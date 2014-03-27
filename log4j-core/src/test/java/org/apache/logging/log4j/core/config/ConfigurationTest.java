@@ -18,9 +18,7 @@
 package org.apache.logging.log4j.core.config;
 
 import java.io.BufferedReader;
-import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,6 +31,7 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.filter.ThreadContextMapFilter;
+import org.apache.logging.log4j.junit.CleanFiles;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.junit.Before;
 import org.junit.Rule;
@@ -59,8 +58,10 @@ public class ConfigurationTest {
     private static final String FILE_LOGGER_NAME = "org.apache.logging.log4j.test2.Test";
     private static final String APPENDER_NAME = "STDOUT";
 
-    private final String configFileName;
     private final String logFileName;
+
+    @Rule
+    public CleanFiles cleanFiles;
 
     @Rule
     public InitialLoggerContext init;
@@ -70,8 +71,8 @@ public class ConfigurationTest {
     private SecureRandom random = new SecureRandom();
 
     public ConfigurationTest(final String configFileName, final String logFileName) {
-        this.configFileName = configFileName;
         this.logFileName = logFileName;
+        this.cleanFiles = new CleanFiles(logFileName);
         this.init = new InitialLoggerContext(configFileName);
     }
 
@@ -88,7 +89,6 @@ public class ConfigurationTest {
 
     @Before
     public void setUp() throws Exception {
-        clearLogFile(this.configFileName);
         this.ctx = this.init.getContext();
     }
 
@@ -139,12 +139,4 @@ public class ConfigurationTest {
         assertThat(line, endsWith(Long.toString(random)));
     }
 
-    private static void clearLogFile(final String file) throws IOException {
-        final FileOutputStream fos = new FileOutputStream(file, false);
-        try {
-            fos.flush();
-        } finally {
-            fos.close();
-        }
-    }
 }
