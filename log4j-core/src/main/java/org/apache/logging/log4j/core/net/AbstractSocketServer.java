@@ -31,6 +31,9 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.xml.XMLConfiguration;
 import org.apache.logging.log4j.core.config.xml.XMLConfigurationFactory;
 
+/**
+ * Abstract socket server for TCP and UDP implementations.
+ */
 public abstract class AbstractSocketServer extends LogEventListener {
 
     /**
