@@ -23,7 +23,6 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
@@ -35,11 +34,6 @@ public class XMLConfigurationPropsTest {
 
     private static final String CONFIG = "log4j-props.xml";
     private static final String CONFIG1 = "log4j-props1.xml";
-    private static final String LOGFILE = "target/test.log";
-
-    @BeforeClass
-    public static void setupClass() {
-    }
 
     @AfterClass
     public static void cleanupClass() {
