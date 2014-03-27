@@ -16,16 +16,14 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import java.util.List;
@@ -36,7 +34,8 @@ import static org.junit.Assert.assertNotNull;
 
 public class CallerInformationTest {
 
-    private static final String CONFIG = "log4j2-calling-class.xml";
+    @ClassRule
+    public static InitialLoggerContext init = new InitialLoggerContext("log4j2-calling-class.xml");
 
     private static LoggerContext ctx;
 
@@ -44,21 +43,13 @@ public class CallerInformationTest {
 
     @BeforeClass
     public static void setConfig() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        ctx = (LoggerContext) LogManager.getContext(false);
+        ctx = init.getContext();
         assertNotNull("No LoggerContext created.", ctx);
         final Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration found!", config);
         appenders = config.getAppenders();
         assertNotNull("No appenders found!", appenders);
         assertEquals("Incorrect number of appenders configured.", 2, appenders.size());
-    }
-
-    @AfterClass
-    public static void resetConfig() {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        ctx.reconfigure();
-        StatusLogger.getLogger().reset();
     }
 
     @Test
