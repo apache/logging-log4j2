@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.net;
 
 import java.io.Serializable;
 import java.util.Properties;
+
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageProducer;

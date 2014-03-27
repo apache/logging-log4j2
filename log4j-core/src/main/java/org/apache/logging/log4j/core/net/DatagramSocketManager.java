@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.core.net;
 
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.appender.ManagerFactory;
-import org.apache.logging.log4j.core.helpers.Strings;
-
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.appender.ManagerFactory;
+import org.apache.logging.log4j.core.helpers.Strings;
 
 /**
  * Socket Manager for UDP connections.
