@@ -20,40 +20,31 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.junit.*;
 
 /**
  *
  */
 public class RollingAppenderTimeAndSizeTest {
 
-    private static final String CONFIG = "log4j-rolling3.xml";
     private static final String DIR = "target/rolling3/test";
 
-    org.apache.logging.log4j.Logger logger = LogManager.getLogger(RollingAppenderTimeAndSizeTest.class.getName());
+    @Rule
+    public InitialLoggerContext init = new InitialLoggerContext("log4j-rolling3.xml");
 
-    @BeforeClass
-    public static void setupClass() {
+    private Logger logger;
+
+    @Before
+    public void setUp() throws Exception {
+        this.logger = this.init.getLogger(RollingAppenderTimeAndSizeTest.class.getName());
         deleteDir();
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
-        final Configuration config = ctx.getConfiguration();
     }
 
-    @AfterClass
-    public static void cleanupClass() {
-        //deleteDir();
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
-        ctx.reconfigure();
-        StatusLogger.getLogger().reset();
+    @After
+    public void tearDown() throws Exception {
+        deleteDir();
     }
 
     @Test
