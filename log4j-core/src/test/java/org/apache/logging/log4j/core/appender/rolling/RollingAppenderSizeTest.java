@@ -19,45 +19,54 @@ package org.apache.logging.log4j.core.appender.rolling;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Collection;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.AfterClass;
-import org.junit.Test;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.junit.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 /**
  *
  */
-public abstract class AbstractRollingAppenderSizeTest {
-
-    protected AbstractRollingAppenderSizeTest(String fileExtension) {
-        super();
-        this.fileExtension = fileExtension;
-    }
+@RunWith(Parameterized.class)
+public class RollingAppenderSizeTest {
 
     private static final String DIR = "target/rolling1";
-    
+
     private final String fileExtension;
 
-    org.apache.logging.log4j.Logger logger = LogManager.getLogger(AbstractRollingAppenderSizeTest.class.getName());
+    private Logger logger;
 
-    protected static void setupClass(String configPath) {
-        deleteDir();
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, configPath);
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
-        final Configuration config = ctx.getConfiguration();
+    @Parameterized.Parameters
+    public static Collection<Object[]> data() {
+        return Arrays.asList(
+                new Object[][]{
+                        { "log4j-rolling-gz.xml", ".gz" },
+                        { "log4j-rolling-zip.xml", ".zip" }
+                }
+        );
     }
 
-    @AfterClass
-    public static void cleanupClass() {
+    @Rule
+    public InitialLoggerContext init;
+
+    public RollingAppenderSizeTest(final String configFile, final String fileExtension) {
+        this.fileExtension = fileExtension;
+        this.init = new InitialLoggerContext(configFile);
+    }
+
+    @Before
+    public void setUp() throws Exception {
         deleteDir();
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
-        ctx.reconfigure();
-        StatusLogger.getLogger().reset();
+        this.logger = this.init.getLogger(RollingAppenderSizeTest.class.getName());
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        deleteDir();
     }
 
     @Test
