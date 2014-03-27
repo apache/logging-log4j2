@@ -28,16 +28,16 @@ import org.apache.logging.log4j.core.LogEvent;
 public class SerializedLogEventInput extends AbstractLogEventInput<ObjectInputStream> {
 
     @Override
-    public LogEvent readLogEvent(ObjectInputStream inputStream) throws IOException {
+    public LogEvent readLogEvent(final ObjectInputStream inputStream) throws IOException {
         try {
             return (LogEvent) inputStream.readObject();
-        } catch (ClassNotFoundException e) {
+        } catch (final ClassNotFoundException e) {
             throw new IOException(e);
         }
     }
 
     @Override
-    public ObjectInputStream wrapStream(InputStream inputStream) throws IOException {
+    public ObjectInputStream wrapStream(final InputStream inputStream) throws IOException {
         return new ObjectInputStream(inputStream);
     }
 }

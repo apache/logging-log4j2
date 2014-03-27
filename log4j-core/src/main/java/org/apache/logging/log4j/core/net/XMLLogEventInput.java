@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.LogEvent;
 public class XMLLogEventInput extends AbstractLogEventInput<InputStream> {
 
     @Override
-    public LogEvent readLogEvent(InputStream inputStream) throws IOException {
+    public LogEvent readLogEvent(final InputStream inputStream) throws IOException {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
