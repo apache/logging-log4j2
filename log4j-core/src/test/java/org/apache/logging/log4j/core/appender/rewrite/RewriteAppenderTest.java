@@ -27,49 +27,34 @@ import java.util.Map;
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 /**
  *
  */
 public class RewriteAppenderTest {
-    private static final String CONFIG = "log4j-rewrite.xml";
-    private static Configuration config;
-    private static ListAppender app;
-    private static ListAppender app2;
-    private static LoggerContext ctx;
+    private ListAppender app;
+    private ListAppender app2;
 
-    @BeforeClass
-    public static void setupClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        ctx = (LoggerContext) LogManager.getContext(false);
-        config = ctx.getConfiguration();
-        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
-            if (entry.getKey().equals("List")) {
-                app = (ListAppender) entry.getValue();
-            } else if (entry.getKey().equals("List2")) {
-                app2 = (ListAppender) entry.getValue();
-            }
-        }
+    @Rule
+    public InitialLoggerContext init = new InitialLoggerContext("log4j-rewrite.xml");
+
+    @Before
+    public void setUp() throws Exception {
+        app = (ListAppender) this.init.getAppender("List");
+        app2 = (ListAppender) this.init.getAppender("List2");
     }
 
-    @AfterClass
-    public static void cleanupClass() {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        ctx.reconfigure();
-        StatusLogger.getLogger().reset();
+    @After
+    public void tearDown() throws Exception {
+        app.clear();
+        app2.clear();
     }
 
     @Test
@@ -90,7 +75,6 @@ public class RewriteAppenderTest {
         assertTrue("Incorrect number of map entries, expected 3 got " + map.size(), map.size() == 3);
         final String value = map.get("Key1");
         assertEquals("Apache", value);
-        app.clear();
     }
 
 
@@ -119,6 +103,5 @@ public class RewriteAppenderTest {
 
         final List<LogEvent> list = app.getEvents();
         assertTrue("Events were generated", list == null || list.size() == 0);
-        app.clear();
     }
 }
