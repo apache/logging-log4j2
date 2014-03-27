@@ -27,7 +27,7 @@ import java.io.InputStream;
 public abstract class AbstractLogEventInput<T extends InputStream> implements LogEventInput<T> {
 
     @Override
-    public T wrapStream(InputStream inputStream) throws IOException {
+    public T wrapStream(final InputStream inputStream) throws IOException {
         return (T) inputStream;
     }
 

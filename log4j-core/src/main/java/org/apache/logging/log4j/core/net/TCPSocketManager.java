@@ -221,11 +221,11 @@ public class TCPSocketManager extends AbstractSocketManager {
         }
     }
 
-    protected Socket createSocket(InetAddress host, int port) throws IOException {
+    protected Socket createSocket(final InetAddress host, final int port) throws IOException {
         return createSocket(host.getHostName(), port);
     }
 
-    protected Socket createSocket(String host, int port) throws IOException {
+    protected Socket createSocket(final String host, final int port) throws IOException {
         return new Socket(host, port);
     }
 

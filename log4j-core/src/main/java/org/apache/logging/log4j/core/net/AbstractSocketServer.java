@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -35,7 +36,7 @@ import org.apache.logging.log4j.core.helpers.Assert;
 /**
  * Abstract socket server for TCP and UDP implementations.
  */
-public abstract class AbstractSocketServer extends LogEventListener {
+public abstract class AbstractSocketServer<T extends InputStream> extends LogEventListener {
 
     /**
      * Factory that creates a Configuration for the server.
@@ -90,9 +91,9 @@ public abstract class AbstractSocketServer extends LogEventListener {
 
     private volatile boolean active = true;
 
-    protected LogEventInput logEventInput;
+    protected final LogEventInput<T> logEventInput;
 
-    public AbstractSocketServer(int port, LogEventInput logEventInput) {
+    public AbstractSocketServer(final int port, final LogEventInput<T> logEventInput) {
         this.logger = LogManager.getLogger(this.getClass().getName() + '.' + port);
         this.logEventInput = Assert.requireNonNull(logEventInput, "LogEventInput");
     }
@@ -101,7 +102,7 @@ public abstract class AbstractSocketServer extends LogEventListener {
         return this.active;
     }
 
-    protected void setActive(boolean isActive) {
+    protected void setActive(final boolean isActive) {
         this.active = isActive;
     }
 

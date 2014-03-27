@@ -52,8 +52,8 @@ public class TLSSocketManager extends TCPSocketManager {
      * @param immediateFail
      * @param layout        The Layout.
      */
-    public TLSSocketManager(String name, OutputStream os, Socket sock, SSLConfiguration sslConfig, InetAddress addr,
-                            String host, int port, int delay, boolean immediateFail, Layout layout) {
+    public TLSSocketManager(final String name, final OutputStream os, final Socket sock, final SSLConfiguration sslConfig, final InetAddress addr,
+                            final String host, final int port, final int delay, final boolean immediateFail, final Layout layout) {
         super(name, os, sock, addr, host, port, delay, immediateFail, layout);
         this.sslConfig = sslConfig;
     }
@@ -66,8 +66,8 @@ public class TLSSocketManager extends TCPSocketManager {
         private final boolean immediateFail;
         private final Layout layout;
 
-        public TLSFactoryData(SSLConfiguration sslConfig, String host, int port, int delay, boolean immediateFail,
-                              Layout layout) {
+        public TLSFactoryData(final SSLConfiguration sslConfig, final String host, final int port, final int delay, final boolean immediateFail,
+                              final Layout layout) {
             this.host = host;
             this.port = port;
             this.delay = delay;
@@ -93,12 +93,12 @@ public class TLSSocketManager extends TCPSocketManager {
     }
 
     @Override
-    protected Socket createSocket(String host, int port) throws IOException {
-        SSLSocketFactory socketFactory = createSSLSocketFactory(sslConfig);
+    protected Socket createSocket(final String host, final int port) throws IOException {
+        final SSLSocketFactory socketFactory = createSSLSocketFactory(sslConfig);
         return socketFactory.createSocket(host, port);
     }
 
-    private static SSLSocketFactory createSSLSocketFactory(SSLConfiguration sslConf) {
+    private static SSLSocketFactory createSSLSocketFactory(final SSLConfiguration sslConf) {
         SSLSocketFactory socketFactory;
 
         if (sslConf != null) {
@@ -130,17 +130,17 @@ public class TLSSocketManager extends TCPSocketManager {
                 os = socket.getOutputStream();
                 checkDelay(data.delay, os);
             }
-            catch (IOException e) {
+            catch (final IOException e) {
                 LOGGER.error("TLSSocketManager (" + name + ") " + e);
                 os = new ByteArrayOutputStream();
             }
-            catch (TLSSocketManagerFactoryException e) {
+            catch (final TLSSocketManagerFactoryException e) {
                 return null;
             }
             return createManager(name, os, socket, data.sslConfig, address, data.host, data.port, data.delay, data.immediateFail, data.layout);
         }
 
-        private InetAddress resolveAddress(String hostName) throws TLSSocketManagerFactoryException {
+        private InetAddress resolveAddress(final String hostName) throws TLSSocketManagerFactoryException {
             InetAddress address;
 
             try {
@@ -153,13 +153,13 @@ public class TLSSocketManager extends TCPSocketManager {
             return address;
         }
 
-        private void checkDelay(int delay, OutputStream os) throws TLSSocketManagerFactoryException {
+        private void checkDelay(final int delay, final OutputStream os) throws TLSSocketManagerFactoryException {
             if (delay == 0 && os == null) {
                 throw new TLSSocketManagerFactoryException();
             }
         }
 
-        private Socket createSocket(TLSFactoryData data) throws IOException {
+        private Socket createSocket(final TLSFactoryData data) throws IOException {
             SSLSocketFactory socketFactory;
             SSLSocket socket;
 
@@ -168,7 +168,7 @@ public class TLSSocketManager extends TCPSocketManager {
             return socket;
         }
 
-        private TLSSocketManager createManager(String name, OutputStream os, Socket socket, SSLConfiguration sslConfig, InetAddress address, String host, int port, int delay, boolean immediateFail, Layout layout) {
+        private TLSSocketManager createManager(final String name, final OutputStream os, final Socket socket, final SSLConfiguration sslConfig, final InetAddress address, final String host, final int port, final int delay, final boolean immediateFail, final Layout layout) {
             return new TLSSocketManager(name, os, socket, sslConfig, address, host, port, delay, immediateFail, layout);
         }
     }
