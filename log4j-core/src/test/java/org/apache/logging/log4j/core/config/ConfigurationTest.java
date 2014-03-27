@@ -21,11 +21,11 @@ import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -65,6 +65,8 @@ public class ConfigurationTest {
     private final String logFileName;
 
     private LoggerContext ctx;
+
+    private SecureRandom random = new SecureRandom();
 
     public ConfigurationTest(final String configFileName, final String logFileName) {
         this.configFileName = configFileName;
@@ -127,7 +129,7 @@ public class ConfigurationTest {
     @Test
     public void testLogToFile() throws Exception {
         final Logger logger = this.ctx.getLogger(FILE_LOGGER_NAME);
-        final long random = ThreadLocalRandom.current().nextLong();
+        final long random = this.random.nextLong();
         logger.debug("This is test message number {}", random);
         int count = 0;
         String line = "";
