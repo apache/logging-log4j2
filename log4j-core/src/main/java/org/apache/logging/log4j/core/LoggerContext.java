@@ -398,7 +398,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     }
 
     public void addPropertyChangeListener(final PropertyChangeListener listener) {
-        propertyChangeListeners.add(Assert.isNotNull(listener, "listener"));
+        propertyChangeListeners.add(Assert.requireNonNull(listener, "listener"));
     }
 
     public void removePropertyChangeListener(final PropertyChangeListener listener) {

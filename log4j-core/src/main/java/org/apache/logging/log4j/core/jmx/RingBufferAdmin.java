@@ -45,7 +45,7 @@ public class RingBufferAdmin implements RingBufferAdminMBean {
     }
     
     protected RingBufferAdmin(RingBuffer<?> ringBuffer, String mbeanName) {
-        this.ringBuffer = Assert.isNotNull(ringBuffer, "ringbuffer");        
+        this.ringBuffer = Assert.requireNonNull(ringBuffer, "ringbuffer");        
         try {
             objectName = new ObjectName(mbeanName);
         } catch (final Exception e) {

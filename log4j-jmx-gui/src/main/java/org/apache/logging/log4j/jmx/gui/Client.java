@@ -52,7 +52,7 @@ public class Client {
      * @throws IOException if the connection failed
      */
     public Client(final JMXConnector connector) throws MalformedObjectNameException, IOException {
-        this.connector = Assert.isNotNull(connector, "JMXConnector");
+        this.connector = Assert.requireNonNull(connector, "JMXConnector");
         this.connector.connect();
         this.connection = connector.getMBeanServerConnection();
         init();

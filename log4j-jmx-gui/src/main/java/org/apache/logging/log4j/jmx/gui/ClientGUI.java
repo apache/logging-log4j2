@@ -76,7 +76,7 @@ public class ClientGUI extends JPanel implements NotificationListener {
     private JTabbedPane tabbedPaneContexts;
 
     public ClientGUI(final Client client) throws IOException, JMException {
-        this.client = Assert.isNotNull(client, "client");
+        this.client = Assert.requireNonNull(client, "client");
         createWidgets();
         populateWidgets();
 

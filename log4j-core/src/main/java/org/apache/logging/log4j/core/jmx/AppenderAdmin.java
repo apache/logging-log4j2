@@ -40,8 +40,8 @@ public class AppenderAdmin implements AppenderAdminMBean {
      */
     public AppenderAdmin(final String contextName, final Appender appender) {
         // super(executor); // no notifications for now
-        this.contextName = Assert.isNotNull(contextName, "contextName");
-        this.appender = Assert.isNotNull(appender, "appender");
+        this.contextName = Assert.requireNonNull(contextName, "contextName");
+        this.appender = Assert.requireNonNull(appender, "appender");
         try {
             final String ctxName = Server.escape(this.contextName);
             final String configName = Server.escape(appender.getName());

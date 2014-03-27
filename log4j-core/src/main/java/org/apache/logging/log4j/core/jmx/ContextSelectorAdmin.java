@@ -43,7 +43,7 @@ public class ContextSelectorAdmin implements ContextSelectorAdminMBean {
      */
     public ContextSelectorAdmin(final String contextName, final ContextSelector selector) {
         super();
-        this.selector = Assert.isNotNull(selector, "ContextSelector");
+        this.selector = Assert.requireNonNull(selector, "ContextSelector");
         try {
             final String mbeanName = String.format(PATTERN, Server.escape(contextName));
             objectName = new ObjectName(mbeanName);

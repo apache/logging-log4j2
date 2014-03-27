@@ -72,7 +72,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
      */
     public LoggerContextAdmin(final LoggerContext loggerContext, final Executor executor) {
         super(executor, createNotificationInfo());
-        this.loggerContext = Assert.isNotNull(loggerContext, "loggerContext");
+        this.loggerContext = Assert.requireNonNull(loggerContext, "loggerContext");
         try {
             final String ctxName = Server.escape(loggerContext.getName());
             final String name = String.format(PATTERN, ctxName);
@@ -169,7 +169,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
     @Override
     public void setConfigText(final String configText, final String charsetName) {
         final String old = customConfigText;
-        customConfigText = Assert.isNotNull(configText, "configText");
+        customConfigText = Assert.requireNonNull(configText, "configText");
         LOGGER.debug("---------");
         LOGGER.debug("Remote request to reconfigure from config text.");
 
