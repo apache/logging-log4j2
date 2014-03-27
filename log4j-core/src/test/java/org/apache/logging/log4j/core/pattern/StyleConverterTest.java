@@ -20,56 +20,38 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
-import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.helpers.Constants;
-import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 /**
  *
  */
 public class StyleConverterTest {
-    private static final String CONFIG = "log4j-style.xml";
-    private static Configuration config;
-    private static ListAppender app;
-    private static LoggerContext ctx;
 
     private static final String EXPECTED =
         "\u001B[1;31mERROR\u001B[m \u001B[1;36mLoggerTest\u001B[m o.a.l.l.c.p.StyleConverterTest org.apache.logging.log4j.core.pattern.StyleConverterTest"
         + Constants.LINE_SEP;
 
-    @BeforeClass
-    public static void setupClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        ctx = (LoggerContext) LogManager.getContext(false);
-        config = ctx.getConfiguration();
-        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
-            if (entry.getKey().equals("List")) {
-                app = (ListAppender) entry.getValue();
-                break;
-            }
-        }
+    @Rule
+    public InitialLoggerContext init = new InitialLoggerContext("log4j-style.xml");
+
+    private Logger logger;
+    private ListAppender app;
+
+    @Before
+    public void setUp() throws Exception {
+        this.logger = this.init.getLogger("LoggerTest");
+        app = (ListAppender) this.init.getAppender("List");
     }
 
-    @AfterClass
-    public static void cleanupClass() {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        ctx.reconfigure();
-        StatusLogger.getLogger().reset();
-        ThreadContext.clear();
+    @After
+    public void tearDown() throws Exception {
+        app.clear();
     }
-
-    org.apache.logging.log4j.Logger logger = LogManager.getLogger("LoggerTest");
 
     @Test
     public void testReplacement() {
@@ -79,6 +61,5 @@ public class StyleConverterTest {
         assertNotNull(msgs);
         assertTrue("Incorrect number of messages. Should be 1 is " + msgs.size(), msgs.size() == 1);
         assertTrue("Replacement failed - expected ending " + EXPECTED + ", actual " + msgs.get(0), msgs.get(0).endsWith(EXPECTED));
-        app.clear();
     }
 }
