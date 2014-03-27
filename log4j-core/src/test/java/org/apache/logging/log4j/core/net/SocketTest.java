@@ -96,15 +96,4 @@ public class SocketTest {
         }
     }
 
-    private static void closeQuietly(final ExecutorService executor) {
-        if (null != executor) {
-            executor.shutdownNow();
-        }
-    }
-
-    private static void closeQuietly(final TestSocketServer testServer) {
-        if (null != testServer) {
-            testServer.close();
-        }
-    }
 }
