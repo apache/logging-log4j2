@@ -16,87 +16,69 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.List;
-import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.apache.logging.log4j.test.appender.FailOnceAppender;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 /**
  *
  */
 public class FailoverAppenderTest {
-    private static final String CONFIG = "log4j-failover.xml";
-    private static Configuration config;
-    private static ListAppender app;
-    private static FailOnceAppender foApp;
-    private static LoggerContext ctx;
+    private ListAppender app;
+    private FailOnceAppender foApp;
+    private Logger logger;
+    private Logger onceLogger;
 
-    @BeforeClass
-    public static void setupClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        ctx = (LoggerContext) LogManager.getContext(false);
-        config = ctx.getConfiguration();
-        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
-            if (entry.getKey().equals("List")) {
-                app = (ListAppender) entry.getValue();
-            } else if (entry.getKey().equals("Once")) {
-                foApp = (FailOnceAppender) entry.getValue();
-            }
-        }
+    @Rule
+    public InitialLoggerContext init = new InitialLoggerContext("log4j-failover.xml");
+
+    @Before
+    public void setUp() throws Exception {
+        app = (ListAppender) this.init.getAppender("List");
+        foApp = (FailOnceAppender) this.init.getAppender("Once");
+        logger = this.init.getLogger("LoggerTest");
+        onceLogger = this.init.getLogger("Once");
     }
 
-    @AfterClass
-    public static void cleanupClass() {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        ctx.reconfigure();
-        StatusLogger.getLogger().reset();
+    @After
+    public void tearDown() throws Exception {
+        app.clear();
     }
-
-    org.apache.logging.log4j.Logger logger = LogManager.getLogger("LoggerTest");
-    org.apache.logging.log4j.Logger onceLogger = LogManager.getLogger("Once");
 
     @Test
     public void testFailover() {
-        app.clear();
         logger.error("This is a test");
         List<LogEvent> events = app.getEvents();
         assertNotNull(events);
-        assertTrue("Incorrect number of events. Should be 1 is " + events.size(), events.size() == 1);
+        assertEquals("Incorrect number of events. Should be 1 is " + events.size(), events.size(), 1);
         app.clear();
         logger.error("This is a test");
         events = app.getEvents();
         assertNotNull(events);
-        assertTrue("Incorrect number of events. Should be 1 is " + events.size(), events.size() == 1);
+        assertEquals("Incorrect number of events. Should be 1 is " + events.size(), events.size(), 1);
     }
 
     @Test
     public void testRecovery() throws Exception {
-        app.clear();
         onceLogger.error("Fail once");
         onceLogger.error("Fail again");
         List<LogEvent> events = app.getEvents();
         assertNotNull(events);
-        assertTrue("Incorrect number of events. Should be 2 is " + events.size(), events.size() == 2);
+        assertEquals("Incorrect number of events. Should be 2 is " + events.size(), events.size(), 2);
         app.clear();
         Thread.sleep(1100);
         onceLogger.error("Fail after recovery interval");
         events = app.getEvents();
-        assertTrue("Did not recover", events.size() == 0);
+        assertEquals("Did not recover", events.size(), 0);
         events = foApp.getEvents();
-        assertTrue("No events in primary appender", events.size() == 1);
+        assertEquals("No events in primary appender", events.size(), 1);
     }
 }
