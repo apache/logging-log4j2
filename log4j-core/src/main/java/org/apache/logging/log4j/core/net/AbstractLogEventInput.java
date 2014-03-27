@@ -22,10 +22,12 @@ import java.io.InputStream;
 /**
  * Abstract class for implementations of {@link LogEventInput}.
  * 
- * @param <T>
+ * @param <T> The kind of input stream read
  */
 public abstract class AbstractLogEventInput<T extends InputStream> implements LogEventInput<T> {
 
+    // @SuppressWarnings("unchecked"): The default is to return the same object as given.
+    @SuppressWarnings("unchecked")
     @Override
     public T wrapStream(final InputStream inputStream) throws IOException {
         return (T) inputStream;

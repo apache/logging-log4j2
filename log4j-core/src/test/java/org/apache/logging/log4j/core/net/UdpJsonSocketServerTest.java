@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import java.io.InputStream;
 import java.io.Serializable;
 
 import org.apache.logging.log4j.LogManager;
@@ -30,8 +31,7 @@ public class UdpJsonSocketServerTest extends AbstractSocketServerTest {
     private static final String PORT = "8199";
     private static final int PORT_NUM = Integer.parseInt(PORT);
     private static Thread thread;
-
-    private static UDPSocketServer udpSocketServer;
+    private static UDPSocketServer<InputStream> udpSocketServer;
 
     @BeforeClass
     public static void setupClass() throws Exception {

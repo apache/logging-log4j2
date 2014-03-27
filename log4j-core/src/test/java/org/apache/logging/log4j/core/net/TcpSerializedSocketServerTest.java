@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 import org.apache.logging.log4j.LogManager;
@@ -27,7 +28,7 @@ import org.junit.BeforeClass;
 public class TcpSerializedSocketServerTest extends AbstractSocketServerTest {
     private static final String PORT = "8198";
     private static final int PORT_NUM = Integer.parseInt(PORT);
-    private static TCPSocketServer tcpSocketServer;
+    private static TCPSocketServer<ObjectInputStream> tcpSocketServer;
 
     private static Thread thread;
 
