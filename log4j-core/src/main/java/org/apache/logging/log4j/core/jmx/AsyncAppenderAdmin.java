@@ -39,8 +39,8 @@ public class AsyncAppenderAdmin implements AsyncAppenderAdminMBean {
      */
     public AsyncAppenderAdmin(final String contextName, final AsyncAppender appender) {
         // super(executor); // no notifications for now
-        this.contextName = Assert.isNotNull(contextName, "contextName");
-        this.asyncAppender = Assert.isNotNull(appender, "async appender");
+        this.contextName = Assert.requireNonNull(contextName, "contextName");
+        this.asyncAppender = Assert.requireNonNull(appender, "async appender");
         try {
             final String ctxName = Server.escape(this.contextName);
             final String configName = Server.escape(appender.getName());

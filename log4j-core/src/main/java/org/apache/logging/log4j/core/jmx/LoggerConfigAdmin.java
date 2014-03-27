@@ -42,8 +42,8 @@ public class LoggerConfigAdmin implements LoggerConfigAdminMBean {
      */
     public LoggerConfigAdmin(final String contextName, final LoggerConfig loggerConfig) {
         // super(executor); // no notifications for now
-        this.contextName = Assert.isNotNull(contextName, "contextName");
-        this.loggerConfig = Assert.isNotNull(loggerConfig, "loggerConfig");
+        this.contextName = Assert.requireNonNull(contextName, "contextName");
+        this.loggerConfig = Assert.requireNonNull(loggerConfig, "loggerConfig");
         try {
             final String ctxName = Server.escape(this.contextName);
             final String configName = Server.escape(loggerConfig.getName());

@@ -94,7 +94,7 @@ public abstract class AbstractSocketServer extends LogEventListener {
 
     public AbstractSocketServer(int port, LogEventInput logEventInput) {
         this.logger = LogManager.getLogger(this.getClass().getName() + '.' + port);
-        this.logEventInput = Assert.isNotNull(logEventInput, "LogEventInput");
+        this.logEventInput = Assert.requireNonNull(logEventInput, "LogEventInput");
     }
 
     protected boolean isActive() {

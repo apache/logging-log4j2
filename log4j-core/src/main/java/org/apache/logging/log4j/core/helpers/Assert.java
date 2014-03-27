@@ -27,6 +27,9 @@ public final class Assert {
      * Throws a {@code NullPointerException} if the specified parameter is
      * {@code null}, otherwise returns the specified parameter.
      * <p>
+     * On Java 7, just use Objects#requireNonNull()
+     * </p>
+     * <p>
      * Usage:
      *
      * <pre>
@@ -40,7 +43,7 @@ public final class Assert {
      *
      * // now you can do the same in one line:
      * public SomeConstructor(Object param) {
-     *     this.field = Assert.isNotNull(param);
+     *     this.field = Assert.requireNonNull(param);
      * }
      * </pre>
      *
@@ -50,7 +53,7 @@ public final class Assert {
      *            {@code null}
      * @return the specified parameter
      */
-    public static <T> T isNotNull(final T checkMe, final String name) {
+    public static <T> T requireNonNull(final T checkMe, final String name) {
         if (checkMe == null) {
             throw new NullPointerException(name + " is null");
         }
