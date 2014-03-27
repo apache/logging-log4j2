@@ -51,6 +51,14 @@ public class NameAbbreviatorTest {
     }
 
     @Test
+    public void testThree() throws Exception {
+        final String str = this.getClass().getName();
+        final NameAbbreviator a = NameAbbreviator.getAbbreviator("3");
+        final String result = a.abbreviate(str);
+        assertEquals("core.pattern.NameAbbreviatorTest", result);
+    }
+
+    @Test
     public void testShortName() {
         final String str = this.getClass().getName();
         final NameAbbreviator a = NameAbbreviator.getAbbreviator("1.");
