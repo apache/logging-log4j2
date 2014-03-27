@@ -140,7 +140,7 @@ public class UDPSocketServer extends AbstractSocketServer implements Runnable {
                 final DatagramPacket packet = new DatagramPacket(buf, buf.length);
                 datagramSocket.receive(packet);
                 final ByteArrayInputStream bais = new ByteArrayInputStream(packet.getData(), packet.getOffset(), packet.getLength());
-                log(logEventInput.readLogEvent(bais));
+                log(logEventInput.readLogEvent(logEventInput.wrapStream(bais)));
             } catch (final OptionalDataException e) {
                 logger.error("OptionalDataException eof=" + e.eof + " length=" + e.length, e);
             } catch (final EOFException e) {
