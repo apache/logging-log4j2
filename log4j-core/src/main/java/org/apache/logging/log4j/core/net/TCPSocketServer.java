@@ -45,7 +45,7 @@ public class TCPSocketServer extends AbstractSocketServer implements Runnable {
 
         private final InputStream inputStream;
 
-        private boolean shutdown = false;
+        private volatile boolean shutdown = false;
 
         public SocketHandler(final Socket socket, LogEventInput logEventInput) throws IOException {
             this.inputStream = new ObjectInputStream(socket.getInputStream());
