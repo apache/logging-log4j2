@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.LogEvent;
 /**
  * Reads XML {@link LogEvent}s.
  */
-public class XMLLogEventInput implements LogEventInput {
+public class XMLLogEventInput extends AbstractLogEventInput {
 
     @Override
     public LogEvent readLogEvent(InputStream inputStream) throws IOException {

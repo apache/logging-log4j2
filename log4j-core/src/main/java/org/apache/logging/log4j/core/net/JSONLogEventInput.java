@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.LogEvent;
 /**
  * Reads JSON {@link LogEvent}s.
  */
-public class JSONLogEventInput implements LogEventInput {
+public class JSONLogEventInput extends AbstractLogEventInput {
 
     @Override
     public LogEvent readLogEvent(InputStream inputStream) throws IOException {
