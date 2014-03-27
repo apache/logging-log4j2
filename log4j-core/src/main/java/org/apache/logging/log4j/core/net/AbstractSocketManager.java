@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core.net;
 
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.appender.OutputStreamManager;
-
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.appender.OutputStreamManager;
 
 /**
  * Abstract base class for managing sockets.

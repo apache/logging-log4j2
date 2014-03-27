@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.net;
 
 import java.io.Serializable;
+
 import javax.jms.JMSException;
 import javax.jms.Queue;
 import javax.jms.QueueConnection;

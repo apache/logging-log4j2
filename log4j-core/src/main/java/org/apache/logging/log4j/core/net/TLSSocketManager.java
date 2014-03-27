@@ -16,19 +16,20 @@
  */
 package org.apache.logging.log4j.core.net;
 
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.appender.ManagerFactory;
-import org.apache.logging.log4j.core.helpers.Strings;
-import org.apache.logging.log4j.core.net.ssl.SSLConfiguration;
-
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.appender.ManagerFactory;
+import org.apache.logging.log4j.core.helpers.Strings;
+import org.apache.logging.log4j.core.net.ssl.SSLConfiguration;
 
 /**
  *
