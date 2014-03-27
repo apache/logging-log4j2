@@ -28,7 +28,7 @@ public class XMLLogEventInput extends AbstractLogEventInput<InputStream> {
 
     @Override
     public LogEvent readLogEvent(InputStream inputStream) throws IOException {
-        throw new UnsupportedOperationException("Not  implemented yet");
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
 }
