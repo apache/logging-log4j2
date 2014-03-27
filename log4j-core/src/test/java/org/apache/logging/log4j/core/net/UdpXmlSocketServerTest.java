@@ -16,29 +16,34 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import java.io.Serializable;
+
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 
-public class TCPSocketServerTest extends AbstractSocketServerTest {
-    private static final String PORT = "8198";
+@Ignore("Not implemented yet")
+public class UdpXmlSocketServerTest extends AbstractSocketServerTest {
+    private static final String PORT = "8199";
     private static final int PORT_NUM = Integer.parseInt(PORT);
-    private static TCPSocketServer tcpSocketServer;
-
     private static Thread thread;
+
+    private static UDPSocketServer udpSocketServer;
 
     @BeforeClass
     public static void setupClass() throws Exception {
         ((LoggerContext) LogManager.getContext(false)).reconfigure();
-        tcpSocketServer = new TCPSocketServer(PORT_NUM);
-        thread = new Thread(tcpSocketServer);
+        udpSocketServer = UDPSocketServer.createXmlSocketServer(PORT_NUM);
+        thread = new Thread(udpSocketServer);
         thread.start();
     }
 
     @AfterClass
     public static void tearDownClass() {
-        tcpSocketServer.shutdown();
+        udpSocketServer.shutdown();
         try {
             thread.join();
         } catch (final InterruptedException e) {
@@ -46,8 +51,13 @@ public class TCPSocketServerTest extends AbstractSocketServerTest {
         }
     }
 
-    public TCPSocketServerTest() {
-        super("tcp", PORT, false);
+    public UdpXmlSocketServerTest() {
+        super("udp", PORT, true);
+    }
+
+    @Override
+    protected Layout<? extends Serializable> createLayout() {
+        return super.createXmlLayout();
     }
 
 }

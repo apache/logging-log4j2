@@ -37,7 +37,9 @@ import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.appender.SocketAppender;
 import org.apache.logging.log4j.core.filter.AbstractFilter;
+import org.apache.logging.log4j.core.layout.JSONLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.core.layout.XMLLayout;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.After;
 import org.junit.Test;
@@ -60,20 +62,37 @@ public abstract class AbstractSocketServerTest {
     }
 
     private static final String MESSAGE_1 = "This is a test message";
+
     private static final String MESSAGE_2 = "This is test message 2";
 
     private final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-
-    private final String port;
-    private final String protocol;
+    
     private final boolean expectLengthException;
 
-    private final Logger root = ctx.getLogger(AbstractSocketServerTest.class.getSimpleName());
+    private final String port;
 
+    private final String protocol;
+    
+    private final Logger root = ctx.getLogger(AbstractSocketServerTest.class.getSimpleName());
+    
     protected AbstractSocketServerTest(final String protocol, final String port, final boolean expectLengthException) {
         this.protocol = protocol;
         this.port = port;
         this.expectLengthException = expectLengthException;
+    }
+
+    protected Layout<String> createJsonLayout() {
+        return JSONLayout.createLayout("true", "true", "true", "false", null);
+    }
+
+    protected abstract Layout<? extends Serializable> createLayout();
+
+    protected Layout<? extends Serializable> createSerializedLayout() {
+        return null;
+    }
+
+    protected Layout<String> createXmlLayout() {
+        return XMLLayout.createLayout("true", "true", "true", null, null, null);
     }
 
     @After
@@ -134,10 +153,6 @@ public abstract class AbstractSocketServerTest {
         assertTrue("Incorrect event", events.get(0).getMessage().getFormattedMessage().equals(message1));
         assertTrue("Incorrect number of events received: " + events.size(), events.size() == 2);
         assertTrue("Incorrect event", events.get(1).getMessage().getFormattedMessage().equals(message2));
-    }
-
-    protected Layout<? extends Serializable> createLayout() {
-        return null;
     }
 
     @Test

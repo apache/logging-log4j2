@@ -14,28 +14,24 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core;
+package org.apache.logging.log4j.core.net;
 
-import org.apache.logging.log4j.LogManager;
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.apache.logging.log4j.core.LogEvent;
 
 /**
- * Base class for server classes that listen to {@link LogEvent}s.
+ * Reads {@link LogEvent}s from an input stream.
  */
-public class LogEventListener {
+public interface LogEventInput {
 
-    private final LoggerContext context;
-
-    protected LogEventListener() {
-        context = (LoggerContext) LogManager.getContext(false);
-    }
-
-    protected void log(final LogEvent event) {
-        if (event == null) {
-            return;
-        }
-        final Logger logger = context.getLogger(event.getLoggerName());
-        if (logger.config.filter(event.getLevel(), event.getMarker(), event.getMessage(), event.getThrown())) {
-            logger.config.logEvent(event);
-        }
-    }
+    /**
+     * Reads a {@link LogEvent} from the given input stream.
+     * 
+     * @param inputStream the input stream to read
+     * @return a LogEvent
+     * @throws IOException 
+     */
+    LogEvent readLogEvent(InputStream inputStream) throws IOException;
 }
