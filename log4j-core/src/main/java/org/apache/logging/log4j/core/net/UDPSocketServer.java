@@ -20,7 +20,9 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.EOFException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.OptionalDataException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -29,8 +31,10 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 
 /**
  * Listens for events over a socket connection.
+ * 
+ * @param <T> The kind of input stream read
  */
-public class UDPSocketServer extends AbstractSocketServer implements Runnable {
+public class UDPSocketServer<T extends InputStream> extends AbstractSocketServer<T> implements Runnable {
 
     /**
      * Creates a socket server that reads JSON log events.
@@ -39,8 +43,8 @@ public class UDPSocketServer extends AbstractSocketServer implements Runnable {
      * @return a new a socket server
      * @throws IOException if an I/O error occurs when opening the socket.
      */
-    public static UDPSocketServer createJsonSocketServer(final int port) throws IOException {
-        return new UDPSocketServer(port, new JSONLogEventInput());
+    public static UDPSocketServer<InputStream> createJsonSocketServer(final int port) throws IOException {
+        return new UDPSocketServer<InputStream> (port, new JSONLogEventInput());
     }
 
     /**
@@ -50,8 +54,8 @@ public class UDPSocketServer extends AbstractSocketServer implements Runnable {
      * @return a new a socket server
      * @throws IOException if an I/O error occurs when opening the socket.
      */
-    public static UDPSocketServer createSerializedSocketServer(final int port) throws IOException {
-        return new UDPSocketServer(port, new SerializedLogEventInput());
+    public static UDPSocketServer<ObjectInputStream>  createSerializedSocketServer(final int port) throws IOException {
+        return new UDPSocketServer<ObjectInputStream> (port, new SerializedLogEventInput());
     }
 
     /**
@@ -61,8 +65,8 @@ public class UDPSocketServer extends AbstractSocketServer implements Runnable {
      * @return a new a socket server
      * @throws IOException if an I/O error occurs when opening the socket.
      */
-    public static UDPSocketServer createXmlSocketServer(final int port) throws IOException {
-        return new UDPSocketServer(port, new XMLLogEventInput());
+    public static UDPSocketServer<InputStream>  createXmlSocketServer(final int port) throws IOException {
+        return new UDPSocketServer<InputStream> (port, new XMLLogEventInput());
     }
 
     private final DatagramSocket datagramSocket;
@@ -77,7 +81,7 @@ public class UDPSocketServer extends AbstractSocketServer implements Runnable {
      * @param logEventInput
      * @throws IOException If an error occurs.
      */
-    public UDPSocketServer(final int port, final LogEventInput logEventInput) throws IOException {
+    public UDPSocketServer(final int port, final LogEventInput<T> logEventInput) throws IOException {
         super(port, logEventInput);
         this.datagramSocket = new DatagramSocket(port);
     }
@@ -103,7 +107,7 @@ public class UDPSocketServer extends AbstractSocketServer implements Runnable {
         if (args.length == 2 && args[1].length() > 0) {
             ConfigurationFactory.setConfigurationFactory(new ServerConfigurationFactory(args[1]));
         }
-        final UDPSocketServer socketServer = UDPSocketServer.createSerializedSocketServer(port);
+        final UDPSocketServer<ObjectInputStream> socketServer = UDPSocketServer.createSerializedSocketServer(port);
         final Thread server = new Thread(socketServer);
         server.start();
         final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));

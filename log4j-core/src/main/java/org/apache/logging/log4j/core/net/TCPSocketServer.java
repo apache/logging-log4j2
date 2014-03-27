@@ -21,6 +21,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.OptionalDataException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -33,21 +34,21 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 
 /**
  * Listens for events over a socket connection.
+ * 
+ * @param <T> The kind of input stream read
  */
-public class TCPSocketServer extends AbstractSocketServer implements Runnable {
+public class TCPSocketServer<T extends InputStream> extends AbstractSocketServer<T> implements Runnable {
 
     /**
      * Thread that processes the events.
      */
     private class SocketHandler extends Thread {
-        private final LogEventInput logEventInput;
 
-        private final InputStream inputStream;
+        private final T inputStream;
 
         private volatile boolean shutdown = false;
 
-        public SocketHandler(final Socket socket, final LogEventInput logEventInput) throws IOException {
-            this.logEventInput = logEventInput;
+        public SocketHandler(final Socket socket) throws IOException {
             this.inputStream = logEventInput.wrapStream(socket.getInputStream());
         }
 
@@ -91,8 +92,8 @@ public class TCPSocketServer extends AbstractSocketServer implements Runnable {
      * @return a new a socket server
      * @throws IOException if an I/O error occurs when opening the socket.
      */
-    public static TCPSocketServer createJsonSocketServer(final int port) throws IOException {
-        return new TCPSocketServer(port, new JSONLogEventInput());
+    public static TCPSocketServer<InputStream> createJsonSocketServer(final int port) throws IOException {
+        return new TCPSocketServer<InputStream>(port, new JSONLogEventInput());
     }
 
     /**
@@ -102,8 +103,8 @@ public class TCPSocketServer extends AbstractSocketServer implements Runnable {
      * @return a new a socket server
      * @throws IOException if an I/O error occurs when opening the socket.
      */
-    public static TCPSocketServer createSerializedSocketServer(final int port) throws IOException {
-        return new TCPSocketServer(port, new SerializedLogEventInput());
+    public static TCPSocketServer<ObjectInputStream> createSerializedSocketServer(final int port) throws IOException {
+        return new TCPSocketServer<ObjectInputStream>(port, new SerializedLogEventInput());
     }
 
     /**
@@ -113,8 +114,8 @@ public class TCPSocketServer extends AbstractSocketServer implements Runnable {
      * @return a new a socket server
      * @throws IOException if an I/O error occurs when opening the socket.
      */
-    public static TCPSocketServer createXmlSocketServer(final int port) throws IOException {
-        return new TCPSocketServer(port, new XMLLogEventInput());
+    public static TCPSocketServer<InputStream> createXmlSocketServer(final int port) throws IOException {
+        return new TCPSocketServer<InputStream>(port, new XMLLogEventInput());
     }
 
     /**
@@ -138,8 +139,7 @@ public class TCPSocketServer extends AbstractSocketServer implements Runnable {
         if (args.length == 2 && args[1].length() > 0) {
             ConfigurationFactory.setConfigurationFactory(new ServerConfigurationFactory(args[1]));
         }
-        final TCPSocketServer socketServer = TCPSocketServer.createSerializedSocketServer(port);
-        ;
+        final TCPSocketServer<ObjectInputStream> socketServer = TCPSocketServer.createSerializedSocketServer(port);
         final Thread serverThread = new Thread(socketServer);
         serverThread.start();
         final Charset enc = Charset.defaultCharset();
@@ -169,7 +169,7 @@ public class TCPSocketServer extends AbstractSocketServer implements Runnable {
      * @param logEventInput the log even input
      * @throws IOException if an I/O error occurs when opening the socket.
      */
-    public TCPSocketServer(final int port, final LogEventInput logEventInput) throws IOException {
+    public TCPSocketServer(final int port, final LogEventInput<T> logEventInput) throws IOException {
         super(port, logEventInput);
         this.server = new ServerSocket(port);
     }
@@ -189,7 +189,7 @@ public class TCPSocketServer extends AbstractSocketServer implements Runnable {
                 // If execution reaches this point, then it means that a client
                 // socket has been accepted.
 
-                final SocketHandler handler = new SocketHandler(clientSocket, this.logEventInput);
+                final SocketHandler handler = new SocketHandler(clientSocket);
                 handlers.put(Long.valueOf(handler.getId()), handler);
                 handler.start();
             } catch (final IOException ioe) {

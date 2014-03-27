@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import java.io.InputStream;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -27,7 +29,7 @@ import org.junit.Ignore;
 public class TcpJsonSocketServerTest extends AbstractSocketServerTest {
     private static final String PORT = "8198";
     private static final int PORT_NUM = Integer.parseInt(PORT);
-    private static TCPSocketServer tcpSocketServer;
+    private static TCPSocketServer<InputStream> tcpSocketServer;
 
     private static Thread thread;
 

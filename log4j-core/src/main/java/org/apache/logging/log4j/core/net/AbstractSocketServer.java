@@ -35,6 +35,8 @@ import org.apache.logging.log4j.core.helpers.Assert;
 
 /**
  * Abstract socket server for TCP and UDP implementations.
+ * 
+ * @param <T> The kind of input stream read
  */
 public abstract class AbstractSocketServer<T extends InputStream> extends LogEventListener {
 
@@ -93,6 +95,12 @@ public abstract class AbstractSocketServer<T extends InputStream> extends LogEve
 
     protected final LogEventInput<T> logEventInput;
 
+    /**
+     * Creates a new socket server.
+     * 
+     * @param port listen to this port
+     * @param logEventInput Use this input to read log events.
+     */
     public AbstractSocketServer(final int port, final LogEventInput<T> logEventInput) {
         this.logger = LogManager.getLogger(this.getClass().getName() + '.' + port);
         this.logEventInput = Assert.requireNonNull(logEventInput, "LogEventInput");
