@@ -17,12 +17,12 @@
 package org.apache.logging.log4j.core.config;
 
 import java.io.File;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.xml.XMLConfiguration;
-import org.apache.logging.log4j.junit.CleanFiles;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
@@ -33,9 +33,6 @@ public class FileOutputTest {
 
     private static final String CONFIG = "log4j-filetest.xml";
     private static final String STATUS_LOG = "target/status.log";
-
-    @Rule
-    public CleanFiles cleanFiles = new CleanFiles(STATUS_LOG);
 
     @Rule
     public InitialLoggerContext init = new InitialLoggerContext(CONFIG);
@@ -59,6 +56,7 @@ public class FileOutputTest {
         final File file = new File(STATUS_LOG);
         assertTrue("Status output file does not exist", file.exists());
         assertTrue("File is empty", file.length() > 0);
+        assertTrue("Couldn't delete file", file.delete());
     }
 
 }
