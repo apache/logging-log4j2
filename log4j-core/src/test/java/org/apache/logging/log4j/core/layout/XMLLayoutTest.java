@@ -115,7 +115,7 @@ public class XMLLayoutTest {
         assertTrue("Incorrect footer", list.get(list.size() - 1).equals("</Events>"));
         assertTrue("Incorrect body. Expected " + body + " Actual: " + list.get(7), list.get(7).trim().equals(body));
 
-        assertTrue("Missing Marker-Tag, Expected "+markerTag+", Actual"+list.get(list.size() - 4),
-                   list.get(list.size() - 4).contains(markerTag));
+        assertTrue("Missing Marker-Tag, Expected " + markerTag + ", Actual" + list.get(list.size() - 4),
+                list.get(list.size() - 4).contains(markerTag));
     }
 }
