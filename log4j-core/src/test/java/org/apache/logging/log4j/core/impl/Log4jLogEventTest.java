@@ -31,16 +31,6 @@ import org.junit.Test;
 public class Log4jLogEventTest {
     
     @Test
-    public void testNullLevelReplacedWithOFF() throws Exception {
-        final Marker marker = null;
-        final Throwable t = null;
-        final Level NULL_LEVEL = null;
-        final Log4jLogEvent evt = new Log4jLogEvent("some.test", marker, "",
-                NULL_LEVEL, new SimpleMessage("abc"), t);
-        assertEquals(Level.OFF, evt.getLevel());
-    }
-
-    @Test
     public void testJavaIoSerializable() throws Exception {
         final Log4jLogEvent evt = new Log4jLogEvent("some.test", null, "",
                 Level.INFO, new SimpleMessage("abc"), null);
@@ -66,6 +56,16 @@ public class Log4jLogEventTest {
         assertEquals(evt.getThrown(), evt2.getThrown());
         assertEquals(evt.isEndOfBatch(), evt2.isEndOfBatch());
         assertEquals(evt.isIncludeLocation(), evt2.isIncludeLocation());
+    }
+
+    @Test
+    public void testNullLevelReplacedWithOFF() throws Exception {
+        final Marker marker = null;
+        final Throwable t = null;
+        final Level NULL_LEVEL = null;
+        final Log4jLogEvent evt = new Log4jLogEvent("some.test", marker, "",
+                NULL_LEVEL, new SimpleMessage("abc"), t);
+        assertEquals(Level.OFF, evt.getLevel());
     }
 
 }
