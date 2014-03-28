@@ -16,17 +16,19 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -60,7 +62,6 @@ public class RollingAppenderSizeTest {
 
     @Before
     public void setUp() throws Exception {
-        deleteDir();
         this.logger = this.init.getLogger(RollingAppenderSizeTest.class.getName());
     }
 
