@@ -26,7 +26,7 @@ import java.util.List;
 import static org.junit.Assert.assertTrue;
 
 /**
- * A JUnit test rule to automatically delete certain files before and after a test is run.
+ * A JUnit test rule to automatically delete certain files after a test is run.
  */
 public class CleanFiles extends ExternalResource {
     private final List<File> files;
@@ -44,19 +44,10 @@ public class CleanFiles extends ExternalResource {
 
     private void clean() {
         for (final File file : files) {
-            delete(file);
+            if (file.exists()) {
+                assertTrue(file.delete());
+            }
         }
-    }
-
-    private static void delete(final File file) {
-        if (file.exists()) {
-            assertTrue(file.delete());
-        }
-    }
-
-    @Override
-    protected void before() throws Throwable {
-        this.clean();
     }
 
     @Override
