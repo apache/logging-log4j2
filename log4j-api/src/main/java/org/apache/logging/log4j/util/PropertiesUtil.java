@@ -26,7 +26,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Helps access properties.
  */
-public class PropertiesUtil {
+public final class PropertiesUtil {
 
     private static final PropertiesUtil LOG4J_PROPERTIES = new PropertiesUtil("log4j2.component.properties");
 
