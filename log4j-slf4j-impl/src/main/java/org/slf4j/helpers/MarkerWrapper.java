@@ -26,7 +26,7 @@ public class MarkerWrapper extends BasicMarker implements Marker {
 
     private MarkerWrapper parent;
 
-    MarkerWrapper(final String name) {
+    public MarkerWrapper(final String name) {
         super(name);
     }
 
