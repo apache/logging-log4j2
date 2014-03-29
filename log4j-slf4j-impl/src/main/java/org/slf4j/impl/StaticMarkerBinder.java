@@ -17,11 +17,12 @@
 package org.slf4j.impl;
 
 import org.slf4j.IMarkerFactory;
-import org.slf4j.helpers.Log4jMarkerFactory;
+import org.apache.logging.slf4j.Log4jMarkerFactory;
 import org.slf4j.spi.MarkerFactoryBinder;
 
 /**
- *
+ * SLF4J MarkerFactoryBinder implementation using Log4j. This class is part of the required classes used to specify an
+ * SLF4J logging provider implementation.
  */
 public class StaticMarkerBinder implements MarkerFactoryBinder {
 
