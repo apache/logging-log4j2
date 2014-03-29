@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.slf4j.helpers;
+package org.apache.logging.slf4j;
 
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -27,7 +27,6 @@ import org.apache.logging.log4j.spi.LoggerProvider;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.impl.SLF4JLogger;
 
 /**
  *
@@ -49,7 +48,7 @@ public class Log4jLoggerFactory implements ILoggerFactory {
             return loggers.get(name);
         }
         final String key = Logger.ROOT_LOGGER_NAME.equals(name) ? LogManager.ROOT_LOGGER_NAME : name;
-        loggers.putIfAbsent(name, new SLF4JLogger(context.getLogger(key), name));
+        loggers.putIfAbsent(name, new Log4j2Logger(context.getLogger(key), name));
         return loggers.get(name);
     }
 

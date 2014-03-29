@@ -17,11 +17,12 @@
 package org.slf4j.impl;
 
 import org.slf4j.ILoggerFactory;
-import org.slf4j.helpers.Log4jLoggerFactory;
+import org.apache.logging.slf4j.Log4jLoggerFactory;
 import org.slf4j.spi.LoggerFactoryBinder;
 
 /**
- *
+ * SLF4J LoggerFactoryBinder implementation using Log4j. This class is part of the required classes used to specify an
+ * SLF4J logger provider implementation.
  */
 public final class StaticLoggerBinder implements LoggerFactoryBinder {
 

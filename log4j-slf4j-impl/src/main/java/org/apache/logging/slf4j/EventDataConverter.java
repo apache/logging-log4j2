@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.slf4j.helpers;
+package org.apache.logging.slf4j;
 
 import java.util.Map;
 

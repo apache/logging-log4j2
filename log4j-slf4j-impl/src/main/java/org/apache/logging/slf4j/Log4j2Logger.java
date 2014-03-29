@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.slf4j.impl;
+package org.apache.logging.slf4j;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -29,15 +29,14 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.LoggerProvider;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
-import org.slf4j.helpers.EventDataConverter;
 import org.slf4j.spi.LocationAwareLogger;
 
 /**
- *
+ * SLF4J logger implementation that uses Log4j.
  */
-public class SLF4JLogger implements LocationAwareLogger, Serializable {
+public class Log4j2Logger implements LocationAwareLogger, Serializable {
 
-    public static final String FQCN = SLF4JLogger.class.getName();
+    public static final String FQCN = Log4j2Logger.class.getName();
     
     private static final long serialVersionUID = 7869000638091304316L;
     private static final Marker EVENT_MARKER = MarkerFactory.getMarker("EVENT");
@@ -46,7 +45,7 @@ public class SLF4JLogger implements LocationAwareLogger, Serializable {
     private final String name;
     private transient EventDataConverter converter;
 
-    public SLF4JLogger(final LoggerProvider logger, final String name) {
+    public Log4j2Logger(final LoggerProvider logger, final String name) {
         this.logger = logger;
         this.eventLogger = "EventLogger".equals(name);
         this.name = name;
