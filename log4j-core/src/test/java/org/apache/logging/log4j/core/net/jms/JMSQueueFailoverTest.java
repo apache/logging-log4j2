@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.net;
+package org.apache.logging.log4j.core.net.jms;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -41,21 +41,22 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockejb.jms.MockTopic;
-import org.mockejb.jms.TopicConnectionFactoryImpl;
+import org.mockejb.jms.MockQueue;
+import org.mockejb.jms.QueueConnectionFactoryImpl;
 import org.mockejb.jndi.MockContextFactory;
 
 /**
  *
  */
-public class JMSTopicFailoverTest {
+public class JMSQueueFailoverTest {
 
-    private static final String FACTORY_NAME = "TopicConnectionFactory";
-    private static final String TOPIC_NAME = "Log4j2Topic";
+    private static final String FACTORY_NAME = "QueueConnectionFactory";
+    private static final String QUEUE_NAME = "Log4j2Queue";
 
     private static Context context;
+    private static AbstractJMSReceiver receiver;
 
-    private static final String CONFIG = "log4j-jmstopic-failover.xml";
+    private static final String CONFIG = "log4j-jmsqueue-failover.xml";
 
     private static Configuration config;
     private static ListAppender app;
@@ -95,7 +96,7 @@ public class JMSTopicFailoverTest {
         StatusLogger.getLogger().registerListener(l);
         MockContextFactory.setAsInitial();
         context = new InitialContext();
-        context.rebind(FACTORY_NAME, new TopicConnectionFactoryImpl() );
+        context.rebind(FACTORY_NAME, new QueueConnectionFactoryImpl() );
         //context.rebind(QUEUE_NAME, new MockQueue(QUEUE_NAME));
         //System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         //receiver = new JMSQueueReceiver(FACTORY_NAME, QUEUE_NAME, null, null);
@@ -104,7 +105,7 @@ public class JMSTopicFailoverTest {
     @Test
     public void testFailover() throws Exception {
         ThreadContext.put("appender", "Failover");
-        final Logger logger = LogManager.getLogger(JMSTopicFailoverTest.class);
+        final Logger logger = LogManager.getLogger(JMSQueueFailoverTest.class);
         logger.debug("Test Message");
         final List<LogEvent> events = app.getEvents();
         assertNotNull("No events returned", events);
@@ -114,10 +115,10 @@ public class JMSTopicFailoverTest {
 
     @Test
     public void testReconnect() throws Exception {
-        context.rebind(TOPIC_NAME, new MockTopic(TOPIC_NAME));
-        final AbstractJMSReceiver receiver = new JMSTopicReceiver(FACTORY_NAME, TOPIC_NAME, null, null);
+        context.rebind(QUEUE_NAME, new MockQueue(QUEUE_NAME));
+        receiver = new JMSQueueReceiver(FACTORY_NAME, QUEUE_NAME, null, null);
         ThreadContext.put("appender", "Failover");
-        final Logger logger = LogManager.getLogger(JMSTopicFailoverTest.class);
+        final Logger logger = LogManager.getLogger(JMSQueueFailoverTest.class);
         logger.debug("Test Message");
         final List<LogEvent> events = app.getEvents();
         assertNotNull("No events returned", events);

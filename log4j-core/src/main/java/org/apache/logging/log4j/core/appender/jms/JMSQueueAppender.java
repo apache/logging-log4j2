@@ -14,20 +14,22 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.appender;
+package org.apache.logging.log4j.core.appender.jms;
 
 import java.io.Serializable;
 
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Booleans;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
-import org.apache.logging.log4j.core.net.JMSQueueManager;
+import org.apache.logging.log4j.core.net.jms.JMSQueueManager;
 
 /**
  * Appender to write to a JMS Queue.

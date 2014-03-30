@@ -14,99 +14,99 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.net;
+package org.apache.logging.log4j.core.net.jms;
 
 import java.io.Serializable;
 
 import javax.jms.JMSException;
-import javax.jms.Queue;
-import javax.jms.QueueConnection;
-import javax.jms.QueueConnectionFactory;
-import javax.jms.QueueSender;
-import javax.jms.QueueSession;
 import javax.jms.Session;
+import javax.jms.Topic;
+import javax.jms.TopicConnection;
+import javax.jms.TopicConnectionFactory;
+import javax.jms.TopicPublisher;
+import javax.jms.TopicSession;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 
 /**
- * Manager for a JMS Queue.
+ * Manager for JMS Topic connections.
  */
-public class JMSQueueManager extends AbstractJMSManager {
+public class JMSTopicManager extends AbstractJMSManager {
 
-    private static final JMSQueueManagerFactory FACTORY = new JMSQueueManagerFactory();
+    private static final JMSTopicManagerFactory FACTORY = new JMSTopicManagerFactory();
 
-    private QueueInfo info;
+    private TopicInfo info;
     private final String factoryBindingName;
-    private final String queueBindingName;
+    private final String topicBindingName;
     private final String userName;
     private final String password;
     private final Context context;
-
     /**
-     * The Constructor.
+     * Constructor.
      * @param name The unique name of the connection.
      * @param context The context.
      * @param factoryBindingName The factory binding name.
-     * @param queueBindingName The queue binding name.
+     * @param topicBindingName The queue binding name.
      * @param userName The user name.
      * @param password The credentials for the user.
      * @param info The Queue connection info.
      */
-    protected JMSQueueManager(final String name, final Context context, final String factoryBindingName,
-                              final String queueBindingName, final String userName, final String password,
-                              final QueueInfo info) {
+    protected JMSTopicManager(final String name, final Context context, final String factoryBindingName,
+                              final String topicBindingName, final String userName, final String password,
+                              final TopicInfo info) {
         super(name);
         this.context = context;
         this.factoryBindingName = factoryBindingName;
-        this.queueBindingName = queueBindingName;
+        this.topicBindingName = topicBindingName;
         this.userName = userName;
         this.password = password;
         this.info = info;
     }
 
     /**
-     * Obtain a JMSQueueManager.
+     * Obtain a JSMTopicManager.
      * @param factoryName The fully qualified class name of the InitialContextFactory.
      * @param providerURL The URL of the provider to use.
      * @param urlPkgPrefixes A colon-separated list of package prefixes for the class name of the factory class that
      * will create a URL context factory
      * @param securityPrincipalName The name of the identity of the Principal.
      * @param securityCredentials The security credentials of the Principal.
-     * @param factoryBindingName The name to locate in the Context that provides the QueueConnectionFactory.
-     * @param queueBindingName The name to use to locate the Queue.
-     * @param userName The userid to use to create the Queue Connection.
-     * @param password The password to use to create the Queue Connection.
-     * @return The JMSQueueManager.
+     * @param factoryBindingName The name to locate in the Context that provides the TopicConnectionFactory.
+     * @param topicBindingName The name to use to locate the Topic.
+     * @param userName The userid to use to create the Topic Connection.
+     * @param password The password to use to create the Topic Connection.
+     * @return A JMSTopicManager.
      */
-    public static JMSQueueManager getJMSQueueManager(final String factoryName, final String providerURL,
+    public static JMSTopicManager getJMSTopicManager(final String factoryName, final String providerURL,
                                                      final String urlPkgPrefixes, final String securityPrincipalName,
                                                      final String securityCredentials, final String factoryBindingName,
-                                                     final String queueBindingName, final String userName,
+                                                     final String topicBindingName, final String userName,
                                                      final String password) {
 
         if (factoryBindingName == null) {
-            LOGGER.error("No factory name provided for JMSQueueManager");
+            LOGGER.error("No factory name provided for JMSTopicManager");
             return null;
         }
-        if (queueBindingName == null) {
-            LOGGER.error("No topic name provided for JMSQueueManager");
+        if (topicBindingName == null) {
+            LOGGER.error("No topic name provided for JMSTopicManager");
             return null;
         }
 
-        final String name = "JMSQueue:" + factoryBindingName + '.' + queueBindingName;
+        final String name = "JMSTopic:" + factoryBindingName + '.' + topicBindingName;
         return getManager(name, FACTORY, new FactoryData(factoryName, providerURL, urlPkgPrefixes,
-            securityPrincipalName, securityCredentials, factoryBindingName, queueBindingName, userName, password));
+            securityPrincipalName, securityCredentials, factoryBindingName, topicBindingName, userName, password));
     }
 
+
     @Override
-    public synchronized void send(final Serializable object) throws Exception {
+    public void send(final Serializable object) throws Exception {
         if (info == null) {
-            info = connect(context, factoryBindingName, queueBindingName, userName, password, false);
+            info = connect(context, factoryBindingName, topicBindingName, userName, password, false);
         }
         try {
-            super.send(object, info.session, info.sender);
+            super.send(object, info.session, info.publisher);
         } catch (final Exception ex) {
             cleanup(true);
             throw ex;
@@ -148,42 +148,42 @@ public class JMSQueueManager extends AbstractJMSManager {
         private final String securityPrincipalName;
         private final String securityCredentials;
         private final String factoryBindingName;
-        private final String queueBindingName;
+        private final String topicBindingName;
         private final String userName;
         private final String password;
 
         public FactoryData(final String factoryName, final String providerURL, final String urlPkgPrefixes,
                            final String securityPrincipalName, final String securityCredentials,
-                           final String factoryBindingName, final String queueBindingName, final String userName,
-                           final String password) {
+                           final String factoryBindingName, final String topicBindingName,
+                           final String userName, final String password) {
             this.factoryName = factoryName;
             this.providerURL = providerURL;
             this.urlPkgPrefixes = urlPkgPrefixes;
             this.securityPrincipalName = securityPrincipalName;
             this.securityCredentials = securityCredentials;
             this.factoryBindingName = factoryBindingName;
-            this.queueBindingName = queueBindingName;
+            this.topicBindingName = topicBindingName;
             this.userName = userName;
             this.password = password;
         }
     }
 
-    private static QueueInfo connect(final Context context, final String factoryBindingName,
+    private static TopicInfo connect(final Context context, final String factoryBindingName,
                                      final String queueBindingName, final String userName, final String password,
                                      final boolean suppress) throws Exception {
         try {
-            final QueueConnectionFactory factory = (QueueConnectionFactory) lookup(context, factoryBindingName);
-            QueueConnection conn;
+            final TopicConnectionFactory factory = (TopicConnectionFactory) lookup(context, factoryBindingName);
+            TopicConnection conn;
             if (userName != null) {
-                conn = factory.createQueueConnection(userName, password);
+                conn = factory.createTopicConnection(userName, password);
             } else {
-                conn = factory.createQueueConnection();
+                conn = factory.createTopicConnection();
             }
-            final QueueSession sess = conn.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
-            final Queue queue = (Queue) lookup(context, queueBindingName);
-            final QueueSender sender = sess.createSender(queue);
+            final TopicSession sess = conn.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
+            final Topic topic = (Topic) lookup(context, queueBindingName);
+            final TopicPublisher publisher = sess.createPublisher(topic);
             conn.start();
-            return new QueueInfo(conn, sess, sender);
+            return new TopicInfo(conn, sess, publisher);
         } catch (final NamingException ex) {
             LOGGER.warn("Unable to locate connection factory " + factoryBindingName, ex);
             if (!suppress) {
@@ -198,32 +198,32 @@ public class JMSQueueManager extends AbstractJMSManager {
         return null;
     }
 
-    /** Queue connection information */
-    private static class QueueInfo {
-        private final QueueConnection conn;
-        private final QueueSession session;
-        private final QueueSender sender;
+    /** Topic connection information */
+    private static class TopicInfo {
+        private final TopicConnection conn;
+        private final TopicSession session;
+        private final TopicPublisher publisher;
 
-        public QueueInfo(final QueueConnection conn, final QueueSession session, final QueueSender sender) {
+        public TopicInfo(final TopicConnection conn, final TopicSession session, final TopicPublisher publisher) {
             this.conn = conn;
             this.session = session;
-            this.sender = sender;
+            this.publisher = publisher;
         }
     }
 
     /**
      * Factory to create the JMSQueueManager.
      */
-    private static class JMSQueueManagerFactory implements ManagerFactory<JMSQueueManager, FactoryData> {
+    private static class JMSTopicManagerFactory implements ManagerFactory<JMSTopicManager, FactoryData> {
 
         @Override
-        public JMSQueueManager createManager(final String name, final FactoryData data) {
+        public JMSTopicManager createManager(final String name, final FactoryData data) {
             try {
                 final Context ctx = createContext(data.factoryName, data.providerURL, data.urlPkgPrefixes,
-                                            data.securityPrincipalName, data.securityCredentials);
-                final QueueInfo info = connect(ctx, data.factoryBindingName, data.queueBindingName, data.userName,
+                    data.securityPrincipalName, data.securityCredentials);
+                final TopicInfo info = connect(ctx, data.factoryBindingName, data.topicBindingName, data.userName,
                     data.password, true);
-                return new JMSQueueManager(name, ctx, data.factoryBindingName, data.queueBindingName,
+                return new JMSTopicManager(name, ctx, data.factoryBindingName, data.topicBindingName,
                     data.userName, data.password, info);
             } catch (final NamingException ex) {
                 LOGGER.error("Unable to locate resource", ex);
