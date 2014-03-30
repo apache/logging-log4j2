@@ -48,7 +48,7 @@ public class Log4jLoggerFactory implements ILoggerFactory {
             return loggers.get(name);
         }
         final String key = Logger.ROOT_LOGGER_NAME.equals(name) ? LogManager.ROOT_LOGGER_NAME : name;
-        loggers.putIfAbsent(name, new Log4j2Logger(context.getLogger(key), name));
+        loggers.putIfAbsent(name, new Log4jLogger(context.getLogger(key), name));
         return loggers.get(name);
     }
 
