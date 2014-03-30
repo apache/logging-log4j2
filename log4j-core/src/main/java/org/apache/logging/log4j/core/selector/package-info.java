@@ -15,6 +15,6 @@
  * limitations under the license.
  */
 /**
- * Log4j 2.0 Context Selectors.
+ * Log4j 2.0 Context Selectors. A Context Selector is used for retaining and locating LoggerContext instances.
  */
 package org.apache.logging.log4j.core.selector;
