@@ -454,9 +454,10 @@
         <version>1.5.0</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.geronimo.specs</groupId>
-        <artifactId>geronimo-jms_1.1_spec</artifactId>
-        <version>1.0</version>
+        <groupId>org.jboss.spec.javax.jms</groupId>
+        <artifactId>jboss-jms-api_1.1_spec</artifactId>
+        <version>1.0.1.Final</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.mockejb</groupId>
@@ -550,6 +551,7 @@
         <groupId>org.eclipse.persistence</groupId>
         <artifactId>javax.persistence</artifactId>
         <version>2.1.0</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.mongodb</groupId>
@@ -569,7 +571,7 @@
         <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
-          <version>2.3.7</version>
+          <version>2.4.0</version>
           <inherited>true</inherited>
         </plugin>
         <plugin>
