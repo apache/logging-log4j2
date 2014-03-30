@@ -124,7 +124,7 @@
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
-    <!-- Advertiser tests -->
+    <!-- Zeroconf advertiser tests -->
     <dependency>
       <groupId>javax.jmdns</groupId>
       <artifactId>jmdns</artifactId>
@@ -178,7 +178,7 @@
       <artifactId>org.eclipse.persistence.jpa</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- JNDI tests -->
+    <!-- JNDI and JMS tests -->
     <dependency>
       <groupId>org.mockejb</groupId>
       <artifactId>mockejb</artifactId>
