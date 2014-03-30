@@ -113,7 +113,7 @@ public class LoggerTest {
         verify("List", "o.a.l.s.LoggerTest Debug message {} MDC{}" + Constants.LINE_SEP);
         logger.debug("Debug message {}", (Object[]) null);
         verify("List", "o.a.l.s.LoggerTest Debug message {} MDC{}" + Constants.LINE_SEP);
-        ((LocationAwareLogger)logger).log(null, Log4j2Logger.class.getName(), LocationAwareLogger.DEBUG_INT,
+        ((LocationAwareLogger)logger).log(null, Log4jLogger.class.getName(), LocationAwareLogger.DEBUG_INT,
             "Debug message {}", null, null);
         verify("List", "o.a.l.s.LoggerTest Debug message {} MDC{}" + Constants.LINE_SEP);
     }

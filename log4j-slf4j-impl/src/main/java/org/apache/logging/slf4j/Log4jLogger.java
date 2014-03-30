@@ -34,9 +34,9 @@ import org.slf4j.spi.LocationAwareLogger;
 /**
  * SLF4J logger implementation that uses Log4j.
  */
-public class Log4j2Logger implements LocationAwareLogger, Serializable {
+public class Log4jLogger implements LocationAwareLogger, Serializable {
 
-    public static final String FQCN = Log4j2Logger.class.getName();
+    public static final String FQCN = Log4jLogger.class.getName();
     
     private static final long serialVersionUID = 7869000638091304316L;
     private static final Marker EVENT_MARKER = MarkerFactory.getMarker("EVENT");
@@ -45,7 +45,7 @@ public class Log4j2Logger implements LocationAwareLogger, Serializable {
     private final String name;
     private transient EventDataConverter converter;
 
-    public Log4j2Logger(final LoggerProvider logger, final String name) {
+    public Log4jLogger(final LoggerProvider logger, final String name) {
         this.logger = logger;
         this.eventLogger = "EventLogger".equals(name);
         this.name = name;
