@@ -16,14 +16,16 @@
  */
 package org.apache.logging.log4j.junit;
 
-import org.junit.rules.ExternalResource;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.sql.Date;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertTrue;
+import org.junit.rules.ExternalResource;
 
 /**
  * A JUnit test rule to automatically delete certain files after a test is run.
@@ -45,8 +47,10 @@ public class CleanFiles extends ExternalResource {
     private void clean() {
         for (final File file : files) {
             if (file.exists()) {
-                assertTrue(file.toString(), file.delete());
-            }
+                assertTrue(
+                        "Could not delete " + file.toString() + ", last modifed "
+                                + DateFormat.getInstance().format(new Date(file.lastModified())), file.delete());
+            } 
         }
     }
 
