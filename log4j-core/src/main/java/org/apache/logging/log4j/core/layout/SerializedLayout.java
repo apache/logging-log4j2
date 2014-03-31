@@ -89,7 +89,6 @@ public final class SerializedLayout extends AbstractLayout<LogEvent> {
      */
     @PluginFactory
     public static SerializedLayout createLayout() {
-
         return new SerializedLayout();
     }
 
