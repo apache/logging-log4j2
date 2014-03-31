@@ -45,7 +45,7 @@ public class CleanFiles extends ExternalResource {
     private void clean() {
         for (final File file : files) {
             if (file.exists()) {
-                assertTrue(file.delete());
+                assertTrue(file.toString(), file.delete());
             }
         }
     }
