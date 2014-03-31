@@ -56,7 +56,7 @@ public class FileOutputTest {
         final File file = new File(STATUS_LOG);
         assertTrue("Status output file does not exist", file.exists());
         assertTrue("File is empty", file.length() > 0);
-        assertTrue("Couldn't delete file", file.delete());
+        assertTrue("Couldn't delete file " + file, file.delete());
     }
 
 }
