@@ -156,7 +156,7 @@
     <Log4jReleaseVersion>2.0-rc1</Log4jReleaseVersion>
     <Log4jReleaseCount>eleventh</Log4jReleaseCount>
     <jackson1.version>1.9.13</jackson1.version>
-    <jackson2.version>2.2.2</jackson2.version>
+    <jackson2.version>2.3.2</jackson2.version>
     <spring.version>3.2.8.RELEASE</spring.version>
     <flumeVersion>1.4.0</flumeVersion>
     <disruptor.version>3.2.0</disruptor.version>
@@ -680,6 +680,10 @@
             <java.awt.headless>true</java.awt.headless>
           </systemPropertyVariables>
           <forkMode>always</forkMode>
+          <excludes>
+            <exclude>${log4j.skip.test1}</exclude>
+            <exclude>${log4j.skip.test2}</exclude>
+          </excludes>
         </configuration>
       </plugin>
       <plugin>
