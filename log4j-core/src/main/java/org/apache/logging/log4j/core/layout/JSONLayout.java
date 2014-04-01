@@ -36,6 +36,8 @@ import org.apache.logging.log4j.message.MultiformatMessage;
 /**
  * Appends a series of JSON events as strings serialized as bytes.
  * 
+ * TODO: Marker.
+ * 
  * <h4>Complete well-formed JSON vs. fragment JSON</h4>
  * <p>
  * If you configure {@code complete="true"}, the appender outputs a well-formed JSON document. 
