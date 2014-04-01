@@ -66,6 +66,9 @@
       <action issue="LOG4J2-582" dev="ggregory" type="update">
         Rename org.apache.logging.log4j.core.net.SocketServer to TCPSocketServer and refactor with UDP.
       </action>
+      <action issue="LOG4J2-592" dev="ggregory" type="update">
+        Update Jackson to 2.3.2 from 2.2.2.
+      </action>
     </release>
     <release version="2.0-rc1" date="2014-02-16" description="Bug fixes and enhancements">
       <action dev="nickwilliams" type="delete">
