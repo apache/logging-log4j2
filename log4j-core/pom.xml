@@ -56,7 +56,7 @@
       <artifactId>jackson-core</artifactId>
       <optional>true</optional>
     </dependency>
-    <!-- Also required for JSON support -->
+    <!-- Required for JSON support -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
