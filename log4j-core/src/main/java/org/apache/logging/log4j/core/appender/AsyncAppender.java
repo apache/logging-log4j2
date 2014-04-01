@@ -123,28 +123,28 @@ public final class AsyncAppender extends AbstractAppender {
     /**
      * Actual writing occurs here.
      * <p/>
-     * @param evt The LogEvent.
+     * @param logEvent The LogEvent.
      */
     @Override
-    public void append(final LogEvent evt) {
+    public void append(final LogEvent logEvent) {
         if (!isStarted()) {
             throw new IllegalStateException("AsyncAppender " + getName() + " is not active");
         }
-        if (!(evt instanceof Log4jLogEvent)) {
+        if (!(logEvent instanceof Log4jLogEvent)) {
             return; // only know how to Serialize Log4jLogEvents
         }
-        Log4jLogEvent event = (Log4jLogEvent) evt;
+        Log4jLogEvent coreEvent = (Log4jLogEvent) logEvent;
         boolean appendSuccessful = false;
         if (blocking) {
             if (isAppenderThread.get() == Boolean.TRUE && queue.remainingCapacity() == 0) {
                 // LOG4J2-485: avoid deadlock that would result from trying
                 // to add to a full queue from appender thread
-                event.setEndOfBatch(false); // queue is definitely not empty!
-                appendSuccessful = thread.callAppenders(event);
+                coreEvent.setEndOfBatch(false); // queue is definitely not empty!
+                appendSuccessful = thread.callAppenders(coreEvent);
             } else {
                 try {
                     // wait for free slots in the queue
-                    queue.put(Log4jLogEvent.serialize(event, includeLocation));
+                    queue.put(Log4jLogEvent.serialize(coreEvent, includeLocation));
                     appendSuccessful = true;
                 } catch (final InterruptedException e) {
                     LOGGER.warn("Interrupted while waiting for a free slot in the AsyncAppender LogEvent-queue {}",
@@ -152,13 +152,13 @@ public final class AsyncAppender extends AbstractAppender {
                 }
             }
         } else {
-            appendSuccessful = queue.offer(Log4jLogEvent.serialize(event, includeLocation));
+            appendSuccessful = queue.offer(Log4jLogEvent.serialize(coreEvent, includeLocation));
             if (!appendSuccessful) {
                 error("Appender " + getName() + " is unable to write primary appenders. queue is full");
             }
         }
         if (!appendSuccessful && errorAppender != null) {
-            errorAppender.callAppender(event);
+            errorAppender.callAppender(coreEvent);
         }
     }
 
