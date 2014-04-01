@@ -418,6 +418,7 @@
           </exclusion>
         </exclusions>
       </dependency>
+      <!-- Jackson 1 start -->
       <dependency>
         <groupId>org.codehaus.jackson</groupId>
         <artifactId>jackson-core-asl</artifactId>
@@ -430,6 +431,8 @@
         <version>${jackson1.version}</version>
         <scope>runtime</scope>
       </dependency>
+      <!-- Jackson 1 end -->
+      <!-- Jackson 2 start -->
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-core</artifactId>
@@ -448,6 +451,7 @@
         <version>${jackson2.version}</version>
         <optional>true</optional>
       </dependency>
+      <!-- Jackson 2 end -->
       <dependency>
         <groupId>com.sun.mail</groupId>
         <artifactId>javax.mail</artifactId>
