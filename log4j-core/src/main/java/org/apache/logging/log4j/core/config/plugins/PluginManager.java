@@ -86,7 +86,7 @@ public class PluginManager {
             System.err.println("A target directory must be specified");
             System.exit(-1);
         }
-        rootDir = args[0].endsWith("/") || args[0].endsWith("\\") ? args[0] : args[0] + "/";
+        rootDir = args[0].endsWith("/") || args[0].endsWith("\\") ? args[0] : args[0] + '/';
 
         final PluginManager manager = new PluginManager("Core");
         final String packages = args.length == 2 ? args[1] : null;
@@ -205,7 +205,7 @@ public class PluginManager {
         sb.append(pkgs);
         sb.append(", preload: ");
         sb.append(preLoad);
-        sb.append(".");
+        sb.append('.');
         LOGGER.debug(sb.toString());
     }
 

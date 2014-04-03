@@ -143,10 +143,10 @@ public class FileRenameAction extends AbstractAction {
             }
         }
     }
-    
+
     @Override
     public String toString() {
-        return FileRenameAction.class.getSimpleName() + "[" + source + " to " + destination //
-                + ", renameEmptyFiles=" + renameEmptyFiles + "]";
+        return FileRenameAction.class.getSimpleName() + '[' + source + " to " + destination //
+                + ", renameEmptyFiles=" + renameEmptyFiles + ']';
     }
 }

@@ -60,16 +60,16 @@ public class XmlCompactFileAppenderTest {
         }
         assertNotNull("line1", line1);
         final String msg1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-        assertTrue("line1 incorrect: [" + line1 + "], does not contain: [" + msg1 + "]", line1.contains(msg1));
+        assertTrue("line1 incorrect: [" + line1 + "], does not contain: [" + msg1 + ']', line1.contains(msg1));
 
         final String msg2 = "<Events xmlns=\"http://logging.apache.org/log4j/2.0/events\">";
-        assertTrue("line1 incorrect: [" + line1 + "], does not contain: [" + msg2 + "]", line1.contains(msg2));
+        assertTrue("line1 incorrect: [" + line1 + "], does not contain: [" + msg2 + ']', line1.contains(msg2));
 
         final String msg3 = "<Event ";
-        assertTrue("line1 incorrect: [" + line1 + "], does not contain: [" + msg3 + "]", line1.contains(msg3));
+        assertTrue("line1 incorrect: [" + line1 + "], does not contain: [" + msg3 + ']', line1.contains(msg3));
 
         final String msg4 = logMsg;
-        assertTrue("line1 incorrect: [" + line1 + "], does not contain: [" + msg4 + "]", line1.contains(msg4));
+        assertTrue("line1 incorrect: [" + line1 + "], does not contain: [" + msg4 + ']', line1.contains(msg4));
 
         final String location = "testFlushAtEndOfBatch";
         assertTrue("no location", !line1.contains(location));

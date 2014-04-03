@@ -273,7 +273,7 @@ public class ResolverUtil {
     String extractPath(final URL url) throws UnsupportedEncodingException {
         String urlPath = url.getPath(); // same as getFile but without the Query portion
         //System.out.println(url.getProtocol() + "->" + urlPath);
-        
+
         // I would be surprised if URL.getPath() ever starts with "jar:" but no harm in checking
         if (urlPath.startsWith("jar:")) {
             urlPath = urlPath.substring(4);
@@ -286,7 +286,7 @@ public class ResolverUtil {
         if (urlPath.indexOf('!') > 0) {
             urlPath = urlPath.substring(0, urlPath.indexOf('!'));
         }
-        
+
         // LOG4J2-445
         // Finally, decide whether to URL-decode the file name or not...
         final String protocol = url.getProtocol();
@@ -335,7 +335,7 @@ public class ResolverUtil {
         StringBuilder builder;
         for (final File file : files) {
             builder = new StringBuilder();
-            builder.append(parent).append("/").append(file.getName());
+            builder.append(parent).append('/').append(file.getName());
             final String packageOrClass = parent == null ? file.getName() : builder.toString();
 
             if (file.isDirectory()) {
@@ -430,7 +430,7 @@ public class ResolverUtil {
             if (test.doesMatchClass()) {
                 final String externalName = fqn.substring(0, fqn.indexOf('.')).replace('/', '.');
                 if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Checking to see if class " + externalName + " matches criteria [" + test + "]");
+                    LOGGER.debug("Checking to see if class " + externalName + " matches criteria [" + test + ']');
                 }
 
                 final Class<?> type = loader.loadClass(externalName);
@@ -612,7 +612,7 @@ public class ResolverUtil {
     public static class NameIs extends ResourceTest {
         private final String name;
 
-        public NameIs(final String name) { this.name = "/" + name; }
+        public NameIs(final String name) { this.name = '/' + name; }
 
         @Override
         public boolean matches(final URI resource) {

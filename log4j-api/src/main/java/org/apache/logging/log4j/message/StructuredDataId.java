@@ -30,13 +30,13 @@ public class StructuredDataId implements Serializable {
      */
     public static final StructuredDataId TIME_QUALITY = new StructuredDataId("timeQuality", null,
         new String[]{"tzKnown", "isSynced", "syncAccuracy"});
-    
+
     /**
      * RFC 5424 Origin.
      */
     public static final StructuredDataId ORIGIN = new StructuredDataId("origin", null,
         new String[]{"ip", "enterpriseId", "software", "swVersion"});
-    
+
     /**
      * RFC 5424 Meta.
      */
@@ -92,7 +92,7 @@ public class StructuredDataId implements Serializable {
             throw new IllegalArgumentException("No structured id name was supplied");
         }
         if (name.contains(AT)) {
-            throw new IllegalArgumentException("Structured id name cannot contain an '" + AT + "'");
+            throw new IllegalArgumentException("Structured id name cannot contain an '" + AT + '\'');
         }
         if (enterpriseNumber <= 0) {
             throw new IllegalArgumentException("No enterprise number was supplied");

@@ -61,12 +61,12 @@ public final class Routes {
         boolean first = true;
         for (final Route route : routes) {
             if (!first) {
-                sb.append(",");
+                sb.append(',');
             }
             first = false;
             sb.append(route.toString());
         }
-        sb.append("}");
+        sb.append('}');
         return sb.toString();
 
     }

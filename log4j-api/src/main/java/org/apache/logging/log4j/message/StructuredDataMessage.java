@@ -249,7 +249,7 @@ public class StructuredDataMessage extends MapMessage {
             if (type == null) {
                 return sb.toString();
             }
-            sb.append(getType()).append(" ");
+            sb.append(getType()).append(' ');
         }
         StructuredDataId id = getId();
         if (id != null) {
@@ -260,15 +260,15 @@ public class StructuredDataMessage extends MapMessage {
         if (id == null || id.getName() == null) {
             return sb.toString();
         }
-        sb.append("[");
+        sb.append('[');
         sb.append(id);
-        sb.append(" ");
+        sb.append(' ');
         appendMap(sb);
-        sb.append("]");
+        sb.append(']');
         if (full) {
             final String msg = getFormat();
             if (msg != null) {
-                sb.append(" ").append(msg);
+                sb.append(' ').append(msg);
             }
         }
         return sb.toString();

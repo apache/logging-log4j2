@@ -85,10 +85,10 @@ public final class PropertiesRewritePolicy implements RewritePolicy {
                 sb.append(", ");
             }
             final Property prop = entry.getKey();
-            sb.append(prop.getName()).append("=").append(prop.getValue());
+            sb.append(prop.getName()).append('=').append(prop.getValue());
             first = false;
         }
-        sb.append("}");
+        sb.append('}');
         return sb.toString();
     }
 

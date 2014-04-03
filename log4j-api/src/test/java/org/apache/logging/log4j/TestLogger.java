@@ -57,15 +57,15 @@ public class TestLogger extends AbstractLoggerProvider {
         if (marker != null) {
             sb.append(marker);
         }
-        sb.append(" ");
+        sb.append(' ');
         sb.append(level.toString());
-        sb.append(" ");
+        sb.append(' ');
         sb.append(msg.getFormattedMessage());
         final Map<String, String> mdc = ThreadContext.getContext();
         if (mdc.size() > 0) {
-            sb.append(" ");
+            sb.append(' ');
             sb.append(mdc.toString());
-            sb.append(" ");
+            sb.append(' ');
         }
         final Object[] params = msg.getParameters();
         Throwable t;
@@ -75,7 +75,7 @@ public class TestLogger extends AbstractLoggerProvider {
             t = throwable;
         }
         if (t != null) {
-            sb.append(" ");
+            sb.append(' ');
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             t.printStackTrace(new PrintStream(baos));
             sb.append(baos.toString());

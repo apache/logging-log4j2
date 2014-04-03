@@ -70,7 +70,7 @@ public final class CompositeTriggeringPolicy implements TriggeringPolicy {
             sb.append(policy.toString());
             first = false;
         }
-        sb.append("}");
+        sb.append('}');
         return sb.toString();
     }
 

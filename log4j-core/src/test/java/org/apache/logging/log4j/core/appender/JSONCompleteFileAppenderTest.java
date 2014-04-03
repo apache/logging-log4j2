@@ -66,23 +66,23 @@ public class JSONCompleteFileAppenderTest {
         }
         assertNotNull("line1", line1);
         final String msg1 = "[";
-        assertTrue("line1 incorrect: [" + line1 + "], does not contain: [" + msg1 + "]", line1.equals(msg1));
+        assertTrue("line1 incorrect: [" + line1 + "], does not contain: [" + msg1 + ']', line1.equals(msg1));
 
         assertNotNull("line2", line2);
         final String msg2 = "  {";
-        assertTrue("line2 incorrect: [" + line2 + "], does not contain: [" + msg2 + "]", line2.equals(msg2));
+        assertTrue("line2 incorrect: [" + line2 + "], does not contain: [" + msg2 + ']', line2.equals(msg2));
 
         assertNotNull("line3", line3);
         final String msg3 = "    \"logger\":\"com.foo.Bar\",";
-        assertTrue("line3 incorrect: [" + line3 + "], does not contain: [" + msg3 + "]", line3.contains(msg3));
+        assertTrue("line3 incorrect: [" + line3 + "], does not contain: [" + msg3 + ']', line3.contains(msg3));
 
         assertNotNull("line4", line4);
         final String msg4 = "\"timestamp\":";
-        assertTrue("line4 incorrect: [" + line4 + "], does not contain: [" + msg4 + "]", line4.contains(msg4));
+        assertTrue("line4 incorrect: [" + line4 + "], does not contain: [" + msg4 + ']', line4.contains(msg4));
 
         assertNotNull("line5", line5);
         final String msg5 = "    \"level\":\"INFO\",";
-        assertTrue("line5 incorrect: [" + line5 + "], does not contain: [" + msg5 + "]", line5.contains(msg5));
+        assertTrue("line5 incorrect: [" + line5 + "], does not contain: [" + msg5 + ']', line5.contains(msg5));
 
         final String location = "testFlushAtEndOfBatch";
         assertTrue("no location", !line1.contains(location));

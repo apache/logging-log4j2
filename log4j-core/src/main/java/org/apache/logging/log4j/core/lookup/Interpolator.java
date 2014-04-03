@@ -146,7 +146,7 @@ public class Interpolator implements StrLookup {
         final StringBuilder sb = new StringBuilder();
         for (final String name : lookups.keySet()) {
             if (sb.length() == 0) {
-                sb.append("{");
+                sb.append('{');
             } else {
                 sb.append(", ");
             }
@@ -154,7 +154,7 @@ public class Interpolator implements StrLookup {
             sb.append(name);
         }
         if (sb.length() > 0) {
-            sb.append("}");
+            sb.append('}');
         }
         return sb.toString();
     }

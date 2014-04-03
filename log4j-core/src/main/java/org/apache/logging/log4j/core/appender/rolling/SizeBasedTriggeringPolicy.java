@@ -97,7 +97,7 @@ public class SizeBasedTriggeringPolicy implements TriggeringPolicy {
 
     @Override
     public String toString() {
-        return "SizeBasedTriggeringPolicy(size=" + maxFileSize + ")";
+        return "SizeBasedTriggeringPolicy(size=" + maxFileSize + ')';
     }
 
     /**

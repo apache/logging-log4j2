@@ -78,13 +78,13 @@ public class SyslogLayout extends AbstractStringLayout {
     public String toSerializable(final LogEvent event) {
         final StringBuilder buf = new StringBuilder();
 
-        buf.append("<");
+        buf.append('<');
         buf.append(Priority.getPriority(facility, event.getLevel()));
-        buf.append(">");
+        buf.append('>');
         addDate(event.getMillis(), buf);
-        buf.append(" ");
+        buf.append(' ');
         buf.append(localHostname);
-        buf.append(" ");
+        buf.append(' ');
 
         String message = event.getMessage().getFormattedMessage();
         if (null != escapeNewLine) {
@@ -93,7 +93,7 @@ public class SyslogLayout extends AbstractStringLayout {
         buf.append(message);
 
         if (includeNewLine) {
-            buf.append("\n");
+            buf.append('\n');
         }
         return buf.toString();
     }

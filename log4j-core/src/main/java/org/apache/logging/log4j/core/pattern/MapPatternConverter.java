@@ -44,7 +44,7 @@ public final class MapPatternConverter extends LogEventPatternConverter {
      * @param options options, may be null.
      */
     private MapPatternConverter(final String[] options) {
-        super(options != null && options.length > 0 ? "MAP{" + options[0] + "}" : "MAP", "map");
+        super(options != null && options.length > 0 ? "MAP{" + options[0] + '}' : "MAP", "map");
         key = options != null && options.length > 0 ? options[0] : null;
     }
 
@@ -83,10 +83,10 @@ public final class MapPatternConverter extends LogEventPatternConverter {
                 if (sb.length() > 1) {
                     sb.append(", ");
                 }
-                sb.append(key).append("=").append(map.get(key));
+                sb.append(key).append('=').append(map.get(key));
 
             }
-            sb.append("}");
+            sb.append('}');
             toAppendTo.append(sb);
         } else {
             // otherwise they just want a single key output

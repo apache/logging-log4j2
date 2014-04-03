@@ -239,39 +239,39 @@ public class MapMessage implements MultiformatMessage {
         boolean first = true;
         for (final Map.Entry<String, String> entry : data.entrySet()) {
             if (!first) {
-                sb.append(" ");
+                sb.append(' ');
             }
             first = false;
-            sb.append(entry.getKey()).append("=\"").append(entry.getValue()).append("\"");
+            sb.append(entry.getKey()).append("=\"").append(entry.getValue()).append('"');
         }
     }
 
     protected void asJSON(final StringBuilder sb) {
         boolean first = true;
-        sb.append("{");
+        sb.append('{');
         for (final Map.Entry<String, String> entry : data.entrySet()) {
             if (!first) {
                 sb.append(", ");
             }
             first = false;
-            sb.append("\"").append(entry.getKey()).append("\":");
-            sb.append("\"").append(entry.getValue()).append("\"");
+            sb.append('"').append(entry.getKey()).append("\":");
+            sb.append('"').append(entry.getValue()).append('"');
         }
-        sb.append("}");
+        sb.append('}');
     }
 
 
     protected void asJava(final StringBuilder sb) {
         boolean first = true;
-        sb.append("{");
+        sb.append('{');
         for (final Map.Entry<String, String> entry : data.entrySet()) {
             if (!first) {
                 sb.append(", ");
             }
             first = false;
-            sb.append(entry.getKey()).append("=\"").append(entry.getValue()).append("\"");
+            sb.append(entry.getKey()).append("=\"").append(entry.getValue()).append('"');
         }
-        sb.append("}");
+        sb.append('}');
     }
 
     public MapMessage newInstance(final Map<String, String> map) {

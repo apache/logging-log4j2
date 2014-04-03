@@ -227,7 +227,7 @@ public abstract class AbstractJdbcAppenderTest {
                 ".testPerformanceOfAppenderWith10000Events");
         logger.info("This is a warm-up message.");
 
-        System.out.println("Starting a performance test for JDBC Appender for " + this.databaseType + ".");
+        System.out.println("Starting a performance test for JDBC Appender for " + this.databaseType + '.');
 
         long start = System.nanoTime();
 
@@ -250,6 +250,6 @@ public abstract class AbstractJdbcAppenderTest {
         assertEquals("The number of records is not correct.", 10001, resultSet.getRow());
 
         System.out.println("Wrote 10,000 log events in " + elapsed + " nanoseconds (" + elapsedMilli +
-                " milliseconds) for " + this.databaseType + ".");
+                " milliseconds) for " + this.databaseType + '.');
     }
 }

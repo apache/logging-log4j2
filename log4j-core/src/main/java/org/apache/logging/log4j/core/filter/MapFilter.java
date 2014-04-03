@@ -100,9 +100,9 @@ public class MapFilter extends AbstractFilter {
                 first = false;
                 final List<String> list = entry.getValue();
                 final String value = list.size() > 1 ? list.get(0) : list.toString();
-                sb.append(entry.getKey()).append("=").append(value);
+                sb.append(entry.getKey()).append('=').append(value);
             }
-            sb.append("}");
+            sb.append('}');
         }
         return sb.toString();
     }

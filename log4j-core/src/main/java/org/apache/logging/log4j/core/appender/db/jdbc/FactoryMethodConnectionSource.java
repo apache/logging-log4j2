@@ -44,7 +44,7 @@ public final class FactoryMethodConnectionSource implements ConnectionSource {
     private FactoryMethodConnectionSource(final DataSource dataSource, final String className, final String methodName,
                                           final String returnType) {
         this.dataSource = dataSource;
-        this.description = "factory{ public static " + returnType + " " + className + "." + methodName + "() }";
+        this.description = "factory{ public static " + returnType + ' ' + className + '.' + methodName + "() }";
     }
 
     @Override
@@ -91,7 +91,7 @@ public final class FactoryMethodConnectionSource implements ConnectionSource {
         if (returnType == DataSource.class) {
             try {
                 dataSource = (DataSource) method.invoke(null);
-                returnTypeString += "[" + dataSource + "]";
+                returnTypeString += "[" + dataSource + ']';
             } catch (final Exception e) {
                 LOGGER.error(e.toString(), e);
                 return null;

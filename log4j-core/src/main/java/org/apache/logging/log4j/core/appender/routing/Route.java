@@ -77,11 +77,11 @@ public final class Route {
             sb.append("invalid Route");
         }
         if (key != null) {
-            sb.append(" key='").append(key).append("'");
+            sb.append(" key='").append(key).append('\'');
         } else {
             sb.append(" default");
         }
-        sb.append(")");
+        sb.append(')');
         return sb.toString();
     }
 

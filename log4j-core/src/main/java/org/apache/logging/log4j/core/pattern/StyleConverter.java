@@ -33,7 +33,7 @@ public final class StyleConverter extends LogEventPatternConverter implements An
 
     /**
      * Gets an instance of the class.
-     * 
+     *
      * @param config
      *            The current Configuration.
      * @param options
@@ -73,13 +73,13 @@ public final class StyleConverter extends LogEventPatternConverter implements An
 
     /**
      * Constructs the converter.
-     * 
+     *
      * @param patternFormatters
      *            The PatternFormatters to generate the text to manipulate.
      * @param style
      *            The style that should encapsulate the pattern.
      * @param noAnsi
-     *            If true, do not output ANSI escape codes. 
+     *            If true, do not output ANSI escape codes.
      */
     private StyleConverter(final List<PatternFormatter> patternFormatters, final String style, boolean noAnsi) {
         super("style", "style");
@@ -121,7 +121,7 @@ public final class StyleConverter extends LogEventPatternConverter implements An
 
     /**
      * Returns a String suitable for debugging.
-     * 
+     *
      * @return a String suitable for debugging.
      */
     @Override
@@ -136,7 +136,7 @@ public final class StyleConverter extends LogEventPatternConverter implements An
         sb.append(patternFormatters);
         sb.append(", noAnsi=");
         sb.append(noAnsi);
-        sb.append("]");
+        sb.append(']');
         return sb.toString();
     }
 

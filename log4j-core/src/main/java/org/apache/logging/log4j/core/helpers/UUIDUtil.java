@@ -147,7 +147,7 @@ public final class UUIDUtil {
                     rand = (rand + 1) & SEQUENCE_MASK;
                 }
             } while (duplicate);
-            assigned = assigned == null ? Long.toString(rand) : assigned + "," + Long.toString(rand);
+            assigned = assigned == null ? Long.toString(rand) : assigned + ',' + Long.toString(rand);
             System.setProperty(ASSIGNED_SEQUENCES, assigned);
         }
 

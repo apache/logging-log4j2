@@ -70,6 +70,6 @@ public class StackTracePackageElement implements Serializable {
     @Override
     public String toString() {
         final String exact = isExact ? "" : "~";
-        return exact + "[" + location + ":" + version + "]";
+        return exact + '[' + location + ':' + version + ']';
     }
 }

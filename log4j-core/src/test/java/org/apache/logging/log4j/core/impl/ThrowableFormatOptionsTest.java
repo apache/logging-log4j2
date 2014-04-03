@@ -136,7 +136,7 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testSeparatorAsDefaultLineSeparator() {
-        test(new String[]{"separator(" + Constants.LINE_SEP + ")"}, Integer.MAX_VALUE, Constants.LINE_SEP, null);
+        test(new String[]{"separator(" + Constants.LINE_SEP + ')'}, Integer.MAX_VALUE, Constants.LINE_SEP, null);
     }
 
     /**

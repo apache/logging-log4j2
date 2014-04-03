@@ -114,10 +114,10 @@ public final class MapRewritePolicy implements RewritePolicy {
             if (!first) {
                 sb.append(", ");
             }
-            sb.append(entry.getKey()).append("=").append(entry.getValue());
+            sb.append(entry.getKey()).append('=').append(entry.getValue());
             first = false;
         }
-        sb.append("}");
+        sb.append('}');
         return sb.toString();
     }
 

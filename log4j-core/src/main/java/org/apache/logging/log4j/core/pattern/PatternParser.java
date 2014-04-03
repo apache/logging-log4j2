@@ -88,7 +88,7 @@ public final class PatternParser {
 
     /**
      * Constructor.
-     * 
+     *
      * @param converterKey
      *            The type of converters that will be used.
      */
@@ -98,7 +98,7 @@ public final class PatternParser {
 
     /**
      * Constructor.
-     * 
+     *
      * @param config
      *            The current Configuration.
      * @param converterKey
@@ -112,7 +112,7 @@ public final class PatternParser {
 
     /**
      * Constructor.
-     * 
+     *
      * @param config
      *            The current Configuration.
      * @param converterKey
@@ -197,7 +197,7 @@ public final class PatternParser {
      * <p/>
      * If i points to a char which is not a character acceptable at the start of a unicode identifier, the value null is
      * returned.
-     * 
+     *
      * @param lastChar
      *            last processed character.
      * @param pattern
@@ -236,7 +236,7 @@ public final class PatternParser {
 
     /**
      * Extract options.
-     * 
+     *
      * @param pattern
      *            conversion pattern.
      * @param i
@@ -277,7 +277,7 @@ public final class PatternParser {
 
     /**
      * Parse a format specifier.
-     * 
+     *
      * @param pattern
      *            pattern to parse.
      * @param patternConverters
@@ -436,7 +436,7 @@ public final class PatternParser {
 
     /**
      * Creates a new PatternConverter.
-     * 
+     *
      * @param converterId
      *            converterId.
      * @param currentLiteral
@@ -455,7 +455,7 @@ public final class PatternParser {
         Class<PatternConverter> converterClass = null;
 
         if (rules == null) {
-            LOGGER.error("Null rules for [" + converterId + "]");
+            LOGGER.error("Null rules for [" + converterId + ']');
             return null;
         }
         for (int i = converterId.length(); i > 0 && converterClass == null; i--) {
@@ -464,12 +464,12 @@ public final class PatternParser {
         }
 
         if (converterClass == null) {
-            LOGGER.error("Unrecognized format specifier [" + converterId + "]");
+            LOGGER.error("Unrecognized format specifier [" + converterId + ']');
             return null;
         }
 
         if (AnsiConverter.class.isAssignableFrom(converterClass)) {
-            options.add(NO_CONSOLE_NO_ANSI + "=" + noConsoleNoAnsi);
+            options.add(NO_CONSOLE_NO_ANSI + '=' + noConsoleNoAnsi);
         }
         // Work around the regression bug in Class.getDeclaredMethods() in Oracle Java in version > 1.6.0_17:
         // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6815786
@@ -534,7 +534,7 @@ public final class PatternParser {
 
     /**
      * Processes a format specifier sequence.
-     * 
+     *
      * @param c
      *            initial character of format specifier.
      * @param pattern

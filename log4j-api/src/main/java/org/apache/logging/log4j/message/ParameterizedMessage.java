@@ -427,7 +427,7 @@ public class ParameterizedMessage implements Message {
                 } else {
                     dejaVu.add(id);
                     final Object[] oArray = (Object[]) o;
-                    str.append("[");
+                    str.append('[');
                     boolean first = true;
                     for (final Object current : oArray) {
                         if (first) {
@@ -437,7 +437,7 @@ public class ParameterizedMessage implements Message {
                         }
                         recursiveDeepToString(current, str, new HashSet<String>(dejaVu));
                     }
-                    str.append("]");
+                    str.append(']');
                 }
                 //str.append(Arrays.deepToString((Object[]) o));
             }
@@ -449,7 +449,7 @@ public class ParameterizedMessage implements Message {
             } else {
                 dejaVu.add(id);
                 final Map<?, ?> oMap = (Map<?, ?>) o;
-                str.append("{");
+                str.append('{');
                 boolean isFirst = true;
                 for (final Object o1 : oMap.entrySet()) {
                     final Map.Entry<?, ?> current = (Map.Entry<?, ?>) o1;
@@ -461,10 +461,10 @@ public class ParameterizedMessage implements Message {
                     final Object key = current.getKey();
                     final Object value = current.getValue();
                     recursiveDeepToString(key, str, new HashSet<String>(dejaVu));
-                    str.append("=");
+                    str.append('=');
                     recursiveDeepToString(value, str, new HashSet<String>(dejaVu));
                 }
-                str.append("}");
+                str.append('}');
             }
         } else if (o instanceof Collection) {
             // special handling of container Collection
@@ -474,7 +474,7 @@ public class ParameterizedMessage implements Message {
             } else {
                 dejaVu.add(id);
                 final Collection<?> oCol = (Collection<?>) o;
-                str.append("[");
+                str.append('[');
                 boolean isFirst = true;
                 for (final Object anOCol : oCol) {
                     if (isFirst) {
@@ -484,7 +484,7 @@ public class ParameterizedMessage implements Message {
                     }
                     recursiveDeepToString(anOCol, str, new HashSet<String>(dejaVu));
                 }
-                str.append("]");
+                str.append(']');
             }
         } else if (o instanceof Date) {
             final Date date = (Date) o;
@@ -533,12 +533,12 @@ public class ParameterizedMessage implements Message {
         if (obj == null) {
             return null;
         }
-        return obj.getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(obj));
+        return obj.getClass().getName() + '@' + Integer.toHexString(System.identityHashCode(obj));
     }
 
     @Override
     public String toString() {
         return "ParameterizedMessage[messagePattern=" + messagePattern + ", stringArgs=" +
-            Arrays.toString(stringArgs) + ", throwable=" + throwable + "]";
+            Arrays.toString(stringArgs) + ", throwable=" + throwable + ']';
     }
 }

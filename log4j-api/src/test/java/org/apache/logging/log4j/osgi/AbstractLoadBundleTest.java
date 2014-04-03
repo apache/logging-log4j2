@@ -43,7 +43,7 @@ public abstract class AbstractLoadBundleTest {
 
     /**
      * Uninstalls the OSGi framework.
-     * 
+     *
      * @throws BundleException
      */
     @AfterClass
@@ -77,12 +77,12 @@ public abstract class AbstractLoadBundleTest {
     }
 
     protected String getBundlePath() {
-        return "target/" + bundleTestInfo.getArtifactId() + "-" + bundleTestInfo.getVersion() + ".jar";
+        return "target/" + bundleTestInfo.getArtifactId() + '-' + bundleTestInfo.getVersion() + ".jar";
     }
 
     /**
      * Gets the expected bundle symbolic name.
-     * 
+     *
      * @return the expected bundle symbolic name.
      */
     public String getExpectedBundleSymbolicName() {
@@ -91,7 +91,7 @@ public abstract class AbstractLoadBundleTest {
 
     /**
      * Loads, starts, and stops a bundle.
-     * 
+     *
      * @throws BundleException
      */
     @Test

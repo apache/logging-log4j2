@@ -163,13 +163,13 @@ public class FlumePersistentManager extends FlumeAvroManager {
         boolean first = true;
         for (final Agent agent : agents) {
             if (!first) {
-                sb.append(",");
+                sb.append(',');
             }
-            sb.append(agent.getHost()).append(":").append(agent.getPort());
+            sb.append(agent.getHost()).append(':').append(agent.getPort());
             first = false;
         }
-        sb.append("]");
-        sb.append(" ").append(dataDirectory);
+        sb.append(']');
+        sb.append(' ').append(dataDirectory);
         return getManager(sb.toString(), factory, new FactoryData(name, agents, batchSize, retries,
             connectionTimeout, requestTimeout, delay, lockTimeoutRetryCount, dataDir, properties));
     }

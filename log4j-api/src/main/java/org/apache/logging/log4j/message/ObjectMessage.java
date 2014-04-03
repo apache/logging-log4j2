@@ -89,7 +89,7 @@ public class ObjectMessage implements Message {
 
     @Override
     public String toString() {
-        return "ObjectMessage[obj=" + obj.toString() + "]";
+        return "ObjectMessage[obj=" + obj.toString() + ']';
     }
 
     private void writeObject(final ObjectOutputStream out) throws IOException {

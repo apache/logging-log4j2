@@ -179,6 +179,6 @@ public class LoggerStreamTest {
     @Test
     public void testFormat() throws Exception {
         stream.format("[%s]", logMessage).println();
-        assertMessageStartsWith("[" + logMessage);
+        assertMessageStartsWith('[' + logMessage);
     }
 }

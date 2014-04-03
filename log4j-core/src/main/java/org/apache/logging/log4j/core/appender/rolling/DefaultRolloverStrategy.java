@@ -38,7 +38,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * When rolling over, <code>DefaultRolloverStrategy</code> renames files
  * according to an algorithm as described below.
- * 
+ *
  * <p>
  * The DefaultRolloverStrategy is a combination of a time-based policy and a fixed-window policy. When
  * the file name pattern contains a date format then the rollover time interval will be used to calculate the
@@ -76,7 +76,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 @Plugin(name = "DefaultRolloverStrategy", category = "Core", printObject = true)
 public class DefaultRolloverStrategy implements RolloverStrategy {
-    
+
     private static final String EXT_ZIP = ".zip";
     private static final String EXT_GZIP = ".gz";
 
@@ -183,7 +183,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
 
         final List<FileRenameAction> renames = new ArrayList<FileRenameAction>();
         final StringBuilder buf = new StringBuilder();
-        
+
         // LOG4J2-531: directory scan & rollover must use same format
         manager.getPatternProcessor().formatFileName(subst, buf, highIndex);
 
@@ -421,7 +421,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             compressAction = new GZCompressAction(new File(renameTo), new File(compressedName), true);
         } else if (renameTo.endsWith(EXT_ZIP)) {
             renameTo = renameTo.substring(0, renameTo.length() - EXT_ZIP.length());
-            compressAction = new ZipCompressAction(new File(renameTo), new File(compressedName), true, 
+            compressAction = new ZipCompressAction(new File(renameTo), new File(compressedName), true,
                     compressionLevel);
         }
 
@@ -433,7 +433,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
 
     @Override
     public String toString() {
-        return "DefaultRolloverStrategy(min=" + minIndex + ", max=" + maxIndex + ")";
+        return "DefaultRolloverStrategy(min=" + minIndex + ", max=" + maxIndex + ')';
     }
 
 }

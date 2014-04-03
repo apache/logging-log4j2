@@ -138,7 +138,7 @@ public class PerfTestDriver {
                 detail = _threadCount + " threads";
             }
             final String target = _runner.substring(_runner.indexOf(".Run") + 4);
-            return target + ": " + _name + " (" + detail + ")";
+            return target + ": " + _name + " (" + detail + ')';
         }
     }
 
@@ -214,7 +214,7 @@ public class PerfTestDriver {
         final String LOG12 = RunLog4j1.class.getName();
         final String LOG20 = RunLog4j2.class.getName();
         final String LOGBK = RunLogback.class.getName();
-        
+
         final String THREADNAME = "-DAsyncLogger.ThreadNameStrategy=" //
                 + System.getProperty("AsyncLogger.ThreadNameStrategy", "CACHED");
 
@@ -338,7 +338,7 @@ public class PerfTestDriver {
     private static void runPerfTest(final int repeat, final int setupIndex, final Setup config,
             final ProcessBuilder pb) throws IOException, InterruptedException {
         for (int i = 0; i < repeat; i++) {
-            System.out.print(" (" + (i + 1) + "/" + repeat + ")...");
+            System.out.print(" (" + (i + 1) + '/' + repeat + ")...");
             final Process process = pb.start();
 
             final boolean[] stop = { false };
@@ -346,7 +346,7 @@ public class PerfTestDriver {
             process.waitFor();
             stop[0] = true;
 
-            final File gc = new File("gc" + setupIndex + "_" + i
+            final File gc = new File("gc" + setupIndex + '_' + i
                     + config._log4jConfig + ".log");
             if (gc.exists()) {
                 gc.delete();

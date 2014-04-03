@@ -103,7 +103,7 @@ public final class JPAAppender extends AbstractDatabaseAppender<JPADatabaseManag
                     entityClass.getConstructor(LogEvent.class);
 
             final String managerName = "jpaManager{ description=" + name + ", bufferSize=" + bufferSizeInt
-                    + ", persistenceUnitName=" + persistenceUnitName + ", entityClass=" + entityClass.getName() + "}";
+                    + ", persistenceUnitName=" + persistenceUnitName + ", entityClass=" + entityClass.getName() + '}';
 
             final JPADatabaseManager manager = JPADatabaseManager.getJPADatabaseManager(
                     managerName, bufferSizeInt, entityClass, entityConstructor, persistenceUnitName

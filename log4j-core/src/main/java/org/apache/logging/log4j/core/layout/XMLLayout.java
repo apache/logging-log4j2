@@ -112,7 +112,7 @@ public class XMLLayout extends AbstractStringLayout {
         this.indent1 = compact ? COMPACT_INDENT : DEFAULT_INDENT;
         this.indent2 = this.indent1 + this.indent1;
         this.indent3 = this.indent2 + this.indent1;
-        this.namespacePrefix = (Strings.isEmpty(nsPrefix) ? DEFAULT_NS_PREFIX : nsPrefix) + ":";
+        this.namespacePrefix = (Strings.isEmpty(nsPrefix) ? DEFAULT_NS_PREFIX : nsPrefix) + ':';
     }
 
     /**
@@ -206,7 +206,7 @@ public class XMLLayout extends AbstractStringLayout {
             buf.append("Marker");
             final Marker parent = marker.getParent();
             if (parent != null) {
-                buf.append(" parent=\"").append(Transform.escapeHtmlTags(parent.getName())).append("\"");
+                buf.append(" parent=\"").append(Transform.escapeHtmlTags(parent.getName())).append('"');
             }
             buf.append('>');
             buf.append(Transform.escapeHtmlTags(marker.getName()));
@@ -337,7 +337,7 @@ public class XMLLayout extends AbstractStringLayout {
         if (!complete) {
             return null;
         }
-        return ("</" + ROOT_TAG + ">" + this.eol).getBytes(getCharset());
+        return ("</" + ROOT_TAG + '>' + this.eol).getBytes(getCharset());
     }
 
     /**
