@@ -135,7 +135,7 @@ public abstract class ConfigurationFactory {
                                 ordered.add(new WeightedFactory(weight, clazz));
                             }
                         } catch (final Exception ex) {
-                            LOGGER.warn("Unable to add class " + type.getPluginClass());
+                            LOGGER.warn("Unable to add class {}", type.getPluginClass());
                         }
                     }
                     for (final WeightedFactory wf : ordered) {
@@ -154,9 +154,9 @@ public abstract class ConfigurationFactory {
         try {
             addFactory(list, (Class<ConfigurationFactory>) Class.forName(factoryClass));
         } catch (final ClassNotFoundException ex) {
-            LOGGER.error("Unable to load class " + factoryClass, ex);
+            LOGGER.error("Unable to load class {}", factoryClass, ex);
         } catch (final Exception ex) {
-            LOGGER.error("Unable to load class " + factoryClass, ex);
+            LOGGER.error("Unable to load class {}", factoryClass, ex);
         }
     }
 
@@ -165,7 +165,7 @@ public abstract class ConfigurationFactory {
         try {
             list.add(factoryClass.newInstance());
         } catch (final Exception ex) {
-            LOGGER.error("Unable to create instance of " + factoryClass.getName(), ex);
+            LOGGER.error("Unable to create instance of {}", factoryClass.getName(), ex);
         }
     }
 
@@ -233,7 +233,7 @@ public abstract class ConfigurationFactory {
             try {
                 return new ConfigurationSource(new FileInputStream(configFile), configFile);
             } catch (final FileNotFoundException ex) {
-                LOGGER.error("Cannot locate file " + configLocation.getPath(), ex);
+                LOGGER.error("Cannot locate file {}", configLocation.getPath(), ex);
             }
         }
         final String scheme = configLocation.getScheme();
@@ -257,11 +257,11 @@ public abstract class ConfigurationFactory {
         try {
             return new ConfigurationSource(configLocation.toURL().openStream(), configLocation.getPath());
         } catch (final MalformedURLException ex) {
-            LOGGER.error("Invalid URL " + configLocation.toString(), ex);
+            LOGGER.error("Invalid URL {}", configLocation.toString(), ex);
         } catch (final IOException ex) {
-            LOGGER.error("Unable to access " + configLocation.toString(), ex);
+            LOGGER.error("Unable to access {}", configLocation.toString(), ex);
         } catch (final Exception ex) {
-            LOGGER.error("Unable to access " + configLocation.toString(), ex);
+            LOGGER.error("Unable to access {}", configLocation.toString(), ex);
         }
         return null;
     }
@@ -284,6 +284,7 @@ public abstract class ConfigurationFactory {
                     return new ConfigurationSource(new FileInputStream(file), file);
                 } catch (final FileNotFoundException fnfe) {
                     // Ignore the exception
+                    LOGGER.catching(fnfe);
                 }
             }
             return source;
@@ -305,6 +306,7 @@ public abstract class ConfigurationFactory {
         try {
             is = url.openStream();
         } catch (final IOException ioe) {
+            LOGGER.catching(ioe);
             return null;
         }
         if (is == null) {
@@ -316,6 +318,7 @@ public abstract class ConfigurationFactory {
                 return new ConfigurationSource(is, FileUtils.fileFromURI(url.toURI()));
             } catch (final URISyntaxException ex) {
                 // Just ignore the exception.
+                LOGGER.catching(ex);
             }
         }
         return new ConfigurationSource(is, resource);
@@ -374,6 +377,7 @@ public abstract class ConfigurationFactory {
                         source = getInputFromURI(FileUtils.getCorrectedFilePathUri(config));
                     } catch (Exception ex) {
                         // Ignore the error and try as a String.
+                        LOGGER.catching(ex);
                     }
                     if (source == null) {
                         final ClassLoader loader = this.getClass().getClassLoader();
