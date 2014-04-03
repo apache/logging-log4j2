@@ -59,7 +59,7 @@ public final class FileUtils {
             try {
                 uri = new File(uri.getPath()).toURI();
             } catch (final Exception ex) {
-                LOGGER.warn("Invalid URI " + uri);
+                LOGGER.warn("Invalid URI {}", uri);
                 return null;
             }
         }
@@ -70,7 +70,7 @@ public final class FileUtils {
             }
             return new File(URLDecoder.decode(fileName, "UTF8"));
         } catch (final MalformedURLException ex) {
-            LOGGER.warn("Invalid URL " + uri, ex);
+            LOGGER.warn("Invalid URL {}", uri, ex);
         } catch (final UnsupportedEncodingException uee) {
             LOGGER.warn("Invalid encoding: UTF8", uee);
         }
