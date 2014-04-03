@@ -81,16 +81,16 @@ class BasicThreadInformation implements ThreadInformation {
      */
     @Override
     public void printThreadInfo(final StringBuilder sb) {
-        sb.append("\"").append(name).append("\" ");
+        sb.append('"').append(name).append("\" ");
         if (isDaemon) {
             sb.append("daemon ");
         }
-        sb.append("prio=").append(priority).append(" tid=").append(id).append(" ");
+        sb.append("prio=").append(priority).append(" tid=").append(id).append(' ');
         if (threadGroupName != null) {
-            sb.append("group=\"").append(threadGroupName).append("\"");
+            sb.append("group=\"").append(threadGroupName).append('"');
         }
-        sb.append("\n");
-        sb.append("\tThread state: ").append(state.name()).append("\n");
+        sb.append('\n');
+        sb.append("\tThread state: ").append(state.name()).append('\n');
     }
 
     /**
@@ -101,7 +101,7 @@ class BasicThreadInformation implements ThreadInformation {
     @Override
     public void printStack(final StringBuilder sb, final StackTraceElement[] trace) {
         for (final StackTraceElement element : trace) {
-            sb.append("\tat ").append(element).append("\n");
+            sb.append("\tat ").append(element).append('\n');
         }
     }
 }
