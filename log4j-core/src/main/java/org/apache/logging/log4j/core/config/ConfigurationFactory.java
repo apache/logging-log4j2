@@ -26,12 +26,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeSet;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.PluginType;
@@ -124,7 +123,7 @@ public abstract class ConfigurationFactory {
                     final PluginManager manager = new PluginManager("ConfigurationFactory");
                     manager.collectPlugins();
                     final Map<String, PluginType<?>> plugins = manager.getPlugins();
-                    final Set<WeightedFactory> ordered = new TreeSet<WeightedFactory>();
+                    final Collection<WeightedFactory> ordered = new TreeSet<WeightedFactory>();
                     for (final PluginType<?> type : plugins.values()) {
                         try {
                             @SuppressWarnings("unchecked")
@@ -150,7 +149,7 @@ public abstract class ConfigurationFactory {
     }
 
     @SuppressWarnings("unchecked")
-    private static void addFactory(final List<ConfigurationFactory> list, final String factoryClass) {
+    private static void addFactory(final Collection<ConfigurationFactory> list, final String factoryClass) {
         try {
             addFactory(list, (Class<ConfigurationFactory>) Class.forName(factoryClass));
         } catch (final ClassNotFoundException ex) {
@@ -160,7 +159,7 @@ public abstract class ConfigurationFactory {
         }
     }
 
-    private static void addFactory(final List<ConfigurationFactory> list,
+    private static void addFactory(final Collection<ConfigurationFactory> list,
                                    final Class<ConfigurationFactory> factoryClass) {
         try {
             list.add(factoryClass.newInstance());
