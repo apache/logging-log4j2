@@ -50,7 +50,7 @@ public class Log4jContextFactory implements LoggerContextFactory {
                     selector = (ContextSelector) clazz.newInstance();
                 }
             } catch (final Exception ex) {
-                LOGGER.error("Unable to create context " + sel, ex);
+                LOGGER.error("Unable to create context {}", sel, ex);
             }
         }
         if (selector == null) {
