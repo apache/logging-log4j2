@@ -211,7 +211,7 @@ public class PatternLayoutTest {
             "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world 1!"), null);
         byte[] header = layout.getHeader();
         assertNotNull("No header", header);
-        assertTrue("expected \"Hello world Header\", actual \"" + new String(header) + "\"", new String(header).equals(new String("Hello world Header")));
+        assertTrue("expected \"Hello world Header\", actual \"" + new String(header) + '"', new String(header).equals(new String("Hello world Header")));
     }
 
 

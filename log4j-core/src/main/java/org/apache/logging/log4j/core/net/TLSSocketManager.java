@@ -88,7 +88,7 @@ public class TLSSocketManager extends TCPSocketManager {
         if (delay == 0) {
             delay = DEFAULT_RECONNECTION_DELAY;
         }
-        return (TLSSocketManager) getManager("TLS:" + host + ":" + port,
+        return (TLSSocketManager) getManager("TLS:" + host + ':' + port,
                 new TLSFactoryData(sslConfig, host, port, delay, immediateFail, layout), FACTORY);
     }
 

@@ -93,12 +93,12 @@ public class FlumeAvroManager extends AbstractFlumeManager {
         boolean first = true;
         for (final Agent agent : agents) {
             if (!first) {
-                sb.append(",");
+                sb.append(',');
             }
-            sb.append(agent.getHost()).append(":").append(agent.getPort());
+            sb.append(agent.getHost()).append(':').append(agent.getPort());
             first = false;
         }
-        sb.append("]");
+        sb.append(']');
         return getManager(sb.toString(), factory,
                 new FactoryData(name, agents, batchSize, retries, connectTimeout, requestTimeout));
     }
@@ -147,13 +147,13 @@ public class FlumeAvroManager extends AbstractFlumeManager {
             } catch (final Exception ex) {
                 rpcClient.close();
                 rpcClient = null;
-                final String msg = "Unable to write to " + getName() + " at " + agents[current].getHost() + ":" +
+                final String msg = "Unable to write to " + getName() + " at " + agents[current].getHost() + ':' +
                     agents[current].getPort();
                 LOGGER.warn(msg, ex);
                 throw new AppenderLoggingException("No Flume agents are available");
             }
         }  else {
-            final String msg = "Unable to write to " + getName() + " at " + agents[current].getHost() + ":" +
+            final String msg = "Unable to write to " + getName() + " at " + agents[current].getHost() + ':' +
                 agents[current].getPort();
             LOGGER.warn(msg);
             throw new AppenderLoggingException("No Flume agents are available");
@@ -172,13 +172,13 @@ public class FlumeAvroManager extends AbstractFlumeManager {
             } catch (final Exception ex) {
                 rpcClient.close();
                 rpcClient = null;
-                final String msg = "Unable to write to " + getName() + " at " + agents[current].getHost() + ":" +
+                final String msg = "Unable to write to " + getName() + " at " + agents[current].getHost() + ':' +
                     agents[current].getPort();
                 LOGGER.warn(msg, ex);
                 throw new AppenderLoggingException("No Flume agents are available");
             }
         } else {
-            final String msg = "Unable to write to " + getName() + " at " + agents[current].getHost() + ":" +
+            final String msg = "Unable to write to " + getName() + " at " + agents[current].getHost() + ':' +
                 agents[current].getPort();
             LOGGER.warn(msg);
             throw new AppenderLoggingException("No Flume agents are available");
@@ -201,10 +201,10 @@ public class FlumeAvroManager extends AbstractFlumeManager {
             final StringBuilder sb = new StringBuilder();
             for (final Agent agent : agents) {
                 if (sb.length() > 0) {
-                    sb.append(" ");
+                    sb.append(' ');
                 }
                 final String hostName = "host" + count++;
-                props.put("hosts." + hostName, agent.getHost() + ":" + agent.getPort());
+                props.put("hosts." + hostName, agent.getHost() + ':' + agent.getPort());
                 sb.append(hostName);
             }
             props.put("hosts", sb.toString());

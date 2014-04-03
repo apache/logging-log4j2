@@ -85,22 +85,22 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
         boolean first = true;
 
         if (agents != null && agents.length > 0) {
-            sb.append(name).append("[");
+            sb.append(name).append('[');
             for (final Agent agent : agents) {
                 if (!first) {
-                    sb.append("_");
+                    sb.append('_');
                 }
-                sb.append(agent.getHost()).append("-").append(agent.getPort());
+                sb.append(agent.getHost()).append('-').append(agent.getPort());
                 first = false;
             }
-            sb.append("]");
+            sb.append(']');
         } else {
             String sep = "";
-            sb.append(name).append("-");
+            sb.append(name).append('-');
             final StringBuilder props = new StringBuilder();
             for (final Property prop : properties) {
                 props.append(sep);
-                props.append(prop.getName()).append("=").append(prop.getValue());
+                props.append(prop.getName()).append('=').append(prop.getValue());
                 sep = "_";
             }
             sb.append(NameUtil.md5(props.toString()));

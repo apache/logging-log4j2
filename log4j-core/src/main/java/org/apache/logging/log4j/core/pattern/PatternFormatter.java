@@ -44,7 +44,7 @@ public class PatternFormatter {
     public FormattingInfo getFormattingInfo() {
         return field;
     }
-    
+
     /**
      * Normally pattern formatters are not meant to handle Exceptions although
      * few pattern formatters might.
@@ -60,7 +60,7 @@ public class PatternFormatter {
 
     /**
      * Returns a String suitable for debugging.
-     * 
+     *
      * @return a String suitable for debugging.
      */
     @Override
@@ -71,7 +71,7 @@ public class PatternFormatter {
         sb.append(converter);
         sb.append(", field=");
         sb.append(field);
-        sb.append("]");
+        sb.append(']');
         return sb.toString();
     }
 }

@@ -107,7 +107,7 @@ public class LogManager {
                     final StringBuilder sb = new StringBuilder("Multiple logging implementations found: \n");
                     for (final Map.Entry<Integer, LoggerContextFactory> entry : factories.entrySet()) {
                         sb.append("Factory: ").append(entry.getValue().getClass().getName());
-                        sb.append(", Weighting: ").append(entry.getKey()).append("\n");
+                        sb.append(", Weighting: ").append(entry.getKey()).append('\n');
                     }
                     factory = factories.get(factories.lastKey());
                     sb.append("Using factory: ").append(factory.getClass().getName());
@@ -123,7 +123,7 @@ public class LogManager {
 
     /**
      * Detects if a Logger with the specified name exists. This is a convenience method for porting from version 1.
-     * 
+     *
      * @param name
      *            The Logger name to search for.
      * @return true if the Logger exists, false otherwise.

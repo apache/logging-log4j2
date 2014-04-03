@@ -165,7 +165,7 @@ public final class FailoverAppender extends AbstractAppender {
             sb.append(str);
             first = false;
         }
-        sb.append("}");
+        sb.append('}');
         return sb.toString();
     }
 

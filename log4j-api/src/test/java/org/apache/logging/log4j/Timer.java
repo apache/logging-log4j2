@@ -224,7 +224,7 @@ public class Timer implements Serializable
         }
         else
         {
-            result.append(" ").append(m_status);
+            result.append(' ').append(m_status);
         }
         return result.toString();
     }

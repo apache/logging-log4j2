@@ -109,7 +109,7 @@ public class WebLookup implements StrLookup {
             return ctx.getInitParameter(key);
         }
 
-        ctx.log(getClass().getName() + " unable to resolve key '" + key + "'");
+        ctx.log(getClass().getName() + " unable to resolve key '" + key + '\'');
         return null;
     }
 

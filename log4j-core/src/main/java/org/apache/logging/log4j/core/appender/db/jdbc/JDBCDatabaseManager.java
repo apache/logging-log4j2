@@ -218,7 +218,7 @@ public final class JDBCDatabaseManager extends AbstractDatabaseManager {
             }
 
             final String sqlStatement = "INSERT INTO " + data.tableName + " (" + columnPart + ") VALUES (" +
-                    valuePart + ")";
+                    valuePart + ')';
 
             return new JDBCDatabaseManager(name, data.getBufferSize(), data.connectionSource, sqlStatement, columns);
         }

@@ -154,6 +154,6 @@ public class JSONLayoutTest {
 
     private void checkAt(String expected, int lineIndex, List<String> list) {
         final String trimedLine = list.get(lineIndex).trim();
-        assertTrue("Incorrect line index " + lineIndex + ": \"" + trimedLine + "\"", trimedLine.equals(expected));
+        assertTrue("Incorrect line index " + lineIndex + ": \"" + trimedLine + '"', trimedLine.equals(expected));
     }
 }

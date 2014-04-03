@@ -170,7 +170,7 @@ public class Logger extends AbstractLoggerProvider {
 
     /**
      * Gets the Level associated with the Logger.
-     * 
+     *
      * @return the Level associate with the Logger.
      */
     @Override
@@ -347,7 +347,7 @@ public class Logger extends AbstractLoggerProvider {
      */
     @Override
     public String toString() {
-        final String nameLevel = "" + getName() + ":" + getLevel();
+        final String nameLevel = "" + getName() + ':' + getLevel();
         if (context == null) {
             return nameLevel;
         }

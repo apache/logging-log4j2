@@ -280,7 +280,7 @@ public class RFC5424Layout extends AbstractStringLayout {
     }
 
     private void appendPriority(final StringBuilder buffer, final Level logLevel) {
-        buffer.append("<");
+        buffer.append('<');
         buffer.append(Priority.getPriority(facility, logLevel));
         buffer.append(">1 ");
     }
@@ -290,7 +290,7 @@ public class RFC5424Layout extends AbstractStringLayout {
     }
 
     private void appendSpace(final StringBuilder buffer) {
-        buffer.append(" ");
+        buffer.append(' ');
     }
 
     private void appendHostName(final StringBuilder buffer) {
@@ -303,7 +303,7 @@ public class RFC5424Layout extends AbstractStringLayout {
         } else if (configName != null) {
             buffer.append(configName);
         } else {
-            buffer.append("-");
+            buffer.append('-');
         }
     }
 
@@ -319,7 +319,7 @@ public class RFC5424Layout extends AbstractStringLayout {
         } else if (messageId != null) {
             buffer.append(messageId);
         } else {
-            buffer.append("-");
+            buffer.append('-');
         }
     }
 
@@ -329,7 +329,7 @@ public class RFC5424Layout extends AbstractStringLayout {
         final String text = (message instanceof StructuredDataMessage) ? message.getFormat() : message.getFormattedMessage();
 
         if (text != null && text.length() > 0) {
-            buffer.append(" ").append(escapeNewlines(text, escapeNewLine));
+            buffer.append(' ').append(escapeNewlines(text, escapeNewLine));
         }
 
         if (exceptionFormatters != null && event.getThrown() != null) {
@@ -349,7 +349,7 @@ public class RFC5424Layout extends AbstractStringLayout {
         final boolean isStructured = message instanceof StructuredDataMessage;
 
         if (!isStructured && (fieldFormatters!= null && fieldFormatters.size() == 0) && !includeMDC) {
-            buffer.append("-");
+            buffer.append('-');
             return;
         }
 
@@ -396,7 +396,7 @@ public class RFC5424Layout extends AbstractStringLayout {
         }
 
         if (sdElements.size() == 0) {
-            buffer.append("-");
+            buffer.append('-');
             return;
         }
 
@@ -437,15 +437,15 @@ public class RFC5424Layout extends AbstractStringLayout {
         final Calendar cal = new GregorianCalendar();
         cal.setTimeInMillis(now);
         buffer.append(Integer.toString(cal.get(Calendar.YEAR)));
-        buffer.append("-");
+        buffer.append('-');
         pad(cal.get(Calendar.MONTH) + 1, TWO_DIGITS, buffer);
-        buffer.append("-");
+        buffer.append('-');
         pad(cal.get(Calendar.DAY_OF_MONTH), TWO_DIGITS, buffer);
-        buffer.append("T");
+        buffer.append('T');
         pad(cal.get(Calendar.HOUR_OF_DAY), TWO_DIGITS, buffer);
-        buffer.append(":");
+        buffer.append(':');
         pad(cal.get(Calendar.MINUTE), TWO_DIGITS, buffer);
-        buffer.append(":");
+        buffer.append(':');
         pad(cal.get(Calendar.SECOND), TWO_DIGITS, buffer);
 
         final int millis = cal.get(Calendar.MILLISECOND);
@@ -456,18 +456,18 @@ public class RFC5424Layout extends AbstractStringLayout {
 
         int tzmin = (cal.get(Calendar.ZONE_OFFSET) + cal.get(Calendar.DST_OFFSET)) / MILLIS_PER_MINUTE;
         if (tzmin == 0) {
-            buffer.append("Z");
+            buffer.append('Z');
         } else {
             if (tzmin < 0) {
                 tzmin = -tzmin;
-                buffer.append("-");
+                buffer.append('-');
             } else {
-                buffer.append("+");
+                buffer.append('+');
             }
             final int tzhour = tzmin / MINUTES_PER_HOUR;
             tzmin -= tzhour * MINUTES_PER_HOUR;
             pad(tzhour, TWO_DIGITS, buffer);
-            buffer.append(":");
+            buffer.append(':');
             pad(tzmin, TWO_DIGITS, buffer);
         }
         synchronized (this) {
@@ -482,7 +482,7 @@ public class RFC5424Layout extends AbstractStringLayout {
     private void pad(final int val, int max, final StringBuilder buf) {
         while (max > 1) {
             if (val < max) {
-                buf.append("0");
+                buf.append('0');
             }
             max = max / TWO_DIGITS;
         }
@@ -495,14 +495,14 @@ public class RFC5424Layout extends AbstractStringLayout {
             return;
         }
 
-        sb.append("[");
+        sb.append('[');
         sb.append(id);
         if (!mdcSDID.toString().equals(id)) {
             appendMap(prefix, data.getFields(), sb, noopChecker);
         } else {
             appendMap(prefix, data.getFields(), sb, checker);
         }
-        sb.append("]");
+        sb.append(']');
     }
 
     private String getId(final StructuredDataId id) {
@@ -517,7 +517,7 @@ public class RFC5424Layout extends AbstractStringLayout {
             ein = enterpriseNumber;
         }
         if (ein >= 0) {
-            sb.append("@").append(ein);
+            sb.append('@').append(ein);
         }
         return sb.toString();
     }
@@ -536,12 +536,12 @@ public class RFC5424Layout extends AbstractStringLayout {
         final SortedMap<String, String> sorted = new TreeMap<String, String>(map);
         for (final Map.Entry<String, String> entry : sorted.entrySet()) {
             if (checker.check(entry.getKey()) && entry.getValue() != null) {
-                sb.append(" ");
+                sb.append(' ');
                 if (prefix != null) {
                     sb.append(prefix);
                 }
                 sb.append(escapeNewlines(escapeSDParams(entry.getKey()), escapeNewLine)).append("=\"")
-                    .append(escapeNewlines(escapeSDParams(entry.getValue()), escapeNewLine)).append("\"");
+                    .append(escapeNewlines(escapeSDParams(entry.getValue()), escapeNewLine)).append('"');
             }
         }
     }

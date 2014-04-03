@@ -136,7 +136,7 @@ public final class OptionConverter {
             try {
                 return Integer.parseInt(s);
             } catch (final NumberFormatException e) {
-                LOGGER.error("[" + s + "] is not in proper int form.");
+                LOGGER.error('[' + s + "] is not in proper int form.");
                 e.printStackTrace();
             }
         }
@@ -172,8 +172,8 @@ public final class OptionConverter {
             try {
                 return Long.parseLong(str) * multiplier;
             } catch (final NumberFormatException e) {
-                LOGGER.error("[" + str + "] is not in proper int form.");
-                LOGGER.error("[" + value + "] not in expected format.", e);
+                LOGGER.error('[' + str + "] is not in proper int form.");
+                LOGGER.error('[' + value + "] not in expected format.", e);
             }
         }
         return defaultValue;
@@ -222,7 +222,7 @@ public final class OptionConverter {
                         superClass.getName() + "\" variable.");
                     LOGGER.error("The class \"" + superClass.getName() + "\" was loaded by ");
                     LOGGER.error("[" + superClass.getClassLoader() + "] whereas object of type ");
-                    LOGGER.error("\"" + classObj.getName() + "\" was loaded by ["
+                    LOGGER.error('"' + classObj.getName() + "\" was loaded by ["
                         + classObj.getClassLoader() + "].");
                     return defaultValue;
                 }

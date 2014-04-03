@@ -162,12 +162,12 @@ public final class ThrowableFormatOptions {
     @Override
     public String toString() {
         final StringBuilder s = new StringBuilder();
-        s.append("{").append(allLines() ? FULL : this.lines == 2 ? SHORT : anyLines() ? String.valueOf(this.lines) : NONE).append("}");
+        s.append('{').append(allLines() ? FULL : this.lines == 2 ? SHORT : anyLines() ? String.valueOf(this.lines) : NONE).append('}');
         s.append("{separator(").append(this.separator).append(")}");
         if (hasPackages()) {
             s.append("{filters(");
             for (final String p : this.packages) {
-                s.append(p).append(",");
+                s.append(p).append(',');
             }
             s.deleteCharAt(s.length() - 1);
             s.append(")}");
@@ -227,7 +227,7 @@ public final class ThrowableFormatOptions {
                     lines = 0;
                 } else if (option.equalsIgnoreCase(SHORT) || option.equalsIgnoreCase(CLASS_NAME) ||
                         option.equalsIgnoreCase(METHOD_NAME) || option.equalsIgnoreCase(LINE_NUMBER) ||
-                        option.equalsIgnoreCase(FILE_NAME) || option.equalsIgnoreCase(MESSAGE) || 
+                        option.equalsIgnoreCase(FILE_NAME) || option.equalsIgnoreCase(MESSAGE) ||
                         option.equalsIgnoreCase(LOCALIZED_MESSAGE)) {
                     lines = 2;
                 } else if (!option.equalsIgnoreCase(FULL)) {

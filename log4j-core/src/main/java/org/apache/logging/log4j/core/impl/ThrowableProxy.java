@@ -177,7 +177,7 @@ public class ThrowableProxy implements Serializable {
             sb.append("Wrapped by: ");
         }
         sb.append(toString());
-        sb.append("\n");
+        sb.append('\n');
         formatElements(sb, 0, throwable.getStackTrace(), callerPackageData, packages);
         return sb.toString();
     }
@@ -204,7 +204,7 @@ public class ThrowableProxy implements Serializable {
             formatWrapper(sb, cause.proxyCause);
             sb.append("Wrapped by: ");
         }
-        sb.append(cause).append("\n");
+        sb.append(cause).append('\n');
         formatElements(sb, cause.commonElementCount, cause.getThrowable().getStackTrace(), cause.callerPackageData,
             packages);
     }
@@ -228,7 +228,7 @@ public class ThrowableProxy implements Serializable {
         if (msg != null) {
             sb.append(": ").append(throwable.getMessage());
         }
-        sb.append("\n");
+        sb.append('\n');
         formatElements(sb, 0, throwable.getStackTrace(), callerPackageData, packages);
         if (proxyCause != null) {
             formatCause(sb, proxyCause, packages);
@@ -254,7 +254,7 @@ public class ThrowableProxy implements Serializable {
 
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     private void formatCause(final StringBuilder sb, final ThrowableProxy cause, final List<String> packages) {
-        sb.append("Caused by: ").append(cause).append("\n");
+        sb.append("Caused by: ").append(cause).append('\n');
         formatElements(sb, cause.commonElementCount, cause.getThrowable().getStackTrace(), cause.callerPackageData,
             packages);
         if (cause.getCause() != null) {
@@ -294,7 +294,7 @@ public class ThrowableProxy implements Serializable {
             }
         }
         if (commonCount != 0) {
-            sb.append("\t... ").append(commonCount).append(" more").append("\n");
+            sb.append("\t... ").append(commonCount).append(" more").append('\n');
         }
     }
 
@@ -302,9 +302,9 @@ public class ThrowableProxy implements Serializable {
                              final StringBuilder sb) {
         sb.append("\tat ");
         sb.append(element);
-        sb.append(" ");
+        sb.append(' ');
         sb.append(packageData);
-        sb.append("\n");
+        sb.append('\n');
     }
 
     private boolean isSuppressed(final StackTraceElement element, final List<String> packages) {

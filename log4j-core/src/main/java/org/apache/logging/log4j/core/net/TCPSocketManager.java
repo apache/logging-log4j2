@@ -105,7 +105,7 @@ public class TCPSocketManager extends AbstractSocketManager {
         if (delay == 0) {
             delay = DEFAULT_RECONNECTION_DELAY;
         }
-        return (TCPSocketManager) getManager("TCP:" + host + ":" + port,
+        return (TCPSocketManager) getManager("TCP:" + host + ':' + port,
             new FactoryData(host, port, delay, immediateFail, layout), FACTORY);
     }
 
@@ -207,13 +207,13 @@ public class TCPSocketManager extends AbstractSocketManager {
                         connector = null;
                         shutdown = true;
                     }
-                    LOGGER.debug("Connection to " + host + ":" + port + " reestablished.");
+                    LOGGER.debug("Connection to " + host + ':' + port + " reestablished.");
                 } catch (final InterruptedException ie) {
                     LOGGER.debug("Reconnection interrupted.");
                 } catch (final ConnectException ex) {
-                    LOGGER.debug(host + ":" + port + " refused connection");
+                    LOGGER.debug(host + ':' + port + " refused connection");
                 } catch (final IOException ioe) {
-                    LOGGER.debug("Unable to reconnect to " + host + ":" + port);
+                    LOGGER.debug("Unable to reconnect to " + host + ':' + port);
                 } finally {
                     latch.countDown();
                 }

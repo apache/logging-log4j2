@@ -126,7 +126,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
 
             len = buffer.length();
             if (len > 0 && !Character.isWhitespace(buffer.charAt(len - 1))) {
-                buffer.append(" ");
+                buffer.append(' ');
             }
             buffer.append(toAppend);
         }

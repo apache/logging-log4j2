@@ -87,32 +87,32 @@ public class SMTPManager extends AbstractManager {
         if (to != null) {
             sb.append(to);
         }
-        sb.append(":");
+        sb.append(':');
         if (cc != null) {
             sb.append(cc);
         }
-        sb.append(":");
+        sb.append(':');
         if (bcc != null) {
             sb.append(bcc);
         }
-        sb.append(":");
+        sb.append(':');
         if (from != null) {
             sb.append(from);
         }
-        sb.append(":");
+        sb.append(':');
         if (replyTo != null) {
             sb.append(replyTo);
         }
-        sb.append(":");
+        sb.append(':');
         if (subject != null) {
             sb.append(subject);
         }
-        sb.append(":");
-        sb.append(protocol).append(":").append(host).append(":").append("port").append(":");
+        sb.append(':');
+        sb.append(protocol).append(':').append(host).append(':').append("port").append(':');
         if (username != null) {
             sb.append(username);
         }
-        sb.append(":");
+        sb.append(':');
         if (password != null) {
             sb.append(password);
         }
@@ -137,7 +137,7 @@ public class SMTPManager extends AbstractManager {
         try {
             final LogEvent[] priorEvents = buffer.removeAll();
             // LOG4J-310: log appendEvent even if priorEvents is empty
-            
+
             final byte[] rawBytes = formatContentToBytes(priorEvents, appendEvent, layout);
 
             final String contentType = layout.getContentType();

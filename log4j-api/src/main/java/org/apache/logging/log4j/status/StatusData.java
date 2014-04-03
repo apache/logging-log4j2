@@ -100,9 +100,9 @@ public class StatusData implements Serializable {
         final StringBuilder sb = new StringBuilder();
         final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
         sb.append(format.format(new Date(timestamp)));
-        sb.append(" ");
+        sb.append(' ');
         sb.append(level.toString());
-        sb.append(" ");
+        sb.append(' ');
         sb.append(msg.getFormattedMessage());
         final Object[] params = msg.getParameters();
         Throwable t;
@@ -112,7 +112,7 @@ public class StatusData implements Serializable {
             t = throwable;
         }
         if (t != null) {
-            sb.append(" ");
+            sb.append(' ');
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             t.printStackTrace(new PrintStream(baos));
             sb.append(baos.toString());

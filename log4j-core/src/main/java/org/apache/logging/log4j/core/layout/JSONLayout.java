@@ -35,19 +35,19 @@ import org.apache.logging.log4j.message.MultiformatMessage;
 
 /**
  * Appends a series of JSON events as strings serialized as bytes.
- * 
+ *
  * TODO: Marker.
- * 
+ *
  * <h4>Complete well-formed JSON vs. fragment JSON</h4>
  * <p>
- * If you configure {@code complete="true"}, the appender outputs a well-formed JSON document. 
+ * If you configure {@code complete="true"}, the appender outputs a well-formed JSON document.
  * By default, with {@code complete="false"}, you should include the
  * output as an <em>external file</em> in a separate file to form a well-formed JSON document.
  * </p>
  * <p>
  * A well-formed JSON document follows this pattern:
  * </p>
- * 
+ *
  * <pre>[
  *   {
  *     "logger":"com.foo.Bar",
@@ -122,7 +122,7 @@ public class JSONLayout extends AbstractStringLayout {
 
     /**
      * Formats a {@link org.apache.logging.log4j.core.LogEvent} in conformance with the log4j.dtd.
-     * 
+     *
      * @param event
      *            The LogEvent.
      * @return The XML representation of the LogEvent.
@@ -131,7 +131,7 @@ public class JSONLayout extends AbstractStringLayout {
     public String toSerializable(final LogEvent event) {
         final StringBuilder buf = new StringBuilder(DEFAULT_SIZE);
         // DC locking to avoid synchronizing the whole layout.
-        boolean check = this.firstLayoutDone; 
+        boolean check = this.firstLayoutDone;
         if (!this.firstLayoutDone) {
             synchronized(this) {
                 check = this.firstLayoutDone;
@@ -139,12 +139,12 @@ public class JSONLayout extends AbstractStringLayout {
                     this.firstLayoutDone = true;
                 } else {
                     buf.append(',');
-                    buf.append(this.eol);                                
+                    buf.append(this.eol);
                 }
             }
         } else {
             buf.append(',');
-            buf.append(this.eol);                                            
+            buf.append(this.eol);
         }
         buf.append(this.indent1);
         buf.append('{');
@@ -197,16 +197,16 @@ public class JSONLayout extends AbstractStringLayout {
         }
 
         if (event.getContextStack().getDepth() > 0) {
-            buf.append(",");
+            buf.append(',');
             buf.append(this.eol);
             buf.append("\"ndc\":");
             buf.append(Transform.escapeJsonControlCharacters(event.getContextStack().toString()));
-            buf.append("\"");
+            buf.append('"');
         }
 
         final Throwable throwable = event.getThrown();
         if (throwable != null) {
-            buf.append(",");
+            buf.append(',');
             buf.append(this.eol);
             buf.append(this.indent2);
             buf.append("\"throwable\":\"");
@@ -215,12 +215,12 @@ public class JSONLayout extends AbstractStringLayout {
                 buf.append(Transform.escapeJsonControlCharacters(str));
                 buf.append("\\\\n");
             }
-            buf.append("\"");
+            buf.append('"');
         }
 
         if (this.locationInfo) {
             final StackTraceElement element = event.getSource();
-            buf.append(",");
+            buf.append(',');
             buf.append(this.eol);
             buf.append(this.indent2);
             buf.append("\"LocationInfo\":{");
@@ -243,14 +243,14 @@ public class JSONLayout extends AbstractStringLayout {
             buf.append(this.indent3);
             buf.append("\"line\":\"");
             buf.append(element.getLineNumber());
-            buf.append("\"");
+            buf.append('"');
             buf.append(this.eol);
             buf.append(this.indent2);
-            buf.append("}");
+            buf.append('}');
         }
 
         if (this.properties && event.getContextMap().size() > 0) {
-            buf.append(",");
+            buf.append(',');
             buf.append(this.eol);
             buf.append(this.indent2);
             buf.append("\"Properties\":[");
@@ -269,30 +269,30 @@ public class JSONLayout extends AbstractStringLayout {
                 buf.append(this.indent4);
                 buf.append("\"value\":\"");
                 buf.append(Transform.escapeJsonControlCharacters(String.valueOf(entry.getValue())));
-                buf.append("\"");
+                buf.append('"');
                 buf.append(this.eol);
                 buf.append(this.indent3);
-                buf.append("}");
+                buf.append('}');
                 if (i < entrySet.size()) {
-                    buf.append(",");
+                    buf.append(',');
                 }
                 buf.append(this.eol);
                 i++;
             }
             buf.append(this.indent2);
-            buf.append("]");
+            buf.append(']');
         }
 
         buf.append(this.eol);
         buf.append(this.indent1);
-        buf.append("}");
+        buf.append('}');
 
         return buf.toString();
     }
 
     /**
      * Returns appropriate JSON headers.
-     * 
+     *
      * @return a byte array containing the header, opening the JSON array.
      */
     @Override
@@ -308,7 +308,7 @@ public class JSONLayout extends AbstractStringLayout {
 
     /**
      * Returns appropriate JSON footer.
-     * 
+     *
      * @return a byte array containing the footer, closing the JSON array.
      */
     @Override
@@ -316,7 +316,7 @@ public class JSONLayout extends AbstractStringLayout {
         if (!this.complete) {
             return null;
         }
-        return (this.eol + "]" + this.eol).getBytes(this.getCharset());
+        return (this.eol + ']' + this.eol).getBytes(this.getCharset());
     }
 
     /**
@@ -325,7 +325,7 @@ public class JSONLayout extends AbstractStringLayout {
      * Key: "dtd" Value: "log4j-events.dtd"
      * <p/>
      * Key: "version" Value: "2.0"
-     * 
+     *
      * @return Map of content format keys supporting XMLLayout
      */
     @Override
@@ -345,7 +345,7 @@ public class JSONLayout extends AbstractStringLayout {
 
     /**
      * Creates an XML Layout.
-     * 
+     *
      * @param locationInfo
      *            If "true", includes the location information in the generated JSON.
      * @param properties
@@ -361,9 +361,9 @@ public class JSONLayout extends AbstractStringLayout {
     @PluginFactory
     public static JSONLayout createLayout(
             @PluginAttribute("locationInfo") final String locationInfo,
-            @PluginAttribute("properties") final String properties, 
+            @PluginAttribute("properties") final String properties,
             @PluginAttribute("complete") final String completeStr,
-            @PluginAttribute("compact") final String compactStr, 
+            @PluginAttribute("compact") final String compactStr,
             @PluginAttribute("charset") final String charsetName) {
         final Charset charset = Charsets.getSupportedCharset(charsetName, Charsets.UTF_8);
         final boolean info = Boolean.parseBoolean(locationInfo);

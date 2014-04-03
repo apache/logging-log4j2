@@ -57,7 +57,7 @@ public class KeyValuePair {
 
     @Override
     public String toString() {
-        return key + "=" + value;
+        return key + '=' + value;
     }
 
     /**

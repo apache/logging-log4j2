@@ -80,7 +80,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
      * Checks that the message factory a logger was created with is the same as the given messageFactory. If they are
      * different log a warning to the {@linkplain StatusLogger}. A null MessageFactory translates to the default
      * MessageFactory {@link #DEFAULT_MESSAGE_FACTORY_CLASS}.
-     * 
+     *
      * @param logger The logger to check
      * @param messageFactory The message factory to check.
      */
@@ -115,7 +115,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Creates a new named logger.
-     * 
+     *
      * @param name the logger name
      */
     public AbstractLoggerProvider(final String name) {
@@ -125,7 +125,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Creates a new named logger.
-     * 
+     *
      * @param name the logger name
      * @param messageFactory the message factory, if null then use the default message factory.
      */
@@ -136,7 +136,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a Throwable that has been caught.
-     * 
+     *
      * @param level The logging Level.
      * @param t The Throwable.
      */
@@ -147,7 +147,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a Throwable that has been caught with location information.
-     * 
+     *
      * @param fqcn The fully qualified class name of the <b>caller</b>.
      * @param level The logging level.
      * @param t The Throwable.
@@ -160,7 +160,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a Throwable at the {@link Level#ERROR ERROR} level..
-     * 
+     *
      * @param t The Throwable.
      */
     @Override
@@ -186,7 +186,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message with the specific Marker at the DEBUG level.
-     * 
+     *
      * @param marker the marker data specific to this log statement
      * @param msg the message string to be logged
      */
@@ -197,7 +197,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message with the specific Marker at the DEBUG level.
-     * 
+     *
      * @param marker the marker data specific to this log statement.
      * @param msg the message string to be logged
      * @param t A Throwable or null.
@@ -209,7 +209,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message object with the {@link Level#DEBUG DEBUG} level.
-     * 
+     *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      */
@@ -221,7 +221,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
     /**
      * Logs a message at the {@link Level#DEBUG DEBUG} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
-     * 
+     *
      * @param marker the marker data specific to this log statement.
      * @param message the message to log.
      * @param t the exception to log, including its stack trace.
@@ -233,7 +233,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message object with the {@link Level#DEBUG DEBUG} level.
-     * 
+     *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      */
@@ -244,7 +244,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message with parameters at the {@link Level#DEBUG DEBUG} level.
-     * 
+     *
      * @param marker the marker data specific to this log statement.
      * @param message the message to log.
      * @param params parameters to the message.
@@ -257,7 +257,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
     /**
      * Logs a message at the {@link Level#DEBUG DEBUG} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
-     * 
+     *
      * @param marker the marker data specific to this log statement.
      * @param message the message to log.
      * @param t the exception to log, including its stack trace.
@@ -269,7 +269,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs the specified Message at the DEBUG level.
-     * 
+     *
      * @param msg the message to be logged
      */
     @Override
@@ -279,7 +279,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs the specified Message at the DEBUG level.
-     * 
+     *
      * @param msg the message to be logged
      * @param t A Throwable or null.
      */
@@ -290,7 +290,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message object with the {@link Level#DEBUG DEBUG} level.
-     * 
+     *
      * @param message the message object to log.
      */
     @Override
@@ -301,7 +301,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
     /**
      * Logs a message at the {@link Level#DEBUG DEBUG} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
-     * 
+     *
      * @param message the message to log.
      * @param t the exception to log, including its stack trace.
      */
@@ -312,7 +312,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message object with the {@link Level#DEBUG DEBUG} level.
-     * 
+     *
      * @param message the message object to log.
      */
     @Override
@@ -322,7 +322,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message with parameters at the {@link Level#DEBUG DEBUG} level.
-     * 
+     *
      * @param message the message to log.
      * @param params parameters to the message.
      */
@@ -334,7 +334,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
     /**
      * Logs a message at the {@link Level#DEBUG DEBUG} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
-     * 
+     *
      * @param message the message to log.
      * @param t the exception to log, including its stack trace.
      */
@@ -353,7 +353,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs entry to a method.
-     * 
+     *
      * @param params The parameters to the method.
      */
     @Override
@@ -363,7 +363,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs entry to a method with location information.
-     * 
+     *
      * @param fqcn The fully qualified class name of the <b>caller</b>.
      * @param params The parameters to the method.
      */
@@ -389,13 +389,13 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
                 sb.append(", ");
             }
         }
-        sb.append(")");
+        sb.append(')');
         return messageFactory.newMessage(sb.toString());
     }
 
     /**
      * Logs a message with the specific Marker at the {@link Level#ERROR ERROR} level.
-     * 
+     *
      * @param marker the marker data specific to this log statement
      * @param msg the message string to be logged
      */
@@ -406,7 +406,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message with the specific Marker at the {@link Level#ERROR ERROR} level.
-     * 
+     *
      * @param marker the marker data specific to this log statement
      * @param msg the message string to be logged
      * @param t A Throwable or null.
@@ -418,7 +418,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message object with the {@link Level#ERROR ERROR} level.
-     * 
+     *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      */
@@ -430,7 +430,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
     /**
      * Logs a message at the {@link Level#ERROR ERROR} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
-     * 
+     *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      * @param t the exception to log, including its stack trace.
@@ -442,7 +442,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message object with the {@link Level#ERROR ERROR} level.
-     * 
+     *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      */
@@ -453,7 +453,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message with parameters at the {@link Level#ERROR ERROR} level.
-     * 
+     *
      * @param marker the marker data specific to this log statement.
      * @param message the message to log.
      * @param params parameters to the message.
@@ -466,7 +466,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
     /**
      * Logs a message at the {@link Level#ERROR ERROR} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
-     * 
+     *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      * @param t the exception to log, including its stack trace.
@@ -478,7 +478,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs the specified Message at the {@link Level#ERROR ERROR} level.
-     * 
+     *
      * @param msg the message to be logged
      */
     @Override
@@ -488,7 +488,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs the specified Message at the {@link Level#ERROR ERROR} level.
-     * 
+     *
      * @param msg the message to be logged
      * @param t A Throwable or null.
      */
@@ -499,7 +499,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message object with the {@link Level#ERROR ERROR} level.
-     * 
+     *
      * @param message the message object to log.
      */
     @Override
@@ -510,7 +510,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
     /**
      * Logs a message at the {@link Level#ERROR ERROR} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
-     * 
+     *
      * @param message the message object to log.
      * @param t the exception to log, including its stack trace.
      */
@@ -521,7 +521,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message object with the {@link Level#ERROR ERROR} level.
-     * 
+     *
      * @param message the message object to log.
      */
     @Override
@@ -531,7 +531,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message with parameters at the {@link Level#ERROR ERROR} level.
-     * 
+     *
      * @param message the message to log.
      * @param params parameters to the message.
      */
@@ -543,7 +543,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
     /**
      * Logs a message at the {@link Level#ERROR ERROR} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
-     * 
+     *
      * @param message the message object to log.
      * @param t the exception to log, including its stack trace.
      */
@@ -562,7 +562,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs exiting from a method with the result.
-     * 
+     *
      * @param <R> The type of the parameter and object being returned.
      * @param result The result being returned from the method call.
      * @return the Throwable.
@@ -574,7 +574,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs exiting from a method with the result and location information.
-     * 
+     *
      * @param fqcn The fully qualified class name of the <b>caller</b>.
      * @param <R> The type of the parameter and object being returned.
      * @param result The result being returned from the method call.
@@ -590,12 +590,12 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
         if (result == null) {
             return messageFactory.newMessage("exit");
         }
-        return messageFactory.newMessage("exit with(" + result + ")");
+        return messageFactory.newMessage("exit with(" + result + ')');
     }
-    
+
     /**
      * Logs a message with the specific Marker at the FATAL level.
-     * 
+     *
      * @param marker the marker data specific to this log statement
      * @param msg the message string to be logged
      */
@@ -606,7 +606,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message with the specific Marker at the FATAL level.
-     * 
+     *
      * @param marker the marker data specific to this log statement
      * @param msg the message string to be logged
      * @param t A Throwable or null.
@@ -618,7 +618,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message object with the {@link Level#FATAL FATAL} level.
-     * 
+     *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      */
@@ -630,7 +630,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
     /**
      * Logs a message at the {@link Level#FATAL FATAL} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
-     * 
+     *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      * @param t the exception to log, including its stack trace.
@@ -642,7 +642,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message object with the {@link Level#FATAL FATAL} level.
-     * 
+     *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      */
@@ -653,7 +653,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message with parameters at the {@link Level#FATAL FATAL} level.
-     * 
+     *
      * @param marker the marker data specific to this log statement.
      * @param message the message to log.
      * @param params parameters to the message.
@@ -666,7 +666,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
     /**
      * Logs a message at the {@link Level#FATAL FATAL} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
-     * 
+     *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      * @param t the exception to log, including its stack trace.
@@ -678,7 +678,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs the specified Message at the FATAL level.
-     * 
+     *
      * @param msg the message to be logged
      */
     @Override
@@ -688,7 +688,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs the specified Message at the FATAL level.
-     * 
+     *
      * @param msg the message to be logged
      * @param t A Throwable or null.
      */
@@ -699,7 +699,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message object with the {@link Level#FATAL FATAL} level.
-     * 
+     *
      * @param message the message object to log.
      */
     @Override
@@ -710,7 +710,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
     /**
      * Logs a message at the {@link Level#FATAL FATAL} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
-     * 
+     *
      * @param message the message object to log.
      * @param t the exception to log, including its stack trace.
      */
@@ -721,7 +721,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message object with the {@link Level#FATAL FATAL} level.
-     * 
+     *
      * @param message the message object to log.
      */
     @Override
@@ -731,7 +731,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message with parameters at the {@link Level#FATAL FATAL} level.
-     * 
+     *
      * @param message the message to log.
      * @param params parameters to the message.
      */
@@ -743,7 +743,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
     /**
      * Logs a message at the {@link Level#FATAL FATAL} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
-     * 
+     *
      * @param message the message object to log.
      * @param t the exception to log, including its stack trace.
      */
@@ -754,7 +754,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Gets the message factory.
-     * 
+     *
      * @return the message factory.
      */
     @Override
@@ -764,7 +764,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.logging.log4j.Logger#getName()
      */
     @Override
@@ -774,7 +774,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Gets a print stream that logs lines to this logger.
-     * 
+     *
      * @param level the logging level
      * @return print stream that logs printed lines to this logger.
      */
@@ -785,7 +785,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Gets a marked print stream that logs lines to this logger.
-     * 
+     *
      * @param marker the marker data specific to this log statement
      * @param level the logging level
      * @return print stream that logs printed lines to this logger.
@@ -797,7 +797,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message with the specific Marker at the INFO level.
-     * 
+     *
      * @param marker the marker data specific to this log statement
      * @param msg the message string to be logged
      */
@@ -808,7 +808,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message with the specific Marker at the INFO level.
-     * 
+     *
      * @param marker the marker data specific to this log statement
      * @param msg the message string to be logged
      * @param t A Throwable or null.
@@ -820,7 +820,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message object with the {@link Level#INFO INFO} level.
-     * 
+     *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      */
@@ -832,7 +832,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
     /**
      * Logs a message at the {@link Level#INFO INFO} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
-     * 
+     *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      * @param t the exception to log, including its stack trace.
@@ -844,7 +844,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message object with the {@link Level#INFO INFO} level.
-     * 
+     *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      */
@@ -855,7 +855,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message with parameters at the {@link Level#INFO INFO} level.
-     * 
+     *
      * @param marker the marker data specific to this log statement.
      * @param message the message to log.
      * @param params parameters to the message.
@@ -868,7 +868,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
     /**
      * Logs a message at the {@link Level#INFO INFO} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
-     * 
+     *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      * @param t the exception to log, including its stack trace.
@@ -880,7 +880,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs the specified Message at the INFO level.
-     * 
+     *
      * @param msg the message to be logged
      */
     @Override
@@ -890,7 +890,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs the specified Message at the INFO level.
-     * 
+     *
      * @param msg the message to be logged
      * @param t A Throwable or null.
      */
@@ -901,7 +901,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message object with the {@link Level#INFO INFO} level.
-     * 
+     *
      * @param message the message object to log.
      */
     @Override
@@ -912,7 +912,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
     /**
      * Logs a message at the {@link Level#INFO INFO} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
-     * 
+     *
      * @param message the message object to log.
      * @param t the exception to log, including its stack trace.
      */
@@ -923,7 +923,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message object with the {@link Level#INFO INFO} level.
-     * 
+     *
      * @param message the message object to log.
      */
     @Override
@@ -933,7 +933,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message with parameters at the {@link Level#INFO INFO} level.
-     * 
+     *
      * @param message the message to log.
      * @param params parameters to the message.
      */
@@ -945,7 +945,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
     /**
      * Logs a message at the {@link Level#INFO INFO} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
-     * 
+     *
      * @param message the message object to log.
      * @param t the exception to log, including its stack trace.
      */
@@ -956,7 +956,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Checks whether this Logger is enabled for the DEBUG Level.
-     * 
+     *
      * @return boolean - {@code true} if this Logger is enabled for level DEBUG, {@code false} otherwise.
      */
     @Override
@@ -966,7 +966,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Checks whether this Logger is enabled for the DEBUG Level.
-     * 
+     *
      * @param marker The marker data.
      * @return boolean - {@code true} if this Logger is enabled for level DEBUG, {@code false} otherwise.
      */
@@ -980,7 +980,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
      * <p>
      * Note that passing in {@link Level#OFF OFF} always returns {@code true}.
      * </p>
-     * 
+     *
      * @param level the level to check
      * @return boolean - {@code true} if this Logger is enabled for level, {@code false} otherwise.
      */
@@ -994,7 +994,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
      * <p>
      * Note that passing in {@link Level#OFF OFF} always returns {@code true}.
      * </p>
-     * 
+     *
      * @param level the level to check
      * @param marker A Marker or null.
      * @return boolean - {@code true} if this Logger is enabled for level, {@code false} otherwise.
@@ -1006,7 +1006,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Checks whether this Logger is enabled for the {@link Level#ERROR ERROR} Level.
-     * 
+     *
      * @return boolean - {@code true} if this Logger is enabled for level {@link Level#ERROR ERROR}, {@code false}
      *         otherwise.
      */
@@ -1017,7 +1017,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Checks whether this Logger is enabled for the {@link Level#ERROR ERROR} Level.
-     * 
+     *
      * @param marker The marker data.
      * @return boolean - {@code true} if this Logger is enabled for level {@link Level#ERROR ERROR}, {@code false}
      *         otherwise.
@@ -1029,7 +1029,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Checks whether this Logger is enabled for the FATAL Level.
-     * 
+     *
      * @return boolean - {@code true} if this Logger is enabled for level FATAL, {@code false} otherwise.
      */
     @Override
@@ -1039,7 +1039,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Checks whether this Logger is enabled for the FATAL Level.
-     * 
+     *
      * @param marker The marker data.
      * @return boolean - {@code true} if this Logger is enabled for level FATAL, {@code false} otherwise.
      */
@@ -1050,7 +1050,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Checks whether this Logger is enabled for the INFO Level.
-     * 
+     *
      * @return boolean - {@code true} if this Logger is enabled for level INFO, {@code false} otherwise.
      */
     @Override
@@ -1060,7 +1060,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Checks whether this Logger is enabled for the INFO Level.
-     * 
+     *
      * @param marker The marker data.
      * @return boolean - {@code true} if this Logger is enabled for level INFO, {@code false} otherwise.
      */
@@ -1071,7 +1071,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Checks whether this Logger is enabled for the TRACE Level.
-     * 
+     *
      * @return boolean - {@code true} if this Logger is enabled for level TRACE, {@code false} otherwise.
      */
     @Override
@@ -1081,7 +1081,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Checks whether this Logger is enabled for the TRACE Level.
-     * 
+     *
      * @param marker The marker data.
      * @return boolean - {@code true} if this Logger is enabled for level TRACE, {@code false} otherwise.
      */
@@ -1092,7 +1092,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Checks whether this Logger is enabled for the WARN Level.
-     * 
+     *
      * @return boolean - {@code true} if this Logger is enabled for level WARN, {@code false} otherwise.
      */
     @Override
@@ -1102,7 +1102,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Checks whether this Logger is enabled for the WARN Level.
-     * 
+     *
      * @param marker The marker data.
      * @return boolean - {@code true} if this Logger is enabled for level WARN, {@code false} otherwise.
      */
@@ -1113,7 +1113,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message with the specific Marker at the given level.
-     * 
+     *
      * @param level the logging level
      * @param marker the marker data specific to this log statement
      * @param msg the message string to be logged
@@ -1125,7 +1125,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message with the specific Marker at the given level.
-     * 
+     *
      * @param level the logging level
      * @param marker the marker data specific to this log statement.
      * @param msg the message string to be logged
@@ -1138,7 +1138,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message object with the given level.
-     * 
+     *
      * @param level the logging level
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
@@ -1151,7 +1151,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
     /**
      * Logs a message at the given level including the stack trace of the {@link Throwable} <code>t</code> passed as
      * parameter.
-     * 
+     *
      * @param level the logging level
      * @param marker the marker data specific to this log statement.
      * @param message the message to log.
@@ -1166,7 +1166,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message object with the given level.
-     * 
+     *
      * @param level the logging level
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
@@ -1178,7 +1178,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message with parameters at the given level.
-     * 
+     *
      * @param level the logging level
      * @param marker the marker data specific to this log statement.
      * @param message the message to log.
@@ -1192,7 +1192,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
     /**
      * Logs a message at the given level including the stack trace of the {@link Throwable} <code>t</code> passed as
      * parameter.
-     * 
+     *
      * @param level the logging level
      * @param marker the marker data specific to this log statement.
      * @param message the message to log.
@@ -1205,7 +1205,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs the specified Message at the given level.
-     * 
+     *
      * @param level the logging level
      * @param msg the message to be logged
      */
@@ -1216,7 +1216,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs the specified Message at the given level.
-     * 
+     *
      * @param level the logging level
      * @param msg the message to be logged
      * @param t A Throwable or null.
@@ -1228,7 +1228,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message object with the given level.
-     * 
+     *
      * @param level the logging level
      * @param message the message object to log.
      */
@@ -1240,7 +1240,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
     /**
      * Logs a message at the given level including the stack trace of the {@link Throwable} <code>t</code> passed as
      * parameter.
-     * 
+     *
      * @param level the logging level
      * @param message the message to log.
      * @param t the exception to log, including its stack trace.
@@ -1252,7 +1252,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message object with the given level.
-     * 
+     *
      * @param level the logging level
      * @param message the message object to log.
      */
@@ -1263,7 +1263,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message with parameters at the given level.
-     * 
+     *
      * @param level the logging level
      * @param message the message to log.
      * @param params parameters to the message.
@@ -1276,7 +1276,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
     /**
      * Logs a message at the given level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
-     * 
+     *
      * @param level the logging level
      * @param message the message to log.
      * @param t the exception to log, including its stack trace.
@@ -1349,7 +1349,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
             logMessage(fqcn, level, marker, message, t);
         }
     }
-    
+
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final Object message,
             final Throwable t) {
         logMessage(fqcn, level, marker, messageFactory.newMessage(message), t);
@@ -1373,7 +1373,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a formatted message using the specified format string and arguments.
-     * 
+     *
      * @param level The logging Level.
      * @param marker the marker data specific to this log statement.
      * @param format The format String.
@@ -1389,7 +1389,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a formatted message using the specified format string and arguments.
-     * 
+     *
      * @param level The logging Level.
      * @param format The format String.
      * @param params Arguments specified by the format.
@@ -1404,7 +1404,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a Throwable to be thrown.
-     * 
+     *
      * @param <T> the type of the Throwable.
      * @param t The Throwable.
      * @return the Throwable.
@@ -1416,7 +1416,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a Throwable to be thrown.
-     * 
+     *
      * @param <T> the type of the Throwable.
      * @param level The logging Level.
      * @param t The Throwable.
@@ -1429,7 +1429,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a Throwable to be thrown.
-     * 
+     *
      * @param <T> the type of the Throwable.
      * @param level The logging Level.
      * @param t The Throwable.
@@ -1448,7 +1448,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message with the specific Marker at the TRACE level.
-     * 
+     *
      * @param marker the marker data specific to this log statement.
      * @param msg the message string to be logged
      */
@@ -1459,7 +1459,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message with the specific Marker at the TRACE level.
-     * 
+     *
      * @param marker the marker data specific to this log statement.
      * @param msg the message string to be logged
      * @param t A Throwable or null.
@@ -1471,7 +1471,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message object with the {@link Level#TRACE TRACE} level.
-     * 
+     *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      */
@@ -1487,7 +1487,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
      * <p>
      * See {@link #debug(String)} form for more detailed information.
      * </p>
-     * 
+     *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      * @param t the exception to log, including its stack trace.
@@ -1499,7 +1499,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message object with the {@link Level#TRACE TRACE} level.
-     * 
+     *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      */
@@ -1510,7 +1510,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message with parameters at the {@link Level#TRACE TRACE} level.
-     * 
+     *
      * @param marker the marker data specific to this log statement.
      * @param message the message to log.
      * @param params parameters to the message.
@@ -1527,7 +1527,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
      * <p>
      * See {@link #debug(String)} form for more detailed information.
      * </p>
-     * 
+     *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      * @param t the exception to log, including its stack trace.
@@ -1539,7 +1539,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs the specified Message at the TRACE level.
-     * 
+     *
      * @param msg the message to be logged
      */
     @Override
@@ -1549,7 +1549,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs the specified Message at the TRACE level.
-     * 
+     *
      * @param msg the message to be logged
      * @param t A Throwable or null.
      */
@@ -1560,7 +1560,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message object with the {@link Level#TRACE TRACE} level.
-     * 
+     *
      * @param message the message object to log.
      */
     @Override
@@ -1575,7 +1575,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
      * <p>
      * See {@link #debug(String)} form for more detailed information.
      * </p>
-     * 
+     *
      * @param message the message object to log.
      * @param t the exception to log, including its stack trace.
      */
@@ -1586,7 +1586,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message object with the {@link Level#TRACE TRACE} level.
-     * 
+     *
      * @param message the message object to log.
      */
     @Override
@@ -1596,7 +1596,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message with parameters at the {@link Level#TRACE TRACE} level.
-     * 
+     *
      * @param message the message to log.
      * @param params parameters to the message.
      */
@@ -1612,7 +1612,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
      * <p>
      * See {@link #debug(String)} form for more detailed information.
      * </p>
-     * 
+     *
      * @param message the message object to log.
      * @param t the exception to log, including its stack trace.
      */
@@ -1623,7 +1623,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message with the specific Marker at the WARN level.
-     * 
+     *
      * @param marker the marker data specific to this log statement
      * @param msg the message string to be logged
      */
@@ -1634,7 +1634,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message with the specific Marker at the WARN level.
-     * 
+     *
      * @param marker the marker data specific to this log statement
      * @param msg the message string to be logged
      * @param t A Throwable or null.
@@ -1646,7 +1646,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message object with the {@link Level#WARN WARN} level.
-     * 
+     *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      */
@@ -1663,7 +1663,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
     /**
      * Logs a message at the {@link Level#WARN WARN} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
-     * 
+     *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      * @param t the exception to log, including its stack trace.
@@ -1675,7 +1675,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message object with the {@link Level#WARN WARN} level.
-     * 
+     *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      */
@@ -1686,7 +1686,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message with parameters at the {@link Level#WARN WARN} level.
-     * 
+     *
      * @param marker the marker data specific to this log statement.
      * @param message the message to log.
      * @param params parameters to the message.
@@ -1699,7 +1699,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
     /**
      * Logs a message at the {@link Level#WARN WARN} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
-     * 
+     *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      * @param t the exception to log, including its stack trace.
@@ -1711,7 +1711,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs the specified Message at the WARN level.
-     * 
+     *
      * @param msg the message to be logged
      */
     @Override
@@ -1721,7 +1721,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs the specified Message at the WARN level.
-     * 
+     *
      * @param msg the message to be logged
      * @param t A Throwable or null.
      */
@@ -1732,7 +1732,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message object with the {@link Level#WARN WARN} level.
-     * 
+     *
      * @param message the message object to log.
      */
     @Override
@@ -1743,7 +1743,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
     /**
      * Logs a message at the {@link Level#WARN WARN} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
-     * 
+     *
      * @param message the message object to log.
      * @param t the exception to log, including its stack trace.
      */
@@ -1754,7 +1754,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message object with the {@link Level#WARN WARN} level.
-     * 
+     *
      * @param message the message object to log.
      */
     @Override
@@ -1764,7 +1764,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /**
      * Logs a message with parameters at the {@link Level#WARN WARN} level.
-     * 
+     *
      * @param message the message to log.
      * @param params parameters to the message.
      */
@@ -1776,7 +1776,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
     /**
      * Logs a message at the {@link Level#WARN WARN} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
-     * 
+     *
      * @param message the message object to log.
      * @param t the exception to log, including its stack trace.
      */

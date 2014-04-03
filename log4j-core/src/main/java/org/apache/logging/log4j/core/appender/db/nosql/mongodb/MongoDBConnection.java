@@ -79,7 +79,7 @@ public final class MongoDBConnection implements NoSQLConnection<BasicDBObject, M
             final WriteResult result = this.collection.insert(object.unwrap(), this.writeConcern);
             if (Strings.isNotEmpty(result.getError())) {
                 throw new AppenderLoggingException("Failed to write log event to MongoDB due to error: " +
-                        result.getError() + ".");
+                        result.getError() + '.');
             }
         } catch (final MongoException e) {
             throw new AppenderLoggingException("Failed to write log event to MongoDB due to error: " + e.getMessage(),

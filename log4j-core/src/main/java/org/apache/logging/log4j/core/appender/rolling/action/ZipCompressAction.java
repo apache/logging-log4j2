@@ -45,7 +45,7 @@ public final class ZipCompressAction extends AbstractAction {
      * If true, attempt to delete file on completion.
      */
     private final boolean deleteSource;
-    
+
     /**
      * Compression level.
      */
@@ -137,10 +137,10 @@ public final class ZipCompressAction extends AbstractAction {
     protected void reportException(final Exception ex) {
         LOGGER.warn("Exception during compression of '" + source.toString() + "'.", ex);
     }
-    
+
     @Override
     public String toString() {
-        return ZipCompressAction.class.getSimpleName() + "[" + source + " to " + destination //
-                + ", level=" + level + ", deleteSource=" + deleteSource + "]";
+        return ZipCompressAction.class.getSimpleName() + '[' + source + " to " + destination //
+                + ", level=" + level + ", deleteSource=" + deleteSource + ']';
     }
 }

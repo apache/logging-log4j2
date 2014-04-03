@@ -116,7 +116,7 @@ public class Compare {
         String s1;
         int lineCounter = 0;
         System.out.println("--------------------------------");
-        System.out.println("Contents of " + file + ":");
+        System.out.println("Contents of " + file + ':');
 
         while ((s1 = in1.readLine()) != null) {
             lineCounter++;

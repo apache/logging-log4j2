@@ -58,7 +58,7 @@ public final class RegexReplacement {
 
     @Override
     public String toString() {
-        return "replace(regex=" + pattern.pattern() + ", replacement=" + substitution + ")";
+        return "replace(regex=" + pattern.pattern() + ", replacement=" + substitution + ')';
     }
 
     /**

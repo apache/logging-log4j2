@@ -75,7 +75,7 @@ class PerfTestResultFormatter {
         sb.append(LF);
         for (int i = 0; i < 3; i++) {
             for (final String subKey : subKeys) {
-                sb.append("\t").append(subKey);
+                sb.append('\t').append(subKey);
             }
         }
         sb.append(LF);
@@ -87,13 +87,13 @@ class PerfTestResultFormatter {
                     final Stats stats = sub.get(subKey);
                     switch (i) {
                     case 0:
-                        sb.append("\t").append((long) stats.avgLatency);
+                        sb.append('\t').append((long) stats.avgLatency);
                         break;
                     case 1:
-                        sb.append("\t").append((long) stats.latency99Pct);
+                        sb.append('\t').append((long) stats.latency99Pct);
                         break;
                     case 2:
-                        sb.append("\t").append((long) stats.latency99_99Pct);
+                        sb.append('\t').append((long) stats.latency99_99Pct);
                         break;
                     }
                 }
@@ -109,7 +109,7 @@ class PerfTestResultFormatter {
         sb.append("\tThroughput per thread (msg/sec)");
         sb.append(LF);
         for (final String subKey : subKeys) {
-            sb.append("\t").append(subKey);
+            sb.append('\t').append(subKey);
         }
         sb.append(LF);
         for (final String key : results.keySet()) {
@@ -117,7 +117,7 @@ class PerfTestResultFormatter {
             final Map<String, Stats> sub = results.get(key);
             for (final String subKey : sub.keySet()) {
                 final Stats stats = sub.get(subKey);
-                sb.append("\t").append(stats.throughput);
+                sb.append('\t').append(stats.throughput);
             }
             sb.append(LF);
         }

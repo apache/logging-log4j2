@@ -51,7 +51,7 @@ public final class CouchDBConnection implements NoSQLConnection<Map<String, Obje
             final Response response = this.client.save(object.unwrap());
             if (response.getError() != null && response.getError().length() > 0) {
                 throw new AppenderLoggingException("Failed to write log event to CouchDB due to error: " +
-                        response.getError() + ".");
+                        response.getError() + '.');
             }
         } catch (final Exception e) {
             throw new AppenderLoggingException("Failed to write log event to CouchDB due to error: " + e.getMessage(),

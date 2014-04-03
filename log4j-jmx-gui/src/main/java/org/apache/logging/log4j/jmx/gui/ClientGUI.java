@@ -61,7 +61,7 @@ import org.apache.logging.log4j.core.jmx.StatusLoggerAdminMBean;
 /**
  * Swing GUI that connects to a Java process via JMX and allows the user to view
  * and modify the Log4j 2 configuration, as well as monitor status logs.
- * 
+ *
  * @see <a href=
  *      "http://docs.oracle.com/javase/6/docs/technotes/guides/management/jconsole.html"
  *      >http://docs.oracle.com/javase/6/docs/technotes/guides/management/
@@ -111,7 +111,7 @@ public class ClientGUI extends JPanel implements NotificationListener {
             JTextArea text = createTextArea();
             final String[] messages = status.getStatusDataHistory();
             for (final String message : messages) {
-                text.append(message + "\n");
+                text.append(message + '\n');
             }
             statusLogTextAreaMap.put(ctx.getObjectName(), text);
             registerListeners(status);
@@ -189,7 +189,7 @@ public class ClientGUI extends JPanel implements NotificationListener {
         if (StatusLoggerAdminMBean.NOTIF_TYPE_MESSAGE.equals(notif.getType())) {
             JTextArea text = statusLogTextAreaMap.get(paramObject);
             if (text != null) {
-                text.append(notif.getMessage() + "\n");
+                text.append(notif.getMessage() + '\n');
             }
             return;
         }
@@ -206,7 +206,7 @@ public class ClientGUI extends JPanel implements NotificationListener {
 
     /**
      * Called every time a Log4J2 MBean was registered in the MBean server.
-     * 
+     *
      * @param mbeanName ObjectName of the registered Log4J2 MBean
      */
     private void onMBeanRegistered(ObjectName mbeanName) {
@@ -222,7 +222,7 @@ public class ClientGUI extends JPanel implements NotificationListener {
 
     /**
      * Called every time a Log4J2 MBean was unregistered from the MBean server.
-     * 
+     *
      * @param mbeanName ObjectName of the unregistered Log4J2 MBean
      */
     private void onMBeanUnregistered(ObjectName mbeanName) {
@@ -250,7 +250,7 @@ public class ClientGUI extends JPanel implements NotificationListener {
      * Useful links:
      * http://www.componative.com/content/controller/developer/insights
      * /jconsole3/
-     * 
+     *
      * @param args must have at least one parameter, which specifies the
      *            location to connect to. Must be of the form {@code host:port}
      *            or {@code service:jmx:rmi:///jndi/rmi://<host>:<port>/jmxrmi}

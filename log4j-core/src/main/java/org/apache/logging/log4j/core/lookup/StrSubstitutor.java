@@ -1129,6 +1129,6 @@ public class StrSubstitutor {
 
     @Override
     public String toString() {
-        return "StrSubstitutor(" + variableResolver.toString() + ")";
+        return "StrSubstitutor(" + variableResolver.toString() + ')';
     }
 }
