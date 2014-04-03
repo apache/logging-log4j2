@@ -25,6 +25,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 
+import java.util.regex.Pattern;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -39,6 +40,7 @@ public final class FileUtils {
     private static final String JBOSS_FILE = "vfsfile";
 
     private static final Logger LOGGER = StatusLogger.getLogger();
+    private static final Pattern WINDOWS_DIRECTORY_SEPARATOR = Pattern.compile("\\\\+");
 
     private FileUtils() {
     }
@@ -111,6 +113,6 @@ public final class FileUtils {
      * @throws URISyntaxException if instantiating the URI threw a {@code URISyntaxException}.
      */
     public static URI getCorrectedFilePathUri(String uri) throws URISyntaxException {
-        return new URI(uri.replaceAll("\\\\+", "/"));
+        return new URI(WINDOWS_DIRECTORY_SEPARATOR.matcher(uri).replaceAll("/"));
     }
 }
