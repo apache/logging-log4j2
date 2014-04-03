@@ -112,6 +112,8 @@ public abstract class ConfigurationFactory {
      * @return the ConfigurationFactory.
      */
     public static ConfigurationFactory getInstance() {
+        // FIXME: double-checked locking is unsafe
+        // http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html
         if (factories == null) {
             synchronized(TEST_PREFIX) {
                 if (factories == null) {
