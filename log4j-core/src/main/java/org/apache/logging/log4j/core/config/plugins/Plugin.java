@@ -23,6 +23,7 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation that identifies a Class as a Plugin.
+ * @see PluginType
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

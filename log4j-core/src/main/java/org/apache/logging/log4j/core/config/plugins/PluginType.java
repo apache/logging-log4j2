@@ -20,9 +20,10 @@ package org.apache.logging.log4j.core.config.plugins;
 import java.io.Serializable;
 
 /**
- * Plugin Descriptor.
+ * Plugin Descriptor. This is a memento object for Plugin annotations paired to their annotated classes.
  *
  * @param <T> The plug-in class, which can be any kind of class.
+ * @see Plugin
  */
 public class PluginType<T> implements Serializable {
 
