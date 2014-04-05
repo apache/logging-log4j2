@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -165,9 +166,7 @@ public class PluginManager {
                 }
             } else {
                 final String[] names = pkgs.split(Patterns.COMMA_SEPARATOR);
-                for (final String name : names) {
-                    PACKAGES.add(name);
-                }
+                Collections.addAll(PACKAGES, names);
             }
         }
         final ResolverUtil.Test test = new PluginTest(clazz);
