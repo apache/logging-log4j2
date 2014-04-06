@@ -16,7 +16,9 @@
     limitations under the License.
 -->
 
-<document>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
   <properties>
     <title>Log4j 2 Architecture</title>
     <author email="rgoers@apache.org">Ralph Goers</author>
@@ -26,8 +28,8 @@
     <section name="Architecture">
       <subsection name="Main Components">
         <p>Log4j uses the classes shown in the diagram below.</p>
-        <img src="../images/Log4jClasses.jpg" title="Log4j 2 Class Relationships" 
-             caption="Log4j 2 Class Relationships"/>
+        <img src="../images/Log4jClasses.jpg" title="Log4j 2 Class Relationships"
+             alt="Log4j 2 Class Relationships"/>
         <p>Applications using the Log4j 2 API will request a Logger with a specific name from the
           LogManager. The LogManager will locate the appropriate LoggerContext and then obtain the Logger from it.
           If the Logger must be created it will be associated with the LoggerConfig that contains either a) the
@@ -58,7 +60,7 @@
             <dt>Named Hierarchy</dt>
             <dd>
               A LoggerConfig is said to be an <em>ancestor</em> of another LoggerConfig if its name followed by a dot
-              is a prefix of the <em>descendant</em> logger name. A LoggerConfig is said to be a <em>parent</em> of a 
+              is a prefix of the <em>descendant</em> logger name. A LoggerConfig is said to be a <em>parent</em> of a
               <em>child</em> LoggerConfig if there are no ancestors between itself and the descendant LoggerConfig.
             </dd>
           </dl>
@@ -79,9 +81,13 @@
         <p>The root LoggerConfig resides at the top of the LoggerConfig hierarchy. It
           is exceptional in that it always exists and it is part of every hierarchy. A Logger
           that is directly linked to the root LoggerConfig can be obtained as follows:
+        </p>
           <pre class="prettyprint">Logger logger = LogManager.getLogger(LogManager.ROOT_LOGGER_NAME);</pre>
-          Alternatively, and more simply: 
+        <p>
+          Alternatively, and more simply:
+        </p>
           <pre class="prettyprint">Logger logger = LogManager.getRootLogger();</pre>
+        <p>
           All other Loggers can be retrieved using the
           <a href="../log4j-api/apidocs/org/apache/logging/log4j/LogManager.html#getLogger(java.lang.String)">
             LogManager.getLogger
@@ -124,10 +130,12 @@
         </p>
 
         <p>For example, in
+        </p>
 <pre class="prettyprint">
 Logger x = LogManager.getLogger("wombat");
 Logger y = LogManager.getLogger("wombat");
 </pre>
+        <p>
           <code>x</code> and <code>y</code> refer to <em>exactly</em> the same Logger object.
         </p>
 
@@ -185,6 +193,7 @@ Logger y = LogManager.getLogger("wombat");
         </p>
 
         <table style="width: 40%">
+          <caption align="bottom">Example 1</caption>
           <tr>
             <th>Logger Name</th>
             <th>Assigned LoggerConfig</th>
@@ -210,7 +219,6 @@ Logger y = LogManager.getLogger("wombat");
             <td>root</td>
             <td>DEBUG</td>
           </tr>
-          <caption align="bottom">Example 1</caption>
         </table>
 
         <p>In example 1 above, only the root logger is configured and has a Log Level. All the other
@@ -218,6 +226,7 @@ Logger y = LogManager.getLogger("wombat");
         </p>
 
         <table style="width: 40%">
+          <caption align="bottom">Example 2</caption>
           <tr>
             <th>Logger Name</th>
             <th>Assigned LoggerConfig</th>
@@ -243,7 +252,6 @@ Logger y = LogManager.getLogger("wombat");
             <td>X.Y.Z</td>
             <td>WARN</td>
           </tr>
-          <caption align="bottom">Example 2</caption>
         </table>
 
         <p>In example 2, all loggers have a configured LoggerConfig and obtain their Level
@@ -251,6 +259,7 @@ Logger y = LogManager.getLogger("wombat");
         </p>
 
         <table style="width: 40%">
+          <caption align="bottom">Example 3</caption>
           <tr>
             <th>Logger Name</th>
             <th>Assigned LoggerConfig</th>
@@ -276,7 +285,6 @@ Logger y = LogManager.getLogger("wombat");
             <td>X.Y.Z</td>
             <td>WARN</td>
           </tr>
-          <caption align="bottom">Example 3</caption>
         </table>
 
         <p>In example 3, the loggers<code>root</code>,
@@ -293,6 +301,7 @@ Logger y = LogManager.getLogger("wombat");
         </p>
 
         <table style="width: 40%">
+          <caption align="bottom">Example 4</caption>
           <tr>
             <th>Logger Name</th>
             <th>Assigned LoggerConfig</th>
@@ -318,7 +327,6 @@ Logger y = LogManager.getLogger("wombat");
             <td>X</td>
             <td>ERROR</td>
           </tr>
-          <caption align="bottom">Example 4</caption>
         </table>
 
         <p>In example 4, the loggers
@@ -336,6 +344,7 @@ Logger y = LogManager.getLogger("wombat");
         </p>
 
         <table style="width: 40%">
+          <caption align="bottom">Example 5</caption>
           <tr>
             <th>Logger Name</th>
             <th>Assigned LoggerConfig</th>
@@ -361,7 +370,6 @@ Logger y = LogManager.getLogger("wombat");
             <td>X</td>
             <td>ERROR</td>
           </tr>
-          <caption align="bottom">Example 5</caption>
         </table>
 
         <p>In example 5, the loggers<code>root</code>.<code>X</code>, and
@@ -386,7 +394,7 @@ Logger y = LogManager.getLogger("wombat");
             <th style="text-align: center" colspan="6">LoggerConfig Level</th>
           </tr>
           <tr>
-            <th>&nbsp;</th>
+            <th>&#160;</th>
             <th>TRACE</th>
             <th>DEBUG</th>
             <th>INFO</th>
@@ -494,9 +502,9 @@ Logger y = LogManager.getLogger("wombat");
           when the event is accepted by the pre-LoggerConfig Filter but is then denied by a LoggerConfig
           filter or is denied by all Appenders.
         </p>
-        
+
         <h4>Appender</h4>
-        
+
         <p>The ability to selectively enable or disable logging requests based
           on their logger is only part of the picture. Log4j allows logging
           requests to print to multiple destinations. In log4j speak, an output
@@ -530,14 +538,14 @@ Logger y = LogManager.getLogger("wombat");
 	        <dt><b>Appender Additivity</b></dt>
 	          <dd>
                 <p>
-                  The output of a log statement of Logger <i>L</i> will go to all the Appenders in the LoggerConfig 
-                  associated with <i>L</i> and the ancestors of that LoggerConfig. This is the meaning of the term 
+                  The output of a log statement of Logger <i>L</i> will go to all the Appenders in the LoggerConfig
+                  associated with <i>L</i> and the ancestors of that LoggerConfig. This is the meaning of the term
                   "appender additivity".
                 </p>
 	            <p>
-                  However, if an ancestor of the LoggerConfig associated with Logger <i>L</i>, say <i>P</i>, has the 
-                  additivity flag set to <code>false</code>, then <i>L</i>'s output will be directed to all the 
-                  appenders in <i>L</i>'s LoggerConfig and it's ancestors up to and including <i>P</i> but not the 
+                  However, if an ancestor of the LoggerConfig associated with Logger <i>L</i>, say <i>P</i>, has the
+                  additivity flag set to <code>false</code>, then <i>L</i>'s output will be directed to all the
+                  appenders in <i>L</i>'s LoggerConfig and it's ancestors up to and including <i>P</i> but not the
                   Appenders in any of the ancestors of <i>P</i>.
                 </p>
 	            <p>Loggers have their additivity flag set to <code>true</code> by default.</p>
@@ -548,7 +556,7 @@ Logger y = LogManager.getLogger("wombat");
         <p>The table below shows an example:</p>
 
         <table>
-          <tr rowspan="2">
+          <tr>
             <th>Logger<br />Name </th>
             <th>Added<br/>Appenders</th>
             <th>Additivity<br/>Flag</th>
@@ -600,7 +608,7 @@ Logger y = LogManager.getLogger("wombat");
             </td>
           </tr>
         </table>
-            
+
         <h4>Layout</h4>
         <p>More often than not, users wish to customize not only the output destination but also the output format.
           This is accomplished by associating a
@@ -613,9 +621,9 @@ Logger y = LogManager.getLogger("wombat");
         </p>
 
         <p>For example, the PatternLayout with the conversion pattern "%r [%t]
-          %-5p %c - %m%n" will output something akin to:<br />
-          <pre>176 [main] INFO  org.foo.Bar - Located nearest gas station.</pre>
+          %-5p %c - %m%n" will output something akin to:
         </p>
+          <pre>176 [main] INFO  org.foo.Bar - Located nearest gas station.</pre>
 
         <p>The first field is the number of milliseconds elapsed since the
           start of the program.  The second field is the thread making the log
@@ -644,8 +652,8 @@ Logger y = LogManager.getLogger("wombat");
           </a>
           class and
           <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/StrLookup.html">StrLookup</a>
-          interface were borrowed from 
-          <a href="https://commons.apache.org/proper/commons-lang/">Apache Commons Lang</a> and then modified 
+          interface were borrowed from
+          <a href="https://commons.apache.org/proper/commons-lang/">Apache Commons Lang</a> and then modified
           to support evaluating LogEvents. In addition the
           <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/Interpolator.html">Interpolator</a>
           class was borrowed from Apache Commons Configuration to allow the StrSubstitutor to evaluate variables
