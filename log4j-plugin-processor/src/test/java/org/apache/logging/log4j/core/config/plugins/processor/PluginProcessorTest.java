@@ -18,8 +18,7 @@
 package org.apache.logging.log4j.core.config.plugins.processor;
 
 import java.io.BufferedInputStream;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
+import java.io.DataInputStream;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.concurrent.ConcurrentHashMap;
@@ -51,7 +50,7 @@ public class PluginProcessorTest {
         final Enumeration<URL> resources = PluginProcessor.class.getClassLoader().getResources(CACHE_FILE);
         while (resources.hasMoreElements()) {
             final URL url = resources.nextElement();
-            final ObjectInput in = new ObjectInputStream(new BufferedInputStream(url.openStream()));
+            final DataInputStream in = new DataInputStream(new BufferedInputStream(url.openStream()));
             try {
                 final int count = in.readInt();
                 for (int i = 0; i < count; i++) {
