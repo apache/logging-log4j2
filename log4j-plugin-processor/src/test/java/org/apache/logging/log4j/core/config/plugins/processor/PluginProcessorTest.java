@@ -103,9 +103,22 @@ public class PluginProcessorTest {
         assertNotNull("The plugin '" + name.toLowerCase() + "' was not found.", fake);
         assertEquals(FakePlugin.class.getName(), fake.getClassName());
         assertEquals(name.toLowerCase(), fake.getKey());
-        assertEquals("", p.elementType());
+        assertEquals(Plugin.EMPTY, p.elementType());
         assertEquals(name, fake.getName());
         assertEquals(p.printObject(), fake.isPrintable());
         assertEquals(p.deferChildren(), fake.isDefer());
+    }
+
+    @Test
+    public void testNestedPlugin() throws Exception {
+        final Plugin p = FakePlugin.Nested.class.getAnnotation(Plugin.class);
+        final PluginEntry nested = pluginCategories.get(p.category()).get(p.name().toLowerCase());
+        assertNotNull(nested);
+        assertEquals(p.name().toLowerCase(), nested.getKey());
+        assertEquals(FakePlugin.Nested.class.getName(), nested.getClassName());
+        assertEquals(p.name(), nested.getName());
+        assertEquals(Plugin.EMPTY, p.elementType());
+        assertEquals(p.printObject(), nested.isPrintable());
+        assertEquals(p.deferChildren(), nested.isDefer());
     }
 }
