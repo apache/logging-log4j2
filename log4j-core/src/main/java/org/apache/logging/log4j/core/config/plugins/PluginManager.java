@@ -249,7 +249,8 @@ public class PluginManager {
                             final PluginType<?> pluginType = loadPluginType(className, name, printable, defer);
                             types.put(key, pluginType);
                         } catch (final ClassNotFoundException e) {
-                            LOGGER.info("Plugin [{}] could not be loaded due to missing classes.", className, e);
+                            LOGGER.catching(e);
+                            LOGGER.info("Plugin [{}] could not be loaded due to missing classes.", className);
                         }
                     }
                     map.putIfAbsent(type, types);
