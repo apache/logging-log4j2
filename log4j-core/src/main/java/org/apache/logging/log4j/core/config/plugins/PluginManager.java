@@ -21,6 +21,7 @@ import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -208,7 +209,6 @@ public class PluginManager {
         LOGGER.debug(sb.toString());
     }
 
-    @SuppressWarnings({ "unchecked" })
     private static ConcurrentMap<String, ConcurrentMap<String, PluginType<?>>> decode(final ClassLoader classLoader) {
         Enumeration<URL> resources;
         try {
@@ -220,13 +220,17 @@ public class PluginManager {
         final ConcurrentMap<String, ConcurrentMap<String, PluginType<?>>> map =
             new ConcurrentHashMap<String, ConcurrentMap<String, PluginType<?>>>();
         while (resources.hasMoreElements()) {
-            DataInputStream dis = null;
+            final URL url = resources.nextElement();
+            LOGGER.debug("Found Plugin Map at {}", url.toExternalForm());
+            InputStream is;
             try {
-                final URL url = resources.nextElement();
-                LOGGER.debug("Found Plugin Map at {}", url.toExternalForm());
-                final InputStream is = url.openStream();
-                final BufferedInputStream bis = new BufferedInputStream(is);
-                dis = new DataInputStream(bis);
+                is = url.openStream();
+            } catch (final IOException e) {
+                LOGGER.warn("Unable to open {}", url.toExternalForm(), e);
+                continue;
+            }
+            final DataInputStream dis = new DataInputStream(new BufferedInputStream(is));
+            try {
                 final int count = dis.readInt();
                 for (int j = 0; j < count; ++j) {
                     final String type = dis.readUTF();
@@ -241,47 +245,61 @@ public class PluginManager {
                         final String name = dis.readUTF();
                         final boolean printable = dis.readBoolean();
                         final boolean defer = dis.readBoolean();
-                        final Class<?> clazz = Class.forName(className);
-                        types.put(key, new PluginType(clazz, name, printable, defer));
+                        try {
+                            final PluginType<?> pluginType = loadPluginType(className, name, printable, defer);
+                            types.put(key, pluginType);
+                        } catch (final ClassNotFoundException e) {
+                            LOGGER.info("Plugin [{}] could not be loaded due to missing classes.", className, e);
+                        }
                     }
                     map.putIfAbsent(type, types);
                 }
-            } catch (final Exception ex) {
+            } catch (final IOException ex) {
                 LOGGER.warn("Unable to preload plugins", ex);
-                return null;
             } finally {
                 Closer.closeSilent(dis);
             }
         }
-        return map.size() == 0 ? null : map;
+        return map.isEmpty() ? null : map;
+    }
+
+    private static PluginType<?> loadPluginType(final String className,
+                                                final String name,
+                                                final boolean printable,
+                                                final boolean defer) throws ClassNotFoundException {
+        final Class<?> clazz = Loader.loadClass(className);
+        @SuppressWarnings("unchecked")
+        final PluginType<?> pluginType = new PluginType(clazz, name, printable, defer);
+        return pluginType;
     }
 
     private static void encode(final ConcurrentMap<String, ConcurrentMap<String, PluginType<?>>> map) {
         final String fileName = rootDir + PATH + FILENAME;
-        DataOutputStream dos = null;
+        final File file = new File(rootDir + PATH);
+        file.mkdirs();
         try {
-            final File file = new File(rootDir + PATH);
-            file.mkdirs();
-            final FileOutputStream fos = new FileOutputStream(fileName);
-            final BufferedOutputStream bos = new BufferedOutputStream(fos);
-            dos = new DataOutputStream(bos);
-            dos.writeInt(map.size());
-            for (final Map.Entry<String, ConcurrentMap<String, PluginType<?>>> outer : map.entrySet()) {
-                dos.writeUTF(outer.getKey());
-                dos.writeInt(outer.getValue().size());
-                for (final Map.Entry<String, PluginType<?>> entry : outer.getValue().entrySet()) {
-                    dos.writeUTF(entry.getKey());
-                    final PluginType<?> pt = entry.getValue();
-                    dos.writeUTF(pt.getPluginClass().getName());
-                    dos.writeUTF(pt.getElementName());
-                    dos.writeBoolean(pt.isObjectPrintable());
-                    dos.writeBoolean(pt.isDeferChildren());
+            final DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(fileName)));
+            try {
+                dos.writeInt(map.size());
+                for (final Map.Entry<String, ConcurrentMap<String, PluginType<?>>> outer : map.entrySet()) {
+                    dos.writeUTF(outer.getKey());
+                    dos.writeInt(outer.getValue().size());
+                    for (final Map.Entry<String, PluginType<?>> entry : outer.getValue().entrySet()) {
+                        dos.writeUTF(entry.getKey());
+                        final PluginType<?> pt = entry.getValue();
+                        dos.writeUTF(pt.getPluginClass().getName());
+                        dos.writeUTF(pt.getElementName());
+                        dos.writeBoolean(pt.isObjectPrintable());
+                        dos.writeBoolean(pt.isDeferChildren());
+                    }
                 }
+            } catch (IOException e) {
+                LOGGER.error("Can't save plugin cache.", e);
+            } finally {
+                Closer.closeSilent(dos);
             }
-        } catch (final Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            Closer.closeSilent(dos);
+        } catch (FileNotFoundException e) {
+            LOGGER.error("Can't save plugin cache to {}", fileName, e);
         }
     }
 
@@ -313,9 +331,9 @@ public class PluginManager {
 
         @Override
         public String toString() {
-            final StringBuilder msg = new StringBuilder("annotated with @" + Plugin.class.getSimpleName());
+            final StringBuilder msg = new StringBuilder("annotated with @").append(Plugin.class.getSimpleName());
             if (isA != null) {
-                msg.append(" is assignable to " + isA.getSimpleName());
+                msg.append(" is assignable to ").append(isA.getSimpleName());
             }
             return msg.toString();
         }
