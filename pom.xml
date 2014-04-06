@@ -1070,6 +1070,7 @@
     <profile>
       <!-- http://www.yourkit.com/docs/80/help/agent.jsp -->
       <id>yourkit-mac</id>
+      <!--
       <activation>
         <os>
           <family>Mac</family>
@@ -1078,6 +1079,7 @@
           <exists>${yourkit.home}/bin/mac/libyjpagent.jnilib</exists>
         </file>
       </activation>
+      -->
       <properties>
         <yourkit.home>/Applications/YJP.app</yourkit.home>
       </properties>
