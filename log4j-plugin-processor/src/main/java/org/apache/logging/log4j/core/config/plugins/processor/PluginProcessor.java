@@ -35,6 +35,7 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementVisitor;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.util.Elements;
 import javax.lang.model.util.SimpleElementVisitor6;
 import javax.tools.FileObject;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -62,10 +63,6 @@ public class PluginProcessor extends AbstractProcessor {
 
     private final ConcurrentMap<String, ConcurrentMap<String, PluginEntry>> pluginCategories =
             new ConcurrentHashMap<String, ConcurrentMap<String, PluginEntry>>();
-    private final ElementVisitor<PluginEntry, Plugin> pluginVisitor =
-            new PluginElementVisitor();
-    private final ElementVisitor<Collection<PluginEntry>, Plugin> pluginAliasesVisitor =
-            new PluginAliasesElementVisitor();
 
     @Override
     public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
@@ -88,6 +85,11 @@ public class PluginProcessor extends AbstractProcessor {
     }
 
     private void collectPlugins(final Iterable<? extends Element> elements) {
+        final Elements elementUtils = processingEnv.getElementUtils();
+        final ElementVisitor<PluginEntry, Plugin> pluginVisitor =
+                new PluginElementVisitor(elementUtils);
+        final ElementVisitor<Collection<PluginEntry>, Plugin> pluginAliasesVisitor =
+                new PluginAliasesElementVisitor(elementUtils);
         for (final Element element : elements) {
             final Plugin plugin = element.getAnnotation(Plugin.class);
             final PluginEntry entry = element.accept(pluginVisitor, plugin);
@@ -128,6 +130,13 @@ public class PluginProcessor extends AbstractProcessor {
      * ElementVisitor to scan the Plugin annotation.
      */
     private static class PluginElementVisitor extends SimpleElementVisitor6<PluginEntry, Plugin> {
+
+        private final Elements elements;
+
+        private PluginElementVisitor(final Elements elements) {
+            this.elements = elements;
+        }
+
         @Override
         public PluginEntry visitType(final TypeElement e, final Plugin plugin) {
             if (plugin == null) {
@@ -135,7 +144,7 @@ public class PluginProcessor extends AbstractProcessor {
             }
             final PluginEntry entry = new PluginEntry();
             entry.setKey(plugin.name().toLowerCase());
-            entry.setClassName(e.getQualifiedName().toString());
+            entry.setClassName(elements.getBinaryName(e).toString());
             entry.setName(Plugin.EMPTY.equals(plugin.elementType()) ? plugin.name() : plugin.elementType());
             entry.setPrintable(plugin.printObject());
             entry.setDefer(plugin.deferChildren());
@@ -148,8 +157,12 @@ public class PluginProcessor extends AbstractProcessor {
      * ElementVisitor to scan the PluginAliases annotation.
      */
     private static class PluginAliasesElementVisitor extends SimpleElementVisitor6<Collection<PluginEntry>, Plugin> {
-        protected PluginAliasesElementVisitor() {
+
+        private final Elements elements;
+
+        private PluginAliasesElementVisitor(final Elements elements) {
             super(Collections.<PluginEntry>emptyList());
+            this.elements = elements;
         }
 
         @Override
@@ -162,7 +175,7 @@ public class PluginProcessor extends AbstractProcessor {
             for (final String alias : aliases.value()) {
                 final PluginEntry entry = new PluginEntry();
                 entry.setKey(alias.toLowerCase());
-                entry.setClassName(e.getQualifiedName().toString());
+                entry.setClassName(elements.getBinaryName(e).toString());
                 entry.setName(Plugin.EMPTY.equals(plugin.elementType()) ? alias : plugin.elementType());
                 entry.setPrintable(plugin.printObject());
                 entry.setDefer(plugin.deferChildren());

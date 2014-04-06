@@ -26,4 +26,8 @@ import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 @Plugin(name = "Fake", category = "Test")
 @PluginAliases({"AnotherFake", "StillFake"})
 public class FakePlugin {
+
+    @Plugin(name = "Nested", category = "Test")
+    public static class Nested {
+    }
 }
