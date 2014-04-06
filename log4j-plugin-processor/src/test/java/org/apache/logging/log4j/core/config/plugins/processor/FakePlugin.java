@@ -21,8 +21,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 
 /**
- * @author msicker
- * @version 1.0.0
+ * Test plugin class for unit tests.
  */
 @Plugin(name = "Fake", category = "Test")
 @PluginAliases({"AnotherFake", "StillFake"})
