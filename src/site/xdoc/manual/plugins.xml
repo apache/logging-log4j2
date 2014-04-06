@@ -16,7 +16,9 @@
     limitations under the License.
 -->
 
-<document>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
     <properties>
         <title>Log4j 2 Plugins</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
@@ -91,10 +93,12 @@
         </subsection>
         <a name="KeyProviders"/>
         <subsection name="KeyProviders">
+          <p>
           Some components within Log4j may provide the ability to perform data encryption. These components require
           a secret key to perform the encryption. Applications may provide the key by creating a class that
           implements the <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/helpers/SecretKeyProvider.html">SecretKeyProvider</a>
           interface.
+          </p>
         </subsection>
         <a name="Lookups"/>
         <subsection name="Lookups">
@@ -107,8 +111,10 @@
             key is the name of the item to locate.
           </p>
         </subsection>
-        <a name="Plugin Preloading"/>
+        <a name="PluginPreloading"/>
         <subsection name="Plugin Preloading">
+          <!-- FIXME: this documentation could probably be simplified quite a bit thanks to LOG4J2-595 -->
+          <p>
           Scanning for annotated classes dynamically takes a bit of time during application initialization. Log4j
           avoids this by scanning its classes during the build. In the Maven build, the PluginManager is invoked as
           shown below and then the resulting Map is stored in a file in the jar being constructed. Log4j will locate
@@ -116,6 +122,7 @@
           following plugin definition to your project's pom.xml will cause the plugin manager to be called during the
           build. It will store the resulting file in the correct location under the directory specified in the first
           argument after scanning all the components located under the package specified in the second argument.
+          </p>
           <pre class="prettyprint linenums"><![CDATA[<plugin>
   <groupId>org.codehaus.mojo</groupId>
   <artifactId>exec-maven-plugin</artifactId>
@@ -136,6 +143,26 @@
     </arguments>
   </Configuration>
 </plugin>]]></pre>
+          <h4>Using the Java annotation processor</h4>
+          <p>
+            Annotated classes marked with <code>@Plugin</code> or <code>@PluginAliases</code> are now automatically
+            preloaded when you include the log4j-core artifact, or more specifically, when you use the following
+            dependency:
+          </p>
+          <!-- FIXME: could this file be renamed to plugins.xml.vm to gain access to ${Log4jReleaseVersion} -->
+          <pre class="prettyprint linenums"><![CDATA[
+<dependencies>
+  <dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-plugin-processor</artifactId>
+    <version>2.0</version>
+  </dependency>
+</dependencies>
+          ]]></pre>
+          <p>
+            Note, however, that explicitly adding this dependency is unnecessary when you include log4j-core as it is
+            used by log4j-core.
+          </p>
         </subsection>
       </section>
     </body>
