@@ -16,8 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="ERROR" name="XMLConfigTest" monitorInterval="5" packages="org.apache.logging.log4j.test"
-    shutdownHook="disable">
+<Configuration status="ERROR" name="XMLConfigTest" monitorInterval="5" shutdownHook="disable">
   <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%m MDC%X%n"/>

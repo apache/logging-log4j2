@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration name="ConfigTest" status="error" packages="org.apache.logging.log4j.test">
+<Configuration name="ConfigTest" status="error">
   <MapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
     <KeyValuePair key="eventId" value="Login"/>
     <KeyValuePair key="eventId" value="Logout"/>

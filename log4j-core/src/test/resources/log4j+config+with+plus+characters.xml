@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="ERROR" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
+<Configuration status="ERROR" name="XMLConfigTest">
 
   <Appenders>
     <List name="List">

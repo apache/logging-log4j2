@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration name="CallerInformationTest" status="error" packages="org.apache.logging.log4j.test">
+<Configuration name="CallerInformationTest" status="error">
   <Appenders>
     <List name="Class">
       <PatternLayout pattern="%class"/>

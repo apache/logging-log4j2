@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="ERROR" name="XMLConfigTest" monitorInterval="5" packages="org.apache.logging.log4j.test">
+<Configuration status="ERROR" name="XMLConfigTest" monitorInterval="5">
   <Appenders>
     <RollingFile name="HostFile" fileName="target/${hostName}.log" filePattern="target/${hostName}-%d{MM-dd-yyyy}-%i.log">
       <PatternLayout>
