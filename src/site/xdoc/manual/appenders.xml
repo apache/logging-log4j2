@@ -16,7 +16,9 @@
     limitations under the License.
 -->
 
-<document>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
     <properties>
         <title>Log4j 2 Appenders</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
@@ -54,6 +56,7 @@
             the application. The AsyncAppender should be configured after the appenders it references to allow it
             to shut down properly.</p>
           <table>
+            <caption align="top">AsyncAppender Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -109,10 +112,10 @@
               not included by default when adding a log event to the queue.
               You can change this by setting includeLocation="true".</td>
             </tr>
-            <caption align="top">AsyncAppender Parameters</caption>
           </table>
           <p>
             A typical AsyncAppender configuration might look like:
+          </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
@@ -132,7 +135,6 @@
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-          </p>
         </subsection>
         <a name="ConsoleAppender"/>
         <subsection name="ConsoleAppender">
@@ -141,6 +143,7 @@
             being the default target. A Layout must be provided to format the LogEvent.
           </p>
           <table>
+            <caption align="top">ConsoleAppender Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -183,10 +186,10 @@
               <td>String</td>
               <td>Either "SYSTEM_OUT" or "SYSTEM_ERR". The default is "SYSTEM_ERR".</td>
             </tr>
-            <caption align="top">ConsoleAppender Parameters</caption>
           </table>
           <p>
             A typical Console configuration might look like:
+          </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
@@ -201,13 +204,13 @@
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-          </p>
         </subsection>
         <a name="FailoverAppender"/>
         <subsection name="FailoverAppender">
           <p>The FailoverAppender wraps a set of appenders. If the primary Appender fails the secondary appenders will be
           tried in order until one succeeds or there are no more secondaries to try.</p>
           <table>
+            <caption align="top">FailoverAppender Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -252,10 +255,10 @@
               <td>String</td>
               <td>Either "SYSTEM_OUT" or "SYSTEM_ERR". The default is "SYSTEM_ERR".</td>
             </tr>
-            <caption align="top">FailoverAppender Parameters</caption>
           </table>
           <p>
             A Failover configuration might look like:
+          </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
@@ -282,7 +285,6 @@
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-          </p>
         </subsection>
         <a name="FileAppender"/>
         <subsection name="FileAppender">
@@ -292,6 +294,7 @@
             accessible. For example, two web applications in a servlet container can have their own configuration and
             safely write to the same file if Log4j is in a ClassLoader that is common to both of them.</p>
           <table>
+            <caption align="top">FileAppender Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -369,10 +372,10 @@
                 caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
                 <a href="#FailoverAppender">FailoverAppender</a>.</td>
             </tr>
-            <caption align="top">FileAppender Parameters</caption>
           </table>
-           <p>
+          <p>
             Here is a sample File configuration:
+          </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
@@ -389,7 +392,6 @@
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-          </p>
         </subsection>
         <a name="FlumeAppender"/>
         <subsection name="FlumeAppender">
@@ -400,6 +402,7 @@
             them to a Flume agent as serialized Avro events for consumption.</p>
           <p>
             The Flume Appender supports three modes of operation.
+          </p>
             <ol>
               <li>It can act as a remote Flume client which sends Flume events via Avro to a Flume Agent configured
               with an Avro Source.</li>
@@ -407,6 +410,7 @@
               <li>It can persist events to a local BerkeleyDB data store and then asynchronously send the events to
               Flume, similar to the embedded Flume Agent but without most of the Flume dependencies.</li>
             </ol>
+          <p>
             Usage as an embedded agent will cause the messages to be directly passed to the Flume Channel and then
             control will be immediately returned to the application. All interaction with remote agents will occur
             asynchronously. Setting the "type" attribute to "Embedded" will force the use of the embedded agent. In
@@ -414,6 +418,7 @@
             to be used.
           </p>
           <table>
+            <caption align="top">FlumeAppender Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -528,10 +533,10 @@
                 configured. Interceptors can be specified for the source using "sources.log4j-source.interceptors".
                 All other Flume configuration properties are allowed. Specifying both Agent and Property
                 elements will result in an error.</p>
-                <p>When used to configure in Persistent mode the valid properties are:
-                  <ol>
+                <p>When used to configure in Persistent mode the valid properties are:</p>
+                <ol>
                   <li>"keyProvider" to specify the name of the plugin to provide the secret key for encryption.</li>
-                </ol></p>
+                </ol>
               </td>
             </tr>
             <tr>
@@ -552,11 +557,11 @@
               <td>enumeration</td>
               <td>One of "Avro", "Embedded", or "Persistent" to indicate which variation of the Appender is desired.</td>
             </tr>
-            <caption align="top">FlumeAppender Parameters</caption>
           </table>
             <p>
               A sample FlumeAppender configuration that is configured with a primary and a secondary agent,
               compresses the body, and formats the body using the RFC5424Layout:
+            </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
@@ -573,10 +578,10 @@
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-          </p>
           <p>
             A sample FlumeAppender configuration that is configured with a primary and a secondary agent,
             compresses the body, formats the body using the RFC5424Layout, and persists encrypted events to disk:
+          </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
@@ -594,7 +599,6 @@
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-          </p>
           <p>
             A sample FlumeAppender configuration that is configured with a primary and a secondary agent,
             compresses the body, formats the body using RFC5424Layout and passes the events to an embedded Flume
@@ -673,6 +677,7 @@
             approach you take, it <strong><em>must</em></strong> be backed by a connection pool. Otherwise, logging
             performance will suffer greatly.</p>
           <table>
+            <caption align="top">JDBCAppender Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -719,12 +724,12 @@
               <td><em>Required.</em> Information about the columns that log event data should be inserted into and how
                 to insert that data. This is represented with multiple <code>&lt;Column&gt;</code> elements.</td>
             </tr>
-            <caption align="top">JDBCAppender Parameters</caption>
           </table>
           <p>When configuring the JDBCAppender, you must specify a <code>ConnectionSource</code> implementation from
             which the Appender gets JDBC connections. You must use exactly one of the <code>&lt;DataSource&gt;</code>
             or <code>&lt;ConnectionFactory&gt;</code> nested elements.</p>
           <table>
+            <caption align="top">DataSource Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -737,9 +742,9 @@
                 to, such as <code>java:/comp/env/jdbc/LoggingDatabase</code>. The <code>DataSource</code> must be backed
                 by a connection pool; otherwise, logging will be very slow.</td>
             </tr>
-            <caption align="top">DataSource Parameters</caption>
           </table>
           <table>
+            <caption align="top">ConnectionFactory Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -761,12 +766,12 @@
                 will be very slow. If the method returns a <code>DataSource</code>, the <code>DataSource</code> will
                 only be retrieved once, and it must be backed by a connection pool for the same reasons.</td>
             </tr>
-            <caption align="top">ConnectionFactory Parameters</caption>
           </table>
           <p>When configuring the JDBCAppender, use the nested <code>&lt;Column&gt;</code> elements to specify which
             columns in the table should be written to and how to write to them. The JDBCAppender uses this information
             to formulate a <code>PreparedStatement</code> to insert records without SQL injection vulnerability.</p>
           <table>
+            <caption align="top">Column Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -820,11 +825,11 @@
                 the value will be inserted as a VARCHAR or NVARCHAR (<code>setString</code> or <code>setNString</code>).
               </td>
             </tr>
-            <caption align="top">Column Parameters</caption>
           </table>
           <p>
             Here are a couple sample configurations for the JDBCAppender, as well as a sample factory implementation
             that uses Commons Pooling and Commons DBCP to pool database connections:
+          </p>
 
             <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="error">
@@ -905,12 +910,12 @@ public class ConnectionFactory {
         return Singleton.INSTANCE.dataSource.getConnection();
     }
 }]]></pre>
-          </p>
         </subsection>
         <a name="JMSQueueAppender"/>
         <subsection name="JMSQueueAppender">
           <p>The JMSQueueAppender sends the formatted log event to a JMS Queue.</p>
           <table>
+            <caption align="top">JMSQueueAppender Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -996,15 +1001,15 @@ public class ConnectionFactory {
                 a URL context factory as defined by
                 <a href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#URL_PKG_PREFIXES">URL_PKG_PREFIXES</a>.</td>
             </tr>
-             <tr>
+            <tr>
               <td>userName</td>
               <td>String</td>
               <td>The user id used to create the queue connection.</td>
             </tr>
-            <caption align="top">JMSQueueAppender Parameters</caption>
           </table>
-           <p>
+          <p>
             Here is a sample JMSQueueAppender configuration:
+          </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
@@ -1018,12 +1023,12 @@ public class ConnectionFactory {
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-          </p>
         </subsection>
         <a name="JMSTopicAppender"/>
         <subsection name="JMSTopicAppender">
           <p>The JMSTopicAppender sends the formatted log event to a JMS Topic.</p>
           <table>
+            <caption align="top">JMSTopicAppender Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -1110,15 +1115,15 @@ public class ConnectionFactory {
                 a URL context factory as defined by
                 <a href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#URL_PKG_PREFIXES">URL_PKG_PREFIXES</a>.</td>
             </tr>
-             <tr>
+            <tr>
               <td>userName</td>
               <td>String</td>
               <td>The user id used to create the queue connection.</td>
             </tr>
-            <caption align="top">JMSTopicAppender Parameters</caption>
           </table>
-           <p>
+          <p>
             Here is a sample JMSTopicAppender configuration:
+          </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
@@ -1132,7 +1137,6 @@ public class ConnectionFactory {
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-          </p>
         </subsection>
         <a name="JPAAppender"/>
         <subsection name="JPAAppender">
@@ -1145,6 +1149,7 @@ public class ConnectionFactory {
             to significantly customize the mappings). See the Javadoc for these two classes for more information. You
             can also consult the source code of these two classes as an example of how to implement the entity.</p>
           <table>
+            <caption align="top">JPAAppender Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -1187,7 +1192,6 @@ public class ConnectionFactory {
               <td><em>Required.</em> The name of the JPA persistence unit that should be used for persisting log
                 events.</td>
             </tr>
-            <caption align="top">JPAAppender Parameters</caption>
           </table>
           <p>
             Here is a sample configuration for the JPAAppender. The first XML sample is the Log4j configuration file,
@@ -1198,6 +1202,7 @@ public class ConnectionFactory {
             own persistence unit away from all other entities and you should use a non-JTA data source. Note that your
             persistence unit <em>must</em> also contain <code>&lt;class&gt;</code> elements for all of the
             <code>org.apache.logging.log4j.core.appender.db.jpa.converter</code> converter classes.
+          </p>
 
             <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="error">
@@ -1313,7 +1318,6 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     }
     ...
 }]]></pre>
-          </p>
         </subsection>
         <a name="NoSQLAppender"/>
         <subsection name="NoSQLAppender">
@@ -1321,6 +1325,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             Provider implementations currently exist for MongoDB and Apache CouchDB, and writing a custom provider is
             quite simple.</p>
           <table>
+            <caption align="top">NoSQLAppender Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -1356,7 +1361,6 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>NoSQLProvider&lt;C extends NoSQLConnection&lt;W, T extends NoSQLObject&lt;W&gt;&gt;&gt;</td>
               <td><em>Required.</em> The NoSQL provider that provides connections to the chosen NoSQL database.</td>
             </tr>
-            <caption align="top">NoSQLAppender Parameters</caption>
           </table>
           <p>You specify which NoSQL provider to use by specifying the appropriate configuration element within the
             <code>&lt;NoSql&gt;</code> element. The types currently supported are <code>&lt;MongoDb&gt;</code> and
@@ -1365,6 +1369,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             documentation about creating Log4j plugins. We recommend you review the source code for the MongoDB and
             CouchDB providers as a guide for creating your own provider.</p>
           <table>
+            <caption align="top">MongoDB Provider Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -1433,9 +1438,9 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>String</td>
               <td>See the documentation for attributes <code>databaseName</code> and <code>factoryClassName</code>.</td>
             </tr>
-            <caption align="top">MongoDB Provider Parameters</caption>
           </table>
           <table>
+            <caption align="top">CouchDB Provider Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -1490,10 +1495,10 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>String</td>
               <td>See the documentation for attributes <code>databaseName</code>.</td>
             </tr>
-            <caption align="top">CouchDB Provider Parameters</caption>
           </table>
           <p>
             Here are a few sample configurations for the NoSQLAppender:
+          </p>
 
             <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="error">
@@ -1539,10 +1544,10 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-          </p>
           <p>
             The following example demonstrates how log events are persisted in NoSQL databases if represented in a JSON
             format:
+          </p>
             <pre class="prettyprint lang-javascript"><![CDATA[{
     "level": "WARN",
     "loggerName": "com.example.application.MyClass",
@@ -1593,15 +1598,16 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         "bottomItem"
     ]
 }]]></pre>
-          </p>
         </subsection>
         <a name="OutputStreamAppender"/>
         <subsection name="OutputStreamAppender">
+          <p>
           The OutputStreamAppender provides the base for many of the other Appenders such as the File and Socket
           appenders that write the event to an Output Stream. It cannot be directly configured. Support for
           immediateFlush and buffering is provided by the OutputStreamAppender. The OutputStreamAppender uses an
           OutputStreamManager to handle the actual I/O, allowing the stream to be shared by Appenders in multiple
           configurations.
+          </p>
         </subsection>
 			<a name="RandomAccessFileAppender" />
 			<subsection name="RandomAccessFileAppender">
@@ -1633,12 +1639,13 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 					both of them.
 				</p>
 				<table>
-					<tr>
+          <caption align="top">RandomAccessFileAppender Parameters</caption>
+          <tr>
 						<th>Parameter Name</th>
 						<th>Type</th>
 						<th>Description</th>
 					</tr>
-					<tr>
+          <tr>
 						<td>append</td>
 						<td>boolean</td>
 						<td>When true - the default, records will be appended to the end
@@ -1647,7 +1654,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 							new records are written.
 						</td>
 					</tr>
-					<tr>
+          <tr>
 						<td>fileName</td>
 						<td>String</td>
 						<td>The name of the file to write to. If the file, or any of its
@@ -1655,7 +1662,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 							they will be created.
 						</td>
 					</tr>
-					<tr>
+          <tr>
 						<td>filters</td>
 						<td>Filter</td>
 						<td>A Filter to determine if the event should be handled by this
@@ -1663,7 +1670,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 							may be used by using a CompositeFilter.
 						</td>
 					</tr>
-					<tr>
+          <tr>
 						<td>immediateFlush</td>
 						<td>boolean</td>
 		                <td>
@@ -1681,22 +1688,22 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                           </p>
 		                </td>
 					</tr>
-                    <tr>
+          <tr>
                       <td>bufferSize</td>
                       <td>int</td>
                       <td>The buffer size, defaults to 262,144 bytes (256 * 1024).</td>
                     </tr>
-					<tr>
+          <tr>
 						<td>layout</td>
 						<td>Layout</td>
 						<td>The Layout to use to format the LogEvent</td>
 					</tr>
-					<tr>
+          <tr>
 						<td>name</td>
 						<td>String</td>
 						<td>The name of the Appender.</td>
 					</tr>
-                    <tr>
+          <tr>
                       <td>ignoreExceptions</td>
                       <td>boolean</td>
                       <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
@@ -1704,10 +1711,10 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                         caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
                         <a href="#FailoverAppender">FailoverAppender</a>.</td>
                     </tr>
-					<caption align="top">RandomAccessFileAppender Parameters</caption>
 				</table>
 				<p>
 					Here is a sample RandomAccessFile configuration:
+        </p>
 
 					<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
@@ -1724,7 +1731,6 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-				</p>
 			</subsection>
         <a name="RewriteAppender"/>
         <subsection name="RewriteAppender">
@@ -1735,6 +1741,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             RewriteAppender should be configured after any Appenders it references to allow it to shut down properly.
           </p>
           <table>
+            <caption align="top">RewriteAppender Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -1770,7 +1777,6 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
                 <a href="#FailoverAppender">FailoverAppender</a>.</td>
             </tr>
-            <caption align="top">RewriteAppender Parameters</caption>
           </table>
           <h4>RewritePolicy</h4>
             <p>
@@ -1800,9 +1806,10 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                   <td>An array of keys and their values.</td>
                 </tr>
               </table>
-           <p>
+            <p>
              The following configuration shows a RewriteAppender configured to add a product key and its value
              to the MapMessage.:
+            </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
@@ -1823,7 +1830,6 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-          </p>
           <h5>PropertiesRewritePolicy</h5>
           <p>
             PropertiesRewritePolicy will add properties configured on the policy to the ThreadContext Map
@@ -1846,6 +1852,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           <p>
             The following configuration shows a RewriteAppender configured to add a product key and its value
             to the MapMessage.:
+          </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
@@ -1867,7 +1874,6 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-          </p>
         </subsection>
         <a name="RollingFileAppender"/>
         <subsection name="RollingFileAppender">
@@ -1888,6 +1894,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             File locking is not supported by the RollingFileAppender.
           </p>
           <table>
+            <caption align="top">RollingFileAppender Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -1972,26 +1979,25 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
                 <a href="#FailoverAppender">FailoverAppender</a>.</td>
             </tr>
-            <caption align="top">RollingFileAppender Parameters</caption>
           </table>
           <a name="TriggeringPolicies"/>
           <h4>Triggering Policies</h4>
             <h5>Composite Triggering Policy</h5>
               <p>
-                The <code>CompositeTriggeringPolicy</code> combines multiple triggering policies and returns true if 
-                any of the configured policies return true. The <code>CompositeTriggeringPolicy</code> is configured 
+                The <code>CompositeTriggeringPolicy</code> combines multiple triggering policies and returns true if
+                any of the configured policies return true. The <code>CompositeTriggeringPolicy</code> is configured
                 simply by wrapping other policies in a <code>Policies</code> element.
               </p>
               <p>
-                For example, the following XML fragment defines policies that rollover the log when the JVM starts, 
-                when the log size reaches twenty megabytes, and when the current date no longer matches the log’s 
+                For example, the following XML fragment defines policies that rollover the log when the JVM starts,
+                when the log size reaches twenty megabytes, and when the current date no longer matches the log’s
                 start date.
               </p>
             <pre class="prettyprint linenums"><![CDATA[<Policies>
   <OnStartupTriggeringPolicy />
   <SizeBasedTriggeringPolicy size="20 MB" />
   <TimeBasedTriggeringPolicy />
-</Policies>]]></pre>              
+</Policies>]]></pre>
             <h5>OnStartup Triggering Policy</h5>
               <p>
                 The <code>OnStartupTriggeringPolicy</code> policy takes no parameters and causes a rollover if the log
@@ -2001,23 +2007,24 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 <em>Google App Engine note:</em><br />
                 When running in Google App Engine, the OnStartup policy causes a rollover if the log file is older
                 than <em>the time when Log4J initialized</em>.
-                (Google App Engine restricts access to certain classes so Log4J cannot determine JVM start time with 
+                (Google App Engine restricts access to certain classes so Log4J cannot determine JVM start time with
                 <code>java.lang.management.ManagementFactory.getRuntimeMXBean().getStartTime()</code>
                 and falls back to Log4J initialization time instead.)
               </p>
             <h5>SizeBased Triggering Policy</h5>
               <p>
-                The <code>SizeBasedTriggeringPolicy</code> causes a rollover once the file has reached the specified 
+                The <code>SizeBasedTriggeringPolicy</code> causes a rollover once the file has reached the specified
                 size. The size can be specified in bytes, with the suffix KB, MB or GB, for example <code>20MB</code>.
               </p>
             <h5>TimeBased Triggering Policy</h5>
               <p>
-                The <code>TimeBasedTriggeringPolicy</code> causes a rollover once the date/time pattern no longer 
-                applies to the active file. This policy accepts an <code>increment</code> attribute which indicates how 
-                frequently the rollover should occur based on the time pattern and a <code>modulate</code> boolean 
+                The <code>TimeBasedTriggeringPolicy</code> causes a rollover once the date/time pattern no longer
+                applies to the active file. This policy accepts an <code>increment</code> attribute which indicates how
+                frequently the rollover should occur based on the time pattern and a <code>modulate</code> boolean
                 attribute.
               </p>
                 <table>
+                  <caption align="top">TimeBasedTriggeringPolicy Parameters</caption>
                   <tr>
                     <th>Parameter Name</th>
                     <th>Type</th>
@@ -2039,7 +2046,6 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                       interval is 4 then then the first rollover will occur at 4 am and then next ones will occur at
                       8 am, noon, 4pm, etc.</td>
                   </tr>
-                  <caption align="top">TimeBasedTriggeringPolicy Parameters</caption>
                 </table>
           <a name="RolloverStrategies"/>
           <h4>Rollover Strategies</h4>
@@ -2150,6 +2156,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 </tr>
               </table>
               <table>
+                <caption align="top">DefaultRolloverStrategy Parameters</caption>
                 <tr>
                   <th>Parameter Name</th>
                   <th>Type</th>
@@ -2181,7 +2188,6 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                     Only implemented for ZIP files.
                   </td>
                 </tr>
-                <caption align="top">DefaultRolloverStrategy Parameters</caption>
               </table>
 
           <p>
@@ -2189,6 +2195,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             triggering policies, will create up to 7 archives on the same day (1-7) that are stored in a directory
             based on the current year and month, and will compress each
             archive using gzip:
+          </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
@@ -2210,9 +2217,9 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-          </p>
           <p>
             This second example shows a rollover strategy that will keep up to 20 files before removing them.
+          </p>
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
   <Appenders>
@@ -2234,12 +2241,12 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-        </p>
           <p>
             Below is a sample configuration that uses a RollingFileAppender with both the time and size based
             triggering policies, will create up to 7 archives on the same day (1-7) that are stored in a directory
             based on the current year and month, and will compress each
             archive using gzip and will roll every 6 hours when the hour is divisible by 6:
+          </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
@@ -2261,7 +2268,6 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-          </p>
         </subsection>
 			<a name="RollingRandomAccessFileAppender" />
 			<subsection name="RollingRandomAccessFileAppender">
@@ -2319,12 +2325,13 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 					File locking is not supported by the RollingRandomAccessFileAppender.
 				</p>
 				<table>
-					<tr>
+          <caption align="top">RollingRandomAccessFileAppender Parameters</caption>
+          <tr>
 						<th>Parameter Name</th>
 						<th>Type</th>
 						<th>Description</th>
 					</tr>
-					<tr>
+          <tr>
 						<td>append</td>
 						<td>boolean</td>
 						<td>When true - the default, records will be appended to the end
@@ -2333,7 +2340,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 							new records are written.
 						</td>
 					</tr>
-					<tr>
+          <tr>
 						<td>filter</td>
 						<td>Filter</td>
 						<td>A Filter to determine if the event should be handled by this
@@ -2342,7 +2349,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 							CompositeFilter.
 						</td>
 					</tr>
-					<tr>
+          <tr>
 						<td>fileName</td>
 						<td>String</td>
 						<td>The name of the file to write to. If the file, or any of its
@@ -2350,7 +2357,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 							they will be created.
 						</td>
 					</tr>
-					<tr>
+          <tr>
 						<td>filePattern</td>
 						<td>String</td>
 						<td>
@@ -2374,7 +2381,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 							be included in the pattern.
 						</td>
 					</tr>
-					<tr>
+          <tr>
 						<td>immediateFlush</td>
 						<td>boolean</td>
 		              <td><p>When set to true - the default, each write will be followed by a flush.
@@ -2387,24 +2394,24 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 						the data is written to disk but is more efficient.</p>
 		              </td>
 					</tr>
-					<tr>
+          <tr>
 						<td>layout</td>
 						<td>Layout</td>
 						<td>The Layout to use to format the LogEvent</td>
 					</tr>
 
-					<tr>
+          <tr>
 						<td>name</td>
 						<td>String</td>
 						<td>The name of the Appender.</td>
 					</tr>
-					<tr>
+          <tr>
 						<td>policy</td>
 						<td>TriggeringPolicy</td>
 						<td>The policy to use to determine if a rollover should occur.
 						</td>
 					</tr>
-					<tr>
+          <tr>
 						<td>strategy</td>
 						<td>RolloverStrategy</td>
 						<td>The strategy to use to determine the name and location of the
@@ -2419,7 +2426,6 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
               <a href="#FailoverAppender">FailoverAppender</a>.</td>
           </tr>
-					<caption align="top">RollingRandomAccessFileAppender Parameters</caption>
 				</table>
 				<a name="FRFA_TriggeringPolicies" />
 				<h4>Triggering Policies</h4>
@@ -2444,6 +2450,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 					based on the current year and month, and will compress
 					each
 					archive using gzip:
+        </p>
 
 					<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
@@ -2465,10 +2472,10 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-				</p>
 				<p>
 					This second example shows a rollover strategy that will keep up to
 					20 files before removing them.
+        </p>
 					<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
   <Appenders>
@@ -2490,7 +2497,6 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-				</p>
 				<p>
 					Below is a sample configuration that uses a RollingRandomAccessFileAppender
 					with both the time and size based
@@ -2503,6 +2509,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 					archive using gzip and will roll every 6 hours when the hour is
 					divisible
 					by 6:
+        </p>
 
 					<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
@@ -2524,7 +2531,6 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-				</p>
 			</subsection>
         <a name="RoutingAppender"/>
         <subsection name="RoutingAppender">
@@ -2535,6 +2541,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
              Appenders it references to allow it to shut down properly.
           </p>
           <table>
+            <caption align="top">RoutingAppender Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -2569,7 +2576,6 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
                 <a href="#FailoverAppender">FailoverAppender</a>.</td>
             </tr>
-            <caption align="top">RoutingAppender Parameters</caption>
           </table>
           <h4>Routes</h4>
             <p>
@@ -2590,6 +2596,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             a FlumeAppender and all other events will be routed to a RollingFileAppender that captures only
             the specific event type. Note that the AuditAppender was predefined while the RollingFileAppenders
             are created as needed.
+          </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
@@ -2620,7 +2627,6 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-          </p>
         </subsection>
         <a name="SMTPAppender"/>
         <subsection name="SMTPAppender">
@@ -2642,6 +2648,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             for the Appender.
           </p>
           <table>
+            <caption align="top">SMTPAppender Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -2732,7 +2739,6 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>String</td>
               <td>The comma-separated list of recipient email addresses.</td>
             </tr>
-            <caption align="top">SMTPAppender Parameters</caption>
           </table>
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
@@ -2757,6 +2763,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             of receiving serialized LogEvents and routing them through the logging system on the server.
           </p>
           <table>
+            <caption align="top">SocketAppender Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -2822,7 +2829,6 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
                 <a href="#FailoverAppender">FailoverAppender</a>.</td>
             </tr>
-            <caption align="top">SocketAppender Parameters</caption>
           </table>
 
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -2847,6 +2853,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             format. The data can be sent over either TCP or UDP.
           </p>
           <table>
+            <caption align="top">SyslogAppender Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -2943,7 +2950,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 specified. To use, include a &gt;LoggerFields&lt; nested element, containing one or more
                 &gt;KeyValuePair&lt; elements. Each &gt;KeyValuePair&lt; must have a key attribute, which
                 specifies the key name which will be used to identify the field within the MDC Structured Data element,
-                and a value attribute, whcih specifies the PatternLayout pattern to use as the value.</td>
+                and a value attribute, which specifies the PatternLayout pattern to use as the value.</td>
             </tr>
             <tr>
               <td>mdcExcludes</td>
@@ -3004,11 +3011,11 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 an exception will be thrown (which can be caught by the application if <code>ignoreExceptions</code> is
                 set to <code>false</code>).</td>
             </tr>
-            <caption align="top">SyslogAppender Parameters</caption>
           </table>
           <p>
             A sample syslogAppender configuration that is configured with two SyslogAppenders, one using the BSD
             format and one using RFC 5424.
+          </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
@@ -3028,7 +3035,6 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-          </p>
         </subsection>
         <a name="TLSSyslogAppender"/>
         <subsection name="TLSSyslogAppender">
@@ -3038,6 +3044,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             RFC 5424 format. The data can be sent over either TCP or UDP.
           </p>
           <table>
+            <caption align="top">SyslogAppender Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -3134,7 +3141,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 specified. To use, include a &gt;LoggerFields&lt; nested element, containing one or more
                 &gt;KeyValuePair&lt; elements. Each &gt;KeyValuePair&lt; must have a key attribute, which
                 specifies the key name which will be used to identify the field within the MDC Structured Data element,
-                and a value attribute, whcih specifies the PatternLayout pattern to use as the value.</td>
+                and a value attribute, which specifies the PatternLayout pattern to use as the value.</td>
             </tr>
             <tr>
               <td>mdcExcludes</td>
@@ -3194,10 +3201,10 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>SSLConfiguration</td>
               <td>Contains the configuration for the KeyStore and TrustStore.</td>
             </tr>
-            <caption align="top">SyslogAppender Parameters</caption>
           </table>
           <p>
             A sample TLS Syslog Appender configuration that is configured to send a BSD-style syslog message.
+          </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
@@ -3215,7 +3222,6 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-          </p>
         </subsection>
       </section>
   </body>
