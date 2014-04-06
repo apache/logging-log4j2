@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="info" name="MyApp" packages="org.apache.logging.log4j.flume.test">
+<Configuration status="info" name="MyApp">
   <Appenders>
     <Flume name="eventLogger" ignoreExceptions="false" compress="true" type="persistent" dataDir="target/persistent"
         batchsize="100" maxDelay="500">
