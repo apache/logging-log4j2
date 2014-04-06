@@ -112,6 +112,8 @@ public abstract class ConfigurationFactory {
      * @return the ConfigurationFactory.
      */
     public static ConfigurationFactory getInstance() {
+        // volatile works in Java 1.6+, so double-checked locking also works properly
+        //noinspection DoubleCheckedLocking
         if (factories == null) {
             synchronized(TEST_PREFIX) {
                 if (factories == null) {
