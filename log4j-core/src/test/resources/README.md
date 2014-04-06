@@ -4,10 +4,10 @@ provided for your convenience in writing and maintaining unit tests.
 Test Plugins
 ------------
 
-Included are various Log4j plugins that are only useful for writing tests. To enable these plugins for your test,
-make sure to include `org.apache.logging.log4j.test` in the root `packages` attribute of the config file. For example:
+Included are various Log4j plugins that are only useful for writing tests. These test plugins are automatically made
+available to test classes. For instance, to use the ListAppender:
 
-    <Configuration packages="org.apache.logging.log4j.test">
+    <Configuration>
       <Appenders>
         <List name="List"/>
       </Appenders>
@@ -55,7 +55,7 @@ reset the `StatusLogger` configuration, and all that other fun boilerplate code.
 Cleaning Up Test Log Files
 --------------------------
 
-The `CleanFiles` rule is also available to automatically delete a list of files before and after every test.
+The `CleanFiles` rule is also available to automatically delete a list of files after every test.
 
     @Rule
     public CleanFiles files = new CleanFiles("target/file1.log", "target/file2.log", "more files");
