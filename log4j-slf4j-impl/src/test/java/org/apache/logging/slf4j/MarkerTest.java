@@ -19,7 +19,6 @@ package org.apache.logging.slf4j;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.junit.Test;
-import org.slf4j.helpers.MarkerWrapper;
 
 import static org.junit.Assert.assertTrue;
 
@@ -34,10 +33,10 @@ public class MarkerTest {
         final org.slf4j.Marker slf4jParent = org.slf4j.MarkerFactory.getMarker("PARENT");
         slf4jMarker.add(slf4jParent);
         final Marker log4jParent = MarkerManager.getMarker("PARENT");
-        final Marker log4jMarker = MarkerManager.getMarker("TEST", log4jParent);
+        final Marker log4jMarker = MarkerManager.getMarker("TEST");
 
-        assertTrue("Incorrect Marker class", slf4jMarker instanceof MarkerWrapper);
-        assertTrue("SLF4J Marker doesn't match Log4j Marker", ((MarkerWrapper) slf4jMarker).isInstanceOf(log4jMarker));
-        assertTrue("SLF4J Parent doesn't match Log4j parent", ((MarkerWrapper) slf4jMarker).isInstanceOf(log4jParent));
+        assertTrue("Incorrect Marker class", slf4jMarker instanceof Log4jMarker);
+        assertTrue("TEST is not an instance of PARENT in Log4j", log4jMarker.isInstanceOf(log4jParent));
+        assertTrue("TEST is not an instance of PARENT in SLF4J", slf4jMarker.contains(slf4jParent));
     }
 }

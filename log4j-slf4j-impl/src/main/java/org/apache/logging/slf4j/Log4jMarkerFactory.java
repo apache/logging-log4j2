@@ -19,9 +19,9 @@ package org.apache.logging.slf4j;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.apache.logging.log4j.MarkerManager;
 import org.slf4j.IMarkerFactory;
 import org.slf4j.Marker;
-import org.slf4j.helpers.MarkerWrapper;
 
 /**
  *
@@ -30,6 +30,11 @@ public class Log4jMarkerFactory implements IMarkerFactory {
 
     private final ConcurrentMap<String, Marker> markerMap = new ConcurrentHashMap<String, Marker>();
 
+    /**
+     * Return a Log4j Marker that is compatible with SLF4J.
+     * @param name The name of the Marker.
+     * @return A Marker.
+     */
     @Override
     public Marker getMarker(final String name) {
         if (name == null) {
@@ -39,23 +44,41 @@ public class Log4jMarkerFactory implements IMarkerFactory {
         if (marker != null) {
             return marker;
         }
-        marker = new MarkerWrapper(name);
+        org.apache.logging.log4j.Marker log4jMarker = MarkerManager.getMarker(name);
+        marker = new Log4jMarker(log4jMarker);
         final Marker existing = markerMap.putIfAbsent(name, marker);
         return existing == null ? marker : existing;
     }
 
+    /**
+     * Returns true if the Marker exists.
+     * @param name The Marker name.
+     * @return true if the Marker exists, false otherwise.
+     */
     @Override
     public boolean exists(final String name) {
         return markerMap.containsKey(name);
     }
 
+    /**
+     * Log4j does not support detached Markers. This method always returns false.
+     * @param name The Marker name.
+     * @return false
+     */
     @Override
     public boolean detachMarker(final String name) {
         return false;
     }
 
+    /**
+     * Log4j does not support detached Markers for performance reasons. The returned Marker is attached.
+     * @param name The Marker name.
+     * @return
+     */
     @Override
     public Marker getDetachedMarker(final String name) {
-        return new MarkerWrapper(name);
+        return getMarker(name);
     }
+
+
 }
