@@ -31,7 +31,7 @@
       <li><a href="#config_sep_appender_level">How do I send log messages with different levels to different appenders?</a></li>
       <li><a href="#troubleshooting">How do I debug my configuration?</a></li>
       <li><a href="#separate_log_files">How do I dynamically write to separate log files?</a></li>
-      <!--  
+      <!--
       <li><a href="#custom_plugin">How do I get log4j2 to recognize my custom plugin?</a></li>
       -->
       </ul>
@@ -41,27 +41,27 @@
         <p>You need at least the log4j-api-2.0 and the log4j-core-2.0 jar files.</p>
         <p>The other jars are necessary if your application calls the API
         of another logging framework and you want to route logging calls to the Log4j 2.0 implementation.</p>
-        <p><img src="images/whichjar.png" /></p>
-        <p>You can use the log4j-to-slf4j adapter jar when your application calls the Log4j 2.0 API and you 
+        <p><img src="images/whichjar.png" alt="Diagram showing which JARs correspond to which systems" /></p>
+        <p>You can use the log4j-to-slf4j adapter jar when your application calls the Log4j 2.0 API and you
         want to route logging calls to a SLF4J implementation.</p>
-        <p><img src="images/whichjar-slf4j.png" /></p>
-        
+        <p><img src="images/whichjar-slf4j.png" alt="Diagram showing the dependency flow to use Log4j 2 API with SLF4J" /></p>
+
 		<a name="config_location" />
         <h4>How do I specify the configuration file location?</h4>
         <p>By default, Log4j looks for a configuration file named <b>log4j2.xml</b> (not log4j.xml) in the classpath.
         </p><p>
         You can also specify the full path of the configuration file with this system property:<br />
         <code>-Dlog4j.configurationFile=path/to/log4j2.xml</code></p>
-        
+
 		<a name="config_from_code" />
         <h4>How do I configure log4j2 in code without a configuration file?</h4>
         <p>You could use the static method <code>#initialize(String contextName, ClassLoader loader, String configLocation)</code>
-         (see 
+         (see
          <a href="log4j-core/xref/org/apache/logging/log4j/core/config/Configurator.html">source code</a>)
-          in <code>org.apache.logging.log4j.core.config.Configurator</code>. 
+          in <code>org.apache.logging.log4j.core.config.Configurator</code>.
          (You can pass null for the class loader.)
          Be aware that this class is not part of the public API so your code may break with any minor release.</p>
-        
+
 		<a name="config_sep_appender_level" />
         <h4>How do I send log messages with different levels to different appenders?</h4>
 		You don't need to declare separate loggers to achieve this.
@@ -85,20 +85,20 @@
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-        
+
 		<a name="troubleshooting" />
         <h4>How do I debug my configuration?</h4>
-        <p>Set configuration <code>status="debug"</code> and you will see 
+        <p>Set configuration <code>status="debug"</code> and you will see
 		detailed log4j2-internal
-        log statements about what happens during the configuration process. 
-        This may be useful to trouble-shoot configuration issues. 
+        log statements about what happens during the configuration process.
+        This may be useful to trouble-shoot configuration issues.
         By default the status logger level is WARN, so you only see notifications when there is a problem.
         </p>
-        
+
 		<a name="separate_log_files" />
         <h4>How do I dynamically write to separate log files?</h4>
 		<p>
-		Look at the 
+		Look at the
 		<a href="http://logging.apache.org/log4j/2.x/manual/appenders.html#RoutingAppender">RoutingAppender</a>.
 		You can define multiple routes in the configuration,
 		and put values in the <code>ThreadContext</code> map that determine
@@ -108,7 +108,7 @@
 		</p>
         <pre class="prettyprint linenums"><![CDATA[<Routing name="Routing">
   <Routes pattern="$${ctx:ROUTINGKEY}">
-    
+
     <!-- This route is chosen if ThreadContext has value 'special' for key ROUTINGKEY. -->
     <Route key="special">
       <RollingFile name="Rolling-${ctx:ROUTINGKEY}" fileName="logs/special-${ctx:ROUTINGKEY}.log"
@@ -122,7 +122,7 @@
 	</Policies>
       </RollingFile>
     </Route>
-    
+
     <!-- This route is chosen if ThreadContext has no value for key ROUTINGKEY. -->
     <Route key="$${ctx:ROUTINGKEY}">
       <RollingFile name="Rolling-default" fileName="logs/default.log"
@@ -136,7 +136,7 @@
         </Policies>
       </RollingFile>
     </Route>
-    
+
     <!-- This route is chosen if ThreadContext has a value for ROUTINGKEY
          (other than the value 'special' which had its own route above).
          The value dynamically determines the name of the log file. -->
@@ -154,14 +154,14 @@
     </Route>
   </Routes>
 </Routing>]]></pre>
-		
 
-        <!-- 
+
+        <!--
 		<a name="custom_plugin" />
         <h4>How do I get log4j2 to recognize my custom plugin?</h4>
         -->
         </subsection>
       </section>
-      
+
     </body>
 </document>
