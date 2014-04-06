@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="debug" name="RoutingByJndiTest" packages="org.apache.logging.log4j.test">
+<Configuration status="debug" name="RoutingByJndiTest">
 
   <ThresholdFilter level="debug"/>
 

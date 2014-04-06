@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration name="MissingRootTest" status="DEBUG" packages="org.apache.logging.log4j.test">
+<Configuration name="MissingRootTest">
   <Appenders>
     <List name="List">
       <PatternLayout>
@@ -24,7 +24,7 @@
       </PatternLayout>
     </List>
   </Appenders>
-  
+
 <!--
     This test intentionally excludes a root logger configuration. This is to demonstrate that by default, the root
     logger is configured as a Logger at the ERROR level with only a ConsoleAppender. Thus, the following would be

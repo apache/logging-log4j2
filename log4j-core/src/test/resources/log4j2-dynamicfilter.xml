@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration name="ConfigTest" status="error" packages="org.apache.logging.log4j.test">
+<Configuration name="ConfigTest" status="error">
   <DynamicThresholdFilter key="loginId" defaultThreshold="ERROR" onMatch="ACCEPT" onMismatch="NEUTRAL">
     <KeyValuePair key="User1" value="DEBUG"/>
   </DynamicThresholdFilter>

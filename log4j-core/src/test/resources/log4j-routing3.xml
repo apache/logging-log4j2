@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="debug" name="RoutingTest" packages="org.apache.logging.log4j.test">
+<Configuration status="debug" name="RoutingTest">
   <Properties>
     <Property name="filename">target/routing1/routingtest.log</Property>
   </Properties>

@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="error" name="StyleTest" packages="org.apache.logging.log4j.test">
+<Configuration status="error" name="StyleTest">
   <Appenders>
     <List name="List">
        <PatternLayout>

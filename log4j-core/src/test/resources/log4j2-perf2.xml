@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration packages="" name="XMLPerfTest" status="error">
+<Configuration name="XMLPerfTest" status="error">
   <Appenders>
     <File name="TestLogfile" fileName="target/testlog4j2.log" immediateFlush="false">
       <PatternLayout>

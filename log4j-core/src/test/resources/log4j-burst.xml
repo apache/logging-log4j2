@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="warn" name="BurstTest" packages="org.apache.logging.log4j.test">
+<Configuration status="warn" name="BurstTest">
   <Appenders>
     <List name="ListAppender">
       <PatternLayout pattern="%-5p %d{dd-MMM-yyyy HH:mm:ss} %t %m%n"/>

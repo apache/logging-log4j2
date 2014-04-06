@@ -16,8 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration name="ConfigTest" status="debug" packages="org.apache.logging.log4j.test"
-    monitorInterval="5">
+<Configuration name="ConfigTest" status="debug" monitorInterval="5">
   <Appenders>
     <JMSQueue name="JMSQueue" factoryBindingName="TestQueueConnectionFactory" queueBindingName="TestQueue">
       <PatternLayout pattern="%m%n"/>

@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="warn" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
+<Configuration status="warn" name="XMLConfigTest">
   <Properties>
     <Property name="filename">target/rolling2/rollingtest.log</Property>
   </Properties>
