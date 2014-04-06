@@ -23,6 +23,7 @@
     <artifactId>log4j</artifactId>
     <groupId>org.apache.logging.log4j</groupId>
     <version>2.0-rc2-SNAPSHOT</version>
+    <relativePath>../</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
