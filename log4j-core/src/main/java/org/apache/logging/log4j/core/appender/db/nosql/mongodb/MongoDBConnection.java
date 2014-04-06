@@ -89,7 +89,9 @@ public final class MongoDBConnection implements NoSQLConnection<BasicDBObject, M
 
     @Override
     public void close() {
-        this.mongo.close();
+        // there's no need to call this.mongo.close() since that literally closes the connection
+        // MongoDBClient uses internal connection pooling
+        // for more details, see LOG4J2-591
     }
 
     @Override
