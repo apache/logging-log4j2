@@ -44,10 +44,15 @@ public class MarkerFilterTest {
         assertTrue(filter.isStarted());
         assertTrue(filter.filter(null, null, stranger, null, (Throwable)null) == Filter.Result.DENY);
         assertTrue(filter.filter(null, null, child, null, (Throwable)null) == Filter.Result.NEUTRAL);
+        assertTrue(filter.filter(null, null, grandChild, null, (Throwable)null) == Filter.Result.NEUTRAL);
+        filter.stop();
         LogEvent event = new Log4jLogEvent(null, grandChild, null, Level.DEBUG, new SimpleMessage("Test"), null);
+        assertTrue(filter.filter(event) == Filter.Result.NEUTRAL);
         filter = MarkerFilter.createFilter("Child", null, null);
+        filter.start();
         assertTrue(filter.filter(event) == Filter.Result.NEUTRAL);
         event = new Log4jLogEvent(null, sibling, null, Level.DEBUG, new SimpleMessage("Test"), null);
         assertTrue(filter.filter(event) == Filter.Result.DENY);
+        filter.stop();
     }
 }

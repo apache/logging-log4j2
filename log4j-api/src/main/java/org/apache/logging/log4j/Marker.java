@@ -34,10 +34,17 @@ public interface Marker extends Serializable {
     String getName();
 
     /**
-     * Returns the parent of this Marker.
-     * @return The parent Marker or null if this Marker has no parent.
+     * Returns the first parent of this Marker.
+     * @return The first parent Marker or null if this Marker has no parents.
+     * @deprecated Use getParents() instead.
      */
     Marker getParent();
+
+    /**
+     * Returns the list of parents of this Marker.
+     * @return The parent Markers or null if this Marker has no parents.
+     */
+    Marker[] getParents();
 
     /**
      * Checks whether this Marker is an instance of the specified Marker.
@@ -52,4 +59,17 @@ public interface Marker extends Serializable {
      * @return true of this Marker or one of its ancestors matches the specified name, false otherwise.
      */
     boolean isInstanceOf(String name);
+
+    /**
+     * Adds a Marker as a parent to this Marker.
+     * @param marker The parent marker to add.
+     */
+    void add(Marker marker);
+
+    /**
+     * Removes the specified Marker as a parent of this Marker.
+     * @param marker The marker to remove.
+     * @return true if the marker was removed.
+     */
+    boolean remove(Marker marker);
 }

@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -68,6 +70,17 @@ public final class MarkerManager {
     }
 
     /**
+     * Retrieves or creates a Marker with the specified parents.
+     * @param name The name of the Marker.
+     * @param parents The parent Markers.
+     * @return The Marker with the specified name.
+     */
+    public static Marker getMarker(final String name, final Marker... parents) {
+        markerMap.putIfAbsent(name, new Log4jMarker(name, parents));
+        return markerMap.get(name);
+    }
+
+    /**
      * The actual Marker implementation.
      */
     private static class Log4jMarker implements Marker {
@@ -75,16 +88,74 @@ public final class MarkerManager {
         private static final long serialVersionUID = 100L;
 
         private final String name;
-        private final Marker parent;
+        private volatile Marker[] parents;
 
         public Log4jMarker(final String name) {
             this.name = name;
-            this.parent = null;
+            this.parents = null;
         }
 
         public Log4jMarker(final String name, final Marker parent) {
             this.name = name;
-            this.parent = parent;
+            this.parents = parent != null ? new Marker[] {parent} : null;
+        }
+
+        public Log4jMarker(final String name, final Marker... parents) {
+            this.name = name;
+            for (Marker marker : parents) {
+                if (marker == null) {
+                    throw new IllegalArgumentException("Marker cannot contain a null parent");
+                }
+            }
+            this.parents = parents;
+        }
+
+        @Override
+        public synchronized void add(Marker parent) {
+            if (parent == null) {
+                throw new IllegalArgumentException("A parent marker must be specified");
+            }
+            // Don't add a parent that is already in the hierarchy.
+            if (parents != null && (this.isInstanceOf(parent) || parent.isInstanceOf(this))) {
+                return;
+            }
+            int size = parents == null ? 1 : parents.length + 1;
+            Marker[] markers = new Marker[size];
+            if (parents != null) {
+                System.arraycopy(parents, 0, markers, 0, parents.length);
+            }
+            markers[size - 1] = parent;
+            parents = markers;
+        }
+
+        @Override
+        public synchronized boolean remove(Marker parent) {
+            if (parent == null) {
+                throw new IllegalArgumentException("A parent marker must be specified");
+            }
+            if (parents == null) {
+                return false;
+            }
+            if (parents.length == 1) {
+                if (parents[0].equals(parent)) {
+                    parents = null;
+                    return true;
+                }
+                return false;
+            }
+            int index = 0;
+            Marker[] markers = new Marker[parents.length - 1];
+            for (int i = 0; i < parents.length; ++i) {
+                Marker marker = parents[i];
+                if (!marker.equals(parent)) {
+                    if (index == parents.length - 1) {
+                        return false;
+                    }
+                    markers[index++] = marker;
+                }
+            }
+            parents = markers;
+            return true;
         }
 
         @Override
@@ -94,7 +165,12 @@ public final class MarkerManager {
 
         @Override
         public Marker getParent() {
-            return this.parent;
+            return this.parents != null ? parents[0] : null;
+        }
+
+        @Override
+        public Marker[] getParents() {
+            return this.parents;
         }
 
         @Override
@@ -102,13 +178,24 @@ public final class MarkerManager {
             if (marker == null) {
                 throw new IllegalArgumentException("A marker parameter is required");
             }
-            Marker test = this;
-            do {
-                if (test == marker) {
-                    return true;
+            if (this == marker) {
+                return true;
+            }
+            Marker[] localParents = parents;
+            if (localParents != null) {
+                // With only one or two parents the for loop is slower.
+                if (localParents.length == 1) {
+                    return checkParent(localParents[0], marker);
                 }
-                test = test.getParent();
-            } while (test != null);
+                if (localParents.length == 2) {
+                    return checkParent(localParents[0], marker) || checkParent(localParents[1], marker);
+                }
+                for (int i = 0; i < localParents.length; ++i) {
+                    if (checkParent(localParents[i], marker)) {
+                        return true;
+                    }
+                }
+            }
             return false;
         }
 
@@ -117,13 +204,50 @@ public final class MarkerManager {
             if (markerName == null) {
                 throw new IllegalArgumentException("A marker name is required");
             }
-            Marker toTest = this;
-            do {
-                if (markerName.equals(toTest.getName())) {
-                    return true;
+            if (markerName.equals(this.getName())) {
+                return true;
+            }
+            // Use a real marker for child comparisons. It is faster than comparing the names.
+            Marker marker = markerMap.get(markerName);
+            if (marker == null) {
+                throw new IllegalArgumentException("No marker exists with the name " + markerName);
+            }
+            Marker[] localParents = parents;
+            if (localParents != null) {
+                if (localParents.length == 1) {
+                    return checkParent(localParents[0], marker);
                 }
-                toTest = toTest.getParent();
-            } while (toTest != null);
+                if (localParents.length == 2) {
+                    return checkParent(localParents[0], marker) || checkParent(localParents[1], marker);
+                }
+                for (int i = 0; i < localParents.length; ++i) {
+                    if (checkParent(localParents[i], marker)) {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private boolean checkParent(Marker parent, Marker marker) {
+            if (parent == marker) {
+                return true;
+            }
+            Marker[] localParents = parent.getParents();
+            if (localParents != null) {
+                if (localParents.length == 1) {
+                    return checkParent(localParents[0], marker);
+                }
+                if (localParents.length == 2) {
+                    return checkParent(localParents[0], marker) || checkParent(localParents[1], marker);
+                }
+                for (int i = 0; i < localParents.length; ++i) {
+                    if (checkParent(localParents[i], marker)) {
+                        return true;
+                    }
+                }
+            }
             return false;
         }
 
@@ -153,21 +277,28 @@ public final class MarkerManager {
         @Override
         public String toString() {
             final StringBuilder sb = new StringBuilder(name);
-            if (parent != null) {
-                Marker m = parent;
-                sb.append("[ ");
-                boolean first = true;
-                while (m != null) {
-                    if (!first) {
-                        sb.append(", ");
-                    }
-                    sb.append(m.getName());
-                    first = false;
-                    m = m.getParent();
-                }
-                sb.append(" ]");
+            Marker[] localParents = parents;
+            if (localParents != null) {
+                addParentInfo(localParents, sb);
             }
             return sb.toString();
+        }
+
+        private void addParentInfo(Marker[] parents, StringBuilder sb) {
+            sb.append("[ ");
+            boolean first = true;
+            for (Marker marker : parents) {
+                if (!first) {
+                    sb.append(", ");
+                }
+                first = false;
+                sb.append(marker.getName());
+                Marker[] p = marker.getParents();
+                if (p != null) {
+                    addParentInfo(p, sb);
+                }
+            }
+            sb.append(" ]");
         }
     }
 }

@@ -37,7 +37,7 @@ import org.slf4j.spi.LocationAwareLogger;
 public class Log4jLogger implements LocationAwareLogger, Serializable {
 
     public static final String FQCN = Log4jLogger.class.getName();
-    
+
     private static final long serialVersionUID = 7869000638091304316L;
     private static final Marker EVENT_MARKER = MarkerFactory.getMarker("EVENT");
     private final boolean eventLogger;
@@ -84,32 +84,32 @@ public class Log4jLogger implements LocationAwareLogger, Serializable {
 
     @Override
     public boolean isTraceEnabled(final Marker marker) {
-        return logger.isEnabled(Level.TRACE, (org.apache.logging.log4j.Marker) marker, null);
+        return logger.isEnabled(Level.TRACE, getMarker(marker), null);
     }
 
     @Override
     public void trace(final Marker marker, final String s) {
-        logger.logIfEnabled(FQCN, Level.TRACE, (org.apache.logging.log4j.Marker) marker, s);
+        logger.logIfEnabled(FQCN, Level.TRACE, getMarker(marker), s);
     }
 
     @Override
     public void trace(final Marker marker, final String s, final Object o) {
-        logger.logIfEnabled(FQCN, Level.TRACE, (org.apache.logging.log4j.Marker) marker, s, o);
+        logger.logIfEnabled(FQCN, Level.TRACE, getMarker(marker), s, o);
     }
 
     @Override
     public void trace(final Marker marker, final String s, final Object o, final Object o1) {
-        logger.logIfEnabled(FQCN, Level.TRACE, (org.apache.logging.log4j.Marker) marker, s, o, o1);
+        logger.logIfEnabled(FQCN, Level.TRACE, getMarker(marker), s, o, o1);
     }
 
     @Override
     public void trace(final Marker marker, final String s, final Object... objects) {
-        logger.logIfEnabled(FQCN, Level.TRACE, (org.apache.logging.log4j.Marker) marker, s, objects);
+        logger.logIfEnabled(FQCN, Level.TRACE, getMarker(marker), s, objects);
     }
 
     @Override
     public void trace(final Marker marker, final String s, final Throwable throwable) {
-        logger.logIfEnabled(FQCN, Level.TRACE, (org.apache.logging.log4j.Marker) marker, s, throwable);
+        logger.logIfEnabled(FQCN, Level.TRACE, getMarker(marker), s, throwable);
     }
 
     @Override
@@ -144,32 +144,32 @@ public class Log4jLogger implements LocationAwareLogger, Serializable {
 
     @Override
     public boolean isDebugEnabled(final Marker marker) {
-        return logger.isEnabled(Level.DEBUG, (org.apache.logging.log4j.Marker) marker, null);
+        return logger.isEnabled(Level.DEBUG, getMarker(marker), null);
     }
 
     @Override
     public void debug(final Marker marker, final String s) {
-        logger.logIfEnabled(FQCN, Level.DEBUG, (org.apache.logging.log4j.Marker) marker, s);
+        logger.logIfEnabled(FQCN, Level.DEBUG, getMarker(marker), s);
     }
 
     @Override
     public void debug(final Marker marker, final String s, final Object o) {
-        logger.logIfEnabled(FQCN, Level.DEBUG, (org.apache.logging.log4j.Marker) marker, s, o);
+        logger.logIfEnabled(FQCN, Level.DEBUG, getMarker(marker), s, o);
     }
 
     @Override
     public void debug(final Marker marker, final String s, final Object o, final Object o1) {
-        logger.logIfEnabled(FQCN, Level.DEBUG, (org.apache.logging.log4j.Marker) marker, s, o, o1);
+        logger.logIfEnabled(FQCN, Level.DEBUG, getMarker(marker), s, o, o1);
     }
 
     @Override
     public void debug(final Marker marker, final String s, final Object... objects) {
-        logger.logIfEnabled(FQCN, Level.DEBUG, (org.apache.logging.log4j.Marker) marker, s, objects);
+        logger.logIfEnabled(FQCN, Level.DEBUG, getMarker(marker), s, objects);
     }
 
     @Override
     public void debug(final Marker marker, final String s, final Throwable throwable) {
-        logger.logIfEnabled(FQCN, Level.DEBUG, (org.apache.logging.log4j.Marker) marker, s, throwable);
+        logger.logIfEnabled(FQCN, Level.DEBUG, getMarker(marker), s, throwable);
     }
 
     @Override
@@ -204,32 +204,32 @@ public class Log4jLogger implements LocationAwareLogger, Serializable {
 
     @Override
     public boolean isInfoEnabled(final Marker marker) {
-        return logger.isEnabled(Level.INFO, (org.apache.logging.log4j.Marker) marker, null);
+        return logger.isEnabled(Level.INFO, getMarker(marker), null);
     }
 
     @Override
     public void info(final Marker marker, final String s) {
-        logger.logIfEnabled(FQCN, Level.INFO, (org.apache.logging.log4j.Marker) marker, s);
+        logger.logIfEnabled(FQCN, Level.INFO, getMarker(marker), s);
     }
 
     @Override
     public void info(final Marker marker, final String s, final Object o) {
-        logger.logIfEnabled(FQCN, Level.INFO, (org.apache.logging.log4j.Marker) marker, s, o);
+        logger.logIfEnabled(FQCN, Level.INFO, getMarker(marker), s, o);
     }
 
     @Override
     public void info(final Marker marker, final String s, final Object o, final Object o1) {
-        logger.logIfEnabled(FQCN, Level.INFO, (org.apache.logging.log4j.Marker) marker, s, o, o1);
+        logger.logIfEnabled(FQCN, Level.INFO, getMarker(marker), s, o, o1);
     }
 
     @Override
     public void info(final Marker marker, final String s, final Object... objects) {
-        logger.logIfEnabled(FQCN, Level.INFO, (org.apache.logging.log4j.Marker) marker, s, objects);
+        logger.logIfEnabled(FQCN, Level.INFO, getMarker(marker), s, objects);
     }
 
     @Override
     public void info(final Marker marker, final String s, final Throwable throwable) {
-        logger.logIfEnabled(FQCN, Level.INFO, (org.apache.logging.log4j.Marker) marker, s, throwable);
+        logger.logIfEnabled(FQCN, Level.INFO, getMarker(marker), s, throwable);
     }
 
     @Override
@@ -264,32 +264,32 @@ public class Log4jLogger implements LocationAwareLogger, Serializable {
 
     @Override
     public boolean isWarnEnabled(final Marker marker) {
-        return logger.isEnabled(Level.WARN, (org.apache.logging.log4j.Marker) marker, null);
+        return logger.isEnabled(Level.WARN, getMarker(marker), null);
     }
 
     @Override
     public void warn(final Marker marker, final String s) {
-        logger.logIfEnabled(FQCN, Level.WARN, (org.apache.logging.log4j.Marker) marker, s);
+        logger.logIfEnabled(FQCN, Level.WARN, getMarker(marker), s);
     }
 
     @Override
     public void warn(final Marker marker, final String s, final Object o) {
-        logger.logIfEnabled(FQCN, Level.WARN, (org.apache.logging.log4j.Marker) marker, s, o);
+        logger.logIfEnabled(FQCN, Level.WARN, getMarker(marker), s, o);
     }
 
     @Override
     public void warn(final Marker marker, final String s, final Object o, final Object o1) {
-        logger.logIfEnabled(FQCN, Level.WARN, (org.apache.logging.log4j.Marker) marker, s, o, o1);
+        logger.logIfEnabled(FQCN, Level.WARN, getMarker(marker), s, o, o1);
     }
 
     @Override
     public void warn(final Marker marker, final String s, final Object... objects) {
-        logger.logIfEnabled(FQCN, Level.WARN, (org.apache.logging.log4j.Marker) marker, s, objects);
+        logger.logIfEnabled(FQCN, Level.WARN, getMarker(marker), s, objects);
     }
 
     @Override
     public void warn(final Marker marker, final String s, final Throwable throwable) {
-        logger.logIfEnabled(FQCN, Level.WARN, (org.apache.logging.log4j.Marker) marker, s, throwable);
+        logger.logIfEnabled(FQCN, Level.WARN, getMarker(marker), s, throwable);
     }
 
     @Override
@@ -324,39 +324,39 @@ public class Log4jLogger implements LocationAwareLogger, Serializable {
 
     @Override
     public boolean isErrorEnabled(final Marker marker) {
-        return logger.isEnabled(Level.ERROR, (org.apache.logging.log4j.Marker) marker, null);
+        return logger.isEnabled(Level.ERROR, getMarker(marker), null);
     }
 
     @Override
     public void error(final Marker marker, final String s) {
-        logger.logIfEnabled(FQCN, Level.ERROR, (org.apache.logging.log4j.Marker) marker, s);
+        logger.logIfEnabled(FQCN, Level.ERROR, getMarker(marker), s);
     }
 
     @Override
     public void error(final Marker marker, final String s, final Object o) {
-        logger.logIfEnabled(FQCN, Level.ERROR, (org.apache.logging.log4j.Marker) marker, s, o);
+        logger.logIfEnabled(FQCN, Level.ERROR, getMarker(marker), s, o);
     }
 
     @Override
     public void error(final Marker marker, final String s, final Object o, final Object o1) {
-        logger.logIfEnabled(FQCN, Level.ERROR, (org.apache.logging.log4j.Marker) marker, s, o, o1);
+        logger.logIfEnabled(FQCN, Level.ERROR, getMarker(marker), s, o, o1);
     }
 
     @Override
     public void error(final Marker marker, final String s, final Object... objects) {
-        logger.logIfEnabled(FQCN, Level.ERROR, (org.apache.logging.log4j.Marker) marker, s, objects);
+        logger.logIfEnabled(FQCN, Level.ERROR, getMarker(marker), s, objects);
     }
 
     @Override
     public void error(final Marker marker, final String s, final Throwable throwable) {
-        logger.logIfEnabled(FQCN, Level.ERROR, (org.apache.logging.log4j.Marker) marker, s, throwable);
+        logger.logIfEnabled(FQCN, Level.ERROR, getMarker(marker), s, throwable);
     }
 
     @Override
     public void log(final Marker marker, final String fqcn, final int level, final String message, final Object[] params, Throwable throwable) {
         final Level log4jLevel = getLevel(level);
-        final org.apache.logging.log4j.Marker log4jMarker = (org.apache.logging.log4j.Marker) marker;
-        
+        final org.apache.logging.log4j.Marker log4jMarker = getMarker(marker);
+
         if (!logger.isEnabled(log4jLevel, log4jMarker, message, params)) {
             return;
         }
@@ -372,6 +372,10 @@ public class Log4jLogger implements LocationAwareLogger, Serializable {
             }
         }
         logger.logMessage(fqcn, log4jLevel, log4jMarker, msg, throwable);
+    }
+
+    private org.apache.logging.log4j.Marker getMarker(Marker marker) {
+        return marker != null ? ((org.apache.logging.slf4j.Log4jMarker) marker).getLog4jMarker() : null;
     }
 
     @Override

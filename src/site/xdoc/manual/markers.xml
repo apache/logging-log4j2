@@ -86,10 +86,13 @@ public class MyApp {
                 <li>Markers must be unique. They are permanently registered by name so care should be taken
                   to insure that Markers used in your application are distinct from those in the application's
                   dependencies, unless that is what is desired.</li>
-                <li>Like many objects in Log4j 2, Markers are immutable. If a marker has a parent, the parent
-                  must be named when the Marker is created and the parent cannot be changed after creation.</li>
-                <li>Markers only have a single parent. Markers can, however, have many children that reference
-                  them.</li>
+                <li>Parent Markers can be added or removed dynamically. However, this is fairly expensive to do.
+                  Instead, it is recommended that the parents be identified when obtaining the Marker the first time
+                  as shown in the examples above.</li>
+                <li>Evaluating Markers with multiple ancestors is much more expensive than Markers with no parents.
+                  For example, in one set of tests to evaluate whether a Marker matched its grandparent took 3
+                  times longer than evaluating the Marker itself. Even then though, evaluating Markers is
+                  inexpensive compared resolving the callers class name or line number.</li>
               </ol>
             </p>
           </subsection>
