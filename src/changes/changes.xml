@@ -21,6 +21,13 @@
   </properties>
   <body>
     <release version="2.0-rc2" date="2014-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-595" dev="mattsicker" type="add">
+          Introduce Java annotation processor as alternative plugin pre-caching mechanism. This is available in the
+          log4j-plugin-processor module.
+      </action>
+      <action issue="LOG4J2-564" dev="mattsicker" type="fix">
+          Renamed SLF4J logger class to Log4jLogger.
+      </action>
       <action issue="LOG4J2-579" dev="ggregory" type="fix">
           Rework Level comparison APIs.
       </action>
