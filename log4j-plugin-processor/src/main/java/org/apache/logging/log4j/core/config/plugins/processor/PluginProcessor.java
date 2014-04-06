@@ -18,9 +18,8 @@
 package org.apache.logging.log4j.core.config.plugins.processor;
 
 import java.io.BufferedOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -104,7 +103,7 @@ public class PluginProcessor extends AbstractProcessor {
 
     private void writeCacheFile(final Element... elements) throws IOException {
         final FileObject fo = processingEnv.getFiler().createResource(CLASS_OUTPUT, PLUGINS_PACKAGE_NAME, FILENAME, elements);
-        final ObjectOutput out = new ObjectOutputStream(new BufferedOutputStream(fo.openOutputStream()));
+        final DataOutputStream out = new DataOutputStream(new BufferedOutputStream(fo.openOutputStream()));
         try {
             out.writeInt(pluginCategories.size());
             for (final Map.Entry<String, ConcurrentMap<String, PluginEntry>> category : pluginCategories.entrySet()) {
@@ -113,8 +112,6 @@ public class PluginProcessor extends AbstractProcessor {
                 out.writeInt(m.size());
                 for (final Map.Entry<String, PluginEntry> entry : m.entrySet()) {
                     final PluginEntry plugin = entry.getValue();
-                    // TODO: would this work? or do we need to override the writeObject(ObjectOutputStream) method?
-                    //out.writeObject(plugin);
                     out.writeUTF(plugin.getKey());
                     out.writeUTF(plugin.getClassName());
                     out.writeUTF(plugin.getName());
