@@ -18,7 +18,9 @@
 
 #set($dollar = '$')
 
-<document>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
     <properties>
         <title>Configuring Log4j 2</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
@@ -40,6 +42,7 @@
         </p>
         <p>
           Configuration of Log4j 2 can be accomplished in 1 of 4 ways:
+        </p>
           <ol>
             <li>Through a configuration file written in XML or JSON.</li>
             <li>Programmatically, by creating a ConfigurationFactory and Configuration implementation.</li>
@@ -47,7 +50,6 @@
               components to the default configuration.</li>
             <li>Programmatically, by calling methods on the internal Logger class.</li>
           </ol>
-        </p>
         <p>
           This page focuses primarily on configuring Log4j through a configuration file. Information on
           programmatically configuring Log4j can be found at <a href="./extending.html">Extending Log4j 2</a>.
@@ -63,6 +65,7 @@
             When Log4j starts it will locate all the ConfigurationFactory plugins and arrange then in weighted
             order from highest to lowest. As delivered, Log4j contains two ConfigurationFactory implementations,
             one for JSON and one for XML.
+          </p>
             <ol>
               <li>Log4j will inspect the "log4j.configurationFile" system property and, if set,  will attempt to
                 load the configuration using the <code>ConfigurationFactory</code> that matches the file
@@ -78,11 +81,9 @@
               <li>If no configuration file could be located the <code>DefaultConfiguration</code> will
                 be used. This will cause logging output to go to the console.</li>
             </ol>
-          </p>
           <p>An example application named <code>MyApp</code> that uses log4j can be used to illustrate how
             this is done.
           </p>
-          <p>
 <pre class="prettyprint linenums">
 import com.foo.Bar;
 
@@ -107,7 +108,6 @@ if (!bar.doIt()) {
 }
 logger.trace("Exiting application.");                 }
 }</pre>
-          </p>
           <p>
             <code>MyApp</code> begins by importing log4j related classes. It
             then defines a static logger variable with the name <code>MyApp</code>
@@ -116,7 +116,6 @@ logger.trace("Exiting application.");                 }
           <p>
             <code>MyApp</code> uses the <code>Bar</code> class defined in the package<code>com.foo</code>.
           </p>
-          <p>
 <pre class="prettyprint linenums">
 package com.foo;
 import org.apache.logging.log4j.Logger;
@@ -131,28 +130,28 @@ public class Bar {
     return logger.exit(false);
   }
 }</pre>
-          </p>
           <p>
             Log4j will provide a default configuration if it cannot locate a configuration file. The default
             configuration, provided in the DefaultConfiguration class, will set up:
+          </p>
             <ul>
               <li>A <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/appender/ConsoleAppender.html">ConsoleAppender</a>
                 attached to the root logger.</li>
               <li>A <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/layout/PatternLayout.html">PatternLayout</a>
                 set to the pattern "%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" attached to the ConsoleAppender</li>
             </ul>
-          </p>
           <p>
             Note that by default Log4j assigns the root logger to <code>Level.ERROR</code>.
           </p>
           <p>The output of MyApp would be similar to:
+          </p>
 <pre class="prettyprint linenums">
 17:13:01.540 [main] ERROR com.foo.Bar - Did it again!
 17:13:01.540 [main] ERROR MyApp - Didn't do it.</pre>
-          </p>
           <p>
             As was described previously, Log4j will first attempt to configure itself from configuration files. A
             configuration equivalent to the default would look like:
+          </p>
           <pre class="prettyprint linenums"><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
@@ -167,8 +166,10 @@ public class Bar {
     </Root>
   </Loggers>
 </Configuration>]]></pre>
+            <p>
             Once the file above is placed into the classpath as log4j2.xml you will get results identical to
             those listed above. Changing the root level to trace will result in results similar to:
+            </p>
              <pre>
 17:13:01.540 [main] TRACE MyApp - Entering application.
 17:13:01.540 [main] TRACE com.foo.Bar - entry
@@ -176,7 +177,6 @@ public class Bar {
 17:13:01.540 [main] TRACE com.foo.Bar - exit with (false)
 17:13:01.540 [main] ERROR MyApp - Didn't do it.
 17:13:01.540 [main] TRACE MyApp - Exiting application.</pre>
-          </p>
           <p>
             Note that status logging is disabled when the default configuration is used.
           </p>
@@ -299,13 +299,13 @@ public class Bar {
           </p>
           <p>
             To advertise an appender configuration:
+          </p>
             <ul>
               <li>Add the JmDns library from <a href="http://jmdns.sourceforge.net">http://jmdns.sourceforge.net</a> to the application classpath</li>
               <li>Set the 'advertiser' attribute of the configuration element to 'multicastdns'</li>
               <li>Set the 'advertise' attribute on the appender element to 'true'</li>
               <li>If advertising a FileAppender-based configuration, set the 'advertiseURI' attribute on the appender element to an appropriate URI</li>
             </ul>
-          </p>
           <p>
             FileAppender-based configurations require an additional 'advertiseURI' attribute to be specified on the appender.
             The 'advertiseURI' attribute provides Chainsaw with information on how the file can be accessed.
@@ -346,6 +346,7 @@ public class Bar {
           <h4>Configuration with XML</h4>
           <p>
             The configuration element in the XML file accepts several attributes:
+          </p>
             <table>
               <tr>
                 <th>Attribute Name</th>
@@ -399,7 +400,6 @@ public class Bar {
                 <td>Enables diagnostic information while loading plugins.</td>
               </tr>
             </table>
-          </p>
           <p>
             Log4j can be configured using two XML flavors; concise and strict. The concise format makes
             configuration very easy as the element names match the components they represent however it
@@ -635,6 +635,7 @@ public class Bar {
           <p>
             The JSON support uses the Jackson Data Processor to parse the JSON files. These dependencies must be added
             to a project that wants to use JSON for configuration:
+          </p>
           <pre class="prettyprint linenums"><![CDATA[
 <dependency>
   <groupId>com.fasterxml.jackson.core</groupId>
@@ -653,7 +654,6 @@ public class Bar {
   <artifactId>jackson-annotations</artifactId>
   <version>2.2.2</version>
 </dependency>]]></pre>
-          </p>
         <a name="Loggers"/>
           <h4>Configuring loggers</h4>
           <p>
@@ -686,11 +686,11 @@ public class Bar {
             <b><em>Every configuration must have a root logger</em></b>. If one is not configured the default root LoggerConfig,
             which has a level of ERROR and has a Console appender attached, will be used. The main differences
             between the root logger and other loggers are
+          </p>
             <ol>
               <li>The root logger does not have a name attribute.</li>
               <li>The root logger does not support the additivity attribute since it has no parent.</li>
             </ol>
-          </p>
         <a name="Appenders"/>
           <h4>Configuring Appenders</h4>
           <p>
@@ -709,6 +709,7 @@ public class Bar {
           <h4>Configuring Filters</h4>
           <p>
             Log4j allows a filter to be specified in any of 4 places:
+          </p>
             <ol>
               <li>At the same level as the appenders, loggers and properties elements. These filters can accept
               or reject events before they have been passed to a LoggerConfig.</li>
@@ -718,7 +719,6 @@ public class Bar {
               <li>In an appender reference element. These filters are used to determine if a Logger should route
                 the event to an appender.</li>
             </ol>
-          </p>
           <p>
             Although only a single <code>filter</code> element can be configured, that element may be the
             <code>filters</code> element which represents the CompositeFilter. The <code>filters</code> element
@@ -838,6 +838,7 @@ public class Bar {
             Log4j also supports the syntax <code>${dollar}{prefix:name}</code> where the prefix identifies tells Log4j
             that variable name should be evaluated in a specific context. The contexts that are built in to Logj4
             are:
+          </p>
             <table>
               <tr>
                 <th>Prefix</th>
@@ -878,7 +879,6 @@ public class Bar {
                 <td>System properties</td>
               </tr>
             </table>
-          </p>
           <p>
             A default property map can be declared in the configuration file. If the value cannot be located in
             the specified lookup the value in the default property map will be used. The default map is
@@ -937,6 +937,7 @@ public class Bar {
             accomplished by adding the status attribute to the configuration element or a default value can be
             provided by setting the "Log4jDefaultStatusLevel" system property. The following
             configuration has the status attribute set to debug.
+          </p>
 
 <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>;
 <Configuration status="debug" name="RoutingTest"
@@ -981,7 +982,9 @@ public class Bar {
   </Loggers>
 
 </Configuration>]]></pre>
+            <p>
             During startup this configuration produces:
+            </p>
 #if ($isPDF)
     <pre>
 2011-11-23 17:08:00,769 DEBUG Generated plugins in 0.003374000 seconds
@@ -1095,7 +1098,6 @@ public class Bar {
 2011-11-23 17:08:00,965 WARN No Loggers were configured, using default
 2011-11-23 17:08:00,976 DEBUG Reconfiguration completed</pre>
 #end
-          </p>
           <p>
             If the status attribute is set to error than only error messages will be written to the console. This
             makes troubleshooting configuration errors possible. As an example, if the configuration above is changed
@@ -1105,19 +1107,19 @@ public class Bar {
 </logger>]]></pre>
           <p>
             the following error message will be produced.
+          </p>
             <pre class="prettyprint linenums">
 2011-11-24 23:21:25,517 ERROR Unable to locate appender Routng for logger EventLogger</pre>
-          </p>
           <p>
             Applications may wish to direct the status output to some other destination. This can be accomplished
             by setting the dest attribute to either "err" to send the output to stderr or to a file location or URL.
             This can also be done by insuring the configured status is set to OFF and then configuring the application
             programmatically such as:
+          </p>
 <pre class="prettyprint linenums">
 StatusConsoleListener listener = new StatusConsoleListener(Level.ERROR);
 ((StatusLogger) logger).registerListener(listener);
 </pre>
-          </p>
         </subsection>
         <a name="UnitTestingInMaven"/>
         <subsection name="Testing in Maven">
