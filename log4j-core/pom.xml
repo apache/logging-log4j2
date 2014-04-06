@@ -38,6 +38,11 @@
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
     </dependency>
+    <!-- Used for pre-caching the standard plugins -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-plugin-processor</artifactId>
+    </dependency>
     <!-- Used for OSGi bundle support -->
     <dependency>
       <groupId>org.osgi</groupId>
@@ -226,6 +231,8 @@
           </execution>
         </executions>
       </plugin>
+      <!-- TODO: verify this is no longer required -->
+      <!--
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
@@ -245,6 +252,7 @@
           </arguments>
         </configuration>
       </plugin>
+      -->
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
@@ -415,6 +423,7 @@
         <reportSets>
           <reportSet>
             <!-- Disabled as it makes the site build very slow and causes the performance unit test to fail -->
+            <!-- TODO: convert this report plugin into a release profile and disable relevant unit tests -->
             <reports />
           </reportSet>
         </reportSets>
