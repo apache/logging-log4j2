@@ -608,6 +608,18 @@
           <artifactId>maven-pmd-plugin</artifactId>
           <version>${pmd.plugin.version}</version>
         </plugin>
+        <!-- some nice default compiler options -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.1</version>
+          <configuration>
+            <source>${maven.compile.source}</source>
+            <target>${maven.compile.target}</target>
+            <showDeprecation>true</showDeprecation>
+            <showWarnings>true</showWarnings>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -906,6 +918,7 @@
     <module>log4j-jmx-gui</module>
     <module>log4j-samples</module>
     <module>log4j-bom</module>
+    <module>log4j-plugin-processor</module>
   </modules>
   <profiles>
     <profile>
