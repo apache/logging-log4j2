@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
@@ -61,8 +60,6 @@ public class PluginProcessor extends AbstractProcessor {
      * Name of cache file.
      */
     public static final String FILENAME = "Log4j2Plugins.dat";
-
-    private static final AtomicInteger invokeCount = new AtomicInteger();
 
     private final ConcurrentMap<String, ConcurrentMap<String, PluginEntry>> pluginCategories =
             new ConcurrentHashMap<String, ConcurrentMap<String, PluginEntry>>();
