@@ -48,6 +48,8 @@ import static javax.tools.StandardLocation.CLASS_OUTPUT;
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class PluginProcessor extends AbstractProcessor {
 
+    // TODO: this could be made more abstract to allow for compile-time and run-time plugin processing
+
     /**
      * Destination package for saving cache file.
      */
