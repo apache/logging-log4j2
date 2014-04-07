@@ -48,6 +48,7 @@ public class PluginManager {
 
     private static final long NANOS_PER_SECOND = 1000000000L;
 
+    // TODO: re-use PluginCache code from plugin processor
     private static ConcurrentMap<String, ConcurrentMap<String, PluginType<?>>> pluginTypeMap =
         new ConcurrentHashMap<String, ConcurrentMap<String, PluginType<?>>>();
 
