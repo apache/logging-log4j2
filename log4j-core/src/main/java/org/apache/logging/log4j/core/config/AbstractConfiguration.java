@@ -25,6 +25,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -686,41 +687,22 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
         if (Map.class.isAssignableFrom(clazz)) {
             try {
-                @SuppressWarnings("unchecked")
-                final Map<String, Object> map = (Map<String, Object>) clazz.newInstance();
-                for (final Node child : node.getChildren()) {
-                    map.put(child.getName(), child.getObject());
-                }
-                return map;
+                return createPluginMap(node, clazz);
             } catch (final Exception ex) {
                 LOGGER.warn("Unable to create Map for {} of class {}", type.getElementName(), clazz);
             }
         }
 
-        if (List.class.isAssignableFrom(clazz)) {
+        if (Collection.class.isAssignableFrom(clazz)) {
             try {
-                @SuppressWarnings("unchecked")
-                final List<Object> list = (List<Object>) clazz.newInstance();
-                for (final Node child : node.getChildren()) {
-                    list.add(child.getObject());
-                }
-                return list;
+                return createPluginCollection(node, clazz);
             } catch (final Exception ex) {
                 LOGGER.warn("Unable to create List for {} of class {}", type.getElementName(), clazz);
             }
         }
 
-        Method factoryMethod = null;
-
-        for (final Method method : clazz.getMethods()) {
-            if (method.isAnnotationPresent(PluginFactory.class)) {
-                factoryMethod = method;
-                break;
-            }
-        }
-        if (factoryMethod == null) {
-            return null;
-        }
+        Method factoryMethod = findFactoryMethod(clazz);
+        if (factoryMethod == null) return null;
 
         final Annotation[][] parmArray = factoryMethod.getParameterAnnotations();
         final Class<?>[] parmClasses = factoryMethod.getParameterTypes();
@@ -749,7 +731,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
          */
         for (final Annotation[] parmTypes : parmArray) {
             String[] aliases = null;
-            for (final Annotation a: parmTypes) {
+            for (final Annotation a : parmTypes) {
                 if (a instanceof PluginAliases) {
                     aliases = ((PluginAliases) a).value();
                 }
@@ -799,7 +781,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                         for (final Node child : children) {
                             final PluginType<?> childType = child.getType();
                             if (elem.value().equalsIgnoreCase(childType.getElementName()) ||
-                                parmClass.isAssignableFrom(childType.getPluginClass())) {
+                                    parmClass.isAssignableFrom(childType.getPluginClass())) {
                                 used.add(child);
                                 if (!first) {
                                     sb.append(", ");
@@ -807,8 +789,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                                 first = false;
                                 final Object obj = child.getObject();
                                 if (obj == null) {
-                                    LOGGER.error("Null object returned for " + child.getName() + " in " +
-                                        node.getName());
+                                    LOGGER.error("Null object returned for {} in {}", child.getName(), node.getName());
                                     continue;
                                 }
                                 if (obj.getClass().isArray()) {
@@ -844,7 +825,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                         for (final Node child : children) {
                             final PluginType<?> childType = child.getType();
                             if (elem.value().equals(childType.getElementName()) ||
-                                parmClass.isAssignableFrom(childType.getPluginClass())) {
+                                    parmClass.isAssignableFrom(childType.getPluginClass())) {
                                 sb.append(child.getName()).append('(').append(child.toString()).append(')');
                                 present = true;
                                 used.add(child);
@@ -893,27 +874,55 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 }
                 final String nodeType = node.getType().getElementName();
                 final String start = nodeType.equals(node.getName()) ? node.getName() : nodeType + ' ' + node.getName();
-                LOGGER.error(start + " has no parameter that matches element " + child.getName());
+                LOGGER.error("{} has no parameter that matches element {}", start, child.getName());
             }
         }
 
         try {
             final int mod = factoryMethod.getModifiers();
             if (!Modifier.isStatic(mod)) {
-                LOGGER.error(factoryMethod.getName() + " method is not static on class " +
-                    clazz.getName() + " for element " + node.getName());
+                LOGGER.error("{} method is not static on class {} for element {}",
+                        factoryMethod.getName(), clazz.getName(), node.getName());
                 return null;
             }
             LOGGER.debug("Calling {} on class {} for element {}{}", factoryMethod.getName(), clazz.getName(),
-                node.getName(), sb.toString());
+                    node.getName(), sb.toString());
             //if (parms.length > 0) {
-                return factoryMethod.invoke(null, parms);
+            return factoryMethod.invoke(null, parms);
             //}
             //return factoryMethod.invoke(null, node);
         } catch (final Exception e) {
-            LOGGER.error("Unable to invoke method " + factoryMethod.getName() + " in class " +
-                clazz.getName() + " for element " + node.getName(), e);
+            LOGGER.error("Unable to invoke method {} in class {} for element {}",
+                    factoryMethod.getName(), clazz.getName(), node.getName(), e);
         }
+        return null;
+    }
+
+    private <T> Object createPluginMap(final Node node, final Class<T> clazz) throws InstantiationException, IllegalAccessException {
+        @SuppressWarnings("unchecked")
+        final Map<String, Object> map = (Map<String, Object>) clazz.newInstance();
+        for (final Node child : node.getChildren()) {
+            map.put(child.getName(), child.getObject());
+        }
+        return map;
+    }
+
+    private <T> Object createPluginCollection(final Node node, final Class<T> clazz) throws InstantiationException, IllegalAccessException {
+        @SuppressWarnings("unchecked")
+        final Collection<Object> list = (Collection<Object>) clazz.newInstance();
+        for (final Node child : node.getChildren()) {
+            list.add(child.getObject());
+        }
+        return list;
+    }
+
+    private <T> Method findFactoryMethod(final Class<T> clazz) {
+        for (final Method method : clazz.getMethods()) {
+            if (method.isAnnotationPresent(PluginFactory.class)) {
+                return method;
+            }
+        }
+        // TODO: this should probably throw an exception instead of returning null
         return null;
     }
 
