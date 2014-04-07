@@ -207,10 +207,10 @@ public final class StatusLogger extends AbstractLoggerProvider {
         }
         boolean next = false;
         for (final StackTraceElement element : stackTrace) {
-            if (next) {
+            final String className = element.getClassName();
+            if (next && !fqcn.equals(className)) {
                 return element;
             }
-            final String className = element.getClassName();
             if (fqcn.equals(className)) {
                 next = true;
             } else if (NOT_AVAIL.equals(className)) {

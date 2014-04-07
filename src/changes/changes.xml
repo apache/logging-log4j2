@@ -21,6 +21,10 @@
   </properties>
   <body>
     <release version="2.0-rc2" date="2014-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-597" dev="rgoers" type="fix">
+        StatusLogger was not skipping multiple instances of the FQCN class, causing messages from classes in
+        the Verbose list to be printed.
+      </action>
       <action issue="LOG4J2-585" dev="rgoers" type="update">
         Add support for multiple parents to Markers.
       </action>
