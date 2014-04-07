@@ -116,11 +116,6 @@ public class JSONConfiguration extends AbstractConfiguration implements Reconfig
     }
 
     @Override
-    public void stop() {
-        super.stop();
-    }
-
-    @Override
     public void setup() {
         final Iterator<Map.Entry<String, JsonNode>> iter = root.fields();
         final List<Node> children = rootNode.getChildren();
