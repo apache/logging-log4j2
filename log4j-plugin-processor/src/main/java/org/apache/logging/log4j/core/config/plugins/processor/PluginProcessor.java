@@ -17,15 +17,12 @@
 
 package org.apache.logging.log4j.core.config.plugins.processor;
 
-import java.io.BufferedOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
@@ -61,8 +58,7 @@ public class PluginProcessor extends AbstractProcessor {
      */
     public static final String FILENAME = "Log4j2Plugins.dat";
 
-    private final ConcurrentMap<String, ConcurrentMap<String, PluginEntry>> pluginCategories =
-            new ConcurrentHashMap<String, ConcurrentMap<String, PluginEntry>>();
+    private final PluginCache pluginCache = new PluginCache();
 
     @Override
     public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
@@ -93,8 +89,7 @@ public class PluginProcessor extends AbstractProcessor {
         for (final Element element : elements) {
             final Plugin plugin = element.getAnnotation(Plugin.class);
             final PluginEntry entry = element.accept(pluginVisitor, plugin);
-            pluginCategories.putIfAbsent(entry.getCategory(), new ConcurrentHashMap<String, PluginEntry>());
-            final ConcurrentMap<String, PluginEntry> category = pluginCategories.get(entry.getCategory());
+            final ConcurrentMap<String, PluginEntry> category = pluginCache.getCategory(entry.getCategory());
             category.put(entry.getKey(), entry);
             final Collection<PluginEntry> entries = element.accept(pluginAliasesVisitor, plugin);
             for (final PluginEntry pluginEntry : entries) {
@@ -105,22 +100,9 @@ public class PluginProcessor extends AbstractProcessor {
 
     private void writeCacheFile(final Element... elements) throws IOException {
         final FileObject fo = processingEnv.getFiler().createResource(CLASS_OUTPUT, PLUGINS_PACKAGE_NAME, FILENAME, elements);
-        final DataOutputStream out = new DataOutputStream(new BufferedOutputStream(fo.openOutputStream()));
+        final OutputStream out = fo.openOutputStream();
         try {
-            out.writeInt(pluginCategories.size());
-            for (final Map.Entry<String, ConcurrentMap<String, PluginEntry>> category : pluginCategories.entrySet()) {
-                out.writeUTF(category.getKey());
-                final Map<String, PluginEntry> m = category.getValue();
-                out.writeInt(m.size());
-                for (final Map.Entry<String, PluginEntry> entry : m.entrySet()) {
-                    final PluginEntry plugin = entry.getValue();
-                    out.writeUTF(plugin.getKey());
-                    out.writeUTF(plugin.getClassName());
-                    out.writeUTF(plugin.getName());
-                    out.writeBoolean(plugin.isPrintable());
-                    out.writeBoolean(plugin.isDefer());
-                }
-            }
+            pluginCache.writeCache(out);
         } finally {
             out.close();
         }
