@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.spi;
 
-import java.io.PrintWriter;
 import java.io.Serializable;
 
 import org.apache.logging.log4j.Level;
@@ -770,29 +769,6 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
     @Override
     public String getName() {
         return name;
-    }
-
-    /**
-     * Gets a print stream that logs lines to this logger.
-     *
-     * @param level the logging level
-     * @return print stream that logs printed lines to this logger.
-     */
-    @Override
-    public PrintWriter printWriter(final Level level) {
-        return new PrintWriter(new LoggerWriter(this, null, level), true);
-    }
-
-    /**
-     * Gets a marked print stream that logs lines to this logger.
-     *
-     * @param marker the marker data specific to this log statement
-     * @param level the logging level
-     * @return print stream that logs printed lines to this logger.
-     */
-    @Override
-    public PrintWriter printWriter(Marker marker, Level level) {
-        return new PrintWriter(new LoggerWriter(this, marker, level), true);
     }
 
     /**
