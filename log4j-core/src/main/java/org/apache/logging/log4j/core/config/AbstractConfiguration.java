@@ -683,6 +683,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     */
     private <T> Object createPluginObject(final PluginType<T> type, final Node node, final LogEvent event)
     {
+        // TODO: add support for type conversion
         final Class<T> clazz = type.getPluginClass();
 
         if (Map.class.isAssignableFrom(clazz)) {
@@ -730,12 +731,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
          *   If not an array, store the object in the child node into the parameter array.
          */
         for (final Annotation[] parmTypes : parmArray) {
-            String[] aliases = null;
-            for (final Annotation a : parmTypes) {
-                if (a instanceof PluginAliases) {
-                    aliases = ((PluginAliases) a).value();
-                }
-            }
+            String[] aliases = extractPluginAliases(parmTypes);
             for (final Annotation a : parmTypes) {
                 if (a instanceof PluginAliases) {
                     continue;
@@ -896,6 +892,16 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                     factoryMethod.getName(), clazz.getName(), node.getName(), e);
         }
         return null;
+    }
+
+    private String[] extractPluginAliases(final Annotation... parmTypes) {
+        String[] aliases = null;
+        for (final Annotation a : parmTypes) {
+            if (a instanceof PluginAliases) {
+                aliases = ((PluginAliases) a).value();
+            }
+        }
+        return aliases;
     }
 
     private <T> Object createPluginMap(final Node node, final Class<T> clazz) throws InstantiationException, IllegalAccessException {
