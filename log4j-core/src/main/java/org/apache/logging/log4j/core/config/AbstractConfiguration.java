@@ -827,27 +827,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             sb.append(')');
         }
 
-        if (!attrs.isEmpty()) {
-            final StringBuilder eb = new StringBuilder();
-            for (final String key : attrs.keySet()) {
-                if (eb.length() == 0) {
-                    eb.append(node.getName());
-                    eb.append(" contains ");
-                    if (attrs.size() == 1) {
-                        eb.append("an invalid element or attribute ");
-                    } else {
-                        eb.append("invalid attributes ");
-                    }
-                } else {
-                    eb.append(", ");
-                }
-                eb.append('"');
-                eb.append(key);
-                eb.append('"');
-
-            }
-            LOGGER.error(eb.toString());
-        }
+        checkForRemainingAttributes(node);
 
         if (!type.isDeferChildren() && used.size() != children.size()) {
             for (final Node child : children) {
@@ -899,6 +879,31 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             }
         }
         return null;
+    }
+
+    private static void checkForRemainingAttributes(final Node node) {
+        final Map<String, String> attrs = node.getAttributes();
+        if (!attrs.isEmpty()) {
+            final StringBuilder eb = new StringBuilder();
+            for (final String key : attrs.keySet()) {
+                if (eb.length() == 0) {
+                    eb.append(node.getName());
+                    eb.append(" contains ");
+                    if (attrs.size() == 1) {
+                        eb.append("an invalid element or attribute ");
+                    } else {
+                        eb.append("invalid attributes ");
+                    }
+                } else {
+                    eb.append(", ");
+                }
+                eb.append('"');
+                eb.append(key);
+                eb.append('"');
+
+            }
+            LOGGER.error(eb.toString());
+        }
     }
 
     private static String[] extractPluginAliases(final Annotation... parmTypes) {
