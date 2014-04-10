@@ -296,8 +296,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     @SuppressWarnings("unchecked")
     protected void doConfigure() {
-        boolean setRoot = false;
-        boolean setLoggers = false;
         if (rootNode.hasChildren() && rootNode.getChildren().get(0).getName().equalsIgnoreCase("Properties")) {
             Node first = rootNode.getChildren().get(0);
             createConfiguration(first, null);
@@ -310,6 +308,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             subst.setVariableResolver(new Interpolator(lookup));
         }
 
+        boolean setLoggers = false;
+        boolean setRoot = false;
         for (final Node child : rootNode.getChildren()) {
             if (child.getName().equalsIgnoreCase("Properties")) {
                 if (tempLookup == subst.getVariableResolver()) {
