@@ -90,9 +90,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     private Advertiser advertiser = new DefaultAdvertiser();
 
-    protected Map<String, String> advertisedConfiguration;
-
-    private Node advertiserNode = null;
+    Reprivate Node advertiserNode = null;
 
     private Object advertisement;
 
