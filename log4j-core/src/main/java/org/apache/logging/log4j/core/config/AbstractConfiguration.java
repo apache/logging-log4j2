@@ -90,7 +90,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     private Advertiser advertiser = new DefaultAdvertiser();
 
-    Reprivate Node advertiserNode = null;
+    private Node advertiserNode = null;
 
     private Object advertisement;
 
