@@ -776,7 +776,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                         boolean first = true;
                         for (final Node child : children) {
                             final PluginType<?> childType = child.getType();
-                            if (elem.value().equalsIgnoreCase(childType.getElementName()) ||
+                            if (name.equalsIgnoreCase(childType.getElementName()) ||
                                     parmClass.isAssignableFrom(childType.getPluginClass())) {
                                 used.add(child);
                                 if (!first) {
@@ -814,7 +814,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                         boolean present = false;
                         for (final Node child : children) {
                             final PluginType<?> childType = child.getType();
-                            if (elem.value().equals(childType.getElementName()) ||
+                            if (name.equals(childType.getElementName()) ||
                                     parmClass.isAssignableFrom(childType.getPluginClass())) {
                                 sb.append(child.getName()).append('(').append(child.toString()).append(')');
                                 present = true;
