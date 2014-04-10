@@ -830,10 +830,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         checkForRemainingAttributes(node);
 
         if (!type.isDeferChildren() && used.size() != children.size()) {
+            children.removeAll(used);
             for (final Node child : children) {
-                if (used.contains(child)) {
-                    continue;
-                }
                 final String nodeType = node.getType().getElementName();
                 final String start = nodeType.equals(node.getName()) ? node.getName() : nodeType + ' ' + node.getName();
                 LOGGER.error("{} has no parameter that matches element {}", start, child.getName());
