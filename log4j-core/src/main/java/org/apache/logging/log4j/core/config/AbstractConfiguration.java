@@ -810,21 +810,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                         }
                         parms[index] = collectionToArray(list, parmClass);
                     } else {
-                        final Class<?> parmClass = parmClasses[index];
-                        boolean present = false;
-                        for (final Node child : children) {
-                            final PluginType<?> childType = child.getType();
-                            if (name.equals(childType.getElementName()) ||
-                                    parmClass.isAssignableFrom(childType.getPluginClass())) {
-                                sb.append(child.getName()).append('(').append(child.toString()).append(')');
-                                present = true;
-                                used.add(child);
-                                parms[index] = child.getObject();
-                                break;
-                            }
-                        }
-                        if (!present) {
+                        final Node child = findNamedNode(name, parmClasses[index], children);
+                        if (child == null) {
                             sb.append("null");
+                        } else {
+                            sb.append(child.getName()).append('(').append(child.toString()).append(')');
+                            used.add(child);
+                            parms[index] = child.getObject();
                         }
                     }
                 }
@@ -896,6 +888,17 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             ++i;
         }
         return array;
+    }
+
+    private static Node findNamedNode(final String name, final Class<?> type, final Iterable<Node> nodes) {
+        for (final Node child : nodes) {
+            final PluginType<?> childType = child.getType();
+            if (name.equalsIgnoreCase(childType.getElementName()) ||
+                    type.isAssignableFrom(childType.getPluginClass())) {
+                return child;
+            }
+        }
+        return null;
     }
 
     private static String[] extractPluginAliases(final Annotation... parmTypes) {
