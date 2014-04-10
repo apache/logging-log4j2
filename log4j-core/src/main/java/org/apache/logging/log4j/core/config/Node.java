@@ -38,7 +38,7 @@ public class Node {
 
 
     /**
-     * Creates a new instance of <code>Node</code> and initializes it
+     * Creates a new instance of {@code Node} and initializes it
      * with a name and the corresponding XML element.
      *
      * @param parent the node's parent.
@@ -78,7 +78,7 @@ public class Node {
     }
 
     public boolean hasChildren() {
-        return children.size() > 0;
+        return !children.isEmpty();
     }
 
     public String getValue() {
