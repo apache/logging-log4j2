@@ -20,11 +20,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Array;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -34,7 +29,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,15 +40,10 @@ import org.apache.logging.log4j.core.appender.AsyncAppender;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfig;
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
-import org.apache.logging.log4j.core.config.plugins.PluginAliases;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilder;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginManager;
-import org.apache.logging.log4j.core.config.plugins.PluginNode;
 import org.apache.logging.log4j.core.config.plugins.PluginType;
-import org.apache.logging.log4j.core.config.plugins.PluginValue;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.core.helpers.NameUtil;
@@ -666,10 +655,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
     }
 
-   /*
-    * Retrieve a static public 'method to create the desired object. Every parameter
-    * will be annotated to identify the appropriate attribute or element to use to
+   /**
+    * Invokes a static factory method to create the desired object. Every parameter
+    * must be annotated to identify the appropriate attribute or element to use to
     * set the value of the parameter.
+    *
     * Parameters annotated with PluginAttribute will always be set as Strings.
     * Parameters annotated with PluginElement may be Objects or arrays. Collections
     * and Maps are currently not supported, although the factory method that is called
@@ -677,9 +667,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     *
     * Although the happy path works, more work still needs to be done to log incorrect
     * parameters. These will generally result in unhelpful InvocationTargetExceptions.
-    * @param classClass the class.
-    * @return the instantiate method or null if there is none by that
-    * description.
+    *
+    * @param type the type of plugin to create.
+    * @param node the corresponding configuration node for this plugin to create.
+    * @param event the LogEvent that spurred the creation of this plugin
+    * @return the created plugin object or {@code null} if there was an error setting it up.
     */
     private <T> Object createPluginObject(final PluginType<T> type, final Node node, final LogEvent event)
     {
@@ -702,216 +694,17 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             }
         }
 
-        Method factoryMethod = findFactoryMethod(clazz);
-        if (factoryMethod == null) return null;
-
-        final Annotation[][] parmArray = factoryMethod.getParameterAnnotations();
-        final Class<?>[] parmClasses = factoryMethod.getParameterTypes();
-        if (parmArray.length != parmClasses.length) {
-            LOGGER.error("Number of parameter annotations ({}) does not equal the number of parameters ({})",
-                    parmArray.length, parmClasses.length
-            );
-        }
-        final Object[] parms = new Object[parmClasses.length];
-
-        int index = 0;
-        final Map<String, String> attrs = node.getAttributes();
-        final List<Node> children = node.getChildren();
-        final StringBuilder sb = new StringBuilder();
-        final List<Node> used = new ArrayList<Node>();
-
-        /*
-         * For each parameter:
-         * If the parameter is an attribute store the value of the attribute in the parameter array.
-         * If the parameter is an element:
-         *   Determine if the required parameter is an array.
-         *     If so, if a child contains the array, use it,
-         *      otherwise create the array from all child nodes of the correct type.
-         *     Store the array into the parameter array.
-         *   If not an array, store the object in the child node into the parameter array.
-         */
-        for (final Annotation[] parmTypes : parmArray) {
-            String[] aliases = extractPluginAliases(parmTypes);
-            for (final Annotation a : parmTypes) {
-                if (a instanceof PluginAliases) {
-                    continue;
-                }
-                if (sb.length() == 0) {
-                    sb.append(" with params(");
-                } else {
-                    sb.append(", ");
-                }
-                if (a instanceof PluginNode) {
-                    parms[index] = node;
-                    sb.append("Node=").append(node.getName());
-                } else if (a instanceof PluginConfiguration) {
-                    parms[index] = this;
-                    if (this.name != null) {
-                        sb.append("Configuration(").append(name).append(')');
-                    } else {
-                        sb.append("Configuration");
-                    }
-                } else if (a instanceof PluginValue) {
-                    final String name = ((PluginValue) a).value();
-                    String v = node.getValue();
-                    if (v == null) {
-                        v = getAttrValue("value", null, attrs);
-                    }
-                    final String value = subst.replace(event, v);
-                    sb.append(name).append("=\"").append(value).append('"');
-                    parms[index] = value;
-                } else if (a instanceof PluginAttribute) {
-                    PluginAttribute attr = (PluginAttribute) a;
-                    final String name = attr.value();
-                    final String value = subst.replace(event, getAttrValue(name, aliases, attrs));
-                    sb.append(name).append("=\"").append(value).append('"');
-                    parms[index] = value;
-                } else if (a instanceof PluginElement) {
-                    final PluginElement elem = (PluginElement) a;
-                    final String name = elem.value();
-                    if (parmClasses[index].isArray()) {
-                        final Class<?> parmClass = parmClasses[index].getComponentType();
-                        final List<Object> list = new ArrayList<Object>();
-                        sb.append(name).append("={");
-                        boolean first = true;
-                        for (final Node child : children) {
-                            final PluginType<?> childType = child.getType();
-                            if (name.equalsIgnoreCase(childType.getElementName()) ||
-                                    parmClass.isAssignableFrom(childType.getPluginClass())) {
-                                used.add(child);
-                                if (!first) {
-                                    sb.append(", ");
-                                }
-                                first = false;
-                                final Object obj = child.getObject();
-                                if (obj == null) {
-                                    LOGGER.error("Null object returned for {} in {}", child.getName(), node.getName());
-                                    continue;
-                                }
-                                if (obj.getClass().isArray()) {
-                                    printArray(sb, (Object[]) obj);
-                                    parms[index] = obj;
-                                    break;
-                                }
-                                sb.append(child.toString());
-                                list.add(obj);
-                            }
-                        }
-                        sb.append('}');
-                        if (parms[index] != null) {
-                            break;
-                        }
-                        if (!(list.isEmpty() || parmClass.isAssignableFrom(list.get(0).getClass()))) {
-                            LOGGER.error(
-                                    "Attempted to assign List containing class {} to array of type {} for attribute {}",
-                                    list.get(0).getClass().getName(), parmClass, name
-                            );
-                            break;
-                        }
-                        parms[index] = collectionToArray(list, parmClass);
-                    } else {
-                        final Node child = findNamedNode(name, parmClasses[index], children);
-                        if (child == null) {
-                            sb.append("null");
-                        } else {
-                            sb.append(child.getName()).append('(').append(child.toString()).append(')');
-                            used.add(child);
-                            parms[index] = child.getObject();
-                        }
-                    }
-                }
-            }
-            ++index;
-        }
-        if (sb.length() > 0) {
-            sb.append(')');
-        }
-
-        checkForRemainingAttributes(node);
-
-        if (!type.isDeferChildren() && used.size() != children.size()) {
-            children.removeAll(used);
-            for (final Node child : children) {
-                final String nodeType = node.getType().getElementName();
-                final String start = nodeType.equals(node.getName()) ? node.getName() : nodeType + ' ' + node.getName();
-                LOGGER.error("{} has no parameter that matches element {}", start, child.getName());
-            }
-        }
-
         try {
-            final int mod = factoryMethod.getModifiers();
-            if (!Modifier.isStatic(mod)) {
-                LOGGER.error("{} method is not static on class {} for element {}",
-                        factoryMethod.getName(), clazz.getName(), node.getName());
-                return null;
-            }
-            LOGGER.debug("Calling {} on class {} for element {}{}", factoryMethod.getName(), clazz.getName(),
-                    node.getName(), sb.toString());
-            //if (parms.length > 0) {
-            return factoryMethod.invoke(null, parms);
-            //}
-            //return factoryMethod.invoke(null, node);
-        } catch (final Exception e) {
-            LOGGER.error("Unable to invoke method {} in class {} for element {}",
-                    factoryMethod.getName(), clazz.getName(), node.getName(), e);
+            return new PluginBuilder<T>(type)
+                    .withFactoryMethodAnnotatedBy(PluginFactory.class)
+                    .withConfiguration(this)
+                    .withConfigurationNode(node)
+                    .forLogEvent(event)
+                    .build();
+        } catch (NoSuchMethodException e) {
+            LOGGER.error("No suitable factory method could be found on class {}", clazz, e);
+            return null;
         }
-        return null;
-    }
-
-    private static Object[] collectionToArray(final Collection<?> collection, final Class<?> type) {
-        final Object[] array = (Object[]) Array.newInstance(type, collection.size());
-        int i = 0;
-        for (final Object obj : collection) {
-            array[i] = obj;
-            ++i;
-        }
-        return array;
-    }
-
-    private static Node findNamedNode(final String name, final Class<?> type, final Iterable<Node> nodes) {
-        for (final Node child : nodes) {
-            final PluginType<?> childType = child.getType();
-            if (name.equalsIgnoreCase(childType.getElementName()) ||
-                    type.isAssignableFrom(childType.getPluginClass())) {
-                return child;
-            }
-        }
-        return null;
-    }
-
-    private static void checkForRemainingAttributes(final Node node) {
-        final Map<String, String> attrs = node.getAttributes();
-        if (!attrs.isEmpty()) {
-            final StringBuilder eb = new StringBuilder();
-            for (final String key : attrs.keySet()) {
-                if (eb.length() == 0) {
-                    eb.append(node.getName());
-                    eb.append(" contains ");
-                    if (attrs.size() == 1) {
-                        eb.append("an invalid element or attribute ");
-                    } else {
-                        eb.append("invalid attributes ");
-                    }
-                } else {
-                    eb.append(", ");
-                }
-                eb.append('"');
-                eb.append(key);
-                eb.append('"');
-
-            }
-            LOGGER.error(eb.toString());
-        }
-    }
-
-    private static String[] extractPluginAliases(final Annotation... parmTypes) {
-        String[] aliases = null;
-        for (final Annotation a : parmTypes) {
-            if (a instanceof PluginAliases) {
-                aliases = ((PluginAliases) a).value();
-            }
-        }
-        return aliases;
     }
 
     private static <T> Object createPluginMap(final Node node, final Class<T> clazz) throws InstantiationException, IllegalAccessException {
@@ -930,48 +723,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             list.add(child.getObject());
         }
         return list;
-    }
-
-    private static <T> Method findFactoryMethod(final Class<T> clazz) {
-        for (final Method method : clazz.getMethods()) {
-            if (method.isAnnotationPresent(PluginFactory.class)) {
-                return method;
-            }
-        }
-        // TODO: this should probably throw an exception instead of returning null
-        return null;
-    }
-
-    private void printArray(final StringBuilder sb, final Object... array) {
-        boolean first = true;
-        for (final Object obj : array) {
-            if (!first) {
-                sb.append(", ");
-            }
-            sb.append(obj.toString());
-            first = false;
-        }
-    }
-
-    private String getAttrValue(final String name, final String[] aliases, final Map<String, String> attrs) {
-        for (final Map.Entry<String, String> entry : attrs.entrySet()) {
-            final String key = entry.getKey();
-            if (key.equalsIgnoreCase(name)) {
-                final String attr = entry.getValue();
-                attrs.remove(key);
-                return attr;
-            }
-            if (aliases != null) {
-                for (String alias : aliases) {
-                    if (key.equalsIgnoreCase(alias)) {
-                        final String attr = entry.getValue();
-                        attrs.remove(key);
-                        return attr;
-                    }
-                }
-            }
-        }
-        return null;
     }
 
     private void setParents() {
