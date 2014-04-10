@@ -808,13 +808,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                             );
                             break;
                         }
-                        final Object[] array = (Object[]) Array.newInstance(parmClass, list.size());
-                        int i = 0;
-                        for (final Object obj : list) {
-                            array[i] = obj;
-                            ++i;
-                        }
-                        parms[index] = array;
+                        parms[index] = collectionToArray(list, parmClass);
                     } else {
                         final Class<?> parmClass = parmClasses[index];
                         boolean present = false;
@@ -892,6 +886,16 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                     factoryMethod.getName(), clazz.getName(), node.getName(), e);
         }
         return null;
+    }
+
+    private static Object[] collectionToArray(final Collection<?> collection, final Class<?> type) {
+        final Object[] array = (Object[]) Array.newInstance(type, collection.size());
+        int i = 0;
+        for (final Object obj : collection) {
+            array[i] = obj;
+            ++i;
+        }
+        return array;
     }
 
     private String[] extractPluginAliases(final Annotation... parmTypes) {
