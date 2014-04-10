@@ -898,7 +898,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         return array;
     }
 
-    private String[] extractPluginAliases(final Annotation... parmTypes) {
+    private static String[] extractPluginAliases(final Annotation... parmTypes) {
         String[] aliases = null;
         for (final Annotation a : parmTypes) {
             if (a instanceof PluginAliases) {
@@ -908,7 +908,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         return aliases;
     }
 
-    private <T> Object createPluginMap(final Node node, final Class<T> clazz) throws InstantiationException, IllegalAccessException {
+    private static <T> Object createPluginMap(final Node node, final Class<T> clazz) throws InstantiationException, IllegalAccessException {
         @SuppressWarnings("unchecked")
         final Map<String, Object> map = (Map<String, Object>) clazz.newInstance();
         for (final Node child : node.getChildren()) {
@@ -917,7 +917,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         return map;
     }
 
-    private <T> Object createPluginCollection(final Node node, final Class<T> clazz) throws InstantiationException, IllegalAccessException {
+    private static <T> Object createPluginCollection(final Node node, final Class<T> clazz) throws InstantiationException, IllegalAccessException {
         @SuppressWarnings("unchecked")
         final Collection<Object> list = (Collection<Object>) clazz.newInstance();
         for (final Node child : node.getChildren()) {
@@ -926,7 +926,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         return list;
     }
 
-    private <T> Method findFactoryMethod(final Class<T> clazz) {
+    private static <T> Method findFactoryMethod(final Class<T> clazz) {
         for (final Method method : clazz.getMethods()) {
             if (method.isAnnotationPresent(PluginFactory.class)) {
                 return method;
