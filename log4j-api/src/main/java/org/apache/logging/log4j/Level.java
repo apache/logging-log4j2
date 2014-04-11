@@ -102,7 +102,7 @@ public final class Level implements Comparable<Level>, Serializable {
     private final StandardLevel standardLevel;
 
     private Level(String name, int intLevel) {
-        if (name == null || name.length() == 0) {
+        if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("Illegal null Level constant");
         }
         if (intLevel < 0) {
