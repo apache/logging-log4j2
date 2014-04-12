@@ -22,7 +22,6 @@ import org.slf4j.Marker;
 import org.slf4j.impl.StaticMarkerBinder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -61,12 +60,12 @@ public class Log4jMarker implements Marker {
 
     @Override
     public boolean hasReferences() {
-        return marker.getParents() != null;
+        return marker.hasParents();
     }
 
     @Override
     public boolean hasChildren() {
-        return marker.getParents() != null;
+        return marker.hasParents();
     }
 
     @Override
