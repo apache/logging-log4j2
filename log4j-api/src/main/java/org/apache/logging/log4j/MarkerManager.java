@@ -49,6 +49,7 @@ public final class MarkerManager {
      * @param parent The name of the parent Marker.
      * @return The Marker with the specified name.
      * @throws IllegalArgumentException if the parent Marker does not exist.
+     * @deprecated Use the Marker add or set methods to add parent Markers. Will be removed by final GA release.
      */
     public static Marker getMarker(final String name, final String parent) {
         final Marker parentMarker = markerMap.get(parent);
@@ -63,23 +64,12 @@ public final class MarkerManager {
      * @param name The name of the Marker.
      * @param parent The parent Marker.
      * @return The Marker with the specified name.
+     * @deprecated Use the Marker add or set methods to add parent Markers. Will be removed by final GA release.
      */
     public static Marker getMarker(final String name, final Marker parent) {
-        markerMap.putIfAbsent(name, new Log4jMarker(name, parent));
-        return markerMap.get(name);
+        markerMap.putIfAbsent(name, new Log4jMarker(name));
+        return markerMap.get(name).add(parent);
     }
-
-    /**
-     * Retrieves or creates a Marker with the specified parents.
-     * @param name The name of the Marker.
-     * @param parents The parent Markers.
-     * @return The Marker with the specified name.
-     */
-    public static Marker getMarker(final String name, final Marker... parents) {
-        markerMap.putIfAbsent(name, new Log4jMarker(name, parents));
-        return markerMap.get(name);
-    }
-
     /**
      * The actual Marker implementation.
      */
@@ -95,29 +85,14 @@ public final class MarkerManager {
             this.parents = null;
         }
 
-        public Log4jMarker(final String name, final Marker parent) {
-            this.name = name;
-            this.parents = parent != null ? new Marker[] {parent} : null;
-        }
-
-        public Log4jMarker(final String name, final Marker... parents) {
-            this.name = name;
-            for (Marker marker : parents) {
-                if (marker == null) {
-                    throw new IllegalArgumentException("Marker cannot contain a null parent");
-                }
-            }
-            this.parents = parents;
-        }
-
         @Override
-        public synchronized void add(Marker parent) {
+        public synchronized Marker add(Marker parent) {
             if (parent == null) {
                 throw new IllegalArgumentException("A parent marker must be specified");
             }
             // Don't add a parent that is already in the hierarchy.
             if (parents != null && (this.isInstanceOf(parent) || parent.isInstanceOf(this))) {
-                return;
+                return this;
             }
             int size = parents == null ? 1 : parents.length + 1;
             Marker[] markers = new Marker[size];
@@ -126,6 +101,7 @@ public final class MarkerManager {
             }
             markers[size - 1] = parent;
             parents = markers;
+            return this;
         }
 
         @Override
@@ -159,6 +135,18 @@ public final class MarkerManager {
         }
 
         @Override
+        public Marker set(Marker... markers) {
+            if (markers == null || markers.length == 0) {
+                this.parents = null;
+            } else {
+                Marker[] array = new Marker[markers.length];
+                System.arraycopy(markers, 0, array, 0, markers.length);
+                this.parents = array;
+            }
+            return this;
+        }
+
+        @Override
         public String getName() {
             return this.name;
         }
@@ -170,7 +158,17 @@ public final class MarkerManager {
 
         @Override
         public Marker[] getParents() {
-            return this.parents;
+            if (this.parents == null) {
+                return null;
+            }
+            Marker[] markers = new Marker[this.parents.length];
+            System.arraycopy(this.parents, 0, markers, 0, this.parents.length);
+            return markers;
+        }
+
+        @Override
+        public boolean hasParents() {
+            return this.parents == null;
         }
 
         @Override
@@ -234,7 +232,7 @@ public final class MarkerManager {
             if (parent == marker) {
                 return true;
             }
-            Marker[] localParents = parent.getParents();
+            Marker[] localParents = parent instanceof Log4jMarker ? ((Log4jMarker)parent).parents : parent.getParents();
             if (localParents != null) {
                 if (localParents.length == 1) {
                     return checkParent(localParents[0], marker);
@@ -293,7 +291,7 @@ public final class MarkerManager {
                 }
                 first = false;
                 sb.append(marker.getName());
-                Marker[] p = marker.getParents();
+                Marker[] p = marker instanceof Log4jMarker ? ((Log4jMarker)marker).parents : marker.getParents();
                 if (p != null) {
                     addParentInfo(p, sb);
                 }

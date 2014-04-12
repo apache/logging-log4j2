@@ -43,8 +43,8 @@ public class MyApp {
 
     private Logger logger = LogManager.getLogger(MyApp.class.getName());
     private static final Marker SQL_MARKER = MarkerManager.getMarker("SQL");
-    private static final Marker UPDATE_MARKER = MarkerManager.getMarker("SQL_UPDATE", SQL_MARKER);
-    private static final Marker QUERY_MARKER = MarkerManager.getMarker("SQL_QUERY", SQL_MARKER);
+    private static final Marker UPDATE_MARKER = MarkerManager.getMarker("SQL_UPDATE").set(SQL_MARKER);
+    private static final Marker QUERY_MARKER = MarkerManager.getMarker("SQL_QUERY").set(SQL_MARKER);
 
     public String doQuery(String table) {
         logger.entry(param);
@@ -88,11 +88,12 @@ public class MyApp {
                   dependencies, unless that is what is desired.</li>
                 <li>Parent Markers can be added or removed dynamically. However, this is fairly expensive to do.
                   Instead, it is recommended that the parents be identified when obtaining the Marker the first time
-                  as shown in the examples above.</li>
+                  as shown in the examples above. Specifically, the set method replaces all the markers in
+                  a single operation while add and remove act on only a single Marker at a time.</li>
                 <li>Evaluating Markers with multiple ancestors is much more expensive than Markers with no parents.
                   For example, in one set of tests to evaluate whether a Marker matched its grandparent took 3
                   times longer than evaluating the Marker itself. Even then though, evaluating Markers is
-                  inexpensive compared resolving the callers class name or line number.</li>
+                  inexpensive compared to resolving the callers class name or line number.</li>
               </ol>
             </p>
           </subsection>

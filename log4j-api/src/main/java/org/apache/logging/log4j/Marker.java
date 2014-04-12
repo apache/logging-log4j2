@@ -41,10 +41,16 @@ public interface Marker extends Serializable {
     Marker getParent();
 
     /**
-     * Returns the list of parents of this Marker.
+     * Returns a list of parents of this Marker.
      * @return The parent Markers or null if this Marker has no parents.
      */
     Marker[] getParents();
+
+    /**
+     * Indicates whether this Marker has references to any other Markers.
+     * @return true if the Marker has parent Markers.
+     */
+    boolean hasParents();
 
     /**
      * Checks whether this Marker is an instance of the specified Marker.
@@ -63,8 +69,16 @@ public interface Marker extends Serializable {
     /**
      * Adds a Marker as a parent to this Marker.
      * @param marker The parent marker to add.
+     * @return The current Marker object, thus allowing multiple adds to be concatenated.
      */
-    void add(Marker marker);
+    Marker add(Marker marker);
+
+    /**
+     * Replaces the set of parent Markers with the provided Markers.
+     * @param markers The new set of parent Markers or null.
+     * @return The current Marker object.
+     */
+    Marker set(Marker... markers);
 
     /**
      * Removes the specified Marker as a parent of this Marker.
