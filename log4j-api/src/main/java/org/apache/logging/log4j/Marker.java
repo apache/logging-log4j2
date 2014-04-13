@@ -78,7 +78,7 @@ public interface Marker extends Serializable {
      * @param markers The new set of parent Markers or null.
      * @return The current Marker object.
      */
-    Marker set(Marker... markers);
+    Marker setParents(Marker... markers);
 
     /**
      * Removes the specified Marker as a parent of this Marker.

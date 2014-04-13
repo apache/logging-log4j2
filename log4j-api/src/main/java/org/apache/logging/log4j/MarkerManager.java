@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -139,7 +140,7 @@ public final class MarkerManager {
         }
 
         @Override
-        public Marker set(Marker... markers) {
+        public Marker setParents(Marker... markers) {
             if (markers == null || markers.length == 0) {
                 this.parents = null;
             } else {
@@ -165,9 +166,7 @@ public final class MarkerManager {
             if (this.parents == null) {
                 return null;
             }
-            Marker[] markers = new Marker[this.parents.length];
-            System.arraycopy(this.parents, 0, markers, 0, this.parents.length);
-            return markers;
+            return Arrays.copyOf(this.parents, this.parents.length);
         }
 
         @Override
