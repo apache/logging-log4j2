@@ -25,7 +25,7 @@
         StatusLogger was not skipping multiple instances of the FQCN class, causing messages from classes in
         the Verbose list to be printed.
       </action>
-      <action issue="LOG4J2-585" dev="rgoers" type="update">
+      <action issue="LOG4J2-585" dev="rgoers" type="update" due-to="Bruce Brouwer">
         Add support for multiple parents to Markers.
       </action>
       <action issue="LOG4J2-595" dev="mattsicker" type="add">
