@@ -90,17 +90,20 @@ public final class MarkerManager {
             if (parent == null) {
                 throw new IllegalArgumentException("A parent marker must be specified");
             }
+            // It is not strictly necessary to copy the variable here but it should perform better than
+            // Accessing a volatile variable multiple times.
+            Marker[] localParents = this.parents;
             // Don't add a parent that is already in the hierarchy.
-            if (parents != null && (this.isInstanceOf(parent) || parent.isInstanceOf(this))) {
+            if (localParents != null && (contains(parent, localParents) || parent.isInstanceOf(this))) {
                 return this;
             }
-            int size = parents == null ? 1 : parents.length + 1;
+            int size = localParents == null ? 1 : localParents.length + 1;
             Marker[] markers = new Marker[size];
-            if (parents != null) {
-                System.arraycopy(parents, 0, markers, 0, parents.length);
+            if (localParents != null) {
+                System.arraycopy(localParents, 0, markers, 0, localParents.length);
             }
             markers[size - 1] = parent;
-            parents = markers;
+            this.parents = markers;
             return this;
         }
 
@@ -109,22 +112,23 @@ public final class MarkerManager {
             if (parent == null) {
                 throw new IllegalArgumentException("A parent marker must be specified");
             }
-            if (parents == null) {
+            Marker[] localParents = this.parents;
+            if (localParents == null) {
                 return false;
             }
-            if (parents.length == 1) {
-                if (parents[0].equals(parent)) {
+            if (localParents.length == 1) {
+                if (localParents[0].equals(parent)) {
                     parents = null;
                     return true;
                 }
                 return false;
             }
             int index = 0;
-            Marker[] markers = new Marker[parents.length - 1];
-            for (int i = 0; i < parents.length; ++i) {
-                Marker marker = parents[i];
+            Marker[] markers = new Marker[localParents.length - 1];
+            for (int i = 0; i < localParents.length; ++i) {
+                Marker marker = localParents[i];
                 if (!marker.equals(parent)) {
-                    if (index == parents.length - 1) {
+                    if (index == localParents.length - 1) {
                         return false;
                     }
                     markers[index++] = marker;
@@ -244,6 +248,19 @@ public final class MarkerManager {
                     if (checkParent(localParents[i], marker)) {
                         return true;
                     }
+                }
+            }
+            return false;
+        }
+
+        /*
+         * Called from add while synchronized.
+         */
+        private boolean contains(Marker parent, Marker[] localParents) {
+
+            for (Marker marker : localParents) {
+                if (marker == parent) {
+                    return true;
                 }
             }
             return false;
