@@ -19,11 +19,10 @@ package org.apache.logging.log4j.util;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Properties;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -42,7 +41,7 @@ public final class ProviderUtil {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private static final List<Provider> PROVIDERS = new ArrayList<Provider>();
+    private static final Collection<Provider> PROVIDERS = new ArrayList<Provider>();
 
     private ProviderUtil() {
     }
@@ -59,9 +58,8 @@ public final class ProviderUtil {
         if (enumResources != null) {
             while (enumResources.hasMoreElements()) {
                 final URL url = enumResources.nextElement();
-                Properties props;
                 try {
-                    props = PropertiesUtil.loadClose(url.openStream(), url);
+                    final Properties props = PropertiesUtil.loadClose(url.openStream(), url);
                     if (!validVersion(props.getProperty(API_VERSION))) {
                         continue;
                     }
@@ -78,7 +76,7 @@ public final class ProviderUtil {
     }
 
     public static boolean hasProviders() {
-        return PROVIDERS.size() > 0;
+        return !PROVIDERS.isEmpty();
     }
 
     public static ClassLoader findClassLoader() {
