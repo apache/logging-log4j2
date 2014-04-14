@@ -17,7 +17,6 @@
 package org.apache.logging.log4j;
 
 import java.net.URI;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -74,9 +73,7 @@ public class LogManager {
             final SortedMap<Integer, LoggerContextFactory> factories = new TreeMap<Integer, LoggerContextFactory>();
 
             if (ProviderUtil.hasProviders()) {
-                final Iterator<Provider> providers = ProviderUtil.getProviders();
-                while (providers.hasNext()) {
-                    final Provider provider = providers.next();
+                for (final Provider provider : ProviderUtil.getProviders()) {
                     final String className = provider.getClassName();
                     if (className != null) {
                         try {

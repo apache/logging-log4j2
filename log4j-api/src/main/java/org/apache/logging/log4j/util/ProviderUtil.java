@@ -21,7 +21,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.Properties;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.spi.Provider;
@@ -71,8 +70,8 @@ public final class ProviderUtil {
         }
     }
 
-    public static Iterator<Provider> getProviders() {
-        return PROVIDERS.iterator();
+    public static Iterable<Provider> getProviders() {
+        return PROVIDERS;
     }
 
     public static boolean hasProviders() {
