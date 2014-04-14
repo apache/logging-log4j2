@@ -21,7 +21,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -91,9 +90,7 @@ public final class ThreadContext  {
         }
         if (contextMap == null && ProviderUtil.hasProviders()) {
             final LoggerContextFactory factory = LogManager.getFactory();
-            final Iterator<Provider> providers = ProviderUtil.getProviders();
-            while (providers.hasNext()) {
-                final Provider provider = providers.next();
+            for (final Provider provider : ProviderUtil.getProviders()) {
                 threadContextMapName = provider.getThreadContextMap();
                 final String factoryClassName = provider.getClassName();
                 if (threadContextMapName != null && factory.getClass().getName().equals(factoryClassName)) {
