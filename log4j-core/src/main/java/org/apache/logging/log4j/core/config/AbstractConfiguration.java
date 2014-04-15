@@ -46,6 +46,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.PluginType;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.helpers.Constants;
+import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.core.helpers.NameUtil;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
@@ -139,15 +140,15 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @Override
     public void start() {
         pluginManager.collectPlugins();
-        PluginManager levelPlugins = new PluginManager("Level");
+        final PluginManager levelPlugins = new PluginManager("Level");
         levelPlugins.collectPlugins();
-        Map<String, PluginType<?>> plugins = levelPlugins.getPlugins();
+        final Map<String, PluginType<?>> plugins = levelPlugins.getPlugins();
         if (plugins != null) {
-            for (PluginType<?> type : plugins.values()) {
+            for (final PluginType<?> type : plugins.values()) {
                 try {
                     // Cause the class to be initialized if it isn't already.
-                    Class.forName(type.getPluginClass().getName(), true, type.getPluginClass().getClassLoader());
-                } catch (Exception ex) {
+                    Loader.initializeClass(type.getPluginClass().getName(), type.getPluginClass().getClassLoader());
+                } catch (final Exception ex) {
                     LOGGER.error("Unable to initialize {} due to {}: {}", type.getPluginClass().getName(),
                             ex.getClass().getSimpleName(), ex.getMessage());
                 }
