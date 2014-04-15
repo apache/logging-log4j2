@@ -26,6 +26,7 @@ import java.util.Map;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.helpers.Integers;
+import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -163,26 +164,17 @@ public class MulticastDNSAdvertiser implements Advertiser {
         return null;
     }
 
-    private Object buildServiceInfoVersion1(final String zone, final int port, final String name, final Map<String, String> properties) {
+    private static Object buildServiceInfoVersion1(final String zone,
+                                                   final int port,
+                                                   final String name,
+                                                   final Map<String, String> properties) {
         //version 1 uses a hashtable
+        @SuppressWarnings("UseOfObsoleteCollectionType")
         final Hashtable<String, String> hashtableProperties = new Hashtable<String, String>(properties);
         try {
-            final Class<?>[] args = new Class<?>[6];
-            args[0] = String.class;
-            args[1] = String.class;
-            args[2] = int.class;
-            args[3] = int.class; //weight (0)
-            args[4] = int.class; //priority (0)
-            args[5] = Hashtable.class;
-            final Constructor<?> constructor  = serviceInfoClass.getConstructor(args);
-            final Object[] values = new Object[6];
-            values[0] = zone;
-            values[1] = name;
-            values[2] = port;
-            values[3] = 0;
-            values[4] = 0;
-            values[5] = hashtableProperties;
-            return constructor.newInstance(values);
+            return serviceInfoClass
+                    .getConstructor(String.class, String.class, int.class, int.class, int.class, Hashtable.class)
+                    .newInstance(zone, name, port, 0, 0, hashtableProperties);
         } catch (final IllegalAccessException e) {
             LOGGER.warn("Unable to construct ServiceInfo instance", e);
         } catch (final NoSuchMethodException e) {
@@ -195,24 +187,14 @@ public class MulticastDNSAdvertiser implements Advertiser {
         return null;
     }
 
-    private Object buildServiceInfoVersion3(final String zone, final int port, final String name, final Map<String, String> properties) {
+    private static Object buildServiceInfoVersion3(final String zone,
+                                                   final int port,
+                                                   final String name,
+                                                   final Map<String, String> properties) {
         try {
-            final Class<?>[] args = new Class<?>[6];
-            args[0] = String.class; //zone/type
-            args[1] = String.class; //display name
-            args[2] = int.class; //port
-            args[3] = int.class; //weight (0)
-            args[4] = int.class; //priority (0)
-            args[5] = Map.class;
-            final Method serviceInfoCreateMethod = serviceInfoClass.getMethod("create", args);
-            final Object[] values = new Object[6];
-            values[0] = zone;
-            values[1] = name;
-            values[2] = port;
-            values[3] = 0;
-            values[4] = 0;
-            values[5] = properties;
-            return serviceInfoCreateMethod.invoke(null, values);
+            return serviceInfoClass //   zone/type     display name  port       weight     priority   properties
+                    .getMethod("create", String.class, String.class, int.class, int.class, int.class, Map.class)
+                    .invoke(null, zone, name, port, 0, 0, properties);
         } catch (final IllegalAccessException e) {
             LOGGER.warn("Unable to invoke create method", e);
         } catch (final NoSuchMethodException e) {
@@ -225,9 +207,8 @@ public class MulticastDNSAdvertiser implements Advertiser {
 
     private static Object initializeJMDNS() {
         try {
-            // FIXME: don't use Class.forName without a ClassLoader
-            jmDNSClass = Class.forName("javax.jmdns.JmDNS");
-            serviceInfoClass = Class.forName("javax.jmdns.ServiceInfo");
+            jmDNSClass = Loader.loadClass("javax.jmdns.JmDNS");
+            serviceInfoClass = Loader.loadClass("javax.jmdns.ServiceInfo");
             //if version 3 is available, use it to constuct a serviceInfo instance, otherwise support the version1 API
             boolean isVersion3 = false;
             try {
