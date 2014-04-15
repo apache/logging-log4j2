@@ -23,6 +23,7 @@ import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.db.nosql.NoSQLProvider;
+import org.apache.logging.log4j.core.config.plugins.SensitivePluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -97,7 +98,7 @@ public final class MongoDBProvider implements NoSQLProvider<MongoDBConnection> {
             @PluginAttribute("server") final String server,
             @PluginAttribute("port") final String port,
             @PluginAttribute("username") final String username,
-            @PluginAttribute("password") final String password,
+            @SensitivePluginAttribute("password") final String password,
             @PluginAttribute("factoryClassName") final String factoryClassName,
             @PluginAttribute("factoryMethodName") final String factoryMethodName) {
         DB database;
