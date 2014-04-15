@@ -360,7 +360,7 @@ public class Log4jLogger implements LocationAwareLogger, Serializable {
         if (!logger.isEnabled(log4jLevel, log4jMarker, message, params)) {
             return;
         }
-        Message msg;
+        final Message msg;
         if (eventLogger && marker != null && marker.contains(EVENT_MARKER) && converter != null) {
             msg = converter.convertEvent(message, params, throwable);
         } else if (params == null) {
@@ -374,7 +374,7 @@ public class Log4jLogger implements LocationAwareLogger, Serializable {
         logger.logMessage(fqcn, log4jLevel, log4jMarker, msg, throwable);
     }
 
-    private org.apache.logging.log4j.Marker getMarker(Marker marker) {
+    private static org.apache.logging.log4j.Marker getMarker(final Marker marker) {
         return marker != null ? ((org.apache.logging.slf4j.Log4jMarker) marker).getLog4jMarker() : null;
     }
 
@@ -387,7 +387,7 @@ public class Log4jLogger implements LocationAwareLogger, Serializable {
      * Always treat de-serialization as a full-blown constructor, by validating the final state of
      * the de-serialized object.
      */
-    private void readObject(ObjectInputStream aInputStream) throws ClassNotFoundException, IOException {
+    private void readObject(final ObjectInputStream aInputStream) throws ClassNotFoundException, IOException {
         // always perform the default de-serialization first
         aInputStream.defaultReadObject();
         logger = LogManager.getContext().getLogger(name);
@@ -397,21 +397,21 @@ public class Log4jLogger implements LocationAwareLogger, Serializable {
     /**
      * This is the default implementation of writeObject. Customise if necessary.
      */
-    private void writeObject(ObjectOutputStream aOutputStream) throws IOException {
+    private void writeObject(final ObjectOutputStream aOutputStream) throws IOException {
         // perform the default serialization for all non-transient, non-static fields
         aOutputStream.defaultWriteObject();
     }
 
-    private EventDataConverter createConverter() {
+    private static EventDataConverter createConverter() {
         try {
             Class.forName("org.slf4j.ext.EventData");
             return new EventDataConverter();
-        } catch (ClassNotFoundException cnfe) {
+        } catch (final ClassNotFoundException cnfe) {
             return null;
         }
     }
 
-    private Level getLevel(final int i) {
+    private static Level getLevel(final int i) {
         switch (i) {
         case TRACE_INT:
             return Level.TRACE;
