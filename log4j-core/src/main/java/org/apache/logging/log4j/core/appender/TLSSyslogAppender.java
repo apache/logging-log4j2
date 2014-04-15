@@ -32,16 +32,19 @@ import org.apache.logging.log4j.core.net.ssl.SSLConfiguration;
 import java.io.Serializable;
 
 /**
- *
  * Secure Syslog Appender.
  */
 @Plugin(name = "TLSSyslog", category = "Core", elementType = "appender", printObject = true)
 public final class TLSSyslogAppender extends SyslogAppender {
 
 
-    protected TLSSyslogAppender(String name, Layout<? extends Serializable> layout, Filter filter,
-                                boolean ignoreExceptions, boolean immediateFlush, AbstractSocketManager manager,
-                                Advertiser advertiser) {
+    private TLSSyslogAppender(final String name,
+                              final Layout<? extends Serializable> layout,
+                              final Filter filter,
+                              final boolean ignoreExceptions,
+                              final boolean immediateFlush,
+                              final AbstractSocketManager manager,
+                              final Advertiser advertiser) {
         super(name, layout, filter, ignoreExceptions, immediateFlush, manager, advertiser);
     }
 
@@ -137,9 +140,12 @@ public final class TLSSyslogAppender extends SyslogAppender {
                 isAdvertise ? config.getAdvertiser() : null);
     }
 
-    public static AbstractSocketManager createSocketManager(SSLConfiguration sslConf, String host, int port,
-                                                            int reconnectDelay, boolean fail,
-                                                            Layout<? extends Serializable> layout) {
+    public static AbstractSocketManager createSocketManager(final SSLConfiguration sslConf,
+                                                            final String host,
+                                                            final int port,
+                                                            final int reconnectDelay,
+                                                            final boolean fail,
+                                                            final Layout<? extends Serializable> layout) {
         return TLSSocketManager.getSocketManager(sslConf, host, port, reconnectDelay, fail, layout);
     }
 }
