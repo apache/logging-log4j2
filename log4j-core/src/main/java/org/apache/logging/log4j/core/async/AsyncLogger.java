@@ -87,31 +87,32 @@ public class AsyncLogger extends Logger {
     static enum ThreadNameStrategy { // LOG4J2-467
         CACHED {
             @Override
-            public String getThreadName(Info info) {
+            public String getThreadName(final Info info) {
                 return info.cachedThreadName;
             }
         },
         UNCACHED {
             @Override
-            public String getThreadName(Info info) {
+            public String getThreadName(final Info info) {
                 return Thread.currentThread().getName();
             }
         };
         abstract String getThreadName(Info info);
 
         static ThreadNameStrategy create() {
-            String name = System.getProperty("AsyncLogger.ThreadNameStrategy", CACHED.name());
+            final String name = System.getProperty("AsyncLogger.ThreadNameStrategy", CACHED.name());
             try {
                 return ThreadNameStrategy.valueOf(name);
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
+                LOGGER.catching(ex);
                 return CACHED;
             }
         }
     }
     private static volatile Disruptor<RingBufferLogEvent> disruptor;
-    private static Clock clock = ClockFactory.getClock();
+    private static final Clock clock = ClockFactory.getClock();
 
-    private static ExecutorService executor = Executors
+    private static final ExecutorService executor = Executors
             .newSingleThreadExecutor(new DaemonThreadFactory("AsyncLogger-"));
 
     static {
@@ -122,10 +123,8 @@ public class AsyncLogger extends Logger {
         final WaitStrategy waitStrategy = createWaitStrategy();
         disruptor = new Disruptor<RingBufferLogEvent>(RingBufferLogEvent.FACTORY, ringBufferSize, executor,
                 ProducerType.MULTI, waitStrategy);
-        final EventHandler<RingBufferLogEvent>[] handlers = new RingBufferLogEventHandler[] {//
-        new RingBufferLogEventHandler() };
         disruptor.handleExceptionsWith(getExceptionHandler());
-        disruptor.handleEventsWith(handlers);
+        disruptor.handleEventsWith(new RingBufferLogEventHandler());
 
         LOGGER.debug("Starting AsyncLogger disruptor with ringbuffer size {}...", disruptor.getRingBuffer()
                 .getBufferSize());
@@ -218,7 +217,7 @@ public class AsyncLogger extends Logger {
         private final RingBufferLogEventTranslator translator;
         private final String cachedThreadName;
         private final boolean isAppenderThread;
-        public Info(RingBufferLogEventTranslator translator, String threadName, boolean appenderThread) {
+        public Info(final RingBufferLogEventTranslator translator, final String threadName, final boolean appenderThread) {
             this.translator = translator;
             this.cachedThreadName = threadName;
             this.isAppenderThread = appenderThread;
@@ -269,7 +268,7 @@ public class AsyncLogger extends Logger {
         disruptor.publishEvent(info.translator);
     }
 
-    private StackTraceElement location(final String fqcnOfLogger) {
+    private static StackTraceElement location(final String fqcnOfLogger) {
         return Log4jLogEvent.calcLocation(fqcnOfLogger);
     }
 
@@ -320,7 +319,7 @@ public class AsyncLogger extends Logger {
      * 
      * @param contextName name of the global {@code AsyncLoggerContext}
      */
-    public static RingBufferAdmin createRingBufferAdmin(String contextName) {
+    public static RingBufferAdmin createRingBufferAdmin(final String contextName) {
         return RingBufferAdmin.forAsyncLogger(disruptor.getRingBuffer(), contextName);
     }
 }
