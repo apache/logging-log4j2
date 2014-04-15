@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -59,16 +60,14 @@ public class OnStartupTriggeringPolicy implements TriggeringPolicy {
         // The reflection is necessary because without it, Google App Engine
         // will refuse to initialize this class.
         try {
-            // FIXME: Class.forName
-            Class<?> factoryClass = Class.forName("java.lang.management.ManagementFactory");
+            Class<?> factoryClass = Loader.loadSystemClass("java.lang.management.ManagementFactory");
             Method getRuntimeMXBean = factoryClass.getMethod("getRuntimeMXBean");
             Object runtimeMXBean = getRuntimeMXBean.invoke(null);
             
-            // FIXME: Class.forName
-            Class<?> runtimeMXBeanClass = Class.forName("java.lang.management.RuntimeMXBean");
+            Class<?> runtimeMXBeanClass = Loader.loadSystemClass("java.lang.management.RuntimeMXBean");
             Method getStartTime = runtimeMXBeanClass.getMethod("getStartTime");
             Long result = (Long) getStartTime.invoke(runtimeMXBean);
-            
+
             return result.longValue();
         } catch (Throwable t) {
             StatusLogger.getLogger().error("Unable to call ManagementFactory.getRuntimeMXBean().getStartTime(), " //
