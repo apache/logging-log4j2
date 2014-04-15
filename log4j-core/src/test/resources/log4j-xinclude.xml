@@ -17,7 +17,7 @@
 
 -->
 <Configuration xmlns:xi="http://www.w3.org/2001/XInclude"
-  status="warn" name="XMLConfigTest">
+  status="OFF" name="XMLConfigTest">
   <Properties>
     <Property name="filename">target/test.log</Property>
   </Properties>

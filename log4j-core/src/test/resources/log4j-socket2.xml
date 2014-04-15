@@ -15,7 +15,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="debug" name="MyApp">
+<Configuration status="OFF" name="MyApp">
   <Appenders>
     <Socket name="socket" host="localhost" port="5514" protocol="TCP" ignoreExceptions="false"
         reconnectionDelay="0">

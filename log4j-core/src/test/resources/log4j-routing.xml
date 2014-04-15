@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="debug" name="RoutingTest">
+<Configuration status="OFF" name="RoutingTest">
   <Properties>
     <Property name="filename">target/routing1/routingtest-$${sd:type}.log</Property>
   </Properties>

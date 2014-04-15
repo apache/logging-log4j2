@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration name="CallerInformationTest" status="error">
+<Configuration name="CallerInformationTest" status="OFF">
   <Appenders>
     <List name="Class">
       <PatternLayout pattern="%class"/>

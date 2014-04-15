@@ -17,7 +17,7 @@
 
 -->
 <!-- https://issues.apache.org/jira/browse/LOG4J2-180 -->
-<Configuration status="INFO">
+<Configuration status="OFF">
   <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
       <PatternLayout pattern="%highlight{%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n}{FATAL=bright red, ERROR=red, WARN=yellow, INFO=blue, DEBUG=green, TRACE=bright blue}" />

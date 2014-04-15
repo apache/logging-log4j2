@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="error" name="StyleTest">
+<Configuration status="OFF" name="StyleTest">
   <Appenders>
     <List name="List">
        <PatternLayout>

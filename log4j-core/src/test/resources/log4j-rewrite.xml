@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="error" name="RoutingTest">
+<Configuration status="OFF" name="RoutingTest">
 
   <Appenders>
     <Console name="STDOUT">
