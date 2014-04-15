@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.helpers.Clock;
 import org.apache.logging.log4j.core.helpers.ClockFactory;
+import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.message.Message;
@@ -189,10 +190,8 @@ public class AsyncLogger extends Logger {
             return null;
         }
         try {
-            @SuppressWarnings("unchecked")
-            final Class<? extends ExceptionHandler> klass = (Class<? extends ExceptionHandler>) Class.forName(cls);
-            final ExceptionHandler result = klass.newInstance();
-            LOGGER.debug("AsyncLogger.ExceptionHandler=" + result);
+            final ExceptionHandler result = Loader.newCheckedInstanceOf(cls, ExceptionHandler.class);
+            LOGGER.debug("AsyncLogger.ExceptionHandler={}", result);
             return result;
         } catch (final Exception ignored) {
             LOGGER.debug("AsyncLogger.ExceptionHandler not set: error creating " + cls + ": ", ignored);
@@ -305,6 +304,7 @@ public class AsyncLogger extends Logger {
             }
             try {
                 // give ringbuffer some time to drain...
+                // TODO: is there a better way to do this than busy-waiting?
                 Thread.sleep(HALF_A_SECOND);
             } catch (final InterruptedException e) {
                 // ignored
