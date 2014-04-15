@@ -26,6 +26,7 @@ import java.util.ListIterator;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
+import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.core.helpers.Strings;
 
 /**
@@ -124,8 +125,7 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
                                    final StackTraceElement[] stackTrace) {
         try {
             @SuppressWarnings("unchecked")
-            final
-            Class<Throwable> throwableClass = (Class<Throwable>) Class.forName(throwableClassName);
+            final Class<Throwable> throwableClass = (Class<Throwable>) Loader.loadClass(throwableClassName);
 
             if (!Throwable.class.isAssignableFrom(throwableClass)) {
                 return null;

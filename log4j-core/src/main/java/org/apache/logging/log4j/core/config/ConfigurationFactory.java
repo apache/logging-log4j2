@@ -115,6 +115,7 @@ public abstract class ConfigurationFactory {
         // volatile works in Java 1.6+, so double-checked locking also works properly
         //noinspection DoubleCheckedLocking
         if (factories == null) {
+            // TODO: synchronize on a real lock
             synchronized(TEST_PREFIX) {
                 if (factories == null) {
                     final List<ConfigurationFactory> list = new ArrayList<ConfigurationFactory>();
@@ -153,7 +154,7 @@ public abstract class ConfigurationFactory {
     @SuppressWarnings("unchecked")
     private static void addFactory(final Collection<ConfigurationFactory> list, final String factoryClass) {
         try {
-            addFactory(list, (Class<ConfigurationFactory>) Class.forName(factoryClass));
+            addFactory(list, (Class<ConfigurationFactory>) Loader.loadClass(factoryClass));
         } catch (final ClassNotFoundException ex) {
             LOGGER.error("Unable to load class {}", factoryClass, ex);
         } catch (final Exception ex) {
@@ -164,7 +165,7 @@ public abstract class ConfigurationFactory {
     private static void addFactory(final Collection<ConfigurationFactory> list,
                                    final Class<ConfigurationFactory> factoryClass) {
         try {
-            list.add(factoryClass.newInstance());
+            list.add(factoryClass.getConstructor().newInstance());
         } catch (final Exception ex) {
             LOGGER.error("Unable to create instance of {}", factoryClass.getName(), ex);
         }

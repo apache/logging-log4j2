@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.appender.db.nosql.NoSQLProvider;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.core.helpers.NameUtil;
 import org.apache.logging.log4j.core.helpers.Strings;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -93,7 +94,7 @@ public final class CouchDBProvider implements NoSQLProvider<CouchDBConnection> {
         if (factoryClassName != null && factoryClassName.length() > 0 &&
                 factoryMethodName != null && factoryMethodName.length() > 0) {
             try {
-                final Class<?> factoryClass = Class.forName(factoryClassName);
+                final Class<?> factoryClass = Loader.loadClass(factoryClassName);
                 final Method method = factoryClass.getMethod(factoryMethodName);
                 final Object object = method.invoke(null);
 
