@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -453,28 +454,25 @@ public class ThrowableProxy implements Serializable {
      * @return The Class object for the Class or null if it could not be located.
      */
     private Class<?> loadClass(final ClassLoader lastLoader, final String className) {
+        // XXX: this is overly complicated
         Class<?> clazz;
         if (lastLoader != null) {
             try {
-                clazz = lastLoader.loadClass(className);
+                clazz = Loader.initializeClass(className, lastLoader);
                 if (clazz != null) {
                     return clazz;
                 }
-            } catch (final Exception ex) {
+            } catch (final Exception ignore) {
                 // Ignore exception.
             }
         }
         try {
-            clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
-        } catch (final ClassNotFoundException e) {
+            clazz = Loader.loadClass(className);
+        } catch (final ClassNotFoundException ignored) {
             try {
-                clazz = Class.forName(className);
-            } catch (final ClassNotFoundException e1) {
-                try {
-                    clazz = getClass().getClassLoader().loadClass(className);
-                } catch (final ClassNotFoundException e2) {
-                    return null;
-                }
+                clazz = Loader.initializeClass(className, getClass().getClassLoader());
+            } catch (final ClassNotFoundException ignore) {
+                return null;
             }
         }
         return clazz;
