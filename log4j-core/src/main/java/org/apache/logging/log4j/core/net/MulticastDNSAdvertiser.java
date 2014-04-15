@@ -85,7 +85,7 @@ public class MulticastDNSAdvertiser implements Advertiser {
             boolean isVersion3 = false;
             try {
                 //create method is in version 3, not version 1
-                jmDNSClass.getMethod("create", (Class[])null);
+                jmDNSClass.getMethod("create");
                 isVersion3 = true;
             } catch (final NoSuchMethodException e) {
                 //no-op
@@ -98,7 +98,7 @@ public class MulticastDNSAdvertiser implements Advertiser {
             }
 
             try {
-                final Method method = jmDNSClass.getMethod("registerService", new Class[]{serviceInfoClass});
+                final Method method = jmDNSClass.getMethod("registerService", serviceInfoClass);
                 method.invoke(jmDNS, serviceInfo);
             } catch(final IllegalAccessException e) {
                 LOGGER.warn("Unable to invoke registerService method", e);
@@ -124,7 +124,7 @@ public class MulticastDNSAdvertiser implements Advertiser {
     public void unadvertise(final Object serviceInfo) {
         if (jmDNS != null) {
             try {
-                final Method method = jmDNSClass.getMethod("unregisterService", new Class[]{serviceInfoClass});
+                final Method method = jmDNSClass.getMethod("unregisterService", serviceInfoClass);
                 method.invoke(jmDNS, serviceInfo);
             } catch(final IllegalAccessException e) {
                 LOGGER.warn("Unable to invoke unregisterService method", e);
@@ -151,7 +151,7 @@ public class MulticastDNSAdvertiser implements Advertiser {
     private static Object createJmDNSVersion3()
     {
         try {
-            final Method jmDNSCreateMethod = jmDNSClass.getMethod("create", (Class[])null);
+            final Method jmDNSCreateMethod = jmDNSClass.getMethod("create");
             return jmDNSCreateMethod.invoke(null, (Object[])null);
         } catch (final IllegalAccessException e) {
             LOGGER.warn("Unable to invoke create method", e);
@@ -225,13 +225,14 @@ public class MulticastDNSAdvertiser implements Advertiser {
 
     private static Object initializeJMDNS() {
         try {
+            // FIXME: don't use Class.forName without a ClassLoader
             jmDNSClass = Class.forName("javax.jmdns.JmDNS");
             serviceInfoClass = Class.forName("javax.jmdns.ServiceInfo");
             //if version 3 is available, use it to constuct a serviceInfo instance, otherwise support the version1 API
             boolean isVersion3 = false;
             try {
                 //create method is in version 3, not version 1
-                jmDNSClass.getMethod("create", (Class[])null);
+                jmDNSClass.getMethod("create");
                 isVersion3 = true;
             } catch (final NoSuchMethodException e) {
                 //no-op

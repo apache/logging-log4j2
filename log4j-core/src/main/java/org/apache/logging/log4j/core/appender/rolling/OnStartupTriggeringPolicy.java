@@ -59,13 +59,15 @@ public class OnStartupTriggeringPolicy implements TriggeringPolicy {
         // The reflection is necessary because without it, Google App Engine
         // will refuse to initialize this class.
         try {
+            // FIXME: Class.forName
             Class<?> factoryClass = Class.forName("java.lang.management.ManagementFactory");
-            Method getRuntimeMXBean = factoryClass.getMethod("getRuntimeMXBean", new Class[0]);
-            Object runtimeMXBean = getRuntimeMXBean.invoke(null, new Object[0]);
+            Method getRuntimeMXBean = factoryClass.getMethod("getRuntimeMXBean");
+            Object runtimeMXBean = getRuntimeMXBean.invoke(null);
             
+            // FIXME: Class.forName
             Class<?> runtimeMXBeanClass = Class.forName("java.lang.management.RuntimeMXBean");
-            Method getStartTime = runtimeMXBeanClass.getMethod("getStartTime", new Class[0]);
-            Long result = (Long) getStartTime.invoke(runtimeMXBean, new Object[0]);
+            Method getStartTime = runtimeMXBeanClass.getMethod("getStartTime");
+            Long result = (Long) getStartTime.invoke(runtimeMXBean);
             
             return result.longValue();
         } catch (Throwable t) {
