@@ -45,10 +45,7 @@ public class Log4jContextFactory implements LoggerContextFactory {
         final String sel = PropertiesUtil.getProperties().getStringProperty(Constants.LOG4J_CONTEXT_SELECTOR);
         if (sel != null) {
             try {
-                final Class<?> clazz = Loader.loadClass(sel);
-                if (clazz != null && ContextSelector.class.isAssignableFrom(clazz)) {
-                    selector = (ContextSelector) clazz.newInstance();
-                }
+                selector = Loader.newCheckedInstanceOf(sel, ContextSelector.class);
             } catch (final Exception ex) {
                 LOGGER.error("Unable to create context {}", sel, ex);
             }
