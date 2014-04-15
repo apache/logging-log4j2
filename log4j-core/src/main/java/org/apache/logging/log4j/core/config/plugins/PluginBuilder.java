@@ -179,17 +179,15 @@ public class PluginBuilder<T> {
                 } else if (a instanceof PluginAttribute) {
                     final PluginAttribute attribute = (PluginAttribute) a;
                     final String name = attribute.value();
-                    final String value = configuration.getStrSubstitutor().replace(event, getAttrValue(name, aliases));
-                    args[i] = value;
-                    sb.append(name).append("=\"");
+                    args[i] = getReplacedAttributeValue(name, aliases);
+                    sb.append(name).append("=\"").append(args[i]).append('"');
+                } else if (a instanceof SensitivePluginAttribute) {
                     // LOG4J2-605
                     // we shouldn't be displaying passwords
-                    if ("password".equalsIgnoreCase(name)) {
-                        sb.append(NameUtil.md5(value + PluginBuilder.class.getName()));
-                    } else {
-                        sb.append(value);
-                    }
-                    sb.append('"');
+                    final SensitivePluginAttribute attribute = (SensitivePluginAttribute) a;
+                    final String name = attribute.value();
+                    args[i] = getReplacedAttributeValue(name, aliases);
+                    sb.append(name).append("=\"").append(NameUtil.md5(args[i] + PluginBuilder.class.getName())).append('"');
                 } else if (a instanceof PluginElement) {
                     final PluginElement element = (PluginElement) a;
                     final String name = element.value();
@@ -265,6 +263,10 @@ public class PluginBuilder<T> {
         return aliases;
     }
 
+    private String getReplacedAttributeValue(final String name, final String... aliases) {
+        return configuration.getStrSubstitutor().replace(event, getAttrValue(name, aliases));
+    }
+
     private String getAttrValue(final String name, final String... aliases) {
         final Map<String, String> attrs = node.getAttributes();
         for (final Map.Entry<String, String> entry : attrs.entrySet()) {
@@ -275,7 +277,7 @@ public class PluginBuilder<T> {
                 return attr;
             }
             if (aliases != null) {
-                for (String alias : aliases) {
+                for (final String alias : aliases) {
                     if (key.equalsIgnoreCase(alias)) {
                         final String attr = entry.getValue();
                         attrs.remove(key);
