@@ -21,6 +21,7 @@ import java.lang.ClassCastException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -248,7 +249,7 @@ public final class Loader {
             // using the TCCL should work the same as the default ClassLoader (i.e., init or not)
             return Class.forName(className, true, getTCL());
         } catch (final Throwable e) {
-            LOGGER.catching(e);
+            LOGGER.catching(Level.DEBUG, e);
             LOGGER.trace("TCCL didn't work. Trying Class.forName({}).", className);
             return loadClassWithDefaultClassLoader(className);
         }
@@ -283,7 +284,7 @@ public final class Loader {
         try {
             return Class.forName(className, true, ClassLoader.getSystemClassLoader());
         } catch (final Throwable t) {
-            LOGGER.catching(t);
+            LOGGER.catching(Level.DEBUG, t);
             LOGGER.trace("Couldn't use SystemClassLoader. Trying Class.forName({}).", className);
             return Class.forName(className);
         }
@@ -306,7 +307,13 @@ public final class Loader {
                    InstantiationException,
                    NoSuchMethodException,
                    InvocationTargetException {
-        return loadClass(className).getConstructor().newInstance();
+        final Class<?> clazz = loadClass(className);
+        try {
+            return clazz.getConstructor().newInstance();
+        } catch (final NoSuchMethodException e) {
+            //noinspection ClassNewInstance
+            return clazz.newInstance();
+        }
     }
 
     /**
@@ -342,7 +349,7 @@ public final class Loader {
         try {
             final Class<?> clazz = loadClass(className);
             return clazz != null;
-        } catch (final Exception ignored) {
+        } catch (final Throwable ignored) {
             return false;
         }
     }
