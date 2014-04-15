@@ -31,6 +31,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Node;
+import org.apache.logging.log4j.core.helpers.NameUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -180,7 +181,15 @@ public class PluginBuilder<T> {
                     final String name = attribute.value();
                     final String value = configuration.getStrSubstitutor().replace(event, getAttrValue(name, aliases));
                     args[i] = value;
-                    sb.append(name).append("=\"").append(value).append('"');
+                    sb.append(name).append("=\"");
+                    // LOG4J2-605
+                    // we shouldn't be displaying passwords
+                    if ("password".equalsIgnoreCase(name)) {
+                        sb.append(NameUtil.md5(value + PluginBuilder.class.getName()));
+                    } else {
+                        sb.append(value);
+                    }
+                    sb.append('"');
                 } else if (a instanceof PluginElement) {
                     final PluginElement element = (PluginElement) a;
                     final String name = element.value();
