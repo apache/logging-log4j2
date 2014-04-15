@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Booleans;
+import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.core.helpers.Strings;
 
 /**
@@ -84,7 +85,7 @@ public final class JPAAppender extends AbstractDatabaseAppender<JPADatabaseManag
         try {
             @SuppressWarnings("unchecked")
             final Class<? extends AbstractLogEventWrapperEntity> entityClass =
-                    (Class<? extends AbstractLogEventWrapperEntity>) Class.forName(entityClassName);
+                    (Class<? extends AbstractLogEventWrapperEntity>) Loader.loadClass(entityClassName);
 
             if (!AbstractLogEventWrapperEntity.class.isAssignableFrom(entityClass)) {
                 LOGGER.error("Entity class [{}] does not extend AbstractLogEventWrapperEntity.", entityClassName);

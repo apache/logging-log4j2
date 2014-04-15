@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.appender.db.nosql.NoSQLProvider;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.core.helpers.NameUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -104,7 +105,7 @@ public final class MongoDBProvider implements NoSQLProvider<MongoDBConnection> {
         if (factoryClassName != null && factoryClassName.length() > 0 &&
                 factoryMethodName != null && factoryMethodName.length() > 0) {
             try {
-                final Class<?> factoryClass = Class.forName(factoryClassName);
+                final Class<?> factoryClass = Loader.loadClass(factoryClassName);
                 final Method method = factoryClass.getMethod(factoryMethodName);
                 final Object object = method.invoke(null);
 
@@ -191,7 +192,7 @@ public final class MongoDBProvider implements NoSQLProvider<MongoDBConnection> {
         if (writeConcernConstant != null && writeConcernConstant.length() > 0) {
             if (writeConcernConstantClassName != null && writeConcernConstantClassName.length() > 0) {
                 try {
-                    final Class<?> writeConcernConstantClass = Class.forName(writeConcernConstantClassName);
+                    final Class<?> writeConcernConstantClass = Loader.loadClass(writeConcernConstantClassName);
                     final Field field = writeConcernConstantClass.getField(writeConcernConstant);
                     writeConcern = (WriteConcern) field.get(null);
                 } catch (final Exception e) {

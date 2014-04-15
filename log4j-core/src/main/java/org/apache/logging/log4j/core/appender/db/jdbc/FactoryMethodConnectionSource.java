@@ -27,6 +27,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.core.helpers.Strings;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -78,7 +79,7 @@ public final class FactoryMethodConnectionSource implements ConnectionSource {
 
         final Method method;
         try {
-            final Class<?> factoryClass = Class.forName(className);
+            final Class<?> factoryClass = Loader.loadClass(className);
             method = factoryClass.getMethod(methodName);
         } catch (final Exception e) {
             LOGGER.error(e.toString(), e);
