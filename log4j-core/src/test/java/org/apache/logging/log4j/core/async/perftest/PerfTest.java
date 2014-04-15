@@ -20,6 +20,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import com.lmax.disruptor.collections.Histogram;
+import org.apache.logging.log4j.core.helpers.Loader;
 
 public class PerfTest {
 
@@ -66,8 +67,7 @@ public class PerfTest {
 
     public void doMain(final String[] args) throws Exception {
         final String runnerClass = args[0];
-        final IPerfTestRunner runner = (IPerfTestRunner) Class.forName(runnerClass)
-                .newInstance();
+        final IPerfTestRunner runner = Loader.newCheckedInstanceOf(runnerClass, IPerfTestRunner.class);
         final String name = args[1];
         final String resultFile = args.length > 2 ? args[2] : null;
         for (final String arg : args) {
@@ -140,9 +140,12 @@ public class PerfTest {
 
         if (file != null) {
             final FileWriter writer = new FileWriter(file, true);
-            writer.write(result);
-            writer.write(System.getProperty("line.separator"));
-            writer.close();
+            try {
+                writer.write(result);
+                writer.write(System.getProperty("line.separator"));
+            } finally {
+                writer.close();
+            }
         }
     }
 

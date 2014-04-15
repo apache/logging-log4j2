@@ -75,7 +75,7 @@ public final class ClockFactory {
             return CoarseCachedClock.instance();
         }
         try {
-            final Clock result = (Clock) Class.forName(userRequest).newInstance();
+            final Clock result = Loader.newCheckedInstanceOf(userRequest, Clock.class);
             LOGGER.debug("Using {} for timestamps", userRequest);
             return result;
         } catch (final Exception e) {
