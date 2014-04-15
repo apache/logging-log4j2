@@ -63,7 +63,7 @@ public class ConfigurationTest {
     private final String logFileName;
 
     @Rule
-    public RuleChain rules;
+    public TestRule rules;
     
     private InitialLoggerContext init;
 
