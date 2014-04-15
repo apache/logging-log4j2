@@ -17,6 +17,8 @@
 package org.apache.logging.log4j.core.helpers;
 
 import java.io.InputStream;
+import java.lang.ClassCastException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 
 import org.apache.logging.log4j.Logger;
@@ -234,19 +236,114 @@ public final class Loader {
      * @return The Class.
      * @throws ClassNotFoundException if the Class could not be found.
      */
+    // FIXME: should we do lazy class loading or eager class loading by default?
     public static Class<?> loadClass(final String className) throws ClassNotFoundException {
         // Just call Class.forName(className) if we are instructed to ignore the TCL.
         if (ignoreTCL) {
             LOGGER.trace("Ignoring TCCL. Trying Class.forName({}).", className);
-            return Class.forName(className);
+            return loadClassWithDefaultClassLoader(className);
         }
         try {
             LOGGER.trace("Trying TCCL for class {}.", className);
-            return getTCL().loadClass(className);
+            // using the TCCL should work the same as the default ClassLoader (i.e., init or not)
+            return Class.forName(className, true, getTCL());
         } catch (final Throwable e) {
             LOGGER.catching(e);
             LOGGER.trace("TCCL didn't work. Trying Class.forName({}).", className);
+            return loadClassWithDefaultClassLoader(className);
+        }
+    }
+
+    private static Class<?> loadClassWithDefaultClassLoader(final String className) throws ClassNotFoundException {
+        return Class.forName(className);
+    }
+
+    /**
+     * Loads and initializes a named Class using a given ClassLoader.
+     *
+     * @param className The class name.
+     * @param loader The class loader.
+     * @return The class.
+     * @throws ClassNotFoundException if the class could not be found.
+     */
+    public static Class<?> initializeClass(final String className, final ClassLoader loader)
+            throws ClassNotFoundException {
+        return Class.forName(className, true, loader);
+    }
+
+    /**
+     * Load a Class in the {@code java.*} namespace by name. Useful for peculiar scenarios typically involving
+     * Google App Engine.
+     *
+     * @param className The class name.
+     * @return The Class.
+     * @throws ClassNotFoundException if the Class could not be found.
+     */
+    public static Class<?> loadSystemClass(final String className) throws ClassNotFoundException {
+        try {
+            return Class.forName(className, true, ClassLoader.getSystemClassLoader());
+        } catch (final Throwable t) {
+            LOGGER.catching(t);
+            LOGGER.trace("Couldn't use SystemClassLoader. Trying Class.forName({}).", className);
             return Class.forName(className);
+        }
+    }
+
+    /**
+     * Loads and instantiates a Class using the default constructor.
+     *
+     * @param className The class name.
+     * @return new instance of the class.
+     * @throws ClassNotFoundException if the class isn't available to the usual ClassLoaders
+     * @throws IllegalAccessException if the class can't be instantiated through a public constructor
+     * @throws InstantiationException if there was an exception whilst instantiating the class
+     * @throws NoSuchMethodException if there isn't a no-args constructor on the class
+     * @throws InvocationTargetException if there was an exception whilst constructing the class
+     */
+    public static Object newInstanceOf(final String className)
+            throws ClassNotFoundException,
+                   IllegalAccessException,
+                   InstantiationException,
+                   NoSuchMethodException,
+                   InvocationTargetException {
+        return loadClass(className).getConstructor().newInstance();
+    }
+
+    /**
+     * Loads, instantiates, and casts a Class using the default constructor.
+     *
+     * @param className The class name.
+     * @param clazz The class to cast it to.
+     * @param <T> The type to cast it to.
+     * @return new instance of the class cast to {@code T}
+     * @throws ClassNotFoundException if the class isn't available to the usual ClassLoaders
+     * @throws IllegalAccessException if the class can't be instantiated through a public constructor
+     * @throws InstantiationException if there was an exception whilst instantiating the class
+     * @throws NoSuchMethodException if there isn't a no-args constructor on the class
+     * @throws InvocationTargetException if there was an exception whilst constructing the class
+     * @throws ClassCastException if the constructed object isn't type compatible with {@code T}
+     */
+    public static <T> T newCheckedInstanceOf(final String className, final Class<T> clazz)
+            throws ClassNotFoundException,
+                   NoSuchMethodException,
+                   IllegalAccessException,
+                   InvocationTargetException,
+                   InstantiationException {
+        return clazz.cast(newInstanceOf(className));
+    }
+
+    /**
+     * Determines if a named Class can be loaded or not.
+     *
+     * @param className The class name.
+     * @return {@code true} if the class could be found or {@code false} otherwise.
+     */
+    public static boolean isClassAvailable(final String className) {
+        try {
+            final Class<?> clazz = loadClass(className);
+            return clazz != null;
+        } catch (final Exception ignored) {
+            return false;
         }
     }
 
