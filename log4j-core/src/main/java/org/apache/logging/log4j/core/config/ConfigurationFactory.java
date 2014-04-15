@@ -31,6 +31,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
+
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.PluginType;
@@ -286,7 +288,7 @@ public abstract class ConfigurationFactory {
                     return new ConfigurationSource(new FileInputStream(file), file);
                 } catch (final FileNotFoundException fnfe) {
                     // Ignore the exception
-                    LOGGER.catching(fnfe);
+                    LOGGER.catching(Level.DEBUG, fnfe);
                 }
             }
             return source;
@@ -308,7 +310,7 @@ public abstract class ConfigurationFactory {
         try {
             is = url.openStream();
         } catch (final IOException ioe) {
-            LOGGER.catching(ioe);
+            LOGGER.catching(Level.DEBUG, ioe);
             return null;
         }
         if (is == null) {
@@ -320,7 +322,7 @@ public abstract class ConfigurationFactory {
                 return new ConfigurationSource(is, FileUtils.fileFromURI(url.toURI()));
             } catch (final URISyntaxException ex) {
                 // Just ignore the exception.
-                LOGGER.catching(ex);
+                LOGGER.catching(Level.DEBUG, ex);
             }
         }
         return new ConfigurationSource(is, resource);
@@ -377,9 +379,9 @@ public abstract class ConfigurationFactory {
                     ConfigurationSource source = null;
                     try {
                         source = getInputFromURI(FileUtils.getCorrectedFilePathUri(config));
-                    } catch (Exception ex) {
+                    } catch (final Exception ex) {
                         // Ignore the error and try as a String.
-                        LOGGER.catching(ex);
+                        LOGGER.catching(Level.DEBUG, ex);
                     }
                     if (source == null) {
                         final ClassLoader loader = this.getClass().getClassLoader();

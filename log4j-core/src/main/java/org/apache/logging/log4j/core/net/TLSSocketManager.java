@@ -27,6 +27,7 @@ import java.net.UnknownHostException;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.helpers.Strings;
@@ -136,7 +137,7 @@ public class TLSSocketManager extends TCPSocketManager {
                 os = new ByteArrayOutputStream();
             }
             catch (final TLSSocketManagerFactoryException e) {
-                LOGGER.catching(e);
+                LOGGER.catching(Level.DEBUG, e);
                 return null;
             }
             return createManager(name, os, socket, data.sslConfig, address, data.host, data.port, data.delay, data.immediateFail, data.layout);
