@@ -104,7 +104,7 @@ public class AsyncLogger extends Logger {
             try {
                 return ThreadNameStrategy.valueOf(name);
             } catch (final Exception ex) {
-                LOGGER.catching(ex);
+                LOGGER.catching(Level.DEBUG, ex);
                 return CACHED;
             }
         }

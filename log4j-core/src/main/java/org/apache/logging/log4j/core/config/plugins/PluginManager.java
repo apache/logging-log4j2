@@ -35,6 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.helpers.Closer;
 import org.apache.logging.log4j.core.helpers.Loader;
@@ -250,7 +251,7 @@ public class PluginManager {
                             final PluginType<?> pluginType = loadPluginType(className, name, printable, defer);
                             types.put(key, pluginType);
                         } catch (final ClassNotFoundException e) {
-                            LOGGER.catching(e);
+                            LOGGER.catching(Level.DEBUG, e);
                             LOGGER.info("Plugin [{}] could not be loaded due to missing classes.", className);
                         }
                     }
