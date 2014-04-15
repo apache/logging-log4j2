@@ -140,10 +140,14 @@ public class MulticastDNSAdvertiser implements Advertiser {
     private static Object createJmDNSVersion1()
     {
         try {
-            return jmDNSClass.newInstance();
+            return jmDNSClass.getConstructor().newInstance();
         } catch (final InstantiationException e) {
             LOGGER.warn("Unable to instantiate JMDNS", e);
         } catch (final IllegalAccessException e) {
+            LOGGER.warn("Unable to instantiate JMDNS", e);
+        } catch (final NoSuchMethodException e) {
+            LOGGER.warn("Unable to instantiate JMDNS", e);
+        } catch (final InvocationTargetException e) {
             LOGGER.warn("Unable to instantiate JMDNS", e);
         }
         return null;
