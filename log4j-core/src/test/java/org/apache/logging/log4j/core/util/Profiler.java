@@ -19,9 +19,9 @@ package org.apache.logging.log4j.core.util;
 import java.lang.reflect.Field;
 
 /**
- *
+ * YourKit Java Profiler helper class.
  */
-public class Profiler {
+public final class Profiler {
     private static Object profiler;
     private static Class<?> profilingModes;
     private static Class<?> controllerClazz;
@@ -41,6 +41,9 @@ public class Profiler {
             // Ignore
         }
 
+    }
+
+    private Profiler() {
     }
 
     public static boolean isActive() {
