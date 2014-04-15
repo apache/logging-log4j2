@@ -930,6 +930,7 @@
     <module>log4j-samples</module>
     <module>log4j-bom</module>
     <module>log4j-plugin-processor</module>
+    <module>log4j-streams</module>
   </modules>
   <profiles>
     <profile>

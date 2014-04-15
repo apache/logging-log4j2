@@ -39,7 +39,6 @@ import org.apache.logging.log4j.message.TimestampMessage;
 public class Log4jLogEvent implements LogEvent {
 
     private static final long serialVersionUID = -1351367343806656055L;
-    private static final String NOT_AVAIL = "?";
     private final String fqcnOfLogger;
     private final Marker marker;
     private final Level level;
@@ -313,21 +312,13 @@ public class Log4jLogEvent implements LogEvent {
             return null;
         }
         final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-        boolean next = false;
-        for (final StackTraceElement element : stackTrace) {
-            final String className = element.getClassName();
-            if (next) {
-                if (fqcnOfLogger.equals(className)) {
-                    continue;
-                }
-                return element;
-            }
-
+        StackTraceElement last = null;
+        for (int i = stackTrace.length - 1; i > 0; i--) {
+            final String className = stackTrace[i].getClassName();
             if (fqcnOfLogger.equals(className)) {
-                next = true;
-            } else if (NOT_AVAIL.equals(className)) {
-                break;
+                return last;
             }
+            last = stackTrace[i];
         }
         return null;
     }
