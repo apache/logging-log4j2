@@ -16,47 +16,32 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.xml.XMLConfiguration;
+
+import org.apache.logging.log4j.junit.CleanFiles;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
+import org.junit.rules.RuleChain;
 
 /**
  *
  */
 public class FileOutputTest {
 
-    private static final String CONFIG = "log4j-filetest.xml";
+    private static final String CONFIG = "classpath:log4j-filetest.xml";
     private static final String STATUS_LOG = "target/status.log";
 
     @Rule
-    public InitialLoggerContext init = new InitialLoggerContext(CONFIG);
-
-    @Before
-    public void setupClass() {
-        final LoggerContext ctx = this.init.getContext();
-        final Configuration config = ctx.getConfiguration();
-        if (config instanceof XMLConfiguration) {
-            final String name = config.getName();
-            if (name == null || !name.equals("XMLConfigTest")) {
-                ctx.reconfigure();
-            }
-        } else {
-            ctx.reconfigure();
-        }
-    }
+    public RuleChain rules = RuleChain.outerRule(new CleanFiles(STATUS_LOG)).around(new InitialLoggerContext(CONFIG));
 
     @Test
     public void testConfig() {
         final File file = new File(STATUS_LOG);
         assertTrue("Status output file does not exist", file.exists());
         assertTrue("File is empty", file.length() > 0);
-        assertTrue("Couldn't delete file " + file, file.delete());
     }
 
 }
