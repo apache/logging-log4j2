@@ -26,6 +26,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.helpers.FileUtils;
+import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.core.helpers.NetUtils;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
@@ -42,13 +43,10 @@ final class Log4jWebInitializerImpl implements Log4jWebInitializer {
     private static final Object MUTEX = new Object();
 
     static {
-        try {
-            Class.forName("org.apache.logging.log4j.core.web.JNDIContextFilter");
+        if (Loader.isClassAvailable("org.apache.logging.log4j.core.web.JNDIContextFilter")) {
             throw new IllegalStateException("You are using Log4j 2 in a web application with the old, extinct " +
                     "log4j-web artifact. This is not supported and could cause serious runtime problems. Please" +
                     "remove the log4j-web JAR file from your application.");
-        } catch (final ClassNotFoundException ignore) {
-            /* Good. They don't have the old log4j-web artifact loaded. */
         }
     }
 
@@ -121,6 +119,7 @@ final class Log4jWebInitializerImpl implements Log4jWebInitializer {
                 }
                 ContextAnchor.THREAD_CONTEXT.remove();
             } else {
+                // won't it be amusing if the servlet container uses Log4j as its ServletContext logger?
                 this.servletContext.log("Potential problem: Selector is not an instance of NamedContextSelector.");
                 return;
             }
