@@ -36,6 +36,8 @@ import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
+import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -61,10 +63,9 @@ public class ConfigurationTest {
     private final String logFileName;
 
     @Rule
-    public CleanFiles cleanFiles;
-
-    @Rule
-    public InitialLoggerContext init;
+    public RuleChain rules;
+    
+    private InitialLoggerContext init;
 
     private LoggerContext ctx;
 
@@ -72,17 +73,17 @@ public class ConfigurationTest {
 
     public ConfigurationTest(final String configFileName, final String logFileName) {
         this.logFileName = logFileName;
-        this.cleanFiles = new CleanFiles(logFileName);
         this.init = new InitialLoggerContext(configFileName);
+        rules = RuleChain.outerRule(new CleanFiles(logFileName)).around(this.init);
     }
 
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(
                 new Object[][]{
-                        {"log4j-test1.xml", "target/test.log"},
-                        {"log4j-test1.json", "target/test.log"},
-                        {"log4j-test1.yaml", "target/test.log"}
+                        {"classpath:log4j-test1.xml", "target/test.log"},
+                        {"classpath:log4j-test1.json", "target/test.log"},
+                        {"classpath:log4j-test1.yaml", "target/test.log"}
                 }
         );
     }
