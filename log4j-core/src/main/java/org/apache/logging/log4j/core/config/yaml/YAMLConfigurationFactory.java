@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.Order;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.helpers.Loader;
 
 @Plugin(name = "YAMLConfigurationFactory", category = "ConfigurationFactory")
 @Order(7)
@@ -30,28 +31,24 @@ public class YAMLConfigurationFactory extends ConfigurationFactory {
     /**
      * The file extensions supported by this factory.
      */
-    public static final String[] SUFFIXES = new String[] {".yml", ".yaml"};
+    private static final String[] SUFFIXES = new String[] {".yml", ".yaml"};
 
-    private static String[] dependencies = new String[] {
+    private static final String[] dependencies = new String[] {
             "com.fasterxml.jackson.databind.ObjectMapper",
             "com.fasterxml.jackson.databind.JsonNode",
             "com.fasterxml.jackson.core.JsonParser",
             "com.fasterxml.jackson.dataformat.yaml.YAMLFactory"
     };
 
-    private final File configFile = null;
-
-    private boolean isActive;
+    private final boolean isActive;
 
     public YAMLConfigurationFactory() {
-        try {
-            for (final String item : dependencies) {
-                Class.forName(item);
+        for (final String dependency : dependencies) {
+            if (!Loader.isClassAvailable(dependency)) {
+                LOGGER.debug("Missing dependencies for Yaml support");
+                isActive = false;
+                return;
             }
-        } catch (final ClassNotFoundException ex) {
-            LOGGER.debug("Missing dependencies for Yaml support");
-            isActive = false;
-            return;
         }
         isActive = true;
     }

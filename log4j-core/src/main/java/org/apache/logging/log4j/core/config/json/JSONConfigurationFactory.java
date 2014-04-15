@@ -20,6 +20,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.Order;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.helpers.Loader;
 
 /**
  *
@@ -31,25 +32,23 @@ public class JSONConfigurationFactory extends ConfigurationFactory {
     /**
      * The file extensions supported by this factory.
      */
-    public static final String[] SUFFIXES = new String[] {".json", ".jsn"};
+    private static final String[] SUFFIXES = new String[] {".json", ".jsn"};
 
-    private static String[] dependencies = new String[] {
+    private static final String[] dependencies = new String[] {
             "com.fasterxml.jackson.databind.ObjectMapper",
             "com.fasterxml.jackson.databind.JsonNode",
             "com.fasterxml.jackson.core.JsonParser"
     };
 
-    private boolean isActive;
+    private final boolean isActive;
 
     public JSONConfigurationFactory() {
-        try {
-            for (final String item : dependencies) {
-                Class.forName(item);
+        for (final String dependency : dependencies) {
+            if (!Loader.isClassAvailable(dependency)) {
+                LOGGER.debug("Missing dependencies for Json support");
+                isActive = false;
+                return;
             }
-        } catch (final ClassNotFoundException ex) {
-            LOGGER.debug("Missing dependencies for Json support");
-            isActive = false;
-            return;
         }
         isActive = true;
     }
