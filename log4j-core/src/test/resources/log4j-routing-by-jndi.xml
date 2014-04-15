@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="debug" name="RoutingByJndiTest">
+<Configuration status="OFF" name="RoutingByJndiTest">
 
   <ThresholdFilter level="debug"/>
 

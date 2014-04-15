@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="error" name="RegexReplacementTest">
+<Configuration status="OFF" name="RegexReplacementTest">
   <Appenders>
     <List name="List">
        <PatternLayout>

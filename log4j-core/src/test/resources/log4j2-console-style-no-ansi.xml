@@ -16,7 +16,7 @@
   limitations under the License.
 
 -->
-<Configuration status="INFO">
+<Configuration status="OFF">
   <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
       <PatternLayout noConsoleNoAnsi="true"

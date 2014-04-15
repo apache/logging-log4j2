@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="error" name="MyApp">
+<Configuration status="OFF" name="MyApp">
   <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%d [%p] %c %m%n"/>

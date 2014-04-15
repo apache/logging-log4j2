@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration name="ConfigTest" status="error">
+<Configuration name="ConfigTest" status="OFF">
   <DynamicThresholdFilter key="loginId" defaultThreshold="ERROR" onMatch="ACCEPT" onMismatch="NEUTRAL">
     <KeyValuePair key="User1" value="DEBUG"/>
   </DynamicThresholdFilter>

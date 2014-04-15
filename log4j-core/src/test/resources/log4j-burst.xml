@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="warn" name="BurstTest">
+<Configuration status="OFF" name="BurstTest">
   <Appenders>
     <List name="ListAppender">
       <PatternLayout pattern="%-5p %d{dd-MMM-yyyy HH:mm:ss} %t %m%n"/>

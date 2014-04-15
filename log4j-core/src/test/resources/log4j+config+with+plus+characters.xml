@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="ERROR" name="XMLConfigTest">
+<Configuration status="OFF" name="XMLConfigTest">
 
   <Appenders>
     <List name="List">

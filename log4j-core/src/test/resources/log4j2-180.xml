@@ -17,7 +17,7 @@
 
 -->
 <!-- https://issues.apache.org/jira/browse/LOG4J2-180 -->
-<Configuration status="INFO">
+<Configuration status="OFF">
   <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
       <PatternLayout pattern="%d{ABSOLUTE} %-5level # %class.%method %m %style{%ex{1}}{green}%n" />
