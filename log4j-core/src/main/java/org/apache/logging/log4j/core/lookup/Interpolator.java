@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.PluginType;
+import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -49,9 +50,9 @@ public class Interpolator implements StrLookup {
             @SuppressWarnings("unchecked")
             final Class<? extends StrLookup> clazz = (Class<? extends StrLookup>) entry.getValue().getPluginClass();
             try {
-                lookups.put(entry.getKey(), clazz.newInstance());
+                lookups.put(entry.getKey(), clazz.getConstructor().newInstance());
             } catch (final Exception ex) {
-                LOGGER.error("Unable to create Lookup for " + entry.getKey(), ex);
+                LOGGER.error("Unable to create Lookup for {}", entry.getKey(), ex);
             }
         }
     }
@@ -66,21 +67,17 @@ public class Interpolator implements StrLookup {
     /**
      * Create the dInterpolator using only Lookups that work without an event and initial properties.
      */
-    public Interpolator(Map<String, String> properties) {
+    public Interpolator(final Map<String, String> properties) {
         this.defaultLookup = new MapLookup(properties == null ? new HashMap<String, String>() : properties);
         lookups.put("sys", new SystemPropertiesLookup());
         lookups.put("env", new EnvironmentLookup());
         lookups.put("jndi", new JndiLookup());
         lookups.put("date", new DateLookup());
         lookups.put("ctx", new ContextMapLookup());
-        try {
-            if (Class.forName("javax.servlet.ServletContext") != null) {
-                lookups.put("web", new WebLookup());
-            }
-        } catch (ClassNotFoundException ex) {
-            LOGGER.debug("ServletContext not present - WebLookup not added");
-        } catch (Exception ex) {
-            LOGGER.error("Unable to locate ServletContext", ex);
+        if (Loader.isClassAvailable("javax.servlet.ServletContext")) {
+            lookups.put("web", new WebLookup());
+        } else {
+            LOGGER.error("Unable to locate ServletContext");
         }
     }
 
