@@ -16,28 +16,31 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import java.lang.reflect.Field;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.helpers.Loader;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * YourKit Java Profiler helper class.
  */
 public final class Profiler {
+    private static final Logger LOGGER = StatusLogger.getLogger();
+
     private static Object profiler;
     private static Class<?> profilingModes;
     private static Class<?> controllerClazz;
 
     static {
         try {
-            controllerClazz = Class.forName("com.yourkit.api.Controller");
-            profilingModes = Class.forName("com.yourkit.api.ProfilingModes");
+            controllerClazz = Loader.loadClass("com.yourkit.api.Controller");
+            profilingModes = Loader.loadClass("com.yourkit.api.ProfilingModes");
             try {
-                profiler = controllerClazz.newInstance();
+                profiler = controllerClazz.getConstructor().newInstance();
             } catch (final Exception e) {
-                e.printStackTrace();
-                System.out.println("Profiler was active, but failed due: " + e.getMessage());
+                LOGGER.error("Profiler was active, but failed.", e);
             }
         }
-        catch (final Exception e) {
+        catch (final Exception ignored) {
             // Ignore
         }
 
@@ -50,20 +53,24 @@ public final class Profiler {
         return profiler != null;
     }
 
+    private static long cpuSampling() throws NoSuchFieldException, IllegalAccessException {
+        return profilingModes.getDeclaredField("CPU_SAMPLING").getLong(profilingModes);
+    }
+
+    private static long snapshotWithoutHeap() throws NoSuchFieldException, IllegalAccessException {
+        return profilingModes.getDeclaredField("SNAPSHOT_WITHOUT_HEAP").getLong(profilingModes);
+    }
+
     public static void start() {
 
         if (profiler != null) {
             try {
-                final Field f = profilingModes.getDeclaredField("CPU_SAMPLING");
-                final Object[] args = new Object[2];
-                args[0] = f.getLong(profilingModes);
-                args[1] = "";
-                final Class<?>[] parms = new Class<?>[] {long.class, String.class};
-                controllerClazz.getMethod("startCPUProfiling", parms).invoke(profiler, args);
+                controllerClazz
+                        .getMethod("startCPUProfiling", long.class, String.class)
+                        .invoke(profiler, cpuSampling(), "");
             }
             catch (final Exception e) {
-                e.printStackTrace();
-                System.out.println("Profiler was active, but failed due: " + e.getMessage());
+                LOGGER.error("Profiler was active, but failed.", e);
             }
         }
     }
@@ -71,16 +78,15 @@ public final class Profiler {
     public static void stop() {
         if (profiler != null) {
             try {
-                final Field f = profilingModes.getDeclaredField("SNAPSHOT_WITHOUT_HEAP");
-                final Object[] args = new Object[1];
-                args[0] = f.getLong(profilingModes);
-                final Class<?>[] parms = new Class<?>[] {long.class};
-                profiler.getClass().getMethod("captureSnapshot", parms).invoke(profiler, args);
-                profiler.getClass().getMethod("stopCPUProfiling").invoke(profiler);
+                controllerClazz
+                        .getMethod("captureSnapshot", long.class)
+                        .invoke(profiler, snapshotWithoutHeap());
+                controllerClazz
+                        .getMethod("stopCPUProfiling")
+                        .invoke(profiler);
             }
             catch (final Exception e) {
-                e.printStackTrace();
-                System.out.println("Profiler was active, but failed due: " + e.getMessage());
+                LOGGER.error("Profiler was active, but failed.", e);
             }
         }
     }
