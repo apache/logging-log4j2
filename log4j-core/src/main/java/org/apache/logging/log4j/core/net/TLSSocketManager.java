@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.net;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -53,7 +54,7 @@ public class TLSSocketManager extends TCPSocketManager {
      * @param layout        The Layout.
      */
     public TLSSocketManager(final String name, final OutputStream os, final Socket sock, final SSLConfiguration sslConfig, final InetAddress addr,
-                            final String host, final int port, final int delay, final boolean immediateFail, final Layout layout) {
+                            final String host, final int port, final int delay, final boolean immediateFail, final Layout<? extends Serializable> layout) {
         super(name, os, sock, addr, host, port, delay, immediateFail, layout);
         this.sslConfig = sslConfig;
     }
@@ -64,10 +65,10 @@ public class TLSSocketManager extends TCPSocketManager {
         private final int port;
         private final int delay;
         private final boolean immediateFail;
-        private final Layout layout;
+        private final Layout<? extends Serializable> layout;
 
         public TLSFactoryData(final SSLConfiguration sslConfig, final String host, final int port, final int delay, final boolean immediateFail,
-                              final Layout layout) {
+                              final Layout<? extends Serializable> layout) {
             this.host = host;
             this.port = port;
             this.delay = delay;
@@ -78,7 +79,7 @@ public class TLSSocketManager extends TCPSocketManager {
     }
 
     public static TLSSocketManager getSocketManager(final SSLConfiguration sslConfig, final String host, int port,
-                                                    int delay, final boolean immediateFail, final Layout layout ) {
+                                                    int delay, final boolean immediateFail, final Layout<? extends Serializable> layout ) {
         if (Strings.isEmpty(host)) {
             throw new IllegalArgumentException("A host name is required");
         }
@@ -131,10 +132,11 @@ public class TLSSocketManager extends TCPSocketManager {
                 checkDelay(data.delay, os);
             }
             catch (final IOException e) {
-                LOGGER.error("TLSSocketManager (" + name + ") " + e);
+                LOGGER.error("TLSSocketManager ({})", name, e);
                 os = new ByteArrayOutputStream();
             }
             catch (final TLSSocketManagerFactoryException e) {
+                LOGGER.catching(e);
                 return null;
             }
             return createManager(name, os, socket, data.sslConfig, address, data.host, data.port, data.delay, data.immediateFail, data.layout);
@@ -146,7 +148,7 @@ public class TLSSocketManager extends TCPSocketManager {
             try {
                 address = InetAddress.getByName(hostName);
             } catch (final UnknownHostException ex) {
-                LOGGER.error("Could not find address of " + hostName, ex);
+                LOGGER.error("Could not find address of {}", hostName, ex);
                 throw new TLSSocketManagerFactoryException();
             }
 
@@ -168,7 +170,7 @@ public class TLSSocketManager extends TCPSocketManager {
             return socket;
         }
 
-        private TLSSocketManager createManager(final String name, final OutputStream os, final Socket socket, final SSLConfiguration sslConfig, final InetAddress address, final String host, final int port, final int delay, final boolean immediateFail, final Layout layout) {
+        private TLSSocketManager createManager(final String name, final OutputStream os, final Socket socket, final SSLConfiguration sslConfig, final InetAddress address, final String host, final int port, final int delay, final boolean immediateFail, final Layout<? extends Serializable> layout) {
             return new TLSSocketManager(name, os, socket, sslConfig, address, host, port, delay, immediateFail, layout);
         }
     }
