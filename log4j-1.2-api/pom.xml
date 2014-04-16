@@ -24,7 +24,7 @@
     <relativePath>../</relativePath>
   </parent>
   <artifactId>log4j-1.2-api</artifactId>
-  <packaging>jar</packaging>
+  <packaging>bundle</packaging>
   <name>Apache Log4j 1.x Compatibility API</name>
   <description>The Log4j 1.x Compatibility API</description>
   <properties>
@@ -43,7 +43,7 @@
       <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.framework</artifactId>
       <scope>test</scope>
-    </dependency>    
+    </dependency>
     <dependency>
       <groupId>org.eclipse.osgi</groupId>
       <artifactId>org.eclipse.osgi</artifactId>
@@ -92,6 +92,16 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Export-Package>org.apache.log4j.*</Export-Package>
+            <Fragment-Host>org.apache.logging.log4j.api;bundle-version=${project.version.osgi}</Fragment-Host>
+          </instructions>
+        </configuration>
       </plugin>
     </plugins>
   </build>
