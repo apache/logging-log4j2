@@ -16,13 +16,8 @@
  */
 package org.apache.logging.log4j.osgi.felix;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.logging.log4j.osgi.AbstractLoadBundleTest;
 import org.junit.Assume;
-import org.junit.BeforeClass;
-import org.osgi.framework.BundleException;
 import org.osgi.framework.launch.FrameworkFactory;
 
 /**
@@ -36,22 +31,9 @@ import org.osgi.framework.launch.FrameworkFactory;
  */
 public abstract class AbstractFelixLoadBundleTest extends AbstractLoadBundleTest {
 
-    /**
-     * Initializes the OSGi framework.
-     * 
-     * @throws BundleException
-     */
-    @BeforeClass
-    public static void initOsgiFramework() throws BundleException {
-        final FrameworkFactory factory = new org.apache.felix.framework.FrameworkFactory();
-        final Map<String, String> configMap = new HashMap<String, String>(2);
-        // Cleans framework before first init. Subsequent init invocations do not clean framework.
-        configMap.put("org.osgi.framework.storage.clean", "onFirstInit");
-        // Delegates loading of endorsed libraries to JVM classloader
-        // config.put("org.osgi.framework.bootdelegation", "javax.*,org.w3c.*,org.xml.*");
-        OsgiFramework = factory.newFramework(configMap);
-        OsgiFramework.init();
-        OsgiFramework.start();
+    @Override
+    protected FrameworkFactory getFactory() {
+        return new org.apache.felix.framework.FrameworkFactory();
     }
 
 }
