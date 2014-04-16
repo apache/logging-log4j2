@@ -26,8 +26,7 @@ import org.apache.camel.spi.UriParam;
 import org.apache.camel.util.ServiceHelper;
 
 /**
- * @author msicker
- * @version 1.0.0
+ * Camel Endpoint for logging to Log4j.
  */
 @UriEndpoint(scheme = "log4j")
 public class LogEndpoint extends ProcessorEndpoint {

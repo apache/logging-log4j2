@@ -24,8 +24,7 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 
 /**
- * @author msicker
- * @version 1.0.0
+ *
  */
 public class LogInputStreamTest extends ContextTestSupport {
 
