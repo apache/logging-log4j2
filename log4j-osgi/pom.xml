@@ -42,7 +42,6 @@
   <modules>
     <module>core-osgi-async</module>
     <module>core-osgi-jpa</module>
-    <module>core-osgi-legacy-api</module>
     <module>core-osgi-net</module>
     <module>core-osgi-nosql-couchdb</module>
     <module>core-osgi-nosql-mongodb</module>
