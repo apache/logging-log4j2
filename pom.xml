@@ -238,6 +238,7 @@
         <artifactId>logback-classic</artifactId>
         <version>${logback.version}</version>
         <type>test-jar</type>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -249,6 +250,7 @@
         <artifactId>log4j-api</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -260,6 +262,7 @@
         <artifactId>log4j-plugin-processor</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -271,6 +274,7 @@
         <artifactId>log4j-core</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -502,6 +506,7 @@
         <groupId>org.easymock</groupId>
         <artifactId>easymock</artifactId>
         <version>3.2</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
