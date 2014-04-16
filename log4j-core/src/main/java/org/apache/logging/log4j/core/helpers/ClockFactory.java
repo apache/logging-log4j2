@@ -76,7 +76,7 @@ public final class ClockFactory {
         }
         try {
             final Clock result = Loader.newCheckedInstanceOf(userRequest, Clock.class);
-            LOGGER.debug("Using {} for timestamps", userRequest);
+            LOGGER.debug("Using {} for timestamps", result.getClass().getName());
             return result;
         } catch (final Exception e) {
             final String fmt = "Could not create {}: {}, using default SystemClock for timestamps";
