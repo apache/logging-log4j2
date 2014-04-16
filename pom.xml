@@ -772,7 +772,6 @@
         </executions>
       </plugin> -->
 
-      <!-- TODO: switch from "jar" to "bundle" packaging as there's no difference in non-OSGi environments -->
       <!-- We need to disable the standard ASF configuration to be able to publish our own notice and license files -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
