@@ -99,8 +99,6 @@ public abstract class AbstractLoadBundleTest {
         final BundleContext bundleContext = OsgiFramework.getBundleContext();
         final Bundle bundle = bundleContext.installBundle("file:" + getBundlePath());
         Assert.assertNotNull("Error loading bundle: null returned", bundle);
-        Assert.assertEquals("Error loading bundle: symbolic name mismatch", getExpectedBundleSymbolicName(),
-                bundle.getSymbolicName());
         Assert.assertEquals("Bundle is not in INSTALLED state", Bundle.INSTALLED, bundle.getState());
 
         // sanity check: start and stop bundle
