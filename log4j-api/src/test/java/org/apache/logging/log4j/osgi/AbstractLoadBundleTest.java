@@ -18,15 +18,16 @@ package org.apache.logging.log4j.osgi;
 
 import java.io.File;
 
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
-import org.osgi.framework.launch.Framework;
+import org.osgi.framework.launch.FrameworkFactory;
 
 /**
  * Tests loading a bundle into an OSGi container.
@@ -39,20 +40,10 @@ import org.osgi.framework.launch.Framework;
  */
 public abstract class AbstractLoadBundleTest {
 
-    protected static Framework OsgiFramework;
+    protected abstract FrameworkFactory getFactory();
 
-    /**
-     * Uninstalls the OSGi framework.
-     *
-     * @throws BundleException
-     */
-    @AfterClass
-    public static void afterClass() throws BundleException {
-        if (OsgiFramework != null) {
-            OsgiFramework.stop();
-            OsgiFramework = null;
-        }
-    }
+    @Rule
+    public OSGiRule osgi = new OSGiRule(getFactory());
 
     private final BundleTestInfo bundleTestInfo;
 
@@ -96,9 +87,11 @@ public abstract class AbstractLoadBundleTest {
      */
     @Test
     public void testLoadStartStop() throws BundleException {
-        final BundleContext bundleContext = OsgiFramework.getBundleContext();
+        final BundleContext bundleContext = osgi.getFramework().getBundleContext();
         final Bundle bundle = bundleContext.installBundle("file:" + getBundlePath());
         Assert.assertNotNull("Error loading bundle: null returned", bundle);
+        Assert.assertEquals("Error loading bundle: symbolic name mismatch", getExpectedBundleSymbolicName(),
+                bundle.getSymbolicName());
         Assert.assertEquals("Bundle is not in INSTALLED state", Bundle.INSTALLED, bundle.getState());
 
         // sanity check: start and stop bundle
