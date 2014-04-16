@@ -16,10 +16,18 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import com.lmax.disruptor.BlockingWaitStrategy;
+import com.lmax.disruptor.ExceptionHandler;
+import com.lmax.disruptor.RingBuffer;
+import com.lmax.disruptor.SleepingWaitStrategy;
+import com.lmax.disruptor.WaitStrategy;
+import com.lmax.disruptor.YieldingWaitStrategy;
+import com.lmax.disruptor.dsl.Disruptor;
+import com.lmax.disruptor.dsl.ProducerType;
+import com.lmax.disruptor.util.Util;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
@@ -34,17 +42,6 @@ import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import com.lmax.disruptor.BlockingWaitStrategy;
-import com.lmax.disruptor.EventHandler;
-import com.lmax.disruptor.ExceptionHandler;
-import com.lmax.disruptor.RingBuffer;
-import com.lmax.disruptor.SleepingWaitStrategy;
-import com.lmax.disruptor.WaitStrategy;
-import com.lmax.disruptor.YieldingWaitStrategy;
-import com.lmax.disruptor.dsl.Disruptor;
-import com.lmax.disruptor.dsl.ProducerType;
-import com.lmax.disruptor.util.Util;
 
 /**
  * AsyncLogger is a logger designed for high throughput and low latency logging.
@@ -201,7 +198,7 @@ public class AsyncLogger extends Logger {
     /**
      * Constructs an {@code AsyncLogger} with the specified context, name and
      * message factory.
-     * 
+     *
      * @param context context of this logger
      * @param name name of this logger
      * @param messageFactory message factory of this logger
@@ -231,7 +228,7 @@ public class AsyncLogger extends Logger {
             info = new Info(new RingBufferLogEventTranslator(), Thread.currentThread().getName(), false);
             threadlocalInfo.set(info);
         }
-        
+
         // LOG4J2-471: prevent deadlock when RingBuffer is full and object
         // being logged calls Logger.log() from its toString() method
         if (info.isAppenderThread && disruptor.getRingBuffer().remainingCapacity() == 0) {
@@ -275,7 +272,7 @@ public class AsyncLogger extends Logger {
     /**
      * This method is called by the EventHandler that processes the
      * RingBufferLogEvent in a separate thread.
-     * 
+     *
      * @param event the event to log
      */
     public void actualAsyncLog(final RingBufferLogEvent event) {
@@ -303,7 +300,7 @@ public class AsyncLogger extends Logger {
             }
             try {
                 // give ringbuffer some time to drain...
-                // TODO: is there a better way to do this than busy-waiting?
+                //noinspection BusyWait
                 Thread.sleep(HALF_A_SECOND);
             } catch (final InterruptedException e) {
                 // ignored
@@ -316,7 +313,7 @@ public class AsyncLogger extends Logger {
     /**
      * Creates and returns a new {@code RingBufferAdmin} that instruments the
      * ringbuffer of the {@code AsyncLogger}.
-     * 
+     *
      * @param contextName name of the global {@code AsyncLoggerContext}
      */
     public static RingBufferAdmin createRingBufferAdmin(final String contextName) {
