@@ -64,7 +64,7 @@ public class ConfigurationTest {
 
     @Rule
     public TestRule rules;
-    
+
     private InitialLoggerContext init;
 
     private LoggerContext ctx;
@@ -81,9 +81,9 @@ public class ConfigurationTest {
     public static Collection<Object[]> data() {
         return Arrays.asList(
                 new Object[][]{
-                        {"classpath:log4j-test1.xml", "target/test.log"},
-                        {"classpath:log4j-test1.json", "target/test.log"},
-                        {"classpath:log4j-test1.yaml", "target/test.log"}
+                        {"classpath:log4j-test1.xml", "target/test-xml.log"},
+                        {"classpath:log4j-test1.json", "target/test-json.log"},
+                        {"classpath:log4j-test1.yaml", "target/test-yaml.log"}
                 }
         );
     }
