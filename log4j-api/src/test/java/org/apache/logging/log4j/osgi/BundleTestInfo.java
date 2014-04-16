@@ -65,7 +65,7 @@ public class BundleTestInfo {
 
     /**
      * Gets the Maven artifact ID.
-     * 
+     *
      * @return the Maven artifact ID.
      */
     public String getArtifactId() {
@@ -74,11 +74,11 @@ public class BundleTestInfo {
 
     /**
      * Gets the Maven version String.
-     * 
+     *
      * @return the Maven version String.
      */
     public String getVersion() {
-        return project.getVersion();
+        return project.getProperties().getProperty("project.version.osgi");
     }
 
 }
