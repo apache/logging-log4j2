@@ -24,7 +24,7 @@
     <relativePath>../</relativePath>
   </parent>
   <artifactId>log4j-api</artifactId>
-  <packaging>jar</packaging>
+  <packaging>bundle</packaging>
   <name>Apache Log4j API</name>
   <description>The Log4j API</description>
   <properties>
@@ -88,6 +88,15 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Export-Package>*</Export-Package>
+          </instructions>
+        </configuration>
       </plugin>
     </plugins>
   </build>
