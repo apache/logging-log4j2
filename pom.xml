@@ -913,8 +913,6 @@
     <module>log4j-samples</module>
     <module>log4j-bom</module>
     <module>log4j-plugin-processor</module>
-    <module>log4j-streams</module>
-    <module>log4j-camel</module>
   </modules>
   <profiles>
     <profile>
