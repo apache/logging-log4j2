@@ -45,7 +45,6 @@ public class XMLConfigurationPropsTest {
 
     @Test
     public void testNoProps() {
-        System.out.println("No status");
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         ctx.reconfigure();
@@ -56,7 +55,6 @@ public class XMLConfigurationPropsTest {
 
     @Test
     public void testDefaultStatus() {
-        System.out.println("Default status");
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG1);
         System.setProperty(Constants.LOG4J_DEFAULT_STATUS_LEVEL, "DEBUG");
         try {
