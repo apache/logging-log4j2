@@ -17,7 +17,8 @@
 package org.apache.logging.log4j.core.config;
 
 import java.io.File;
-
+import java.io.Serializable;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Layout;
@@ -26,10 +27,12 @@ import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.xml.XMLConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -49,12 +52,14 @@ public class CustomConfigurationTest {
 
     @Test
     public void testConfig() {
-        System.setProperty("log4j.level", "error");
+        // don't bother using "error" since that's the default; try another level
+        System.setProperty("log4j.level", "info");
         final LoggerContext ctx = this.init.getContext();
         ctx.reconfigure();
         final Configuration config = ctx.getConfiguration();
         assertTrue("Configuration is not an XMLConfiguration", config instanceof XMLConfiguration);
-        Layout layout = PatternLayout.createLayout(PatternLayout.SIMPLE_CONVERSION_PATTERN, config, null,
+        assertSame(StatusLogger.getLogger().getLevel(), Level.INFO);
+        Layout<? extends Serializable> layout = PatternLayout.createLayout(PatternLayout.SIMPLE_CONVERSION_PATTERN, config, null,
             null,null, null, null, null);
         Appender appender = FileAppender.createAppender(LOG_FILE, "false", "false", "File", "true",
             "false", "false", "4000", layout, null, "false", null, config);
@@ -68,7 +73,7 @@ public class CustomConfigurationTest {
         loggerConfig.addAppender(appender, null, null);
         config.addLogger("org.apache.logging.log4j", loggerConfig);
         ctx.updateLoggers();
-        Logger logger = ctx.getLogger("org.apache.logging.log4j.core.config.CustomConfigurationTest");
+        Logger logger = ctx.getLogger(CustomConfigurationTest.class.getName());
         logger.info("This is a test");
         final File file = new File(LOG_FILE);
         assertTrue("log file not created", file.exists());
