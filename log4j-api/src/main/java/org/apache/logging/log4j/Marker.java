@@ -38,6 +38,7 @@ public interface Marker extends Serializable {
      * @return The first parent Marker or null if this Marker has no parents.
      * @deprecated Use getParents() instead.
      */
+    @Deprecated
     Marker getParent();
 
     /**
