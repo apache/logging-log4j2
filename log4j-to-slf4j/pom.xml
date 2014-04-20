@@ -80,6 +80,15 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Export-Package>org.apache.logging.slf4j</Export-Package>
+          </instructions>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
   <reporting>

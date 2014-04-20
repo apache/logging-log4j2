@@ -46,7 +46,6 @@
     <module>core-osgi-nosql-couchdb</module>
     <module>core-osgi-nosql-mongodb</module>
     <module>core-osgi-reduced</module>
-    <module>log4j-to-slf4j</module>
     <module>slf4j-to-log4j</module>
   </modules>
 </project>
