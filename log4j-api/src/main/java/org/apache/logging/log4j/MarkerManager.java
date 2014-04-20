@@ -17,8 +17,6 @@
 package org.apache.logging.log4j;
 
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -52,6 +50,7 @@ public final class MarkerManager {
      * @throws IllegalArgumentException if the parent Marker does not exist.
      * @deprecated Use the Marker add or set methods to add parent Markers. Will be removed by final GA release.
      */
+    @Deprecated
     public static Marker getMarker(final String name, final String parent) {
         final Marker parentMarker = markerMap.get(parent);
         if (parentMarker == null) {
@@ -67,6 +66,7 @@ public final class MarkerManager {
      * @return The Marker with the specified name.
      * @deprecated Use the Marker add or set methods to add parent Markers. Will be removed by final GA release.
      */
+    @Deprecated
     public static Marker getMarker(final String name, final Marker parent) {
         markerMap.putIfAbsent(name, new Log4jMarker(name));
         return markerMap.get(name).add(parent);
@@ -101,6 +101,8 @@ public final class MarkerManager {
             int size = localParents == null ? 1 : localParents.length + 1;
             Marker[] markers = new Marker[size];
             if (localParents != null) {
+                // It's perfectly OK to call arraycopy in a synchronized context; it's still faster
+                //noinspection CallToNativeMethodWhileLocked
                 System.arraycopy(localParents, 0, markers, 0, localParents.length);
             }
             markers[size - 1] = parent;
@@ -126,8 +128,7 @@ public final class MarkerManager {
             }
             int index = 0;
             Marker[] markers = new Marker[localParents.length - 1];
-            for (int i = 0; i < localParents.length; ++i) {
-                Marker marker = localParents[i];
+            for (Marker marker : localParents) {
                 if (!marker.equals(parent)) {
                     if (index == localParents.length - 1) {
                         return false;
@@ -191,8 +192,8 @@ public final class MarkerManager {
                 if (localParents.length == 2) {
                     return checkParent(localParents[0], marker) || checkParent(localParents[1], marker);
                 }
-                for (int i = 0; i < localParents.length; ++i) {
-                    if (checkParent(localParents[i], marker)) {
+                for (final Marker localParent : localParents) {
+                    if (checkParent(localParent, marker)) {
                         return true;
                     }
                 }
@@ -221,8 +222,8 @@ public final class MarkerManager {
                 if (localParents.length == 2) {
                     return checkParent(localParents[0], marker) || checkParent(localParents[1], marker);
                 }
-                for (int i = 0; i < localParents.length; ++i) {
-                    if (checkParent(localParents[i], marker)) {
+                for (final Marker localParent : localParents) {
+                    if (checkParent(localParent, marker)) {
                         return true;
                     }
                 }
@@ -243,8 +244,8 @@ public final class MarkerManager {
                 if (localParents.length == 2) {
                     return checkParent(localParents[0], marker) || checkParent(localParents[1], marker);
                 }
-                for (int i = 0; i < localParents.length; ++i) {
-                    if (checkParent(localParents[i], marker)) {
+                for (final Marker localParent : localParents) {
+                    if (checkParent(localParent, marker)) {
                         return true;
                     }
                 }
@@ -255,7 +256,7 @@ public final class MarkerManager {
         /*
          * Called from add while synchronized.
          */
-        private boolean contains(Marker parent, Marker[] localParents) {
+        private boolean contains(Marker parent, Marker... localParents) {
 
             for (Marker marker : localParents) {
                 if (marker == parent) {
