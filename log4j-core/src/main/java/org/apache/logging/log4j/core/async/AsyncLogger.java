@@ -73,8 +73,8 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 public class AsyncLogger extends Logger {
     private static final long serialVersionUID = 1L;
-    private static final int HALF_A_SECOND = 500;
-    private static final int MAX_DRAIN_ATTEMPTS_BEFORE_SHUTDOWN = 20;
+    private static final int SLEEP_MILLIS_BETWEEN_DRAIN_ATTEMPTS = 50;
+    private static final int MAX_DRAIN_ATTEMPTS_BEFORE_SHUTDOWN = 200;
     private static final int RINGBUFFER_MIN_SIZE = 128;
     private static final int RINGBUFFER_DEFAULT_SIZE = 256 * 1024;
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
@@ -101,7 +101,7 @@ public class AsyncLogger extends Logger {
             try {
                 return ThreadNameStrategy.valueOf(name);
             } catch (final Exception ex) {
-                LOGGER.catching(Level.DEBUG, ex);
+                LOGGER.debug("Using AsyncLogger.ThreadNameStrategy.CACHED: '{}' not valid: {}", name, ex.toString());
                 return CACHED;
             }
         }
@@ -292,16 +292,17 @@ public class AsyncLogger extends Logger {
         }
         temp.shutdown();
 
-        // wait up to 10 seconds for the ringbuffer to drain
+        // Wait up to 10 seconds for the ringbuffer to drain,
+        // in case we received a burst of events right before the application was stopped.
         final RingBuffer<RingBufferLogEvent> ringBuffer = temp.getRingBuffer();
         for (int i = 0; i < MAX_DRAIN_ATTEMPTS_BEFORE_SHUTDOWN; i++) {
             if (ringBuffer.hasAvailableCapacity(ringBuffer.getBufferSize())) {
-                break;
+                break; // no more events queued, we can safely kill the processor thread
             }
             try {
                 // give ringbuffer some time to drain...
-                //noinspection BusyWait
-                Thread.sleep(HALF_A_SECOND);
+                // noinspection BusyWait
+                Thread.sleep(SLEEP_MILLIS_BETWEEN_DRAIN_ATTEMPTS);
             } catch (final InterruptedException e) {
                 // ignored
             }
