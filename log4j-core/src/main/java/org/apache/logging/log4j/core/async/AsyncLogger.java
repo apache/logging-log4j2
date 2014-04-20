@@ -101,7 +101,7 @@ public class AsyncLogger extends Logger {
             try {
                 return ThreadNameStrategy.valueOf(name);
             } catch (final Exception ex) {
-                LOGGER.catching(Level.DEBUG, ex);
+                LOGGER.debug("Using AsyncLogger.ThreadNameStrategy.CACHED: '{}' not valid: {}", name, ex.toString());
                 return CACHED;
             }
         }
