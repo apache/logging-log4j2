@@ -15,6 +15,8 @@
  * limitations under the license.
  */
 /**
- * SLF4J support.
+ * SLF4J support. Note that this does indeed share the same package namespace as the one found in log4j-to-slf4j;
+ * this is intentional. The two JARs should <em>not</em> be used at the same time! Thus, in an OSGi environment
+ * where split packages are not allowed, this error is prevented due to both JARs sharing an exported package name.
  */
 package org.apache.logging.slf4j;
