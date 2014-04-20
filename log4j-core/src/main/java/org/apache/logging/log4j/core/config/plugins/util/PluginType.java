@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.config.plugins;
+package org.apache.logging.log4j.core.config.plugins.util;
 
 
 import java.io.Serializable;
@@ -23,7 +23,7 @@ import java.io.Serializable;
  * Plugin Descriptor. This is a memento object for Plugin annotations paired to their annotated classes.
  *
  * @param <T> The plug-in class, which can be any kind of class.
- * @see Plugin
+ * @see org.apache.logging.log4j.core.config.plugins.Plugin
  */
 public class PluginType<T> implements Serializable {
 
