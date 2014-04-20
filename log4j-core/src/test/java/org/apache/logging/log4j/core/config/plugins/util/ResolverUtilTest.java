@@ -15,14 +15,14 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.core.config.plugins;
-
-import static org.junit.Assert.*;
+package org.apache.logging.log4j.core.config.plugins.util;
 
 import java.net.URL;
-
 import org.junit.Ignore;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests the ResolverUtil class.
@@ -67,7 +67,7 @@ public class ResolverUtilTest {
         final String existingFile = "/log4j+config+with+plus+characters.xml";
         URL url = ResolverUtilTest.class.getResource(existingFile);
         assertTrue("should be file url but was " + url, "file".equals(url.getProtocol()));
-        
+
         final String actual = new ResolverUtil().extractPath(url);
         assertTrue("should not be decoded: " + actual, actual.endsWith(existingFile));
     }
@@ -130,7 +130,7 @@ public class ResolverUtilTest {
         String expected = "/path with plus/file name with plus.jar";
         assertEquals(expected, new ResolverUtil().extractPath(url));
     }
-    
+
     @Test
     public void testExtractPathFromHttpsComplexUrl() throws Exception {
         URL url = new URL("https://issues.apache.org/jira/browse/LOG4J2-445?focusedCommentId=13862479&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-13862479");
