@@ -42,7 +42,7 @@ import org.apache.logging.log4j.message.MultiformatMessage;
  * <p>
  * If you configure {@code complete="true"}, the appender outputs a well-formed JSON document.
  * By default, with {@code complete="false"}, you should include the
- * output as an <em>external file</em> in a separate file to form a well-formed JSON document.
+ * output in an <em>external file</em> to form a well-formed JSON document.
  * </p>
  * <p>
  * A well-formed JSON document follows this pattern:
@@ -77,7 +77,7 @@ import org.apache.logging.log4j.message.MultiformatMessage;
  * Appenders using this layout should have their {@code charset} set to {@code UTF-8} or {@code UTF-16}, otherwise
  * events containing non ASCII characters could result in corrupted log files.
  * </p>
- * <h4>Pretty vs. compact XML</h4>
+ * <h4>Pretty vs. compact JSON</h4>
  * <p>
  * By default, the JSON layout is not compact (a.k.a. not "pretty") with {@code compact="false"}, which means the
  * appender uses end-of-line characters and indents lines to format the text. If {@code compact="true"}, then no
@@ -125,7 +125,7 @@ public class JSONLayout extends AbstractStringLayout {
      *
      * @param event
      *            The LogEvent.
-     * @return The XML representation of the LogEvent.
+     * @return The JSON representation of the LogEvent.
      */
     @Override
     public String toSerializable(final LogEvent event) {
@@ -320,13 +320,13 @@ public class JSONLayout extends AbstractStringLayout {
     }
 
     /**
-     * XMLLayout's content format is specified by:
+     * JSONLayout's content format is specified by:
      * <p/>
      * Key: "dtd" Value: "log4j-events.dtd"
      * <p/>
      * Key: "version" Value: "2.0"
      *
-     * @return Map of content format keys supporting XMLLayout
+     * @return Map of content format keys supporting JSONLayout
      */
     @Override
     public Map<String, String> getContentFormat() {
@@ -344,7 +344,7 @@ public class JSONLayout extends AbstractStringLayout {
     }
 
     /**
-     * Creates an XML Layout.
+     * Creates an JSON Layout.
      *
      * @param locationInfo
      *            If "true", includes the location information in the generated JSON.
@@ -356,7 +356,7 @@ public class JSONLayout extends AbstractStringLayout {
      *            If "true", does not use end-of-lines and indentation, defaults to "false".
      * @param charsetName
      *            The character set to use, if {@code null}, uses "UTF-8".
-     * @return An XML Layout.
+     * @return An JSON Layout.
      */
     @PluginFactory
     public static JSONLayout createLayout(
