@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public final class MarkerManager {
 
-    private static ConcurrentMap<String, Marker> markerMap = new ConcurrentHashMap<String, Marker>();
+    private static final ConcurrentMap<String, Marker> markerMap = new ConcurrentHashMap<String, Marker>();
 
     private MarkerManager() {
     }
@@ -89,19 +89,20 @@ public final class MarkerManager {
         }
 
         @Override
-        public synchronized Marker add(Marker parent) {
+        public synchronized Marker add(final Marker parent) {
             if (parent == null) {
                 throw new IllegalArgumentException("A parent marker must be specified");
             }
             // It is not strictly necessary to copy the variable here but it should perform better than
             // Accessing a volatile variable multiple times.
-            Marker[] localParents = this.parents;
+            final Marker[] localParents = this.parents;
             // Don't add a parent that is already in the hierarchy.
             if (localParents != null && (contains(parent, localParents) || parent.isInstanceOf(this))) {
                 return this;
             }
-            int size = localParents == null ? 1 : localParents.length + 1;
-            Marker[] markers = new Marker[size];
+            // FIXME: should we really be only increasing the array size by 1 each time? why not something like log(n)?
+            final int size = localParents == null ? 1 : localParents.length + 1;
+            final Marker[] markers = new Marker[size];
             if (localParents != null) {
                 // It's perfectly OK to call arraycopy in a synchronized context; it's still faster
                 //noinspection CallToNativeMethodWhileLocked
@@ -113,15 +114,16 @@ public final class MarkerManager {
         }
 
         @Override
-        public synchronized boolean remove(Marker parent) {
+        public synchronized boolean remove(final Marker parent) {
             if (parent == null) {
                 throw new IllegalArgumentException("A parent marker must be specified");
             }
-            Marker[] localParents = this.parents;
+            final Marker[] localParents = this.parents;
             if (localParents == null) {
                 return false;
             }
-            if (localParents.length == 1) {
+            final int localParentsLength = localParents.length;
+            if (localParentsLength == 1) {
                 if (localParents[0].equals(parent)) {
                     parents = null;
                     return true;
@@ -129,10 +131,12 @@ public final class MarkerManager {
                 return false;
             }
             int index = 0;
-            Marker[] markers = new Marker[localParents.length - 1];
-            for (Marker marker : localParents) {
+            final Marker[] markers = new Marker[localParentsLength - 1];
+            //noinspection ForLoopReplaceableByForEach
+            for (int i = 0; i < localParentsLength; i++) {
+                final Marker marker = localParents[i];
                 if (!marker.equals(parent)) {
-                    if (index == localParents.length - 1) {
+                    if (index == localParentsLength - 1) {
                         return false;
                     }
                     markers[index++] = marker;
@@ -143,11 +147,11 @@ public final class MarkerManager {
         }
 
         @Override
-        public Marker setParents(Marker... markers) {
+        public Marker setParents(final Marker... markers) {
             if (markers == null || markers.length == 0) {
                 this.parents = null;
             } else {
-                Marker[] array = new Marker[markers.length];
+                final Marker[] array = new Marker[markers.length];
                 System.arraycopy(markers, 0, array, 0, markers.length);
                 this.parents = array;
             }
@@ -185,16 +189,19 @@ public final class MarkerManager {
             if (this == marker) {
                 return true;
             }
-            Marker[] localParents = parents;
+            final Marker[] localParents = parents;
             if (localParents != null) {
                 // With only one or two parents the for loop is slower.
-                if (localParents.length == 1) {
+                final int localParentsLength = localParents.length;
+                if (localParentsLength == 1) {
                     return checkParent(localParents[0], marker);
                 }
-                if (localParents.length == 2) {
+                if (localParentsLength == 2) {
                     return checkParent(localParents[0], marker) || checkParent(localParents[1], marker);
                 }
-                for (final Marker localParent : localParents) {
+                //noinspection ForLoopReplaceableByForEach
+                for (int i = 0; i < localParentsLength; i++) {
+                    final Marker localParent = localParents[i];
                     if (checkParent(localParent, marker)) {
                         return true;
                     }
@@ -206,25 +213,30 @@ public final class MarkerManager {
         @Override
         public boolean isInstanceOf(final String markerName) {
             if (markerName == null) {
+                // FIXME: and normally you'd throw an NPE here (ditto for other cases above)
                 throw new IllegalArgumentException("A marker name is required");
             }
             if (markerName.equals(this.getName())) {
                 return true;
             }
             // Use a real marker for child comparisons. It is faster than comparing the names.
-            Marker marker = markerMap.get(markerName);
+            final Marker marker = markerMap.get(markerName);
             if (marker == null) {
+                // FIXME: shouldn't this just return false?
                 throw new IllegalArgumentException("No marker exists with the name " + markerName);
             }
-            Marker[] localParents = parents;
+            final Marker[] localParents = parents;
             if (localParents != null) {
-                if (localParents.length == 1) {
+                final int localParentsLength = localParents.length;
+                if (localParentsLength == 1) {
                     return checkParent(localParents[0], marker);
                 }
-                if (localParents.length == 2) {
+                if (localParentsLength == 2) {
                     return checkParent(localParents[0], marker) || checkParent(localParents[1], marker);
                 }
-                for (final Marker localParent : localParents) {
+                //noinspection ForLoopReplaceableByForEach
+                for (int i = 0; i < localParentsLength; i++) {
+                    final Marker localParent = localParents[i];
                     if (checkParent(localParent, marker)) {
                         return true;
                     }
@@ -234,19 +246,22 @@ public final class MarkerManager {
             return false;
         }
 
-        private boolean checkParent(Marker parent, Marker marker) {
+        private static boolean checkParent(final Marker parent, final Marker marker) {
             if (parent == marker) {
                 return true;
             }
-            Marker[] localParents = parent instanceof Log4jMarker ? ((Log4jMarker)parent).parents : parent.getParents();
+            final Marker[] localParents = parent instanceof Log4jMarker ? ((Log4jMarker)parent).parents : parent.getParents();
             if (localParents != null) {
-                if (localParents.length == 1) {
+                final int localParentsLength = localParents.length;
+                if (localParentsLength == 1) {
                     return checkParent(localParents[0], marker);
                 }
-                if (localParents.length == 2) {
+                if (localParentsLength == 2) {
                     return checkParent(localParents[0], marker) || checkParent(localParents[1], marker);
                 }
-                for (final Marker localParent : localParents) {
+                //noinspection ForLoopReplaceableByForEach
+                for (int i = 0; i < localParentsLength; i++) {
+                    final Marker localParent = localParents[i];
                     if (checkParent(localParent, marker)) {
                         return true;
                     }
@@ -258,9 +273,10 @@ public final class MarkerManager {
         /*
          * Called from add while synchronized.
          */
-        private boolean contains(Marker parent, Marker... localParents) {
-
-            for (Marker marker : localParents) {
+        private static boolean contains(final Marker parent, final Marker... localParents) {
+            //noinspection ForLoopReplaceableByForEach
+            for (int i = 0, localParentsLength = localParents.length; i < localParentsLength; i++) {
+                final Marker marker = localParents[i];
                 if (marker == parent) {
                     return true;
                 }
@@ -293,26 +309,29 @@ public final class MarkerManager {
 
         @Override
         public String toString() {
+            // FIXME: might want to use an initial capacity; the default is 16 (or str.length() + 16)
             final StringBuilder sb = new StringBuilder(name);
-            Marker[] localParents = parents;
+            final Marker[] localParents = parents;
             if (localParents != null) {
-                addParentInfo(localParents, sb);
+                addParentInfo(sb, localParents);
             }
             return sb.toString();
         }
 
-        private void addParentInfo(Marker[] parents, StringBuilder sb) {
+        private static void addParentInfo(final StringBuilder sb, final Marker... parents) {
             sb.append("[ ");
             boolean first = true;
-            for (Marker marker : parents) {
+            //noinspection ForLoopReplaceableByForEach
+            for (int i = 0, parentsLength = parents.length; i < parentsLength; i++) {
+                final Marker marker = parents[i];
                 if (!first) {
                     sb.append(", ");
                 }
                 first = false;
                 sb.append(marker.getName());
-                Marker[] p = marker instanceof Log4jMarker ? ((Log4jMarker)marker).parents : marker.getParents();
+                final Marker[] p = marker instanceof Log4jMarker ? ((Log4jMarker) marker).parents : marker.getParents();
                 if (p != null) {
-                    addParentInfo(p, sb);
+                    addParentInfo(sb, p);
                 }
             }
             sb.append(" ]");
