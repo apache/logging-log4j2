@@ -36,6 +36,7 @@ public final class MarkerManager {
      * Retrieve a Marker or create a Marker that has no parent.
      * @param name The name of the Marker.
      * @return The Marker with the specified name.
+     * @throws NullPointerException if the argument is {@code null}
      */
     public static Marker getMarker(final String name) {
         markerMap.putIfAbsent(name, new Log4jMarker(name));
@@ -48,6 +49,7 @@ public final class MarkerManager {
      * @param parent The name of the parent Marker.
      * @return The Marker with the specified name.
      * @throws IllegalArgumentException if the parent Marker does not exist.
+     * @throws NullPointerException if the argument is {@code null}
      * @deprecated Use the Marker add or set methods to add parent Markers. Will be removed by final GA release.
      */
     @Deprecated
@@ -66,6 +68,7 @@ public final class MarkerManager {
      * @param name The name of the Marker.
      * @param parent The parent Marker.
      * @return The Marker with the specified name.
+     * @throws NullPointerException if the argument is {@code null}
      * @deprecated Use the Marker add or set methods to add parent Markers. Will be removed by final GA release.
      */
     @Deprecated
@@ -83,15 +86,27 @@ public final class MarkerManager {
         private final String name;
         private volatile Marker[] parents;
 
+        /**
+         * Constructs a new Marker.
+         * @param name the name of the Marker.
+         * @throws NullPointerException if the argument is {@code null}
+         */
         public Log4jMarker(final String name) {
+            if (name == null) {
+                // we can't store null references in a ConcurrentHashMap as it is, not to mention that a null Marker
+                // name seems rather pointless. To get an "anonymous" Marker, just use an empty string.
+                throw new NullPointerException("Marker name cannot be null.");
+            }
             this.name = name;
             this.parents = null;
         }
 
+        // TODO: use java.util.concurrent
+
         @Override
         public synchronized Marker add(final Marker parent) {
             if (parent == null) {
-                throw new IllegalArgumentException("A parent marker must be specified");
+                throw new NullPointerException("A parent marker must be specified");
             }
             // It is not strictly necessary to copy the variable here but it should perform better than
             // Accessing a volatile variable multiple times.
@@ -100,7 +115,6 @@ public final class MarkerManager {
             if (localParents != null && (contains(parent, localParents) || parent.isInstanceOf(this))) {
                 return this;
             }
-            // FIXME: should we really be only increasing the array size by 1 each time? why not something like log(n)?
             final int size = localParents == null ? 1 : localParents.length + 1;
             final Marker[] markers = new Marker[size];
             if (localParents != null) {
@@ -113,10 +127,12 @@ public final class MarkerManager {
             return this;
         }
 
+        // TODO: add(Marker parent, Marker... moreParents)
+
         @Override
         public synchronized boolean remove(final Marker parent) {
             if (parent == null) {
-                throw new IllegalArgumentException("A parent marker must be specified");
+                throw new NullPointerException("A parent marker must be specified");
             }
             final Marker[] localParents = this.parents;
             if (localParents == null) {
@@ -184,7 +200,7 @@ public final class MarkerManager {
         @Override
         public boolean isInstanceOf(final Marker marker) {
             if (marker == null) {
-                throw new IllegalArgumentException("A marker parameter is required");
+                throw new NullPointerException("A marker parameter is required");
             }
             if (this == marker) {
                 return true;
@@ -213,8 +229,7 @@ public final class MarkerManager {
         @Override
         public boolean isInstanceOf(final String markerName) {
             if (markerName == null) {
-                // FIXME: and normally you'd throw an NPE here (ditto for other cases above)
-                throw new IllegalArgumentException("A marker name is required");
+                throw new NullPointerException("A marker name is required");
             }
             if (markerName.equals(this.getName())) {
                 return true;
@@ -222,8 +237,7 @@ public final class MarkerManager {
             // Use a real marker for child comparisons. It is faster than comparing the names.
             final Marker marker = markerMap.get(markerName);
             if (marker == null) {
-                // FIXME: shouldn't this just return false?
-                throw new IllegalArgumentException("No marker exists with the name " + markerName);
+                return false;
             }
             final Marker[] localParents = parents;
             if (localParents != null) {
@@ -292,19 +306,13 @@ public final class MarkerManager {
             if (o == null || !(o instanceof Marker)) {
                 return false;
             }
-
             final Marker marker = (Marker) o;
-
-            if (name != null ? !name.equals(marker.getName()) : marker.getName() != null) {
-                return false;
-            }
-
-            return true;
+            return name.equals(marker.getName());
         }
 
         @Override
         public int hashCode() {
-            return name != null ? name.hashCode() : 0;
+            return name.hashCode();
         }
 
         @Override
