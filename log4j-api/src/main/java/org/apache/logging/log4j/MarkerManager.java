@@ -155,6 +155,7 @@ public final class MarkerManager {
                     if (index == localParentsLength - 1) {
                         return false;
                     }
+                    // FIXME: buffer overflow
                     markers[index++] = marker;
                 }
             }
