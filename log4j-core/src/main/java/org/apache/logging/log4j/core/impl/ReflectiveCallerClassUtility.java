@@ -26,33 +26,37 @@ import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Utility class that handles the instability of the Sun/OpenJDK {@code sun.reflect.Reflection.getCallerClass(int)}
- * method.<br>
- * <br>
+ * method.
+ * <p>
  * <strong>Background:</strong> This method, available only in the Oracle/Sun/OpenJDK implementations of the Java
  * Virtual Machine, is a much more efficient mechanism for determining the {@link Class} of the caller of a particular
  * method. When it is not available, a {@link SecurityManager} is the second-best option. When this is also not
  * possible, the {@code StackTraceElement[]} returned by {@link Thread#getStackTrace()} must be used, and its
- * {@code String} class name converted to a {@code Class} using the slow {@link Class#forName}.<br>
- * <br>
+ * {@code String} class name converted to a {@code Class} using the slow {@link Class#forName}.
+ * </p>
+ * <p>
  * As of Java 8, the {@code getCallerClass(int)} method has been removed from Oracle/OpenJDK and is no longer usable. A
  * back-port of the feature that resulted in this change was made in Java 7u25, but the {@code getCallerClass(int)} was
  * left around for that version and deprecated, with the intention of being removed in 7u40. By coincidence, the change
  * actually broke {@code getCallerClass(int)} (the return value was inadvertently offset by 1 stack frame). This was
  * actually a good thing, because it made the hundreds of libraries and frameworks relying on this method aware of what
- * the JDK developers were up to.<br>
- * <br>
+ * the JDK developers were up to.
+ * </p>
+ * <p>
  * After much community backlash, the JDK team agreed to restore {@code getCallerClass(int)} and keep its existing
- * behavior for the rest of Java 7. However, the method will still not be available in Java 8, and so backup options
- * must be used. This class:<br>
+ * behavior for the rest of Java 7. However, the method is deprecated in Java 8, supposedly won't be in Java 9 (unless
+ * no public API is exposed which may force them to keep it), and so backup options must be used. This class:
+ * </p>
  * <ul>
  *     <li>Uses {@code getCallerClass(int)} the traditional way when possible.</li>
  *     <li>Uses {@code getCallerClass(int)} with an adjusted offset in Oracle/OpenJDK 7u25.</li>
  *     <li>Returns null otherwise. (Currently, it is the caller's responsibility to use the backup mechanisms.)</li>
  * </ul>
- * <br>
+ * <p>
  * <strong>IMPORTANT NOTE:</strong> This class should not be relied upon. It is considered an internal class and could
  * change at any time, breaking your code if you use it. Specifically, as a possible public API replacement for
- * {@code getCallerClass(int)} develops in Java 8, this class is very likely to change or even go away.
+ * {@code getCallerClass(int)} develops in Java 9, this class is very likely to change or even go away.
+ * </p>
  */
 public final class ReflectiveCallerClassUtility {
 
