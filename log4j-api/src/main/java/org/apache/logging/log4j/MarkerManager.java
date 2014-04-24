@@ -36,7 +36,7 @@ public final class MarkerManager {
      * Retrieve a Marker or create a Marker that has no parent.
      * @param name The name of the Marker.
      * @return The Marker with the specified name.
-     * @throws NullPointerException if the argument is {@code null}
+     * @throws IllegalArgumentException if the argument is {@code null}
      */
     public static Marker getMarker(final String name) {
         markerMap.putIfAbsent(name, new Log4jMarker(name));
@@ -49,7 +49,6 @@ public final class MarkerManager {
      * @param parent The name of the parent Marker.
      * @return The Marker with the specified name.
      * @throws IllegalArgumentException if the parent Marker does not exist.
-     * @throws NullPointerException if the argument is {@code null}
      * @deprecated Use the Marker add or set methods to add parent Markers. Will be removed by final GA release.
      */
     @Deprecated
@@ -68,7 +67,7 @@ public final class MarkerManager {
      * @param name The name of the Marker.
      * @param parent The parent Marker.
      * @return The Marker with the specified name.
-     * @throws NullPointerException if the argument is {@code null}
+     * @throws IllegalArgumentException if any argument is {@code null}
      * @deprecated Use the Marker add or set methods to add parent Markers. Will be removed by final GA release.
      */
     @Deprecated
@@ -89,13 +88,13 @@ public final class MarkerManager {
         /**
          * Constructs a new Marker.
          * @param name the name of the Marker.
-         * @throws NullPointerException if the argument is {@code null}
+         * @throws IllegalArgumentException if the argument is {@code null}
          */
         public Log4jMarker(final String name) {
             if (name == null) {
                 // we can't store null references in a ConcurrentHashMap as it is, not to mention that a null Marker
                 // name seems rather pointless. To get an "anonymous" Marker, just use an empty string.
-                throw new NullPointerException("Marker name cannot be null.");
+                throw new IllegalArgumentException("Marker name cannot be null.");
             }
             this.name = name;
             this.parents = null;
@@ -106,7 +105,7 @@ public final class MarkerManager {
         @Override
         public synchronized Marker add(final Marker parent) {
             if (parent == null) {
-                throw new NullPointerException("A parent marker must be specified");
+                throw new IllegalArgumentException("A parent marker must be specified");
             }
             // It is not strictly necessary to copy the variable here but it should perform better than
             // Accessing a volatile variable multiple times.
@@ -132,7 +131,7 @@ public final class MarkerManager {
         @Override
         public synchronized boolean remove(final Marker parent) {
             if (parent == null) {
-                throw new NullPointerException("A parent marker must be specified");
+                throw new IllegalArgumentException("A parent marker must be specified");
             }
             final Marker[] localParents = this.parents;
             if (localParents == null) {
@@ -153,9 +152,9 @@ public final class MarkerManager {
                 final Marker marker = localParents[i];
                 if (!marker.equals(parent)) {
                     if (index == localParentsLength - 1) {
+                        // no need to swap array
                         return false;
                     }
-                    // FIXME: buffer overflow
                     markers[index++] = marker;
                 }
             }
@@ -201,7 +200,7 @@ public final class MarkerManager {
         @Override
         public boolean isInstanceOf(final Marker marker) {
             if (marker == null) {
-                throw new NullPointerException("A marker parameter is required");
+                throw new IllegalArgumentException("A marker parameter is required");
             }
             if (this == marker) {
                 return true;
@@ -230,7 +229,7 @@ public final class MarkerManager {
         @Override
         public boolean isInstanceOf(final String markerName) {
             if (markerName == null) {
-                throw new NullPointerException("A marker name is required");
+                throw new IllegalArgumentException("A marker name is required");
             }
             if (markerName.equals(this.getName())) {
                 return true;

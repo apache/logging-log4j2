@@ -57,7 +57,7 @@ public interface Marker extends Serializable {
      * Checks whether this Marker is an instance of the specified Marker.
      * @param m The Marker to check.
      * @return {@code true} if this Marker or one of its ancestors is the specified Marker, {@code false} otherwise.
-     * @throws NullPointerException if the argument is {@code null}
+     * @throws IllegalArgumentException if the argument is {@code null}
      */
     boolean isInstanceOf(Marker m);
 
@@ -65,7 +65,7 @@ public interface Marker extends Serializable {
      * Checks whether this Marker is an instance of the specified Marker.
      * @param name The name of the Marker.
      * @return {@code true} if this Marker or one of its ancestors matches the specified name, {@code false} otherwise.
-     * @throws NullPointerException if the argument is {@code null}
+     * @throws IllegalArgumentException if the argument is {@code null}
      */
     boolean isInstanceOf(String name);
 
@@ -73,7 +73,7 @@ public interface Marker extends Serializable {
      * Adds a Marker as a parent to this Marker.
      * @param marker The parent marker to add.
      * @return The current Marker object, thus allowing multiple adds to be concatenated.
-     * @throws NullPointerException if the argument is {@code null}
+     * @throws IllegalArgumentException if the argument is {@code null}
      */
     Marker add(Marker marker);
 
@@ -88,7 +88,7 @@ public interface Marker extends Serializable {
      * Removes the specified Marker as a parent of this Marker.
      * @param marker The marker to remove.
      * @return {@code true} if the marker was removed.
-     * @throws NullPointerException if the argument is {@code null}
+     * @throws IllegalArgumentException if the argument is {@code null}
      */
     boolean remove(Marker marker);
 }
