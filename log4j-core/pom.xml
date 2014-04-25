@@ -260,7 +260,6 @@
           <instructions>
             <Bundle-SymbolicName>org.apache.logging.log4j.core</Bundle-SymbolicName>
             <Export-Package>org.apache.logging.log4j.core.*</Export-Package>
-            <Fragment-Host>org.apache.logging.log4j.api;bundle-version=${project.version.osgi}</Fragment-Host>
           </instructions>
         </configuration>
       </plugin>
