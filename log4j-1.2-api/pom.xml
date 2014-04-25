@@ -99,7 +99,6 @@
         <configuration>
           <instructions>
             <Export-Package>org.apache.log4j.*</Export-Package>
-            <Fragment-Host>org.apache.logging.log4j.api;bundle-version=${project.version.osgi}</Fragment-Host>
           </instructions>
         </configuration>
       </plugin>
