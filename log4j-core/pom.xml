@@ -38,11 +38,6 @@
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
     </dependency>
-    <!-- Used for pre-caching the standard plugins -->
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-plugin-processor</artifactId>
-    </dependency>
     <!-- Used for OSGi bundle support -->
     <dependency>
       <groupId>org.osgi</groupId>
@@ -221,6 +216,40 @@
   <build>
     <plugins>
       <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <executions>
+          <execution>
+            <!-- disable annotation processing for first pass -->
+            <id>default-compile</id>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <phase>compile</phase>
+            <configuration>
+              <proc>none</proc>
+            </configuration>
+          </execution>
+          <execution>
+            <!-- then do a processing-only pass to generate plugins .dat file -->
+            <id>process-plugins</id>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <phase>process-classes</phase>
+            <configuration>
+              <proc>only</proc>
+            </configuration>
+          </execution>
+          <!--execution>
+            <id>default-testCompile</id>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+            <phase>test-compile</phase>
+          </execution-->
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <executions>
@@ -231,28 +260,6 @@
           </execution>
         </executions>
       </plugin>
-      <!-- TODO: verify this is no longer required -->
-      <!--
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>1.2.1</version>
-        <executions>
-          <execution>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>java</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <mainClass>org.apache.logging.log4j.core.config.plugins.util.PluginManager</mainClass>
-          <arguments>
-            <argument>${project.build.outputDirectory}</argument>
-          </arguments>
-        </configuration>
-      </plugin>
-      -->
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
