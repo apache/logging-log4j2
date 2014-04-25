@@ -195,7 +195,7 @@
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- XXX: Spring tests? -->
+    <!-- Spring tests (JNDI and such) -->
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
@@ -240,13 +240,6 @@
               <proc>only</proc>
             </configuration>
           </execution>
-          <!--execution>
-            <id>default-testCompile</id>
-            <goals>
-              <goal>testCompile</goal>
-            </goals>
-            <phase>test-compile</phase>
-          </execution-->
         </executions>
       </plugin>
       <plugin>
