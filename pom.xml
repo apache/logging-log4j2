@@ -254,18 +254,6 @@
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-plugin-processor</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-plugin-processor</artifactId>
-        <version>${project.version}</version>
-        <type>test-jar</type>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-core</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -912,7 +900,6 @@
     <module>log4j-jmx-gui</module>
     <module>log4j-samples</module>
     <module>log4j-bom</module>
-    <module>log4j-plugin-processor</module>
   </modules>
   <profiles>
     <profile>
