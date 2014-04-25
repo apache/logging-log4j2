@@ -890,7 +890,6 @@
   <modules>
     <module>log4j-api</module>
     <module>log4j-core</module>
-    <module>log4j-osgi</module>
     <module>log4j-1.2-api</module>
     <module>log4j-slf4j-impl</module>
     <module>log4j-to-slf4j</module>
