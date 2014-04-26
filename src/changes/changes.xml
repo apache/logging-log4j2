@@ -21,6 +21,19 @@
   </properties>
   <body>
     <release version="2.0-rc2" date="2014-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-440" dev="mattsicker" type="fix">
+        During shutdown, a NullPointerException could be thrown due to the NullConfiguration class no longer being
+        available to the ClassLoader.
+      </action>
+      <action issue="LOG4J2-346" dev="mattsicker" type="fix">
+        Cyclic dependency with log4j-slf4j-impl in OSGi.
+      </action>
+      <action issue="LOG4J2-345" dev="mattsicker" type="fix">
+        The log4j-1.2-api module didn't export any packages to OSGi.
+      </action>
+      <action issue="LOG4J2-605" dev="mattsicker" type="fix">
+        Password data from the NoSQL plugins no longer shows up in cleartext in debug logging.
+      </action>
       <action issue="LOG4J2-448" dev="rgoers" type="fix" due-to="X86core">
         A StringIndexOutOfBounds exception could occur during property substitution.
       </action>
