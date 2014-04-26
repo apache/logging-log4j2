@@ -1,0 +1,48 @@
+{
+    "configuration": {
+        "status": "debug"
+        ,"name": "Test-Logging"
+        ,"monitorInterval":30
+        ,"packages": "org.apache.logging.log4j.core"
+        ,"ThresholdFilter": { "level": "all" }
+        ,"properties": {
+            "property": { "name" : "theLogName"
+                ,"value" : "test-logging2.log"
+            }
+        }
+        ,"appenders": {
+            "Console": {
+                "name": "stdout"
+                ,"target":"SYSTEM_OUT"
+                ,"ignoreExceptions":false
+                ,"PatternLayout": {
+                    "pattern": "%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n"
+                }
+            }
+            ,"File": {
+                "name": "fileout"
+                ,"immediateFlush": true
+                ,"PatternLayout": {
+                    "pattern":"%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n"
+                }
+                ,"fileName":"${map:theLogName}"
+            }
+        }
+        ,"loggers": {
+            "logger": {
+                "name": "TestLogger"
+                ,"level": "DEBUG"
+                ,"additivity": "true"
+                ,"bufferedIO": true
+                ,"bufferSize": 16384
+                ,"AppenderRef": {
+                    "ref":"fileout"
+                }
+            }
+            ,"root": {
+                "level": "ALL"
+                ,"AppenderRef": { "ref": "stdout" }
+            }
+        }
+    }
+}

@@ -24,8 +24,14 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -52,6 +58,17 @@ public class DataSourceConnectionSourceTest {
 
     public DataSourceConnectionSourceTest(final String jndiURL) {
         this.jndiURL = jndiURL;
+    }
+
+    private static final String CONFIG = "log4j-fatalOnly.xml";
+
+    @BeforeClass
+    public static void beforeClass() {
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
+        LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        ctx.reconfigure();
+        StatusLogger logger = StatusLogger.getLogger();
+        logger.setLevel(Level.FATAL);
     }
 
     @Before

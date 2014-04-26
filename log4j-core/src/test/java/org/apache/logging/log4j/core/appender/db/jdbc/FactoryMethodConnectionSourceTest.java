@@ -20,9 +20,15 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.easymock.EasyMock.*;
@@ -30,6 +36,16 @@ import static org.junit.Assert.*;
 
 public class FactoryMethodConnectionSourceTest {
     private static ThreadLocal<Object> holder = new ThreadLocal<Object>();
+    private static final String CONFIG = "log4j-fatalOnly.xml";
+
+    @BeforeClass
+    public static void beforeClass() {
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
+        LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        ctx.reconfigure();
+        StatusLogger logger = StatusLogger.getLogger();
+        logger.setLevel(Level.FATAL);
+    }
 
     @AfterClass
     public static void tearDownClass() {

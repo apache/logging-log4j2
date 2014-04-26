@@ -23,6 +23,7 @@ import static org.junit.Assert.assertNotNull;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
@@ -35,6 +36,8 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.util.Map;
 
 /**
  *
@@ -77,6 +80,10 @@ public class PatternLayoutTest {
         final String mdcMsgPattern3 = "%m : %X{key2}%n";
         final String mdcMsgPattern4 = "%m : %X{key3}%n";
         final String mdcMsgPattern5 = "%m : %X{key1},%X{key2},%X{key3}%n";
+        final Map<String, Appender> appenders = root.getAppenders();
+        for (Appender appender : appenders.values()) {
+            root.removeAppender(appender);
+        }
 
         // set up appender
         final PatternLayout layout = PatternLayout.createLayout(msgPattern, ctx.getConfiguration(), null, null, null,
@@ -137,6 +144,10 @@ public class PatternLayoutTest {
         root.removeAppender(appender);
 
         appender.stop();
+
+        for (Appender app : appenders.values()) {
+            root.addAppender(app);
+        }
     }
 
     @Test

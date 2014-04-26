@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
@@ -34,6 +35,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertTrue;
 
@@ -75,7 +77,10 @@ public class SerializedLayoutTest {
      */
     @Test
     public void testLayout() throws Exception {
-
+        final Map<String, Appender> appenders = root.getAppenders();
+        for (Appender appender : appenders.values()) {
+            root.removeAppender(appender);
+        }
         // set up appender
         final SerializedLayout layout = SerializedLayout.createLayout();
         final ListAppender appender = new ListAppender("List", null, layout, false, true);
@@ -123,6 +128,8 @@ public class SerializedLayoutTest {
             assertTrue("Incorrect event", event.toString().equals(expected[i]));
             ++i;
         }
-
+        for (Appender app : appenders.values()) {
+            root.addAppender(app);
+        }
     }
 }

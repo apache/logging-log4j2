@@ -20,12 +20,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -77,7 +79,10 @@ public class XMLLayoutTest {
      */
     @Test
     public void testLayout() throws Exception {
-
+        final Map<String, Appender> appenders = root.getAppenders();
+        for (Appender appender : appenders.values()) {
+            root.removeAppender(appender);
+        }
         // set up appender
         final XMLLayout layout = XMLLayout.createLayout("true", "true", "true", null, null, null);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
@@ -117,5 +122,8 @@ public class XMLLayoutTest {
 
         assertTrue("Missing Marker-Tag, Expected " + markerTag + ", Actual" + list.get(list.size() - 4),
                 list.get(list.size() - 4).contains(markerTag));
+        for (Appender app : appenders.values()) {
+            root.addAppender(app);
+        }
     }
 }

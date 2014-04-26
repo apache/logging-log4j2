@@ -56,7 +56,7 @@ public class XMLConfigurationPropsTest {
     @Test
     public void testDefaultStatus() {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG1);
-        System.setProperty(Constants.LOG4J_DEFAULT_STATUS_LEVEL, "DEBUG");
+        System.setProperty(Constants.LOG4J_DEFAULT_STATUS_LEVEL, "WARN");
         try {
             final LoggerContext ctx = (LoggerContext) LogManager.getContext();
             ctx.reconfigure();
@@ -70,7 +70,7 @@ public class XMLConfigurationPropsTest {
     @Test
     public void testWithConfigProp() {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        System.setProperty("log4j.level", "debug");
+        System.setProperty("log4j.level", "warn");
         try {
             final LoggerContext ctx = (LoggerContext) LogManager.getContext();
             ctx.reconfigure();
@@ -85,8 +85,8 @@ public class XMLConfigurationPropsTest {
     @Test
     public void testWithProps() {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        System.setProperty("log4j.level", "debug");
-        System.setProperty("log.level", "debug");
+        System.setProperty("log4j.level", "warn");
+        System.setProperty("log.level", "warn");
         try {
             final LoggerContext ctx = (LoggerContext) LogManager.getContext();
             ctx.reconfigure();
