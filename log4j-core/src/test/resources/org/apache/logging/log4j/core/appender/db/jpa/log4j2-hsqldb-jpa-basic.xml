@@ -30,7 +30,7 @@
       <AppenderRef ref="databaseAppender" />
     </Logger>
 
-    <Root level="error">
+    <Root level="fatal">
       <AppenderRef ref="STDOUT"/>
     </Root>
   </Loggers>

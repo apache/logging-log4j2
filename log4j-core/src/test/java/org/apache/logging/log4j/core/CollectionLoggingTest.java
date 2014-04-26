@@ -24,13 +24,44 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.message.MapMessage;
+import org.apache.logging.log4j.test.appender.ListAppender;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Work in progress.
  */
 public class CollectionLoggingTest {
+
+    private static final String CONFIG = "log4j-collectionLogging.xml";
+    private static LoggerContext ctx;
+    private ListAppender app;
+
+
+    @BeforeClass
+    public static void beforeClass() {
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
+        ctx = (LoggerContext) LogManager.getContext();
+        ctx.reconfigure();
+    }
+
+    @Before
+    public void before() {
+        Configuration config = ctx.getConfiguration();
+        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
+            if (entry.getKey().equals("List")) {
+                app = (ListAppender) entry.getValue();
+            }
+        }
+        assertNotNull("No Appender", app);
+        app.clear();
+    }
 
     @Test
     public void testSystemProperties() {

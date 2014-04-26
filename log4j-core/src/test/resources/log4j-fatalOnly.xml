@@ -14,21 +14,17 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
+
 -->
-<Configuration status="OFF">
+<Configuration status="OFF" name="Log4jTest">
 
   <Appenders>
     <Console name="STDOUT">
-      <PatternLayout pattern="%C{1.} %m %level MDC%X%n"/>
+      <PatternLayout pattern="%m%n"/>
     </Console>
-    <Jpa name="databaseAppender" persistenceUnitName="hyperSqlJpaAppenderTestUnit"
-         entityClassName="org.apache.logging.log4j.core.appender.db.jpa.TestBaseEntity" ignoreExceptions="false" />
   </Appenders>
 
   <Loggers>
-    <Logger name="org.apache.logging.log4j.core.appender.db" level="debug" additivity="false">
-      <AppenderRef ref="databaseAppender" />
-    </Logger>
 
     <Root level="fatal">
       <AppenderRef ref="STDOUT"/>

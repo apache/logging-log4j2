@@ -20,10 +20,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -73,7 +75,10 @@ public class JSONLayoutTest {
      */
     @Test
     public void testLayout() throws Exception {
-
+        final Map<String, Appender> appenders = root.getAppenders();
+        for (Appender appender : appenders.values()) {
+            root.removeAppender(appender);
+        }
         // set up appender
         final JSONLayout layout = JSONLayout.createLayout("true", "true", "true", "false", null);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
@@ -124,11 +129,17 @@ public class JSONLayoutTest {
         this.checkAt("\"logger\":\"root\",", 2, list);
         this.checkAt("\"level\":\"DEBUG\",", 4, list);
         this.checkAt("\"message\":\"starting mdc pattern test\",", 6, list);
+        for (Appender app : appenders.values()) {
+            root.addAppender(app);
+        }
     }
 
     @Test
     public void testEscapeLayout() throws Exception {
-
+        final Map<String, Appender> appenders = root.getAppenders();
+        for (Appender appender : appenders.values()) {
+            root.removeAppender(appender);
+        }
         // set up appender
         final JSONLayout layout = JSONLayout.createLayout("true", "true", "true", "false", null);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
@@ -150,6 +161,9 @@ public class JSONLayoutTest {
         this.checkAt("\"logger\":\"root\",", 2, list);
         this.checkAt("\"level\":\"DEBUG\",", 4, list);
         this.checkAt("\"message\":\"Here is a quote ' and then a double quote \\\"\",", 6, list);
+        for (Appender app : appenders.values()) {
+            root.addAppender(app);
+        }
     }
 
     private void checkAt(String expected, int lineIndex, List<String> list) {
