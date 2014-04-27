@@ -65,28 +65,29 @@ public class PluginManager {
     private static String rootDir;
 
     private Map<String, PluginType<?>> plugins = new HashMap<String, PluginType<?>>();
-    private final String type;
+    private final String category;
     private final Class<?> clazz;
 
     /**
-     * Constructor that takes only a type name.
-     * @param type The type name.
+     * Constructs a PluginManager for the plugin category name given.
+     * @param category The plugin category name.
      */
-    public PluginManager(final String type) {
-        this.type = type;
+    public PluginManager(final String category) {
+        this.category = category;
         this.clazz = null;
     }
 
     /**
-     * Constructor that takes a type name and a Class.
-     * @param type The type that must be matched.
+     * Constructs a PluginManager for a given plugin category name and plugin class.
+     * @param category The plugin category name.
      * @param clazz The Class each match must be an instance of.
      */
-    public PluginManager(final String type, final Class<?> clazz) {
-        this.type = type;
+    public PluginManager(final String category, final Class<?> clazz) {
+        this.category = category;
         this.clazz = clazz;
     }
 
+    @Deprecated // use PluginProcessor instead
     public static void main(final String[] args) throws Exception {
         if (args == null || args.length < 1) {
             System.err.println("A target directory must be specified");
@@ -145,8 +146,8 @@ public class PluginManager {
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public void collectPlugins(boolean preLoad, final String pkgs) {
-        if (pluginTypeMap.containsKey(type)) {
-            plugins = pluginTypeMap.get(type);
+        if (pluginTypeMap.containsKey(category)) {
+            plugins = pluginTypeMap.get(category);
             preLoad = false;
         }
         final long start = System.nanoTime();
@@ -159,7 +160,7 @@ public class PluginManager {
             final ConcurrentMap<String, ConcurrentMap<String, PluginType<?>>> map = decode(classLoader);
             if (map != null) {
                 pluginTypeMap = map;
-                plugins = map.get(type);
+                plugins = map.get(category);
             } else {
                 LOGGER.warn("Plugin preloads not available from class loader {}", classLoader);
             }
@@ -198,7 +199,7 @@ public class PluginManager {
             }
         }
         long elapsed = System.nanoTime() - start;
-        plugins = pluginTypeMap.get(type);
+        plugins = pluginTypeMap.get(category);
         final StringBuilder sb = new StringBuilder("Generated plugins in ");
         DecimalFormat numFormat = new DecimalFormat("#0");
         final long seconds = elapsed / NANOS_PER_SECOND;
