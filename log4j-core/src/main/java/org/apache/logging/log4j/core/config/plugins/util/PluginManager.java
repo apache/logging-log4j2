@@ -145,8 +145,8 @@ public class PluginManager {
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public void collectPlugins(boolean preLoad, final String pkgs) {
-        if (pluginTypeMap.containsKey(category)) {
-            plugins = pluginTypeMap.get(category);
+        if (pluginTypeMap.hasCategory(category)) {
+            plugins = pluginTypeMap.getCategory(category);
             preLoad = false;
         }
         final long start = System.nanoTime();
@@ -159,7 +159,7 @@ public class PluginManager {
             final PluginRegistry<PluginType<?>> map = decode(classLoader);
             if (map != null) {
                 pluginTypeMap = map;
-                plugins = map.get(category);
+                plugins = map.getCategory(category);
             } else {
                 LOGGER.warn("Plugin preloads not available from class loader {}", classLoader);
             }
@@ -181,7 +181,7 @@ public class PluginManager {
         for (final Class<?> clazz : resolver.getClasses()) {
             final Plugin plugin = clazz.getAnnotation(Plugin.class);
             final String pluginCategory = plugin.category();
-            final Map<String, PluginType<?>> map = pluginTypeMap.get(pluginCategory);
+            final Map<String, PluginType<?>> map = pluginTypeMap.getCategory(pluginCategory);
             String type = plugin.elementType().equals(Plugin.EMPTY) ? plugin.name() : plugin.elementType();
             PluginType pluginType = new PluginType(clazz, type, plugin.printObject(), plugin.deferChildren());
             map.put(plugin.name().toLowerCase(), pluginType);
@@ -195,7 +195,7 @@ public class PluginManager {
             }
         }
         long elapsed = System.nanoTime() - start;
-        plugins = pluginTypeMap.get(category);
+        plugins = pluginTypeMap.getCategory(category);
         final StringBuilder sb = new StringBuilder("Generated plugins in ");
         DecimalFormat numFormat = new DecimalFormat("#0");
         final long seconds = elapsed / NANOS_PER_SECOND;
@@ -235,7 +235,7 @@ public class PluginManager {
                 for (int j = 0; j < count; ++j) {
                     final String category = dis.readUTF();
                     final int entries = dis.readInt();
-                    final Map<String, PluginType<?>> types = map.get(category);
+                    final Map<String, PluginType<?>> types = map.getCategory(category);
                     for (int i = 0; i < entries; ++i) {
                         final String key = dis.readUTF();
                         final String className = dis.readUTF();
@@ -277,8 +277,8 @@ public class PluginManager {
         try {
             final DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(fileName)));
             try {
-                dos.writeInt(map.size());
-                for (final Map.Entry<String, ConcurrentMap<String, PluginType<?>>> outer : map.entrySet()) {
+                dos.writeInt(map.getCategoryCount());
+                for (final Map.Entry<String, ConcurrentMap<String, PluginType<?>>> outer : map.getCategories()) {
                     dos.writeUTF(outer.getKey());
                     dos.writeInt(outer.getValue().size());
                     for (final Map.Entry<String, PluginType<?>> entry : outer.getValue().entrySet()) {
