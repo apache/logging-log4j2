@@ -16,6 +16,21 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,17 +57,6 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-
 /**
  * Logger object that is created via configuration.
  */
@@ -61,7 +65,6 @@ public class LoggerConfig extends AbstractFilterable {
 
     protected static final Logger LOGGER = StatusLogger.getLogger();
     private static final int MAX_RETRIES = 3;
-    private static final long WAIT_TIME = 1000;
     private static LogEventFactory LOG_EVENT_FACTORY = null;
 
     private List<AppenderRef> appenderRefs = new ArrayList<AppenderRef>();
@@ -73,9 +76,11 @@ public class LoggerConfig extends AbstractFilterable {
     private boolean includeLocation = true;
     private LoggerConfig parent;
     private final AtomicInteger counter = new AtomicInteger();
-    private boolean shutdown = false;
+    private final AtomicBoolean shutdown = new AtomicBoolean(false);
     private final Map<Property, Boolean> properties;
     private final Configuration config;
+    private final Lock shutdownLock = new ReentrantLock();
+    private final Condition noLogEvents = shutdownLock.newCondition(); // should only be used when shutdown == true
 
     static {
         final String factory = PropertiesUtil.getProperties().getStringProperty(Constants.LOG4J_LOG_EVENT_FACTORY);
@@ -369,18 +374,20 @@ public class LoggerConfig extends AbstractFilterable {
      * Waits for all log events to complete before shutting down this
      * loggerConfig.
      */
-    private synchronized void waitForCompletion() {
-        if (shutdown) {
-            return;
-        }
-        shutdown = true;
-        int retries = 0;
-        while (counter.get() > 0) {
-            try {
-                wait(WAIT_TIME * (retries + 1));
-            } catch (final InterruptedException ie) {
-                if (++retries > MAX_RETRIES) {
-                    break;
+    private void waitForCompletion() {
+        if (shutdown.compareAndSet(false, true)) {
+            int retries = 0;
+            // if this were Java 1.7, we could use a java.util.concurrent.Phaser instead
+            while (counter.get() > 0) {
+                shutdownLock.lock();
+                try {
+                    noLogEvents.await(retries + 1, TimeUnit.SECONDS);
+                } catch (final InterruptedException ie) {
+                    if (++retries > MAX_RETRIES) {
+                        break;
+                    }
+                } finally {
+                    shutdownLock.unlock();
                 }
             }
         }
@@ -408,12 +415,14 @@ public class LoggerConfig extends AbstractFilterable {
             }
         } finally {
             if (counter.decrementAndGet() == 0) {
-                synchronized (this) {
-                    if (shutdown) {
-                        notifyAll();
+                shutdownLock.lock();
+                try {
+                    if (shutdown.get()) {
+                        noLogEvents.signalAll();
                     }
+                } finally {
+                    shutdownLock.unlock();
                 }
-
             }
         }
     }
