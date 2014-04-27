@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-rc2" date="2014-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-617" dev="mattsicker" type="update">
+        Update SLF4J to 1.7.7.
+      </action>
       <action issue="LOG4J2-616" dev="mattsicker" type="update">
         Update Jackson to 2.3.3.
       </action>
