@@ -30,6 +30,8 @@ import java.util.List;
  */
 public class Log4jMarker implements Marker {
 
+    public static final long serialVersionUID = 1590472L;
+
     private final IMarkerFactory factory = StaticMarkerBinder.SINGLETON.getMarkerFactory();
 
     private final org.apache.logging.log4j.Marker marker;
