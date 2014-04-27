@@ -17,29 +17,20 @@
 package org.apache.logging.log4j.core.config.plugins.util;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.text.DecimalFormat;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAliases;
+import org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor;
 import org.apache.logging.log4j.core.helpers.Closer;
 import org.apache.logging.log4j.core.helpers.Loader;
-import org.apache.logging.log4j.core.helpers.Patterns;
+import org.apache.logging.log4j.core.helpers.lang.ClassLoaderResourceLoader;
+import org.apache.logging.log4j.core.helpers.lang.ResourceLoader;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -47,20 +38,14 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 public class PluginManager {
 
-    private static final long NANOS_PER_SECOND = 1000000000L;
-
     // TODO: re-use PluginCache code from plugin processor
-    private static PluginRegistry<PluginType<?>> pluginTypeMap =
+    private static final PluginRegistry<PluginType<?>> REGISTRY =
         new PluginRegistry<PluginType<?>>();
 
-    private static final CopyOnWriteArrayList<String> PACKAGES = new CopyOnWriteArrayList<String>();
-    private static final String PATH = "org/apache/logging/log4j/core/config/plugins/";
-    private static final String FILENAME = "Log4j2Plugins.dat";
-    private static final String LOG4J_PACKAGES = "org.apache.logging.log4j.core";
+    private static final String PATH = PluginProcessor.DIRECTORY;
+    private static final String FILENAME = PluginProcessor.FILENAME;
 
     private static final Logger LOGGER = StatusLogger.getLogger();
-
-    private static String rootDir;
 
     private Map<String, PluginType<?>> plugins = new HashMap<String, PluginType<?>>();
     private final String category;
@@ -93,31 +78,17 @@ public class PluginManager {
      * is on the classpath.
      */
     @Deprecated // use PluginProcessor instead
-    public static void main(final String[] args) throws Exception {
+    public static void main(final String[] args) {
         System.err.println("WARNING: this tool is superseded by the annotation processor included in log4j-core.");
-        if (args == null || args.length < 1) {
-            System.err.println("A target directory must be specified");
-            System.exit(-1);
-        }
-        rootDir = args[0].endsWith("/") || args[0].endsWith("\\") ? args[0] : args[0] + '/';
-
-        final PluginManager manager = new PluginManager("Core");
-        final String packages = args.length == 2 ? args[1] : null;
-
-        manager.collectPlugins(false, packages);
-        encode(pluginTypeMap);
+        System.exit(-1);
     }
 
     /**
      * Adds a package name to be scanned for plugins. Must be invoked prior to plugins being collected.
      * @param p The package name.
      */
+    @Deprecated // no more need for this method due to PluginProcessor
     public static void addPackage(final String p) {
-        if (PACKAGES.addIfAbsent(p))
-        {
-            //set of available plugins could have changed, reset plugin cache for newly-retrieved managers
-            pluginTypeMap.clear();
-        }
     }
 
     /**
@@ -141,86 +112,41 @@ public class PluginManager {
      * Locates all the plugins.
      */
     public void collectPlugins() {
-        collectPlugins(true, null);
+        collectPlugins(true);
     }
 
     /**
      * Collects plugins, optionally obtaining them from a preload map.
      * @param preLoad if true, plugins will be obtained from the preload map.
-     * @param pkgs A comma separated list of package names to scan for plugins. If
-     * null the default Log4j package name will be used.
+     *
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void collectPlugins(boolean preLoad, final String pkgs) {
-        if (pluginTypeMap.hasCategory(category)) {
-            plugins = pluginTypeMap.getCategory(category);
+    public void collectPlugins(boolean preLoad) {
+        if (REGISTRY.hasCategory(category)) {
+            plugins = REGISTRY.getCategory(category);
             preLoad = false;
         }
-        final long start = System.nanoTime();
-        final ResolverUtil resolver = new ResolverUtil();
-        final ClassLoader classLoader = Loader.getClassLoader();
-        if (classLoader != null) {
-            resolver.setClassLoader(classLoader);
-        }
+        final ResourceLoader loader = new ClassLoaderResourceLoader(Loader.getClassLoader());
         if (preLoad) {
-            final PluginRegistry<PluginType<?>> map = decode(classLoader);
-            if (map != null) {
-                pluginTypeMap = map;
-                plugins = map.getCategory(category);
-            } else {
-                LOGGER.warn("Plugin preloads not available from class loader {}", classLoader);
-            }
+            loadPlugins(loader);
         }
-        if (plugins == null || plugins.isEmpty()) {
-            if (pkgs == null) {
-                if (!PACKAGES.contains(LOG4J_PACKAGES)) {
-                    PACKAGES.add(LOG4J_PACKAGES);
-                }
-            } else {
-                final String[] names = pkgs.split(Patterns.COMMA_SEPARATOR);
-                Collections.addAll(PACKAGES, names);
-            }
-        }
-        final ResolverUtil.Test test = new PluginTest(clazz);
-        for (final String pkg : PACKAGES) {
-            resolver.findInPackage(test, pkg);
-        }
-        for (final Class<?> clazz : resolver.getClasses()) {
-            final Plugin plugin = clazz.getAnnotation(Plugin.class);
-            final String pluginCategory = plugin.category();
-            final Map<String, PluginType<?>> map = pluginTypeMap.getCategory(pluginCategory);
-            String type = plugin.elementType().equals(Plugin.EMPTY) ? plugin.name() : plugin.elementType();
-            PluginType pluginType = new PluginType(clazz, type, plugin.printObject(), plugin.deferChildren());
-            map.put(plugin.name().toLowerCase(), pluginType);
-            final PluginAliases pluginAliases = clazz.getAnnotation(PluginAliases.class);
-            if (pluginAliases != null) {
-                for (final String alias : pluginAliases.value()) {
-                    type =  plugin.elementType().equals(Plugin.EMPTY) ? alias : plugin.elementType();
-                    pluginType = new PluginType(clazz, type, plugin.printObject(), plugin.deferChildren());
-                    map.put(alias.trim().toLowerCase(), pluginType);
-                }
-            }
-        }
-        long elapsed = System.nanoTime() - start;
-        plugins = pluginTypeMap.getCategory(category);
-        final StringBuilder sb = new StringBuilder("Generated plugins in ");
-        DecimalFormat numFormat = new DecimalFormat("#0");
-        final long seconds = elapsed / NANOS_PER_SECOND;
-        elapsed %= NANOS_PER_SECOND;
-        sb.append(numFormat.format(seconds)).append('.');
-        numFormat = new DecimalFormat("000000000");
-        sb.append(numFormat.format(elapsed)).append(" seconds, packages: ");
-        sb.append(pkgs);
-        sb.append(", preload: ");
-        sb.append(preLoad);
-        sb.append('.');
-        LOGGER.debug(sb.toString());
+        plugins = REGISTRY.getCategory(category);
     }
 
-    private static PluginRegistry<PluginType<?>> decode(final ClassLoader classLoader) {
+    public static void loadPlugins(final ResourceLoader loader) {
+        final PluginRegistry<PluginType<?>> registry = decode(loader);
+        if (registry != null) {
+            for (final Map.Entry<String, ConcurrentMap<String, PluginType<?>>> entry : registry.getCategories()) {
+                REGISTRY.getCategory(entry.getKey()).putAll(entry.getValue());
+            }
+        } else {
+            LOGGER.info("Plugin preloads not available from class loader {}", loader);
+        }
+    }
+
+    private static PluginRegistry<PluginType<?>> decode(final ResourceLoader loader) {
         final Enumeration<URL> resources;
         try {
-            resources = classLoader.getResources(PATH + FILENAME);
+            resources = loader.getResources(PATH + FILENAME);
         } catch (final IOException ioe) {
             LOGGER.warn("Unable to preload plugins", ioe);
             return null;
@@ -250,7 +176,7 @@ public class PluginManager {
                         final boolean printable = dis.readBoolean();
                         final boolean defer = dis.readBoolean();
                         try {
-                            final Class<?> clazz = classLoader.loadClass(className);
+                            final Class<?> clazz = loader.loadClass(className);
                             @SuppressWarnings("unchecked")
                             final PluginType<?> pluginType = new PluginType(clazz, name, printable, defer);
                             types.put(key, pluginType);
@@ -266,72 +192,6 @@ public class PluginManager {
             }
         }
         return map.isEmpty() ? null : map;
-    }
-
-    private static void encode(final PluginRegistry<PluginType<?>> map) {
-        final String fileName = rootDir + PATH + FILENAME;
-        final File file = new File(rootDir + PATH);
-        file.mkdirs();
-        try {
-            final DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(fileName)));
-            try {
-                dos.writeInt(map.getCategoryCount());
-                for (final Map.Entry<String, ConcurrentMap<String, PluginType<?>>> outer : map.getCategories()) {
-                    dos.writeUTF(outer.getKey());
-                    dos.writeInt(outer.getValue().size());
-                    for (final Map.Entry<String, PluginType<?>> entry : outer.getValue().entrySet()) {
-                        dos.writeUTF(entry.getKey());
-                        final PluginType<?> pt = entry.getValue();
-                        dos.writeUTF(pt.getPluginClass().getName());
-                        dos.writeUTF(pt.getElementName());
-                        dos.writeBoolean(pt.isObjectPrintable());
-                        dos.writeBoolean(pt.isDeferChildren());
-                    }
-                }
-            } catch (final IOException e) {
-                LOGGER.error("Can't save plugin cache.", e);
-            } finally {
-                Closer.closeSilent(dos);
-            }
-        } catch (final FileNotFoundException e) {
-            LOGGER.error("Can't save plugin cache to {}", fileName, e);
-        }
-    }
-
-    /**
-     * A Test that checks to see if each class is annotated with a specific annotation. If it
-     * is, then the test returns true, otherwise false.
-     */
-    public static class PluginTest extends ResolverUtil.ClassTest {
-        private final Class<?> isA;
-
-        /**
-         * Constructs an AnnotatedWith test for the specified annotation type.
-         * @param isA The class to compare against.
-         */
-        public PluginTest(final Class<?> isA) {
-            this.isA = isA;
-        }
-
-        /**
-         * Returns true if the type is annotated with the class provided to the constructor.
-         * @param type The type to check for.
-         * @return true if the Class is of the specified type.
-         */
-        @Override
-        public boolean matches(final Class<?> type) {
-            return type != null && type.isAnnotationPresent(Plugin.class) &&
-                (isA == null || isA.isAssignableFrom(type));
-        }
-
-        @Override
-        public String toString() {
-            final StringBuilder msg = new StringBuilder("annotated with @").append(Plugin.class.getSimpleName());
-            if (isA != null) {
-                msg.append(" is assignable to ").append(isA.getSimpleName());
-            }
-            return msg.toString();
-        }
     }
 
 }
