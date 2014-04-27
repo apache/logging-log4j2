@@ -86,7 +86,7 @@ public class LoggerConfig extends AbstractFilterable {
                     LOG_EVENT_FACTORY = (LogEventFactory) clazz.newInstance();
                 }
             } catch (final Exception ex) {
-                LOGGER.error("Unable to create LogEventFactory " + factory, ex);
+                LOGGER.error("Unable to create LogEventFactory {}", factory, ex);
             }
         }
         if (LOG_EVENT_FACTORY == null) {
