@@ -26,15 +26,15 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import org.apache.logging.log4j.core.config.plugins.util.PluginRegistry;
 
 /**
  *
  */
 public class PluginCache {
-    private final ConcurrentMap<String, ConcurrentMap<String, PluginEntry>> pluginCategories =
-            new ConcurrentHashMap<String, ConcurrentMap<String, PluginEntry>>();
+    private final transient PluginRegistry<PluginEntry> pluginCategories = new PluginRegistry<PluginEntry>();
 
     /**
      * Gets or creates a category of plugins.
@@ -43,7 +43,6 @@ public class PluginCache {
      * @return plugin mapping of names to plugin entries.
      */
     public ConcurrentMap<String, PluginEntry> getCategory(final String category) {
-        pluginCategories.putIfAbsent(category, new ConcurrentHashMap<String, PluginEntry>());
         return pluginCategories.get(category);
     }
 
@@ -90,7 +89,6 @@ public class PluginCache {
                 final int count = in.readInt();
                 for (int i = 0; i < count; i++) {
                     final String category = in.readUTF();
-                    pluginCategories.putIfAbsent(category, new ConcurrentHashMap<String, PluginEntry>());
                     final ConcurrentMap<String, PluginEntry> m = pluginCategories.get(category);
                     final int entries = in.readInt();
                     for (int j = 0; j < entries; j++) {
@@ -103,7 +101,6 @@ public class PluginCache {
                         entry.setCategory(category);
                         m.putIfAbsent(entry.getKey(), entry);
                     }
-                    pluginCategories.putIfAbsent(category, m);
                 }
             } finally {
                 in.close();
