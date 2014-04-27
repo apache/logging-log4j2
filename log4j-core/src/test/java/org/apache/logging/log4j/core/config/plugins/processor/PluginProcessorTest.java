@@ -32,7 +32,7 @@ import static org.junit.Assert.*;
 @RunWith(JUnit4.class)
 public class PluginProcessorTest {
 
-    private static final String CACHE_FILE = "org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat";
+    private static final String CACHE_FILE = PluginProcessor.DIRECTORY + PluginProcessor.FILENAME;
 
     private static final PluginCache pluginCache = new PluginCache();
 

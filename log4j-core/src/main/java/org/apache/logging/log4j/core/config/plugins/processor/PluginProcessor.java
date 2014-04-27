@@ -55,6 +55,8 @@ public class PluginProcessor extends AbstractProcessor {
      */
     public static final String PLUGINS_PACKAGE_NAME = "org.apache.logging.log4j.core.config.plugins";
 
+    public static final String DIRECTORY = "org/apache/logging/log4j/core/config/plugins/";
+
     /**
      * Name of cache file.
      */
