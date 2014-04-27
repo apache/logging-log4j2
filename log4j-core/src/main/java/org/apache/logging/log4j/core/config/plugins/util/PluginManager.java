@@ -163,7 +163,7 @@ public class PluginManager {
                 LOGGER.warn("Plugin preloads not available from class loader {}", classLoader);
             }
         }
-        if (plugins == null || plugins.size() == 0) {
+        if (plugins == null || plugins.isEmpty()) {
             if (pkgs == null) {
                 if (!PACKAGES.contains(LOG4J_PACKAGES)) {
                     PACKAGES.add(LOG4J_PACKAGES);
@@ -186,7 +186,7 @@ public class PluginManager {
             map.put(plugin.name().toLowerCase(), pluginType);
             final PluginAliases pluginAliases = clazz.getAnnotation(PluginAliases.class);
             if (pluginAliases != null) {
-                for (String alias : pluginAliases.value()) {
+                for (final String alias : pluginAliases.value()) {
                     type =  plugin.elementType().equals(Plugin.EMPTY) ? alias : plugin.elementType();
                     pluginType = new PluginType(clazz, type, plugin.printObject(), plugin.deferChildren());
                     map.put(alias.trim().toLowerCase(), pluginType);
@@ -210,7 +210,7 @@ public class PluginManager {
     }
 
     private static PluginRegistry<PluginType<?>> decode(final ClassLoader classLoader) {
-        Enumeration<URL> resources;
+        final Enumeration<URL> resources;
         try {
             resources = classLoader.getResources(PATH + FILENAME);
         } catch (final IOException ioe) {
@@ -221,7 +221,7 @@ public class PluginManager {
         while (resources.hasMoreElements()) {
             final URL url = resources.nextElement();
             LOGGER.debug("Found Plugin Map at {}", url.toExternalForm());
-            InputStream is;
+            final InputStream is;
             try {
                 is = url.openStream();
             } catch (final IOException e) {
@@ -280,12 +280,12 @@ public class PluginManager {
                         dos.writeBoolean(pt.isDeferChildren());
                     }
                 }
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 LOGGER.error("Can't save plugin cache.", e);
             } finally {
                 Closer.closeSilent(dos);
             }
-        } catch (FileNotFoundException e) {
+        } catch (final FileNotFoundException e) {
             LOGGER.error("Can't save plugin cache to {}", fileName, e);
         }
     }
