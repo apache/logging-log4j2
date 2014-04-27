@@ -31,7 +31,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -52,8 +51,8 @@ public class PluginManager {
     private static final long NANOS_PER_SECOND = 1000000000L;
 
     // TODO: re-use PluginCache code from plugin processor
-    private static ConcurrentMap<String, ConcurrentMap<String, PluginType<?>>> pluginTypeMap =
-        new ConcurrentHashMap<String, ConcurrentMap<String, PluginType<?>>>();
+    private static PluginRegistry<PluginType<?>> pluginTypeMap =
+        new PluginRegistry<PluginType<?>>();
 
     private static final CopyOnWriteArrayList<String> PACKAGES = new CopyOnWriteArrayList<String>();
     private static final String PATH = "org/apache/logging/log4j/core/config/plugins/";
@@ -157,7 +156,7 @@ public class PluginManager {
             resolver.setClassLoader(classLoader);
         }
         if (preLoad) {
-            final ConcurrentMap<String, ConcurrentMap<String, PluginType<?>>> map = decode(classLoader);
+            final PluginRegistry<PluginType<?>> map = decode(classLoader);
             if (map != null) {
                 pluginTypeMap = map;
                 plugins = map.get(category);
@@ -182,9 +181,6 @@ public class PluginManager {
         for (final Class<?> clazz : resolver.getClasses()) {
             final Plugin plugin = clazz.getAnnotation(Plugin.class);
             final String pluginCategory = plugin.category();
-            if (!pluginTypeMap.containsKey(pluginCategory)) {
-                pluginTypeMap.putIfAbsent(pluginCategory, new ConcurrentHashMap<String, PluginType<?>>());
-            }
             final Map<String, PluginType<?>> map = pluginTypeMap.get(pluginCategory);
             String type = plugin.elementType().equals(Plugin.EMPTY) ? plugin.name() : plugin.elementType();
             PluginType pluginType = new PluginType(clazz, type, plugin.printObject(), plugin.deferChildren());
@@ -214,7 +210,7 @@ public class PluginManager {
         LOGGER.debug(sb.toString());
     }
 
-    private static ConcurrentMap<String, ConcurrentMap<String, PluginType<?>>> decode(final ClassLoader classLoader) {
+    private static PluginRegistry<PluginType<?>> decode(final ClassLoader classLoader) {
         Enumeration<URL> resources;
         try {
             resources = classLoader.getResources(PATH + FILENAME);
@@ -222,8 +218,7 @@ public class PluginManager {
             LOGGER.warn("Unable to preload plugins", ioe);
             return null;
         }
-        final ConcurrentMap<String, ConcurrentMap<String, PluginType<?>>> map =
-            new ConcurrentHashMap<String, ConcurrentMap<String, PluginType<?>>>();
+        final PluginRegistry<PluginType<?>> map = new PluginRegistry<PluginType<?>>();
         while (resources.hasMoreElements()) {
             final URL url = resources.nextElement();
             LOGGER.debug("Found Plugin Map at {}", url.toExternalForm());
@@ -238,12 +233,9 @@ public class PluginManager {
             try {
                 final int count = dis.readInt();
                 for (int j = 0; j < count; ++j) {
-                    final String type = dis.readUTF();
+                    final String category = dis.readUTF();
                     final int entries = dis.readInt();
-                    ConcurrentMap<String, PluginType<?>> types = map.get(type);
-                    if (types == null) {
-                        types = new ConcurrentHashMap<String, PluginType<?>>(count);
-                    }
+                    final Map<String, PluginType<?>> types = map.get(category);
                     for (int i = 0; i < entries; ++i) {
                         final String key = dis.readUTF();
                         final String className = dis.readUTF();
@@ -258,7 +250,6 @@ public class PluginManager {
                             LOGGER.info("Plugin [{}] could not be loaded due to missing classes.", className);
                         }
                     }
-                    map.putIfAbsent(type, types);
                 }
             } catch (final IOException ex) {
                 LOGGER.warn("Unable to preload plugins", ex);
@@ -279,7 +270,7 @@ public class PluginManager {
         return pluginType;
     }
 
-    private static void encode(final ConcurrentMap<String, ConcurrentMap<String, PluginType<?>>> map) {
+    private static void encode(final PluginRegistry<PluginType<?>> map) {
         final String fileName = rootDir + PATH + FILENAME;
         final File file = new File(rootDir + PATH);
         file.mkdirs();
