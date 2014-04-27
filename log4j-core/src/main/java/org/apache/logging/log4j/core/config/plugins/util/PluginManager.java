@@ -34,7 +34,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
@@ -243,11 +242,12 @@ public class PluginManager {
                         final boolean printable = dis.readBoolean();
                         final boolean defer = dis.readBoolean();
                         try {
-                            final PluginType<?> pluginType = loadPluginType(className, name, printable, defer);
+                            final Class<?> clazz = classLoader.loadClass(className);
+                            @SuppressWarnings("unchecked")
+                            final PluginType<?> pluginType = new PluginType(clazz, name, printable, defer);
                             types.put(key, pluginType);
                         } catch (final ClassNotFoundException e) {
-                            LOGGER.catching(Level.DEBUG, e);
-                            LOGGER.info("Plugin [{}] could not be loaded due to missing classes.", className);
+                            LOGGER.info("Plugin [{}] could not be loaded due to missing classes.", className, e);
                         }
                     }
                 }
@@ -258,16 +258,6 @@ public class PluginManager {
             }
         }
         return map.isEmpty() ? null : map;
-    }
-
-    private static PluginType<?> loadPluginType(final String className,
-                                                final String name,
-                                                final boolean printable,
-                                                final boolean defer) throws ClassNotFoundException {
-        final Class<?> clazz = Loader.loadClass(className);
-        @SuppressWarnings("unchecked")
-        final PluginType<?> pluginType = new PluginType(clazz, name, printable, defer);
-        return pluginType;
     }
 
     private static void encode(final PluginRegistry<PluginType<?>> map) {
