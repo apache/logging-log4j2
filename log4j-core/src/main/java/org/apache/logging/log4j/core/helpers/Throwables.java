@@ -28,11 +28,14 @@ import java.util.List;
 /**
  * Helps with Throwable objects.
  */
-public class Throwables {
+public final class Throwables {
+
+    private Throwables() {
+    }
 
     /**
-     * Converts a Throwable into a List of Strings
-     * 
+     * Converts a Throwable stack trace into a List of Strings
+     *
      * @param throwable
      *            the Throwable
      * @return a List of Strings
@@ -46,8 +49,8 @@ public class Throwables {
             // Ignore any exceptions.
         }
         pw.flush();
+        final List<String> lines = new ArrayList<String>();
         final LineNumberReader reader = new LineNumberReader(new StringReader(sw.toString()));
-        final ArrayList<String> lines = new ArrayList<String>();
         try {
             String line = reader.readLine();
             while (line != null) {
@@ -59,6 +62,8 @@ public class Throwables {
                 Thread.currentThread().interrupt();
             }
             lines.add(ex.toString());
+        } finally {
+            Closer.closeSilent(reader);
         }
         return lines;
     }
