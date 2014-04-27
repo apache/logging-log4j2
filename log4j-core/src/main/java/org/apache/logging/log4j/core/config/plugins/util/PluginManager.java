@@ -87,6 +87,7 @@ public class PluginManager {
 
     @Deprecated // use PluginProcessor instead
     public static void main(final String[] args) throws Exception {
+        System.err.println("WARNING: this tool is superseded by the annotation processor included in log4j-core.");
         if (args == null || args.length < 1) {
             System.err.println("A target directory must be specified");
             System.exit(-1);
