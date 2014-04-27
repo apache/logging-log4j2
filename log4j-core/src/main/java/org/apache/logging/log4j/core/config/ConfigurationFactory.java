@@ -32,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
@@ -109,6 +111,8 @@ public abstract class ConfigurationFactory {
 
     protected final StrSubstitutor substitutor = new StrSubstitutor(new Interpolator());
 
+    private static final Lock LOCK = new ReentrantLock();
+
     /**
      * Returns the ConfigurationFactory.
      * @return the ConfigurationFactory.
@@ -117,8 +121,8 @@ public abstract class ConfigurationFactory {
         // volatile works in Java 1.6+, so double-checked locking also works properly
         //noinspection DoubleCheckedLocking
         if (factories == null) {
-            // TODO: synchronize on a real lock
-            synchronized(TEST_PREFIX) {
+            LOCK.lock();
+            try {
                 if (factories == null) {
                     final List<ConfigurationFactory> list = new ArrayList<ConfigurationFactory>();
                     final String factoryClass = PropertiesUtil.getProperties().getStringProperty(CONFIGURATION_FACTORY_PROPERTY);
@@ -147,6 +151,8 @@ public abstract class ConfigurationFactory {
                     }
                     factories = Collections.unmodifiableList(list);
                 }
+            } finally {
+                LOCK.unlock();
             }
         }
 
