@@ -32,7 +32,7 @@ public class PluginRegistry<T extends Serializable> {
     private final ConcurrentMap<String, ConcurrentMap<String, T>> categories =
         new ConcurrentHashMap<String, ConcurrentMap<String, T>>();
 
-    public ConcurrentMap<String, T> get(final String category) {
+    public ConcurrentMap<String, T> getCategory(final String category) {
         if (category == null) {
             throw new IllegalArgumentException("Category name cannot be null.");
         }
@@ -41,7 +41,7 @@ public class PluginRegistry<T extends Serializable> {
         return categories.get(key);
     }
 
-    public int size() {
+    public int getCategoryCount() {
         return categories.size();
     }
 
@@ -53,11 +53,11 @@ public class PluginRegistry<T extends Serializable> {
         categories.clear();
     }
 
-    public boolean containsKey(final String key) {
+    public boolean hasCategory(final String key) {
         return categories.containsKey(key);
     }
 
-    public Set<Map.Entry<String, ConcurrentMap<String, T>>> entrySet() {
+    public Set<Map.Entry<String, ConcurrentMap<String, T>>> getCategories() {
         return categories.entrySet();
     }
 }

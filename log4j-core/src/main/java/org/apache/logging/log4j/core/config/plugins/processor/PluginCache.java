@@ -43,7 +43,7 @@ public class PluginCache {
      * @return plugin mapping of names to plugin entries.
      */
     public ConcurrentMap<String, PluginEntry> getCategory(final String category) {
-        return pluginCategories.get(category);
+        return pluginCategories.getCategory(category);
     }
 
     /**
@@ -55,8 +55,8 @@ public class PluginCache {
     public void writeCache(final OutputStream os) throws IOException {
         final DataOutputStream out = new DataOutputStream(new BufferedOutputStream(os));
         try {
-            out.writeInt(pluginCategories.size());
-            for (final Map.Entry<String, ConcurrentMap<String, PluginEntry>> category : pluginCategories.entrySet()) {
+            out.writeInt(pluginCategories.getCategoryCount());
+            for (final Map.Entry<String, ConcurrentMap<String, PluginEntry>> category : pluginCategories.getCategories()) {
                 out.writeUTF(category.getKey());
                 final Map<String, PluginEntry> m = category.getValue();
                 out.writeInt(m.size());
@@ -89,7 +89,7 @@ public class PluginCache {
                 final int count = in.readInt();
                 for (int i = 0; i < count; i++) {
                     final String category = in.readUTF();
-                    final ConcurrentMap<String, PluginEntry> m = pluginCategories.get(category);
+                    final ConcurrentMap<String, PluginEntry> m = pluginCategories.getCategory(category);
                     final int entries = in.readInt();
                     for (int j = 0; j < entries; j++) {
                         final PluginEntry entry = new PluginEntry();
@@ -114,6 +114,6 @@ public class PluginCache {
      * @return number of plugin categories in cache.
      */
     public int size() {
-        return pluginCategories.size();
+        return pluginCategories.getCategoryCount();
     }
 }
