@@ -85,6 +85,13 @@ public class PluginManager {
         this.clazz = clazz;
     }
 
+    /**
+     * Process annotated plugins.
+     * @deprecated Use {@link org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor} instead. To do
+     * so, simply include {@code log4j-core} in your dependencies and make sure annotation processing is not disabled.
+     * By default, supported Java compilers will automatically use that plugin processor provided {@code log4j-core}
+     * is on the classpath.
+     */
     @Deprecated // use PluginProcessor instead
     public static void main(final String[] args) throws Exception {
         System.err.println("WARNING: this tool is superseded by the annotation processor included in log4j-core.");
