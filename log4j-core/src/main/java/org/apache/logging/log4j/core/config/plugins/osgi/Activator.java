@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleListener;
@@ -40,13 +41,31 @@ public class Activator implements org.osgi.framework.BundleActivator {
     public void start(final BundleContext context) throws Exception {
         registerLoggerContextFactory();
         context.addBundleListener(new Listener());
+        // done after the BundleListener as to not miss any new bundle installs in the interim
+        scanInstalledBundlesForPlugins(context);
     }
 
     private void registerLoggerContextFactory() {
         final LoggerContextFactory current = LogManager.getFactory();
         if (!(current instanceof Log4jContextFactory)) {
+            LOGGER.debug("Replacing LogManager LoggerContextFactory.");
             LogManager.setFactory(new Log4jContextFactory());
         }
+    }
+
+    private void scanInstalledBundlesForPlugins(final BundleContext context) {
+        final Bundle[] bundles = context.getBundles();
+        for (final Bundle bundle : bundles) {
+            if (bundle.getState() == Bundle.ACTIVE) {
+                // TODO: bundle state can change during this
+                scanBundleForPlugins(bundle);
+            }
+        }
+    }
+
+    private static void scanBundleForPlugins(final Bundle bundle) {
+        LOGGER.debug("Scanning bundle [{}] for plugins.", bundle.getSymbolicName());
+        PluginManager.loadPlugins(new BundleResourceLoader(bundle));
     }
 
     @Override
@@ -64,7 +83,7 @@ public class Activator implements org.osgi.framework.BundleActivator {
         public void bundleChanged(final BundleEvent event) {
             switch (event.getType()) {
                 case BundleEvent.STARTED:
-                    PluginManager.loadPlugins(new BundleResourceLoader(event.getBundle()));
+                    scanBundleForPlugins(event.getBundle());
                     break;
 
                 default:
