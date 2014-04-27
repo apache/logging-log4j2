@@ -18,6 +18,9 @@ package org.apache.logging.log4j.core.config;
 
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Configuration monitor that periodically checks the timestamp of the configuration file and calls the
@@ -41,7 +44,9 @@ public class FileConfigurationMonitor implements ConfigurationMonitor {
 
     private long nextCheck;
 
-    private volatile int counter = 0;
+    private final AtomicInteger counter = new AtomicInteger(0);
+
+    private static final Lock LOCK = new ReentrantLock();
 
     private final Reconfigurable reconfigurable;
 
@@ -68,18 +73,19 @@ public class FileConfigurationMonitor implements ConfigurationMonitor {
      */
     @Override
     public void checkConfiguration() {
-        if ((++counter & MASK) == 0) {
-            synchronized (this) {
-                final long current = System.currentTimeMillis();
-                if (current >= nextCheck) {
-                    nextCheck = current + interval;
-                    if (file.lastModified() > lastModified) {
-                        lastModified = file.lastModified();
-                        for (final ConfigurationListener listener : listeners) {
-                            listener.onChange(reconfigurable);
-                        }
+        final long current = System.currentTimeMillis();
+        if (((counter.incrementAndGet() & MASK) == 0) && (current >= nextCheck)) {
+            LOCK.lock();
+            try {
+                nextCheck = current + interval;
+                if (file.lastModified() > lastModified) {
+                    lastModified = file.lastModified();
+                    for (final ConfigurationListener listener : listeners) {
+                        listener.onChange(reconfigurable);
                     }
                 }
+            } finally {
+                LOCK.unlock();
             }
         }
     }
