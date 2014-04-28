@@ -27,6 +27,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>log4j-nosql</artifactId>
+  <name>Apache Log4j NoSQL Plugins</name>
+  <description>Use NoSQL databases such as MongoDB and CouchDB to append log messages.</description>
 
   <dependencies>
     <dependency>
