@@ -25,6 +25,8 @@ import org.apache.logging.log4j.core.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.junit.AfterClass;
@@ -32,12 +34,16 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 /**
  *
@@ -131,5 +137,28 @@ public class SerializedLayoutTest {
         for (Appender app : appenders.values()) {
             root.addAppender(app);
         }
+    }
+
+    @Test
+    public void testSerialization() throws Exception {
+        final SerializedLayout layout = SerializedLayout.createLayout();
+        final Throwable throwable = new LoggingException("Test");
+        final LogEvent event = new Log4jLogEvent(this.getClass().getName(), null,
+            "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world!"), throwable);
+        final byte[] result = layout.toByteArray(event);
+        assertNotNull(result);
+        //FileOutputStream fos = new FileOutputStream("target/serializedEvent.dat");
+        //fos.write(layout.getHeader());
+        //fos.write(result);
+        //fos.close();
+    }
+
+    @Test
+    public void testDeserialization() throws Exception {
+        File file = new File("target/test-classes/serializedEvent.dat");
+        FileInputStream fis = new FileInputStream(file);
+        ObjectInputStream ois = new ObjectInputStream(fis);
+        final LogEvent event = (LogEvent) ois.readObject();
+        assertNotNull(event);
     }
 }
