@@ -393,6 +393,41 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <b>enc{pattern}</b><br />
+                <b>encode{pattern}</b>
+              </td>
+              <td>
+                <p>
+                  Encodes special characters such as '\n' and HTML characters to help prevent log forging 
+                  and some XSS attacks that could occur when displaying logs in a web browser. Anytime 
+                  user provided data is logged, this can provide a safeguard.   
+                </p>
+                <p>
+                  A typical usage would encode the message
+                  <pre>%enc{%m}</pre>
+                  but user input could come from other locations as well, such as the MDC
+                  <pre>%enc{%mdc{key}}</pre>
+                </p>
+                <p>The replaced characters are:
+                 <table>
+                   <tr>
+                     <th>Character</th>
+                     <th>Replacement</th>
+                   </tr>
+                   <tr>
+                     <th>'\r', '\n'</th>
+                     <th>Removed from the pattern</th>
+                   </tr>
+                   <tr>
+                     <td>&amp;, &lt;, &gt;, &quot;, &apos;, &#x2F;</td>
+                     <td>Replaced with the corresponding HTML entity</td>
+                   </tr>
+                 </table>
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td align="center">
                 <b>ex</b>|<b>exception</b>|<b>throwable</b><br />
                 &nbsp;&nbsp;{["none"<br />
                 &nbsp;&nbsp;|"full"<br />
