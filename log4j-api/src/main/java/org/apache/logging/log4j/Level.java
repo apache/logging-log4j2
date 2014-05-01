@@ -204,7 +204,7 @@ public final class Level implements Comparable<Level>, Serializable {
     }
 
     /**
-     * Return the Level assoicated with the name or null if the Level cannot be found.
+     * Return the Level associated with the name or null if the Level cannot be found.
      * @param name The name of the Level.
      * @return The Level or null.
      */
