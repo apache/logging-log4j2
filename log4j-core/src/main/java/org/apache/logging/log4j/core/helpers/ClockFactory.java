@@ -25,7 +25,7 @@ public final class ClockFactory {
 
     /**
      * Name of the system property that can be used to specify a {@code Clock}
-     * implementation class.
+     * implementation class. The value of this property is {@value}.
      */
     public static final String PROPERTY_NAME = "log4j.Clock";
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
@@ -37,11 +37,11 @@ public final class ClockFactory {
 
     /**
      * Returns a {@code Clock} instance depending on the value of system
-     * property {@code "AsyncLogger.Clock"}.
+     * property {@link #PROPERTY_NAME}.
      * <p>
-     * If system property {@code AsyncLogger.Clock=CachedClock} is specified,
+     * If system property {@code log4j.Clock=CachedClock} is specified,
      * this method returns an instance of {@link CachedClock}. If system
-     * property {@code AsyncLogger.Clock=CoarseCachedClock} is specified, this
+     * property {@code log4j.Clock=CoarseCachedClock} is specified, this
      * method returns an instance of {@link CoarseCachedClock}.
      * <p>
      * If another value is specified, this value is taken as the fully qualified
