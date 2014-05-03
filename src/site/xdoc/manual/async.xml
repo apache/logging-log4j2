@@ -200,6 +200,7 @@
 				Some of these can be used to
 				tune logging performance.
 				</p>
+			<a name="SysPropsAllAsync" />
 				<table>
           <caption align="top">System Properties to configure all
             asynchronous loggers
@@ -391,6 +392,7 @@
 				Some of these can be used to
 				tune logging performance.
 				</p>
+			<a name="SysPropsMixedSync-Async" />
 				<table>
           <caption align="top">System Properties to configure mixed
             asynchronous and normal loggers
