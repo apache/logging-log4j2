@@ -105,6 +105,9 @@ public class StatusConsoleListener implements StatusListener {
 
     @Override
     public void close() throws IOException {
-        this.stream.close();
+        // only want to close non-system streams
+        if (this.stream != System.out && this.stream != System.err) {
+            this.stream.close();
+        }
     }
 }
