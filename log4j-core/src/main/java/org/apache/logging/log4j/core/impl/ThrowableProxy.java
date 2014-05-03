@@ -46,7 +46,7 @@ public class ThrowableProxy implements Serializable {
 
     private final ThrowableProxy proxyCause;
 
-    private final Throwable throwable;
+    private final transient Throwable throwable;
 
     private final String name;
 

@@ -50,42 +50,42 @@ public final class Level implements Comparable<Level>, Serializable {
      * No events will be logged.
      */
     public static final Level OFF;
-    
+
     /**
      * A severe error that will prevent the application from continuing.
      */
     public static final Level FATAL;
-    
+
     /**
      * An error in the application, possibly recoverable.
      */
     public static final Level ERROR;
-    
+
     /**
      * An event that might possible lead to an error.
      */
     public static final Level WARN;
-    
+
     /**
      * An event for informational purposes.
      */
     public static final Level INFO;
-    
+
     /**
      * A general debugging event.
      */
     public static final Level DEBUG;
-    
+
     /**
      * A fine-grained debug message, typically capturing the flow through the application.
      */
     public static final Level TRACE;
-    
+
     /**
      * All events should be logged.
      */
     public static final Level ALL;
-    
+
     static {
         OFF = new Level("OFF", StandardLevel.OFF.intLevel());
         FATAL = new Level("FATAL", StandardLevel.FATAL.intLevel());
@@ -101,7 +101,7 @@ public final class Level implements Comparable<Level>, Serializable {
     private final int intLevel;
     private final StandardLevel standardLevel;
 
-    private Level(String name, int intLevel) {
+    private Level(final String name, final int intLevel) {
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("Illegal null Level constant");
         }
@@ -127,7 +127,7 @@ public final class Level implements Comparable<Level>, Serializable {
     /**
      * Compares this level against the level passed as an argument and returns true if this level is the same or is less
      * specific.T
-     * 
+     *
      * @param level
      *            The level to test.
      * @return True if this level Level is less specific or the same as the given Level.
@@ -139,7 +139,7 @@ public final class Level implements Comparable<Level>, Serializable {
     /**
      * Compares this level against the level passed as an argument and returns true if this level is the same or is more
      * specific.
-     * 
+     *
      * @param level
      *            The level to test.
      * @return True if this level Level is more specific or the same as the given Level.
@@ -190,7 +190,7 @@ public final class Level implements Comparable<Level>, Serializable {
      * @return The Level.
      * @throws java.lang.IllegalArgumentException if the name is null or intValue is less than zero.
      */
-    public static Level forName(String name, int intValue) {
+    public static Level forName(final String name, final int intValue) {
         Level level = levels.get(name);
         if (level != null) {
             return level;
@@ -204,11 +204,11 @@ public final class Level implements Comparable<Level>, Serializable {
     }
 
     /**
-     * Return the Level assoicated with the name or null if the Level cannot be found.
+     * Return the Level associated with the name or null if the Level cannot be found.
      * @param name The name of the Level.
      * @return The Level or null.
      */
-    public static Level getLevel(String name) {
+    public static Level getLevel(final String name) {
         return levels.get(name);
     }
 
@@ -253,20 +253,21 @@ public final class Level implements Comparable<Level>, Serializable {
      * Return the Level associated with the name.
      * @param name The name of the Level to return.
      * @return The Level.
+     * @throws java.lang.NullPointerException if the Level name is {@code null}.
      * @throws java.lang.IllegalArgumentException if the Level name is not registered.
      */
-    public static Level valueOf(String name) {
+    public static Level valueOf(final String name) {
         if (name == null) {
-            throw new IllegalArgumentException("Unknown level constant [" + name + "].");
+            throw new NullPointerException("No level name given.");
         }
-        name = name.toUpperCase();
-        if (levels.containsKey(name)) {
-            return levels.get(name);
+        final String levelName = name.toUpperCase();
+        if (levels.containsKey(levelName)) {
+            return levels.get(levelName);
         }
-        throw new IllegalArgumentException("Unknown level constant [" + name + "].");
+        throw new IllegalArgumentException("Unknown level constant [" + levelName + "].");
     }
 
-    public static <T extends Enum<T>> T valueOf(Class<T> enumType, String name) {
+    public static <T extends Enum<T>> T valueOf(final Class<T> enumType, final String name) {
         return Enum.valueOf(enumType, name);
     }
 

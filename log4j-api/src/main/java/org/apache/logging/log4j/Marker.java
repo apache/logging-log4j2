@@ -35,34 +35,37 @@ public interface Marker extends Serializable {
 
     /**
      * Returns the first parent of this Marker.
-     * @return The first parent Marker or null if this Marker has no parents.
+     * @return The first parent Marker or {@code null} if this Marker has no parents.
      * @deprecated Use getParents() instead.
      */
+    @Deprecated
     Marker getParent();
 
     /**
      * Returns a list of parents of this Marker.
-     * @return The parent Markers or null if this Marker has no parents.
+     * @return The parent Markers or {@code null} if this Marker has no parents.
      */
     Marker[] getParents();
 
     /**
      * Indicates whether this Marker has references to any other Markers.
-     * @return true if the Marker has parent Markers.
+     * @return {@code true} if the Marker has parent Markers
      */
     boolean hasParents();
 
     /**
      * Checks whether this Marker is an instance of the specified Marker.
      * @param m The Marker to check.
-     * @return true of this Marker or one of its ancestors is the specified Marker, false otherwise.
+     * @return {@code true} if this Marker or one of its ancestors is the specified Marker, {@code false} otherwise.
+     * @throws IllegalArgumentException if the argument is {@code null}
      */
     boolean isInstanceOf(Marker m);
 
     /**
      * Checks whether this Marker is an instance of the specified Marker.
      * @param name The name of the Marker.
-     * @return true of this Marker or one of its ancestors matches the specified name, false otherwise.
+     * @return {@code true} if this Marker or one of its ancestors matches the specified name, {@code false} otherwise.
+     * @throws IllegalArgumentException if the argument is {@code null}
      */
     boolean isInstanceOf(String name);
 
@@ -70,12 +73,13 @@ public interface Marker extends Serializable {
      * Adds a Marker as a parent to this Marker.
      * @param marker The parent marker to add.
      * @return The current Marker object, thus allowing multiple adds to be concatenated.
+     * @throws IllegalArgumentException if the argument is {@code null}
      */
     Marker add(Marker marker);
 
     /**
      * Replaces the set of parent Markers with the provided Markers.
-     * @param markers The new set of parent Markers or null.
+     * @param markers The new set of parent Markers or {@code null} to clear the parents.
      * @return The current Marker object.
      */
     Marker setParents(Marker... markers);
@@ -83,7 +87,8 @@ public interface Marker extends Serializable {
     /**
      * Removes the specified Marker as a parent of this Marker.
      * @param marker The marker to remove.
-     * @return true if the marker was removed.
+     * @return {@code true} if the marker was removed.
+     * @throws IllegalArgumentException if the argument is {@code null}
      */
     boolean remove(Marker marker);
 }

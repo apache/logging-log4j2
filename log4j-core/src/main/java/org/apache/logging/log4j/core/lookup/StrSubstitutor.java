@@ -814,7 +814,7 @@ public class StrSubstitutor {
                                 if (priorVariables == null) {
                                     priorVariables = new ArrayList<String>();
                                     priorVariables.add(new String(chars,
-                                            offset, length));
+                                            offset, length + lengthChange));
                                 }
 
                                 // handle cyclic substitution

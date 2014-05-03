@@ -41,6 +41,10 @@ public class DefaultConfiguration extends AbstractConfiguration {
      * The System Property used to specify the logging level.
      */
     public static final String DEFAULT_LEVEL = "org.apache.logging.log4j.level";
+    /**
+     * The default Pattern used for the default Layout.
+     */
+    public static final String DEFAULT_PATTERN = "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n";
 
     /**
      * Constructor to create the default configuration.
@@ -49,7 +53,7 @@ public class DefaultConfiguration extends AbstractConfiguration {
 
         setName(DEFAULT_NAME);
         final Layout<? extends Serializable> layout =
-                PatternLayout.createLayout("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n", null, null, null,
+                PatternLayout.createLayout(DEFAULT_PATTERN, null, null, null,
                     null, null, null, null);
         final Appender appender =
                 ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false", "true");

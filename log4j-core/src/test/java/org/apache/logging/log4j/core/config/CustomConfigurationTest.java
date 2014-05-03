@@ -27,8 +27,11 @@ import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.xml.XMLConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.status.StatusConsoleListener;
+import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -42,6 +45,12 @@ public class CustomConfigurationTest {
 
     public static final String LOG_FILE = "target/test.log";
 
+    @BeforeClass
+    public static void before() {
+        System.setProperty("log4j.level", "info");
+        System.setProperty("log.level", "info");
+    }
+
     @Rule
     public InitialLoggerContext init = new InitialLoggerContext("log4j-props.xml");
 
@@ -53,12 +62,16 @@ public class CustomConfigurationTest {
     @Test
     public void testConfig() {
         // don't bother using "error" since that's the default; try another level
-        System.setProperty("log4j.level", "info");
         final LoggerContext ctx = this.init.getContext();
         ctx.reconfigure();
         final Configuration config = ctx.getConfiguration();
         assertTrue("Configuration is not an XMLConfiguration", config instanceof XMLConfiguration);
-        assertSame(StatusLogger.getLogger().getLevel(), Level.INFO);
+        for (StatusListener listener : StatusLogger.getLogger().getListeners()) {
+            if (listener instanceof StatusConsoleListener) {
+                assertSame(listener.getStatusLevel(), Level.INFO);
+                break;
+            }
+        }
         Layout<? extends Serializable> layout = PatternLayout.createLayout(PatternLayout.SIMPLE_CONVERSION_PATTERN, config, null,
             null,null, null, null, null);
         Appender appender = FileAppender.createAppender(LOG_FILE, "false", "false", "File", "true",

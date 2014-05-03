@@ -150,13 +150,13 @@
     <url>http://www.apache.org</url>
   </organization>
   <properties>
-    <slf4j.version>1.7.6</slf4j.version>
+    <slf4j.version>1.7.7</slf4j.version>
     <logback.version>1.0.13</logback.version>
     <log4jParentDir>${basedir}</log4jParentDir>
     <Log4jReleaseVersion>2.0-rc1</Log4jReleaseVersion>
     <Log4jReleaseCount>eleventh</Log4jReleaseCount>
     <jackson1.version>1.9.13</jackson1.version>
-    <jackson2.version>2.3.2</jackson2.version>
+    <jackson2.version>2.3.3</jackson2.version>
     <spring.version>3.2.8.RELEASE</spring.version>
     <flumeVersion>1.4.0</flumeVersion>
     <disruptor.version>3.2.1</disruptor.version>
@@ -248,18 +248,6 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-api</artifactId>
-        <version>${project.version}</version>
-        <type>test-jar</type>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-plugin-processor</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-plugin-processor</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
@@ -902,7 +890,6 @@
   <modules>
     <module>log4j-api</module>
     <module>log4j-core</module>
-    <module>log4j-osgi</module>
     <module>log4j-1.2-api</module>
     <module>log4j-slf4j-impl</module>
     <module>log4j-to-slf4j</module>
@@ -912,7 +899,7 @@
     <module>log4j-jmx-gui</module>
     <module>log4j-samples</module>
     <module>log4j-bom</module>
-    <module>log4j-plugin-processor</module>
+    <module>log4j-nosql</module>
   </modules>
   <profiles>
     <profile>

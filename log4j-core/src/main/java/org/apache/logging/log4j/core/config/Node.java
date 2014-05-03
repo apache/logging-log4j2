@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.core.config.plugins.PluginType;
+import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 
 /**
  * A Configuration node.

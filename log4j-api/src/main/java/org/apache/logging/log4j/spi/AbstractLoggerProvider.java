@@ -42,12 +42,12 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
     /**
      * Marker for method entry tracing.
      */
-    public static final Marker ENTRY_MARKER = MarkerManager.getMarker("ENTRY", FLOW_MARKER);
+    public static final Marker ENTRY_MARKER = MarkerManager.getMarker("ENTRY").add(FLOW_MARKER);
 
     /**
      * Marker for method exit tracing.
      */
-    public static final Marker EXIT_MARKER = MarkerManager.getMarker("EXIT", FLOW_MARKER);
+    public static final Marker EXIT_MARKER = MarkerManager.getMarker("EXIT").add(FLOW_MARKER);
 
     /**
      * Marker for exception tracing.
@@ -57,12 +57,12 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
     /**
      * Marker for throwing exceptions.
      */
-    public static final Marker THROWING_MARKER = MarkerManager.getMarker("THROWING", EXCEPTION_MARKER);
+    public static final Marker THROWING_MARKER = MarkerManager.getMarker("THROWING").add(EXCEPTION_MARKER);
 
     /**
      * Marker for catching exceptions.
      */
-    public static final Marker CATCHING_MARKER = MarkerManager.getMarker("CATCHING", EXCEPTION_MARKER);
+    public static final Marker CATCHING_MARKER = MarkerManager.getMarker("CATCHING").add(EXCEPTION_MARKER);
 
     /**
      * The default MessageFactory class.

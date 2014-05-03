@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn">
+  <properties>
+    <property name="filters">org.junit,org.apache.maven,org.eclipse,sun.reflect,java.lang.reflect</property>
+  </properties>
+  <appenders>
+    <console name="console" target="SYSTEM_OUT">
+      <patternLayout pattern="%d{HH:mm:ss,SSS} [%t] %-5level [$${date:yyyyMMdd.HHmmSS}] %logger{1}.%method:%line - %msg%n%rEx{filters(${filters})}" />
+    </console>
+  </appenders>
+  <loggers>
+    <root level="warn">
+      <appenderRef ref="console" />
+    </root>
+  </loggers>
+</configuration>

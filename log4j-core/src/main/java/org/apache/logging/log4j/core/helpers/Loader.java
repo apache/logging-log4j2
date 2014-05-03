@@ -16,12 +16,11 @@
  */
 package org.apache.logging.log4j.core.helpers;
 
+
 import java.io.InputStream;
-import java.lang.ClassCastException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -232,12 +231,14 @@ public final class Loader {
     }
 
     /**
-     * Load a Class by name.
+     * Load a Class by name. Note that unlike {@link ClassLoader#loadClass(String) ClassLoader.loadClass}, this method
+     * will initialize the class as well if it hasn't been already. This is equivalent to the calling the
+     * {@link ClassLoader#loadClass(String, boolean) protected version} with the second parameter equal to {@code true}.
+     *
      * @param className The class name.
      * @return The Class.
      * @throws ClassNotFoundException if the Class could not be found.
      */
-    // FIXME: should we do lazy class loading or eager class loading by default?
     public static Class<?> loadClass(final String className) throws ClassNotFoundException {
         // Just call Class.forName(className) if we are instructed to ignore the TCL.
         if (ignoreTCL) {
@@ -249,8 +250,7 @@ public final class Loader {
             // using the TCCL should work the same as the default ClassLoader (i.e., init or not)
             return Class.forName(className, true, getTCL());
         } catch (final Throwable e) {
-            LOGGER.catching(Level.DEBUG, e);
-            LOGGER.trace("TCCL didn't work. Trying Class.forName({}).", className);
+            LOGGER.trace("TCCL didn't work. Trying Class.forName({}).", className, e);
             return loadClassWithDefaultClassLoader(className);
         }
     }
@@ -284,8 +284,7 @@ public final class Loader {
         try {
             return Class.forName(className, true, ClassLoader.getSystemClassLoader());
         } catch (final Throwable t) {
-            LOGGER.catching(Level.DEBUG, t);
-            LOGGER.trace("Couldn't use SystemClassLoader. Trying Class.forName({}).", className);
+            LOGGER.trace("Couldn't use SystemClassLoader. Trying Class.forName({}).", className, t);
             return Class.forName(className);
         }
     }
@@ -311,6 +310,7 @@ public final class Loader {
         try {
             return clazz.getConstructor().newInstance();
         } catch (final NoSuchMethodException e) {
+            // try the default-default constructor
             //noinspection ClassNewInstance
             return clazz.newInstance();
         }
@@ -349,7 +349,10 @@ public final class Loader {
         try {
             final Class<?> clazz = loadClass(className);
             return clazz != null;
-        } catch (final Throwable ignored) {
+        } catch (final ClassNotFoundException e) {
+            return false;
+        } catch (final Throwable e) {
+            LOGGER.trace("Unknown error checking for existence of class [{}].", className, e);
             return false;
         }
     }

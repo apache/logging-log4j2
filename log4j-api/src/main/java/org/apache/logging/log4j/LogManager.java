@@ -36,7 +36,7 @@ import org.apache.logging.log4j.util.ProviderUtil;
  */
 public class LogManager {
 
-    private static LoggerContextFactory factory;
+    private static volatile LoggerContextFactory factory;
 
     private static final String FACTORY_PROPERTY_NAME = "log4j2.loggerContextFactory";
 
@@ -81,18 +81,17 @@ public class LogManager {
                             if (LoggerContextFactory.class.isAssignableFrom(clazz)) {
                                 factories.put(provider.getPriority(), (LoggerContextFactory) clazz.newInstance());
                             } else {
-                                LOGGER.error(className + " does not implement " + LoggerContextFactory.class.getName());
+                                LOGGER.error("{} does not implement {}", className, LoggerContextFactory.class.getName());
                             }
                         } catch (final ClassNotFoundException cnfe) {
-                            LOGGER.error("Unable to locate class " + className + " specified in " +
+                            LOGGER.error("Unable to locate class {} specified in {}", className,
                                 provider.getURL().toString(), cnfe);
                         } catch (final IllegalAccessException iae) {
-                            LOGGER.error("Unable to create class " + className + " specified in " +
+                            LOGGER.error("Unable to create class {} specified in {}", className,
                                 provider.getURL().toString(), iae);
                         } catch (final Exception e) {
-                            LOGGER.error("Unable to create class " + className + " specified in " +
+                            LOGGER.error("Unable to create class {} specified in {}", className,
                                 provider.getURL().toString(), e);
-                            e.printStackTrace();
                         }
                     }
                 }
@@ -126,7 +125,7 @@ public class LogManager {
      * @return true if the Logger exists, false otherwise.
      * @see LoggerContext#hasLogger(String)
      */
-    public static boolean exists(String name) {
+    public static boolean exists(final String name) {
         return getContext().hasLogger(name);
     }
 
@@ -285,11 +284,29 @@ public class LogManager {
     }
 
     /**
-     * Returns the LoggerContextFactory.
+     * Returns the current LoggerContextFactory.
      * @return The LoggerContextFactory.
      */
     public static LoggerContextFactory getFactory() {
         return factory;
+    }
+
+    /**
+     * Sets the current LoggerContextFactory to use. Normally, the appropriate LoggerContextFactory is created at
+     * startup, but in certain environments, a LoggerContextFactory implementation may not be available at this point.
+     * Thus, an alternative LoggerContextFactory can be set at runtime.
+     *
+     * <p>
+     * Note that any Logger or LoggerContext objects already created will still be valid, but they will no longer be
+     * accessible through LogManager. Thus, <strong>it is a bad idea to use this method without a good reason</strong>!
+     * Generally, this method should be used only during startup before any code starts caching Logger objects.
+     * </p>
+     *
+     * @param factory the LoggerContextFactory to use.
+     */
+    // FIXME: should we allow only one update of the factory?
+    public static void setFactory(final LoggerContextFactory factory) {
+        LogManager.factory = factory;
     }
 
     /**

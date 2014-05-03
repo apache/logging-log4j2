@@ -34,11 +34,11 @@
   </Appenders>
 
   <Loggers>
-    <Logger name="org.apache.logging.log4j.core.appender.db" level="debug">
+    <Logger name="org.apache.logging.log4j.core.appender.db" level="debug" additivity="false">
       <AppenderRef ref="databaseAppender" />
     </Logger>
 
-    <Root level="error">
+    <Root level="fatal">
       <AppenderRef ref="STDOUT"/>
     </Root>
   </Loggers>

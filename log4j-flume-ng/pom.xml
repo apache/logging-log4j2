@@ -39,10 +39,6 @@
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-plugin-processor</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core</artifactId>
     </dependency>
     <dependency>
@@ -136,6 +132,16 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>org.apache.logging.log4j.flume</Bundle-SymbolicName>
+            <Export-Package>org.apache.logging.log4j.flume.appender</Export-Package>
+          </instructions>
+        </configuration>
       </plugin>
     </plugins>
   </build>
