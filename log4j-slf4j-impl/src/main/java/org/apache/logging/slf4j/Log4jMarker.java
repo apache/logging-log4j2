@@ -47,7 +47,7 @@ public class Log4jMarker implements Marker {
     @Override
     public void add(Marker marker) {
         Marker m = factory.getMarker(marker.getName());
-        this.marker.add(((Log4jMarker)m).getLog4jMarker());
+        this.marker.addParents(((Log4jMarker)m).getLog4jMarker());
     }
 
     @Override

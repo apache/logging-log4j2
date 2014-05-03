@@ -204,9 +204,17 @@ public class XMLLayout extends AbstractStringLayout {
                 buf.append(this.namespacePrefix);
             }
             buf.append("Marker");
-            final Marker parent = marker.getParent();
-            if (parent != null) {
-                buf.append(" parent=\"").append(Transform.escapeHtmlTags(parent.getName())).append('"');
+            final Marker[] parents = marker.getParents();
+            if (parents != null && parents.length > 0) {
+                buf.append(" parents=\"");
+                boolean first = true;
+                for (Marker parent : parents) {
+                    if (!first) {
+                        buf.append(", ");
+                    }
+                    buf.append(parent.getName());
+                }
+                buf.append("\"");
             }
             buf.append('>');
             buf.append(Transform.escapeHtmlTags(marker.getName()));

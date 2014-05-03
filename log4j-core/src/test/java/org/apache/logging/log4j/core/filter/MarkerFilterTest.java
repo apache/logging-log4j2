@@ -35,9 +35,9 @@ public class MarkerFilterTest {
     @Test
     public void testMarkers() {
         final Marker parent = MarkerManager.getMarker("Parent");
-        final Marker child = MarkerManager.getMarker("Child", parent);
-        final Marker grandChild = MarkerManager.getMarker("GrandChild", child);
-        final Marker sibling = MarkerManager.getMarker("Sibling", parent);
+        final Marker child = MarkerManager.getMarker("Child").setParents(parent);
+        final Marker grandChild = MarkerManager.getMarker("GrandChild").setParents(child);
+        final Marker sibling = MarkerManager.getMarker("Sibling").setParents(parent);
         final Marker stranger = MarkerManager.getMarker("Stranger");
         MarkerFilter filter = MarkerFilter.createFilter("Parent", null, null);
         filter.start();
