@@ -21,7 +21,7 @@
   </properties>
   <body>
     <release version="2.0-rc2" date="2014-MM-DD" description="Bug fixes and enhancements">
-      <action issue="LOG4J2-629" dev="rpopma" type="fix">
+      <action issue="LOG4J2-629" dev="rpopma" type="update">
         Use Clock to generate all log event timestamps, not just for Async Loggers.
       </action>
       <action issue="LOG4J2-629" dev="rpopma" type="add">
