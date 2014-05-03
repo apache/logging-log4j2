@@ -16,12 +16,14 @@
  */
 package org.apache.logging.log4j.status;
 
+import java.io.Closeable;
+
 import org.apache.logging.log4j.Level;
 
 /**
  * Interface that allows implementers to be notified of events in the logging system.
  */
-public interface StatusListener {
+public interface StatusListener extends Closeable {
 
     /**
      * Called as events occur to process the StatusData.

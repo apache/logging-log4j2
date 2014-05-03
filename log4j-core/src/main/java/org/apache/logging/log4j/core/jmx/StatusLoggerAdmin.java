@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.jmx;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicLong;
@@ -129,7 +130,7 @@ public class StatusLoggerAdmin extends NotificationBroadcasterSupport implements
      * Returns the {@code ObjectName} of this mbean.
      * 
      * @return the {@code ObjectName}
-     * @see StatusLoggerAdminMBean#NAME
+     * @see StatusLoggerAdminMBean#PATTERN
      */
     @Override
     public ObjectName getObjectName() {
@@ -142,5 +143,10 @@ public class StatusLoggerAdmin extends NotificationBroadcasterSupport implements
 
     private long now() {
         return System.currentTimeMillis();
+    }
+
+    @Override
+    public void close() throws IOException {
+        // nothing to close here
     }
 }

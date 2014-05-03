@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.status;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -107,6 +109,7 @@ public final class StatusLogger extends AbstractLoggerProvider {
      * @param listener The StatusListener to remove.
      */
     public void removeListener(final StatusListener listener) {
+        closeSilently(listener);
         listenersLock.writeLock().lock();
         try {
             listeners.remove(listener);
@@ -135,8 +138,24 @@ public final class StatusLogger extends AbstractLoggerProvider {
      * Clears the list of status events and listeners.
      */
     public void reset() {
-        listeners.clear();
-        clear();
+        listenersLock.writeLock().lock();
+        try {
+            for (final StatusListener listener : listeners) {
+                closeSilently(listener);
+            }
+        } finally {
+            listeners.clear();
+            listenersLock.writeLock().unlock();
+            // note this should certainly come after the unlock to avoid unnecessary nested locking
+            clear();
+        }
+    }
+
+    private static void closeSilently(final Closeable resource) {
+        try {
+            resource.close();
+        } catch (final IOException ignored) {
+        }
     }
 
     /**
