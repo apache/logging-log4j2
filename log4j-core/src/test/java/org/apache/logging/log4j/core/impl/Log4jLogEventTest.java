@@ -25,10 +25,35 @@ import java.io.ObjectOutputStream;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.core.helpers.Clock;
+import org.apache.logging.log4j.core.helpers.ClockFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class Log4jLogEventTest {
+    
+    /** Helper class */
+    public static class FixedTimeClock implements Clock {
+        public static final long FIXED_TIME = 1234567890L;
+        /* (non-Javadoc)
+         * @see org.apache.logging.log4j.core.helpers.Clock#currentTimeMillis()
+         */
+        @Override
+        public long currentTimeMillis() {
+            return FIXED_TIME;
+        }        
+    }
+    @BeforeClass
+    public static void beforeClass() {
+        System.setProperty(ClockFactory.PROPERTY_NAME, FixedTimeClock.class.getName());
+    }
+    
+    @AfterClass
+    public static void afterClass() {
+        System.clearProperty(ClockFactory.PROPERTY_NAME);
+    }
     
     @Test
     public void testJavaIoSerializable() throws Exception {
@@ -68,4 +93,14 @@ public class Log4jLogEventTest {
         assertEquals(Level.OFF, evt.getLevel());
     }
 
+    @Test
+    public void testTimestampGeneratedByClock() {
+        final Marker marker = null;
+        final Throwable t = null;
+        final Level NULL_LEVEL = null;
+        final Log4jLogEvent evt = new Log4jLogEvent("some.test", marker, "",
+                NULL_LEVEL, new SimpleMessage("abc"), t);
+        assertEquals(FixedTimeClock.FIXED_TIME, evt.getMillis());
+        
+    }
 }

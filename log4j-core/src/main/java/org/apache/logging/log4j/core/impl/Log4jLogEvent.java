@@ -29,6 +29,8 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.helpers.Clock;
+import org.apache.logging.log4j.core.helpers.ClockFactory;
 import org.apache.logging.log4j.message.LoggerNameAwareMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.TimestampMessage;
@@ -39,6 +41,7 @@ import org.apache.logging.log4j.message.TimestampMessage;
 public class Log4jLogEvent implements LogEvent {
 
     private static final long serialVersionUID = -1351367343806656055L;
+    private static final Clock clock = ClockFactory.getClock();
     private final String fqcnOfLogger;
     private final Marker marker;
     private final Level level;
@@ -89,7 +92,7 @@ public class Log4jLogEvent implements LogEvent {
         this(loggerName, marker, fqcn, level, message, t,
             createMap(properties),
             ThreadContext.getDepth() == 0 ? null : ThreadContext.cloneStack(), null,
-            null, System.currentTimeMillis());
+            null, clock.currentTimeMillis()); // LOG4J2-628 use log4j.Clock for timestamps
     }
 
     /**
