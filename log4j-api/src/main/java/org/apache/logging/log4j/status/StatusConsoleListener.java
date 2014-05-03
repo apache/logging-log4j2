@@ -19,7 +19,6 @@ package org.apache.logging.log4j.status;
 import java.io.PrintStream;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * StatusListener that writes to the Console.
@@ -27,22 +26,9 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 @SuppressWarnings("UseOfSystemOutOrSystemErr")
 public class StatusConsoleListener implements StatusListener {
 
-    private static final String STATUS_LEVEL = "org.apache.logging.log4j.StatusLevel";
-
     private Level level = Level.FATAL;
-
     private String[] filters = null;
-
     private final PrintStream stream;
-
-    /**
-     * Creates the StatusConsoleListener using either the level configured by the
-     * {@value #STATUS_LEVEL} system property if it is set or to a
-     * default value of FATAL.
-     */
-    public StatusConsoleListener() {
-        this(Level.toLevel(PropertiesUtil.getProperties().getStringProperty(STATUS_LEVEL), Level.FATAL));
-    }
 
     /**
      * Creates the StatusConsoleListener using the supplied Level.
