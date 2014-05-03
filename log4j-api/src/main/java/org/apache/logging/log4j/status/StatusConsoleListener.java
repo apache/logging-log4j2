@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.status;
 
+import java.io.IOException;
 import java.io.PrintStream;
 
 import org.apache.logging.log4j.Level;
@@ -43,8 +44,12 @@ public class StatusConsoleListener implements StatusListener {
      * to avoid creating an infinite loop of indirection!
      * @param level The Level of status messages that should appear on the console.
      * @param stream The PrintStream to write to.
+     * @throws IllegalArgumentException if the PrintStream argument is {@code null}.
      */
     public StatusConsoleListener(final Level level, final PrintStream stream) {
+        if (stream == null) {
+            throw new IllegalArgumentException("You must provide a stream to use for this listener.");
+        }
         this.level = level;
         this.stream = stream;
     }
@@ -98,4 +103,8 @@ public class StatusConsoleListener implements StatusListener {
         return false;
     }
 
+    @Override
+    public void close() throws IOException {
+        this.stream.close();
+    }
 }
