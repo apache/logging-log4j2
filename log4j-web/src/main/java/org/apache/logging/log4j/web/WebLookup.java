@@ -14,16 +14,18 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.lookup;
+package org.apache.logging.log4j.web;
+// Please note that if you move this class, make sure to update the Interpolator class (if still applicable) or remove
+// this comment if no longer relevant
 
+import javax.servlet.ServletContext;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
-
-import javax.servlet.ServletContext;
+import org.apache.logging.log4j.core.lookup.StrLookup;
 
 
 @Plugin(name = "web", category = "Lookup")

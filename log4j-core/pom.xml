@@ -86,13 +86,6 @@
       <artifactId>javax.mail</artifactId>
       <optional>true</optional>
     </dependency>
-    <!-- Used for web container support -->
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
-      <version>3.0.1</version>
-      <scope>provided</scope>
-    </dependency>
     <!-- Used for JPA appenders (needs an implementation of course) -->
     <dependency>
       <groupId>org.eclipse.persistence</groupId>

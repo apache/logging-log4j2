@@ -19,4 +19,4 @@
  * The classes in this package are responsible for properly initializing and deinitializing Log4j in a Java EE web
  * application.
  */
-package org.apache.logging.log4j.core.web;
+package org.apache.logging.log4j.web;
