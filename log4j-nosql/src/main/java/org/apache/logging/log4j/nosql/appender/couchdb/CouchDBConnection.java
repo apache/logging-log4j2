@@ -14,13 +14,13 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.appender.db.nosql.couchdb;
+package org.apache.logging.log4j.nosql.appender.couchdb;
 
 import java.util.Map;
 
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
-import org.apache.logging.log4j.core.appender.db.nosql.NoSQLConnection;
-import org.apache.logging.log4j.core.appender.db.nosql.NoSQLObject;
+import org.apache.logging.log4j.nosql.appender.NoSQLConnection;
+import org.apache.logging.log4j.nosql.appender.NoSQLObject;
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.Response;
 

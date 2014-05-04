@@ -14,11 +14,11 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.appender.db.nosql.mongodb;
+package org.apache.logging.log4j.nosql.appender.mongodb;
 
 import java.util.Collections;
 
-import org.apache.logging.log4j.core.appender.db.nosql.NoSQLObject;
+import org.apache.logging.log4j.nosql.appender.NoSQLObject;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;

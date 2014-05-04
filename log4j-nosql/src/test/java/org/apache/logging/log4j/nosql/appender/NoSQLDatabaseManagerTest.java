@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.appender.db.nosql;
+package org.apache.logging.log4j.nosql.appender;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -28,8 +28,8 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
-import org.apache.logging.log4j.core.appender.db.nosql.couchdb.CouchDBObject;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.nosql.appender.couchdb.CouchDBObject;
 import org.easymock.Capture;
 import org.easymock.IAnswer;
 import org.junit.After;

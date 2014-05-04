@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.appender.db.nosql.mongodb;
+package org.apache.logging.log4j.nosql.appender.mongodb;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
-import org.apache.logging.log4j.core.appender.db.nosql.NoSQLProvider;
+import org.apache.logging.log4j.nosql.appender.NoSQLProvider;
 import org.apache.logging.log4j.core.config.plugins.SensitivePluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
