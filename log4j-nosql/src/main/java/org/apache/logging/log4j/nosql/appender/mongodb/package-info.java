@@ -15,6 +15,6 @@
  * limitations under the license.
  */
 /**
- * The classes in this package contain the Apache CouchDB provider for the NoSQL Appender.
+ * The classes in this package contain the MongoDB provider for the NoSQL Appender.
  */
-package org.apache.logging.log4j.core.appender.db.nosql.couchdb;
+package org.apache.logging.log4j.nosql.appender.mongodb;
