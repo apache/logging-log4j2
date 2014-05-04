@@ -27,6 +27,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>log4j-web</artifactId>
+  <packaging>jar</packaging>
+  <name>Apache Log4j Web</name>
+  <description>Support for Log4j in a web servlet container</description>
 
   <dependencies>
     <dependency>
@@ -71,6 +74,8 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
+            <!-- we compile against 3.0, but require 2.5 minimum -->
+            <Import-Package>javax.servlet;version="[2.5,4)",*</Import-Package>
             <Export-Package>org.apache.logging.log4j.web</Export-Package>
           </instructions>
         </configuration>
