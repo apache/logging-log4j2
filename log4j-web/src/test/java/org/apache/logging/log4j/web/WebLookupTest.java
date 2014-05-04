@@ -14,7 +14,12 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.web;
+package org.apache.logging.log4j.web;
+
+import java.util.Map;
+
+import javax.servlet.ServletContext;
+import javax.servlet.UnavailableException;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -23,13 +28,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.junit.Test;
-
-import javax.servlet.ServletContext;
-import javax.servlet.UnavailableException;
-
 import org.springframework.mock.web.MockServletContext;
-
-import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -56,16 +55,16 @@ public class WebLookupTest {
             assertNotNull("No Interpolator", substitutor);
             String value = substitutor.replace("${web:initParam.TestParam}");
             assertNotNull("No value for TestParam", value);
-            assertTrue("Incorrect value for TestParam: " + value, "ParamValue".equals(value));
+            assertEquals("Incorrect value for TestParam: " + value, "ParamValue", value);
             value = substitutor.replace("${web:attr.TestAttr}");
             assertNotNull("No value for TestAttr", value);
-            assertTrue("Incorrect value for TestAttr: " + value, "AttrValue".equals(value));
+            assertEquals("Incorrect value for TestAttr: " + value, "AttrValue", value);
             value = substitutor.replace("${web:Name1}");
             assertNotNull("No value for Name1", value);
-            assertTrue("Incorrect value for Name1: " + value, "Ben".equals(value));
+            assertEquals("Incorrect value for Name1: " + value, "Ben", value);
             value = substitutor.replace("${web:Name2}");
             assertNotNull("No value for Name2", value);
-            assertTrue("Incorrect value for Name2: " + value, "Jerry".equals(value));
+            assertEquals("Incorrect value for Name2: " + value, "Jerry", value);
         } catch (final UnavailableException e) {
             fail("Failed to initialize Log4j properly." + e.getMessage());
         }
@@ -94,7 +93,7 @@ public class WebLookupTest {
         for (Map.Entry<String, Appender> entry : appenders.entrySet()) {
             if (entry.getKey().equals("file")) {
                 FileAppender fa = (FileAppender) entry.getValue();
-                assertTrue("target/myapp.log".equals(fa.getFileName()));
+                assertEquals("target/myapp.log", fa.getFileName());
             }
         }
         initializer.deinitialize();

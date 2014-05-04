@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.web;
+package org.apache.logging.log4j.web;
 
 import java.util.EnumSet;
 import java.util.Set;

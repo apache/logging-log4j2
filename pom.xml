@@ -900,6 +900,7 @@
     <module>log4j-samples</module>
     <module>log4j-bom</module>
     <module>log4j-nosql</module>
+    <module>log4j-web</module>
   </modules>
   <profiles>
     <profile>
