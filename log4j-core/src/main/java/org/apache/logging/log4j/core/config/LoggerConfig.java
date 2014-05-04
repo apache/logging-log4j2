@@ -377,7 +377,6 @@ public class LoggerConfig extends AbstractFilterable {
     private void waitForCompletion() {
         if (shutdown.compareAndSet(false, true)) {
             int retries = 0;
-            // if this were Java 1.7, we could use a java.util.concurrent.Phaser instead
             while (counter.get() > 0) {
                 shutdownLock.lock();
                 try {
