@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- vi: set sw=2: -->
 <!--
    Licensed to the Apache Software Foundation (ASF) under one or more
    contributor license agreements.  See the NOTICE file distributed with
@@ -21,6 +22,15 @@
   </properties>
   <body>
     <release version="2.0-rc2" date="2014-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-613" dev="mattsicker" type="fix">
+        The OSGi version of log4j-web imports Servlet 2.5 at minimum instead of 3.0.
+      </action>
+      <action issue="LOG4J2-602" dev="rgoers" type="fix">
+        Unit tests are now less verbose during the build process.
+      </action>
+      <action issue="LOG4J2-570" dev="mattsicker" type="fix">
+        Fix shutdown thread memory leak in servlet containers.
+      </action>
       <action issue="LOG4J2-628" dev="rpopma" type="update">
         Use Clock to generate all log event timestamps, not just for Async Loggers.
       </action>
