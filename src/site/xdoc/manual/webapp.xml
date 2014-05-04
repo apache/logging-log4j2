@@ -33,6 +33,10 @@
         on whether your application is a <a href="#Servlet-3.0">Servlet 3.0 or newer</a> or
         <a href="#Servlet-2.5">Servlet 2.5</a> web application.
       </p>
+      <p>
+        In either case, you'll need to add the <code>log4j-web</code> module to your deployment as detailed in the
+        <a href="../maven-artifacts.html">Maven, Ivy, and Gradle Artifacts</a> manual page.
+      </p>
       <p class="big-red">
         It is important to note that you should add <code>shutdownHook=&quot;disable&quot;</code> to your root
         configuration element to avoid memory leaks. For example:
@@ -67,11 +71,11 @@
           <b>The Long Story</b><br />
           The Log4j 2 Core JAR file is a web-fragment configured to order before any other web fragments in your
           application. It contains a <code>ServletContainerInitializer</code>
-          (<a href="../log4j-core/apidocs/org/apache/logging/log4j/core/web/Log4jServletContainerInitializer.html"
+          (<a href="../log4j-core/apidocs/org/apache/logging/log4j/web/Log4jServletContainerInitializer.html"
             >Log4jServletContainerInitializer</a>) that the container automatically discovers and initializes. This adds
-          the <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/web/Log4jServletContextListener.html"
+          the <a href="../log4j-core/apidocs/org/apache/logging/log4j/web/Log4jServletContextListener.html"
             >Log4jServletContextListener</a> and
-          <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/web/Log4jServletFilter.html"
+          <a href="../log4j-core/apidocs/org/apache/logging/log4j/web/Log4jServletFilter.html"
             >Log4jServletFilter</a> to the <code>ServletContext</code>. These classes properly initialize
           and deinitialize the Log4j configuration.
         </p>
@@ -114,9 +118,9 @@
         <p>
           If you are using Log4j in a Servlet 2.5 web application, or if you have disabled auto-initialization with
           the <code>isLog4jAutoInitializationDisabled</code> context parameter, you <em>must</em> configure the
-          <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/web/Log4jServletContextListener.html"
+          <a href="../log4j-core/apidocs/org/apache/logging/log4j/web/Log4jServletContextListener.html"
             >Log4jServletContextListener</a> and
-          <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/web/Log4jServletFilter.html"
+          <a href="../log4j-core/apidocs/org/apache/logging/log4j/web/Log4jServletFilter.html"
             >Log4jServletFilter</a> in the deployment descriptor or programmatically. The filter should match all
           requests of any type. The listener should be the very first listener defined in your application, and the
           filter should be the very first filter defined and mapped in your application. This is easily accomplished
@@ -271,7 +275,7 @@
         <p>
           Thankfully, Log4j provides a simple mechanism for binding the <code>LoggerContext</code> to asynchronous
           threads in these special circumstances. The key is to obtain a
-          <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/web/Log4jWebSupport.html"
+          <a href="../log4j-core/apidocs/org/apache/logging/log4j/web/Log4jWebSupport.html"
               >Log4jWebSupport</a> instance from the <code>ServletContext</code> attributes, call its
           <code>setLoggerContext</code> method as the very first line of code in your asynchronous thread, and call
           its <code>clearLoggerContext</code> method as the very last line of code in your asynchronous thread. The
