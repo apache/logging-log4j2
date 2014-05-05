@@ -112,12 +112,14 @@ public final class AsyncAppender extends AbstractAppender {
     @Override
     public void stop() {
         super.stop();
+        LOGGER.trace("AsyncAppender stopping. Queue still has {} events.", queue.size());
         thread.shutdown();
         try {
             thread.join();
         } catch (final InterruptedException ex) {
             LOGGER.warn("Interrupted while stopping AsyncAppender {}", getName());
         }
+        LOGGER.trace("AsyncAppender stopped. Queue has {} events.", queue.size());
     }
 
     /**
@@ -246,18 +248,29 @@ public final class AsyncAppender extends AbstractAppender {
                 }
             }
             // Process any remaining items in the queue.
+            LOGGER.trace("AsyncAppender.AsyncThread shutting down. Processing remaining {} queue events.",
+                    queue.size());
+            int count= 0;
+            int ignored = 0;
             while (!queue.isEmpty()) {
                 try {
                     final Serializable s = queue.take();
-                    if (s instanceof Log4jLogEvent) {
+                    if (Log4jLogEvent.canDeserialize(s)) {
                         final Log4jLogEvent event = Log4jLogEvent.deserialize(s);
                         event.setEndOfBatch(queue.isEmpty());
                         callAppenders(event);
+                        count++;
+                    } else {
+                        ignored++;
+                        LOGGER.trace("Ignoring event of class {}", s.getClass().getName());
                     }
                 } catch (final InterruptedException ex) {
                     // May have been interrupted to shut down.
                 }
             }
+            LOGGER.trace("AsyncAppender.AsyncThread stopped. Queue has {} events remaining. " +
+            		"Processed {} and ignored {} events since shutdown started.", 
+            		queue.size(), count, ignored);
         }
 
         /**

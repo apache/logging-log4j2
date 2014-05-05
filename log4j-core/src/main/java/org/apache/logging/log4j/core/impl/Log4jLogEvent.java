@@ -359,6 +359,10 @@ public class Log4jLogEvent implements LogEvent {
         return new LogEventProxy(event, includeLocation);
     }
 
+    public static boolean canDeserialize(final Serializable event) {
+        return event instanceof LogEventProxy;
+    }
+    
     public static Log4jLogEvent deserialize(final Serializable event) {
         if (event == null) {
             throw new NullPointerException("Event cannot be null");

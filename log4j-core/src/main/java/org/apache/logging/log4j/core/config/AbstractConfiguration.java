@@ -169,7 +169,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     @Override
     public void stop() {
-
+        LOGGER.trace("AbstractConfiguration stopping...");
+        
         // LOG4J2-392 first stop AsyncLogger Disruptor thread
         final LoggerContextFactory factory = LogManager.getFactory();
         if (factory instanceof Log4jContextFactory) {
@@ -181,9 +182,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 //
                 // Uncomment the line below after LOG4J2-493 is fixed
                 //AsyncLogger.stop();
+                //LOGGER.trace("AbstractConfiguration stopped AsyncLogger disruptor.");
             }
         }
         // similarly, first stop AsyncLoggerConfig Disruptor thread(s)
+        int asyncLoggerConfigCount = 0;
         for (final LoggerConfig logger : loggers.values()) {
             if (logger instanceof AsyncLoggerConfig) {
                 // LOG4J2-520, LOG4J2-392:
@@ -192,31 +195,46 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 // shut down the disruptor and wait for all enqueued events to be processed.
                 // Only *after this* the appenders can be cleared or events will be lost.
                 logger.stopFilter();
+                asyncLoggerConfigCount++;
             }
         }
         if (root instanceof AsyncLoggerConfig) {
             root.stopFilter();
+            asyncLoggerConfigCount++;
         }
+        LOGGER.trace("AbstractConfiguration stopped {} AsyncLoggerConfigs.", asyncLoggerConfigCount);
 
         // Stop the appenders in reverse order in case they still have activity.
         final Appender[] array = appenders.values().toArray(new Appender[appenders.size()]);
 
         // LOG4J2-511, LOG4J2-392 stop AsyncAppenders first
+        int asyncAppenderCount = 0;
         for (int i = array.length - 1; i >= 0; --i) {
             if (array[i] instanceof AsyncAppender) {
                 array[i].stop();
+                asyncAppenderCount++;
             }
         }
+        LOGGER.trace("AbstractConfiguration stopped {} AsyncAppenders.", asyncAppenderCount);
+
+        int appenderCount = 0;
         for (int i = array.length - 1; i >= 0; --i) {
             if (array[i].isStarted()) { // then stop remaining Appenders
                 array[i].stop();
+                appenderCount++;
             }
         }
+        LOGGER.trace("AbstractConfiguration stopped {} Appenders.", appenderCount);
+
+        int loggerCount = 0;
         for (final LoggerConfig logger : loggers.values()) {
             // AsyncLoggerConfig objects may be stopped multiple times, that's okay...
             logger.clearAppenders();
             logger.stopFilter();
+            loggerCount++;
         }
+        LOGGER.trace("AbstractConfiguration stopped {} Loggers.", loggerCount);
+
         // If root is an AsyncLoggerConfig it may already be stopped. Stopping it twice is okay.
         root.stopFilter();
         stopFilter();
