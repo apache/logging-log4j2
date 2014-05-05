@@ -22,13 +22,12 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,8 +39,8 @@ import org.apache.logging.log4j.core.appender.AsyncAppender;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfig;
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
-import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
@@ -114,8 +113,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     private LoggerConfig root = new LoggerConfig();
 
-    private final boolean started = false;
-
     private final ConcurrentMap<String, Object> componentMap = new ConcurrentHashMap<String, Object>();
 
     protected PluginManager pluginManager;
@@ -187,17 +184,18 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             }
         }
         // similarly, first stop AsyncLoggerConfig Disruptor thread(s)
-        Set<LoggerConfig> alreadyStopped = new HashSet<LoggerConfig>();
         for (final LoggerConfig logger : loggers.values()) {
             if (logger instanceof AsyncLoggerConfig) {
-                logger.clearAppenders();
+                // LOG4J2-520, LOG4J2-392:
+                // Important: do not clear appenders until after all AsyncLoggerConfigs
+                // have been stopped! Stopping the last AsyncLoggerConfig will
+                // shut down the disruptor and wait for all enqueued events to be processed.
+                // Only *after this* the appenders can be cleared or events will be lost.
                 logger.stopFilter();
-                alreadyStopped.add(logger);
             }
         }
         if (root instanceof AsyncLoggerConfig) {
             root.stopFilter();
-            alreadyStopped.add(root);
         }
 
         // Stop the appenders in reverse order in case they still have activity.
@@ -215,15 +213,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             }
         }
         for (final LoggerConfig logger : loggers.values()) {
-            if (alreadyStopped.contains(logger)) {
-                continue;
-            }
+            // AsyncLoggerConfig objects may be stopped multiple times, that's okay...
             logger.clearAppenders();
             logger.stopFilter();
         }
-        if (!alreadyStopped.contains(root)) {
-            root.stopFilter();
-        }
+        // If root is an AsyncLoggerConfig it may already be stopped. Stopping it twice is okay.
+        root.stopFilter();
         stopFilter();
         if (advertiser != null && advertisement != null) {
             advertiser.unadvertise(advertisement);

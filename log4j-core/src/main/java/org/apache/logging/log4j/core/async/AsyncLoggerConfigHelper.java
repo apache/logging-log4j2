@@ -58,14 +58,13 @@ import com.lmax.disruptor.util.Util;
  */
 class AsyncLoggerConfigHelper {
 
-    private static final int MAX_DRAIN_ATTEMPTS_BEFORE_SHUTDOWN = 20;
-    private static final int HALF_A_SECOND = 500;
+    private static final int MAX_DRAIN_ATTEMPTS_BEFORE_SHUTDOWN = 200;
+    private static final int SLEEP_MILLIS_BETWEEN_DRAIN_ATTEMPTS = 50;
     private static final int RINGBUFFER_MIN_SIZE = 128;
     private static final int RINGBUFFER_DEFAULT_SIZE = 256 * 1024;
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private static ThreadFactory threadFactory = new DaemonThreadFactory(
-            "AsyncLoggerConfig-");
+    private static ThreadFactory threadFactory = new DaemonThreadFactory("AsyncLoggerConfig-");
     private static volatile Disruptor<Log4jEventWrapper> disruptor;
     private static ExecutorService executor;
 
@@ -256,7 +255,9 @@ class AsyncLoggerConfigHelper {
         }
         final Disruptor<Log4jEventWrapper> temp = disruptor;
         if (temp == null) {
-            LOGGER.trace("AsyncLoggerConfigHelper: disruptor already shut down: ref count is {}.", count);
+            LOGGER.trace("AsyncLoggerConfigHelper: disruptor already shut down: ref count is {}. (Resetting to zero.)",
+                    count);
+            count = 0; // ref count must not be negative or #claim() will not work correctly
             return; // disruptor was already shut down by another thread
         }
         LOGGER.trace("AsyncLoggerConfigHelper: shutting down disruptor: ref count is {}.", count);
@@ -264,23 +265,27 @@ class AsyncLoggerConfigHelper {
         // Must guarantee that publishing to the RingBuffer has stopped
         // before we call disruptor.shutdown()
         disruptor = null; // client code fails with NPE if log after stop = OK
-        temp.shutdown();
 
-        // wait up to 10 seconds for the ringbuffer to drain
-        final RingBuffer<Log4jEventWrapper> ringBuffer = temp.getRingBuffer();
-        for (int i = 0; i < MAX_DRAIN_ATTEMPTS_BEFORE_SHUTDOWN; i++) {
-            if (ringBuffer.hasAvailableCapacity(ringBuffer.getBufferSize())) {
-                break;
-            }
+        // Calling Disruptor.shutdown() will wait until all enqueued events are fully processed,
+        // but this waiting happens in a busy-spin. To avoid (postpone) wasting CPU,
+        // we sleep in short chunks, up to 10 seconds, waiting for the ringbuffer to drain.
+        for (int i = 0; hasBacklog(temp) && i < MAX_DRAIN_ATTEMPTS_BEFORE_SHUTDOWN; i++) {
             try {
-                // give ringbuffer some time to drain...
-                Thread.sleep(HALF_A_SECOND);
-            } catch (final InterruptedException e) {
-                // ignored
+                Thread.sleep(SLEEP_MILLIS_BETWEEN_DRAIN_ATTEMPTS); // give up the CPU for a while
+            } catch (final InterruptedException e) { // ignored
             }
         }
+        temp.shutdown(); // busy-spins until all events currently in the disruptor have been processed
         executor.shutdown(); // finally, kill the processor thread
         executor = null; // release reference to allow GC
+    }
+
+    /**
+     * Returns {@code true} if the specified disruptor still has unprocessed events.
+     */
+    private static boolean hasBacklog(Disruptor<?> disruptor) {
+        final RingBuffer<?> ringBuffer = disruptor.getRingBuffer();
+        return !ringBuffer.hasAvailableCapacity(ringBuffer.getBufferSize());
     }
 
     /**
@@ -289,7 +294,7 @@ class AsyncLoggerConfigHelper {
      * RingBuffer is full. (LOG4J2-471)
      */
     private static void initThreadLocalForExecutorThread() {
-        executor.submit(new Runnable(){
+        executor.submit(new Runnable() {
             @Override
             public void run() {
                 isAppenderThread.set(Boolean.TRUE);
@@ -311,12 +316,12 @@ class AsyncLoggerConfigHelper {
      *          calling thread needs to process the event itself
      */
     public boolean callAppendersFromAnotherThread(final LogEvent event) {
-        
+
         // LOG4J2-471: prevent deadlock when RingBuffer is full and object
         // being logged calls Logger.log() from its toString() method
         if (isAppenderThread.get() == Boolean.TRUE //
                 && disruptor.getRingBuffer().remainingCapacity() == 0) {
-            
+
             // bypass RingBuffer and invoke Appender directly
             return false;
         }
