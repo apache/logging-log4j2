@@ -22,6 +22,10 @@
   </properties>
   <body>
     <release version="2.0-rc2" date="2014-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-392" dev="rpopma" type="fix" due-to="Andre Bogus">
+        Resolved a problem with the previous solution that resulted in dropped events
+        with slow appenders when application is stopped.
+      </action>
       <action issue="LOG4J2-613" dev="mattsicker" type="fix">
         The OSGi version of log4j-web imports Servlet 2.5 at minimum instead of 3.0.
       </action>
