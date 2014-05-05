@@ -52,8 +52,6 @@ public class RandomAccessFileManager extends OutputStreamManager {
         this.randomAccessFile = file;
         this.advertiseURI = advertiseURI;
         this.isEndOfBatch.set(Boolean.FALSE);
-
-        // TODO make buffer size configurable?
         this.buffer = ByteBuffer.allocate(bufferSize);
     }
 
@@ -135,6 +133,14 @@ public class RandomAccessFileManager extends OutputStreamManager {
      */
     public String getFileName() {
         return getName();
+    }
+    
+    /**
+     * Returns the buffer capacity.
+     * @return the buffer size
+     */
+    public int getBufferSize() {
+        return buffer.capacity();
     }
 
     /** {@code OutputStream} subclass that does not write anything. */

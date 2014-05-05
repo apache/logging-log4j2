@@ -75,6 +75,22 @@ public class RandomAccessFileManagerTest {
         manager.flush();
         assertEquals(size, raf.length()); // all data written to file now
     }
+    
+    @Test
+    public void testConfigurableBufferSize() throws IOException {
+        final File file = File.createTempFile("log4j2", "test");
+        file.deleteOnExit();
+        final RandomAccessFile raf = new RandomAccessFile(file, "rw");
+        final OutputStream os = new RandomAccessFileManager.DummyOutputStream();
+        final int bufferSize = 4 * 1024;
+        assertNotEquals(bufferSize, RandomAccessFileManager.DEFAULT_BUFFER_SIZE);
+        
+        final RandomAccessFileManager manager = new RandomAccessFileManager(raf, file.getName(), os,
+                false, bufferSize, null, null);
+        
+        // check the resulting buffer size is what was requested
+        assertEquals(bufferSize, manager.getBufferSize());
+    }
 
     @Test
     public void testWrite_dataExceedingMinBufferSize() throws IOException {
