@@ -94,6 +94,14 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
     public String getFileName() {
         return this.fileName;
     }
+    
+    /**
+     * Returns the size of the file manager's buffer.
+     * @return the buffer size
+     */
+    public int getBufferSize() {
+        return getManager().getBufferSize();
+    }
 
     // difference from standard File Appender:
     // locking is not supported and buffering cannot be switched off

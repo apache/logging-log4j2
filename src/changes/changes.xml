@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="2.0-rc2" date="2014-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-566" dev="rpopma" type="update" due-to="Luigi Alice">
+        Made RollingRandomAccessFileAppender buffer size configurable.
+      </action>
       <action issue="LOG4J2-520" dev="rpopma" type="fix" due-to="JavaTech, Andre Bogus">
         Resolved issue where AsyncAppender dropped events if queue still contained
         events when application is stopped.

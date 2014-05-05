@@ -2395,6 +2395,11 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 		              </td>
 					</tr>
           <tr>
+                      <td>bufferSize</td>
+                      <td>int</td>
+                      <td>The buffer size, defaults to 262,144 bytes (256 * 1024).</td>
+                    </tr>
+          <tr>
 						<td>layout</td>
 						<td>Layout</td>
 						<td>The Layout to use to format the LogEvent</td>
