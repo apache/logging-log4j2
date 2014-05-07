@@ -164,4 +164,44 @@ public class DefaultThreadContextMap implements ThreadContextMap {
         Map<String, String> map = localMap.get();
         return map == null ? "{}" : map.toString();
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        Map<String, String> map = this.localMap.get();
+        result = prime * result + ((map == null) ? 0 : map.hashCode());
+        result = prime * result + (this.useMap ? 1231 : 1237);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (obj instanceof DefaultThreadContextMap) {
+            DefaultThreadContextMap other = (DefaultThreadContextMap) obj;
+            if (this.useMap != other.useMap) {
+                return false;
+            }
+        }
+        if (!(obj instanceof ThreadContextMap)) {
+            return false;
+        }
+        ThreadContextMap other = (ThreadContextMap) obj;
+        Map<String, String> map = this.localMap.get();
+        Map<String, String> otherMap = other.getImmutableMapOrNull(); 
+        if (map == null) {
+            if (otherMap != null) {
+                return false;
+            }
+        } else if (!map.equals(otherMap)) {
+            return false;
+        }
+        return true;
+    }
 }
