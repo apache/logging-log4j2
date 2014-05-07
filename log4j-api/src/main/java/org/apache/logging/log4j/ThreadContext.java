@@ -347,12 +347,7 @@ public final class ThreadContext  {
     /**
      * The ThreadContext Stack interface.
      */
-    public interface ContextStack extends Serializable {
-
-        /**
-         * Clears all elements from the stack.
-         */
-        void clear();
+    public interface ContextStack extends Serializable, Collection<String> {
 
         /**
          * Returns the element at the top of the stack.
