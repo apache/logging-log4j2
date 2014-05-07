@@ -140,9 +140,11 @@ public class DefaultThreadContextStack implements ThreadContextStack {
 
     @Override
     public int hashCode() {
+        final List<String> list = stack.get();
         final int prime = 31;
         int result = 1;
-        result = prime * result + (this.useStack ? 1231 : 1237);
+        // Factor in the stack itself to compare vs. other implementors.
+        result = prime * result + ((list == null) ? 0 : list.hashCode());
         return result;
     }
 
