@@ -28,7 +28,7 @@ import org.junit.Test;
 public class DefaultThreadContextMapTest {
 
     @Test
-    public void testEquals() {
+    public void testEqualsVsSameKind() {
         final DefaultThreadContextMap map1 = createMap();
         final DefaultThreadContextMap map2 = createMap();
         assertEquals(map1, map1);
@@ -38,7 +38,7 @@ public class DefaultThreadContextMapTest {
     }
 
     @Test
-    public void testHashCode() {
+    public void testHashCodeVsSameKind() {
         final DefaultThreadContextMap map1 = createMap();
         final DefaultThreadContextMap map2 = createMap();
         assertEquals(map1.hashCode(), map2.hashCode());

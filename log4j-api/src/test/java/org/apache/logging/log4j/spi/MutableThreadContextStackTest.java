@@ -145,7 +145,7 @@ public class MutableThreadContextStackTest {
     }
 
     @Test
-    public void testEquals() {
+    public void testEqualsVsSameKind() {
         final MutableThreadContextStack stack1 = createStack();
         final MutableThreadContextStack stack2 = createStack();
         assertEquals(stack1, stack1);
@@ -155,7 +155,7 @@ public class MutableThreadContextStackTest {
     }
 
     @Test
-    public void testHashCode() {
+    public void testHashCodeVsSameKind() {
         final MutableThreadContextStack stack1 = createStack();
         final MutableThreadContextStack stack2 = createStack();
         assertEquals(stack1.hashCode(), stack2.hashCode());
