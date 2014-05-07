@@ -36,9 +36,26 @@ public class DefaultThreadContextStackTest {
     }
 
     @Test
+    public void testEqualsVsMutable() {
+        final DefaultThreadContextStack stack1 = createStack();
+        final MutableThreadContextStack stack2 = MutableThreadContextStackTest.createStack();
+        assertEquals(stack1, stack1);
+        assertEquals(stack2, stack2);
+        assertEquals(stack1, stack2);
+        assertEquals(stack2, stack1);
+    }
+
+    @Test
     public void testHashCodeVsSameKind() {
         final DefaultThreadContextStack stack1 = createStack();
         final DefaultThreadContextStack stack2 = createStack();
+        assertEquals(stack1.hashCode(), stack2.hashCode());
+    }
+
+    @Test
+    public void testHashCodeVsMutable() {
+        final DefaultThreadContextStack stack1 = createStack();
+        final MutableThreadContextStack stack2 = MutableThreadContextStackTest.createStack();
         assertEquals(stack1.hashCode(), stack2.hashCode());
     }
 
@@ -160,7 +177,7 @@ public class DefaultThreadContextStackTest {
     /**
      * @return
      */
-    private DefaultThreadContextStack createStack() {
+    static DefaultThreadContextStack createStack() {
         final DefaultThreadContextStack stack = new DefaultThreadContextStack(true);
         stack.clear();
         assertTrue(stack.isEmpty());

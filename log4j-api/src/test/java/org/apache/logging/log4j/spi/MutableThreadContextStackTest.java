@@ -164,7 +164,7 @@ public class MutableThreadContextStackTest {
     /**
      * @return
      */
-    private MutableThreadContextStack createStack() {
+    static MutableThreadContextStack createStack() {
         final MutableThreadContextStack stack1 = new MutableThreadContextStack(new ArrayList<String>());
         stack1.clear();
         assertTrue(stack1.isEmpty());
