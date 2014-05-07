@@ -24,16 +24,14 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
- * A copy-on-write thread-safe variant of
- * {@code org.apache.logging.log4j.spi.ThreadContextStack} in which all mutative
- * operations (add, pop, and so on) are implemented by making a fresh copy of
- * the underlying list.
+ * A copy-on-write thread-safe variant of {@code org.apache.logging.log4j.spi.ThreadContextStack} in which all mutative operations (add,
+ * pop, and so on) are implemented by making a fresh copy of the underlying list.
  */
 public class DefaultThreadContextStack implements ThreadContextStack {
 
     private static final long serialVersionUID = 5050501L;
 
-    private static ThreadLocal<List<String>> stack = new ThreadLocal<List<String>>();
+    private static final ThreadLocal<List<String>> stack = new ThreadLocal<List<String>>();
 
     private final boolean useStack;
 
@@ -47,8 +45,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
             return false;
         }
         final List<String> list = stack.get();
-        final List<String> copy = list == null ? new ArrayList<String>()
-                : new ArrayList<String>(list);
+        final List<String> copy = list == null ? new ArrayList<String>() : new ArrayList<String>(list);
         copy.add(s);
         stack.set(Collections.unmodifiableList(copy));
         return true;
@@ -60,8 +57,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
             return false;
         }
         final List<String> list = stack.get();
-        final List<String> copy = list == null ? new ArrayList<String>()
-                : new ArrayList<String>(list);
+        final List<String> copy = list == null ? new ArrayList<String>() : new ArrayList<String>(list);
         copy.addAll(strings);
         stack.set(Collections.unmodifiableList(copy));
         return true;
@@ -107,9 +103,47 @@ public class DefaultThreadContextStack implements ThreadContextStack {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (obj instanceof DefaultThreadContextStack) {
+            DefaultThreadContextStack other = (DefaultThreadContextStack) obj;
+            if (this.useStack != other.useStack) {
+                return false;
+            }
+        }
+        if (!(obj instanceof ThreadContextStack)) {
+            return false;
+        }
+        ThreadContextStack other = (ThreadContextStack) obj;
+        final List<String> otherAsList = other.asList();
+        final List<String> list = stack.get();
+        if (list == null) {
+            if (otherAsList != null) {
+                return false;
+            }
+        } else if (!list.equals(otherAsList)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public int getDepth() {
         final List<String> list = stack.get();
         return list == null ? 0 : list.size();
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (this.useStack ? 1231 : 1237);
+        return result;
     }
 
     @Override
@@ -243,8 +277,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
     @Override
     public void trim(final int depth) {
         if (depth < 0) {
-            throw new IllegalArgumentException(
-                    "Maximum stack depth cannot be negative");
+            throw new IllegalArgumentException("Maximum stack depth cannot be negative");
         }
         final List<String> list = stack.get();
         if (list == null) {
