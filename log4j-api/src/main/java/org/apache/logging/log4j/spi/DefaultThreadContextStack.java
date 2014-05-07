@@ -42,6 +42,103 @@ public class DefaultThreadContextStack implements ThreadContextStack {
     }
 
     @Override
+    public boolean add(final String s) {
+        if (!useStack) {
+            return false;
+        }
+        final List<String> list = stack.get();
+        final List<String> copy = list == null ? new ArrayList<String>()
+                : new ArrayList<String>(list);
+        copy.add(s);
+        stack.set(Collections.unmodifiableList(copy));
+        return true;
+    }
+
+    @Override
+    public boolean addAll(final Collection<? extends String> strings) {
+        if (!useStack || strings.isEmpty()) {
+            return false;
+        }
+        final List<String> list = stack.get();
+        final List<String> copy = list == null ? new ArrayList<String>()
+                : new ArrayList<String>(list);
+        copy.addAll(strings);
+        stack.set(Collections.unmodifiableList(copy));
+        return true;
+    }
+
+    @Override
+    public List<String> asList() {
+        final List<String> list = stack.get();
+        if (list == null) {
+            return Collections.emptyList();
+        }
+        return list;
+    }
+
+    @Override
+    public void clear() {
+        stack.remove();
+    }
+
+    @Override
+    public boolean contains(final Object o) {
+        final List<String> result = stack.get();
+        return result != null && result.contains(o);
+    }
+
+    @Override
+    public boolean containsAll(final Collection<?> objects) {
+        if (objects.isEmpty()) { // quick check before accessing the ThreadLocal
+            return true; // looks counter-intuitive, but see
+                         // j.u.AbstractCollection
+        }
+        final List<String> list = stack.get();
+        return list != null && list.containsAll(objects);
+    }
+
+    @Override
+    public ThreadContextStack copy() {
+        List<String> result = null;
+        if (!useStack || (result = stack.get()) == null) {
+            return new MutableThreadContextStack(new ArrayList<String>());
+        }
+        return new MutableThreadContextStack(result);
+    }
+
+    @Override
+    public int getDepth() {
+        final List<String> list = stack.get();
+        return list == null ? 0 : list.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        final List<String> result = stack.get();
+        return result == null || result.isEmpty();
+    }
+
+    @Override
+    public Iterator<String> iterator() {
+        final List<String> immutable = stack.get();
+        if (immutable == null) {
+            final List<String> empty = Collections.emptyList();
+            return empty.iterator();
+        }
+        return immutable.iterator();
+    }
+
+    @Override
+    public String peek() {
+        final List<String> list = stack.get();
+        if (list == null || list.size() == 0) {
+            return null;
+        }
+        final int last = list.size() - 1;
+        return list.get(last);
+    }
+
+    @Override
     public String pop() {
         if (!useStack) {
             return "";
@@ -58,130 +155,11 @@ public class DefaultThreadContextStack implements ThreadContextStack {
     }
 
     @Override
-    public String peek() {
-        final List<String> list = stack.get();
-        if (list == null || list.size() == 0) {
-            return null;
-        }
-        final int last = list.size() - 1;
-        return list.get(last);
-    }
-
-    @Override
     public void push(final String message) {
         if (!useStack) {
             return;
         }
         add(message);
-    }
-
-    @Override
-    public int getDepth() {
-        final List<String> list = stack.get();
-        return list == null ? 0 : list.size();
-    }
-
-    @Override
-    public List<String> asList() {
-        final List<String> list = stack.get();
-        if (list == null) {
-            return Collections.emptyList();
-        }
-        return list;
-    }
-
-    @Override
-    public void trim(final int depth) {
-        if (depth < 0) {
-            throw new IllegalArgumentException(
-                    "Maximum stack depth cannot be negative");
-        }
-        final List<String> list = stack.get();
-        if (list == null) {
-            return;
-        }
-        final List<String> copy = new ArrayList<String>();
-        final int count = Math.min(depth, list.size());
-        for (int i = 0; i < count; i++) {
-            copy.add(list.get(i));
-        }
-        stack.set(copy);
-    }
-
-    @Override
-    public ThreadContextStack copy() {
-        List<String> result = null;
-        if (!useStack || (result = stack.get()) == null) {
-            return new MutableThreadContextStack(new ArrayList<String>());
-        }
-        return new MutableThreadContextStack(result);
-    }
-
-    @Override
-    public void clear() {
-        stack.remove();
-    }
-
-    @Override
-    public int size() {
-        final List<String> result = stack.get();
-        return result == null ? 0 : result.size();
-    }
-
-    @Override
-    public boolean isEmpty() {
-        final List<String> result = stack.get();
-        return result == null || result.isEmpty();
-    }
-
-    @Override
-    public boolean contains(final Object o) {
-        final List<String> result = stack.get();
-        return result != null && result.contains(o);
-    }
-
-    @Override
-    public Iterator<String> iterator() {
-        final List<String> immutable = stack.get();
-        if (immutable == null) {
-            final List<String> empty = Collections.emptyList();
-            return empty.iterator();
-        }
-        return immutable.iterator();
-    }
-
-    @Override
-    public Object[] toArray() {
-        final List<String> result = stack.get();
-        if (result == null) {
-            return new String[0];
-        }
-        return result.toArray(new Object[result.size()]);
-    }
-
-    @Override
-    public <T> T[] toArray(final T[] ts) {
-        final List<String> result = stack.get();
-        if (result == null) {
-            if (ts.length > 0) { // as per the contract of j.u.List#toArray(T[])
-                ts[0] = null;
-            }
-            return ts;
-        }
-        return result.toArray(ts);
-    }
-
-    @Override
-    public boolean add(final String s) {
-        if (!useStack) {
-            return false;
-        }
-        final List<String> list = stack.get();
-        final List<String> copy = list == null ? new ArrayList<String>()
-                : new ArrayList<String>(list);
-        copy.add(s);
-        stack.set(Collections.unmodifiableList(copy));
-        return true;
     }
 
     @Override
@@ -197,29 +175,6 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         final boolean result = copy.remove(o);
         stack.set(Collections.unmodifiableList(copy));
         return result;
-    }
-
-    @Override
-    public boolean containsAll(final Collection<?> objects) {
-        if (objects.isEmpty()) { // quick check before accessing the ThreadLocal
-            return true; // looks counter-intuitive, but see
-                         // j.u.AbstractCollection
-        }
-        final List<String> list = stack.get();
-        return list != null && list.containsAll(objects);
-    }
-
-    @Override
-    public boolean addAll(final Collection<? extends String> strings) {
-        if (!useStack || strings.isEmpty()) {
-            return false;
-        }
-        final List<String> list = stack.get();
-        final List<String> copy = list == null ? new ArrayList<String>()
-                : new ArrayList<String>(list);
-        copy.addAll(strings);
-        stack.set(Collections.unmodifiableList(copy));
-        return true;
     }
 
     @Override
@@ -253,8 +208,53 @@ public class DefaultThreadContextStack implements ThreadContextStack {
     }
 
     @Override
+    public int size() {
+        final List<String> result = stack.get();
+        return result == null ? 0 : result.size();
+    }
+
+    @Override
+    public Object[] toArray() {
+        final List<String> result = stack.get();
+        if (result == null) {
+            return new String[0];
+        }
+        return result.toArray(new Object[result.size()]);
+    }
+
+    @Override
+    public <T> T[] toArray(final T[] ts) {
+        final List<String> result = stack.get();
+        if (result == null) {
+            if (ts.length > 0) { // as per the contract of j.u.List#toArray(T[])
+                ts[0] = null;
+            }
+            return ts;
+        }
+        return result.toArray(ts);
+    }
+
+    @Override
     public String toString() {
         final List<String> list = stack.get();
         return list == null ? "[]" : list.toString();
+    }
+
+    @Override
+    public void trim(final int depth) {
+        if (depth < 0) {
+            throw new IllegalArgumentException(
+                    "Maximum stack depth cannot be negative");
+        }
+        final List<String> list = stack.get();
+        if (list == null) {
+            return;
+        }
+        final List<String> copy = new ArrayList<String>();
+        final int count = Math.min(depth, list.size());
+        for (int i = 0; i < count; i++) {
+            copy.add(list.get(i));
+        }
+        stack.set(copy);
     }
 }
