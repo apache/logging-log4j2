@@ -26,6 +26,23 @@ import org.junit.Test;
 public class DefaultThreadContextStackTest {
 
     @Test
+    public void testEquals() {
+        final DefaultThreadContextStack stack1 = createStack();
+        final DefaultThreadContextStack stack2 = createStack();
+        assertEquals(stack1, stack1);
+        assertEquals(stack2, stack2);
+        assertEquals(stack1, stack2);
+        assertEquals(stack2, stack1);
+    }
+
+    @Test
+    public void testHashCode() {
+        final DefaultThreadContextStack stack1 = createStack();
+        final DefaultThreadContextStack stack2 = createStack();
+        assertEquals(stack1.hashCode(), stack2.hashCode());
+    }
+
+    @Test
     public void testDoesNothingIfConstructedWithUseStackIsFalse() {
         final DefaultThreadContextStack stack = new DefaultThreadContextStack(false);
         stack.clear();
