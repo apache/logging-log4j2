@@ -26,7 +26,7 @@ import org.junit.Test;
 public class DefaultThreadContextStackTest {
 
     @Test
-    public void testEquals() {
+    public void testEqualsVsSameKind() {
         final DefaultThreadContextStack stack1 = createStack();
         final DefaultThreadContextStack stack2 = createStack();
         assertEquals(stack1, stack1);
@@ -36,7 +36,7 @@ public class DefaultThreadContextStackTest {
     }
 
     @Test
-    public void testHashCode() {
+    public void testHashCodeVsSameKind() {
         final DefaultThreadContextStack stack1 = createStack();
         final DefaultThreadContextStack stack2 = createStack();
         assertEquals(stack1.hashCode(), stack2.hashCode());
