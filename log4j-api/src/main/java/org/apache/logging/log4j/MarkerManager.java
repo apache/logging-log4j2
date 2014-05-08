@@ -33,6 +33,13 @@ public final class MarkerManager {
     }
 
     /**
+     * Clears all markers.
+     */
+    public static void clear() {
+        markerMap.clear();        
+    }
+
+    /**
      * Retrieve a Marker or create a Marker that has no parent.
      * @param name The name of the Marker.
      * @return The Marker with the specified name.
