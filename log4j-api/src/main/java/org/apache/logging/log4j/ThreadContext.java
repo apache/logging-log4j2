@@ -128,7 +128,7 @@ public final class ThreadContext  {
     }
 
     /**
-     * Put a context value (the <code>value</code> parameter) as identified
+     * Puts a context value (the <code>value</code> parameter) as identified
      * with the <code>key</code> parameter into the current thread's
      * context map.
      * <p/>
@@ -142,7 +142,7 @@ public final class ThreadContext  {
     }
 
     /**
-     * Get the context value identified by the <code>key</code> parameter.
+     * Gets the context value identified by the <code>key</code> parameter.
      * <p/>
      * <p>This method has no side effects.
      * @param key The key to locate.
@@ -153,7 +153,7 @@ public final class ThreadContext  {
     }
 
     /**
-     * Remove the context value identified by the <code>key</code> parameter.
+     * Removes the context value identified by the <code>key</code> parameter.
      * @param key The key to remove.
      */
     public static void remove(final String key) {
@@ -161,7 +161,7 @@ public final class ThreadContext  {
     }
 
     /**
-     * Clear the context.
+     * Clears the context.
      * @deprecated Use {@link #clearMap()}
      */
     public static void clear() {
@@ -184,7 +184,7 @@ public final class ThreadContext  {
     }
 
     /**
-     * Determine if the key is in the context.
+     * Determines if the key is in the context.
      * @param key The key to locate.
      * @return True if the key is in the context, false otherwise.
      */
@@ -233,7 +233,7 @@ public final class ThreadContext  {
     }
 
     /**
-     * Get an immutable copy of this current thread's context stack.
+     * Gets an immutable copy of this current thread's context stack.
      * @return an immutable copy of the ThreadContext stack.
      */
     public static ContextStack getImmutableStack() {
@@ -241,7 +241,7 @@ public final class ThreadContext  {
     }
 
     /**
-     * Set this thread's stack.
+     * Sets this thread's stack.
      * @param stack The stack to use.
      */
     public static void setStack(final Collection<String> stack) {
@@ -253,7 +253,7 @@ public final class ThreadContext  {
     }
 
     /**
-     * Get the current nesting depth of this thread's stack.
+     * Gets the current nesting depth of this thread's stack.
      * @return the number of items in the stack.
      *
      * @see #trim
@@ -288,7 +288,7 @@ public final class ThreadContext  {
     }
 
     /**
-     * Push new diagnostic context information for the current thread.
+     * Pushes new diagnostic context information for the current thread.
      * <p/>
      * <p>The contents of the <code>message</code> parameter is
      * determined solely by the client.
@@ -299,7 +299,7 @@ public final class ThreadContext  {
         contextStack.push(message);
     }
     /**
-     * Push new diagnostic context information for the current thread.
+     * Pushes new diagnostic context information for the current thread.
      * <p/>
      * <p>The contents of the <code>message</code> and args parameters are
      * determined solely by the client. The message will be treated as a format String
@@ -314,7 +314,7 @@ public final class ThreadContext  {
     }
 
     /**
-     * Remove the diagnostic context for this thread.
+     * Removes the diagnostic context for this thread.
      * <p/>
      * <p>Each thread that created a diagnostic context by calling
      * {@link #push} should call this method before exiting. Otherwise,
@@ -387,7 +387,7 @@ public final class ThreadContext  {
         String peek();
 
         /**
-         * Add an element to the stack.
+         * Pushes an element onto the stack.
          * @param message The element to add.
          */
         void push(String message);
