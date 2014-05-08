@@ -74,7 +74,7 @@ public final class ThreadContext  {
     /**
      * <em>Consider private, used for testing.</em>
      */
-    static void init() {
+    public static void init() {
         contextMap = null;
         final PropertiesUtil managerProps = PropertiesUtil.getProperties();
         disableAll = managerProps.getBooleanProperty(DISABLE_ALL);
@@ -162,9 +162,25 @@ public final class ThreadContext  {
 
     /**
      * Clear the context.
+     * @deprecated Use {@link #clearMap()}
      */
     public static void clear() {
         contextMap.clear();
+    }
+
+    /**
+     * Clears the context map.
+     */
+    public static void clearMap() {
+        contextMap.clear();
+    }
+
+    /**
+     * Clears the context map and stack.
+     */
+    public static void clearAll() {
+        clearMap();
+        clearStack();
     }
 
     /**
@@ -202,7 +218,7 @@ public final class ThreadContext  {
     }
 
     /**
-     * Clear the stack for this thread.
+     * Clears the stack for this thread.
      */
     public static void clearStack() {
         contextStack.clear();
