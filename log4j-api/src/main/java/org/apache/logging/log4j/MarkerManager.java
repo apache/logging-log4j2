@@ -30,6 +30,7 @@ public final class MarkerManager {
     private static final ConcurrentMap<String, Marker> markerMap = new ConcurrentHashMap<String, Marker>();
 
     private MarkerManager() {
+        // do nothing
     }
 
     /**
