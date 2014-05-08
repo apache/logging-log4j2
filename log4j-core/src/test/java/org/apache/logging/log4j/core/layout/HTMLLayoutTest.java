@@ -46,6 +46,7 @@ public class HTMLLayoutTest {
 
     @BeforeClass
     public static void setupClass() {
+        ThreadContext.clearAll();
         ConfigurationFactory.setConfigurationFactory(cf);
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         ctx.reconfigure();
@@ -54,6 +55,7 @@ public class HTMLLayoutTest {
     @AfterClass
     public static void cleanupClass() {
         ConfigurationFactory.removeConfigurationFactory(cf);
+        ThreadContext.clearAll();
     }
 
     private static final String body = "<tr><td bgcolor=\"#993300\" style=\"color:White; font-size : small;\" colspan=\"6\">java.lang.NullPointerException: test";
@@ -126,12 +128,16 @@ public class HTMLLayoutTest {
         appender.stop();
 
         final List<String> list = appender.getMessages();
+        StringBuilder sb = new StringBuilder();
+        for (String string : list) {
+            sb.append(string);
+        }
+        String html = sb.toString();
         assertTrue("Incorrect number of lines. Require at least 85 " + list.size(), list.size() > 85);
         final String string = list.get(3);
         assertTrue("Incorrect header: " + string, string.equals("<meta charset=\"UTF-8\"/>"));
         assertTrue("Incorrect title", list.get(4).equals("<title>Log4j Log Messages</title>"));
         assertTrue("Incorrect footer", list.get(list.size() - 1).equals("</body></html>"));
-        String html = list.toString();
         if (includeLocation) {
             assertTrue("Incorrect multiline", list.get(50).equals(multiLine));
             assertTrue("Missing location", html.contains("HTMLLayoutTest.java:"));
