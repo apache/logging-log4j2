@@ -60,7 +60,7 @@ public final class ThreadContext  {
     private static final String DISABLE_ALL = "disableThreadContext";
     private static final String THREAD_CONTEXT_KEY = "log4j2.threadContextMap";
 
-    private static boolean all;
+    private static boolean disableAll;
     private static boolean useMap;
     private static boolean useStack;
     private static ThreadContextMap contextMap;
@@ -68,12 +68,20 @@ public final class ThreadContext  {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     static {
+        init();
+    }
+        
+    /**
+     * <em>Consider private, used for testing.</em>
+     */
+    static void init() {
+        contextMap = null;
         final PropertiesUtil managerProps = PropertiesUtil.getProperties();
-        all = managerProps.getBooleanProperty(DISABLE_ALL);
-        useStack = !(managerProps.getBooleanProperty(DISABLE_STACK) || all);
-        contextStack = new DefaultThreadContextStack(useStack);
+        disableAll = managerProps.getBooleanProperty(DISABLE_ALL);
+        useStack = !(managerProps.getBooleanProperty(DISABLE_STACK) || disableAll);
+        useMap = !(managerProps.getBooleanProperty(DISABLE_MAP) || disableAll);
 
-        useMap = !(managerProps.getBooleanProperty(DISABLE_MAP) || all);
+        contextStack = new DefaultThreadContextStack(useStack);
         String threadContextMapName = managerProps.getStringProperty(THREAD_CONTEXT_KEY);
         final ClassLoader cl = ProviderUtil.findClassLoader();
         if (threadContextMapName != null) {
@@ -116,7 +124,7 @@ public final class ThreadContext  {
     }
 
     private ThreadContext() {
-
+        // empty
     }
 
     /**
