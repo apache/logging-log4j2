@@ -57,6 +57,7 @@ public class SerializedLayoutTest {
 
     @BeforeClass
     public static void setupClass() {
+        ThreadContext.clearAll();
         ConfigurationFactory.setConfigurationFactory(cf);
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         ctx.reconfigure();
@@ -65,6 +66,7 @@ public class SerializedLayoutTest {
     @AfterClass
     public static void cleanupClass() {
         ConfigurationFactory.removeConfigurationFactory(cf);
+        ThreadContext.clearAll();
     }
 
     private static final String body =
