@@ -27,8 +27,6 @@ import static org.junit.Assert.assertNull;
  */
 public class NoopThreadContextTest {
 
-
-
     @BeforeClass
     public static void before() {
         System.setProperty("disableThreadContext", "true");
