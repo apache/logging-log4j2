@@ -33,11 +33,13 @@ public class ThreadContextInheritanceTest {
     @BeforeClass
     public static void setupClass() {
         System.setProperty(DefaultThreadContextMap.INHERITABLE_MAP, "true");
+        ThreadContext.init();
     }
     
     @AfterClass
     public static void tearDownClass() {
         System.clearProperty(DefaultThreadContextMap.INHERITABLE_MAP);
+        ThreadContext.init();
     }
 
     @Test
