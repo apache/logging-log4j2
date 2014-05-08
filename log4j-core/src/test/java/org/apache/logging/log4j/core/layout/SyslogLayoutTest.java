@@ -54,6 +54,7 @@ public class SyslogLayoutTest {
 
     @BeforeClass
     public static void setupClass() {
+        ThreadContext.clearAll();
         ConfigurationFactory.setConfigurationFactory(cf);
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         ctx.reconfigure();
@@ -62,6 +63,7 @@ public class SyslogLayoutTest {
     @AfterClass
     public static void cleanupClass() {
         ConfigurationFactory.removeConfigurationFactory(cf);
+        ThreadContext.clearAll();
     }
 
 
