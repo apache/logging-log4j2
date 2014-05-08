@@ -23,18 +23,26 @@ import org.junit.Test;
 import static org.junit.Assert.assertNull;
 
 /**
- *
+ * Tests {@link ThreadContext}.
  */
 public class NoopThreadContextTest {
 
+    private static final String TRUE = "true";
+    private static final String PROPERY_KEY_ALL = "disableThreadContext";
+    private static final String PROPERY_KEY_MAP = "disableThreadContextMap";
+
     @BeforeClass
     public static void before() {
-        System.setProperty("disableThreadContext", "true");
+        System.setProperty(PROPERY_KEY_ALL, TRUE);
+        System.setProperty(PROPERY_KEY_MAP, TRUE);
+        ThreadContext.init();
     }
 
     @AfterClass
     public static void after() {
-        System.clearProperty("disableThreadContext");
+        System.clearProperty(PROPERY_KEY_ALL);
+        System.clearProperty(PROPERY_KEY_MAP);
+        ThreadContext.init();
     }
 
     @Test
