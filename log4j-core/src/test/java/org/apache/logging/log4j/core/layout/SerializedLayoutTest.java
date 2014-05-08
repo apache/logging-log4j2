@@ -49,6 +49,7 @@ import static org.junit.Assert.assertNotNull;
  *
  */
 public class SerializedLayoutTest {
+    private static final String DAT_PATH = "target/test-classes/serializedEvent.dat";
     LoggerContext ctx = (LoggerContext) LogManager.getContext();
     Logger root = ctx.getLogger("");
 
@@ -147,15 +148,16 @@ public class SerializedLayoutTest {
             "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world!"), throwable);
         final byte[] result = layout.toByteArray(event);
         assertNotNull(result);
-        //FileOutputStream fos = new FileOutputStream("target/serializedEvent.dat");
-        //fos.write(layout.getHeader());
-        //fos.write(result);
-        //fos.close();
+        FileOutputStream fos = new FileOutputStream(DAT_PATH);
+        fos.write(layout.getHeader());
+        fos.write(result);
+        fos.close();
     }
 
     @Test
     public void testDeserialization() throws Exception {
-        File file = new File("target/test-classes/serializedEvent.dat");
+        testSerialization();
+        File file = new File(DAT_PATH);
         FileInputStream fis = new FileInputStream(file);
         ObjectInputStream ois = new ObjectInputStream(fis);
         final LogEvent event = (LogEvent) ois.readObject();
