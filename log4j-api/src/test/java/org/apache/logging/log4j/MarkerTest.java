@@ -16,8 +16,11 @@
  */
 package org.apache.logging.log4j;
 
+import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -25,8 +28,30 @@ import static org.junit.Assert.assertTrue;
  */
 public class MarkerTest {
 
+    @Before
+    public void setUp() {
+        MarkerManager.clear();
+    }
+
     @Test
-    public void markerTest() {
+    public void testGetMarker() {
+        Marker expected = MarkerManager.getMarker("A");
+        assertNull(expected.getParents());
+    }
+
+    @Test
+    public void testGetMarkerWithParents() {
+        Marker expected = MarkerManager.getMarker("A");
+        final Marker p1 = MarkerManager.getMarker("P1");
+        p1.addParents(MarkerManager.getMarker("PP1"));
+        final Marker p2 = MarkerManager.getMarker("P2");
+        expected.addParents(p1);
+        expected.addParents(p2);
+        assertEquals(2, expected.getParents().length);
+    }
+
+    @Test
+    public void testMarker() {
         final Marker parent = MarkerManager.getMarker("PARENT");
         final Marker test1 = MarkerManager.getMarker("TEST1").setParents(parent);
         final Marker test2 = MarkerManager.getMarker("TEST2").addParents(parent);
@@ -35,7 +60,7 @@ public class MarkerTest {
     }
 
     @Test
-    public void multipleParentsTest() {
+    public void testMultipleParents() {
         final Marker parent1 = MarkerManager.getMarker("PARENT1");
         final Marker parent2 = MarkerManager.getMarker("PARENT2");
         final Marker test1 = MarkerManager.getMarker("TEST1").setParents(parent1, parent2);
@@ -47,7 +72,7 @@ public class MarkerTest {
     }
 
     @Test
-    public void addToExistingParentsTest() {
+    public void testAddToExistingParents() {
         final Marker parent = MarkerManager.getMarker("PARENT");
         final Marker existing = MarkerManager.getMarker("EXISTING");
         final Marker test1 = MarkerManager.getMarker("TEST1").setParents(existing);
@@ -58,7 +83,7 @@ public class MarkerTest {
 
 
     @Test
-    public void duplicateParentsTest() {
+    public void testDuplicateParents() {
         final Marker parent = MarkerManager.getMarker("PARENT");
         final Marker existing = MarkerManager.getMarker("EXISTING");
         final Marker test1 = MarkerManager.getMarker("TEST1").setParents(existing);
