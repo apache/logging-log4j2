@@ -94,6 +94,15 @@ public final class MarkerManager {
         private volatile Marker[] parents;
 
         /**
+         * Required by JAXB and Jackson for XML and JSON IO.
+         */
+        @SuppressWarnings("unused")
+        private Log4jMarker() {
+            this.name = null;
+            this.parents = null;
+        }
+
+        /**
          * Constructs a new Marker.
          * @param name the name of the Marker.
          * @throws IllegalArgumentException if the argument is {@code null}
