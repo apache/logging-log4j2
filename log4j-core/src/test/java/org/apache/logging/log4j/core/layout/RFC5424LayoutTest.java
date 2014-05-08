@@ -61,6 +61,7 @@ public class RFC5424LayoutTest {
 
     @BeforeClass
     public static void setupClass() {
+        ThreadContext.clearAll();
         StatusLogger.getLogger().setLevel(Level.OFF);
         ConfigurationFactory.setConfigurationFactory(cf);
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
@@ -70,6 +71,7 @@ public class RFC5424LayoutTest {
     @AfterClass
     public static void cleanupClass() {
         ConfigurationFactory.removeConfigurationFactory(cf);
+        ThreadContext.clearAll();
     }
 
     /**
