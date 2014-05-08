@@ -26,9 +26,10 @@ import java.util.Map;
 import static org.junit.Assert.*;
 
 /**
- *
+ * Tests {@link ThreadContext}.
  */
 public class ThreadContextInheritanceTest {
+    
     @BeforeClass
     public static void setupClass() {
         System.setProperty(DefaultThreadContextMap.INHERITABLE_MAP, "true");
