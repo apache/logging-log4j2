@@ -79,7 +79,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
         this.event = event;
         this.compress = compress;
         final Map<String, String> headers = getHeaders();
-        headers.put(TIMESTAMP, Long.toString(event.getMillis()));
+        headers.put(TIMESTAMP, Long.toString(event.getTimeMillis()));
         if (mdcPrefix == null) {
             mdcPrefix = DEFAULT_MDC_PREFIX;
         }
@@ -261,8 +261,8 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
      * @return the event timestamp.
      */
     @Override
-    public long getMillis() {
-        return event.getMillis();
+    public long getTimeMillis() {
+        return event.getTimeMillis();
     }
 
     /**

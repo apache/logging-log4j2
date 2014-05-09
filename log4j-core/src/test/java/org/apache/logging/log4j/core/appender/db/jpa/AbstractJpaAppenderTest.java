@@ -175,7 +175,7 @@ public abstract class AbstractJpaAppenderTest {
 
             assertTrue("There should be at least one row.", resultSet.next());
 
-            long date = resultSet.getLong("millis");
+            long date = resultSet.getLong("timemillis");
             assertTrue("The date should be later than pre-logging (1).", date >= millis);
             assertTrue("The date should be earlier than now (1).", date <= System.currentTimeMillis());
             assertEquals("The level column is not correct (1).", "DEBUG", resultSet.getString("level"));
@@ -186,7 +186,7 @@ public abstract class AbstractJpaAppenderTest {
 
             assertTrue("There should be at least two rows.", resultSet.next());
 
-            date = resultSet.getLong("millis");
+            date = resultSet.getLong("timemillis");
             assertTrue("The date should be later than pre-logging (2).", date >= millis);
             assertTrue("The date should be earlier than now (2).", date <= System.currentTimeMillis());
             assertEquals("The level column is not correct (2).", "WARN", resultSet.getString("level"));
@@ -197,7 +197,7 @@ public abstract class AbstractJpaAppenderTest {
 
             assertTrue("There should be three rows.", resultSet.next());
 
-            date = resultSet.getLong("millis");
+            date = resultSet.getLong("timemillis");
             assertTrue("The date should be later than pre-logging (3).", date >= millis);
             assertTrue("The date should be earlier than now (3).", date <= System.currentTimeMillis());
             assertEquals("The level column is not correct (3).", "FATAL", resultSet.getString("level"));

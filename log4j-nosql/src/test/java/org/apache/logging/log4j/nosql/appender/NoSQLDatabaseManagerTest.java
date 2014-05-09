@@ -201,7 +201,7 @@ public class NoSQLDatabaseManagerTest {
             expect(event.getSource()).andReturn(new StackTraceElement("com.foo.Bar", "testMethod01", "Bar.java", 15));
             expect(event.getMarker()).andReturn(null);
             expect(event.getThreadName()).andReturn("MyThread-A");
-            expect(event.getMillis()).andReturn(1234567890123L).times(2);
+            expect(event.getTimeMillis()).andReturn(1234567890123L).times(2);
             expect(event.getThrown()).andReturn(null);
             expect(event.getContextMap()).andReturn(null);
             expect(event.getContextStack()).andReturn(null);
@@ -314,7 +314,7 @@ public class NoSQLDatabaseManagerTest {
             expect(event.getSource()).andReturn(new StackTraceElement("com.bar.Foo", "anotherMethod03", "Foo.java", 9));
             expect(event.getMarker()).andReturn(MarkerManager.getMarker("LoneMarker"));
             expect(event.getThreadName()).andReturn("AnotherThread-B");
-            expect(event.getMillis()).andReturn(987654321564L).times(2);
+            expect(event.getTimeMillis()).andReturn(987654321564L).times(2);
             expect(event.getThrown()).andReturn(exception);
             expect(event.getContextMap()).andReturn(context);
             expect(event.getContextStack()).andReturn(stack);
@@ -469,7 +469,7 @@ public class NoSQLDatabaseManagerTest {
                     MarkerManager.getMarker("AnotherMarker",
                             MarkerManager.getMarker("Parent1", MarkerManager.getMarker("Grandparent2"))));
             expect(event.getThreadName()).andReturn("AnotherThread-B");
-            expect(event.getMillis()).andReturn(987654321564L).times(2);
+            expect(event.getTimeMillis()).andReturn(987654321564L).times(2);
             expect(event.getThrown()).andReturn(exception2);
             expect(event.getContextMap()).andReturn(context);
             expect(event.getContextStack()).andReturn(stack);

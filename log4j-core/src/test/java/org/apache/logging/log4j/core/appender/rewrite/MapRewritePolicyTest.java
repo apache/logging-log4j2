@@ -150,6 +150,6 @@ public class MapRewritePolicyTest {
         Assert.assertEquals("ContextStack changed", orig.getContextStack(), changed.getContextStack());
         Assert.assertEquals("ThreadName changed", orig.getThreadName(), changed.getThreadName());
         Assert.assertEquals("Source changed", orig.getSource(), changed.getSource());
-        Assert.assertEquals("Millis changed", orig.getMillis(), changed.getMillis());
+        Assert.assertEquals("Millis changed", orig.getTimeMillis(), changed.getTimeMillis());
     }
 }

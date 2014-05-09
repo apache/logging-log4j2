@@ -160,7 +160,7 @@ public class JSONLayout extends AbstractStringLayout {
         buf.append(this.eol);
         buf.append(this.indent2);
         buf.append("\"timestamp\":\"");
-        buf.append(event.getMillis());
+        buf.append(event.getTimeMillis());
         buf.append("\",");
         buf.append(this.eol);
         buf.append(this.indent2);

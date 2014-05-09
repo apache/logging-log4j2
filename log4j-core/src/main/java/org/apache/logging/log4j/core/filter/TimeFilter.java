@@ -71,7 +71,7 @@ public final class TimeFilter extends AbstractFilter {
     @Override
     public Result filter(final LogEvent event) {
         final Calendar calendar = Calendar.getInstance(timezone);
-        calendar.setTimeInMillis(event.getMillis());
+        calendar.setTimeInMillis(event.getTimeMillis());
         //
         //   get apparent number of milliseconds since midnight
         //      (ignores extra or missing hour on daylight time changes).

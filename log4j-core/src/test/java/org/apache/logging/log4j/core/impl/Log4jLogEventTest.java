@@ -68,7 +68,7 @@ public class Log4jLogEventTest {
         final ObjectInputStream in = new ObjectInputStream(inArr);
         final Log4jLogEvent evt2 = (Log4jLogEvent) in.readObject();
 
-        assertEquals(evt.getMillis(), evt2.getMillis());
+        assertEquals(evt.getTimeMillis(), evt2.getTimeMillis());
         assertEquals(evt.getFQCN(), evt2.getFQCN());
         assertEquals(evt.getLevel(), evt2.getLevel());
         assertEquals(evt.getLoggerName(), evt2.getLoggerName());
@@ -100,7 +100,7 @@ public class Log4jLogEventTest {
         final Level NULL_LEVEL = null;
         final Log4jLogEvent evt = new Log4jLogEvent("some.test", marker, "",
                 NULL_LEVEL, new SimpleMessage("abc"), t);
-        assertEquals(FixedTimeClock.FIXED_TIME, evt.getMillis());
+        assertEquals(FixedTimeClock.FIXED_TIME, evt.getTimeMillis());
         
     }
 }

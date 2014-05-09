@@ -63,7 +63,7 @@ public final class TimeBasedTriggeringPolicy implements TriggeringPolicy {
         if (manager.getFileSize() == 0) {
             return false;
         }
-        final long now = event.getMillis();
+        final long now = event.getTimeMillis();
         if (now > nextRollover) {
             nextRollover = manager.getPatternProcessor().getNextTime(now, interval, modulate);
             return true;

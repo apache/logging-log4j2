@@ -32,7 +32,7 @@ public class TestRewritePolicy implements RewritePolicy {
 
         return new Log4jLogEvent(source.getLoggerName(), source.getMarker(), source.getFQCN(), source.getLevel(),
             source.getMessage(), source.getThrown(), source.getContextMap(), source.getContextStack(),
-            source.getThreadName(), source.getSource(), source.getMillis());
+            source.getThreadName(), source.getSource(), source.getTimeMillis());
     }
 
     @PluginFactory

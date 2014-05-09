@@ -168,12 +168,12 @@ public class PatternLayoutTest {
         final LogEvent event1 = new Log4jLogEvent(this.getClass().getName(), null,
                 "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world 1!"), null);
         final byte[] result1 = layout.toByteArray(event1);
-        assertEquals(event1.getMillis() + " Hello, world 1!", new String(result1));
+        assertEquals(event1.getTimeMillis() + " Hello, world 1!", new String(result1));
         // System.out.println("event1=" + event1.getMillis());
         final LogEvent event2 = new Log4jLogEvent(this.getClass().getName(), null,
                 "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world 2!"), null);
         final byte[] result2 = layout.toByteArray(event2);
-        assertEquals(event2.getMillis() + " Hello, world 2!", new String(result2));
+        assertEquals(event2.getTimeMillis() + " Hello, world 2!", new String(result2));
         // System.out.println("event2=" + event2.getMillis());
     }
 
@@ -185,13 +185,13 @@ public class PatternLayoutTest {
         final LogEvent event1 = new Log4jLogEvent(this.getClass().getName(), null,
                 "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world 1!"), null);
         final byte[] result1 = layout.toByteArray(event1);
-        assertEquals(event1.getMillis() / 1000 + " Hello, world 1!", new String(result1));
-        System.out.println("event1=" + event1.getMillis() / 1000);
+        assertEquals(event1.getTimeMillis() / 1000 + " Hello, world 1!", new String(result1));
+        System.out.println("event1=" + event1.getTimeMillis() / 1000);
         final LogEvent event2 = new Log4jLogEvent(this.getClass().getName(), null,
                 "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world 2!"), null);
         final byte[] result2 = layout.toByteArray(event2);
-        assertEquals(event2.getMillis() / 1000 + " Hello, world 2!", new String(result2));
-        System.out.println("event2=" + event2.getMillis() / 1000);
+        assertEquals(event2.getTimeMillis() / 1000 + " Hello, world 2!", new String(result2));
+        System.out.println("event2=" + event2.getTimeMillis() / 1000);
     }
 
     @Test
@@ -202,13 +202,13 @@ public class PatternLayoutTest {
         final LogEvent event1 = new Log4jLogEvent(this.getClass().getName(), null,
                 "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world 1!"), null);
         final byte[] result1 = layout.toByteArray(event1);
-        assertEquals(event1.getMillis() + " Hello, world 1!", new String(result1));
-        System.out.println("event1=" + event1.getMillis());
+        assertEquals(event1.getTimeMillis() + " Hello, world 1!", new String(result1));
+        System.out.println("event1=" + event1.getTimeMillis());
         final LogEvent event2 = new Log4jLogEvent(this.getClass().getName(), null,
                 "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world 2!"), null);
         final byte[] result2 = layout.toByteArray(event2);
-        assertEquals(event2.getMillis() + " Hello, world 2!", new String(result2));
-        System.out.println("event2=" + event2.getMillis());
+        assertEquals(event2.getTimeMillis() + " Hello, world 2!", new String(result2));
+        System.out.println("event2=" + event2.getTimeMillis());
     }
 
     @Test

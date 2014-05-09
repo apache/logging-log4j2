@@ -235,7 +235,7 @@ public class Log4jLogEvent implements LogEvent {
      * @return The time the event occurred.
      */
     @Override
-    public long getMillis() {
+    public long getTimeMillis() {
         return timestamp;
     }
 
