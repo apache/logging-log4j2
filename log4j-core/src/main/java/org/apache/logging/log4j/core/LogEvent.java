@@ -23,6 +23,7 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.Message;
 
 /**
@@ -104,10 +105,19 @@ public interface LogEvent extends Serializable {
 
     /**
      * Gets throwable associated with logging request.
+     * <p>
+     * Convenience method for {@code ThrowableProxy.getThrowable();}
      * 
      * @return throwable, may be null.
      */
     Throwable getThrown();
+
+    /**
+     * Gets throwable proxy associated with logging request.
+     * 
+     * @return throwable, may be null.
+     */
+    ThrowableProxy getThrownProxy();
 
     /**
      * Returns {@code true} if this event is the last one in a batch, {@code false} otherwise. Used by asynchronous

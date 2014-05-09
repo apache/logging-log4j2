@@ -26,7 +26,9 @@ import javax.persistence.Transient;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.AbstractLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.Message;
 
 /**
@@ -253,82 +255,7 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
      * A no-op log event class to prevent {@code NullPointerException}s. O/RMs tend to create instances of entities in
      * order to "play around" with them.
      */
-    private static class NullLogEvent implements LogEvent {
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public Level getLevel() {
-            return null;
-        }
-
-        @Override
-        public String getLoggerName() {
-            return null;
-        }
-
-        @Override
-        public StackTraceElement getSource() {
-            return null;
-        }
-
-        @Override
-        public Message getMessage() {
-            return null;
-        }
-
-        @Override
-        public Marker getMarker() {
-            return null;
-        }
-
-        @Override
-        public String getThreadName() {
-            return null;
-        }
-
-        @Override
-        public long getTimeMillis() {
-            return 0;
-        }
-
-        @Override
-        public Throwable getThrown() {
-            return null;
-        }
-
-        @Override
-        public Map<String, String> getContextMap() {
-            return null;
-        }
-
-        @Override
-        public ThreadContext.ContextStack getContextStack() {
-            return null;
-        }
-
-        @Override
-        public String getLoggerFQCN() {
-            return null;
-        }
-
-        @Override
-        public boolean isIncludeLocation() {
-            return false;
-        }
-
-        @Override
-        public void setIncludeLocation(final boolean locationRequired) {
-
-        }
-
-        @Override
-        public boolean isEndOfBatch() {
-            return false;
-        }
-
-        @Override
-        public void setEndOfBatch(final boolean endOfBatch) {
-
-        }
+    private static class NullLogEvent extends AbstractLogEvent {
+    	// Inherits everything
     }
 }

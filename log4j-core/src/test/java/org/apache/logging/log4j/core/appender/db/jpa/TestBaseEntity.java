@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.appender.db.jpa;
 
 import java.util.Date;
 import java.util.Map;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -37,6 +38,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.db.jpa.converter.LevelAttributeConverter;
 import org.apache.logging.log4j.core.appender.db.jpa.converter.MessageAttributeConverter;
 import org.apache.logging.log4j.core.appender.db.jpa.converter.ThrowableAttributeConverter;
+import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.Message;
 
 @Entity
@@ -126,6 +128,12 @@ public class TestBaseEntity extends AbstractLogEventWrapperEntity {
     @Column(name = "exception")
     public Throwable getThrown() {
         return this.getWrappedEvent().getThrown();
+    }
+
+    @Override
+    @Transient
+    public ThrowableProxy getThrownProxy() {
+        return this.getWrappedEvent().getThrownProxy();
     }
 
     @Override

@@ -32,6 +32,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.helpers.Patterns;
 import org.apache.logging.log4j.core.helpers.UUIDUtil;
+import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataId;
@@ -272,6 +273,15 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
     @Override
     public Throwable getThrown() {
         return event.getThrown();
+    }
+
+    /**
+     * Returns the Throwable associated with the event, if any.
+     * @return the Throwable.
+     */
+    @Override
+    public ThrowableProxy getThrownProxy() {
+        return event.getThrownProxy();
     }
 
     /**
