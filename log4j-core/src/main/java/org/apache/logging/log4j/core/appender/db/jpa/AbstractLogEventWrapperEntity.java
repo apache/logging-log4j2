@@ -171,7 +171,7 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
      * @param millis Ignored.
      */
     @SuppressWarnings("unused")
-    public void setMillis(final long millis) {
+    public void setTimeMillis(final long millis) {
         // this entity is write-only
     }
 
@@ -287,7 +287,7 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
         }
 
         @Override
-        public long getMillis() {
+        public long getTimeMillis() {
             return 0;
         }
 

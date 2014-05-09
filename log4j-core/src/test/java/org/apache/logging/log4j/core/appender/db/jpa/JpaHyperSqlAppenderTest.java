@@ -47,7 +47,7 @@ public class JpaHyperSqlAppenderTest extends AbstractJpaAppenderTest {
 
         statement = connection.createStatement();
         statement.executeUpdate("CREATE TABLE jpaBasicLogEntry ( " +
-                "id INTEGER IDENTITY, millis BIGINT, level VARCHAR(10), loggerName VARCHAR(255), " +
+                "id INTEGER IDENTITY, timemillis BIGINT, level VARCHAR(10), loggerName VARCHAR(255), " +
                 "message VARCHAR(1024), thrown VARCHAR(1048576), contextMapJson VARCHAR(1048576)," +
                 "fqcn VARCHAR(1024), contextStack VARCHAR(1048576), marker VARCHAR(255), source VARCHAR(2048)," +
                 "threadName VARCHAR(255)" +

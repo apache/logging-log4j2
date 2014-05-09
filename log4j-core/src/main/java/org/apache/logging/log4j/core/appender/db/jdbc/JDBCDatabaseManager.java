@@ -90,7 +90,7 @@ public final class JDBCDatabaseManager extends AbstractDatabaseManager {
             int i = 1;
             for (final Column column : this.columns) {
                 if (column.isEventTimestamp) {
-                    this.statement.setTimestamp(i++, new Timestamp(event.getMillis()));
+                    this.statement.setTimestamp(i++, new Timestamp(event.getTimeMillis()));
                 } else {
                     if (column.isClob) {
                         reader = new StringReader(column.layout.toSerializable(event));

@@ -122,7 +122,7 @@ public final class HTMLLayout extends AbstractStringLayout {
         sbuf.append(Constants.LINE_SEP).append("<tr>").append(Constants.LINE_SEP);
 
         sbuf.append("<td>");
-        sbuf.append(event.getMillis() - jvmStartTime);
+        sbuf.append(event.getTimeMillis() - jvmStartTime);
         sbuf.append("</td>").append(Constants.LINE_SEP);
 
         final String escapedThread = Transform.escapeHtmlTags(event.getThreadName());

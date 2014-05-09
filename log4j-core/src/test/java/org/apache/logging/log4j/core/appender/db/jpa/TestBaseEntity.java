@@ -69,7 +69,7 @@ public class TestBaseEntity extends AbstractLogEventWrapperEntity {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "eventDate")
     public Date getEventDate() {
-        return new Date(this.getMillis());
+        return new Date(this.getTimeMillis());
     }
 
     public void setEventDate(final Date date) {
@@ -117,8 +117,8 @@ public class TestBaseEntity extends AbstractLogEventWrapperEntity {
 
     @Override
     @Transient
-    public long getMillis() {
-        return this.getWrappedEvent().getMillis();
+    public long getTimeMillis() {
+        return this.getWrappedEvent().getTimeMillis();
     }
 
     @Override

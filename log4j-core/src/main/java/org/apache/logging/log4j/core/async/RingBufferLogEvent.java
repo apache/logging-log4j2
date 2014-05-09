@@ -183,7 +183,7 @@ public class RingBufferLogEvent implements LogEvent {
     }
 
     @Override
-    public long getMillis() {
+    public long getTimeMillis() {
         Message msg = getMessage();
         if (msg instanceof TimestampMessage) { // LOG4J2-455
             return ((TimestampMessage) msg).getTimestamp();

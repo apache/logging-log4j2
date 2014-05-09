@@ -87,7 +87,7 @@ public class RingBufferLogEventTest {
         long currentTimeMillis = 123;
         evt.setValues(null, loggerName, marker, fqcn, level, data, t, map,
                 contextStack, threadName, location, currentTimeMillis);
-        assertEquals(123, evt.getMillis());
+        assertEquals(123, evt.getTimeMillis());
     }
 
     static class TimeMsg implements Message, TimestampMessage {
@@ -142,7 +142,7 @@ public class RingBufferLogEventTest {
         long currentTimeMillis = 123;
         evt.setValues(null, loggerName, marker, fqcn, level, data, t, map,
                 contextStack, threadName, location, currentTimeMillis);
-        assertEquals(567, evt.getMillis());
+        assertEquals(567, evt.getTimeMillis());
     }
 
 }

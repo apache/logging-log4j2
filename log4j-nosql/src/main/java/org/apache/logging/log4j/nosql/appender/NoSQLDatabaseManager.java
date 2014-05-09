@@ -101,8 +101,8 @@ public final class NoSQLDatabaseManager<W> extends AbstractDatabaseManager {
         }
 
         entity.set("threadName", event.getThreadName());
-        entity.set("millis", event.getMillis());
-        entity.set("date", new java.util.Date(event.getMillis()));
+        entity.set("millis", event.getTimeMillis());
+        entity.set("date", new java.util.Date(event.getTimeMillis()));
 
         @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
         Throwable thrown = event.getThrown();

@@ -81,7 +81,7 @@ public class SyslogLayout extends AbstractStringLayout {
         buf.append('<');
         buf.append(Priority.getPriority(facility, event.getLevel()));
         buf.append('>');
-        addDate(event.getMillis(), buf);
+        addDate(event.getTimeMillis(), buf);
         buf.append(' ');
         buf.append(localHostname);
         buf.append(' ');

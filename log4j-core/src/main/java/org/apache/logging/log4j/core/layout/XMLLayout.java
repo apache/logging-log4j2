@@ -137,7 +137,7 @@ public class XMLLayout extends AbstractStringLayout {
         }
         buf.append(Transform.escapeHtmlTags(name));
         buf.append("\" timestamp=\"");
-        buf.append(event.getMillis());
+        buf.append(event.getTimeMillis());
         buf.append("\" level=\"");
         buf.append(Transform.escapeHtmlTags(String.valueOf(event.getLevel())));
         buf.append("\" thread=\"");

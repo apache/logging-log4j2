@@ -85,7 +85,7 @@ public interface LogEvent extends Serializable {
      * @return milliseconds since midnight, January 1, 1970 UTC.
      * @see java.lang.System#currentTimeMillis()
      */
-    long getMillis();
+    long getTimeMillis();
 
     /**
      * Gets the source of logging request.

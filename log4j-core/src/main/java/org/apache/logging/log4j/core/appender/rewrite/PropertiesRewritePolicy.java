@@ -72,7 +72,7 @@ public final class PropertiesRewritePolicy implements RewritePolicy {
 
         return new Log4jLogEvent(source.getLoggerName(), source.getMarker(), source.getFQCN(), source.getLevel(),
             source.getMessage(), source.getThrown(), props, source.getContextStack(), source.getThreadName(),
-            source.getSource(), source.getMillis());
+            source.getSource(), source.getTimeMillis());
     }
 
     @Override

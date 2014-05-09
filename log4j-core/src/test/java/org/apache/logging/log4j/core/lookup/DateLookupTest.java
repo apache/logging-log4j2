@@ -80,7 +80,7 @@ public class DateLookupTest {
         }
 
         @Override
-        public long getMillis() {
+        public long getTimeMillis() {
             final Calendar cal = Calendar.getInstance();
             cal.set(2011, 11, 30, 10, 56, 35);
             return cal.getTimeInMillis();

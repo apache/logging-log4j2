@@ -82,11 +82,11 @@ public final class MapRewritePolicy implements RewritePolicy {
             Log4jLogEvent event = (Log4jLogEvent) source;
             return Log4jLogEvent.createEvent(event.getLoggerName(), event.getMarker(), event.getFQCN(),
                 event.getLevel(), message, event.getThrownProxy(), event.getContextMap(), event.getContextStack(),
-                event.getThreadName(), event.getSource(), event.getMillis());
+                event.getThreadName(), event.getSource(), event.getTimeMillis());
         }
         return new Log4jLogEvent(source.getLoggerName(), source.getMarker(), source.getFQCN(), source.getLevel(),
             message, source.getThrown(), source.getContextMap(), source.getContextStack(), source.getThreadName(),
-            source.getSource(), source.getMillis());
+            source.getSource(), source.getTimeMillis());
     }
 
     /**

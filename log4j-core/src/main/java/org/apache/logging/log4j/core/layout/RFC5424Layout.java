@@ -261,7 +261,7 @@ public class RFC5424Layout extends AbstractStringLayout {
     public String toSerializable(final LogEvent event) {
         final StringBuilder buf = new StringBuilder();
         appendPriority(buf, event.getLevel());
-        appendTimestamp(buf, event.getMillis());
+        appendTimestamp(buf, event.getTimeMillis());
         appendSpace(buf);
         appendHostName(buf);
         appendSpace(buf);

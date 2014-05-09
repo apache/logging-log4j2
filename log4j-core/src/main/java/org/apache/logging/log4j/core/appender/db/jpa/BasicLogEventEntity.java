@@ -162,8 +162,8 @@ public abstract class BasicLogEventEntity extends AbstractLogEventWrapperEntity 
      */
     @Override
     @Basic
-    public long getMillis() {
-        return this.getWrappedEvent().getMillis();
+    public long getTimeMillis() {
+        return this.getWrappedEvent().getTimeMillis();
     }
 
     /**
