@@ -59,8 +59,7 @@ public class RingBufferLogEvent implements LogEvent {
 	private String fqcn;
 	private Level level;
 	private Message message;
-	// TODO: Need to track a ThrowableProxy instead of a Throwable.
-	private Throwable thrown;
+	private ThrowableProxy thrownProxy;
 	private Map<String, String> contextMap;
 	private ContextStack contextStack;
 	private String threadName;
@@ -71,7 +70,7 @@ public class RingBufferLogEvent implements LogEvent {
 
 	public void setValues(final AsyncLogger asyncLogger,
 			final String loggerName, final Marker marker, final String fqcn,
-			final Level level, final Message data, final Throwable t,
+			final Level level, final Message data, final ThrowableProxy throwableProxy,
 			final Map<String, String> map, final ContextStack contextStack,
 			final String threadName, final StackTraceElement location,
 			final long currentTimeMillis) {
@@ -81,7 +80,7 @@ public class RingBufferLogEvent implements LogEvent {
 		this.fqcn = fqcn;
 		this.level = level;
 		this.message = data;
-		this.thrown = t;
+		this.thrownProxy = throwableProxy;
 		this.contextMap = map;
 		this.contextStack = contextStack;
 		this.threadName = threadName;
@@ -162,12 +161,12 @@ public class RingBufferLogEvent implements LogEvent {
 
 	@Override
 	public Throwable getThrown() {
-		return thrown;
+		return thrownProxy == null ? null : thrownProxy.getThrowable();
 	}
 
 	@Override
 	public ThrowableProxy getThrownProxy() {
-		return new ThrowableProxy(this.thrown);
+		return this.thrownProxy;
 	}
 
 	@Override

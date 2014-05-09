@@ -24,6 +24,7 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
+import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.TimestampMessage;
 import org.junit.Test;
@@ -41,7 +42,7 @@ public class RingBufferLogEventTest {
         String fqcn = null;
         Level level = null;
         Message data = null;
-        Throwable t = null;
+        ThrowableProxy t = null;
         Map<String, String> map = null;
         ContextStack contextStack = null;
         String threadName = null;
@@ -60,7 +61,7 @@ public class RingBufferLogEventTest {
         String fqcn = null;
         Level level = null;
         Message data = null;
-        Throwable t = null;
+        ThrowableProxy t = null;
         Map<String, String> map = null;
         ContextStack contextStack = null;
         String threadName = null;
@@ -79,7 +80,7 @@ public class RingBufferLogEventTest {
         String fqcn = null;
         Level level = null;
         Message data = null;
-        Throwable t = null;
+        ThrowableProxy t = null;
         Map<String, String> map = null;
         ContextStack contextStack = null;
         String threadName = null;
@@ -134,7 +135,7 @@ public class RingBufferLogEventTest {
         String fqcn = null;
         Level level = null;
         Message data = new TimeMsg("", 567);
-        Throwable t = null;
+        ThrowableProxy t = null;
         Map<String, String> map = null;
         ContextStack contextStack = null;
         String threadName = null;

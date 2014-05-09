@@ -21,6 +21,7 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
+import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.Message;
 
 import com.lmax.disruptor.EventTranslator;
@@ -40,7 +41,7 @@ public class RingBufferLogEventTranslator implements
     private String fqcn;
     private Level level;
     private Message message;
-    private Throwable thrown;
+    private ThrowableProxy thrownProxy;
     private Map<String, String> contextMap;
     private ContextStack contextStack;
     private String threadName;
@@ -51,7 +52,7 @@ public class RingBufferLogEventTranslator implements
     @Override
     public void translateTo(final RingBufferLogEvent event, final long sequence) {
         event.setValues(asyncLogger, loggerName, marker, fqcn, level, message,
-                thrown, contextMap, contextStack, threadName, location,
+                thrownProxy, contextMap, contextStack, threadName, location,
                 currentTimeMillis);
         clear();
     }
@@ -78,7 +79,7 @@ public class RingBufferLogEventTranslator implements
 
     public void setValues(final AsyncLogger asyncLogger, final String loggerName,
             final Marker marker, final String fqcn, final Level level, final Message message,
-            final Throwable thrown, final Map<String, String> contextMap,
+            final ThrowableProxy thrownProxy, final Map<String, String> contextMap,
             final ContextStack contextStack, final String threadName,
             final StackTraceElement location, final long currentTimeMillis) {
         this.asyncLogger = asyncLogger;
@@ -87,7 +88,7 @@ public class RingBufferLogEventTranslator implements
         this.fqcn = fqcn;
         this.level = level;
         this.message = message;
-        this.thrown = thrown;
+        this.thrownProxy = thrownProxy;
         this.contextMap = contextMap;
         this.contextStack = contextStack;
         this.threadName = threadName;
