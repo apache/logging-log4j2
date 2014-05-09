@@ -17,9 +17,11 @@
 package org.apache.logging.log4j.core.appender.db.jpa;
 
 import java.util.Map;
+
 import javax.persistence.Basic;
 import javax.persistence.Convert;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
@@ -32,6 +34,7 @@ import org.apache.logging.log4j.core.appender.db.jpa.converter.MarkerAttributeCo
 import org.apache.logging.log4j.core.appender.db.jpa.converter.MessageAttributeConverter;
 import org.apache.logging.log4j.core.appender.db.jpa.converter.StackTraceElementAttributeConverter;
 import org.apache.logging.log4j.core.appender.db.jpa.converter.ThrowableAttributeConverter;
+import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.Message;
 
 /**
@@ -176,6 +179,18 @@ public abstract class BasicLogEventEntity extends AbstractLogEventWrapperEntity 
     @Convert(converter = ThrowableAttributeConverter.class)
     public Throwable getThrown() {
         return this.getWrappedEvent().getThrown();
+    }
+
+    /**
+     * Gets the exception logged. Annotated with {@code @Convert(converter = ThrowableAttributeConverter.class)}.
+     *
+     * @return the exception logged.
+     * @see ThrowableAttributeConverter
+     */
+    @Override
+    @Transient
+    public ThrowableProxy getThrownProxy() {
+        return this.getWrappedEvent().getThrownProxy();
     }
 
     /**
