@@ -49,7 +49,7 @@ public interface LogEvent extends Serializable {
      * 
      * @return The fully qualified class name of the caller.
      */
-    String getFQCN();
+    String getLoggerFQCN();
 
     /**
      * Gets the level.

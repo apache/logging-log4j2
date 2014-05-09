@@ -102,7 +102,7 @@ public class DateLookupTest {
         }
 
         @Override
-        public String getFQCN() {
+        public String getLoggerFQCN() {
             return null;
         }
 
