@@ -30,6 +30,7 @@ import org.apache.logging.log4j.core.helpers.Clock;
 import org.apache.logging.log4j.core.helpers.ClockFactory;
 import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
@@ -224,7 +225,7 @@ public class AsyncLogger extends Logger {
     }
 
     @Override
-    public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message, final Throwable t) {
+    public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message, final Throwable thrown) {
         Info info = threadlocalInfo.get();
         if (info == null) {
             info = new Info(new RingBufferLogEventTranslator(), Thread.currentThread().getName(), false);
@@ -235,11 +236,13 @@ public class AsyncLogger extends Logger {
         // being logged calls Logger.log() from its toString() method
         if (info.isAppenderThread && disruptor.getRingBuffer().remainingCapacity() == 0) {
             // bypass RingBuffer and invoke Appender directly
-            config.loggerConfig.log(getName(), fqcn, marker, level, message, t);
+            config.loggerConfig.log(getName(), fqcn, marker, level, message, thrown);
             return;
         }
         final boolean includeLocation = config.loggerConfig.isIncludeLocation();
-        info.translator.setValues(this, getName(), marker, fqcn, level, message, t, //
+        info.translator.setValues(this, getName(), marker, fqcn, level, message, //
+                // thrown proxy or null
+                thrown == null ? null : new ThrowableProxy(thrown), //
 
                 // config properties are taken care of in the EventHandler
                 // thread in the #actualAsyncLog method
