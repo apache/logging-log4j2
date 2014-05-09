@@ -271,7 +271,7 @@ public class Log4jLogEvent implements LogEvent {
      * @return the fully qualified class name of the class that is performing logging.
      */
     @Override
-    public String getFQCN() {
+    public String getLoggerFQCN() {
         return fqcnOfLogger;
     }
 

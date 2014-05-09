@@ -211,7 +211,7 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
      * @param fqcn Ignored.
      */
     @SuppressWarnings("unused")
-    public void setFQCN(final String fqcn) {
+    public void setLoggerFQCN(final String fqcn) {
         // this entity is write-only
     }
 
@@ -307,7 +307,7 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
         }
 
         @Override
-        public String getFQCN() {
+        public String getLoggerFQCN() {
             return null;
         }
 

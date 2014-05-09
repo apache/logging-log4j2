@@ -198,8 +198,8 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
      * @return the FQCN String.
      */
     @Override
-    public String getFQCN() {
-        return event.getFQCN();
+    public String getLoggerFQCN() {
+        return event.getLoggerFQCN();
     }
 
     /**
