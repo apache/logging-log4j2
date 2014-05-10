@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="2.0-rc2" date="2014-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-623" dev="rgoers" type="fix">
+        Generate MDC properties as a JSON map in JSONLayout.
+      </action>
       <action issue="LOG4J2-566" dev="rpopma" type="update" due-to="Luigi Alice">
         Made RollingRandomAccessFileAppender buffer size configurable.
       </action>
