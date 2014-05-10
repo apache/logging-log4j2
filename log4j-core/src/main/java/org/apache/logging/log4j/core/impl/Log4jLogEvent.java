@@ -56,6 +56,10 @@ public class Log4jLogEvent implements LogEvent {
     private boolean includeLocation;
     private boolean endOfBatch = false;
 
+    public Log4jLogEvent() {
+        this(clock.currentTimeMillis());
+    }
+
     /**
      *
      */
