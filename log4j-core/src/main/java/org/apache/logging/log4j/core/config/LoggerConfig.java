@@ -63,7 +63,6 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 @Plugin(name = "logger", category = "Core", printObject = true)
 public class LoggerConfig extends AbstractFilterable {
 
-    protected static final Logger LOGGER = StatusLogger.getLogger();
     private static final int MAX_RETRIES = 3;
     private static LogEventFactory LOG_EVENT_FACTORY = null;
 
