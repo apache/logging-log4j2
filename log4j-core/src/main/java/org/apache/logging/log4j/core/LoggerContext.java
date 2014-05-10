@@ -45,6 +45,7 @@ import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLoggerProvider;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * The LoggerContext is the anchor for the logging system. It maintains a list
@@ -55,11 +56,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext, ConfigurationListener, LifeCycle {
 
-    static {
-        USING_LOG4J_WEB = Loader.isClassAvailable("org.apache.logging.log4j.web.Log4jWebSupport");
-    }
-
-    private static final boolean USING_LOG4J_WEB;
+    private static final boolean USING_LOG4J_WEB = PropertiesUtil.getProperties().getBooleanProperty("log4j-web", false);
 
     public static final String PROPERTY_CONFIG = "config";
     private static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
