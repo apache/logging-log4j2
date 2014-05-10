@@ -19,15 +19,15 @@ package org.apache.logging.log4j.web;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 /**
  *
  */
-public class WebPropertyTest {
+public class ShutdownPropertyTest {
 
     @Test
     public void testWebProperty() {
-        assertTrue(PropertiesUtil.getProperties().getBooleanProperty("log4j-web", false));
+        assertFalse(PropertiesUtil.getProperties().getBooleanProperty("log4j.shutdownHookEnabled", true));
     }
 }

@@ -55,7 +55,8 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  */
 public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext, ConfigurationListener, LifeCycle {
 
-    private static final boolean USING_LOG4J_WEB = PropertiesUtil.getProperties().getBooleanProperty("log4j-web", false);
+    private static final boolean SHUTDOWN_HOOK_ENABLED =
+        PropertiesUtil.getProperties().getBooleanProperty("log4j.shutdownHookEnabled", true);
 
     public static final String PROPERTY_CONFIG = "config";
     private static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
@@ -189,7 +190,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     }
 
     private void setUpShutdownHook() {
-        if (config.isShutdownHookEnabled() && !USING_LOG4J_WEB) {
+        if (config.isShutdownHookEnabled() && SHUTDOWN_HOOK_ENABLED) {
             LOGGER.debug(SHUTDOWN_HOOK, "Shutdown hook enabled. Registering a new one.");
             shutdownThread = new SoftReference<Thread>(
                     new Thread(new ShutdownThread(this), "log4j-shutdown")
