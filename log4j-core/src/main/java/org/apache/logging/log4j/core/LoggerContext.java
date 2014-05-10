@@ -39,7 +39,6 @@ import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.helpers.Assert;
-import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.core.helpers.NetUtils;
 import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.message.MessageFactory;
