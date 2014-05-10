@@ -253,34 +253,25 @@ public class JSONLayout extends AbstractStringLayout {
             buf.append(',');
             buf.append(this.eol);
             buf.append(this.indent2);
-            buf.append("\"Properties\":[");
-            buf.append(this.eol);
+            buf.append("\"Properties\": {");
             final Set<Entry<String, String>> entrySet = event.getContextMap().entrySet();
             int i = 1;
             for (final Map.Entry<String, String> entry : entrySet) {
-                buf.append(this.indent3);
-                buf.append('{');
                 buf.append(this.eol);
-                buf.append(this.indent4);
-                buf.append("\"name\":\"");
+                buf.append(this.indent3);
+                buf.append("\"");
                 buf.append(Transform.escapeJsonControlCharacters(entry.getKey()));
-                buf.append("\",");
-                buf.append(this.eol);
-                buf.append(this.indent4);
-                buf.append("\"value\":\"");
+                buf.append("\": \"");
                 buf.append(Transform.escapeJsonControlCharacters(String.valueOf(entry.getValue())));
-                buf.append('"');
-                buf.append(this.eol);
-                buf.append(this.indent3);
-                buf.append('}');
+                buf.append("\"}");
                 if (i < entrySet.size()) {
                     buf.append(',');
                 }
-                buf.append(this.eol);
                 i++;
             }
+            buf.append(this.eol);
             buf.append(this.indent2);
-            buf.append(']');
+            buf.append('}');
         }
 
         buf.append(this.eol);

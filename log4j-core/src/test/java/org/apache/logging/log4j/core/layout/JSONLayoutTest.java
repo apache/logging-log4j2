@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.layout;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 import java.util.Map;
@@ -129,6 +130,8 @@ public class JSONLayoutTest {
         this.checkAt("\"logger\":\"root\",", 2, list);
         this.checkAt("\"level\":\"DEBUG\",", 4, list);
         this.checkAt("\"message\":\"starting mdc pattern test\",", 6, list);
+        this.checkAt("\"Properties\": {", 41, list);
+        this.checkAt("\"key2\": \"value2\"}", list, 42, 43);
         for (Appender app : appenders.values()) {
             root.addAppender(app);
         }
@@ -167,7 +170,17 @@ public class JSONLayoutTest {
     }
 
     private void checkAt(String expected, int lineIndex, List<String> list) {
-        final String trimedLine = list.get(lineIndex).trim();
-        assertTrue("Incorrect line index " + lineIndex + ": \"" + trimedLine + '"', trimedLine.equals(expected));
+        final String trimmedLine = list.get(lineIndex).trim();
+        assertTrue("Incorrect line index " + lineIndex + ": \"" + trimmedLine + '"', trimmedLine.equals(expected));
+    }
+
+    private void checkAt(String expected, List<String> list, int... lineIndexes) {
+        for (int lineIndex : lineIndexes) {
+            final String trimmedLine = list.get(lineIndex).trim();
+            if (trimmedLine.startsWith(expected)) {
+                return;
+            }
+        }
+        fail("Incorrect lines. Expected: " + expected);
     }
 }
