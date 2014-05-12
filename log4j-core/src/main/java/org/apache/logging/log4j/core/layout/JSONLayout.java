@@ -263,7 +263,7 @@ public class JSONLayout extends AbstractStringLayout {
                 buf.append(Transform.escapeJsonControlCharacters(entry.getKey()));
                 buf.append("\": \"");
                 buf.append(Transform.escapeJsonControlCharacters(String.valueOf(entry.getValue())));
-                buf.append("\"}");
+                buf.append("\"");
                 if (i < entrySet.size()) {
                     buf.append(',');
                 }
