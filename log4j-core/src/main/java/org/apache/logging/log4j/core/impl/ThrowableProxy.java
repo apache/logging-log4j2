@@ -98,6 +98,19 @@ public class ThrowableProxy implements Serializable {
     }
 
     /**
+     * For JSON and XML IO via Jackson.
+     */
+    @SuppressWarnings("unused")
+    private ThrowableProxy() {
+        this.throwable = null;
+        this.name = null;
+        this.stackTracePackages = null;
+        this.causeProxy = null;
+        this.message = null;
+        this.localizedMessage = null;
+    }
+
+    /**
      * Construct the wrapper for the Throwable that includes packaging data.
      * @param throwable The Throwable to wrap.
      */
