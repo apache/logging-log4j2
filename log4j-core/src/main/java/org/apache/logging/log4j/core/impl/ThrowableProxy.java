@@ -61,7 +61,7 @@ public class ThrowableProxy implements Serializable {
 
     private final String name;
 
-    private final StackTracePackageElement[] callerPackageData;
+    private final StackTracePackageElement[] stackTracePackages;
 
     private int commonElementCount;
 
@@ -108,7 +108,7 @@ public class ThrowableProxy implements Serializable {
         this.localizedMessage = throwable.getLocalizedMessage();
         final Map<String, CacheEntry> map = new HashMap<String, CacheEntry>();
         final Stack<Class<?>> stack = getCurrentStack();
-        callerPackageData = resolvePackageData(stack, map, null, throwable.getStackTrace());
+        stackTracePackages = resolvePackageData(stack, map, null, throwable.getStackTrace());
         this.causeProxy = throwable.getCause() == null ? null :
             new ThrowableProxy(throwable, stack, map, throwable.getCause());
         setSuppressed(throwable);
@@ -128,7 +128,7 @@ public class ThrowableProxy implements Serializable {
         this.name = cause.getClass().getName();
         this.message = throwable.getMessage();
         this.localizedMessage = throwable.getLocalizedMessage();
-        callerPackageData = resolvePackageData(stack, map, parent.getStackTrace(), cause.getStackTrace());
+        stackTracePackages = resolvePackageData(stack, map, parent.getStackTrace(), cause.getStackTrace());
         this.causeProxy = cause.getCause() == null ? null :
             new ThrowableProxy(parent, stack, map, cause.getCause());
         setSuppressed(cause);
@@ -171,8 +171,8 @@ public class ThrowableProxy implements Serializable {
      * Return the package data associated with the stack trace.
      * @return The package data associated with the stack trace.
      */
-    public StackTracePackageElement[] getPackageData() {
-        return callerPackageData;
+    public StackTracePackageElement[] getStackTracePackages() {
+        return stackTracePackages;
     }
 
     @Override
@@ -202,7 +202,7 @@ public class ThrowableProxy implements Serializable {
         }
         sb.append(toString());
         sb.append(EOL);
-        formatElements(sb, 0, throwable.getStackTrace(), callerPackageData, packages);
+        formatElements(sb, 0, throwable.getStackTrace(), stackTracePackages, packages);
         return sb.toString();
     }
 
@@ -229,7 +229,7 @@ public class ThrowableProxy implements Serializable {
             sb.append("Wrapped by: ");
         }
         sb.append(cause).append(EOL);
-        formatElements(sb, cause.commonElementCount, cause.getThrowable().getStackTrace(), cause.callerPackageData,
+        formatElements(sb, cause.commonElementCount, cause.getThrowable().getStackTrace(), cause.stackTracePackages,
             packages);
     }
 
@@ -253,7 +253,7 @@ public class ThrowableProxy implements Serializable {
             sb.append(": ").append(throwable.getMessage());
         }
         sb.append(EOL);
-        formatElements(sb, 0, throwable.getStackTrace(), callerPackageData, packages);
+        formatElements(sb, 0, throwable.getStackTrace(), stackTracePackages, packages);
         if (causeProxy != null) {
             formatCause(sb, causeProxy, packages);
         }
@@ -279,7 +279,7 @@ public class ThrowableProxy implements Serializable {
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     private void formatCause(final StringBuilder sb, final ThrowableProxy cause, final List<String> packages) {
         sb.append("Caused by: ").append(cause).append(EOL);
-        formatElements(sb, cause.commonElementCount, cause.getThrowable().getStackTrace(), cause.callerPackageData,
+        formatElements(sb, cause.commonElementCount, cause.getThrowable().getStackTrace(), cause.stackTracePackages,
             packages);
         if (cause.getCauseProxy() != null) {
             formatCause(sb, cause.causeProxy, packages);
