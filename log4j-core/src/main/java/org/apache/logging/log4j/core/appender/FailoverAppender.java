@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Appender;
@@ -56,9 +57,7 @@ public final class FailoverAppender extends AbstractAppender {
 
     private final long intervalMillis;
 
-    private long nextCheckMillis = 0;
-
-    private volatile boolean failure = false;
+    private volatile long nextCheckMillis = 0;
 
     private FailoverAppender(final String name, final Filter filter, final String primary, final String[] failovers,
                              final int intervalMillis, final Configuration config, final boolean ignoreExceptions) {
@@ -106,24 +105,20 @@ public final class FailoverAppender extends AbstractAppender {
             error("FailoverAppender " + getName() + " did not start successfully");
             return;
         }
-        if (!failure) {
+        long localCheckMillis = nextCheckMillis;
+        if (localCheckMillis == 0 || System.currentTimeMillis() > localCheckMillis) {
             callAppender(event);
         } else {
-            final long currentMillis = System.currentTimeMillis();
-            if (currentMillis >= nextCheckMillis) {
-                callAppender(event);
-            } else {
-                failover(event, null);
-            }
+            failover(event, null);
         }
     }
 
     private void callAppender(final LogEvent event) {
         try {
             primary.callAppender(event);
+            nextCheckMillis = 0;
         } catch (final Exception ex) {
             nextCheckMillis = System.currentTimeMillis() + intervalMillis;
-            failure = true;
             failover(event, ex);
         }
     }
