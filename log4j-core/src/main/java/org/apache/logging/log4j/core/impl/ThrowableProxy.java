@@ -46,7 +46,7 @@ public class ThrowableProxy implements Serializable {
 
     private static final Method ADD_SUPPRESSED;
 
-    private final ThrowableProxy proxyCause;
+    private final ThrowableProxy causeProxy;
 
     private final transient Throwable throwable;
 
@@ -98,7 +98,7 @@ public class ThrowableProxy implements Serializable {
         final Map<String, CacheEntry> map = new HashMap<String, CacheEntry>();
         final Stack<Class<?>> stack = getCurrentStack();
         callerPackageData = resolvePackageData(stack, map, null, throwable.getStackTrace());
-        this.proxyCause = throwable.getCause() == null ? null :
+        this.causeProxy = throwable.getCause() == null ? null :
             new ThrowableProxy(throwable, stack, map, throwable.getCause());
         setSuppressed(throwable);
     }
@@ -116,7 +116,7 @@ public class ThrowableProxy implements Serializable {
         this.throwable = cause;
         this.name = cause.getClass().getName();
         callerPackageData = resolvePackageData(stack, map, parent.getStackTrace(), cause.getStackTrace());
-        this.proxyCause = cause.getCause() == null ? null :
+        this.causeProxy = cause.getCause() == null ? null :
             new ThrowableProxy(parent, stack, map, cause.getCause());
         setSuppressed(cause);
     }
@@ -126,7 +126,7 @@ public class ThrowableProxy implements Serializable {
     }
 
     public ThrowableProxy getCause() {
-        return proxyCause;
+        return causeProxy;
     }
 
     /**
@@ -175,8 +175,8 @@ public class ThrowableProxy implements Serializable {
      */
     public String getRootCauseStackTrace(final List<String> packages) {
         final StringBuilder sb = new StringBuilder();
-        if (proxyCause != null) {
-            formatWrapper(sb, proxyCause);
+        if (causeProxy != null) {
+            formatWrapper(sb, causeProxy);
             sb.append("Wrapped by: ");
         }
         sb.append(toString());
@@ -204,7 +204,7 @@ public class ThrowableProxy implements Serializable {
     public void formatWrapper(final StringBuilder sb, final ThrowableProxy cause, final List<String> packages) {
         final Throwable caused = cause.getCause() != null ? cause.getCause().getThrowable() : null;
         if (caused != null) {
-            formatWrapper(sb, cause.proxyCause);
+            formatWrapper(sb, cause.causeProxy);
             sb.append("Wrapped by: ");
         }
         sb.append(cause).append(EOL);
@@ -233,8 +233,8 @@ public class ThrowableProxy implements Serializable {
         }
         sb.append(EOL);
         formatElements(sb, 0, throwable.getStackTrace(), callerPackageData, packages);
-        if (proxyCause != null) {
-            formatCause(sb, proxyCause, packages);
+        if (causeProxy != null) {
+            formatCause(sb, causeProxy, packages);
         }
         return sb.toString();
     }
@@ -261,7 +261,7 @@ public class ThrowableProxy implements Serializable {
         formatElements(sb, cause.commonElementCount, cause.getThrowable().getStackTrace(), cause.callerPackageData,
             packages);
         if (cause.getCause() != null) {
-            formatCause(sb, cause.proxyCause, packages);
+            formatCause(sb, cause.causeProxy, packages);
         }
     }
 
