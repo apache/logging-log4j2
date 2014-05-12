@@ -131,7 +131,7 @@ public class JSONLayoutTest {
         this.checkAt("\"level\":\"DEBUG\",", 4, list);
         this.checkAt("\"message\":\"starting mdc pattern test\",", 6, list);
         this.checkAt("\"Properties\": {", 41, list);
-        this.checkAt("\"key2\": \"value2\"}", list, 42, 43);
+        this.checkAt("\"key2\": \"value2\"", list, 42, 43);
         for (Appender app : appenders.values()) {
             root.addAppender(app);
         }
