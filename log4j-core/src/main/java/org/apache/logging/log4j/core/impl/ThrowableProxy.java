@@ -31,6 +31,11 @@ import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Wraps a Throwable to add packaging information about each stack trace element.
+ * <p>
+ * A proxy is used to represent a throwable that may not exist in a different class loader or JVM. When an application
+ * deserializes a ThrowableProxy, the throwable will not be set, but the throwable's information is preserved in other
+ * fields of the proxy.
+ * </p>
  */
 public class ThrowableProxy implements Serializable {
 
@@ -49,6 +54,10 @@ public class ThrowableProxy implements Serializable {
     private final ThrowableProxy causeProxy;
 
     private final transient Throwable throwable;
+
+    private final String message;
+    
+    private final String localizedMessage;
 
     private final String name;
 
@@ -95,6 +104,8 @@ public class ThrowableProxy implements Serializable {
     public ThrowableProxy(final Throwable throwable) {
         this.throwable = throwable;
         this.name = throwable.getClass().getName();
+        this.message = throwable.getMessage();
+        this.localizedMessage = throwable.getLocalizedMessage();
         final Map<String, CacheEntry> map = new HashMap<String, CacheEntry>();
         final Stack<Class<?>> stack = getCurrentStack();
         callerPackageData = resolvePackageData(stack, map, null, throwable.getStackTrace());
@@ -115,6 +126,8 @@ public class ThrowableProxy implements Serializable {
                            final Throwable cause) {
         this.throwable = cause;
         this.name = cause.getClass().getName();
+        this.message = throwable.getMessage();
+        this.localizedMessage = throwable.getLocalizedMessage();
         callerPackageData = resolvePackageData(stack, map, parent.getStackTrace(), cause.getStackTrace());
         this.causeProxy = cause.getCause() == null ? null :
             new ThrowableProxy(parent, stack, map, cause.getCause());
@@ -127,6 +140,14 @@ public class ThrowableProxy implements Serializable {
 
     public ThrowableProxy getCauseProxy() {
         return causeProxy;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public String getLocalizedMessage() {
+        return localizedMessage;
     }
 
     /**
@@ -156,7 +177,7 @@ public class ThrowableProxy implements Serializable {
 
     @Override
     public String toString() {
-        final String msg = throwable.getMessage();
+        final String msg = this.message;
         return msg != null ? name + ": " + msg : name;
     }
 
