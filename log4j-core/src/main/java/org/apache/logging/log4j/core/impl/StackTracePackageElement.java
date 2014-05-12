@@ -44,6 +44,38 @@ public class StackTracePackageElement implements Serializable {
         this.exact = exact;
     }
 
+@Override
+public boolean equals(Object obj) {
+    if (this == obj) {
+        return true;
+    }
+    if (obj == null) {
+        return false;
+    }
+    if (getClass() != obj.getClass()) {
+        return false;
+    }
+    StackTracePackageElement other = (StackTracePackageElement) obj;
+    if (this.exact != other.exact) {
+        return false;
+    }
+    if (this.location == null) {
+        if (other.location != null) {
+            return false;
+        }
+    } else if (!this.location.equals(other.location)) {
+        return false;
+    }
+    if (this.version == null) {
+        if (other.version != null) {
+            return false;
+        }
+    } else if (!this.version.equals(other.version)) {
+        return false;
+    }
+    return true;
+}
+
     /**
      * Returns the indicator of whether this is an exact match.
      * 
@@ -70,6 +102,16 @@ public class StackTracePackageElement implements Serializable {
     public String getVersion() {
         return version;
     }
+
+    @Override
+public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + (this.exact ? 1231 : 1237);
+    result = prime * result + ((this.location == null) ? 0 : this.location.hashCode());
+    result = prime * result + ((this.version == null) ? 0 : this.version.hashCode());
+    return result;
+}
 
     @Override
     public String toString() {
