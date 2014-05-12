@@ -125,7 +125,7 @@ public class ThrowableProxy implements Serializable {
         return throwable;
     }
 
-    public ThrowableProxy getCause() {
+    public ThrowableProxy getCauseProxy() {
         return causeProxy;
     }
 
@@ -202,7 +202,7 @@ public class ThrowableProxy implements Serializable {
      */
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     public void formatWrapper(final StringBuilder sb, final ThrowableProxy cause, final List<String> packages) {
-        final Throwable caused = cause.getCause() != null ? cause.getCause().getThrowable() : null;
+        final Throwable caused = cause.getCauseProxy() != null ? cause.getCauseProxy().getThrowable() : null;
         if (caused != null) {
             formatWrapper(sb, cause.causeProxy);
             sb.append("Wrapped by: ");
@@ -260,7 +260,7 @@ public class ThrowableProxy implements Serializable {
         sb.append("Caused by: ").append(cause).append(EOL);
         formatElements(sb, cause.commonElementCount, cause.getThrowable().getStackTrace(), cause.callerPackageData,
             packages);
-        if (cause.getCause() != null) {
+        if (cause.getCauseProxy() != null) {
             formatCause(sb, cause.causeProxy, packages);
         }
     }
