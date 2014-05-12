@@ -191,7 +191,7 @@ public class PatternLayoutTest {
                 "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world 2!"), null);
         final byte[] result2 = layout.toByteArray(event2);
         assertEquals(event2.getTimeMillis() / 1000 + " Hello, world 2!", new String(result2));
-        System.out.println("event2=" + event2.getTimeMillis() / 1000);
+        // System.out.println("event2=" + event2.getTimeMillis() / 1000);
     }
 
     @Test
@@ -208,7 +208,7 @@ public class PatternLayoutTest {
                 "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world 2!"), null);
         final byte[] result2 = layout.toByteArray(event2);
         assertEquals(event2.getTimeMillis() + " Hello, world 2!", new String(result2));
-        System.out.println("event2=" + event2.getTimeMillis());
+        // System.out.println("event2=" + event2.getTimeMillis());
     }
 
     @Test
