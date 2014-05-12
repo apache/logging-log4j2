@@ -25,14 +25,15 @@ public class StackTracePackageElement implements Serializable {
 
     private static final long serialVersionUID = -2171069569241280505L;
 
+    private final boolean exact;
+
     private final String location;
 
     private final String version;
 
-    private final boolean isExact;
-
     /**
      * Constructor that takes the location, version, and exact match flag.
+     * 
      * @param location The location of the Class.
      * @param version The version of the component.
      * @param exact if true this is an exact package element.
@@ -40,11 +41,21 @@ public class StackTracePackageElement implements Serializable {
     public StackTracePackageElement(final String location, final String version, final boolean exact) {
         this.location = location;
         this.version = version;
-        this.isExact = exact;
+        this.exact = exact;
+    }
+
+    /**
+     * Returns the indicator of whether this is an exact match.
+     * 
+     * @return true if the location was determined exactly.
+     */
+    public boolean getExact() {
+        return exact;
     }
 
     /**
      * Returns the location of the element.
+     * 
      * @return The location of the element.
      */
     public String getLocation() {
@@ -53,23 +64,16 @@ public class StackTracePackageElement implements Serializable {
 
     /**
      * Returns the version of the element.
+     * 
      * @return the version of the element.
      */
     public String getVersion() {
         return version;
     }
 
-    /**
-     * Returns the indicator of whether this is an exact match.
-     * @return true if the location was determined exactly.
-     */
-    public boolean isExact() {
-        return isExact;
-    }
-
     @Override
     public String toString() {
-        final String exact = isExact ? "" : "~";
-        return exact + '[' + location + ':' + version + ']';
+        final String exactStr = exact ? "" : "~";
+        return exactStr + '[' + location + ':' + version + ']';
     }
 }
