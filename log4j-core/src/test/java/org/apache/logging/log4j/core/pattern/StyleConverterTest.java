@@ -37,7 +37,7 @@ public class StyleConverterTest {
 
     private static final String EXPECTED =
         "\u001B[1;31mERROR\u001B[m \u001B[1;36mLoggerTest\u001B[m o.a.l.l.c.p.StyleConverterTest org.apache.logging.log4j.core.pattern.StyleConverterTest"
-        + Constants.LINE_SEP;
+        + Constants.LINE_SEPARATOR;
 
     @Rule
     public InitialLoggerContext init = new InitialLoggerContext("log4j-style.xml");

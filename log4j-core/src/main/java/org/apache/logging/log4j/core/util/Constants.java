@@ -43,7 +43,7 @@ public final class Constants {
     /**
      * Line separator.
      */
-    public static final String LINE_SEP = PropertiesUtil.getProperties().getStringProperty("line.separator", "\n");
+    public static final String LINE_SEPARATOR = PropertiesUtil.getProperties().getStringProperty("line.separator", "\n");
 
     /**
      * Number of milliseconds in a second.

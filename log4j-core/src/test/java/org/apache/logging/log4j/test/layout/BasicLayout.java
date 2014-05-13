@@ -33,7 +33,7 @@ import org.apache.logging.log4j.core.util.Constants;
 @Plugin(name = "BasicLayout", category = "Core", elementType = "layout", printObject = true)
 public class BasicLayout extends AbstractStringLayout {
 
-    private static final String HEADER = "Header" + Constants.LINE_SEP;
+    private static final String HEADER = "Header" + Constants.LINE_SEPARATOR;
 
     @Override
     public byte[] getHeader() {
@@ -46,7 +46,7 @@ public class BasicLayout extends AbstractStringLayout {
 
     @Override
     public String toSerializable(final LogEvent event) {
-        return event.getMessage().getFormattedMessage() + Constants.LINE_SEP;
+        return event.getMessage().getFormattedMessage() + Constants.LINE_SEPARATOR;
     }
 
     @Override

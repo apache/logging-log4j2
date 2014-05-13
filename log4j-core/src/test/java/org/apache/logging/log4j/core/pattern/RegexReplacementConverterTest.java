@@ -47,6 +47,6 @@ public class RegexReplacementConverterTest {
             options);
         converter.format(event, sb);
         assertEquals("org/apache/logging/log4j/core/pattern/RegexReplacementConverterTest This is a test" +
-            Constants.LINE_SEP, sb.toString());
+            Constants.LINE_SEPARATOR, sb.toString());
     }
 }

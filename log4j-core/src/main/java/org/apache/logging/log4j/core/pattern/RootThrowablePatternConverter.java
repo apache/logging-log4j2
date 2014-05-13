@@ -74,9 +74,9 @@ public final class RootThrowablePatternConverter extends ThrowablePatternConvert
             if (len > 0 && !Character.isWhitespace(toAppendTo.charAt(len - 1))) {
                 toAppendTo.append(' ');
             }
-            if (!options.allLines() || !Constants.LINE_SEP.equals(options.getSeparator())) {
+            if (!options.allLines() || !Constants.LINE_SEPARATOR.equals(options.getSeparator())) {
                 final StringBuilder sb = new StringBuilder();
-                final String[] array = trace.split(Constants.LINE_SEP);
+                final String[] array = trace.split(Constants.LINE_SEPARATOR);
                 final int limit = options.minLines(array.length) - 1;
                 for (int i = 0; i <= limit; ++i) {
                     sb.append(array[i]);

@@ -102,7 +102,7 @@ public class PatternParserTest {
             formatter.format(event, buf);
         }
         final String str = buf.toString();
-        final String expected = "INFO  [PatternParserTest        :96  ] - Hello, world" + Constants.LINE_SEP;
+        final String expected = "INFO  [PatternParserTest        :96  ] - Hello, world" + Constants.LINE_SEPARATOR;
         assertTrue("Expected to end with: " + expected + ". Actual: " + str, str.endsWith(expected));
     }
 
@@ -129,7 +129,7 @@ public class PatternParserTest {
             formatter.format(event, buf);
         }
         final String str = buf.toString();
-        final String expectedEnd = String.format("] %-5s: Hello, world%s\u001B[m", level, Constants.LINE_SEP);
+        final String expectedEnd = String.format("] %-5s: Hello, world%s\u001B[m", level, Constants.LINE_SEPARATOR);
         assertTrue("Expected to start with: " + expectedStart + ". Actual: " + str, str.startsWith(expectedStart));
         assertTrue("Expected to end with: \"" + expectedEnd + "\". Actual: \"" + str, str.endsWith(expectedEnd));
     }
