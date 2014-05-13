@@ -32,7 +32,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.OutputStreamManager;
-import org.apache.logging.log4j.core.helpers.Strings;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Manager of TCP Socket connections.

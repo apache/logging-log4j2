@@ -21,7 +21,7 @@ import javax.persistence.Converter;
 
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
-import org.apache.logging.log4j.core.helpers.Strings;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * A JPA 2.1 attribute converter for {@link Marker}s in {@link org.apache.logging.log4j.core.LogEvent}s. This

@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.lookup;
 
 import java.util.Arrays;
 
-import org.apache.logging.log4j.core.helpers.Strings;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * A matcher class that can be queried to determine if a character array

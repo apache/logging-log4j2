@@ -28,8 +28,8 @@ import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.helpers.NameUtil;
-import org.apache.logging.log4j.core.helpers.Strings;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  *

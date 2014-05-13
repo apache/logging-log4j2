@@ -24,8 +24,8 @@ import javax.persistence.Converter;
 import javax.persistence.PersistenceException;
 
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.helpers.Strings;
 import org.apache.logging.log4j.spi.DefaultThreadContextStack;
+import org.apache.logging.log4j.util.Strings;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
