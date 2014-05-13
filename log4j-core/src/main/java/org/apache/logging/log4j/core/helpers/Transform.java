@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.helpers;
 
+import org.apache.logging.log4j.util.Strings;
+
 
 /**
  * Utility class for transforming strings.
