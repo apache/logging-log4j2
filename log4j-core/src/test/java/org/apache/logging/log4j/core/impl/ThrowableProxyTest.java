@@ -16,17 +16,41 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import org.junit.Assert;
-import org.junit.Test;
-
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
+
+import org.apache.logging.log4j.core.jackson.Log4jJsonObjectMapper;
+import org.junit.Assert;
+import org.junit.Test;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  *
  */
 public class ThrowableProxyTest {
+
+    static class Fixture {
+        @JsonProperty
+        ThrowableProxy proxy = new ThrowableProxy(new IOException("test"));
+    }
+
+    @Test
+    public void testJsonIoContainer() throws IOException {
+        ObjectMapper objectMapper = new Log4jJsonObjectMapper();
+        Fixture expected = new Fixture();
+        final String s = objectMapper.writeValueAsString(expected);
+        Fixture actual = objectMapper.readValue(s, Fixture.class);
+        Assert.assertEquals(expected.proxy.getName(), actual.proxy.getName());
+        Assert.assertEquals(expected.proxy.getMessage(), actual.proxy.getMessage());
+        Assert.assertEquals(expected.proxy.getLocalizedMessage(), actual.proxy.getLocalizedMessage());
+        Assert.assertEquals(expected.proxy.getCommonElementCount(), actual.proxy.getCommonElementCount());
+        Assert.assertArrayEquals(expected.proxy.getExtendedStackTrace(), actual.proxy.getExtendedStackTrace());        
+        Assert.assertEquals(expected.proxy, actual.proxy);
+    }
 
     @Test
     public void testStack() {
@@ -34,8 +58,8 @@ public class ThrowableProxyTest {
         final Stack<Class<?>> stack = new Stack<Class<?>>();
         final Throwable throwable = new IllegalStateException("This is a test");
         final ThrowableProxy proxy = new ThrowableProxy(throwable);
-        final StackTracePackageElement[] callerPackageData = proxy.resolvePackageData(stack, map, null,
-            throwable.getStackTrace());
+        final ExtendedStackTraceElement[] callerPackageData = proxy.toExtendedStackTrace(stack, map, null,
+                throwable.getStackTrace());
         Assert.assertNotNull("No package data returned", callerPackageData);
     }
 }

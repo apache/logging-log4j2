@@ -14,10 +14,11 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.net;
+package org.apache.logging.log4j.core.net.server;
 
-import java.io.ObjectInputStream;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.nio.charset.Charset;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Layout;
@@ -25,24 +26,23 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-public class TcpSerializedSocketServerTest extends AbstractSocketServerTest {
-    private static final String PORT = "8198";
-    private static final int PORT_NUM = Integer.parseInt(PORT);
-    private static TCPSocketServer<ObjectInputStream> tcpSocketServer;
-
+public class UdpXmlSocketServerTest extends AbstractSocketServerTest {
+    private static UDPSocketServer<InputStream> socketServer;
     private static Thread thread;
 
     @BeforeClass
     public static void setupClass() throws Exception {
         ((LoggerContext) LogManager.getContext(false)).reconfigure();
-        tcpSocketServer = TCPSocketServer.createSerializedSocketServer(PORT_NUM);
-        thread = new Thread(tcpSocketServer);
+        // Use a tiny buffer just to test the code, the TCP test uses a large buffer
+        socketServer = new UDPSocketServer<InputStream>(PORT_NUM, new XmlInputStreamLogEventBridge(100,
+                Charset.defaultCharset()));
+        thread = new Thread(socketServer);
         thread.start();
     }
 
     @AfterClass
     public static void tearDownClass() {
-        tcpSocketServer.shutdown();
+        socketServer.shutdown();
         try {
             thread.join();
         } catch (final InterruptedException e) {
@@ -50,13 +50,13 @@ public class TcpSerializedSocketServerTest extends AbstractSocketServerTest {
         }
     }
 
-    public TcpSerializedSocketServerTest() {
-        super("tcp", PORT, false);
+    public UdpXmlSocketServerTest() {
+        super("udp", PORT, true);
     }
 
     @Override
     protected Layout<? extends Serializable> createLayout() {
-        return super.createSerializedLayout();
+        return super.createXmlLayout();
     }
 
 }

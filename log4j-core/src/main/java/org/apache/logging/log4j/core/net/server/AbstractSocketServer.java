@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.net;
+package org.apache.logging.log4j.core.net.server;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,7 +36,8 @@ import org.apache.logging.log4j.core.helpers.Assert;
 /**
  * Abstract socket server for TCP and UDP implementations.
  * 
- * @param <T> The kind of input stream read
+ * @param <T>
+ *            The kind of input stream read
  */
 public abstract class AbstractSocketServer<T extends InputStream> extends LogEventListener {
 
@@ -87,21 +88,23 @@ public abstract class AbstractSocketServer<T extends InputStream> extends LogEve
         }
     }
 
-    protected final Logger logger;
-
     protected static final int MAX_PORT = 65534;
 
     private volatile boolean active = true;
 
-    protected final LogEventInput<T> logEventInput;
+    protected final LogEventBridge<T> logEventInput;
+
+    protected final Logger logger;
 
     /**
      * Creates a new socket server.
      * 
-     * @param port listen to this port
-     * @param logEventInput Use this input to read log events.
+     * @param port
+     *            listen to this port
+     * @param logEventInput
+     *            Use this input to read log events.
      */
-    public AbstractSocketServer(final int port, final LogEventInput<T> logEventInput) {
+    public AbstractSocketServer(final int port, final LogEventBridge<T> logEventInput) {
         this.logger = LogManager.getLogger(this.getClass().getName() + '.' + port);
         this.logEventInput = Assert.requireNonNull(logEventInput, "LogEventInput");
     }

@@ -66,7 +66,7 @@ public class XmlFileAppenderTest {
         assertNotNull("line1", line1);
 
         assertNotNull("line1", line1);
-        final String msg1 = "<log4j:Event ";
+        final String msg1 = "<Event ";
         assertTrue("line1 incorrect: [" + line1 + "], does not contain: [" + msg1 + ']', line1.contains(msg1));
 
         assertNotNull("line2", line2);
@@ -74,7 +74,7 @@ public class XmlFileAppenderTest {
         assertTrue("line2 incorrect: [" + line2 + "], does not contain: [" + msg2 + ']', line2.contains(msg2));
 
         assertNotNull("line3", line3);
-        final String msg3 = "</log4j:Event>";
+        final String msg3 = "</Event>";
         assertTrue("line3 incorrect: [" + line3 + "], does not contain: [" + msg3 + ']', line3.contains(msg3));
 
         final String location = "testFlushAtEndOfBatch";

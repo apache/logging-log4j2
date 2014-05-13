@@ -14,9 +14,10 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.net;
+package org.apache.logging.log4j.core.net.server;
 
-import java.io.InputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 import org.apache.logging.log4j.LogManager;
@@ -24,26 +25,27 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 
-@Ignore("Not implemented yet")
-public class UdpJsonSocketServerTest extends AbstractSocketServerTest {
-    private static final String PORT = "8199";
-    private static final int PORT_NUM = Integer.parseInt(PORT);
+public class TcpSerializedSocketServerTest extends AbstractSocketServerTest {
+    private static TCPSocketServer<ObjectInputStream> tcpSocketServer;
+
     private static Thread thread;
-    private static UDPSocketServer<InputStream> udpSocketServer;
 
     @BeforeClass
     public static void setupClass() throws Exception {
         ((LoggerContext) LogManager.getContext(false)).reconfigure();
-        udpSocketServer = UDPSocketServer.createJsonSocketServer(PORT_NUM);
-        thread = new Thread(udpSocketServer);
+        tcpSocketServer = TCPSocketServer.createSerializedSocketServer(PORT_NUM);
+        thread = new Thread(tcpSocketServer);
         thread.start();
     }
 
     @AfterClass
     public static void tearDownClass() {
-        udpSocketServer.shutdown();
+        try {
+            tcpSocketServer.shutdown();
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
         try {
             thread.join();
         } catch (final InterruptedException e) {
@@ -51,13 +53,13 @@ public class UdpJsonSocketServerTest extends AbstractSocketServerTest {
         }
     }
 
-    public UdpJsonSocketServerTest() {
-        super("udp", PORT, true);
+    public TcpSerializedSocketServerTest() {
+        super("tcp", PORT, false);
     }
 
     @Override
     protected Layout<? extends Serializable> createLayout() {
-        return super.createJsonLayout();
+        return super.createSerializedLayout();
     }
 
 }

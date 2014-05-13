@@ -14,36 +14,39 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.net;
+package org.apache.logging.log4j.core.net.server;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 
-@Ignore("Not implemented yet")
 public class TcpXmlSocketServerTest extends AbstractSocketServerTest {
-    private static final String PORT = "8198";
-    private static final int PORT_NUM = Integer.parseInt(PORT);
-    private static TCPSocketServer<InputStream> tcpSocketServer;
-
+    private static TCPSocketServer<InputStream> socketServer;
     private static Thread thread;
 
     @BeforeClass
     public static void setupClass() throws Exception {
         ((LoggerContext) LogManager.getContext(false)).reconfigure();
-        tcpSocketServer = TCPSocketServer.createXmlSocketServer(PORT_NUM);
-        thread = new Thread(tcpSocketServer);
+        // Use a large buffer just to test the code, the UDP test uses a tiny buffer
+        socketServer = new TCPSocketServer<InputStream>(PORT_NUM, new XmlInputStreamLogEventBridge(1024 * 100,
+                Charset.defaultCharset()));
+        thread = new Thread(socketServer);
         thread.start();
     }
 
     @AfterClass
     public static void tearDownClass() {
-        tcpSocketServer.shutdown();
+        try {
+            socketServer.shutdown();
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
         try {
             thread.join();
         } catch (final InterruptedException e) {

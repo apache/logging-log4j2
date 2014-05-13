@@ -14,9 +14,9 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.net;
+package org.apache.logging.log4j.core.net.server;
 
-import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 import org.apache.logging.log4j.LogManager;
@@ -24,19 +24,15 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 
-@Ignore("Not implemented yet")
-public class UdpXmlSocketServerTest extends AbstractSocketServerTest {
-    private static final String PORT = "8199";
-    private static final int PORT_NUM = Integer.parseInt(PORT);
+public class UdpSerializedSocketServerTest extends AbstractSocketServerTest {
     private static Thread thread;
-    private static UDPSocketServer<InputStream> udpSocketServer;
+    private static UDPSocketServer<ObjectInputStream> udpSocketServer;
 
     @BeforeClass
     public static void setupClass() throws Exception {
         ((LoggerContext) LogManager.getContext(false)).reconfigure();
-        udpSocketServer = UDPSocketServer.createXmlSocketServer(PORT_NUM);
+        udpSocketServer = UDPSocketServer.createSerializedSocketServer(PORT_NUM);
         thread = new Thread(udpSocketServer);
         thread.start();
     }
@@ -51,13 +47,13 @@ public class UdpXmlSocketServerTest extends AbstractSocketServerTest {
         }
     }
 
-    public UdpXmlSocketServerTest() {
+    public UdpSerializedSocketServerTest() {
         super("udp", PORT, true);
     }
 
     @Override
     protected Layout<? extends Serializable> createLayout() {
-        return super.createXmlLayout();
+        return super.createSerializedLayout();
     }
 
 }

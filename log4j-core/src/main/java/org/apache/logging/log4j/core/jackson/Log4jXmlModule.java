@@ -14,30 +14,33 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.net;
+package org.apache.logging.log4j.core.jackson;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
+import org.apache.logging.log4j.core.jackson.Initializers.SetupContextInitializer;
+import org.apache.logging.log4j.core.jackson.Initializers.SimpleModuleInitializer;
 
-import org.apache.logging.log4j.core.LogEvent;
+import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 
 /**
- * Reads serialized {@link LogEvent}s.
+ * <p>
+ * <em>Consider this class private.</em>
+ * </p>
  */
-public class SerializedLogEventInput extends AbstractLogEventInput<ObjectInputStream> {
+class Log4jXmlModule extends JacksonXmlModule {
 
-    @Override
-    public LogEvent readLogEvent(final ObjectInputStream inputStream) throws IOException {
-        try {
-            return (LogEvent) inputStream.readObject();
-        } catch (final ClassNotFoundException e) {
-            throw new IOException(e);
-        }
+    private static final long serialVersionUID = 1L;
+
+    Log4jXmlModule() {
+        super();
+        // MUST init here.
+        // Calling this from setupModule is too late!
+        new SimpleModuleInitializer().initialize(this);
     }
 
     @Override
-    public ObjectInputStream wrapStream(final InputStream inputStream) throws IOException {
-        return new ObjectInputStream(inputStream);
+    public void setupModule(final SetupContext context) {
+        // Calling super is a MUST!
+        super.setupModule(context);
+        new SetupContextInitializer().setupModule(context);
     }
 }

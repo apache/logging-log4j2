@@ -14,21 +14,27 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.net;
+package org.apache.logging.log4j.core.jackson;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.apache.logging.log4j.core.LogEvent;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Reads JSON {@link LogEvent}s.
+ * A Jackson {@link ObjectMapper} initialized for Log4j.
+ * <p>
+ * <em>Consider this class private.</em>
+ * </p>
  */
-public class JSONLogEventInput extends AbstractLogEventInput<InputStream> {
+public class Log4jJsonObjectMapper extends ObjectMapper {
 
-    @Override
-    public LogEvent readLogEvent(final InputStream inputStream) throws IOException {
-        throw new UnsupportedOperationException("Not implemented yet");
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Create a new instance using the {@link Log4jJsonModule}.
+     */
+    public Log4jJsonObjectMapper() {
+        this.registerModule(new Log4jJsonModule());
+        this.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
     }
 
 }
