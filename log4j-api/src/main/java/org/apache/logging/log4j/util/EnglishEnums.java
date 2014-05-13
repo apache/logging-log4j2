@@ -19,10 +19,14 @@
 import java.util.Locale;
 
 /**
- * Helps convert English Strings to English Enum values.
+ * <em>Consider this class private.</em>
+ * 
  * <p>
- * Enum name arguments are converted internally to upper case with the {@linkplain Locale#ENGLISH ENGLISH} locale to
- * avoid problems on the Turkish locale. Do not use with Turkish enum values.
+ * Helps convert English Strings to English Enum values.
+ * </p>
+ * <p>
+ * Enum name arguments are converted internally to upper case with the {@linkplain Locale#ENGLISH ENGLISH} locale to avoid problems on the
+ * Turkish locale. Do not use with Turkish enum values.
  * </p>
  */
 public final class EnglishEnums {
