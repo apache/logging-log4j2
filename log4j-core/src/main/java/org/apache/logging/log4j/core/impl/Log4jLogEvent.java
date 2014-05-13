@@ -34,6 +34,7 @@ import org.apache.logging.log4j.core.helpers.ClockFactory;
 import org.apache.logging.log4j.message.LoggerNameAwareMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.TimestampMessage;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Implementation of a LogEvent.
@@ -64,7 +65,7 @@ public class Log4jLogEvent implements LogEvent {
      *
      */
     public Log4jLogEvent(final long timestamp) {
-        this("", null, "", null, null, (ThrowableProxy) null, null, null, null, null, timestamp);
+        this(Strings.EMPTY, null, Strings.EMPTY, null, null, (ThrowableProxy) null, null, null, null, null, timestamp);
     }
 
     /**
