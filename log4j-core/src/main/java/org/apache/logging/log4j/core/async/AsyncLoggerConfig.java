@@ -34,6 +34,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Booleans;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Asynchronous Logger object that is created via configuration and can be
@@ -181,7 +182,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
                     levelName);
             level = Level.ERROR;
         }
-        final String name = loggerName.equals("root") ? "" : loggerName;
+        final String name = loggerName.equals("root") ? Strings.EMPTY : loggerName;
         final boolean additive = Booleans.parseBoolean(additivity, true);
 
         return new AsyncLoggerConfig(name, appenderRefs, filter, level,
