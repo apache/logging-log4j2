@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import static org.junit.Assert.assertTrue;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
 
 
 /**

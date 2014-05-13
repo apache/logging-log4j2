@@ -16,15 +16,16 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa;
 
+import static org.junit.Assert.assertNull;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
-
-import static org.junit.Assert.assertNull;
 
 public class JpaHyperSqlAppenderTest extends AbstractJpaAppenderTest {
     private static final String USER_ID = "sa";

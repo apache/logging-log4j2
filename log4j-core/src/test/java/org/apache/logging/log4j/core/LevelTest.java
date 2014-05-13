@@ -16,8 +16,14 @@
  */
 package org.apache.logging.log4j.core;
 
-import static org.apache.logging.log4j.Level.*;
-import static org.junit.Assert.*;
+import static org.apache.logging.log4j.Level.DEBUG;
+import static org.apache.logging.log4j.Level.ERROR;
+import static org.apache.logging.log4j.Level.FATAL;
+import static org.apache.logging.log4j.Level.INFO;
+import static org.apache.logging.log4j.Level.TRACE;
+import static org.apache.logging.log4j.Level.WARN;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import java.util.Map;

@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
+import java.security.KeyStore;
+
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.security.KeyStore;
 
 public class KeyStoreConfigurationTest {
     @Test(expected = StoreConfigurationException.class)

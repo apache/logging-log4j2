@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.helpers;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.apache.logging.log4j.core.util.CachedClock;
 import org.apache.logging.log4j.core.util.Clock;

@@ -16,6 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -32,8 +38,6 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public abstract class AbstractJpaAppenderTest {
     private final String databaseType;

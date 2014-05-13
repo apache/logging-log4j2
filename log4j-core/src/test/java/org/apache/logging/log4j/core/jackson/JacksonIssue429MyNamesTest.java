@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.jackson;
 
 import java.io.IOException;
 
+import org.apache.logging.log4j.util.Strings;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -29,7 +30,6 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 

@@ -16,13 +16,14 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
-import org.junit.Assert;
-import org.junit.Test;
+import java.io.IOException;
+import java.io.OutputStream;
 
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
-import java.io.IOException;
-import java.io.OutputStream;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 public class SSLConfigurationTest {
     private static final String TLS_TEST_HOST = "login.yahoo.com";

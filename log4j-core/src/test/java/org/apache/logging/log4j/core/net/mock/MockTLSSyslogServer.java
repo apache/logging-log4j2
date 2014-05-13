@@ -16,17 +16,19 @@
  */
 package org.apache.logging.log4j.core.net.mock;
 
-import org.apache.logging.log4j.core.net.ssl.LegacyBSDTLSSyslogInputStreamReader;
-import org.apache.logging.log4j.core.net.ssl.TLSSyslogInputStreamReader;
-import org.apache.logging.log4j.core.net.ssl.TLSSyslogInputStreamReaderBase;
-import org.apache.logging.log4j.core.net.ssl.TLSSyslogMessageFormat;
-
-import javax.net.ssl.SSLServerSocket;
-import javax.net.ssl.SSLSocket;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLSocket;
+
+import org.apache.logging.log4j.core.net.ssl.LegacyBSDTLSSyslogInputStreamReader;
+import org.apache.logging.log4j.core.net.ssl.TLSSyslogInputStreamReader;
+import org.apache.logging.log4j.core.net.ssl.TLSSyslogInputStreamReaderBase;
+import org.apache.logging.log4j.core.net.ssl.TLSSyslogMessageFormat;
+import org.apache.logging.log4j.util.Strings;
 
 public class MockTLSSyslogServer extends MockSyslogServer {
     private final SSLServerSocket serverSocket;

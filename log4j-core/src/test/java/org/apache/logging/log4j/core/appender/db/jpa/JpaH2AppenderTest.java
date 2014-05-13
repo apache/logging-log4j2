@@ -21,6 +21,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.apache.logging.log4j.util.Strings;
+
 public class JpaH2AppenderTest extends AbstractJpaAppenderTest {
     private static final String USER_ID = "sa";
     private static final String PASSWORD = Strings.EMPTY;

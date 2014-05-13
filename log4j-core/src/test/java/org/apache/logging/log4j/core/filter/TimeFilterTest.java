@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.core.filter;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.LogEvent;
-import org.junit.Test;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Calendar;
 import java.util.TimeZone;
 
-import static org.junit.Assert.assertTrue;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.junit.Test;
 
 /**
  *

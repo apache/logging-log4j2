@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import org.apache.logging.log4j.core.util.Constants;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 /**
  * Unit tests for {@code ThrowableFormatOptions}.
