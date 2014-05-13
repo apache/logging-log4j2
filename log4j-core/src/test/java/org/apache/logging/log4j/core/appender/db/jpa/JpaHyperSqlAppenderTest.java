@@ -28,7 +28,7 @@ import static org.junit.Assert.assertNull;
 
 public class JpaHyperSqlAppenderTest extends AbstractJpaAppenderTest {
     private static final String USER_ID = "sa";
-    private static final String PASSWORD = "";
+    private static final String PASSWORD = Strings.EMPTY;
 
     public JpaHyperSqlAppenderTest() {
         super("hsqldb");

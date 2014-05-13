@@ -173,7 +173,7 @@ public class Timer implements Serializable
             // Get remaining nanoseconds
             nanoseconds = nanoseconds % NANO_PER_SECOND;
 
-            String elapsed = "";
+            String elapsed = Strings.EMPTY;
 
             if (hours > 0)
             {
@@ -206,7 +206,7 @@ public class Timer implements Serializable
                 // Get remaining nanoseconds
                 nanoseconds = nanoseconds % NANO_PER_SECOND;
 
-                elapsed = "";
+                elapsed = Strings.EMPTY;
 
                 if (hours > 0)
                 {

@@ -186,7 +186,7 @@ public class FileAppenderTest {
         final FileInputStream fis = new FileInputStream(FILENAME);
         final BufferedReader is = new BufferedReader(new InputStreamReader(fis));
         int counter = 0;
-        String str = "";
+        String str = Strings.EMPTY;
         while (is.ready()) {
             str = is.readLine();
             // System.out.println(str);

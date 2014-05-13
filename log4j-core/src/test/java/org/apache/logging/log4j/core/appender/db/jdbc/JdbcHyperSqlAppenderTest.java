@@ -25,7 +25,7 @@ import java.sql.SQLException;
  */
 public class JdbcHyperSqlAppenderTest extends AbstractJdbcAppenderTest {
     private static final String USER_ID = "sa";
-    private static final String PASSWORD = "";
+    private static final String PASSWORD = Strings.EMPTY;
 
     public JdbcHyperSqlAppenderTest() {
         super("hsqldb");

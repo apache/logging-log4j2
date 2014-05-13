@@ -31,7 +31,7 @@ public class LegacyBSDTLSSyslogInputStreamReader extends TLSSyslogInputStreamRea
 
     @Override
     public String read() throws IOException {
-        String message = "";
+        String message = Strings.EMPTY;
         try {
             while (true) {
                 int b = inputStream.read();

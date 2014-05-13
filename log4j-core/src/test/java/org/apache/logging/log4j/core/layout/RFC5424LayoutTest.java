@@ -359,8 +359,8 @@ public class RFC5424LayoutTest {
         }
 
         final LoggerFields[] loggerFields = new LoggerFields[] {
-                LoggerFields.createLoggerFields(new KeyValuePair[] { new KeyValuePair("dummy", ""),
-                        new KeyValuePair("empty", "")}, "SD-ID", "32473", "true"),
+                LoggerFields.createLoggerFields(new KeyValuePair[] { new KeyValuePair("dummy", Strings.EMPTY),
+                        new KeyValuePair("empty", Strings.EMPTY)}, "SD-ID", "32473", "true"),
                 LoggerFields.createLoggerFields(new KeyValuePair[] { new KeyValuePair("baz", "%C.%M"),
                         new KeyValuePair("baz", "%C.%M") }, "BAZ", "32473", "false"),
                 LoggerFields.createLoggerFields(new KeyValuePair[] { new KeyValuePair("bar", "%C.%M")}, null, null, "false")

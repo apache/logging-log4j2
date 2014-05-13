@@ -107,7 +107,7 @@ public class MockTLSSyslogServer extends MockSyslogServer {
         try {
             int count = 0;
             while (true) {
-                String message = "";
+                String message = Strings.EMPTY;
                 message = syslogReader.read();
                 messageList.add(message);
                 count++;

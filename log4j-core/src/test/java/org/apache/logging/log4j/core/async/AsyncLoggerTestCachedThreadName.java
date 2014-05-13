@@ -44,7 +44,7 @@ public class AsyncLoggerTestCachedThreadName {
 
     @AfterClass
     public static void afterClass() {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, "");
+        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, Strings.EMPTY);
     }
 
     @Test

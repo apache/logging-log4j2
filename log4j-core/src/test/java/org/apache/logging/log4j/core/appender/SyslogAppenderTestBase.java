@@ -114,7 +114,7 @@ public class SyslogAppenderTestBase {
         for (int i = 0; i < receivedMessages.size(); i++) {
             String receivedMessage = receivedMessages.get(i);
             String sentMessage = sentMessages.get(i);
-            String suffix =  "true".equalsIgnoreCase(includeNewLine) ? "\n" : "";
+            String suffix =  "true".equalsIgnoreCase(includeNewLine) ? "\n" : Strings.EMPTY;
             assertTrue("Incorrect message received: " + receivedMessage,
                     receivedMessage.endsWith(sentMessage + suffix) || receivedMessage.contains(sentMessage));
         }

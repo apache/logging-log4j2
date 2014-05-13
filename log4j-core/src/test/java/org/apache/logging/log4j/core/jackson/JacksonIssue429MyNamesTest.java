@@ -51,7 +51,7 @@ public class JacksonIssue429MyNamesTest {
             JsonToken t = jp.getCurrentToken();
             // Must get an Object
             if (t == JsonToken.START_OBJECT) {
-                String className = "", methodName = "", fileName = "";
+                String className = Strings.EMPTY, methodName = Strings.EMPTY, fileName = Strings.EMPTY;
                 int lineNumber = -1;
 
                 while ((t = jp.nextValue()) != JsonToken.END_OBJECT) {

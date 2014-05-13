@@ -23,7 +23,7 @@ import java.sql.Statement;
 
 public class JpaH2AppenderTest extends AbstractJpaAppenderTest {
     private static final String USER_ID = "sa";
-    private static final String PASSWORD = "";
+    private static final String PASSWORD = Strings.EMPTY;
 
     public JpaH2AppenderTest() {
         super("h2");
