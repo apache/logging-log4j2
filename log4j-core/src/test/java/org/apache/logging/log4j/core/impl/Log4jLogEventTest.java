@@ -57,7 +57,7 @@ public class Log4jLogEventTest {
     
     @Test
     public void testJavaIoSerializable() throws Exception {
-        final Log4jLogEvent evt = new Log4jLogEvent("some.test", null, "",
+        final Log4jLogEvent evt = new Log4jLogEvent("some.test", null, Strings.EMPTY,
                 Level.INFO, new SimpleMessage("abc"), null);
 
         final ByteArrayOutputStream arr = new ByteArrayOutputStream();
@@ -88,7 +88,7 @@ public class Log4jLogEventTest {
         final Marker marker = null;
         final Throwable t = null;
         final Level NULL_LEVEL = null;
-        final Log4jLogEvent evt = new Log4jLogEvent("some.test", marker, "",
+        final Log4jLogEvent evt = new Log4jLogEvent("some.test", marker, Strings.EMPTY,
                 NULL_LEVEL, new SimpleMessage("abc"), t);
         assertEquals(Level.OFF, evt.getLevel());
     }
@@ -98,7 +98,7 @@ public class Log4jLogEventTest {
         final Marker marker = null;
         final Throwable t = null;
         final Level NULL_LEVEL = null;
-        final Log4jLogEvent evt = new Log4jLogEvent("some.test", marker, "",
+        final Log4jLogEvent evt = new Log4jLogEvent("some.test", marker, Strings.EMPTY,
                 NULL_LEVEL, new SimpleMessage("abc"), t);
         assertEquals(FixedTimeClock.FIXED_TIME, evt.getTimeMillis());
         

@@ -126,7 +126,7 @@ public class ConfigurationTest {
         final long random = this.random.nextLong();
         logger.debug("This is test message number {}", random);
         int count = 0;
-        String line = "";
+        String line = Strings.EMPTY;
         final BufferedReader in = new BufferedReader(new FileReader(this.logFileName));
         try {
             while (in.ready()) {

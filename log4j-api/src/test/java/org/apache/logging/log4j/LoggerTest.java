@@ -26,6 +26,7 @@ import java.util.Locale;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -264,9 +265,9 @@ public class LoggerTest {
     @Test
     public void getRootLogger() {
         assertNotNull(LogManager.getRootLogger());
-        assertNotNull(LogManager.getLogger(""));
+        assertNotNull(LogManager.getLogger(Strings.EMPTY));
         assertNotNull(LogManager.getLogger(LogManager.ROOT_LOGGER_NAME));
-        assertEquals(LogManager.getRootLogger(), LogManager.getLogger(""));
+        assertEquals(LogManager.getRootLogger(), LogManager.getLogger(Strings.EMPTY));
         assertEquals(LogManager.getRootLogger(), LogManager.getLogger(LogManager.ROOT_LOGGER_NAME));
     }
 

@@ -128,7 +128,7 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testSeparatorAsEmpty() {
-        test(new String[]{"separator()"}, Integer.MAX_VALUE, "", null);
+        test(new String[]{"separator()"}, Integer.MAX_VALUE, Strings.EMPTY, null);
     }
 
     /**

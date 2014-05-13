@@ -197,7 +197,7 @@ public abstract class AbstractJdbcAppenderTest {
         assertEquals("The logger column is not correct (1).", logger.getName(), resultSet.getNString("logger"));
         assertEquals("The message column is not correct (1).", "Factory logged message 01.",
                 resultSet.getString("message"));
-        assertEquals("The exception column is not correct (1).", "",
+        assertEquals("The exception column is not correct (1).", Strings.EMPTY,
                 IOUtils.readStringAndClose(resultSet.getNClob("exception").getCharacterStream(), -1));
 
         assertTrue("There should be two rows.", resultSet.next());
