@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  *
@@ -133,7 +134,7 @@ public class SizeBasedTriggeringPolicy implements TriggeringPolicy {
                 // Get units specified
                 final String units = matcher.group(3);
 
-                if (units.equalsIgnoreCase("")) {
+                if (units.equalsIgnoreCase(Strings.EMPTY)) {
                     return value;
                 } else if (units.equalsIgnoreCase("K")) {
                     return value * KB;
