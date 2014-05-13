@@ -18,6 +18,8 @@ package org.apache.logging.log4j.core.util;
 
 import java.security.MessageDigest;
 
+import org.apache.logging.log4j.util.Strings;
+
 /**
  *
  */
@@ -33,7 +35,7 @@ public final class NameUtil {
             return null;
         }
         final int i = name.lastIndexOf('.');
-        return i > 0 ? name.substring(0, i) : "";
+        return i > 0 ? name.substring(0, i) : Strings.EMPTY;
     }
 
     public static String md5(final String string) {

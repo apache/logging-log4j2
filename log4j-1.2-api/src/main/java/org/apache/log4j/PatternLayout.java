@@ -17,6 +17,7 @@
 package org.apache.log4j;
 
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  *
@@ -29,7 +30,7 @@ public class PatternLayout extends Layout {
 
     @Override
     public String format(final LoggingEvent event) {
-        return "";
+        return Strings.EMPTY;
     }
 
     @Override

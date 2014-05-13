@@ -171,7 +171,7 @@ public final class PatternParser {
                 pc = (LogEventPatternConverter) converter;
                 handlesThrowable |= pc.handlesThrowable();
             } else {
-                pc = new LiteralPatternConverter(config, "");
+                pc = new LiteralPatternConverter(config, Strings.EMPTY);
             }
 
             FormattingInfo field;
