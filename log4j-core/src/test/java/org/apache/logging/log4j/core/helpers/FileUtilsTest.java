@@ -23,6 +23,7 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.apache.logging.log4j.core.util.FileUtils;
 import org.junit.Test;
 
 /**

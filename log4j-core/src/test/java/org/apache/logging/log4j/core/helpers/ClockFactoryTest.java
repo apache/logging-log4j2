@@ -18,11 +18,11 @@ package org.apache.logging.log4j.core.helpers;
 
 import static org.junit.Assert.*;
 
-import org.apache.logging.log4j.core.helpers.CachedClock;
-import org.apache.logging.log4j.core.helpers.Clock;
-import org.apache.logging.log4j.core.helpers.ClockFactory;
-import org.apache.logging.log4j.core.helpers.CoarseCachedClock;
-import org.apache.logging.log4j.core.helpers.SystemClock;
+import org.apache.logging.log4j.core.util.CachedClock;
+import org.apache.logging.log4j.core.util.Clock;
+import org.apache.logging.log4j.core.util.ClockFactory;
+import org.apache.logging.log4j.core.util.CoarseCachedClock;
+import org.apache.logging.log4j.core.util.SystemClock;
 import org.junit.Test;
 
 public class ClockFactoryTest {

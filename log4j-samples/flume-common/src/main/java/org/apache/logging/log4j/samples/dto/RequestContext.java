@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.samples.dto;
 
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.helpers.UUIDUtil;
+import org.apache.logging.log4j.core.util.UUIDUtil;
 
 /**
  *

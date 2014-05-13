@@ -26,7 +26,7 @@ import java.util.ListIterator;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
-import org.apache.logging.log4j.core.helpers.Loader;
+import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.util.Strings;
 
 /**

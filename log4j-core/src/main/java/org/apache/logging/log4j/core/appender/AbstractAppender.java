@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
-import org.apache.logging.log4j.core.helpers.Integers;
+import org.apache.logging.log4j.core.util.Integers;
 
 /**
  * Abstract base class for Appenders. Although Appenders do not have to extend this class, doing so

@@ -28,10 +28,10 @@ import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.remote.JMXConnector;
 
-import org.apache.logging.log4j.core.helpers.Assert;
 import org.apache.logging.log4j.core.jmx.LoggerContextAdminMBean;
 import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.core.jmx.StatusLoggerAdminMBean;
+import org.apache.logging.log4j.core.util.Assert;
 
 /**
  * This class allows client-side code to perform operations on remote

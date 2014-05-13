@@ -23,7 +23,7 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.helpers.Patterns;
+import org.apache.logging.log4j.core.util.Patterns;
 
 /**
  * Returns the event's level in a StringBuilder.

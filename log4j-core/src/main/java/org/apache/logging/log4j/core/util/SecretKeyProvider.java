@@ -14,24 +14,14 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.helpers;
+package org.apache.logging.log4j.core.util;
+
+import javax.crypto.SecretKey;
 
 /**
- * Boolean helpers.
+ *
  */
-public class Booleans {
+public interface SecretKeyProvider {
 
-    /**
-     * Returns {@code true} if {@code s} is {@code "true"} (case-insensitive), {@code false} if {@code s} is
-     * {@code "false"} (case-insensitive), and {@code defaultValue} if {@code s} is anything else (including null or
-     * empty).
-     *
-     * @param s The {@code String} to parse into a {@code boolean}
-     * @param defaultValue The default value to use if {@code s} is neither {@code "true"} nor {@code "false"}
-     * @return the {@code boolean} value represented by the argument, or {@code defaultValue}.
-     */
-    public static boolean parseBoolean(String s, boolean defaultValue) {
-        return "true".equalsIgnoreCase(s) || (defaultValue && !"false".equalsIgnoreCase(s));
-    }
-
+    SecretKey getSecretKey();
 }

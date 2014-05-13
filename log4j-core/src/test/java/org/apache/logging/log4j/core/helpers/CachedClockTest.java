@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.helpers;
 
 import static org.junit.Assert.*;
 
-import org.apache.logging.log4j.core.helpers.CachedClock;
+import org.apache.logging.log4j.core.util.CachedClock;
 import org.junit.Test;
 
 public class CachedClockTest {

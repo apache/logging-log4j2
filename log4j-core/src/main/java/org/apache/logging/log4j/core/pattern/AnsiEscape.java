@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.logging.log4j.core.helpers.Patterns;
+import org.apache.logging.log4j.core.util.Patterns;
 
 /**
  * Converts text into ANSI escape sequences.

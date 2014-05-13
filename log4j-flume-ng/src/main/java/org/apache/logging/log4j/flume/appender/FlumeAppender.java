@@ -28,9 +28,9 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.helpers.Booleans;
-import org.apache.logging.log4j.core.helpers.Integers;
 import org.apache.logging.log4j.core.layout.RFC5424Layout;
+import org.apache.logging.log4j.core.util.Booleans;
+import org.apache.logging.log4j.core.util.Integers;
 
 /**
  * An Appender that uses the Avro protocol to route events to Flume.

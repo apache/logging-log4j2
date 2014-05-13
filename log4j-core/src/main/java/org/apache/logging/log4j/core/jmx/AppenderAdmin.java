@@ -20,7 +20,7 @@ import javax.management.ObjectName;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
-import org.apache.logging.log4j.core.helpers.Assert;
+import org.apache.logging.log4j.core.util.Assert;
 
 /**
  * Implementation of the {@code AppenderAdminMBean} interface.

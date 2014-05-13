@@ -14,14 +14,16 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.helpers;
-
-import javax.crypto.SecretKey;
+package org.apache.logging.log4j.core.util;
 
 /**
- *
+ * Provides the time stamp used in log events.
  */
-public interface SecretKeyProvider {
-
-    SecretKey getSecretKey();
+public interface Clock {
+    /**
+     * Returns the time in milliseconds since the epoch.
+     *
+     * @return the time in milliseconds since the epoch
+     */
+    long currentTimeMillis();
 }

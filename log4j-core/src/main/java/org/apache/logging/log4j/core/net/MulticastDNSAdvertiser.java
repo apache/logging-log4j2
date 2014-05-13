@@ -24,8 +24,8 @@ import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.helpers.Integers;
-import org.apache.logging.log4j.core.helpers.Loader;
+import org.apache.logging.log4j.core.util.Integers;
+import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**

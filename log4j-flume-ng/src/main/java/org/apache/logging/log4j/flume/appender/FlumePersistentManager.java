@@ -43,8 +43,8 @@ import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
-import org.apache.logging.log4j.core.helpers.FileUtils;
-import org.apache.logging.log4j.core.helpers.SecretKeyProvider;
+import org.apache.logging.log4j.core.util.FileUtils;
+import org.apache.logging.log4j.core.util.SecretKeyProvider;
 import org.apache.logging.log4j.util.Strings;
 
 import com.sleepycat.je.Cursor;

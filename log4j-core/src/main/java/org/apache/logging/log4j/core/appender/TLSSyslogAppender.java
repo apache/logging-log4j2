@@ -20,7 +20,6 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.*;
-import org.apache.logging.log4j.core.helpers.Booleans;
 import org.apache.logging.log4j.core.layout.LoggerFields;
 import org.apache.logging.log4j.core.layout.RFC5424Layout;
 import org.apache.logging.log4j.core.layout.SyslogLayout;
@@ -28,6 +27,7 @@ import org.apache.logging.log4j.core.net.AbstractSocketManager;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.net.TLSSocketManager;
 import org.apache.logging.log4j.core.net.ssl.SSLConfiguration;
+import org.apache.logging.log4j.core.util.Booleans;
 
 import java.io.Serializable;
 

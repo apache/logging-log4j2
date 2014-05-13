@@ -23,7 +23,7 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import org.apache.logging.log4j.core.helpers.Charsets;
+import org.apache.logging.log4j.core.util.Charsets;
 
 /**
  *  Helper class for SMTPManager.

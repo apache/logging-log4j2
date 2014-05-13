@@ -21,8 +21,8 @@ import java.io.StringWriter;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.core.impl.ThrowableFormatOptions;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.util.Strings;
 
 
