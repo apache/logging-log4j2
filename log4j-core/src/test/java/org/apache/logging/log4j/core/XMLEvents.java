@@ -49,7 +49,7 @@ public class XMLEvents {
         EventLogger.logEvent(msg);
         msg.setCompletionStatus("Transfer Complete");
         EventLogger.logEvent(msg);
-        ThreadContext.clear();
+        ThreadContext.clearMap();
 
 
     }

@@ -62,7 +62,7 @@ public class PatternLayoutTest {
 
     @After
     public void after() {
-        ThreadContext.clear();
+        ThreadContext.clearMap();
     }
 
     LoggerContext ctx = (LoggerContext) LogManager.getContext();

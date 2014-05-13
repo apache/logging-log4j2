@@ -85,7 +85,7 @@ public class LoggingController {
 
                 @Override
                 public void run() {
-                    ThreadContext.clear();
+                    ThreadContext.clearMap();
 
                     RequestContext.setSessionId("session1234");
                     RequestContext.setIpAddress("127.0.0.1");

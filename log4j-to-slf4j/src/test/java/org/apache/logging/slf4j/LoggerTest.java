@@ -167,7 +167,7 @@ public class LoggerTest {
     public void mdc() {
         ThreadContext.put("TestYear", new Integer(2010).toString());
         logger.debug("Debug message");
-        ThreadContext.clear();
+        ThreadContext.clearMap();
         logger.debug("Debug message");
         assertTrue("Incorrect number of events. Expected 2, actual " + list.strList.size(), list.strList.size() == 2);
         assertTrue("Incorrect year", list.strList.get(0).startsWith("2010"));

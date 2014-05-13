@@ -62,7 +62,7 @@ import org.apache.logging.log4j.util.Strings;
  * @see <a href="https://tools.ietf.org/html/rfc5424">RFC 5424</a>
  */
 @Plugin(name = "RFC5424Layout", category = "Core", elementType = "layout", printObject = true)
-public class RFC5424Layout extends AbstractStringLayout {
+public final class RFC5424Layout extends AbstractStringLayout {
 
     private static final String LF = "\n";
 

@@ -56,7 +56,7 @@ public final class RequestContext {
     public static final String USER_AGENT = "userAgent";
 
     public static void initialize() {
-        ThreadContext.clear();
+        ThreadContext.clearMap();
         ThreadContext.put(REQUEST_ID, UUIDUtil.getTimeBasedUUID().toString());
     }
 

@@ -76,7 +76,7 @@ public class InterpolatorTest {
         assertEquals(TESTVAL, value);
         value = lookup.lookup("BadKey");
         assertNull(value);
-        ThreadContext.clear();
+        ThreadContext.clearMap();
         value = lookup.lookup("ctx:" + TESTKEY);
         assertEquals(TESTVAL, value);
         value = lookup.lookup("jndi:" + TEST_CONTEXT_RESOURCE_NAME);

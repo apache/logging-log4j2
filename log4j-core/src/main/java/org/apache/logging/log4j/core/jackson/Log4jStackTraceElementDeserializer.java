@@ -31,7 +31,7 @@ import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
  * <em>Consider this class private.</em>
  * </p>
  */
-public class Log4jStackTraceElementDeserializer extends StdScalarDeserializer<StackTraceElement> {
+public final class Log4jStackTraceElementDeserializer extends StdScalarDeserializer<StackTraceElement> {
     private static final long serialVersionUID = 1L;
 
     /**

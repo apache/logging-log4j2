@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.layout;
 /**
  * Keeps constants separate from any class that may depend on third party jars.
  */
-public class JSONConstants {
+public final class JSONConstants {
     public static final String PROP_SOURCE = "source";
     public static final String PROP_CONTEXT_MAP = "contextMap";
 }

@@ -40,7 +40,7 @@ import org.apache.logging.log4j.core.util.Charsets;
  * Formats a log event as a BSD Log record.
  */
 @Plugin(name = "SyslogLayout", category = "Core", elementType = "layout", printObject = true)
-public class SyslogLayout extends AbstractStringLayout {
+public final class SyslogLayout extends AbstractStringLayout {
     /**
      * Match newlines in a platform-independent manner.
      */

@@ -30,7 +30,7 @@ import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
  * <em>Consider this class private.</em>
  * </p>
  */
-class MessageSerializer extends StdScalarSerializer<Message> {
+final class MessageSerializer extends StdScalarSerializer<Message> {
 
     MessageSerializer() {
         super(Message.class);

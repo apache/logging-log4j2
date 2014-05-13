@@ -184,7 +184,7 @@ import org.apache.logging.log4j.core.util.Charsets;
  * </p>
  */
 @Plugin(name = "XMLLayout", category = "Core", elementType = "layout", printObject = true)
-public class XMLLayout extends AbstractJacksonLayout {
+public final class XMLLayout extends AbstractJacksonLayout {
 
     private static final String ROOT_TAG = "Events";
 

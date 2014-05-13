@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.layout;
 /**
  * Keeps constants separate from any class that may depend on third party jars.
  */
-public class XMLConstants {
+public final class XMLConstants {
     public static final String TAG_SOURCE = "Source";
     public static final String TAG_CONTEXT_MAP = "ContextMap";
     public static final String XML_NAMESPACE = "http://logging.apache.org/log4j/2.0/events";

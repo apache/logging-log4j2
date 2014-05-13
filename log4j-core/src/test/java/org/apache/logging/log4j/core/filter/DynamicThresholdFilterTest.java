@@ -60,14 +60,14 @@ public class DynamicThresholdFilterTest {
         assertTrue(filter.isStarted());
         assertTrue(filter.filter(null, Level.DEBUG, null, null, (Throwable)null) == Filter.Result.NEUTRAL);
         assertTrue(filter.filter(null, Level.ERROR, null, null, (Throwable)null) == Filter.Result.NEUTRAL);
-        ThreadContext.clear();
+        ThreadContext.clearMap();
         ThreadContext.put("userid", "JohnDoe");
         ThreadContext.put("organization", "apache");
         LogEvent event = new Log4jLogEvent(null, null, null, Level.DEBUG, new SimpleMessage("Test"), null);
         assertTrue(filter.filter(event) == Filter.Result.DENY);
         event = new Log4jLogEvent(null, null, null, Level.ERROR, new SimpleMessage("Test"), null);
         assertTrue(filter.filter(event) == Filter.Result.NEUTRAL);
-        ThreadContext.clear();
+        ThreadContext.clearMap();
     }
 
     @Test

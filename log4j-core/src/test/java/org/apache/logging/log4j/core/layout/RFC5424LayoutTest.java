@@ -147,7 +147,7 @@ public class RFC5424LayoutTest {
             assertTrue("No messages expected, found " + list.size(), list.size() == 0);
         } finally {
             root.removeAppender(appender);
-            ThreadContext.clear();
+            ThreadContext.clearMap();
 
             appender.stop();
         }
@@ -209,7 +209,7 @@ public class RFC5424LayoutTest {
             assertTrue("No messages expected, found " + list.size(), list.size() == 0);
         } finally {
             root.removeAppender(appender);
-            ThreadContext.clear();
+            ThreadContext.clearMap();
 
             appender.stop();
         }
@@ -249,7 +249,7 @@ public class RFC5424LayoutTest {
             appender.clear();
         } finally {
             root.removeAppender(appender);
-            ThreadContext.clear();
+            ThreadContext.clearMap();
 
             appender.stop();
         }
@@ -291,7 +291,7 @@ public class RFC5424LayoutTest {
             appender.clear();
         } finally {
             root.removeAppender(appender);
-            ThreadContext.clear();
+            ThreadContext.clearMap();
 
             appender.stop();
         }
@@ -340,7 +340,7 @@ public class RFC5424LayoutTest {
             appender.clear();
         } finally {
             root.removeAppender(appender);
-            ThreadContext.clear();
+            ThreadContext.clearMap();
 
             appender.stop();
         }
@@ -388,7 +388,7 @@ public class RFC5424LayoutTest {
             appender.clear();
         } finally {
             root.removeAppender(appender);
-            ThreadContext.clear();
+            ThreadContext.clearMap();
 
             appender.stop();
         }
@@ -422,7 +422,7 @@ public class RFC5424LayoutTest {
             appender.clear();
         } finally {
             root.removeAppender(appender);
-            ThreadContext.clear();
+            ThreadContext.clearMap();
 
             appender.stop();
         }
