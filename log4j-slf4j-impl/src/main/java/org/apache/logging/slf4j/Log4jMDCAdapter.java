@@ -43,7 +43,7 @@ public class Log4jMDCAdapter implements MDCAdapter {
 
     @Override
     public void clear() {
-        ThreadContext.clear();
+        ThreadContext.clearMap();
     }
 
     @Override
@@ -54,7 +54,7 @@ public class Log4jMDCAdapter implements MDCAdapter {
     @Override
     @SuppressWarnings("unchecked") // nothing we can do about this, restricted by SLF4J API
     public void setContextMap(@SuppressWarnings("rawtypes") final Map map) {
-        ThreadContext.clear();
+        ThreadContext.clearMap();
         for (final Map.Entry<String, String> entry : ((Map<String, String>) map).entrySet()) {
             ThreadContext.put(entry.getKey(), entry.getValue());
         }

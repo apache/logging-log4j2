@@ -33,7 +33,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
  * </p>
  */
 @JsonPropertyOrder({ "key", "value" })
-class MapEntry {
+final class MapEntry {
 
     @JsonProperty
     @JacksonXmlProperty(isAttribute = true)

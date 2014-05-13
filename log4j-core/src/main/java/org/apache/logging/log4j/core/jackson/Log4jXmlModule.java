@@ -26,7 +26,7 @@ import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
  * <em>Consider this class private.</em>
  * </p>
  */
-class Log4jXmlModule extends JacksonXmlModule {
+final class Log4jXmlModule extends JacksonXmlModule {
 
     private static final long serialVersionUID = 1L;
 

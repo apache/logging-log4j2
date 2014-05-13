@@ -33,7 +33,7 @@ import org.osgi.framework.BundleListener;
 /**
  * OSGi BundleActivator.
  */
-public class Activator implements org.osgi.framework.BundleActivator {
+public final class Activator implements org.osgi.framework.BundleActivator {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 

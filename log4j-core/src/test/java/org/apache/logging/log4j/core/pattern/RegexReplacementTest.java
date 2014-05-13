@@ -68,7 +68,7 @@ public class RegexReplacementTest {
         System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         ctx.reconfigure();
         StatusLogger.getLogger().reset();
-        ThreadContext.clear();
+        ThreadContext.clearMap();
     }
 
     org.apache.logging.log4j.Logger logger = LogManager.getLogger("LoggerTest");

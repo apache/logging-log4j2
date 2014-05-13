@@ -161,14 +161,6 @@ public final class ThreadContext  {
     }
 
     /**
-     * Clears the context.
-     * @deprecated Use {@link #clearMap()}
-     */
-    public static void clear() {
-        contextMap.clear();
-    }
-
-    /**
      * Clears the context map.
      */
     public static void clearMap() {

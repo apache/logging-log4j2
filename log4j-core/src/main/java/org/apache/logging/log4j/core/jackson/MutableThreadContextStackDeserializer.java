@@ -32,7 +32,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
  * <em>Consider this class private.</em>
  * </p>
  */
-class MutableThreadContextStackDeserializer extends StdDeserializer<MutableThreadContextStack> {
+final class MutableThreadContextStackDeserializer extends StdDeserializer<MutableThreadContextStack> {
 
     private static final long serialVersionUID = 1L;
 

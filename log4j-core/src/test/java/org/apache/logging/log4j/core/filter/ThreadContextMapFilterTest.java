@@ -46,7 +46,7 @@ public class ThreadContextMapFilterTest {
         assertTrue(filter.filter(null, Level.ERROR, null, null, (Throwable)null) == Filter.Result.NEUTRAL);
         ThreadContext.put("organization", "ASF");
         assertTrue(filter.filter(null, Level.DEBUG, null, null, (Throwable)null) == Filter.Result.DENY);
-        ThreadContext.clear();
+        ThreadContext.clearMap();
         filter = ThreadContextMapFilter.createFilter(pairs, "or", null, null);
         filter.start();
         assertTrue(filter.isStarted());
@@ -62,6 +62,6 @@ public class ThreadContextMapFilterTest {
         filter.start();
         assertTrue(filter.isStarted());
         assertTrue(filter.filter(null, Level.DEBUG, null, null, (Throwable)null) == Filter.Result.NEUTRAL);
-        ThreadContext.clear();
+        ThreadContext.clearMap();
     }
 }

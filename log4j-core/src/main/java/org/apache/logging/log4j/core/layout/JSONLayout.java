@@ -790,7 +790,7 @@ import org.apache.logging.log4j.core.util.Charsets;
  * </p>
  */
 @Plugin(name = "JSONLayout", category = "Core", elementType = "layout", printObject = true)
-public class JSONLayout extends AbstractJacksonLayout {
+public final class JSONLayout extends AbstractJacksonLayout {
 
     protected JSONLayout(final boolean locationInfo, final boolean properties, final boolean complete, final boolean compact,
             final Charset charset) {

@@ -86,7 +86,7 @@ public class JMSTopicFailoverTest {
         }
         assertNotNull("No Appender", app);
         app.clear();
-        ThreadContext.clear();
+        ThreadContext.clearMap();
     }
 
     private static void setupQueue() throws Exception {
