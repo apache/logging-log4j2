@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
  * Key/Value pair configuration item.
  */
 @Plugin(name = "KeyValuePair", category = "Core", printObject = true)
-public class KeyValuePair {
+public final class KeyValuePair {
 
     private final String key;
     private final String value;

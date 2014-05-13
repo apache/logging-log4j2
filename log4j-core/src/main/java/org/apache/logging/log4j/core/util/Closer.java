@@ -26,7 +26,7 @@ import java.sql.Statement;
 /**
  * Helper class for closing resources.
  */
-public class Closer {
+public final class Closer {
 
     /**
      * Closes the specified {@code Closeable} (stream or reader/writer),

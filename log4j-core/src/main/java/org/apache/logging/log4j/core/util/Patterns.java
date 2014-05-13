@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
  * 
  * @see Pattern
  */
-public class Patterns {
+public final class Patterns {
 
     /**
      * A pattern string for comma separated lists with optional whitespace.
