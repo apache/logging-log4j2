@@ -43,7 +43,6 @@ import org.apache.logging.log4j.core.helpers.Charsets;
 import org.apache.logging.log4j.core.helpers.Integers;
 import org.apache.logging.log4j.core.helpers.NetUtils;
 import org.apache.logging.log4j.core.helpers.Patterns;
-import org.apache.logging.log4j.core.helpers.Strings;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Priority;
 import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
@@ -54,6 +53,7 @@ import org.apache.logging.log4j.core.pattern.ThrowablePatternConverter;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataId;
 import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.util.Strings;
 
 
 /**

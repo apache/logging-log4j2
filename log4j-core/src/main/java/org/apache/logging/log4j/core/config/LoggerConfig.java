@@ -49,12 +49,12 @@ import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.helpers.Booleans;
 import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.core.helpers.Loader;
-import org.apache.logging.log4j.core.helpers.Strings;
 import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Logger object that is created via configuration.

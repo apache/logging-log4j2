@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.core.helpers.NameUtil;
-import org.apache.logging.log4j.core.helpers.Strings;
+import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.CouchDbProperties;

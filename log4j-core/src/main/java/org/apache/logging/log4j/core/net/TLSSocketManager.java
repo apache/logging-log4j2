@@ -30,8 +30,8 @@ import javax.net.ssl.SSLSocketFactory;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
-import org.apache.logging.log4j.core.helpers.Strings;
 import org.apache.logging.log4j.core.net.ssl.SSLConfiguration;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  *
