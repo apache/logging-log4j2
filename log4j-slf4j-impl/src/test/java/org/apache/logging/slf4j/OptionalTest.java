@@ -69,7 +69,7 @@ public class OptionalTest {
     public void testEventLogger() {
         logger.info(marker, "This is a test");
         MDC.clear();
-        verify("EventLogger", "o.a.l.s.OptionalTest This is a test" + Constants.LINE_SEP);
+        verify("EventLogger", "o.a.l.s.OptionalTest This is a test" + Constants.LINE_SEPARATOR);
     }
 
     private void verify(final String name, final String expected) {

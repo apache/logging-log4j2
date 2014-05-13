@@ -173,7 +173,7 @@ public class CategoryTest {
         final String msg = msgs.get(0);
         appender.clear();
         final String threadName = Thread.currentThread().getName();
-        final String expected = "ERROR o.a.l.CategoryTest [" + threadName + "] Test Message" + Constants.LINE_SEP;
+        final String expected = "ERROR o.a.l.CategoryTest [" + threadName + "] Test Message" + Constants.LINE_SEPARATOR;
         assertTrue("Incorrect message \"" + msg + '"' + " expected \"" + expected + '"', msg.endsWith(expected));
     }
 

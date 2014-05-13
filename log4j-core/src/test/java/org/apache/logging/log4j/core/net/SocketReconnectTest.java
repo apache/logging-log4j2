@@ -40,11 +40,11 @@ public class SocketReconnectTest {
 
     private static final String CONFIG = "log4j-socket.xml";
 
-    private static final String SHUTDOWN = "Shutdown" + Constants.LINE_SEP +
-        "................................................................" + Constants.LINE_SEP +
-        "................................................................" + Constants.LINE_SEP +
-        "................................................................" + Constants.LINE_SEP +
-        "................................................................" + Constants.LINE_SEP;
+    private static final String SHUTDOWN = "Shutdown" + Constants.LINE_SEPARATOR +
+        "................................................................" + Constants.LINE_SEPARATOR +
+        "................................................................" + Constants.LINE_SEPARATOR +
+        "................................................................" + Constants.LINE_SEPARATOR +
+        "................................................................" + Constants.LINE_SEPARATOR;
 
 
     @BeforeClass

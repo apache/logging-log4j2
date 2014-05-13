@@ -46,7 +46,7 @@ public class RegexReplacementTest {
     private static ListAppender app2;
     private static LoggerContext ctx;
 
-    private static final String EXPECTED = "/RegexReplacementTest" + Constants.LINE_SEP;
+    private static final String EXPECTED = "/RegexReplacementTest" + Constants.LINE_SEPARATOR;
 
     @BeforeClass
     public static void setupClass() {
@@ -87,7 +87,7 @@ public class RegexReplacementTest {
         msgs = app.getMessages();
         assertNotNull(msgs);
         assertTrue("Incorrect number of messages. Should be 1 is " + msgs.size(), msgs.size() == 1);
-        assertEquals("LoggerTest This is a test for Apache" + Constants.LINE_SEP , msgs.get(0));
+        assertEquals("LoggerTest This is a test for Apache" + Constants.LINE_SEPARATOR , msgs.get(0));
         app.clear();
 
     }

@@ -84,7 +84,7 @@ public class HostNameTest {
         testLogger.debug("Hello, {}", "World");
         final List<String> msgs = host.getMessages();
         assertTrue("Incorrect number of events. Expected 1, actual " + msgs.size(), msgs.size() == 1);
-        String expected = NetUtils.getLocalHostname() + Constants.LINE_SEP;
+        String expected = NetUtils.getLocalHostname() + Constants.LINE_SEPARATOR;
         assertTrue("Incorrect hostname - expected " + expected + " actual - " + msgs.get(0),
             msgs.get(0).endsWith(expected));
         assertNotNull("No Host FileAppender file name", hostFile.getFileName());

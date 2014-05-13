@@ -43,7 +43,7 @@ public final class LineSeparatorPatternConverter extends LogEventPatternConverte
    */
   private LineSeparatorPatternConverter() {
     super("Line Sep", "lineSep");
-    lineSep = Constants.LINE_SEP;
+    lineSep = Constants.LINE_SEPARATOR;
   }
 
   /**

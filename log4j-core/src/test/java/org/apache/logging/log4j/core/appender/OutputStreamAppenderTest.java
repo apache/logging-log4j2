@@ -46,7 +46,7 @@ public class OutputStreamAppenderTest {
         app.append(event);
         final String msg = app.toString();
         assertNotNull("No message", msg);
-        assertTrue("Incorrect message: " + msg , msg.endsWith("Test" + Constants.LINE_SEP));
+        assertTrue("Incorrect message: " + msg , msg.endsWith("Test" + Constants.LINE_SEPARATOR));
         app.stop();
         assertFalse("Appender did not stop", app.isStarted());
     }

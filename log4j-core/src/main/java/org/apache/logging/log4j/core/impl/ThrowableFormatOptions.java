@@ -80,7 +80,7 @@ public final class ThrowableFormatOptions {
      */
     protected ThrowableFormatOptions(final int lines, final String separator, final List<String> packages) {
         this.lines = lines;
-        this.separator = separator == null ? Constants.LINE_SEP : separator;
+        this.separator = separator == null ? Constants.LINE_SEPARATOR : separator;
         this.packages = packages;
     }
 

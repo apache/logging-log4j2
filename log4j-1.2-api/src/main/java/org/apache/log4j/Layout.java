@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.util.Constants;
 public abstract class Layout {
 
     /** Note that the line.separator property can be looked up even by applets. */
-    public static final int LINE_SEP_LEN = Constants.LINE_SEP.length();
+    public static final int LINE_SEP_LEN = Constants.LINE_SEPARATOR.length();
 
     /**
      * Implement this method to create your own layout format.

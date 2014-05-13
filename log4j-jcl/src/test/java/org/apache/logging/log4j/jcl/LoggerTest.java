@@ -63,13 +63,13 @@ public class LoggerTest {
     @Test
     public void testLog() {
         logger.debug("Test message");
-        verify("List", "o.a.l.l.j.LoggerTest Test message MDC{}" + Constants.LINE_SEP);
+        verify("List", "o.a.l.l.j.LoggerTest Test message MDC{}" + Constants.LINE_SEPARATOR);
         logger.debug("Exception: " , new NullPointerException("Test"));
-        verify("List", "o.a.l.l.j.LoggerTest Exception:  MDC{}" + Constants.LINE_SEP);
+        verify("List", "o.a.l.l.j.LoggerTest Exception:  MDC{}" + Constants.LINE_SEPARATOR);
         logger.info("Info Message");
-        verify("List", "o.a.l.l.j.LoggerTest Info Message MDC{}" + Constants.LINE_SEP);
+        verify("List", "o.a.l.l.j.LoggerTest Info Message MDC{}" + Constants.LINE_SEPARATOR);
         logger.info("Info Message {}");
-        verify("List", "o.a.l.l.j.LoggerTest Info Message {} MDC{}" + Constants.LINE_SEP);
+        verify("List", "o.a.l.l.j.LoggerTest Info Message {} MDC{}" + Constants.LINE_SEPARATOR);
     }
 
     private void verify(final String name, final String expected) {
