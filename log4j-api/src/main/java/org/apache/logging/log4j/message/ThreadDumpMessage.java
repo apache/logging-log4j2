@@ -107,7 +107,7 @@ public class ThreadDumpMessage implements Message {
      */
     @Override
     public String getFormat() {
-        return title == null ? "" : title;
+        return title == null ? Strings.EMPTY : title;
     }
 
     /**

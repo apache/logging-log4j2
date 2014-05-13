@@ -37,6 +37,7 @@ import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataId;
 import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Class that is both a Flume and Log4j Event.
@@ -49,9 +50,9 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
      */
     private static final long serialVersionUID = -8988674608627854140L;
 
-    private static final String DEFAULT_MDC_PREFIX = "";
+    private static final String DEFAULT_MDC_PREFIX = Strings.EMPTY;
 
-    private static final String DEFAULT_EVENT_PREFIX = "";
+    private static final String DEFAULT_EVENT_PREFIX = Strings.EMPTY;
 
     private static final String EVENT_TYPE = "eventType";
 

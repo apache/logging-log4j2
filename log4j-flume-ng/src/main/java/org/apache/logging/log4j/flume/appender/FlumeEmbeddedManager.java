@@ -95,7 +95,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
             }
             sb.append(']');
         } else {
-            String sep = "";
+            String sep = Strings.EMPTY;
             sb.append(name).append('-');
             final StringBuilder props = new StringBuilder();
             for (final Property prop : properties) {
@@ -213,7 +213,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
                 }
 
                 final StringBuilder sb = new StringBuilder();
-                String leading = "";
+                String leading = Strings.EMPTY;
                 int priority = agents.length;
                 for (int i = 0; i < priority; ++i) {
                     sb.append(leading).append("agent").append(i);

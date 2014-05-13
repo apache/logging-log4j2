@@ -103,7 +103,7 @@ public class LoggerConfig extends AbstractFilterable {
     public LoggerConfig() {
         this.logEventFactory = LOG_EVENT_FACTORY;
         this.level = Level.ERROR;
-        this.name = "";
+        this.name = Strings.EMPTY;
         this.properties = null;
         this.config = null;
     }
@@ -474,7 +474,7 @@ public class LoggerConfig extends AbstractFilterable {
                     levelName);
             level = Level.ERROR;
         }
-        final String name = loggerName.equals("root") ? "" : loggerName;
+        final String name = loggerName.equals("root") ? Strings.EMPTY : loggerName;
         final boolean additive = Booleans.parseBoolean(additivity, true);
 
         return new LoggerConfig(name, appenderRefs, filter, level, additive,
