@@ -16,6 +16,15 @@
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
+import static org.easymock.EasyMock.createStrictMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -23,6 +32,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
+
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
@@ -33,14 +43,12 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
 import org.easymock.IAnswer;
 import org.h2.util.IOUtils;
 import org.junit.After;
 import org.junit.Test;
 import org.mockejb.jndi.MockContextFactory;
-
-import static org.easymock.EasyMock.*;
-import static org.junit.Assert.*;
 
 public abstract class AbstractJdbcAppenderTest {
     private final String databaseType;

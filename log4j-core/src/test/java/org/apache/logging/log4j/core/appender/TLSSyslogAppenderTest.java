@@ -16,14 +16,21 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import org.apache.logging.log4j.core.net.mock.MockSyslogServerFactory;
-import org.apache.logging.log4j.core.net.ssl.*;
-import org.junit.Test;
+import java.io.IOException;
+import java.util.List;
 
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
-import java.io.IOException;
-import java.util.List;
+
+import org.apache.logging.log4j.core.net.mock.MockSyslogServerFactory;
+import org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration;
+import org.apache.logging.log4j.core.net.ssl.SSLConfiguration;
+import org.apache.logging.log4j.core.net.ssl.SSLConfigurationException;
+import org.apache.logging.log4j.core.net.ssl.TLSSyslogMessageFormat;
+import org.apache.logging.log4j.core.net.ssl.TLSSyslogTestUtil;
+import org.apache.logging.log4j.core.net.ssl.TestConstants;
+import org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration;
+import org.junit.Test;
 
 public class TLSSyslogAppenderTest extends SyslogAppenderTest{
 

@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.config.xml;
 
+import static org.junit.Assert.assertTrue;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -24,8 +26,6 @@ import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.AfterClass;
 import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
 
 /**
  *

@@ -26,7 +26,10 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.apache.logging.log4j.test.appender.FailOnceAppender;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  *

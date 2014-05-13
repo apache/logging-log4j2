@@ -17,7 +17,7 @@
 
 package org.apache.logging.log4j.core.helpers;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertSame;
 
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;

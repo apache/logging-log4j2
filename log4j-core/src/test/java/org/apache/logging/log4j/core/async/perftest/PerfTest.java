@@ -19,9 +19,9 @@ package org.apache.logging.log4j.core.async.perftest;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import com.lmax.disruptor.collections.Histogram;
-
 import org.apache.logging.log4j.core.util.Loader;
+
+import com.lmax.disruptor.collections.Histogram;
 
 public class PerfTest {
 

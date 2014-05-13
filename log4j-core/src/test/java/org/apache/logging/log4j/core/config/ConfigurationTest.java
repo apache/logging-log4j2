@@ -17,6 +17,13 @@
 
 package org.apache.logging.log4j.core.config;
 
+import static org.hamcrest.CoreMatchers.endsWith;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.security.SecureRandom;
@@ -33,6 +40,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.filter.ThreadContextMapFilter;
 import org.apache.logging.log4j.junit.CleanFiles;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -41,13 +49,6 @@ import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-
-import static org.hamcrest.CoreMatchers.endsWith;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
 
 /**
  * Unit tests for testing various supported configuration file formats. Each configuration file format should provide a

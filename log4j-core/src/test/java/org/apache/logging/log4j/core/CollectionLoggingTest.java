@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.nio.charset.Charset;
@@ -31,8 +33,6 @@ import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.assertNotNull;
 
 /**
  * Work in progress.

@@ -16,15 +16,16 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.junit.Assert.assertTrue;
+
+import java.util.Random;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import java.util.Random;
-
-import static org.junit.Assert.assertTrue;
 
 /**
  *

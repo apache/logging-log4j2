@@ -20,6 +20,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import org.apache.logging.log4j.util.Strings;
+
 /**
  * Tests the JDBC appender with the HyperSQL database (a.k.a. HSQLDB) in memory.
  */

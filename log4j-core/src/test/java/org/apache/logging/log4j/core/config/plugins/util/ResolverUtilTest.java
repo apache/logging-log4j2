@@ -17,12 +17,13 @@
 
 package org.apache.logging.log4j.core.config.plugins.util;
 
-import java.net.URL;
-import org.junit.Ignore;
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import java.net.URL;
+
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * Tests the ResolverUtil class.

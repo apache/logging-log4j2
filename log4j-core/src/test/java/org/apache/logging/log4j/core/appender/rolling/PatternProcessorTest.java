@@ -17,7 +17,7 @@
 
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
