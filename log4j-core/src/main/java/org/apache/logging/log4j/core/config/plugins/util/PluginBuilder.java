@@ -321,25 +321,25 @@ public class PluginBuilder<T> {
     private void checkForRemainingAttributes() {
         final Map<String, String> attrs = node.getAttributes();
         if (!attrs.isEmpty()) {
-            final StringBuilder eb = new StringBuilder();
+            final StringBuilder sb = new StringBuilder();
             for (final String key : attrs.keySet()) {
-                if (eb.length() == 0) {
-                    eb.append(node.getName());
-                    eb.append(" contains ");
+                if (sb.length() == 0) {
+                    sb.append(node.getName());
+                    sb.append(" contains ");
                     if (attrs.size() == 1) {
-                        eb.append("an invalid element or attribute ");
+                        sb.append("an invalid element or attribute ");
                     } else {
-                        eb.append("invalid attributes ");
+                        sb.append("invalid attributes ");
                     }
                 } else {
-                    eb.append(", ");
+                    sb.append(", ");
                 }
-                eb.append('"');
-                eb.append(key);
-                eb.append('"');
+                sb.append('"');
+                sb.append(key);
+                sb.append('"');
 
             }
-            LOGGER.error(eb.toString());
+            LOGGER.error(sb.toString());
         }
     }
 
