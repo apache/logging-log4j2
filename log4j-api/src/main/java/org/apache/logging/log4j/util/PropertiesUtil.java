@@ -26,7 +26,10 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
+ * <em>Consider this class private.</em>
+ * <p>
  * Helps access properties.
+ * </p>
  */
 public final class PropertiesUtil {
 
