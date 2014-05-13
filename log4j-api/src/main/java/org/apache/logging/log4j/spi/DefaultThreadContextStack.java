@@ -23,6 +23,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.apache.logging.log4j.util.Strings;
+
 /**
  * A copy-on-write thread-safe variant of {@code org.apache.logging.log4j.spi.ThreadContextStack} in which all mutative operations (add,
  * pop, and so on) are implemented by making a fresh copy of the underlying list.
@@ -177,7 +179,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
     @Override
     public String pop() {
         if (!useStack) {
-            return "";
+            return Strings.EMPTY;
         }
         final List<String> list = stack.get();
         if (list == null || list.size() == 0) {

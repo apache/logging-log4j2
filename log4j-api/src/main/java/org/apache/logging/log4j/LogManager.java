@@ -30,6 +30,7 @@ import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ProviderUtil;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * The anchor point for the logging system.
@@ -45,7 +46,7 @@ public class LogManager {
     /**
      * The name of the root Logger.
      */
-    public static final String ROOT_LOGGER_NAME = "";
+    public static final String ROOT_LOGGER_NAME = Strings.EMPTY;
 
     /**
      * Scans the classpath to find all logging implementation. Currently, only one will

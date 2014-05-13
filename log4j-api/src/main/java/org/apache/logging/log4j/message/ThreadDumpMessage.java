@@ -26,6 +26,8 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.util.Strings;
+
 /**
  * Captures information about all running Threads.
  */
@@ -58,13 +60,13 @@ public class ThreadDumpMessage implements Message {
      * @param title The title.
      */
     public ThreadDumpMessage(final String title) {
-        this.title = title == null ? "" : title;
+        this.title = title == null ? Strings.EMPTY : title;
         threads = FACTORY.createThreadInfo();
     }
 
     private ThreadDumpMessage(final String formattedMsg, final String title) {
         this.formattedMessage = formattedMsg;
-        this.title = title == null ? "" : title;
+        this.title = title == null ? Strings.EMPTY : title;
     }
 
     @Override

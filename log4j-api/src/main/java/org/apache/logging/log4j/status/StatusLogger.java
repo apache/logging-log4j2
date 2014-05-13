@@ -35,6 +35,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.simple.SimpleLogger;
 import org.apache.logging.log4j.spi.AbstractLoggerProvider;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Mechanism to record events that occur in the logging system.
@@ -70,7 +71,7 @@ public final class StatusLogger extends AbstractLoggerProvider {
     private int listenersLevel;
 
     private StatusLogger() {
-        this.logger = new SimpleLogger("StatusLogger", Level.ERROR, false, true, false, false, "", null, PROPS,
+        this.logger = new SimpleLogger("StatusLogger", Level.ERROR, false, true, false, false, Strings.EMPTY, null, PROPS,
             System.err);
         this.listenersLevel = Level.toLevel(DEFAULT_STATUS_LEVEL, Level.WARN).intLevel();
     }
