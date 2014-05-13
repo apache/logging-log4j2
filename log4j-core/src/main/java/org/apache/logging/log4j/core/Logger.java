@@ -30,6 +30,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLoggerProvider;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * @doubt All the isEnabled methods could be pushed into a filter interface.  Not sure of the utility of having
@@ -97,7 +98,7 @@ public class Logger extends AbstractLoggerProvider {
 
     @Override
     public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message, final Throwable t) {
-        final Message msg = message == null ? new SimpleMessage("") : message;
+        final Message msg = message == null ? new SimpleMessage(Strings.EMPTY) : message;
         config.config.getConfigurationMonitor().checkConfiguration();
         config.loggerConfig.log(getName(), fqcn, marker, level, msg, t);
     }
@@ -347,7 +348,7 @@ public class Logger extends AbstractLoggerProvider {
      */
     @Override
     public String toString() {
-        final String nameLevel = "" + getName() + ':' + getLevel();
+        final String nameLevel = Strings.EMPTY + getName() + ':' + getLevel();
         if (context == null) {
             return nameLevel;
         }
