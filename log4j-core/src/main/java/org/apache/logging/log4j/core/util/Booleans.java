@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.util;
 /**
  * Boolean helpers.
  */
-public class Booleans {
+public final class Booleans {
 
     /**
      * Returns {@code true} if {@code s} is {@code "true"} (case-insensitive), {@code false} if {@code s} is

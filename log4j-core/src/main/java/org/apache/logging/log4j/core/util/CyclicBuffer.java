@@ -23,7 +23,7 @@ import java.lang.reflect.Array;
  * size of the buffer the oldest element will be overwritten. Access to the buffer is thread safe.
  * @param <T> The type of object stored in the buffer.
  */
-public class CyclicBuffer<T> {
+public final class CyclicBuffer<T> {
     private final T[] ring;
     private int first = 0;
     private int last = 0;

@@ -25,7 +25,7 @@ import org.osgi.framework.Bundle;
 /**
  * Bundle-based ResourceLoader.
  */
-public class BundleResourceLoader implements ResourceLoader {
+public final class BundleResourceLoader implements ResourceLoader {
 
     private final Bundle bundle;
 

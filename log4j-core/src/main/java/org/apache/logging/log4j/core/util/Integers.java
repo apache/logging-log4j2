@@ -21,7 +21,7 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Helps deal with integers.
  */
-public class Integers {
+public final class Integers {
 
     /**
      * Parses the string argument as a signed decimal integer.
