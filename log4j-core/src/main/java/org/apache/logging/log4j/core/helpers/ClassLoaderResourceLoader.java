@@ -15,17 +15,35 @@
  * limitations under the License.
  */
 
-package org.apache.logging.log4j.core.helpers.lang;
+package org.apache.logging.log4j.core.helpers;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
 
 /**
- * Abstract interface for a ClassLoader or similar object.
+ * ClassLoader-based ResourceLoader.
  */
-public interface ResourceLoader {
-    Class<?> loadClass(String name) throws ClassNotFoundException;
-    URL getResource(String name);
-    Enumeration<URL> getResources(String name) throws IOException;
+public class ClassLoaderResourceLoader implements ResourceLoader {
+
+    private final ClassLoader loader;
+
+    public ClassLoaderResourceLoader(final ClassLoader loader) {
+        this.loader = loader != null ? loader : this.getClass().getClassLoader();
+    }
+
+    @Override
+    public Class<?> loadClass(final String name) throws ClassNotFoundException {
+        return loader.loadClass(name);
+    }
+
+    @Override
+    public URL getResource(final String name) {
+        return loader.getResource(name);
+    }
+
+    @Override
+    public Enumeration<URL> getResources(final String name) throws IOException {
+        return loader.getResources(name);
+    }
 }

@@ -20,7 +20,7 @@ package org.apache.logging.log4j.core.config.plugins.osgi;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
-import org.apache.logging.log4j.core.helpers.lang.BundleResourceLoader;
+import org.apache.logging.log4j.core.helpers.BundleResourceLoader;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
