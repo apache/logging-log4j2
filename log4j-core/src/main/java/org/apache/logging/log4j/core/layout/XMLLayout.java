@@ -18,47 +18,153 @@ package org.apache.logging.log4j.core.layout;
 
 import java.nio.charset.Charset;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Charsets;
-import org.apache.logging.log4j.core.helpers.Strings;
-import org.apache.logging.log4j.core.helpers.Throwables;
-import org.apache.logging.log4j.core.helpers.Transform;
-import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.MultiformatMessage;
-
 
 /**
  * Appends a series of {@code event} elements as defined in the <a href="log4j.dtd">log4j.dtd</a>.
- *
+ * 
  * <h4>Complete well-formed XML vs. fragment XML</h4>
  * <p>
- * If you configure {@code complete="true"}, the appender outputs a well-formed XML document where the default namespace
- * is the log4j namespace {@value #XML_NAMESPACE}. By default, with {@code complete="false"}, you should include the
- * output as an <em>external entity</em> in a separate file to form a well-formed XML document, in which case the
- * appender uses {@code namespacePrefix} with a default of {@value #DEFAULT_NS_PREFIX}.
+ * If you configure {@code complete="true"}, the appender outputs a well-formed XML document where the default namespace is the log4j
+ * namespace {@value XMLConstants#XML_NAMESPACE}. By default, with {@code complete="false"}, you should include the output as an
+ * <em>external entity</em> in a separate file to form a well-formed XML document.
  * </p>
  * <p>
  * A well-formed XML document follows this pattern:
  * </p>
- *
  * <pre>
- * &lt;?xml version="1.0" encoding=&quotUTF-8&quot?&gt;
- * &lt;Events xmlns="http://logging.apache.org/log4j/2.0/events"&gt;
- * &nbsp;&nbsp;&lt;Event logger="com.foo.Bar" timestamp="1373436580419" level="INFO" thread="main"&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;&lt;Message>&lt;![CDATA[This is a log message 1]]&gt;&lt;/Message&gt;
- * &nbsp;&nbsp;&lt;/Event&gt;
- * &nbsp;&nbsp;&lt;Event logger="com.foo.Baz" timestamp="1373436580420" level="INFO" thread="main"&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;&lt;Message>&lt;![CDATA[This is a log message 2]]&gt;&lt;/Message&gt;
- * &nbsp;&nbsp;&lt;/Event&gt;
- * &lt;/Events&gt;
- * </pre>
+&lt;Event xmlns=&quot;http://logging.apache.org/log4j/2.0/events&quot; timeMillis=&quot;1&quot; thread=&quot;MyThreadName&quot; level=&quot;DEBUG&quot; loggerName=&quot;a.B&quot; loggerFQCN=&quot;f.q.c.n&quot; endOfBatch=&quot;false&quot;&gt;
+    &lt;Marker name=&quot;Marker1&quot;&gt;
+        &lt;Parents&gt;
+            &lt;Parents name=&quot;ParentMarker1&quot;&gt;
+                &lt;Parents&gt;
+                    &lt;Parents name=&quot;GrandMotherMarker&quot;/&gt;
+                    &lt;Parents name=&quot;GrandFatherMarker&quot;/&gt;
+                &lt;/Parents&gt;
+            &lt;/Parents&gt;
+            &lt;Parents name=&quot;GrandFatherMarker&quot;/&gt;
+        &lt;/Parents&gt;
+    &lt;/Marker&gt;
+    &lt;Message&gt;Msg&lt;/Message&gt;
+    &lt;ContextMap&gt;
+        &lt;item key=&quot;MDC.B&quot; value=&quot;B_Value&quot;/&gt;
+        &lt;item key=&quot;MDC.A&quot; value=&quot;A_Value&quot;/&gt;
+    &lt;/ContextMap&gt;
+    &lt;ContextStack&gt;
+        &lt;ContextStack&gt;stack_msg1&lt;/ContextStack&gt;
+        &lt;ContextStack&gt;stack_msg2&lt;/ContextStack&gt;
+    &lt;/ContextStack&gt;
+    &lt;Source class=&quot;org.apache.logging.log4j.core.layout.LogEventFixtures&quot; method=&quot;createLogEvent&quot; file=&quot;LogEventFixtures.java&quot; line=&quot;54&quot;/&gt;
+    &lt;Thrown commonElementCount=&quot;0&quot; localizedMessage=&quot;testIOEx&quot; message=&quot;testIOEx&quot; name=&quot;java.io.IOException&quot;&gt;
+        &lt;Cause commonElementCount=&quot;27&quot; localizedMessage=&quot;testNPEx&quot; message=&quot;testNPEx&quot; name=&quot;java.lang.NullPointerException&quot;&gt;
+            &lt;ExtendedStackTrace&gt;
+                &lt;ExtendedStackTrace class=&quot;org.apache.logging.log4j.core.layout.LogEventFixtures&quot; method=&quot;createLogEvent&quot; file=&quot;LogEventFixtures.java&quot; line=&quot;53&quot; exact=&quot;false&quot; location=&quot;test-classes/&quot; version=&quot;?&quot;/&gt;
+            &lt;/ExtendedStackTrace&gt;
+        &lt;/Cause&gt;
+        &lt;ExtendedStackTrace&gt;
+            &lt;ExtendedStackTrace class=&quot;org.apache.logging.log4j.core.layout.LogEventFixtures&quot; method=&quot;createLogEvent&quot; file=&quot;LogEventFixtures.java&quot; line=&quot;56&quot; exact=&quot;true&quot; location=&quot;test-classes/&quot; version=&quot;?&quot;/&gt;
+            &lt;ExtendedStackTrace class=&quot;org.apache.logging.log4j.core.layout.XMLLayoutTest&quot; method=&quot;testAllFeatures&quot; file=&quot;XMLLayoutTest.java&quot; line=&quot;122&quot; exact=&quot;true&quot; location=&quot;test-classes/&quot; version=&quot;?&quot;/&gt;
+            &lt;ExtendedStackTrace class=&quot;org.apache.logging.log4j.core.layout.XMLLayoutTest&quot; method=&quot;testLocationOnCompactOnMdcOn&quot; file=&quot;XMLLayoutTest.java&quot; line=&quot;270&quot; exact=&quot;true&quot; location=&quot;test-classes/&quot; version=&quot;?&quot;/&gt;
+            &lt;ExtendedStackTrace class=&quot;sun.reflect.NativeMethodAccessorImpl&quot; method=&quot;invoke&quot; line=&quot;-1&quot; exact=&quot;false&quot; location=&quot;?&quot; version=&quot;1.7.0_55&quot;/&gt;
+            &lt;ExtendedStackTrace class=&quot;sun.reflect.NativeMethodAccessorImpl&quot; method=&quot;invoke&quot; line=&quot;-1&quot; exact=&quot;false&quot; location=&quot;?&quot; version=&quot;1.7.0_55&quot;/&gt;
+            &lt;ExtendedStackTrace class=&quot;sun.reflect.DelegatingMethodAccessorImpl&quot; method=&quot;invoke&quot; line=&quot;-1&quot; exact=&quot;false&quot; location=&quot;?&quot; version=&quot;1.7.0_55&quot;/&gt;
+            &lt;ExtendedStackTrace class=&quot;java.lang.reflect.Method&quot; method=&quot;invoke&quot; line=&quot;-1&quot; exact=&quot;false&quot; location=&quot;?&quot; version=&quot;1.7.0_55&quot;/&gt;
+            &lt;ExtendedStackTrace class=&quot;org.junit.runners.model.FrameworkMethod$1&quot; method=&quot;runReflectiveCall&quot; file=&quot;FrameworkMethod.java&quot; line=&quot;47&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+            &lt;ExtendedStackTrace class=&quot;org.junit.internal.runners.model.ReflectiveCallable&quot; method=&quot;run&quot; file=&quot;ReflectiveCallable.java&quot; line=&quot;12&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+            &lt;ExtendedStackTrace class=&quot;org.junit.runners.model.FrameworkMethod&quot; method=&quot;invokeExplosively&quot; file=&quot;FrameworkMethod.java&quot; line=&quot;44&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+            &lt;ExtendedStackTrace class=&quot;org.junit.internal.runners.statements.InvokeMethod&quot; method=&quot;evaluate&quot; file=&quot;InvokeMethod.java&quot; line=&quot;17&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+            &lt;ExtendedStackTrace class=&quot;org.junit.runners.ParentRunner&quot; method=&quot;runLeaf&quot; file=&quot;ParentRunner.java&quot; line=&quot;271&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+            &lt;ExtendedStackTrace class=&quot;org.junit.runners.BlockJUnit4ClassRunner&quot; method=&quot;runChild&quot; file=&quot;BlockJUnit4ClassRunner.java&quot; line=&quot;70&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+            &lt;ExtendedStackTrace class=&quot;org.junit.runners.BlockJUnit4ClassRunner&quot; method=&quot;runChild&quot; file=&quot;BlockJUnit4ClassRunner.java&quot; line=&quot;50&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+            &lt;ExtendedStackTrace class=&quot;org.junit.runners.ParentRunner$3&quot; method=&quot;run&quot; file=&quot;ParentRunner.java&quot; line=&quot;238&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+            &lt;ExtendedStackTrace class=&quot;org.junit.runners.ParentRunner$1&quot; method=&quot;schedule&quot; file=&quot;ParentRunner.java&quot; line=&quot;63&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+            &lt;ExtendedStackTrace class=&quot;org.junit.runners.ParentRunner&quot; method=&quot;runChildren&quot; file=&quot;ParentRunner.java&quot; line=&quot;236&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+            &lt;ExtendedStackTrace class=&quot;org.junit.runners.ParentRunner&quot; method=&quot;access$000&quot; file=&quot;ParentRunner.java&quot; line=&quot;53&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+            &lt;ExtendedStackTrace class=&quot;org.junit.runners.ParentRunner$2&quot; method=&quot;evaluate&quot; file=&quot;ParentRunner.java&quot; line=&quot;229&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+            &lt;ExtendedStackTrace class=&quot;org.junit.internal.runners.statements.RunBefores&quot; method=&quot;evaluate&quot; file=&quot;RunBefores.java&quot; line=&quot;26&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+            &lt;ExtendedStackTrace class=&quot;org.junit.internal.runners.statements.RunAfters&quot; method=&quot;evaluate&quot; file=&quot;RunAfters.java&quot; line=&quot;27&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+            &lt;ExtendedStackTrace class=&quot;org.junit.runners.ParentRunner&quot; method=&quot;run&quot; file=&quot;ParentRunner.java&quot; line=&quot;309&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+            &lt;ExtendedStackTrace class=&quot;org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference&quot; method=&quot;run&quot; file=&quot;JUnit4TestReference.java&quot; line=&quot;50&quot; exact=&quot;true&quot; location=&quot;.cp/&quot; version=&quot;?&quot;/&gt;
+            &lt;ExtendedStackTrace class=&quot;org.eclipse.jdt.internal.junit.runner.TestExecution&quot; method=&quot;run&quot; file=&quot;TestExecution.java&quot; line=&quot;38&quot; exact=&quot;true&quot; location=&quot;.cp/&quot; version=&quot;?&quot;/&gt;
+            &lt;ExtendedStackTrace class=&quot;org.eclipse.jdt.internal.junit.runner.RemoteTestRunner&quot; method=&quot;runTests&quot; file=&quot;RemoteTestRunner.java&quot; line=&quot;467&quot; exact=&quot;true&quot; location=&quot;.cp/&quot; version=&quot;?&quot;/&gt;
+            &lt;ExtendedStackTrace class=&quot;org.eclipse.jdt.internal.junit.runner.RemoteTestRunner&quot; method=&quot;runTests&quot; file=&quot;RemoteTestRunner.java&quot; line=&quot;683&quot; exact=&quot;true&quot; location=&quot;.cp/&quot; version=&quot;?&quot;/&gt;
+            &lt;ExtendedStackTrace class=&quot;org.eclipse.jdt.internal.junit.runner.RemoteTestRunner&quot; method=&quot;run&quot; file=&quot;RemoteTestRunner.java&quot; line=&quot;390&quot; exact=&quot;true&quot; location=&quot;.cp/&quot; version=&quot;?&quot;/&gt;
+            &lt;ExtendedStackTrace class=&quot;org.eclipse.jdt.internal.junit.runner.RemoteTestRunner&quot; method=&quot;main&quot; file=&quot;RemoteTestRunner.java&quot; line=&quot;197&quot; exact=&quot;true&quot; location=&quot;.cp/&quot; version=&quot;?&quot;/&gt;
+        &lt;/ExtendedStackTrace&gt;
+        &lt;Suppressed&gt;
+            &lt;Suppressed commonElementCount=&quot;0&quot; localizedMessage=&quot;I am suppressed exception 1&quot; message=&quot;I am suppressed exception 1&quot; name=&quot;java.lang.IndexOutOfBoundsException&quot;&gt;
+                &lt;ExtendedStackTrace&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.apache.logging.log4j.core.layout.LogEventFixtures&quot; method=&quot;createLogEvent&quot; file=&quot;LogEventFixtures.java&quot; line=&quot;57&quot; exact=&quot;true&quot; location=&quot;test-classes/&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.apache.logging.log4j.core.layout.XMLLayoutTest&quot; method=&quot;testAllFeatures&quot; file=&quot;XMLLayoutTest.java&quot; line=&quot;122&quot; exact=&quot;true&quot; location=&quot;test-classes/&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.apache.logging.log4j.core.layout.XMLLayoutTest&quot; method=&quot;testLocationOnCompactOnMdcOn&quot; file=&quot;XMLLayoutTest.java&quot; line=&quot;270&quot; exact=&quot;true&quot; location=&quot;test-classes/&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;sun.reflect.NativeMethodAccessorImpl&quot; method=&quot;invoke&quot; line=&quot;-1&quot; exact=&quot;false&quot; location=&quot;?&quot; version=&quot;1.7.0_55&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;sun.reflect.NativeMethodAccessorImpl&quot; method=&quot;invoke&quot; line=&quot;-1&quot; exact=&quot;false&quot; location=&quot;?&quot; version=&quot;1.7.0_55&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;sun.reflect.DelegatingMethodAccessorImpl&quot; method=&quot;invoke&quot; line=&quot;-1&quot; exact=&quot;false&quot; location=&quot;?&quot; version=&quot;1.7.0_55&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;java.lang.reflect.Method&quot; method=&quot;invoke&quot; line=&quot;-1&quot; exact=&quot;false&quot; location=&quot;?&quot; version=&quot;1.7.0_55&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.junit.runners.model.FrameworkMethod$1&quot; method=&quot;runReflectiveCall&quot; file=&quot;FrameworkMethod.java&quot; line=&quot;47&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.junit.internal.runners.model.ReflectiveCallable&quot; method=&quot;run&quot; file=&quot;ReflectiveCallable.java&quot; line=&quot;12&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.junit.runners.model.FrameworkMethod&quot; method=&quot;invokeExplosively&quot; file=&quot;FrameworkMethod.java&quot; line=&quot;44&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.junit.internal.runners.statements.InvokeMethod&quot; method=&quot;evaluate&quot; file=&quot;InvokeMethod.java&quot; line=&quot;17&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.junit.runners.ParentRunner&quot; method=&quot;runLeaf&quot; file=&quot;ParentRunner.java&quot; line=&quot;271&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.junit.runners.BlockJUnit4ClassRunner&quot; method=&quot;runChild&quot; file=&quot;BlockJUnit4ClassRunner.java&quot; line=&quot;70&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.junit.runners.BlockJUnit4ClassRunner&quot; method=&quot;runChild&quot; file=&quot;BlockJUnit4ClassRunner.java&quot; line=&quot;50&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.junit.runners.ParentRunner$3&quot; method=&quot;run&quot; file=&quot;ParentRunner.java&quot; line=&quot;238&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.junit.runners.ParentRunner$1&quot; method=&quot;schedule&quot; file=&quot;ParentRunner.java&quot; line=&quot;63&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.junit.runners.ParentRunner&quot; method=&quot;runChildren&quot; file=&quot;ParentRunner.java&quot; line=&quot;236&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.junit.runners.ParentRunner&quot; method=&quot;access$000&quot; file=&quot;ParentRunner.java&quot; line=&quot;53&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.junit.runners.ParentRunner$2&quot; method=&quot;evaluate&quot; file=&quot;ParentRunner.java&quot; line=&quot;229&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.junit.internal.runners.statements.RunBefores&quot; method=&quot;evaluate&quot; file=&quot;RunBefores.java&quot; line=&quot;26&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.junit.internal.runners.statements.RunAfters&quot; method=&quot;evaluate&quot; file=&quot;RunAfters.java&quot; line=&quot;27&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.junit.runners.ParentRunner&quot; method=&quot;run&quot; file=&quot;ParentRunner.java&quot; line=&quot;309&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference&quot; method=&quot;run&quot; file=&quot;JUnit4TestReference.java&quot; line=&quot;50&quot; exact=&quot;true&quot; location=&quot;.cp/&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.eclipse.jdt.internal.junit.runner.TestExecution&quot; method=&quot;run&quot; file=&quot;TestExecution.java&quot; line=&quot;38&quot; exact=&quot;true&quot; location=&quot;.cp/&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.eclipse.jdt.internal.junit.runner.RemoteTestRunner&quot; method=&quot;runTests&quot; file=&quot;RemoteTestRunner.java&quot; line=&quot;467&quot; exact=&quot;true&quot; location=&quot;.cp/&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.eclipse.jdt.internal.junit.runner.RemoteTestRunner&quot; method=&quot;runTests&quot; file=&quot;RemoteTestRunner.java&quot; line=&quot;683&quot; exact=&quot;true&quot; location=&quot;.cp/&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.eclipse.jdt.internal.junit.runner.RemoteTestRunner&quot; method=&quot;run&quot; file=&quot;RemoteTestRunner.java&quot; line=&quot;390&quot; exact=&quot;true&quot; location=&quot;.cp/&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.eclipse.jdt.internal.junit.runner.RemoteTestRunner&quot; method=&quot;main&quot; file=&quot;RemoteTestRunner.java&quot; line=&quot;197&quot; exact=&quot;true&quot; location=&quot;.cp/&quot; version=&quot;?&quot;/&gt;
+                &lt;/ExtendedStackTrace&gt;
+            &lt;/Suppressed&gt;
+            &lt;Suppressed commonElementCount=&quot;0&quot; localizedMessage=&quot;I am suppressed exception 2&quot; message=&quot;I am suppressed exception 2&quot; name=&quot;java.lang.IndexOutOfBoundsException&quot;&gt;
+                &lt;ExtendedStackTrace&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.apache.logging.log4j.core.layout.LogEventFixtures&quot; method=&quot;createLogEvent&quot; file=&quot;LogEventFixtures.java&quot; line=&quot;58&quot; exact=&quot;true&quot; location=&quot;test-classes/&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.apache.logging.log4j.core.layout.XMLLayoutTest&quot; method=&quot;testAllFeatures&quot; file=&quot;XMLLayoutTest.java&quot; line=&quot;122&quot; exact=&quot;true&quot; location=&quot;test-classes/&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.apache.logging.log4j.core.layout.XMLLayoutTest&quot; method=&quot;testLocationOnCompactOnMdcOn&quot; file=&quot;XMLLayoutTest.java&quot; line=&quot;270&quot; exact=&quot;true&quot; location=&quot;test-classes/&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;sun.reflect.NativeMethodAccessorImpl&quot; method=&quot;invoke&quot; line=&quot;-1&quot; exact=&quot;false&quot; location=&quot;?&quot; version=&quot;1.7.0_55&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;sun.reflect.NativeMethodAccessorImpl&quot; method=&quot;invoke&quot; line=&quot;-1&quot; exact=&quot;false&quot; location=&quot;?&quot; version=&quot;1.7.0_55&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;sun.reflect.DelegatingMethodAccessorImpl&quot; method=&quot;invoke&quot; line=&quot;-1&quot; exact=&quot;false&quot; location=&quot;?&quot; version=&quot;1.7.0_55&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;java.lang.reflect.Method&quot; method=&quot;invoke&quot; line=&quot;-1&quot; exact=&quot;false&quot; location=&quot;?&quot; version=&quot;1.7.0_55&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.junit.runners.model.FrameworkMethod$1&quot; method=&quot;runReflectiveCall&quot; file=&quot;FrameworkMethod.java&quot; line=&quot;47&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.junit.internal.runners.model.ReflectiveCallable&quot; method=&quot;run&quot; file=&quot;ReflectiveCallable.java&quot; line=&quot;12&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.junit.runners.model.FrameworkMethod&quot; method=&quot;invokeExplosively&quot; file=&quot;FrameworkMethod.java&quot; line=&quot;44&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.junit.internal.runners.statements.InvokeMethod&quot; method=&quot;evaluate&quot; file=&quot;InvokeMethod.java&quot; line=&quot;17&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.junit.runners.ParentRunner&quot; method=&quot;runLeaf&quot; file=&quot;ParentRunner.java&quot; line=&quot;271&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.junit.runners.BlockJUnit4ClassRunner&quot; method=&quot;runChild&quot; file=&quot;BlockJUnit4ClassRunner.java&quot; line=&quot;70&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.junit.runners.BlockJUnit4ClassRunner&quot; method=&quot;runChild&quot; file=&quot;BlockJUnit4ClassRunner.java&quot; line=&quot;50&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.junit.runners.ParentRunner$3&quot; method=&quot;run&quot; file=&quot;ParentRunner.java&quot; line=&quot;238&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.junit.runners.ParentRunner$1&quot; method=&quot;schedule&quot; file=&quot;ParentRunner.java&quot; line=&quot;63&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.junit.runners.ParentRunner&quot; method=&quot;runChildren&quot; file=&quot;ParentRunner.java&quot; line=&quot;236&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.junit.runners.ParentRunner&quot; method=&quot;access$000&quot; file=&quot;ParentRunner.java&quot; line=&quot;53&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.junit.runners.ParentRunner$2&quot; method=&quot;evaluate&quot; file=&quot;ParentRunner.java&quot; line=&quot;229&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.junit.internal.runners.statements.RunBefores&quot; method=&quot;evaluate&quot; file=&quot;RunBefores.java&quot; line=&quot;26&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.junit.internal.runners.statements.RunAfters&quot; method=&quot;evaluate&quot; file=&quot;RunAfters.java&quot; line=&quot;27&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.junit.runners.ParentRunner&quot; method=&quot;run&quot; file=&quot;ParentRunner.java&quot; line=&quot;309&quot; exact=&quot;true&quot; location=&quot;junit-4.11.jar&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference&quot; method=&quot;run&quot; file=&quot;JUnit4TestReference.java&quot; line=&quot;50&quot; exact=&quot;true&quot; location=&quot;.cp/&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.eclipse.jdt.internal.junit.runner.TestExecution&quot; method=&quot;run&quot; file=&quot;TestExecution.java&quot; line=&quot;38&quot; exact=&quot;true&quot; location=&quot;.cp/&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.eclipse.jdt.internal.junit.runner.RemoteTestRunner&quot; method=&quot;runTests&quot; file=&quot;RemoteTestRunner.java&quot; line=&quot;467&quot; exact=&quot;true&quot; location=&quot;.cp/&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.eclipse.jdt.internal.junit.runner.RemoteTestRunner&quot; method=&quot;runTests&quot; file=&quot;RemoteTestRunner.java&quot; line=&quot;683&quot; exact=&quot;true&quot; location=&quot;.cp/&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.eclipse.jdt.internal.junit.runner.RemoteTestRunner&quot; method=&quot;run&quot; file=&quot;RemoteTestRunner.java&quot; line=&quot;390&quot; exact=&quot;true&quot; location=&quot;.cp/&quot; version=&quot;?&quot;/&gt;
+                    &lt;ExtendedStackTrace class=&quot;org.eclipse.jdt.internal.junit.runner.RemoteTestRunner&quot; method=&quot;main&quot; file=&quot;RemoteTestRunner.java&quot; line=&quot;197&quot; exact=&quot;true&quot; location=&quot;.cp/&quot; version=&quot;?&quot;/&gt;
+                &lt;/ExtendedStackTrace&gt;
+            &lt;/Suppressed&gt;
+        &lt;/Suppressed&gt;
+    &lt;/Thrown&gt;
+&lt;/Event&gt;
+</pre>
  * <p>
  * If {@code complete="false"}, the appender does not write the XML processing instruction and the root element.
  * </p>
@@ -67,244 +173,23 @@ import org.apache.logging.log4j.message.MultiformatMessage;
  * </p>
  * <h4>Encoding</h4>
  * <p>
- * Appenders using this layout should have their {@code charset} set to {@code UTF-8} or {@code UTF-16}, otherwise
- * events containing non ASCII characters could result in corrupted log files.
+ * Appenders using this layout should have their {@code charset} set to {@code UTF-8} or {@code UTF-16}, otherwise events containing non
+ * ASCII characters could result in corrupted log files.
  * </p>
  * <h4>Pretty vs. compact XML</h4>
  * <p>
- * By default, the XML layout is not compact (a.k.a. not "pretty") with {@code compact="false"}, which means the
- * appender uses end-of-line characters and indents lines to format the XML. If {@code compact="true"}, then no
- * end-of-line or indentation is used. Message content may contain, of course, end-of-lines.
+ * By default, the XML layout is not compact (compact = not "pretty") with {@code compact="false"}, which means the appender uses
+ * end-of-line characters and indents lines to format the XML. If {@code compact="true"}, then no end-of-line or indentation is used.
+ * Message content may contain, of course, end-of-lines.
  * </p>
  */
 @Plugin(name = "XMLLayout", category = "Core", elementType = "layout", printObject = true)
-public class XMLLayout extends AbstractStringLayout {
+public class XMLLayout extends AbstractJacksonLayout {
 
-    private static final String XML_NAMESPACE = "http://logging.apache.org/log4j/2.0/events";
     private static final String ROOT_TAG = "Events";
-    private static final int DEFAULT_SIZE = 256;
 
-    // We yield to \r\n for the default.
-    private static final String DEFAULT_EOL = "\r\n";
-    private static final String COMPACT_EOL = "";
-    private static final String DEFAULT_INDENT = "  ";
-    private static final String COMPACT_INDENT = "";
-    private static final String DEFAULT_NS_PREFIX = "log4j";
-
-    private static final String[] FORMATS = new String[] {"xml"};
-
-    private final boolean locationInfo;
-    private final boolean properties;
-    private final boolean complete;
-    private final String namespacePrefix;
-    private final String eol;
-    private final String indent1;
-    private final String indent2;
-    private final String indent3;
-
-    protected XMLLayout(final boolean locationInfo, final boolean properties, final boolean complete,
-                        boolean compact, final String nsPrefix, final Charset charset) {
-        super(charset);
-        this.locationInfo = locationInfo;
-        this.properties = properties;
-        this.complete = complete;
-        this.eol = compact ? COMPACT_EOL : DEFAULT_EOL;
-        this.indent1 = compact ? COMPACT_INDENT : DEFAULT_INDENT;
-        this.indent2 = this.indent1 + this.indent1;
-        this.indent3 = this.indent2 + this.indent1;
-        this.namespacePrefix = (Strings.isEmpty(nsPrefix) ? DEFAULT_NS_PREFIX : nsPrefix) + ':';
-    }
-
-    /**
-     * Formats a {@link org.apache.logging.log4j.core.LogEvent} in conformance with the log4j.dtd.
-     *
-     * @param event The LogEvent.
-     * @return The XML representation of the LogEvent.
-     */
-    @Override
-    public String toSerializable(final LogEvent event) {
-        final StringBuilder buf = new StringBuilder(DEFAULT_SIZE);
-
-        buf.append(this.indent1);
-        buf.append('<');
-        if (!complete) {
-            buf.append(this.namespacePrefix);
-        }
-        buf.append("Event logger=\"");
-        String name = event.getLoggerName();
-        if (name.isEmpty()) {
-            name = "root";
-        }
-        buf.append(Transform.escapeHtmlTags(name));
-        buf.append("\" timestamp=\"");
-        buf.append(event.getTimeMillis());
-        buf.append("\" level=\"");
-        buf.append(Transform.escapeHtmlTags(String.valueOf(event.getLevel())));
-        buf.append("\" thread=\"");
-        buf.append(Transform.escapeHtmlTags(event.getThreadName()));
-        buf.append("\">");
-        buf.append(this.eol);
-
-        final Message msg = event.getMessage();
-        if (msg != null) {
-            boolean xmlSupported = false;
-            if (msg instanceof MultiformatMessage) {
-                final String[] formats = ((MultiformatMessage) msg).getFormats();
-                for (final String format : formats) {
-                    if (format.equalsIgnoreCase("XML")) {
-                        xmlSupported = true;
-                        break;
-                    }
-                }
-            }
-            buf.append(this.indent2);
-            buf.append('<');
-            if (!complete) {
-                buf.append(this.namespacePrefix);
-            }
-            buf.append("Message>");
-            if (xmlSupported) {
-                buf.append(((MultiformatMessage) msg).getFormattedMessage(FORMATS));
-            } else {
-                buf.append("<![CDATA[");
-                // Append the rendered message. Also make sure to escape any
-                // existing CDATA sections.
-                Transform.appendEscapingCDATA(buf, event.getMessage().getFormattedMessage());
-                buf.append("]]>");
-            }
-            buf.append("</");
-            if (!complete) {
-                buf.append(this.namespacePrefix);
-            }
-            buf.append("Message>");
-            buf.append(this.eol);
-        }
-
-        if (event.getContextStack().getDepth() > 0) {
-            buf.append(this.indent2);
-            buf.append('<');
-            if (!complete) {
-                buf.append(this.namespacePrefix);
-            }
-            buf.append("NDC><![CDATA[");
-            Transform.appendEscapingCDATA(buf, event.getContextStack().toString());
-            buf.append("]]></");
-            if (!complete) {
-                buf.append(this.namespacePrefix);
-            }
-            buf.append("NDC>");
-            buf.append(this.eol);
-        }
-
-        if (event.getMarker() != null) {
-            final Marker marker = event.getMarker();
-            buf.append(this.indent2);
-            buf.append('<');
-            if (!complete) {
-                buf.append(this.namespacePrefix);
-            }
-            buf.append("Marker");
-            final Marker[] parents = marker.getParents();
-            if (parents != null && parents.length > 0) {
-                buf.append(" parents=\"");
-                boolean first = true;
-                for (Marker parent : parents) {
-                    if (!first) {
-                        buf.append(", ");
-                    }
-                    buf.append(parent.getName());
-                }
-                buf.append("\"");
-            }
-            buf.append('>');
-            buf.append(Transform.escapeHtmlTags(marker.getName()));
-            buf.append("</");
-            if (!complete) {
-                buf.append(this.namespacePrefix);
-            }
-            buf.append("Marker>");
-            buf.append(this.eol);
-        }
-
-        final Throwable throwable = event.getThrown();
-        if (throwable != null) {
-            final List<String> s = Throwables.toStringList(throwable);
-            buf.append(this.indent2);
-            buf.append('<');
-            if (!complete) {
-                buf.append(this.namespacePrefix);
-            }
-            buf.append("Throwable><![CDATA[");
-            for (final String str : s) {
-                Transform.appendEscapingCDATA(buf, str);
-                buf.append(this.eol);
-            }
-            buf.append("]]></");
-            if (!complete) {
-                buf.append(this.namespacePrefix);
-            }
-            buf.append("Throwable>");
-            buf.append(this.eol);
-        }
-
-        if (locationInfo) {
-            final StackTraceElement element = event.getSource();
-            buf.append(this.indent2);
-            buf.append('<');
-            if (!complete) {
-                buf.append(this.namespacePrefix);
-            }
-            buf.append("LocationInfo class=\"");
-            buf.append(Transform.escapeHtmlTags(element.getClassName()));
-            buf.append("\" method=\"");
-            buf.append(Transform.escapeHtmlTags(element.getMethodName()));
-            buf.append("\" file=\"");
-            buf.append(Transform.escapeHtmlTags(element.getFileName()));
-            buf.append("\" line=\"");
-            buf.append(element.getLineNumber());
-            buf.append("\"/>");
-            buf.append(this.eol);
-        }
-
-        if (properties && event.getContextMap().size() > 0) {
-            buf.append(this.indent2);
-            buf.append('<');
-            if (!complete) {
-                buf.append(this.namespacePrefix);
-            }
-            buf.append("Properties>");
-            buf.append(this.eol);
-            for (final Map.Entry<String, String> entry : event.getContextMap().entrySet()) {
-                buf.append(this.indent3);
-                buf.append('<');
-                if (!complete) {
-                    buf.append(this.namespacePrefix);
-                }
-                buf.append("Data name=\"");
-                buf.append(Transform.escapeHtmlTags(entry.getKey()));
-                buf.append("\" value=\"");
-                buf.append(Transform.escapeHtmlTags(String.valueOf(entry.getValue())));
-                buf.append("\"/>");
-                buf.append(this.eol);
-            }
-            buf.append(this.indent2);
-            buf.append("</");
-            if (!complete) {
-                buf.append(this.namespacePrefix);
-            }
-            buf.append("Properties>");
-            buf.append(this.eol);
-        }
-
-        buf.append(this.indent1);
-        buf.append("</");
-        if (!complete) {
-            buf.append(this.namespacePrefix);
-        }
-        buf.append("Event>");
-        buf.append(this.eol);
-
-        return buf.toString();
+    protected XMLLayout(final boolean locationInfo, final boolean properties, final boolean complete, boolean compact, final Charset charset) {
+        super(new JacksonFactory.XML().newWriter(locationInfo, properties, compact), charset, compact, complete);
     }
 
     /**
@@ -313,7 +198,7 @@ public class XMLLayout extends AbstractStringLayout {
      * <li>XML processing instruction</li>
      * <li>XML root element</li>
      * </ol>
-     *
+     * 
      * @return a byte array containing the header.
      */
     @Override
@@ -329,15 +214,14 @@ public class XMLLayout extends AbstractStringLayout {
         // Make the log4j namespace the default namespace, no need to use more space with a namespace prefix.
         buf.append('<');
         buf.append(ROOT_TAG);
-        buf.append(" xmlns=\"" + XML_NAMESPACE + "\">");
+        buf.append(" xmlns=\"" + XMLConstants.XML_NAMESPACE + "\">");
         buf.append(this.eol);
         return buf.toString().getBytes(this.getCharset());
     }
 
-
     /**
      * Returns appropriate XML footer.
-     *
+     * 
      * @return a byte array containing the footer, closing the XML root element.
      */
     @Override
@@ -349,15 +233,18 @@ public class XMLLayout extends AbstractStringLayout {
     }
 
     /**
-     * XMLLayout's content format is specified by:<p/>
-     * Key: "dtd" Value: "log4j-events.dtd"<p/>
+     * XMLLayout's content format is specified by:
+     * <p/>
+     * Key: "dtd" Value: "log4j-events.dtd"
+     * <p/>
      * Key: "version" Value: "2.0"
+     * 
      * @return Map of content format keys supporting XMLLayout
      */
     @Override
     public Map<String, String> getContentFormat() {
         final Map<String, String> result = new HashMap<String, String>();
-        //result.put("dtd", "log4j-events.dtd");
+        // result.put("dtd", "log4j-events.dtd");
         result.put("xsd", "log4j-events.xsd");
         result.put("version", "2.0");
         return result;
@@ -373,28 +260,29 @@ public class XMLLayout extends AbstractStringLayout {
 
     /**
      * Creates an XML Layout.
-     *
-     * @param locationInfo If "true", includes the location information in the generated XML.
-     * @param properties If "true", includes the thread context in the generated XML.
+     * 
+     * @param locationInfoStr If "true", includes the location information in the generated XML.
+     * @param propertiesStr If "true", includes the thread context in the generated XML.
      * @param completeStr If "true", includes the XML header and footer, defaults to "false".
      * @param compactStr If "true", does not use end-of-lines and indentation, defaults to "false".
-     * @param namespacePrefix The namespace prefix, defaults to {@value #DEFAULT_NS_PREFIX}
      * @param charsetName The character set to use, if {@code null}, uses "UTF-8".
      * @return An XML Layout.
      */
     @PluginFactory
     public static XMLLayout createLayout(
-            @PluginAttribute("locationInfo") final String locationInfo,
-            @PluginAttribute("properties") final String properties,
+            // @formatter:off
+            @PluginAttribute("locationInfo") final String locationInfoStr,
+            @PluginAttribute("properties") final String propertiesStr, 
             @PluginAttribute("complete") final String completeStr,
-            @PluginAttribute("compact") final String compactStr,
-            @PluginAttribute("namespacePrefix") final String namespacePrefix,
-            @PluginAttribute("charset") final String charsetName) {
+            @PluginAttribute("compact") final String compactStr, 
+            @PluginAttribute("charset") final String charsetName)
+            // @formatter:on
+    {
         final Charset charset = Charsets.getSupportedCharset(charsetName, Charsets.UTF_8);
-        final boolean info = Boolean.parseBoolean(locationInfo);
-        final boolean props = Boolean.parseBoolean(properties);
+        final boolean info = Boolean.parseBoolean(locationInfoStr);
+        final boolean props = Boolean.parseBoolean(propertiesStr);
         final boolean complete = Boolean.parseBoolean(completeStr);
         final boolean compact = Boolean.parseBoolean(compactStr);
-        return new XMLLayout(info, props, complete, compact, namespacePrefix, charset);
+        return new XMLLayout(info, props, complete, compact, charset);
     }
 }

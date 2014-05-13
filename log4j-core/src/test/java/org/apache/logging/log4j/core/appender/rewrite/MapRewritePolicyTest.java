@@ -140,7 +140,7 @@ public class MapRewritePolicyTest {
         Assert.assertEquals("Marker changed", orig.getMarker(), changed.getMarker());
         Assert.assertEquals("FQCN changed", orig.getLoggerFQCN(), changed.getLoggerFQCN());
         Assert.assertEquals("Level changed", orig.getLevel(), changed.getLevel());
-        Assert.assertEquals("Throwable changed", orig.getThrown() == null //
+        Assert.assertArrayEquals("Throwable changed", orig.getThrown() == null //
                 ? null //
                 : ((Log4jLogEvent) orig).getThrownProxy().getExtendedStackTrace(), //
                 changed.getThrown() == null //

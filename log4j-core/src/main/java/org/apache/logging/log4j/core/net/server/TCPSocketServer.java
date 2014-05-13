@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.net;
+package org.apache.logging.log4j.core.net.server;
 
 import java.io.BufferedReader;
 import java.io.EOFException;
@@ -35,7 +35,8 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 /**
  * Listens for events over a socket connection.
  * 
- * @param <T> The kind of input stream read
+ * @param <T>
+ *            The kind of input stream read
  */
 public class TCPSocketServer<T extends InputStream> extends AbstractSocketServer<T> implements Runnable {
 
@@ -58,7 +59,7 @@ public class TCPSocketServer<T extends InputStream> extends AbstractSocketServer
             try {
                 try {
                     while (!shutdown) {
-                        log(logEventInput.readLogEvent(inputStream));
+                        logEventInput.logEvents(inputStream, TCPSocketServer.this);
                     }
                 } catch (final EOFException e) {
                     closed = true;
@@ -88,41 +89,49 @@ public class TCPSocketServer<T extends InputStream> extends AbstractSocketServer
     /**
      * Creates a socket server that reads JSON log events.
      * 
-     * @param port the port to listen
+     * @param port
+     *            the port to listen
      * @return a new a socket server
-     * @throws IOException if an I/O error occurs when opening the socket.
+     * @throws IOException
+     *             if an I/O error occurs when opening the socket.
      */
     public static TCPSocketServer<InputStream> createJsonSocketServer(final int port) throws IOException {
-        return new TCPSocketServer<InputStream>(port, new JSONLogEventInput());
+        return new TCPSocketServer<InputStream>(port, new JsonInputStreamLogEventBridge());
     }
 
     /**
      * Creates a socket server that reads serialized log events.
      * 
-     * @param port the port to listen
+     * @param port
+     *            the port to listen
      * @return a new a socket server
-     * @throws IOException if an I/O error occurs when opening the socket.
+     * @throws IOException
+     *             if an I/O error occurs when opening the socket.
      */
     public static TCPSocketServer<ObjectInputStream> createSerializedSocketServer(final int port) throws IOException {
-        return new TCPSocketServer<ObjectInputStream>(port, new SerializedLogEventInput());
+        return new TCPSocketServer<ObjectInputStream>(port, new ObjectInputStreamLogEventBridge());
     }
 
     /**
      * Creates a socket server that reads XML log events.
      * 
-     * @param port the port to listen
+     * @param port
+     *            the port to listen
      * @return a new a socket server
-     * @throws IOException if an I/O error occurs when opening the socket.
+     * @throws IOException
+     *             if an I/O error occurs when opening the socket.
      */
     public static TCPSocketServer<InputStream> createXmlSocketServer(final int port) throws IOException {
-        return new TCPSocketServer<InputStream>(port, new XMLLogEventInput());
+        return new TCPSocketServer<InputStream>(port, new XmlInputStreamLogEventBridge());
     }
 
     /**
      * Main startup for the server.
      * 
-     * @param args The command line arguments.
-     * @throws Exception if an error occurs.
+     * @param args
+     *            The command line arguments.
+     * @throws Exception
+     *             if an error occurs.
      */
     public static void main(final String[] args) throws Exception {
         if (args.length < 1 || args.length > 2) {
@@ -146,7 +155,8 @@ public class TCPSocketServer<T extends InputStream> extends AbstractSocketServer
         final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in, enc));
         while (true) {
             final String line = reader.readLine();
-            if (line == null || line.equalsIgnoreCase("Quit") || line.equalsIgnoreCase("Stop") || line.equalsIgnoreCase("Exit")) {
+            if (line == null || line.equalsIgnoreCase("Quit") || line.equalsIgnoreCase("Stop")
+                    || line.equalsIgnoreCase("Exit")) {
                 socketServer.shutdown();
                 serverThread.join();
                 break;
@@ -160,18 +170,21 @@ public class TCPSocketServer<T extends InputStream> extends AbstractSocketServer
 
     private final ConcurrentMap<Long, SocketHandler> handlers = new ConcurrentHashMap<Long, SocketHandler>();
 
-    private final ServerSocket server;
+    private final ServerSocket serverSocket;
 
     /**
      * Constructor.
      * 
-     * @param port to listen.
-     * @param logEventInput the log even input
-     * @throws IOException if an I/O error occurs when opening the socket.
+     * @param port
+     *            to listen.
+     * @param logEventInput
+     *            the log even input
+     * @throws IOException
+     *             if an I/O error occurs when opening the socket.
      */
-    public TCPSocketServer(final int port, final LogEventInput<T> logEventInput) throws IOException {
+    public TCPSocketServer(final int port, final LogEventBridge<T> logEventInput) throws IOException {
         super(port, logEventInput);
-        this.server = new ServerSocket(port);
+        this.serverSocket = new ServerSocket(port);
     }
 
     /**
@@ -182,7 +195,7 @@ public class TCPSocketServer<T extends InputStream> extends AbstractSocketServer
         while (isActive()) {
             try {
                 // Accept incoming connections.
-                final Socket clientSocket = server.accept();
+                final Socket clientSocket = serverSocket.accept();
                 clientSocket.setSoLinger(true, 0);
 
                 // accept() will block until a client connects to the server.
@@ -210,9 +223,12 @@ public class TCPSocketServer<T extends InputStream> extends AbstractSocketServer
 
     /**
      * Shutdown the server.
+     * 
+     * @throws IOException
      */
-    public void shutdown() {
+    public void shutdown() throws IOException {
         setActive(false);
         Thread.currentThread().interrupt();
+        serverSocket.close();
     }
 }

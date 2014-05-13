@@ -14,28 +14,32 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core;
+package org.apache.logging.log4j.core.jackson;
 
-import org.apache.logging.log4j.LogManager;
+import java.io.IOException;
+
+import org.apache.logging.log4j.message.Message;
+
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
 
 /**
- * Base class for server classes that listen to {@link LogEvent}s.
+ * <p>
+ * <em>Consider this class private.</em>
+ * </p>
  */
-public class LogEventListener {
+class MessageSerializer extends StdScalarSerializer<Message> {
 
-    private final LoggerContext context;
-
-    protected LogEventListener() {
-        context = (LoggerContext) LogManager.getContext(false);
+    MessageSerializer() {
+        super(Message.class);
     }
 
-    public void log(final LogEvent event) {
-        if (event == null) {
-            return;
-        }
-        final Logger logger = context.getLogger(event.getLoggerName());
-        if (logger.config.filter(event.getLevel(), event.getMarker(), event.getMessage(), event.getThrown())) {
-            logger.config.logEvent(event);
-        }
+    @Override
+    public void serialize(final Message value, final JsonGenerator jgen, final SerializerProvider provider) throws IOException,
+            JsonGenerationException {
+        jgen.writeString(value.getFormattedMessage());
     }
+
 }

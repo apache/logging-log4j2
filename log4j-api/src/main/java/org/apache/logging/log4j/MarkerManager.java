@@ -83,14 +83,24 @@ public final class MarkerManager {
         markerMap.putIfAbsent(name, new Log4jMarker(name));
         return markerMap.get(name).addParents(parent);
     }
+    
     /**
+     * <em>Consider this class private, it is only public to satisfy Jackson for XML and JSON IO.</em>
+     * <p>
      * The actual Marker implementation.
+     * </p>
+     * <p>
+     * <em>Internal note: We could make this class package private instead of public if the class 
+     * {@link org.apache.logging.log4j.core.jackson.MarkerMixIn} 
+     * is moved to this package and would of course stay in its current module.</em>
+     * </p>
      */
-    private static class Log4jMarker implements Marker {
+    public static class Log4jMarker implements Marker {
 
         private static final long serialVersionUID = 100L;
 
         private final String name;
+        
         private volatile Marker[] parents;
 
         /**

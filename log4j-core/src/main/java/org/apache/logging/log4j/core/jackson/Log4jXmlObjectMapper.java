@@ -14,23 +14,28 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.net;
+package org.apache.logging.log4j.core.jackson;
 
-import java.io.IOException;
-import java.io.InputStream;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 /**
- * Abstract class for implementations of {@link LogEventInput}.
- * 
- * @param <T> The kind of input stream read
+ * A Jackson {@link ObjectMapper} initialized for Log4j.
+ * <p>
+ * <em>Consider this class private.</em>
+ * </p>
  */
-public abstract class AbstractLogEventInput<T extends InputStream> implements LogEventInput<T> {
+public class Log4jXmlObjectMapper extends XmlMapper {
 
-    // @SuppressWarnings("unchecked"): The default is to return the same object as given.
-    @SuppressWarnings("unchecked")
-    @Override
-    public T wrapStream(final InputStream inputStream) throws IOException {
-        return (T) inputStream;
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Create a new instance using the {@link Log4jXmlModule}.
+     */
+    public Log4jXmlObjectMapper() {
+        super(new Log4jXmlModule());
+        this.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
     }
 
 }

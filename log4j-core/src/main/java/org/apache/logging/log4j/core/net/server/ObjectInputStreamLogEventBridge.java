@@ -14,35 +14,32 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.net;
+package org.apache.logging.log4j.core.net.server;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.LogEventListener;
 
 /**
- * Reads {@link LogEvent}s from an input stream.
- * 
- * @param <T> The kind of {@link InputStream} to wrap and read.
+ * Reads and logs serialized {@link LogEvent} objects from an {@link ObjectInputStream}.
  */
-public interface LogEventInput<T extends InputStream> {
+public class ObjectInputStreamLogEventBridge extends AbstractLogEventBridge<ObjectInputStream> {
 
-    /**
-     * Reads a {@link LogEvent} from the given input stream.
-     * 
-     * @param inputStream the input stream to read
-     * @return a LogEvent
-     * @throws IOException
-     */
-    LogEvent readLogEvent(T inputStream) throws IOException;
+    @Override
+    public void logEvents(final ObjectInputStream inputStream, final LogEventListener logEventListener)
+            throws IOException {
+        try {
+            logEventListener.log((LogEvent) inputStream.readObject());
+        } catch (final ClassNotFoundException e) {
+            throw new IOException(e);
+        }
+    }
 
-    /**
-     * Wraps the given stream if needed.
-     * 
-     * @param inputStream the stream to wrap
-     * @return the wrapped stream or the given stream.
-     * @throws IOException
-     */
-    T wrapStream(InputStream inputStream) throws IOException;
+    @Override
+    public ObjectInputStream wrapStream(final InputStream inputStream) throws IOException {
+        return new ObjectInputStream(inputStream);
+    }
 }

@@ -14,28 +14,32 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core;
+package org.apache.logging.log4j.core.jackson;
 
-import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Marker;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * Base class for server classes that listen to {@link LogEvent}s.
+ * Jackson mix-in for {@link Level}.
+ * <p>
+ * <em>Consider this class private.</em>
+ * </p>
+ * @see Marker
  */
-public class LogEventListener {
+@JsonIgnoreProperties({ "name", "declaringClass", "standardLevel" })
+abstract class LevelMixIn {
 
-    private final LoggerContext context;
-
-    protected LogEventListener() {
-        context = (LoggerContext) LogManager.getContext(false);
+    @JsonCreator
+    public static Level getLevel(@JsonProperty("name") final String name) {
+        return null;
     }
 
-    public void log(final LogEvent event) {
-        if (event == null) {
-            return;
-        }
-        final Logger logger = context.getLogger(event.getLoggerName());
-        if (logger.config.filter(event.getLevel(), event.getMarker(), event.getMessage(), event.getThrown())) {
-            logger.config.logEvent(event);
-        }
-    }
+    @JsonValue
+    public abstract String name();
+
 }

@@ -68,6 +68,18 @@
       <artifactId>jackson-dataformat-yaml</artifactId>
       <optional>true</optional>
     </dependency>
+    <!-- Required for XML layout and receiver support -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-xml</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.woodstox</groupId>
+      <artifactId>woodstox-core-asl</artifactId>
+      <version>4.3.0</version>
+      <optional>true</optional>
+    </dependency>    
     <!-- Required for console color support in Windows -->
     <dependency>
       <groupId>org.fusesource.jansi</groupId>

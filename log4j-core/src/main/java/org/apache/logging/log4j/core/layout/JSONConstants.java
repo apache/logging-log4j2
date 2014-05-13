@@ -14,28 +14,12 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core;
-
-import org.apache.logging.log4j.LogManager;
+package org.apache.logging.log4j.core.layout;
 
 /**
- * Base class for server classes that listen to {@link LogEvent}s.
+ * Keeps constants separate from any class that may depend on third party jars.
  */
-public class LogEventListener {
-
-    private final LoggerContext context;
-
-    protected LogEventListener() {
-        context = (LoggerContext) LogManager.getContext(false);
-    }
-
-    public void log(final LogEvent event) {
-        if (event == null) {
-            return;
-        }
-        final Logger logger = context.getLogger(event.getLoggerName());
-        if (logger.config.filter(event.getLevel(), event.getMarker(), event.getMessage(), event.getThrown())) {
-            logger.config.logEvent(event);
-        }
-    }
+public class JSONConstants {
+    public static final String PROP_SOURCE = "source";
+    public static final String PROP_CONTEXT_MAP = "contextMap";
 }
