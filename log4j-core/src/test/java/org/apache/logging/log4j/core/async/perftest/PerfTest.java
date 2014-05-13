@@ -20,7 +20,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import com.lmax.disruptor.collections.Histogram;
-import org.apache.logging.log4j.core.helpers.Loader;
+
+import org.apache.logging.log4j.core.util.Loader;
 
 public class PerfTest {
 

@@ -27,9 +27,9 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
-import org.apache.logging.log4j.core.helpers.Booleans;
 import org.apache.logging.log4j.core.layout.HTMLLayout;
 import org.apache.logging.log4j.core.net.SMTPManager;
+import org.apache.logging.log4j.core.util.Booleans;
 
 /**
  * Send an e-mail when a specific logging event occurs, typically on errors or

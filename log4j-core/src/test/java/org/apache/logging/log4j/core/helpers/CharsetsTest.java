@@ -22,6 +22,7 @@ import static org.junit.Assert.*;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 
+import org.apache.logging.log4j.core.util.Charsets;
 import org.junit.Test;
 
 public class CharsetsTest {

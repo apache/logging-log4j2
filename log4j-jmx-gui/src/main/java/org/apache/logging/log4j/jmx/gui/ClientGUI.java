@@ -53,10 +53,10 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
-import org.apache.logging.log4j.core.helpers.Assert;
 import org.apache.logging.log4j.core.jmx.LoggerContextAdminMBean;
 import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.core.jmx.StatusLoggerAdminMBean;
+import org.apache.logging.log4j.core.util.Assert;
 
 /**
  * Swing GUI that connects to a Java process via JMX and allows the user to view

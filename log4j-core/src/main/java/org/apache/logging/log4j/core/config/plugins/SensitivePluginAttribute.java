@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  * Identifies a sensitive PluginAttribute. This means that the value should NOT be displayed in log messages anywhere
  * and instead should be hashed.
  *
- * @see org.apache.logging.log4j.core.helpers.NameUtil#md5(String) MD5
+ * @see org.apache.logging.log4j.core.util.NameUtil#md5(String) MD5
  * @see org.apache.logging.log4j.core.config.plugins.PluginAttribute
  */
 @Retention(RetentionPolicy.RUNTIME)

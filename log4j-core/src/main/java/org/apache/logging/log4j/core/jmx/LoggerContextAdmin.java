@@ -42,10 +42,10 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationFactory.ConfigurationSource;
-import org.apache.logging.log4j.core.helpers.Assert;
-import org.apache.logging.log4j.core.helpers.Charsets;
-import org.apache.logging.log4j.core.helpers.Closer;
-import org.apache.logging.log4j.core.helpers.FileUtils;
+import org.apache.logging.log4j.core.util.Assert;
+import org.apache.logging.log4j.core.util.Charsets;
+import org.apache.logging.log4j.core.util.Closer;
+import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 

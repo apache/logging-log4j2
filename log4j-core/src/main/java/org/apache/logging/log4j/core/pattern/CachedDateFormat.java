@@ -23,7 +23,7 @@ import java.text.ParsePosition;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.apache.logging.log4j.core.helpers.Constants;
+import org.apache.logging.log4j.core.util.Constants;
 
 
 /**

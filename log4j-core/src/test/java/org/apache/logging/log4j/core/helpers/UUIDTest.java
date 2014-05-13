@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.helpers;
 
-import org.apache.logging.log4j.core.helpers.UUIDUtil;
+import org.apache.logging.log4j.core.util.UUIDUtil;
 import org.junit.Test;
 
 import java.util.UUID;

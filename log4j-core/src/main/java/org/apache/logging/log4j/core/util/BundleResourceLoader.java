@@ -15,35 +15,36 @@
  * limitations under the License.
  */
 
-package org.apache.logging.log4j.core.helpers;
+package org.apache.logging.log4j.core.util;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
+import org.osgi.framework.Bundle;
 
 /**
- * ClassLoader-based ResourceLoader.
+ * Bundle-based ResourceLoader.
  */
-public class ClassLoaderResourceLoader implements ResourceLoader {
+public class BundleResourceLoader implements ResourceLoader {
 
-    private final ClassLoader loader;
+    private final Bundle bundle;
 
-    public ClassLoaderResourceLoader(final ClassLoader loader) {
-        this.loader = loader != null ? loader : this.getClass().getClassLoader();
+    public BundleResourceLoader(final Bundle bundle) {
+        this.bundle = bundle;
     }
 
     @Override
     public Class<?> loadClass(final String name) throws ClassNotFoundException {
-        return loader.loadClass(name);
+        return bundle.loadClass(name);
     }
 
     @Override
     public URL getResource(final String name) {
-        return loader.getResource(name);
+        return bundle.getResource(name);
     }
 
     @Override
     public Enumeration<URL> getResources(final String name) throws IOException {
-        return loader.getResources(name);
+        return bundle.getResources(name);
     }
 }

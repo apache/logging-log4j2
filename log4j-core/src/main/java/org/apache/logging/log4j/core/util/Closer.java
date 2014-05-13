@@ -15,7 +15,7 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.core.helpers;
+package org.apache.logging.log4j.core.util;
 
 import java.io.Closeable;
 import java.io.IOException;

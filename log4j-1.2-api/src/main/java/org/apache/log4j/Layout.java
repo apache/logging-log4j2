@@ -17,7 +17,7 @@
 package org.apache.log4j;
 
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.logging.log4j.core.helpers.Constants;
+import org.apache.logging.log4j.core.util.Constants;
 
 /**
  *
