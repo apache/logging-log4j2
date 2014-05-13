@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
+import org.apache.logging.log4j.util.Strings;
 
 import com.lmax.disruptor.EventFactory;
 
@@ -154,7 +155,7 @@ public class RingBufferLogEvent implements LogEvent {
 	@Override
 	public Message getMessage() {
 		if (message == null) {
-			message = new SimpleMessage("");
+			message = new SimpleMessage(Strings.EMPTY);
 		}
 		return message;
 	}
