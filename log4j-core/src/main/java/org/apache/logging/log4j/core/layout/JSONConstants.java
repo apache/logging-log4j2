@@ -22,4 +22,5 @@ package org.apache.logging.log4j.core.layout;
 public final class JSONConstants {
     public static final String PROP_SOURCE = "source";
     public static final String PROP_CONTEXT_MAP = "contextMap";
+    public static final String PROP_CONTEXT_STACK = "contextStack";
 }
