@@ -437,6 +437,11 @@ public class ThrowableProxy implements Serializable {
         return sb.toString();
     }
 
+    /**
+     * The throwable or null if this object is deserialized from XML or JSON.
+     * 
+     * @return The throwable or null if this object is deserialized from XML or JSON.
+     */
     public Throwable getThrowable() {
         return this.throwable;
     }
