@@ -123,6 +123,7 @@ public class XMLLayoutTest {
         final XMLLayout layout = XMLLayout.createLayout(Boolean.toString(includeSource), Boolean.toString(includeContext), "false",
                 Boolean.toString(compact), "UTF-8");
         final String str = layout.toSerializable(expected);
+        // System.out.println(str);
         assertEquals(str, !compact, str.contains("\n"));
         assertEquals(str, includeSource, str.contains("Source"));
         assertEquals(str, includeContext, str.contains("ContextMap"));
