@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 /**
@@ -32,6 +33,22 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
  * <p>
  * <em>Consider this class private.</em>
  * </p>
+ * <p>
+ * Example XML:
+ * </p>
+ * <pre>
+&lt;Marker name=&quot;Marker1&quot;&gt;
+    &lt;Parents&gt;
+        &lt;Marker name=&quot;ParentMarker1&quot;&gt;
+            &lt;Parents&gt;
+                &lt;Marker name=&quot;GrandMotherMarker&quot;/&gt;
+                &lt;Marker name=&quot;GrandFatherMarker&quot;/&gt;
+            &lt;/Parents&gt;
+        &lt;/Marker&gt;
+        &lt;Marker name=&quot;ParentMarker2&quot;/&gt;
+    &lt;/Parents&gt;
+&lt;/Marker&gt;
+ * 
  * @see Marker
  */
 // Alternate for multiple Marker implementation.
@@ -56,7 +73,8 @@ abstract class MarkerMixIn implements Marker {
 
     @Override
     @JsonProperty(JSONConstants.ELT_PARENTS)
-    @JacksonXmlProperty(namespace = XMLConstants.XML_NAMESPACE, localName = XMLConstants.ELT_PARENTS)
+    @JacksonXmlElementWrapper(namespace = XMLConstants.XML_NAMESPACE, localName = XMLConstants.ELT_PARENTS)
+    @JacksonXmlProperty(namespace = XMLConstants.XML_NAMESPACE, localName = "Marker")
     public abstract Marker[] getParents();
 
 }
