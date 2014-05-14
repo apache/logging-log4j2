@@ -28,5 +28,6 @@ public final class JSONConstants {
     public static final String ELT_SOURCE = "source";
     public static final String ELT_SUPPRESSED = "suppressed";
     public static final String ELT_THROWN = "thrown";
-    static final String ELT_MESSAGE = "message";
+    public static final String ELT_MESSAGE = "message";
+    public static final String ELT_EXTENDED_STACK_TRACE = "extendedStackTrace";
 }
