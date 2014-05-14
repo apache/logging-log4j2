@@ -106,6 +106,7 @@ public class JSONLayoutTest {
         final AbstractJacksonLayout layout = JSONLayout.createLayout(Boolean.toString(includeSource), Boolean.toString(includeContext),
                 "false", Boolean.toString(compact), "UTF-8");
         final String str = layout.toSerializable(expected);
+        // System.out.println(str);
         final String propSep = this.toPropertySeparator(compact);
         // Just check for \n since \r might or might not be there.
         assertEquals(str, !compact, str.contains("\n"));
