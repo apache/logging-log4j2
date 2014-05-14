@@ -32,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
@@ -52,7 +53,8 @@ abstract class LogEventMixIn implements LogEvent {
     public abstract Map<String, String> getContextMap();
 
     @JsonProperty(JSONConstants.ELT_CONTEXT_STACK)
-    @JacksonXmlProperty(namespace = XMLConstants.XML_NAMESPACE, localName = XMLConstants.ELT_CONTEXT_STACK)
+    @JacksonXmlElementWrapper(namespace = XMLConstants.XML_NAMESPACE, localName = XMLConstants.ELT_CONTEXT_STACK)
+    @JacksonXmlProperty(namespace = XMLConstants.XML_NAMESPACE, localName = XMLConstants.ELT_CONTEXT_STACK_ITEM)
     @Override
     public abstract ContextStack getContextStack();
 
