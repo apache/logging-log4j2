@@ -41,7 +41,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 @JacksonXmlRootElement(namespace = XMLConstants.XML_NAMESPACE, localName = "Event")
 @JsonFilter("org.apache.logging.log4j.core.impl.Log4jLogEvent")
 @JsonPropertyOrder({ "timeMillis", "threadName", "level", "loggerName", "marker", "message", "thrown", XMLConstants.TAG_CONTEXT_MAP,
-        "ContextStack", "loggerFQCN", "Source", "endOfBatch" })
+        JSONConstants.PROP_CONTEXT_STACK, "loggerFQCN", "Source", "endOfBatch" })
 abstract class LogEventMixIn implements LogEvent {
 
     private static final long serialVersionUID = 1L;
@@ -53,8 +53,8 @@ abstract class LogEventMixIn implements LogEvent {
     @Override
     public abstract Map<String, String> getContextMap();
 
-    @JsonProperty("contextStack")
-    @JacksonXmlProperty(namespace = XMLConstants.XML_NAMESPACE, localName = "ContextStack")
+    @JsonProperty(JSONConstants.PROP_CONTEXT_STACK)
+    @JacksonXmlProperty(namespace = XMLConstants.XML_NAMESPACE, localName = XMLConstants.TAG_CONTEXT_STACK)
     @Override
     public abstract ContextStack getContextStack();
 

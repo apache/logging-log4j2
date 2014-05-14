@@ -22,5 +22,6 @@ package org.apache.logging.log4j.core.layout;
 public final class XMLConstants {
     public static final String TAG_SOURCE = "Source";
     public static final String TAG_CONTEXT_MAP = "ContextMap";
+    public static final String TAG_CONTEXT_STACK = "ContextStack";
     public static final String XML_NAMESPACE = "http://logging.apache.org/log4j/2.0/events";
 }
