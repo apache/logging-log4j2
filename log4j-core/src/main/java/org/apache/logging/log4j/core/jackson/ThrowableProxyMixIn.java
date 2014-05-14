@@ -36,7 +36,7 @@ abstract class ThrowableProxyMixIn {
     @JacksonXmlProperty(isAttribute = true)
     private int commonElementCount;
 
-    @JsonProperty
+    @JsonProperty(JSONConstants.ELT_EXTENDED_STACK_TRACE)
     @JacksonXmlProperty(namespace = XMLConstants.XML_NAMESPACE, localName = XMLConstants.ELT_EXTENDED_STACK_TRACE)
     private ExtendedStackTraceElement[] extendedStackTrace;
 
