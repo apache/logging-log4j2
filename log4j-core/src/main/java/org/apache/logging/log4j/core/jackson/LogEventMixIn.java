@@ -23,8 +23,6 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
-import org.apache.logging.log4j.core.layout.JSONConstants;
-import org.apache.logging.log4j.core.layout.XMLConstants;
 import org.apache.logging.log4j.message.Message;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
@@ -37,24 +35,24 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
-@JsonRootName("Event")
-@JacksonXmlRootElement(namespace = XMLConstants.XML_NAMESPACE, localName = "Event")
+@JsonRootName(XMLConstants.ELT_EVENT)
+@JacksonXmlRootElement(namespace = XMLConstants.XML_NAMESPACE, localName = XMLConstants.ELT_EVENT)
 @JsonFilter("org.apache.logging.log4j.core.impl.Log4jLogEvent")
-@JsonPropertyOrder({ "timeMillis", "threadName", "level", "loggerName", "marker", "message", "thrown", XMLConstants.TAG_CONTEXT_MAP,
-        JSONConstants.PROP_CONTEXT_STACK, "loggerFQCN", "Source", "endOfBatch" })
+@JsonPropertyOrder({ "timeMillis", "threadName", "level", "loggerName", "marker", "message", "thrown", XMLConstants.ELT_CONTEXT_MAP,
+        JSONConstants.ELT_CONTEXT_STACK, "loggerFQCN", "Source", "endOfBatch" })
 abstract class LogEventMixIn implements LogEvent {
 
     private static final long serialVersionUID = 1L;
 
-    @JsonProperty(JSONConstants.PROP_CONTEXT_MAP)
-    @JacksonXmlProperty(namespace = XMLConstants.XML_NAMESPACE, localName = XMLConstants.TAG_CONTEXT_MAP)
+    @JsonProperty(JSONConstants.ELT_CONTEXT_MAP)
+    @JacksonXmlProperty(namespace = XMLConstants.XML_NAMESPACE, localName = XMLConstants.ELT_CONTEXT_MAP)
     @JsonSerialize(using = ListOfMapEntrySerializer.class)
     @JsonDeserialize(using = ListOfMapEntryDeserializer.class)
     @Override
     public abstract Map<String, String> getContextMap();
 
-    @JsonProperty(JSONConstants.PROP_CONTEXT_STACK)
-    @JacksonXmlProperty(namespace = XMLConstants.XML_NAMESPACE, localName = XMLConstants.TAG_CONTEXT_STACK)
+    @JsonProperty(JSONConstants.ELT_CONTEXT_STACK)
+    @JacksonXmlProperty(namespace = XMLConstants.XML_NAMESPACE, localName = XMLConstants.ELT_CONTEXT_STACK)
     @Override
     public abstract ContextStack getContextStack();
 
@@ -73,20 +71,20 @@ abstract class LogEventMixIn implements LogEvent {
     @Override
     public abstract String getLoggerName();
 
-    @JsonProperty("marker")
-    @JacksonXmlProperty(namespace = XMLConstants.XML_NAMESPACE, localName = "Marker")
+    @JsonProperty(JSONConstants.ELT_MARKER)
+    @JacksonXmlProperty(namespace = XMLConstants.XML_NAMESPACE, localName = XMLConstants.ELT_MARKER)
     @Override
     public abstract Marker getMarker();
 
     @JsonSerialize(using = MessageSerializer.class)
     @JsonDeserialize(using = SimpleMessageDeserializer.class)
-    @JacksonXmlProperty(namespace = XMLConstants.XML_NAMESPACE, localName = "Message")
+    @JacksonXmlProperty(namespace = XMLConstants.XML_NAMESPACE, localName = XMLConstants.ELT_MESSAGE)
     @Override
     public abstract Message getMessage();
 
-    @JsonProperty(JSONConstants.PROP_SOURCE)
+    @JsonProperty(JSONConstants.ELT_SOURCE)
     @JsonDeserialize(using = Log4jStackTraceElementDeserializer.class)
-    @JacksonXmlProperty(namespace = XMLConstants.XML_NAMESPACE, localName = XMLConstants.TAG_SOURCE)
+    @JacksonXmlProperty(namespace = XMLConstants.XML_NAMESPACE, localName = XMLConstants.ELT_SOURCE)
     @Override
     public abstract StackTraceElement getSource();
 
@@ -99,8 +97,8 @@ abstract class LogEventMixIn implements LogEvent {
     @Override
     public abstract Throwable getThrown();
 
-    @JsonProperty("thrown")
-    @JacksonXmlProperty(namespace = XMLConstants.XML_NAMESPACE, localName = "Thrown")
+    @JsonProperty(JSONConstants.ELT_THROWN)
+    @JacksonXmlProperty(namespace = XMLConstants.XML_NAMESPACE, localName = XMLConstants.ELT_THROWN)
     @Override
     public abstract ThrowableProxy getThrownProxy();
 

@@ -20,8 +20,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.jackson.JSONConstants;
 import org.apache.logging.log4j.core.jackson.Log4jJsonObjectMapper;
 import org.apache.logging.log4j.core.jackson.Log4jXmlObjectMapper;
+import org.apache.logging.log4j.core.jackson.XMLConstants;
 
 import com.fasterxml.jackson.core.PrettyPrinter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
@@ -38,12 +40,12 @@ abstract class JacksonFactory {
 
         @Override
         protected String getPropertNameForContextMap() {
-            return JSONConstants.PROP_CONTEXT_MAP;
+            return JSONConstants.ELT_CONTEXT_MAP;
         }
 
         @Override
         protected String getPropertNameForSource() {
-            return JSONConstants.PROP_SOURCE;
+            return JSONConstants.ELT_SOURCE;
         }
 
         @Override
@@ -66,12 +68,12 @@ abstract class JacksonFactory {
 
         @Override
         protected String getPropertNameForContextMap() {
-            return XMLConstants.TAG_CONTEXT_MAP;
+            return XMLConstants.ELT_CONTEXT_MAP;
         }
 
         @Override
         protected String getPropertNameForSource() {
-            return XMLConstants.TAG_SOURCE;
+            return XMLConstants.ELT_SOURCE;
         }
 
         @Override
