@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.jackson;
 
 import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.core.layout.XMLConstants;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -56,8 +55,8 @@ abstract class MarkerMixIn implements Marker {
     public abstract Marker getParent();
 
     @Override
-    @JsonProperty("parents")
-    @JacksonXmlProperty(namespace = XMLConstants.XML_NAMESPACE, localName = "Parents")
+    @JsonProperty(JSONConstants.ELT_PARENTS)
+    @JacksonXmlProperty(namespace = XMLConstants.XML_NAMESPACE, localName = XMLConstants.ELT_PARENTS)
     public abstract Marker[] getParents();
 
 }

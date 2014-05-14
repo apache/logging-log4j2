@@ -14,14 +14,18 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.layout;
+package org.apache.logging.log4j.core.jackson;
 
 /**
  * Keeps constants separate from any class that may depend on third party jars.
  */
-public final class XMLConstants {
-    public static final String TAG_SOURCE = "Source";
-    public static final String TAG_CONTEXT_MAP = "ContextMap";
-    public static final String TAG_CONTEXT_STACK = "ContextStack";
-    public static final String XML_NAMESPACE = "http://logging.apache.org/log4j/2.0/events";
+public final class JSONConstants {
+    public static final String ELT_CAUSE = "cause";
+    public static final String ELT_CONTEXT_MAP = "contextMap";
+    public static final String ELT_CONTEXT_STACK = "contextStack";
+    public static final String ELT_MARKER = "marker";
+    public static final String ELT_PARENTS = "parents";
+    public static final String ELT_SOURCE = "source";
+    public static final String ELT_SUPPRESSED = "suppressed";
+    public static final String ELT_THROWN = "thrown";
 }

@@ -23,6 +23,7 @@ import java.util.Map;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.jackson.XMLConstants;
 import org.apache.logging.log4j.core.util.Charsets;
 
 /**

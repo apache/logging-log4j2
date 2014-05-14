@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.jackson;
 
 import org.apache.logging.log4j.core.impl.ExtendedStackTraceElement;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
-import org.apache.logging.log4j.core.layout.XMLConstants;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -29,8 +28,8 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
  */
 abstract class ThrowableProxyMixIn {
 
-    @JsonProperty("cause")
-    @JacksonXmlProperty(namespace = XMLConstants.XML_NAMESPACE, localName = "Cause")
+    @JsonProperty(JSONConstants.ELT_CAUSE)
+    @JacksonXmlProperty(namespace = XMLConstants.XML_NAMESPACE, localName = XMLConstants.ELT_CAUSE)
     private ThrowableProxyMixIn causeProxy;
 
     @JsonProperty
@@ -38,7 +37,7 @@ abstract class ThrowableProxyMixIn {
     private int commonElementCount;
 
     @JsonProperty
-    @JacksonXmlProperty(namespace = XMLConstants.XML_NAMESPACE, localName = "ExtendedStackTrace")
+    @JacksonXmlProperty(namespace = XMLConstants.XML_NAMESPACE, localName = XMLConstants.ELT_EXTENDED_STACK_TRACE)
     private ExtendedStackTraceElement[] extendedStackTrace;
 
     @JsonProperty
@@ -65,8 +64,8 @@ abstract class ThrowableProxyMixIn {
     @JsonIgnore
     public abstract StackTraceElement[] getStackTrace();
 
-    @JsonProperty("suppressed")
-    @JacksonXmlProperty(namespace = XMLConstants.XML_NAMESPACE, localName = "Suppressed")
+    @JsonProperty(JSONConstants.ELT_SUPPRESSED)
+    @JacksonXmlProperty(namespace = XMLConstants.XML_NAMESPACE, localName = XMLConstants.ELT_SUPPRESSED)
     public abstract ThrowableProxy[] getSuppressedProxies();
 
     @JsonIgnore
