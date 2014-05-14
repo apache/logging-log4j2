@@ -45,7 +45,7 @@ class LogEventFixtures {
         final Marker gfMarker = MarkerManager.getMarker("GrandFatherMarker");
         final Marker gmMarker = MarkerManager.getMarker("GrandMotherMarker");
         cMarker.addParents(pMarker1);
-        cMarker.addParents(gfMarker);
+        cMarker.addParents(pMarker2);
         pMarker1.addParents(gmMarker);
         pMarker1.addParents(gfMarker);
         final Exception sourceHelper = new Exception();
