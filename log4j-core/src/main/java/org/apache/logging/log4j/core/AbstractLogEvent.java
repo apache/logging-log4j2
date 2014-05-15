@@ -42,12 +42,12 @@ public abstract class AbstractLogEvent implements LogEvent {
     }
 
     @Override
-    public String getLoggerFQCN() {
+    public Level getLevel() {
         return null;
     }
 
     @Override
-    public Level getLevel() {
+    public String getLoggerFQCN() {
         return null;
     }
 
@@ -64,11 +64,6 @@ public abstract class AbstractLogEvent implements LogEvent {
     @Override
     public Message getMessage() {
         return null;
-    }
-
-    @Override
-    public long getTimeMillis() {
-        return 0;
     }
 
     @Override
@@ -89,6 +84,11 @@ public abstract class AbstractLogEvent implements LogEvent {
     @Override
     public ThrowableProxy getThrownProxy() {
         return null;
+    }
+
+    @Override
+    public long getTimeMillis() {
+        return 0;
     }
 
     @Override
