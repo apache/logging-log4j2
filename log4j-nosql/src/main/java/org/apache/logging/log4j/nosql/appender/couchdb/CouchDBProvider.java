@@ -20,15 +20,15 @@ import java.lang.reflect.Method;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
-import org.apache.logging.log4j.nosql.appender.NoSQLProvider;
-import org.apache.logging.log4j.core.config.plugins.SensitivePluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.helpers.Loader;
-import org.apache.logging.log4j.core.helpers.NameUtil;
-import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.core.config.plugins.SensitivePluginAttribute;
+import org.apache.logging.log4j.core.util.Loader;
+import org.apache.logging.log4j.core.util.NameUtil;
+import org.apache.logging.log4j.nosql.appender.NoSQLProvider;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.CouchDbProperties;
 
