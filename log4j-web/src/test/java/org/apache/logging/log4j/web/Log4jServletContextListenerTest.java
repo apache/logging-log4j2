@@ -20,6 +20,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.UnavailableException;
 
+import org.apache.logging.log4j.util.Strings;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -86,7 +87,7 @@ public class Log4jServletContextListenerTest {
         expectLastCall();
         expect(this.servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).andReturn(this.initializer);
         this.initializer.initialize();
-        expectLastCall().andThrow(new UnavailableException(""));
+        expectLastCall().andThrow(new UnavailableException(Strings.EMPTY));
 
         replay(this.event, this.servletContext, this.initializer);
 
