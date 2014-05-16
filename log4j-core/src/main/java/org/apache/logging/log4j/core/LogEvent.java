@@ -39,6 +39,15 @@ public interface LogEvent extends Serializable {
     Map<String, String> getContextMap();
 
     /**
+     * Gets the value at the given key in the context map.
+     * 
+     * @param key the key to query
+     * @return the value to which the specified key is mapped, or {@code null} if this map contains no mapping for the key or there is no
+     *         map.
+     */
+    String getContextMap(String key);
+
+    /**
      * Gets the NDC data.
      * 
      * @return A copy of the Nested Diagnostic Context or null;
@@ -160,4 +169,5 @@ public interface LogEvent extends Serializable {
      * @see #getSource()
      */
     void setIncludeLocation(boolean locationRequired);
+
 }

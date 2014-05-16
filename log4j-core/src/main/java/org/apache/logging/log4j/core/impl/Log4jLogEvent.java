@@ -299,6 +299,18 @@ public class Log4jLogEvent implements LogEvent {
     }
 
     /**
+     * Gets the value at the given key in the context map.
+     * 
+     * @param key the key to query
+     * @return the value to which the specified key is mapped, or {@code null} if this map contains no mapping for the key or there is no
+     *         map.
+     */
+    @Override
+    public String getContextMap(String key) {
+        return contextMap == null ? null : contextMap.get(key);
+    }
+
+    /**
      * Returns the StackTraceElement for the caller. This will be the entry that occurs right
      * before the first occurrence of FQCN as a class name.
      * @return the StackTraceElement for the caller.

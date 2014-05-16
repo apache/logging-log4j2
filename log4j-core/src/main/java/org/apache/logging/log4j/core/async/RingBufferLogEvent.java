@@ -190,6 +190,11 @@ public class RingBufferLogEvent implements LogEvent {
 		return contextMap;
 	}
 
+    @Override
+    public String getContextMap(String key) {
+        return contextMap == null ? null : contextMap.get(key);
+    }
+
 	@Override
 	public ContextStack getContextStack() {
 		return contextStack;

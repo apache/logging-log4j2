@@ -166,7 +166,7 @@ public final class HTMLLayout extends AbstractStringLayout {
         sbuf.append("</td>").append(Constants.LINE_SEPARATOR);
         sbuf.append("</tr>").append(Constants.LINE_SEPARATOR);
 
-        if (event.getContextStack().getDepth() > 0) {
+        if (event.getContextStack() != null && !event.getContextStack().isEmpty()) {
             sbuf.append("<tr><td bgcolor=\"#EEEEEE\" style=\"font-size : ").append(fontSize);
             sbuf.append(";\" colspan=\"6\" ");
             sbuf.append("title=\"Nested Diagnostic Context\">");
@@ -174,7 +174,7 @@ public final class HTMLLayout extends AbstractStringLayout {
             sbuf.append("</td></tr>").append(Constants.LINE_SEPARATOR);
         }
 
-        if (event.getContextMap().size() > 0) {
+        if (event.getContextMap() != null && !event.getContextMap().isEmpty()) {
             sbuf.append("<tr><td bgcolor=\"#EEEEEE\" style=\"font-size : ").append(fontSize);
             sbuf.append(";\" colspan=\"6\" ");
             sbuf.append("title=\"Mapped Diagnostic Context\">");
