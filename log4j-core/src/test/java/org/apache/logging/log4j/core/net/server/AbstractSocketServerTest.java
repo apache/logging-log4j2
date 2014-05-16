@@ -139,7 +139,7 @@ public abstract class AbstractSocketServerTest {
     }
 
     @Test
-    public void test64KMessages() throws Exception {
+    public void test64KBMessages() throws Exception {
         final char[] a64K = new char[1024 * 64];
         Arrays.fill(a64K, 'a');
         final String m1 = new String(a64K);
@@ -189,6 +189,7 @@ public abstract class AbstractSocketServerTest {
             rootLogger.debug(message);
         }
         try {
+            // Let the server side read the messages.
             Thread.sleep(2000);
         } catch (Exception e) {
             e.printStackTrace();
