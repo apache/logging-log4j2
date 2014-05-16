@@ -26,22 +26,20 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
 public class TcpJsonSocketServerTest extends AbstractSocketServerTest {
-    private static TCPSocketServer<InputStream> tcpSocketServer;
-
-    private static Thread thread;
+    
+    private static TCPSocketServer<InputStream> server;
 
     @BeforeClass
     public static void setupClass() throws Exception {
         ((LoggerContext) LogManager.getContext(false)).reconfigure();
-        tcpSocketServer = TCPSocketServer.createJsonSocketServer(PORT_NUM);
-        thread = new Thread(tcpSocketServer);
-        thread.start();
+        server = TCPSocketServer.createJsonSocketServer(PORT_NUM);
+        thread = server.startNewThread();
     }
 
     @AfterClass
     public static void tearDownClass() {
         try {
-            tcpSocketServer.shutdown();
+            server.shutdown();
         } catch (final IOException e) {
             e.printStackTrace();
         }

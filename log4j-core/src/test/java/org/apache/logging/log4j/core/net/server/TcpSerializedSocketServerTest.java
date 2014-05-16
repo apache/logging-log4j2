@@ -27,22 +27,20 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
 public class TcpSerializedSocketServerTest extends AbstractSocketServerTest {
-    private static TCPSocketServer<ObjectInputStream> tcpSocketServer;
-
-    private static Thread thread;
+    
+    private static TCPSocketServer<ObjectInputStream> server;
 
     @BeforeClass
     public static void setupClass() throws Exception {
         ((LoggerContext) LogManager.getContext(false)).reconfigure();
-        tcpSocketServer = TCPSocketServer.createSerializedSocketServer(PORT_NUM);
-        thread = new Thread(tcpSocketServer);
-        thread.start();
+        server = TCPSocketServer.createSerializedSocketServer(PORT_NUM);
+        thread = server.startNewThread();
     }
 
     @AfterClass
     public static void tearDownClass() {
         try {
-            tcpSocketServer.shutdown();
+            server.shutdown();
         } catch (final IOException e) {
             e.printStackTrace();
         }

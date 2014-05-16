@@ -51,6 +51,8 @@ import org.junit.Test;
  */
 public abstract class AbstractSocketServerTest {
 
+    protected static Thread thread;
+
     private class ThreadFilter extends AbstractFilter {
 
         public ThreadFilter(final Result onMatch, final Result onMismatch) {
