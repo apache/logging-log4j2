@@ -88,14 +88,14 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
         if (eventPrefix == null) {
             eventPrefix = DEFAULT_EVENT_PREFIX;
         }
-        final Map<String, String> contextMap = event.getContextMap();
+        final Map<String, String> eventContextMap = event.getContextMap();
         if (includes != null) {
             final String[] array = includes.split(Patterns.COMMA_SEPARATOR);
             if (array.length > 0) {
                 for (String str : array) {
                     str = str.trim();
-                    if (contextMap.containsKey(str)) {
-                        contextMap.put(str, contextMap.get(str));
+                    if (eventContextMap.containsKey(str)) {
+                        eventContextMap.put(str, eventContextMap.get(str));
                     }
                 }
             }
@@ -106,14 +106,14 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
                 for (final String value : array) {
                     list.add(value.trim());
                 }
-                for (final Map.Entry<String, String> entry : contextMap.entrySet()) {
+                for (final Map.Entry<String, String> entry : eventContextMap.entrySet()) {
                     if (!list.contains(entry.getKey())) {
-                        contextMap.put(entry.getKey(), entry.getValue());
+                        eventContextMap.put(entry.getKey(), entry.getValue());
                     }
                 }
             }
         } else {
-            contextMap.putAll(contextMap);
+            eventContextMap.putAll(eventContextMap);
         }
 
         if (required != null) {
@@ -121,7 +121,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
             if (array.length > 0) {
                 for (String str : array) {
                     str = str.trim();
-                    if (!contextMap.containsKey(str)) {
+                    if (!eventContextMap.containsKey(str)) {
                         throw new LoggingException("Required key " + str + " is missing from the MDC");
                     }
                 }
@@ -140,7 +140,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
             headers.put(GUID, guid);
         }
 
-        addContextData(mdcPrefix, headers, contextMap);
+        addContextData(mdcPrefix, headers, eventContextMap);
     }
 
     protected void addStructuredData(final String prefix, final Map<String, String> fields,
