@@ -168,9 +168,9 @@ public abstract class AbstractSocketServerTest {
         final Filter socketFilter = new ThreadFilter(Filter.Result.NEUTRAL, Filter.Result.DENY);
         final Filter serverFilter = new ThreadFilter(Filter.Result.DENY, Filter.Result.NEUTRAL);
         final Layout<? extends Serializable> socketLayout = createLayout();
-        final SocketAppender appender = SocketAppender.createAppender("localhost", this.port, this.protocol, "-1",
+        final SocketAppender socketAppender = SocketAppender.createAppender("localhost", this.port, this.protocol, "-1",
                 null, "Test", null, "false", socketLayout, socketFilter, null, null);
-        appender.start();
+        socketAppender.start();
         final ListAppender listAppender = new ListAppender("Events", serverFilter, null, false, false);
         listAppender.start();
         final PatternLayout layout = PatternLayout.createLayout("%m %ex%n", null, null, null, null, null, null, null);
@@ -181,7 +181,7 @@ public abstract class AbstractSocketServerTest {
         serverLogger.setAdditive(false);
 
         // set appender on root and set level to debug
-        rootLogger.addAppender(appender);
+        rootLogger.addAppender(socketAppender);
         rootLogger.addAppender(listAppender);
         rootLogger.setAdditive(false);
         rootLogger.setLevel(Level.DEBUG);
