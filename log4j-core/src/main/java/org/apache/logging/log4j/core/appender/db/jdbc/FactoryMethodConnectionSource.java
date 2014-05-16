@@ -125,6 +125,7 @@ public final class FactoryMethodConnectionSource implements ConnectionSource {
 
                 // method must be present to compile on Java 7!
                 // @Override must be absent to compile on Java 6!
+                @Override
                 @SuppressWarnings("unused")
                 public java.util.logging.Logger getParentLogger() {
                     throw new UnsupportedOperationException();

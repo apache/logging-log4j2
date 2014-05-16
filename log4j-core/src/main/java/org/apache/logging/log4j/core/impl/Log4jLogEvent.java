@@ -257,6 +257,7 @@ public class Log4jLogEvent implements LogEvent {
      * Returns the ThrowableProxy associated with the event, or null.
      * @return The ThrowableProxy associated with the event.
      */
+    @Override
     public ThrowableProxy getThrownProxy() {
         return thrownProxy;
     }
