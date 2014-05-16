@@ -15,12 +15,9 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.core.helpers;
+package org.apache.logging.log4j.core.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.net.URI;

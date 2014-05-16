@@ -14,9 +14,9 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.helpers;
+package org.apache.logging.log4j.core.util;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.UUID;
 
@@ -35,7 +35,7 @@ public class UUIDTest {
     @Test
     public void testTimeBaseUUID() {
         final UUID uuid = UUIDUtil.getTimeBasedUUID();
-        final UUID uuid2 = UUIDUtil.getTimeBasedUUID();
+        //final UUID uuid2 = UUIDUtil.getTimeBasedUUID(); // unused
         final long current = (System.currentTimeMillis() * 10000) + NUM_100NS_INTERVALS_SINCE_UUID_EPOCH;
         final long time = uuid.timestamp();
         assertTrue("Incorrect time", current + 10000 - time > 0);

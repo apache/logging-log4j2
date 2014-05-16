@@ -15,9 +15,9 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.core.helpers;
+package org.apache.logging.log4j.core.util;
 
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.*;
 
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;

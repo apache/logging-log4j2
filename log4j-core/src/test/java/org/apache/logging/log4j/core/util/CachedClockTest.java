@@ -14,34 +14,34 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.helpers;
+package org.apache.logging.log4j.core.util;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
-import org.apache.logging.log4j.core.util.SystemClock;
+import org.apache.logging.log4j.core.util.CachedClock;
 import org.junit.Test;
 
-public class SystemClockTest {
+public class CachedClockTest {
 
     @Test
-    public void testLessThan2Millis() {
-        final long millis1 = new SystemClock().currentTimeMillis();
+    public void testLessThan17Millis() {
+        final long millis1 = CachedClock.instance().currentTimeMillis();
         final long sysMillis = System.currentTimeMillis();
 
         final long diff = sysMillis - millis1;
 
-        assertTrue("diff too large: " + diff, diff <= 1);
+        assertTrue("diff too large: " + diff, diff <= 16);
     }
 
     @Test
-    public void testAfterWaitStillLessThan2Millis() throws Exception {
+    public void testAfterWaitStillLessThan17Millis() throws Exception {
         Thread.sleep(100);
-        final long millis1 = new SystemClock().currentTimeMillis();
+        final long millis1 = CachedClock.instance().currentTimeMillis();
         final long sysMillis = System.currentTimeMillis();
 
         final long diff = sysMillis - millis1;
 
-        assertTrue("diff too large: " + diff, diff <= 1);
+        assertTrue("diff too large: " + diff, diff <= 16);
     }
 
 }
