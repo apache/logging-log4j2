@@ -143,6 +143,11 @@ public class TestBaseEntity extends AbstractLogEventWrapperEntity {
     }
 
     @Override
+    public String getContextMap(String key) {
+        return this.getWrappedEvent().getContextMap(key);
+    }
+
+    @Override
     @Transient
     public ThreadContext.ContextStack getContextStack() {
         return this.getWrappedEvent().getContextStack();
