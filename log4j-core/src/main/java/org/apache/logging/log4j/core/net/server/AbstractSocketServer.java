@@ -36,10 +36,9 @@ import org.apache.logging.log4j.core.util.Assert;
 /**
  * Abstract socket server for TCP and UDP implementations.
  * 
- * @param <T>
- *            The kind of input stream read
+ * @param <T> The kind of input stream read
  */
-public abstract class AbstractSocketServer<T extends InputStream> extends LogEventListener {
+public abstract class AbstractSocketServer<T extends InputStream> extends LogEventListener implements Runnable {
 
     /**
      * Factory that creates a Configuration for the server.
@@ -99,10 +98,8 @@ public abstract class AbstractSocketServer<T extends InputStream> extends LogEve
     /**
      * Creates a new socket server.
      * 
-     * @param port
-     *            listen to this port
-     * @param logEventInput
-     *            Use this input to read log events.
+     * @param port listen to this port
+     * @param logEventInput Use this input to read log events.
      */
     public AbstractSocketServer(final int port, final LogEventBridge<T> logEventInput) {
         this.logger = LogManager.getLogger(this.getClass().getName() + '.' + port);
@@ -115,6 +112,17 @@ public abstract class AbstractSocketServer<T extends InputStream> extends LogEve
 
     protected void setActive(final boolean isActive) {
         this.active = isActive;
+    }
+
+    /**
+     * Start this server in a new thread.
+     * 
+     * @return the new thread that running this server.
+     */
+    public Thread startNewThread() {
+        Thread thread = new Thread(this);
+        thread.start();
+        return thread;
     }
 
 }
