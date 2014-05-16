@@ -25,7 +25,6 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-//@Ignore("Not implemented yet")
 public class UdpJsonSocketServerTest extends AbstractSocketServerTest {
     private static Thread thread;
     private static UDPSocketServer<InputStream> udpSocketServer;

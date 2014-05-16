@@ -25,7 +25,6 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-//@Ignore("Not implemented yet")
 public class TcpJsonSocketServerTest extends AbstractSocketServerTest {
     private static TCPSocketServer<InputStream> tcpSocketServer;
 
