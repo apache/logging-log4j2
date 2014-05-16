@@ -34,6 +34,8 @@ public class JacksonIssue429Test {
 
     @SuppressWarnings("serial")
     static class Jackson429StackTraceElementDeserializer extends StdDeserializer<StackTraceElement> {
+        private static final long serialVersionUID = 1L;
+
         public Jackson429StackTraceElementDeserializer() {
             super(StackTraceElement.class);
         }
