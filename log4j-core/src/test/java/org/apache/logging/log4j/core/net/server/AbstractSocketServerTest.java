@@ -171,7 +171,7 @@ public abstract class AbstractSocketServerTest {
         final Filter serverFilter = new ThreadFilter(Filter.Result.DENY, Filter.Result.NEUTRAL);
         final Layout<? extends Serializable> socketLayout = createLayout();
         final SocketAppender socketAppender = SocketAppender.createAppender("localhost", this.port, this.protocol, "-1",
-                null, "Test", null, "false", socketLayout, socketFilter, null, null);
+                null, "Test", "true", "false", socketLayout, socketFilter, null, null);
         socketAppender.start();
         final ListAppender listAppender = new ListAppender("Events", serverFilter, null, false, false);
         listAppender.start();
