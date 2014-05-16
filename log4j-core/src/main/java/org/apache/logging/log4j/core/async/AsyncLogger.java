@@ -27,7 +27,6 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
@@ -241,8 +240,8 @@ public class AsyncLogger extends Logger {
         }
         final boolean includeLocation = config.loggerConfig.isIncludeLocation();
         info.translator.setValues(this, getName(), marker, fqcn, level, message, //
-                // thrown proxy or null
-                thrown == null ? null : new ThrowableProxy(thrown), //
+                // don't construct ThrowableProxy until required
+                thrown, //
 
                 // config properties are taken care of in the EventHandler
                 // thread in the #actualAsyncLog method

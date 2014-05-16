@@ -17,9 +17,13 @@
 
 package org.apache.logging.log4j.core.async;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Map;
 
 import org.apache.logging.log4j.Level;
@@ -27,6 +31,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
 import org.junit.Test;
 
@@ -43,7 +48,7 @@ public class RingBufferLogEventTest {
         String fqcn = null;
         Level level = null;
         Message data = null;
-        ThrowableProxy t = null;
+        Throwable t = null;
         Map<String, String> map = null;
         ContextStack contextStack = null;
         String threadName = null;
@@ -62,7 +67,7 @@ public class RingBufferLogEventTest {
         String fqcn = null;
         Level level = null;
         Message data = null;
-        ThrowableProxy t = null;
+        Throwable t = null;
         Map<String, String> map = null;
         ContextStack contextStack = null;
         String threadName = null;
@@ -81,7 +86,7 @@ public class RingBufferLogEventTest {
         String fqcn = null;
         Level level = null;
         Message data = null;
-        ThrowableProxy t = null;
+        Throwable t = null;
         Map<String, String> map = null;
         ContextStack contextStack = null;
         String threadName = null;
@@ -136,7 +141,7 @@ public class RingBufferLogEventTest {
         String fqcn = null;
         Level level = null;
         Message data = new TimeMsg("", 567);
-        ThrowableProxy t = null;
+        Throwable t = null;
         Map<String, String> map = null;
         ContextStack contextStack = null;
         String threadName = null;
@@ -147,4 +152,40 @@ public class RingBufferLogEventTest {
         assertEquals(567, evt.getTimeMillis());
     }
 
+    @Test
+    public void testSerializationDeserialization() throws IOException, ClassNotFoundException {
+        RingBufferLogEvent evt = new RingBufferLogEvent();
+        String loggerName = "logger.name";
+        Marker marker = null;
+        String fqcn = "f.q.c.n";
+        Level level = Level.TRACE;
+        Message data = new SimpleMessage("message");
+        Throwable t = new InternalError("not a real error");
+        Map<String, String> map = null;
+        ContextStack contextStack = null;
+        String threadName = "main";
+        StackTraceElement location = null;
+        long currentTimeMillis = 12345;
+        evt.setValues(null, loggerName, marker, fqcn, level, data, t, map,
+                contextStack, threadName, location, currentTimeMillis);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(baos);
+        out.writeObject(evt);
+        
+        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+        RingBufferLogEvent other = (RingBufferLogEvent) in.readObject();
+        assertEquals(loggerName, other.getLoggerName());
+        assertEquals(marker, other.getMarker());
+        assertEquals(fqcn, other.getLoggerFQCN());
+        assertEquals(level, other.getLevel());
+        assertEquals(data, other.getMessage());
+        assertNull("null after serialization", other.getThrown());
+        assertEquals(new ThrowableProxy(t), other.getThrownProxy());
+        assertEquals(map, other.getContextMap());
+        assertEquals(contextStack, other.getContextStack());
+        assertEquals(threadName, other.getThreadName());
+        assertEquals(location, other.getSource());
+        assertEquals(currentTimeMillis, other.getTimeMillis());
+    }
 }

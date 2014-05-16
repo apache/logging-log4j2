@@ -55,7 +55,7 @@ public class AsyncLoggerTest {
         f.delete();
         final Logger log = LogManager.getLogger("com.foo.Bar");
         final String msg = "Async logger msg";
-        log.info(msg);
+        log.info(msg, new InternalError("this is not a real error"));
         ((LifeCycle) LogManager.getContext()).stop(); // stop async thread
 
         final BufferedReader reader = new BufferedReader(new FileReader(f));
