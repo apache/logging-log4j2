@@ -256,6 +256,8 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
      * order to "play around" with them.
      */
     private static class NullLogEvent extends AbstractLogEvent {
+
+        private static final long serialVersionUID = 1L;
     	// Inherits everything
     }
 }
