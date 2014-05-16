@@ -35,7 +35,7 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
  * @param <T>
  *            The kind of input stream read
  */
-public class UDPSocketServer<T extends InputStream> extends AbstractSocketServer<T> implements Runnable {
+public class UDPSocketServer<T extends InputStream> extends AbstractSocketServer<T> {
 
     /**
      * Creates a socket server that reads JSON log events.
@@ -143,18 +143,33 @@ public class UDPSocketServer<T extends InputStream> extends AbstractSocketServer
     @Override
     public void run() {
         while (isActive()) {
+            if (datagramSocket.isClosed()) {
+                // OK we're done.
+                return;
+            }
             try {
                 final byte[] buf = new byte[maxBufferSize];
                 final DatagramPacket packet = new DatagramPacket(buf, buf.length);
                 datagramSocket.receive(packet);
-                final ByteArrayInputStream bais = new ByteArrayInputStream(packet.getData(), packet.getOffset(),
-                        packet.getLength());
+                final ByteArrayInputStream bais = new ByteArrayInputStream(packet.getData(), packet.getOffset(), packet.getLength());
                 logEventInput.logEvents(logEventInput.wrapStream(bais), this);
             } catch (final OptionalDataException e) {
+                if (datagramSocket.isClosed()) {
+                    // OK we're done.
+                    return;
+                }
                 logger.error("OptionalDataException eof=" + e.eof + " length=" + e.length, e);
             } catch (final EOFException e) {
+                if (datagramSocket.isClosed()) {
+                    // OK we're done.
+                    return;
+                }
                 logger.info("EOF encountered");
             } catch (final IOException e) {
+                if (datagramSocket.isClosed()) {
+                    // OK we're done.
+                    return;
+                }
                 logger.error("Exception encountered on accept. Ignoring. Stack Trace :", e);
             }
         }

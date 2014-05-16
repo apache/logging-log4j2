@@ -38,7 +38,7 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
  * @param <T>
  *            The kind of input stream read
  */
-public class TCPSocketServer<T extends InputStream> extends AbstractSocketServer<T> implements Runnable {
+public class TCPSocketServer<T extends InputStream> extends AbstractSocketServer<T> {
 
     /**
      * Thread that processes the events.
@@ -193,6 +193,9 @@ public class TCPSocketServer<T extends InputStream> extends AbstractSocketServer
     @Override
     public void run() {
         while (isActive()) {
+            if (serverSocket.isClosed()) {
+                return;
+            }
             try {
                 // Accept incoming connections.
                 final Socket clientSocket = serverSocket.accept();
@@ -206,6 +209,10 @@ public class TCPSocketServer<T extends InputStream> extends AbstractSocketServer
                 handlers.put(Long.valueOf(handler.getId()), handler);
                 handler.start();
             } catch (final IOException ioe) {
+                if (serverSocket.isClosed()) {
+                    // OK we're done.
+                    return;
+                }
                 System.out.println("Exception encountered on accept. Ignoring. Stack Trace :");
                 ioe.printStackTrace();
             }
