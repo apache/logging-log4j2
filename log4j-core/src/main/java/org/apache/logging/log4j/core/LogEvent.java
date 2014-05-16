@@ -32,7 +32,7 @@ import org.apache.logging.log4j.message.Message;
 public interface LogEvent extends Serializable {
 
     /**
-     * Gets the MDC data.
+     * Gets the context map (also know as MDC).
      * 
      * @return A copy of the Mapped Diagnostic Context or null.
      */
@@ -48,7 +48,7 @@ public interface LogEvent extends Serializable {
     String getContextMap(String key);
 
     /**
-     * Gets the NDC data.
+     * Gets the context stack (also known as NDC).
      * 
      * @return A copy of the Nested Diagnostic Context or null;
      */
