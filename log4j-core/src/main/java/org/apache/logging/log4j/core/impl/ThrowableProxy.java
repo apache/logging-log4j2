@@ -51,7 +51,7 @@ public class ThrowableProxy implements Serializable {
      * Consider this class private.
      * </p>
      */
-    class CacheEntry {
+    static class CacheEntry {
         private final ExtendedStackTraceElement element;
         private final ClassLoader loader;
 
