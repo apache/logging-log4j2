@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,7 +61,8 @@ public class RingBufferLogEvent implements LogEvent {
 	private String fqcn;
 	private Level level;
 	private Message message;
-	private ThrowableProxy thrownProxy;
+	private transient Throwable thrown;
+    private ThrowableProxy thrownProxy;
 	private Map<String, String> contextMap;
 	private ContextStack contextStack;
 	private String threadName;
@@ -71,7 +73,7 @@ public class RingBufferLogEvent implements LogEvent {
 
 	public void setValues(final AsyncLogger asyncLogger,
 			final String loggerName, final Marker marker, final String fqcn,
-			final Level level, final Message data, final ThrowableProxy throwableProxy,
+			final Level level, final Message data, final Throwable throwable,
 			final Map<String, String> map, final ContextStack contextStack,
 			final String threadName, final StackTraceElement location,
 			final long currentTimeMillis) {
@@ -81,7 +83,8 @@ public class RingBufferLogEvent implements LogEvent {
 		this.fqcn = fqcn;
 		this.level = level;
 		this.message = data;
-		this.thrownProxy = throwableProxy;
+		this.thrown = throwable;
+		this.thrownProxy = null;
 		this.contextMap = map;
 		this.contextStack = contextStack;
 		this.threadName = threadName;
@@ -162,11 +165,23 @@ public class RingBufferLogEvent implements LogEvent {
 
 	@Override
 	public Throwable getThrown() {
-		return thrownProxy == null ? null : thrownProxy.getThrowable();
+	    // after deserialization, thrown is null but thrownProxy may be non-null
+	    if (thrown == null) {
+	        if (thrownProxy != null) {
+	            thrown = thrownProxy.getThrowable();
+	        }
+	    }
+  return thrown;
 	}
 
 	@Override
 	public ThrowableProxy getThrownProxy() {
+	    // lazily instantiate the (expensive) ThrowableProxy
+	    if (thrownProxy == null) {
+	        if (thrown != null) {
+	            thrownProxy = new ThrowableProxy(thrown);
+	        }
+	    }
 		return this.thrownProxy;
 	}
 
@@ -249,5 +264,10 @@ public class RingBufferLogEvent implements LogEvent {
 				null, // location
 				0 // currentTimeMillis
 		);
+	}
+	
+	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+	    getThrownProxy(); // initialize the ThrowableProxy before serializing
+	    out.defaultWriteObject();
 	}
 }
