@@ -244,7 +244,7 @@ public class RingBufferLogEvent implements LogEvent {
 			if (map.containsKey(prop.getName())) {
 				continue; // contextMap overrides config properties
 			}
-			final String value = entry.getValue() ? strSubstitutor.replace(prop
+			final String value = entry.getValue().booleanValue() ? strSubstitutor.replace(prop
 					.getValue()) : prop.getValue();
 			map.put(prop.getName(), value);
 		}
