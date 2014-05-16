@@ -189,8 +189,8 @@ public abstract class AbstractSocketServerTest {
             rootLogger.debug(message);
         }
         try {
-            // Let the server side read the messages.
-            Thread.sleep(2000);
+            // Let the server-side read the messages.
+            Thread.sleep(4000);
         } catch (Exception e) {
             e.printStackTrace();
         }
