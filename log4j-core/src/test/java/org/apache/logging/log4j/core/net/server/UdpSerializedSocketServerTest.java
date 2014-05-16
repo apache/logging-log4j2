@@ -26,20 +26,19 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
 public class UdpSerializedSocketServerTest extends AbstractSocketServerTest {
-    private static Thread thread;
-    private static UDPSocketServer<ObjectInputStream> udpSocketServer;
+
+    private static UDPSocketServer<ObjectInputStream> server;
 
     @BeforeClass
     public static void setupClass() throws Exception {
         ((LoggerContext) LogManager.getContext(false)).reconfigure();
-        udpSocketServer = UDPSocketServer.createSerializedSocketServer(PORT_NUM);
-        thread = new Thread(udpSocketServer);
-        thread.start();
+        server = UDPSocketServer.createSerializedSocketServer(PORT_NUM);
+        thread = server.startNewThread();
     }
 
     @AfterClass
     public static void tearDownClass() {
-        udpSocketServer.shutdown();
+        server.shutdown();
         try {
             thread.join();
         } catch (final InterruptedException e) {

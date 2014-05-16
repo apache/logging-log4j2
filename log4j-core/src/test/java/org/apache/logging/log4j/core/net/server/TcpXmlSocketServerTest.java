@@ -27,23 +27,22 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
 public class TcpXmlSocketServerTest extends AbstractSocketServerTest {
-    private static TCPSocketServer<InputStream> socketServer;
-    private static Thread thread;
+    
+    private static TCPSocketServer<InputStream> server;
 
     @BeforeClass
     public static void setupClass() throws Exception {
         ((LoggerContext) LogManager.getContext(false)).reconfigure();
         // Use a large buffer just to test the code, the UDP test uses a tiny buffer
-        socketServer = new TCPSocketServer<InputStream>(PORT_NUM, new XmlInputStreamLogEventBridge(1024 * 100,
+        server = new TCPSocketServer<InputStream>(PORT_NUM, new XmlInputStreamLogEventBridge(1024 * 100,
                 Charset.defaultCharset()));
-        thread = new Thread(socketServer);
-        thread.start();
+        thread = server.startNewThread();
     }
 
     @AfterClass
     public static void tearDownClass() {
         try {
-            socketServer.shutdown();
+            server.shutdown();
         } catch (final IOException e) {
             e.printStackTrace();
         }
