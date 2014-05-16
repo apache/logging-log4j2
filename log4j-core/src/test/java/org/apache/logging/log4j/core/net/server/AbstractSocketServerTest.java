@@ -79,7 +79,7 @@ public abstract class AbstractSocketServerTest {
 
     private final String protocol;
 
-    private final Logger root = ctx.getLogger(AbstractSocketServerTest.class.getSimpleName());
+    private final Logger rootLogger = ctx.getLogger(AbstractSocketServerTest.class.getSimpleName());
 
     protected AbstractSocketServerTest(final String protocol, final String port, final boolean expectLengthException) {
         this.protocol = protocol;
@@ -103,10 +103,10 @@ public abstract class AbstractSocketServerTest {
 
     @After
     public void tearDown() {
-        final Map<String, Appender> map = root.getAppenders();
+        final Map<String, Appender> map = rootLogger.getAppenders();
         for (final Map.Entry<String, Appender> entry : map.entrySet()) {
             final Appender appender = entry.getValue();
-            root.removeAppender(appender);
+            rootLogger.removeAppender(appender);
             appender.stop();
         }
     }
@@ -181,14 +181,18 @@ public abstract class AbstractSocketServerTest {
         serverLogger.setAdditive(false);
 
         // set appender on root and set level to debug
-        root.addAppender(appender);
-        root.addAppender(listApp);
-        root.setAdditive(false);
-        root.setLevel(Level.DEBUG);
+        rootLogger.addAppender(appender);
+        rootLogger.addAppender(listApp);
+        rootLogger.setAdditive(false);
+        rootLogger.setLevel(Level.DEBUG);
         for (final String message : messages) {
-            root.debug(message);
+            rootLogger.debug(message);
         }
-        Thread.sleep(2000);
+        try {
+            Thread.sleep(2000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         final List<LogEvent> events = listApp.getEvents();
         assertNotNull("No event retrieved", events);
         assertEquals("Incorrect number of events received", messages.length, events.size());
