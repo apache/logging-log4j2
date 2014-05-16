@@ -37,6 +37,11 @@ public abstract class AbstractLogEvent implements LogEvent {
     }
 
     @Override
+    public String getContextMap(String key) {
+        return null;
+    }
+
+    @Override
     public ContextStack getContextStack() {
         return null;
     }

@@ -62,7 +62,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
 
     private final LogEvent event;
 
-    private final Map<String, String> ctx = new HashMap<String, String>();
+    private final Map<String, String> contextMap = new HashMap<String, String>();
 
     private final boolean compress;
 
@@ -95,7 +95,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
                 for (String str : array) {
                     str = str.trim();
                     if (mdc.containsKey(str)) {
-                        ctx.put(str, mdc.get(str));
+                        contextMap.put(str, mdc.get(str));
                     }
                 }
             }
@@ -108,12 +108,12 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
                 }
                 for (final Map.Entry<String, String> entry : mdc.entrySet()) {
                     if (!list.contains(entry.getKey())) {
-                        ctx.put(entry.getKey(), entry.getValue());
+                        contextMap.put(entry.getKey(), entry.getValue());
                     }
                 }
             }
         } else {
-            ctx.putAll(mdc);
+            contextMap.putAll(mdc);
         }
 
         if (required != null) {
@@ -140,7 +140,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
             headers.put(GUID, guid);
         }
 
-        addContextData(mdcPrefix, headers, ctx);
+        addContextData(mdcPrefix, headers, contextMap);
     }
 
     protected void addStructuredData(final String prefix, final Map<String, String> fields,
@@ -291,7 +291,19 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
      */
     @Override
     public Map<String, String> getContextMap() {
-        return ctx;
+        return contextMap;
+    }
+
+    /**
+     * Gets the value at the given key in the context map.
+     * 
+     * @param key the key to query
+     * @return the value to which the specified key is mapped, or {@code null} if this map contains no mapping for the key or there is no
+     *         map.
+     */
+    @Override
+    public String getContextMap(String key) {
+        return contextMap == null ? null : contextMap.get(key);
     }
 
     /**

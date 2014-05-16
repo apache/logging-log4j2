@@ -207,6 +207,18 @@ public abstract class BasicLogEventEntity extends AbstractLogEventWrapperEntity 
     }
 
     /**
+     * Gets the value at the given key in the context map.
+     * 
+     * @param key the key to query
+     * @return the value to which the specified key is mapped, or {@code null} if this map contains no mapping for the key or there is no
+     *         map.
+     */
+    @Override
+    public String getContextMap(String key) {
+        return this.getWrappedEvent().getContextMap(key);
+    }
+
+    /**
      * Gets the context stack. Annotated with {@code @Convert(converter = ContextStackAttributeConverter.class)}.
      *
      * @return the context stack.
