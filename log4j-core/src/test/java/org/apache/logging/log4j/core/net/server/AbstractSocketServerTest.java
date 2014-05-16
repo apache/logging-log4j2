@@ -171,8 +171,8 @@ public abstract class AbstractSocketServerTest {
         final SocketAppender appender = SocketAppender.createAppender("localhost", this.port, this.protocol, "-1",
                 null, "Test", null, "false", socketLayout, socketFilter, null, null);
         appender.start();
-        final ListAppender listApp = new ListAppender("Events", serverFilter, null, false, false);
-        listApp.start();
+        final ListAppender listAppender = new ListAppender("Events", serverFilter, null, false, false);
+        listAppender.start();
         final PatternLayout layout = PatternLayout.createLayout("%m %ex%n", null, null, null, null, null, null, null);
         final ConsoleAppender console = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false",
                 "true");
@@ -182,7 +182,7 @@ public abstract class AbstractSocketServerTest {
 
         // set appender on root and set level to debug
         rootLogger.addAppender(appender);
-        rootLogger.addAppender(listApp);
+        rootLogger.addAppender(listAppender);
         rootLogger.setAdditive(false);
         rootLogger.setLevel(Level.DEBUG);
         for (final String message : messages) {
@@ -193,7 +193,7 @@ public abstract class AbstractSocketServerTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        final List<LogEvent> events = listApp.getEvents();
+        final List<LogEvent> events = listAppender.getEvents();
         assertNotNull("No event retrieved", events);
         assertEquals("Incorrect number of events received", messages.length, events.size());
         for (int i = 0; i < messages.length; i++) {
