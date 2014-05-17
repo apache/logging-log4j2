@@ -153,7 +153,7 @@ public class SocketAppenderTest {
     @Test
     public void testTcpAppenderDeadlock() throws Exception {
 
-        final SocketAppender appender = SocketAppender.createAppender("localhost", DYN_PORT, "tcp", "10000",
+        final SocketAppender appender = SocketAppender.createAppender("localhost", DYN_PORT, "tcp", "100",
                 "false", "Test", null, null, null, null, null, null);
             appender.start();
             // set appender on root and set level to debug
@@ -172,7 +172,7 @@ public class SocketAppenderTest {
     @Test
     public void testTcpAppenderNoWait() throws Exception {
 
-        final SocketAppender appender = SocketAppender.createAppender("localhost", ERROR_PORT, "tcp", "10000",
+        final SocketAppender appender = SocketAppender.createAppender("localhost", ERROR_PORT, "tcp", "100",
             "true", "Test", null, "false", null, null, null, null);
         appender.start();
         // set appender on root and set level to debug
