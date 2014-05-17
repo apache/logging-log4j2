@@ -34,12 +34,12 @@ import javax.lang.model.element.ElementVisitor;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.SimpleElementVisitor6;
+import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
+import javax.tools.StandardLocation;
+
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
-
-import static javax.tools.Diagnostic.Kind.ERROR;
-import static javax.tools.StandardLocation.CLASS_OUTPUT;
 
 /**
  * Annotation processor for pre-scanning Log4j 2 plugins.
@@ -81,7 +81,7 @@ public class PluginProcessor extends AbstractProcessor {
     }
 
     private void error(final CharSequence message) {
-        processingEnv.getMessager().printMessage(ERROR, message);
+        processingEnv.getMessager().printMessage(Kind.ERROR, message);
     }
 
     private void collectPlugins(final Iterable<? extends Element> elements) {
@@ -103,7 +103,8 @@ public class PluginProcessor extends AbstractProcessor {
     }
 
     private void writeCacheFile(final Element... elements) throws IOException {
-        final FileObject fo = processingEnv.getFiler().createResource(CLASS_OUTPUT, PLUGINS_PACKAGE_NAME, FILENAME, elements);
+        final FileObject fo = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT, 
+                PLUGINS_PACKAGE_NAME, FILENAME, elements);
         final OutputStream out = fo.openOutputStream();
         try {
             pluginCache.writeCache(out);
