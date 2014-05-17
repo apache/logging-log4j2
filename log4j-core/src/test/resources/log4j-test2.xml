@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="OFF" name="XMLConfigTest" monitorInterval="5">
+<Configuration status="OFF" name="XMLConfigTest" monitorInterval="1">
   <Appenders>
     <RollingFile name="HostFile" fileName="target/${hostName}.log" filePattern="target/${hostName}-%d{MM-dd-yyyy}-%i.log">
       <PatternLayout>
