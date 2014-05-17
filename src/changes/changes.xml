@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="2.0-rc2" date="2014-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-639" dev="rpopma" type="fix" due-to="Mck SembWever">
+        Prevent NPE in AsyncLogger and AsyncLoggerConfig if logger is used after log4j has been shut down.
+      </action>
       <action issue="LOG4J2-469" dev="rgoers" type="fix">
         FailoverAppender was not resetting its status after the primary appender recovered.
       </action>
