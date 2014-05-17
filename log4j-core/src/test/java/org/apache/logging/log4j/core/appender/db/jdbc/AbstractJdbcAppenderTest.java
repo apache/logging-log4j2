@@ -226,20 +226,20 @@ public abstract class AbstractJdbcAppenderTest {
     }
 
     @Test
-    public void testPerformanceOfAppenderWith10000Events() throws Exception {
+    public void testPerformanceOfAppenderWith1000Events() throws Exception {
         this.setUp("fmLogEntry", "log4j2-" + this.databaseType + "-factory-method.xml");
 
         final RuntimeException exception = new RuntimeException("Hello, world!");
 
         final Logger logger = LogManager.getLogger(this.getClass().getName() +
-                ".testPerformanceOfAppenderWith10000Events");
+                ".testPerformanceOfAppenderWith1000Events");
         logger.info("This is a warm-up message.");
 
         System.out.println("Starting a performance test for JDBC Appender for " + this.databaseType + '.');
 
         long start = System.nanoTime();
 
-        for(int i = 0; i < 10000; i++) {
+        for(int i = 0; i < 1000; i++) {
             if (i % 25 == 0) {
                 logger.warn("This is an exception message.", exception);
             } else {
@@ -255,9 +255,9 @@ public abstract class AbstractJdbcAppenderTest {
         final ResultSet resultSet = statement.executeQuery("SELECT * FROM fmLogEntry ORDER BY id");
 
         resultSet.last();
-        assertEquals("The number of records is not correct.", 10001, resultSet.getRow());
+        assertEquals("The number of records is not correct.", 1001, resultSet.getRow());
 
-        System.out.println("Wrote 10,000 log events in " + elapsed + " nanoseconds (" + elapsedMilli +
+        System.out.println("Wrote 1,000 log events in " + elapsed + " nanoseconds (" + elapsedMilli +
                 " milliseconds) for " + this.databaseType + '.');
     }
 }
