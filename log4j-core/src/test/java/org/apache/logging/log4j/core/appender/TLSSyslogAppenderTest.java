@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.appender;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.net.ssl.SSLServerSocket;
@@ -48,12 +49,10 @@ public class TLSSyslogAppenderTest extends SyslogAppenderTest{
         String prefix = "BEGIN";
         initTLSTestEnvironment(1, TLSSyslogMessageFormat.LEGACY_BSD);
 
-        StringBuilder builder = new StringBuilder(prefix);
-        for (int i = 0; i < 2 * 1024 * 2014; i++) {
-            builder.append('a');
-        }
-        String message = builder.toString();
-        sendAndCheckLegacyBSDMessage(message);
+        char[] msg = new char[2 * 1024 * 2014 + prefix.length()];
+        Arrays.fill(msg, 'a');
+        System.arraycopy(prefix.toCharArray(), 0, msg, 0, prefix.length());
+        sendAndCheckLegacyBSDMessage(new String(msg));
     }
 
     @Test
