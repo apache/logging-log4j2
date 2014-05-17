@@ -230,10 +230,16 @@ public class AsyncLogger extends Logger {
             info = new Info(new RingBufferLogEventTranslator(), Thread.currentThread().getName(), false);
             threadlocalInfo.set(info);
         }
+        
+        Disruptor<RingBufferLogEvent> temp = disruptor;
+        if (temp == null) { // LOG4J2-639
+            LOGGER.fatal("Ignoring log event after log4j was shut down");
+            return;
+        }
 
         // LOG4J2-471: prevent deadlock when RingBuffer is full and object
         // being logged calls Logger.log() from its toString() method
-        if (info.isAppenderThread && disruptor.getRingBuffer().remainingCapacity() == 0) {
+        if (info.isAppenderThread && temp.getRingBuffer().remainingCapacity() == 0) {
             // bypass RingBuffer and invoke Appender directly
             config.loggerConfig.log(getName(), fqcn, marker, level, message, thrown);
             return;
@@ -266,7 +272,15 @@ public class AsyncLogger extends Logger {
                 // CachedClock: 10% faster than system clock, smaller gaps
                 clock.currentTimeMillis());
 
-        disruptor.publishEvent(info.translator);
+        // LOG4J2-639: catch NPE if disruptor field was set to null after our check above
+        try {
+            // Note: do NOT use the temp variable above!
+            // That could result in adding a log event to the disruptor after it was shut down,
+            // which could cause the publishEvent method to hang and never return.
+            disruptor.publishEvent(info.translator);
+        } catch (NullPointerException npe) {
+            LOGGER.fatal("Ignoring log event after log4j was shut down.");
+        }
     }
 
     private static StackTraceElement location(final String fqcnOfLogger) {

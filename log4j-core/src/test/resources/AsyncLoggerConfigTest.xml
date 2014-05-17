@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="OFF">
+<Configuration status="ERROR">
   <Appenders>
     <File name="File" 
           fileName="target/AsyncLoggerConfigTest.log" 
