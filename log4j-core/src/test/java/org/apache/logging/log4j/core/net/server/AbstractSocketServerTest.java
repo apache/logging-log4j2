@@ -190,11 +190,18 @@ public abstract class AbstractSocketServerTest {
         for (final String message : messages) {
             rootLogger.debug(message);
         }
-        try {
-            // Let the server-side read the messages.
-            Thread.sleep(4000);
-        } catch (Exception e) {
-            e.printStackTrace();
+        final int MAX_TRIES = 100;
+        for (int i = 0; i < MAX_TRIES; i++) {
+            if (listAppender.getEvents().size() < messages.length) {
+                try {
+                    // Let the server-side read the messages.
+                    Thread.sleep(40);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                break;
+            }
         }
         final List<LogEvent> events = listAppender.getEvents();
         assertNotNull("No event retrieved", events);
