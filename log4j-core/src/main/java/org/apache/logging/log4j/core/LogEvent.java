@@ -45,6 +45,7 @@ public interface LogEvent extends Serializable {
      * @return the value to which the specified key is mapped, or {@code null} if this map contains no mapping for the key or there is no
      *         map.
      */
+    @Deprecated
     String getContextMap(String key);
 
     /**
