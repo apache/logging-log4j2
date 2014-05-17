@@ -58,12 +58,10 @@ public class RollingAppenderTimeTest {
 
     @Test
     public void testAppender() throws Exception {
-        for (int i=0; i < 100; ++i) {
-            if (i % 11 == 0) {
-                Thread.sleep(1000);
-            }
-            logger.debug("This is test message number " + i);
-        }
+        logger.debug("This is test message number 1");
+        Thread.sleep(1500);
+        logger.debug("This is test message number 2");
+
         final File dir = new File(DIR);
         assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
         final File[] files = dir.listFiles();
