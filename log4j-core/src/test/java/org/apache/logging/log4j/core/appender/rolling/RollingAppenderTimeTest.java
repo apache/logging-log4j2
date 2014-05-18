@@ -49,7 +49,7 @@ public class RollingAppenderTimeTest {
 
     @AfterClass
     public static void cleanupClass() {
-        deleteDir();
+        //deleteDir();
         System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         ctx.reconfigure();
@@ -60,8 +60,11 @@ public class RollingAppenderTimeTest {
     public void testAppender() throws Exception {
         logger.debug("This is test message number 1");
         Thread.sleep(1500);
-        logger.debug("This is test message number 2");
-
+        // Trigger the rollover
+        for (int i = 0; i < 16; ++i) {
+            logger.debug("This is test message number " + i + 1);
+        }
+        Thread.sleep(100); // Allow time for rollover to complete
         final File dir = new File(DIR);
         assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
         final File[] files = dir.listFiles();
