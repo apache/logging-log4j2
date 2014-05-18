@@ -68,7 +68,7 @@ public final class MDC {
 
     public static void clear() {
         localMap.get().clear();
-        ThreadContext.clear();
+        ThreadContext.clearMap();
     }
 
     public static Hashtable<String, Object> getContext() {

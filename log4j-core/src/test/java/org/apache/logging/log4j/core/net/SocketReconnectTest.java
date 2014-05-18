@@ -31,7 +31,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.helpers.Constants;
+import org.apache.logging.log4j.core.util.Constants;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -40,11 +40,11 @@ public class SocketReconnectTest {
 
     private static final String CONFIG = "log4j-socket.xml";
 
-    private static final String SHUTDOWN = "Shutdown" + Constants.LINE_SEP +
-        "................................................................" + Constants.LINE_SEP +
-        "................................................................" + Constants.LINE_SEP +
-        "................................................................" + Constants.LINE_SEP +
-        "................................................................" + Constants.LINE_SEP;
+    private static final String SHUTDOWN = "Shutdown" + Constants.LINE_SEPARATOR +
+        "................................................................" + Constants.LINE_SEPARATOR +
+        "................................................................" + Constants.LINE_SEPARATOR +
+        "................................................................" + Constants.LINE_SEPARATOR +
+        "................................................................" + Constants.LINE_SEPARATOR;
 
 
     @BeforeClass

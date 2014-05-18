@@ -25,8 +25,8 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy;
-import org.apache.logging.log4j.core.appender.rolling.RollingRandomAccessFileManager;
 import org.apache.logging.log4j.core.appender.rolling.RollingFileManager;
+import org.apache.logging.log4j.core.appender.rolling.RollingRandomAccessFileManager;
 import org.apache.logging.log4j.core.appender.rolling.RolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -35,9 +35,10 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.helpers.Booleans;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.net.Advertiser;
+import org.apache.logging.log4j.core.util.Booleans;
+import org.apache.logging.log4j.core.util.Integers;
 
 /**
  * An appender that writes to random access files and can roll over at
@@ -54,11 +55,10 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
     private RollingRandomAccessFileAppender(final String name, final Layout<? extends Serializable> layout,
             final Filter filter, final RollingFileManager manager, final String fileName,
             final String filePattern, final boolean ignoreExceptions,
-            final boolean immediateFlush, final Advertiser advertiser) {
+            final boolean immediateFlush, final int bufferSize, final Advertiser advertiser) {
         super(name, layout, filter, ignoreExceptions, immediateFlush, manager);
         if (advertiser != null) {
-            final Map<String, String> configuration = new HashMap<String, String>(
-                    layout.getContentFormat());
+            final Map<String, String> configuration = new HashMap<String, String>(layout.getContentFormat());
             configuration.put("contentType", layout.getContentType());
             configuration.put("name", name);
             advertisement = advertiser.advertise(configuration);
@@ -113,6 +113,14 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
     public String getFilePattern() {
         return filePattern;
     }
+    
+    /**
+     * Returns the size of the file manager's buffer.
+     * @return the buffer size
+     */
+    public int getBufferSize() {
+        return ((RollingRandomAccessFileManager) getManager()).getBufferSize();
+    }
 
     /**
      * Create a RollingRandomAccessFileAppender.
@@ -126,6 +134,7 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
      * @param name The name of the Appender (required).
      * @param immediateFlush When true, events are immediately flushed. Defaults
      *            to "true".
+     * @param bufferSizeStr The buffer size, defaults to {@value RollingRandomAccessFileManager#DEFAULT_BUFFER_SIZE}.
      * @param policy The triggering policy. (required).
      * @param strategy The rollover strategy. Defaults to
      *            DefaultRolloverStrategy.
@@ -147,6 +156,7 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
             @PluginAttribute("append") final String append,
             @PluginAttribute("name") final String name,
             @PluginAttribute("immediateFlush") final String immediateFlush,
+            @PluginAttribute("bufferSize") final String bufferSizeStr,
             @PluginElement("Policy") final TriggeringPolicy policy,
             @PluginElement("Strategy") RolloverStrategy strategy,
             @PluginElement("Layout") Layout<? extends Serializable> layout,
@@ -160,6 +170,7 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         final boolean isFlush = Booleans.parseBoolean(immediateFlush, true);
         final boolean isAdvertise = Boolean.parseBoolean(advertise);
+        final int bufferSize = Integers.parseInt(bufferSizeStr, RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE);
 
         if (name == null) {
             LOGGER.error("No name provided for FileAppender");
@@ -167,14 +178,12 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
         }
 
         if (fileName == null) {
-            LOGGER.error("No filename was provided for FileAppender with name "
-                    + name);
+            LOGGER.error("No filename was provided for FileAppender with name " + name);
             return null;
         }
 
         if (filePattern == null) {
-            LOGGER.error("No filename pattern provided for FileAppender with name "
-                    + name);
+            LOGGER.error("No filename pattern provided for FileAppender with name " + name);
             return null;
         }
 
@@ -192,15 +201,14 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
             layout = PatternLayout.createLayout(null, null, null, null, null, null, null, null);
         }
 
-
-        final RollingRandomAccessFileManager manager = RollingRandomAccessFileManager.getRollingRandomAccessFileManager(fileName, filePattern,
-            isAppend, isFlush, policy, strategy, advertiseURI, layout);
+        final RollingRandomAccessFileManager manager = RollingRandomAccessFileManager.getRollingRandomAccessFileManager(
+                fileName, filePattern, isAppend, isFlush, bufferSize, policy, strategy, advertiseURI, layout);
         if (manager == null) {
             return null;
         }
 
         return new RollingRandomAccessFileAppender(name, layout, filter, manager,
-                fileName, filePattern, ignoreExceptions, isFlush,
+                fileName, filePattern, ignoreExceptions, isFlush, bufferSize,
                 isAdvertise ? config.getAdvertiser() : null);
     }
 }

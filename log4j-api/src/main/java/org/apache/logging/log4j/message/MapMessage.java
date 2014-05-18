@@ -22,6 +22,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.apache.logging.log4j.util.EnglishEnums;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Represents a Message that consists of a Map.
@@ -84,7 +85,7 @@ public class MapMessage implements MultiformatMessage {
      */
     @Override
     public String getFormat() {
-        return "";
+        return Strings.EMPTY;
     }
 
     /**

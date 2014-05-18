@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.io.IOException;
+import java.net.SocketException;
+
 import org.apache.logging.log4j.core.net.mock.MockSyslogServerFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.IOException;
-import java.net.SocketException;
 
 /**
  *

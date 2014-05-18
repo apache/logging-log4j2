@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Substitutes variables within a string by values.
@@ -1116,7 +1117,7 @@ public class StrSubstitutor {
      */
     public void appendWithSeparators(final StringBuilder sb, final Iterable<?> iterable, String separator) {
         if (iterable != null) {
-            separator = (separator == null ? "" : separator);
+            separator = (separator == null ? Strings.EMPTY : separator);
             final Iterator<?> it = iterable.iterator();
             while (it.hasNext()) {
                 sb.append(it.next());

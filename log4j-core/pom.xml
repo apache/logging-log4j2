@@ -68,6 +68,18 @@
       <artifactId>jackson-dataformat-yaml</artifactId>
       <optional>true</optional>
     </dependency>
+    <!-- Required for XML layout and receiver support -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-xml</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.woodstox</groupId>
+      <artifactId>woodstox-core-asl</artifactId>
+      <version>4.3.0</version>
+      <optional>true</optional>
+    </dependency>    
     <!-- Required for console color support in Windows -->
     <dependency>
       <groupId>org.fusesource.jansi</groupId>
@@ -86,31 +98,10 @@
       <artifactId>javax.mail</artifactId>
       <optional>true</optional>
     </dependency>
-    <!-- Used for web container support -->
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
-      <version>3.0.1</version>
-      <scope>provided</scope>
-    </dependency>
     <!-- Used for JPA appenders (needs an implementation of course) -->
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>javax.persistence</artifactId>
-      <scope>compile</scope>
-      <optional>true</optional>
-    </dependency>
-    <!-- Required for MongoDB NoSQLAppender -->
-    <dependency>
-      <groupId>org.mongodb</groupId>
-      <artifactId>mongo-java-driver</artifactId>
-      <scope>compile</scope>
-      <optional>true</optional>
-    </dependency>
-    <!-- Required for CouchDB NoSQLAppender -->
-    <dependency>
-      <groupId>org.lightcouch</groupId>
-      <artifactId>lightcouch</artifactId>
       <scope>compile</scope>
       <optional>true</optional>
     </dependency>
@@ -195,12 +186,6 @@
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- Spring tests (JNDI and such) -->
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-test</artifactId>
-      <scope>test</scope>
-    </dependency>
     <!-- OSGi tests -->
     <dependency>
       <groupId>org.eclipse.osgi</groupId>
@@ -243,6 +228,26 @@
         </executions>
       </plugin>
       <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <excludedGroups>
+            org.apache.logging.log4j.categories.PerformanceTests
+          </excludedGroups>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <configuration>
+          <includes>
+            <include>**/*.java</include>
+          </includes>
+          <groups>
+            org.apache.logging.log4j.categories.PerformanceTests
+          </groups>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <executions>
@@ -259,6 +264,7 @@
         <configuration>
           <instructions>
             <Bundle-SymbolicName>org.apache.logging.log4j.core</Bundle-SymbolicName>
+            <!-- TODO: exclude internal classes from export -->
             <Export-Package>org.apache.logging.log4j.core.*</Export-Package>
             <Bundle-Activator>org.apache.logging.log4j.core.config.plugins.osgi.Activator</Bundle-Activator>
           </instructions>

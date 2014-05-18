@@ -26,6 +26,7 @@ import java.util.Locale;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -264,9 +265,9 @@ public class LoggerTest {
     @Test
     public void getRootLogger() {
         assertNotNull(LogManager.getRootLogger());
-        assertNotNull(LogManager.getLogger(""));
+        assertNotNull(LogManager.getLogger(Strings.EMPTY));
         assertNotNull(LogManager.getLogger(LogManager.ROOT_LOGGER_NAME));
-        assertEquals(LogManager.getRootLogger(), LogManager.getLogger(""));
+        assertEquals(LogManager.getRootLogger(), LogManager.getLogger(Strings.EMPTY));
         assertEquals(LogManager.getRootLogger(), LogManager.getLogger(LogManager.ROOT_LOGGER_NAME));
     }
 
@@ -321,7 +322,7 @@ public class LoggerTest {
 
         ThreadContext.put("TestYear", new Integer(2010).toString());
         logger.debug("Debug message");
-        ThreadContext.clear();
+        ThreadContext.clearMap();
         logger.debug("Debug message");
         assertEquals(2, results.size());
         assertTrue("Incorrect MDC: " + results.get(0),
@@ -354,7 +355,7 @@ public class LoggerTest {
         msg.put("FromAccount", "123457");
         msg.put("Amount", "200.00");
         logger.info(MarkerManager.getMarker("EVENT"), msg);
-        ThreadContext.clear();
+        ThreadContext.clearMap();
         assertEquals(1, results.size());
         assertThat("Incorrect structured data: ", results.get(0), startsWith(
                 "EVENT INFO Transfer [Audit@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"] Transfer Complete"));

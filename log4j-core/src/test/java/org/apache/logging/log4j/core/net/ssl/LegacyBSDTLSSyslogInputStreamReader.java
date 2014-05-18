@@ -21,6 +21,8 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.logging.log4j.util.Strings;
+
 public class LegacyBSDTLSSyslogInputStreamReader extends TLSSyslogInputStreamReaderBase {
     private final ByteArrayOutputStream buffer;
 
@@ -31,7 +33,7 @@ public class LegacyBSDTLSSyslogInputStreamReader extends TLSSyslogInputStreamRea
 
     @Override
     public String read() throws IOException {
-        String message = "";
+        String message = Strings.EMPTY;
         try {
             while (true) {
                 int b = inputStream.read();

@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.jmx;
 import javax.management.ObjectName;
 
 import org.apache.logging.log4j.core.appender.AsyncAppender;
-import org.apache.logging.log4j.core.helpers.Assert;
+import org.apache.logging.log4j.core.util.Assert;
 
 /**
  * Implementation of the {@code AsyncAppenderAdminMBean} interface.

@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import static org.junit.Assert.assertTrue;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -35,9 +35,9 @@ public class MarkerFilterTest {
     @Test
     public void testMarkers() {
         final Marker parent = MarkerManager.getMarker("Parent");
-        final Marker child = MarkerManager.getMarker("Child", parent);
-        final Marker grandChild = MarkerManager.getMarker("GrandChild", child);
-        final Marker sibling = MarkerManager.getMarker("Sibling", parent);
+        final Marker child = MarkerManager.getMarker("Child").setParents(parent);
+        final Marker grandChild = MarkerManager.getMarker("GrandChild").setParents(child);
+        final Marker sibling = MarkerManager.getMarker("Sibling").setParents(parent);
         final Marker stranger = MarkerManager.getMarker("Stranger");
         MarkerFilter filter = MarkerFilter.createFilter("Parent", null, null);
         filter.start();

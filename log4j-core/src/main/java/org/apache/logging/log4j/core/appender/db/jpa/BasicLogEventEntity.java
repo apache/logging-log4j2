@@ -17,9 +17,11 @@
 package org.apache.logging.log4j.core.appender.db.jpa;
 
 import java.util.Map;
+
 import javax.persistence.Basic;
 import javax.persistence.Convert;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
@@ -32,6 +34,7 @@ import org.apache.logging.log4j.core.appender.db.jpa.converter.MarkerAttributeCo
 import org.apache.logging.log4j.core.appender.db.jpa.converter.MessageAttributeConverter;
 import org.apache.logging.log4j.core.appender.db.jpa.converter.StackTraceElementAttributeConverter;
 import org.apache.logging.log4j.core.appender.db.jpa.converter.ThrowableAttributeConverter;
+import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.Message;
 
 /**
@@ -162,8 +165,8 @@ public abstract class BasicLogEventEntity extends AbstractLogEventWrapperEntity 
      */
     @Override
     @Basic
-    public long getMillis() {
-        return this.getWrappedEvent().getMillis();
+    public long getTimeMillis() {
+        return this.getWrappedEvent().getTimeMillis();
     }
 
     /**
@@ -179,6 +182,18 @@ public abstract class BasicLogEventEntity extends AbstractLogEventWrapperEntity 
     }
 
     /**
+     * Gets the exception logged. Annotated with {@code @Convert(converter = ThrowableAttributeConverter.class)}.
+     *
+     * @return the exception logged.
+     * @see ThrowableAttributeConverter
+     */
+    @Override
+    @Transient
+    public ThrowableProxy getThrownProxy() {
+        return this.getWrappedEvent().getThrownProxy();
+    }
+
+    /**
      * Gets the context map. Annotated with {@code @Convert(converter = ContextMapAttributeConverter.class)}.
      *
      * @return the context map.
@@ -189,6 +204,18 @@ public abstract class BasicLogEventEntity extends AbstractLogEventWrapperEntity 
     @Convert(converter = ContextMapAttributeConverter.class)
     public Map<String, String> getContextMap() {
         return this.getWrappedEvent().getContextMap();
+    }
+
+    /**
+     * Gets the value at the given key in the context map.
+     * 
+     * @param key the key to query
+     * @return the value to which the specified key is mapped, or {@code null} if this map contains no mapping for the key or there is no
+     *         map.
+     */
+    @Override
+    public String getContextMap(String key) {
+        return this.getWrappedEvent().getContextMap(key);
     }
 
     /**
@@ -211,7 +238,7 @@ public abstract class BasicLogEventEntity extends AbstractLogEventWrapperEntity 
      */
     @Override
     @Basic
-    public String getFQCN() {
-        return this.getWrappedEvent().getFQCN();
+    public String getLoggerFQCN() {
+        return this.getWrappedEvent().getLoggerFQCN();
     }
 }

@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.junit.Assert.assertEquals;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -24,8 +26,6 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -37,7 +37,7 @@ public class MarkerPatternConverterTest {
     public void testLookup() {
         final Message msg = new StructuredDataMessage("Test", "This is a test", "Audit");
         final Marker eventMarker = MarkerManager.getMarker("EVENT");
-        final Marker auditMarker = MarkerManager.getMarker("AUDIT", eventMarker);
+        final Marker auditMarker = MarkerManager.getMarker("AUDIT").setParents(eventMarker);
         final LogEvent event = new Log4jLogEvent("MyLogger", auditMarker, null, Level.DEBUG, msg, null);
         final StringBuilder sb = new StringBuilder();
         final MarkerPatternConverter converter = MarkerPatternConverter.newInstance(null);

@@ -31,9 +31,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -46,16 +46,15 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
-import org.apache.logging.log4j.core.helpers.Booleans;
-import org.apache.logging.log4j.core.helpers.Constants;
-import org.apache.logging.log4j.core.helpers.Loader;
-import org.apache.logging.log4j.core.helpers.Strings;
 import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.logging.log4j.core.util.Booleans;
+import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Logger object that is created via configuration.
@@ -63,7 +62,6 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 @Plugin(name = "logger", category = "Core", printObject = true)
 public class LoggerConfig extends AbstractFilterable {
 
-    protected static final Logger LOGGER = StatusLogger.getLogger();
     private static final int MAX_RETRIES = 3;
     private static LogEventFactory LOG_EVENT_FACTORY = null;
 
@@ -105,7 +103,7 @@ public class LoggerConfig extends AbstractFilterable {
     public LoggerConfig() {
         this.logEventFactory = LOG_EVENT_FACTORY;
         this.level = Level.ERROR;
-        this.name = "";
+        this.name = Strings.EMPTY;
         this.properties = null;
         this.config = null;
     }
@@ -377,7 +375,6 @@ public class LoggerConfig extends AbstractFilterable {
     private void waitForCompletion() {
         if (shutdown.compareAndSet(false, true)) {
             int retries = 0;
-            // if this were Java 1.7, we could use a java.util.concurrent.Phaser instead
             while (counter.get() > 0) {
                 shutdownLock.lock();
                 try {
@@ -477,7 +474,7 @@ public class LoggerConfig extends AbstractFilterable {
                     levelName);
             level = Level.ERROR;
         }
-        final String name = loggerName.equals("root") ? "" : loggerName;
+        final String name = loggerName.equals("root") ? Strings.EMPTY : loggerName;
         final boolean additive = Booleans.parseBoolean(additivity, true);
 
         return new LoggerConfig(name, appenderRefs, filter, level, additive,

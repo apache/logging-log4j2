@@ -21,13 +21,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.apache.logging.log4j.util.Strings;
+
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Constraint {
 
     boolean required() default false;
 
-    String pattern() default "";
+    String pattern() default Strings.EMPTY;
 
     int minLength() default -1;
 

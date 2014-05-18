@@ -52,7 +52,7 @@ public class LoggingApp {
 
     public LoggingApp(final String member) {
 
-        ThreadContext.clear();
+        ThreadContext.clearMap();
 
         RequestContext.setSessionId("session1234");
         RequestContext.setIpAddress("127.0.0.1");

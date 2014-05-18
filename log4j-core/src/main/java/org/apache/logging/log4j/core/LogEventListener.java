@@ -29,7 +29,7 @@ public class LogEventListener {
         context = (LoggerContext) LogManager.getContext(false);
     }
 
-    protected void log(final LogEvent event) {
+    public void log(final LogEvent event) {
         if (event == null) {
             return;
         }

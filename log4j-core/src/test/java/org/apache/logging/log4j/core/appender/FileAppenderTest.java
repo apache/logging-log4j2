@@ -16,14 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.junit.CleanFiles;
-import org.apache.logging.log4j.message.SimpleMessage;
-import org.junit.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -36,8 +30,18 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.junit.CleanFiles;
+import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.util.Strings;
+import org.junit.AfterClass;
+import org.junit.Ignore;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  *
@@ -186,7 +190,7 @@ public class FileAppenderTest {
         final FileInputStream fis = new FileInputStream(FILENAME);
         final BufferedReader is = new BufferedReader(new InputStreamReader(fis));
         int counter = 0;
-        String str = "";
+        String str = Strings.EMPTY;
         while (is.ready()) {
             str = is.readLine();
             // System.out.println(str);

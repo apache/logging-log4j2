@@ -27,7 +27,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.helpers.Constants;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.AfterClass;
@@ -69,7 +69,7 @@ public class OptionalTest {
     public void testEventLogger() {
         logger.info(marker, "This is a test");
         MDC.clear();
-        verify("EventLogger", "o.a.l.s.OptionalTest This is a test" + Constants.LINE_SEP);
+        verify("EventLogger", "o.a.l.s.OptionalTest This is a test" + Constants.LINE_SEPARATOR);
     }
 
     private void verify(final String name, final String expected) {

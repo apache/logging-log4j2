@@ -29,10 +29,10 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.helpers.Booleans;
-import org.apache.logging.log4j.core.helpers.Integers;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.net.Advertiser;
+import org.apache.logging.log4j.core.util.Booleans;
+import org.apache.logging.log4j.core.util.Integers;
 
 /**
  * File Appender.
@@ -93,6 +93,14 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
      */
     public String getFileName() {
         return this.fileName;
+    }
+    
+    /**
+     * Returns the size of the file manager's buffer.
+     * @return the buffer size
+     */
+    public int getBufferSize() {
+        return getManager().getBufferSize();
     }
 
     // difference from standard File Appender:

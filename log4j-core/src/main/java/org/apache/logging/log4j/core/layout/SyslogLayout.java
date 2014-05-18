@@ -31,16 +31,16 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.helpers.Charsets;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Priority;
+import org.apache.logging.log4j.core.util.Charsets;
 
 
 /**
  * Formats a log event as a BSD Log record.
  */
 @Plugin(name = "SyslogLayout", category = "Core", elementType = "layout", printObject = true)
-public class SyslogLayout extends AbstractStringLayout {
+public final class SyslogLayout extends AbstractStringLayout {
     /**
      * Match newlines in a platform-independent manner.
      */
@@ -81,7 +81,7 @@ public class SyslogLayout extends AbstractStringLayout {
         buf.append('<');
         buf.append(Priority.getPriority(facility, event.getLevel()));
         buf.append('>');
-        addDate(event.getMillis(), buf);
+        addDate(event.getTimeMillis(), buf);
         buf.append(' ');
         buf.append(localHostname);
         buf.append(' ');

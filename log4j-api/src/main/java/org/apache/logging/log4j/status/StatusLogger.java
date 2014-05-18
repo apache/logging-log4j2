@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.status;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -33,6 +35,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.simple.SimpleLogger;
 import org.apache.logging.log4j.spi.AbstractLoggerProvider;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Mechanism to record events that occur in the logging system.
@@ -68,7 +71,7 @@ public final class StatusLogger extends AbstractLoggerProvider {
     private int listenersLevel;
 
     private StatusLogger() {
-        this.logger = new SimpleLogger("StatusLogger", Level.ERROR, false, true, false, false, "", null, PROPS,
+        this.logger = new SimpleLogger("StatusLogger", Level.ERROR, false, true, false, false, Strings.EMPTY, null, PROPS,
             System.err);
         this.listenersLevel = Level.toLevel(DEFAULT_STATUS_LEVEL, Level.WARN).intLevel();
     }
@@ -107,6 +110,7 @@ public final class StatusLogger extends AbstractLoggerProvider {
      * @param listener The StatusListener to remove.
      */
     public void removeListener(final StatusListener listener) {
+        closeSilently(listener);
         listenersLock.writeLock().lock();
         try {
             listeners.remove(listener);
@@ -135,8 +139,24 @@ public final class StatusLogger extends AbstractLoggerProvider {
      * Clears the list of status events and listeners.
      */
     public void reset() {
-        listeners.clear();
-        clear();
+        listenersLock.writeLock().lock();
+        try {
+            for (final StatusListener listener : listeners) {
+                closeSilently(listener);
+            }
+        } finally {
+            listeners.clear();
+            listenersLock.writeLock().unlock();
+            // note this should certainly come after the unlock to avoid unnecessary nested locking
+            clear();
+        }
+    }
+
+    private static void closeSilently(final Closeable resource) {
+        try {
+            resource.close();
+        } catch (final IOException ignored) {
+        }
     }
 
     /**

@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.layout;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -30,9 +31,14 @@ import org.apache.logging.log4j.core.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.helpers.Charsets;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.jackson.Log4jJsonObjectMapper;
+import org.apache.logging.log4j.core.util.Charsets;
+import org.apache.logging.log4j.core.util.Throwables;
+import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -42,13 +48,17 @@ import org.junit.Test;
 public class JSONLayoutTest {
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
+    private static final String DQUOTE = "\"";
+
     @AfterClass
     public static void cleanupClass() {
         ConfigurationFactory.removeConfigurationFactory(cf);
+        ThreadContext.clearAll();
     }
 
     @BeforeClass
     public static void setupClass() {
+        ThreadContext.clearAll();
         ConfigurationFactory.setConfigurationFactory(cf);
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         ctx.reconfigure();
@@ -56,18 +66,141 @@ public class JSONLayoutTest {
 
     LoggerContext ctx = (LoggerContext) LogManager.getContext();
 
-    Logger root = this.ctx.getLogger("");
+    Logger rootLogger = this.ctx.getLogger("");
+
+    private void checkAt(final String expected, final int lineIndex, final List<String> list) {
+        final String trimedLine = list.get(lineIndex).trim();
+        assertTrue("Incorrect line index " + lineIndex + ": \"" + trimedLine + '"', trimedLine.equals(expected));
+    }
+
+    private void checkContains(final String expected, final List<String> list) {
+        for (final String string : list) {
+            final String trimedLine = string.trim();
+            if (trimedLine.equals(expected)) {
+                return;
+            }
+        }
+        Assert.fail("Cannot find " + expected + " in " + list);
+    }
+
+    private void checkMapEntry(final String key, final String value, final boolean compact, final String str) {
+        final String propSep = this.toPropertySeparator(compact);
+        // "name":"value"
+        final String expected = String.format("{\"key\":\"%s\",\"value\":\"%s\"}", key, value);
+        assertTrue("Cannot find " + expected + " in " + str, str.contains(expected));
+    }
+
+    private void checkProperty(final String key, final String value, final boolean compact, final String str) {
+        final String propSep = this.toPropertySeparator(compact);
+        // {"key":"MDC.B","value":"B_Value"}
+        final String expected = String.format("\"%s\"%s\"%s\"", key, propSep, value);
+        assertTrue("Cannot find " + expected + " in " + str, str.contains(expected));
+    }
+
+    private void checkPropertyName(final String name, final boolean compact, final String str) {
+        final String propSep = this.toPropertySeparator(compact);
+        assertTrue(str, str.contains(DQUOTE + name + DQUOTE + propSep));
+    }
+
+    private void testAllFeatures(final boolean includeSource, final boolean compact, final boolean includeContext) throws Exception {
+        final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
+        final AbstractJacksonLayout layout = JSONLayout.createLayout(Boolean.toString(includeSource), Boolean.toString(includeContext),
+                "false", Boolean.toString(compact), "UTF-8");
+        final String str = layout.toSerializable(expected);
+        // System.out.println(str);
+        final String propSep = this.toPropertySeparator(compact);
+        // Just check for \n since \r might or might not be there.
+        assertEquals(str, !compact, str.contains("\n"));
+        assertEquals(str, includeSource, str.contains("source"));
+        assertEquals(str, includeContext, str.contains("contextMap"));
+        final Log4jLogEvent actual = new Log4jJsonObjectMapper().readValue(str, Log4jLogEvent.class);
+        LogEventFixtures.assertEqualLogEvents(expected, actual, includeSource, includeContext);
+        if (includeContext) {
+            this.checkMapEntry("MDC.A", "A_Value", compact, str);
+            this.checkMapEntry("MDC.B", "B_Value", compact, str);
+        }
+        //
+        assertNull(actual.getThrown());
+        // make sure the names we want are used
+        this.checkPropertyName("timeMillis", compact, str);
+        this.checkPropertyName("thread", compact, str); // and not threadName
+        this.checkPropertyName("level", compact, str);
+        this.checkPropertyName("loggerName", compact, str);
+        this.checkPropertyName("marker", compact, str);
+        this.checkPropertyName("name", compact, str);
+        this.checkPropertyName("parents", compact, str);
+        this.checkPropertyName("message", compact, str);
+        this.checkPropertyName("thrown", compact, str);
+        this.checkPropertyName("cause", compact, str);
+        this.checkPropertyName("class", compact, str);
+        this.checkPropertyName("method", compact, str);
+        this.checkPropertyName("file", compact, str);
+        this.checkPropertyName("line", compact, str);
+        this.checkPropertyName("exact", compact, str);
+        this.checkPropertyName("location", compact, str);
+        this.checkPropertyName("version", compact, str);
+        this.checkPropertyName("commonElementCount", compact, str);
+        this.checkPropertyName("localizedMessage", compact, str);
+        this.checkPropertyName("extendedStackTrace", compact, str);
+        if (Throwables.isSuppressedAvailable()) {
+            this.checkPropertyName("suppressed", compact, str);
+        }
+        this.checkPropertyName("loggerFQCN", compact, str);
+        this.checkPropertyName("endOfBatch", compact, str);
+        if (includeContext) {
+            this.checkPropertyName("contextMap", compact, str);
+        }
+        this.checkPropertyName("contextStack", compact, str);
+        if (includeSource) {
+            this.checkPropertyName("source", compact, str);
+        }
+        // check some attrs
+        this.checkProperty("loggerFQCN", "f.q.c.n", compact, str);
+        this.checkProperty("loggerName", "a.B", compact, str);
+    }
 
     @Test
     public void testContentType() {
-        final JSONLayout layout = JSONLayout.createLayout(null, null, null, null, null);
+        final AbstractJacksonLayout layout = JSONLayout.createLayout(null, null, null, null, null);
         assertEquals("application/json; charset=UTF-8", layout.getContentType());
     }
 
     @Test
     public void testDefaultCharset() {
-        final JSONLayout layout = JSONLayout.createLayout(null, null, null, null, null);
+        final AbstractJacksonLayout layout = JSONLayout.createLayout(null, null, null, null, null);
         assertEquals(Charsets.UTF_8, layout.getCharset());
+    }
+
+    @Test
+    public void testEscapeLayout() throws Exception {
+        final Map<String, Appender> appenders = this.rootLogger.getAppenders();
+        for (final Appender appender : appenders.values()) {
+            this.rootLogger.removeAppender(appender);
+        }
+        // set up appender
+        final AbstractJacksonLayout layout = JSONLayout.createLayout("true", "true", "true", "false", null);
+        final ListAppender appender = new ListAppender("List", null, layout, true, false);
+        appender.start();
+
+        // set appender on root and set level to debug
+        this.rootLogger.addAppender(appender);
+        this.rootLogger.setLevel(Level.DEBUG);
+
+        // output starting message
+        this.rootLogger.debug("Here is a quote ' and then a double quote \"");
+
+        appender.stop();
+
+        final List<String> list = appender.getMessages();
+
+        this.checkAt("[", 0, list);
+        this.checkAt("{", 1, list);
+        this.checkContains("\"level\" : \"DEBUG\",", list);
+        this.checkContains("\"message\" : \"Here is a quote ' and then a double quote \\\"\",", list);
+        this.checkContains("\"loggerFQCN\" : \"org.apache.logging.log4j.spi.AbstractLoggerProvider\",", list);
+        for (final Appender app : appenders.values()) {
+            this.rootLogger.addAppender(app);
+        }
     }
 
     /**
@@ -75,99 +208,71 @@ public class JSONLayoutTest {
      */
     @Test
     public void testLayout() throws Exception {
-        final Map<String, Appender> appenders = root.getAppenders();
-        for (Appender appender : appenders.values()) {
-            root.removeAppender(appender);
+        final Map<String, Appender> appenders = this.rootLogger.getAppenders();
+        for (final Appender appender : appenders.values()) {
+            this.rootLogger.removeAppender(appender);
         }
         // set up appender
-        final JSONLayout layout = JSONLayout.createLayout("true", "true", "true", "false", null);
+        final AbstractJacksonLayout layout = JSONLayout.createLayout("true", "true", "true", "false", null);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
         // set appender on root and set level to debug
-        this.root.addAppender(appender);
-        this.root.setLevel(Level.DEBUG);
+        this.rootLogger.addAppender(appender);
+        this.rootLogger.setLevel(Level.DEBUG);
 
         // output starting message
-        this.root.debug("starting mdc pattern test");
+        this.rootLogger.debug("starting mdc pattern test");
 
-        this.root.debug("empty mdc");
+        this.rootLogger.debug("empty mdc");
 
         ThreadContext.put("key1", "value1");
         ThreadContext.put("key2", "value2");
 
-        this.root.debug("filled mdc");
+        this.rootLogger.debug("filled mdc");
 
         ThreadContext.remove("key1");
         ThreadContext.remove("key2");
 
-        this.root.error("finished mdc pattern test", new NullPointerException("test"));
+        this.rootLogger.error("finished mdc pattern test", new NullPointerException("test"));
 
         appender.stop();
 
         final List<String> list = appender.getMessages();
 
-        // System.out.println(list);
-        // [[, {, "logger":"root",, "timestamp":"1376676700199",, "level":"DEBUG",, "thread":"main",,
-        // "message":"starting mdc pattern test",, "LocationInfo":{,
-        // "class":"org.apache.logging.log4j.core.layout.JSONLayoutTest",, "method":"testLayout",,
-        // "file":"JSONLayoutTest.java",, "line":"87", }, },, {, "logger":"root",, "timestamp":"1376676700203",,
-        // "level":"DEBUG",, "thread":"main",, "message":"empty mdc",, "LocationInfo":{,
-        // "class":"org.apache.logging.log4j.core.layout.JSONLayoutTest",, "method":"testLayout",,
-        // "file":"JSONLayoutTest.java",, "line":"89", }, },, {, "logger":"root",, "timestamp":"1376676700204",,
-        // "level":"DEBUG",, "thread":"main",, "message":"filled mdc",, "LocationInfo":{,
-        // "class":"org.apache.logging.log4j.core.layout.JSONLayoutTest",, "method":"testLayout",,
-        // "file":"JSONLayoutTest.java",, "line":"94", },, "Properties":[, {, "name":"key2",, "value":"value2", },, {,
-        // "name":"key1",, "value":"value1", }, ], },, {, "logger":"root",, "timestamp":"1376676700204",,
-        // "level":"ERROR",, "thread":"main",, "message":"finished mdc pattern test",,
-        // "throwable":"java.lang.NullPointerException: test\\n\\tat org.apache.logging.log4j.core.layout.JSONLayoutTest.testLayout(JSONLayoutTest.java:99)\\n\\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\\n\\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)\\n\\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\\n\\tat java.lang.reflect.Method.invoke(Method.java:606)\\n\\tat org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:47)\\n\\tat org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)\\n\\tat org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:44)\\n\\tat org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)\\n\\tat org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:271)\\n\\tat org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:70)\\n\\tat org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)\\n\\tat org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)\\n\\tat org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)\\n\\tat org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)\\n\\tat org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)\\n\\tat org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)\\n\\tat org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)\\n\\tat org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)\\n\\tat org.junit.runners.ParentRunner.run(ParentRunner.java:309)\\n\\tat org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:50)\\n\\tat org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)\\n\\tat org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:467)\\n\\tat org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:683)\\n\\tat org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:390)\\n\\tat org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:197)\\n",,
-        // "LocationInfo":{, "class":"org.apache.logging.log4j.core.layout.JSONLayoutTest",, "method":"testLayout",,
-        // "file":"JSONLayoutTest.java",, "line":"99", }, },, ]]
-
         this.checkAt("[", 0, list);
         this.checkAt("{", 1, list);
-        this.checkAt("\"logger\":\"root\",", 2, list);
-        this.checkAt("\"level\":\"DEBUG\",", 4, list);
-        this.checkAt("\"message\":\"starting mdc pattern test\",", 6, list);
-        for (Appender app : appenders.values()) {
-            root.addAppender(app);
+        this.checkContains("\"loggerFQCN\" : \"org.apache.logging.log4j.spi.AbstractLoggerProvider\",", list);
+        this.checkContains("\"level\" : \"DEBUG\",", list);
+        this.checkContains("\"message\" : \"starting mdc pattern test\",", list);
+        for (final Appender app : appenders.values()) {
+            this.rootLogger.addAppender(app);
         }
     }
 
     @Test
-    public void testEscapeLayout() throws Exception {
-        final Map<String, Appender> appenders = root.getAppenders();
-        for (Appender appender : appenders.values()) {
-            root.removeAppender(appender);
-        }
-        // set up appender
-        final JSONLayout layout = JSONLayout.createLayout("true", "true", "true", "false", null);
-        final ListAppender appender = new ListAppender("List", null, layout, true, false);
-        appender.start();
-
-        // set appender on root and set level to debug
-        this.root.addAppender(appender);
-        this.root.setLevel(Level.DEBUG);
-
-        // output starting message
-        this.root.debug("Here is a quote ' and then a double quote \"");
-
-        appender.stop();
-
-        final List<String> list = appender.getMessages();
-
-        this.checkAt("[", 0, list);
-        this.checkAt("{", 1, list);
-        this.checkAt("\"logger\":\"root\",", 2, list);
-        this.checkAt("\"level\":\"DEBUG\",", 4, list);
-        this.checkAt("\"message\":\"Here is a quote ' and then a double quote \\\"\",", 6, list);
-        for (Appender app : appenders.values()) {
-            root.addAppender(app);
-        }
+    public void testLayoutLoggerName() throws Exception {
+        final AbstractJacksonLayout layout = JSONLayout.createLayout("false", null, "false", "true", "UTF-8");
+        final Log4jLogEvent expected = Log4jLogEvent.createEvent("a.B", null, "f.q.c.n", Level.DEBUG, new SimpleMessage("M"), null, null,
+                null, "threadName", null, 1);
+        final String str = layout.toSerializable(expected);
+        assertTrue(str, str.contains("\"loggerName\":\"a.B\""));
+        final Log4jLogEvent actual = new Log4jJsonObjectMapper().readValue(str, Log4jLogEvent.class);
+        assertEquals(expected.getLoggerName(), actual.getLoggerName());
+        assertEquals(expected, actual);
     }
 
-    private void checkAt(String expected, int lineIndex, List<String> list) {
-        final String trimedLine = list.get(lineIndex).trim();
-        assertTrue("Incorrect line index " + lineIndex + ": \"" + trimedLine + '"', trimedLine.equals(expected));
+    @Test
+    public void testLocationOffCompactOffMdcOff() throws Exception {
+        this.testAllFeatures(false, false, false);
+    }
+
+    @Test
+    public void testLocationOnCompactOnMdcOn() throws Exception {
+        this.testAllFeatures(true, true, true);
+    }
+
+    private String toPropertySeparator(final boolean compact) {
+        return compact ? ":" : " : ";
     }
 }

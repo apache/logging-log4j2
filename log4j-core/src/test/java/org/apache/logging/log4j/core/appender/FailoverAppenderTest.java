@@ -26,7 +26,10 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.apache.logging.log4j.test.appender.FailOnceAppender;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  *
@@ -76,9 +79,10 @@ public class FailoverAppenderTest {
         app.clear();
         Thread.sleep(1100);
         onceLogger.error("Fail after recovery interval");
+        onceLogger.error("Second log message");
         events = app.getEvents();
         assertEquals("Did not recover", events.size(), 0);
         events = foApp.getEvents();
-        assertEquals("No events in primary appender", events.size(), 1);
+        assertEquals("Incorrect number of events in primary appender", events.size(), 2);
     }
 }

@@ -21,8 +21,9 @@ import java.io.StringWriter;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.core.impl.ThrowableFormatOptions;
+import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.util.Strings;
 
 
 /**
@@ -103,7 +104,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         }
 
         if (t != null && throwingMethod != null) {
-            String toAppend = "";
+            String toAppend = Strings.EMPTY;
 
             if (ThrowableFormatOptions.CLASS_NAME.equalsIgnoreCase(rawOption)) {
                 toAppend = throwingMethod.getClassName();
@@ -140,9 +141,9 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         if (len > 0 && !Character.isWhitespace(buffer.charAt(len - 1))) {
             buffer.append(' ');
         }
-        if (!options.allLines() || !Constants.LINE_SEP.equals(options.getSeparator())) {
+        if (!options.allLines() || !Constants.LINE_SEPARATOR.equals(options.getSeparator())) {
             final StringBuilder sb = new StringBuilder();
-            final String[] array = w.toString().split(Constants.LINE_SEP);
+            final String[] array = w.toString().split(Constants.LINE_SEPARATOR);
             final int limit = options.minLines(array.length) - 1;
             for (int i = 0; i <= limit; ++i) {
                 sb.append(array[i]);

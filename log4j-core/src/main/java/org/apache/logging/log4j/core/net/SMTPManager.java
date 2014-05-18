@@ -41,10 +41,10 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
-import org.apache.logging.log4j.core.helpers.CyclicBuffer;
-import org.apache.logging.log4j.core.helpers.NameUtil;
-import org.apache.logging.log4j.core.helpers.NetUtils;
-import org.apache.logging.log4j.core.helpers.Strings;
+import org.apache.logging.log4j.core.util.CyclicBuffer;
+import org.apache.logging.log4j.core.util.NameUtil;
+import org.apache.logging.log4j.core.util.NetUtils;
+import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**

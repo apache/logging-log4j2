@@ -28,8 +28,8 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
-import org.apache.logging.log4j.core.helpers.Closer;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.core.util.Closer;
 
 /**
  * An {@link AbstractDatabaseManager} implementation for relational databases accessed via JDBC.
@@ -90,7 +90,7 @@ public final class JDBCDatabaseManager extends AbstractDatabaseManager {
             int i = 1;
             for (final Column column : this.columns) {
                 if (column.isEventTimestamp) {
-                    this.statement.setTimestamp(i++, new Timestamp(event.getMillis()));
+                    this.statement.setTimestamp(i++, new Timestamp(event.getTimeMillis()));
                 } else {
                     if (column.isClob) {
                         reader = new StringReader(column.layout.toSerializable(event));

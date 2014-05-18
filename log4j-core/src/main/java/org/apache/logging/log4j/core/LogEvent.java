@@ -23,6 +23,7 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.Message;
 
 /**
@@ -31,14 +32,24 @@ import org.apache.logging.log4j.message.Message;
 public interface LogEvent extends Serializable {
 
     /**
-     * Gets the MDC data.
+     * Gets the context map (also know as MDC).
      * 
      * @return A copy of the Mapped Diagnostic Context or null.
      */
     Map<String, String> getContextMap();
 
     /**
-     * Gets the NDC data.
+     * Gets the value at the given key in the context map.
+     * 
+     * @param key the key to query
+     * @return the value to which the specified key is mapped, or {@code null} if this map contains no mapping for the key or there is no
+     *         map.
+     */
+    @Deprecated
+    String getContextMap(String key);
+
+    /**
+     * Gets the context stack (also known as NDC).
      * 
      * @return A copy of the Nested Diagnostic Context or null;
      */
@@ -49,7 +60,7 @@ public interface LogEvent extends Serializable {
      * 
      * @return The fully qualified class name of the caller.
      */
-    String getFQCN();
+    String getLoggerFQCN();
 
     /**
      * Gets the level.
@@ -85,7 +96,7 @@ public interface LogEvent extends Serializable {
      * @return milliseconds since midnight, January 1, 1970 UTC.
      * @see java.lang.System#currentTimeMillis()
      */
-    long getMillis();
+    long getTimeMillis();
 
     /**
      * Gets the source of logging request.
@@ -104,10 +115,19 @@ public interface LogEvent extends Serializable {
 
     /**
      * Gets throwable associated with logging request.
+     * <p>
+     * Convenience method for {@code ThrowableProxy.getThrowable();}
      * 
      * @return throwable, may be null.
      */
     Throwable getThrown();
+
+    /**
+     * Gets throwable proxy associated with logging request.
+     * 
+     * @return throwable, may be null.
+     */
+    ThrowableProxy getThrownProxy();
 
     /**
      * Returns {@code true} if this event is the last one in a batch, {@code false} otherwise. Used by asynchronous
@@ -150,4 +170,5 @@ public interface LogEvent extends Serializable {
      * @see #getSource()
      */
     void setIncludeLocation(boolean locationRequired);
+
 }

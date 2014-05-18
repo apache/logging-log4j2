@@ -21,9 +21,11 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.apache.logging.log4j.util.Strings;
+
 public class JpaH2AppenderTest extends AbstractJpaAppenderTest {
     private static final String USER_ID = "sa";
-    private static final String PASSWORD = "";
+    private static final String PASSWORD = Strings.EMPTY;
 
     public JpaH2AppenderTest() {
         super("h2");
@@ -42,9 +44,9 @@ public class JpaH2AppenderTest extends AbstractJpaAppenderTest {
 
         statement = connection.createStatement();
         statement.executeUpdate("CREATE TABLE jpaBasicLogEntry ( " +
-                "id INTEGER IDENTITY, millis BIGINT, level NVARCHAR(10), loggerName NVARCHAR(255), " +
+                "id INTEGER IDENTITY, timemillis BIGINT, level NVARCHAR(10), loggerName NVARCHAR(255), " +
                 "message NVARCHAR(1024), thrown NVARCHAR(1048576), contextMapJson NVARCHAR(1048576)," +
-                "fqcn NVARCHAR(1024), contextStack NVARCHAR(1048576), marker NVARCHAR(255), source NVARCHAR(2048)," +
+                "loggerFQCN NVARCHAR(1024), contextStack NVARCHAR(1048576), marker NVARCHAR(255), source NVARCHAR(2048)," +
                 "threadName NVARCHAR(255)" +
                 " )");
         statement.close();

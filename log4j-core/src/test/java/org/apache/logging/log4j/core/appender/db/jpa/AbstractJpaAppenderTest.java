@@ -16,6 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -26,14 +32,14 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.categories.PerformanceTests;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
+import org.junit.experimental.categories.Category;
 
 public abstract class AbstractJpaAppenderTest {
     private final String databaseType;
@@ -175,7 +181,7 @@ public abstract class AbstractJpaAppenderTest {
 
             assertTrue("There should be at least one row.", resultSet.next());
 
-            long date = resultSet.getLong("millis");
+            long date = resultSet.getLong("timemillis");
             assertTrue("The date should be later than pre-logging (1).", date >= millis);
             assertTrue("The date should be earlier than now (1).", date <= System.currentTimeMillis());
             assertEquals("The level column is not correct (1).", "DEBUG", resultSet.getString("level"));
@@ -186,7 +192,7 @@ public abstract class AbstractJpaAppenderTest {
 
             assertTrue("There should be at least two rows.", resultSet.next());
 
-            date = resultSet.getLong("millis");
+            date = resultSet.getLong("timemillis");
             assertTrue("The date should be later than pre-logging (2).", date >= millis);
             assertTrue("The date should be earlier than now (2).", date <= System.currentTimeMillis());
             assertEquals("The level column is not correct (2).", "WARN", resultSet.getString("level"));
@@ -197,7 +203,7 @@ public abstract class AbstractJpaAppenderTest {
 
             assertTrue("There should be three rows.", resultSet.next());
 
-            date = resultSet.getLong("millis");
+            date = resultSet.getLong("timemillis");
             assertTrue("The date should be later than pre-logging (3).", date >= millis);
             assertTrue("The date should be earlier than now (3).", date <= System.currentTimeMillis());
             assertEquals("The level column is not correct (3).", "FATAL", resultSet.getString("level"));
@@ -213,6 +219,7 @@ public abstract class AbstractJpaAppenderTest {
     }
 
     @Test
+    @Category(PerformanceTests.class)
     public void testPerformanceOfAppenderWith10000EventsUsingBasicEntity() throws SQLException {
         try {
             this.setUp("log4j2-" + this.databaseType + "-jpa-basic.xml");

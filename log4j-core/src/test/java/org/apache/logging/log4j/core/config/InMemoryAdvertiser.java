@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.net.Advertiser;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.net.Advertiser;
 
 @Plugin(name = "memory", category = "Core", elementType = "advertiser", printObject = false)
 public class InMemoryAdvertiser implements Advertiser {

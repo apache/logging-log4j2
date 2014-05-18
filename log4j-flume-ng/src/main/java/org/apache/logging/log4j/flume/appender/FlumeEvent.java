@@ -30,12 +30,14 @@ import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.helpers.Patterns;
-import org.apache.logging.log4j.core.helpers.UUIDUtil;
+import org.apache.logging.log4j.core.impl.ThrowableProxy;
+import org.apache.logging.log4j.core.util.Patterns;
+import org.apache.logging.log4j.core.util.UUIDUtil;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataId;
 import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Class that is both a Flume and Log4j Event.
@@ -48,9 +50,9 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
      */
     private static final long serialVersionUID = -8988674608627854140L;
 
-    private static final String DEFAULT_MDC_PREFIX = "";
+    private static final String DEFAULT_MDC_PREFIX = Strings.EMPTY;
 
-    private static final String DEFAULT_EVENT_PREFIX = "";
+    private static final String DEFAULT_EVENT_PREFIX = Strings.EMPTY;
 
     private static final String EVENT_TYPE = "eventType";
 
@@ -60,7 +62,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
 
     private final LogEvent event;
 
-    private final Map<String, String> ctx = new HashMap<String, String>();
+    private final Map<String, String> contextMap = new HashMap<String, String>();
 
     private final boolean compress;
 
@@ -79,7 +81,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
         this.event = event;
         this.compress = compress;
         final Map<String, String> headers = getHeaders();
-        headers.put(TIMESTAMP, Long.toString(event.getMillis()));
+        headers.put(TIMESTAMP, Long.toString(event.getTimeMillis()));
         if (mdcPrefix == null) {
             mdcPrefix = DEFAULT_MDC_PREFIX;
         }
@@ -93,7 +95,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
                 for (String str : array) {
                     str = str.trim();
                     if (mdc.containsKey(str)) {
-                        ctx.put(str, mdc.get(str));
+                        contextMap.put(str, mdc.get(str));
                     }
                 }
             }
@@ -106,12 +108,12 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
                 }
                 for (final Map.Entry<String, String> entry : mdc.entrySet()) {
                     if (!list.contains(entry.getKey())) {
-                        ctx.put(entry.getKey(), entry.getValue());
+                        contextMap.put(entry.getKey(), entry.getValue());
                     }
                 }
             }
         } else {
-            ctx.putAll(mdc);
+            contextMap.putAll(mdc);
         }
 
         if (required != null) {
@@ -138,7 +140,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
             headers.put(GUID, guid);
         }
 
-        addContextData(mdcPrefix, headers, ctx);
+        addContextData(mdcPrefix, headers, contextMap);
     }
 
     protected void addStructuredData(final String prefix, final Map<String, String> fields,
@@ -198,8 +200,8 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
      * @return the FQCN String.
      */
     @Override
-    public String getFQCN() {
-        return event.getFQCN();
+    public String getLoggerFQCN() {
+        return event.getLoggerFQCN();
     }
 
     /**
@@ -261,8 +263,8 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
      * @return the event timestamp.
      */
     @Override
-    public long getMillis() {
-        return event.getMillis();
+    public long getTimeMillis() {
+        return event.getTimeMillis();
     }
 
     /**
@@ -275,12 +277,33 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
     }
 
     /**
+     * Returns the Throwable associated with the event, if any.
+     * @return the Throwable.
+     */
+    @Override
+    public ThrowableProxy getThrownProxy() {
+        return event.getThrownProxy();
+    }
+
+    /**
      * Returns a copy of the context Map.
      * @return a copy of the context Map.
      */
     @Override
     public Map<String, String> getContextMap() {
-        return ctx;
+        return contextMap;
+    }
+
+    /**
+     * Gets the value at the given key in the context map.
+     * 
+     * @param key the key to query
+     * @return the value to which the specified key is mapped, or {@code null} if this map contains no mapping for the key or there is no
+     *         map.
+     */
+    @Override
+    public String getContextMap(String key) {
+        return contextMap == null ? null : contextMap.get(key);
     }
 
     /**

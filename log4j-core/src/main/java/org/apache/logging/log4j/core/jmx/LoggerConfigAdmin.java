@@ -17,12 +17,13 @@
 package org.apache.logging.log4j.core.jmx;
 
 import java.util.List;
+
 import javax.management.ObjectName;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.core.helpers.Assert;
+import org.apache.logging.log4j.core.util.Assert;
 
 /**
  * Implementation of the {@code LoggerConfigAdminMBean} interface.

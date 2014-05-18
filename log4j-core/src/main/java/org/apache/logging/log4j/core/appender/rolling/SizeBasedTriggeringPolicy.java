@@ -133,7 +133,7 @@ public class SizeBasedTriggeringPolicy implements TriggeringPolicy {
                 // Get units specified
                 final String units = matcher.group(3);
 
-                if (units.equalsIgnoreCase("")) {
+                if (units.isEmpty()) {
                     return value;
                 } else if (units.equalsIgnoreCase("K")) {
                     return value * KB;

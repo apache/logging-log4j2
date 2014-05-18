@@ -16,6 +16,15 @@
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
+import static org.easymock.EasyMock.createStrictMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -23,24 +32,25 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
+
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.categories.PerformanceTests;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
 import org.easymock.IAnswer;
 import org.h2.util.IOUtils;
 import org.junit.After;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.mockejb.jndi.MockContextFactory;
-
-import static org.easymock.EasyMock.*;
-import static org.junit.Assert.*;
 
 public abstract class AbstractJdbcAppenderTest {
     private final String databaseType;
@@ -197,7 +207,7 @@ public abstract class AbstractJdbcAppenderTest {
         assertEquals("The logger column is not correct (1).", logger.getName(), resultSet.getNString("logger"));
         assertEquals("The message column is not correct (1).", "Factory logged message 01.",
                 resultSet.getString("message"));
-        assertEquals("The exception column is not correct (1).", "",
+        assertEquals("The exception column is not correct (1).", Strings.EMPTY,
                 IOUtils.readStringAndClose(resultSet.getNClob("exception").getCharacterStream(), -1));
 
         assertTrue("There should be two rows.", resultSet.next());
@@ -218,20 +228,21 @@ public abstract class AbstractJdbcAppenderTest {
     }
 
     @Test
-    public void testPerformanceOfAppenderWith10000Events() throws Exception {
+    @Category(PerformanceTests.class)
+    public void testPerformanceOfAppenderWith1000Events() throws Exception {
         this.setUp("fmLogEntry", "log4j2-" + this.databaseType + "-factory-method.xml");
 
         final RuntimeException exception = new RuntimeException("Hello, world!");
 
         final Logger logger = LogManager.getLogger(this.getClass().getName() +
-                ".testPerformanceOfAppenderWith10000Events");
+                ".testPerformanceOfAppenderWith1000Events");
         logger.info("This is a warm-up message.");
 
         System.out.println("Starting a performance test for JDBC Appender for " + this.databaseType + '.');
 
         long start = System.nanoTime();
 
-        for(int i = 0; i < 10000; i++) {
+        for(int i = 0; i < 1000; i++) {
             if (i % 25 == 0) {
                 logger.warn("This is an exception message.", exception);
             } else {
@@ -247,9 +258,9 @@ public abstract class AbstractJdbcAppenderTest {
         final ResultSet resultSet = statement.executeQuery("SELECT * FROM fmLogEntry ORDER BY id");
 
         resultSet.last();
-        assertEquals("The number of records is not correct.", 10001, resultSet.getRow());
+        assertEquals("The number of records is not correct.", 1001, resultSet.getRow());
 
-        System.out.println("Wrote 10,000 log events in " + elapsed + " nanoseconds (" + elapsedMilli +
+        System.out.println("Wrote 1,000 log events in " + elapsed + " nanoseconds (" + elapsedMilli +
                 " milliseconds) for " + this.databaseType + '.');
     }
 }

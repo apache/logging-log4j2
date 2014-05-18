@@ -22,13 +22,12 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,14 +39,11 @@ import org.apache.logging.log4j.core.appender.AsyncAppender;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfig;
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
-import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
-import org.apache.logging.log4j.core.helpers.Constants;
-import org.apache.logging.log4j.core.helpers.Loader;
-import org.apache.logging.log4j.core.helpers.NameUtil;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.lookup.Interpolator;
@@ -56,6 +52,9 @@ import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.selector.ContextSelector;
+import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.Loader;
+import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -114,8 +113,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     private LoggerConfig root = new LoggerConfig();
 
-    private final boolean started = false;
-
     private final ConcurrentMap<String, Object> componentMap = new ConcurrentHashMap<String, Object>();
 
     protected PluginManager pluginManager;
@@ -172,7 +169,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     @Override
     public void stop() {
-
+        LOGGER.trace("AbstractConfiguration stopping...");
+        
         // LOG4J2-392 first stop AsyncLogger Disruptor thread
         final LoggerContextFactory factory = LogManager.getFactory();
         if (factory instanceof Log4jContextFactory) {
@@ -184,46 +182,61 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 //
                 // Uncomment the line below after LOG4J2-493 is fixed
                 //AsyncLogger.stop();
+                //LOGGER.trace("AbstractConfiguration stopped AsyncLogger disruptor.");
             }
         }
         // similarly, first stop AsyncLoggerConfig Disruptor thread(s)
-        Set<LoggerConfig> alreadyStopped = new HashSet<LoggerConfig>();
+        int asyncLoggerConfigCount = 0;
         for (final LoggerConfig logger : loggers.values()) {
             if (logger instanceof AsyncLoggerConfig) {
-                logger.clearAppenders();
+                // LOG4J2-520, LOG4J2-392:
+                // Important: do not clear appenders until after all AsyncLoggerConfigs
+                // have been stopped! Stopping the last AsyncLoggerConfig will
+                // shut down the disruptor and wait for all enqueued events to be processed.
+                // Only *after this* the appenders can be cleared or events will be lost.
                 logger.stopFilter();
-                alreadyStopped.add(logger);
+                asyncLoggerConfigCount++;
             }
         }
         if (root instanceof AsyncLoggerConfig) {
             root.stopFilter();
-            alreadyStopped.add(root);
+            asyncLoggerConfigCount++;
         }
+        LOGGER.trace("AbstractConfiguration stopped {} AsyncLoggerConfigs.", asyncLoggerConfigCount);
 
         // Stop the appenders in reverse order in case they still have activity.
         final Appender[] array = appenders.values().toArray(new Appender[appenders.size()]);
 
         // LOG4J2-511, LOG4J2-392 stop AsyncAppenders first
+        int asyncAppenderCount = 0;
         for (int i = array.length - 1; i >= 0; --i) {
             if (array[i] instanceof AsyncAppender) {
                 array[i].stop();
+                asyncAppenderCount++;
             }
         }
+        LOGGER.trace("AbstractConfiguration stopped {} AsyncAppenders.", asyncAppenderCount);
+
+        int appenderCount = 0;
         for (int i = array.length - 1; i >= 0; --i) {
             if (array[i].isStarted()) { // then stop remaining Appenders
                 array[i].stop();
+                appenderCount++;
             }
         }
+        LOGGER.trace("AbstractConfiguration stopped {} Appenders.", appenderCount);
+
+        int loggerCount = 0;
         for (final LoggerConfig logger : loggers.values()) {
-            if (alreadyStopped.contains(logger)) {
-                continue;
-            }
+            // AsyncLoggerConfig objects may be stopped multiple times, that's okay...
             logger.clearAppenders();
             logger.stopFilter();
+            loggerCount++;
         }
-        if (!alreadyStopped.contains(root)) {
-            root.stopFilter();
-        }
+        LOGGER.trace("AbstractConfiguration stopped {} Loggers.", loggerCount);
+
+        // If root is an AsyncLoggerConfig it may already be stopped. Stopping it twice is okay.
+        root.stopFilter();
         stopFilter();
         if (advertiser != null && advertisement != null) {
             advertiser.unadvertise(advertisement);

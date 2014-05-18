@@ -23,8 +23,8 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.helpers.KeyValuePair;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StructuredDataMessage;
@@ -138,9 +138,9 @@ public class MapRewritePolicyTest {
         // Ensure that everything but the Mapped Data is still the same
         Assert.assertEquals("LoggerName changed", orig.getLoggerName(), changed.getLoggerName());
         Assert.assertEquals("Marker changed", orig.getMarker(), changed.getMarker());
-        Assert.assertEquals("FQCN changed", orig.getFQCN(), changed.getFQCN());
+        Assert.assertEquals("FQCN changed", orig.getLoggerFQCN(), changed.getLoggerFQCN());
         Assert.assertEquals("Level changed", orig.getLevel(), changed.getLevel());
-        Assert.assertEquals("Throwable changed", orig.getThrown() == null //
+        Assert.assertArrayEquals("Throwable changed", orig.getThrown() == null //
                 ? null //
                 : ((Log4jLogEvent) orig).getThrownProxy().getExtendedStackTrace(), //
                 changed.getThrown() == null //
@@ -150,6 +150,6 @@ public class MapRewritePolicyTest {
         Assert.assertEquals("ContextStack changed", orig.getContextStack(), changed.getContextStack());
         Assert.assertEquals("ThreadName changed", orig.getThreadName(), changed.getThreadName());
         Assert.assertEquals("Source changed", orig.getSource(), changed.getSource());
-        Assert.assertEquals("Millis changed", orig.getMillis(), changed.getMillis());
+        Assert.assertEquals("Millis changed", orig.getTimeMillis(), changed.getTimeMillis());
     }
 }

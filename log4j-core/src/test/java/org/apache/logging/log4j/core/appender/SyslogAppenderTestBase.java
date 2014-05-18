@@ -16,6 +16,15 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.MarkerManager;
@@ -25,23 +34,15 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.net.mock.MockSyslogServer;
 import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.BeforeClass;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 public class SyslogAppenderTestBase {
     protected static final String line1 =
             "TestApp - Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"]" +
                     "[RequestContext@18060 ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete";
     protected LoggerContext ctx = (LoggerContext) LogManager.getContext();
-    protected static final int DEFAULT_TIMEOUT_IN_MS = 100;
+    protected static final int DEFAULT_TIMEOUT_IN_MS = 10;
     protected static final String PORT = "8199";
     protected static final int PORTNUM = Integer.parseInt(PORT);
     protected MockSyslogServer syslogServer;
@@ -114,7 +115,7 @@ public class SyslogAppenderTestBase {
         for (int i = 0; i < receivedMessages.size(); i++) {
             String receivedMessage = receivedMessages.get(i);
             String sentMessage = sentMessages.get(i);
-            String suffix =  "true".equalsIgnoreCase(includeNewLine) ? "\n" : "";
+            String suffix =  "true".equalsIgnoreCase(includeNewLine) ? "\n" : Strings.EMPTY;
             assertTrue("Incorrect message received: " + receivedMessage,
                     receivedMessage.endsWith(sentMessage + suffix) || receivedMessage.contains(sentMessage));
         }

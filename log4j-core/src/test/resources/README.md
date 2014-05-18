@@ -1,6 +1,12 @@
 This directory is mainly for storing configuration files used in various unit tests. As such, there are a few things
 provided for your convenience in writing and maintaining unit tests.
 
+Running Unit Tests
+------------------
+
+First, make sure you've recently run `mvn clean install` in `log4j-api` to get an up to date dependency. Then you can
+run `mvn test` to run unit tests, or run `mvn verify` to run both unit tests and integration/performance tests.
+
 Test Plugins
 ------------
 
@@ -64,3 +70,17 @@ You can specify either a list of strings or a list of `File`s.
 
 If you have any questions about writing unit tests, feel free to send an email to the dev mailing list, or check out
 the JUnit documentation over at junit.org.
+
+Specifying Test Categories
+--------------------------
+
+If your test is something more than just a unit test, it's usually a good idea to add a JUnit category to it. This
+can be done at the class or method level:
+
+    @Category(PerformanceTests.class)
+    @Test
+    public void testRandomAccessFileLogging() {
+        // ...
+    }
+
+Various pre-defined categories are defined in `org.apache.logging.log4j.categories` in `log4j-core` test.

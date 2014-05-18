@@ -26,17 +26,20 @@ import java.util.Map;
 import static org.junit.Assert.*;
 
 /**
- *
+ * Tests {@link ThreadContext}.
  */
 public class ThreadContextInheritanceTest {
+    
     @BeforeClass
     public static void setupClass() {
         System.setProperty(DefaultThreadContextMap.INHERITABLE_MAP, "true");
+        ThreadContext.init();
     }
     
     @AfterClass
     public static void tearDownClass() {
         System.clearProperty(DefaultThreadContextMap.INHERITABLE_MAP);
+        ThreadContext.init();
     }
 
     @Test
@@ -54,7 +57,7 @@ public class ThreadContextInheritanceTest {
     public void testInheritanceSwitchedOn() throws Exception {
         System.setProperty(DefaultThreadContextMap.INHERITABLE_MAP, "true");
         try {
-            ThreadContext.clear();
+            ThreadContext.clearMap();
             ThreadContext.put("Greeting", "Hello");
             StringBuilder sb = new StringBuilder();
             TestThread thread = new TestThread(sb);
@@ -77,7 +80,7 @@ public class ThreadContextInheritanceTest {
 
     @Test
     public void perfTest() throws Exception {
-        ThreadContext.clear();
+        ThreadContext.clearMap();
         final Timer complete = new Timer("ThreadContextTest");
         complete.start();
         ThreadContext.put("Var1", "value 1");
@@ -105,13 +108,13 @@ public class ThreadContextInheritanceTest {
 
     @Test
     public void testGetContextReturnsEmptyMapIfEmpty() {
-        ThreadContext.clear();
+        ThreadContext.clearMap();
         assertTrue(ThreadContext.getContext().isEmpty());
     }
 
     @Test
     public void testGetContextReturnsMutableCopy() {
-        ThreadContext.clear();
+        ThreadContext.clearMap();
         final Map<String, String> map1 = ThreadContext.getContext();
         assertTrue(map1.isEmpty());
         map1.put("K", "val"); // no error
@@ -134,13 +137,13 @@ public class ThreadContextInheritanceTest {
 
     @Test
     public void testGetImmutableContextReturnsEmptyMapIfEmpty() {
-        ThreadContext.clear();
+        ThreadContext.clearMap();
         assertTrue(ThreadContext.getImmutableContext().isEmpty());
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void testGetImmutableContextReturnsImmutableMapIfNonEmpty() {
-        ThreadContext.clear();
+        ThreadContext.clearMap();
         ThreadContext.put("key", "val");
         final Map<String, String> immutable = ThreadContext.getImmutableContext();
         immutable.put("otherkey", "otherval");
@@ -148,7 +151,7 @@ public class ThreadContextInheritanceTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void testGetImmutableContextReturnsImmutableMapIfEmpty() {
-        ThreadContext.clear();
+        ThreadContext.clearMap();
         final Map<String, String> immutable = ThreadContext.getImmutableContext();
         immutable.put("otherkey", "otherval");
     }
@@ -161,7 +164,7 @@ public class ThreadContextInheritanceTest {
 
     @Test
     public void testPut() {
-        ThreadContext.clear();
+        ThreadContext.clearMap();
         assertNull(ThreadContext.get("testKey"));
         ThreadContext.put("testKey", "testValue");
         assertEquals("testValue", ThreadContext.get("testKey"));
@@ -169,7 +172,7 @@ public class ThreadContextInheritanceTest {
 
     @Test
     public void testRemove() {
-        ThreadContext.clear();
+        ThreadContext.clearMap();
         assertNull(ThreadContext.get("testKey"));
         ThreadContext.put("testKey", "testValue");
         assertEquals("testValue", ThreadContext.get("testKey"));
@@ -181,7 +184,7 @@ public class ThreadContextInheritanceTest {
 
     @Test
     public void testContainsKey() {
-        ThreadContext.clear();
+        ThreadContext.clearMap();
         assertFalse(ThreadContext.containsKey("testKey"));
         ThreadContext.put("testKey", "testValue");
         assertTrue(ThreadContext.containsKey("testKey"));
@@ -206,7 +209,7 @@ public class ThreadContextInheritanceTest {
             } else {
                 sb.append(greeting);
             }
-            ThreadContext.clear();
+            ThreadContext.clearMap();
         }
     }
 }

@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.File;
 
@@ -49,7 +49,7 @@ public class RollingAppenderTimeTest {
 
     @AfterClass
     public static void cleanupClass() {
-        deleteDir();
+        //deleteDir();
         System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         ctx.reconfigure();
@@ -58,24 +58,27 @@ public class RollingAppenderTimeTest {
 
     @Test
     public void testAppender() throws Exception {
-        for (int i=0; i < 100; ++i) {
-            if (i % 11 == 0) {
-                Thread.sleep(1000);
-            }
-            logger.debug("This is test message number " + i);
+        logger.debug("This is test message number 1");
+        Thread.sleep(1500);
+        // Trigger the rollover
+        for (int i = 0; i < 16; ++i) {
+            logger.debug("This is test message number " + i + 1);
         }
         final File dir = new File(DIR);
         assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
-        final File[] files = dir.listFiles();
-        assertTrue("No files created", files.length > 0);
-        boolean found = false;
-        for (final File file : files) {
-            if (file.getName().endsWith(".gz")) {
-                found = true;
-                break;
+
+        final int MAX_TRIES = 10;
+        for (int i = 0; i < MAX_TRIES; i++) {
+            final File[] files = dir.listFiles();
+            assertTrue("No files created", files.length > 0);
+            for (final File file : files) {
+                if (file.getName().endsWith(".gz")) {
+                    return; // test succeeded
+                }
             }
+            Thread.sleep(50); // Allow time for rollover to complete
         }
-        assertTrue("No compressed files found", found);
+        fail("No compressed files found");
     }
 
     private static void deleteDir() {

@@ -197,6 +197,8 @@ public class PatternProcessor {
      * @param obj object to be evaluated in formatting, may not be null.
      */
     public final void formatFileName(final StrSubstitutor subst, final StringBuilder buf, final Object obj) {
+        // LOG4J2-628: we deliberately use System time, not the log4j.Clock time
+        // for creating the file name of rolled-over files. 
         final long time = prevFileTime == 0 ? System.currentTimeMillis() : prevFileTime;
         formatFileName(buf, new Date(time), obj);
         LogEvent event = new Log4jLogEvent(time);

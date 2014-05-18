@@ -17,8 +17,8 @@
 package org.apache.logging.log4j.core.util;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * YourKit Java Profiler helper class.
@@ -67,7 +67,7 @@ public final class Profiler {
             try {
                 controllerClazz
                         .getMethod("startCPUProfiling", long.class, String.class)
-                        .invoke(profiler, cpuSampling(), "");
+                        .invoke(profiler, cpuSampling(), Strings.EMPTY);
             }
             catch (final Exception e) {
                 LOGGER.error("Profiler was active, but failed.", e);

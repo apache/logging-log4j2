@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
-import org.apache.logging.log4j.core.helpers.Loader;
+import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -69,15 +69,21 @@ public class Interpolator implements StrLookup {
      */
     public Interpolator(final Map<String, String> properties) {
         this.defaultLookup = new MapLookup(properties == null ? new HashMap<String, String>() : properties);
+        // TODO: this ought to use the PluginManager
         lookups.put("sys", new SystemPropertiesLookup());
         lookups.put("env", new EnvironmentLookup());
         lookups.put("jndi", new JndiLookup());
         lookups.put("date", new DateLookup());
         lookups.put("ctx", new ContextMapLookup());
         if (Loader.isClassAvailable("javax.servlet.ServletContext")) {
-            lookups.put("web", new WebLookup());
+            try {
+                lookups.put("web",
+                    Loader.newCheckedInstanceOf("org.apache.logging.log4j.web.WebLookup", StrLookup.class));
+            } catch (final Exception e) {
+                LOGGER.warn("ServletContext is available, but log4j-web is not.", e);
+            }
         } else {
-            LOGGER.error("Unable to locate ServletContext");
+            LOGGER.info("Not in a ServletContext environment, thus not loading WebLookup plugin.");
         }
     }
 

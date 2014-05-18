@@ -19,11 +19,14 @@ package org.apache.logging.log4j;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import org.apache.logging.log4j.categories.PerformanceTests;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 
+@Category(PerformanceTests.class)
 public class Log4jInitPerformance {
 
 

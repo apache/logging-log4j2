@@ -18,13 +18,18 @@ package org.apache.logging.log4j.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.util.Enumeration;
 import java.util.Properties;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
+ * <em>Consider this class private.</em>
+ * <p>
  * Helps access properties.
+ * </p>
  */
 public final class PropertiesUtil {
 
@@ -70,8 +75,30 @@ public final class PropertiesUtil {
     public PropertiesUtil(final String propsLocn) {
         final ClassLoader loader = ProviderUtil.findClassLoader();
         @SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
-        final InputStream in = loader.getResourceAsStream(propsLocn);
-        this.props = loadClose(in, propsLocn);
+        Properties properties = new Properties();
+            try {
+                Enumeration<URL> enumeration = loader.getResources(propsLocn);
+                while (enumeration.hasMoreElements()) {
+                    final URL url = enumeration.nextElement();
+                    final InputStream in = url.openStream();
+                    try {
+                        properties.load(in);
+                    } catch (IOException ioe) {
+                        LOGGER.error("Unable to read {}", url.toString());
+                    } finally {
+                        try {
+                            in.close();
+                        } catch (IOException ioe) {
+                            LOGGER.error("Unable to close {}", url.toString(), ioe);
+                        }
+                    }
+
+                }
+
+            } catch (IOException ioe) {
+                LOGGER.error("Unable to access {}", propsLocn, ioe);
+            }
+        this.props = properties;
     }
 
     public static PropertiesUtil getProperties() {

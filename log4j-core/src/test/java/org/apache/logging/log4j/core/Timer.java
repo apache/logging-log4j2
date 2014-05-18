@@ -19,6 +19,8 @@ package org.apache.logging.log4j.core;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 
+import org.apache.logging.log4j.util.Strings;
+
 /**
  *
  */
@@ -173,7 +175,7 @@ public class Timer implements Serializable
             // Get remaining nanoseconds
             nanoseconds = nanoseconds % NANO_PER_SECOND;
 
-            String elapsed = "";
+            String elapsed = Strings.EMPTY;
 
             if (hours > 0)
             {
@@ -206,7 +208,7 @@ public class Timer implements Serializable
                 // Get remaining nanoseconds
                 nanoseconds = nanoseconds % NANO_PER_SECOND;
 
-                elapsed = "";
+                elapsed = Strings.EMPTY;
 
                 if (hours > 0)
                 {

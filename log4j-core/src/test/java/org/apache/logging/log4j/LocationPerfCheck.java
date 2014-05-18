@@ -16,15 +16,18 @@
  */
 package org.apache.logging.log4j;
 
+import org.apache.logging.log4j.categories.PerformanceTests;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Timer;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  *
  */
+@Category(PerformanceTests.class)
 public class LocationPerfCheck {
 
     private static final int LOOP_COUNT = 100000;

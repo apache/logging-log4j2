@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import org.apache.logging.log4j.core.helpers.Constants;
-import org.apache.logging.log4j.core.helpers.Patterns;
+import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.Patterns;
 
 /**
  * Contains options which control how a {@link Throwable} pattern is formatted.
@@ -80,7 +80,7 @@ public final class ThrowableFormatOptions {
      */
     protected ThrowableFormatOptions(final int lines, final String separator, final List<String> packages) {
         this.lines = lines;
-        this.separator = separator == null ? Constants.LINE_SEP : separator;
+        this.separator = separator == null ? Constants.LINE_SEPARATOR : separator;
         this.packages = packages;
     }
 

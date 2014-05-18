@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -38,7 +39,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginNode;
 import org.apache.logging.log4j.core.config.plugins.PluginValue;
 import org.apache.logging.log4j.core.config.plugins.SensitivePluginAttribute;
-import org.apache.logging.log4j.core.helpers.NameUtil;
+import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -320,25 +321,25 @@ public class PluginBuilder<T> {
     private void checkForRemainingAttributes() {
         final Map<String, String> attrs = node.getAttributes();
         if (!attrs.isEmpty()) {
-            final StringBuilder eb = new StringBuilder();
+            final StringBuilder sb = new StringBuilder();
             for (final String key : attrs.keySet()) {
-                if (eb.length() == 0) {
-                    eb.append(node.getName());
-                    eb.append(" contains ");
+                if (sb.length() == 0) {
+                    sb.append(node.getName());
+                    sb.append(" contains ");
                     if (attrs.size() == 1) {
-                        eb.append("an invalid element or attribute ");
+                        sb.append("an invalid element or attribute ");
                     } else {
-                        eb.append("invalid attributes ");
+                        sb.append("invalid attributes ");
                     }
                 } else {
-                    eb.append(", ");
+                    sb.append(", ");
                 }
-                eb.append('"');
-                eb.append(key);
-                eb.append('"');
+                sb.append('"');
+                sb.append(key);
+                sb.append('"');
 
             }
-            LOGGER.error(eb.toString());
+            LOGGER.error(sb.toString());
         }
     }
 

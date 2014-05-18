@@ -33,7 +33,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.helpers.Booleans;
+import org.apache.logging.log4j.core.util.Booleans;
 
 /**
  * This Appender "routes" between various Appenders, some of which can be references to

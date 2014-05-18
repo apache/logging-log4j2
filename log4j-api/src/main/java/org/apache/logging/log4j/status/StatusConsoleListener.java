@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.status;
 
+import java.io.IOException;
 import java.io.PrintStream;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * StatusListener that writes to the Console.
@@ -27,22 +27,9 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 @SuppressWarnings("UseOfSystemOutOrSystemErr")
 public class StatusConsoleListener implements StatusListener {
 
-    private static final String STATUS_LEVEL = "org.apache.logging.log4j.StatusLevel";
-
     private Level level = Level.FATAL;
-
     private String[] filters = null;
-
     private final PrintStream stream;
-
-    /**
-     * Creates the StatusConsoleListener using either the level configured by the
-     * {@value #STATUS_LEVEL} system property if it is set or to a
-     * default value of FATAL.
-     */
-    public StatusConsoleListener() {
-        this(Level.toLevel(PropertiesUtil.getProperties().getStringProperty(STATUS_LEVEL), Level.FATAL));
-    }
 
     /**
      * Creates the StatusConsoleListener using the supplied Level.
@@ -57,8 +44,12 @@ public class StatusConsoleListener implements StatusListener {
      * to avoid creating an infinite loop of indirection!
      * @param level The Level of status messages that should appear on the console.
      * @param stream The PrintStream to write to.
+     * @throws IllegalArgumentException if the PrintStream argument is {@code null}.
      */
     public StatusConsoleListener(final Level level, final PrintStream stream) {
+        if (stream == null) {
+            throw new IllegalArgumentException("You must provide a stream to use for this listener.");
+        }
         this.level = level;
         this.stream = stream;
     }
@@ -112,4 +103,11 @@ public class StatusConsoleListener implements StatusListener {
         return false;
     }
 
+    @Override
+    public void close() throws IOException {
+        // only want to close non-system streams
+        if (this.stream != System.out && this.stream != System.err) {
+            this.stream.close();
+        }
+    }
 }

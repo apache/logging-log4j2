@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.util.Arrays;
+
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.Arrays;
 
 public class TLSSyslogFrameTest {
     private static final String TESTMESSAGE = "The quick brown fox jumps over the lazy dog";

@@ -27,9 +27,9 @@ import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.helpers.NameUtil;
-import org.apache.logging.log4j.core.helpers.Strings;
+import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  *
@@ -95,7 +95,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
             }
             sb.append(']');
         } else {
-            String sep = "";
+            String sep = Strings.EMPTY;
             sb.append(name).append('-');
             final StringBuilder props = new StringBuilder();
             for (final Property prop : properties) {
@@ -213,7 +213,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
                 }
 
                 final StringBuilder sb = new StringBuilder();
-                String leading = "";
+                String leading = Strings.EMPTY;
                 int priority = agents.length;
                 for (int i = 0; i < priority; ++i) {
                     sb.append(leading).append("agent").append(i);

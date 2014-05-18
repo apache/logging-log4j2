@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.test.appender;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -26,11 +31,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 /**
  * This appender is primarily used for testing. Use in a real environment is discouraged as the
  * List could eventually grow to cause an OutOfMemoryError.
@@ -38,6 +38,8 @@ import java.util.List;
 @Plugin(name = "List", category = "Core", elementType = "appender", printObject = true)
 public class ListAppender extends AbstractAppender {
 
+    // Use CopyOnWriteArrayList?
+    
     private final List<LogEvent> events = new ArrayList<LogEvent>();
 
     private final List<String> messages = new ArrayList<String>();

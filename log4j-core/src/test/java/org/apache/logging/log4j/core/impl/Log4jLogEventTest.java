@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -25,14 +25,40 @@ import java.io.ObjectOutputStream;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.core.util.Clock;
+import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.util.Strings;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class Log4jLogEventTest {
     
+    /** Helper class */
+    public static class FixedTimeClock implements Clock {
+        public static final long FIXED_TIME = 1234567890L;
+        /* (non-Javadoc)
+         * @see org.apache.logging.log4j.core.helpers.Clock#currentTimeMillis()
+         */
+        @Override
+        public long currentTimeMillis() {
+            return FIXED_TIME;
+        }        
+    }
+    @BeforeClass
+    public static void beforeClass() {
+        System.setProperty(ClockFactory.PROPERTY_NAME, FixedTimeClock.class.getName());
+    }
+    
+    @AfterClass
+    public static void afterClass() {
+        System.clearProperty(ClockFactory.PROPERTY_NAME);
+    }
+    
     @Test
     public void testJavaIoSerializable() throws Exception {
-        final Log4jLogEvent evt = new Log4jLogEvent("some.test", null, "",
+        final Log4jLogEvent evt = new Log4jLogEvent("some.test", null, Strings.EMPTY,
                 Level.INFO, new SimpleMessage("abc"), null);
 
         final ByteArrayOutputStream arr = new ByteArrayOutputStream();
@@ -43,8 +69,8 @@ public class Log4jLogEventTest {
         final ObjectInputStream in = new ObjectInputStream(inArr);
         final Log4jLogEvent evt2 = (Log4jLogEvent) in.readObject();
 
-        assertEquals(evt.getMillis(), evt2.getMillis());
-        assertEquals(evt.getFQCN(), evt2.getFQCN());
+        assertEquals(evt.getTimeMillis(), evt2.getTimeMillis());
+        assertEquals(evt.getLoggerFQCN(), evt2.getLoggerFQCN());
         assertEquals(evt.getLevel(), evt2.getLevel());
         assertEquals(evt.getLoggerName(), evt2.getLoggerName());
         assertEquals(evt.getMarker(), evt2.getMarker());
@@ -63,9 +89,19 @@ public class Log4jLogEventTest {
         final Marker marker = null;
         final Throwable t = null;
         final Level NULL_LEVEL = null;
-        final Log4jLogEvent evt = new Log4jLogEvent("some.test", marker, "",
+        final Log4jLogEvent evt = new Log4jLogEvent("some.test", marker, Strings.EMPTY,
                 NULL_LEVEL, new SimpleMessage("abc"), t);
         assertEquals(Level.OFF, evt.getLevel());
     }
 
+    @Test
+    public void testTimestampGeneratedByClock() {
+        final Marker marker = null;
+        final Throwable t = null;
+        final Level NULL_LEVEL = null;
+        final Log4jLogEvent evt = new Log4jLogEvent("some.test", marker, Strings.EMPTY,
+                NULL_LEVEL, new SimpleMessage("abc"), t);
+        assertEquals(FixedTimeClock.FIXED_TIME, evt.getTimeMillis());
+        
+    }
 }

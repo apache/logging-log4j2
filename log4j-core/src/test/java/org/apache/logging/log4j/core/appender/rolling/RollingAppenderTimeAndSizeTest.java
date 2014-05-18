@@ -22,7 +22,10 @@ import java.io.File;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  *
@@ -50,11 +53,9 @@ public class RollingAppenderTimeAndSizeTest {
     @Test
     public void testAppender() throws Exception {
         for (int i=0; i < 100; ++i) {
-            if (i % 11 == 0) {
-                Thread.sleep(1000);
-            }
             logger.debug("This is test message number " + i);
         }
+        Thread.sleep(50);
         final File dir = new File(DIR);
         assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
         final File[] files = dir.listFiles();

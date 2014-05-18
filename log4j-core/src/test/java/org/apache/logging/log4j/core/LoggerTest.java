@@ -204,7 +204,7 @@ public class LoggerTest {
     public void mdc() {
         ThreadContext.put("TestYear", "2010");
         logger.debug("Debug message");
-        ThreadContext.clear();
+        ThreadContext.clearMap();
         logger.debug("Debug message");
         final List<LogEvent> events = app.getEvents();
         assertTrue("Incorrect number of events. Expected 2, actual " + events.size(), events.size() == 2);
@@ -221,7 +221,7 @@ public class LoggerTest {
         msg.put("FromAccount", "123457");
         msg.put("Amount", "200.00");
         logger.info(MarkerManager.getMarker("EVENT"), msg);
-        ThreadContext.clear();
+        ThreadContext.clearMap();
         final List<LogEvent> events = app.getEvents();
         assertTrue("Incorrect number of events. Expected 1, actual " + events.size(), events.size() == 1);
         app.clear();
@@ -229,11 +229,12 @@ public class LoggerTest {
 
     @Test
     public void testReconfiguration() throws Exception {
+        final int MONITOR_INTERVAL_SECONDS = 1;
         final File file = new File("target/test-classes/" + CONFIG);
         final long orig = file.lastModified();
         final long newTime = orig + 10000;
         file.setLastModified(newTime);
-        Thread.sleep(6000);
+        Thread.sleep((MONITOR_INTERVAL_SECONDS + 1) * 1000);
         for (int i = 0; i < 17; ++i) {
             logger.debug("Reconfigure");
         }

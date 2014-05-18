@@ -60,7 +60,7 @@ public final class ThreadContext  {
     private static final String DISABLE_ALL = "disableThreadContext";
     private static final String THREAD_CONTEXT_KEY = "log4j2.threadContextMap";
 
-    private static boolean all;
+    private static boolean disableAll;
     private static boolean useMap;
     private static boolean useStack;
     private static ThreadContextMap contextMap;
@@ -68,12 +68,20 @@ public final class ThreadContext  {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     static {
+        init();
+    }
+        
+    /**
+     * <em>Consider private, used for testing.</em>
+     */
+    public static void init() {
+        contextMap = null;
         final PropertiesUtil managerProps = PropertiesUtil.getProperties();
-        all = managerProps.getBooleanProperty(DISABLE_ALL);
-        useStack = !(managerProps.getBooleanProperty(DISABLE_STACK) || all);
-        contextStack = new DefaultThreadContextStack(useStack);
+        disableAll = managerProps.getBooleanProperty(DISABLE_ALL);
+        useStack = !(managerProps.getBooleanProperty(DISABLE_STACK) || disableAll);
+        useMap = !(managerProps.getBooleanProperty(DISABLE_MAP) || disableAll);
 
-        useMap = !(managerProps.getBooleanProperty(DISABLE_MAP) || all);
+        contextStack = new DefaultThreadContextStack(useStack);
         String threadContextMapName = managerProps.getStringProperty(THREAD_CONTEXT_KEY);
         final ClassLoader cl = ProviderUtil.findClassLoader();
         if (threadContextMapName != null) {
@@ -116,11 +124,11 @@ public final class ThreadContext  {
     }
 
     private ThreadContext() {
-
+        // empty
     }
 
     /**
-     * Put a context value (the <code>value</code> parameter) as identified
+     * Puts a context value (the <code>value</code> parameter) as identified
      * with the <code>key</code> parameter into the current thread's
      * context map.
      * <p/>
@@ -134,7 +142,7 @@ public final class ThreadContext  {
     }
 
     /**
-     * Get the context value identified by the <code>key</code> parameter.
+     * Gets the context value identified by the <code>key</code> parameter.
      * <p/>
      * <p>This method has no side effects.
      * @param key The key to locate.
@@ -145,7 +153,7 @@ public final class ThreadContext  {
     }
 
     /**
-     * Remove the context value identified by the <code>key</code> parameter.
+     * Removes the context value identified by the <code>key</code> parameter.
      * @param key The key to remove.
      */
     public static void remove(final String key) {
@@ -153,14 +161,22 @@ public final class ThreadContext  {
     }
 
     /**
-     * Clear the context.
+     * Clears the context map.
      */
-    public static void clear() {
+    public static void clearMap() {
         contextMap.clear();
     }
 
     /**
-     * Determine if the key is in the context.
+     * Clears the context map and stack.
+     */
+    public static void clearAll() {
+        clearMap();
+        clearStack();
+    }
+
+    /**
+     * Determines if the key is in the context.
      * @param key The key to locate.
      * @return True if the key is in the context, false otherwise.
      */
@@ -194,7 +210,7 @@ public final class ThreadContext  {
     }
 
     /**
-     * Clear the stack for this thread.
+     * Clears the stack for this thread.
      */
     public static void clearStack() {
         contextStack.clear();
@@ -209,7 +225,7 @@ public final class ThreadContext  {
     }
 
     /**
-     * Get an immutable copy of this current thread's context stack.
+     * Gets an immutable copy of this current thread's context stack.
      * @return an immutable copy of the ThreadContext stack.
      */
     public static ContextStack getImmutableStack() {
@@ -217,7 +233,7 @@ public final class ThreadContext  {
     }
 
     /**
-     * Set this thread's stack.
+     * Sets this thread's stack.
      * @param stack The stack to use.
      */
     public static void setStack(final Collection<String> stack) {
@@ -229,7 +245,7 @@ public final class ThreadContext  {
     }
 
     /**
-     * Get the current nesting depth of this thread's stack.
+     * Gets the current nesting depth of this thread's stack.
      * @return the number of items in the stack.
      *
      * @see #trim
@@ -264,7 +280,7 @@ public final class ThreadContext  {
     }
 
     /**
-     * Push new diagnostic context information for the current thread.
+     * Pushes new diagnostic context information for the current thread.
      * <p/>
      * <p>The contents of the <code>message</code> parameter is
      * determined solely by the client.
@@ -275,7 +291,7 @@ public final class ThreadContext  {
         contextStack.push(message);
     }
     /**
-     * Push new diagnostic context information for the current thread.
+     * Pushes new diagnostic context information for the current thread.
      * <p/>
      * <p>The contents of the <code>message</code> and args parameters are
      * determined solely by the client. The message will be treated as a format String
@@ -290,7 +306,7 @@ public final class ThreadContext  {
     }
 
     /**
-     * Remove the diagnostic context for this thread.
+     * Removes the diagnostic context for this thread.
      * <p/>
      * <p>Each thread that created a diagnostic context by calling
      * {@link #push} should call this method before exiting. Otherwise,
@@ -347,12 +363,7 @@ public final class ThreadContext  {
     /**
      * The ThreadContext Stack interface.
      */
-    public interface ContextStack extends Serializable {
-
-        /**
-         * Clears all elements from the stack.
-         */
-        void clear();
+    public interface ContextStack extends Serializable, Collection<String> {
 
         /**
          * Returns the element at the top of the stack.
@@ -368,7 +379,7 @@ public final class ThreadContext  {
         String peek();
 
         /**
-         * Add an element to the stack.
+         * Pushes an element onto the stack.
          * @param message The element to add.
          */
         void push(String message);

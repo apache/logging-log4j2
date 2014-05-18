@@ -16,19 +16,23 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.junit.Assert.assertTrue;
+
+import java.util.Random;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.categories.PerformanceTests;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import java.util.Random;
-
-import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
 
 /**
  *
  */
+@Category(PerformanceTests.class)
 public class SimplePerfTest {
 
     private static org.apache.logging.log4j.Logger logger = LogManager.getLogger(SimplePerfTest.class.getName());

@@ -21,16 +21,19 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.apache.logging.log4j.util.Strings;
+
 /**
  * Annotation that identifies a Class as a Plugin.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Plugin {
+    
     /**
      * Value of the elementType when none is specified.
      */
-    String EMPTY = "";
+    String EMPTY = Strings.EMPTY;
 
     String name();
     String category();

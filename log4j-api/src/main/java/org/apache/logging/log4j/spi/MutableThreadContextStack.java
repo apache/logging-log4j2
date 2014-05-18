@@ -166,4 +166,35 @@ public class MutableThreadContextStack implements ThreadContextStack {
     public String toString() {
         return String.valueOf(list);
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.list == null) ? 0 : this.list.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof ThreadContextStack)) {
+            return false;
+        }
+        ThreadContextStack other = (ThreadContextStack) obj;
+        final List<String> otherAsList = other.asList();
+        if (this.list == null) {
+            if (otherAsList != null) {
+                return false;
+            }
+        } else if (!this.list.equals(otherAsList)) {
+            return false;
+        }
+        return true;
+    }
 }

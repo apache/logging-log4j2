@@ -21,6 +21,7 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -34,7 +35,7 @@ public class InitialLoggerContext implements TestRule {
 
     private LoggerContext context;
 
-    public InitialLoggerContext(String configLocation) {
+    public InitialLoggerContext(final String configLocation) {
         this.configLocation = configLocation;
     }
 
@@ -52,6 +53,7 @@ public class InitialLoggerContext implements TestRule {
                     base.evaluate();
                 } finally {
                     Configurator.shutdown(context);
+                    StatusLogger.getLogger().reset();
                 }
             }
         };

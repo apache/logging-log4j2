@@ -228,7 +228,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
      */
     @Override
     public void format(final LogEvent event, final StringBuilder output) {
-        final long timestamp = event.getMillis();
+        final long timestamp = event.getTimeMillis();
 
         synchronized (this) {
             if (timestamp != lastTimestamp) {

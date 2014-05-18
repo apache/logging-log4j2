@@ -16,19 +16,20 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa;
 
+import static org.junit.Assert.assertNull;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
-
-import static org.junit.Assert.assertNull;
 
 public class JpaHyperSqlAppenderTest extends AbstractJpaAppenderTest {
     private static final String USER_ID = "sa";
-    private static final String PASSWORD = "";
+    private static final String PASSWORD = Strings.EMPTY;
 
     public JpaHyperSqlAppenderTest() {
         super("hsqldb");
@@ -47,9 +48,9 @@ public class JpaHyperSqlAppenderTest extends AbstractJpaAppenderTest {
 
         statement = connection.createStatement();
         statement.executeUpdate("CREATE TABLE jpaBasicLogEntry ( " +
-                "id INTEGER IDENTITY, millis BIGINT, level VARCHAR(10), loggerName VARCHAR(255), " +
+                "id INTEGER IDENTITY, timemillis BIGINT, level VARCHAR(10), loggerName VARCHAR(255), " +
                 "message VARCHAR(1024), thrown VARCHAR(1048576), contextMapJson VARCHAR(1048576)," +
-                "fqcn VARCHAR(1024), contextStack VARCHAR(1048576), marker VARCHAR(255), source VARCHAR(2048)," +
+                "loggerFQCN VARCHAR(1024), contextStack VARCHAR(1048576), marker VARCHAR(255), source VARCHAR(2048)," +
                 "threadName VARCHAR(255)" +
                 " )");
         statement.close();

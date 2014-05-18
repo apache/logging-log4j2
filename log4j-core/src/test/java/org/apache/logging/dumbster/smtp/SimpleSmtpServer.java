@@ -16,15 +16,17 @@
  */
 package org.apache.logging.dumbster.smtp;
 
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Dummy SMTP server for testing purposes.
@@ -167,7 +169,7 @@ public class SimpleSmtpServer implements Runnable {
     private List<SmtpMessage> handleTransaction(final PrintWriter out, final BufferedReader input) throws IOException {
         // Initialize the state machine
         SmtpState smtpState = SmtpState.CONNECT;
-        final SmtpRequest smtpRequest = new SmtpRequest(SmtpActionType.CONNECT, "", smtpState);
+        final SmtpRequest smtpRequest = new SmtpRequest(SmtpActionType.CONNECT, Strings.EMPTY, smtpState);
 
         // Execute the connection request
         final SmtpResponse smtpResponse = smtpRequest.execute();

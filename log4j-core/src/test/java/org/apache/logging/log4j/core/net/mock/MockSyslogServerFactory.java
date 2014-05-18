@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.core.net.mock;
 
-import org.apache.logging.log4j.core.net.ssl.TLSSyslogMessageFormat;
-
-import javax.net.ssl.SSLServerSocket;
 import java.io.IOException;
 import java.net.SocketException;
+
+import javax.net.ssl.SSLServerSocket;
+
+import org.apache.logging.log4j.core.net.ssl.TLSSyslogMessageFormat;
 
 public class MockSyslogServerFactory {
 

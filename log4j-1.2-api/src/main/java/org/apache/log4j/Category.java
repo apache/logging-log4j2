@@ -27,10 +27,11 @@ import org.apache.log4j.helpers.NullEnumeration;
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.helpers.NameUtil;
+import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.message.LocalizedMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
+import org.apache.logging.log4j.util.Strings;
 
 
 /**
@@ -119,12 +120,12 @@ public class Category {
     }
 
     public static Category getRoot() {
-        return getInstance("");
+        return getInstance(Strings.EMPTY);
     }
 
 
     static Category getRoot(final LoggerContext context) {
-        return getInstance(context, "");
+        return getInstance(context, Strings.EMPTY);
     }
 
     private static ConcurrentMap<String, Logger> getLoggersMap(final LoggerContext context) {

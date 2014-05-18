@@ -16,6 +16,13 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.MarkerManager;
@@ -24,22 +31,16 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.helpers.KeyValuePair;
-import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.Assert;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class RFC5424LayoutTest {
     LoggerContext ctx = (LoggerContext) LogManager.getContext();
@@ -61,6 +62,7 @@ public class RFC5424LayoutTest {
 
     @BeforeClass
     public static void setupClass() {
+        ThreadContext.clearAll();
         StatusLogger.getLogger().setLevel(Level.OFF);
         ConfigurationFactory.setConfigurationFactory(cf);
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
@@ -70,6 +72,7 @@ public class RFC5424LayoutTest {
     @AfterClass
     public static void cleanupClass() {
         ConfigurationFactory.removeConfigurationFactory(cf);
+        ThreadContext.clearAll();
     }
 
     /**
@@ -144,7 +147,7 @@ public class RFC5424LayoutTest {
             assertTrue("No messages expected, found " + list.size(), list.size() == 0);
         } finally {
             root.removeAppender(appender);
-            ThreadContext.clear();
+            ThreadContext.clearMap();
 
             appender.stop();
         }
@@ -206,7 +209,7 @@ public class RFC5424LayoutTest {
             assertTrue("No messages expected, found " + list.size(), list.size() == 0);
         } finally {
             root.removeAppender(appender);
-            ThreadContext.clear();
+            ThreadContext.clearMap();
 
             appender.stop();
         }
@@ -246,7 +249,7 @@ public class RFC5424LayoutTest {
             appender.clear();
         } finally {
             root.removeAppender(appender);
-            ThreadContext.clear();
+            ThreadContext.clearMap();
 
             appender.stop();
         }
@@ -288,7 +291,7 @@ public class RFC5424LayoutTest {
             appender.clear();
         } finally {
             root.removeAppender(appender);
-            ThreadContext.clear();
+            ThreadContext.clearMap();
 
             appender.stop();
         }
@@ -337,7 +340,7 @@ public class RFC5424LayoutTest {
             appender.clear();
         } finally {
             root.removeAppender(appender);
-            ThreadContext.clear();
+            ThreadContext.clearMap();
 
             appender.stop();
         }
@@ -357,8 +360,8 @@ public class RFC5424LayoutTest {
         }
 
         final LoggerFields[] loggerFields = new LoggerFields[] {
-                LoggerFields.createLoggerFields(new KeyValuePair[] { new KeyValuePair("dummy", ""),
-                        new KeyValuePair("empty", "")}, "SD-ID", "32473", "true"),
+                LoggerFields.createLoggerFields(new KeyValuePair[] { new KeyValuePair("dummy", Strings.EMPTY),
+                        new KeyValuePair("empty", Strings.EMPTY)}, "SD-ID", "32473", "true"),
                 LoggerFields.createLoggerFields(new KeyValuePair[] { new KeyValuePair("baz", "%C.%M"),
                         new KeyValuePair("baz", "%C.%M") }, "BAZ", "32473", "false"),
                 LoggerFields.createLoggerFields(new KeyValuePair[] { new KeyValuePair("bar", "%C.%M")}, null, null, "false")
@@ -385,7 +388,7 @@ public class RFC5424LayoutTest {
             appender.clear();
         } finally {
             root.removeAppender(appender);
-            ThreadContext.clear();
+            ThreadContext.clearMap();
 
             appender.stop();
         }
@@ -419,7 +422,7 @@ public class RFC5424LayoutTest {
             appender.clear();
         } finally {
             root.removeAppender(appender);
-            ThreadContext.clear();
+            ThreadContext.clearMap();
 
             appender.stop();
         }

@@ -46,7 +46,7 @@
 	</session-config>
 
 	<listener>
-		<listener-class>org.apache.logging.log4j.core.web.Log4jServletContextListener</listener-class>
+		<listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class>
 	</listener>
 
 	<context-param>

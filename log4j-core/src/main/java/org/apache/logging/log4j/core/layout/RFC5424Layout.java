@@ -38,12 +38,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.helpers.Booleans;
-import org.apache.logging.log4j.core.helpers.Charsets;
-import org.apache.logging.log4j.core.helpers.Integers;
-import org.apache.logging.log4j.core.helpers.NetUtils;
-import org.apache.logging.log4j.core.helpers.Patterns;
-import org.apache.logging.log4j.core.helpers.Strings;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Priority;
 import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
@@ -51,9 +45,15 @@ import org.apache.logging.log4j.core.pattern.PatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.core.pattern.ThrowablePatternConverter;
+import org.apache.logging.log4j.core.util.Booleans;
+import org.apache.logging.log4j.core.util.Charsets;
+import org.apache.logging.log4j.core.util.Integers;
+import org.apache.logging.log4j.core.util.NetUtils;
+import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataId;
 import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.util.Strings;
 
 
 /**
@@ -62,7 +62,7 @@ import org.apache.logging.log4j.message.StructuredDataMessage;
  * @see <a href="https://tools.ietf.org/html/rfc5424">RFC 5424</a>
  */
 @Plugin(name = "RFC5424Layout", category = "Core", elementType = "layout", printObject = true)
-public class RFC5424Layout extends AbstractStringLayout {
+public final class RFC5424Layout extends AbstractStringLayout {
 
     private static final String LF = "\n";
 
@@ -261,7 +261,7 @@ public class RFC5424Layout extends AbstractStringLayout {
     public String toSerializable(final LogEvent event) {
         final StringBuilder buf = new StringBuilder();
         appendPriority(buf, event.getLevel());
-        appendTimestamp(buf, event.getMillis());
+        appendTimestamp(buf, event.getTimeMillis());
         appendSpace(buf);
         appendHostName(buf);
         appendSpace(buf);

@@ -16,17 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.LoggingException;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.EOFException;
@@ -41,9 +33,17 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LoggingException;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  *
@@ -153,7 +153,7 @@ public class SocketAppenderTest {
     @Test
     public void testTcpAppenderDeadlock() throws Exception {
 
-        final SocketAppender appender = SocketAppender.createAppender("localhost", DYN_PORT, "tcp", "10000",
+        final SocketAppender appender = SocketAppender.createAppender("localhost", DYN_PORT, "tcp", "100",
                 "false", "Test", null, null, null, null, null, null);
             appender.start();
             // set appender on root and set level to debug
@@ -172,7 +172,7 @@ public class SocketAppenderTest {
     @Test
     public void testTcpAppenderNoWait() throws Exception {
 
-        final SocketAppender appender = SocketAppender.createAppender("localhost", ERROR_PORT, "tcp", "10000",
+        final SocketAppender appender = SocketAppender.createAppender("localhost", ERROR_PORT, "tcp", "100",
             "true", "Test", null, "false", null, null, null, null);
         appender.start();
         // set appender on root and set level to debug

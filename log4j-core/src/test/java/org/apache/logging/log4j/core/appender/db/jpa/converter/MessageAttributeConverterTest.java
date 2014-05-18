@@ -16,13 +16,15 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class MessageAttributeConverterTest {
     private static final StatusLogger LOGGER = StatusLogger.getLogger();

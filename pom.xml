@@ -455,6 +455,18 @@
         <version>${jackson2.version}</version>
         <optional>true</optional>
       </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.dataformat</groupId>
+        <artifactId>jackson-dataformat-xml</artifactId>
+        <version>${jackson2.version}</version>
+        <optional>true</optional>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.module</groupId>
+        <artifactId>jackson-module-jaxb-annotations</artifactId>
+        <version>${jackson2.version}</version>
+        <optional>true</optional>
+      </dependency>      
       <!-- Jackson 2 end -->
       <dependency>
         <groupId>com.sun.mail</groupId>
@@ -714,12 +726,33 @@
           <systemPropertyVariables>
             <java.awt.headless>true</java.awt.headless>
           </systemPropertyVariables>
-          <forkMode>always</forkMode>
+          <argLine>-Xms256m -Xmx1024m</argLine>
+          <forkCount>1</forkCount>
+          <reuseForks>false</reuseForks>
           <excludes>
             <exclude>${log4j.skip.test1}</exclude>
             <exclude>${log4j.skip.test2}</exclude>
           </excludes>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>${surefire.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>integration-tests</id>
+            <goals>
+              <goal>integration-test</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>verify</id>
+            <goals>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -846,6 +879,14 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-report-plugin</artifactId>
         <version>${surefire.plugin.version}</version>
+        <reportSets>
+          <reportSet>
+            <id>integration-tests</id>
+            <reports>
+              <report>failsafe-report-only</report>
+            </reports>
+          </reportSet>
+        </reportSets>
       </plugin>
 
       <!-- RAT report -->
@@ -900,6 +941,7 @@
     <module>log4j-samples</module>
     <module>log4j-bom</module>
     <module>log4j-nosql</module>
+    <module>log4j-web</module>
   </modules>
   <profiles>
     <profile>
@@ -1069,6 +1111,22 @@
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
               <argLine>-agentpath:"${yourkit.home}/bin/mac/libyjpagent.jnilib"</argLine>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>jdk-pre-8</id>
+      <activation>
+        <jdk>[1.6,1.8)</jdk>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <argLine>-XX:MaxPermSize=512m</argLine>
             </configuration>
           </plugin>
         </plugins>

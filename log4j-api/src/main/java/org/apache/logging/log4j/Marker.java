@@ -71,11 +71,11 @@ public interface Marker extends Serializable {
 
     /**
      * Adds a Marker as a parent to this Marker.
-     * @param marker The parent marker to add.
+     * @param markers The parent markers to add.
      * @return The current Marker object, thus allowing multiple adds to be concatenated.
      * @throws IllegalArgumentException if the argument is {@code null}
      */
-    Marker add(Marker marker);
+    Marker addParents(Marker... markers);
 
     /**
      * Replaces the set of parent Markers with the provided Markers.

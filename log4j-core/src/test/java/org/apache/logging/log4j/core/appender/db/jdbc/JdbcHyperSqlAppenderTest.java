@@ -20,12 +20,14 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import org.apache.logging.log4j.util.Strings;
+
 /**
  * Tests the JDBC appender with the HyperSQL database (a.k.a. HSQLDB) in memory.
  */
 public class JdbcHyperSqlAppenderTest extends AbstractJdbcAppenderTest {
     private static final String USER_ID = "sa";
-    private static final String PASSWORD = "";
+    private static final String PASSWORD = Strings.EMPTY;
 
     public JdbcHyperSqlAppenderTest() {
         super("hsqldb");

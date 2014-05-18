@@ -30,6 +30,14 @@ public final class MarkerManager {
     private static final ConcurrentMap<String, Marker> markerMap = new ConcurrentHashMap<String, Marker>();
 
     private MarkerManager() {
+        // do nothing
+    }
+
+    /**
+     * Clears all markers.
+     */
+    public static void clear() {
+        markerMap.clear();        
     }
 
     /**
@@ -73,17 +81,36 @@ public final class MarkerManager {
     @Deprecated
     public static Marker getMarker(final String name, final Marker parent) {
         markerMap.putIfAbsent(name, new Log4jMarker(name));
-        return markerMap.get(name).add(parent);
+        return markerMap.get(name).addParents(parent);
     }
+    
     /**
+     * <em>Consider this class private, it is only public to satisfy Jackson for XML and JSON IO.</em>
+     * <p>
      * The actual Marker implementation.
+     * </p>
+     * <p>
+     * <em>Internal note: We could make this class package private instead of public if the class 
+     * {@link org.apache.logging.log4j.core.jackson.MarkerMixIn} 
+     * is moved to this package and would of course stay in its current module.</em>
+     * </p>
      */
-    private static class Log4jMarker implements Marker {
+    public static class Log4jMarker implements Marker {
 
         private static final long serialVersionUID = 100L;
 
         private final String name;
+        
         private volatile Marker[] parents;
+
+        /**
+         * Required by JAXB and Jackson for XML and JSON IO.
+         */
+        @SuppressWarnings("unused")
+        private Log4jMarker() {
+            this.name = null;
+            this.parents = null;
+        }
 
         /**
          * Constructs a new Marker.
@@ -103,30 +130,42 @@ public final class MarkerManager {
         // TODO: use java.util.concurrent
 
         @Override
-        public synchronized Marker add(final Marker parent) {
-            if (parent == null) {
+        public synchronized Marker addParents(final Marker... parents) {
+            if (parents == null) {
                 throw new IllegalArgumentException("A parent marker must be specified");
             }
             // It is not strictly necessary to copy the variable here but it should perform better than
             // Accessing a volatile variable multiple times.
             final Marker[] localParents = this.parents;
             // Don't add a parent that is already in the hierarchy.
-            if (localParents != null && (contains(parent, localParents) || parent.isInstanceOf(this))) {
-                return this;
+            int count = 0;
+            int size = parents.length;
+            if (localParents != null) {
+                for (Marker parent : parents) {
+                    if (localParents != null && !(contains(parent, localParents) || parent.isInstanceOf(this))) {
+                        ++count;
+                    }
+                }
+                if (count == 0) {
+                    return this;
+                }
+                size = localParents.length + count;
             }
-            final int size = localParents == null ? 1 : localParents.length + 1;
             final Marker[] markers = new Marker[size];
             if (localParents != null) {
                 // It's perfectly OK to call arraycopy in a synchronized context; it's still faster
                 //noinspection CallToNativeMethodWhileLocked
                 System.arraycopy(localParents, 0, markers, 0, localParents.length);
             }
-            markers[size - 1] = parent;
+            int index = localParents == null ? 0 : localParents.length;
+            for (Marker parent : parents) {
+                if (localParents == null || !(contains(parent, localParents) || parent.isInstanceOf(this))) {
+                    markers[index++] = parent;
+                }
+            }
             this.parents = markers;
             return this;
         }
-
-        // TODO: add(Marker parent, Marker... moreParents)
 
         @Override
         public synchronized boolean remove(final Marker parent) {

@@ -25,8 +25,8 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.helpers.KeyValuePair;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -80,13 +80,13 @@ public final class MapRewritePolicy implements RewritePolicy {
         final MapMessage message = ((MapMessage) msg).newInstance(newMap);
         if (source instanceof Log4jLogEvent) {
             Log4jLogEvent event = (Log4jLogEvent) source;
-            return Log4jLogEvent.createEvent(event.getLoggerName(), event.getMarker(), event.getFQCN(),
+            return Log4jLogEvent.createEvent(event.getLoggerName(), event.getMarker(), event.getLoggerFQCN(),
                 event.getLevel(), message, event.getThrownProxy(), event.getContextMap(), event.getContextStack(),
-                event.getThreadName(), event.getSource(), event.getMillis());
+                event.getThreadName(), event.getSource(), event.getTimeMillis());
         }
-        return new Log4jLogEvent(source.getLoggerName(), source.getMarker(), source.getFQCN(), source.getLevel(),
+        return new Log4jLogEvent(source.getLoggerName(), source.getMarker(), source.getLoggerFQCN(), source.getLevel(),
             message, source.getThrown(), source.getContextMap(), source.getContextStack(), source.getThreadName(),
-            source.getSource(), source.getMillis());
+            source.getSource(), source.getTimeMillis());
     }
 
     /**

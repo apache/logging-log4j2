@@ -25,12 +25,13 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor;
-import org.apache.logging.log4j.core.helpers.Closer;
-import org.apache.logging.log4j.core.helpers.Loader;
-import org.apache.logging.log4j.core.helpers.lang.ClassLoaderResourceLoader;
-import org.apache.logging.log4j.core.helpers.lang.ResourceLoader;
+import org.apache.logging.log4j.core.util.ClassLoaderResourceLoader;
+import org.apache.logging.log4j.core.util.Closer;
+import org.apache.logging.log4j.core.util.Loader;
+import org.apache.logging.log4j.core.util.ResourceLoader;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**

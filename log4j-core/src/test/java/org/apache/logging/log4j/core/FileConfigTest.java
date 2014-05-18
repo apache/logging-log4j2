@@ -72,11 +72,12 @@ public class FileConfigTest {
 
     @Test
     public void testReconfiguration() throws Exception {
+        final int MONITOR_INTERVAL_SECONDS = 1;
         final File file = new File(CONFIG);
         final long orig = file.lastModified();
         final long newTime = orig + 10000;
         file.setLastModified(newTime);
-        Thread.sleep(6000);
+        Thread.sleep((MONITOR_INTERVAL_SECONDS + 1) * 1000);
         for (int i = 0; i < 17; ++i) {
             logger.debug("Reconfigure");
         }

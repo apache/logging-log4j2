@@ -16,24 +16,24 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+import java.util.Map;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.helpers.Constants;
-import org.apache.logging.log4j.core.helpers.NetUtils;
+import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -84,7 +84,7 @@ public class HostNameTest {
         testLogger.debug("Hello, {}", "World");
         final List<String> msgs = host.getMessages();
         assertTrue("Incorrect number of events. Expected 1, actual " + msgs.size(), msgs.size() == 1);
-        String expected = NetUtils.getLocalHostname() + Constants.LINE_SEP;
+        String expected = NetUtils.getLocalHostname() + Constants.LINE_SEPARATOR;
         assertTrue("Incorrect hostname - expected " + expected + " actual - " + msgs.get(0),
             msgs.get(0).endsWith(expected));
         assertNotNull("No Host FileAppender file name", hostFile.getFileName());

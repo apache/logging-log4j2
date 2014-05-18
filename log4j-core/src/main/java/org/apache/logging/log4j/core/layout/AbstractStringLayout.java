@@ -26,7 +26,7 @@ import org.apache.logging.log4j.core.LogEvent;
 public abstract class AbstractStringLayout extends AbstractLayout<String> {
 
     /**
-     * The charset of the formatted message.
+     * The charset for the formatted message.
      */
     private final Charset charset;
 

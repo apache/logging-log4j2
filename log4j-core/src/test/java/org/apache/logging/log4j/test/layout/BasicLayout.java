@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.test.layout;
 
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.helpers.Charsets;
-import org.apache.logging.log4j.core.helpers.Constants;
-import org.apache.logging.log4j.core.layout.AbstractStringLayout;
-
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.layout.AbstractStringLayout;
+import org.apache.logging.log4j.core.util.Charsets;
+import org.apache.logging.log4j.core.util.Constants;
 
 /**
  *
@@ -33,7 +33,7 @@ import java.util.Map;
 @Plugin(name = "BasicLayout", category = "Core", elementType = "layout", printObject = true)
 public class BasicLayout extends AbstractStringLayout {
 
-    private static final String HEADER = "Header" + Constants.LINE_SEP;
+    private static final String HEADER = "Header" + Constants.LINE_SEPARATOR;
 
     @Override
     public byte[] getHeader() {
@@ -46,7 +46,7 @@ public class BasicLayout extends AbstractStringLayout {
 
     @Override
     public String toSerializable(final LogEvent event) {
-        return event.getMessage().getFormattedMessage() + Constants.LINE_SEP;
+        return event.getMessage().getFormattedMessage() + Constants.LINE_SEPARATOR;
     }
 
     @Override

@@ -38,12 +38,13 @@ import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.Reconfigurable;
-import org.apache.logging.log4j.core.helpers.Assert;
-import org.apache.logging.log4j.core.helpers.NetUtils;
 import org.apache.logging.log4j.core.jmx.Server;
+import org.apache.logging.log4j.core.util.Assert;
+import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLoggerProvider;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * The LoggerContext is the anchor for the logging system. It maintains a list
@@ -53,6 +54,9 @@ import org.apache.logging.log4j.status.StatusLogger;
  * occurs.
  */
 public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext, ConfigurationListener, LifeCycle {
+
+    private static final boolean SHUTDOWN_HOOK_ENABLED =
+        PropertiesUtil.getProperties().getBooleanProperty("log4j.shutdownHookEnabled", true);
 
     public static final String PROPERTY_CONFIG = "config";
     private static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
@@ -186,7 +190,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     }
 
     private void setUpShutdownHook() {
-        if (config.isShutdownHookEnabled()) {
+        if (config.isShutdownHookEnabled() && SHUTDOWN_HOOK_ENABLED) {
             LOGGER.debug(SHUTDOWN_HOOK, "Shutdown hook enabled. Registering a new one.");
             shutdownThread = new SoftReference<Thread>(
                     new Thread(new ShutdownThread(this), "log4j-shutdown")
@@ -294,7 +298,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      * Whether this collection is a copy of the underlying collection or not is undefined. Therefore, modify this collection at your own
      * risk.
      * </p>
-     * 
+     *
      * @return a collection of the current loggers.
      */
     public Collection<Logger> getLoggers() {

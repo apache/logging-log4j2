@@ -20,8 +20,8 @@ package org.apache.logging.log4j.core.config.plugins.osgi;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
-import org.apache.logging.log4j.core.helpers.lang.BundleResourceLoader;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
+import org.apache.logging.log4j.core.util.BundleResourceLoader;
 import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -33,7 +33,7 @@ import org.osgi.framework.BundleListener;
 /**
  * OSGi BundleActivator.
  */
-public class Activator implements org.osgi.framework.BundleActivator {
+public final class Activator implements org.osgi.framework.BundleActivator {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 

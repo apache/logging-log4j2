@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.test.appender;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *

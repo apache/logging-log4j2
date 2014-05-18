@@ -27,7 +27,7 @@ import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- *
+ * <em>Consider this class private.</em>
  */
 public final class ProviderUtil {
 

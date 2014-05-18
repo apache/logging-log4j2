@@ -28,6 +28,23 @@ import org.junit.Test;
 public class DefaultThreadContextMapTest {
 
     @Test
+    public void testEqualsVsSameKind() {
+        final DefaultThreadContextMap map1 = createMap();
+        final DefaultThreadContextMap map2 = createMap();
+        assertEquals(map1, map1);
+        assertEquals(map2, map2);
+        assertEquals(map1, map2);
+        assertEquals(map2, map1);
+    }
+
+    @Test
+    public void testHashCodeVsSameKind() {
+        final DefaultThreadContextMap map1 = createMap();
+        final DefaultThreadContextMap map2 = createMap();
+        assertEquals(map1.hashCode(), map2.hashCode());
+    }
+
+    @Test
     public void testDoesNothingIfConstructedWithUseMapIsFalse() {
         final DefaultThreadContextMap map = new DefaultThreadContextMap(false);
         assertTrue(map.isEmpty());
@@ -58,10 +75,7 @@ public class DefaultThreadContextMapTest {
      */
     @Test
     public void testRemove() {
-        final DefaultThreadContextMap map = new DefaultThreadContextMap(true);
-        assertTrue(map.isEmpty());
-        map.put("key", "value");
-        map.put("key2", "value2");
+        final DefaultThreadContextMap map = createMap();
         assertEquals("value", map.get("key"));
         assertEquals("value2", map.get("key2"));
 
@@ -72,12 +86,7 @@ public class DefaultThreadContextMapTest {
 
     @Test
     public void testClear() {
-        final DefaultThreadContextMap map = new DefaultThreadContextMap(true);
-        assertTrue(map.isEmpty());
-        map.put("key", "value");
-        map.put("key2", "value2");
-        assertEquals("value", map.get("key"));
-        assertEquals("value2", map.get("key2"));
+        final DefaultThreadContextMap map = createMap();
 
         map.clear();
         assertTrue(map.isEmpty());
@@ -85,6 +94,19 @@ public class DefaultThreadContextMapTest {
         assertFalse(map.containsKey("key2"));
     }
 
+    /**
+     * @return
+     */
+    private DefaultThreadContextMap createMap() {
+        final DefaultThreadContextMap map = new DefaultThreadContextMap(true);
+        assertTrue(map.isEmpty());
+        map.put("key", "value");
+        map.put("key2", "value2");
+        assertEquals("value", map.get("key"));
+        assertEquals("value2", map.get("key2"));
+        return map;
+    }
+    
     @Test
     public void testGetCopyReturnsMutableMap() {
         final DefaultThreadContextMap map = new DefaultThreadContextMap(true);

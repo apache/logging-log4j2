@@ -136,7 +136,7 @@ public class StrictXMLConfigTest {
 
         ThreadContext.put("TestYear", "2010");
         logger.debug("Debug message");
-        ThreadContext.clear();
+        ThreadContext.clearMap();
         logger.debug("Debug message");
         final List<LogEvent> events = app.getEvents();
         assertTrue("Incorrect number of events. Expected 2, actual " + events.size(), events.size() == 2);
@@ -153,7 +153,7 @@ public class StrictXMLConfigTest {
         msg.put("FromAccount", "123457");
         msg.put("Amount", "200.00");
         logger.info(MarkerManager.getMarker("EVENT"), msg);
-        ThreadContext.clear();
+        ThreadContext.clearMap();
         final List<LogEvent> events = app.getEvents();
         assertTrue("Incorrect number of events. Expected 1, actual " + events.size(), events.size() == 1);
         app.clear();

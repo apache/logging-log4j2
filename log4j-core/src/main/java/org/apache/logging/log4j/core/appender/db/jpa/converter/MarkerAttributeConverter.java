@@ -21,7 +21,7 @@ import javax.persistence.Converter;
 
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
-import org.apache.logging.log4j.core.helpers.Strings;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * A JPA 2.1 attribute converter for {@link Marker}s in {@link org.apache.logging.log4j.core.LogEvent}s. This
@@ -34,24 +34,7 @@ public class MarkerAttributeConverter implements AttributeConverter<Marker, Stri
         if (marker == null) {
             return null;
         }
-
-        final StringBuilder builder = new StringBuilder(marker.getName());
-        Marker parent = marker.getParent();
-        int levels = 0;
-        boolean hasParent = false;
-        while (parent != null) {
-            levels++;
-            hasParent = true;
-            builder.append("[ ").append(parent.getName());
-            parent = parent.getParent();
-        }
-        for (int i = 0; i < levels; i++) {
-            builder.append(" ]");
-        }
-        if (hasParent) {
-            builder.append(" ]");
-        }
-        return builder.toString();
+        return marker.toString();
     }
 
     @Override
