@@ -175,6 +175,11 @@
       <artifactId>mockejb</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <scope>test</scope>
+    </dependency>
     <!-- Logback performance tests -->
     <dependency>
       <groupId>ch.qos.logback</groupId>
