@@ -32,12 +32,14 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.categories.PerformanceTests;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 public abstract class AbstractJpaAppenderTest {
     private final String databaseType;
@@ -217,6 +219,7 @@ public abstract class AbstractJpaAppenderTest {
     }
 
     @Test
+    @Category(PerformanceTests.class)
     public void testPerformanceOfAppenderWith10000EventsUsingBasicEntity() throws SQLException {
         try {
             this.setUp("log4j2-" + this.databaseType + "-jpa-basic.xml");
