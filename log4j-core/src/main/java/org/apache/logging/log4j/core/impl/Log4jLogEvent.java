@@ -168,7 +168,7 @@ public class Log4jLogEvent implements LogEvent {
         this.level = (level == null) ? Level.OFF : level; // LOG4J2-462, LOG4J2-465
         this.message = message;
         this.thrownProxy = thrownProxy;
-        this.contextMap = contextMap;
+        this.contextMap = contextMap == null ? ThreadContext.EMPTY_MAP : contextMap;
         this.contextStack = contextStack;
         this.timeMillis = message instanceof TimestampMessage ? ((TimestampMessage) message).getTimestamp() : timestamp;
         this.threadName = threadName;
@@ -287,7 +287,7 @@ public class Log4jLogEvent implements LogEvent {
      */
     @Override
     public Map<String, String> getContextMap() {
-        return contextMap == null ? ThreadContext.EMPTY_MAP : contextMap;
+        return contextMap;
     }
 
     /**
@@ -297,18 +297,6 @@ public class Log4jLogEvent implements LogEvent {
     @Override
     public ThreadContext.ContextStack getContextStack() {
         return contextStack == null ? ThreadContext.EMPTY_STACK : contextStack;
-    }
-
-    /**
-     * Gets the value at the given key in the context map.
-     * 
-     * @param key the key to query
-     * @return the value to which the specified key is mapped, or {@code null} if this map contains no mapping for the key or there is no
-     *         map.
-     */
-    @Override
-    public String getContextMap(String key) {
-        return contextMap == null ? null : contextMap.get(key);
     }
 
     /**

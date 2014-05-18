@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core;
 
+import java.util.Collections;
 import java.util.Map;
 
 import org.apache.logging.log4j.Level;
@@ -31,14 +32,12 @@ public abstract class AbstractLogEvent implements LogEvent {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Returns {@link Collections#emptyMap()}.
+     */
     @Override
     public Map<String, String> getContextMap() {
-        return null;
-    }
-
-    @Override
-    public String getContextMap(String key) {
-        return null;
+        return Collections.emptyMap();
     }
 
     @Override

@@ -164,15 +164,15 @@ public class RingBufferLogEvent implements LogEvent {
 	}
 
 	@Override
-	public Throwable getThrown() {
-	    // after deserialization, thrown is null but thrownProxy may be non-null
-	    if (thrown == null) {
-	        if (thrownProxy != null) {
-	            thrown = thrownProxy.getThrowable();
-	        }
-	    }
-  return thrown;
-	}
+    public Throwable getThrown() {
+        // after deserialization, thrown is null but thrownProxy may be non-null
+        if (thrown == null) {
+            if (thrownProxy != null) {
+                thrown = thrownProxy.getThrowable();
+            }
+        }
+        return thrown;
+    }
 
 	@Override
 	public ThrowableProxy getThrownProxy() {
@@ -189,11 +189,6 @@ public class RingBufferLogEvent implements LogEvent {
 	public Map<String, String> getContextMap() {
 		return contextMap;
 	}
-
-    @Override
-    public String getContextMap(String key) {
-        return contextMap == null ? null : contextMap.get(key);
-    }
 
 	@Override
 	public ContextStack getContextStack() {
