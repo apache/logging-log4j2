@@ -169,7 +169,7 @@ public class XMLLayoutTest {
         this.checkAttributeName("message", compact, str);
         this.checkAttributeName("localizedMessage", compact, str);
         this.checkElementName("ExtendedStackTrace", compact, str, false, true);
-        if (Throwables.isSuppressedAvailable()) {
+        if (Throwables.isGetSuppressedAvailable()) {
             this.checkElementName("Suppressed", compact, str, false, true);
         }
         this.checkAttributeName("loggerFQCN", compact, str);

@@ -142,7 +142,7 @@ public class JSONLayoutTest {
         this.checkPropertyName("commonElementCount", compact, str);
         this.checkPropertyName("localizedMessage", compact, str);
         this.checkPropertyName("extendedStackTrace", compact, str);
-        if (Throwables.isSuppressedAvailable()) {
+        if (Throwables.isGetSuppressedAvailable()) {
             this.checkPropertyName("suppressed", compact, str);
         }
         this.checkPropertyName("loggerFQCN", compact, str);
