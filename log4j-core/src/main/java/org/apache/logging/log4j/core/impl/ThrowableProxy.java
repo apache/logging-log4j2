@@ -33,13 +33,13 @@ import org.apache.logging.log4j.util.Strings;
 
 /**
  * Wraps a Throwable to add packaging information about each stack trace element.
- * 
+ *
  * <p>
  * A proxy is used to represent a throwable that may not exist in a different class loader or JVM. When an application deserializes a
  * ThrowableProxy, the throwable may not be set, but the throwable's information is preserved in other fields of the proxy like the message
  * and stack trace.
  * </p>
- * 
+ *
  * TODO: Move this class to org.apache.logging.log4j.core because it is used from LogEvent.
  * TODO: Deserialize: Try to rebuild Throwable if the target exception is in this class loader?
  */
@@ -115,7 +115,7 @@ public class ThrowableProxy implements Serializable {
     private final ThrowableProxy[] suppressedProxies;
 
     private final transient Throwable throwable;
-    
+
     /**
      * For JSON and XML IO via Jackson.
      */
@@ -132,7 +132,7 @@ public class ThrowableProxy implements Serializable {
 
     /**
      * Constructs the wrapper for the Throwable that includes packaging data.
-     * 
+     *
      * @param throwable The Throwable to wrap, must not be null.
      */
     public ThrowableProxy(final Throwable throwable) {
@@ -150,7 +150,7 @@ public class ThrowableProxy implements Serializable {
 
     /**
      * Constructs the wrapper for a Throwable that is referenced as the cause by another Throwable.
-     * 
+     *
      * @param parent The Throwable referencing this Throwable.
      * @param stack The Class stack.
      * @param map The cache containing the packaging data.
@@ -259,7 +259,7 @@ public class ThrowableProxy implements Serializable {
 
     /**
      * Formats the specified Throwable.
-     * 
+     *
      * @param sb StringBuilder to contain the formatted Throwable.
      * @param cause The Throwable to format.
      */
@@ -269,7 +269,7 @@ public class ThrowableProxy implements Serializable {
 
     /**
      * Formats the specified Throwable.
-     * 
+     *
      * @param sb StringBuilder to contain the formatted Throwable.
      * @param cause The Throwable to format.
      * @param packages The List of packages to be suppressed from the trace.
@@ -291,7 +291,7 @@ public class ThrowableProxy implements Serializable {
 
     /**
      * Format the Throwable that is the cause of this Throwable.
-     * 
+     *
      * @return The formatted Throwable that caused this Throwable.
      */
     public String getCauseStackTraceAsString() {
@@ -300,7 +300,7 @@ public class ThrowableProxy implements Serializable {
 
     /**
      * Format the Throwable that is the cause of this Throwable.
-     * 
+     *
      * @param packages The List of packages to be suppressed from the trace.
      * @return The formatted Throwable that caused this Throwable.
      */
@@ -318,7 +318,7 @@ public class ThrowableProxy implements Serializable {
 
     /**
      * Return the number of elements that are being omitted because they are common with the parent Throwable's stack trace.
-     * 
+     *
      * @return The number of elements omitted from the stack trace.
      */
     public int getCommonElementCount() {
@@ -328,7 +328,7 @@ public class ThrowableProxy implements Serializable {
     /**
      * Initialize the cache by resolving everything in the current stack trace via Reflection.getCallerClass or via the SecurityManager if
      * either are available. These are the only Classes that can be trusted to be accurate.
-     * 
+     *
      * @return A Stack containing the current stack of Class objects.
      */
     private Stack<Class<?>> getCurrentStack() {
@@ -354,7 +354,7 @@ public class ThrowableProxy implements Serializable {
 
     /**
      * Gets the stack trace including packaging information.
-     * 
+     *
      * @return The stack trace including packaging information.
      */
     public ExtendedStackTraceElement[] getExtendedStackTrace() {
@@ -363,7 +363,7 @@ public class ThrowableProxy implements Serializable {
 
     /**
      * Format the stack trace including packaging information.
-     * 
+     *
      * @return The formatted stack trace including packaging information.
      */
     public String getExtendedStackTraceAsString() {
@@ -372,7 +372,7 @@ public class ThrowableProxy implements Serializable {
 
     /**
      * Format the stack trace including packaging information.
-     * 
+     *
      * @param packages List of packages to be suppressed from the trace.
      * @return The formatted stack trace including packaging information.
      */
@@ -400,7 +400,7 @@ public class ThrowableProxy implements Serializable {
 
     /**
      * Return the FQCN of the Throwable.
-     * 
+     *
      * @return The FQCN of the Throwable.
      */
     public String getName() {
@@ -413,7 +413,7 @@ public class ThrowableProxy implements Serializable {
 
     /**
      * Gets proxies for suppressed exceptions.
-     * 
+     *
      * @return proxies for suppressed exceptions.
      */
     public ThrowableProxy[] getSuppressedProxies() {
@@ -422,7 +422,7 @@ public class ThrowableProxy implements Serializable {
 
     /**
      * Format the suppressed Throwables.
-     * 
+     *
      * @return The formatted suppressed Throwables.
      */
     public String getSuppressedStackTrace() {
@@ -439,7 +439,7 @@ public class ThrowableProxy implements Serializable {
 
     /**
      * The throwable or null if this object is deserialized from XML or JSON.
-     * 
+     *
      * @return The throwable or null if this object is deserialized from XML or JSON.
      */
     public Throwable getThrowable() {
@@ -470,7 +470,7 @@ public class ThrowableProxy implements Serializable {
 
     /**
      * Loads classes not located via Reflection.getCallerClass.
-     * 
+     *
      * @param lastLoader The ClassLoader that loaded the Class that called this Class.
      * @param className The name of the Class.
      * @return The Class object for the Class or null if it could not be located.
@@ -502,11 +502,11 @@ public class ThrowableProxy implements Serializable {
 
     /**
      * Construct the CacheEntry from the Class's information.
-     * 
+     *
      * @param stackTraceElement The stack trace element
      * @param callerClass The Class.
      * @param exact True if the class was obtained via Reflection.getCallerClass.
-     * 
+     *
      * @return The CacheEntry.
      */
     private CacheEntry resolvePackageElement(final StackTraceElement stackTraceElement, final Class<?> callerClass, final boolean exact) {
@@ -546,7 +546,7 @@ public class ThrowableProxy implements Serializable {
 
     /**
      * Resolve all the stack entries in this stack trace that are not common with the parent.
-     * 
+     *
      * @param stack The callers Class stack.
      * @param map The cache of CacheEntry objects.
      * @param rootTrace The first stack trace resolve or null.
@@ -614,7 +614,7 @@ public class ThrowableProxy implements Serializable {
         try {
             final Throwable[] suppressed = Throwables.getSuppressed(thrown);
             if (suppressed == null) {
-                return null;
+                return EMPTY_THROWABLE_PROXY_ARRAY;
             }
             final ThrowableProxy[] proxies = new ThrowableProxy[suppressed.length];
             for (int i = 0; i < suppressed.length; i++) {
