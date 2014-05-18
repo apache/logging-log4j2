@@ -24,10 +24,12 @@ import java.io.Writer;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
+import org.apache.logging.log4j.categories.PerformanceTests;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * Use this class to analyze Log4j-only performance.
@@ -36,6 +38,7 @@ import org.junit.Test;
  *
  * @version $Id$
  */
+@Category(PerformanceTests.class)
 public class PerformanceRun {
 
     private final Logger logger = LogManager.getLogger(PerformanceRun.class.getName());
