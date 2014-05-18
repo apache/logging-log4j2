@@ -34,19 +34,9 @@ public interface LogEvent extends Serializable {
     /**
      * Gets the context map (also know as MDC).
      * 
-     * @return A copy of the Mapped Diagnostic Context or null.
+     * @return A copy of the Mapped Diagnostic Context, never {@code null}.
      */
     Map<String, String> getContextMap();
-
-    /**
-     * Gets the value at the given key in the context map.
-     * 
-     * @param key the key to query
-     * @return the value to which the specified key is mapped, or {@code null} if this map contains no mapping for the key or there is no
-     *         map.
-     */
-    @Deprecated
-    String getContextMap(String key);
 
     /**
      * Gets the context stack (also known as NDC).
@@ -130,9 +120,9 @@ public interface LogEvent extends Serializable {
     ThrowableProxy getThrownProxy();
 
     /**
-     * Returns {@code true} if this event is the last one in a batch, {@code false} otherwise. Used by asynchronous
-     * Loggers and Appenders to signal to buffered downstream components when to flush to disk, as a more efficient
-     * alternative to the {@code immediateFlush=true} configuration.
+     * Returns {@code true} if this event is the last one in a batch, {@code false} otherwise. Used by asynchronous Loggers and Appenders to
+     * signal to buffered downstream components when to flush to disk, as a more efficient alternative to the {@code immediateFlush=true}
+     * configuration.
      * 
      * @return whether this event is the last one in a batch.
      */
@@ -140,9 +130,8 @@ public interface LogEvent extends Serializable {
     boolean isEndOfBatch();
 
     /**
-     * Returns whether the source of the logging request is required downstream. Asynchronous Loggers and Appenders use
-     * this flag to determine whether to take a {@code StackTrace} snapshot or not before handing off this event to
-     * another thread.
+     * Returns whether the source of the logging request is required downstream. Asynchronous Loggers and Appenders use this flag to
+     * determine whether to take a {@code StackTrace} snapshot or not before handing off this event to another thread.
      * 
      * @return {@code true} if the source of the logging request is required downstream, {@code false} otherwise.
      * @see #getSource()
@@ -151,22 +140,18 @@ public interface LogEvent extends Serializable {
     boolean isIncludeLocation();
 
     /**
-     * Sets whether this event is the last one in a batch. Used by asynchronous Loggers and Appenders to signal to
-     * buffered downstream components when to flush to disk, as a more efficient alternative to the
-     * {@code immediateFlush=true} configuration.
+     * Sets whether this event is the last one in a batch. Used by asynchronous Loggers and Appenders to signal to buffered downstream
+     * components when to flush to disk, as a more efficient alternative to the {@code immediateFlush=true} configuration.
      * 
-     * @param endOfBatch
-     *            {@code true} if this event is the last one in a batch, {@code false} otherwise.
+     * @param endOfBatch {@code true} if this event is the last one in a batch, {@code false} otherwise.
      */
     void setEndOfBatch(boolean endOfBatch);
 
     /**
-     * Sets whether the source of the logging request is required downstream. Asynchronous Loggers and Appenders use
-     * this flag to determine whether to take a {@code StackTrace} snapshot or not before handing off this event to
-     * another thread.
+     * Sets whether the source of the logging request is required downstream. Asynchronous Loggers and Appenders use this flag to determine
+     * whether to take a {@code StackTrace} snapshot or not before handing off this event to another thread.
      * 
-     * @param locationRequired
-     *            {@code true} if the source of the logging request is required downstream, {@code false} otherwise.
+     * @param locationRequired {@code true} if the source of the logging request is required downstream, {@code false} otherwise.
      * @see #getSource()
      */
     void setIncludeLocation(boolean locationRequired);
