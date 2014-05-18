@@ -24,17 +24,20 @@ import java.io.Writer;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
+import org.apache.logging.log4j.categories.PerformanceTests;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Profiler;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * Use this class to analyze performance between Log4j and other logging frameworks.
  *
  * @version $Id$
  */
+@Category(PerformanceTests.class)
 public class PerformanceComparison {
 
     private final Logger logger = LogManager.getLogger(PerformanceComparison.class.getName());

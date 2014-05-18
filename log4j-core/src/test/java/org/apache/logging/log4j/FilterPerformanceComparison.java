@@ -16,14 +16,17 @@
  */
 package org.apache.logging.log4j;
 
+import org.apache.logging.log4j.categories.PerformanceTests;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  *
  */
+@Category(PerformanceTests.class)
 public class FilterPerformanceComparison {
 
     private final Logger logger = LogManager.getLogger(FilterPerformanceComparison.class.getName());
