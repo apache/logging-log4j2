@@ -107,7 +107,7 @@ public final class Throwables {
      * Returns true if the getSuppressed method is available.
      * @return True if getSuppressed is available.
      */
-    public static boolean isSuppressedAvailable() {
+    public static boolean isGetSuppressedAvailable() {
         return GET_SUPPRESSED != null;
     }
 
