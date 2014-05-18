@@ -661,6 +661,7 @@
             <target>${maven.compile.target}</target>
             <showDeprecation>true</showDeprecation>
             <showWarnings>true</showWarnings>
+            <encoding>UTF-8</encoding>
           </configuration>
         </plugin>
       </plugins>
@@ -683,6 +684,7 @@
             <Xmaxwarns>10000</Xmaxwarns>
             <Xlint />
           </compilerArguments>
+          <encoding>UTF-8</encoding>
         </configuration>
       </plugin>
       <plugin>
@@ -765,6 +767,15 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <systemPropertyVariables>
+            <java.awt.headless>true</java.awt.headless>
+          </systemPropertyVariables>
+          <argLine>-Xms256m -Xmx1024m</argLine>
+          <forkCount>1</forkCount>
+          <reuseForks>false</reuseForks>
+          <encoding>UTF-8</encoding>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -972,6 +983,12 @@
                         <argLine>-server</argLine>
                     </configuration>
                 </plugin>
+              <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                  <argLine>-server</argLine>
+                </configuration>
+              </plugin>
             </plugins>
         </build>
     </profile>
@@ -1125,6 +1142,12 @@
               <argLine>-agentpath:"${yourkit.home}/bin/mac/libyjpagent.jnilib"</argLine>
             </configuration>
           </plugin>
+          <plugin>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <configuration>
+              <argLine>-agentpath:"${yourkit.home}/bin/mac/libyjpagent.jnilib"</argLine>
+            </configuration>
+          </plugin>
         </plugins>
       </build>
     </profile>
@@ -1137,6 +1160,12 @@
         <plugins>
           <plugin>
             <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <argLine>-XX:MaxPermSize=512m</argLine>
+            </configuration>
+          </plugin>
+          <plugin>
+            <artifactId>maven-failsafe-plugin</artifactId>
             <configuration>
               <argLine>-XX:MaxPermSize=512m</argLine>
             </configuration>
