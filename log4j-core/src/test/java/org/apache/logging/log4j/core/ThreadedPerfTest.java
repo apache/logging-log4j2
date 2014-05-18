@@ -21,11 +21,14 @@ import java.util.concurrent.Executors;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.categories.PerformanceTests;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  *
  */
+@Category(PerformanceTests.class)
 public class ThreadedPerfTest {
 
     private static org.apache.logging.log4j.Logger logger = LogManager.getLogger(ThreadedPerfTest.class.getName());
