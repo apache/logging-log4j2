@@ -23,6 +23,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.processor.DefaultExchangeFormatter;
 import org.apache.camel.spi.ExchangeFormatter;
 import org.apache.camel.util.AsyncProcessorHelper;
+import org.apache.camel.util.ObjectHelper;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 
@@ -44,12 +45,8 @@ public class LogProcessor implements AsyncProcessor {
     }
 
     public LogProcessor(final LoggerWrapper logger, final ExchangeFormatter formatter) {
-        if (logger == null) {
-            throw new NullPointerException("No LoggerWrapper provided.");
-        }
-        if (formatter == null) {
-            throw new NullPointerException("No ExchangeFormatter provided.");
-        }
+        ObjectHelper.notNull(logger, "logger");
+        ObjectHelper.notNull(formatter, "formatter");
         this.logger = logger;
         this.formatter = formatter;
     }
