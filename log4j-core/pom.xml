@@ -228,6 +228,26 @@
         </executions>
       </plugin>
       <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <excludedGroups>
+            org.apache.logging.log4j.categories.PerformanceTests
+          </excludedGroups>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <configuration>
+          <includes>
+            <include>**/*.java</include>
+          </includes>
+          <groups>
+            org.apache.logging.log4j.categories.PerformanceTests
+          </groups>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <executions>
@@ -244,6 +264,7 @@
         <configuration>
           <instructions>
             <Bundle-SymbolicName>org.apache.logging.log4j.core</Bundle-SymbolicName>
+            <!-- TODO: exclude internal classes from export -->
             <Export-Package>org.apache.logging.log4j.core.*</Export-Package>
             <Bundle-Activator>org.apache.logging.log4j.core.config.plugins.osgi.Activator</Bundle-Activator>
           </instructions>
