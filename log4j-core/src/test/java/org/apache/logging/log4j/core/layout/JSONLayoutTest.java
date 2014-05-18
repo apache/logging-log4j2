@@ -34,6 +34,7 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.jackson.Log4jJsonObjectMapper;
 import org.apache.logging.log4j.core.util.Charsets;
+import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.AfterClass;
@@ -141,7 +142,9 @@ public class JSONLayoutTest {
         this.checkPropertyName("commonElementCount", compact, str);
         this.checkPropertyName("localizedMessage", compact, str);
         this.checkPropertyName("extendedStackTrace", compact, str);
-        this.checkPropertyName("suppressed", compact, str);
+        if (Throwables.isSuppressedAvailable()) {
+            this.checkPropertyName("suppressed", compact, str);
+        }
         this.checkPropertyName("loggerFQCN", compact, str);
         this.checkPropertyName("endOfBatch", compact, str);
         if (includeContext) {

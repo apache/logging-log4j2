@@ -37,6 +37,7 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.jackson.Log4jXmlObjectMapper;
 import org.apache.logging.log4j.core.util.Charsets;
+import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.AfterClass;
@@ -168,7 +169,9 @@ public class XMLLayoutTest {
         this.checkAttributeName("message", compact, str);
         this.checkAttributeName("localizedMessage", compact, str);
         this.checkElementName("ExtendedStackTrace", compact, str, false, true);
-        this.checkElementName("Suppressed", compact, str, false, true);
+        if (Throwables.isSuppressedAvailable()) {
+            this.checkElementName("Suppressed", compact, str, false, true);
+        }
         this.checkAttributeName("loggerFQCN", compact, str);
         this.checkAttributeName("endOfBatch", compact, str);
         if (includeContext) {

@@ -54,7 +54,7 @@ public final class Throwables {
 
     /**
      * Has no effect on Java 6 and below.
-     * 
+     *
      * @param throwable a Throwable
      * @param suppressedThrowable a suppressed Throwable
      * @see Throwable#addSuppressed(Throwable)
@@ -82,7 +82,7 @@ public final class Throwables {
 
     /**
      * Has no effect on Java 6 and below.
-     * 
+     *
      * @param throwable a Throwable
      * @return see Java 7's {@link Throwable#getSuppressed()}
      * @see Throwable#getSuppressed()
@@ -104,8 +104,16 @@ public final class Throwables {
     }
 
     /**
+     * Returns true if the getSuppressed method is available.
+     * @return True if getSuppressed is available.
+     */
+    public static boolean isSuppressedAvailable() {
+        return GET_SUPPRESSED != null;
+    }
+
+    /**
      * Converts a Throwable stack trace into a List of Strings
-     * 
+     *
      * @param throwable the Throwable
      * @return a List of Strings
      */
