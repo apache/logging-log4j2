@@ -45,11 +45,7 @@ public class StoreConfiguration {
     }
 
     public char[] getPasswordAsCharArray() {
-        if (password == null) {
-            return null;
-        } else {
-            return password.toCharArray();
-        }
+        return password == null ? null : password.toCharArray();
     }
 
     public void setPassword(String password) {
