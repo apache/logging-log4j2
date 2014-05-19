@@ -142,7 +142,7 @@ public final class MarkerManager {
             int size = parents.length;
             if (localParents != null) {
                 for (Marker parent : parents) {
-                    if (localParents != null && !(contains(parent, localParents) || parent.isInstanceOf(this))) {
+                    if (!(contains(parent, localParents) || parent.isInstanceOf(this))) {
                         ++count;
                     }
                 }
