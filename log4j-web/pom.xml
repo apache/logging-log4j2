@@ -31,6 +31,12 @@
   <name>Apache Log4j Web</name>
   <description>Support for Log4j in a web servlet container</description>
 
+  <properties>
+    <log4jParentDir>${basedir}/..</log4jParentDir>
+    <docLabel>Web Documentation</docLabel>
+    <projectDir>/log4j-web</projectDir>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
