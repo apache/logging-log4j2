@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="2.0-rc2" date="2014-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-620" dev="rgoers" type="fix">
+        Perform reconfiguration in a separate thread to prevent deadlocks.
+      </action>
       <action issue="LOG4J2-641" dev="mattsicker" type="update">
         Override commons-logging dependency version in tests.
       </action>

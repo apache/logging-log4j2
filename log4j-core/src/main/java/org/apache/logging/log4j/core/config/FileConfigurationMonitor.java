@@ -81,12 +81,30 @@ public class FileConfigurationMonitor implements ConfigurationMonitor {
                 if (file.lastModified() > lastModified) {
                     lastModified = file.lastModified();
                     for (final ConfigurationListener listener : listeners) {
-                        listener.onChange(reconfigurable);
+                        Thread thread = new Thread(new ReconfigurationWorker(listener, reconfigurable));
+                        thread.setDaemon(true);
+                        thread.start();
                     }
                 }
             } finally {
                 LOCK.unlock();
             }
+        }
+    }
+
+    private class ReconfigurationWorker implements Runnable {
+
+        private final ConfigurationListener listener;
+        private final Reconfigurable reconfigurable;
+
+        public ReconfigurationWorker(ConfigurationListener listener, Reconfigurable reconfigurable) {
+            this.listener = listener;
+            this.reconfigurable = reconfigurable;
+        }
+
+        @Override
+        public void run() {
+            listener.onChange(reconfigurable);
         }
     }
 }
