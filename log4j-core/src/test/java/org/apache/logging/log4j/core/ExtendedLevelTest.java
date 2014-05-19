@@ -16,23 +16,17 @@
  */
 package org.apache.logging.log4j.core;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.List;
-import java.util.Map;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.apache.logging.log4j.test.ExtendedLevels;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  *
@@ -40,56 +34,37 @@ import org.junit.Test;
 public class ExtendedLevelTest {
 
     private static final String CONFIG = "log4j-customLevel.xml";
-    private static LoggerContext ctx;
     private static ListAppender list1;
     private static ListAppender list2;
 
-    @BeforeClass
-    public static void setupClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        ctx = (LoggerContext) LogManager.getContext(false);
-    }
-
-    @AfterClass
-    public static void cleanupClass() {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        ctx.reconfigure();
-        StatusLogger.getLogger().reset();
-    }
+    @ClassRule
+    public static InitialLoggerContext context = new InitialLoggerContext(CONFIG);
 
     @Before
     public void before() {
-        Configuration config = ctx.getConfiguration();
-        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
-            if (entry.getKey().equals("List1")) {
-                list1 = (ListAppender) entry.getValue();
-            } else if (entry.getKey().equals("List2")) {
-                list2 = (ListAppender) entry.getValue();
-            }
-        }
-        assertNotNull("No List1 Appender", list1);
-        assertNotNull("No List2 Appender", list2);
+        list1 = (ListAppender) context.getRequiredAppender("List1");
+        list2 = (ListAppender) context.getRequiredAppender("List2");
         list1.clear();
         list2.clear();
     }
 
     @Test
     public void testLevelLogging() {
-        org.apache.logging.log4j.Logger logger = LogManager.getLogger("org.apache.logging.log4j.test1");
+        org.apache.logging.log4j.Logger logger = context.getLogger("org.apache.logging.log4j.test1");
         logger.log(ExtendedLevels.DETAIL, "Detail message");
         logger.log(Level.DEBUG, "Debug message");
         List<LogEvent> events = list1.getEvents();
         assertNotNull("No events", events);
-        assertTrue("Incorrect number of events. Expected 1 got " + events.size(), events.size() == 1);
+        assertEquals("Incorrect number of events. Expected 1 got " + events.size(), 1, events.size());
         LogEvent event = events.get(0);
-        assertTrue("Expected level DETAIL, got" + event.getLevel(), event.getLevel().name().equals("DETAIL"));
-        logger = LogManager.getLogger("org.apache.logging.log4j.test2");
+        assertEquals("Expected level DETAIL, got" + event.getLevel(), "DETAIL", event.getLevel().name());
+        logger = context.getLogger("org.apache.logging.log4j.test2");
         logger.log(ExtendedLevels.NOTE, "Note message");
         logger.log(Level.INFO, "Info message");
         events = list2.getEvents();
         assertNotNull("No events", events);
-        assertTrue("Incorrect number of events. Expected 1 got " + events.size(), events.size() == 1);
+        assertEquals("Incorrect number of events. Expected 1 got " + events.size(), 1, events.size());
         event = events.get(0);
-        assertTrue("Expected level NOTE, got" + event.getLevel(), event.getLevel().name().equals("NOTE"));
+        assertEquals("Expected level NOTE, got" + event.getLevel(), "NOTE", event.getLevel().name());
     }
 }
