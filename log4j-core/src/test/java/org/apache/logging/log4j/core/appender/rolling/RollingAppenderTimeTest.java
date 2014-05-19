@@ -67,7 +67,7 @@ public class RollingAppenderTimeTest {
         final File dir = new File(DIR);
         assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
 
-        final int MAX_TRIES = 10;
+        final int MAX_TRIES = 20;
         for (int i = 0; i < MAX_TRIES; i++) {
             final File[] files = dir.listFiles();
             assertTrue("No files created", files.length > 0);
@@ -76,7 +76,8 @@ public class RollingAppenderTimeTest {
                     return; // test succeeded
                 }
             }
-            Thread.sleep(50); // Allow time for rollover to complete
+            logger.debug("Adding additional event " + i);
+            Thread.sleep(100); // Allow time for rollover to complete
         }
         fail("No compressed files found");
     }
