@@ -41,7 +41,7 @@ public final class UUIDUtil {
 
     private static final String ASSIGNED_SEQUENCES = "org.apache.logging.log4j.assignedSequences";
 
-    private static AtomicInteger count = new AtomicInteger(0);
+    private static final AtomicInteger count = new AtomicInteger(0);
 
     private static final long TYPE1 = 0x1000L;
 
@@ -51,9 +51,9 @@ public final class UUIDUtil {
 
     private static final long NUM_100NS_INTERVALS_SINCE_UUID_EPOCH = 0x01b21dd213814000L;
 
-    private static long uuidSequence = PropertiesUtil.getProperties().getLongProperty(UUID_SEQUENCE, 0);
+    private static final long uuidSequence = PropertiesUtil.getProperties().getLongProperty(UUID_SEQUENCE, 0);
 
-    private static long least;
+    private static final long least;
 
     private static final long LOW_MASK = 0xffffffffL;
     private static final long MID_MASK = 0xffff00000000L;
