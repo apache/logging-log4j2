@@ -26,6 +26,8 @@ import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
+import static org.junit.Assert.*;
+
 /**
  * JUnit {@link TestRule} for constructing a new LoggerContext using a specified configuration file.
  */
@@ -45,9 +47,9 @@ public class InitialLoggerContext implements TestRule {
             @Override
             public void evaluate() throws Throwable {
                 context = Configurator.initialize(
-                        description.getDisplayName(),
-                        description.getTestClass().getClassLoader(),
-                        configLocation
+                    description.getDisplayName(),
+                    description.getTestClass().getClassLoader(),
+                    configLocation
                 );
                 try {
                     base.evaluate();
@@ -59,19 +61,50 @@ public class InitialLoggerContext implements TestRule {
         };
     }
 
+    /**
+     * Gets the current LoggerContext associated with this rule.
+     * @return the current LoggerContext.
+     */
     public LoggerContext getContext() {
         return context;
     }
 
+    /**
+     * Gets a named Logger in this LoggerContext.
+     *
+     * @param name the name of the Logger to look up or create.
+     * @return the named Logger.
+     */
     public Logger getLogger(final String name) {
         return context.getLogger(name);
     }
 
+    /**
+     * Gets the associated Configuration for the configuration file this was constructed with.
+     * @return this LoggerContext's Configuration.
+     */
     public Configuration getConfiguration() {
         return context.getConfiguration();
     }
 
+    /**
+     * Gets a named Appender for this LoggerContext.
+     * @param name the name of the Appender to look up.
+     * @return the named Appender or {@code null} if it wasn't defined in the configuration.
+     */
     public Appender getAppender(final String name) {
         return getConfiguration().getAppenders().get(name);
+    }
+
+    /**
+     * Gets a named Appender or throws an exception for this LoggerContext.
+     * @param name the name of the Appender to look up.
+     * @return the named Appender.
+     * @throws AssertionError if the Appender doesn't exist.
+     */
+    public Appender getRequiredAppender(final String name) {
+        final Appender appender = getAppender(name);
+        assertNotNull("Appender named " + name + " was null.", appender);
+        return appender;
     }
 }
