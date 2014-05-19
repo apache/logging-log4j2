@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.LockSupport;
 
 /**
@@ -25,13 +24,14 @@ import java.util.concurrent.locks.LockSupport;
  */
 public final class CoarseCachedClock implements Clock {
     private static final CoarseCachedClock instance = new CoarseCachedClock();
-    private final AtomicLong millis = new AtomicLong(System.currentTimeMillis());
+    // ignore IDE complaints; volatile long is fine
+    private volatile long millis = System.currentTimeMillis();
 
     private final Thread updater = new Thread("Clock Updater Thread") {
         @Override
         public void run() {
             while (true) {
-                millis.set(System.currentTimeMillis());
+                millis = System.currentTimeMillis();
 
                 // avoid explicit dependency on sun.misc.Util
                 LockSupport.parkNanos(1000 * 1000);
@@ -62,6 +62,6 @@ public final class CoarseCachedClock implements Clock {
      */
     @Override
     public long currentTimeMillis() {
-        return millis.get();
+        return millis;
     }
 }
