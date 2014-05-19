@@ -41,7 +41,7 @@ public interface LogEvent extends Serializable {
     /**
      * Gets the context stack (also known as Nested Diagnostic Context or NDC).
      * 
-     * @return The context stack or null;
+     * @return The context stack, never {@code null}.
      */
     ThreadContext.ContextStack getContextStack();
 
