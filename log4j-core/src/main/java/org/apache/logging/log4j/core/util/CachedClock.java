@@ -28,7 +28,7 @@ import java.util.concurrent.locks.LockSupport;
  */
 public final class CachedClock implements Clock {
     private static final int UPDATE_THRESHOLD = 0x3FF;
-    private static CachedClock instance = new CachedClock();
+    private static final CachedClock instance = new CachedClock();
     private volatile long millis = System.currentTimeMillis();
     private volatile short count = 0;
 
