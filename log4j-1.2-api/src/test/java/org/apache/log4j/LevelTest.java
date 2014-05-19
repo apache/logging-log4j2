@@ -17,14 +17,12 @@
 
 package org.apache.log4j;
 
-import org.apache.log4j.util.SerializationTestHelper;
-
 import java.util.Locale;
 
+import org.apache.log4j.util.SerializationTestHelper;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 
 /**

@@ -16,12 +16,12 @@
  */
 package org.apache.log4j;
 
+import java.io.StringWriter;
+
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.junit.Test;
-
-import java.io.StringWriter;
 
 /**
  *
