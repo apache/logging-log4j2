@@ -83,6 +83,18 @@ public final class ThreadContext  {
         }
 
         @Override
+        public boolean equals(Object o) {
+            // Similar to java.util.Collections.EmptyList.equals(Object)
+            return (o instanceof Collection) && ((Collection<?>) o).isEmpty();
+        }
+
+        @Override
+        public int hashCode() {
+            // Same as java.util.Collections.EmptyList.hashCode()
+            return 1;
+        }
+        
+        @Override
         public ContextStack copy() {
             return this;
         }
