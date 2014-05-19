@@ -23,7 +23,7 @@ import java.util.concurrent.locks.LockSupport;
  * the cost of some accuracy.
  */
 public final class CoarseCachedClock implements Clock {
-    private static CoarseCachedClock instance = new CoarseCachedClock();
+    private static final CoarseCachedClock instance = new CoarseCachedClock();
     private volatile long millis = System.currentTimeMillis();
 
     private final Thread updater = new Thread("Clock Updater Thread") {
