@@ -169,7 +169,7 @@ public class Log4jLogEvent implements LogEvent {
         this.message = message;
         this.thrownProxy = thrownProxy;
         this.contextMap = contextMap == null ? ThreadContext.EMPTY_MAP : contextMap;
-        this.contextStack = contextStack;
+        this.contextStack = contextStack == null ? ThreadContext.EMPTY_STACK : contextStack;
         this.timeMillis = message instanceof TimestampMessage ? ((TimestampMessage) message).getTimestamp() : timestamp;
         this.threadName = threadName;
         this.source = source;
@@ -296,7 +296,7 @@ public class Log4jLogEvent implements LogEvent {
      */
     @Override
     public ThreadContext.ContextStack getContextStack() {
-        return contextStack == null ? ThreadContext.EMPTY_STACK : contextStack;
+        return contextStack;
     }
 
     /**
