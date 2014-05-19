@@ -23,6 +23,9 @@ import org.apache.logging.log4j.util.Strings;
  */
 public final class Integers {
 
+    private Integers() {
+    }
+
     /**
      * Parses the string argument as a signed decimal integer.
      *

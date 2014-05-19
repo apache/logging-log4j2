@@ -28,6 +28,9 @@ import java.sql.Statement;
  */
 public final class Closer {
 
+    private Closer() {
+    }
+
     /**
      * Closes the specified {@code Closeable} (stream or reader/writer),
      * ignoring any exceptions thrown by the close operation.
