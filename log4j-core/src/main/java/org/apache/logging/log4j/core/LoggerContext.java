@@ -141,11 +141,11 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     public void start() {
         if (configLock.tryLock()) {
             try {
-                if (state == LifeCycleState.INITIALIZED || state == LifeCycleState.STOPPED) {
-                    state = LifeCycleState.STARTING;
+                if (state == LifeCycle.State.INITIALIZED || state == LifeCycle.State.STOPPED) {
+                    state = LifeCycle.State.STARTING;
                     reconfigure();
                     setUpShutdownHook();
-                    state = LifeCycleState.STARTED;
+                    state = LifeCycle.State.STARTED;
                 }
             } finally {
                 configLock.unlock();
@@ -160,9 +160,9 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     public void start(final Configuration config) {
         if (configLock.tryLock()) {
             try {
-                if (state == LifeCycleState.INITIALIZED || state == LifeCycleState.STOPPED) {
+                if (state == LifeCycle.State.INITIALIZED || state == LifeCycle.State.STOPPED) {
                     setUpShutdownHook();
-                    state = LifeCycleState.STARTED;
+                    state = LifeCycle.State.STARTED;
                 }
             } finally {
                 configLock.unlock();
@@ -202,10 +202,10 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     public void stop() {
         configLock.lock();
         try {
-            if (state == LifeCycleState.STOPPED) {
+            if (state == LifeCycle.State.STOPPED) {
                 return;
             }
-            state = LifeCycleState.STOPPING;
+            state = LifeCycle.State.STOPPING;
             tearDownShutdownHook();
             final Configuration prev = config;
             config = NULL_CONFIGURATION;
@@ -213,7 +213,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
             prev.stop();
             externalContext = null;
             LogManager.getFactory().removeContext(this);
-            state = LifeCycleState.STOPPED;
+            state = LifeCycle.State.STOPPED;
         } finally {
             configLock.unlock();
 
