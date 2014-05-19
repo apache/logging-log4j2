@@ -21,6 +21,23 @@ package org.apache.logging.log4j.core;
  *
  */
 public interface LifeCycle {
+    
+    /**
+     * Status of a life cycle like a {@link LoggerContext}..
+     */
+    public enum State {
+        /** Initialized but not yet started. */
+        INITIALIZED,
+        /** In the process of starting. */
+        STARTING,
+        /** Is active. */
+        STARTED,
+        /** Stopping is in progress. */
+        STOPPING,
+        /** Has stopped. */
+        STOPPED
+    }
+    
     void start();
 
     void stop();

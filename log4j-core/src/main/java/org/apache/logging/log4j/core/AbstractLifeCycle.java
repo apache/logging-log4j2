@@ -21,30 +21,30 @@ package org.apache.logging.log4j.core;
  */
 public class AbstractLifeCycle implements LifeCycle {
 
-    protected volatile LifeCycleState state = LifeCycleState.INITIALIZED;
+    protected volatile LifeCycle.State state = LifeCycle.State.INITIALIZED;
 
-    public LifeCycleState getState() {
+    public LifeCycle.State getState() {
         return this.state;
     }
     
     @Override
     public void start() {
-        this.state = LifeCycleState.STARTED;
+        this.state = LifeCycle.State.STARTED;
     }
 
     @Override
     public void stop() {
-        this.state = LifeCycleState.STOPPED;
+        this.state = LifeCycle.State.STOPPED;
     }
 
     @Override
     public boolean isStarted() {
-        return this.state == LifeCycleState.STARTED;
+        return this.state == LifeCycle.State.STARTED;
     }
 
     @Override
     public boolean isStopped() {
-        return this.state == LifeCycleState.STOPPED;
+        return this.state == LifeCycle.State.STOPPED;
     }
 
 }

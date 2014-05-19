@@ -18,8 +18,8 @@ package org.apache.logging.log4j.core.impl;
 
 import java.net.URI;
 
+import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.LifeCycleState;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
@@ -70,7 +70,7 @@ public class Log4jContextFactory implements LoggerContextFactory {
                                     final boolean currentContext) {
         final LoggerContext ctx = selector.getContext(fqcn, loader, currentContext);
         ctx.setExternalContext(externalContext);
-        if (ctx.getState() == LifeCycleState.INITIALIZED) {
+        if (ctx.getState() == LifeCycle.State.INITIALIZED) {
             ctx.start();
         }
         return ctx;
@@ -92,7 +92,7 @@ public class Log4jContextFactory implements LoggerContextFactory {
         if (externalContext != null && ctx.getExternalContext() == null) {
             ctx.setExternalContext(externalContext);
         }
-        if (ctx.getState() == LifeCycleState.INITIALIZED) {
+        if (ctx.getState() == LifeCycle.State.INITIALIZED) {
             if (source != null) {
                 ContextAnchor.THREAD_CONTEXT.set(ctx);
                 final Configuration config = ConfigurationFactory.getInstance().getConfiguration(source);
@@ -122,7 +122,7 @@ public class Log4jContextFactory implements LoggerContextFactory {
         if (externalContext != null && ctx.getExternalContext() == null) {
             ctx.setExternalContext(externalContext);
         }
-        if (ctx.getState() == LifeCycleState.INITIALIZED) {
+        if (ctx.getState() == LifeCycle.State.INITIALIZED) {
             if (configLocation != null || name != null) {
                 ContextAnchor.THREAD_CONTEXT.set(ctx);
                 final Configuration config = ConfigurationFactory.getInstance().getConfiguration(name, configLocation);
