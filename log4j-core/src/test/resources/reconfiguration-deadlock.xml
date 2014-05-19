@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="error" monitorInterval="5">
+  <Appenders>
+    <UsesLoggingAppender name="myAppender">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+    </UsesLoggingAppender>
+    <Console name="STDOUT">
+      <PatternLayout pattern="%m%n"/>
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Logger name="Dump" level="trace" additivity="false">
+      <AppenderRef ref="STDOUT" />
+    </Logger>
+    <Root level="ERROR">
+      <AppenderRef ref="myAppender" />
+    </Root>
+  </Loggers>
+</Configuration>

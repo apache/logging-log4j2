@@ -81,6 +81,7 @@ public class FileConfigTest {
         for (int i = 0; i < 17; ++i) {
             logger.debug("Reconfigure");
         }
+        Thread.sleep(100);
         final Configuration cfg = ctx.getConfiguration();
         assertNotNull("No configuration", cfg);
         assertTrue("Reconfiguration failed", cfg != config);

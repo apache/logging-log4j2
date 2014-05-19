@@ -235,6 +235,7 @@ public class TestConfigurator {
         for (int i = 0; i < 17; ++i) {
             logger.debug("Test message " + i);
         }
+        Thread.sleep(100);
         final Configuration newConfig = ctx.getConfiguration();
         assertTrue("Configuration not reset", newConfig != config);
         Configurator.shutdown(ctx);
