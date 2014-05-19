@@ -669,6 +669,11 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>${surefire.plugin.version}</version>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>${surefire.plugin.version}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
