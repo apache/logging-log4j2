@@ -53,7 +53,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * appenders, filters, etc and will be atomically updated whenever a reconfigure
  * occurs.
  */
-public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext, ConfigurationListener, LifeCycle {
+public class LoggerContext extends AbstractLifeCycle implements org.apache.logging.log4j.spi.LoggerContext, ConfigurationListener {
 
     private static final boolean SHUTDOWN_HOOK_ENABLED =
         PropertiesUtil.getProperties().getBooleanProperty("log4j.shutdownHookEnabled", true);
@@ -81,24 +81,6 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      * SoftReference here to prevent possible cyclic memory references.
      */
     private Reference<Thread> shutdownThread;
-
-    /**
-     * Status of the LoggerContext.
-     */
-    public enum Status {
-        /** Initialized but not yet started. */
-        INITIALIZED,
-        /** In the process of starting. */
-        STARTING,
-        /** Is active. */
-        STARTED,
-        /** Shutdown is in progress. */
-        STOPPING,
-        /** Has shutdown. */
-        STOPPED
-    }
-
-    private volatile Status status = Status.INITIALIZED;
 
     private final Lock configLock = new ReentrantLock();
 
@@ -159,11 +141,11 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     public void start() {
         if (configLock.tryLock()) {
             try {
-                if (status == Status.INITIALIZED || status == Status.STOPPED) {
-                    status = Status.STARTING;
+                if (state == LifeCycleState.INITIALIZED || state == LifeCycleState.STOPPED) {
+                    state = LifeCycleState.STARTING;
                     reconfigure();
                     setUpShutdownHook();
-                    status = Status.STARTED;
+                    state = LifeCycleState.STARTED;
                 }
             } finally {
                 configLock.unlock();
@@ -178,9 +160,9 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     public void start(final Configuration config) {
         if (configLock.tryLock()) {
             try {
-                if (status == Status.INITIALIZED || status == Status.STOPPED) {
+                if (state == LifeCycleState.INITIALIZED || state == LifeCycleState.STOPPED) {
                     setUpShutdownHook();
-                    status = Status.STARTED;
+                    state = LifeCycleState.STARTED;
                 }
             } finally {
                 configLock.unlock();
@@ -220,10 +202,10 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     public void stop() {
         configLock.lock();
         try {
-            if (status == Status.STOPPED) {
+            if (state == LifeCycleState.STOPPED) {
                 return;
             }
-            status = Status.STOPPING;
+            state = LifeCycleState.STOPPING;
             tearDownShutdownHook();
             final Configuration prev = config;
             config = NULL_CONFIGURATION;
@@ -231,7 +213,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
             prev.stop();
             externalContext = null;
             LogManager.getFactory().removeContext(this);
-            status = Status.STOPPED;
+            state = LifeCycleState.STOPPED;
         } finally {
             configLock.unlock();
 
@@ -254,15 +236,6 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      */
     public String getName() {
         return name;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    @Override
-    public boolean isStarted() {
-        return status == Status.STARTED;
     }
 
     /**

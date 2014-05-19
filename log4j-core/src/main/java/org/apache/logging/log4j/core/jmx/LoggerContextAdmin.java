@@ -94,7 +94,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
 
     @Override
     public String getStatus() {
-        return loggerContext.getStatus().toString();
+        return loggerContext.getState().toString();
     }
 
     @Override

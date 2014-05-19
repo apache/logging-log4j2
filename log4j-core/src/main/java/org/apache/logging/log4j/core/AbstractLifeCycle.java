@@ -14,18 +14,37 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core;
 
 /**
- *
+ * A life cycle to be extended.
  */
-public interface LifeCycle {
-    void start();
+public class AbstractLifeCycle implements LifeCycle {
 
-    void stop();
+    protected volatile LifeCycleState state = LifeCycleState.INITIALIZED;
 
-    boolean isStarted();
+    public LifeCycleState getState() {
+        return this.state;
+    }
+    
+    @Override
+    public void start() {
+        this.state = LifeCycleState.STARTED;
+    }
 
-    boolean isStopped();
+    @Override
+    public void stop() {
+        this.state = LifeCycleState.STOPPED;
+    }
+
+    @Override
+    public boolean isStarted() {
+        return this.state == LifeCycleState.STARTED;
+    }
+
+    @Override
+    public boolean isStopped() {
+        return this.state == LifeCycleState.STOPPED;
+    }
+
 }

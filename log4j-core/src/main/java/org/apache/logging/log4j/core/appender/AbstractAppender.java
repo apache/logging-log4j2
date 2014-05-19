@@ -155,6 +155,14 @@ public abstract class AbstractAppender extends AbstractFilterable
     }
 
     /**
+     * Returns true if the Appender is started, false otherwise.
+     * @return true if the Appender is started, false otherwise.
+     */
+    public boolean isStopped() {
+        return !started;
+    }
+
+    /**
      * The handler must be set before the appender is started.
      * @param handler The ErrorHandler to use.
      */
