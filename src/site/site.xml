@@ -22,6 +22,8 @@
       <item name="Download" href="/download.html"/>
       <item name="Maven and Ivy" href="/maven-artifacts.html"/>
       <item name="Build" href="/build.html"/>
+      <item name="Guidelines" href="/guidelines.html"/>
+      <item name="Style Guide" href="/javastyle.html"/>
       <item name="Changelog" href="/changelog.html"/>
       <item name="Javadoc" href="/javadoc.html" collapse="true">
         <item name="Log4j 2 API" href="/log4j-api/apidocs/index.html" />
