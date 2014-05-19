@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.message;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.Serializable;
 import java.util.Locale;
 
 import org.apache.commons.lang3.SerializationUtils;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests LocalizedMessage.
