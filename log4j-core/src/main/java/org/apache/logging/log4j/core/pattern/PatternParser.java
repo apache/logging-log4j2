@@ -522,9 +522,8 @@ public final class PatternParser {
                 currentLiteral.delete(0, currentLiteral.length() - (converterId.length() - converterName.length()));
 
                 return (PatternConverter) newObj;
-            } else {
-                LOGGER.warn("Class " + converterClass.getName() + " does not extend PatternConverter.");
             }
+            LOGGER.warn("Class " + converterClass.getName() + " does not extend PatternConverter.");
         } catch (final Exception ex) {
             LOGGER.error("Error creating converter for " + converterId, ex);
         }
