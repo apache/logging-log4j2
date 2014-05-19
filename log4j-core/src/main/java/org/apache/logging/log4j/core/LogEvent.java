@@ -32,16 +32,16 @@ import org.apache.logging.log4j.message.Message;
 public interface LogEvent extends Serializable {
 
     /**
-     * Gets the context map (also know as MDC).
+     * Gets the context map (also know as Mapped Diagnostic Context or MDC).
      * 
-     * @return A copy of the Mapped Diagnostic Context, never {@code null}.
+     * @return The context map, never {@code null}.
      */
     Map<String, String> getContextMap();
 
     /**
-     * Gets the context stack (also known as NDC).
+     * Gets the context stack (also known as Nested Diagnostic Context or NDC).
      * 
-     * @return A copy of the Nested Diagnostic Context or null;
+     * @return The context stack or null;
      */
     ThreadContext.ContextStack getContextStack();
 
