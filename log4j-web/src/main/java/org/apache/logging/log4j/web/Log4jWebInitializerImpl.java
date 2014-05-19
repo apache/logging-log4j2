@@ -25,6 +25,7 @@ import javax.servlet.UnavailableException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.LifeCycleState;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
@@ -115,7 +116,7 @@ final class Log4jWebInitializerImpl implements Log4jWebInitializer {
                 this.selector = (NamedContextSelector) selector;
                 loggerContext = this.selector.locateContext(this.name, this.servletContext, configLocation);
                 ContextAnchor.THREAD_CONTEXT.set(loggerContext);
-                if (loggerContext.getStatus() == LoggerContext.Status.INITIALIZED) {
+                if (loggerContext.getState() == LifeCycleState.INITIALIZED) {
                     loggerContext.start();
                 }
                 ContextAnchor.THREAD_CONTEXT.remove();

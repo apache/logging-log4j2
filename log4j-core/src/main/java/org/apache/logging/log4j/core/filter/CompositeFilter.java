@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
@@ -37,12 +38,10 @@ import org.apache.logging.log4j.message.Message;
  * Composes and invokes one or more filters.
  */
 @Plugin(name = "filters", category = "Core", printObject = true)
-public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycle {
+public final class CompositeFilter extends AbstractLifeCycle implements Iterable<Filter>, Filter, LifeCycle {
 
     private final List<Filter> filters;
     private final boolean hasFilters;
-
-    private boolean isStarted;
 
     private CompositeFilter() {
         this.filters = new ArrayList<Filter>();
@@ -95,7 +94,7 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycl
                 ((LifeCycle) filter).start();
             }
         }
-        isStarted = true;
+        super.start();
     }
 
     @Override
@@ -105,12 +104,7 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycl
                 ((LifeCycle) filter).stop();
             }
         }
-        isStarted = false;
-    }
-
-    @Override
-    public boolean isStarted() {
-        return isStarted;
+        super.stop();
     }
 
     /**
