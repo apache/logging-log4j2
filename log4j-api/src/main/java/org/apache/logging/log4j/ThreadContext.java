@@ -18,9 +18,10 @@
 package org.apache.logging.log4j;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +29,6 @@ import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.DefaultThreadContextStack;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
-import org.apache.logging.log4j.spi.MutableThreadContextStack;
 import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextStack;
@@ -46,6 +46,90 @@ import org.apache.logging.log4j.util.ProviderUtil;
 public final class ThreadContext  {
 
     /**
+     * An empty read-only ThreadContextStack.
+     */
+    private static class EmptyThreadContextStack extends AbstractCollection<String> implements ThreadContextStack {
+
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public String pop() {
+            return null;
+        }
+
+        @Override
+        public String peek() {
+            return null;
+        }
+
+        @Override
+        public void push(String message) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public int getDepth() {
+            return 0;
+        }
+
+        @Override
+        public List<String> asList() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public void trim(int depth) {
+            // Do nothing
+        }
+
+        @Override
+        public ContextStack copy() {
+            return this;
+        }
+
+        @Override
+        public <T> T[] toArray(T[] a) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean add(String e) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean containsAll(Collection<?> c) {
+            return false;
+        }
+
+        @Override
+        public boolean addAll(Collection<? extends String> c) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean removeAll(Collection<?> c) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean retainAll(Collection<?> c) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Iterator<String> iterator() {
+            return Collections.emptyIterator();
+        }
+
+        @Override
+        public int size() {
+            return 0;
+        }
+
+    }
+
+    /**
      * Empty, immutable Map.
      */
     public static final Map<String, String> EMPTY_MAP = Collections.emptyMap();
@@ -53,7 +137,7 @@ public final class ThreadContext  {
     /**
      * Empty, immutable ContextStack.
      */
-    public static final ThreadContextStack EMPTY_STACK = new MutableThreadContextStack(new ArrayList<String>());
+    public static final ThreadContextStack EMPTY_STACK = new EmptyThreadContextStack();
 
     private static final String DISABLE_MAP = "disableThreadContextMap";
     private static final String DISABLE_STACK = "disableThreadContextStack";
