@@ -1,9 +1,9 @@
 #Organize Import Order
-#Sun May 18 17:18:10 EDT 2014
-6=com
-5=org
-4=javax
-3=java
-2=\#org.junit.Assert
-1=\#org.hamcrest.CoreMatchers
-0=\#org.easymock.EasyMock
+#Sun May 18 22:45:33 EDT 2014
+6=\#org.junit.Assert
+5=\#org.hamcrest.CoreMatchers
+4=\#org.easymock.EasyMock
+3=com
+2=org
+1=javax
+0=java
