@@ -21,6 +21,9 @@ package org.apache.logging.log4j.core.util;
  */
 public final class Booleans {
 
+    private Booleans() {
+    }
+
     /**
      * Returns {@code true} if {@code s} is {@code "true"} (case-insensitive), {@code false} if {@code s} is
      * {@code "false"} (case-insensitive), and {@code defaultValue} if {@code s} is anything else (including null or
