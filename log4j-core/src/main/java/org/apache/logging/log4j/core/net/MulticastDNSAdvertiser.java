@@ -221,9 +221,8 @@ public class MulticastDNSAdvertiser implements Advertiser {
 
             if (isVersion3) {
                 return createJmDNSVersion3();
-            } else {
-                return createJmDNSVersion1();
             }
+            return createJmDNSVersion1();
         } catch (final ClassNotFoundException e) {
             LOGGER.warn("JmDNS or serviceInfo class not found", e);
         } catch (final ExceptionInInitializerError e2) {
