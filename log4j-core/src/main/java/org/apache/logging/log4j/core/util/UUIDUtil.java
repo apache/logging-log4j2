@@ -115,41 +115,38 @@ public final class UUIDUtil {
         System.arraycopy(mac, index, node, index + 2, length);
         final ByteBuffer buf = ByteBuffer.wrap(node);
         long rand = uuidSequence;
-        final Runtime runtime = Runtime.getRuntime();
-        synchronized (runtime) {
-            String assigned = PropertiesUtil.getProperties().getStringProperty(ASSIGNED_SEQUENCES);
-            long[] sequences;
-            if (assigned == null) {
-                sequences = new long[0];
-            } else {
-                final String[] array = assigned.split(Patterns.COMMA_SEPARATOR);
-                sequences = new long[array.length];
-                int i = 0;
-                for (final String value : array) {
-                    sequences[i] = Long.parseLong(value);
-                    ++i;
-                }
+        String assigned = PropertiesUtil.getProperties().getStringProperty(ASSIGNED_SEQUENCES);
+        long[] sequences;
+        if (assigned == null) {
+            sequences = new long[0];
+        } else {
+            final String[] array = assigned.split(Patterns.COMMA_SEPARATOR);
+            sequences = new long[array.length];
+            int i = 0;
+            for (final String value : array) {
+                sequences[i] = Long.parseLong(value);
+                ++i;
             }
-            if (rand == 0) {
-                rand = randomGenerator.nextLong();
-            }
-            rand &= SEQUENCE_MASK;
-            boolean duplicate;
-            do {
-                duplicate = false;
-                for (final long sequence : sequences) {
-                    if (sequence == rand) {
-                        duplicate = true;
-                        break;
-                    }
-                }
-                if (duplicate) {
-                    rand = (rand + 1) & SEQUENCE_MASK;
-                }
-            } while (duplicate);
-            assigned = assigned == null ? Long.toString(rand) : assigned + ',' + Long.toString(rand);
-            System.setProperty(ASSIGNED_SEQUENCES, assigned);
         }
+        if (rand == 0) {
+            rand = randomGenerator.nextLong();
+        }
+        rand &= SEQUENCE_MASK;
+        boolean duplicate;
+        do {
+            duplicate = false;
+            for (final long sequence : sequences) {
+                if (sequence == rand) {
+                    duplicate = true;
+                    break;
+                }
+            }
+            if (duplicate) {
+                rand = (rand + 1) & SEQUENCE_MASK;
+            }
+        } while (duplicate);
+        assigned = assigned == null ? Long.toString(rand) : assigned + ',' + Long.toString(rand);
+        System.setProperty(ASSIGNED_SEQUENCES, assigned);
 
         least = buf.getLong() | rand << SHIFT_6;
     }
