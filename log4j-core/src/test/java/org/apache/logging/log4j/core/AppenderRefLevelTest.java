@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core;
 
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
@@ -48,9 +47,9 @@ public class AppenderRefLevelTest {
         app2 = (ListAppender) context.getAppender("LIST2");
     }
 
-    org.apache.logging.log4j.Logger logger1 = LogManager.getLogger("org.apache.logging.log4j.test1");
-    org.apache.logging.log4j.Logger logger2 = LogManager.getLogger("org.apache.logging.log4j.test2");
-    org.apache.logging.log4j.Logger logger3 = LogManager.getLogger("org.apache.logging.log4j.test3");
+    org.apache.logging.log4j.Logger logger1 = context.getLogger("org.apache.logging.log4j.test1");
+    org.apache.logging.log4j.Logger logger2 = context.getLogger("org.apache.logging.log4j.test2");
+    org.apache.logging.log4j.Logger logger3 = context.getLogger("org.apache.logging.log4j.test3");
     Marker testMarker = MarkerManager.getMarker("TEST");
 
     @Before
