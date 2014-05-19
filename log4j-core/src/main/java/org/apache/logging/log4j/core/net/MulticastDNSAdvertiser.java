@@ -109,11 +109,8 @@ public class MulticastDNSAdvertiser implements Advertiser {
             }
             return serviceInfo;
         }
-        else
-        {
-            LOGGER.warn("JMDNS not available - will not advertise ZeroConf support");
-            return null;
-        }
+        LOGGER.warn("JMDNS not available - will not advertise ZeroConf support");
+        return null;
     }
 
     /**
