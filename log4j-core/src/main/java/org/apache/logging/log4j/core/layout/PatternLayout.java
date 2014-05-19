@@ -143,9 +143,8 @@ public final class PatternLayout extends AbstractStringLayout {
         byte [] header = super.getHeader();
         if (header != null) {
             return config.getStrSubstitutor().replace(new String(header, getCharset())).getBytes(getCharset());
-        } else {
-            return header;
         }
+        return header;
     }
 
     @Override
@@ -153,9 +152,8 @@ public final class PatternLayout extends AbstractStringLayout {
         byte [] footer = super.getFooter();
         if (footer != null) {
             return config.getStrSubstitutor().replace(new String(footer, getCharset())).getBytes(getCharset());
-        } else {
-            return footer;
         }
+        return footer;
     }
 
     /**
