@@ -46,7 +46,7 @@ public interface LogEvent extends Serializable {
     ThreadContext.ContextStack getContextStack();
 
     /**
-     * Returns the fully qualified class name of the caller of the logging api.
+     * Returns the fully qualified class name of the caller of the logging API.
      * 
      * @return The fully qualified class name of the caller.
      */
