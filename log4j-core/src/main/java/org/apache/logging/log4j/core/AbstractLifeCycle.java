@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core;
 
+import org.apache.logging.log4j.status.StatusLogger;
+
 /**
  * A life cycle to be extended.
  * <p>
@@ -24,6 +26,8 @@ package org.apache.logging.log4j.core;
  */
 public class AbstractLifeCycle implements LifeCycle {
 
+    protected static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
+    
     private volatile LifeCycle.State state = LifeCycle.State.INITIALIZED;
 
     public LifeCycle.State getState() {
