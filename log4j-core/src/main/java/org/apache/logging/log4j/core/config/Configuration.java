@@ -30,7 +30,7 @@ import org.apache.logging.log4j.core.net.Advertiser;
 /**
  * Interface that must be implemented to create a configuration.
  */
-public interface Configuration extends Filterable, LifeCycle {
+public interface Configuration extends Filterable {
 
     /** Key for storing the Context properties. */
     String CONTEXT_PROPERTIES = "ContextProperties";
