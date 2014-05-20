@@ -17,12 +17,17 @@
 package org.apache.logging.log4j.core.filter;
 
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 
 /**
  * Interface implemented by Classes that allow filtering to occur.
+ * 
+ * <p>
+ * Extends {@link LifeCycle} since filters have a life cycle.
+ * </p>
  */
-public interface Filterable {
+public interface Filterable extends LifeCycle {
 
     /**
      * Adds a new Filter. If a Filter already exists it is converted to a CompositeFilter.

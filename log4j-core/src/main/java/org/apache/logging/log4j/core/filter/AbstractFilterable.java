@@ -21,7 +21,6 @@ import java.util.Iterator;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -32,6 +31,9 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
 
     protected static final Logger LOGGER = StatusLogger.getLogger();
 
+    /**
+     * May be null.
+     */
     private volatile Filter filter;
 
     protected AbstractFilterable(final Filter filter) {
@@ -43,7 +45,7 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
 
     /**
      * Returns the Filter.
-     * @return the Filter.
+     * @return the Filter or null.
      */
     @Override
     public Filter getFilter() {
@@ -51,7 +53,7 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
     }
 
     /**
-     * Add a filter.
+     * Adds a filter.
      * @param filter The Filter to add.
      */
     @Override
@@ -67,7 +69,7 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
     }
 
     /**
-     * Remove a Filter.
+     * Removes a Filter.
      * @param filter The Filter to remove.
      */
     @Override
@@ -101,8 +103,8 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
      * Make the Filter available for use.
      */
     public void startFilter() {
-       if (filter instanceof LifeCycle) {
-           ((LifeCycle) filter).start();
+       if (filter != null) {
+           filter.start();
        }
     }
 
@@ -110,8 +112,8 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
      * Cleanup the Filter.
      */
     public void stopFilter() {
-       if (filter instanceof LifeCycle) {
-           ((LifeCycle) filter).stop();
+       if (filter != null) {
+           filter.stop();
        }
     }
 
