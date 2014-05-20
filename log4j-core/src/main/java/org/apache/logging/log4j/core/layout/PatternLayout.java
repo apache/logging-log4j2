@@ -142,7 +142,8 @@ public final class PatternLayout extends AbstractStringLayout {
     public byte[] getHeader() {
         byte [] myHeader = super.getHeader();
         if (myHeader != null) {
-            return config.getStrSubstitutor().replace(new String(myHeader, getCharset())).getBytes(getCharset());
+            final Charset cs = getCharset();
+            return config.getStrSubstitutor().replace(new String(myHeader, cs)).getBytes(cs);
         }
         return myHeader;
     }
@@ -151,7 +152,8 @@ public final class PatternLayout extends AbstractStringLayout {
     public byte[] getFooter() {
         byte [] myFooter = super.getFooter();
         if (myFooter != null) {
-            return config.getStrSubstitutor().replace(new String(myFooter, getCharset())).getBytes(getCharset());
+            final Charset cs = getCharset();
+            return config.getStrSubstitutor().replace(new String(myFooter, cs)).getBytes(cs);
         }
         return myFooter;
     }
