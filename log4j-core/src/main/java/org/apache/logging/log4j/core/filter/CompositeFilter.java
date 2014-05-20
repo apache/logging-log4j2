@@ -38,7 +38,7 @@ import org.apache.logging.log4j.message.Message;
  * Composes and invokes one or more filters.
  */
 @Plugin(name = "filters", category = "Core", printObject = true)
-public final class CompositeFilter extends AbstractLifeCycle implements Iterable<Filter>, Filter, LifeCycle {
+public final class CompositeFilter extends AbstractLifeCycle implements Iterable<Filter>, Filter {
 
     private final List<Filter> filters;
     private final boolean hasFilters;

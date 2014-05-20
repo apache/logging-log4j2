@@ -18,23 +18,20 @@ package org.apache.logging.log4j.core;
 
 /**
  * A life cycle to be extended.
+ * <p>
+ * Wraps a {@link LifeCycle.State}.
+ * </p>
  */
 public class AbstractLifeCycle implements LifeCycle {
 
-    protected volatile LifeCycle.State state = LifeCycle.State.INITIALIZED;
+    private volatile LifeCycle.State state = LifeCycle.State.INITIALIZED;
 
     public LifeCycle.State getState() {
         return this.state;
     }
-    
-    @Override
-    public void start() {
-        this.state = LifeCycle.State.STARTED;
-    }
 
-    @Override
-    public void stop() {
-        this.state = LifeCycle.State.STOPPED;
+    public boolean isInitialized() {
+        return this.state == LifeCycle.State.INITIALIZED;
     }
 
     @Override
@@ -42,9 +39,47 @@ public class AbstractLifeCycle implements LifeCycle {
         return this.state == LifeCycle.State.STARTED;
     }
 
+    public boolean isStarting() {
+        return this.state == LifeCycle.State.STARTING;
+    }
+
     @Override
     public boolean isStopped() {
         return this.state == LifeCycle.State.STOPPED;
+    }
+
+    public boolean isStopping() {
+        return this.state == LifeCycle.State.STOPPING;
+    }
+
+    protected void setStarted() {
+        this.setState(LifeCycle.State.STARTED);
+    }
+
+    protected void setStarting() {
+        this.setState(LifeCycle.State.STARTING);
+    }
+
+    protected void setState(final LifeCycle.State newState) {
+        this.state = newState;
+    }
+
+    protected void setStopped() {
+        this.setState(LifeCycle.State.STOPPED);
+    }
+
+    protected void setStopping() {
+        this.setState(LifeCycle.State.STOPPING);
+    }
+
+    @Override
+    public void start() {
+        this.setStarted();
+    }
+
+    @Override
+    public void stop() {
+        this.state = LifeCycle.State.STOPPED;
     }
 
 }

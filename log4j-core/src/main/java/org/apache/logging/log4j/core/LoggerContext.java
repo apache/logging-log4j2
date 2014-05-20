@@ -141,11 +141,11 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     public void start() {
         if (configLock.tryLock()) {
             try {
-                if (state == LifeCycle.State.INITIALIZED || state == LifeCycle.State.STOPPED) {
-                    state = LifeCycle.State.STARTING;
+                if (this.isInitialized() || this.isStopped()) {
+                    this.setStarting();
                     reconfigure();
                     setUpShutdownHook();
-                    state = LifeCycle.State.STARTED;
+                    this.setStarted();
                 }
             } finally {
                 configLock.unlock();
@@ -160,9 +160,9 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     public void start(final Configuration config) {
         if (configLock.tryLock()) {
             try {
-                if (state == LifeCycle.State.INITIALIZED || state == LifeCycle.State.STOPPED) {
+                if (this.isInitialized() || this.isStopped()) {
                     setUpShutdownHook();
-                    state = LifeCycle.State.STARTED;
+                    this.setStarted();
                 }
             } finally {
                 configLock.unlock();
@@ -202,10 +202,10 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     public void stop() {
         configLock.lock();
         try {
-            if (state == LifeCycle.State.STOPPED) {
+            if (this.isStopped()) {
                 return;
             }
-            state = LifeCycle.State.STOPPING;
+            this.setStopping();
             tearDownShutdownHook();
             final Configuration prev = config;
             config = NULL_CONFIGURATION;
@@ -213,7 +213,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
             prev.stop();
             externalContext = null;
             LogManager.getFactory().removeContext(this);
-            state = LifeCycle.State.STOPPED;
+            this.setStopped();
         } finally {
             configLock.unlock();
 
