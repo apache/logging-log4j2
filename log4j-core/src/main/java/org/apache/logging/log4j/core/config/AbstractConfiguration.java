@@ -136,6 +136,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     @Override
     public void start() {
+        this.setStarting();
         pluginManager.collectPlugins();
         final PluginManager levelPlugins = new PluginManager("Level");
         levelPlugins.collectPlugins();
@@ -155,13 +156,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         setupAdvertisement();
         doConfigure();
         for (final LoggerConfig logger : loggers.values()) {
-            logger.startFilter();
+            logger.start();
         }
         for (final Appender appender : appenders.values()) {
             appender.start();
         }
-        root.startFilter(); // LOG4J2-336
-        startFilter();
+        root.start(); // LOG4J2-336
+        super.start();
     }
 
     /**
@@ -169,6 +170,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     @Override
     public void stop() {
+        this.setStopping();
         LOGGER.trace("AbstractConfiguration stopping...");
         
         // LOG4J2-392 first stop AsyncLogger Disruptor thread
@@ -194,12 +196,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 // have been stopped! Stopping the last AsyncLoggerConfig will
                 // shut down the disruptor and wait for all enqueued events to be processed.
                 // Only *after this* the appenders can be cleared or events will be lost.
-                logger.stopFilter();
+                logger.stop();
                 asyncLoggerConfigCount++;
             }
         }
         if (root instanceof AsyncLoggerConfig) {
-            root.stopFilter();
+            root.stop();
             asyncLoggerConfigCount++;
         }
         LOGGER.trace("AbstractConfiguration stopped {} AsyncLoggerConfigs.", asyncLoggerConfigCount);
@@ -230,14 +232,14 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         for (final LoggerConfig logger : loggers.values()) {
             // AsyncLoggerConfig objects may be stopped multiple times, that's okay...
             logger.clearAppenders();
-            logger.stopFilter();
+            logger.stop();
             loggerCount++;
         }
         LOGGER.trace("AbstractConfiguration stopped {} Loggers.", loggerCount);
 
         // If root is an AsyncLoggerConfig it may already be stopped. Stopping it twice is okay.
-        root.stopFilter();
-        stopFilter();
+        root.stop();
+        super.stop();
         if (advertiser != null && advertisement != null) {
             advertiser.unadvertise(advertisement);
         }

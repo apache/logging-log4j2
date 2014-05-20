@@ -102,19 +102,25 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
     /**
      * Make the Filter available for use.
      */
-    public void startFilter() {
-       if (filter != null) {
-           filter.start();
-       }
+    @Override
+    public void start() {
+        this.setStarting();
+        if (filter != null) {
+            filter.start();
+        }
+        this.setStarted();
     }
 
     /**
      * Cleanup the Filter.
      */
-    public void stopFilter() {
+    @Override
+    public void stop() {
+        this.setStopping();
        if (filter != null) {
            filter.stop();
        }
+       this.setStopped();
     }
 
     /**
