@@ -42,7 +42,7 @@ public class SyslogAppenderTestBase {
             "TestApp - Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"]" +
                     "[RequestContext@18060 ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete";
     protected LoggerContext ctx = (LoggerContext) LogManager.getContext();
-    protected static final int DEFAULT_TIMEOUT_IN_MS = 10;
+    protected static final int DEFAULT_TIMEOUT_IN_MS = 100;
     protected static final String PORT = "8199";
     protected static final int PORTNUM = Integer.parseInt(PORT);
     protected MockSyslogServer syslogServer;
