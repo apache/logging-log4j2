@@ -131,7 +131,8 @@ public final class ThreadContext  {
 
         @Override
         public Iterator<String> iterator() {
-            return Collections.emptyIterator();
+            List<String> empty = Collections.emptyList();
+            return empty.iterator();
         }
 
         @Override
