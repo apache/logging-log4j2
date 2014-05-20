@@ -16,14 +16,14 @@
  */
 package org.apache.logging.slf4j;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.logging.log4j.MarkerManager;
 import org.slf4j.IMarkerFactory;
 import org.slf4j.Marker;
 import org.slf4j.impl.StaticMarkerBinder;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  *

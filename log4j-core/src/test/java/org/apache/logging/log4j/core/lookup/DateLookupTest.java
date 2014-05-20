@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import java.util.Calendar;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-
-import java.util.Calendar;
 
 import org.apache.logging.log4j.core.AbstractLogEvent;
 import org.apache.logging.log4j.core.LogEvent;

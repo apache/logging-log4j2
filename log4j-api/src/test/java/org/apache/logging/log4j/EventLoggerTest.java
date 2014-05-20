@@ -16,14 +16,15 @@
  */
 package org.apache.logging.log4j;
 
+import java.util.List;
+import java.util.Locale;
+
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.List;
-import java.util.Locale;
+import static org.hamcrest.CoreMatchers.*;
 
-import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.*;
 
 /**

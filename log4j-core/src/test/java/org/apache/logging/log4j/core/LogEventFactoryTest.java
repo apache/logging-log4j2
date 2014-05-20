@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core;
 
+import java.util.List;
+import java.util.Map;
+
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
-import java.util.List;
-import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;

@@ -17,10 +17,6 @@
 */
 package org.apache.logging.slf4j;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Date;
 import java.util.List;
 
@@ -40,6 +36,8 @@ import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.testUtil.StringListAppender;
+
+import static org.junit.Assert.*;
 
 /**
  *

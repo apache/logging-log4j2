@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core;
 
+import java.util.Map;
+
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
-import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;

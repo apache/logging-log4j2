@@ -16,10 +16,16 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.io.Serializable;
+
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.*;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.LoggerFields;
 import org.apache.logging.log4j.core.layout.RFC5424Layout;
 import org.apache.logging.log4j.core.layout.SyslogLayout;
@@ -28,8 +34,6 @@ import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.net.TLSSocketManager;
 import org.apache.logging.log4j.core.net.ssl.SSLConfiguration;
 import org.apache.logging.log4j.core.util.Booleans;
-
-import java.io.Serializable;
 
 /**
  * Secure Syslog Appender.

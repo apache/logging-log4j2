@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa;
 
-import static org.junit.Assert.assertNull;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import static org.junit.Assert.assertNull;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.util.Strings;

@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerProvider;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  *

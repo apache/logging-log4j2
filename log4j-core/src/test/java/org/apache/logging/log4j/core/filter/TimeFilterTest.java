@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.filter;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.Calendar;
 import java.util.TimeZone;
+
+import static org.junit.Assert.assertTrue;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;

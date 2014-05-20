@@ -44,8 +44,8 @@ import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.util.CyclicBuffer;
 import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.core.util.NetUtils;
-import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Manager for sending SMTP events.

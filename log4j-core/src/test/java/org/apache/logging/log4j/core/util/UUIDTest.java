@@ -16,11 +16,10 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import static org.junit.Assert.*;
-
 import java.util.UUID;
 
-import org.apache.logging.log4j.core.util.UUIDUtil;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 /**
  *

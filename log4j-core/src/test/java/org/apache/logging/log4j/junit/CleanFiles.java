@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.junit;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.sql.Date;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static org.junit.Assert.assertTrue;
 
 import org.junit.rules.ExternalResource;
 

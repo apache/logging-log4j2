@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.junit;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -25,8 +27,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
-
-import static org.junit.Assert.*;
 
 /**
  * JUnit {@link TestRule} for constructing a new LoggerContext using a specified configuration file.

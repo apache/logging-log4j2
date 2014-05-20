@@ -19,8 +19,7 @@ package org.apache.logging.log4j;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 /**
  *

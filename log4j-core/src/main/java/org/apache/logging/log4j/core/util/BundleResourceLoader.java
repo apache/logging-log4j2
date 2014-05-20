@@ -20,6 +20,7 @@ package org.apache.logging.log4j.core.util;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
+
 import org.osgi.framework.Bundle;
 
 /**

@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.util.List;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.core.LogEvent;

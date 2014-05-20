@@ -16,11 +16,6 @@
  */
 package org.apache.logging.log4j.taglib;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
 import java.io.Writer;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +37,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.mock.web.MockBodyContent;
 import org.springframework.mock.web.MockPageContext;
+
+import static org.junit.Assert.*;
 
 /**
  *

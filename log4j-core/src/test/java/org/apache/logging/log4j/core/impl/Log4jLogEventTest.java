@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+
+import static org.junit.Assert.assertEquals;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;

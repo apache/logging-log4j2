@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
 
 import org.apache.logging.log4j.ThreadContext;
 import org.junit.AfterClass;

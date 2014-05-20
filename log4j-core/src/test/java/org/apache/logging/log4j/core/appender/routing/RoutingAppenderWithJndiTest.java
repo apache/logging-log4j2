@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.junit.InitialLoggerContext;

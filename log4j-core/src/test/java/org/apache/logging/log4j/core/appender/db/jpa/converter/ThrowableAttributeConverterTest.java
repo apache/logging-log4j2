@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
+import java.sql.SQLException;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-
-import java.sql.SQLException;
 
 import org.junit.After;
 import org.junit.Before;

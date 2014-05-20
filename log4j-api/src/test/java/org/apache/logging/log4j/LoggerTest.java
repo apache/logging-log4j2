@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -29,6 +26,10 @@ import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.*;
+
+import static org.junit.Assert.*;
 
 /**
  *

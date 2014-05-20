@@ -19,6 +19,7 @@ package org.apache.logging.log4j.osgi;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.junit.rules.ExternalResource;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.launch.Framework;

@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.PrintStream;
+
+import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.AfterClass;

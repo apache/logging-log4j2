@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.ByteArrayOutputStream;
+
+import static org.junit.Assert.assertTrue;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;

@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.samples.app;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 import org.apache.logging.log4j.samples.dto.AuditEvent;
 import org.apache.logging.log4j.samples.events.Alert;
 import org.apache.logging.log4j.samples.events.ChangePassword;
 import org.apache.logging.log4j.samples.events.Login;
 import org.apache.logging.log4j.samples.events.ScheduledTransaction;
 import org.apache.logging.log4j.samples.events.Transfer;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 public class MockEventsSupplier {
 

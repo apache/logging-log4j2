@@ -19,7 +19,7 @@ package org.apache.logging.log4j.taglib;
 import org.apache.logging.log4j.Level;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  *

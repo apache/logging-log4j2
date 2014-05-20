@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.spi;
 
-import static org.junit.Assert.*;
-
 import java.util.Map;
 
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests the {@code DefaultThreadContextMap} class.
