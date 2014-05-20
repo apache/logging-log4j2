@@ -172,6 +172,11 @@ public final class PatternLayout extends AbstractStringLayout {
         formatters = parser.parse(pattern, this.alwaysWriteExceptions, this.noConsoleNoAnsi);
     }
 
+    /**
+     * Gets the conversion pattern.
+     * 
+     * @return the conversion pattern.
+     */
     public String getConversionPattern() {
         return conversionPattern;
     }
