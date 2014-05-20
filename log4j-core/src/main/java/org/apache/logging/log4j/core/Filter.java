@@ -30,7 +30,7 @@ import org.apache.logging.log4j.util.EnglishEnums;
  * specific loggers and associated with Appenders. It is recommended that, where possible, Filter implementations
  * create a generic filtering method that can be called from any of the filter methods.
  */
-public interface Filter {
+public interface Filter extends LifeCycle {
 
     /**
      * The result that can returned from a filter method call.

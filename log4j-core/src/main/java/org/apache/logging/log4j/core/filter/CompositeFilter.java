@@ -26,7 +26,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -59,15 +58,23 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
     }
 
     public CompositeFilter addFilter(final Filter filter) {
-        final List<Filter> filters = new ArrayList<Filter>(this.filters);
-        filters.add(filter);
-        return new CompositeFilter(Collections.unmodifiableList(filters));
+        if (filter == null) {
+            // null does nothing
+            return this;
+        }
+        final List<Filter> filterList = new ArrayList<Filter>(this.filters);
+        filterList.add(filter);
+        return new CompositeFilter(Collections.unmodifiableList(filterList));
     }
 
     public CompositeFilter removeFilter(final Filter filter) {
-        final List<Filter> filters = new ArrayList<Filter>(this.filters);
-        filters.remove(filter);
-        return new CompositeFilter(Collections.unmodifiableList(filters));
+        if (filter == null) {
+            // null does nothing
+            return this;
+        }
+        final List<Filter> filterList = new ArrayList<Filter>(this.filters);
+        filterList.remove(filter);
+        return new CompositeFilter(Collections.unmodifiableList(filterList));
     }
 
     @Override
@@ -90,9 +97,7 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
     @Override
     public void start() {
         for (final Filter filter : filters) {
-            if (filter instanceof LifeCycle) {
-                ((LifeCycle) filter).start();
-            }
+            filter.start();
         }
         super.start();
     }
@@ -100,9 +105,7 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
     @Override
     public void stop() {
         for (final Filter filter : filters) {
-            if (filter instanceof LifeCycle) {
-                ((LifeCycle) filter).stop();
-            }
+            filter.stop();
         }
         super.stop();
     }
