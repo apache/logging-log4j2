@@ -59,7 +59,6 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
         PropertiesUtil.getProperties().getBooleanProperty("log4j.shutdownHookEnabled", true);
 
     public static final String PROPERTY_CONFIG = "config";
-    private static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
     private static final Marker SHUTDOWN_HOOK = MarkerManager.getMarker("SHUTDOWN HOOK");
     private static final Configuration NULL_CONFIGURATION = new NullConfiguration();
 
