@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core;
 
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -26,6 +27,9 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 public class AbstractLifeCycle implements LifeCycle {
 
+    /**
+     * Allow subclasses access to the status logger without creating another instance.
+     */
     protected static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
     
     private volatile LifeCycle.State state = LifeCycle.State.INITIALIZED;
