@@ -33,14 +33,14 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 @Plugin(name = "SerializedLayout", category = "Core", elementType = "layout", printObject = true)
 public final class SerializedLayout extends AbstractLayout<LogEvent> {
 
-    private static byte[] header;
+    private static byte[] serializedHeader;
 
     static {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             final ObjectOutputStream oos = new ObjectOutputStream(baos);
             oos.close();
-            header = baos.toByteArray();
+            serializedHeader = baos.toByteArray();
         } catch (final Exception ex) {
             LOGGER.error("Unable to generate Object stream header", ex);
         }
@@ -94,7 +94,7 @@ public final class SerializedLayout extends AbstractLayout<LogEvent> {
 
     @Override
     public byte[] getHeader() {
-        return header;
+        return serializedHeader;
     }
 
     /**
