@@ -43,7 +43,6 @@ import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLoggerProvider;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**

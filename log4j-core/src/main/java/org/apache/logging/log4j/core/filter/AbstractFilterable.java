@@ -18,11 +18,9 @@ package org.apache.logging.log4j.core.filter;
 
 import java.util.Iterator;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Enhances a Class by allowing it to contain Filters.
