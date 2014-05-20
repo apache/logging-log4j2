@@ -140,20 +140,20 @@ public final class PatternLayout extends AbstractStringLayout {
 
     @Override
     public byte[] getHeader() {
-        byte [] header = super.getHeader();
-        if (header != null) {
-            return config.getStrSubstitutor().replace(new String(header, getCharset())).getBytes(getCharset());
+        byte [] myHeader = super.getHeader();
+        if (myHeader != null) {
+            return config.getStrSubstitutor().replace(new String(myHeader, getCharset())).getBytes(getCharset());
         }
-        return header;
+        return myHeader;
     }
 
     @Override
     public byte[] getFooter() {
-        byte [] footer = super.getFooter();
-        if (footer != null) {
-            return config.getStrSubstitutor().replace(new String(footer, getCharset())).getBytes(getCharset());
+        byte [] myFooter = super.getFooter();
+        if (myFooter != null) {
+            return config.getStrSubstitutor().replace(new String(myFooter, getCharset())).getBytes(getCharset());
         }
-        return footer;
+        return myFooter;
     }
 
     /**
