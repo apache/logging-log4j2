@@ -119,19 +119,21 @@ public class AsyncLoggerConfig extends LoggerConfig {
     }
 
     @Override
-    public void startFilter() {
+    public void start() {
+        this.setStarting();
         if (helper == null) {
             helper = new AsyncLoggerConfigHelper(this);
         } else {
             AsyncLoggerConfigHelper.claim(); // LOG4J2-336
         }
-        super.startFilter();
+        super.start();
     }
 
     @Override
-    public void stopFilter() {
+    public void stop() {
+        this.setStopping();
         AsyncLoggerConfigHelper.release();
-        super.stopFilter();
+        super.stop();
     }
 
     /**

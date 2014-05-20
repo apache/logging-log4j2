@@ -48,7 +48,7 @@ public class AppenderControl extends AbstractFilterable {
         this.appender = appender;
         this.level = level;
         this.intLevel = level == null ? Level.ALL.intLevel() : level.intLevel();
-        startFilter();
+        start();
     }
 
     /**

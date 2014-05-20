@@ -156,24 +156,6 @@ public abstract class AbstractAppender extends AbstractFilterable
         this.handler = handler;
     }
 
-    /**
-     * Start the Appender.
-     */
-    @Override
-    public void start() {
-        startFilter();
-        this.setStarted();
-    }
-
-    /**
-     * Stop the Appender.
-     */
-    @Override
-    public void stop() {
-        this.setStopped();
-        stopFilter();
-    }
-
     @Override
     public String toString() {
         return name;
