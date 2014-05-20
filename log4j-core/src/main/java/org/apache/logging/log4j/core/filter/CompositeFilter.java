@@ -96,18 +96,20 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
 
     @Override
     public void start() {
+        this.setStarting();
         for (final Filter filter : filters) {
             filter.start();
         }
-        super.start();
+        this.setStarted();
     }
 
     @Override
     public void stop() {
+        this.setStopping();
         for (final Filter filter : filters) {
             filter.stop();
         }
-        super.stop();
+        this.setStopped();
     }
 
     /**
@@ -259,9 +261,9 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
      */
     @PluginFactory
     public static CompositeFilter createFilters(@PluginElement("Filters") final Filter[] filters) {
-        final List<Filter> f = filters == null || filters.length == 0 ?
+        final List<Filter> filterList = filters == null || filters.length == 0 ?
             new ArrayList<Filter>() : Arrays.asList(filters);
-        return new CompositeFilter(f);
+        return new CompositeFilter(filterList);
     }
 
 }
