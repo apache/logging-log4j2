@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.samples.app;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.samples.dto.AuditEvent;
 import org.apache.logging.log4j.samples.dto.Constraint;
 import org.apache.logging.log4j.samples.util.NamingUtils;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 
 /**
  *

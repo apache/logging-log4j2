@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.List;
 import java.util.Locale;
+
+import static org.junit.Assert.assertTrue;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;

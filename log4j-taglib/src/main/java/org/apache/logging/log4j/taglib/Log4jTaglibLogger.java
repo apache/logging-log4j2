@@ -18,8 +18,8 @@ package org.apache.logging.log4j.taglib;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.spi.LoggerProviderWrapper;
 import org.apache.logging.log4j.spi.LoggerProvider;
+import org.apache.logging.log4j.spi.LoggerProviderWrapper;
 
 /**
  * The bridge between the tag library and the Log4j API ensures that the source information for log events is

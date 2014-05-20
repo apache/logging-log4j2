@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.net.jms;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.Map;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
+
+import static org.junit.Assert.assertTrue;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;

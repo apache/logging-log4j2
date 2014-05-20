@@ -18,6 +18,8 @@ package org.apache.logging.log4j.core;
 
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
@@ -26,8 +28,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  *

@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.appender.db.jpa;
 
 import java.lang.reflect.Constructor;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;

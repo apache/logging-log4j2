@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.util.Map;
+
+import static org.junit.Assert.assertTrue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;

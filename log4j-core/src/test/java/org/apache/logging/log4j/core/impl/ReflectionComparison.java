@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import static org.junit.Assert.assertSame;
-
 import java.lang.reflect.Constructor;
+
+import static org.junit.Assert.assertSame;
 
 import org.apache.logging.log4j.core.Timer;
 import org.apache.logging.log4j.message.Message;

@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.taglib;
 
-import static org.junit.Assert.assertEquals;
-
 import javax.servlet.jsp.tagext.Tag;
 
 import org.apache.logging.log4j.Level;
@@ -32,6 +30,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.mock.web.MockPageContext;
+
+import static org.junit.Assert.*;
 
 /**
  *

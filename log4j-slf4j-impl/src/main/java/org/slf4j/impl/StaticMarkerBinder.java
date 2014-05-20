@@ -16,8 +16,8 @@
  */
 package org.slf4j.impl;
 
-import org.slf4j.IMarkerFactory;
 import org.apache.logging.slf4j.Log4jMarkerFactory;
+import org.slf4j.IMarkerFactory;
 import org.slf4j.spi.MarkerFactoryBinder;
 
 /**

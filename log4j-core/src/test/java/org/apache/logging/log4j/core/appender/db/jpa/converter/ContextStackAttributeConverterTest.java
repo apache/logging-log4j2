@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-
-import java.util.Arrays;
 
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;

@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.core.config.yaml;
 
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.json.JSONConfiguration;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.config.json.JSONConfiguration;
 
 public class YAMLConfiguration extends JSONConfiguration {
 

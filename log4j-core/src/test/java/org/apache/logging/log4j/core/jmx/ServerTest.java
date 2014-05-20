@@ -17,9 +17,9 @@
 
 package org.apache.logging.log4j.core.jmx;
 
-import static org.junit.Assert.assertEquals;
-
 import javax.management.ObjectName;
+
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 

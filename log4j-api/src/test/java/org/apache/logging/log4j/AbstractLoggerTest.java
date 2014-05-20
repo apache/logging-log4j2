@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLoggerProvider;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  *

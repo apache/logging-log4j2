@@ -17,12 +17,12 @@
 
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.Assert.assertEquals;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 

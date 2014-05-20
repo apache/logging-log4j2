@@ -16,9 +16,8 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
-import org.apache.logging.log4j.core.util.SystemClock;
 import org.junit.Test;
 
 public class SystemClockTest {

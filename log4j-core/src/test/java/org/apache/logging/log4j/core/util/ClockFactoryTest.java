@@ -16,13 +16,8 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import org.apache.logging.log4j.core.util.CachedClock;
-import org.apache.logging.log4j.core.util.Clock;
-import org.apache.logging.log4j.core.util.ClockFactory;
-import org.apache.logging.log4j.core.util.CoarseCachedClock;
-import org.apache.logging.log4j.core.util.SystemClock;
 import org.junit.Test;
 
 public class ClockFactoryTest {

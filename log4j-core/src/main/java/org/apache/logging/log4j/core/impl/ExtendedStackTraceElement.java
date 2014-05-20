@@ -20,6 +20,8 @@ import java.io.Serializable;
 
 import org.apache.logging.log4j.util.Strings;
 
+import sun.reflect.Reflection;
+
 /**
  * Wraps and extends the concept of the JRE's final class {@link StackTraceElement} by adding more location information.
  * <p>
