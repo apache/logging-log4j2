@@ -18,9 +18,6 @@ package org.apache.logging.log4j.core;
 
 import java.io.File;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
@@ -28,6 +25,8 @@ import org.apache.logging.log4j.core.config.xml.XMLConfiguration;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  *

@@ -23,9 +23,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.rules.ExternalResource;
+
+import static org.junit.Assert.*;
 
 /**
  * A JUnit test rule to automatically delete certain files after a test is run.

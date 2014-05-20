@@ -22,12 +22,6 @@ import java.io.FileReader;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.not;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.CleanFiles;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
@@ -36,6 +30,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import static org.hamcrest.CoreMatchers.*;
+
+import static org.junit.Assert.*;
 
 /**
  * Simple tests for both the RandomAccessFileAppender and RollingRandomAccessFileAppender.

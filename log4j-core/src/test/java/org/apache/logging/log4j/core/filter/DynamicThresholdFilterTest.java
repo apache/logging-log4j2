@@ -18,9 +18,6 @@ package org.apache.logging.log4j.core.filter;
 
 import java.util.Map;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
@@ -35,6 +32,8 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.After;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 
 /**

@@ -20,14 +20,13 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.CleanFiles;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.junit.Rule;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests a "complete" XML file a.k.a. a well-formed XML file.

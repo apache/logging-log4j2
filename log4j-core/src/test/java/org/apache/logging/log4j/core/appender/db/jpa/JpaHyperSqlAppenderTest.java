@@ -21,11 +21,11 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import static org.junit.Assert.assertNull;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class JpaHyperSqlAppenderTest extends AbstractJpaAppenderTest {
     private static final String USER_ID = "sa";

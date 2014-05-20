@@ -18,14 +18,14 @@ package org.apache.logging.log4j.core.impl;
 
 import java.lang.reflect.Constructor;
 
-import static org.junit.Assert.assertSame;
-
 import org.apache.logging.log4j.core.Timer;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.junit.Test;
 
 import sun.reflect.Reflection;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests the cost of invoking Reflection.getCallerClass via reflection vs calling it directly.

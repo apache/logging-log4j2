@@ -18,9 +18,9 @@ package org.apache.logging.log4j.core.util;
 
 import java.util.UUID;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 /**
  *
  */

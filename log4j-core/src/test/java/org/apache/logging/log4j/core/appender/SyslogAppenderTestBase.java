@@ -21,10 +21,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.MarkerManager;
@@ -36,6 +32,8 @@ import org.apache.logging.log4j.core.net.mock.MockSyslogServer;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.BeforeClass;
+
+import static org.junit.Assert.*;
 
 public class SyslogAppenderTestBase {
     protected static final String line1 =
