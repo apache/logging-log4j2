@@ -158,6 +158,7 @@ public abstract class AbstractAppender extends AbstractFilterable
      * Returns true if the Appender is started, false otherwise.
      * @return true if the Appender is started, false otherwise.
      */
+    @Override
     public boolean isStopped() {
         return !started;
     }
