@@ -30,7 +30,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -56,7 +55,6 @@ import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -64,10 +62,6 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  */
 public abstract class AbstractConfiguration extends AbstractFilterable implements Configuration {
 
-    /**
-     * Allow subclasses access to the status logger without creating another instance.
-     */
-    protected static final Logger LOGGER = StatusLogger.getLogger();
     private static final int BUF_SIZE = 16384;
 
     /**

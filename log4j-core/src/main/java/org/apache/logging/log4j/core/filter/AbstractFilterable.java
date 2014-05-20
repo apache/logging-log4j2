@@ -29,8 +29,6 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 public abstract class AbstractFilterable extends AbstractLifeCycle implements Filterable {
 
-    protected static final Logger LOGGER = StatusLogger.getLogger();
-
     /**
      * May be null.
      */

@@ -34,11 +34,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 public abstract class AbstractFilter extends AbstractLifeCycle implements Filter {
     
     /**
-     * Allow subclasses access to the status logger without creating another instance.
-     */
-    protected static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
-
-    /**
      * The onMatch Result.
      */
     protected final Result onMatch;
