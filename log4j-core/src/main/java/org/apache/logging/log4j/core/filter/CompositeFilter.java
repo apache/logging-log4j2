@@ -40,21 +40,17 @@ import org.apache.logging.log4j.message.Message;
 public final class CompositeFilter extends AbstractLifeCycle implements Iterable<Filter>, Filter {
 
     private final List<Filter> filters;
-    private final boolean hasFilters;
 
     private CompositeFilter() {
         this.filters = new ArrayList<Filter>();
-        this.hasFilters = false;
     }
 
     private CompositeFilter(final List<Filter> filters) {
         if (filters == null) {
             this.filters = Collections.unmodifiableList(new ArrayList<Filter>());
-            this.hasFilters = false;
             return;
         }
         this.filters = Collections.unmodifiableList(filters);
-        this.hasFilters = this.filters.size() > 0;
     }
 
     public CompositeFilter addFilter(final Filter filter) {
@@ -87,7 +83,7 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
     }
 
     public boolean hasFilters() {
-        return hasFilters;
+        return !this.filters.isEmpty();
     }
 
     public int size() {
