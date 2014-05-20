@@ -16,21 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender.db;
 
-import static org.easymock.EasyMock.createMockBuilder;
-import static org.easymock.EasyMock.createStrictMock;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.reset;
-import static org.easymock.EasyMock.same;
-import static org.easymock.EasyMock.verify;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.junit.After;
 import org.junit.Test;
+
+import static org.easymock.EasyMock.*;
+
+import static org.junit.Assert.*;
 
 public class AbstractDatabaseManagerTest {
     private AbstractDatabaseManager manager;

@@ -22,9 +22,6 @@ import java.util.Map;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,6 +41,8 @@ import org.junit.Test;
 import org.mockejb.jms.MockTopic;
 import org.mockejb.jms.TopicConnectionFactoryImpl;
 import org.mockejb.jndi.MockContextFactory;
+
+import static org.junit.Assert.*;
 
 /**
  *

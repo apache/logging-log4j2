@@ -16,10 +16,9 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class AsyncLoggerThreadNameStrategyTest {
 

@@ -18,13 +18,13 @@ package org.apache.logging.log4j.core.config;
 
 import java.io.File;
 
-import static org.junit.Assert.assertTrue;
-
 import org.apache.logging.log4j.junit.CleanFiles;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
+
+import static org.junit.Assert.*;
 
 /**
  *

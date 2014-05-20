@@ -20,8 +20,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static org.junit.Assert.assertTrue;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.junit.After;
@@ -30,6 +28,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import static org.junit.Assert.*;
 
 /**
  *

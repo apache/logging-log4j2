@@ -20,13 +20,12 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockejb.jndi.MockContextFactory;
+
+import static org.junit.Assert.*;
 
 /**
  * JndiLookupTest

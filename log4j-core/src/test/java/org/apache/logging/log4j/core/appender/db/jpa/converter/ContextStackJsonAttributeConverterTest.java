@@ -18,15 +18,13 @@ package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
 import java.util.Arrays;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class ContextStackJsonAttributeConverterTest {
     private ContextStackJsonAttributeConverter converter;

@@ -18,14 +18,14 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import java.io.File;
 
-import static org.junit.Assert.assertTrue;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  *
