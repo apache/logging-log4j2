@@ -312,7 +312,7 @@ public class TestConfigurator {
         final Filter filter = lcfg.getFilter();
         assertNotNull("No Filter", filter);
         assertTrue("Incorrect filter", filter instanceof CompositeFilter);
-        assertFalse("Unexpected filters", ((CompositeFilter) filter).hasFilters());
+        assertTrue("Unexpected filters", ((CompositeFilter) filter).isEmpty());
     }
 
     @Test

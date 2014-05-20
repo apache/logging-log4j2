@@ -82,8 +82,13 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
         return filters;
     }
 
-    public boolean hasFilters() {
-        return !this.filters.isEmpty();
+    /**
+     * Returns whether this composite contains any filters.
+     * 
+     * @return whether this composite contains any filters.
+     */
+    public boolean isEmpty() {
+        return this.filters.isEmpty();
     }
 
     public int size() {
