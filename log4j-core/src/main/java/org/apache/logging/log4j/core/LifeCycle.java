@@ -30,7 +30,7 @@ public interface LifeCycle {
         INITIALIZED,
         /** In the process of starting. */
         STARTING,
-        /** Is active. */
+        /** Has started. */
         STARTED,
         /** Stopping is in progress. */
         STOPPING,
