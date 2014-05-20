@@ -238,20 +238,23 @@ public final class PatternLayout extends AbstractStringLayout {
 
     /**
      * Create a pattern layout.
-     *
+     * 
      * @param pattern
-     *            The pattern. If not specified, defaults to DEFAULT_CONVERSION_PATTERN.
+     *        The pattern. If not specified, defaults to DEFAULT_CONVERSION_PATTERN.
      * @param config
-     *            The Configuration. Some Converters require access to the Interpolator.
+     *        The Configuration. Some Converters require access to the Interpolator.
      * @param replace
-     *            A Regex replacement String.
+     *        A Regex replacement String.
      * @param charsetName
-     *            The character set.
+     *        The character set.
      * @param always
-     *            If {@code "true"} (default) exceptions are always written even if the pattern contains no exception
-     *            tokens.
+     *        If {@code "true"} (default) exceptions are always written even if the pattern contains no exception tokens.
      * @param noConsoleNoAnsiStr
-     *            If {@code "true"} (default is false) and {@link System#console()} is null, do not output ANSI escape codes
+     *        If {@code "true"} (default is false) and {@link System#console()} is null, do not output ANSI escape codes
+     * @param header
+     *        The footer to place at the end of the document, once.
+     * @param footer
+     *        The footer to place at the top of the document, once.
      * @return The PatternLayout.
      */
     @PluginFactory
