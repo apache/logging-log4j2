@@ -190,7 +190,7 @@ public abstract class AbstractSocketServerTest {
         for (final String message : messages) {
             rootLogger.debug(message);
         }
-        final int MAX_TRIES = 100;
+        final int MAX_TRIES = 200;
         for (int i = 0; i < MAX_TRIES; i++) {
             if (listAppender.getEvents().size() < messages.length) {
                 try {
