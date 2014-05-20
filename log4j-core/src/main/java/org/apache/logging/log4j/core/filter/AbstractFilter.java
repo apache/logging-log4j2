@@ -23,7 +23,6 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Users should extend this class to implement filters. Filters can be either context wide or attached to
