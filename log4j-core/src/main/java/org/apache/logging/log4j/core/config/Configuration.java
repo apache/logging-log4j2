@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.filter.Filterable;
@@ -29,7 +30,7 @@ import org.apache.logging.log4j.core.net.Advertiser;
 /**
  * Interface that must be implemented to create a configuration.
  */
-public interface Configuration extends Filterable {
+public interface Configuration extends Filterable, LifeCycle {
 
     /** Key for storing the Context properties. */
     String CONTEXT_PROPERTIES = "ContextProperties";
@@ -69,10 +70,6 @@ public interface Configuration extends Filterable {
     void removeLogger(final String name);
 
     Map<String, String> getProperties();
-
-    void start();
-
-    void stop();
 
     void addListener(ConfigurationListener listener);
 

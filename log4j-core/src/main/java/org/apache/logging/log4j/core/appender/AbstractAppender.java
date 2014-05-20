@@ -40,11 +40,6 @@ public abstract class AbstractAppender extends AbstractFilterable
 
     private final String name;
 
-    /**
-     * Appenders set this by calling super.start().
-     */
-    private boolean started = false;
-
     public static int parseInt(String s, int defaultValue) {
         try {
             return Integers.parseInt(s, defaultValue);
@@ -146,24 +141,6 @@ public abstract class AbstractAppender extends AbstractFilterable
     }
 
     /**
-     * Returns true if the Appender is started, false otherwise.
-     * @return true if the Appender is started, false otherwise.
-     */
-    @Override
-    public boolean isStarted() {
-        return started;
-    }
-
-    /**
-     * Returns true if the Appender is started, false otherwise.
-     * @return true if the Appender is started, false otherwise.
-     */
-    @Override
-    public boolean isStopped() {
-        return !started;
-    }
-
-    /**
      * The handler must be set before the appender is started.
      * @param handler The ErrorHandler to use.
      */
@@ -185,7 +162,7 @@ public abstract class AbstractAppender extends AbstractFilterable
     @Override
     public void start() {
         startFilter();
-        this.started = true;
+        this.setStarted();
     }
 
     /**
@@ -193,7 +170,7 @@ public abstract class AbstractAppender extends AbstractFilterable
      */
     @Override
     public void stop() {
-        this.started = false;
+        this.setStopped();
         stopFilter();
     }
 

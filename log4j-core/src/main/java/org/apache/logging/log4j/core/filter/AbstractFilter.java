@@ -20,7 +20,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.message.Message;
@@ -32,7 +31,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * which case it will only implement the required method(s). The rest will default to return NEUTRAL.
  *
  */
-public abstract class AbstractFilter extends AbstractLifeCycle implements Filter, LifeCycle {
+public abstract class AbstractFilter extends AbstractLifeCycle implements Filter {
     
     /**
      * Allow subclasses access to the status logger without creating another instance.
