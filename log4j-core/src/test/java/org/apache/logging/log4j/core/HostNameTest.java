@@ -35,22 +35,17 @@ import static org.junit.Assert.*;
 public class HostNameTest {
 
     private static final String CONFIG = "log4j-test2.xml";
-    private static ListAppender app;
-    private static ListAppender host;
-    private static RollingFileAppender hostFile;
+    private ListAppender host;
+    private RollingFileAppender hostFile;
 
     @ClassRule
     public static InitialLoggerContext context = new InitialLoggerContext(CONFIG);
 
     @Before
     public void before() {
-        app = (ListAppender) context.getAppender("List");
-        host = (ListAppender) context.getAppender("HostTest");
+        host = context.getListAppender("HostTest").clear();
         hostFile = (RollingFileAppender) context.getRequiredAppender("HostFile");
-        app.clear();
-        host.clear();
     }
-
 
     @Test
     public void testHostname() {

@@ -39,13 +39,13 @@ import static org.junit.Assert.*;
 public class LevelTest {
 
     private static final String CONFIG = "log4j-Level.xml";
-    private static ListAppender listAll;
-    private static ListAppender listTrace;
-    private static ListAppender listDebug;
-    private static ListAppender listInfo;
-    private static ListAppender listWarn;
-    private static ListAppender listError;
-    private static ListAppender listFatal;
+    private ListAppender listAll;
+    private ListAppender listTrace;
+    private ListAppender listDebug;
+    private ListAppender listInfo;
+    private ListAppender listWarn;
+    private ListAppender listError;
+    private ListAppender listFatal;
 
     @ClassRule
     public static InitialLoggerContext context = new InitialLoggerContext(CONFIG);
