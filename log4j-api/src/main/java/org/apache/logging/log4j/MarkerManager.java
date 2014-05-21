@@ -91,7 +91,7 @@ public final class MarkerManager {
      * </p>
      * <p>
      * <em>Internal note: We could make this class package private instead of public if the class 
-     * {@link org.apache.logging.log4j.core.jackson.MarkerMixIn} 
+     * {@code org.apache.logging.log4j.core.jackson.MarkerMixIn} 
      * is moved to this package and would of course stay in its current module.</em>
      * </p>
      */
