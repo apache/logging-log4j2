@@ -33,7 +33,7 @@ import org.apache.logging.log4j.core.net.ssl.TestConstants;
 import org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration;
 import org.junit.Test;
 
-public class TlsSyslogAppenderTest extends SyslogAppenderTest{
+public class TlsSyslogAppenderTest extends SyslogAppenderTest {
 
     private SSLServerSocketFactory serverSocketFactory;
     private TlsSyslogMessageFormat messageFormat;
