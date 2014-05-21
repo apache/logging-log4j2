@@ -56,7 +56,7 @@ public final class TlsSyslogAppender extends SyslogAppender {
      * Create a SyslogAppender.
      * @param host The name of the host to connect to.
      * @param portNum The port to connect to on the target host.
-     * @param sslConfig   The SSL configuration
+     * @param sslConfig The SSL configuration
      * @param delay The interval in which failed writes should be retried.
      * @param immediateFail True if the write should fail if no socket is immediately available.
      * @param name The name of the Appender.
