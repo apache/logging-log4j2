@@ -18,11 +18,13 @@ package org.apache.logging.log4j.core.impl;
 
 import java.lang.reflect.Constructor;
 
+import org.apache.logging.log4j.categories.PerformanceTests;
 import org.apache.logging.log4j.core.util.Timer;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.junit.Test;
 
+import org.junit.experimental.categories.Category;
 import sun.reflect.Reflection;
 
 import static org.junit.Assert.*;
@@ -30,6 +32,7 @@ import static org.junit.Assert.*;
 /**
  * Tests the cost of invoking Reflection.getCallerClass via reflection vs calling it directly.
  */
+@Category(PerformanceTests.class)
 public class ReflectionComparison {
 
     private static final int COUNT = 1000000;
