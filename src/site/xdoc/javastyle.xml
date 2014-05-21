@@ -124,8 +124,10 @@
       <a name="import-statements"/>
       <h3>Import statements</h3>
       <a name="wildcard-imports"/>
-      <h4>No wildcard imports</h4>
+      <h4>No wildcard imports in the main tree</h4>
         <p><strong>Wildcard imports</strong>, static or otherwise, <strong>are not used</strong>.</p>
+      <h4>Static wildcard imports in the test tree</h4>
+        <p><strong>Wildcard static imports</strong> are encouraged for test imports like JUnit, EasyMock, and Hamcrest.</p>
       <a name="import-line-wrapping"/>
       <h4>No line-wrapping</h4>
       <p>Import statements are <strong>not line-wrapped</strong>. The column limit
@@ -135,13 +137,21 @@
       <p>Import statements are divided into the following groups, in this order, with each group
         separated by a single blank line:</p>
         <ol>
-          <li>imports for java.* followed by javax.*.</li>
-          <li>imports for org.* followed by com.*.</li>
+          <li>java</li>
+          <li>javax</li>
+          <li>org</li>
+          <li>com</li>
           <li>All static imports in a single group</li>
         </ol>
       <p>Within a group there are no blank lines, and the imported names appear in ASCII sort
       order. (<strong>Note:</strong> this is not the same as the import <em>statements</em> being in
       ASCII sort order; the presence of semicolons warps the result.)</p>
+      <p>IDE settings for ordering imports automatically can be found in the source distributions under 
+      <code>src/ide</code>. For example:</p>
+      <ul>
+        <li>Eclipse: <code>src/ide/eclipse/4.3.2/organize-imports.importorder</code></li>
+        <li>IntelliJ: <code>src/ide/Intellij/13/IntellijSettings.jar</code></li>
+      </ul>
       <a name="class-declaration"/>
       <h3>Class declaration</h3>
       <a name="oneclassperfile"/>
