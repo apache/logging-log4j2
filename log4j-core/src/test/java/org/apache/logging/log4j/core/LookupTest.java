@@ -16,16 +16,10 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.util.Map;
-
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -36,33 +30,14 @@ import static org.junit.Assert.*;
 public class LookupTest {
 
     private static final String CONFIG = "log4j-lookup.xml";
-    private static Configuration config;
-    private static ConsoleAppender app;
-    private static LoggerContext ctx;
 
-    @BeforeClass
-    public static void setupClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        ctx = (LoggerContext) LogManager.getContext(false);
-    }
-
-    @AfterClass
-    public static void cleanupClass() {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        ctx.reconfigure();
-        StatusLogger.getLogger().reset();
-    }
+    @ClassRule
+    public static InitialLoggerContext context = new InitialLoggerContext(CONFIG);
 
     @Test
     public void testHostname() {
-        config = ctx.getConfiguration();
-        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
-            if (entry.getKey().equals("console")) {
-                app = (ConsoleAppender) entry.getValue();
-            }
-        }
-        assertNotNull(app);
-        Layout layout = app.getLayout();
+        final ConsoleAppender app = (ConsoleAppender) context.getRequiredAppender("console");
+        final Layout<?> layout = app.getLayout();
         assertNotNull("No Layout", layout);
         assertTrue("Layout is not a PatternLayout", layout instanceof PatternLayout);
         String pattern = ((PatternLayout) layout).getConversionPattern();
