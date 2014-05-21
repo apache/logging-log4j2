@@ -17,16 +17,12 @@
 package org.apache.logging.log4j.core;
 
 import java.io.File;
-import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -37,40 +33,22 @@ import static org.junit.Assert.*;
 public class FileConfigTest {
 
     private static final String CONFIG = "target/test-classes/log4j-test2.xml";
-    private static Configuration config;
     private static ListAppender app;
-    private static LoggerContext ctx;
 
-    private final org.apache.logging.log4j.Logger logger = LogManager.getLogger("LoggerTest");
+    @ClassRule
+    public static InitialLoggerContext context = new InitialLoggerContext(CONFIG);
 
-    @BeforeClass
-    public static void setupClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        ctx = (LoggerContext) LogManager.getContext(false);
-    }
-
-    @AfterClass
-    public static void cleanupClass() {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        ctx.reconfigure();
-        StatusLogger.getLogger().reset();
-    }
+    private final org.apache.logging.log4j.Logger logger = context.getLogger("LoggerTest");
 
     @Before
     public void before() {
-        config = ctx.getConfiguration();
-        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
-            if (entry.getKey().equals("List")) {
-                app = (ListAppender) entry.getValue();
-                break;
-            }
-        }
-        assertNotNull("No Appender", app);
+        app = (ListAppender) context.getRequiredAppender("List");
         app.clear();
     }
 
     @Test
     public void testReconfiguration() throws Exception {
+        final Configuration oldConfig = context.getConfiguration();
         final int MONITOR_INTERVAL_SECONDS = 1;
         final File file = new File(CONFIG);
         final long orig = file.lastModified();
@@ -81,9 +59,8 @@ public class FileConfigTest {
             logger.debug("Reconfigure");
         }
         Thread.sleep(100);
-        final Configuration cfg = ctx.getConfiguration();
-        assertNotNull("No configuration", cfg);
-        assertTrue("Reconfiguration failed", cfg != config);
+        final Configuration newConfig = context.getConfiguration();
+        assertNotSame("Reconfiguration failed", newConfig, oldConfig);
     }
 }
 
