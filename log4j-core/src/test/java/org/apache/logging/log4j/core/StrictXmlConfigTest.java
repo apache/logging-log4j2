@@ -34,7 +34,7 @@ import static org.junit.Assert.*;
 /**
  *
  */
-public class StrictXMLConfigTest {
+public class StrictXmlConfigTest {
 
     private static final String CONFIG = "log4j-strict1.xml";
     private ListAppender app;
