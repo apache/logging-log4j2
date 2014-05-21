@@ -22,11 +22,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.Callable;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.junit.BeforeClass;
+import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -36,17 +35,15 @@ public class SocketTest {
 
     private static final String CONFIG = "log4j-socket.xml";
 
-    @BeforeClass
-    public static void before() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-    }
+    @ClassRule
+    public static InitialLoggerContext context = new InitialLoggerContext(CONFIG);
 
     @Test
     public void testConnect() throws Exception {
         System.err.println("Initializing logger");
         Logger logger = null;
         try {
-            logger = LogManager.getLogger(SocketTest.class);
+            logger = context.getLogger();
         } catch (final NullPointerException e) {
             fail("Unexpected exception; should not occur until first logging statement " + e.getMessage());
         }
@@ -76,7 +73,7 @@ public class SocketTest {
             closeQuietly(server);
         }
 
-        private void closeQuietly(final ServerSocket socket) {
+        private static void closeQuietly(final ServerSocket socket) {
             if (null != socket) {
                 try {
                     socket.close();
@@ -85,7 +82,7 @@ public class SocketTest {
             }
         }
 
-        private void closeQuietly(final Socket socket) {
+        private static void closeQuietly(final Socket socket) {
             if (null != socket) {
                 try {
                     socket.close();
