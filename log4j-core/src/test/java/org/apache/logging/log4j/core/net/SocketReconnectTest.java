@@ -23,12 +23,11 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Constants;
-import org.junit.BeforeClass;
+import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -44,11 +43,8 @@ public class SocketReconnectTest {
         "................................................................" + Constants.LINE_SEPARATOR +
         "................................................................" + Constants.LINE_SEPARATOR;
 
-
-    @BeforeClass
-    public static void before() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-    }
+    @ClassRule
+    public static InitialLoggerContext context = new InitialLoggerContext(CONFIG);
 
     @Test
     public void testReconnect() throws Exception {
@@ -59,7 +55,7 @@ public class SocketReconnectTest {
         Thread.sleep(300);
 
         //System.err.println("Initializing logger");
-        final Logger logger = LogManager.getLogger(SocketReconnectTest.class);
+        final Logger logger = context.getLogger();
 
         String message = "Log #1";
         logger.error(message);
