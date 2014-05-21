@@ -20,22 +20,19 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -46,53 +43,29 @@ import static org.junit.Assert.*;
 public class LoggerTest {
 
     private static final String CONFIG = "log4j-test2.xml";
-    private static Configuration config;
-    private static ListAppender app;
-    private static ListAppender host;
-    private static ListAppender noThrown;
-    private static LoggerContext ctx;
+    private ListAppender app;
+    private ListAppender host;
+    private ListAppender noThrown;
 
-    @BeforeClass
-    public static void setupClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        ctx = (LoggerContext) LogManager.getContext(false);
-    }
-
-    @AfterClass
-    public static void cleanupClass() {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        ctx.reconfigure();
-        StatusLogger.getLogger().reset();
-    }
+    @ClassRule
+    public static InitialLoggerContext context = new InitialLoggerContext(CONFIG);
 
     @Before
     public void before() {
-        config = ctx.getConfiguration();
-        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
-            if (entry.getKey().equals("List")) {
-                app = (ListAppender) entry.getValue();
-            } else if (entry.getKey().equals("HostTest")) {
-                host = (ListAppender) entry.getValue();
-            } else if (entry.getKey().equals("NoThrowable")) {
-                noThrown = (ListAppender) entry.getValue();
-            }
-        }
-        assertNotNull("No Appender", app);
-        assertNotNull("No Host Appender", host);
-        app.clear();
-        host.clear();
+        app = context.getListAppender("List").clear();
+        host = context.getListAppender("HostTest").clear();
+        noThrown = context.getListAppender("NoThrowable").clear();
     }
 
 
-    org.apache.logging.log4j.Logger logger = LogManager.getLogger("LoggerTest");
+    org.apache.logging.log4j.Logger logger = context.getLogger("LoggerTest");
 
     @Test
     public void basicFlow() {
         logger.entry();
         logger.exit();
         final List<LogEvent> events = app.getEvents();
-        assertTrue("Incorrect number of events. Expected 2, actual " + events.size(), events.size() == 2);
-        app.clear();
+        assertEquals("Incorrect number of events. Expected 2, actual " + events.size(), 2, events.size());
     }
 
     @Test
@@ -100,16 +73,14 @@ public class LoggerTest {
         logger.entry(CONFIG);
         logger.exit(0);
         final List<LogEvent> events = app.getEvents();
-        assertTrue("Incorrect number of events. Expected 2, actual " + events.size(), events.size() == 2);
-        app.clear();
+        assertEquals("Incorrect number of events. Expected 2, actual " + events.size(), 2, events.size());
     }
 
     @Test
     public void throwing() {
         logger.throwing(new IllegalArgumentException("Test Exception"));
         final List<LogEvent> events = app.getEvents();
-        assertTrue("Incorrect number of events. Expected 1, actual " + events.size(), events.size() == 1);
-        app.clear();
+        assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 1, events.size());
     }
 
     @Test
@@ -120,16 +91,14 @@ public class LoggerTest {
             logger.catching(e);
         }
         final List<LogEvent> events = app.getEvents();
-        assertTrue("Incorrect number of events. Expected 1, actual " + events.size(), events.size() == 1);
-        app.clear();
+        assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 1, events.size());
     }
 
     @Test
     public void debug() {
         logger.debug("Debug message");
         final List<LogEvent> events = app.getEvents();
-        assertTrue("Incorrect number of events. Expected 1, actual " + events.size(), events.size() == 1);
-        app.clear();
+        assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 1, events.size());
     }
 
     @Test
@@ -138,7 +107,7 @@ public class LoggerTest {
                 StringFormatterMessageFactory.INSTANCE, ParameterizedMessageFactory.INSTANCE);
         testLogger.debug("%,d", Integer.MAX_VALUE);
         final List<LogEvent> events = app.getEvents();
-        assertTrue("Incorrect number of events. Expected 1, actual " + events.size(), events.size() == 1);
+        assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 1, events.size());
         assertEquals(String.format("%,d", Integer.MAX_VALUE), events.get(0).getMessage().getFormattedMessage());
     }
 
@@ -147,11 +116,13 @@ public class LoggerTest {
         final Logger testLogger =  testMessageFactoryMismatch("getLogger_String_MessageFactoryMismatchNull", StringFormatterMessageFactory.INSTANCE, null);
         testLogger.debug("%,d", Integer.MAX_VALUE);
         final List<LogEvent> events = app.getEvents();
-        assertTrue("Incorrect number of events. Expected 1, actual " + events.size(), events.size() == 1);
+        assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 1, events.size());
         assertEquals(String.format("%,d", Integer.MAX_VALUE), events.get(0).getMessage().getFormattedMessage());
     }
 
-    private Logger testMessageFactoryMismatch(final String name, final MessageFactory messageFactory1, final MessageFactory messageFactory2) {
+    private static Logger testMessageFactoryMismatch(final String name,
+                                                     final MessageFactory messageFactory1,
+                                                     final MessageFactory messageFactory2) {
         final Logger testLogger = (Logger) LogManager.getLogger(name, messageFactory1);
         assertNotNull(testLogger);
         assertEquals(messageFactory1, testLogger.getMessageFactory());
@@ -164,24 +135,22 @@ public class LoggerTest {
     public void debugObject() {
         logger.debug(new Date());
         final List<LogEvent> events = app.getEvents();
-        assertTrue("Incorrect number of events. Expected 1, actual " + events.size(), events.size() == 1);
-        app.clear();
+        assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 1, events.size());
     }
 
     @Test
     public void debugWithParms() {
         logger.debug("Hello, {}", "World");
         final List<LogEvent> events = app.getEvents();
-        assertTrue("Incorrect number of events. Expected 1, actual " + events.size(), events.size() == 1);
-        app.clear();
+        assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 1, events.size());
     }
 
     @Test
     public void testImpliedThrowable() {
-        final org.apache.logging.log4j.Logger testLogger = LogManager.getLogger("org.apache.logging.log4j.hosttest");
+        final org.apache.logging.log4j.Logger testLogger = context.getLogger("org.apache.logging.log4j.hosttest");
         testLogger.debug("This is a test", new Throwable("Testing"));
         final List<String> msgs = host.getMessages();
-        assertTrue("Incorrect number of messages. Expected 1, actual " + msgs.size(), msgs.size() == 1);
+        assertEquals("Incorrect number of messages. Expected 1, actual " + msgs.size(), 1, msgs.size());
         final String expected = "java.lang.Throwable: Testing";
         assertTrue("Incorrect message data", msgs.get(0).contains(expected));
     }
@@ -189,10 +158,10 @@ public class LoggerTest {
 
     @Test
     public void testSuppressedThrowable() {
-        final org.apache.logging.log4j.Logger testLogger = LogManager.getLogger("org.apache.logging.log4j.nothrown");
+        final org.apache.logging.log4j.Logger testLogger = context.getLogger("org.apache.logging.log4j.nothrown");
         testLogger.debug("This is a test", new Throwable("Testing"));
         final List<String> msgs = noThrown.getMessages();
-        assertTrue("Incorrect number of messages. Expected 1, actual " + msgs.size(), msgs.size() == 1);
+        assertEquals("Incorrect number of messages. Expected 1, actual " + msgs.size(), 1, msgs.size());
         final String suppressed = "java.lang.Throwable: Testing";
         assertTrue("Incorrect message data", !msgs.get(0).contains(suppressed));
     }
@@ -205,8 +174,7 @@ public class LoggerTest {
         ThreadContext.clearMap();
         logger.debug("Debug message");
         final List<LogEvent> events = app.getEvents();
-        assertTrue("Incorrect number of events. Expected 2, actual " + events.size(), events.size() == 2);
-        app.clear();
+        assertEquals("Incorrect number of events. Expected 2, actual " + events.size(), 2, events.size());
     }
 
     @Test
@@ -221,12 +189,12 @@ public class LoggerTest {
         logger.info(MarkerManager.getMarker("EVENT"), msg);
         ThreadContext.clearMap();
         final List<LogEvent> events = app.getEvents();
-        assertTrue("Incorrect number of events. Expected 1, actual " + events.size(), events.size() == 1);
-        app.clear();
+        assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 1, events.size());
     }
 
     @Test
     public void testReconfiguration() throws Exception {
+        final Configuration oldConfig = context.getConfiguration();
         final int MONITOR_INTERVAL_SECONDS = 1;
         final File file = new File("target/test-classes/" + CONFIG);
         final long orig = file.lastModified();
@@ -237,17 +205,17 @@ public class LoggerTest {
             logger.debug("Reconfigure");
         }
         Thread.sleep(100);
-        final Configuration cfg = ctx.getConfiguration();
-        assertNotNull("No configuration", cfg);
-        assertTrue("Reconfiguration failed", cfg != config);
+        final Configuration newConfig = context.getConfiguration();
+        assertNotNull("No configuration", newConfig);
+        assertNotSame("Reconfiguration failed", newConfig, oldConfig);
     }
 
     @Test
     public void testAdditivity() throws Exception {
-        final Logger localLogger = (Logger) LogManager.getLogger("org.apache.test");
+        final Logger localLogger = context.getLogger("org.apache.test");
         localLogger.error("Test parent additivity");
         final List<LogEvent> events = app.getEvents();
-        assertTrue("Incorrect number of events. Expected 1, actual " + events.size(), events.size() == 1);
+        assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 1, events.size());
     }
 }
 

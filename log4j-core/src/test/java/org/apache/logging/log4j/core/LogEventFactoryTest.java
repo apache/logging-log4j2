@@ -17,24 +17,23 @@
 package org.apache.logging.log4j.core;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
+import org.junit.rules.TestRule;
+import org.junit.runner.Description;
+import org.junit.runners.model.Statement;
 
 import static org.junit.Assert.*;
 
@@ -44,48 +43,43 @@ import static org.junit.Assert.*;
 public class LogEventFactoryTest {
 
     private static final String CONFIG = "log4j2-config.xml";
-    private static Configuration config;
-    private static ListAppender app;
-    private static LoggerContext ctx;
+    private static final InitialLoggerContext context = new InitialLoggerContext(CONFIG);
 
-    @BeforeClass
-    public static void setupClass() {
-        System.setProperty(Constants.LOG4J_LOG_EVENT_FACTORY, TestLogEventFactory.class.getName());
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        ctx = (LoggerContext) LogManager.getContext(false);
-        config = ctx.getConfiguration();
-        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
-            if (entry.getKey().equals("List")) {
-                app = (ListAppender) entry.getValue();
-                break;
-            }
-        }
-        if (app == null) {
-            fail("No List Appender could be found");
-        }
-    }
+    private ListAppender app;
 
-    @AfterClass
-    public static void cleanupClass() {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        ctx.reconfigure();
-        StatusLogger.getLogger().reset();
-    }
+    // this would look so cool using lambdas
+    @ClassRule
+    public static RuleChain chain = RuleChain.outerRule(new TestRule() {
+        @Override
+        public Statement apply(final Statement base, final Description description) {
+            return new Statement() {
+                @Override
+                public void evaluate() throws Throwable {
+                    System.setProperty(Constants.LOG4J_LOG_EVENT_FACTORY, TestLogEventFactory.class.getName());
+                    try {
+                        base.evaluate();
+                    } finally {
+                        System.clearProperty(Constants.LOG4J_LOG_EVENT_FACTORY);
+                    }
+                }
+            };
+        }
+    }).around(context);
 
     @Before
     public void before() {
-        app.clear();
+        app = context.getListAppender("List").clear();
     }
 
     @Test
     public void testEvent() {
-        final org.apache.logging.log4j.Logger logger = LogManager.getLogger("org.apache.test.LogEventFactory");
+        final org.apache.logging.log4j.Logger logger = context.getLogger("org.apache.test.LogEventFactory");
         logger.error("error message");
         final List<LogEvent> events = app.getEvents();
         assertNotNull("No events", events);
-        assertTrue("Incorrect number of events. Expected 1, actual " + events.size(), events.size() == 1);
+        assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 1, events.size());
         final LogEvent event = events.get(0);
-        assertTrue("Test LogEventFactory wasn't used", event.getLoggerName().equals("Test"));
+        assertEquals("Test LogEventFactory wasn't used", "Test", event.getLoggerName());
     }
 
     public static class TestLogEventFactory implements LogEventFactory {
