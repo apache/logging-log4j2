@@ -54,11 +54,11 @@ public class UUIDTest {
                 }
             }
         }
-        assertTrue(errors + " duplicate UUIDS", errors == 0);
+        assertEquals(errors + " duplicate UUIDS", 0, errors);
         final int variant = uuid.variant();
-        assertTrue("Incorrect variant. Expected 2 got " + variant, variant == 2);
+        assertEquals("Incorrect variant. Expected 2 got " + variant, 2, variant);
         final int version = uuid.version();
-        assertTrue("Incorrect version. Expected 1 got " + version, version == 1);
+        assertEquals("Incorrect version. Expected 1 got " + version, 1, version);
         final long node = uuid.node();
         assertTrue("Invalid node", node != 0);
     }
@@ -90,12 +90,12 @@ public class UUIDTest {
                 }
             }
         }
-        assertTrue(errors + " duplicate UUIDS", errors == 0);
+        assertEquals(errors + " duplicate UUIDS", 0, errors);
     }
 
 
 
-    private class Worker extends Thread {
+    private static class Worker extends Thread {
 
         private final UUID[] uuids;
         private final long[] elapsed;
