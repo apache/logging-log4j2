@@ -60,9 +60,9 @@ public class MapFilterTest {
         msg.put("FromAccount", "211000");
         msg.put("Amount", "1000.00");
         assertTrue(filter.isStarted());
-        assertTrue(filter.filter(null, Level.DEBUG, null, msg, null) == Filter.Result.NEUTRAL);
+        assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.DEBUG, null, msg, null));
         msg.put("ToAccount", "111111");
-        assertTrue(filter.filter(null, Level.ERROR, null, msg, null) == Filter.Result.DENY);
+        assertSame(Filter.Result.DENY, filter.filter(null, Level.ERROR, null, msg, null));
         filter = MapFilter.createFilter(pairs, "or", null, null);
         filter.start();
         msg = new MapMessage();
@@ -70,9 +70,9 @@ public class MapFilterTest {
         msg.put("FromAccount", "211000");
         msg.put("Amount", "1000.00");
         assertTrue(filter.isStarted());
-        assertTrue(filter.filter(null, Level.DEBUG, null, msg, null) == Filter.Result.NEUTRAL);
+        assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.DEBUG, null, msg, null));
         msg.put("ToAccount", "111111");
-        assertTrue(filter.filter(null, Level.ERROR, null, msg, null) == Filter.Result.NEUTRAL);
+        assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.ERROR, null, msg, null));
     }
 
     @Test
@@ -86,10 +86,10 @@ public class MapFilterTest {
         assertFalse("Should not be And filter", mapFilter.isAnd());
         final Map<String, List<String>> map = mapFilter.getMap();
         assertNotNull("No Map", map);
-        assertTrue("No elements in Map", map.size() != 0);
-        assertTrue("Incorrect number of elements in Map", map.size() == 1);
+        assertFalse("No elements in Map", map.isEmpty());
+        assertEquals("Incorrect number of elements in Map", 1, map.size());
         assertTrue("Map does not contain key eventId", map.containsKey("eventId"));
-        assertTrue("List does not contain 2 elements", map.get("eventId").size() == 2);
+        assertEquals("List does not contain 2 elements", 2, map.get("eventId").size());
         final Logger logger = LogManager.getLogger(MapFilterTest.class);
         final Map<String, String> eventMap = new HashMap<String, String>();
         eventMap.put("eventId", "Login");
@@ -99,7 +99,7 @@ public class MapFilterTest {
         assertNotNull("No List appender", app);
         final List<String> msgs = ((ListAppender) app).getMessages();
         assertNotNull("No messages", msgs);
-        assertTrue("No messages", msgs.size() > 0);
+        assertFalse("No messages", msgs.isEmpty());
 
 
     }
