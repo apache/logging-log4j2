@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -106,5 +107,19 @@ public class InitialLoggerContext implements TestRule {
         final Appender appender = getAppender(name);
         assertNotNull("Appender named " + name + " was null.", appender);
         return appender;
+    }
+
+    /**
+     * Gets a named ListAppender or throws an exception for this LoggerContext.
+     * @param name the name of the ListAppender to look up.
+     * @return the named ListAppender.
+     * @throws AssertionError if the named ListAppender doesn't exist or isn't a ListAppender.
+     */
+    public ListAppender getListAppender(final String name) {
+        final Appender appender = getAppender(name);
+        if (appender instanceof ListAppender) {
+            return (ListAppender) appender;
+        }
+        throw new AssertionError("No ListAppender named " + name + " found.");
     }
 }
