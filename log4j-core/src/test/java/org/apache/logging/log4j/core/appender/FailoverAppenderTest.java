@@ -44,7 +44,7 @@ public class FailoverAppenderTest {
 
     @Before
     public void setUp() throws Exception {
-        app = (ListAppender) this.init.getAppender("List");
+        app = this.init.getListAppender("List");
         foApp = (FailOnceAppender) this.init.getAppender("Once");
         logger = this.init.getLogger("LoggerTest");
         onceLogger = this.init.getLogger("Once");
