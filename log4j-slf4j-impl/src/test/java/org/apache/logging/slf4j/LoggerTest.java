@@ -180,8 +180,7 @@ public class LoggerTest {
     }
 
     @Before
-    public void cleanup()
-    {
+    public void cleanup() {
         final Map<String, Appender> list = ctx.getConfiguration().getAppenders();
         final Appender listApp = list.get("List");
         ((ListAppender) listApp).clear();
