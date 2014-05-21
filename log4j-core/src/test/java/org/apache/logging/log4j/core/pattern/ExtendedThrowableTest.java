@@ -21,9 +21,8 @@ import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -34,28 +33,23 @@ import static org.junit.Assert.*;
 public class ExtendedThrowableTest {
     private ListAppender app;
 
-    @Rule
-    public InitialLoggerContext init = new InitialLoggerContext("log4j-throwablefilter.xml");
+    @ClassRule
+    public static InitialLoggerContext context = new InitialLoggerContext("log4j-throwablefilter.xml");
 
     @Before
     public void setUp() throws Exception {
-        this.app = (ListAppender) this.init.getContext().getConfiguration().getAppenders().get("List");
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        this.app.clear();
+        this.app = context.getListAppender("List").clear();
     }
 
     @Test
     public void testException() {
-        final Logger logger = this.init.getContext().getLogger("LoggerTest");
+        final Logger logger = context.getLogger("LoggerTest");
         final Throwable cause = new NullPointerException("null pointer");
         final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
         logger.error("Exception", parent);
         final List<String> msgs = app.getMessages();
         assertNotNull(msgs);
-        assertEquals("Incorrect number of messages. Should be 1 is " + msgs.size(), msgs.size(), 1);
+        assertEquals("Incorrect number of messages. Should be 1 is " + msgs.size(), 1, msgs.size());
         assertTrue("No suppressed lines", msgs.get(0).contains("suppressed"));
     }
 }
