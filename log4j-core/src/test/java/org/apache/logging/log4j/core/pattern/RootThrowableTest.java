@@ -17,17 +17,12 @@
 package org.apache.logging.log4j.core.pattern;
 
 import java.util.List;
-import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -37,39 +32,25 @@ import static org.junit.Assert.*;
  */
 public class RootThrowableTest {
     private static final String CONFIG = "log4j-rootthrowablefilter.xml";
-    private static Configuration config;
     private static ListAppender app;
-    private static LoggerContext ctx;
 
-    @BeforeClass
-    public static void setupClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        ctx = (LoggerContext) LogManager.getContext(false);
-        config = ctx.getConfiguration();
-        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
-            if (entry.getKey().equals("List")) {
-                app = (ListAppender) entry.getValue();
-            }
-        }
+    @ClassRule
+    public static InitialLoggerContext context = new InitialLoggerContext(CONFIG);
+
+    @Before
+    public void setUp() throws Exception {
+        app = context.getListAppender("List").clear();
     }
-
-    @AfterClass
-    public static void cleanupClass() {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        ctx.reconfigure();
-        StatusLogger.getLogger().reset();
-    }
-
-    org.apache.logging.log4j.Logger logger = LogManager.getLogger("LoggerTest");
 
     @Test
     public void testException() {
+        final Logger logger = context.getLogger("LoggerTest");
         final Throwable cause = new NullPointerException("null pointer");
         final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
         logger.error("Exception", parent);
         final List<String> msgs = app.getMessages();
         assertNotNull(msgs);
-        assertTrue("Incorrect number of messages. Should be 1 is " + msgs.size(), msgs.size() == 1);
+        assertEquals("Incorrect number of messages. Should be 1 is " + msgs.size(), 1, msgs.size());
         assertTrue("No suppressed lines", msgs.get(0).contains("suppressed"));
         app.clear();
     }
