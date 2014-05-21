@@ -39,7 +39,7 @@ public class KeyStoreConfiguration extends StoreConfiguration {
 
     public KeyStoreConfiguration(String location, String password) {
         super(location, password);
-        this.keyStoreType = SSLConfigurationDefaults.KEYSTORE_TYPE;
+        this.keyStoreType = SslConfigurationDefaults.KEYSTORE_TYPE;
         this.keyStore = null;
     }
 

@@ -52,7 +52,7 @@ public final class ZipCompressAction extends AbstractAction {
     private final int level;
 
     /**
-     * Create new instance of GZCompressAction.
+     * Create new instance of GzCompressAction.
      *
      * @param source       file to compress, may not be null.
      * @param destination  compressed file, may not be null.

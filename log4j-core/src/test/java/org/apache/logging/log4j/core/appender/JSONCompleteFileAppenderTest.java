@@ -34,9 +34,9 @@ import static org.junit.Assert.*;
  */
 public class JSONCompleteFileAppenderTest {
 
-    private final File logFile = new File("target", "JSONCompleteFileAppenderTest.log");
+    private final File logFile = new File("target", "JsonCompleteFileAppenderTest.log");
 
-    private final InitialLoggerContext init = new InitialLoggerContext("JSONCompleteFileAppenderTest.xml");
+    private final InitialLoggerContext init = new InitialLoggerContext("JsonCompleteFileAppenderTest.xml");
     private final CleanFiles files = new CleanFiles(logFile);
 
     @Rule

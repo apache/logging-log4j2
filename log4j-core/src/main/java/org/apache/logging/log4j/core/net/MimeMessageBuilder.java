@@ -26,7 +26,7 @@ import javax.mail.internet.MimeMessage;
 import org.apache.logging.log4j.core.util.Charsets;
 
 /**
- *  Helper class for SMTPManager.
+ *  Helper class for SmtpManager.
  */
 public class MimeMessageBuilder {
     private final MimeMessage message;

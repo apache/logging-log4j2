@@ -39,7 +39,7 @@ public class TrustStoreConfiguration extends StoreConfiguration {
 
     public TrustStoreConfiguration(String location, String password) {
         super(location, password);
-        trustStoreType = SSLConfigurationDefaults.KEYSTORE_TYPE;
+        trustStoreType = SslConfigurationDefaults.KEYSTORE_TYPE;
         trustStore = null;
     }
 

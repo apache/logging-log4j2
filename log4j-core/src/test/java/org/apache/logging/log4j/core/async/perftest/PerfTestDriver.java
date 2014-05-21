@@ -134,7 +134,7 @@ public class PerfTestDriver {
             String detail = _class.getSimpleName();
             if (PerfTest.class == _class) {
                 detail = "single thread";
-            } else if (MTPerfTest.class == _class) {
+            } else if (MtPerfTest.class == _class) {
                 detail = _threadCount + " threads";
             }
             final String target = _runner.substring(_runner.indexOf(".Run") + 4);
@@ -202,7 +202,7 @@ public class PerfTestDriver {
             final int threadCount, final String... systemProperties) throws IOException {
         final WaitStrategy wait = WaitStrategy.valueOf(System.getProperty(
                 "WaitStrategy", "Sleep"));
-        return new Setup(MTPerfTest.class, runner, name, config, threadCount,
+        return new Setup(MtPerfTest.class, runner, name, config, threadCount,
                 wait, systemProperties);
     }
 

@@ -28,12 +28,12 @@ import org.junit.BeforeClass;
 
 public class TcpSerializedSocketServerTest extends AbstractSocketServerTest {
     
-    private static TCPSocketServer<ObjectInputStream> server;
+    private static TcpSocketServer<ObjectInputStream> server;
 
     @BeforeClass
     public static void setupClass() throws Exception {
         ((LoggerContext) LogManager.getContext(false)).reconfigure();
-        server = TCPSocketServer.createSerializedSocketServer(PORT_NUM);
+        server = TcpSocketServer.createSerializedSocketServer(PORT_NUM);
         thread = server.startNewThread();
     }
 

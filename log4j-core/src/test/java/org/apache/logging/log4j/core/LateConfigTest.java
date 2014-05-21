@@ -21,7 +21,7 @@ import java.io.File;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.apache.logging.log4j.core.config.xml.XMLConfiguration;
+import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -55,7 +55,7 @@ public class LateConfigTest {
         assertNotNull("No Logger Context", loggerContext);
         final Configuration newConfig = loggerContext.getConfiguration();
         assertTrue("Configuration not reset", cfg != newConfig);
-        assertTrue("Reconfiguration failed", newConfig instanceof XMLConfiguration);
+        assertTrue("Reconfiguration failed", newConfig instanceof XmlConfiguration);
         ctx = (LoggerContext) LogManager.getContext(false);
         final Configuration sameConfig = ctx.getConfiguration();
         assertTrue("Configuration should not have been reset", newConfig == sameConfig);

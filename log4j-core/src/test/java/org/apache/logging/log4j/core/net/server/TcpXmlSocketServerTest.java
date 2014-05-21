@@ -28,13 +28,13 @@ import org.junit.BeforeClass;
 
 public class TcpXmlSocketServerTest extends AbstractSocketServerTest {
     
-    private static TCPSocketServer<InputStream> server;
+    private static TcpSocketServer<InputStream> server;
 
     @BeforeClass
     public static void setupClass() throws Exception {
         ((LoggerContext) LogManager.getContext(false)).reconfigure();
         // Use a large buffer just to test the code, the UDP test uses a tiny buffer
-        server = new TCPSocketServer<InputStream>(PORT_NUM, new XmlInputStreamLogEventBridge(1024 * 100,
+        server = new TcpSocketServer<InputStream>(PORT_NUM, new XmlInputStreamLogEventBridge(1024 * 100,
                 Charset.defaultCharset()));
         thread = server.startNewThread();
     }

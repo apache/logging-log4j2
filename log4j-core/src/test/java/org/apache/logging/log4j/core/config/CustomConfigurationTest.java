@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.FileAppender;
-import org.apache.logging.log4j.core.config.xml.XMLConfiguration;
+import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.apache.logging.log4j.status.StatusConsoleListener;
@@ -65,7 +65,7 @@ public class CustomConfigurationTest {
         final LoggerContext ctx = this.init.getContext();
         ctx.reconfigure();
         final Configuration config = ctx.getConfiguration();
-        assertTrue("Configuration is not an XMLConfiguration", config instanceof XMLConfiguration);
+        assertTrue("Configuration is not an XmlConfiguration", config instanceof XmlConfiguration);
         for (StatusListener listener : StatusLogger.getLogger().getListeners()) {
             if (listener instanceof StatusConsoleListener) {
                 assertSame(listener.getStatusLevel(), Level.INFO);

@@ -58,7 +58,7 @@ public abstract class AbstractPatternConverter implements PatternConverter {
     /**
      * This method returns the name of the conversion pattern.
      * <p/>
-     * The name can be useful to certain Layouts such as HTMLLayout.
+     * The name can be useful to certain Layouts such as HtmlLayout.
      *
      * @return the name of the conversion pattern
      */
@@ -71,7 +71,7 @@ public abstract class AbstractPatternConverter implements PatternConverter {
      * This method returns the CSS style class that should be applied to
      * the LoggingEvent passed as parameter, which can be null.
      * <p/>
-     * This information is currently used only by HTMLLayout.
+     * This information is currently used only by HtmlLayout.
      *
      * @param e null values are accepted
      * @return the name of the conversion pattern

@@ -32,7 +32,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.util.Patterns;
-import org.apache.logging.log4j.core.util.UUIDUtil;
+import org.apache.logging.log4j.core.util.UuidUtil;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataId;
@@ -127,7 +127,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
                 }
             }
         }
-        final String guid =  UUIDUtil.getTimeBasedUUID().toString();
+        final String guid =  UuidUtil.getTimeBasedUUID().toString();
         final Message message = event.getMessage();
         if (message instanceof MapMessage) {
             // Add the guid to the Map so that it can be included in the Layout.
