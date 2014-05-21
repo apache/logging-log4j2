@@ -39,16 +39,16 @@ public class MessagePatternConverterTest {
         LogEvent event = new Log4jLogEvent("MyLogger", null, null, Level.DEBUG, msg, null);
         StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
-        assertTrue("Unexpected result", "Hello!".equals(sb.toString()));
+        assertEquals("Unexpected result", "Hello!", sb.toString());
         event = new Log4jLogEvent("MyLogger", null, null, Level.DEBUG, null, null);
         sb = new StringBuilder();
         converter.format(event, sb);
-        assertTrue("Incorrect length: " + sb.length(), sb.length() == 0);
+        assertEquals("Incorrect length: " + sb.length(), 0, sb.length());
         msg = new SimpleMessage(null);
         event = new Log4jLogEvent("MyLogger", null, null, Level.DEBUG, msg, null);
         sb = new StringBuilder();
         converter.format(event, sb);
-        assertTrue("Incorrect length: " + sb.length(), sb.length() == 4);
+        assertEquals("Incorrect length: " + sb.length(), 4, sb.length());
 
     }
 
@@ -60,15 +60,15 @@ public class MessagePatternConverterTest {
         LogEvent event = new Log4jLogEvent("MyLogger", null, null, Level.DEBUG, msg, null);
         StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
-        assertTrue("Unexpected result", "Hello!".equals(sb.toString()));
+        assertEquals("Unexpected result", "Hello!", sb.toString());
         event = new Log4jLogEvent("MyLogger", null, null, Level.DEBUG, null, null);
         sb = new StringBuilder();
         converter.format(event, sb);
-        assertTrue("Incorrect length: " + sb.length(), sb.length() == 0);
+        assertEquals("Incorrect length: " + sb.length(), 0, sb.length());
         msg = new SimpleMessage(null);
         event = new Log4jLogEvent("MyLogger", null, null, Level.DEBUG, msg, null);
         sb = new StringBuilder();
         converter.format(event, sb);
-        assertTrue("Incorrect length: " + sb.length(), sb.length() == 4);
+        assertEquals("Incorrect length: " + sb.length(), 4, sb.length());
     }
 }
