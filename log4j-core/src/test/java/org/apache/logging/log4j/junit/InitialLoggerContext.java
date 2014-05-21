@@ -38,12 +38,15 @@ public class InitialLoggerContext implements TestRule {
 
     private LoggerContext context;
 
+    private String testClassName;
+
     public InitialLoggerContext(final String configLocation) {
         this.configLocation = configLocation;
     }
 
     @Override
     public Statement apply(final Statement base, final Description description) {
+        testClassName = description.getClassName();
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
@@ -68,6 +71,14 @@ public class InitialLoggerContext implements TestRule {
      */
     public LoggerContext getContext() {
         return context;
+    }
+
+    /**
+     * Gets a named Logger using the test class's name from this LoggerContext.
+     * @return the test class's named Logger.
+     */
+    public Logger getLogger() {
+        return context.getLogger(testClassName);
     }
 
     /**
