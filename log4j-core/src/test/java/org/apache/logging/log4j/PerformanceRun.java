@@ -28,6 +28,7 @@ import org.apache.logging.log4j.categories.PerformanceTests;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -68,7 +69,8 @@ public class PerformanceRun {
         System.out.println("###############################################");
     }
 
-    // @Test
+    @Test
+    @Ignore("Why was this test disabled?")
     public void testRawPerformance() throws Exception {
         final OutputStream os = new FileOutputStream("target/testos.log", true);
         final long result1 = writeToStream(COUNT, os);
