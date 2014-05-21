@@ -34,6 +34,7 @@ import org.apache.logging.log4j.core.layout.SerializedLayout;
 /**
  * This appender is primarily used for testing. Use in a real environment is discouraged as the
  * List could eventually grow to cause an OutOfMemoryError.
+ * @see org.apache.logging.log4j.junit.InitialLoggerContext#getListAppender(String) ILC.getListAppender
  */
 @Plugin(name = "List", category = "Core", elementType = "appender", printObject = true)
 public class ListAppender extends AbstractAppender {
@@ -99,7 +100,7 @@ public class ListAppender extends AbstractAppender {
             while (index < str.length()) {
                 int end;
                 final int wend = str.indexOf(WINDOWS_LINE_SEP, index);
-                final int lend = str.indexOf("\n", index);
+                final int lend = str.indexOf('\n', index);
                 int length;
                 if (wend >= 0 && wend < lend) {
                     end = wend;
@@ -109,7 +110,7 @@ public class ListAppender extends AbstractAppender {
                     length = 1;
                 }
                 if (index == end) {
-                    if (!messages.get(messages.size() - length).equals("")) {
+                    if (!messages.get(messages.size() - length).isEmpty()) {
                         messages.add("");
                     }
                 } else if (end >= 0) {
@@ -137,10 +138,11 @@ public class ListAppender extends AbstractAppender {
         }
     }
 
-    public synchronized void clear() {
+    public synchronized ListAppender clear() {
         events.clear();
         messages.clear();
         data.clear();
+        return this;
     }
 
     public synchronized List<LogEvent> getEvents() {
