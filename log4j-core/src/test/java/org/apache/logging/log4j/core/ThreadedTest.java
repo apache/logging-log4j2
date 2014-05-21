@@ -19,45 +19,53 @@ package org.apache.logging.log4j.core;
 import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.apache.logging.log4j.categories.PerformanceTests;
+import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.rules.RuleChain;
+import org.junit.rules.TestRule;
+import org.junit.runner.Description;
+import org.junit.runners.model.Statement;
 
 /**
  *
  */
+@Category(PerformanceTests.class)
 public class ThreadedTest {
     private static final String DIR = "target/threaded";
     private static final String CONFIG = "log4j-threaded.xml";
-    private final Logger logger = LogManager.getLogger(ThreadedTest.class.getName());
-    private volatile Level lvl = Level.DEBUG;
     private static final int LOOP_CNT = 25;
     private static final int THREADS = 4;
-    private static int counter = 0;
+    private static final AtomicInteger counter = new AtomicInteger(0);
+    private static final InitialLoggerContext context = new InitialLoggerContext(CONFIG);
 
-    @BeforeClass
-    public static void setupClass() {
-        deleteDir();
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
-        final Configuration config = ctx.getConfiguration();
-    }
+    private final Logger logger = context.getLogger(ThreadedTest.class.getName());
+    private volatile Level lvl = Level.DEBUG;
 
-    @AfterClass
-    public static void cleanupClass() {
-        deleteDir();
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
-        ctx.reconfigure();
-        StatusLogger.getLogger().reset();
-    }
+    // this would look pretty sweet with lambdas
+    @ClassRule
+    public static RuleChain chain = RuleChain.outerRule(new TestRule() {
+        @Override
+        public Statement apply(final Statement base, final Description description) {
+            return new Statement() {
+                @Override
+                public void evaluate() throws Throwable {
+                    deleteDir();
+                    try {
+                        base.evaluate();
+                    } finally {
+                        deleteDir();
+                    }
+                }
+            };
+        }
+    }).around(context);
 
     @Test
     public void testDeadlock() throws Exception {
@@ -119,8 +127,7 @@ public class ThreadedTest {
         }
 
         synchronized Object getState() {
-            ++counter;
-            return counter;
+            return counter.incrementAndGet();
         }
 
         @Override
