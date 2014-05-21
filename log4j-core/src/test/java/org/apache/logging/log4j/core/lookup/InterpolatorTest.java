@@ -44,17 +44,23 @@ public class InterpolatorTest {
     private static final String TEST_CONTEXT_RESOURCE_NAME = "logging/context-name";
     private static final String TEST_CONTEXT_NAME = "app-1";
 
+    private static Context context;
+
     @BeforeClass
     public static void before() throws NamingException {
         System.setProperty(TESTKEY, TESTVAL);
 
         MockContextFactory.setAsInitial();
-        Context context = new InitialContext();
+        context = new InitialContext();
         context.bind(JndiLookup.CONTAINER_JNDI_RESOURCE_PATH_PREFIX + TEST_CONTEXT_RESOURCE_NAME, TEST_CONTEXT_NAME);
     }
 
     @AfterClass
     public static void after() {
+        try {
+            context.close();
+        } catch (final NamingException ignored) {
+        }
         MockContextFactory.revertSetAsInitial();
 
         System.clearProperty(TESTKEY);
