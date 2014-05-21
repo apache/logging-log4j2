@@ -148,7 +148,6 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             return null;
         }
 
-
         return new FileAppender(name, layout, filter, manager, fileName, ignoreExceptions, isFlush,
                 isAdvertise ? config.getAdvertiser() : null);
     }
