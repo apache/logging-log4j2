@@ -147,7 +147,7 @@ public class SSLConfiguration {
             KeyManager[] kManagers = null;
             TrustManager[] tManagers = null;
 
-            SSLContext sslContext = SSLContext.getInstance(SSLConfigurationDefaults.PROTOCOL);
+            SSLContext newSslContext = SSLContext.getInstance(SSLConfigurationDefaults.PROTOCOL);
             if (!loadDefaultKeyManagerFactory) {
                 KeyManagerFactory kmFactory = loadKeyManagerFactory();
                 kManagers = kmFactory.getKeyManagers();
@@ -157,8 +157,8 @@ public class SSLConfiguration {
                 tManagers = tmFactory.getTrustManagers();
             }
 
-            sslContext.init(kManagers, tManagers, null);
-            return sslContext;
+            newSslContext.init(kManagers, tManagers, null);
+            return newSslContext;
         }
         catch (NoSuchAlgorithmException e) {
             LOGGER.error("No Provider supports a TrustManagerFactorySpi implementation for the specified protocol");
