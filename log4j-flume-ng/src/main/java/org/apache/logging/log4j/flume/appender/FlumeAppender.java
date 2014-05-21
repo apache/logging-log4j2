@@ -28,7 +28,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.layout.RFC5424Layout;
+import org.apache.logging.log4j.core.layout.Rfc5424Layout;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.Integers;
 
@@ -219,7 +219,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
         final int delay = Integers.parseInt(maxDelay, DEFAULT_MAX_DELAY);
 
         if (layout == null) {
-            layout = RFC5424Layout.createLayout(null, null, null, "True", null, mdcPrefix, eventPrefix,
+            layout = Rfc5424Layout.createLayout(null, null, null, "True", null, mdcPrefix, eventPrefix,
                     null, null, null, null, excludes, includes, required, null, null, null, null);
         }
 

@@ -24,7 +24,7 @@ import java.util.zip.Deflater;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
 import org.apache.logging.log4j.core.appender.rolling.action.FileRenameAction;
-import org.apache.logging.log4j.core.appender.rolling.action.GZCompressAction;
+import org.apache.logging.log4j.core.appender.rolling.action.GzCompressAction;
 import org.apache.logging.log4j.core.appender.rolling.action.ZipCompressAction;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -418,7 +418,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
 
         if (renameTo.endsWith(EXT_GZIP)) {
             renameTo = renameTo.substring(0, renameTo.length() - EXT_GZIP.length());
-            compressAction = new GZCompressAction(new File(renameTo), new File(compressedName), true);
+            compressAction = new GzCompressAction(new File(renameTo), new File(compressedName), true);
         } else if (renameTo.endsWith(EXT_ZIP)) {
             renameTo = renameTo.substring(0, renameTo.length() - EXT_ZIP.length());
             compressAction = new ZipCompressAction(new File(renameTo), new File(compressedName), true,

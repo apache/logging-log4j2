@@ -21,19 +21,19 @@ import java.net.SocketException;
 
 import javax.net.ssl.SSLServerSocket;
 
-import org.apache.logging.log4j.core.net.ssl.TLSSyslogMessageFormat;
+import org.apache.logging.log4j.core.net.ssl.TlsSyslogMessageFormat;
 
 public class MockSyslogServerFactory {
 
     public static MockSyslogServer createUDPSyslogServer(int numberOfMessagesToReceive, int port) throws SocketException {
-        return new MockUDPSyslogServer(numberOfMessagesToReceive, port);
+        return new MockUdpSyslogServer(numberOfMessagesToReceive, port);
     }
 
     public static MockSyslogServer createTCPSyslogServer(int numberOfMessagesToReceive, int port) throws IOException {
-        return new MockTCPSyslogServer(numberOfMessagesToReceive, port);
+        return new MockTcpSyslogServer(numberOfMessagesToReceive, port);
     }
 
-    public static MockSyslogServer createTLSSyslogServer(int numberOfMessagesToReceive, TLSSyslogMessageFormat format, SSLServerSocket serverSocket) {
-        return new MockTLSSyslogServer(numberOfMessagesToReceive, format, serverSocket);
+    public static MockSyslogServer createTLSSyslogServer(int numberOfMessagesToReceive, TlsSyslogMessageFormat format, SSLServerSocket serverSocket) {
+        return new MockTlsSyslogServer(numberOfMessagesToReceive, format, serverSocket);
    }
 }

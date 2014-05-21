@@ -27,12 +27,12 @@ import org.junit.BeforeClass;
 
 public class TcpJsonSocketServerTest extends AbstractSocketServerTest {
     
-    private static TCPSocketServer<InputStream> server;
+    private static TcpSocketServer<InputStream> server;
 
     @BeforeClass
     public static void setupClass() throws Exception {
         ((LoggerContext) LogManager.getContext(false)).reconfigure();
-        server = TCPSocketServer.createJsonSocketServer(PORT_NUM);
+        server = TcpSocketServer.createJsonSocketServer(PORT_NUM);
         thread = server.startNewThread();
     }
 

@@ -17,7 +17,7 @@
 /**
  * Supporting network code for JMS appenders.
  * <p/>
- * Note that you can use JMSQueueReceiver or JMSTopicReceiver as executable main classes to receive log events over
+ * Note that you can use JmsQueueReceiver or JmsTopicReceiver as executable main classes to receive log events over
  * JMS (sent via the appropriate JMS appender) that can be subsequently logged according to the configuration given to
  * the running process. Of course, use of these classes as standalone executables are entirely optional and can
  * be used directly in your application (e.g., through your Spring {@code beans.xml} configuration).

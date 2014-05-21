@@ -29,8 +29,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEventListener;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.xml.XMLConfiguration;
-import org.apache.logging.log4j.core.config.xml.XMLConfigurationFactory;
+import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
+import org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory;
 import org.apache.logging.log4j.core.util.Assert;
 
 /**
@@ -43,7 +43,7 @@ public abstract class AbstractSocketServer<T extends InputStream> extends LogEve
     /**
      * Factory that creates a Configuration for the server.
      */
-    protected static class ServerConfigurationFactory extends XMLConfigurationFactory {
+    protected static class ServerConfigurationFactory extends XmlConfigurationFactory {
 
         private final String path;
 
@@ -76,7 +76,7 @@ public abstract class AbstractSocketServer<T extends InputStream> extends LogEve
 
                 try {
                     if (source != null) {
-                        return new XMLConfiguration(source);
+                        return new XmlConfiguration(source);
                     }
                 } catch (final Exception ex) {
                     // Ignore this error.

@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.samples.dto;
 
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.util.UUIDUtil;
+import org.apache.logging.log4j.core.util.UuidUtil;
 
 /**
  *
@@ -57,7 +57,7 @@ public final class RequestContext {
 
     public static void initialize() {
         ThreadContext.clearMap();
-        ThreadContext.put(REQUEST_ID, UUIDUtil.getTimeBasedUUID().toString());
+        ThreadContext.put(REQUEST_ID, UuidUtil.getTimeBasedUUID().toString());
     }
 
     public static String getId() {

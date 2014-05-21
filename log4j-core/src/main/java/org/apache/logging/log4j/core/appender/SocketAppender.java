@@ -33,7 +33,7 @@ import org.apache.logging.log4j.core.net.AbstractSocketManager;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.net.DatagramSocketManager;
 import org.apache.logging.log4j.core.net.Protocol;
-import org.apache.logging.log4j.core.net.TCPSocketManager;
+import org.apache.logging.log4j.core.net.TcpSocketManager;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.util.EnglishEnums;
 
@@ -133,7 +133,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
                                                                final Layout<? extends Serializable> layout) {
         switch (p) {
             case TCP:
-                return TCPSocketManager.getSocketManager(host, port, delay, immediateFail, layout);
+                return TcpSocketManager.getSocketManager(host, port, delay, immediateFail, layout);
             case UDP:
                 return DatagramSocketManager.getSocketManager(host, port, layout);
             default:

@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.LoggerFields;
-import org.apache.logging.log4j.core.layout.RFC5424Layout;
+import org.apache.logging.log4j.core.layout.Rfc5424Layout;
 import org.apache.logging.log4j.core.layout.SyslogLayout;
 import org.apache.logging.log4j.core.net.AbstractSocketManager;
 import org.apache.logging.log4j.core.net.Advertiser;
@@ -125,7 +125,7 @@ public class SyslogAppender extends SocketAppender {
         final int port = AbstractAppender.parseInt(portNum, 0);
         final boolean isAdvertise = Boolean.parseBoolean(advertise);
         final Layout<? extends Serializable> layout = (RFC5424.equalsIgnoreCase(format) ?
-            RFC5424Layout.createLayout(facility, id, ein, includeMDC, mdcId, mdcPrefix, eventPrefix, includeNL,
+            Rfc5424Layout.createLayout(facility, id, ein, includeMDC, mdcId, mdcPrefix, eventPrefix, includeNL,
                 escapeNL, appName, msgId, excludes, includes, required, exceptionPattern, "false", loggerFields,
                 config) :
             SyslogLayout.createLayout(facility, includeNL, escapeNL, charsetName));
