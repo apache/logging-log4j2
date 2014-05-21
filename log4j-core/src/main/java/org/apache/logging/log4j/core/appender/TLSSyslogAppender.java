@@ -144,12 +144,12 @@ public final class TLSSyslogAppender extends SyslogAppender {
                 isAdvertise ? config.getAdvertiser() : null);
     }
 
-    public static AbstractSocketManager createSocketManager(final SSLConfiguration sslConf,
+    public static AbstractSocketManager createSocketManager(final SSLConfiguration sslConfig,
                                                             final String host,
                                                             final int port,
                                                             final int reconnectDelay,
                                                             final boolean fail,
                                                             final Layout<? extends Serializable> layout) {
-        return TLSSocketManager.getSocketManager(sslConf, host, port, reconnectDelay, fail, layout);
+        return TLSSocketManager.getSocketManager(sslConfig, host, port, reconnectDelay, fail, layout);
     }
 }
