@@ -29,12 +29,12 @@ import org.osgi.framework.launch.FrameworkFactory;
  * @author msicker
  * @version 1.0.0
  */
-public class OSGiRule extends ExternalResource {
+public class OsgiRule extends ExternalResource {
 
     private final FrameworkFactory factory;
     private Framework framework;
 
-    public OSGiRule(final FrameworkFactory factory) {
+    public OsgiRule(final FrameworkFactory factory) {
         this.factory = factory;
     }
 

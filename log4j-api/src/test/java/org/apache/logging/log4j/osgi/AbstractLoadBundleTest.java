@@ -42,7 +42,7 @@ public abstract class AbstractLoadBundleTest {
     protected abstract FrameworkFactory getFactory();
 
     @Rule
-    public OSGiRule osgi = new OSGiRule(getFactory());
+    public OsgiRule osgi = new OsgiRule(getFactory());
 
     private final BundleTestInfo bundleTestInfo;
 
