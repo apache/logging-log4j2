@@ -25,9 +25,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
 import org.apache.logging.log4j.categories.PerformanceTests;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -42,22 +41,15 @@ import org.junit.experimental.categories.Category;
 @Category(PerformanceTests.class)
 public class PerformanceRun {
 
-    private final Logger logger = LogManager.getLogger(PerformanceRun.class.getName());
+    private static final String CONFIG = "log4j2-perf.xml";
+
+    @ClassRule
+    public static InitialLoggerContext context = new InitialLoggerContext(CONFIG);
+
+    private final Logger logger = context.getLogger(PerformanceRun.class.getName());
 
     // How many times should we try to log:
     private static final int COUNT = 1000000;
-
-    private static final String CONFIG = "log4j2-perf.xml";
-
-    @BeforeClass
-    public static void setupClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-    }
-
-    @AfterClass
-    public static void cleanupClass() {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-    }
 
     @Test
     public void testPerformance() throws Exception {
