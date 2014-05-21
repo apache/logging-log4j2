@@ -34,18 +34,16 @@ import static org.junit.Assert.*;
 public class ExtendedLevelTest {
 
     private static final String CONFIG = "log4j-customLevel.xml";
-    private static ListAppender list1;
-    private static ListAppender list2;
+    private ListAppender list1;
+    private ListAppender list2;
 
     @ClassRule
     public static InitialLoggerContext context = new InitialLoggerContext(CONFIG);
 
     @Before
     public void before() {
-        list1 = (ListAppender) context.getRequiredAppender("List1");
-        list2 = (ListAppender) context.getRequiredAppender("List2");
-        list1.clear();
-        list2.clear();
+        list1 = context.getListAppender("List1").clear();
+        list2 = context.getListAppender("List2").clear();
     }
 
     @Test

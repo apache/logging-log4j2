@@ -33,7 +33,7 @@ import static org.junit.Assert.*;
 public class FileConfigTest {
 
     private static final String CONFIG = "target/test-classes/log4j-test2.xml";
-    private static ListAppender app;
+    private ListAppender app;
 
     @ClassRule
     public static InitialLoggerContext context = new InitialLoggerContext(CONFIG);
@@ -42,8 +42,7 @@ public class FileConfigTest {
 
     @Before
     public void before() {
-        app = (ListAppender) context.getRequiredAppender("List");
-        app.clear();
+        app = context.getListAppender("List").clear();
     }
 
     @Test

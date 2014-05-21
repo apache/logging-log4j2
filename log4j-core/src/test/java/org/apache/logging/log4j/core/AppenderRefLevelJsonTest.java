@@ -23,7 +23,6 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -35,17 +34,11 @@ import static org.junit.Assert.*;
 public class AppenderRefLevelJsonTest {
 
     private static final String CONFIG = "log4j-reference-level.json";
-    private static ListAppender app1;
-    private static ListAppender app2;
+    private ListAppender app1;
+    private ListAppender app2;
 
     @ClassRule
     public static InitialLoggerContext context = new InitialLoggerContext(CONFIG);
-
-    @BeforeClass
-    public static void setupClass() {
-        app1 = (ListAppender) context.getAppender("LIST1");
-        app2 = (ListAppender) context.getAppender("LIST2");
-    }
 
     org.apache.logging.log4j.Logger logger1 = context.getLogger("org.apache.logging.log4j.test1");
     org.apache.logging.log4j.Logger logger2 = context.getLogger("org.apache.logging.log4j.test2");
@@ -54,8 +47,8 @@ public class AppenderRefLevelJsonTest {
 
     @Before
     public void before() {
-        app1.clear();
-        app2.clear();
+        app1 = context.getListAppender("LIST1").clear();
+        app2 = context.getListAppender("LIST2").clear();
     }
 
     @Test

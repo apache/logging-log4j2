@@ -43,8 +43,7 @@ public class CollectionLoggingTest {
 
     @Before
     public void before() {
-        app = (ListAppender) context.getRequiredAppender("List");
-        app.clear();
+        app = context.getListAppender("List").clear();
     }
 
     @Test
@@ -52,6 +51,7 @@ public class CollectionLoggingTest {
         final Logger logger = context.getLogger(CollectionLoggingTest.class.getName());
         logger.error(System.getProperties());
         // logger.error(new MapMessage(System.getProperties()));
+        // TODO: some assertions
     }
 
     @Test
@@ -63,18 +63,21 @@ public class CollectionLoggingTest {
         map.put("MyKey2", "MyValue2");
         logger.error(new MapMessage(map));
         logger.error(map);
+        // TODO: some assertions
     }
 
     @Test
     public void testNetworkInterfaces() throws SocketException {
         final Logger logger = context.getLogger(CollectionLoggingTest.class.getName());
         logger.error(NetworkInterface.getNetworkInterfaces());
+        // TODO: some assertions
     }
 
     @Test
     public void testAvailableCharsets() throws SocketException {
         final Logger logger = context.getLogger(CollectionLoggingTest.class.getName());
         logger.error(Charset.availableCharsets());
+        // TODO: some assertions
     }
 
 }
