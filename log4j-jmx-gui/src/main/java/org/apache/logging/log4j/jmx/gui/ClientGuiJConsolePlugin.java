@@ -25,15 +25,15 @@ import javax.swing.SwingWorker;
 import com.sun.tools.jconsole.JConsolePlugin;
 
 /**
- * Adapts the {@code ClientGUI} to the {@code JConsolePlugin} API.
+ * Adapts the {@code ClientGui} to the {@code JConsolePlugin} API.
  */
-public class ClientGUIJConsolePlugin extends JConsolePlugin {
+public class ClientGuiJConsolePlugin extends JConsolePlugin {
 
     @Override
     public Map<String, JPanel> getTabs() {
         try {
             final Client client = new Client(getContext().getMBeanServerConnection());
-            final ClientGUI gui = new ClientGUI(client);
+            final ClientGui gui = new ClientGui(client);
             final Map<String, JPanel> result = new HashMap<String, JPanel>();
             result.put("Log4j2", gui);
             return result;

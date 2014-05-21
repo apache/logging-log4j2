@@ -67,7 +67,7 @@ import org.apache.logging.log4j.core.util.Assert;
  *      >http://docs.oracle.com/javase/6/docs/technotes/guides/management/
  *      jconsole.html</a >
  */
-public class ClientGUI extends JPanel implements NotificationListener {
+public class ClientGui extends JPanel implements NotificationListener {
     private static final long serialVersionUID = -253621277232291174L;
     private static final int INITIAL_STRING_WRITER_SIZE = 1024;
     private final Client client;
@@ -75,7 +75,7 @@ public class ClientGUI extends JPanel implements NotificationListener {
     private final Map<ObjectName, JTextArea> statusLogTextAreaMap = new HashMap<ObjectName, JTextArea>();
     private JTabbedPane tabbedPaneContexts;
 
-    public ClientGUI(final Client client) throws IOException, JMException {
+    public ClientGui(final Client client) throws IOException, JMException {
         this.client = Assert.requireNonNull(client, "client");
         createWidgets();
         populateWidgets();
@@ -282,7 +282,7 @@ public class ClientGUI extends JPanel implements NotificationListener {
             public void run() {
                 installLookAndFeel();
                 try {
-                    final ClientGUI gui = new ClientGUI(client);
+                    final ClientGui gui = new ClientGui(client);
                     final JFrame frame = new JFrame(title);
                     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     frame.getContentPane().add(gui, BorderLayout.CENTER);
@@ -305,7 +305,7 @@ public class ClientGUI extends JPanel implements NotificationListener {
     }
 
     private static void usage() {
-        final String me = ClientGUI.class.getName();
+        final String me = ClientGui.class.getName();
         System.err.println("Usage: java " + me + " <host>:<port>");
         System.err.println("   or: java " + me + " service:jmx:rmi:///jndi/rmi://<host>:<port>/jmxrmi");
         final String longAdr = " service:jmx:rmi://<host>:<port>/jndi/rmi://<host>:<port>/jmxrmi";
