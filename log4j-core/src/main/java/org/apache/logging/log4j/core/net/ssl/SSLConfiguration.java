@@ -249,10 +249,10 @@ public class SSLConfiguration {
     }
 
     /**
-     * Create an SSLConfiguration from a KeyStoreConfiguration and a TrustStoreConfiguration.
+     * Creates an SSLConfiguration from a KeyStoreConfiguration and a TrustStoreConfiguration.
      * @param keyStoreConfig The KeyStoreConfiguration.
      * @param trustStoreConfig The TrustStoreConfiguration.
-     * @return
+     * @return a new SSLConfiguration
      */
     @PluginFactory
     public static SSLConfiguration createSSLConfiguration(
