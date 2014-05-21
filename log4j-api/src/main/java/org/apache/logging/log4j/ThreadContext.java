@@ -197,7 +197,7 @@ public final class ThreadContext  {
     /**
      * <em>Consider private, used for testing.</em>
      */
-    public static void init() {
+    static void init() {
         contextMap = null;
         final PropertiesUtil managerProps = PropertiesUtil.getProperties();
         disableAll = managerProps.getBooleanProperty(DISABLE_ALL);
