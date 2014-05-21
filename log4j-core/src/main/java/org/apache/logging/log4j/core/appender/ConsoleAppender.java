@@ -71,7 +71,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
      * Create a Console Appender.
      * @param layout The layout to use (required).
      * @param filter The Filter or null.
-     * @param t The target ("SYSTEM_OUT" or "SYSTEM_ERR"). The default is "SYSTEM_OUT".
+     * @param targetStr The target ("SYSTEM_OUT" or "SYSTEM_ERR"). The default is "SYSTEM_OUT".
      * @param follow If true will follow changes to the underlying output stream.
      * @param name The name of the Appender (required).
      * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
@@ -82,7 +82,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
     public static ConsoleAppender createAppender(
             @PluginElement("Layout") Layout<? extends Serializable> layout,
             @PluginElement("Filters") final Filter filter,
-            @PluginAttribute("target") final String t,
+            @PluginAttribute("target") final String targetStr,
             @PluginAttribute("name") final String name,
             @PluginAttribute("follow") final String follow,
             @PluginAttribute("ignoreExceptions") final String ignore) {
@@ -95,7 +95,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         }
         final boolean isFollow = Boolean.parseBoolean(follow);
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
-        final Target target = t == null ? Target.SYSTEM_OUT : Target.valueOf(t);
+        final Target target = targetStr == null ? Target.SYSTEM_OUT : Target.valueOf(targetStr);
         return new ConsoleAppender(name, layout, filter, getManager(isFollow, target, layout), ignoreExceptions);
     }
 
