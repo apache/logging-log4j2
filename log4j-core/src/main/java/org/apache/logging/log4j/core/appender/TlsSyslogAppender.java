@@ -135,21 +135,12 @@ public final class TlsSyslogAppender extends SyslogAppender {
             LOGGER.error("No name provided for TlsSyslogAppender");
             return null;
         }
-        final AbstractSocketManager manager = createSocketManager(sslConfig, host, port, reconnectDelay, fail, layout);
+        final AbstractSocketManager manager = TlsSocketManager.getSocketManager(sslConfig, host, port, reconnectDelay, fail, layout);
         if (manager == null) {
             return null;
         }
 
         return new TlsSyslogAppender(name, layout, filter, ignoreExceptions, isFlush, manager,
                 isAdvertise ? config.getAdvertiser() : null);
-    }
-
-    public static AbstractSocketManager createSocketManager(final SslConfiguration sslConfig,
-                                                            final String host,
-                                                            final int port,
-                                                            final int reconnectDelay,
-                                                            final boolean fail,
-                                                            final Layout<? extends Serializable> layout) {
-        return TlsSocketManager.getSocketManager(sslConfig, host, port, reconnectDelay, fail, layout);
     }
 }
