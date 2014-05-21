@@ -29,17 +29,17 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
  */
 abstract class ThrowableProxyMixIn {
 
-    @JsonProperty(JSONConstants.ELT_CAUSE)
-    @JacksonXmlProperty(namespace = XMLConstants.XML_NAMESPACE, localName = XMLConstants.ELT_CAUSE)
+    @JsonProperty(JsonConstants.ELT_CAUSE)
+    @JacksonXmlProperty(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_CAUSE)
     private ThrowableProxyMixIn causeProxy;
 
     @JsonProperty
     @JacksonXmlProperty(isAttribute = true)
     private int commonElementCount;
 
-    @JsonProperty(JSONConstants.ELT_EXTENDED_STACK_TRACE)
-    @JacksonXmlElementWrapper(namespace = XMLConstants.XML_NAMESPACE, localName = XMLConstants.ELT_EXTENDED_STACK_TRACE)
-    @JacksonXmlProperty(namespace = XMLConstants.XML_NAMESPACE, localName = XMLConstants.ELT_EXTENDED_STACK_TRACE_ITEM)
+    @JsonProperty(JsonConstants.ELT_EXTENDED_STACK_TRACE)
+    @JacksonXmlElementWrapper(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_EXTENDED_STACK_TRACE)
+    @JacksonXmlProperty(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_EXTENDED_STACK_TRACE_ITEM)
     private ExtendedStackTraceElement[] extendedStackTrace;
 
     @JsonProperty
@@ -66,9 +66,9 @@ abstract class ThrowableProxyMixIn {
     @JsonIgnore
     public abstract StackTraceElement[] getStackTrace();
 
-    @JsonProperty(JSONConstants.ELT_SUPPRESSED)
-    @JacksonXmlElementWrapper(namespace = XMLConstants.XML_NAMESPACE, localName = XMLConstants.ELT_SUPPRESSED)
-    @JacksonXmlProperty(namespace = XMLConstants.XML_NAMESPACE, localName = XMLConstants.ELT_SUPPRESSED_ITEM)
+    @JsonProperty(JsonConstants.ELT_SUPPRESSED)
+    @JacksonXmlElementWrapper(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_SUPPRESSED)
+    @JacksonXmlProperty(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_SUPPRESSED_ITEM)
     public abstract ThrowableProxy[] getSuppressedProxies();
 
     @JsonIgnore

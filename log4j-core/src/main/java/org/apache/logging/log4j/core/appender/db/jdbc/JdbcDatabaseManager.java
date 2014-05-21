@@ -34,7 +34,7 @@ import org.apache.logging.log4j.core.util.Closer;
 /**
  * An {@link AbstractDatabaseManager} implementation for relational databases accessed via JDBC.
  */
-public final class JDBCDatabaseManager extends AbstractDatabaseManager {
+public final class JdbcDatabaseManager extends AbstractDatabaseManager {
     private static final JDBCDatabaseManagerFactory FACTORY = new JDBCDatabaseManagerFactory();
 
     private final List<Column> columns;
@@ -44,7 +44,7 @@ public final class JDBCDatabaseManager extends AbstractDatabaseManager {
     private Connection connection;
     private PreparedStatement statement;
 
-    private JDBCDatabaseManager(final String name, final int bufferSize, final ConnectionSource connectionSource,
+    private JdbcDatabaseManager(final String name, final int bufferSize, final ConnectionSource connectionSource,
                                 final String sqlStatement, final List<Column> columns) {
         super(name, bufferSize);
         this.connectionSource = connectionSource;
@@ -153,7 +153,7 @@ public final class JDBCDatabaseManager extends AbstractDatabaseManager {
     }
 
     /**
-     * Creates a JDBC manager for use within the {@link JDBCAppender}, or returns a suitable one if it already exists.
+     * Creates a JDBC manager for use within the {@link JdbcAppender}, or returns a suitable one if it already exists.
      *
      * @param name The name of the manager, which should include connection details and hashed passwords where possible.
      * @param bufferSize The size of the log event buffer.
@@ -162,7 +162,7 @@ public final class JDBCDatabaseManager extends AbstractDatabaseManager {
      * @param columnConfigs Configuration information about the log table columns.
      * @return a new or existing JDBC manager as applicable.
      */
-    public static JDBCDatabaseManager getJDBCDatabaseManager(final String name, final int bufferSize,
+    public static JdbcDatabaseManager getJDBCDatabaseManager(final String name, final int bufferSize,
                                                              final ConnectionSource connectionSource,
                                                              final String tableName,
                                                              final ColumnConfig[] columnConfigs) {
@@ -192,9 +192,9 @@ public final class JDBCDatabaseManager extends AbstractDatabaseManager {
     /**
      * Creates managers.
      */
-    private static final class JDBCDatabaseManagerFactory implements ManagerFactory<JDBCDatabaseManager, FactoryData> {
+    private static final class JDBCDatabaseManagerFactory implements ManagerFactory<JdbcDatabaseManager, FactoryData> {
         @Override
-        public JDBCDatabaseManager createManager(final String name, final FactoryData data) {
+        public JdbcDatabaseManager createManager(final String name, final FactoryData data) {
             final StringBuilder columnPart = new StringBuilder();
             final StringBuilder valuePart = new StringBuilder();
             final List<Column> columns = new ArrayList<Column>();
@@ -220,7 +220,7 @@ public final class JDBCDatabaseManager extends AbstractDatabaseManager {
             final String sqlStatement = "INSERT INTO " + data.tableName + " (" + columnPart + ") VALUES (" +
                     valuePart + ')';
 
-            return new JDBCDatabaseManager(name, data.getBufferSize(), data.connectionSource, sqlStatement, columns);
+            return new JdbcDatabaseManager(name, data.getBufferSize(), data.connectionSource, sqlStatement, columns);
         }
     }
 

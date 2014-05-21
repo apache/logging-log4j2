@@ -28,10 +28,12 @@ import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+@Ignore("Currently needs better port choosing support")
 public class SocketReconnectTest {
     private static final int SOCKET_PORT = 5514;
 

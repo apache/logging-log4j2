@@ -32,7 +32,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
 /**
- * A {@link JDBCAppender} connection source that uses a public static factory method to obtain a {@link Connection} or
+ * A {@link JdbcAppender} connection source that uses a public static factory method to obtain a {@link Connection} or
  * {@link DataSource}.
  */
 @Plugin(name = "ConnectionFactory", category = "Core", elementType = "connectionSource", printObject = true)

@@ -38,11 +38,11 @@ import org.apache.logging.log4j.util.Strings;
  * @see AbstractLogEventWrapperEntity
  */
 @Plugin(name = "JPA", category = "Core", elementType = "appender", printObject = true)
-public final class JPAAppender extends AbstractDatabaseAppender<JPADatabaseManager> {
+public final class JpaAppender extends AbstractDatabaseAppender<JpaDatabaseManager> {
     private final String description;
 
-    private JPAAppender(final String name, final Filter filter, final boolean ignoreExceptions,
-            final JPADatabaseManager manager) {
+    private JpaAppender(final String name, final Filter filter, final boolean ignoreExceptions,
+            final JpaDatabaseManager manager) {
         super(name, filter, ignoreExceptions, manager);
         this.description = this.getName() + "{ manager=" + this.getManager() + " }";
     }
@@ -67,7 +67,7 @@ public final class JPAAppender extends AbstractDatabaseAppender<JPADatabaseManag
      * @return a new JPA appender.
      */
     @PluginFactory
-    public static JPAAppender createAppender(
+    public static JpaAppender createAppender(
             @PluginAttribute("name") final String name,
             @PluginAttribute("ignoreExceptions") final String ignore,
             @PluginElement("Filter") final Filter filter,
@@ -106,14 +106,14 @@ public final class JPAAppender extends AbstractDatabaseAppender<JPADatabaseManag
             final String managerName = "jpaManager{ description=" + name + ", bufferSize=" + bufferSizeInt
                     + ", persistenceUnitName=" + persistenceUnitName + ", entityClass=" + entityClass.getName() + '}';
 
-            final JPADatabaseManager manager = JPADatabaseManager.getJPADatabaseManager(
+            final JpaDatabaseManager manager = JpaDatabaseManager.getJPADatabaseManager(
                     managerName, bufferSizeInt, entityClass, entityConstructor, persistenceUnitName
             );
             if (manager == null) {
                 return null;
             }
 
-            return new JPAAppender(name, filter, ignoreExceptions, manager);
+            return new JpaAppender(name, filter, ignoreExceptions, manager);
         } catch (final ClassNotFoundException e) {
             LOGGER.error("Could not load entity class [{}].", entityClassName, e);
             return null;

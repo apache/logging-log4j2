@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.jackson;
 /**
  * Keeps constants separate from any class that may depend on third party jars.
  */
-public final class JSONConstants {
+public final class JsonConstants {
     public static final String ELT_CAUSE = "cause";
     public static final String ELT_CONTEXT_MAP = "contextMap";
     public static final String ELT_CONTEXT_STACK = "contextStack";

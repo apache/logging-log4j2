@@ -41,9 +41,9 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Tests the JSONLayout class.
+ * Tests the JsonLayout class.
  */
-public class JSONLayoutTest {
+public class JsonLayoutTest {
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
     private static final String DQUOTE = "\"";
@@ -102,7 +102,7 @@ public class JSONLayoutTest {
 
     private void testAllFeatures(final boolean includeSource, final boolean compact, final boolean includeContext) throws Exception {
         final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
-        final AbstractJacksonLayout layout = JSONLayout.createLayout(Boolean.toString(includeSource), Boolean.toString(includeContext),
+        final AbstractJacksonLayout layout = JsonLayout.createLayout(Boolean.toString(includeSource), Boolean.toString(includeContext),
                 "false", Boolean.toString(compact), "UTF-8");
         final String str = layout.toSerializable(expected);
         // System.out.println(str);
@@ -159,13 +159,13 @@ public class JSONLayoutTest {
 
     @Test
     public void testContentType() {
-        final AbstractJacksonLayout layout = JSONLayout.createLayout(null, null, null, null, null);
+        final AbstractJacksonLayout layout = JsonLayout.createLayout(null, null, null, null, null);
         assertEquals("application/json; charset=UTF-8", layout.getContentType());
     }
 
     @Test
     public void testDefaultCharset() {
-        final AbstractJacksonLayout layout = JSONLayout.createLayout(null, null, null, null, null);
+        final AbstractJacksonLayout layout = JsonLayout.createLayout(null, null, null, null, null);
         assertEquals(Charsets.UTF_8, layout.getCharset());
     }
 
@@ -176,7 +176,7 @@ public class JSONLayoutTest {
             this.rootLogger.removeAppender(appender);
         }
         // set up appender
-        final AbstractJacksonLayout layout = JSONLayout.createLayout("true", "true", "true", "false", null);
+        final AbstractJacksonLayout layout = JsonLayout.createLayout("true", "true", "true", "false", null);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
@@ -211,7 +211,7 @@ public class JSONLayoutTest {
             this.rootLogger.removeAppender(appender);
         }
         // set up appender
-        final AbstractJacksonLayout layout = JSONLayout.createLayout("true", "true", "true", "false", null);
+        final AbstractJacksonLayout layout = JsonLayout.createLayout("true", "true", "true", "false", null);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
@@ -250,7 +250,7 @@ public class JSONLayoutTest {
 
     @Test
     public void testLayoutLoggerName() throws Exception {
-        final AbstractJacksonLayout layout = JSONLayout.createLayout("false", null, "false", "true", "UTF-8");
+        final AbstractJacksonLayout layout = JsonLayout.createLayout("false", null, "false", "true", "UTF-8");
         final Log4jLogEvent expected = Log4jLogEvent.createEvent("a.B", null, "f.q.c.n", Level.DEBUG, new SimpleMessage("M"), null, null,
                 null, "threadName", null, 1);
         final String str = layout.toSerializable(expected);
