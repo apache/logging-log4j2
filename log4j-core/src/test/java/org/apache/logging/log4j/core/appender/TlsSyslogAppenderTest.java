@@ -45,9 +45,9 @@ public class TlsSyslogAppenderTest extends SyslogAppenderTest{
     }
 
     @Test
-    public void sendLargeLegacyBSDMessageOverTLS() throws IOException, InterruptedException {
+    public void sendLargeLegacyBsdMessageOverTls() throws IOException, InterruptedException {
         String prefix = "BEGIN";
-        initTLSTestEnvironment(1, TlsSyslogMessageFormat.LEGACY_BSD);
+        initTlsTestEnvironment(1, TlsSyslogMessageFormat.LEGACY_BSD);
 
         char[] msg = new char[2 * 1024 * 2014 + prefix.length()];
         Arrays.fill(msg, 'a');
@@ -56,25 +56,25 @@ public class TlsSyslogAppenderTest extends SyslogAppenderTest{
     }
 
     @Test
-    public void sendLegacyBSDMessagesOverTLS() throws IOException, InterruptedException {
+    public void sendLegacyBsdMessagesOverTls() throws IOException, InterruptedException {
         int numberOfMessages = 100;
-        initTLSTestEnvironment(100, TlsSyslogMessageFormat.LEGACY_BSD);
+        initTlsTestEnvironment(100, TlsSyslogMessageFormat.LEGACY_BSD);
 
         List<String> sentMessages = TlsSyslogTestUtil.generateMessages(numberOfMessages, TlsSyslogMessageFormat.LEGACY_BSD);
         sendAndCheckLegacyBSDMessages(sentMessages);
     }
 
     @Test
-    public void sendStructuredMessageOverTLS() throws InterruptedException, IOException {
-        initTLSTestEnvironment(1, TlsSyslogMessageFormat.SYSLOG);
+    public void sendStructuredMessageOverTls() throws InterruptedException, IOException {
+        initTlsTestEnvironment(1, TlsSyslogMessageFormat.SYSLOG);
 
         sendAndCheckStructuredMessage();
     }
 
     @Test
-    public void sendStructuredMessagesOverTLS() throws IOException, InterruptedException {
+    public void sendStructuredMessagesOverTls() throws IOException, InterruptedException {
         int numberOfMessages = 100;
-        initTLSTestEnvironment(100, TlsSyslogMessageFormat.SYSLOG);
+        initTlsTestEnvironment(100, TlsSyslogMessageFormat.SYSLOG);
 
         sendAndCheckStructuredMessages(numberOfMessages);
     }
@@ -100,7 +100,7 @@ public class TlsSyslogAppenderTest extends SyslogAppenderTest{
                 null, format, null, null, null, null, null, null);
     }
 
-    private void initTLSTestEnvironment(int numberOfMessages, TlsSyslogMessageFormat messageFormat) throws IOException {
+    private void initTlsTestEnvironment(int numberOfMessages, TlsSyslogMessageFormat messageFormat) throws IOException {
         this.messageFormat = messageFormat;
         SSLServerSocket sslServerSocket = (SSLServerSocket) serverSocketFactory.createServerSocket(PORTNUM);
 
