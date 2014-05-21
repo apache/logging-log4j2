@@ -17,19 +17,14 @@
 package org.apache.logging.log4j.core.pattern;
 
 import java.util.List;
-import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -39,63 +34,51 @@ import static org.junit.Assert.*;
  */
 public class RegexReplacementTest {
     private static final String CONFIG = "log4j-replace.xml";
-    private static Configuration config;
     private static ListAppender app;
     private static ListAppender app2;
-    private static LoggerContext ctx;
 
     private static final String EXPECTED = "/RegexReplacementTest" + Constants.LINE_SEPARATOR;
 
-    @BeforeClass
-    public static void setupClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        ctx = (LoggerContext) LogManager.getContext(false);
-        config = ctx.getConfiguration();
-        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
-            if (entry.getKey().equals("List")) {
-                app = (ListAppender) entry.getValue();
-            }
-            if (entry.getKey().equals("List2")) {
-                app2 = (ListAppender) entry.getValue();
-            }
-        }
+    @ClassRule
+    public static InitialLoggerContext context = new InitialLoggerContext(CONFIG);
+
+    @Before
+    public void setUp() throws Exception {
+        app = context.getListAppender("List").clear();
+        app2 = context.getListAppender("List2").clear();
     }
 
-    @AfterClass
-    public static void cleanupClass() {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        ctx.reconfigure();
-        StatusLogger.getLogger().reset();
+    @After
+    public void tearDown() throws Exception {
         ThreadContext.clearMap();
     }
 
-    org.apache.logging.log4j.Logger logger = LogManager.getLogger("LoggerTest");
-    org.apache.logging.log4j.Logger logger2 = LogManager.getLogger("ReplacementTest");
+    org.apache.logging.log4j.Logger logger = context.getLogger("LoggerTest");
+    org.apache.logging.log4j.Logger logger2 = context.getLogger("ReplacementTest");
 
     @Test
     public void testReplacement() {
         logger.error(this.getClass().getName());
         List<String> msgs = app.getMessages();
         assertNotNull(msgs);
-        assertTrue("Incorrect number of messages. Should be 1 is " + msgs.size(), msgs.size() == 1);
-        assertTrue("Replacement failed - expected ending " + EXPECTED + " Actual " + msgs.get(0), msgs.get(0).endsWith(EXPECTED));
+        assertEquals("Incorrect number of messages. Should be 1 is " + msgs.size(), 1, msgs.size());
+        assertTrue("Replacement failed - expected ending " + EXPECTED + " Actual " + msgs.get(0),
+            msgs.get(0).endsWith(EXPECTED));
         app.clear();
         ThreadContext.put("MyKey", "Apache");
         logger.error("This is a test for ${ctx:MyKey}");
         msgs = app.getMessages();
         assertNotNull(msgs);
-        assertTrue("Incorrect number of messages. Should be 1 is " + msgs.size(), msgs.size() == 1);
-        assertEquals("LoggerTest This is a test for Apache" + Constants.LINE_SEPARATOR , msgs.get(0));
-        app.clear();
-
+        assertEquals("Incorrect number of messages. Should be 1 is " + msgs.size(), 1, msgs.size());
+        assertEquals("LoggerTest This is a test for Apache" + Constants.LINE_SEPARATOR, msgs.get(0));
     }
      @Test
     public void testConverter() {
         logger2.error(this.getClass().getName());
         final List<String> msgs = app2.getMessages();
         assertNotNull(msgs);
-        assertTrue("Incorrect number of messages. Should be 1 is " + msgs.size(), msgs.size() == 1);
-         assertTrue("Replacement failed - expected ending " + EXPECTED + " Actual " + msgs.get(0), msgs.get(0).endsWith(EXPECTED));
-        app2.clear();
+         assertEquals("Incorrect number of messages. Should be 1 is " + msgs.size(), 1, msgs.size());
+         assertTrue("Replacement failed - expected ending " + EXPECTED + " Actual " + msgs.get(0),
+             msgs.get(0).endsWith(EXPECTED));
     }
 }
