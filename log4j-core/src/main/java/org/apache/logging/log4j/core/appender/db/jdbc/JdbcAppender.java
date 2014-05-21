@@ -28,18 +28,18 @@ import org.apache.logging.log4j.core.util.Booleans;
 /**
  * This Appender writes logging events to a relational database using standard JDBC mechanisms. It takes a list of
  * {@link ColumnConfig}s with which it determines how to save the event data into the appropriate columns in the table.
- * A {@link ConnectionSource} plugin instance instructs the appender (and {@link JDBCDatabaseManager}) how to connect to
+ * A {@link ConnectionSource} plugin instance instructs the appender (and {@link JdbcDatabaseManager}) how to connect to
  * the database. This appender can be reconfigured at run time.
  *
  * @see ColumnConfig
  * @see ConnectionSource
  */
 @Plugin(name = "JDBC", category = "Core", elementType = "appender", printObject = true)
-public final class JDBCAppender extends AbstractDatabaseAppender<JDBCDatabaseManager> {
+public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseManager> {
     private final String description;
 
-    private JDBCAppender(final String name, final Filter filter, final boolean ignoreExceptions,
-                         final JDBCDatabaseManager manager) {
+    private JdbcAppender(final String name, final Filter filter, final boolean ignoreExceptions,
+                         final JdbcDatabaseManager manager) {
         super(name, filter, ignoreExceptions, manager);
         this.description = this.getName() + "{ manager=" + this.getManager() + " }";
     }
@@ -65,7 +65,7 @@ public final class JDBCAppender extends AbstractDatabaseAppender<JDBCDatabaseMan
      * @return a new JDBC appender.
      */
     @PluginFactory
-    public static JDBCAppender createAppender(
+    public static JdbcAppender createAppender(
             @PluginAttribute("name") final String name,
             @PluginAttribute("ignoreExceptions") final String ignore,
             @PluginElement("Filter") final Filter filter,
@@ -91,13 +91,13 @@ public final class JDBCAppender extends AbstractDatabaseAppender<JDBCDatabaseMan
 
         managerName.append(" ] }");
 
-        final JDBCDatabaseManager manager = JDBCDatabaseManager.getJDBCDatabaseManager(
+        final JdbcDatabaseManager manager = JdbcDatabaseManager.getJDBCDatabaseManager(
                 managerName.toString(), bufferSizeInt, connectionSource, tableName, columnConfigs
         );
         if (manager == null) {
             return null;
         }
 
-        return new JDBCAppender(name, filter, ignoreExceptions, manager);
+        return new JdbcAppender(name, filter, ignoreExceptions, manager);
     }
 }

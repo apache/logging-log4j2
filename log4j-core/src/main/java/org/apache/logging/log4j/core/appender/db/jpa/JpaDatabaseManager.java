@@ -31,7 +31,7 @@ import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
 /**
  * An {@link AbstractDatabaseManager} implementation for relational databases accessed via JPA.
  */
-public final class JPADatabaseManager extends AbstractDatabaseManager {
+public final class JpaDatabaseManager extends AbstractDatabaseManager {
     private static final JPADatabaseManagerFactory FACTORY = new JPADatabaseManagerFactory();
 
     private final String entityClassName;
@@ -43,7 +43,7 @@ public final class JPADatabaseManager extends AbstractDatabaseManager {
     private EntityManager entityManager;
     private EntityTransaction transaction;
 
-    private JPADatabaseManager(final String name, final int bufferSize,
+    private JpaDatabaseManager(final String name, final int bufferSize,
                                final Class<? extends AbstractLogEventWrapperEntity> entityClass,
                                final Constructor<? extends AbstractLogEventWrapperEntity> entityConstructor,
                                final String persistenceUnitName) {
@@ -133,7 +133,7 @@ public final class JPADatabaseManager extends AbstractDatabaseManager {
     }
 
     /**
-     * Creates a JPA manager for use within the {@link JPAAppender}, or returns a suitable one if it already exists.
+     * Creates a JPA manager for use within the {@link JpaAppender}, or returns a suitable one if it already exists.
      *
      * @param name The name of the manager, which should include connection details, entity class name, etc.
      * @param bufferSize The size of the log event buffer.
@@ -143,7 +143,7 @@ public final class JPADatabaseManager extends AbstractDatabaseManager {
      * @param persistenceUnitName The name of the JPA persistence unit that should be used for persisting log events.
      * @return a new or existing JPA manager as applicable.
      */
-    public static JPADatabaseManager getJPADatabaseManager(final String name, final int bufferSize,
+    public static JpaDatabaseManager getJPADatabaseManager(final String name, final int bufferSize,
                                                            final Class<? extends AbstractLogEventWrapperEntity>
                                                                    entityClass,
                                                            final Constructor<? extends AbstractLogEventWrapperEntity>
@@ -177,10 +177,10 @@ public final class JPADatabaseManager extends AbstractDatabaseManager {
     /**
      * Creates managers.
      */
-    private static final class JPADatabaseManagerFactory implements ManagerFactory<JPADatabaseManager, FactoryData> {
+    private static final class JPADatabaseManagerFactory implements ManagerFactory<JpaDatabaseManager, FactoryData> {
         @Override
-        public JPADatabaseManager createManager(final String name, final FactoryData data) {
-            return new JPADatabaseManager(
+        public JpaDatabaseManager createManager(final String name, final FactoryData data) {
+            return new JpaDatabaseManager(
                     name, data.getBufferSize(), data.entityClass, data.entityConstructor, data.persistenceUnitName
             );
         }

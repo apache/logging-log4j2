@@ -23,7 +23,7 @@ import java.util.Map;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.jackson.XMLConstants;
+import org.apache.logging.log4j.core.jackson.XmlConstants;
 import org.apache.logging.log4j.core.util.Charsets;
 
 /**
@@ -32,7 +32,7 @@ import org.apache.logging.log4j.core.util.Charsets;
  * <h4>Complete well-formed XML vs. fragment XML</h4>
  * <p>
  * If you configure {@code complete="true"}, the appender outputs a well-formed XML document where the default namespace is the log4j
- * namespace {@value XMLConstants#XML_NAMESPACE}. By default, with {@code complete="false"}, you should include the output as an
+ * namespace {@value XmlConstants#XML_NAMESPACE}. By default, with {@code complete="false"}, you should include the output as an
  * <em>external entity</em> in a separate file to form a well-formed XML document.
  * </p>
  * <p>
@@ -215,7 +215,7 @@ public final class XmlLayout extends AbstractJacksonLayout {
         // Make the log4j namespace the default namespace, no need to use more space with a namespace prefix.
         buf.append('<');
         buf.append(ROOT_TAG);
-        buf.append(" xmlns=\"" + XMLConstants.XML_NAMESPACE + "\">");
+        buf.append(" xmlns=\"" + XmlConstants.XML_NAMESPACE + "\">");
         buf.append(this.eol);
         return buf.toString().getBytes(this.getCharset());
     }

@@ -35,7 +35,7 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
  * @param <T>
  *            The kind of input stream read
  */
-public class UDPSocketServer<T extends InputStream> extends AbstractSocketServer<T> {
+public class UdpSocketServer<T extends InputStream> extends AbstractSocketServer<T> {
 
     /**
      * Creates a socket server that reads JSON log events.
@@ -46,8 +46,8 @@ public class UDPSocketServer<T extends InputStream> extends AbstractSocketServer
      * @throws IOException
      *             if an I/O error occurs when opening the socket.
      */
-    public static UDPSocketServer<InputStream> createJsonSocketServer(final int port) throws IOException {
-        return new UDPSocketServer<InputStream>(port, new JsonInputStreamLogEventBridge());
+    public static UdpSocketServer<InputStream> createJsonSocketServer(final int port) throws IOException {
+        return new UdpSocketServer<InputStream>(port, new JsonInputStreamLogEventBridge());
     }
 
     /**
@@ -59,8 +59,8 @@ public class UDPSocketServer<T extends InputStream> extends AbstractSocketServer
      * @throws IOException
      *             if an I/O error occurs when opening the socket.
      */
-    public static UDPSocketServer<ObjectInputStream> createSerializedSocketServer(final int port) throws IOException {
-        return new UDPSocketServer<ObjectInputStream>(port, new ObjectInputStreamLogEventBridge());
+    public static UdpSocketServer<ObjectInputStream> createSerializedSocketServer(final int port) throws IOException {
+        return new UdpSocketServer<ObjectInputStream>(port, new ObjectInputStreamLogEventBridge());
     }
 
     /**
@@ -72,8 +72,8 @@ public class UDPSocketServer<T extends InputStream> extends AbstractSocketServer
      * @throws IOException
      *             if an I/O error occurs when opening the socket.
      */
-    public static UDPSocketServer<InputStream> createXmlSocketServer(final int port) throws IOException {
-        return new UDPSocketServer<InputStream>(port, new XmlInputStreamLogEventBridge());
+    public static UdpSocketServer<InputStream> createXmlSocketServer(final int port) throws IOException {
+        return new UdpSocketServer<InputStream>(port, new XmlInputStreamLogEventBridge());
     }
 
     /**
@@ -99,7 +99,7 @@ public class UDPSocketServer<T extends InputStream> extends AbstractSocketServer
         if (args.length == 2 && args[1].length() > 0) {
             ConfigurationFactory.setConfigurationFactory(new ServerConfigurationFactory(args[1]));
         }
-        final UDPSocketServer<ObjectInputStream> socketServer = UDPSocketServer.createSerializedSocketServer(port);
+        final UdpSocketServer<ObjectInputStream> socketServer = UdpSocketServer.createSerializedSocketServer(port);
         final Thread server = new Thread(socketServer);
         server.start();
         final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -132,7 +132,7 @@ public class UDPSocketServer<T extends InputStream> extends AbstractSocketServer
      * @throws IOException
      *             If an error occurs.
      */
-    public UDPSocketServer(final int port, final LogEventBridge<T> logEventInput) throws IOException {
+    public UdpSocketServer(final int port, final LogEventBridge<T> logEventInput) throws IOException {
         super(port, logEventInput);
         this.datagramSocket = new DatagramSocket(port);
     }

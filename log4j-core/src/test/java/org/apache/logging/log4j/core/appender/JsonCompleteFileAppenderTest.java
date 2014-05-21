@@ -32,7 +32,7 @@ import static org.junit.Assert.*;
 /**
  * Tests a "complete" XML file a.k.a. a well-formed XML file.
  */
-public class JSONCompleteFileAppenderTest {
+public class JsonCompleteFileAppenderTest {
 
     private final File logFile = new File("target", "JsonCompleteFileAppenderTest.log");
 

@@ -83,8 +83,8 @@ public abstract class AbstractJdbcAppenderTest {
             final Map<String, Appender> list = context.getConfiguration().getAppenders();
             final Appender appender = list.get("databaseAppender");
             assertNotNull("The appender should not be null.", appender);
-            assertTrue("The appender should be a JDBCAppender.", appender instanceof JDBCAppender);
-            ((JDBCAppender) appender).getManager().release();
+            assertTrue("The appender should be a JdbcAppender.", appender instanceof JdbcAppender);
+            ((JdbcAppender) appender).getManager().release();
         } finally {
             System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
             context.reconfigure();

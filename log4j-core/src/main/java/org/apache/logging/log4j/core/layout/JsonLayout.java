@@ -83,17 +83,17 @@ import org.apache.logging.log4j.core.util.Charsets;
       "location": "test-classes/",
       "version": "?"
     }, {
-      "class": "org.apache.logging.log4j.core.layout.JSONLayoutTest",
+      "class": "org.apache.logging.log4j.core.layout.JsonLayoutTest",
       "method": "testAllFeatures",
-      "file": "JSONLayoutTest.java",
+      "file": "JsonLayoutTest.java",
       "line": 105,
       "exact": true,
       "location": "test-classes/",
       "version": "?"
     }, {
-      "class": "org.apache.logging.log4j.core.layout.JSONLayoutTest",
+      "class": "org.apache.logging.log4j.core.layout.JsonLayoutTest",
       "method": "testLocationOnCompactOnMdcOn",
-      "file": "JSONLayoutTest.java",
+      "file": "JsonLayoutTest.java",
       "line": 268,
       "exact": true,
       "location": "test-classes/",
@@ -309,17 +309,17 @@ import org.apache.logging.log4j.core.util.Charsets;
         "location": "test-classes/",
         "version": "?"
       }, {
-        "class": "org.apache.logging.log4j.core.layout.JSONLayoutTest",
+        "class": "org.apache.logging.log4j.core.layout.JsonLayoutTest",
         "method": "testAllFeatures",
-        "file": "JSONLayoutTest.java",
+        "file": "JsonLayoutTest.java",
         "line": 105,
         "exact": true,
         "location": "test-classes/",
         "version": "?"
       }, {
-        "class": "org.apache.logging.log4j.core.layout.JSONLayoutTest",
+        "class": "org.apache.logging.log4j.core.layout.JsonLayoutTest",
         "method": "testLocationOnCompactOnMdcOn",
-        "file": "JSONLayoutTest.java",
+        "file": "JsonLayoutTest.java",
         "line": 268,
         "exact": true,
         "location": "test-classes/",
@@ -535,17 +535,17 @@ import org.apache.logging.log4j.core.util.Charsets;
         "location": "test-classes/",
         "version": "?"
       }, {
-        "class": "org.apache.logging.log4j.core.layout.JSONLayoutTest",
+        "class": "org.apache.logging.log4j.core.layout.JsonLayoutTest",
         "method": "testAllFeatures",
-        "file": "JSONLayoutTest.java",
+        "file": "JsonLayoutTest.java",
         "line": 105,
         "exact": true,
         "location": "test-classes/",
         "version": "?"
       }, {
-        "class": "org.apache.logging.log4j.core.layout.JSONLayoutTest",
+        "class": "org.apache.logging.log4j.core.layout.JsonLayoutTest",
         "method": "testLocationOnCompactOnMdcOn",
-        "file": "JSONLayoutTest.java",
+        "file": "JsonLayoutTest.java",
         "line": 268,
         "exact": true,
         "location": "test-classes/",
@@ -775,7 +775,7 @@ import org.apache.logging.log4j.core.util.Charsets;
  * end.
  * </p>
  * <p>
- * This approach enforces the independence of the JSONLayout and the appender where you embed it.
+ * This approach enforces the independence of the JsonLayout and the appender where you embed it.
  * </p>
  * <h4>Encoding</h4>
  * <p>
@@ -789,10 +789,10 @@ import org.apache.logging.log4j.core.util.Charsets;
  * may contain, of course, escaped end-of-lines.
  * </p>
  */
-@Plugin(name = "JSONLayout", category = "Core", elementType = "layout", printObject = true)
-public final class JSONLayout extends AbstractJacksonLayout {
+@Plugin(name = "JsonLayout", category = "Core", elementType = "layout", printObject = true)
+public final class JsonLayout extends AbstractJacksonLayout {
 
-    protected JSONLayout(final boolean locationInfo, final boolean properties, final boolean complete, final boolean compact,
+    protected JsonLayout(final boolean locationInfo, final boolean properties, final boolean complete, final boolean compact,
             final Charset charset) {
         super(new JacksonFactory.JSON().newWriter(locationInfo, properties, compact), charset, compact, complete);
     }
@@ -866,6 +866,6 @@ public final class JSONLayout extends AbstractJacksonLayout {
         final boolean props = Boolean.parseBoolean(properties);
         final boolean complete = Boolean.parseBoolean(completeStr);
         final boolean compact = Boolean.parseBoolean(compactStr);
-        return new JSONLayout(info, props, complete, compact, charset);
+        return new JsonLayout(info, props, complete, compact, charset);
     }
 }

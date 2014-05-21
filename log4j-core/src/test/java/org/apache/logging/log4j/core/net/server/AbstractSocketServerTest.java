@@ -34,7 +34,7 @@ import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.appender.SocketAppender;
 import org.apache.logging.log4j.core.filter.AbstractFilter;
-import org.apache.logging.log4j.core.layout.JSONLayout;
+import org.apache.logging.log4j.core.layout.JsonLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.layout.XmlLayout;
 import org.apache.logging.log4j.test.appender.ListAppender;
@@ -88,7 +88,7 @@ public abstract class AbstractSocketServerTest {
     }
 
     protected Layout<String> createJsonLayout() {
-        return JSONLayout.createLayout("true", "true", "false", "false", null);
+        return JsonLayout.createLayout("true", "true", "false", "false", null);
     }
 
     protected abstract Layout<? extends Serializable> createLayout();

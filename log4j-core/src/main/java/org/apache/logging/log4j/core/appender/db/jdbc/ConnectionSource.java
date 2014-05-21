@@ -20,7 +20,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * Configuration element for {@link JDBCAppender}. If you want to use the {@link JDBCAppender} but none of the provided
+ * Configuration element for {@link JdbcAppender}. If you want to use the {@link JdbcAppender} but none of the provided
  * connection sources meet your needs, you can simply create your own connection source.
  */
 public interface ConnectionSource {

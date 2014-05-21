@@ -27,12 +27,12 @@ import org.junit.BeforeClass;
 
 public class UdpSerializedSocketServerTest extends AbstractSocketServerTest {
 
-    private static UDPSocketServer<ObjectInputStream> server;
+    private static UdpSocketServer<ObjectInputStream> server;
 
     @BeforeClass
     public static void setupClass() throws Exception {
         ((LoggerContext) LogManager.getContext(false)).reconfigure();
-        server = UDPSocketServer.createSerializedSocketServer(PORT_NUM);
+        server = UdpSocketServer.createSerializedSocketServer(PORT_NUM);
         thread = server.startNewThread();
     }
 

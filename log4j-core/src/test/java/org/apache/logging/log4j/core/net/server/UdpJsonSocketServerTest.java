@@ -27,12 +27,12 @@ import org.junit.BeforeClass;
 
 public class UdpJsonSocketServerTest extends AbstractSocketServerTest {
 
-    private static UDPSocketServer<InputStream> server;
+    private static UdpSocketServer<InputStream> server;
 
     @BeforeClass
     public static void setupClass() throws Exception {
         ((LoggerContext) LogManager.getContext(false)).reconfigure();
-        server = UDPSocketServer.createJsonSocketServer(PORT_NUM);
+        server = UdpSocketServer.createJsonSocketServer(PORT_NUM);
         thread = server.startNewThread();
     }
 
