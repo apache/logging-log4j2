@@ -78,8 +78,8 @@ public class BurstFilterTest {
         }
 
         msgs = app.getMessages();
-        assertTrue("Incorrect message count. Should be > 0 and < 100, actual " + msgs.size(),
-            msgs.size() > 0 && msgs.size() < 100);
+        assertFalse("No messages were counted.", msgs.isEmpty());
+        assertTrue("Incorrect message count. Should be > 0 and < 100, actual " + msgs.size(), msgs.size() < 100);
         app.clear();
 
         filter.clear();

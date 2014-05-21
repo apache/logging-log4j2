@@ -42,12 +42,13 @@ public class RegexFilterTest {
         RegexFilter filter = RegexFilter.createFilter(".* test .*", null, null, null);
         filter.start();
         assertTrue(filter.isStarted());
-        assertTrue(filter.filter(null, Level.DEBUG, null, "This is a test message", (Throwable)null) == Filter.Result.NEUTRAL);
-        assertTrue(filter.filter(null, Level.ERROR, null, "This is not a test", (Throwable)null) == Filter.Result.DENY);
+        assertSame(Filter.Result.NEUTRAL,
+            filter.filter(null, Level.DEBUG, null, "This is a test message", (Throwable) null));
+        assertSame(Filter.Result.DENY, filter.filter(null, Level.ERROR, null, "This is not a test", (Throwable) null));
         LogEvent event = new Log4jLogEvent(null, null, null, Level.DEBUG, new SimpleMessage("Another test message"), null);
-        assertTrue(filter.filter(event) == Filter.Result.NEUTRAL);
+        assertSame(Filter.Result.NEUTRAL, filter.filter(event));
         event = new Log4jLogEvent(null, null, null, Level.ERROR, new SimpleMessage("test"), null);
-        assertTrue(filter.filter(event) == Filter.Result.DENY);
+        assertSame(Filter.Result.DENY, filter.filter(event));
         filter = RegexFilter.createFilter("* test *", null, null, null);
         assertNull(filter);
     }
@@ -57,9 +58,9 @@ public class RegexFilterTest {
         final RegexFilter filter = RegexFilter.createFilter(".* test .*", null, null, null);
         filter.start();
         assertTrue(filter.isStarted());
-        assertTrue(filter.filter(null, Level.DEBUG, null, (String)null, (Throwable)null) == Filter.Result.DENY);
-        assertTrue(filter.filter(null, Level.DEBUG, null, (Message)null, (Throwable)null) == Filter.Result.DENY);
-        assertTrue(filter.filter(null, Level.DEBUG, null, null, (Object[])null) == Filter.Result.DENY);
+        assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (String) null, (Throwable) null));
+        assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (Message) null, (Throwable) null));
+        assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, null, (Object[]) null));
 
     }
 }

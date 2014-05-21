@@ -35,11 +35,11 @@ public class ThresholdFilterTest {
         final ThresholdFilter filter = ThresholdFilter.createFilter("ERROR", null, null);
         filter.start();
         assertTrue(filter.isStarted());
-        assertTrue(filter.filter(null, Level.DEBUG, null, null, (Throwable)null) == Filter.Result.DENY);
-        assertTrue(filter.filter(null, Level.ERROR, null, null, (Throwable)null) == Filter.Result.NEUTRAL);
+        assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, null, (Throwable) null));
+        assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.ERROR, null, null, (Throwable) null));
         LogEvent event = new Log4jLogEvent(null, null, null, Level.DEBUG, new SimpleMessage("Test"), null);
-        assertTrue(filter.filter(event) == Filter.Result.DENY);
+        assertSame(Filter.Result.DENY, filter.filter(event));
         event = new Log4jLogEvent(null, null, null, Level.ERROR, new SimpleMessage("Test"), null);
-        assertTrue(filter.filter(event) == Filter.Result.NEUTRAL);
+        assertSame(Filter.Result.NEUTRAL, filter.filter(event));
     }
 }
