@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.impl;
 
 import java.lang.reflect.Constructor;
 
-import org.apache.logging.log4j.core.Timer;
+import org.apache.logging.log4j.core.util.Timer;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.junit.Test;
