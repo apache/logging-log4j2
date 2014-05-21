@@ -20,9 +20,9 @@ import java.util.Locale;
 
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 /**
@@ -32,10 +32,8 @@ public class XMLEvents {
 
     private static final String CONFIG = "xml-events.xml";
 
-    @BeforeClass
-    public static void setupClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-    }
+    @ClassRule
+    public static InitialLoggerContext context = new InitialLoggerContext(CONFIG);
 
     @Test
     public void testEvents() {
@@ -50,11 +48,11 @@ public class XMLEvents {
         msg.setCompletionStatus("Transfer Complete");
         EventLogger.logEvent(msg);
         ThreadContext.clearMap();
-
+        // TODO: do something with the results
 
     }
 
-    private class TransferMessage extends StructuredDataMessage {
+    private static class TransferMessage extends StructuredDataMessage {
 
         /**
          * Generated serial version ID.

@@ -17,16 +17,11 @@
 package org.apache.logging.log4j.core;
 
 import java.util.Calendar;
-import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.appender.FileAppender;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.AfterClass;
+import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -37,32 +32,14 @@ import static org.junit.Assert.*;
 public class LoggerDateTest {
 
     private static final String CONFIG = "log4j-date.xml";
-    private static Configuration config;
-    private static FileAppender fileApp;
-    private static LoggerContext ctx;
+    private FileAppender fileApp;
 
-    @BeforeClass
-    public static void setupClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        ctx = (LoggerContext) LogManager.getContext(false);
-    }
-
-    @AfterClass
-    public static void cleanupClass() {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        ctx.reconfigure();
-        StatusLogger.getLogger().reset();
-    }
+    @ClassRule
+    public static InitialLoggerContext context = new InitialLoggerContext(CONFIG);
 
     @Before
     public void before() {
-        config = ctx.getConfiguration();
-        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
-            if (entry.getKey().equals("File")) {
-                fileApp = (FileAppender) entry.getValue();
-            }
-        }
-        assertNotNull("No FileAppender", fileApp);
+        fileApp = (FileAppender) context.getRequiredAppender("File");
     }
 
 
