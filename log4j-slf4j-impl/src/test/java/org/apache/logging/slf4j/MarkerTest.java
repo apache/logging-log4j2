@@ -18,6 +18,8 @@ package org.apache.logging.slf4j;
 
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -27,6 +29,12 @@ import static org.junit.Assert.*;
  */
 public class MarkerTest {
 
+    @Before
+    @After
+    public void clearMarkers() {
+        MarkerManager.clear();
+    }
+    
     @Test
     public void testMarker() {
         final org.slf4j.Marker slf4jMarker = org.slf4j.MarkerFactory.getMarker("TEST");
@@ -39,4 +47,6 @@ public class MarkerTest {
         assertTrue("TEST is not an instance of PARENT in Log4j", log4jMarker.isInstanceOf(log4jParent));
         assertTrue("TEST is not an instance of PARENT in SLF4J", slf4jMarker.contains(slf4jParent));
     }
+    
+    
 }
