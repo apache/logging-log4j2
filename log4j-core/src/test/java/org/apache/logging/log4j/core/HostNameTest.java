@@ -17,19 +17,14 @@
 package org.apache.logging.log4j.core;
 
 import java.util.List;
-import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.NetUtils;
-import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -40,38 +35,18 @@ import static org.junit.Assert.*;
 public class HostNameTest {
 
     private static final String CONFIG = "log4j-test2.xml";
-    private static Configuration config;
     private static ListAppender app;
     private static ListAppender host;
     private static RollingFileAppender hostFile;
-    private static LoggerContext ctx;
 
-    @BeforeClass
-    public static void setupClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        ctx = (LoggerContext) LogManager.getContext(false);
-    }
-
-    @AfterClass
-    public static void cleanupClass() {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        ctx.reconfigure();
-        StatusLogger.getLogger().reset();
-    }
+    @ClassRule
+    public static InitialLoggerContext context = new InitialLoggerContext(CONFIG);
 
     @Before
     public void before() {
-        config = ctx.getConfiguration();
-        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
-            if (entry.getKey().equals("List")) {
-                app = (ListAppender) entry.getValue();
-            } else if (entry.getKey().equals("HostTest")) {
-                host = (ListAppender) entry.getValue();
-            } else if (entry.getKey().equals("HostFile")) {
-                hostFile = (RollingFileAppender) entry.getValue();
-            }
-        }
-        assertNotNull("No Host FileAppender", hostFile);
+        app = (ListAppender) context.getAppender("List");
+        host = (ListAppender) context.getAppender("HostTest");
+        hostFile = (RollingFileAppender) context.getRequiredAppender("HostFile");
         app.clear();
         host.clear();
     }
@@ -79,23 +54,23 @@ public class HostNameTest {
 
     @Test
     public void testHostname() {
-        final org.apache.logging.log4j.Logger testLogger = LogManager.getLogger("org.apache.logging.log4j.hosttest");
+        final org.apache.logging.log4j.Logger testLogger = context.getLogger("org.apache.logging.log4j.hosttest");
         testLogger.debug("Hello, {}", "World");
         final List<String> msgs = host.getMessages();
-        assertTrue("Incorrect number of events. Expected 1, actual " + msgs.size(), msgs.size() == 1);
+        assertEquals("Incorrect number of events. Expected 1, actual " + msgs.size(), 1, msgs.size());
         String expected = NetUtils.getLocalHostname() + Constants.LINE_SEPARATOR;
         assertTrue("Incorrect hostname - expected " + expected + " actual - " + msgs.get(0),
             msgs.get(0).endsWith(expected));
         assertNotNull("No Host FileAppender file name", hostFile.getFileName());
         expected = "target/" + NetUtils.getLocalHostname() + ".log";
         String name = hostFile.getFileName();
-        assertTrue("Incorrect HostFile FileAppender file name - expected " + expected + " actual - " + name,
-            name.equals(expected));
+        assertEquals("Incorrect HostFile FileAppender file name - expected " + expected + " actual - " + name, name,
+            expected);
         name = hostFile.getFilePattern();
         assertNotNull("No file pattern", name);
         expected = "target/" + NetUtils.getLocalHostname() + "-%d{MM-dd-yyyy}-%i.log";
-        assertTrue("Incorrect HostFile FileAppender file pattern - expected " + expected + " actual - " + name,
-            name.equals(expected));
+        assertEquals("Incorrect HostFile FileAppender file pattern - expected " + expected + " actual - " + name, name,
+            expected);
 
     }
 }
