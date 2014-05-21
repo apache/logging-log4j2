@@ -54,6 +54,7 @@ public class LoggerTest {
     public static void setupClass() {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         ctx = (LoggerContext) LogManager.getContext(false);
+        ctx.reconfigure();
         ctx.getConfiguration();
     }
 
