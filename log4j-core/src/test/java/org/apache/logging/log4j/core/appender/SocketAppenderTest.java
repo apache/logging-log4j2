@@ -95,7 +95,7 @@ public class SocketAppenderTest {
     }
 
     @Test
-    public void testTCPAppender() throws Exception {
+    public void testTcpAppender() throws Exception {
 
         final SocketAppender appender = SocketAppender.createAppender("localhost", PORT, "tcp", "-1",
             "false", "Test", null, null, null, null, null, null);
@@ -131,7 +131,7 @@ public class SocketAppenderTest {
 
 
     @Test
-    public void testUDPAppender() throws Exception {
+    public void testUdpAppender() throws Exception {
 
         final SocketAppender appender = SocketAppender.createAppender("localhost", PORT, "udp", "-1",
             "false", "Test", null, null, null, null, null, null);
