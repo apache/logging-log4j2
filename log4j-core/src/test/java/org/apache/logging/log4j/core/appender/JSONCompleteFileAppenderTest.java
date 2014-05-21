@@ -25,6 +25,7 @@ import org.apache.logging.log4j.junit.CleanFiles;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 
 import static org.junit.Assert.*;
 
@@ -35,11 +36,11 @@ public class JSONCompleteFileAppenderTest {
 
     private final File logFile = new File("target", "JSONCompleteFileAppenderTest.log");
 
-    @Rule
-    public InitialLoggerContext init = new InitialLoggerContext("JSONCompleteFileAppenderTest.xml");
+    private final InitialLoggerContext init = new InitialLoggerContext("JSONCompleteFileAppenderTest.xml");
+    private final CleanFiles files = new CleanFiles(logFile);
 
     @Rule
-    public CleanFiles files = new CleanFiles(logFile);
+    public RuleChain chain = RuleChain.outerRule(files).around(init);
 
     @Test
     public void testFlushAtEndOfBatch() throws Exception {

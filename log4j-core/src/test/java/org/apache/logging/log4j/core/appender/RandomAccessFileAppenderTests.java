@@ -28,6 +28,7 @@ import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.hamcrest.Matcher;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -53,11 +54,11 @@ public class RandomAccessFileAppenderTests {
         );
     }
 
-    @Rule
-    public InitialLoggerContext init;
+    private InitialLoggerContext init;
+    private CleanFiles files;
 
     @Rule
-    public CleanFiles files;
+    public RuleChain chain = RuleChain.outerRule(files).around(init);
 
     private final File logFile;
     private final boolean locationEnabled;
