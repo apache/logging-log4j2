@@ -17,15 +17,10 @@
 package org.apache.logging.log4j.core.pattern;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -34,29 +29,12 @@ import static org.junit.Assert.*;
 public class CallerInformationTest {
 
     @ClassRule
-    public static InitialLoggerContext init = new InitialLoggerContext("log4j2-calling-class.xml");
-
-    private static LoggerContext ctx;
-
-    private static Map<String, Appender> appenders;
-
-    @BeforeClass
-    public static void setConfig() {
-        ctx = init.getContext();
-        assertNotNull("No LoggerContext created.", ctx);
-        final Configuration config = ctx.getConfiguration();
-        assertNotNull("No configuration found!", config);
-        appenders = config.getAppenders();
-        assertNotNull("No appenders found!", appenders);
-        assertEquals("Incorrect number of appenders configured.", 2, appenders.size());
-    }
+    public static InitialLoggerContext context = new InitialLoggerContext("log4j2-calling-class.xml");
 
     @Test
     public void testClassLogger() throws Exception {
-        final ListAppender app = (ListAppender) appenders.get("Class");
-        assertNotNull(app);
-        app.clear();
-        final Logger logger = ctx.getLogger("ClassLogger");
+        final ListAppender app = context.getListAppender("Class").clear();
+        final Logger logger = context.getLogger("ClassLogger");
         logger.info("Ignored message contents.");
         logger.warn("Verifying the caller class is still correct.");
         logger.error("Hopefully nobody breaks me!");
@@ -69,10 +47,8 @@ public class CallerInformationTest {
 
     @Test
     public void testMethodLogger() throws Exception {
-        final ListAppender app = (ListAppender) appenders.get("Method");
-        assertNotNull(app);
-        app.clear();
-        final Logger logger = ctx.getLogger("MethodLogger");
+        final ListAppender app = context.getListAppender("Method").clear();
+        final Logger logger = context.getLogger("MethodLogger");
         logger.info("More messages.");
         logger.warn("CATASTROPHE INCOMING!");
         logger.error("ZOMBIES!!!");
