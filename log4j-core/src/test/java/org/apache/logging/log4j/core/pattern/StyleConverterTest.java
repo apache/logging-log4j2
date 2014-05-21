@@ -22,7 +22,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -47,12 +46,7 @@ public class StyleConverterTest {
     @Before
     public void setUp() throws Exception {
         this.logger = this.init.getLogger("LoggerTest");
-        app = (ListAppender) this.init.getAppender("List");
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        app.clear();
+        this.app = this.init.getListAppender("List").clear();
     }
 
     @Test
@@ -61,7 +55,7 @@ public class StyleConverterTest {
 
         final List<String> msgs = app.getMessages();
         assertNotNull(msgs);
-        assertTrue("Incorrect number of messages. Should be 1 is " + msgs.size(), msgs.size() == 1);
+        assertEquals("Incorrect number of messages. Should be 1 is " + msgs.size(), 1, msgs.size());
         assertTrue("Replacement failed - expected ending " + EXPECTED + ", actual " + msgs.get(0), msgs.get(0).endsWith(EXPECTED));
     }
 }
