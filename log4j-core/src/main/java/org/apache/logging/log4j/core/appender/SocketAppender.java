@@ -129,10 +129,10 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
                 isAdvertise ? config.getAdvertiser() : null);
     }
 
-    protected static AbstractSocketManager createSocketManager(final Protocol p, final String host, final int port,
+    protected static AbstractSocketManager createSocketManager(final Protocol protocol, final String host, final int port,
                                                                final int delay, final boolean immediateFail,
                                                                final Layout<? extends Serializable> layout) {
-        switch (p) {
+        switch (protocol) {
             case TCP:
                 return TcpSocketManager.getSocketManager(host, port, delay, immediateFail, layout);
             case UDP:
