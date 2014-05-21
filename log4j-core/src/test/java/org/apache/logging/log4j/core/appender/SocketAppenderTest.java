@@ -56,8 +56,8 @@ public class SocketAppenderTest {
 
     private static BlockingQueue<LogEvent> list = new ArrayBlockingQueue<LogEvent>(10);
 
-    private static TCPSocketServer tcp;
-    private static UDPSocketServer udp;
+    private static TCPSocketServer tcpServer;
+    private static UDPSocketServer udpServer;
 
     LoggerContext context = (LoggerContext) LogManager.getContext();
     Logger root = context.getLogger("SocketAppenderTest");
@@ -67,17 +67,17 @@ public class SocketAppenderTest {
 
     @BeforeClass
     public static void setupClass() throws Exception {
-        tcp = new TCPSocketServer(PORTNUM1);
-        tcp.start();
-        udp = new UDPSocketServer();
-        udp.start();
+        tcpServer = new TCPSocketServer(PORTNUM1);
+        tcpServer.start();
+        udpServer = new UDPSocketServer();
+        udpServer.start();
         ((LoggerContext) LogManager.getContext()).reconfigure();
     }
 
     @AfterClass
     public static void cleanupClass() {
-        tcp.shutdown();
-        udp.shutdown();
+        tcpServer.shutdown();
+        udpServer.shutdown();
         list.clear();
     }
 
