@@ -35,15 +35,21 @@ public class JndiLookupTest {
     private static final String TEST_CONTEXT_RESOURCE_NAME = "logging/context-name";
     private static final String TEST_CONTEXT_NAME = "app-1";
 
+    private Context context;
+
     @Before
     public void before() throws NamingException {
         MockContextFactory.setAsInitial();
-        Context context = new InitialContext();
+        context = new InitialContext();
         context.bind(JndiLookup.CONTAINER_JNDI_RESOURCE_PATH_PREFIX + TEST_CONTEXT_RESOURCE_NAME, TEST_CONTEXT_NAME);
     }
 
     @After
     public void after() {
+        try {
+            context.close();
+        } catch (final NamingException ignored) {
+        }
         MockContextFactory.revertSetAsInitial();
     }
 
