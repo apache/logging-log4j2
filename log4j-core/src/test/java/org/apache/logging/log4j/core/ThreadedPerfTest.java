@@ -31,7 +31,7 @@ import org.junit.experimental.categories.Category;
 @Category(PerformanceTests.class)
 public class ThreadedPerfTest {
 
-    private static org.apache.logging.log4j.Logger logger = LogManager.getLogger(ThreadedPerfTest.class.getName());
+    private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(ThreadedPerfTest.class.getName());
     private volatile Level lvl = Level.DEBUG;
     private static final int LOOP_CNT = 10000000;
     private static final int THREADS = 10;
@@ -64,7 +64,7 @@ public class ThreadedPerfTest {
         System.out.println(timer.toString());
     }
 
-    public class DebugDisabledRunnable implements Runnable {
+    public static class DebugDisabledRunnable implements Runnable {
         @Override
         public void run() {
             for (int i=0; i < LOOP_CNT; ++i) {
@@ -73,7 +73,7 @@ public class ThreadedPerfTest {
         }
     }
 
-     public class DebugLoggerRunnable implements Runnable {
+     public static class DebugLoggerRunnable implements Runnable {
         @Override
         public void run() {
             for (int i=0; i < LOOP_CNT; ++i) {
