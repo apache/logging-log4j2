@@ -125,11 +125,11 @@ public final class TLSSyslogAppender extends SyslogAppender {
         final int port = AbstractAppender.parseInt(portNum, 0);
         final boolean isAdvertise = Boolean.parseBoolean(advertise);
         @SuppressWarnings("unchecked")
-        final Layout<? extends Serializable> layout = (RFC5424.equalsIgnoreCase(format) ?
+        final Layout<? extends Serializable> layout = RFC5424.equalsIgnoreCase(format) ?
                 RFC5424Layout.createLayout(facility, id, ein, includeMDC, mdcId, mdcPrefix, eventPrefix, includeNL,
                     escapeNL, appName, msgId, excludes, includes, required, exceptionPattern, "true" ,loggerFields,
                     config) :
-                SyslogLayout.createLayout(facility, includeNL, escapeNL, charsetName));
+                SyslogLayout.createLayout(facility, includeNL, escapeNL, charsetName);
 
         if (name == null) {
             LOGGER.error("No name provided for TLSSyslogAppender");
