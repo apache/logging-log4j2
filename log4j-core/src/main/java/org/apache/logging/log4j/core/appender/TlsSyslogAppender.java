@@ -91,7 +91,7 @@ public final class TlsSyslogAppender extends SyslogAppender {
     @PluginFactory
     public static TlsSyslogAppender createAppender(@PluginAttribute("host") final String host,
                                                    @PluginAttribute("port") final String portNum,
-                                                   @PluginElement("ssl") final SslConfiguration sslConfig,
+                                                   @PluginElement("Ssl") final SslConfiguration sslConfig,
                                                    @PluginAttribute("reconnectionDelay") final String delay,
                                                    @PluginAttribute("immediateFail") final String immediateFail,
                                                    @PluginAttribute("name") final String name,
@@ -112,7 +112,7 @@ public final class TlsSyslogAppender extends SyslogAppender {
                                                    @PluginAttribute("mdcIncludes") final String includes,
                                                    @PluginAttribute("mdcRequired") final String required,
                                                    @PluginAttribute("format") final String format,
-                                                   @PluginElement("filters") final Filter filter,
+                                                   @PluginElement("Filters") final Filter filter,
                                                    @PluginConfiguration final Configuration config,
                                                    @PluginAttribute("charset") final String charsetName,
                                                    @PluginAttribute("exceptionPattern") final String exceptionPattern,
