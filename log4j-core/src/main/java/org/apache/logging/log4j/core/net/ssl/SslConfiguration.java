@@ -39,7 +39,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  *  SSL Configuration
  */
-@Plugin(name = "ssl", category = "Core", printObject = true)
+@Plugin(name = "Ssl", category = "Core", printObject = true)
 public class SslConfiguration {
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
     private final KeyStoreConfiguration keyStoreConfig;
