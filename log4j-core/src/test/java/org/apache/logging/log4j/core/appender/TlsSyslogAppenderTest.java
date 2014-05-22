@@ -86,7 +86,7 @@ public class TlsSyslogAppenderTest extends SyslogAppenderTest {
         serverSocketFactory = sslConfig.getSslServerSocketFactory();
     }
 
-    private TlsSyslogAppender createAppender() {
+    private SyslogAppender createAppender() {
         String format;
 
         if (messageFormat == TlsSyslogMessageFormat.LEGACY_BSD) {
@@ -95,7 +95,7 @@ public class TlsSyslogAppenderTest extends SyslogAppenderTest {
             format = "RFC5424";
         }
 
-        return TlsSyslogAppender.createAppender("localhost", PORT, sslConfig, "-1", null, "Test", "true", "false", "LOCAL0", "Audit",
+        return SyslogAppender.createAppender("localhost", PORT, "SSL", sslConfig, "-1", null, "Test", "true", "false", "LOCAL0", "Audit",
                 "18060", "true", "RequestContext", null, null, includeNewLine, null, "TestApp", "Test", null, "ipAddress,loginId",
                 null, format, null, null, null, null, null, null);
     }

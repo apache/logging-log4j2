@@ -33,8 +33,8 @@ import org.apache.logging.log4j.core.net.AbstractSocketManager;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.net.DatagramSocketManager;
 import org.apache.logging.log4j.core.net.Protocol;
-import org.apache.logging.log4j.core.net.TcpSocketManager;
 import org.apache.logging.log4j.core.net.SslSocketManager;
+import org.apache.logging.log4j.core.net.TcpSocketManager;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.util.EnglishEnums;
@@ -56,7 +56,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
             configuration.putAll(manager.getContentFormat());
             configuration.put("contentType", layout.getContentType());
             configuration.put("name", name);
-            advertisement = advertiser.advertise(configuration);
+            this.advertisement = advertiser.advertise(configuration);
         }
         this.advertiser = advertiser;
     }
@@ -64,8 +64,8 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
     @Override
     public void stop() {
         super.stop();
-        if (advertiser != null) {
-            advertiser.unadvertise(advertisement);
+        if (this.advertiser != null) {
+            this.advertiser.unadvertise(this.advertisement);
         }
     }
 
@@ -106,7 +106,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
             @PluginAttribute("host") final String host,
             @PluginAttribute("port") final String portNum,
             @PluginAttribute("protocol") final String protocolStr,
-            @PluginElement("SSL") SslConfiguration sslConfig,
+            @PluginElement("SSL") final SslConfiguration sslConfig,
             @PluginAttribute("reconnectionDelay") final String delay,
             @PluginAttribute("immediateFail") final String immediateFail,
             @PluginAttribute("name") final String name,
@@ -132,30 +132,33 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
             return null;
         }
 
-        Protocol protocol = EnglishEnums.valueOf(Protocol.class,
+        final Protocol protocol = EnglishEnums.valueOf(Protocol.class,
                 protocolStr != null ? protocolStr : Protocol.TCP.name());
         if (protocol == Protocol.UDP) {
             isFlush = true;
         }
-        
+
         final AbstractSocketManager manager = createSocketManager(name, protocol, host, port, sslConfig,
                 reconnectDelay, fail, layout);
-        if (manager == null) {
-            return null;
-        }
 
         return new SocketAppender(name, layout, filter, manager, ignoreExceptions, isFlush,
                 isAdvertise ? config.getAdvertiser() : null);
     }
 
+    /**
+     * Creates an AbstractSocketManager for TCP, UDP, and SSL.
+     * 
+     * @throws IllegalArgumentException
+     *         if the protocol cannot be handled.
+     */
     protected static AbstractSocketManager createSocketManager(final String name, Protocol protocol, final String host,
-            final int port, SslConfiguration sslConfig, final int delay, final boolean immediateFail,
+            final int port, final SslConfiguration sslConfig, final int delay, final boolean immediateFail,
             final Layout<? extends Serializable> layout) {
         if (protocol == Protocol.TCP && sslConfig != null) {
             // Upgrade TCP to SSL if an SSL config is specified.
-            protocol = Protocol.TLS;
+            protocol = Protocol.SSL;
         }
-        if (protocol != Protocol.TLS && sslConfig != null) {
+        if (protocol != Protocol.SSL && sslConfig != null) {
             LOGGER.info("Appender {} ignoring SSL configuration for {} protocol", name, protocol);
         }
         switch (protocol) {
@@ -163,7 +166,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
             return TcpSocketManager.getSocketManager(host, port, delay, immediateFail, layout);
         case UDP:
             return DatagramSocketManager.getSocketManager(host, port, layout);
-        case TLS:
+        case SSL:
             return SslSocketManager.getSocketManager(sslConfig, host, port, delay, immediateFail, layout);
         default:
             throw new IllegalArgumentException(protocol.toString());

@@ -106,8 +106,8 @@ public class SyslogAppenderTest extends SyslogAppenderTestBase {
     }
 
     private SyslogAppender createAppender(final String protocol, final String format) {
-        return SyslogAppender.createAppender("localhost", PORT, protocol, "-1", null, "Test", "true", "false", "LOCAL0", "Audit",
-            "18060", "true", "RequestContext", null, null, includeNewLine, null, "TestApp", "Test", null, "ipAddress,loginId",
-            null, format, null, null, null, null, null, null);
+        return SyslogAppender.createAppender("localhost", PORT, protocol, null, "-1", null, "Test", "true", "false", "LOCAL0",
+            "Audit", "18060", "true", "RequestContext", null, null, includeNewLine, null, "TestApp", "Test", null,
+            "ipAddress,loginId", null, format, null, null, null, null, null, null);
     }
 }
