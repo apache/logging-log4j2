@@ -74,7 +74,7 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
         return manager;
     }
 
-    protected void replaceManager(final M newManager) {
+    protected void setManager(final M newManager) {
 
         writeLock.lock();
         try {
