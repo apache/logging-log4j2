@@ -94,9 +94,9 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     private final Facility facility;
     private final String defaultId;
     private final int enterpriseNumber;
-    private final boolean includeMDC;
+    private final boolean includeMdc;
     private final String mdcId;
-    private final StructuredDataId mdcSDID;
+    private final StructuredDataId mdcSdId;
     private final String localHostName;
     private final String appName;
     private final String messageId;
@@ -110,7 +110,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     private final ListChecker noopChecker = new NoopChecker();
     private final boolean includeNewLine;
     private final String escapeNewLine;
-    private final boolean useTLSMessageFormat;
+    private final boolean useTlsMessageFormat;
 
     private long lastTimestamp = -1;
     private String timestamppStr;
@@ -130,16 +130,16 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         this.facility = facility;
         this.defaultId = id == null ? DEFAULT_ID : id;
         this.enterpriseNumber = ein;
-        this.includeMDC = includeMDC;
+        this.includeMdc = includeMDC;
         this.includeNewLine = includeNL;
         this.escapeNewLine = escapeNL == null ? null : Matcher.quoteReplacement(escapeNL);
         this.mdcId = mdcId;
-        this.mdcSDID = new StructuredDataId(mdcId, enterpriseNumber, null, null);
+        this.mdcSdId = new StructuredDataId(mdcId, enterpriseNumber, null, null);
         this.mdcPrefix = mdcPrefix;
         this.eventPrefix = eventPrefix;
         this.appName = appName;
         this.messageId = messageId;
-        this.useTLSMessageFormat = useTLSMessageFormat;
+        this.useTlsMessageFormat = useTLSMessageFormat;
         this.localHostName = NetUtils.getLocalHostname();
         ListChecker c = null;
         if (excludes != null) {
@@ -196,7 +196,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
 
         if (loggerFields != null) {
             for (final LoggerFields lField : loggerFields) {
-                final StructuredDataId key = lField.getSdId() == null ? mdcSDID : lField.getSdId();
+                final StructuredDataId key = lField.getSdId() == null ? mdcSdId : lField.getSdId();
                 final Map<String, List<PatternFormatter>> sdParams = new HashMap<String, List<PatternFormatter>>();
                 final Map<String, String> fields = lField.getMap();
                 if (!fields.isEmpty()) {
@@ -273,7 +273,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         appendSpace(buf);
         appendStructuredElements(buf, event);
         appendMessage(buf, event);
-        if (useTLSMessageFormat) {
+        if (useTlsMessageFormat) {
             return new TlsSyslogFrame(buf.toString()).toString();
         }
         return buf.toString();
@@ -348,7 +348,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         final Message message = event.getMessage();
         final boolean isStructured = message instanceof StructuredDataMessage;
 
-        if (!isStructured && (fieldFormatters!= null && fieldFormatters.size() == 0) && !includeMDC) {
+        if (!isStructured && (fieldFormatters!= null && fieldFormatters.size() == 0) && !includeMdc) {
             buffer.append('-');
             return;
         }
@@ -368,14 +368,14 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             }
         }
 
-        if (includeMDC && contextMap.size() > 0) {
-            if (sdElements.containsKey(mdcSDID.toString())) {
-                final StructuredDataElement union = sdElements.get(mdcSDID.toString());
+        if (includeMdc && contextMap.size() > 0) {
+            if (sdElements.containsKey(mdcSdId.toString())) {
+                final StructuredDataElement union = sdElements.get(mdcSdId.toString());
                 union.union(contextMap);
-                sdElements.put(mdcSDID.toString(), union);
+                sdElements.put(mdcSdId.toString(), union);
             } else {
                 final StructuredDataElement formattedContextMap = new StructuredDataElement(contextMap, false);
-                sdElements.put(mdcSDID.toString(), formattedContextMap);
+                sdElements.put(mdcSdId.toString(), formattedContextMap);
             }
         }
 
@@ -497,7 +497,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
 
         sb.append('[');
         sb.append(id);
-        if (!mdcSDID.toString().equals(id)) {
+        if (!mdcSdId.toString().equals(id)) {
             appendMap(prefix, data.getFields(), sb, noopChecker);
         } else {
             appendMap(prefix, data.getFields(), sb, checker);
@@ -595,7 +595,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         sb.append(" defaultId=").append(defaultId);
         sb.append(" enterpriseNumber=").append(enterpriseNumber);
         sb.append(" newLine=").append(includeNewLine);
-        sb.append(" includeMDC=").append(includeMDC);
+        sb.append(" includeMDC=").append(includeMdc);
         sb.append(" messageId=").append(messageId);
         return sb.toString();
     }
