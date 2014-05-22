@@ -53,7 +53,7 @@ public class Provider {
         return threadContextMap;
     }
 
-    public URL getURL() {
+    public URL getUrl() {
         return url;
     }
 }

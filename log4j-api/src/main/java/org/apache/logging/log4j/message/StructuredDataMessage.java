@@ -316,7 +316,7 @@ public class StructuredDataMessage extends MapMessage {
         sb.append("<StructuredData>\n");
         sb.append("<type>").append(type).append("</type>\n");
         sb.append("<id>").append(id).append("</id>\n");
-        super.asXML(sb);
+        super.asXml(sb);
         sb.append("</StructuredData>\n");
         return sb.toString();
     }

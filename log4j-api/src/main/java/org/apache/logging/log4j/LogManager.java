@@ -86,13 +86,13 @@ public class LogManager {
                             }
                         } catch (final ClassNotFoundException cnfe) {
                             LOGGER.error("Unable to locate class {} specified in {}", className,
-                                provider.getURL().toString(), cnfe);
+                                provider.getUrl().toString(), cnfe);
                         } catch (final IllegalAccessException iae) {
                             LOGGER.error("Unable to create class {} specified in {}", className,
-                                provider.getURL().toString(), iae);
+                                provider.getUrl().toString(), iae);
                         } catch (final Exception e) {
                             LOGGER.error("Unable to create class {} specified in {}", className,
-                                provider.getURL().toString(), e);
+                                provider.getUrl().toString(), e);
                         }
                     }
                 }
