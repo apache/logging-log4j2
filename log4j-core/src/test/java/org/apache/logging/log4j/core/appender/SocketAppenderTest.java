@@ -36,6 +36,7 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.test.AvailablePortFinder;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -48,11 +49,12 @@ import static org.junit.Assert.*;
  */
 public class SocketAppenderTest {
 
-    private static final String PORT = "8199";
-    private static final String DYN_PORT = "8300";
-    private static final String ERROR_PORT = "8301";
-    private static final int PORTNUM1 = Integer.parseInt(PORT);
-    private static final int PORTNUM2 = Integer.parseInt(DYN_PORT);
+    private static final int PORTNUM1 = AvailablePortFinder.getNextAvailable();
+    private static final int PORTNUM2 = AvailablePortFinder.getNextAvailable();
+
+    private static final String PORT = String.valueOf(PORTNUM1);
+    private static final String DYN_PORT = String.valueOf(PORTNUM2);
+    private static final String ERROR_PORT = String.valueOf(AvailablePortFinder.getNextAvailable());
 
     private static BlockingQueue<LogEvent> list = new ArrayBlockingQueue<LogEvent>(10);
 
@@ -182,6 +184,7 @@ public class SocketAppenderTest {
             root.debug("This message is written because a deadlock never.");
             fail("No Exception was thrown");
         } catch (final Exception ex) {
+            // TODO: move exception to @Test(expect = Exception.class)
             // Failure is expected.
         }
     }
