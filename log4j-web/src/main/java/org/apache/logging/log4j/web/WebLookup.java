@@ -66,11 +66,10 @@ public class WebLookup implements StrLookup {
         if ("rootDir".equals(key)) {
             String root = ctx.getRealPath("/");
             if (root == null) {
-                String msg = "failed to resolve web:rootDir -- " +
+                String msg = "Failed to resolve web:rootDir -- " +
                         "servlet container unable to translate virtual path " +
                         " to real path (probably not deployed as exploded";
-                throw new RuntimeException(msg);
-
+                throw new IllegalStateException(msg);
             }
             return root;
         }

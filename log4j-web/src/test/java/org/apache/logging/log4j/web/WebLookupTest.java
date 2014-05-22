@@ -19,7 +19,6 @@ package org.apache.logging.log4j.web;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
-import javax.servlet.UnavailableException;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -42,9 +41,9 @@ public class WebLookupTest {
         servletContext.setInitParameter("TestParam", "ParamValue");
         servletContext.setAttribute("Name1", "Ben");
         servletContext.setInitParameter("Name2", "Jerry");
-        Log4jWebInitializer initializer = Log4jWebInitializerImpl.getLog4jWebInitializer(servletContext);
+        Log4jWebLifeCycle initializer = Log4jWebInitializerImpl.getLog4jWebInitializer(servletContext);
         try {
-            initializer.initialize();
+            initializer.start();
             initializer.setLoggerContext();
             LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
             assertNotNull("No LoggerContext", ctx);
@@ -65,10 +64,10 @@ public class WebLookupTest {
             value = substitutor.replace("${web:Name2}");
             assertNotNull("No value for Name2", value);
             assertEquals("Incorrect value for Name2: " + value, "Jerry", value);
-        } catch (final UnavailableException e) {
+        } catch (final IllegalStateException e) {
             fail("Failed to initialize Log4j properly." + e.getMessage());
         }
-        initializer.deinitialize();
+        initializer.stop();
         ContextAnchor.THREAD_CONTEXT.remove();
     }
 
@@ -81,8 +80,8 @@ public class WebLookupTest {
         servletContext.setAttribute("Name1", "Ben");
         servletContext.setInitParameter("Name2", "Jerry");
         servletContext.setInitParameter("log4jConfiguration", "log4j-webvar.xml");
-        Log4jWebInitializer initializer = Log4jWebInitializerImpl.getLog4jWebInitializer(servletContext);
-        initializer.initialize();
+        Log4jWebLifeCycle initializer = Log4jWebInitializerImpl.getLog4jWebInitializer(servletContext);
+        initializer.start();
         initializer.setLoggerContext();
         LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
         assertNotNull("No LoggerContext", ctx);
@@ -96,7 +95,7 @@ public class WebLookupTest {
                 assertEquals("target/myapp.log", fa.getFileName());
             }
         }
-        initializer.deinitialize();
+        initializer.stop();
         ContextAnchor.THREAD_CONTEXT.remove();
     }
 

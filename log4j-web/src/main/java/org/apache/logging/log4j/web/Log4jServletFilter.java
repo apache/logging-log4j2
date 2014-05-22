@@ -42,7 +42,7 @@ public class Log4jServletFilter implements Filter {
     static final String ALREADY_FILTERED_ATTRIBUTE = Log4jServletFilter.class.getName() + ".FILTERED";
 
     private ServletContext servletContext;
-    private Log4jWebInitializer initializer;
+    private Log4jWebLifeCycle initializer;
 
     @Override
     public void init(final FilterConfig filterConfig) throws ServletException {

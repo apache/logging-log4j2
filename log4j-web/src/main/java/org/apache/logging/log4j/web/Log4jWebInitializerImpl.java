@@ -21,10 +21,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.ServletContext;
-import javax.servlet.UnavailableException;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.LifeCycle;
+import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
@@ -41,7 +40,7 @@ import org.apache.logging.log4j.spi.LoggerContextFactory;
 /**
  * This class initializes and deinitializes Log4j no matter how the initialization occurs.
  */
-final class Log4jWebInitializerImpl implements Log4jWebInitializer {
+final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWebLifeCycle {
     private static final Object MUTEX = new Object();
 
     static {
@@ -57,26 +56,23 @@ final class Log4jWebInitializerImpl implements Log4jWebInitializer {
     private final ServletContext servletContext;
 
     private String name;
-    private NamedContextSelector selector;
+    private NamedContextSelector namedContextSelector;
     private LoggerContext loggerContext;
-
-    private boolean initialized = false;
-    private boolean deinitialized = false;
 
     private Log4jWebInitializerImpl(final ServletContext servletContext) {
         this.servletContext = servletContext;
-        map.put("hostName", NetUtils.getLocalHostname());
+        this.map.put("hostName", NetUtils.getLocalHostname());
     }
 
     @Override
-    public synchronized void initialize() throws UnavailableException {
-        if (this.deinitialized) {
-            throw new IllegalStateException("Cannot initialize Log4jWebInitializer after it was destroyed.");
+    public synchronized void start() {
+        if (this.isStopped() || this.isStopping()) {
+            throw new IllegalStateException("Cannot start this Log4jWebInitializerImpl after it was stopped.");
         }
 
         // only do this once
-        if (!this.initialized) {
-            this.initialized = true;
+        if (this.isInitialized()) {
+            super.setStarting();
 
             this.name = this.substitutor.replace(this.servletContext.getInitParameter(LOG4J_CONTEXT_NAME));
             final String location =
@@ -91,10 +87,11 @@ final class Log4jWebInitializerImpl implements Log4jWebInitializer {
             }
 
             this.servletContext.setAttribute(CONTEXT_ATTRIBUTE, this.loggerContext);
+            super.setStarted();
         }
     }
 
-    private void initializeJndi(final String location) throws UnavailableException {
+    private void initializeJndi(final String location) {
         URI configLocation = null;
         if (location != null) {
             try {
@@ -105,19 +102,19 @@ final class Log4jWebInitializerImpl implements Log4jWebInitializer {
         }
 
         if (this.name == null) {
-            throw new UnavailableException("A log4jContextName context parameter is required");
+            throw new IllegalStateException("A log4jContextName context parameter is required");
         }
 
-        LoggerContext loggerContext;
+        LoggerContext context;
         final LoggerContextFactory factory = LogManager.getFactory();
         if (factory instanceof Log4jContextFactory) {
             final ContextSelector selector = ((Log4jContextFactory) factory).getSelector();
             if (selector instanceof NamedContextSelector) {
-                this.selector = (NamedContextSelector) selector;
-                loggerContext = this.selector.locateContext(this.name, this.servletContext, configLocation);
-                ContextAnchor.THREAD_CONTEXT.set(loggerContext);
-                if (loggerContext.getState() == LifeCycle.State.INITIALIZED) {
-                    loggerContext.start();
+                this.namedContextSelector = (NamedContextSelector) selector;
+                context = this.namedContextSelector.locateContext(this.name, this.servletContext, configLocation);
+                ContextAnchor.THREAD_CONTEXT.set(context);
+                if (context.isInitialized()) {
+                    context.start();
                 }
                 ContextAnchor.THREAD_CONTEXT.remove();
             } else {
@@ -129,9 +126,9 @@ final class Log4jWebInitializerImpl implements Log4jWebInitializer {
             this.servletContext.log("Potential problem: Factory is not an instance of Log4jContextFactory.");
             return;
         }
-        this.loggerContext = loggerContext;
+        this.loggerContext = context;
         this.servletContext.log("Created logger context for [" + this.name + "] using [" +
-                loggerContext.getClass().getClassLoader() + "].");
+                context.getClass().getClassLoader() + "].");
     }
 
     private void initializeNonJndi(final String location) {
@@ -148,25 +145,25 @@ final class Log4jWebInitializerImpl implements Log4jWebInitializer {
     }
 
     @Override
-    public synchronized void deinitialize() {
-        if (!this.initialized) {
-            throw new IllegalStateException("Cannot deinitialize Log4jWebInitializer because it has not initialized.");
+    public synchronized void stop() {
+        if (!this.isStarted() && !this.isStopped()) {
+            throw new IllegalStateException("Cannot stop this Log4jWebInitializer because it has not started.");
         }
 
         // only do this once
-        if (!this.deinitialized) {
-            this.deinitialized = true;
-
+        if (this.isStarted()) {
+            this.setStopping();
             if (this.loggerContext != null) {
                 this.servletContext.log("Removing LoggerContext for [" + this.name + "].");
                 this.servletContext.removeAttribute(CONTEXT_ATTRIBUTE);
-                if (this.selector != null) {
-                    this.selector.removeContext(this.name);
+                if (this.namedContextSelector != null) {
+                    this.namedContextSelector.removeContext(this.name);
                 }
                 this.loggerContext.stop();
                 this.loggerContext.setExternalContext(null);
                 this.loggerContext = null;
             }
+            this.setStopped();
         }
     }
 
@@ -212,9 +209,9 @@ final class Log4jWebInitializerImpl implements Log4jWebInitializer {
      * @param servletContext The {@link ServletContext} for this web application
      * @return the initializer, never {@code null}.
      */
-    static Log4jWebInitializer getLog4jWebInitializer(final ServletContext servletContext) {
+    static Log4jWebLifeCycle getLog4jWebInitializer(final ServletContext servletContext) {
         synchronized (MUTEX) {
-            Log4jWebInitializer initializer = (Log4jWebInitializer) servletContext.getAttribute(SUPPORT_ATTRIBUTE);
+            Log4jWebLifeCycle initializer = (Log4jWebLifeCycle) servletContext.getAttribute(SUPPORT_ATTRIBUTE);
             if (initializer == null) {
                 initializer = new Log4jWebInitializerImpl(servletContext);
                 servletContext.setAttribute(SUPPORT_ATTRIBUTE, initializer);

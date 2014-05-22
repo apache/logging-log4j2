@@ -18,7 +18,6 @@ package org.apache.logging.log4j.web;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
-import javax.servlet.UnavailableException;
 
 import org.apache.logging.log4j.util.Strings;
 import org.junit.After;
@@ -32,7 +31,7 @@ import static org.junit.Assert.*;
 public class Log4jServletContextListenerTest {
     private ServletContextEvent event;
     private ServletContext servletContext;
-    private Log4jWebInitializer initializer;
+    private Log4jWebLifeCycle initializer;
 
     private Log4jServletContextListener listener;
 
@@ -40,7 +39,7 @@ public class Log4jServletContextListenerTest {
     public void setUp() {
         this.event = createStrictMock(ServletContextEvent.class);
         this.servletContext = createStrictMock(ServletContext.class);
-        this.initializer = createStrictMock(Log4jWebInitializer.class);
+        this.initializer = createStrictMock(Log4jWebLifeCycle.class);
 
         this.listener = new Log4jServletContextListener();
     }
@@ -56,7 +55,7 @@ public class Log4jServletContextListenerTest {
         this.servletContext.log(anyObject(String.class));
         expectLastCall();
         expect(this.servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).andReturn(this.initializer);
-        this.initializer.initialize();
+        this.initializer.start();
         expectLastCall();
         this.initializer.setLoggerContext();
         expectLastCall();
@@ -72,7 +71,7 @@ public class Log4jServletContextListenerTest {
         expectLastCall();
         this.initializer.clearLoggerContext();
         expectLastCall();
-        this.initializer.deinitialize();
+        this.initializer.stop();
         expectLastCall();
 
         replay(this.event, this.servletContext, this.initializer);
@@ -86,8 +85,8 @@ public class Log4jServletContextListenerTest {
         this.servletContext.log(anyObject(String.class));
         expectLastCall();
         expect(this.servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).andReturn(this.initializer);
-        this.initializer.initialize();
-        expectLastCall().andThrow(new UnavailableException(Strings.EMPTY));
+        this.initializer.start();
+        expectLastCall().andThrow(new IllegalStateException(Strings.EMPTY));
 
         replay(this.event, this.servletContext, this.initializer);
 
