@@ -37,6 +37,7 @@ import org.apache.logging.log4j.core.filter.AbstractFilter;
 import org.apache.logging.log4j.core.layout.JsonLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.layout.XmlLayout;
+import org.apache.logging.log4j.test.AvailablePortFinder;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.After;
 import org.junit.Ignore;
@@ -67,9 +68,9 @@ public abstract class AbstractSocketServerTest {
 
     private static final String MESSAGE_2 = "This is test message 2";
 
-    static final String PORT = "8199";
+    static final int PORT_NUM = AvailablePortFinder.getNextAvailable();
 
-    static final int PORT_NUM = Integer.parseInt(PORT);
+    static final String PORT = String.valueOf(PORT_NUM);
 
     private final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
 

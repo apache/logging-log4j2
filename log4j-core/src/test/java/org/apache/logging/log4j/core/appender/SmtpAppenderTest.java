@@ -31,6 +31,7 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.net.MimeMessageBuilder;
 import org.apache.logging.log4j.core.util.CyclicBuffer;
+import org.apache.logging.log4j.test.AvailablePortFinder;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -38,8 +39,8 @@ import static org.junit.Assert.*;
 public class SmtpAppenderTest {
 
     private static final String HOST = "localhost";
-    private static final String PORT = "8199";
-    private static final int PORTNUM = Integer.parseInt(PORT);
+    private static final int PORTNUM = AvailablePortFinder.getNextAvailable();
+    private static final String PORT = String.valueOf(PORTNUM);
 
     @Test
     public void testMessageFactorySetFrom() throws MessagingException {
