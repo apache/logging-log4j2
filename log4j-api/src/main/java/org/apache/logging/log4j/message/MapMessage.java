@@ -175,11 +175,11 @@ public class MapMessage implements MultiformatMessage {
         } else {
             switch (format) {
                 case XML : {
-                    asXML(sb);
+                    asXml(sb);
                     break;
                 }
                 case JSON : {
-                    asJSON(sb);
+                    asJson(sb);
                     break;
                 }
                 case JAVA : {
@@ -194,7 +194,7 @@ public class MapMessage implements MultiformatMessage {
         return sb.toString();
     }
 
-    public void asXML(final StringBuilder sb) {
+    public void asXml(final StringBuilder sb) {
         sb.append("<Map>\n");
         for (final Map.Entry<String, String> entry : data.entrySet()) {
             sb.append("  <Entry key=\"").append(entry.getKey()).append("\">").append(entry.getValue())
@@ -247,7 +247,7 @@ public class MapMessage implements MultiformatMessage {
         }
     }
 
-    protected void asJSON(final StringBuilder sb) {
+    protected void asJson(final StringBuilder sb) {
         boolean first = true;
         sb.append('{');
         for (final Map.Entry<String, String> entry : data.entrySet()) {
