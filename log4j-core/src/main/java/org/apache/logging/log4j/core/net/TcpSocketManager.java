@@ -47,7 +47,7 @@ public class TcpSocketManager extends AbstractSocketManager {
      */
     private static final int DEFAULT_PORT = 4560;
 
-    private static final TCPSocketManagerFactory FACTORY = new TCPSocketManagerFactory();
+    private static final TcpSocketManagerFactory FACTORY = new TcpSocketManagerFactory();
 
     private final int reconnectionDelay;
 
@@ -252,7 +252,7 @@ public class TcpSocketManager extends AbstractSocketManager {
     /**
      * Factory to create a TcpSocketManager.
      */
-    protected static class TCPSocketManagerFactory implements ManagerFactory<TcpSocketManager, FactoryData> {
+    protected static class TcpSocketManagerFactory implements ManagerFactory<TcpSocketManager, FactoryData> {
         @Override
         public TcpSocketManager createManager(final String name, final FactoryData data) {
 
