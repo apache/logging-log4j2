@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.appender.SecureSocketAppender;
 import org.apache.logging.log4j.core.appender.SocketAppender;
 import org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
+import org.apache.logging.log4j.core.net.ssl.StoreConfigurationException;
 import org.apache.logging.log4j.core.net.ssl.TestConstants;
 import org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration;
 import org.junit.AfterClass;
@@ -40,11 +41,12 @@ public class SslXmlSocketServerTest extends AbstractSocketServerTest {
 
     private static SslConfiguration sslConfig;
 
-    private static void initServerSocketFactory() {
-        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, TestConstants.KEYSTORE_PWD);
+    private static void initServerSocketFactory() throws StoreConfigurationException {
+        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE,
+                TestConstants.KEYSTORE_PWD, TestConstants.KEYSTORE_TYPE, null);
         final TrustStoreConfiguration tsc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE,
-                TestConstants.TRUSTSTORE_PWD);
-        sslConfig = SslConfiguration.createSSLConfiguration(ksc, tsc);
+                TestConstants.TRUSTSTORE_PWD, null, null);
+        sslConfig = SslConfiguration.createSSLConfiguration(null, ksc, tsc);
     }
 
     @Override

@@ -21,60 +21,76 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  *
  */
-public class StoreConfiguration {
+public class StoreConfiguration<T> {
     protected static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     private String location;
     private String password;
 
-    public StoreConfiguration(String location, String password) {
+    public StoreConfiguration(final String location, final String password) {
         this.location = location;
         this.password = password;
     }
 
     public String getLocation() {
-        return location;
+        return this.location;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(final String location) {
         this.location = location;
     }
 
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     public char[] getPasswordAsCharArray() {
-        return password == null ? null : password.toCharArray();
+        return this.password == null ? null : this.password.toCharArray();
     }
 
-    public void setPassword(String password) {
+    public void setPassword(final String password) {
         this.password = password;
     }
 
-    public boolean equals(StoreConfiguration config) {
-        if (config == null) {
+    protected T load() throws StoreConfigurationException {
+        return null;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.location == null) ? 0 : this.location.hashCode());
+        result = prime * result + ((this.password == null) ? 0 : this.password.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
             return false;
         }
-
-        boolean locationEquals = false;
-        boolean passwordEquals = false;
-
-        if (location != null) {
-            locationEquals = location.equals(config.location);
-        } else {
-            locationEquals = location == config.location;
+        if (!(obj instanceof StoreConfiguration)) {
+            return false;
         }
-
-        if (password != null) {
-            passwordEquals = password.equals(config.password);
-        } else {
-            passwordEquals = password == config.password;
+        final StoreConfiguration<?> other = (StoreConfiguration<?>) obj;
+        if (this.location == null) {
+            if (other.location != null) {
+                return false;
+            }
+        } else if (!this.location.equals(other.location)) {
+            return false;
         }
-
-        return locationEquals && passwordEquals;
-    }
-
-    protected void load() throws StoreConfigurationException {
-    }
+        if (this.password == null) {
+            if (other.password != null) {
+                return false;
+            }
+        } else if (!this.password.equals(other.password)) {
+            return false;
+        }
+        return true;
+    }    
 }

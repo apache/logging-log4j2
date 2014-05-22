@@ -16,13 +16,11 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
+import java.security.UnrecoverableKeyException;
+
+import javax.net.ssl.KeyManagerFactory;
 
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -31,76 +29,47 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 /**
  * Configuration of the KeyStore
  */
-@Plugin(name = "keyStore", category = "Core", printObject = true)
-public class KeyStoreConfiguration extends StoreConfiguration {
-    private KeyStore keyStore;
-    private final String keyStoreType;
+@Plugin(name = "KeyStore", category = "Core", printObject = true)
+public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
 
+    private final String keyManagerFactoryAlgorithm;
 
-    public KeyStoreConfiguration(String location, String password) {
-        super(location, password);
-        this.keyStoreType = SslConfigurationDefaults.KEYSTORE_TYPE;
-        this.keyStore = null;
-    }
-
-    @Override
-    protected void load() throws StoreConfigurationException {
-        FileInputStream fin = null;
-
-        LOGGER.debug("Loading keystore from file with params(location={})", getLocation());
-        try {
-            if (getLocation() == null) {
-                throw new IOException("The location is null");
-            }
-            fin = new FileInputStream(getLocation());
-            KeyStore ks = KeyStore.getInstance(keyStoreType);
-            ks.load(fin, getPasswordAsCharArray());
-            keyStore = ks;
-        }
-         catch (CertificateException e) {
-            LOGGER.error("No Provider supports a KeyStoreSpi implementation for the specified type {}", keyStoreType);
-            throw new StoreConfigurationException(e);
-        } catch (NoSuchAlgorithmException e) {
-            LOGGER.error("The algorithm used to check the integrity of the keystore cannot be found");
-            throw new StoreConfigurationException(e);
-        } catch (KeyStoreException e) {
-            LOGGER.error(e);
-            throw new StoreConfigurationException(e);
-        } catch (FileNotFoundException e) {
-            LOGGER.error("The keystore file({}) is not found", getLocation());
-            throw new StoreConfigurationException(e);
-        } catch (IOException e) {
-            LOGGER.error("Something is wrong with the format of the keystore or the given password");
-            throw new StoreConfigurationException(e);
-        }
-        finally {
-            try {
-                if (fin != null) {
-                    fin.close();
-                }
-            } catch (IOException e) {
-            }
-        }
-        LOGGER.debug("Keystore successfully loaded with params(location={})", getLocation());
-    }
-
-    public KeyStore getKeyStore() throws StoreConfigurationException {
-        if (keyStore == null) {
-            load();
-        }
-        return keyStore;
+    public KeyStoreConfiguration(String location, String password, String keyStoreType,
+            String keyManagerFactoryAlgorithm) throws StoreConfigurationException {
+        super(location, password, keyStoreType);
+        this.keyManagerFactoryAlgorithm = keyManagerFactoryAlgorithm == null ? KeyManagerFactory.getDefaultAlgorithm()
+                : keyManagerFactoryAlgorithm;
     }
 
     /**
      * Creates a KeyStoreConfiguration.
-     * @param location The location of the KeyStore.
-     * @param password The password to access the KeyStore.
+     * 
+     * @param location
+     *        The location of the KeyStore.
+     * @param password
+     *        The password to access the KeyStore.
+     * @param keyStoreType
+     *        The KeyStore type, null defaults to {@code "JKS"}.
+     * @param keyManagerFactoryAlgorithm
+     *        TODO
      * @return
+     * @throws StoreConfigurationException
      */
     @PluginFactory
     public static KeyStoreConfiguration createKeyStoreConfiguration(
+            // @formatter:off
             @PluginAttribute("location") String location,
-            @PluginAttribute("password") String password) {
-        return new KeyStoreConfiguration(location, password);
+            @PluginAttribute("password") String password,
+            @PluginAttribute("type") String keyStoreType, 
+            @PluginAttribute("keyManagerFactoryAlgorithm") String keyManagerFactoryAlgorithm) throws StoreConfigurationException {
+            // @formatter:on
+        return new KeyStoreConfiguration(location, password, keyStoreType, null);
+    }
+
+    public KeyManagerFactory initKeyManagerFactory() throws NoSuchAlgorithmException, UnrecoverableKeyException,
+            KeyStoreException {
+        KeyManagerFactory kmFactory = KeyManagerFactory.getInstance(this.keyManagerFactoryAlgorithm);
+        kmFactory.init(this.getKeyStore(), this.getPasswordAsCharArray());
+        return kmFactory;
     }
 }

@@ -26,10 +26,10 @@ import javax.net.ssl.SSLServerSocketFactory;
 import org.apache.logging.log4j.core.net.mock.MockSyslogServerFactory;
 import org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
-import org.apache.logging.log4j.core.net.ssl.SslConfigurationException;
+import org.apache.logging.log4j.core.net.ssl.StoreConfigurationException;
+import org.apache.logging.log4j.core.net.ssl.TestConstants;
 import org.apache.logging.log4j.core.net.ssl.TlsSyslogMessageFormat;
 import org.apache.logging.log4j.core.net.ssl.TlsSyslogTestUtil;
-import org.apache.logging.log4j.core.net.ssl.TestConstants;
 import org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration;
 import org.junit.Test;
 
@@ -39,7 +39,7 @@ public class TlsSyslogAppenderTest extends SyslogAppenderTest {
     private TlsSyslogMessageFormat messageFormat;
     private SslConfiguration sslConfig;
 
-    public TlsSyslogAppenderTest() throws SslConfigurationException {
+    public TlsSyslogAppenderTest() throws StoreConfigurationException {
         initServerSocketFactory();
         root = ctx.getLogger("TLSSyslogAppenderTest");
     }
@@ -79,10 +79,10 @@ public class TlsSyslogAppenderTest extends SyslogAppenderTest {
         sendAndCheckStructuredMessages(numberOfMessages);
     }
 
-    private void initServerSocketFactory() {
-        KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, TestConstants.KEYSTORE_PWD);
-        TrustStoreConfiguration tsc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE, TestConstants.TRUSTSTORE_PWD);
-        sslConfig = SslConfiguration.createSSLConfiguration(ksc, tsc);
+    private void initServerSocketFactory() throws StoreConfigurationException {
+        KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, TestConstants.KEYSTORE_PWD, null, null);
+        TrustStoreConfiguration tsc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE, TestConstants.TRUSTSTORE_PWD, null, null);
+        sslConfig = SslConfiguration.createSSLConfiguration(null, ksc, tsc);
         serverSocketFactory = sslConfig.getSslServerSocketFactory();
     }
 
