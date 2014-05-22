@@ -619,7 +619,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
      * @param includes         A comma separated list of MDC keys that should be included in the FlumeEvent.
      * @param required         A comma separated list of MDC keys that must be present in the MDC.
      * @param exceptionPattern The pattern for formatting exceptions.
-     * @param useTLSMessageFormat If true the message will be formatted according to RFC 5425.
+     * @param useTlsMessageFormatStr If true the message will be formatted according to RFC 5425.
      * @param loggerFields     Container for the KeyValuePairs containing the patterns
      * @param config           The Configuration. Some Converters require access to the Interpolator.
      * @return An Rfc5424Layout.
@@ -641,7 +641,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             @PluginAttribute("mdcIncludes") String includes,
             @PluginAttribute("mdcRequired") final String required,
             @PluginAttribute("exceptionPattern") final String exceptionPattern,
-            @PluginAttribute("useTLSMessageFormat") final String useTLSMessageFormat, // RFC 5425
+            @PluginAttribute("useTlsMessageFormat") final String useTlsMessageFormatStr, // RFC 5425
             @PluginElement("LoggerFields") final LoggerFields[] loggerFields,
             @PluginConfiguration final Configuration config) {
         final Charset charset = Charsets.UTF_8;
@@ -653,7 +653,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         final int enterpriseNumber = Integers.parseInt(ein, DEFAULT_ENTERPRISE_NUMBER);
         final boolean isMdc = Booleans.parseBoolean(includeMDC, true);
         final boolean includeNewLine = Boolean.parseBoolean(includeNL);
-        final boolean useTlsMessageFormat = Booleans.parseBoolean(useTLSMessageFormat, false);
+        final boolean useTlsMessageFormat = Booleans.parseBoolean(useTlsMessageFormatStr, false);
         if (mdcId == null) {
             mdcId = DEFAULT_MDCID;
         }
