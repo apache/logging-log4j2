@@ -135,7 +135,7 @@ public class SyslogAppender extends SocketAppender {
             return null;
         }
         final Protocol p = EnglishEnums.valueOf(Protocol.class, protocol);
-        final AbstractSocketManager manager = createSocketManager(p, host, port, reconnectDelay, fail, layout);
+        final AbstractSocketManager manager = createSocketManager(name, p, host, port, null, reconnectDelay, fail, layout);
         if (manager == null) {
             return null;
         }

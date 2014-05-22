@@ -111,7 +111,6 @@
         <item name="Routing" href="/manual/appenders.html#RoutingAppender"/>
         <item name="SMTP" href="/manual/appenders.html#SMTPAppender"/>
         <item name="Socket" href="/manual/appenders.html#SocketAppender"/>
-        <item name="Secure Socket" href="/manual/appenders.html#SecureSocketAppender"/>
         <item name="Syslog" href="/manual/appenders.html#SyslogAppender"/>
         <item name="TLS Syslog" href="/manual/appenders.html#TLSSyslogAppender"/>
       </item>
