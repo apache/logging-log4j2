@@ -34,7 +34,7 @@ public class FileUtilsTest {
     public void testFileFromUriWithPlusCharactersInName() throws Exception {
         String config = "target/test-classes/log4j+config+with+plus+characters.xml";
         URI uri = new URI(config);
-        File file = FileUtils.fileFromURI(uri);
+        File file = FileUtils.fileFromUri(uri);
         assertEquals("log4j+config+with+plus+characters.xml", file.getName());
         assertTrue("file exists", file.exists());
     }
@@ -44,7 +44,7 @@ public class FileUtilsTest {
             throws Exception {
         String config = "NON-EXISTING-PATH/this+file+does+not+exist.xml";
         URI uri = new URI(config);
-        File file = FileUtils.fileFromURI(uri);
+        File file = FileUtils.fileFromUri(uri);
         assertEquals("this file does not exist.xml", file.getName());
         assertFalse("file does not exist", file.exists());
     }

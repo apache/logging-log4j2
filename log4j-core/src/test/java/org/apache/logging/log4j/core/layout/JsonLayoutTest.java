@@ -143,7 +143,7 @@ public class JsonLayoutTest {
         if (Throwables.isGetSuppressedAvailable()) {
             this.checkPropertyName("suppressed", compact, str);
         }
-        this.checkPropertyName("loggerFQCN", compact, str);
+        this.checkPropertyName("loggerFqcn", compact, str);
         this.checkPropertyName("endOfBatch", compact, str);
         if (includeContext) {
             this.checkPropertyName("contextMap", compact, str);
@@ -153,7 +153,7 @@ public class JsonLayoutTest {
             this.checkPropertyName("source", compact, str);
         }
         // check some attrs
-        this.checkProperty("loggerFQCN", "f.q.c.n", compact, str);
+        this.checkProperty("loggerFqcn", "f.q.c.n", compact, str);
         this.checkProperty("loggerName", "a.B", compact, str);
     }
 
@@ -195,7 +195,7 @@ public class JsonLayoutTest {
         this.checkAt("{", 1, list);
         this.checkContains("\"level\" : \"DEBUG\",", list);
         this.checkContains("\"message\" : \"Here is a quote ' and then a double quote \\\"\",", list);
-        this.checkContains("\"loggerFQCN\" : \"org.apache.logging.log4j.spi.AbstractLoggerProvider\",", list);
+        this.checkContains("\"loggerFqcn\" : \"org.apache.logging.log4j.spi.AbstractLoggerProvider\",", list);
         for (final Appender app : appenders.values()) {
             this.rootLogger.addAppender(app);
         }
@@ -240,7 +240,7 @@ public class JsonLayoutTest {
 
         this.checkAt("[", 0, list);
         this.checkAt("{", 1, list);
-        this.checkContains("\"loggerFQCN\" : \"org.apache.logging.log4j.spi.AbstractLoggerProvider\",", list);
+        this.checkContains("\"loggerFqcn\" : \"org.apache.logging.log4j.spi.AbstractLoggerProvider\",", list);
         this.checkContains("\"level\" : \"DEBUG\",", list);
         this.checkContains("\"message\" : \"starting mdc pattern test\",", list);
         for (final Appender app : appenders.values()) {

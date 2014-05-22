@@ -79,7 +79,7 @@ public class JmsTopicManager extends AbstractJmsManager {
      * @param password The password to use to create the Topic Connection.
      * @return A JmsTopicManager.
      */
-    public static JmsTopicManager getJMSTopicManager(final String factoryName, final String providerURL,
+    public static JmsTopicManager getJmsTopicManager(final String factoryName, final String providerURL,
                                                      final String urlPkgPrefixes, final String securityPrincipalName,
                                                      final String securityCredentials, final String factoryBindingName,
                                                      final String topicBindingName, final String userName,

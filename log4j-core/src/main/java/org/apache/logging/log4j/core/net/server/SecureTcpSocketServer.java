@@ -31,7 +31,7 @@ public class SecureTcpSocketServer<T extends InputStream> extends TcpSocketServe
 
     public SecureTcpSocketServer(int port, LogEventBridge<T> logEventInput, SslConfiguration sslConfig)
             throws IOException {
-        super(port, logEventInput, sslConfig.getSSLServerSocketFactory().createServerSocket(port));
+        super(port, logEventInput, sslConfig.getSslServerSocketFactory().createServerSocket(port));
     }
 
 }

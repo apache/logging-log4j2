@@ -48,77 +48,77 @@ public class SslConfiguration {
     private SslConfiguration(KeyStoreConfiguration keyStoreConfig, TrustStoreConfiguration trustStoreConfig) {
         this.keyStoreConfig = keyStoreConfig;
         this.trustStoreConfig = trustStoreConfig;
-        this.sslContext = this.createSSLContext();
+        this.sslContext = this.createSslContext();
     }
 
-    public SSLSocketFactory getSSLSocketFactory() {
+    public SSLSocketFactory getSslSocketFactory() {
         return sslContext.getSocketFactory();
     }
 
-    public SSLServerSocketFactory getSSLServerSocketFactory() {
+    public SSLServerSocketFactory getSslServerSocketFactory() {
         return sslContext.getServerSocketFactory();
     }
 
-    private SSLContext createSSLContext() {
+    private SSLContext createSslContext() {
         SSLContext context = null;
 
         try {
-            context = createSSLContextBasedOnConfiguration();
+            context = createSslContextBasedOnConfiguration();
             LOGGER.debug("Creating SSLContext with the given parameters");
         }
         catch (TrustStoreConfigurationException e) {
-            context = createSSLContextWithTrustStoreFailure();
+            context = createSslContextWithTrustStoreFailure();
         }
         catch (KeyStoreConfigurationException e) {
-            context = createSSLContextWithKeyStoreFailure();
+            context = createSslContextWithKeyStoreFailure();
         }
         return context;
     }
 
-    private SSLContext createSSLContextWithTrustStoreFailure() {
+    private SSLContext createSslContextWithTrustStoreFailure() {
         SSLContext context;
 
         try {
-            context = createSSLContextWithDefaultTrustManagerFactory();
+            context = createSslContextWithDefaultTrustManagerFactory();
             LOGGER.debug("Creating SSLContext with default truststore");
         }
         catch (KeyStoreConfigurationException e) {
-            context = createDefaultSSLContext();
+            context = createDefaultSslContext();
             LOGGER.debug("Creating SSLContext with default configuration");
         }
         return context;
     }
 
-    private SSLContext createSSLContextWithKeyStoreFailure() {
+    private SSLContext createSslContextWithKeyStoreFailure() {
         SSLContext context;
 
         try {
-            context = createSSLContextWithDefaultKeyManagerFactory();
+            context = createSslContextWithDefaultKeyManagerFactory();
             LOGGER.debug("Creating SSLContext with default keystore");
         }
         catch (TrustStoreConfigurationException e) {
-            context = createDefaultSSLContext();
+            context = createDefaultSslContext();
             LOGGER.debug("Creating SSLContext with default configuration");
         }
         return context;
     }
 
-    private SSLContext createSSLContextBasedOnConfiguration() throws KeyStoreConfigurationException, TrustStoreConfigurationException {
-        return createSSLContext(false, false);
+    private SSLContext createSslContextBasedOnConfiguration() throws KeyStoreConfigurationException, TrustStoreConfigurationException {
+        return createSslContext(false, false);
     }
 
-    private SSLContext createSSLContextWithDefaultKeyManagerFactory() throws TrustStoreConfigurationException {
+    private SSLContext createSslContextWithDefaultKeyManagerFactory() throws TrustStoreConfigurationException {
         try {
-            return createSSLContext(true, false);
+            return createSslContext(true, false);
         } catch (KeyStoreConfigurationException dummy) {
              LOGGER.debug("Exception occured while using default keystore. This should be a BUG");
              return null;
         }
     }
 
-    private SSLContext createSSLContextWithDefaultTrustManagerFactory() throws KeyStoreConfigurationException {
+    private SSLContext createSslContextWithDefaultTrustManagerFactory() throws KeyStoreConfigurationException {
         try {
-            return createSSLContext(false, true);
+            return createSslContext(false, true);
         }
         catch (TrustStoreConfigurationException dummy) {
             LOGGER.debug("Exception occured while using default truststore. This should be a BUG");
@@ -126,7 +126,7 @@ public class SslConfiguration {
         }
     }
 
-    private SSLContext createDefaultSSLContext() {
+    private SSLContext createDefaultSslContext() {
         try {
             return SSLContext.getDefault();
         } catch (NoSuchAlgorithmException e) {
@@ -135,7 +135,7 @@ public class SslConfiguration {
         }
     }
 
-    private SSLContext createSSLContext(boolean loadDefaultKeyManagerFactory, boolean loadDefaultTrustManagerFactory)
+    private SSLContext createSslContext(boolean loadDefaultKeyManagerFactory, boolean loadDefaultTrustManagerFactory)
             throws KeyStoreConfigurationException, TrustStoreConfigurationException {
         try {
             KeyManager[] kManagers = null;

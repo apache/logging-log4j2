@@ -114,7 +114,7 @@ public class StatusConfiguration {
             return System.err;
         }
         final URI destination = FileUtils.getCorrectedFilePathUri(name);
-        final File output = FileUtils.fileFromURI(destination);
+        final File output = FileUtils.fileFromUri(destination);
         if (output == null) {
             // don't want any NPEs, no sir
             return DEFAULT_STREAM;

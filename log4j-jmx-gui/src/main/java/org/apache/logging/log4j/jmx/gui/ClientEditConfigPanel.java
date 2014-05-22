@@ -63,7 +63,7 @@ public class ClientEditConfigPanel extends JPanel {
         @Override
         public void actionPerformed(final ActionEvent e) {
             try {
-                contextAdmin.setConfigLocationURI(locationTextField.getText());
+                contextAdmin.setConfigLocationUri(locationTextField.getText());
                 populateWidgets();
                 showConfirmation();
             } catch (final Exception ex) {
@@ -119,7 +119,7 @@ public class ClientEditConfigPanel extends JPanel {
             ex.printStackTrace(new PrintWriter(sw));
             configTextArea.setText(sw.toString());
         }
-        final String uri = contextAdmin.getConfigLocationURI();
+        final String uri = contextAdmin.getConfigLocationUri();
         locationTextField.setText(uri);
     }
 

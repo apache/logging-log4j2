@@ -80,7 +80,7 @@ public class JmsQueueManager extends AbstractJmsManager {
      * @param password The password to use to create the Queue Connection.
      * @return The JmsQueueManager.
      */
-    public static JmsQueueManager getJMSQueueManager(final String factoryName, final String providerURL,
+    public static JmsQueueManager getJmsQueueManager(final String factoryName, final String providerURL,
                                                      final String urlPkgPrefixes, final String securityPrincipalName,
                                                      final String securityCredentials, final String factoryBindingName,
                                                      final String queueBindingName, final String userName,

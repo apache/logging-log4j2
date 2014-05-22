@@ -98,7 +98,7 @@ public final class JmsQueueAppender extends AbstractAppender {
             return null;
         }
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
-        final JmsQueueManager manager = JmsQueueManager.getJMSQueueManager(factoryName, providerURL, urlPkgPrefixes,
+        final JmsQueueManager manager = JmsQueueManager.getJmsQueueManager(factoryName, providerURL, urlPkgPrefixes,
             securityPrincipalName, securityCredentials, factoryBindingName, queueBindingName, userName, password);
         if (manager == null) {
             return null;

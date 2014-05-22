@@ -177,7 +177,7 @@ public class RingBufferLogEventTest {
         RingBufferLogEvent other = (RingBufferLogEvent) in.readObject();
         assertEquals(loggerName, other.getLoggerName());
         assertEquals(marker, other.getMarker());
-        assertEquals(fqcn, other.getLoggerFQCN());
+        assertEquals(fqcn, other.getLoggerFqcn());
         assertEquals(level, other.getLevel());
         assertEquals(data, other.getMessage());
         assertNull("null after serialization", other.getThrown());

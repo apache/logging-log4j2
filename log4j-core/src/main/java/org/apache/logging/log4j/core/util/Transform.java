@@ -89,7 +89,7 @@ public final class Transform {
      *            section are the responsibility of the calling method.
      * @param str The String that is inserted into an existing CDATA Section within buf.
      */
-    public static void appendEscapingCDATA(final StringBuilder buf, final String str) {
+    public static void appendEscapingCData(final StringBuilder buf, final String str) {
         if (str != null) {
             int end = str.indexOf(CDATA_END);
             if (end < 0) {

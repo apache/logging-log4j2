@@ -136,7 +136,7 @@ public class XmlLayoutTest {
         //
         assertNull(actual.getThrown());
         // check some attrs
-        assertTrue(str, str.contains("loggerFQCN=\"f.q.c.n\""));
+        assertTrue(str, str.contains("loggerFqcn=\"f.q.c.n\""));
         assertTrue(str, str.contains("loggerName=\"a.B\""));
         // make sure short names are used
         assertTrue(str, str.contains("<Event "));
@@ -170,7 +170,7 @@ public class XmlLayoutTest {
         if (Throwables.isGetSuppressedAvailable()) {
             this.checkElementName("Suppressed", compact, str, false, true);
         }
-        this.checkAttributeName("loggerFQCN", compact, str);
+        this.checkAttributeName("loggerFqcn", compact, str);
         this.checkAttributeName("endOfBatch", compact, str);
         if (includeContext) {
             this.checkElementName("ContextMap", compact, str, false, true);
@@ -180,7 +180,7 @@ public class XmlLayoutTest {
             this.checkElementName("Source", compact, str, true, false);
         }
         // check some attrs
-        this.checkAttribute("loggerFQCN", "f.q.c.n", compact, str);
+        this.checkAttribute("loggerFqcn", "f.q.c.n", compact, str);
         this.checkAttribute("loggerName", "a.B", compact, str);
     }
 
@@ -239,7 +239,7 @@ public class XmlLayoutTest {
         final String string = list.get(0);
         assertTrue("Incorrect header: " + string, string.equals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
         assertTrue("Incorrect footer", list.get(list.size() - 1).equals("</Events>"));
-        this.checkContains("loggerFQCN=\"org.apache.logging.log4j.spi.AbstractLoggerProvider\"", list);
+        this.checkContains("loggerFqcn=\"org.apache.logging.log4j.spi.AbstractLoggerProvider\"", list);
         this.checkContains("level=\"DEBUG\"", list);
         this.checkContains(">starting mdc pattern test</Message>", list);
         // this.checkContains("<Message>starting mdc pattern test</Message>", list);

@@ -150,7 +150,7 @@ public class TestBaseEntity extends AbstractLogEventWrapperEntity {
 
     @Override
     @Transient
-    public String getLoggerFQCN() {
-        return this.getWrappedEvent().getLoggerFQCN();
+    public String getLoggerFqcn() {
+        return this.getWrappedEvent().getLoggerFqcn();
     }
 }

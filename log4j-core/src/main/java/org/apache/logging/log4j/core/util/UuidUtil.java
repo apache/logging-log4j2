@@ -172,7 +172,7 @@ public final class UuidUtil {
      *
      * @return universally unique identifiers (UUID)
      */
-    public static UUID getTimeBasedUUID() {
+    public static UUID getTimeBasedUuid() {
 
         final long time = ((System.currentTimeMillis() * HUNDRED_NANOS_PER_MILLI) +
             NUM_100NS_INTERVALS_SINCE_UUID_EPOCH) + (count.incrementAndGet() % HUNDRED_NANOS_PER_MILLI);
