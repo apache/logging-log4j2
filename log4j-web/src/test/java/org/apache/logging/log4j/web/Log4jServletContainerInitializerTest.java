@@ -23,7 +23,6 @@ import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
-import javax.servlet.UnavailableException;
 
 import org.apache.logging.log4j.util.Strings;
 import org.easymock.Capture;
@@ -37,14 +36,14 @@ import static org.junit.Assert.*;
 
 public class Log4jServletContainerInitializerTest {
     private ServletContext servletContext;
-    private Log4jWebInitializer initializer;
+    private Log4jWebLifeCycle initializer;
 
     private Log4jServletContainerInitializer containerInitializer;
 
     @Before
     public void setUp() {
         this.servletContext = createStrictMock(ServletContext.class);
-        this.initializer = createStrictMock(Log4jWebInitializer.class);
+        this.initializer = createStrictMock(Log4jWebLifeCycle.class);
 
         this.containerInitializer = new Log4jServletContainerInitializer();
     }
@@ -112,7 +111,7 @@ public class Log4jServletContainerInitializerTest {
         expectLastCall();
         expect(this.servletContext.addFilter(eq("log4jServletFilter"), capture(filterCapture))).andReturn(registration);
         expect(this.servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).andReturn(this.initializer);
-        this.initializer.initialize();
+        this.initializer.start();
         expectLastCall();
         this.initializer.setLoggerContext();
         expectLastCall();
@@ -168,7 +167,7 @@ public class Log4jServletContainerInitializerTest {
         final FilterRegistration.Dynamic registration = createStrictMock(FilterRegistration.Dynamic.class);
 
         final Capture<Class<? extends Filter>> filterCapture = new Capture<Class<? extends Filter>>();
-        final UnavailableException exception = new UnavailableException(Strings.EMPTY);
+        final IllegalStateException exception = new IllegalStateException(Strings.EMPTY);
 
         expect(this.servletContext.getMajorVersion()).andReturn(3);
         expect(this.servletContext.getEffectiveMajorVersion()).andReturn(3);
@@ -178,7 +177,7 @@ public class Log4jServletContainerInitializerTest {
         expectLastCall();
         expect(this.servletContext.addFilter(eq("log4jServletFilter"), capture(filterCapture))).andReturn(registration);
         expect(this.servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).andReturn(this.initializer);
-        this.initializer.initialize();
+        this.initializer.start();
         expectLastCall().andThrow(exception);
 
         replay(this.servletContext, this.initializer, registration);
@@ -186,7 +185,7 @@ public class Log4jServletContainerInitializerTest {
         try {
             this.containerInitializer.onStartup(null, this.servletContext);
             fail("Expected the exception thrown by the initializer; got no exception.");
-        } catch (final UnavailableException e) {
+        } catch (final IllegalStateException e) {
             assertSame("The exception is not correct.", exception, e);
         }
 

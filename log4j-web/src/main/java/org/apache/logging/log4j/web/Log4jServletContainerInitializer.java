@@ -49,8 +49,8 @@ public class Log4jServletContainerInitializer implements ServletContainerInitial
                 return;
             }
 
-            final Log4jWebInitializer initializer = Log4jWebInitializerImpl.getLog4jWebInitializer(servletContext);
-            initializer.initialize();
+            final Log4jWebLifeCycle initializer = Log4jWebInitializerImpl.getLog4jWebInitializer(servletContext);
+            initializer.start();
             initializer.setLoggerContext(); // the application is just now starting to start up
 
             servletContext.addListener(new Log4jServletContextListener());

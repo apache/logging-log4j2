@@ -31,7 +31,7 @@ import static org.easymock.EasyMock.*;
 public class Log4jServletFilterTest {
     private FilterConfig filterConfig;
     private ServletContext servletContext;
-    private Log4jWebInitializer initializer;
+    private Log4jWebLifeCycle initializer;
 
     private Log4jServletFilter filter;
 
@@ -39,7 +39,7 @@ public class Log4jServletFilterTest {
     public void setUp() {
         this.filterConfig = createStrictMock(FilterConfig.class);
         this.servletContext = createStrictMock(ServletContext.class);
-        this.initializer = createStrictMock(Log4jWebInitializer.class);
+        this.initializer = createStrictMock(Log4jWebLifeCycle.class);
 
         this.filter = new Log4jServletFilter();
     }

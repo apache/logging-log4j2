@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.web;
 
-import javax.servlet.UnavailableException;
+import org.apache.logging.log4j.core.LifeCycle;
 
 /**
  * Specifies an interface for initializing and deinitializing Log4j in a Java EE web application. The default and only
@@ -24,17 +24,20 @@ import javax.servlet.UnavailableException;
  * The methods here are contained in a package-private sub-interface because general application code should not have
  * access to them.
  */
-interface Log4jWebInitializer extends Log4jWebSupport {
+interface Log4jWebLifeCycle extends Log4jWebSupport, LifeCycle {
+    
     /**
      * Starts up Log4j in the web application. Calls {@link #setLoggerContext()} after initialization is complete.
      *
-     * @throws UnavailableException if a JNDI config location is specified but no name is specified.
+     * @throws IllegalStateException if a JNDI config location is specified but no name is specified.
      */
-    void initialize() throws UnavailableException;
+    @Override
+    void start();
 
     /**
      * Shuts down Log4j in the web application. Calls {@link #clearLoggerContext()} immediately before deinitialization
      * begins.
      */
-    void deinitialize();
+    @Override
+    void stop();
 }

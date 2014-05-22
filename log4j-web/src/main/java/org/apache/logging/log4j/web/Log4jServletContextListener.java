@@ -19,7 +19,6 @@ package org.apache.logging.log4j.web;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import javax.servlet.UnavailableException;
 
 /**
  * In environments older than Servlet 3.0, this initializer is responsible for starting up Log4j logging before anything
@@ -29,7 +28,7 @@ import javax.servlet.UnavailableException;
 public class Log4jServletContextListener implements ServletContextListener {
 
     private ServletContext servletContext;
-    private Log4jWebInitializer initializer;
+    private Log4jWebLifeCycle initializer;
 
     @Override
     public void contextInitialized(final ServletContextEvent event) {
@@ -38,10 +37,10 @@ public class Log4jServletContextListener implements ServletContextListener {
 
         this.initializer = Log4jWebInitializerImpl.getLog4jWebInitializer(this.servletContext);
         try {
-            this.initializer.initialize();
+            this.initializer.start();
             this.initializer.setLoggerContext(); // the application is just now starting to start up
-        } catch (final UnavailableException e) {
-            throw new RuntimeException("Failed to initialize Log4j properly.", e);
+        } catch (final IllegalStateException e) {
+            throw new IllegalStateException("Failed to initialize Log4j properly.", e);
         }
     }
 
@@ -53,6 +52,6 @@ public class Log4jServletContextListener implements ServletContextListener {
         this.servletContext.log("Log4jServletContextListener ensuring that Log4j shuts down properly.");
 
         this.initializer.clearLoggerContext(); // the application is finished shutting down now
-        this.initializer.deinitialize();
+        this.initializer.stop();
     }
 }
