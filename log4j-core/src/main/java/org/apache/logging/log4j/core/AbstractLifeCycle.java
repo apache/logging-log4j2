@@ -30,7 +30,7 @@ public class AbstractLifeCycle implements LifeCycle {
      * Allow subclasses access to the status logger without creating another instance.
      */
     protected static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
-    
+
     private volatile LifeCycle.State state = LifeCycle.State.INITIALIZED;
 
     public LifeCycle.State getState() {
@@ -69,6 +69,8 @@ public class AbstractLifeCycle implements LifeCycle {
 
     protected void setState(final LifeCycle.State newState) {
         this.state = newState;
+        // Need a better string than this.toString() for the message
+        // LOGGER.debug("{} {}", this.state, this);
     }
 
     protected void setStopped() {
