@@ -92,7 +92,7 @@ public class KeyStoreConfiguration extends StoreConfiguration {
     }
 
     /**
-     * Create a KeyStoreConfiguration.
+     * Creates a KeyStoreConfiguration.
      * @param location The location of the KeyStore.
      * @param password The password to access the KeyStore.
      * @return
