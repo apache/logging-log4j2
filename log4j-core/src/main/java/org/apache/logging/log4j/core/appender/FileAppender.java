@@ -98,6 +98,7 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
      */
     @PluginFactory
     public static FileAppender createAppender(
+            // @formatter:off
             @PluginAttribute("fileName") final String fileName,
             @PluginAttribute("append") final String append,
             @PluginAttribute("locking") final String locking,
@@ -111,7 +112,7 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             @PluginAttribute("advertise") final String advertise,
             @PluginAttribute("advertiseURI") final String advertiseURI,
             @PluginConfiguration final Configuration config) {
-
+        // @formatter:on
         final boolean isAppend = Booleans.parseBoolean(append, true);
         final boolean isLocking = Boolean.parseBoolean(locking);
         boolean isBuffered = Booleans.parseBoolean(bufferedIO, true);
