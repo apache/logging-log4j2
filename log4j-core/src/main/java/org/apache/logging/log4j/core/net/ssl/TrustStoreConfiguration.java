@@ -94,7 +94,7 @@ public class TrustStoreConfiguration extends StoreConfiguration {
     }
 
     /**
-     * Create a TrustStoreConfiguration.
+     * Creates a TrustStoreConfiguration.
      * @param location The location of the TrustStore.
      * @param password The password required to access the TrustStore.
      * @return
