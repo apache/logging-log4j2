@@ -24,30 +24,30 @@ import org.junit.Test;
 public class TrustStoreConfigurationTest {
     @Test(expected = StoreConfigurationException.class)
     public void loadEmptyConfiguration() throws StoreConfigurationException {
-        TrustStoreConfiguration ksc = new TrustStoreConfiguration(null, null);
-        KeyStore ks = ksc.getTrustStore();
+        TrustStoreConfiguration ksc = new TrustStoreConfiguration(null, null, null, null);
+        KeyStore ks = ksc.getKeyStore();
         Assert.assertTrue(ks == null);
     }
 
     @Test
     public void loadConfiguration() throws StoreConfigurationException {
-        TrustStoreConfiguration ksc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE, TestConstants.TRUSTSTORE_PWD);
-        KeyStore ks = ksc.getTrustStore();
+        TrustStoreConfiguration ksc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE, TestConstants.TRUSTSTORE_PWD, null, null);
+        KeyStore ks = ksc.getKeyStore();
         Assert.assertNotNull(ks);
     }
 
     @Test
     public void returnTheSameKeyStoreAfterMultipleLoads() throws StoreConfigurationException {
-        TrustStoreConfiguration ksc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE, TestConstants.TRUSTSTORE_PWD);
-        KeyStore ks = ksc.getTrustStore();
-        KeyStore ks2 = ksc.getTrustStore();
+        TrustStoreConfiguration ksc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE, TestConstants.TRUSTSTORE_PWD, null, null);
+        KeyStore ks = ksc.getKeyStore();
+        KeyStore ks2 = ksc.getKeyStore();
         Assert.assertTrue(ks == ks2);
     }
 
     @Test(expected = StoreConfigurationException.class)
     public void wrongPassword() throws StoreConfigurationException {
-        TrustStoreConfiguration ksc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE, "wrongPassword!");
-        KeyStore ks = ksc.getTrustStore();
+        TrustStoreConfiguration ksc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE, "wrongPassword!", null, null);
+        KeyStore ks = ksc.getKeyStore();
         Assert.assertTrue(false);
     }
 }

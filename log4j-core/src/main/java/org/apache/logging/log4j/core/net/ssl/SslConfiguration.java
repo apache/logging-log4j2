@@ -31,6 +31,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -44,10 +45,13 @@ public class SslConfiguration {
     private final KeyStoreConfiguration keyStoreConfig;
     private final TrustStoreConfiguration trustStoreConfig;
     private final SSLContext sslContext;
+    private final String protocol;
 
-    private SslConfiguration(KeyStoreConfiguration keyStoreConfig, TrustStoreConfiguration trustStoreConfig) {
+    private SslConfiguration(String protocol, KeyStoreConfiguration keyStoreConfig,
+            TrustStoreConfiguration trustStoreConfig) {
         this.keyStoreConfig = keyStoreConfig;
         this.trustStoreConfig = trustStoreConfig;
+        this.protocol = protocol == null ? SslConfigurationDefaults.PROTOCOL : protocol;
         this.sslContext = this.createSslContext();
     }
 
@@ -141,7 +145,7 @@ public class SslConfiguration {
             KeyManager[] kManagers = null;
             TrustManager[] tManagers = null;
 
-            SSLContext newSslContext = SSLContext.getInstance(SslConfigurationDefaults.PROTOCOL);
+            SSLContext newSslContext = SSLContext.getInstance(this.protocol);
             if (!loadDefaultKeyManagerFactory) {
                 KeyManagerFactory kmFactory = loadKeyManagerFactory();
                 kManagers = kmFactory.getKeyManagers();
@@ -165,17 +169,12 @@ public class SslConfiguration {
     }
 
     private TrustManagerFactory loadTrustManagerFactory() throws TrustStoreConfigurationException {
-        KeyStore trustStore = null;
-        TrustManagerFactory tmFactory = null;
-
         if (trustStoreConfig == null) {
             throw new TrustStoreConfigurationException(new Exception("The trustStoreConfiguration is null"));
         }
 
         try {
-            trustStore = trustStoreConfig.getTrustStore();
-            tmFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            tmFactory.init(trustStore);
+            return trustStoreConfig.initTrustManagerFactory();
         }
         catch (NoSuchAlgorithmException e) {
             LOGGER.error("The specified algorithm is not available from the specified provider");
@@ -183,25 +182,16 @@ public class SslConfiguration {
         } catch (KeyStoreException e) {
             LOGGER.error("Failed to initialize the TrustManagerFactory");
             throw new TrustStoreConfigurationException(e);
-        } catch (StoreConfigurationException e) {
-            throw new TrustStoreConfigurationException(e);
         }
-
-        return tmFactory;
     }
 
     private KeyManagerFactory loadKeyManagerFactory() throws KeyStoreConfigurationException {
-        KeyStore keyStore = null;
-        KeyManagerFactory kmFactory = null;
-
         if (keyStoreConfig == null) {
             throw new KeyStoreConfigurationException(new Exception("The keyStoreConfiguration is null"));
         }
 
         try {
-            keyStore = keyStoreConfig.getKeyStore();
-            kmFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-            kmFactory.init(keyStore, keyStoreConfig.getPasswordAsCharArray());
+            return keyStoreConfig.initKeyManagerFactory();
         }
         catch (NoSuchAlgorithmException e) {
             LOGGER.error("The specified algorithm is not available from the specified provider");
@@ -209,14 +199,10 @@ public class SslConfiguration {
         } catch (KeyStoreException e) {
             LOGGER.error("Failed to initialize the TrustManagerFactory");
             throw new KeyStoreConfigurationException(e);
-        } catch (StoreConfigurationException e) {
-            throw new KeyStoreConfigurationException(e);
         } catch (UnrecoverableKeyException e) {
             LOGGER.error("The key cannot be recovered (e.g. the given password is wrong)");
             throw new KeyStoreConfigurationException(e);
         }
-
-        return kmFactory;
     }
 
     public boolean equals(SslConfiguration config) {
@@ -244,14 +230,18 @@ public class SslConfiguration {
 
     /**
      * Creates an SslConfiguration from a KeyStoreConfiguration and a TrustStoreConfiguration.
+     * @param protocol The protocol, see http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#SSLContext
      * @param keyStoreConfig The KeyStoreConfiguration.
      * @param trustStoreConfig The TrustStoreConfiguration.
      * @return a new SslConfiguration
      */
     @PluginFactory
     public static SslConfiguration createSSLConfiguration(
-            @PluginElement("keyStore") KeyStoreConfiguration keyStoreConfig,
-            @PluginElement("trustStore") TrustStoreConfiguration trustStoreConfig) {
-        return new SslConfiguration(keyStoreConfig, trustStoreConfig);
+            // @formatter:off
+            @PluginAttribute("protocol") String protocol,
+            @PluginElement("KeyStore") KeyStoreConfiguration keyStoreConfig, 
+            @PluginElement("TrustStore") TrustStoreConfiguration trustStoreConfig) {
+            // @formatter:on
+        return new SslConfiguration(protocol, keyStoreConfig, trustStoreConfig);
     }
 }

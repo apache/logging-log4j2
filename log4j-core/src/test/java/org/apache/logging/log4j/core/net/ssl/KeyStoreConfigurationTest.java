@@ -24,21 +24,23 @@ import org.junit.Test;
 public class KeyStoreConfigurationTest {
     @Test(expected = StoreConfigurationException.class)
     public void loadEmptyConfiguration() throws StoreConfigurationException {
-        KeyStoreConfiguration ksc = new KeyStoreConfiguration(null, null);
+        KeyStoreConfiguration ksc = new KeyStoreConfiguration(null, null, null, null);
         KeyStore ks = ksc.getKeyStore();
         Assert.assertTrue(ks == null);
     }
 
     @Test
     public void loadNotEmptyConfiguration() throws StoreConfigurationException {
-        KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, TestConstants.KEYSTORE_PWD);
+        KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, TestConstants.KEYSTORE_PWD,
+                TestConstants.KEYSTORE_TYPE, null);
         KeyStore ks = ksc.getKeyStore();
         Assert.assertTrue(ks != null);
     }
 
     @Test
     public void returnTheSameKeyStoreAfterMultipleLoads() throws StoreConfigurationException {
-        KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, TestConstants.KEYSTORE_PWD);
+        KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, TestConstants.KEYSTORE_PWD,
+                TestConstants.KEYSTORE_TYPE, null);
         KeyStore ks = ksc.getKeyStore();
         KeyStore ks2 = ksc.getKeyStore();
         Assert.assertTrue(ks == ks2);
@@ -46,7 +48,7 @@ public class KeyStoreConfigurationTest {
 
     @Test(expected = StoreConfigurationException.class)
     public void wrongPassword() throws StoreConfigurationException {
-        KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, "wrongPassword!");
+        KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, "wrongPassword!", null, null);
         KeyStore ks = ksc.getKeyStore();
     }
 }

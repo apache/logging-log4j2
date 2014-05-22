@@ -30,24 +30,24 @@ public class SslConfigurationTest {
     private static final int TLS_TEST_PORT = 443;
 
     @Test
-    public void emptyConfigurationDoesntCauseNullSSLSocketFactory() throws SslConfigurationException {
-        SslConfiguration sc = SslConfiguration.createSSLConfiguration(null, null);
+    public void emptyConfigurationDoesntCauseNullSSLSocketFactory() {
+        SslConfiguration sc = SslConfiguration.createSSLConfiguration(null, null, null);
         SSLSocketFactory factory = sc.getSslSocketFactory();
         Assert.assertTrue(factory != null);
     }
 
     @Test
-    public void emptyConfigurationHasDefaultTrustStore() throws SslConfigurationException, IOException {
-        SslConfiguration sc = SslConfiguration.createSSLConfiguration(null, null);
+    public void emptyConfigurationHasDefaultTrustStore() throws IOException {
+        SslConfiguration sc = SslConfiguration.createSSLConfiguration(null, null, null);
         SSLSocketFactory factory = sc.getSslSocketFactory();
         SSLSocket clientSocket = (SSLSocket) factory.createSocket(TLS_TEST_HOST, TLS_TEST_PORT);
         Assert.assertTrue(true);
     }
 
     @Test(expected = IOException.class)
-    public void connectionFailsWithoutValidServerCertificate() throws SslConfigurationException, IOException {
-        TrustStoreConfiguration tsc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE, null);
-        SslConfiguration sc = SslConfiguration.createSSLConfiguration(null, tsc);
+    public void connectionFailsWithoutValidServerCertificate() throws IOException, StoreConfigurationException {
+        TrustStoreConfiguration tsc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE, null, null, null);
+        SslConfiguration sc = SslConfiguration.createSSLConfiguration(null, null, tsc);
         SSLSocketFactory factory = sc.getSslSocketFactory();
         SSLSocket clientSocket = (SSLSocket) factory.createSocket(TLS_TEST_HOST, TLS_TEST_PORT);
         OutputStream os = clientSocket.getOutputStream();
@@ -56,9 +56,9 @@ public class SslConfigurationTest {
     }
 
     @Test
-    public void loadKeyStoreWithoutPassword() throws StoreConfigurationException, SslConfigurationException {
-        KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, null);
-        SslConfiguration sslConf = SslConfiguration.createSSLConfiguration(ksc, null);
+    public void loadKeyStoreWithoutPassword() throws StoreConfigurationException {
+        KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, null, null, null);
+        SslConfiguration sslConf = SslConfiguration.createSSLConfiguration(null, ksc, null);
         SSLSocketFactory factory = sslConf.getSslSocketFactory();
         Assert.assertTrue(true);
     }

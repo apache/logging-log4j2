@@ -21,8 +21,10 @@ public class TestConstants {
     public static final String TRUSTSTORE_PATH = PATH;
     public static final String TRUSTSTORE_FILE = TRUSTSTORE_PATH + "truststore.jks";
     public static final String TRUSTSTORE_PWD = "changeit";
+    public static final String TRUSTSTORE_TYPE = "JKS";
 
     public static final String KEYSTORE_PATH = PATH;
     public static final String KEYSTORE_FILE = KEYSTORE_PATH + "client.log4j2-keystore.jks";
     public static final String KEYSTORE_PWD = "changeit";
+    public static final String KEYSTORE_TYPE = "JKS";
 }
