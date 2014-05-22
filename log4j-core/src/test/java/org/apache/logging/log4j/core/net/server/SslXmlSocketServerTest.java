@@ -80,7 +80,7 @@ public class SslXmlSocketServerTest extends AbstractSocketServerTest {
     }
 
     public SslXmlSocketServerTest() {
-        super("TLS", PORT, false);
+        super("SSL", PORT, false);
     }
 
     @Override

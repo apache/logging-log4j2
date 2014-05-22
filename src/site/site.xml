@@ -112,7 +112,6 @@
         <item name="SMTP" href="/manual/appenders.html#SMTPAppender"/>
         <item name="Socket" href="/manual/appenders.html#SocketAppender"/>
         <item name="Syslog" href="/manual/appenders.html#SyslogAppender"/>
-        <item name="TLS Syslog" href="/manual/appenders.html#TLSSyslogAppender"/>
       </item>
 
       <item name="Layouts" href="/manual/layouts.html" collapse="true">

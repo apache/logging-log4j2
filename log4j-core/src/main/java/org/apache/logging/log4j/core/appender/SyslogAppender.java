@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.layout.SyslogLayout;
 import org.apache.logging.log4j.core.net.AbstractSocketManager;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.net.Protocol;
+import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.util.EnglishEnums;
 
@@ -54,7 +55,8 @@ public class SyslogAppender extends SocketAppender {
      * Create a SyslogAppender.
      * @param host The name of the host to connect to.
      * @param portNum The port to connect to on the target host.
-     * @param protocol The Protocol to use.
+     * @param protocolStr The Protocol to use.
+     * @param sslConfig TODO
      * @param delay The interval in which failed writes should be retried.
      * @param immediateFail True if the write should fail if no socket is immediately available.
      * @param name The name of the Appender.
@@ -64,7 +66,7 @@ public class SyslogAppender extends SocketAppender {
      * @param facility The Facility is used to try to classify the message.
      * @param id The default structured data id to use when formatting according to RFC 5424.
      * @param ein The IANA enterprise number.
-     * @param includeMDC Indicates whether data from the ThreadContextMap will be included in the RFC 5424 Syslog
+     * @param includeMdc Indicates whether data from the ThreadContextMap will be included in the RFC 5424 Syslog
      * record. Defaults to "true:.
      * @param mdcId The id to use for the MDC Structured Data Element.
      * @param mdcPrefix The prefix to add to MDC key names.
@@ -88,9 +90,11 @@ public class SyslogAppender extends SocketAppender {
      */
     @PluginFactory
     public static SyslogAppender createAppender(
+            // @formatter:off
             @PluginAttribute("host") final String host,
             @PluginAttribute("port") final String portNum,
-            @PluginAttribute("protocol") final String protocol,
+            @PluginAttribute("protocol") final String protocolStr,
+            @PluginElement("SSL") final SslConfiguration sslConfig,
             @PluginAttribute("reconnectionDelay") final String delay,
             @PluginAttribute("immediateFail") final String immediateFail,
             @PluginAttribute("name") final String name,
@@ -99,7 +103,7 @@ public class SyslogAppender extends SocketAppender {
             @PluginAttribute("facility") final String facility,
             @PluginAttribute("id") final String id,
             @PluginAttribute("enterpriseNumber") final String ein,
-            @PluginAttribute("includeMDC") final String includeMDC,
+            @PluginAttribute("includeMdc") final String includeMdc,
             @PluginAttribute("mdcId") final String mdcId,
             @PluginAttribute("mdcPrefix") final String mdcPrefix,
             @PluginAttribute("eventPrefix") final String eventPrefix,
@@ -115,8 +119,8 @@ public class SyslogAppender extends SocketAppender {
             @PluginConfiguration final Configuration config,
             @PluginAttribute("charset") final String charsetName,
             @PluginAttribute("exceptionPattern") final String exceptionPattern,
-            @PluginElement("LoggerFields") final LoggerFields[] loggerFields,
-            @PluginAttribute("advertise") final String advertise) {
+            @PluginElement("LoggerFields") final LoggerFields[] loggerFields, @PluginAttribute("advertise") final String advertise) {
+        // @formatter:on
 
         final boolean isFlush = Booleans.parseBoolean(immediateFlush, true);
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
@@ -124,21 +128,19 @@ public class SyslogAppender extends SocketAppender {
         final boolean fail = Booleans.parseBoolean(immediateFail, true);
         final int port = AbstractAppender.parseInt(portNum, 0);
         final boolean isAdvertise = Boolean.parseBoolean(advertise);
-        final Layout<? extends Serializable> layout = (RFC5424.equalsIgnoreCase(format) ?
-            Rfc5424Layout.createLayout(facility, id, ein, includeMDC, mdcId, mdcPrefix, eventPrefix, includeNL,
-                escapeNL, appName, msgId, excludes, includes, required, exceptionPattern, "false", loggerFields,
+        final Protocol protocol = EnglishEnums.valueOf(Protocol.class, protocolStr);
+        final String useTlsMessageFormat = Boolean.toString(sslConfig != null || protocol == Protocol.SSL);
+        final Layout<? extends Serializable> layout = RFC5424.equalsIgnoreCase(format) ?
+            Rfc5424Layout.createLayout(facility, id, ein, includeMdc, mdcId, mdcPrefix, eventPrefix, includeNL,
+                escapeNL, appName, msgId, excludes, includes, required, exceptionPattern, useTlsMessageFormat, loggerFields,
                 config) :
-            SyslogLayout.createLayout(facility, includeNL, escapeNL, charsetName));
+            SyslogLayout.createLayout(facility, includeNL, escapeNL, charsetName);
 
         if (name == null) {
             LOGGER.error("No name provided for SyslogAppender");
             return null;
         }
-        final Protocol p = EnglishEnums.valueOf(Protocol.class, protocol);
-        final AbstractSocketManager manager = createSocketManager(name, p, host, port, null, reconnectDelay, fail, layout);
-        if (manager == null) {
-            return null;
-        }
+        final AbstractSocketManager manager = createSocketManager(name, protocol, host, port, sslConfig, reconnectDelay, fail, layout);
 
         return new SyslogAppender(name, layout, filter, ignoreExceptions, isFlush, manager,
                 isAdvertise ? config.getAdvertiser() : null);

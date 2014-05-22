@@ -22,8 +22,8 @@ package org.apache.logging.log4j.core.net;
 public enum Protocol {
     /** TCP Protocol. */
     TCP,
-    /** TLS Protocol. */
-    TLS,
+    /** SSL Protocol. */
+    SSL,
     /** UDP Protocol. */
     UDP;
 
