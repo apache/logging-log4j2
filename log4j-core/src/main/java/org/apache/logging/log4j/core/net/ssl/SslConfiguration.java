@@ -59,10 +59,10 @@ public class SslConfiguration {
     }
 
     public SSLServerSocketFactory getSSLServerSocketFactory() {
-            if (sslContext == null) {
-                this.sslContext = createSSLContext();
-            }
-            return sslContext.getServerSocketFactory();
+        if (sslContext == null) {
+            this.sslContext = createSSLContext();
+        }
+        return sslContext.getServerSocketFactory();
     }
 
     private SSLContext createSSLContext() {
