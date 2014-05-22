@@ -75,9 +75,9 @@ public abstract class AbstractSocketServerTest {
 
     private final boolean expectLengthException;
 
-    private final String port;
+    protected final String port;
 
-    private final String protocol;
+    protected final String protocol;
 
     private final Logger rootLogger = ctx.getLogger(AbstractSocketServerTest.class.getSimpleName());
 
@@ -168,8 +168,7 @@ public abstract class AbstractSocketServerTest {
         final Filter socketFilter = new ThreadFilter(Filter.Result.NEUTRAL, Filter.Result.DENY);
         final Filter serverFilter = new ThreadFilter(Filter.Result.DENY, Filter.Result.NEUTRAL);
         final Layout<? extends Serializable> socketLayout = createLayout();
-        final SocketAppender socketAppender = SocketAppender.createAppender("localhost", this.port, this.protocol, "-1",
-                null, "Test", "true", "false", socketLayout, socketFilter, null, null);
+        final SocketAppender socketAppender = createSocketAppender(socketFilter, socketLayout);
         socketAppender.start();
         final ListAppender listAppender = new ListAppender("Events", serverFilter, null, false, false);
         listAppender.start();
@@ -207,6 +206,12 @@ public abstract class AbstractSocketServerTest {
         for (int i = 0; i < messages.length; i++) {
             assertTrue("Incorrect event", events.get(i).getMessage().getFormattedMessage().equals(messages[i]));
         }
+    }
+
+    protected SocketAppender createSocketAppender(final Filter socketFilter,
+            final Layout<? extends Serializable> socketLayout) {
+        return SocketAppender.createAppender("localhost", this.port, this.protocol, "-1", null, "Test", "true",
+                "false", socketLayout, socketFilter, null, null);
     }
 
 }

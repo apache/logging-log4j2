@@ -43,25 +43,19 @@ public class SslConfiguration {
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
     private final KeyStoreConfiguration keyStoreConfig;
     private final TrustStoreConfiguration trustStoreConfig;
-    private SSLContext sslContext;
+    private final SSLContext sslContext;
 
     private SslConfiguration(KeyStoreConfiguration keyStoreConfig, TrustStoreConfiguration trustStoreConfig) {
         this.keyStoreConfig = keyStoreConfig;
         this.trustStoreConfig = trustStoreConfig;
-        this.sslContext = null;
+        this.sslContext = this.createSSLContext();
     }
 
     public SSLSocketFactory getSSLSocketFactory() {
-        if (sslContext == null) {
-            this.sslContext = createSSLContext();
-        }
         return sslContext.getSocketFactory();
     }
 
     public SSLServerSocketFactory getSSLServerSocketFactory() {
-        if (sslContext == null) {
-            this.sslContext = createSSLContext();
-        }
         return sslContext.getServerSocketFactory();
     }
 

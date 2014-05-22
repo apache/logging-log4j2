@@ -37,6 +37,8 @@ import org.apache.logging.log4j.core.util.Assert;
  * Abstract socket server for TCP and UDP implementations.
  * 
  * @param <T> The kind of input stream read
+ * 
+ * TODO Make a LifeCycle
  */
 public abstract class AbstractSocketServer<T extends InputStream> extends LogEventListener implements Runnable {
 
