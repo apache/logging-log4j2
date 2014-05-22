@@ -25,6 +25,9 @@
       <action issue="LOG4J2-644" dev="ggregory" type="add">
         Implement a SecureSocketAppender and secure server (SSL/TLS).
       </action>
+      <action issue="LOG4J2-646" dev="ggregory" type="update">
+        Merge the TLS Syslog appender into the Syslog appender.
+      </action>
       <action issue="LOG4J2-620" dev="rgoers" type="fix">
         Perform reconfiguration in a separate thread to prevent deadlocks.
       </action>
