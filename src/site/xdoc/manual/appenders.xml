@@ -2762,13 +2762,13 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         <a name="SocketAppender"/>
         <subsection name="SocketAppender">
           <p>
-            The SocketAppender is an OutputStreamAppender that writes its output to a remote destination
+            The <code>SocketAppender</code> is an OutputStreamAppender that writes its output to a remote destination
             specified by a host and port. The data can be sent over either TCP or UDP and can be sent in any format.
             The default format is to send a Serialized LogEvent. Log4j 2 contains a SocketServer which is capable
             of receiving serialized LogEvents and routing them through the logging system on the server.
           </p>
           <table>
-            <caption align="top">SocketAppender Parameters</caption>
+            <caption align="top"><code>SocketAppender</code> Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -2816,7 +2816,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>protocol</td>
               <td>String</td>
-              <td>"TCP" or "UDP". This parameter is required.</td>
+              <td>"TCP" (default) or "UDP".</td>
             </tr>
             <tr>
               <td>reconnectionDelay</td>
@@ -2850,15 +2850,118 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
   </Loggers>
 </Configuration>]]></pre>
         </subsection>
+        <a name="SecureSocketAppender"/>
+        <subsection name="SecureSocketAppender">
+          <p>
+            The <code>SecureSocketAppender</code> is a <code>SocketAppender</code> that securely writes its output to a remote destination
+            specified by a host and port. The data is sent over TLS and can be sent in any format.
+            The default format is to send a Serialized LogEvent. Log4j 2 contains a secure socket server which is capable
+            of receiving serialized LogEvents and routing them through the logging system on the server.
+          </p>
+          <p>
+            The parameters in this table are the same as for the <code>SocketAppender</code> with the addition of the SSL parameter.
+          </p>
+          <table>
+            <caption align="top"><code>SecureSocketAppender</code> Parameters</caption>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>SSL</td>
+              <td>SSLConfiguration</td>
+              <td>Contains the configuration for the KeyStore and TrustStore.</td>
+            </tr>
+            <tr>
+              <td>filter</td>
+              <td>Filter</td>
+              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
+              may be used by using a CompositeFilter.</td>
+            </tr>
+            <tr>
+              <td>host</td>
+              <td>String</td>
+              <td>The name or address of the system that is listening for log events. This parameter is required.</td>
+            </tr>
+            <tr>
+              <td>immediateFail</td>
+              <td>boolean</td>
+              <td>When set to true, log events will not wait to try to reconnect and will fail immediately if the
+              socket is not available.</td>
+            </tr>
+            <tr>
+              <td>immediateFlush</td>
+              <td>boolean</td>
+              <td>When set to true - the default, each write will be followed by a flush.
+                This will guarantee the data is written
+                to disk but could impact performance.</td>
+            </tr>
+            <tr>
+              <td>layout</td>
+              <td>Layout</td>
+              <td>The Layout to use to format the LogEvent. The default is SerializedLayout.</td>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td>The name of the Appender.</td>
+            </tr>
+            <tr>
+              <td>port</td>
+              <td>integer</td>
+              <td>The port on the host that is listening for log events. This parameter must be specified.</td>
+            </tr>
+            <tr>
+              <td>protocol</td>
+              <td>String</td>
+              <td>"TLS" is the only value supported and is optional.</td>
+            </tr>
+            <tr>
+              <td>reconnectionDelay</td>
+              <td>integer</td>
+              <td>If set to a value greater than 0, after an error the SocketManager will attempt to reconnect to
+                the server after waiting the specified number of milliseconds. If the reconnect fails then
+                an exception will be thrown (which can be caught by the application if <code>ignoreExceptions</code> is
+                set to <code>false</code>).</td>
+            </tr>
+            <tr>
+              <td>ignoreExceptions</td>
+              <td>boolean</td>
+              <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
+                internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
+                caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
+                <a href="#FailoverAppender">FailoverAppender</a>.</td>
+            </tr>
+          </table>
+
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp" packages="">
+  <Appenders>
+    <Socket name="socket" host="localhost" port="9500">
+      <SerializedLayout />
+      <SSL>
+        <KeyStore location="log4j2-keystore.jks" password="changeme"/>
+        <TrustStore location="truststore.jks" password="changeme"/>
+      </SSL>
+    </Socket>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="socket"/>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
+        </subsection>
         <a name="SyslogAppender"/>
         <subsection name="SyslogAppender">
           <p>
-            The SyslogAppender is a SocketAppender that writes its output to a remote destination
+            The <code>SyslogAppender</code> is a <code>SocketAppender</code> that writes its output to a remote destination
             specified by a host and port in a format that conforms with either the BSD Syslog format or the RFC 5424
             format. The data can be sent over either TCP or UDP.
           </p>
           <table>
-            <caption align="top">SyslogAppender Parameters</caption>
+            <caption align="top"><code>SyslogAppender</code> Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -3018,7 +3121,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             </tr>
           </table>
           <p>
-            A sample syslogAppender configuration that is configured with two SyslogAppenders, one using the BSD
+            A sample syslogAppender configuration that is configured with two <code>SyslogAppender</code>s, one using the BSD
             format and one using RFC 5424.
           </p>
 
@@ -3044,12 +3147,12 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         <a name="TLSSyslogAppender"/>
         <subsection name="TLSSyslogAppender">
           <p>
-            The TLSSyslogAppender is a SocketAppender that writes its output to a remote destination
+            The <code>TLSSyslogAppender</code> is a <code>SocketAppender</code> that writes its output to a remote destination
             specified by a host and port over SSL in a format that conforms with either the BSD Syslog format or the
             RFC 5424 format. The data can be sent over either TCP or UDP.
           </p>
           <table>
-            <caption align="top">SyslogAppender Parameters</caption>
+            <caption align="top"><code>SyslogAppender</code> Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>

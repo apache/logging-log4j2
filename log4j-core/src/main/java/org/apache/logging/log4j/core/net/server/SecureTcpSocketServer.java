@@ -14,25 +14,24 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.net;
+package org.apache.logging.log4j.core.net.server;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 
 /**
- * Enumeration of the supported protocols.
+ * Listens for events over a secure socket connection (SSL/TLS).
+ * 
+ * @param <T>
+ *        The kind of input stream read
  */
-public enum Protocol {
-    /** TCP Protocol. */
-    TCP,
-    /** TLS Protocol. */
-    TLS,
-    /** UDP Protocol. */
-    UDP;
+public class SecureTcpSocketServer<T extends InputStream> extends TcpSocketServer<T> {
 
-    /**
-     * Determine if the String matches this enum.
-     * @param name The enumeration name to check.
-     * @return true if this enumeration has the specified name.
-     */
-    public boolean isEqual(final String name) {
-        return this.name().equalsIgnoreCase(name);
+    public SecureTcpSocketServer(int port, LogEventBridge<T> logEventInput, SslConfiguration sslConfig)
+            throws IOException {
+        super(port, logEventInput, sslConfig.getSSLServerSocketFactory().createServerSocket(port));
     }
+
 }

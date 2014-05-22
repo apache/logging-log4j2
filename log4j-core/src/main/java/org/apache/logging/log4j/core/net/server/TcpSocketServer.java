@@ -36,7 +36,7 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
  * Listens for events over a socket connection.
  * 
  * @param <T>
- *            The kind of input stream read
+ *        The kind of input stream read
  */
 public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer<T> {
 
@@ -90,10 +90,10 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
      * Creates a socket server that reads JSON log events.
      * 
      * @param port
-     *            the port to listen
+     *        the port to listen
      * @return a new a socket server
      * @throws IOException
-     *             if an I/O error occurs when opening the socket.
+     *         if an I/O error occurs when opening the socket.
      */
     public static TcpSocketServer<InputStream> createJsonSocketServer(final int port) throws IOException {
         return new TcpSocketServer<InputStream>(port, new JsonInputStreamLogEventBridge());
@@ -103,10 +103,10 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
      * Creates a socket server that reads serialized log events.
      * 
      * @param port
-     *            the port to listen
+     *        the port to listen
      * @return a new a socket server
      * @throws IOException
-     *             if an I/O error occurs when opening the socket.
+     *         if an I/O error occurs when opening the socket.
      */
     public static TcpSocketServer<ObjectInputStream> createSerializedSocketServer(final int port) throws IOException {
         return new TcpSocketServer<ObjectInputStream>(port, new ObjectInputStreamLogEventBridge());
@@ -116,10 +116,10 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
      * Creates a socket server that reads XML log events.
      * 
      * @param port
-     *            the port to listen
+     *        the port to listen
      * @return a new a socket server
      * @throws IOException
-     *             if an I/O error occurs when opening the socket.
+     *         if an I/O error occurs when opening the socket.
      */
     public static TcpSocketServer<InputStream> createXmlSocketServer(final int port) throws IOException {
         return new TcpSocketServer<InputStream>(port, new XmlInputStreamLogEventBridge());
@@ -129,9 +129,9 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
      * Main startup for the server.
      * 
      * @param args
-     *            The command line arguments.
+     *        The command line arguments.
      * @throws Exception
-     *             if an error occurs.
+     *         if an error occurs.
      */
     public static void main(final String[] args) throws Exception {
         if (args.length < 1 || args.length > 2) {
@@ -176,15 +176,32 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
      * Constructor.
      * 
      * @param port
-     *            to listen.
+     *        to listen.
      * @param logEventInput
-     *            the log even input
+     *        the log even input
      * @throws IOException
-     *             if an I/O error occurs when opening the socket.
+     *         if an I/O error occurs when opening the socket.
      */
     public TcpSocketServer(final int port, final LogEventBridge<T> logEventInput) throws IOException {
+        this(port, logEventInput, new ServerSocket(port));
+    }
+
+    /**
+     * Constructor.
+     * 
+     * @param port
+     *        to listen.
+     * @param logEventInput
+     *        the log even input
+     * @param serverSocket
+     *        the socket server
+     * @throws IOException
+     *         if an I/O error occurs when opening the socket.
+     */
+    public TcpSocketServer(final int port, final LogEventBridge<T> logEventInput, ServerSocket serverSocket)
+            throws IOException {
         super(port, logEventInput);
-        this.serverSocket = new ServerSocket(port);
+        this.serverSocket = serverSocket;
     }
 
     /**

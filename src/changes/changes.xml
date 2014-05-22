@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="2.0-rc2" date="2014-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-644" dev="ggregory" type="add">
+        Implement a SecureSocketAppender and secure server (SSL/TLS).
+      </action>
       <action issue="LOG4J2-620" dev="rgoers" type="fix">
         Perform reconfiguration in a separate thread to prevent deadlocks.
       </action>

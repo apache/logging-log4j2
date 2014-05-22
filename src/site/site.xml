@@ -82,13 +82,13 @@
       </item>
 
       <item name="Lookups" href="/manual/lookups.html" collapse="true">
-        <item name="ContextMap" href="/manual/lookups.html#ContextMapLookup"/>
+        <item name="Context Map" href="/manual/lookups.html#ContextMapLookup"/>
         <item name="Date" href="/manual/lookups.html#DateLookcup"/>
         <item name="Environment" href="/manual/lookups.html#EnvironmentLookup"/>
         <item name="JNDI" href="/manual/lookups.html#JNDILookup"/>
         <item name="Map" href="/manual/lookups.html#MapLookup"/>
-        <item name="StructuredData" href="/manual/lookups.html#StructuredDataLookup"/>
-        <item name="SystemProperties" href="/manual/lookups.html#SystemPropertiesLookup"/>
+        <item name="Structured Data" href="/manual/lookups.html#StructuredDataLookup"/>
+        <item name="System Properties" href="/manual/lookups.html#SystemPropertiesLookup"/>
         <item name="Web" href="/manual/lookups.html#WebLookup"/>
       </item>
 
@@ -99,26 +99,27 @@
         <item name="File" href="/manual/appenders.html#FileAppender"/>
         <item name="Flume" href="/manual/appenders.html#FlumeAppender"/>
         <item name="JDBC" href="/manual/appenders.html#JDBCAppender"/>
-        <item name="JMSQueue" href="/manual/appenders.html#JMSQueueAppender"/>
-        <item name="JMSTopic" href="/manual/appenders.html#JMSTopicAppender"/>
+        <item name="JMS Queue" href="/manual/appenders.html#JMSQueueAppender"/>
+        <item name="JMS Topic" href="/manual/appenders.html#JMSTopicAppender"/>
         <item name="JPA" href="/manual/appenders.html#JPAAppender"/>
         <item name="NoSQL" href="/manual/appenders.html#NoSQLAppender"/>
-        <item name="OutputStream" href="/manual/appenders.html#OutputStreamAppender"/>
-        <item name="RandomAccessFile" href="/manual/appenders.html#RandomAccessFileAppender"/>
+        <item name="Output Stream" href="/manual/appenders.html#OutputStreamAppender"/>
+        <item name="Random Access File" href="/manual/appenders.html#RandomAccessFileAppender"/>
         <item name="Rewrite" href="/manual/appenders.html#RewriteAppender"/>
-        <item name="RollingFile" href="/manual/appenders.html#RollingFileAppender"/>
-        <item name="RollingRandomAccessFile" href="/manual/appenders.html#RollingRandomAccessFileAppender"/>
+        <item name="Rolling File" href="/manual/appenders.html#RollingFileAppender"/>
+        <item name="Rolling Random Access File" href="/manual/appenders.html#RollingRandomAccessFileAppender"/>
         <item name="Routing" href="/manual/appenders.html#RoutingAppender"/>
         <item name="SMTP" href="/manual/appenders.html#SMTPAppender"/>
         <item name="Socket" href="/manual/appenders.html#SocketAppender"/>
+        <item name="Secure Socket" href="/manual/appenders.html#SecureSocketAppender"/>
         <item name="Syslog" href="/manual/appenders.html#SyslogAppender"/>
-        <item name="TLSSyslog" href="/manual/appenders.html#TLSSyslogAppender"/>
+        <item name="TLS Syslog" href="/manual/appenders.html#TLSSyslogAppender"/>
       </item>
 
       <item name="Layouts" href="/manual/layouts.html" collapse="true">
         <item name="HTML" href="/manual/layouts.html#HTMLLayout"/>
         <item name="Pattern" href="/manual/layouts.html#PatternLayout"/>
-        <item name="RFC5424" href="/manual/layouts.html#RFC5424Layout"/>
+        <item name="RFC-5424" href="/manual/layouts.html#RFC5424Layout"/>
         <item name="Serialized" href="/manual/layouts.html#SerializedLayout"/>
         <item name="Syslog" href="/manual/layouts.html#SyslogLayout"/>
         <item name="XML" href="/manual/layouts.html#XMLLayout"/>
@@ -127,13 +128,13 @@
 
       <item name="Filters" href="/manual/filters.html" collapse="true">
         <item name="Burst" href="/manual/filters.html#BurstFilter"/>
-        <item name="CompositeFilter" href="/manual/filters.html#CompositeFilter"/>
-        <item name="DynamicThreshold" href="/manual/filters.html#DynamicThresholdFilter"/>
+        <item name="Composite Filter" href="/manual/filters.html#CompositeFilter"/>
+        <item name="Dynamic Threshold" href="/manual/filters.html#DynamicThresholdFilter"/>
         <item name="Map" href="/manual/filters.html#MapFilter"/>
         <item name="Marker" href="/manual/filters.html#MarkerFilter"/>
         <item name="Regex" href="/manual/filters.html#RegexFilter"/>
-        <item name="StructuredData" href="/manual/filters.html#StructuredDataFilter"/>
-        <item name="ThreadContextMap" href="/manual/filters.html#ThreadContextMapFilter"/>
+        <item name="Structured Data" href="/manual/filters.html#StructuredDataFilter"/>
+        <item name="Thread Context Map" href="/manual/filters.html#ThreadContextMapFilter"/>
         <item name="Threshold" href="/manual/filters.html#ThresholdFilter"/>
         <item name="Time" href="/manual/filters.html#TimeFilter"/>
       </item>
