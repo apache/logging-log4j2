@@ -55,21 +55,21 @@ public class FileManager extends OutputStreamManager {
      * @param fileName The name of the file to manage.
      * @param append true if the file should be appended to, false if it should be overwritten.
      * @param locking true if the file should be locked while writing, false otherwise.
-     * @param bufferedIO true if the contents should be buffered as they are written.
-     * @param advertiseURI the URI to use when advertising the file
+     * @param bufferedIo true if the contents should be buffered as they are written.
+     * @param advertiseUri the URI to use when advertising the file
      * @param layout The layout
      * @param bufferSize buffer size for buffered IO
      * @return A FileManager for the File.
      */
     public static FileManager getFileManager(final String fileName, final boolean append, boolean locking,
-            final boolean bufferedIO, final String advertiseURI, final Layout<? extends Serializable> layout,
+            final boolean bufferedIo, final String advertiseUri, final Layout<? extends Serializable> layout,
             final int bufferSize) {
 
-        if (locking && bufferedIO) {
+        if (locking && bufferedIo) {
             locking = false;
         }
-        return (FileManager) getManager(fileName, new FactoryData(append, locking, bufferedIO, bufferSize,
-                advertiseURI, layout), FACTORY);
+        return (FileManager) getManager(fileName, new FactoryData(append, locking, bufferedIo, bufferSize,
+                advertiseUri, layout), FACTORY);
     }
 
     @Override
