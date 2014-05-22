@@ -36,9 +36,9 @@ import org.apache.logging.log4j.util.Strings;
 /**
  *
  */
-public class TlsSocketManager extends TcpSocketManager {
+public class SslSocketManager extends TcpSocketManager {
     public static final int DEFAULT_PORT = 6514;
-    private static final TlsSocketManagerFactory FACTORY = new TlsSocketManagerFactory();
+    private static final SslSocketManagerFactory FACTORY = new SslSocketManagerFactory();
     private final SslConfiguration sslConfig;
 
     /**
@@ -54,13 +54,13 @@ public class TlsSocketManager extends TcpSocketManager {
      * @param immediateFail
      * @param layout        The Layout.
      */
-    public TlsSocketManager(final String name, final OutputStream os, final Socket sock, final SslConfiguration sslConfig, final InetAddress addr,
+    public SslSocketManager(final String name, final OutputStream os, final Socket sock, final SslConfiguration sslConfig, final InetAddress addr,
                             final String host, final int port, final int delay, final boolean immediateFail, final Layout<? extends Serializable> layout) {
         super(name, os, sock, addr, host, port, delay, immediateFail, layout);
         this.sslConfig = sslConfig;
     }
 
-    private static class TlsFactoryData {
+    private static class SslFactoryData {
         protected SslConfiguration sslConfig;
         private final String host;
         private final int port;
@@ -68,7 +68,7 @@ public class TlsSocketManager extends TcpSocketManager {
         private final boolean immediateFail;
         private final Layout<? extends Serializable> layout;
 
-        public TlsFactoryData(final SslConfiguration sslConfig, final String host, final int port, final int delay, final boolean immediateFail,
+        public SslFactoryData(final SslConfiguration sslConfig, final String host, final int port, final int delay, final boolean immediateFail,
                               final Layout<? extends Serializable> layout) {
             this.host = host;
             this.port = port;
@@ -79,7 +79,7 @@ public class TlsSocketManager extends TcpSocketManager {
         }
     }
 
-    public static TlsSocketManager getSocketManager(final SslConfiguration sslConfig, final String host, int port,
+    public static SslSocketManager getSocketManager(final SslConfiguration sslConfig, final String host, int port,
                                                     int delay, final boolean immediateFail, final Layout<? extends Serializable> layout ) {
         if (Strings.isEmpty(host)) {
             throw new IllegalArgumentException("A host name is required");
@@ -90,8 +90,8 @@ public class TlsSocketManager extends TcpSocketManager {
         if (delay == 0) {
             delay = DEFAULT_RECONNECTION_DELAY;
         }
-        return (TlsSocketManager) getManager("TLS:" + host + ':' + port,
-                new TlsFactoryData(sslConfig, host, port, delay, immediateFail, layout), FACTORY);
+        return (SslSocketManager) getManager("TLS:" + host + ':' + port,
+                new SslFactoryData(sslConfig, host, port, delay, immediateFail, layout), FACTORY);
     }
 
     @Override
@@ -113,7 +113,7 @@ public class TlsSocketManager extends TcpSocketManager {
     }
 
 
-    private static class TlsSocketManagerFactory implements ManagerFactory<TlsSocketManager, TlsFactoryData> {
+    private static class SslSocketManagerFactory implements ManagerFactory<SslSocketManager, SslFactoryData> {
 
         private class TlsSocketManagerFactoryException extends Exception {
 
@@ -121,7 +121,7 @@ public class TlsSocketManager extends TcpSocketManager {
         }
 
         @Override
-        public TlsSocketManager createManager(final String name, final TlsFactoryData data) {
+        public SslSocketManager createManager(final String name, final SslFactoryData data) {
             InetAddress address = null;
             OutputStream os = null;
             Socket socket = null;
@@ -133,7 +133,7 @@ public class TlsSocketManager extends TcpSocketManager {
                 checkDelay(data.delay, os);
             }
             catch (final IOException e) {
-                LOGGER.error("TlsSocketManager ({})", name, e);
+                LOGGER.error("SslSocketManager ({})", name, e);
                 os = new ByteArrayOutputStream();
             }
             catch (final TlsSocketManagerFactoryException e) {
@@ -162,7 +162,7 @@ public class TlsSocketManager extends TcpSocketManager {
             }
         }
 
-        private Socket createSocket(final TlsFactoryData data) throws IOException {
+        private Socket createSocket(final SslFactoryData data) throws IOException {
             SSLSocketFactory socketFactory;
             SSLSocket socket;
 
@@ -171,8 +171,8 @@ public class TlsSocketManager extends TcpSocketManager {
             return socket;
         }
 
-        private TlsSocketManager createManager(final String name, final OutputStream os, final Socket socket, final SslConfiguration sslConfig, final InetAddress address, final String host, final int port, final int delay, final boolean immediateFail, final Layout<? extends Serializable> layout) {
-            return new TlsSocketManager(name, os, socket, sslConfig, address, host, port, delay, immediateFail, layout);
+        private SslSocketManager createManager(final String name, final OutputStream os, final Socket socket, final SslConfiguration sslConfig, final InetAddress address, final String host, final int port, final int delay, final boolean immediateFail, final Layout<? extends Serializable> layout) {
+            return new SslSocketManager(name, os, socket, sslConfig, address, host, port, delay, immediateFail, layout);
         }
     }
 }

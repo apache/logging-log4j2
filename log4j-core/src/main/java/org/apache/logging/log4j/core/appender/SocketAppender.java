@@ -34,7 +34,7 @@ import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.net.DatagramSocketManager;
 import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.net.TcpSocketManager;
-import org.apache.logging.log4j.core.net.TlsSocketManager;
+import org.apache.logging.log4j.core.net.SslSocketManager;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.util.EnglishEnums;
@@ -164,7 +164,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
         case UDP:
             return DatagramSocketManager.getSocketManager(host, port, layout);
         case TLS:
-            return TlsSocketManager.getSocketManager(sslConfig, host, port, delay, immediateFail, layout);
+            return SslSocketManager.getSocketManager(sslConfig, host, port, delay, immediateFail, layout);
         default:
             throw new IllegalArgumentException(protocol.toString());
         }

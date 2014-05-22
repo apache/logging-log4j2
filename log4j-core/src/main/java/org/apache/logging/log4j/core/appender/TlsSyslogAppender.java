@@ -31,7 +31,7 @@ import org.apache.logging.log4j.core.layout.Rfc5424Layout;
 import org.apache.logging.log4j.core.layout.SyslogLayout;
 import org.apache.logging.log4j.core.net.AbstractSocketManager;
 import org.apache.logging.log4j.core.net.Advertiser;
-import org.apache.logging.log4j.core.net.TlsSocketManager;
+import org.apache.logging.log4j.core.net.SslSocketManager;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.util.Booleans;
 
@@ -135,7 +135,7 @@ public final class TlsSyslogAppender extends SyslogAppender {
             LOGGER.error("No name provided for TlsSyslogAppender");
             return null;
         }
-        final AbstractSocketManager manager = TlsSocketManager.getSocketManager(sslConfig, host, port, reconnectDelay, fail, layout);
+        final AbstractSocketManager manager = SslSocketManager.getSocketManager(sslConfig, host, port, reconnectDelay, fail, layout);
         if (manager == null) {
             return null;
         }
