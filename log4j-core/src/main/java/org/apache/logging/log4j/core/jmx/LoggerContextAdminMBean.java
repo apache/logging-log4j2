@@ -86,7 +86,7 @@ public interface LoggerContextAdminMBean {
      * 
      * @return the configuration location
      */
-    String getConfigLocationURI();
+    String getConfigLocationUri();
 
     /**
      * Sets the configuration location to the specified URI. This will cause the
@@ -98,7 +98,7 @@ public interface LoggerContextAdminMBean {
      *             configLocationURI is incorrect
      * @throws IOException if an error occurred reading the specified location
      */
-    void setConfigLocationURI(String configLocation) throws URISyntaxException, IOException;
+    void setConfigLocationUri(String configLocation) throws URISyntaxException, IOException;
 
     /**
      * Returns the configuration text, which may be the contents of the

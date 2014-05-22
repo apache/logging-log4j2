@@ -127,7 +127,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
                 }
             }
         }
-        final String guid =  UuidUtil.getTimeBasedUUID().toString();
+        final String guid =  UuidUtil.getTimeBasedUuid().toString();
         final Message message = event.getMessage();
         if (message instanceof MapMessage) {
             // Add the guid to the Map so that it can be included in the Layout.
@@ -200,8 +200,8 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
      * @return the FQCN String.
      */
     @Override
-    public String getLoggerFQCN() {
-        return event.getLoggerFQCN();
+    public String getLoggerFqcn() {
+        return event.getLoggerFqcn();
     }
 
     /**

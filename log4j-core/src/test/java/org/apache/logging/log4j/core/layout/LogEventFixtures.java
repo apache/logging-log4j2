@@ -76,7 +76,7 @@ class LogEventFixtures {
         assertEquals(expected.getContextStack(), actual.getContextStack());
         assertEquals(expected.getLevel(), actual.getLevel());
         assertEquals(expected.getLoggerName(), actual.getLoggerName());
-        assertEquals(expected.getLoggerFQCN(), actual.getLoggerFQCN());
+        assertEquals(expected.getLoggerFqcn(), actual.getLoggerFqcn());
         assertEquals(expected.getMarker(), actual.getMarker());
         assertEquals(expected.getMessage(), actual.getMessage());
         assertEquals(expected.getTimeMillis(), actual.getTimeMillis());

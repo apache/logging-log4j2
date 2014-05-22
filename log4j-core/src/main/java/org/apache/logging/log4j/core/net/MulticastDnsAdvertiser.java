@@ -38,7 +38,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 @Plugin(name = "multicastdns", category = "Core", elementType = "advertiser", printObject = false)
 public class MulticastDnsAdvertiser implements Advertiser {
     protected static final Logger LOGGER = StatusLogger.getLogger();
-    private static Object jmDNS = initializeJMDNS();
+    private static Object jmDNS = initializeJmDns();
 
     private static Class<?> jmDNSClass;
     private static Class<?> serviceInfoClass;
@@ -133,7 +133,7 @@ public class MulticastDnsAdvertiser implements Advertiser {
         }
     }
 
-    private static Object createJmDNSVersion1()
+    private static Object createJmDnsVersion1()
     {
         try {
             return jmDNSClass.getConstructor().newInstance();
@@ -149,7 +149,7 @@ public class MulticastDnsAdvertiser implements Advertiser {
         return null;
     }
 
-    private static Object createJmDNSVersion3()
+    private static Object createJmDnsVersion3()
     {
         try {
             final Method jmDNSCreateMethod = jmDNSClass.getMethod("create");
@@ -205,7 +205,7 @@ public class MulticastDnsAdvertiser implements Advertiser {
         return null;
     }
 
-    private static Object initializeJMDNS() {
+    private static Object initializeJmDns() {
         try {
             jmDNSClass = Loader.loadClass("javax.jmdns.JmDNS");
             serviceInfoClass = Loader.loadClass("javax.jmdns.ServiceInfo");
@@ -220,9 +220,9 @@ public class MulticastDnsAdvertiser implements Advertiser {
             }
 
             if (isVersion3) {
-                return createJmDNSVersion3();
+                return createJmDnsVersion3();
             }
-            return createJmDNSVersion1();
+            return createJmDnsVersion1();
         } catch (final ClassNotFoundException e) {
             LOGGER.warn("JmDNS or serviceInfo class not found", e);
         } catch (final ExceptionInInitializerError e2) {

@@ -70,7 +70,7 @@ public class Log4jLogEventTest {
         final Log4jLogEvent evt2 = (Log4jLogEvent) in.readObject();
 
         assertEquals(evt.getTimeMillis(), evt2.getTimeMillis());
-        assertEquals(evt.getLoggerFQCN(), evt2.getLoggerFQCN());
+        assertEquals(evt.getLoggerFqcn(), evt2.getLoggerFqcn());
         assertEquals(evt.getLevel(), evt2.getLevel());
         assertEquals(evt.getLoggerName(), evt2.getLoggerName());
         assertEquals(evt.getMarker(), evt2.getMarker());

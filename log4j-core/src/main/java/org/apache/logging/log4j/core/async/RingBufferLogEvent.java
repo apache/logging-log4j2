@@ -143,7 +143,7 @@ public class RingBufferLogEvent implements LogEvent {
 	}
 
 	@Override
-	public String getLoggerFQCN() {
+	public String getLoggerFqcn() {
 		return fqcn;
 	}
 

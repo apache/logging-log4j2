@@ -138,7 +138,7 @@ public class MapRewritePolicyTest {
         // Ensure that everything but the Mapped Data is still the same
         Assert.assertEquals("LoggerName changed", orig.getLoggerName(), changed.getLoggerName());
         Assert.assertEquals("Marker changed", orig.getMarker(), changed.getMarker());
-        Assert.assertEquals("FQCN changed", orig.getLoggerFQCN(), changed.getLoggerFQCN());
+        Assert.assertEquals("FQCN changed", orig.getLoggerFqcn(), changed.getLoggerFqcn());
         Assert.assertEquals("Level changed", orig.getLevel(), changed.getLevel());
         Assert.assertArrayEquals("Throwable changed", orig.getThrown() == null //
                 ? null //

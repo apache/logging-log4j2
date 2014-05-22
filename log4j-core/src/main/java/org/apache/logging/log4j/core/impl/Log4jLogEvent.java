@@ -43,7 +43,7 @@ public class Log4jLogEvent implements LogEvent {
 
     private static final long serialVersionUID = -1351367343806656055L;
     private static final Clock clock = ClockFactory.getClock();
-    private final String loggerFQCN;
+    private final String loggerFqcn;
     private final Marker marker;
     private final Level level;
     private final String loggerName;
@@ -164,7 +164,7 @@ public class Log4jLogEvent implements LogEvent {
                          final StackTraceElement source, final long timestamp) {
         this.loggerName = loggerName;
         this.marker = marker;
-        this.loggerFQCN = loggerFQCN;
+        this.loggerFqcn = loggerFQCN;
         this.level = (level == null) ? Level.OFF : level; // LOG4J2-462, LOG4J2-465
         this.message = message;
         this.thrownProxy = thrownProxy;
@@ -277,8 +277,8 @@ public class Log4jLogEvent implements LogEvent {
      * @return the fully qualified class name of the class that is performing logging.
      */
     @Override
-    public String getLoggerFQCN() {
-        return loggerFQCN;
+    public String getLoggerFqcn() {
+        return loggerFqcn;
     }
 
     /**
@@ -309,10 +309,10 @@ public class Log4jLogEvent implements LogEvent {
         if (source != null) {
             return source;
         }
-        if (loggerFQCN == null || !includeLocation) {
+        if (loggerFqcn == null || !includeLocation) {
             return null;
         }
-        source = calcLocation(loggerFQCN);
+        source = calcLocation(loggerFqcn);
         return source;
     }
 
@@ -420,7 +420,7 @@ public class Log4jLogEvent implements LogEvent {
         if (timeMillis != that.timeMillis) {
             return false;
         }
-        if (loggerFQCN != null ? !loggerFQCN.equals(that.loggerFQCN) : that.loggerFQCN != null) {
+        if (loggerFqcn != null ? !loggerFqcn.equals(that.loggerFqcn) : that.loggerFqcn != null) {
             return false;
         }
         if (level != null ? !level.equals(that.level) : that.level != null) {
@@ -456,7 +456,7 @@ public class Log4jLogEvent implements LogEvent {
 
     @Override
     public int hashCode() {
-        int result = loggerFQCN != null ? loggerFQCN.hashCode() : 0;
+        int result = loggerFqcn != null ? loggerFqcn.hashCode() : 0;
         result = 31 * result + (marker != null ? marker.hashCode() : 0);
         result = 31 * result + (level != null ? level.hashCode() : 0);
         result = 31 * result + loggerName.hashCode();
@@ -493,7 +493,7 @@ public class Log4jLogEvent implements LogEvent {
         private final boolean isEndOfBatch;
 
         public LogEventProxy(final Log4jLogEvent event, final boolean includeLocation) {
-            this.loggerFQCN = event.loggerFQCN;
+            this.loggerFQCN = event.loggerFqcn;
             this.marker = event.marker;
             this.level = event.level;
             this.loggerName = event.loggerName;

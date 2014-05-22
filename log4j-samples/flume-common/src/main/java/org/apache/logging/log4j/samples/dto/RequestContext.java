@@ -57,7 +57,7 @@ public final class RequestContext {
 
     public static void initialize() {
         ThreadContext.clearMap();
-        ThreadContext.put(REQUEST_ID, UuidUtil.getTimeBasedUUID().toString());
+        ThreadContext.put(REQUEST_ID, UuidUtil.getTimeBasedUuid().toString());
     }
 
     public static String getId() {

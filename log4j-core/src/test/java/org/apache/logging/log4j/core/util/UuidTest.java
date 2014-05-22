@@ -33,7 +33,7 @@ public class UuidTest {
 
     @Test
     public void testTimeBaseUUID() {
-        final UUID uuid = UuidUtil.getTimeBasedUUID();
+        final UUID uuid = UuidUtil.getTimeBasedUuid();
         //final UUID uuid2 = UuidUtil.getTimeBasedUUID(); // unused
         final long current = (System.currentTimeMillis() * 10000) + NUM_100NS_INTERVALS_SINCE_UUID_EPOCH;
         final long time = uuid.timestamp();
@@ -41,7 +41,7 @@ public class UuidTest {
         final UUID[] uuids = new UUID[COUNT];
         final long start = System.nanoTime();
         for (int i=0; i < COUNT; ++i) {
-            uuids[i] = UuidUtil.getTimeBasedUUID();
+            uuids[i] = UuidUtil.getTimeBasedUuid();
         }
         final long elapsed = System.nanoTime() - start;
         System.out.println("Elapsed for " + COUNT + " UUIDS = " + elapsed + " Average = " + elapsed / COUNT + " ns");
@@ -114,7 +114,7 @@ public class UuidTest {
             final int pos = index * count;
             final long start = System.nanoTime();
             for (int i=pos; i < pos + count; ++i) {
-                uuids[i] = UuidUtil.getTimeBasedUUID();
+                uuids[i] = UuidUtil.getTimeBasedUuid();
             }
             elapsed[index] = System.nanoTime() - start;
         }

@@ -32,14 +32,14 @@ public class SslConfigurationTest {
     @Test
     public void emptyConfigurationDoesntCauseNullSSLSocketFactory() throws SslConfigurationException {
         SslConfiguration sc = SslConfiguration.createSSLConfiguration(null, null);
-        SSLSocketFactory factory = sc.getSSLSocketFactory();
+        SSLSocketFactory factory = sc.getSslSocketFactory();
         Assert.assertTrue(factory != null);
     }
 
     @Test
     public void emptyConfigurationHasDefaultTrustStore() throws SslConfigurationException, IOException {
         SslConfiguration sc = SslConfiguration.createSSLConfiguration(null, null);
-        SSLSocketFactory factory = sc.getSSLSocketFactory();
+        SSLSocketFactory factory = sc.getSslSocketFactory();
         SSLSocket clientSocket = (SSLSocket) factory.createSocket(TLS_TEST_HOST, TLS_TEST_PORT);
         Assert.assertTrue(true);
     }
@@ -48,7 +48,7 @@ public class SslConfigurationTest {
     public void connectionFailsWithoutValidServerCertificate() throws SslConfigurationException, IOException {
         TrustStoreConfiguration tsc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE, null);
         SslConfiguration sc = SslConfiguration.createSSLConfiguration(null, tsc);
-        SSLSocketFactory factory = sc.getSSLSocketFactory();
+        SSLSocketFactory factory = sc.getSslSocketFactory();
         SSLSocket clientSocket = (SSLSocket) factory.createSocket(TLS_TEST_HOST, TLS_TEST_PORT);
         OutputStream os = clientSocket.getOutputStream();
         os.write("GET config/login_verify2?".getBytes());
@@ -59,7 +59,7 @@ public class SslConfigurationTest {
     public void loadKeyStoreWithoutPassword() throws StoreConfigurationException, SslConfigurationException {
         KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, null);
         SslConfiguration sslConf = SslConfiguration.createSSLConfiguration(ksc, null);
-        SSLSocketFactory factory = sslConf.getSSLSocketFactory();
+        SSLSocketFactory factory = sslConf.getSslSocketFactory();
         Assert.assertTrue(true);
     }
 }

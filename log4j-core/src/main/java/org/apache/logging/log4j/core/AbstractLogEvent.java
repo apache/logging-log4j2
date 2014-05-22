@@ -53,7 +53,7 @@ public abstract class AbstractLogEvent implements LogEvent {
     }
 
     @Override
-    public String getLoggerFQCN() {
+    public String getLoggerFqcn() {
         return null;
     }
 

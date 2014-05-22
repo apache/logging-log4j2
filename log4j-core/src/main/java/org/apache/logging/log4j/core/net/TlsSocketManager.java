@@ -38,7 +38,7 @@ import org.apache.logging.log4j.util.Strings;
  */
 public class TlsSocketManager extends TcpSocketManager {
     public static final int DEFAULT_PORT = 6514;
-    private static final TLSSocketManagerFactory FACTORY = new TLSSocketManagerFactory();
+    private static final TlsSocketManagerFactory FACTORY = new TlsSocketManagerFactory();
     private final SslConfiguration sslConfig;
 
     /**
@@ -60,7 +60,7 @@ public class TlsSocketManager extends TcpSocketManager {
         this.sslConfig = sslConfig;
     }
 
-    private static class TLSFactoryData {
+    private static class TlsFactoryData {
         protected SslConfiguration sslConfig;
         private final String host;
         private final int port;
@@ -68,7 +68,7 @@ public class TlsSocketManager extends TcpSocketManager {
         private final boolean immediateFail;
         private final Layout<? extends Serializable> layout;
 
-        public TLSFactoryData(final SslConfiguration sslConfig, final String host, final int port, final int delay, final boolean immediateFail,
+        public TlsFactoryData(final SslConfiguration sslConfig, final String host, final int port, final int delay, final boolean immediateFail,
                               final Layout<? extends Serializable> layout) {
             this.host = host;
             this.port = port;
@@ -91,20 +91,20 @@ public class TlsSocketManager extends TcpSocketManager {
             delay = DEFAULT_RECONNECTION_DELAY;
         }
         return (TlsSocketManager) getManager("TLS:" + host + ':' + port,
-                new TLSFactoryData(sslConfig, host, port, delay, immediateFail, layout), FACTORY);
+                new TlsFactoryData(sslConfig, host, port, delay, immediateFail, layout), FACTORY);
     }
 
     @Override
     protected Socket createSocket(final String host, final int port) throws IOException {
-        final SSLSocketFactory socketFactory = createSSLSocketFactory(sslConfig);
+        final SSLSocketFactory socketFactory = createSslSocketFactory(sslConfig);
         return socketFactory.createSocket(host, port);
     }
 
-    private static SSLSocketFactory createSSLSocketFactory(final SslConfiguration sslConf) {
+    private static SSLSocketFactory createSslSocketFactory(final SslConfiguration sslConf) {
         SSLSocketFactory socketFactory;
 
         if (sslConf != null) {
-            socketFactory = sslConf.getSSLSocketFactory();
+            socketFactory = sslConf.getSslSocketFactory();
         } else {
             socketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
         }
@@ -113,15 +113,15 @@ public class TlsSocketManager extends TcpSocketManager {
     }
 
 
-    private static class TLSSocketManagerFactory implements ManagerFactory<TlsSocketManager, TLSFactoryData> {
+    private static class TlsSocketManagerFactory implements ManagerFactory<TlsSocketManager, TlsFactoryData> {
 
-        private class TLSSocketManagerFactoryException extends Exception {
+        private class TlsSocketManagerFactoryException extends Exception {
 
             private static final long serialVersionUID = 1L;
         }
 
         @Override
-        public TlsSocketManager createManager(final String name, final TLSFactoryData data) {
+        public TlsSocketManager createManager(final String name, final TlsFactoryData data) {
             InetAddress address = null;
             OutputStream os = null;
             Socket socket = null;
@@ -136,37 +136,37 @@ public class TlsSocketManager extends TcpSocketManager {
                 LOGGER.error("TlsSocketManager ({})", name, e);
                 os = new ByteArrayOutputStream();
             }
-            catch (final TLSSocketManagerFactoryException e) {
+            catch (final TlsSocketManagerFactoryException e) {
                 LOGGER.catching(Level.DEBUG, e);
                 return null;
             }
             return createManager(name, os, socket, data.sslConfig, address, data.host, data.port, data.delay, data.immediateFail, data.layout);
         }
 
-        private InetAddress resolveAddress(final String hostName) throws TLSSocketManagerFactoryException {
+        private InetAddress resolveAddress(final String hostName) throws TlsSocketManagerFactoryException {
             InetAddress address;
 
             try {
                 address = InetAddress.getByName(hostName);
             } catch (final UnknownHostException ex) {
                 LOGGER.error("Could not find address of {}", hostName, ex);
-                throw new TLSSocketManagerFactoryException();
+                throw new TlsSocketManagerFactoryException();
             }
 
             return address;
         }
 
-        private void checkDelay(final int delay, final OutputStream os) throws TLSSocketManagerFactoryException {
+        private void checkDelay(final int delay, final OutputStream os) throws TlsSocketManagerFactoryException {
             if (delay == 0 && os == null) {
-                throw new TLSSocketManagerFactoryException();
+                throw new TlsSocketManagerFactoryException();
             }
         }
 
-        private Socket createSocket(final TLSFactoryData data) throws IOException {
+        private Socket createSocket(final TlsFactoryData data) throws IOException {
             SSLSocketFactory socketFactory;
             SSLSocket socket;
 
-            socketFactory = createSSLSocketFactory(data.sslConfig);
+            socketFactory = createSslSocketFactory(data.sslConfig);
             socket = (SSLSocket) socketFactory.createSocket(data.host, data.port);
             return socket;
         }

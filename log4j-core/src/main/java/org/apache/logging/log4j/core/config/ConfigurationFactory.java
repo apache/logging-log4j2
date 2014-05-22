@@ -224,7 +224,7 @@ public abstract class ConfigurationFactory {
             return null;
         }
         if (configLocation != null) {
-            final ConfigurationSource source = getInputFromURI(configLocation);
+            final ConfigurationSource source = getInputFromUri(configLocation);
             if (source != null) {
                 return getConfiguration(source);
             }
@@ -237,8 +237,8 @@ public abstract class ConfigurationFactory {
      * @param configLocation A URI representing the location of the configuration.
      * @return The ConfigurationSource for the configuration.
      */
-    protected ConfigurationSource getInputFromURI(final URI configLocation) {
-        final File configFile = FileUtils.fileFromURI(configLocation);
+    protected ConfigurationSource getInputFromUri(final URI configLocation) {
+        final File configFile = FileUtils.fileFromUri(configLocation);
         if (configFile != null && configFile.exists() && configFile.canRead()) {
             try {
                 return new ConfigurationSource(new FileInputStream(configFile), configFile);
@@ -285,7 +285,7 @@ public abstract class ConfigurationFactory {
     protected ConfigurationSource getInputFromString(final String config, final ClassLoader loader) {
         try {
             final URL url = new URL(config);
-            return new ConfigurationSource(url.openStream(), FileUtils.fileFromURI(url.toURI()));
+            return new ConfigurationSource(url.openStream(), FileUtils.fileFromUri(url.toURI()));
         } catch (final Exception ex) {
             final ConfigurationSource source = getInputFromResource(config, loader);
             if (source == null) {
@@ -325,7 +325,7 @@ public abstract class ConfigurationFactory {
 
         if (FileUtils.isFile(url)) {
             try {
-                return new ConfigurationSource(is, FileUtils.fileFromURI(url.toURI()));
+                return new ConfigurationSource(is, FileUtils.fileFromUri(url.toURI()));
             } catch (final URISyntaxException ex) {
                 // Just ignore the exception.
                 LOGGER.catching(Level.DEBUG, ex);
@@ -384,7 +384,7 @@ public abstract class ConfigurationFactory {
                 if (config != null) {
                     ConfigurationSource source = null;
                     try {
-                        source = getInputFromURI(FileUtils.getCorrectedFilePathUri(config));
+                        source = getInputFromUri(FileUtils.getCorrectedFilePathUri(config));
                     } catch (final Exception ex) {
                         // Ignore the error and try as a String.
                         LOGGER.catching(Level.DEBUG, ex);

@@ -99,7 +99,7 @@ public final class JmsTopicAppender extends AbstractAppender {
             return null;
         }
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
-        final JmsTopicManager manager = JmsTopicManager.getJMSTopicManager(factoryName, providerURL, urlPkgPrefixes,
+        final JmsTopicManager manager = JmsTopicManager.getJmsTopicManager(factoryName, providerURL, urlPkgPrefixes,
             securityPrincipalName, securityCredentials, factoryBindingName, topicBindingName, userName, password);
         if (manager == null) {
             return null;

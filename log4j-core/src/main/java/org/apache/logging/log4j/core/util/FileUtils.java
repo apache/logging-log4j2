@@ -52,7 +52,7 @@ public final class FileUtils {
      * @param uri the URI
      * @return the resulting file object
      */
-    public static File fileFromURI(URI uri) {
+    public static File fileFromUri(URI uri) {
         if (uri == null || (uri.getScheme() != null &&
             (!PROTOCOL_FILE.equals(uri.getScheme()) && !JBOSS_FILE.equals(uri.getScheme())))) {
             return null;

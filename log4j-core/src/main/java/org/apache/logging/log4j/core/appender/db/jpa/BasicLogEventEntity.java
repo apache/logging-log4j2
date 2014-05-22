@@ -226,7 +226,7 @@ public abstract class BasicLogEventEntity extends AbstractLogEventWrapperEntity 
      */
     @Override
     @Basic
-    public String getLoggerFQCN() {
-        return this.getWrappedEvent().getLoggerFQCN();
+    public String getLoggerFqcn() {
+        return this.getWrappedEvent().getLoggerFqcn();
     }
 }

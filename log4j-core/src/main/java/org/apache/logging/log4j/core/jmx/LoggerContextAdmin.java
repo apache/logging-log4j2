@@ -107,7 +107,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
     }
 
     @Override
-    public String getConfigLocationURI() {
+    public String getConfigLocationUri() {
         if (loggerContext.getConfigLocation() != null) {
             return String.valueOf(loggerContext.getConfigLocation());
         }
@@ -118,7 +118,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
     }
 
     @Override
-    public void setConfigLocationURI(final String configLocation)
+    public void setConfigLocationUri(final String configLocation)
             throws URISyntaxException, IOException {
         LOGGER.debug("---------");
         LOGGER.debug("Remote request to reconfigure using location "
@@ -159,7 +159,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
         }
         try {
             final Charset charset = Charset.forName(charsetName);
-            return readContents(FileUtils.getCorrectedFilePathUri(getConfigLocationURI()), charset);
+            return readContents(FileUtils.getCorrectedFilePathUri(getConfigLocationUri()), charset);
         } catch (final Exception ex) {
             final StringWriter sw = new StringWriter(BUFFER_SIZE);
             ex.printStackTrace(new PrintWriter(sw));

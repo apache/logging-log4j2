@@ -56,7 +56,7 @@ public final class Loader {
 
         ClassLoader loader1 = null;
         try {
-            loader1 = getTCL();
+            loader1 = getTcl();
         } catch (final Exception ex) {
             LOGGER.warn("Caught exception locating thread ClassLoader {}", ex.getMessage());
         }
@@ -93,7 +93,7 @@ public final class Loader {
      */
     public static URL getResource(final String resource, final ClassLoader defaultLoader) {
         try {
-            ClassLoader classLoader = getTCL();
+            ClassLoader classLoader = getTcl();
             if (classLoader != null) {
                 LOGGER.trace("Trying to find [{}] using context class loader {}.", resource, classLoader);
                 final URL url = classLoader.getResource(resource);
@@ -158,7 +158,7 @@ public final class Loader {
      */
     public static InputStream getResourceAsStream(final String resource, final ClassLoader defaultLoader) {
         try {
-            ClassLoader classLoader = getTCL();
+            ClassLoader classLoader = getTcl();
             InputStream is;
             if (classLoader != null) {
                 LOGGER.trace("Trying to find [{}] using context class loader {}.", resource, classLoader);
@@ -201,7 +201,7 @@ public final class Loader {
         return ClassLoader.getSystemResourceAsStream(resource);
     }
 
-    private static ClassLoader getTCL() {
+    private static ClassLoader getTcl() {
         ClassLoader cl;
         if (System.getSecurityManager() == null) {
             cl = Thread.currentThread().getContextClassLoader();
@@ -248,7 +248,7 @@ public final class Loader {
         try {
             LOGGER.trace("Trying TCCL for class {}.", className);
             // using the TCCL should work the same as the default ClassLoader (i.e., init or not)
-            return Class.forName(className, true, getTCL());
+            return Class.forName(className, true, getTcl());
         } catch (final Throwable e) {
             LOGGER.trace("TCCL didn't work. Trying Class.forName({}).", className, e);
             return loadClassWithDefaultClassLoader(className);

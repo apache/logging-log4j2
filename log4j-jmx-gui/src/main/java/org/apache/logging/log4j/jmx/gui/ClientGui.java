@@ -180,12 +180,12 @@ public class ClientGui extends JPanel implements NotificationListener {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() { // LOG4J2-538
-                handleNotificationInAWTEventThread(notif, paramObject);
+                handleNotificationInAwtEventThread(notif, paramObject);
             }
         });
     }
 
-    private void handleNotificationInAWTEventThread(final Notification notif, final Object paramObject) {
+    private void handleNotificationInAwtEventThread(final Notification notif, final Object paramObject) {
         if (StatusLoggerAdminMBean.NOTIF_TYPE_MESSAGE.equals(notif.getType())) {
             JTextArea text = statusLogTextAreaMap.get(paramObject);
             if (text != null) {

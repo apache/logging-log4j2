@@ -66,7 +66,7 @@ abstract class LogEventMixIn implements LogEvent {
     @JsonProperty()
     @JacksonXmlProperty(isAttribute = true)
     @Override
-    public abstract String getLoggerFQCN();
+    public abstract String getLoggerFqcn();
 
     @JsonProperty()
     @JacksonXmlProperty(isAttribute = true)

@@ -186,7 +186,7 @@ public final class HtmlLayout extends AbstractStringLayout {
         if (throwable != null) {
             sbuf.append("<tr><td bgcolor=\"#993300\" style=\"color:White; font-size : ").append(fontSize);
             sbuf.append(";\" colspan=\"6\">");
-            appendThrowableAsHTML(throwable, sbuf);
+            appendThrowableAsHtml(throwable, sbuf);
             sbuf.append("</td></tr>").append(Constants.LINE_SEPARATOR);
         }
 
@@ -211,7 +211,7 @@ public final class HtmlLayout extends AbstractStringLayout {
         return contentType;
     }
 
-    private void appendThrowableAsHTML(final Throwable throwable, final StringBuilder sbuf) {
+    private void appendThrowableAsHtml(final Throwable throwable, final StringBuilder sbuf) {
         final StringWriter sw = new StringWriter();
         final PrintWriter pw = new PrintWriter(sw);
         try {

@@ -212,7 +212,7 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
      * @param fqcn Ignored.
      */
     @SuppressWarnings("unused")
-    public void setLoggerFQCN(final String fqcn) {
+    public void setLoggerFqcn(final String fqcn) {
         // this entity is write-only
     }
 
