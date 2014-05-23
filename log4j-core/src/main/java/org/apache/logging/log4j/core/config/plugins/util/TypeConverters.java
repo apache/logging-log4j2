@@ -21,12 +21,16 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Collection of basic TypeConverter implementations.
  */
 public final class TypeConverters {
+
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final Map<Class<?>, TypeConverter<?>> registry =
         new ConcurrentHashMap<Class<?>, TypeConverter<?>>();
@@ -61,7 +65,12 @@ public final class TypeConverters {
         if (converter == null) {
             throw new IllegalArgumentException("No type converter found for class: " + clazz.getName());
         }
-        return converter.convert(s);
+        try {
+            return converter.convert(s);
+        } catch (final Exception e) {
+            LOGGER.warn("Error while converting string [{}] to type [{}].", s, clazz, e);
+            return null;
+        }
     }
 
     /**
