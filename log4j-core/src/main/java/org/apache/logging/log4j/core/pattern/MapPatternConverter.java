@@ -73,7 +73,7 @@ public final class MapPatternConverter extends LogEventPatternConverter {
         // if there is no additional options, we output every single
         // Key/Value pair for the Map in a similar format to Hashtable.toString()
         if (key == null) {
-            if (map.size() == 0) {
+            if (map.isEmpty()) {
                 toAppendTo.append("{}");
                 return;
             }

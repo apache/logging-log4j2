@@ -215,7 +215,7 @@ public class ThrowableProxy implements Serializable {
 
     private void formatElements(final StringBuilder sb, final int commonCount, final StackTraceElement[] causedTrace,
             final ExtendedStackTraceElement[] extStackTrace, final List<String> ignorePackages) {
-        if (ignorePackages == null || ignorePackages.size() == 0) {
+        if (ignorePackages == null || ignorePackages.isEmpty()) {
             for (int i = 0; i < extStackTrace.length; ++i) {
                 this.formatEntry(causedTrace[i], extStackTrace[i], sb);
             }

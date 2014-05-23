@@ -143,7 +143,7 @@ public class Rfc5424LayoutTest {
             root.debug("This is a test");
 
             list = appender.getMessages();
-            assertTrue("No messages expected, found " + list.size(), list.size() == 0);
+            assertTrue("No messages expected, found " + list.size(), list.isEmpty());
         } finally {
             root.removeAppender(appender);
             ThreadContext.clearMap();
@@ -205,7 +205,7 @@ public class Rfc5424LayoutTest {
             root.debug("This is a test");
 
             list = appender.getMessages();
-            assertTrue("No messages expected, found " + list.size(), list.size() == 0);
+            assertTrue("No messages expected, found " + list.size(), list.isEmpty());
         } finally {
             root.removeAppender(appender);
             ThreadContext.clearMap();

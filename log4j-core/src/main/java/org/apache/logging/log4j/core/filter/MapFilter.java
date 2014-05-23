@@ -146,7 +146,7 @@ public class MapFilter extends AbstractFilter {
                 map.put(pair.getKey(), list);
             }
         }
-        if (map.size() == 0) {
+        if (map.isEmpty()) {
             LOGGER.error("MapFilter is not configured with any valid key value pairs");
             return null;
         }

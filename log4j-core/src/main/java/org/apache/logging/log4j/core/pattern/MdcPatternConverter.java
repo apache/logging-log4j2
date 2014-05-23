@@ -69,7 +69,7 @@ public final class MdcPatternConverter extends LogEventPatternConverter {
         if (key == null) {
 
 
-            if (contextMap == null || contextMap.size() == 0) {
+            if (contextMap == null || contextMap.isEmpty()) {
                 toAppendTo.append("{}");
                 return;
             }
