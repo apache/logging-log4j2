@@ -215,7 +215,7 @@ public final class BurstFilter extends AbstractFilter {
     }
 
     /**
-     * @param levelName  The logging level.
+     * @param level  The logging level.
      * @param rate   The average number of events per second to allow.
      * @param maxBurst  The maximum number of events that can occur before events are filtered for exceeding the
      * average rate. The default is 10 times the rate.
@@ -225,19 +225,19 @@ public final class BurstFilter extends AbstractFilter {
      */
     @PluginFactory
     public static BurstFilter createFilter(
-            @PluginAttribute("level") final String levelName,
-            @PluginAttribute("rate") final String rate,
-            @PluginAttribute("maxBurst") final String maxBurst,
-            @PluginAttribute("onMatch") final String match,
-            @PluginAttribute("onMismatch") final String mismatch) {
-        final Result onMatch = Result.toResult(match, Result.NEUTRAL);
-        final Result onMismatch = Result.toResult(mismatch, Result.DENY);
-        final Level level = Level.toLevel(levelName, Level.WARN);
-        float eventRate = rate == null ? DEFAULT_RATE : Float.parseFloat(rate);
+            @PluginAttribute("level") final Level level,
+            @PluginAttribute("rate") final Float rate,
+            @PluginAttribute("maxBurst") final Long maxBurst,
+            @PluginAttribute("onMatch") final Result match,
+            @PluginAttribute("onMismatch") final Result mismatch) {
+        final Result onMatch = match == null ? Result.NEUTRAL : match;
+        final Result onMismatch = mismatch == null ? Result.DENY : mismatch;
+        final Level actualLevel = level == null ? Level.WARN : level;
+        float eventRate = rate == null ? DEFAULT_RATE : rate;
         if (eventRate <= 0) {
             eventRate = DEFAULT_RATE;
         }
-        final long max = maxBurst == null ? (long) (eventRate * DEFAULT_RATE_MULTIPLE) : Long.parseLong(maxBurst);
-        return new BurstFilter(level, eventRate, max, onMatch, onMismatch);
+        final long max = maxBurst == null ? (long) (eventRate * DEFAULT_RATE_MULTIPLE) : maxBurst;
+        return new BurstFilter(actualLevel, eventRate, max, onMatch, onMismatch);
     }
 }

@@ -119,25 +119,23 @@ public final class DynamicThresholdFilter extends AbstractFilter {
      * Create the DynamicThresholdFilter.
      * @param key The name of the key to compare.
      * @param pairs An array of value and Level pairs.
-     * @param levelName The default Level.
-     * @param match The action to perform if a match occurs.
-     * @param mismatch The action to perform if no match occurs.
+     * @param defaultThreshold The default Level.
+     * @param onMatch The action to perform if a match occurs.
+     * @param onMismatch The action to perform if no match occurs.
      * @return The DynamicThresholdFilter.
      */
     @PluginFactory
     public static DynamicThresholdFilter createFilter(
             @PluginAttribute("key") final String key,
             @PluginElement("Pairs") final KeyValuePair[] pairs,
-            @PluginAttribute("defaultThreshold") final String levelName,
-            @PluginAttribute("onMatch") final String match,
-            @PluginAttribute("onMismatch") final String mismatch) {
-        final Result onMatch = Result.toResult(match);
-        final Result onMismatch = Result.toResult(mismatch);
+            @PluginAttribute("defaultThreshold") final Level defaultThreshold,
+            @PluginAttribute("onMatch") final Result onMatch,
+            @PluginAttribute("onMismatch") final Result onMismatch) {
         final Map<String, Level> map = new HashMap<String, Level>();
         for (final KeyValuePair pair : pairs) {
             map.put(pair.getKey(), Level.toLevel(pair.getValue()));
         }
-        final Level level = Level.toLevel(levelName, Level.ERROR);
+        final Level level = defaultThreshold == null ? Level.ERROR : defaultThreshold;
         return new DynamicThresholdFilter(key, map, level, onMatch, onMismatch);
     }
 }

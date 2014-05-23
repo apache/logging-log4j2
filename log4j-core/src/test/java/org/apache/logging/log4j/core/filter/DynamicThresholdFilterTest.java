@@ -54,7 +54,7 @@ public class DynamicThresholdFilterTest {
         ThreadContext.put("organization", "apache");
         final KeyValuePair[] pairs = new KeyValuePair[] { new KeyValuePair("testuser", "DEBUG"),
                                                     new KeyValuePair("JohnDoe", "warn")};
-        final DynamicThresholdFilter filter = DynamicThresholdFilter.createFilter("userid", pairs, "ERROR", null, null);
+        final DynamicThresholdFilter filter = DynamicThresholdFilter.createFilter("userid", pairs, Level.ERROR, null, null);
         filter.start();
         assertTrue(filter.isStarted());
         assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.DEBUG, null, null, (Throwable) null));
