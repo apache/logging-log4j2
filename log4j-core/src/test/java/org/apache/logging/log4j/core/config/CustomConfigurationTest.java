@@ -81,7 +81,7 @@ public class CustomConfigurationTest {
         AppenderRef ref = AppenderRef.createAppenderRef("File", null, null);
         AppenderRef[] refs = new AppenderRef[] {ref};
 
-        LoggerConfig loggerConfig = LoggerConfig.createLogger("false", "info", "org.apache.logging.log4j",
+        LoggerConfig loggerConfig = LoggerConfig.createLogger("false", Level.INFO, "org.apache.logging.log4j",
             "true", refs, null, config, null );
         loggerConfig.addAppender(appender, null, null);
         config.addLogger("org.apache.logging.log4j", loggerConfig);

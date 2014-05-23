@@ -64,29 +64,20 @@ public final class AppenderRef {
     /**
      * Create an Appender reference.
      * @param ref The name of the Appender.
-     * @param levelName The Level to filter against.
+     * @param level The Level to filter against.
      * @param filter The filter(s) to use.
      * @return The name of the Appender.
      */
     @PluginFactory
     public static AppenderRef createAppenderRef(
             @PluginAttribute("ref") final String ref,
-            @PluginAttribute("level") final String levelName,
+            @PluginAttribute("level") final Level level,
             @PluginElement("Filters") final Filter filter) {
 
         if (ref == null) {
             LOGGER.error("Appender references must contain a reference");
             return null;
         }
-        Level level = null;
-
-        if (levelName != null) {
-            level = Level.toLevel(levelName, null);
-            if (level == null) {
-                LOGGER.error("Invalid level " + levelName + " on Appender reference " + ref);
-            }
-        }
-
         return new AppenderRef(ref, level, filter);
     }
 }

@@ -437,7 +437,7 @@ public class LoggerConfig extends AbstractFilterable {
      * Factory method to create a LoggerConfig.
      *
      * @param additivity True if additive, false otherwise.
-     * @param levelName The Level to be associated with the Logger.
+     * @param level The Level to be associated with the Logger.
      * @param loggerName The name of the Logger.
      * @param includeLocation whether location should be passed downstream
      * @param refs An array of Appender names.
@@ -449,7 +449,7 @@ public class LoggerConfig extends AbstractFilterable {
     @PluginFactory
     public static LoggerConfig createLogger(
             @PluginAttribute("additivity") final String additivity,
-            @PluginAttribute("level") final String levelName,
+            @PluginAttribute("level") final Level level,
             @PluginAttribute("name") final String loggerName,
             @PluginAttribute("includeLocation") final String includeLocation,
             @PluginElement("AppenderRef") final AppenderRef[] refs,
@@ -462,19 +462,11 @@ public class LoggerConfig extends AbstractFilterable {
         }
 
         final List<AppenderRef> appenderRefs = Arrays.asList(refs);
-        Level level;
-        try {
-            level = Level.toLevel(levelName, Level.ERROR);
-        } catch (final Exception ex) {
-            LOGGER.error(
-                    "Invalid Log level specified: {}. Defaulting to Error",
-                    levelName);
-            level = Level.ERROR;
-        }
+        final Level actualLevel = level == null ? Level.ERROR : level;
         final String name = loggerName.equals("root") ? Strings.EMPTY : loggerName;
         final boolean additive = Booleans.parseBoolean(additivity, true);
 
-        return new LoggerConfig(name, appenderRefs, filter, level, additive,
+        return new LoggerConfig(name, appenderRefs, filter, actualLevel, additive,
                 properties, config, includeLocation(includeLocation));
     }
 
@@ -498,26 +490,18 @@ public class LoggerConfig extends AbstractFilterable {
         @PluginFactory
         public static LoggerConfig createLogger(
                 @PluginAttribute("additivity") final String additivity,
-                @PluginAttribute("level") final String levelName,
+                @PluginAttribute("level") final Level level,
                 @PluginAttribute("includeLocation") final String includeLocation,
                 @PluginElement("AppenderRef") final AppenderRef[] refs,
                 @PluginElement("Properties") final Property[] properties,
                 @PluginConfiguration final Configuration config,
                 @PluginElement("Filters") final Filter filter) {
             final List<AppenderRef> appenderRefs = Arrays.asList(refs);
-            Level level;
-            try {
-                level = Level.toLevel(levelName, Level.ERROR);
-            } catch (final Exception ex) {
-                LOGGER.error(
-                        "Invalid Log level specified: {}. Defaulting to Error",
-                        levelName);
-                level = Level.ERROR;
-            }
+            final Level actualLevel = level == null ? Level.ERROR : level;
             final boolean additive = Booleans.parseBoolean(additivity, true);
 
             return new LoggerConfig(LogManager.ROOT_LOGGER_NAME, appenderRefs,
-                    filter, level, additive, properties, config,
+                    filter, actualLevel, additive, properties, config,
                     includeLocation(includeLocation));
         }
     }
