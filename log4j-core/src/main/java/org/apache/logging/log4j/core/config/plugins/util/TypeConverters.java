@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.config.plugins.util;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
@@ -46,6 +47,7 @@ public final class TypeConverters {
         registry.put(Long.class, new LongConverter());
         registry.put(Float.class, new FloatConverter());
         registry.put(Double.class, new DoubleConverter());
+        registry.put(Pattern.class, new PatternConverter());
         registry.put(Level.class, new LevelConverter());
         registry.put(Filter.Result.class, new FilterResultConverter());
     }
@@ -130,6 +132,16 @@ public final class TypeConverters {
         @Override
         public Double convert(String s) {
             return Double.parseDouble(s);
+        }
+    }
+
+    /**
+     * Parses strings into regular expression Patterns.
+     */
+    private static class PatternConverter implements TypeConverter<Pattern> {
+        @Override
+        public Pattern convert(String s) {
+            return Pattern.compile(s);
         }
     }
 
