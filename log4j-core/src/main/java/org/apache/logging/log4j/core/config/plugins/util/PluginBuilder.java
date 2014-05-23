@@ -182,20 +182,22 @@ public class PluginBuilder<T> {
                     final String name = ((PluginValue) a).value();
                     final String v = node.getValue() != null ? node.getValue() : getAttrValue("value");
                     final String value = configuration.getStrSubstitutor().replace(event, v);
-                    args[i] = value;
+                    args[i] = TypeConverters.convert(value, types[i]);
                     sb.append(name).append("=\"").append(value).append('"');
                 } else if (a instanceof PluginAttribute) {
                     final PluginAttribute attribute = (PluginAttribute) a;
                     final String name = attribute.value();
-                    args[i] = getReplacedAttributeValue(name, aliases);
-                    sb.append(name).append("=\"").append(args[i]).append('"');
+                    final String value = getReplacedAttributeValue(name, aliases);
+                    args[i] = TypeConverters.convert(value, types[i]);
+                    sb.append(name).append("=\"").append(value).append('"');
                 } else if (a instanceof SensitivePluginAttribute) {
                     // LOG4J2-605
                     // we shouldn't be displaying passwords
                     final SensitivePluginAttribute attribute = (SensitivePluginAttribute) a;
                     final String name = attribute.value();
-                    args[i] = getReplacedAttributeValue(name, aliases);
-                    sb.append(name).append("=\"").append(NameUtil.md5(args[i] + PluginBuilder.class.getName())).append('"');
+                    final String value = getReplacedAttributeValue(name, aliases);
+                    args[i] = TypeConverters.convert(value, types[i]);
+                    sb.append(name).append("=\"").append(NameUtil.md5(value + PluginBuilder.class.getName())).append('"');
                 } else if (a instanceof PluginElement) {
                     final PluginElement element = (PluginElement) a;
                     final String name = element.value();
