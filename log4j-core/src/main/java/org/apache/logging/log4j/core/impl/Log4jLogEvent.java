@@ -183,7 +183,7 @@ public class Log4jLogEvent implements LogEvent {
         if (contextMap == null && (properties == null || properties.size() == 0)) {
             return null;
         }
-        if (properties == null || properties.size() == 0) {
+        if (properties == null || properties.isEmpty()) {
             return contextMap; // contextMap is not null
         }
         final Map<String, String> map = new HashMap<String, String>(contextMap);
