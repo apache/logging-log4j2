@@ -214,14 +214,14 @@ public class ThrowableProxy implements Serializable {
     }
 
     private void formatElements(final StringBuilder sb, final int commonCount, final StackTraceElement[] causedTrace,
-            final ExtendedStackTraceElement[] packageData, final List<String> packages) {
+            final ExtendedStackTraceElement[] extendedStackTrace, final List<String> packages) {
         if (packages == null || packages.size() == 0) {
-            for (int i = 0; i < packageData.length; ++i) {
-                this.formatEntry(causedTrace[i], packageData[i], sb);
+            for (int i = 0; i < extendedStackTrace.length; ++i) {
+                this.formatEntry(causedTrace[i], extendedStackTrace[i], sb);
             }
         } else {
             int count = 0;
-            for (int i = 0; i < packageData.length; ++i) {
+            for (int i = 0; i < extendedStackTrace.length; ++i) {
                 if (!this.isSuppressed(causedTrace[i], packages)) {
                     if (count > 0) {
                         if (count == 1) {
@@ -231,7 +231,7 @@ public class ThrowableProxy implements Serializable {
                         }
                         count = 0;
                     }
-                    this.formatEntry(causedTrace[i], packageData[i], sb);
+                    this.formatEntry(causedTrace[i], extendedStackTrace[i], sb);
                 } else {
                     ++count;
                 }
