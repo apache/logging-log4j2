@@ -102,6 +102,6 @@ public class RewriteAppenderTest {
         logger.trace(msg);
 
         final List<LogEvent> list = app.getEvents();
-        assertTrue("Events were generated", list == null || list.size() == 0);
+        assertTrue("Events were generated", list == null || list.isEmpty());
     }
 }

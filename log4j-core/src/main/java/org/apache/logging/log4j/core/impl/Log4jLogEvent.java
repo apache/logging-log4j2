@@ -180,7 +180,7 @@ public class Log4jLogEvent implements LogEvent {
 
     private static Map<String, String> createMap(final List<Property> properties) {
         final Map<String, String> contextMap = ThreadContext.getImmutableContext();
-        if (contextMap == null && (properties == null || properties.size() == 0)) {
+        if (contextMap == null && (properties == null || properties.isEmpty())) {
             return null;
         }
         if (properties == null || properties.isEmpty()) {
@@ -368,7 +368,7 @@ public class Log4jLogEvent implements LogEvent {
     public static boolean canDeserialize(final Serializable event) {
         return event instanceof LogEventProxy;
     }
-    
+
     public static Log4jLogEvent deserialize(final Serializable event) {
         if (event == null) {
             throw new NullPointerException("Event cannot be null");

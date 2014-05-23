@@ -159,7 +159,7 @@ public final class MapRewritePolicy implements RewritePolicy {
             }
             map.put(pair.getKey(), pair.getValue());
         }
-        if (map.size() == 0) {
+        if (map.isEmpty()) {
             LOGGER.error("MapRewritePolicy is not configured with any valid key value pairs");
             return null;
         }

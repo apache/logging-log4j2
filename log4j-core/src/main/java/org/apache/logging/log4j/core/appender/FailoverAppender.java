@@ -85,7 +85,7 @@ public final class FailoverAppender extends AbstractAppender {
                 LOGGER.error("Failover appender " + name + " is not configured");
             }
         }
-        if (failoverAppenders.size() == 0) {
+        if (failoverAppenders.isEmpty()) {
             LOGGER.error("No failover appenders are available");
             ++errors;
         }

@@ -141,7 +141,7 @@ public class ThreadContextMapFilter extends MapFilter {
                 map.put(pair.getKey(), list);
             }
         }
-        if (map.size() == 0) {
+        if (map.isEmpty()) {
             LOGGER.error("ThreadContextMapFilter is not configured with any valid key value pairs");
             return null;
         }

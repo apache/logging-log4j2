@@ -348,7 +348,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         final Message message = event.getMessage();
         final boolean isStructured = message instanceof StructuredDataMessage;
 
-        if (!isStructured && (fieldFormatters!= null && fieldFormatters.size() == 0) && !includeMdc) {
+        if (!isStructured && (fieldFormatters!= null && fieldFormatters.isEmpty()) && !includeMdc) {
             buffer.append('-');
             return;
         }
@@ -395,7 +395,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             }
         }
 
-        if (sdElements.size() == 0) {
+        if (sdElements.isEmpty()) {
             buffer.append('-');
             return;
         }

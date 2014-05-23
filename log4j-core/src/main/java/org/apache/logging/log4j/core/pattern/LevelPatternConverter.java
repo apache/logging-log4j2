@@ -86,7 +86,7 @@ public final class LevelPatternConverter extends LogEventPatternConverter {
                 }
             }
         }
-        if (levelMap.size() == 0 && length == Integer.MAX_VALUE && !lowerCase) {
+        if (levelMap.isEmpty() && length == Integer.MAX_VALUE && !lowerCase) {
             return INSTANCE;
         }
         for (final Level level : Level.values()) {

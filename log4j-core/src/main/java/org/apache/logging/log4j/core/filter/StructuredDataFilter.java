@@ -131,7 +131,7 @@ public final class StructuredDataFilter extends MapFilter {
                 map.put(pair.getKey(), list);
             }
         }
-        if (map.size() == 0) {
+        if (map.isEmpty()) {
             LOGGER.error("StructuredDataFilter is not configured with any valid key value pairs");
             return null;
         }
