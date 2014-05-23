@@ -79,11 +79,13 @@ public class Interpolator implements StrLookup {
             try {
                 lookups.put("web",
                     Loader.newCheckedInstanceOf("org.apache.logging.log4j.web.WebLookup", StrLookup.class));
-            } catch (final Exception e) {
-                LOGGER.warn("ServletContext is available, but log4j-web is not.", e);
+            } catch (final Exception ignored) {
+                LOGGER.info("Log4j appears to be running in a Servlet environment, but there's no log4j-web module " +
+                    "available. If you want better web container support, please add the log4j-web JAR to your " +
+                    "web archive or server lib directory.");
             }
         } else {
-            LOGGER.info("Not in a ServletContext environment, thus not loading WebLookup plugin.");
+            LOGGER.debug("Not in a ServletContext environment, thus not loading WebLookup plugin.");
         }
     }
 
