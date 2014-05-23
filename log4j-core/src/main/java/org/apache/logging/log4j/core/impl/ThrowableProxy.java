@@ -249,11 +249,11 @@ public class ThrowableProxy implements Serializable {
         }
     }
 
-    private void formatEntry(final StackTraceElement element, final ExtendedStackTraceElement packageData, final StringBuilder sb) {
+    private void formatEntry(final StackTraceElement element, final ExtendedStackTraceElement extStackTraceElement, final StringBuilder sb) {
         sb.append("\tat ");
         sb.append(element);
         sb.append(' ');
-        sb.append(packageData);
+        sb.append(extStackTraceElement);
         sb.append('\n');
     }
 
