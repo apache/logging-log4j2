@@ -43,7 +43,7 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
      */
     protected final boolean immediateFlush;
 
-    private volatile M manager;
+    private final M manager;
 
     private final ReadWriteLock rwLock = new ReentrantReadWriteLock();
     private final Lock readLock = rwLock.readLock();
@@ -72,19 +72,6 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
      */
     public M getManager() {
         return manager;
-    }
-
-    protected void setManager(final M newManager) {
-
-        writeLock.lock();
-        try {
-            final M old = manager;
-            manager = newManager;
-            old.release();
-        } finally {
-            writeLock.unlock();
-        }
-
     }
 
     @Override
