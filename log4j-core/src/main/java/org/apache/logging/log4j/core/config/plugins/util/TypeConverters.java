@@ -40,6 +40,8 @@ public final class TypeConverters {
         registry.put(Boolean.class, new BooleanConverter());
         registry.put(Integer.class, new IntegerConverter());
         registry.put(Long.class, new LongConverter());
+        registry.put(Float.class, new FloatConverter());
+        registry.put(Double.class, new DoubleConverter());
         registry.put(Level.class, new LevelConverter());
         registry.put(Filter.Result.class, new FilterResultConverter());
     }
@@ -99,6 +101,26 @@ public final class TypeConverters {
         @Override
         public Long convert(String s) {
             return Long.parseLong(s);
+        }
+    }
+
+    /**
+     * Parses strings into floats.
+     */
+    private static class FloatConverter implements TypeConverter<Float> {
+        @Override
+        public Float convert(String s) {
+            return Float.parseFloat(s);
+        }
+    }
+
+    /**
+     * Parses strings into doubles.
+     */
+    private static class DoubleConverter implements TypeConverter<Double> {
+        @Override
+        public Double convert(String s) {
+            return Double.parseDouble(s);
         }
     }
 
