@@ -47,8 +47,6 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
 
     private final ReadWriteLock rwLock = new ReentrantReadWriteLock();
     private final Lock readLock = rwLock.readLock();
-    private final Lock writeLock = rwLock.writeLock();
-
     /**
      * Instantiate a WriterAppender and set the output destination to a
      * new {@link java.io.OutputStreamWriter} initialized with <code>os</code>
