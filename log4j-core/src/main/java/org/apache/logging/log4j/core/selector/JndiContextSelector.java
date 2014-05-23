@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NameNotFoundException;
@@ -31,6 +30,7 @@ import javax.naming.NamingException;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
+import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -111,11 +111,14 @@ public class JndiContextSelector implements NamedContextSelector {
 
         String loggingContextName = null;
 
+        Context ctx = null;
         try {
-            final Context ctx = new InitialContext();
+            ctx = new InitialContext();
             loggingContextName = (String) lookup(ctx, Constants.JNDI_CONTEXT_NAME);
         } catch (final NamingException ne) {
             LOGGER.error("Unable to lookup " + Constants.JNDI_CONTEXT_NAME, ne);
+        } finally {
+            Closer.closeSilent(ctx);
         }
 
         return loggingContextName == null ? CONTEXT : locateContext(loggingContextName, null, configLocation);
