@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.naming.Context;
+import javax.naming.NamingException;
 
 /**
  * Helper class for closing resources.
@@ -34,7 +36,7 @@ public final class Closer {
     /**
      * Closes the specified {@code Closeable} (stream or reader/writer),
      * ignoring any exceptions thrown by the close operation.
-     * 
+     *
      * @param closeable the resource to close, may be {@code null}
      */
     public static void closeSilent(Closeable closeable) {
@@ -49,7 +51,7 @@ public final class Closer {
 
     /**
      * Closes the specified {@code Closeable} (stream or reader/writer).
-     * 
+     *
      * @param closeable the resource to close, may be {@code null}
      * @throws IOException if a problem occurred closing the specified resource
      */
@@ -62,7 +64,7 @@ public final class Closer {
     /**
      * Closes the specified {@code Statement}, ignoring any exceptions thrown by
      * the close operation.
-     * 
+     *
      * @param statement the resource to close, may be {@code null}
      */
     public static void closeSilent(Statement statement) {
@@ -77,7 +79,7 @@ public final class Closer {
 
     /**
      * Closes the specified {@code Statement}.
-     * 
+     *
      * @param statement the resource to close, may be {@code null}
      * @throws SQLException if a problem occurred closing the specified resource
      */
@@ -90,7 +92,7 @@ public final class Closer {
     /**
      * Closes the specified {@code Connection}, ignoring any exceptions thrown
      * by the close operation.
-     * 
+     *
      * @param connection the resource to close, may be {@code null}
      */
     public static void closeSilent(Connection connection) {
@@ -105,13 +107,38 @@ public final class Closer {
 
     /**
      * Closes the specified {@code Connection}.
-     * 
+     *
      * @param connection the resource to close, may be {@code null}
      * @throws SQLException if a problem occurred closing the specified resource
      */
     public static void close(Connection connection) throws SQLException {
         if (connection != null) {
             connection.close();
+        }
+    }
+
+    /**
+     * Closes the specified {@code Context}, ignoring any exceptions thrown by the close operation.
+     *
+     * @param context the JNDI Context to close, may be {@code null}
+     */
+    public static void closeSilent(Context context) {
+        try {
+            close(context);
+        } catch (final NamingException ignored) {
+            // ignored
+        }
+    }
+
+    /**
+     * Closes the specified {@code Context}.
+     *
+     * @param context the JNDI Context to close, may be {@code null}
+     * @throws NamingException if a problem occurred closing the specified JNDI Context
+     */
+    public static void close(Context context) throws NamingException {
+        if (context != null) {
+            context.close();
         }
     }
 
