@@ -16,11 +16,13 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.util.Closer;
 
 /**
  * Looks up keys from JNDI resources.
@@ -53,11 +55,14 @@ public class JndiLookup implements StrLookup {
             return null;
         }
 
+        Context ctx = null;
         try {
-            InitialContext ctx = new InitialContext();
+            ctx = new InitialContext();
             return (String) ctx.lookup(convertJndiName(key));
         } catch (NamingException e) {
             return null;
+        } finally {
+            Closer.closeSilent(ctx);
         }
     }
 
