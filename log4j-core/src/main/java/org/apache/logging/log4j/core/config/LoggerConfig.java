@@ -37,7 +37,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -239,9 +238,7 @@ public class LoggerConfig extends AbstractFilterable {
         final Filter filter = ctl.getFilter();
         if (filter != null) {
             ctl.removeFilter(filter);
-            if (filter instanceof LifeCycle) {
-                ((LifeCycle) filter).stop();
-            }
+            filter.stop();
         }
     }
 
