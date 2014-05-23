@@ -205,24 +205,24 @@ public class ThrowableProxy implements Serializable {
     }
 
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
-    private void formatCause(final StringBuilder sb, final ThrowableProxy cause, final List<String> packages) {
+    private void formatCause(final StringBuilder sb, final ThrowableProxy cause, final List<String> ignorePackages) {
         sb.append("Caused by: ").append(cause).append(EOL);
-        this.formatElements(sb, cause.commonElementCount, cause.getThrowable().getStackTrace(), cause.extendedStackTrace, packages);
+        this.formatElements(sb, cause.commonElementCount, cause.getThrowable().getStackTrace(), cause.extendedStackTrace, ignorePackages);
         if (cause.getCauseProxy() != null) {
-            this.formatCause(sb, cause.causeProxy, packages);
+            this.formatCause(sb, cause.causeProxy, ignorePackages);
         }
     }
 
     private void formatElements(final StringBuilder sb, final int commonCount, final StackTraceElement[] causedTrace,
-            final ExtendedStackTraceElement[] extStackTrace, final List<String> packages) {
-        if (packages == null || packages.size() == 0) {
+            final ExtendedStackTraceElement[] extStackTrace, final List<String> ignorePackages) {
+        if (ignorePackages == null || ignorePackages.size() == 0) {
             for (int i = 0; i < extStackTrace.length; ++i) {
                 this.formatEntry(causedTrace[i], extStackTrace[i], sb);
             }
         } else {
             int count = 0;
             for (int i = 0; i < extStackTrace.length; ++i) {
-                if (!this.isSuppressed(causedTrace[i], packages)) {
+                if (!this.ignoreElement(causedTrace[i], ignorePackages)) {
                     if (count > 0) {
                         if (count == 1) {
                             sb.append("\t....\n");
@@ -373,19 +373,19 @@ public class ThrowableProxy implements Serializable {
     /**
      * Format the stack trace including packaging information.
      *
-     * @param packages List of packages to be suppressed from the trace.
+     * @param ignorePackages List of packages to be ignored in the trace.
      * @return The formatted stack trace including packaging information.
      */
-    public String getExtendedStackTraceAsString(final List<String> packages) {
+    public String getExtendedStackTraceAsString(final List<String> ignorePackages) {
         final StringBuilder sb = new StringBuilder(this.name);
         final String msg = this.message;
         if (msg != null) {
             sb.append(": ").append(msg);
         }
         sb.append('\n');
-        this.formatElements(sb, 0, this.throwable.getStackTrace(), this.extendedStackTrace, packages);
+        this.formatElements(sb, 0, this.throwable.getStackTrace(), this.extendedStackTrace, ignorePackages);
         if (this.causeProxy != null) {
-            this.formatCause(sb, this.causeProxy, packages);
+            this.formatCause(sb, this.causeProxy, ignorePackages);
         }
         return sb.toString();
     }
@@ -458,9 +458,9 @@ public class ThrowableProxy implements Serializable {
         return result;
     }
 
-    private boolean isSuppressed(final StackTraceElement element, final List<String> packages) {
+    private boolean ignoreElement(final StackTraceElement element, final List<String> ignorePackages) {
         final String className = element.getClassName();
-        for (final String pkg : packages) {
+        for (final String pkg : ignorePackages) {
             if (className.startsWith(pkg)) {
                 return true;
             }
