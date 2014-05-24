@@ -83,6 +83,37 @@ public class Log4jLogEventTest {
         assertEquals(evt.isEndOfBatch(), evt2.isEndOfBatch());
         assertEquals(evt.isIncludeLocation(), evt2.isIncludeLocation());
     }
+    
+    @Test
+    public void testJavaIoSerializableWithThrown() throws Exception {
+        final Error thrown = new InternalError("test error");
+        final Log4jLogEvent evt = new Log4jLogEvent("some.test", null, Strings.EMPTY,
+                Level.INFO, new SimpleMessage("abc"), thrown);
+
+        final ByteArrayOutputStream arr = new ByteArrayOutputStream();
+        final ObjectOutputStream out = new ObjectOutputStream(arr);
+        out.writeObject(evt);
+
+        final ByteArrayInputStream inArr = new ByteArrayInputStream(arr.toByteArray());
+        final ObjectInputStream in = new ObjectInputStream(inArr);
+        final Log4jLogEvent evt2 = (Log4jLogEvent) in.readObject();
+
+        assertEquals(evt.getTimeMillis(), evt2.getTimeMillis());
+        assertEquals(evt.getLoggerFqcn(), evt2.getLoggerFqcn());
+        assertEquals(evt.getLevel(), evt2.getLevel());
+        assertEquals(evt.getLoggerName(), evt2.getLoggerName());
+        assertEquals(evt.getMarker(), evt2.getMarker());
+        assertEquals(evt.getContextMap(), evt2.getContextMap());
+        assertEquals(evt.getContextStack(), evt2.getContextStack());
+        assertEquals(evt.getMessage(), evt2.getMessage());
+        assertEquals(evt.getSource(), evt2.getSource());
+        assertEquals(evt.getThreadName(), evt2.getThreadName());
+        assertEquals(evt.getThrown().getClass(), evt2.getThrown().getClass());
+        assertEquals(evt.getThrown().getMessage(), evt2.getThrown().getMessage());
+        assertEquals(evt.getThrownProxy(), evt2.getThrownProxy());
+        assertEquals(evt.isEndOfBatch(), evt2.isEndOfBatch());
+        assertEquals(evt.isIncludeLocation(), evt2.isIncludeLocation());
+    }
 
     @Test
     public void testNullLevelReplacedWithOFF() throws Exception {

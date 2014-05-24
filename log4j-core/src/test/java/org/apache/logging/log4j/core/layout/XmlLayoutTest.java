@@ -256,8 +256,8 @@ public class XmlLayoutTest {
     @Test
     public void testLayoutLoggerName() {
         final XmlLayout layout = XmlLayout.createLayout("false", "true", "true", null, null);
-        final Log4jLogEvent event = Log4jLogEvent.createEvent("a.B", null, "f.q.c.n", Level.DEBUG, new SimpleMessage("M"), null, null,
-                null, "threadName", null, 1);
+        final Log4jLogEvent event = Log4jLogEvent.createEvent("a.B", null, "f.q.c.n", Level.DEBUG, 
+                new SimpleMessage("M"), null, null, null, null, "threadName", null, 1);
         final String str = layout.toSerializable(event);
         assertTrue(str, str.contains("loggerName=\"a.B\""));
     }

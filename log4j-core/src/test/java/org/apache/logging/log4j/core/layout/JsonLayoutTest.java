@@ -100,10 +100,11 @@ public class JsonLayoutTest {
         assertTrue(str, str.contains(DQUOTE + name + DQUOTE + propSep));
     }
 
-    private void testAllFeatures(final boolean includeSource, final boolean compact, final boolean includeContext) throws Exception {
+    private void testAllFeatures(final boolean includeSource, final boolean compact, final boolean includeContext)
+            throws Exception {
         final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
-        final AbstractJacksonLayout layout = JsonLayout.createLayout(Boolean.toString(includeSource), Boolean.toString(includeContext),
-                "false", Boolean.toString(compact), "UTF-8");
+        final AbstractJacksonLayout layout = JsonLayout.createLayout(Boolean.toString(includeSource),
+                Boolean.toString(includeContext), "false", Boolean.toString(compact), "UTF-8");
         final String str = layout.toSerializable(expected);
         // System.out.println(str);
         final String propSep = this.toPropertySeparator(compact);
@@ -251,8 +252,8 @@ public class JsonLayoutTest {
     @Test
     public void testLayoutLoggerName() throws Exception {
         final AbstractJacksonLayout layout = JsonLayout.createLayout("false", null, "false", "true", "UTF-8");
-        final Log4jLogEvent expected = Log4jLogEvent.createEvent("a.B", null, "f.q.c.n", Level.DEBUG, new SimpleMessage("M"), null, null,
-                null, "threadName", null, 1);
+        final Log4jLogEvent expected = Log4jLogEvent.createEvent("a.B", null, "f.q.c.n", Level.DEBUG, 
+                new SimpleMessage("M"), null, null, null, null, "threadName", null, 1);
         final String str = layout.toSerializable(expected);
         assertTrue(str, str.contains("\"loggerName\":\"a.B\""));
         final Log4jLogEvent actual = new Log4jJsonObjectMapper().readValue(str, Log4jLogEvent.class);
