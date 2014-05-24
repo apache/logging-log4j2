@@ -32,7 +32,7 @@ public class UuidTest {
     private static final long NUM_100NS_INTERVALS_SINCE_UUID_EPOCH = 0x01b21dd213814000L;
 
     @Test
-    public void testTimeBaseUUID() {
+    public void testTimeBaseUuid() {
         final UUID uuid = UuidUtil.getTimeBasedUuid();
         //final UUID uuid2 = UuidUtil.getTimeBasedUUID(); // unused
         final long current = (System.currentTimeMillis() * 10000) + NUM_100NS_INTERVALS_SINCE_UUID_EPOCH;
