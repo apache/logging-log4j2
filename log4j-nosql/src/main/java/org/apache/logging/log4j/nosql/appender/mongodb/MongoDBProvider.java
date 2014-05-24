@@ -90,7 +90,7 @@ public final class MongoDBProvider implements NoSQLProvider<MongoDBConnection> {
      * @return a new MongoDB provider.
      */
     @PluginFactory
-    public static MongoDBProvider createNoSQLProvider(
+    public static MongoDBProvider createNoSqlProvider(
             @PluginAttribute("collectionName") final String collectionName,
             @PluginAttribute("writeConcernConstant") final String writeConcernConstant,
             @PluginAttribute("writeConcernConstantClass") final String writeConcernConstantClassName,

@@ -82,7 +82,7 @@ public final class NoSQLAppender extends AbstractDatabaseAppender<NoSQLDatabaseM
         final String managerName = "noSqlManager{ description=" + name + ", bufferSize=" + bufferSizeInt
                 + ", provider=" + provider + " }";
 
-        final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSQLDatabaseManager(
+        final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSqlDatabaseManager(
                 managerName, bufferSizeInt, provider
         );
         if (manager == null) {
