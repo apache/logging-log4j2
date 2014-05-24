@@ -81,7 +81,7 @@ public final class CouchDBProvider implements NoSQLProvider<CouchDBConnection> {
      * @return a new Apache CouchDB provider.
      */
     @PluginFactory
-    public static CouchDBProvider createNoSQLProvider(
+    public static CouchDBProvider createNoSqlProvider(
             @PluginAttribute("databaseName") final String databaseName,
             @PluginAttribute("protocol") String protocol,
             @PluginAttribute("server") String server,

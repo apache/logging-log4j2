@@ -60,7 +60,7 @@ public class NoSQLDatabaseManagerTest {
     public void testConnection() {
         replay(this.provider, this.connection);
 
-        final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSQLDatabaseManager("name", 0, this.provider);
+        final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSqlDatabaseManager("name", 0, this.provider);
 
         assertNotNull("The manager should not be null.", manager);
 
@@ -93,7 +93,7 @@ public class NoSQLDatabaseManagerTest {
     public void testWriteInternalNotConnected01() {
         replay(this.provider, this.connection);
 
-        final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSQLDatabaseManager("name", 0, this.provider);
+        final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSqlDatabaseManager("name", 0, this.provider);
 
         try {
             verify(this.provider, this.connection);
@@ -121,7 +121,7 @@ public class NoSQLDatabaseManagerTest {
 
     @Test
     public void testWriteInternalNotConnected02() {
-        final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSQLDatabaseManager("name", 0, this.provider);
+        final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSqlDatabaseManager("name", 0, this.provider);
 
         try {
             replay(this.provider, this.connection);
@@ -166,7 +166,7 @@ public class NoSQLDatabaseManagerTest {
 
     @Test
     public void testWriteInternal01() {
-        final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSQLDatabaseManager("name", 0, this.provider);
+        final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSqlDatabaseManager("name", 0, this.provider);
 
         try {
             replay(this.provider, this.connection);
@@ -258,7 +258,7 @@ public class NoSQLDatabaseManagerTest {
 
     @Test
     public void testWriteInternal02() {
-        final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSQLDatabaseManager("name", 0, this.provider);
+        final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSqlDatabaseManager("name", 0, this.provider);
 
         try {
             replay(this.provider, this.connection);
@@ -398,7 +398,7 @@ public class NoSQLDatabaseManagerTest {
 
     @Test
     public void testWriteInternal03() {
-        final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSQLDatabaseManager("name", 0, this.provider);
+        final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSqlDatabaseManager("name", 0, this.provider);
 
         try {
             replay(this.provider, this.connection);

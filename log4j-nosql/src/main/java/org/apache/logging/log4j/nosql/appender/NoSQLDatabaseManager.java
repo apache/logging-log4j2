@@ -184,7 +184,7 @@ public final class NoSQLDatabaseManager<W> extends AbstractDatabaseManager {
      * @param provider A provider instance which will be used to obtain connections to the chosen NoSQL database.
      * @return a new or existing NoSQL manager as applicable.
      */
-    public static NoSQLDatabaseManager<?> getNoSQLDatabaseManager(final String name, final int bufferSize,
+    public static NoSQLDatabaseManager<?> getNoSqlDatabaseManager(final String name, final int bufferSize,
                                                                   final NoSQLProvider<?> provider) {
         return AbstractDatabaseManager.getManager(name, new FactoryData(bufferSize, provider), FACTORY);
     }
