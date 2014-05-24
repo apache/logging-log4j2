@@ -49,7 +49,7 @@ public class Log4jLogEvent implements LogEvent {
     private final String loggerName;
     private final Message message;
     private final long timeMillis;
-    private final Throwable thrown;
+    private transient final Throwable thrown;
     private ThrowableProxy thrownProxy;
     private final Map<String, String> contextMap;
     private final ThreadContext.ContextStack contextStack;
@@ -367,11 +367,13 @@ public class Log4jLogEvent implements LogEvent {
      * @return a LogEventProxy.
      */
     protected Object writeReplace() {
+        getThrownProxy(); // ensure ThrowableProxy is initialized
         return new LogEventProxy(this, this.includeLocation);
     }
 
     public static Serializable serialize(final Log4jLogEvent event,
             final boolean includeLocation) {
+        event.getThrownProxy(); // ensure ThrowableProxy is initialized
         return new LogEventProxy(event, includeLocation);
     }
 
