@@ -49,7 +49,8 @@ public class Log4jLogEvent implements LogEvent {
     private final String loggerName;
     private final Message message;
     private final long timeMillis;
-    private final ThrowableProxy thrownProxy;
+    private final Throwable thrown;
+    private ThrowableProxy thrownProxy;
     private final Map<String, String> contextMap;
     private final ThreadContext.ContextStack contextStack;
     private String threadName = null;
@@ -65,7 +66,7 @@ public class Log4jLogEvent implements LogEvent {
      *
      */
     public Log4jLogEvent(final long timestamp) {
-        this(Strings.EMPTY, null, Strings.EMPTY, null, null, (ThrowableProxy) null, null, null, null, null, timestamp);
+        this(Strings.EMPTY, null, Strings.EMPTY, null, null, (Throwable) null, null, null, null, null, timestamp);
     }
 
     /**
@@ -115,11 +116,11 @@ public class Log4jLogEvent implements LogEvent {
      * @param timestamp The timestamp of the event.
      */
     public Log4jLogEvent(final String loggerName, final Marker marker, final String loggerFQCN, final Level level,
-                         final Message message, final Throwable t,
-                         final Map<String, String> mdc, final ThreadContext.ContextStack ndc, final String threadName,
+                         final Message message, final Throwable t, final Map<String, String> mdc,
+                         final ThreadContext.ContextStack ndc, final String threadName,
                          final StackTraceElement location, final long timestamp) {
-        this(loggerName, marker, loggerFQCN, level, message, t == null ? null : new ThrowableProxy(t), mdc, ndc, threadName,
-            location, timestamp);
+        this(loggerName, marker, loggerFQCN, level, message, t, null, mdc, ndc, threadName,
+                location, timestamp);
     }
 
     /**
@@ -129,7 +130,8 @@ public class Log4jLogEvent implements LogEvent {
      * @param loggerFQCN The fully qualified class name of the caller.
      * @param level The logging Level.
      * @param message The Message.
-     * @param t A ThrowableProxy or null.
+     * @param thrown A Throwable or null.
+     * @param thrownProxy A ThrowableProxy or null.
      * @param mdc The mapped diagnostic context.
      * @param ndc the nested diagnostic context.
      * @param threadName The name of the thread.
@@ -137,11 +139,14 @@ public class Log4jLogEvent implements LogEvent {
      * @param timestamp The timestamp of the event.
      */
     public static Log4jLogEvent createEvent(final String loggerName, final Marker marker, final String loggerFQCN,
-                                            final Level level, final Message message, final ThrowableProxy t,
+                                            final Level level, final Message message, final Throwable thrown, 
+                                            final ThrowableProxy thrownProxy,
                                             final Map<String, String> mdc, final ThreadContext.ContextStack ndc,
                                             final String threadName, final StackTraceElement location,
                                             final long timestamp) {
-     return new Log4jLogEvent(loggerName, marker, loggerFQCN, level, message, t, mdc, ndc, threadName, location, timestamp);
+        final Log4jLogEvent result = new Log4jLogEvent(loggerName, marker, loggerFQCN, level, message, thrown, 
+                thrownProxy, mdc, ndc, threadName, location, timestamp);
+        return result;
     }
 
     /**
@@ -151,6 +156,7 @@ public class Log4jLogEvent implements LogEvent {
      * @param loggerFQCN The fully qualified class name of the caller.
      * @param level The logging Level.
      * @param message The Message.
+     * @param thrown A Throwable or null.
      * @param thrownProxy A ThrowableProxy or null.
      * @param contextMap The mapped diagnostic context.
      * @param contextStack the nested diagnostic context.
@@ -159,14 +165,15 @@ public class Log4jLogEvent implements LogEvent {
      * @param timestamp The timestamp of the event.
      */
     private Log4jLogEvent(final String loggerName, final Marker marker, final String loggerFQCN, final Level level,
-                         final Message message, final ThrowableProxy thrownProxy,
-                         final Map<String, String> contextMap, final ThreadContext.ContextStack contextStack, final String threadName,
-                         final StackTraceElement source, final long timestamp) {
+            final Message message, final Throwable thrown, ThrowableProxy thrownProxy, 
+            final Map<String, String> contextMap, final ThreadContext.ContextStack contextStack, 
+            final String threadName, final StackTraceElement source, final long timestamp) {
         this.loggerName = loggerName;
         this.marker = marker;
         this.loggerFqcn = loggerFQCN;
         this.level = (level == null) ? Level.OFF : level; // LOG4J2-462, LOG4J2-465
         this.message = message;
+        this.thrown = thrown;
         this.thrownProxy = thrownProxy;
         this.contextMap = contextMap == null ? ThreadContext.EMPTY_MAP : contextMap;
         this.contextStack = contextStack == null ? ThreadContext.EMPTY_STACK : contextStack;
@@ -250,7 +257,7 @@ public class Log4jLogEvent implements LogEvent {
      */
     @Override
     public Throwable getThrown() {
-        return thrownProxy == null ? null : thrownProxy.getThrowable();
+        return thrown;
     }
 
     /**
@@ -259,6 +266,9 @@ public class Log4jLogEvent implements LogEvent {
      */
     @Override
     public ThrowableProxy getThrownProxy() {
+        if (thrownProxy == null && thrown != null) {
+            thrownProxy = new ThrowableProxy(thrown);
+        }
         return thrownProxy;
     }
 
@@ -377,7 +387,7 @@ public class Log4jLogEvent implements LogEvent {
             final LogEventProxy proxy = (LogEventProxy) event;
             final Log4jLogEvent result = new Log4jLogEvent(proxy.loggerName, proxy.marker,
                     proxy.loggerFQCN, proxy.level, proxy.message,
-                    proxy.thrownProxy, proxy.contextMap, proxy.contextStack, proxy.threadName,
+                    proxy.thrown, proxy.thrownProxy, proxy.contextMap, proxy.contextStack, proxy.threadName,
                     proxy.source, proxy.timeMillis);
             result.setEndOfBatch(proxy.isEndOfBatch);
             result.setIncludeLocation(proxy.isLocationRequired);
@@ -447,6 +457,9 @@ public class Log4jLogEvent implements LogEvent {
         if (threadName != null ? !threadName.equals(that.threadName) : that.threadName != null) {
             return false;
         }
+        if (thrown != null ? !thrown.equals(that.thrown) : that.thrown != null) {
+            return false;
+        }
         if (thrownProxy != null ? !thrownProxy.equals(that.thrownProxy) : that.thrownProxy != null) {
             return false;
         }
@@ -462,6 +475,7 @@ public class Log4jLogEvent implements LogEvent {
         result = 31 * result + loggerName.hashCode();
         result = 31 * result + message.hashCode();
         result = 31 * result + (int) (timeMillis ^ (timeMillis >>> 32));
+        result = 31 * result + (thrown != null ? thrown.hashCode() : 0);
         result = 31 * result + (thrownProxy != null ? thrownProxy.hashCode() : 0);
         result = 31 * result + (contextMap != null ? contextMap.hashCode() : 0);
         result = 31 * result + (contextStack != null ? contextStack.hashCode() : 0);
@@ -484,6 +498,7 @@ public class Log4jLogEvent implements LogEvent {
         private final String loggerName;
         private final Message message;
         private final long timeMillis;
+        private final Throwable thrown;
         private final ThrowableProxy thrownProxy;
         private final Map<String, String> contextMap;
         private final ThreadContext.ContextStack contextStack;
@@ -499,6 +514,7 @@ public class Log4jLogEvent implements LogEvent {
             this.loggerName = event.loggerName;
             this.message = event.message;
             this.timeMillis = event.timeMillis;
+            this.thrown = event.thrown;
             this.thrownProxy = event.thrownProxy;
             this.contextMap = event.contextMap;
             this.contextStack = event.contextStack;
@@ -513,9 +529,8 @@ public class Log4jLogEvent implements LogEvent {
          * @return Log4jLogEvent.
          */
         protected Object readResolve() {
-            final Log4jLogEvent result = new Log4jLogEvent(loggerName, marker, loggerFQCN,
-                    level, message, thrownProxy, contextMap, contextStack, threadName, source,
-                    timeMillis);
+            final Log4jLogEvent result = new Log4jLogEvent(loggerName, marker, loggerFQCN, level, message, thrown,
+                    thrownProxy, contextMap, contextStack, threadName, source, timeMillis);
             result.setEndOfBatch(isEndOfBatch);
             result.setIncludeLocation(isLocationRequired);
             return result;

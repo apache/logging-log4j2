@@ -56,7 +56,7 @@ class LogEventFixtures {
         final IOException ioException = new IOException("testIOEx", cause);
         Throwables.addSuppressed(ioException, new IndexOutOfBoundsException("I am suppressed exception 1"));
         Throwables.addSuppressed(ioException, new IndexOutOfBoundsException("I am suppressed exception 2"));
-        final ThrowableProxy throwable = new ThrowableProxy(ioException);
+        final ThrowableProxy throwableProxy = new ThrowableProxy(ioException);
         final Map<String, String> contextMap = new HashMap<String, String>();
         contextMap.put("MDC.A", "A_Value");
         contextMap.put("MDC.B", "B_Value");
@@ -64,13 +64,15 @@ class LogEventFixtures {
         contextStack.clear();
         contextStack.push("stack_msg1");
         contextStack.add("stack_msg2");
-        final Log4jLogEvent expected = Log4jLogEvent.createEvent("a.B", cMarker, "f.q.c.n", Level.DEBUG, new SimpleMessage("Msg"),
-                throwable, contextMap, contextStack, "MyThreadName", source, 1);
+        final Log4jLogEvent expected = Log4jLogEvent.createEvent("a.B", cMarker, "f.q.c.n", Level.DEBUG, 
+                new SimpleMessage("Msg"), ioException, throwableProxy, contextMap, contextStack, "MyThreadName", source,
+                1);
         // validate event?
         return expected;
     }
 
-    static void assertEqualLogEvents(final LogEvent expected, final LogEvent actual, final boolean includeSource, final boolean includeContext) {
+    static void assertEqualLogEvents(final LogEvent expected, final LogEvent actual, final boolean includeSource, 
+            final boolean includeContext) {
         assertEquals(expected.getClass(), actual.getClass());
         assertEquals(includeContext ? expected.getContextMap() : Collections.EMPTY_MAP, actual.getContextMap());
         assertEquals(expected.getContextStack(), actual.getContextStack());
@@ -82,13 +84,16 @@ class LogEventFixtures {
         assertEquals(expected.getTimeMillis(), actual.getTimeMillis());
         assertEquals(includeSource ? expected.getSource() : null, actual.getSource());
         assertEquals(expected.getThreadName(), actual.getThreadName());
+        assertNotNull("original should have an exception", expected.getThrown());
+        assertNull("exception should not be serialized", actual.getThrown());
         assertEquals(expected.getThrownProxy(), actual.getThrownProxy());
         assertEquals(expected.isEndOfBatch(), actual.isEndOfBatch());
         assertEquals(expected.isIncludeLocation(), actual.isIncludeLocation());
-        if (includeSource) {
-            assertEquals(expected.hashCode(), actual.hashCode());
-            assertEquals(expected, actual);
-        }
+
+        // original: non-null thrown & null thrownProxy
+        // deserialized: null thrown & non-null thrownProxy
+        assertNotEquals(expected.hashCode(), actual.hashCode());
+        assertNotEquals(expected, actual);
     }
 
 }
