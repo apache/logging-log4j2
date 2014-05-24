@@ -16,9 +16,12 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import java.util.regex.Pattern;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.plugins.util.TypeConverters;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
@@ -39,7 +42,7 @@ public class RegexFilterTest {
 
     @Test
     public void testThresholds() {
-        RegexFilter filter = RegexFilter.createFilter(".* test .*", null, null, null);
+        RegexFilter filter = RegexFilter.createFilter(Pattern.compile(".* test .*"), false, null, null);
         filter.start();
         assertTrue(filter.isStarted());
         assertSame(Filter.Result.NEUTRAL,
@@ -49,13 +52,13 @@ public class RegexFilterTest {
         assertSame(Filter.Result.NEUTRAL, filter.filter(event));
         event = new Log4jLogEvent(null, null, null, Level.ERROR, new SimpleMessage("test"), null);
         assertSame(Filter.Result.DENY, filter.filter(event));
-        filter = RegexFilter.createFilter("* test *", null, null, null);
+        filter = RegexFilter.createFilter((Pattern) TypeConverters.convert("* test *", Pattern.class), false, null, null);
         assertNull(filter);
     }
 
     @Test
     public void TestNoMsg() {
-        final RegexFilter filter = RegexFilter.createFilter(".* test .*", null, null, null);
+        final RegexFilter filter = RegexFilter.createFilter(Pattern.compile(".* test .*"), false, null, null);
         filter.start();
         assertTrue(filter.isStarted());
         assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (String) null, (Throwable) null));

@@ -104,8 +104,8 @@ public final class StructuredDataFilter extends MapFilter {
     public static StructuredDataFilter createFilter(
             @PluginElement("Pairs") final KeyValuePair[] pairs,
             @PluginAttribute("operator") final String oper,
-            @PluginAttribute("onMatch") final String match,
-            @PluginAttribute("onMismatch") final String mismatch) {
+            @PluginAttribute("onMatch") final Result match,
+            @PluginAttribute("onMismatch") final Result mismatch) {
         if (pairs == null || pairs.length == 0) {
             LOGGER.error("keys and values must be specified for the StructuredDataFilter");
             return null;
@@ -136,8 +136,6 @@ public final class StructuredDataFilter extends MapFilter {
             return null;
         }
         final boolean isAnd = oper == null || !oper.equalsIgnoreCase("or");
-        final Result onMatch = Result.toResult(match);
-        final Result onMismatch = Result.toResult(mismatch);
-        return new StructuredDataFilter(map, isAnd, onMatch, onMismatch);
+        return new StructuredDataFilter(map, isAnd, match, mismatch);
     }
 }

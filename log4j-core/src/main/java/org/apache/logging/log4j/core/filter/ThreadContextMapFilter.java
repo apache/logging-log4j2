@@ -114,8 +114,8 @@ public class ThreadContextMapFilter extends MapFilter {
     public static ThreadContextMapFilter createFilter(
             @PluginElement("Pairs") final KeyValuePair[] pairs,
             @PluginAttribute("operator") final String oper,
-            @PluginAttribute("onMatch") final String match,
-            @PluginAttribute("onMismatch") final String mismatch) {
+            @PluginAttribute("onMatch") final Result match,
+            @PluginAttribute("onMismatch") final Result mismatch) {
         if (pairs == null || pairs.length == 0) {
             LOGGER.error("key and value pairs must be specified for the ThreadContextMapFilter");
             return null;
@@ -146,8 +146,6 @@ public class ThreadContextMapFilter extends MapFilter {
             return null;
         }
         final boolean isAnd = oper == null || !oper.equalsIgnoreCase("or");
-        final Result onMatch = Result.toResult(match);
-        final Result onMismatch = Result.toResult(mismatch);
-        return new ThreadContextMapFilter(map, isAnd, onMatch, onMismatch);
+        return new ThreadContextMapFilter(map, isAnd, match, mismatch);
     }
 }

@@ -106,8 +106,8 @@ public final class TimeFilter extends AbstractFilter {
             @PluginAttribute("start") final String start,
             @PluginAttribute("end") final String end,
             @PluginAttribute("timezone") final String tz,
-            @PluginAttribute("onMatch") final String match,
-            @PluginAttribute("onMismatch") final String mismatch) {
+            @PluginAttribute("onMatch") final Result match,
+            @PluginAttribute("onMismatch") final Result mismatch) {
         final SimpleDateFormat stf = new SimpleDateFormat("HH:mm:ss");
         long s = 0;
         if (start != null) {
@@ -128,8 +128,8 @@ public final class TimeFilter extends AbstractFilter {
             }
         }
         final TimeZone timezone = tz == null ? TimeZone.getDefault() : TimeZone.getTimeZone(tz);
-        final Result onMatch = Result.toResult(match, Result.NEUTRAL);
-        final Result onMismatch = Result.toResult(mismatch, Result.DENY);
+        final Result onMatch = match == null ? Result.NEUTRAL : match;
+        final Result onMismatch = mismatch == null ? Result.DENY : mismatch;
         return new TimeFilter(s, e, timezone, onMatch, onMismatch);
     }
 
