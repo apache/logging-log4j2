@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.util;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -63,8 +64,7 @@ public final class Closer {
     }
 
     /**
-     * Closes the specified {@code ServerSocket} (stream or reader/writer),
-     * ignoring any exceptions thrown by the close operation.
+     * Closes the specified resource, ignoring any exceptions thrown by the close operation.
      *
      * @param serverSocket the resource to close, may be {@code null}
      */
@@ -79,7 +79,7 @@ public final class Closer {
     }
 
     /**
-     * Closes the specified {@code ServerSocket} (stream or reader/writer).
+     * Closes the specified resource.
      *
      * @param serverSocket the resource to close, may be {@code null}
      * @throws IOException if a problem occurred closing the specified resource
@@ -87,6 +87,33 @@ public final class Closer {
     public static void close(ServerSocket serverSocket) throws IOException {
         if (serverSocket != null) {
             serverSocket.close();
+        }
+    }
+
+    /**
+     * Closes the specified resource, ignoring any exceptions thrown by the close operation.
+     *
+     * @param datagramSocket the resource to close, may be {@code null}
+     */
+    public static void closeSilent(DatagramSocket datagramSocket) {
+        try {
+            if (datagramSocket != null) {
+                datagramSocket.close();
+            }
+        } catch (final Exception ignored) {
+            // ignored
+        }
+    }
+
+    /**
+     * Closes the specified resource.
+     *
+     * @param datagramSocket the resource to close, may be {@code null}
+     * @throws IOException if a problem occurred closing the specified resource
+     */
+    public static void close(DatagramSocket datagramSocket) throws IOException {
+        if (datagramSocket != null) {
+            datagramSocket.close();
         }
     }
 
