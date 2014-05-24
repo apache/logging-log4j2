@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.util;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -58,6 +59,34 @@ public final class Closer {
     public static void close(Closeable closeable) throws IOException {
         if (closeable != null) {
             closeable.close();
+        }
+    }
+
+    /**
+     * Closes the specified {@code ServerSocket} (stream or reader/writer),
+     * ignoring any exceptions thrown by the close operation.
+     *
+     * @param serverSocket the resource to close, may be {@code null}
+     */
+    public static void closeSilent(ServerSocket serverSocket) {
+        try {
+            if (serverSocket != null) {
+                serverSocket.close();
+            }
+        } catch (final Exception ignored) {
+            // ignored
+        }
+    }
+
+    /**
+     * Closes the specified {@code ServerSocket} (stream or reader/writer).
+     *
+     * @param serverSocket the resource to close, may be {@code null}
+     * @throws IOException if a problem occurred closing the specified resource
+     */
+    public static void close(ServerSocket serverSocket) throws IOException {
+        if (serverSocket != null) {
+            serverSocket.close();
         }
     }
 
