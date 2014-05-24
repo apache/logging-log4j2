@@ -30,7 +30,7 @@ import org.apache.logging.log4j.samples.events.Transfer;
 public class MockEventsSupplier {
 
     /* This provides random generation */
-    static Random ran = new Random();
+    static Random random = new Random();
 
     public static List<AuditEvent> getAllEvents(final String member) {
 
