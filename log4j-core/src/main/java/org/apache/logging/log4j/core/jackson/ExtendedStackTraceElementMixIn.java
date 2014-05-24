@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.jackson;
 
 import java.io.Serializable;
 
+import org.apache.logging.log4j.core.impl.ExtendedClassInfo;
 import org.apache.logging.log4j.core.impl.ExtendedStackTraceElement;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -30,12 +31,12 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
  * Mix-in for {@link ExtendedStackTraceElement}.
  */
 @JsonPropertyOrder({ "class", "method", "file", "line", "exact", "location", "version" })
-abstract class StackTracePackageElementMixIn implements Serializable {
+abstract class ExtendedStackTraceElementMixIn implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @JsonCreator
-    public StackTracePackageElementMixIn(
+    public ExtendedStackTraceElementMixIn(
             // @formatter:off
             @JsonProperty("class") final String declaringClass,
             @JsonProperty("method") final String methodName,
@@ -57,6 +58,9 @@ abstract class StackTracePackageElementMixIn implements Serializable {
     @JacksonXmlProperty(isAttribute = true)
     public abstract boolean getExact();
 
+    @JsonIgnore
+    public abstract ExtendedClassInfo getExtraClassInfo();
+
     @JsonProperty("file")
     @JacksonXmlProperty(localName = "file", isAttribute = true)
     public abstract String getFileName();
@@ -72,7 +76,7 @@ abstract class StackTracePackageElementMixIn implements Serializable {
     @JsonProperty("method")
     @JacksonXmlProperty(localName = "method", isAttribute = true)
     public abstract String getMethodName();
-
+    
     @JsonIgnore
     abstract StackTraceElement getStackTraceElement();
 

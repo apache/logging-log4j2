@@ -47,7 +47,7 @@ class Initializers {
             context.setMixInAnnotations(Level.class, LevelMixIn.class);
             context.setMixInAnnotations(LogEvent.class, LogEventMixIn.class);
             // Log4j Core classes: we do not want to bring in Jackson at runtime if we do not have to.
-            context.setMixInAnnotations(ExtendedStackTraceElement.class, StackTracePackageElementMixIn.class);
+            context.setMixInAnnotations(ExtendedStackTraceElement.class, ExtendedStackTraceElementMixIn.class);
             context.setMixInAnnotations(ThrowableProxy.class, ThrowableProxyMixIn.class);            
         }
     }

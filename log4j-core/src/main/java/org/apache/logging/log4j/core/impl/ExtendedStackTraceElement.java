@@ -18,8 +18,6 @@ package org.apache.logging.log4j.core.impl;
 
 import java.io.Serializable;
 
-import org.apache.logging.log4j.util.Strings;
-
 import sun.reflect.Reflection;
 
 /**
@@ -33,37 +31,26 @@ import sun.reflect.Reflection;
  * </ul>
  * </p>
  */
-public class ExtendedStackTraceElement implements Serializable {
+public final class ExtendedStackTraceElement implements Serializable {
 
     private static final long serialVersionUID = -2171069569241280505L;
 
-    private final boolean exact;
-
-    private final String location;
+    private final ExtendedClassInfo extraClassInfo;
 
     private final StackTraceElement stackTraceElement;
 
-    private final String version;
-
-    /**
-     * Constructor that takes the location, version, and exact match flag.
-     * 
-     * @param stackTraceElement TODO
-     * @param exact if true this is an exact package element.
-     * @param location The location of the Class.
-     * @param version The version of the component.
-     */
-    public ExtendedStackTraceElement(final StackTraceElement stackTraceElement, final boolean exact, final String location,
-            final String version) {
+    public ExtendedStackTraceElement(final StackTraceElement stackTraceElement, final ExtendedClassInfo extraClassInfo) {
         this.stackTraceElement = stackTraceElement;
-        this.location = location;
-        this.version = version;
-        this.exact = exact;
+        this.extraClassInfo = extraClassInfo;
     }
 
-    public ExtendedStackTraceElement(final String declaringClass, final String methodName, final String fileName, final int lineNumber,
-            final boolean exact, final String location, final String version) {
-        this(new StackTraceElement(declaringClass, methodName, fileName, lineNumber), exact, location, version);
+    /**
+     * Called from Jackson for XML and JSON IO.
+     */
+    public ExtendedStackTraceElement(final String declaringClass, final String methodName, final String fileName,
+            final int lineNumber, final boolean exact, final String location, final String version) {
+        this(new StackTraceElement(declaringClass, methodName, fileName, lineNumber), new ExtendedClassInfo(exact,
+                location, version));
     }
 
     @Override
@@ -78,14 +65,11 @@ public class ExtendedStackTraceElement implements Serializable {
             return false;
         }
         final ExtendedStackTraceElement other = (ExtendedStackTraceElement) obj;
-        if (this.exact != other.exact) {
-            return false;
-        }
-        if (this.location == null) {
-            if (other.location != null) {
+        if (this.extraClassInfo == null) {
+            if (other.extraClassInfo != null) {
                 return false;
             }
-        } else if (!this.location.equals(other.location)) {
+        } else if (!this.extraClassInfo.equals(other.extraClassInfo)) {
             return false;
         }
         if (this.stackTraceElement == null) {
@@ -95,62 +79,19 @@ public class ExtendedStackTraceElement implements Serializable {
         } else if (!this.stackTraceElement.equals(other.stackTraceElement)) {
             return false;
         }
-        if (this.version == null) {
-            if (other.version != null) {
-                return false;
-            }
-        } else if (!this.version.equals(other.version)) {
-            return false;
-        }
         return true;
     }
 
-    /**
-     * Returns the indicator of whether this is an exact match.
-     * 
-     * @return true if the location was determined exactly.
-     */
+    public String getClassName() {
+        return this.stackTraceElement.getClassName();
+    }
+
     public boolean getExact() {
-        return this.exact;
+        return this.extraClassInfo.getExact();
     }
 
-    /**
-     * Returns the location of the element.
-     * 
-     * @return The location of the element.
-     */
-    public String getLocation() {
-        return this.location;
-    }
-
-    public StackTraceElement getStackTraceElement() {
-        return this.stackTraceElement;
-    }
-
-    /**
-     * Returns the version of the element.
-     * 
-     * @return the version of the element.
-     */
-    public String getVersion() {
-        return this.version;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (this.exact ? 1231 : 1237);
-        result = prime * result + (this.location == null ? 0 : this.location.hashCode());
-        result = prime * result + (this.version == null ? 0 : this.version.hashCode());
-        result = prime * result + (this.stackTraceElement == null ? 0 : this.stackTraceElement.hashCode());
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        final String exactStr = this.exact ? Strings.EMPTY : "~";
-        return exactStr + '[' + this.location + ':' + this.version + ']';
+    public ExtendedClassInfo getExtraClassInfo() {
+        return this.extraClassInfo;
     }
 
     public String getFileName() {
@@ -161,15 +102,41 @@ public class ExtendedStackTraceElement implements Serializable {
         return this.stackTraceElement.getLineNumber();
     }
 
-    public String getClassName() {
-        return this.stackTraceElement.getClassName();
+    public String getLocation() {
+        return this.extraClassInfo.getLocation();
     }
 
     public String getMethodName() {
         return this.stackTraceElement.getMethodName();
     }
 
+    public StackTraceElement getStackTraceElement() {
+        return this.stackTraceElement;
+    }
+
+    public String getVersion() {
+        return this.extraClassInfo.getVersion();
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.extraClassInfo == null) ? 0 : this.extraClassInfo.hashCode());
+        result = prime * result + ((this.stackTraceElement == null) ? 0 : this.stackTraceElement.hashCode());
+        return result;
+    }
+
     public boolean isNativeMethod() {
         return this.stackTraceElement.isNativeMethod();
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append(this.stackTraceElement);
+        sb.append(" ");
+        sb.append(this.extraClassInfo);
+        return sb.toString();
     }
 }
