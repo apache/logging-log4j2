@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="2.0-rc2" date="2014-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-647" dev="ggregory" type="update">
+        Upgrade to Flume 1.5.0.
+      </action>
       <action issue="LOG4J2-644" dev="ggregory" type="add">
         Implement a SecureSocketAppender and secure server (SSL/TLS).
       </action>
