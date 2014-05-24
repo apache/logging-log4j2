@@ -500,7 +500,7 @@ public class Log4jLogEvent implements LogEvent {
         private final String loggerName;
         private final Message message;
         private final long timeMillis;
-        private final Throwable thrown;
+        private final transient Throwable thrown;
         private final ThrowableProxy thrownProxy;
         private final Map<String, String> contextMap;
         private final ThreadContext.ContextStack contextStack;
