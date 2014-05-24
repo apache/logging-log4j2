@@ -105,27 +105,16 @@ public final class RegexFilter extends AbstractFilter {
      */
     @PluginFactory
     public static RegexFilter createFilter(
-            @PluginAttribute("regex") final String regex,
-            @PluginAttribute("useRawMsg") final String useRawMsg,
-            @PluginAttribute("onMatch") final String match,
-            @PluginAttribute("onMismatch") final String mismatch) {
+            @PluginAttribute("regex") final Pattern regex,
+            @PluginAttribute("useRawMsg") final Boolean useRawMsg,
+            @PluginAttribute("onMatch") final Result match,
+            @PluginAttribute("onMismatch") final Result mismatch) {
 
         if (regex == null) {
             LOGGER.error("A regular expression must be provided for RegexFilter");
             return null;
         }
-        final boolean raw = Boolean.parseBoolean(useRawMsg);
-        Pattern pattern;
-        try {
-            pattern = Pattern.compile(regex);
-        } catch (final Exception ex) {
-            LOGGER.error("RegexFilter caught exception compiling pattern: " + regex + " cause: " + ex.getMessage());
-            return null;
-        }
-        final Result onMatch = Result.toResult(match);
-        final Result onMismatch = Result.toResult(mismatch);
-
-        return new RegexFilter(raw, pattern, onMatch, onMismatch);
+        return new RegexFilter(useRawMsg, regex, match, mismatch);
     }
 
 }

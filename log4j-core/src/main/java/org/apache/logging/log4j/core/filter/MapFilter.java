@@ -119,8 +119,8 @@ public class MapFilter extends AbstractFilter {
     public static MapFilter createFilter(
             @PluginElement("Pairs") final KeyValuePair[] pairs,
             @PluginAttribute("operator") final String oper,
-            @PluginAttribute("onMatch") final String match,
-            @PluginAttribute("onMismatch") final String mismatch) {
+            @PluginAttribute("onMatch") final Result match,
+            @PluginAttribute("onMismatch") final Result mismatch) {
         if (pairs == null || pairs.length == 0) {
             LOGGER.error("keys and values must be specified for the MapFilter");
             return null;
@@ -151,8 +151,6 @@ public class MapFilter extends AbstractFilter {
             return null;
         }
         final boolean isAnd = oper == null || !oper.equalsIgnoreCase("or");
-        final Result onMatch = Result.toResult(match);
-        final Result onMismatch = Result.toResult(mismatch);
-        return new MapFilter(map, isAnd, onMatch, onMismatch);
+        return new MapFilter(map, isAnd, match, mismatch);
     }
 }

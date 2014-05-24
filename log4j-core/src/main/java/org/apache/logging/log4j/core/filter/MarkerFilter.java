@@ -82,16 +82,14 @@ public final class MarkerFilter extends AbstractFilter {
     @PluginFactory
     public static MarkerFilter createFilter(
             @PluginAttribute("marker") final String marker,
-            @PluginAttribute("onMatch") final String match,
-            @PluginAttribute("onMismatch") final String mismatch) {
+            @PluginAttribute("onMatch") final Result match,
+            @PluginAttribute("onMismatch") final Result mismatch) {
 
         if (marker == null) {
             LOGGER.error("A marker must be provided for MarkerFilter");
             return null;
         }
-        final Result onMatch = Result.toResult(match);
-        final Result onMismatch = Result.toResult(mismatch);
-        return new MarkerFilter(marker, onMatch, onMismatch);
+        return new MarkerFilter(marker, match, mismatch);
     }
 
 }
