@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.config.plugins;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -24,9 +25,19 @@ import java.lang.annotation.Target;
 /**
  * Identifies a Plugin Attribute.
  */
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
+@Target({ElementType.PARAMETER, ElementType.FIELD})
 public @interface PluginAttribute {
 
+    // TODO: could we allow a blank value and infer the attribute name through reflection?
+    /**
+     * Specifies the name of the attribute (case-insensitive) this annotation corresponds to.
+     */
     String value();
+
+    /**
+     * Specifies the default value this attribute should use if none is provided or if the provided value is invalid.
+     */
+    String defaultValue() default "";
 }

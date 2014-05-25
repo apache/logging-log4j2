@@ -23,12 +23,15 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Identifies a parameter as an element.
+ * Identifies a parameter as a Plugin and corresponds with an XML element (or equivalent) in configuration files.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
+@Target({ElementType.PARAMETER, ElementType.FIELD})
 public @interface PluginElement {
 
+    /**
+     * Identifies the case-insensitive element name (or attribute name) this corresponds with in a configuration file.
+     */
     String value();
 }
