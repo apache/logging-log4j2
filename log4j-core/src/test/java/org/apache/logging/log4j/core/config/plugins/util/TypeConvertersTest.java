@@ -50,6 +50,10 @@ public class TypeConvertersTest {
                 { null, null, null, Boolean.class },
                 { null, true, "true", Boolean.class },
                 { "no", false, null, Boolean.class }, // TODO: see above
+                { "true", true, "false", boolean.class },
+                { "FALSE", false, "true", boolean.class },
+                { null, false, "false", boolean.class },
+                { "invalid", false, "false", boolean.class },
                 // integers
                 { "+42", 42, null, Integer.class },
                 { "53", 53, null, Integer.class },
@@ -60,6 +64,10 @@ public class TypeConvertersTest {
                 { "4.2", null, null, Integer.class },
                 { "4.2", 0, "0", Integer.class },
                 { null, null, null, Integer.class },
+                { "75", 75, "0", int.class },
+                { "-30", -30, "0", int.class },
+                { "0", 0, "10", int.class },
+                { null, 10, "10", int.class },
                 // longs
                 { "55", 55L, null, Long.class },
                 { "1234567890123456789", 1234567890123456789L, null, Long.class },
@@ -73,6 +81,9 @@ public class TypeConvertersTest {
                 { "3.14", 0L, "0", Long.class },
                 { "*3", 1000L, "1000", Long.class },
                 { null, null, null, Long.class },
+                { "3000", 3000L, "0", long.class },
+                { "-543210", -543210L, "0", long.class },
+                { "22.7", -53L, "-53", long.class },
                 // charsets
                 { "UTF-8", Charsets.UTF_8, null, Charset.class },
                 { "ASCII", Charset.forName("ASCII"), "UTF-8", Charset.class },

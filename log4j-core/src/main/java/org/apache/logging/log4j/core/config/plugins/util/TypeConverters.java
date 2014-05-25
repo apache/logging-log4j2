@@ -49,10 +49,15 @@ public final class TypeConverters {
     private TypeConverters() {
         registry.put(String.class, new StringConverter());
         registry.put(Boolean.class, new BooleanConverter());
+        registry.put(boolean.class, registry.get(Boolean.class));
         registry.put(Integer.class, new IntegerConverter());
+        registry.put(int.class, registry.get(Integer.class));
         registry.put(Long.class, new LongConverter());
+        registry.put(long.class, registry.get(Long.class));
         registry.put(Float.class, new FloatConverter());
+        registry.put(float.class, registry.get(Float.class));
         registry.put(Double.class, new DoubleConverter());
+        registry.put(double.class, registry.get(Double.class));
         registry.put(Pattern.class, new PatternConverter());
         registry.put(Charset.class, new CharsetConverter());
         registry.put(Level.class, new LevelConverter());
