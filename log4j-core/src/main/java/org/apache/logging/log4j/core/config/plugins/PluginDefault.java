@@ -17,10 +17,19 @@
 
 package org.apache.logging.log4j.core.config.plugins;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
  * Identifies a default string value for a given plugin attribute or value. This value should be used as a fallback
  * where either the given value is invalid, or when there is no given value.
  */
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.PARAMETER)
 public @interface PluginDefault {
     /**
      * The default value to use.
