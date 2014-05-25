@@ -136,10 +136,12 @@ public class PluginBuilder<T> {
      *
      * @return the plugin object or {@code null} if there was a problem creating it.
      */
-    public Object build() {
+    public T build() {
         init();
         try {
-            return factory.invoke(null, generateParameters());
+            @SuppressWarnings("unchecked")
+            final T plugin = (T) factory.invoke(null, generateParameters());
+            return plugin;
         } catch (final Exception e) {
             LOGGER.error("Unable to invoke method {} in class {} for element {}",
                     factory.getName(), clazz.getName(), node.getName(), e);
