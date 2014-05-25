@@ -22,6 +22,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.logging.log4j.core.util.Patterns;
+import org.apache.logging.log4j.util.EnglishEnums;
 
 /**
  * Converts text into ANSI escape sequences.
@@ -312,7 +313,7 @@ public enum AnsiEscape {
         boolean first = true;
         for (final String name : names) {
             try {
-                final AnsiEscape escape = AnsiEscape.valueOf(name.trim().toUpperCase(Locale.ENGLISH));
+                final AnsiEscape escape = EnglishEnums.valueOf(AnsiEscape.class, name.trim());
                 if (!first) {
                     sb.append(AnsiEscape.SEPARATOR.getCode());
                 }
