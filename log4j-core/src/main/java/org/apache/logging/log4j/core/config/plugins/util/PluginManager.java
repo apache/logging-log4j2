@@ -178,7 +178,7 @@ public class PluginManager {
                         final boolean defer = dis.readBoolean();
                         try {
                             final Class<?> clazz = loader.loadClass(className);
-                            @SuppressWarnings("unchecked")
+                            @SuppressWarnings({"unchecked","rawtypes"})
                             final PluginType<?> pluginType = new PluginType(clazz, name, printable, defer);
                             types.put(key, pluginType);
                         } catch (final ClassNotFoundException e) {
