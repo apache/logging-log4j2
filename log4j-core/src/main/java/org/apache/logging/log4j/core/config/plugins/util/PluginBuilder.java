@@ -35,6 +35,7 @@ import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
+import org.apache.logging.log4j.core.config.plugins.PluginDefault;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginNode;
 import org.apache.logging.log4j.core.config.plugins.PluginValue;
@@ -164,15 +165,18 @@ public class PluginBuilder<T> {
         final Object[] args = new Object[annotations.length];
         for (int i = 0; i < annotations.length; i++) {
             final String[] aliases = extractPluginAliases(annotations[i]);
+            final String defaultValue = extractPluginDefault(annotations[i]);
             for (Annotation a : annotations[i]) {
-                if (a instanceof PluginAliases) {
+                if (a instanceof PluginAliases || a instanceof PluginDefault) {
                     continue; // already processed
                 }
                 sb.append(sb.length() == 0 ? "with params(" : ", ");
                 if (a instanceof PluginNode) {
+                    // TODO: type check against Node
                     args[i] = node;
                     sb.append("Node=").append(node.getName());
                 } else if (a instanceof PluginConfiguration) {
+                    // TODO: type check against Configuration
                     args[i] = configuration;
                     sb.append("Configuration");
                     if (configuration.getName() != null) {
@@ -182,13 +186,13 @@ public class PluginBuilder<T> {
                     final String name = ((PluginValue) a).value();
                     final String v = node.getValue() != null ? node.getValue() : getAttrValue("value");
                     final String value = configuration.getStrSubstitutor().replace(event, v);
-                    args[i] = TypeConverters.convert(value, types[i]);
+                    args[i] = TypeConverters.convert(value, types[i], defaultValue);
                     sb.append(name).append("=\"").append(value).append('"');
                 } else if (a instanceof PluginAttribute) {
                     final PluginAttribute attribute = (PluginAttribute) a;
                     final String name = attribute.value();
                     final String value = getReplacedAttributeValue(name, aliases);
-                    args[i] = TypeConverters.convert(value, types[i]);
+                    args[i] = TypeConverters.convert(value, types[i], defaultValue);
                     sb.append(name).append("=\"").append(value).append('"');
                 } else if (a instanceof SensitivePluginAttribute) {
                     // LOG4J2-605
@@ -196,7 +200,7 @@ public class PluginBuilder<T> {
                     final SensitivePluginAttribute attribute = (SensitivePluginAttribute) a;
                     final String name = attribute.value();
                     final String value = getReplacedAttributeValue(name, aliases);
-                    args[i] = TypeConverters.convert(value, types[i]);
+                    args[i] = TypeConverters.convert(value, types[i], defaultValue);
                     sb.append(name).append("=\"").append(NameUtil.md5(value + PluginBuilder.class.getName())).append('"');
                 } else if (a instanceof PluginElement) {
                     final PluginElement element = (PluginElement) a;
@@ -271,6 +275,15 @@ public class PluginBuilder<T> {
             }
         }
         return aliases;
+    }
+
+    private static String extractPluginDefault(final Annotation... annotations) {
+        for (final Annotation annotation : annotations) {
+            if (annotation instanceof PluginDefault) {
+                return ((PluginDefault) annotation).value();
+            }
+        }
+        return null;
     }
 
     private String getReplacedAttributeValue(final String name, final String... aliases) {

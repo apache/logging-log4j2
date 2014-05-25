@@ -52,7 +52,7 @@ public class RegexFilterTest {
         assertSame(Filter.Result.NEUTRAL, filter.filter(event));
         event = new Log4jLogEvent(null, null, null, Level.ERROR, new SimpleMessage("test"), null);
         assertSame(Filter.Result.DENY, filter.filter(event));
-        filter = RegexFilter.createFilter((Pattern) TypeConverters.convert("* test *", Pattern.class), false, null, null);
+        filter = RegexFilter.createFilter((Pattern) TypeConverters.convert("* test *", Pattern.class, null), false, null, null);
         assertNull(filter);
     }
 
