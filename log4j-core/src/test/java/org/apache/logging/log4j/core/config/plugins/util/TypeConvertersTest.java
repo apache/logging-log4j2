@@ -17,11 +17,13 @@
 
 package org.apache.logging.log4j.core.config.plugins.util;
 
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collection;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.util.Charsets;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -71,6 +73,12 @@ public class TypeConvertersTest {
                 { "3.14", 0L, "0", Long.class },
                 { "*3", 1000L, "1000", Long.class },
                 { null, null, null, Long.class },
+                // charsets
+                { "UTF-8", Charsets.UTF_8, null, Charset.class },
+                { "ASCII", Charset.forName("ASCII"), "UTF-8", Charset.class },
+                { "Not a real charset", Charsets.UTF_8, "UTF-8", Charset.class },
+                { null, Charsets.UTF_8, "UTF-8", Charset.class },
+                { null, null, null, Charset.class },
                 // levels
                 { "ERROR", Level.ERROR, null, Level.class },
                 { "WARN", Level.WARN, null, Level.class },
