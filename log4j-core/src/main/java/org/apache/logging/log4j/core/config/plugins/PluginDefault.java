@@ -23,6 +23,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+// TODO: replace this with the additional attribute in @PluginAttribute
 /**
  * Identifies a default string value for a given plugin attribute or value. This value should be used as a fallback
  * where either the given value is invalid, or when there is no given value.
