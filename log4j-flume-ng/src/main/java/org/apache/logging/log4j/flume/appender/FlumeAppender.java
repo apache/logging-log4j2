@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.Rfc5424Layout;
+import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.Integers;
 
@@ -220,7 +221,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
 
         if (layout == null) {
             final int enterpriseNumber = Integer.parseInt(Rfc5424Layout.DEFAULT_ENTERPRISE_NUMBER);
-            layout = Rfc5424Layout.createLayout(null, null, enterpriseNumber, true, Rfc5424Layout.DEFAULT_MDCID,
+            layout = Rfc5424Layout.createLayout(Facility.LOCAL0, null, enterpriseNumber, true, Rfc5424Layout.DEFAULT_MDCID,
                     mdcPrefix, eventPrefix, false, null, null, null, excludes, includes, required, null, false, null,
                     null);
         }
