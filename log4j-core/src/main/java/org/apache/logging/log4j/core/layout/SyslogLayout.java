@@ -28,10 +28,10 @@ import java.util.regex.Pattern;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginDefault;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Priority;
-import org.apache.logging.log4j.core.util.Charsets;
 import org.apache.logging.log4j.core.util.NetUtils;
 
 
@@ -128,20 +128,17 @@ public final class SyslogLayout extends AbstractStringLayout {
     /**
      * Create a SyslogLayout.
      * @param facility The Facility is used to try to classify the message.
-     * @param includeNL If true a newline will be appended to the result.
+     * @param includeNewLine If true a newline will be appended to the result.
      * @param escapeNL Pattern to use for replacing newlines.
-     * @param charsetName The character set.
+     * @param charset The character set.
      * @return A SyslogLayout.
      */
     @PluginFactory
     public static SyslogLayout createLayout(
-            @PluginAttribute("facility") final String facility,
-            @PluginAttribute("newLine") final String includeNL,
+            @PluginAttribute("facility") @PluginDefault("LOCAL0") final Facility facility,
+            @PluginAttribute("newLine") @PluginDefault("false") final boolean includeNewLine,
             @PluginAttribute("newLineEscape") final String escapeNL,
-            @PluginAttribute("charset") final String charsetName) {
-        final Charset charset = Charsets.getSupportedCharset(charsetName);
-        final boolean includeNewLine = Boolean.parseBoolean(includeNL);
-        final Facility f = Facility.toFacility(facility, Facility.LOCAL0);
-        return new SyslogLayout(f, includeNewLine, escapeNL, charset);
+            @PluginAttribute("charset") @PluginDefault("UTF-8") final Charset charset) {
+        return new SyslogLayout(facility, includeNewLine, escapeNL, charset);
     }
 }

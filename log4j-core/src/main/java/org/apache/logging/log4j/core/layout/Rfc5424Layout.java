@@ -36,6 +36,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
+import org.apache.logging.log4j.core.config.plugins.PluginDefault;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.net.Facility;
@@ -45,9 +46,7 @@ import org.apache.logging.log4j.core.pattern.PatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.core.pattern.ThrowablePatternConverter;
-import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.Charsets;
-import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.message.Message;
@@ -69,7 +68,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     /**
      * Not a very good default - it is the Apache Software Foundation's enterprise number.
      */
-    public static final int DEFAULT_ENTERPRISE_NUMBER = 18060;
+    public static final String DEFAULT_ENTERPRISE_NUMBER = "18060";
     /**
      * The default event id.
      */
@@ -605,13 +604,13 @@ public final class Rfc5424Layout extends AbstractStringLayout {
      *
      * @param facility         The Facility is used to try to classify the message.
      * @param id               The default structured data id to use when formatting according to RFC 5424.
-     * @param ein              The IANA enterprise number.
+     * @param enterpriseNumber The IANA enterprise number.
      * @param includeMDC       Indicates whether data from the ThreadContextMap will be included in the RFC 5424 Syslog
      *                         record. Defaults to "true:.
      * @param mdcId            The id to use for the MDC Structured Data Element.
      * @param mdcPrefix        The prefix to add to MDC key names.
      * @param eventPrefix      The prefix to add to event key names.
-     * @param includeNL        If true, a newline will be appended to the end of the syslog record. The default is false.
+     * @param newLine          If true, a newline will be appended to the end of the syslog record. The default is false.
      * @param escapeNL         String that should be used to replace newlines within the message text.
      * @param appName          The value to use as the APP-NAME in the RFC 5424 syslog record.
      * @param msgId            The default value to be used in the MSGID field of RFC 5424 syslog records.
@@ -619,21 +618,21 @@ public final class Rfc5424Layout extends AbstractStringLayout {
      * @param includes         A comma separated list of MDC keys that should be included in the FlumeEvent.
      * @param required         A comma separated list of MDC keys that must be present in the MDC.
      * @param exceptionPattern The pattern for formatting exceptions.
-     * @param useTlsMessageFormatStr If true the message will be formatted according to RFC 5425.
+     * @param useTlsMessageFormat If true the message will be formatted according to RFC 5425.
      * @param loggerFields     Container for the KeyValuePairs containing the patterns
      * @param config           The Configuration. Some Converters require access to the Interpolator.
      * @return An Rfc5424Layout.
      */
     @PluginFactory
     public static Rfc5424Layout createLayout(
-            @PluginAttribute("facility") final String facility,
+            @PluginAttribute("facility") @PluginDefault("LOCAL0") final Facility facility,
             @PluginAttribute("id") final String id,
-            @PluginAttribute("enterpriseNumber") final String ein,
-            @PluginAttribute("includeMDC") final String includeMDC,
-            @PluginAttribute("mdcId") String mdcId,
+            @PluginAttribute("enterpriseNumber") @PluginDefault(DEFAULT_ENTERPRISE_NUMBER) final int enterpriseNumber,
+            @PluginAttribute("includeMDC") @PluginDefault("true") final boolean includeMDC,
+            @PluginAttribute("mdcId") @PluginDefault(DEFAULT_MDCID) final String mdcId,
             @PluginAttribute("mdcPrefix") final String mdcPrefix,
             @PluginAttribute("eventPrefix") final String eventPrefix,
-            @PluginAttribute("newLine") final String includeNL,
+            @PluginAttribute("newLine") @PluginDefault("false") final boolean newLine,
             @PluginAttribute("newLineEscape") final String escapeNL,
             @PluginAttribute("appName") final String appName,
             @PluginAttribute("messageId") final String msgId,
@@ -641,7 +640,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             @PluginAttribute("mdcIncludes") String includes,
             @PluginAttribute("mdcRequired") final String required,
             @PluginAttribute("exceptionPattern") final String exceptionPattern,
-            @PluginAttribute("useTlsMessageFormat") final String useTlsMessageFormatStr, // RFC 5425
+            @PluginAttribute("useTlsMessageFormat") @PluginDefault("false") final boolean useTlsMessageFormat, // RFC 5425
             @PluginElement("LoggerFields") final LoggerFields[] loggerFields,
             @PluginConfiguration final Configuration config) {
         final Charset charset = Charsets.UTF_8;
@@ -649,16 +648,8 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             LOGGER.error("mdcIncludes and mdcExcludes are mutually exclusive. Includes wil be ignored");
             includes = null;
         }
-        final Facility f = Facility.toFacility(facility, Facility.LOCAL0);
-        final int enterpriseNumber = Integers.parseInt(ein, DEFAULT_ENTERPRISE_NUMBER);
-        final boolean isMdc = Booleans.parseBoolean(includeMDC, true);
-        final boolean includeNewLine = Boolean.parseBoolean(includeNL);
-        final boolean useTlsMessageFormat = Booleans.parseBoolean(useTlsMessageFormatStr, false);
-        if (mdcId == null) {
-            mdcId = DEFAULT_MDCID;
-        }
 
-        return new Rfc5424Layout(config, f, id, enterpriseNumber, isMdc, includeNewLine, escapeNL, mdcId, mdcPrefix,
+        return new Rfc5424Layout(config, facility, id, enterpriseNumber, includeMDC, newLine, escapeNL, mdcId, mdcPrefix,
                 eventPrefix, appName, msgId, excludes, includes, required, charset, exceptionPattern,
                 useTlsMessageFormat, loggerFields);
     }

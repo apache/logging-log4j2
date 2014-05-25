@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender;
 import java.io.IOException;
 import java.net.SocketException;
 
+import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.mock.MockSyslogServerFactory;
 import org.junit.After;
 import org.junit.Before;
@@ -106,8 +107,8 @@ public class SyslogAppenderTest extends SyslogAppenderTestBase {
     }
 
     private SyslogAppender createAppender(final String protocol, final String format) {
-        return SyslogAppender.createAppender("localhost", PORT, protocol, null, "-1", null, "Test", "true", "false", "LOCAL0",
-            "Audit", "18060", "true", "RequestContext", null, null, includeNewLine, null, "TestApp", "Test", null,
-            "ipAddress,loginId", null, format, null, null, null, null, null, null);
+        return SyslogAppender.createAppender("localhost", PORTNUM, protocol, null, -1, true, "Test", true, false,
+            Facility.LOCAL0, "Audit", 18060, true, "RequestContext", null, null, includeNewLine, null, "TestApp",
+            "Test", null, "ipAddress,loginId", null, format, null, null, null, null, null, false);
     }
 }

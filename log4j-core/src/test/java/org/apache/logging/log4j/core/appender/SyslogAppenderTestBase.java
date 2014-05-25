@@ -41,13 +41,12 @@ public class SyslogAppenderTestBase {
                     "[RequestContext@18060 ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete";
     protected LoggerContext ctx = (LoggerContext) LogManager.getContext();
     protected static final int DEFAULT_TIMEOUT_IN_MS = 100;
-    protected static final String PORT = "8199";
-    protected static final int PORTNUM = Integer.parseInt(PORT);
+    protected static final int PORTNUM = 8199;
     protected MockSyslogServer syslogServer;
     protected SyslogAppender appender;
     protected Logger root = ctx.getLogger("SyslogAppenderTest");
     protected List<String> sentMessages = new ArrayList<String>();
-    protected String includeNewLine = "true";
+    protected boolean includeNewLine = true;
 
     @BeforeClass
     public static void setupClass() throws Exception {
@@ -113,7 +112,7 @@ public class SyslogAppenderTestBase {
         for (int i = 0; i < receivedMessages.size(); i++) {
             String receivedMessage = receivedMessages.get(i);
             String sentMessage = sentMessages.get(i);
-            String suffix =  "true".equalsIgnoreCase(includeNewLine) ? "\n" : Strings.EMPTY;
+            String suffix =  includeNewLine ? "\n" : Strings.EMPTY;
             assertTrue("Incorrect message received: " + receivedMessage,
                     receivedMessage.endsWith(sentMessage + suffix) || receivedMessage.contains(sentMessage));
         }
