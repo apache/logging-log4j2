@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.layout;
 import java.nio.charset.Charset;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.util.Charsets;
 
 /**
  * Abstract base class for Layouts that result in a String.
@@ -31,7 +32,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
     private final Charset charset;
 
     protected AbstractStringLayout(final Charset charset) {
-        this.charset = charset;
+        this.charset = charset == null ? Charsets.UTF_8 : charset;
     }
 
     /**
