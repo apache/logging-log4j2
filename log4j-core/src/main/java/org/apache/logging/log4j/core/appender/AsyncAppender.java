@@ -35,10 +35,10 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
+import org.apache.logging.log4j.core.config.plugins.PluginDefault;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.util.Booleans;
 
 /**
  * Appends to one or more Appenders asynchronously.  You can configure an
@@ -49,7 +49,7 @@ import org.apache.logging.log4j.core.util.Booleans;
 @Plugin(name = "Async", category = "Core", elementType = "appender", printObject = true)
 public final class AsyncAppender extends AbstractAppender {
 
-    private static final int DEFAULT_QUEUE_SIZE = 128;
+    private static final String DEFAULT_QUEUE_SIZE = "128";
     private static final String SHUTDOWN = "Shutdown";
 
     private final BlockingQueue<Serializable> queue;
@@ -174,20 +174,20 @@ public final class AsyncAppender extends AbstractAppender {
      * @param includeLocation whether to include location information. The default is false.
      * @param filter The Filter or null.
      * @param config The Configuration.
-     * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
-     *               they are propagated to the caller.
+     * @param ignoreExceptions If {@code "true"} (default) exceptions encountered when appending events are logged;
+     *                         otherwise they are propagated to the caller.
      * @return The AsyncAppender.
      */
     @PluginFactory
     public static AsyncAppender createAppender(@PluginElement("AppenderRef") final AppenderRef[] appenderRefs,
             @PluginAttribute("errorRef") @PluginAliases("error-ref") final String errorRef,
-            @PluginAttribute("blocking") final String blocking, 
-            @PluginAttribute("bufferSize") final String size,
+            @PluginAttribute("blocking") @PluginDefault("true") final Boolean blocking,
+            @PluginAttribute("bufferSize") @PluginDefault(DEFAULT_QUEUE_SIZE) final int size,
             @PluginAttribute("name") final String name,
-            @PluginAttribute("includeLocation") final String includeLocation,
+            @PluginAttribute("includeLocation") @PluginDefault("false") final boolean includeLocation,
             @PluginElement("Filter") final Filter filter, 
             @PluginConfiguration final Configuration config,
-            @PluginAttribute("ignoreExceptions") final String ignore) {
+            @PluginAttribute("ignoreExceptions") @PluginDefault("true") final boolean ignoreExceptions) {
         if (name == null) {
             LOGGER.error("No name provided for AsyncAppender");
             return null;
@@ -196,13 +196,8 @@ public final class AsyncAppender extends AbstractAppender {
             LOGGER.error("No appender references provided to AsyncAppender {}", name);
         }
 
-        final boolean isBlocking = Booleans.parseBoolean(blocking, true);
-        final int queueSize = AbstractAppender.parseInt(size, DEFAULT_QUEUE_SIZE);
-        final boolean isIncludeLocation = Boolean.parseBoolean(includeLocation);
-        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
-
         return new AsyncAppender(name, filter, appenderRefs, errorRef,
-                queueSize, isBlocking, ignoreExceptions, config, isIncludeLocation);
+                size, blocking, ignoreExceptions, config, includeLocation);
     }
 
     /**
