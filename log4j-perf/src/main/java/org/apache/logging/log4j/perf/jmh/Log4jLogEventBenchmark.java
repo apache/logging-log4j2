@@ -55,4 +55,15 @@ public class Log4jLogEventBenchmark {
         bh.consume(event);
     }
 
+    // ============================== HOW TO RUN THIS TEST: ====================================
+    //
+    // In sampling mode (latency test):
+    // java -jar log4j-perf/target/microbenchmarks.jar ".*Log4jLogEventBenchmark.*" -i 5 -f 1 -wi 5 -bm sample -tu ns
+    //
+    // Throughput test:
+    // java -jar microbenchmarks.jar ".*Log4jLogEventBenchmark.*" -i 5 -f 1 -wi 5 -bm Throughput -tu ms
+    //
+    // Usage help:
+    // java -jar log4j-perf/target/microbenchmarks.jar -help
+    //
 }
