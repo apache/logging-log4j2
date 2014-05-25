@@ -39,7 +39,6 @@ import org.openjdk.jmh.logic.BlackHole;
  */
 // ============================== HOW TO RUN THIS TEST: ====================================
 //
-// In sampling mode (latency test):
 // java -jar log4j-perf/target/microbenchmarks.jar ".*SimpleBenchmark.*" -f 1 -wi 5 -i 5
 //
 // Usage help:
