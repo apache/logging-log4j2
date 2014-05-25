@@ -981,6 +981,7 @@
     <module>log4j-bom</module>
     <module>log4j-nosql</module>
     <module>log4j-web</module>
+    <module>log4j-perf</module>
   </modules>
   <profiles>
     <profile>

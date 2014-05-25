@@ -22,6 +22,10 @@
   </properties>
   <body>
     <release version="2.0-rc2" date="2014-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-654" dev="rpopma" type="add">
+        Add log4j-perf module to provide a home for all log4j performance tests.
+        Add support for JMH microbenchmark performance tests.
+      </action>
       <action issue="LOG4J2-652" dev="mattsicker" type="add">
         Add support for default plugin values and attributes.
       </action>
