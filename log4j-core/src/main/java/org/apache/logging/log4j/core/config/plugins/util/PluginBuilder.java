@@ -172,15 +172,23 @@ public class PluginBuilder<T> {
                 }
                 sb.append(sb.length() == 0 ? "with params(" : ", ");
                 if (a instanceof PluginNode) {
-                    // TODO: type check against Node
-                    args[i] = node;
-                    sb.append("Node=").append(node.getName());
+                    if (types[i].isInstance(node)) {
+                        args[i] = node;
+                        sb.append("Node=").append(node.getName());
+                    } else {
+                        LOGGER.warn("Parameter annotated with PluginNode is not compatible with type {}.",
+                            node.getClass().getName());
+                    }
                 } else if (a instanceof PluginConfiguration) {
-                    // TODO: type check against Configuration
-                    args[i] = configuration;
-                    sb.append("Configuration");
-                    if (configuration.getName() != null) {
-                        sb.append('(').append(configuration.getName()).append(')');
+                    if (types[i].isInstance(configuration)) {
+                        args[i] = configuration;
+                        sb.append("Configuration");
+                        if (configuration.getName() != null) {
+                            sb.append('(').append(configuration.getName()).append(')');
+                        }
+                    } else {
+                        LOGGER.warn("Parameter annotated with PluginConfiguration is not compatible with type {}.",
+                            configuration.getClass().getName());
                     }
                 } else if (a instanceof PluginValue) {
                     final String name = ((PluginValue) a).value();
