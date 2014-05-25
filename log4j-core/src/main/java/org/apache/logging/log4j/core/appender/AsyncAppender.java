@@ -181,7 +181,7 @@ public final class AsyncAppender extends AbstractAppender {
     @PluginFactory
     public static AsyncAppender createAppender(@PluginElement("AppenderRef") final AppenderRef[] appenderRefs,
             @PluginAttribute("errorRef") @PluginAliases("error-ref") final String errorRef,
-            @PluginAttribute("blocking") @PluginDefault("true") final Boolean blocking,
+            @PluginAttribute("blocking") @PluginDefault("true") final boolean blocking,
             @PluginAttribute("bufferSize") @PluginDefault(DEFAULT_QUEUE_SIZE) final int size,
             @PluginAttribute("name") final String name,
             @PluginAttribute("includeLocation") @PluginDefault("false") final boolean includeLocation,
