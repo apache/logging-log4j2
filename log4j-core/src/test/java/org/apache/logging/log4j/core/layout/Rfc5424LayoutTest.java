@@ -264,8 +264,8 @@ public class Rfc5424LayoutTest {
         }
 
         final LoggerFields[] loggerFields = new LoggerFields[] {
-                LoggerFields.createLoggerFields(new KeyValuePair[] { new KeyValuePair("source", "%C.%M")}, null, null, null),
-                LoggerFields.createLoggerFields(new KeyValuePair[] { new KeyValuePair("source2", "%C.%M")}, null, null, null)
+                LoggerFields.createLoggerFields(new KeyValuePair[] { new KeyValuePair("source", "%C.%M")}, null, null, false),
+                LoggerFields.createLoggerFields(new KeyValuePair[] { new KeyValuePair("source2", "%C.%M")}, null, null, false)
         };
 
         // set up layout/appender
@@ -311,10 +311,10 @@ public class Rfc5424LayoutTest {
 
         final LoggerFields[] loggerFields = new LoggerFields[] {
                 LoggerFields.createLoggerFields(new KeyValuePair[] { new KeyValuePair("source", "%C.%M")}, "SD-ID",
-                        "32473", null),
+                        "32473", false),
                 LoggerFields.createLoggerFields(new KeyValuePair[] { new KeyValuePair("baz", "%C.%M"),
-                        new KeyValuePair("baz", "%C.%M") }, "BAZ", "32473", null),
-                LoggerFields.createLoggerFields(new KeyValuePair[] { new KeyValuePair("bar", "%C.%M")}, null, null, null)
+                        new KeyValuePair("baz", "%C.%M") }, "BAZ", "32473", false),
+                LoggerFields.createLoggerFields(new KeyValuePair[] { new KeyValuePair("bar", "%C.%M")}, null, null, false)
         };
 
         final AbstractStringLayout layout = Rfc5424Layout.createLayout("Local0", "Event", "3692", "true", "RequestContext",
@@ -360,10 +360,10 @@ public class Rfc5424LayoutTest {
 
         final LoggerFields[] loggerFields = new LoggerFields[] {
                 LoggerFields.createLoggerFields(new KeyValuePair[] { new KeyValuePair("dummy", Strings.EMPTY),
-                        new KeyValuePair("empty", Strings.EMPTY)}, "SD-ID", "32473", "true"),
+                        new KeyValuePair("empty", Strings.EMPTY)}, "SD-ID", "32473", true),
                 LoggerFields.createLoggerFields(new KeyValuePair[] { new KeyValuePair("baz", "%C.%M"),
-                        new KeyValuePair("baz", "%C.%M") }, "BAZ", "32473", "false"),
-                LoggerFields.createLoggerFields(new KeyValuePair[] { new KeyValuePair("bar", "%C.%M")}, null, null, "false")
+                        new KeyValuePair("baz", "%C.%M") }, "BAZ", "32473", false),
+                LoggerFields.createLoggerFields(new KeyValuePair[] { new KeyValuePair("bar", "%C.%M")}, null, null, false)
         };
 
         final AbstractStringLayout layout = Rfc5424Layout.createLayout("Local0", "Event", "3692", "true", mdcId,

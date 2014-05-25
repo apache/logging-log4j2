@@ -22,9 +22,9 @@ import java.util.Map;
 
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginDefault;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.StructuredDataId;
 
@@ -70,17 +70,18 @@ public final class LoggerFields {
      * @return A LoggerFields instance containing a Map<String, String>.
      */
     @PluginFactory
-    public static LoggerFields createLoggerFields(@PluginElement("LoggerFields") final KeyValuePair[] keyValuePairs,
-            @PluginAttribute("sdId") final String sdId, @PluginAttribute("enterpriseId") String enterpriseId,
-            @PluginAttribute("discardIfAllFieldsAreEmpty") String discardIfAllFieldsAreEmpty) {
+    public static LoggerFields createLoggerFields(
+        @PluginElement("LoggerFields") final KeyValuePair[] keyValuePairs,
+        @PluginAttribute("sdId") final String sdId,
+        @PluginAttribute("enterpriseId") final String enterpriseId,
+        @PluginAttribute("discardIfAllFieldsAreEmpty") @PluginDefault("false") final boolean discardIfAllFieldsAreEmpty) {
         final Map<String, String> map = new HashMap<String, String>();
 
         for (final KeyValuePair keyValuePair : keyValuePairs) {
             map.put(keyValuePair.getKey(), keyValuePair.getValue());
         }
 
-        final boolean discardIfEmpty = Booleans.parseBoolean(discardIfAllFieldsAreEmpty, false);
-        return new LoggerFields(map, sdId, enterpriseId, discardIfEmpty);
+        return new LoggerFields(map, sdId, enterpriseId, discardIfAllFieldsAreEmpty);
     }
 
     public StructuredDataId getSdId() {
