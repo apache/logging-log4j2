@@ -32,6 +32,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginDefault;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.Charsets;
 import org.apache.logging.log4j.core.util.Constants;
@@ -55,6 +56,8 @@ public final class HtmlLayout extends AbstractStringLayout {
     private static final String DEFAULT_TITLE = "Log4j Log Messages";
 
     private static final String DEFAULT_CONTENT_TYPE = "text/html";
+
+    public static final String DEFAULT_FONT_FAMILY = "arial,sans-serif";
 
     private final long jvmStartTime = ManagementFactory.getRuntimeMXBean().getStartTime();
 
@@ -103,10 +106,17 @@ public final class HtmlLayout extends AbstractStringLayout {
         super(charset);
         this.locationInfo = locationInfo;
         this.title = title;
-        this.contentType = contentType;
+        this.contentType = addCharsetToContentType(contentType);
         this.font = font;
         this.fontSize = fontSize;
         this.headerSize = headerSize;
+    }
+
+    private String addCharsetToContentType(final String contentType) {
+        if (contentType == null) {
+            return DEFAULT_CONTENT_TYPE + "; charset=" + getCharset();
+        }
+        return contentType.contains("charset") ? contentType : contentType + "; charset=" + getCharset();
     }
 
     /**
@@ -306,33 +316,35 @@ public final class HtmlLayout extends AbstractStringLayout {
      * @param locationInfo If "true", location information will be included. The default is false.
      * @param title The title to include in the file header. If none is specified the default title will be used.
      * @param contentType The content type. Defaults to "text/html".
-     * @param charsetName The character set to use. If not specified, the default will be used.
+     * @param charset The character set to use. If not specified, the default will be used.
      * @param fontSize The font size of the text.
      * @param font The font to use for the text.
      * @return An HTML Layout.
      */
     @PluginFactory
     public static HtmlLayout createLayout(
-            @PluginAttribute("locationInfo") final String locationInfo,
-            @PluginAttribute("title") String title,
-            @PluginAttribute("contentType") String contentType,
-            @PluginAttribute("charset") final String charsetName,
+            @PluginAttribute("locationInfo") @PluginDefault("false") final boolean locationInfo,
+            @PluginAttribute("title") @PluginDefault(DEFAULT_TITLE) final String title,
+            @PluginAttribute("contentType") @PluginDefault(DEFAULT_CONTENT_TYPE) String contentType,
+            @PluginAttribute("charset") @PluginDefault("UTF-8") final Charset charset,
             @PluginAttribute("fontSize") String fontSize,
-            @PluginAttribute("fontName") String font) {
-        final Charset charset = Charsets.getSupportedCharset(charsetName, Charsets.UTF_8);
-        if (font == null) {
-            font = "arial,sans-serif";
-        }
+            @PluginAttribute("fontName") @PluginDefault(DEFAULT_FONT_FAMILY) final String font) {
         final FontSize fs = FontSize.getFontSize(fontSize);
         fontSize = fs.getFontSize();
         final String headerSize = fs.larger().getFontSize();
-        final boolean info = Boolean.parseBoolean(locationInfo);
-        if (title == null) {
-            title = DEFAULT_TITLE;
-        }
         if (contentType == null) {
             contentType = DEFAULT_CONTENT_TYPE + "; charset=" + charset;
         }
-        return new HtmlLayout(info, title, contentType, charset, font, fontSize, headerSize);
+        return new HtmlLayout(locationInfo, title, contentType, charset, font, fontSize, headerSize);
+    }
+
+    /**
+     * Creates an HTML Layout using the default settings.
+     *
+     * @return an HTML Layout.
+     */
+    public static HtmlLayout createDefaultLayout() {
+        return new HtmlLayout(false, DEFAULT_TITLE, DEFAULT_CONTENT_TYPE + "; charset=UTF-8", Charsets.UTF_8,
+            DEFAULT_FONT_FAMILY, FontSize.SMALL.getFontSize(), FontSize.SMALL.larger().getFontSize());
     }
 }
