@@ -132,7 +132,7 @@ public final class SmtpAppender extends AbstractAppender {
         final int bufferSize = bufferSizeStr == null ? DEFAULT_BUFFER_SIZE : Integer.parseInt(bufferSizeStr);
 
         if (layout == null) {
-            layout = HtmlLayout.createLayout(null, null, null, null, null, null);
+            layout = HtmlLayout.createDefaultLayout();
         }
         if (filter == null) {
             filter = ThresholdFilter.createFilter(null, null, null);
