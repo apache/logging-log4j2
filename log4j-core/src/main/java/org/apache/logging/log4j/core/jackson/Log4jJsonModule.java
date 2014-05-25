@@ -35,6 +35,7 @@ class Log4jJsonModule extends SimpleModule {
         super(Log4jJsonModule.class.getName(), new Version(2, 0, 0, null, null, null));
         // MUST init here.
         // Calling this from setupModule is too late!
+        //noinspection ThisEscapedInObjectConstruction
         new SimpleModuleInitializer().initialize(this);
     }
 
