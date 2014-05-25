@@ -27,7 +27,7 @@ public interface TypeConverter<T> {
     /**
      * Converts a String to a given type.
      *
-     * @param s the String to convert.
+     * @param s the String to convert. Cannot be {@code null}.
      * @return the converted object.
      */
     T convert(String s);
