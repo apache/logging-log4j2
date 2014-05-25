@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.core.config.plugins.util;
 
+import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
@@ -53,6 +54,7 @@ public final class TypeConverters {
         registry.put(Float.class, new FloatConverter());
         registry.put(Double.class, new DoubleConverter());
         registry.put(Pattern.class, new PatternConverter());
+        registry.put(Charset.class, new CharsetConverter());
         registry.put(Level.class, new LevelConverter());
         registry.put(Filter.Result.class, new FilterResultConverter());
     }
@@ -191,6 +193,16 @@ public final class TypeConverters {
         @Override
         public Pattern convert(final String s) {
             return Pattern.compile(s);
+        }
+    }
+
+    /**
+     * Parses strings into character sets.
+     */
+    private static class CharsetConverter implements TypeConverter<Charset> {
+        @Override
+        public Charset convert(final String s) {
+            return Charset.forName(s);
         }
     }
 
