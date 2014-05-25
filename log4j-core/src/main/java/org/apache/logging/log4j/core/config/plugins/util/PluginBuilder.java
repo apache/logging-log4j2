@@ -40,6 +40,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginNode;
 import org.apache.logging.log4j.core.config.plugins.PluginValue;
 import org.apache.logging.log4j.core.config.plugins.SensitivePluginAttribute;
+import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -147,15 +148,9 @@ public class PluginBuilder<T> {
     }
 
     private void init() {
-        if (factory == null) {
-            throw new IllegalStateException("No factory method was found.");
-        }
-        if (configuration == null) {
-            throw new IllegalStateException("No Configuration object was set.");
-        }
-        if (node == null) {
-            throw new IllegalStateException("No Node object was set.");
-        }
+        Assert.requireNonNull(factory, "No factory method was found.");
+        Assert.requireNonNull(configuration, "No Configuration object was set.");
+        Assert.requireNonNull(node, "No Node object was set.");
         annotations = factory.getParameterAnnotations();
         types = factory.getParameterTypes();
     }
