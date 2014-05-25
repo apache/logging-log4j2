@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -62,6 +63,7 @@ public final class TypeConverters {
         registry.put(Charset.class, new CharsetConverter());
         registry.put(Level.class, new LevelConverter());
         registry.put(Filter.Result.class, new FilterResultConverter());
+        registry.put(Facility.class, new FacilityConverter());
     }
 
     /**
@@ -228,6 +230,16 @@ public final class TypeConverters {
         @Override
         public Filter.Result convert(final String s) {
             return Filter.Result.valueOf(s.toUpperCase());
+        }
+    }
+
+    /**
+     * Parses strings into Syslog Facility levels. Returns {@code null} for invalid facility names.
+     */
+    private static class FacilityConverter implements TypeConverter<Facility> {
+        @Override
+        public Facility convert(final String s) {
+            return Facility.toFacility(s);
         }
     }
 }
