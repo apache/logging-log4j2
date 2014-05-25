@@ -82,7 +82,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
      */
     public static final Pattern PARAM_VALUE_ESCAPE_PATTERN = Pattern.compile("[\\\"\\]\\\\]");
 
-    protected static final String DEFAULT_MDCID = "mdc";
+    public static final String DEFAULT_MDCID = "mdc";
     private static final int TWO_DIGITS = 10;
     private static final int THREE_DIGITS = 100;
     private static final int MILLIS_PER_MINUTE = 60000;
