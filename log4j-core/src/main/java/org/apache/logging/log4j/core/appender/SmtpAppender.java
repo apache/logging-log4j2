@@ -55,7 +55,7 @@ public final class SmtpAppender extends AbstractAppender {
     private static final int DEFAULT_BUFFER_SIZE = 512;
 
     /** The SMTP Manager */
-    protected final SmtpManager manager;
+    private final SmtpManager manager;
 
     private SmtpAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout, final SmtpManager manager,
                          final boolean ignoreExceptions) {
