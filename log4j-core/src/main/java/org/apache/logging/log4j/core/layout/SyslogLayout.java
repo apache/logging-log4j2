@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -34,6 +32,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Priority;
 import org.apache.logging.log4j.core.util.Charsets;
+import org.apache.logging.log4j.core.util.NetUtils;
 
 
 /**
@@ -57,7 +56,7 @@ public final class SyslogLayout extends AbstractStringLayout {
     /**
      * Host name used to identify messages from this appender.
      */
-    private final String localHostname = getLocalHostname();
+    private final String localHostname = NetUtils.getLocalHostname();
 
 
 
@@ -96,23 +95,6 @@ public final class SyslogLayout extends AbstractStringLayout {
             buf.append('\n');
         }
         return buf.toString();
-    }
-
-    /**
-     * This method gets the network name of the machine we are running on.
-     * Returns "UNKNOWN_LOCALHOST" in the unlikely case where the host name
-     * cannot be found.
-     *
-     * @return String the name of the local host
-     */
-    private String getLocalHostname() {
-        try {
-            final InetAddress addr = InetAddress.getLocalHost();
-            return addr.getHostName();
-        } catch (final UnknownHostException uhe) {
-            LOGGER.error("Could not determine local host name", uhe);
-            return "UNKNOWN_LOCALHOST";
-        }
     }
 
     private synchronized void addDate(final long timestamp, final StringBuilder buf) {
