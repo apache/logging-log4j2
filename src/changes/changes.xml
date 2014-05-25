@@ -22,6 +22,12 @@
   </properties>
   <body>
     <release version="2.0-rc2" date="2014-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-652" dev="mattsicker" type="add">
+        Add support for default plugin values and attributes.
+      </action>
+      <action issue="LOG4J2-598" dev="mattsicker" type="add">
+        Add support for types other than String for plugin factory values/attributes.
+      </action>
       <action issue="LOG4J2-250" dev="rpopma" type="update">
         Refactor Log4jLogEvent to lazily create ThrowableProxy.
       </action>
