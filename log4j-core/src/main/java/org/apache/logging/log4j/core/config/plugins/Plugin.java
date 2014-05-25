@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.config.plugins;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -26,6 +27,7 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Annotation that identifies a Class as a Plugin.
  */
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Plugin {
