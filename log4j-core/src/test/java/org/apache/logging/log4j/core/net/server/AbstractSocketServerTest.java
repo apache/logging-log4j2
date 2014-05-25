@@ -89,7 +89,7 @@ public abstract class AbstractSocketServerTest {
     }
 
     protected Layout<String> createJsonLayout() {
-        return JsonLayout.createLayout("true", "true", "false", "false", null);
+        return JsonLayout.createLayout(true, true, false, false, null);
     }
 
     protected abstract Layout<? extends Serializable> createLayout();
@@ -173,7 +173,7 @@ public abstract class AbstractSocketServerTest {
         socketAppender.start();
         final ListAppender listAppender = new ListAppender("Events", serverFilter, null, false, false);
         listAppender.start();
-        final PatternLayout layout = PatternLayout.createLayout("%m %ex%n", null, null, null, null, null, null, null);
+        final PatternLayout layout = PatternLayout.createCustomLayout("%m %ex%n");
         final ConsoleAppender console = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false",
                 "true");
         final Logger serverLogger = ctx.getLogger(this.getClass().getName());

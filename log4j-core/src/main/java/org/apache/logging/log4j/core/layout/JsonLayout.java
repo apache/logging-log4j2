@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginDefault;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.Charsets;
 
@@ -842,30 +843,34 @@ public final class JsonLayout extends AbstractJacksonLayout {
     }
 
     /**
-     * Creates an XML Layout.
+     * Creates a JSON Layout.
      * 
      * @param locationInfo If "true", includes the location information in the generated JSON.
      * @param properties If "true", includes the thread context in the generated JSON.
-     * @param completeStr If "true", includes the JSON header and footer, defaults to "false".
-     * @param compactStr If "true", does not use end-of-lines and indentation, defaults to "false".
-     * @param charsetName The character set to use, if {@code null}, uses "UTF-8".
-     * @return An XML Layout.
+     * @param complete If "true", includes the JSON header and footer, defaults to "false".
+     * @param compact If "true", does not use end-of-lines and indentation, defaults to "false".
+     * @param charset The character set to use, if {@code null}, uses "UTF-8".
+     * @return A JSON Layout.
      */
     @PluginFactory
     public static AbstractJacksonLayout createLayout(
             // @formatter:off
-            @PluginAttribute("locationInfo") final String locationInfo,
-            @PluginAttribute("properties") final String properties,
-            @PluginAttribute("complete") final String completeStr, 
-            @PluginAttribute("compact") final String compactStr,
-            @PluginAttribute("charset") final String charsetName
+            @PluginAttribute("locationInfo") @PluginDefault("false") final boolean locationInfo,
+            @PluginAttribute("properties") @PluginDefault("false") final boolean properties,
+            @PluginAttribute("complete") @PluginDefault("false") final boolean complete,
+            @PluginAttribute("compact") @PluginDefault("false") final boolean compact,
+            @PluginAttribute("charset") @PluginDefault("UTF-8") final Charset charset
             // @formatter:on
     ) {
-        final Charset charset = Charsets.getSupportedCharset(charsetName, Charsets.UTF_8);
-        final boolean info = Boolean.parseBoolean(locationInfo);
-        final boolean props = Boolean.parseBoolean(properties);
-        final boolean complete = Boolean.parseBoolean(completeStr);
-        final boolean compact = Boolean.parseBoolean(compactStr);
-        return new JsonLayout(info, props, complete, compact, charset);
+        return new JsonLayout(locationInfo, properties, complete, compact, charset);
+    }
+
+    /**
+     * Creates a JSON Layout using the default settings.
+     *
+     * @return A JSON Layout.
+     */
+    public static AbstractJacksonLayout createDefaultLayout() {
+        return new JsonLayout(false, false, false, false, Charsets.UTF_8);
     }
 }
