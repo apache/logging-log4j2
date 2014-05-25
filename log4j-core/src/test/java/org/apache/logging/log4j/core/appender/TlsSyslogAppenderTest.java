@@ -19,10 +19,10 @@ package org.apache.logging.log4j.core.appender;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
 
+import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.mock.MockSyslogServerFactory;
 import org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
@@ -95,9 +95,9 @@ public class TlsSyslogAppenderTest extends SyslogAppenderTest {
             format = "RFC5424";
         }
 
-        return SyslogAppender.createAppender("localhost", PORT, "SSL", sslConfig, "-1", null, "Test", "true", "false", "LOCAL0", "Audit",
-                "18060", "true", "RequestContext", null, null, includeNewLine, null, "TestApp", "Test", null, "ipAddress,loginId",
-                null, format, null, null, null, null, null, null);
+        return SyslogAppender.createAppender("localhost", PORTNUM, "SSL", sslConfig, -1, true, "Test", true, false,
+            Facility.LOCAL0, "Audit", 18060, true, "RequestContext", null, null, includeNewLine, null, "TestApp",
+            "Test", null, "ipAddress,loginId", null, format, null, null, null, null, null, false);
     }
 
     private void initTlsTestEnvironment(int numberOfMessages, TlsSyslogMessageFormat messageFormat) throws IOException {

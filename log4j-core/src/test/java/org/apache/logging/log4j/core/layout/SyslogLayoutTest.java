@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.AfterClass;
@@ -78,7 +79,7 @@ public class SyslogLayoutTest {
             root.removeAppender(appender);
         }
         // set up appender
-        final SyslogLayout layout = SyslogLayout.createLayout("Local0", "true", null, null);
+        final SyslogLayout layout = SyslogLayout.createLayout(Facility.LOCAL0, true, null, null);
         //ConsoleAppender appender = new ConsoleAppender("Console", layout);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
