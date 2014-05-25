@@ -23,6 +23,7 @@ import java.util.Collection;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.util.Charsets;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -105,7 +106,13 @@ public class TypeConvertersTest {
                 { "NONE", null, null, Filter.Result.class },
                 { "NONE", Filter.Result.NEUTRAL, "NEUTRAL", Filter.Result.class },
                 { null, null, null, Filter.Result.class },
-                { null, Filter.Result.ACCEPT, "ACCEPT", Filter.Result.class }
+                { null, Filter.Result.ACCEPT, "ACCEPT", Filter.Result.class },
+                // syslog facilities
+                { "KERN", Facility.KERN, "USER", Facility.class },
+                { "mail", Facility.MAIL, "KERN", Facility.class },
+                { "Cron", Facility.CRON, null, Facility.class },
+                { "not a real facility", Facility.AUTH, "auth", Facility.class },
+                { null, null, null, Facility.class },
             }
         );
     }
