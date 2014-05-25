@@ -99,7 +99,7 @@ public abstract class AbstractSocketServerTest {
     }
 
     protected Layout<String> createXmlLayout() {
-        return XmlLayout.createLayout("true", "true", "false", null, null);
+        return XmlLayout.createLayout(true, true, false, false, null);
     }
 
     @After

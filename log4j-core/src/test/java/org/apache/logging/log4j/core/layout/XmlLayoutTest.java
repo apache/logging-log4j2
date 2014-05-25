@@ -119,8 +119,7 @@ public class XmlLayoutTest {
     private void testAllFeatures(final boolean includeSource, final boolean compact, final boolean includeContext) throws IOException,
             JsonParseException, JsonMappingException {
         final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
-        final XmlLayout layout = XmlLayout.createLayout(Boolean.toString(includeSource), Boolean.toString(includeContext), "false",
-                Boolean.toString(compact), "UTF-8");
+        final XmlLayout layout = XmlLayout.createLayout(includeSource, includeContext, false, compact, Charsets.UTF_8);
         final String str = layout.toSerializable(expected);
         // System.out.println(str);
         assertEquals(str, !compact, str.contains("\n"));
@@ -186,13 +185,13 @@ public class XmlLayoutTest {
 
     @Test
     public void testContentType() {
-        final XmlLayout layout = XmlLayout.createLayout(null, null, null, null, null);
+        final XmlLayout layout = XmlLayout.createDefaultLayout();
         assertEquals("text/xml; charset=UTF-8", layout.getContentType());
     }
 
     @Test
     public void testDefaultCharset() {
-        final XmlLayout layout = XmlLayout.createLayout(null, null, null, null, null);
+        final XmlLayout layout = XmlLayout.createDefaultLayout();
         assertEquals(Charsets.UTF_8, layout.getCharset());
     }
 
@@ -206,7 +205,7 @@ public class XmlLayoutTest {
             this.rootLogger.removeAppender(appender);
         }
         // set up appender
-        final XmlLayout layout = XmlLayout.createLayout("true", "true", "true", null, null);
+        final XmlLayout layout = XmlLayout.createLayout(true, true, true, false, null);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
@@ -255,7 +254,7 @@ public class XmlLayoutTest {
 
     @Test
     public void testLayoutLoggerName() {
-        final XmlLayout layout = XmlLayout.createLayout("false", "true", "true", null, null);
+        final XmlLayout layout = XmlLayout.createLayout(false, true, true, false, null);
         final Log4jLogEvent event = Log4jLogEvent.createEvent("a.B", null, "f.q.c.n", Level.DEBUG, 
                 new SimpleMessage("M"), null, null, null, null, "threadName", null, 1);
         final String str = layout.toSerializable(event);
