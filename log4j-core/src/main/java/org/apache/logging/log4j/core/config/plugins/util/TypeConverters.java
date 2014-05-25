@@ -26,6 +26,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.net.Facility;
+import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.EnglishEnums;
@@ -65,6 +66,7 @@ public final class TypeConverters {
         registry.put(Level.class, new LevelConverter());
         registry.put(Filter.Result.class, new EnumConverter<Filter.Result>(Filter.Result.class));
         registry.put(Facility.class, new EnumConverter<Facility>(Facility.class));
+        registry.put(Protocol.class, new EnumConverter<Protocol>(Protocol.class));
     }
 
     /**
