@@ -439,7 +439,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                     }
                 }
                 if (key != null) {
-                    final PluginManager manager = new PluginManager("KeyProvider", SecretKeyProvider.class);
+                    final PluginManager manager = new PluginManager("KeyProvider");
                     manager.collectPlugins();
                     final Map<String, PluginType<?>> plugins = manager.getPlugins();
                     if (plugins != null) {

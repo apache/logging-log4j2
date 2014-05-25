@@ -50,7 +50,6 @@ public class PluginManager {
 
     private Map<String, PluginType<?>> plugins = new HashMap<String, PluginType<?>>();
     private final String category;
-    private final Class<?> clazz;
 
     /**
      * Constructs a PluginManager for the plugin category name given.
@@ -58,17 +57,6 @@ public class PluginManager {
      */
     public PluginManager(final String category) {
         this.category = category;
-        this.clazz = null;
-    }
-
-    /**
-     * Constructs a PluginManager for a given plugin category name and plugin class.
-     * @param category The plugin category name.
-     * @param clazz The Class each match must be an instance of.
-     */
-    public PluginManager(final String category, final Class<?> clazz) {
-        this.category = category;
-        this.clazz = clazz;
     }
 
     /**

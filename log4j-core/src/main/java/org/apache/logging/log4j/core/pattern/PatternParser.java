@@ -125,7 +125,7 @@ public final class PatternParser {
     public PatternParser(final Configuration config, final String converterKey, final Class<?> expectedClass,
             final Class<?> filterClass) {
         this.config = config;
-        final PluginManager manager = new PluginManager(converterKey, expectedClass);
+        final PluginManager manager = new PluginManager(converterKey);
         manager.collectPlugins();
         final Map<String, PluginType<?>> plugins = manager.getPlugins();
         final Map<String, Class<PatternConverter>> converters = new HashMap<String, Class<PatternConverter>>();
