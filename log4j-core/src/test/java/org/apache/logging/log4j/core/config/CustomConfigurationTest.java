@@ -72,8 +72,8 @@ public class CustomConfigurationTest {
                 break;
             }
         }
-        Layout<? extends Serializable> layout = PatternLayout.createLayout(PatternLayout.SIMPLE_CONVERSION_PATTERN, config, null,
-            null,null, null, null, null);
+        final Layout<? extends Serializable> layout =
+            PatternLayout.createCustomLayout(PatternLayout.SIMPLE_CONVERSION_PATTERN, config);
         Appender appender = FileAppender.createAppender(LOG_FILE, "false", "false", "File", "true",
             "false", "false", "4000", layout, null, "false", null, config);
         appender.start();

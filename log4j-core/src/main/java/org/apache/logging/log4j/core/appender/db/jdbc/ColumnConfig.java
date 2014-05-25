@@ -130,7 +130,7 @@ public final class ColumnConfig {
         }
         if (isPattern) {
             return new ColumnConfig(
-                    name, PatternLayout.createLayout(pattern, config, null, null, "false", null, null, null), null,
+                    name, PatternLayout.createLayout(pattern, config, null, null, false, false, null, null), null,
                     false, isUnicode, isClob
             );
         }

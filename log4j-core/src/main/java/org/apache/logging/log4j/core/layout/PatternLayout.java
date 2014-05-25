@@ -26,13 +26,13 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
+import org.apache.logging.log4j.core.config.plugins.PluginDefault;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.core.pattern.RegexReplacement;
-import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.Charsets;
 import org.apache.logging.log4j.core.util.OptionConverter;
 
@@ -252,11 +252,11 @@ public final class PatternLayout extends AbstractStringLayout {
      *        The Configuration. Some Converters require access to the Interpolator.
      * @param replace
      *        A Regex replacement String.
-     * @param charsetName
+     * @param charset
      *        The character set.
-     * @param always
+     * @param alwaysWriteExceptions
      *        If {@code "true"} (default) exceptions are always written even if the pattern contains no exception tokens.
-     * @param noConsoleNoAnsiStr
+     * @param noConsoleNoAnsi
      *        If {@code "true"} (default is false) and {@link System#console()} is null, do not output ANSI escape codes
      * @param header
      *        The footer to place at the end of the document, once.
@@ -269,15 +269,47 @@ public final class PatternLayout extends AbstractStringLayout {
             @PluginAttribute("pattern") final String pattern,
             @PluginConfiguration final Configuration config,
             @PluginElement("Replace") final RegexReplacement replace,
-            @PluginAttribute("charset") final String charsetName,
-            @PluginAttribute("alwaysWriteExceptions") final String always,
-            @PluginAttribute("noConsoleNoAnsi") final String noConsoleNoAnsiStr,
+            @PluginAttribute("charset") @PluginDefault("UTF-8") final Charset charset,
+            @PluginAttribute("alwaysWriteExceptions") @PluginDefault("true") final boolean alwaysWriteExceptions,
+            @PluginAttribute("noConsoleNoAnsi") @PluginDefault("false") final boolean noConsoleNoAnsi,
             @PluginAttribute("header") final String header,
             @PluginAttribute("footer") final String footer) {
-        final Charset charset = Charsets.getSupportedCharset(charsetName);
-        final boolean alwaysWriteExceptions = Booleans.parseBoolean(always, true);
-        final boolean noConsoleNoAnsi = Booleans.parseBoolean(noConsoleNoAnsiStr, false);
         return new PatternLayout(config, replace, pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern, charset,
                 alwaysWriteExceptions, noConsoleNoAnsi, header, footer);
+    }
+
+    /**
+     * Creates a PatternLayout using the default options. These options include using UTF-8, the default conversion
+     * pattern, exceptions being written, and with ANSI escape codes.
+     *
+     * @return the PatternLayout.
+     * @see #DEFAULT_CONVERSION_PATTERN Default conversion pattern
+     */
+    public static PatternLayout createDefaultLayout() {
+        return createCustomLayout(DEFAULT_CONVERSION_PATTERN);
+    }
+
+    /**
+     * Creates a PatternLayout using a custom layout and the default options elsewhere.
+     *
+     * @param layout the conversion pattern layout to use.
+     * @return the PatternLayout.
+     */
+    public static PatternLayout createCustomLayout(final String layout) {
+        return createCustomLayout(layout, null);
+    }
+
+    /**
+     * Creates a PatternLayout using a specific Configuration, custom pattern conversion layout, and default options
+     * for everything else.
+     *
+     * @param layout the conversion pattern layout to use.
+     * @param config The Configuration. Some Converters require access to the Interpolator.
+     * @return the PatternLayout.
+     */
+    public static PatternLayout createCustomLayout(final String layout, final Configuration config) {
+        return new PatternLayout(
+            config, null, layout, Charsets.UTF_8, true, false, null, null
+        );
     }
 }
