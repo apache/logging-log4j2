@@ -198,7 +198,7 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
         }
 
         if (layout == null) {
-            layout = PatternLayout.createLayout(null, null, null, null, null, null, null, null);
+            layout = PatternLayout.createDefaultLayout();
         }
 
         final RollingRandomAccessFileManager manager = RollingRandomAccessFileManager.getRollingRandomAccessFileManager(

@@ -91,7 +91,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
             return null;
         }
         if (layout == null) {
-            layout = PatternLayout.createLayout(null, null, null, null, null, null, null, null);
+            layout = PatternLayout.createDefaultLayout();
         }
         final boolean isFollow = Boolean.parseBoolean(follow);
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);

@@ -66,8 +66,7 @@ public class FileAppenderTest {
 
     @Test
     public void testSmallestBufferSize() throws Exception {
-        final Layout<String> layout = PatternLayout.createLayout(PatternLayout.SIMPLE_CONVERSION_PATTERN, null, null,
-                null, null, null, null, null);
+        final Layout<String> layout = PatternLayout.createCustomLayout(PatternLayout.SIMPLE_CONVERSION_PATTERN);
         final String bufferSizeStr = "1";
         final FileAppender appender = FileAppender.createAppender(FILENAME, "true", "false", "test", "false", "false",
                 "false", bufferSizeStr, layout, null, "false", null, null);
@@ -161,8 +160,7 @@ public class FileAppenderTest {
     }
 
     private static void writer(final boolean lock, final int count, final String name) throws Exception {
-        final Layout<String> layout = PatternLayout.createLayout(PatternLayout.SIMPLE_CONVERSION_PATTERN, null, null,
-                null, null, null, null, null);
+        final Layout<String> layout = PatternLayout.createCustomLayout(PatternLayout.SIMPLE_CONVERSION_PATTERN);
         final FileAppender app = FileAppender.createAppender(FILENAME, "true", Boolean.toString(lock), "test", "false",
                 "false", "false", null, layout, null, "false", null, null);
         app.start();

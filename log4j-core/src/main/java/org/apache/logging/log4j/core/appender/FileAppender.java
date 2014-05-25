@@ -140,7 +140,7 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             return null;
         }
         if (layout == null) {
-            layout = PatternLayout.createLayout(null, null, null, null, null, null, null, null);
+            layout = PatternLayout.createDefaultLayout();
         }
 
         final FileManager manager = FileManager.getFileManager(fileName, isAppend, isLocking, isBuffered, advertiseUri,
