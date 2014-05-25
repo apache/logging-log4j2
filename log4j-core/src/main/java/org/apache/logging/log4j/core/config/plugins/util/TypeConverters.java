@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.EnglishEnums;
 
 /**
  * Collection of basic TypeConverter implementations. May be used to register additional TypeConverters or find
@@ -62,8 +63,8 @@ public final class TypeConverters {
         registry.put(Pattern.class, new PatternConverter());
         registry.put(Charset.class, new CharsetConverter());
         registry.put(Level.class, new LevelConverter());
-        registry.put(Filter.Result.class, new FilterResultConverter());
-        registry.put(Facility.class, new FacilityConverter());
+        registry.put(Filter.Result.class, new EnumConverter<Filter.Result>(Filter.Result.class));
+        registry.put(Facility.class, new EnumConverter<Facility>(Facility.class));
     }
 
     /**
@@ -74,6 +75,7 @@ public final class TypeConverters {
      */
     public static TypeConverter<?> findTypeConverter(final Class<?> clazz) {
         // TODO: what to do if there's no converter?
+        // supplementary idea: automatically add type converters for enums using EnglishEnums
         // Idea 1: use reflection to see if the class has a static "valueOf" method and use that
         // Idea 2: reflect on class's declared methods to see if any methods look suitable (probably too complex)
         return Holder.INSTANCE.registry.get(clazz);
@@ -224,22 +226,20 @@ public final class TypeConverters {
     }
 
     /**
-     * Parses strings into Filter Results. Returns {@code null} for invalid result names.
+     * Parses strings into enums. Returns {@code null} for invalid enum names.
+     *
+     * @param <E> the enum class to parse.
      */
-    private static class FilterResultConverter implements TypeConverter<Filter.Result> {
-        @Override
-        public Filter.Result convert(final String s) {
-            return Filter.Result.valueOf(s.toUpperCase());
-        }
-    }
+    private static class EnumConverter<E extends Enum<E>> implements TypeConverter<E> {
+        private final Class<E> clazz;
 
-    /**
-     * Parses strings into Syslog Facility levels. Returns {@code null} for invalid facility names.
-     */
-    private static class FacilityConverter implements TypeConverter<Facility> {
+        private EnumConverter(final Class<E> clazz) {
+            this.clazz = clazz;
+        }
+
         @Override
-        public Facility convert(final String s) {
-            return Facility.toFacility(s);
+        public E convert(final String s) {
+            return EnglishEnums.valueOf(clazz, s);
         }
     }
 }
