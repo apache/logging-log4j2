@@ -37,63 +37,76 @@ public class TypeConvertersTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(
-            //   value, expected, type
+            //   value, expected, default, type
             new Object[][]{
                 // booleans
-                { "true", true, Boolean.class },
-                { "false", false, Boolean.class },
-                { "True", true, Boolean.class },
-                { "TRUE", true, Boolean.class },
-                { "blah", false, Boolean.class },
-                { null, false, Boolean.class },
+                { "true", true, null, Boolean.class },
+                { "false", false, null, Boolean.class },
+                { "True", true, null, Boolean.class },
+                { "TRUE", true, null, Boolean.class },
+                { "blah", false, null, Boolean.class }, // TODO: is this acceptable? it's how Boolean.parseBoolean works
+                { null, null, null, Boolean.class },
+                { null, true, "true", Boolean.class },
+                { "no", false, null, Boolean.class }, // TODO: see above
                 // integers
-                { "+42", 42, Integer.class },
-                { "53", 53, Integer.class },
-                { "-16", -16, Integer.class },
-                { "0", 0, Integer.class },
-                { "n", null, Integer.class },
-                { "4.2", null, Integer.class },
-                { null, null, Integer.class },
+                { "+42", 42, null, Integer.class },
+                { "53", 53, null, Integer.class },
+                { "-16", -16, null, Integer.class },
+                { "0", 0, null, Integer.class },
+                { "n", null, null, Integer.class },
+                { "n", 5, "5", Integer.class },
+                { "4.2", null, null, Integer.class },
+                { "4.2", 0, "0", Integer.class },
+                { null, null, null, Integer.class },
                 // longs
-                { "55", 55L, Long.class },
-                { "1234567890123456789", 1234567890123456789L, Long.class },
-                { "123123123L", null, Long.class },
-                { "+123123123123", 123123123123L, Long.class },
-                { "-987654321", -987654321L, Long.class },
-                { "-45l", null, Long.class },
-                { "0", 0L, Long.class },
-                { "asdf", null, Long.class },
-                { "3.14", null, Long.class },
-                { null, null, Long.class },
+                { "55", 55L, null, Long.class },
+                { "1234567890123456789", 1234567890123456789L, null, Long.class },
+                { "123123123L", null, null, Long.class },
+                { "+123123123123", 123123123123L, null, Long.class },
+                { "-987654321", -987654321L, null, Long.class },
+                { "-45l", null, null, Long.class },
+                { "0", 0L, null, Long.class },
+                { "asdf", null, null, Long.class },
+                { "3.14", null, null, Long.class },
+                { "3.14", 0L, "0", Long.class },
+                { "*3", 1000L, "1000", Long.class },
+                { null, null, null, Long.class },
                 // levels
-                { "ERROR", Level.ERROR, Level.class },
-                { "WARN", Level.WARN, Level.class },
-                { "FOO", null, Level.class },
-                { "OFF", Level.OFF, Level.class },
-                { null, null, Level.class },
+                { "ERROR", Level.ERROR, null, Level.class },
+                { "WARN", Level.WARN, null, Level.class },
+                { "FOO", null, null, Level.class },
+                { "FOO", Level.DEBUG, "DEBUG", Level.class },
+                { "OFF", Level.OFF, null, Level.class },
+                { null, null, null, Level.class },
+                { null, Level.INFO, "INFO", Level.class },
                 // results
-                { "ACCEPT", Filter.Result.ACCEPT, Filter.Result.class },
-                { "NEUTRAL", Filter.Result.NEUTRAL, Filter.Result.class },
-                { "DENY", Filter.Result.DENY, Filter.Result.class },
-                { "NONE", null, Filter.Result.class },
-                { null, null, Filter.Result.class }
+                { "ACCEPT", Filter.Result.ACCEPT, null, Filter.Result.class },
+                { "NEUTRAL", Filter.Result.NEUTRAL, null, Filter.Result.class },
+                { "DENY", Filter.Result.DENY, null, Filter.Result.class },
+                { "NONE", null, null, Filter.Result.class },
+                { "NONE", Filter.Result.NEUTRAL, "NEUTRAL", Filter.Result.class },
+                { null, null, null, Filter.Result.class },
+                { null, Filter.Result.ACCEPT, "ACCEPT", Filter.Result.class }
             }
         );
     }
 
     private final String value;
     private final Object expected;
+    private final String defaultValue;
     private final Class<?> clazz;
 
-    public TypeConvertersTest(String value, Object expected, Class<?> clazz) {
+    public TypeConvertersTest(final String value, final Object expected, final String defaultValue, final Class<?> clazz) {
         this.value = value;
         this.expected = expected;
+        this.defaultValue = defaultValue;
         this.clazz = clazz;
     }
 
     @Test
     public void testConvert() throws Exception {
-        final Object actual = TypeConverters.convert(value, clazz);
-        assertEquals(expected, actual);
+        final Object actual = TypeConverters.convert(value, clazz, defaultValue);
+        final String assertionMessage = "\nGiven: " + value + "\nDefault: " + defaultValue;
+        assertEquals(assertionMessage, expected, actual);
     }
 }
