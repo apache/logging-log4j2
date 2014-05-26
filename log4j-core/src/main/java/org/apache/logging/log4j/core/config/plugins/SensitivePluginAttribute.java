@@ -36,4 +36,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.PARAMETER)
 public @interface SensitivePluginAttribute {
     String value();
+
+    String defaultValue() default "";
 }
