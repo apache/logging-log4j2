@@ -105,12 +105,12 @@ public final class TypeConverters {
      *
      * @param s     the string to convert
      * @param clazz the class to try to convert the string to
-     * @param defaultValue the fallback string to use if the conversion is unsuccessful
+     * @param defaultValue the fallback object to use if the conversion is unsuccessful
      * @return the converted object which may be {@code null} if the string is invalid for the given type
      * @throws NullPointerException if {@code clazz} is {@code null}
      * @throws IllegalArgumentException if no TypeConverter exists for the given class
      */
-    public static Object convert(final String s, final Class<?> clazz, final String defaultValue) {
+    public static Object convert(final String s, final Class<?> clazz, final Object defaultValue) {
         final TypeConverter<?> converter = findTypeConverter(
             Assert.requireNonNull(clazz, "No class specified to convert to."));
         if (converter == null) {
@@ -129,12 +129,15 @@ public final class TypeConverters {
         }
     }
 
-    private static Object parseDefaultValue(final TypeConverter<?> converter, final String defaultValue) {
+    private static Object parseDefaultValue(final TypeConverter<?> converter, final Object defaultValue) {
         if (defaultValue == null) {
             return null;
         }
+        if (!(defaultValue instanceof String)) {
+            return defaultValue;
+        }
         try {
-            return converter.convert(defaultValue);
+            return converter.convert((String) defaultValue);
         } catch (final Exception e) {
             LOGGER.debug("Can't parse default value [{}] for type [{}].", defaultValue, converter.getClass(), e);
             return null;
