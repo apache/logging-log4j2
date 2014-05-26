@@ -322,7 +322,7 @@ public final class HtmlLayout extends AbstractStringLayout {
      */
     @PluginFactory
     public static HtmlLayout createLayout(
-            @PluginAttribute(value = "locationInfo", defaultStringValue = "false") final boolean locationInfo,
+            @PluginAttribute(value = "locationInfo", defaultBooleanValue = false) final boolean locationInfo,
             @PluginAttribute(value = "title", defaultStringValue = DEFAULT_TITLE) final String title,
             @PluginAttribute(value = "contentType", defaultStringValue = DEFAULT_CONTENT_TYPE) String contentType,
             @PluginAttribute(value = "charset", defaultStringValue = "UTF-8") final Charset charset,

@@ -67,7 +67,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     /**
      * Not a very good default - it is the Apache Software Foundation's enterprise number.
      */
-    public static final String DEFAULT_ENTERPRISE_NUMBER = "18060";
+    public static final int DEFAULT_ENTERPRISE_NUMBER = 18060;
     /**
      * The default event id.
      */
@@ -626,12 +626,12 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     public static Rfc5424Layout createLayout(
             @PluginAttribute(value = "facility", defaultStringValue = "LOCAL0") final Facility facility,
             @PluginAttribute("id") final String id,
-            @PluginAttribute(value = "enterpriseNumber", defaultStringValue = DEFAULT_ENTERPRISE_NUMBER) final int enterpriseNumber,
-            @PluginAttribute(value = "includeMDC", defaultStringValue = "true") final boolean includeMDC,
+            @PluginAttribute(value = "enterpriseNumber", defaultIntValue = DEFAULT_ENTERPRISE_NUMBER) final int enterpriseNumber,
+            @PluginAttribute(value = "includeMDC", defaultBooleanValue = true) final boolean includeMDC,
             @PluginAttribute(value = "mdcId", defaultStringValue = DEFAULT_MDCID) final String mdcId,
             @PluginAttribute("mdcPrefix") final String mdcPrefix,
             @PluginAttribute("eventPrefix") final String eventPrefix,
-            @PluginAttribute(value = "newLine", defaultStringValue = "false") final boolean newLine,
+            @PluginAttribute(value = "newLine", defaultBooleanValue = false) final boolean newLine,
             @PluginAttribute("newLineEscape") final String escapeNL,
             @PluginAttribute("appName") final String appName,
             @PluginAttribute("messageId") final String msgId,
@@ -639,7 +639,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             @PluginAttribute("mdcIncludes") String includes,
             @PluginAttribute("mdcRequired") final String required,
             @PluginAttribute("exceptionPattern") final String exceptionPattern,
-            @PluginAttribute(value = "useTlsMessageFormat", defaultStringValue = "false") final boolean useTlsMessageFormat, // RFC 5425
+            @PluginAttribute(value = "useTlsMessageFormat", defaultBooleanValue = false) final boolean useTlsMessageFormat, // RFC 5425
             @PluginElement("LoggerFields") final LoggerFields[] loggerFields,
             @PluginConfiguration final Configuration config) {
         final Charset charset = Charsets.UTF_8;
