@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.logging.log4j.core.config.plugins.util;
+package org.apache.logging.log4j.core.util;
 
 /**
  * A type of Plugin builder that can be used to configure and create a plugin instance using a Java DSL instead of
@@ -31,7 +31,7 @@ package org.apache.logging.log4j.core.config.plugins.util;
  *
  * @param <T> the Plugin class this is a builder for.
  */
-public interface ConfigurablePluginBuilder<T> {
+public interface Builder<T> {
 
     /**
      * Builds the plugin object after all configuration has been set. This will use default values for any

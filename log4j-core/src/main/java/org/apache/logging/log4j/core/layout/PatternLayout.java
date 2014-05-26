@@ -30,7 +30,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.config.plugins.util.ConfigurablePluginBuilder;
 import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
@@ -303,7 +302,7 @@ public final class PatternLayout extends AbstractStringLayout {
     /**
      * Custom PatternLayout builder. Use the {@link PatternLayout#custom() builder factory method} to create this.
      */
-    public static class Builder implements ConfigurablePluginBuilder<PatternLayout> {
+    public static class Builder implements org.apache.logging.log4j.core.util.Builder<PatternLayout> {
 
         @PluginAttribute("pattern")
         private String pattern = PatternLayout.DEFAULT_CONVERSION_PATTERN;
