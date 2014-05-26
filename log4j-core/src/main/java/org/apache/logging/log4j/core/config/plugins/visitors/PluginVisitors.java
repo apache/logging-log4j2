@@ -23,6 +23,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
+import org.apache.logging.log4j.core.config.plugins.PluginNode;
+import org.apache.logging.log4j.core.config.plugins.PluginValue;
+import org.apache.logging.log4j.core.config.plugins.SensitivePluginAttribute;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -40,6 +44,10 @@ public final class PluginVisitors {
         // register the default PluginVisitor classes
         REGISTRY = new ConcurrentHashMap<Class<? extends Annotation>, Class<? extends PluginVisitor<? extends Annotation>>>();
         registerVisitor(PluginAttribute.class, PluginAttributeVisitor.class);
+        registerVisitor(SensitivePluginAttribute.class, SensitivePluginAttributeVisitor.class);
+        registerVisitor(PluginConfiguration.class, PluginConfigurationVisitor.class);
+        registerVisitor(PluginNode.class, PluginNodeVisitor.class);
+        registerVisitor(PluginValue.class, PluginValueVisitor.class);
     }
 
     private PluginVisitors() {

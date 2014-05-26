@@ -33,15 +33,10 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginNode;
-import org.apache.logging.log4j.core.config.plugins.PluginValue;
-import org.apache.logging.log4j.core.config.plugins.SensitivePluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitor;
 import org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitors;
 import org.apache.logging.log4j.core.util.Assert;
-import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -164,11 +159,11 @@ public class PluginBuilder<T> {
         final Object[] args = new Object[annotations.length];
         for (int i = 0; i < annotations.length; i++) {
             final String[] aliases = extractPluginAliases(annotations[i]);
+            LOGGER.debug("Constructing plugin of type {}", clazz);
             for (Annotation a : annotations[i]) {
                 if (a instanceof PluginAliases) {
                     continue; // already processed
                 }
-                // TODO: migrate the rest of this to PluginVisitor classes
                 final PluginVisitor<? extends Annotation> helper = PluginVisitors.findVisitor(a.annotationType());
                 if (helper != null) {
                     args[i] = helper.setAliases(aliases)
@@ -176,43 +171,8 @@ public class PluginBuilder<T> {
                         .setConversionType(types[i])
                         .setStrSubstitutor(configuration.getStrSubstitutor())
                         .visit(configuration, node, event);
-                    continue;
-                }
-                sb.append(sb.length() == 0 ? "with params(" : ", ");
-                if (a instanceof PluginNode) {
-                    if (types[i].isInstance(node)) {
-                        args[i] = node;
-                        sb.append("Node=").append(node.getName());
-                    } else {
-                        LOGGER.warn("Parameter annotated with PluginNode is not compatible with type {}.",
-                            node.getClass().getName());
-                    }
-                } else if (a instanceof PluginConfiguration) {
-                    if (types[i].isInstance(configuration)) {
-                        args[i] = configuration;
-                        sb.append("Configuration");
-                        if (configuration.getName() != null) {
-                            sb.append('(').append(configuration.getName()).append(')');
-                        }
-                    } else {
-                        LOGGER.warn("Parameter annotated with PluginConfiguration is not compatible with type {}.",
-                            configuration.getClass().getName());
-                    }
-                } else if (a instanceof PluginValue) {
-                    final String name = ((PluginValue) a).value();
-                    final String v = node.getValue() != null ? node.getValue() : getAttrValue("value");
-                    final String value = configuration.getStrSubstitutor().replace(event, v);
-                    args[i] = value;
-                    sb.append(name).append("=\"").append(value).append('"');
-                } else if (a instanceof SensitivePluginAttribute) {
-                    // LOG4J2-605
-                    // we shouldn't be displaying passwords
-                    final SensitivePluginAttribute attribute = (SensitivePluginAttribute) a;
-                    final String name = attribute.value();
-                    final String value = getReplacedAttributeValue(name, aliases);
-                    args[i] = value; // TODO: merge this with @PluginAttribute
-                    sb.append(name).append("=\"").append(NameUtil.md5(value + PluginBuilder.class.getName())).append('"');
                 } else if (a instanceof PluginElement) {
+                    // TODO: migrate this to PluginElementVisitor
                     final PluginElement element = (PluginElement) a;
                     final String name = element.value();
                     if (types[i].isArray()) {
@@ -268,12 +228,8 @@ public class PluginBuilder<T> {
                 }
             }
         }
-        if (sb.length() > 0) {
-            sb.append(')');
-        }
         checkForRemainingAttributes();
         verifyNodeChildrenUsed();
-        LOGGER.debug("Calling {} on class {} for element {} {}", factory.getName(), clazz.getName(), node.getName(), sb.toString());
         return args;
     }
 
@@ -285,31 +241,6 @@ public class PluginBuilder<T> {
             }
         }
         return aliases;
-    }
-
-    private String getReplacedAttributeValue(final String name, final String... aliases) {
-        return configuration.getStrSubstitutor().replace(event, getAttrValue(name, aliases));
-    }
-
-    private String getAttrValue(final String name, final String... aliases) {
-        final Map<String, String> attrs = node.getAttributes();
-        for (final Map.Entry<String, String> entry : attrs.entrySet()) {
-            final String key = entry.getKey();
-            final String attr = entry.getValue();
-            if (key.equalsIgnoreCase(name)) {
-                attrs.remove(key);
-                return attr;
-            }
-            if (aliases != null) {
-                for (final String alias : aliases) {
-                    if (key.equalsIgnoreCase(alias)) {
-                        attrs.remove(key);
-                        return attr;
-                    }
-                }
-            }
-        }
-        return null;
     }
 
     private static Object[] collectionToArray(final Collection<?> collection, final Class<?> type) {
