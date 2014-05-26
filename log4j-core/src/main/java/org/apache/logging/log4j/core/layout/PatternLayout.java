@@ -270,9 +270,9 @@ public final class PatternLayout extends AbstractStringLayout {
             @PluginAttribute("pattern") final String pattern,
             @PluginConfiguration final Configuration config,
             @PluginElement("Replace") final RegexReplacement replace,
-            @PluginAttribute(value = "charset", defaultValue = "UTF-8") final Charset charset,
-            @PluginAttribute(value = "alwaysWriteExceptions", defaultValue = "true") final boolean alwaysWriteExceptions,
-            @PluginAttribute(value = "noConsoleNoAnsi", defaultValue = "false") final boolean noConsoleNoAnsi,
+            @PluginAttribute(value = "charset", defaultStringValue = "UTF-8") final Charset charset,
+            @PluginAttribute(value = "alwaysWriteExceptions", defaultStringValue = "true") final boolean alwaysWriteExceptions,
+            @PluginAttribute(value = "noConsoleNoAnsi", defaultStringValue = "false") final boolean noConsoleNoAnsi,
             @PluginAttribute("header") final String header,
             @PluginAttribute("footer") final String footer) {
         return new PatternLayout(config, replace, pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern, charset,

@@ -180,13 +180,13 @@ public final class AsyncAppender extends AbstractAppender {
     @PluginFactory
     public static AsyncAppender createAppender(@PluginElement("AppenderRef") final AppenderRef[] appenderRefs,
             @PluginAttribute("errorRef") @PluginAliases("error-ref") final String errorRef,
-            @PluginAttribute(value = "blocking", defaultValue = "true") final boolean blocking,
-            @PluginAttribute(value = "bufferSize", defaultValue = DEFAULT_QUEUE_SIZE) final int size,
+            @PluginAttribute(value = "blocking", defaultStringValue = "true") final boolean blocking,
+            @PluginAttribute(value = "bufferSize", defaultStringValue = DEFAULT_QUEUE_SIZE) final int size,
             @PluginAttribute("name") final String name,
-            @PluginAttribute(value = "includeLocation", defaultValue = "false") final boolean includeLocation,
+            @PluginAttribute(value = "includeLocation", defaultStringValue = "false") final boolean includeLocation,
             @PluginElement("Filter") final Filter filter,
             @PluginConfiguration final Configuration config,
-            @PluginAttribute(value = "ignoreExceptions", defaultValue = "true") final boolean ignoreExceptions) {
+            @PluginAttribute(value = "ignoreExceptions", defaultStringValue = "true") final boolean ignoreExceptions) {
         if (name == null) {
             LOGGER.error("No name provided for AsyncAppender");
             return null;

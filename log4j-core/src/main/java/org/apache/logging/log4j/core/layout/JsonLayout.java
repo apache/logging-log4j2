@@ -854,11 +854,11 @@ public final class JsonLayout extends AbstractJacksonLayout {
     @PluginFactory
     public static AbstractJacksonLayout createLayout(
             // @formatter:off
-            @PluginAttribute(value = "locationInfo", defaultValue = "false") final boolean locationInfo,
-            @PluginAttribute(value = "properties", defaultValue = "false") final boolean properties,
-            @PluginAttribute(value = "complete", defaultValue = "false") final boolean complete,
-            @PluginAttribute(value = "compact", defaultValue = "false") final boolean compact,
-            @PluginAttribute(value = "charset", defaultValue = "UTF-8") final Charset charset
+            @PluginAttribute(value = "locationInfo", defaultStringValue = "false") final boolean locationInfo,
+            @PluginAttribute(value = "properties", defaultStringValue = "false") final boolean properties,
+            @PluginAttribute(value = "complete", defaultStringValue = "false") final boolean complete,
+            @PluginAttribute(value = "compact", defaultStringValue = "false") final boolean compact,
+            @PluginAttribute(value = "charset", defaultStringValue = "UTF-8") final Charset charset
             // @formatter:on
     ) {
         return new JsonLayout(locationInfo, properties, complete, compact, charset);
