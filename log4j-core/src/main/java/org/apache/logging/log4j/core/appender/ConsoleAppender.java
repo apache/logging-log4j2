@@ -84,8 +84,8 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
             @PluginElement("Filters") final Filter filter,
             @PluginAttribute(value = "target", defaultStringValue = "SYSTEM_OUT") final String targetStr,
             @PluginAttribute("name") final String name,
-            @PluginAttribute(value = "follow", defaultStringValue = "false") final String follow,
-            @PluginAttribute(value = "ignoreExceptions", defaultStringValue = "true") final String ignore) {
+            @PluginAttribute(value = "follow", defaultBooleanValue = false) final String follow,
+            @PluginAttribute(value = "ignoreExceptions", defaultBooleanValue = true) final String ignore) {
         if (name == null) {
             LOGGER.error("No name provided for ConsoleAppender");
             return null;

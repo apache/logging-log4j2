@@ -48,7 +48,7 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 @Plugin(name = "Async", category = "Core", elementType = "appender", printObject = true)
 public final class AsyncAppender extends AbstractAppender {
 
-    private static final String DEFAULT_QUEUE_SIZE = "128";
+    private static final int DEFAULT_QUEUE_SIZE = 128;
     private static final String SHUTDOWN = "Shutdown";
 
     private final BlockingQueue<Serializable> queue;
@@ -180,13 +180,13 @@ public final class AsyncAppender extends AbstractAppender {
     @PluginFactory
     public static AsyncAppender createAppender(@PluginElement("AppenderRef") final AppenderRef[] appenderRefs,
             @PluginAttribute("errorRef") @PluginAliases("error-ref") final String errorRef,
-            @PluginAttribute(value = "blocking", defaultStringValue = "true") final boolean blocking,
-            @PluginAttribute(value = "bufferSize", defaultStringValue = DEFAULT_QUEUE_SIZE) final int size,
+            @PluginAttribute(value = "blocking", defaultBooleanValue = true) final boolean blocking,
+            @PluginAttribute(value = "bufferSize", defaultIntValue = DEFAULT_QUEUE_SIZE) final int size,
             @PluginAttribute("name") final String name,
-            @PluginAttribute(value = "includeLocation", defaultStringValue = "false") final boolean includeLocation,
+            @PluginAttribute(value = "includeLocation", defaultBooleanValue = false) final boolean includeLocation,
             @PluginElement("Filter") final Filter filter,
             @PluginConfiguration final Configuration config,
-            @PluginAttribute(value = "ignoreExceptions", defaultStringValue = "true") final boolean ignoreExceptions) {
+            @PluginAttribute(value = "ignoreExceptions", defaultBooleanValue = true) final boolean ignoreExceptions) {
         if (name == null) {
             LOGGER.error("No name provided for AsyncAppender");
             return null;

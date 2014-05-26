@@ -38,10 +38,28 @@ public class PluginAttributeVisitor extends AbstractPluginVisitor<PluginAttribut
         final Map<String, String> attributes = node.getAttributes();
         final String rawValue = removeAttributeValue(attributes, name, this.aliases);
         final String replacedValue = this.substitutor.replace(event, rawValue);
-        final String rawDefaultValue = this.annotation.defaultStringValue();
-        final String replacedDefaultValue = this.substitutor.replace(event, rawDefaultValue);
-        final Object value = convert(replacedValue, replacedDefaultValue);
+        final Object defaultValue = findDefaultValue(event);
+        final Object value = convert(replacedValue, defaultValue);
         LOGGER.debug("Attribute({}=\"{}\"", name, value);
         return value;
+    }
+
+    private Object findDefaultValue(final LogEvent event) {
+        if (this.conversionType == int.class || this.conversionType == Integer.class) {
+            return this.annotation.defaultIntValue();
+        }
+        if (this.conversionType == long.class || this.conversionType == Long.class) {
+            return this.annotation.defaultLongValue();
+        }
+        if (this.conversionType == boolean.class || this.conversionType == Boolean.class) {
+            return this.annotation.defaultBooleanValue();
+        }
+        if (this.conversionType == float.class || this.conversionType == Float.class) {
+            return this.annotation.defaultFloatValue();
+        }
+        if (this.conversionType == double.class || this.conversionType == Double.class) {
+            return this.annotation.defaultDoubleValue();
+        }
+        return this.substitutor.replace(event, this.annotation.defaultStringValue());
     }
 }
