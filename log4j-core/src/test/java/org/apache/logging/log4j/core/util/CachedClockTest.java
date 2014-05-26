@@ -23,16 +23,6 @@ import static org.junit.Assert.*;
 public class CachedClockTest {
 
     @Test
-    public void testLessThan17Millis() {
-        final long millis1 = CachedClock.instance().currentTimeMillis();
-        final long sysMillis = System.currentTimeMillis();
-
-        final long diff = sysMillis - millis1;
-
-        assertTrue("diff too large: " + diff, diff <= 16);
-    }
-
-    @Test
     public void testAfterWaitStillLessThan17Millis() throws Exception {
         Thread.sleep(100);
         final long millis1 = CachedClock.instance().currentTimeMillis();
