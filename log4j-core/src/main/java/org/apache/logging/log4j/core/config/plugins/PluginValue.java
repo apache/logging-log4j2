@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  * Identifies a parameter as a value. These correspond with property values generally, but are meant as values to be
  * used as a placeholder value somewhere.
  *
- * @see org.apache.logging.log4j.core.config.plugins.util.PropertiesPlugin
+ * @see org.apache.logging.log4j.core.config.PropertiesPlugin
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
