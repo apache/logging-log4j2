@@ -322,12 +322,12 @@ public final class HtmlLayout extends AbstractStringLayout {
      */
     @PluginFactory
     public static HtmlLayout createLayout(
-            @PluginAttribute(value = "locationInfo", defaultValue = "false") final boolean locationInfo,
-            @PluginAttribute(value = "title", defaultValue = DEFAULT_TITLE) final String title,
-            @PluginAttribute(value = "contentType", defaultValue = DEFAULT_CONTENT_TYPE) String contentType,
-            @PluginAttribute(value = "charset", defaultValue = "UTF-8") final Charset charset,
+            @PluginAttribute(value = "locationInfo", defaultStringValue = "false") final boolean locationInfo,
+            @PluginAttribute(value = "title", defaultStringValue = DEFAULT_TITLE) final String title,
+            @PluginAttribute(value = "contentType", defaultStringValue = DEFAULT_CONTENT_TYPE) String contentType,
+            @PluginAttribute(value = "charset", defaultStringValue = "UTF-8") final Charset charset,
             @PluginAttribute("fontSize") String fontSize,
-            @PluginAttribute(value = "fontName", defaultValue = DEFAULT_FONT_FAMILY) final String font) {
+            @PluginAttribute(value = "fontName", defaultStringValue = DEFAULT_FONT_FAMILY) final String font) {
         final FontSize fs = FontSize.getFontSize(fontSize);
         fontSize = fs.getFontSize();
         final String headerSize = fs.larger().getFontSize();

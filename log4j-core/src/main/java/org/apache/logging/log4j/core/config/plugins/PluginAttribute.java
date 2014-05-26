@@ -23,7 +23,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Identifies a Plugin Attribute.
+ * Identifies a Plugin Attribute and its default value. Note that only one of the defaultFooValue attributes will be
+ * used based on the type this annotation is attached to. Thus, for primitive types, the default<i>Type</i>Value
+ * attribute will be used for some <i>Type</i>. However, for more complex types (including enums), the default
+ * string value is used instead and should correspond to the string that would correctly convert to the appropriate
+ * enum value using {@link Enum#valueOf(Class, String) Enum.valueOf}.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
@@ -39,5 +43,30 @@ public @interface PluginAttribute {
     /**
      * Specifies the default value this attribute should use if none is provided or if the provided value is invalid.
      */
-    String defaultValue() default "";
+    String defaultStringValue() default "";
+
+    /**
+     * Specifies the default integer value to use.
+     */
+    int defaultIntValue() default 0;
+
+    /**
+     * Specifies the default long value to use.
+     */
+    long defaultLongValue() default 0L;
+
+    /**
+     * Specifies the default boolean value to use.
+     */
+    boolean defaultBooleanValue() default false;
+
+    /**
+     * Specifies the default floating point value to use.
+     */
+    float defaultFloatValue() default 0.0f;
+
+    /**
+     * Specifies the default double floating point value to use.
+     */
+    double defaultDoubleValue() default 0.0d;
 }
