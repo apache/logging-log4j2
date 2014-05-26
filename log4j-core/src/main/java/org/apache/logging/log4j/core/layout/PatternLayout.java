@@ -287,7 +287,7 @@ public final class PatternLayout extends AbstractStringLayout {
      * @see #DEFAULT_CONVERSION_PATTERN Default conversion pattern
      */
     public static PatternLayout createDefaultLayout() {
-        return custom().build();
+        return newBuilder().build();
     }
 
     /**
@@ -295,12 +295,12 @@ public final class PatternLayout extends AbstractStringLayout {
      * @return a PatternLayout builder.
      */
     @PluginBuilderFactory
-    public static Builder custom() {
+    public static Builder newBuilder() {
         return new Builder();
     }
 
     /**
-     * Custom PatternLayout builder. Use the {@link PatternLayout#custom() builder factory method} to create this.
+     * Custom PatternLayout builder. Use the {@link PatternLayout#newBuilder() builder factory method} to create this.
      */
     public static class Builder implements org.apache.logging.log4j.core.util.Builder<PatternLayout> {
 

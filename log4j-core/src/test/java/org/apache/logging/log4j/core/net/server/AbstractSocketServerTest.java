@@ -173,7 +173,7 @@ public abstract class AbstractSocketServerTest {
         socketAppender.start();
         final ListAppender listAppender = new ListAppender("Events", serverFilter, null, false, false);
         listAppender.start();
-        final PatternLayout layout = PatternLayout.custom().withPattern("%m %ex%n").build();
+        final PatternLayout layout = PatternLayout.newBuilder().withPattern("%m %ex%n").build();
         final ConsoleAppender console = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false",
                 "true");
         final Logger serverLogger = ctx.getLogger(this.getClass().getName());

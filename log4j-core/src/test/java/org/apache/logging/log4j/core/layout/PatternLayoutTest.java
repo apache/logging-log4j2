@@ -84,7 +84,7 @@ public class PatternLayoutTest {
         }
 
         // set up appender
-        final PatternLayout layout = PatternLayout.custom()
+        final PatternLayout layout = PatternLayout.newBuilder()
             .withPattern(msgPattern)
             .withConfiguration(ctx.getConfiguration())
             .build();
@@ -153,7 +153,7 @@ public class PatternLayoutTest {
     @Test
     public void testRegex() throws Exception {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
-        final PatternLayout layout = PatternLayout.custom()
+        final PatternLayout layout = PatternLayout.newBuilder()
             .withPattern(regexPattern)
             .withConfiguration(ctx.getConfiguration())
             .build();
@@ -165,7 +165,7 @@ public class PatternLayoutTest {
 
     private void testUnixTime(String pattern) throws Exception {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
-        final PatternLayout layout = PatternLayout.custom()
+        final PatternLayout layout = PatternLayout.newBuilder()
             .withPattern(pattern + " %m")
             .withConfiguration(ctx.getConfiguration())
             .build();
@@ -184,7 +184,7 @@ public class PatternLayoutTest {
     @Test
     public void testUnixTime() throws Exception {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
-        final PatternLayout layout = PatternLayout.custom()
+        final PatternLayout layout = PatternLayout.newBuilder()
             .withPattern("%d{UNIX} %m")
             .withConfiguration(ctx.getConfiguration())
             .build();
@@ -203,7 +203,7 @@ public class PatternLayoutTest {
     @Test
     public void testUnixTimeMillis() throws Exception {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
-        final PatternLayout layout = PatternLayout.custom()
+        final PatternLayout layout = PatternLayout.newBuilder()
             .withPattern("%d{UNIX_MILLIS} %m")
             .withConfiguration(ctx.getConfiguration())
             .build();
@@ -222,7 +222,7 @@ public class PatternLayoutTest {
     @Test
     public void testHeaderFooter() throws Exception {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
-        final PatternLayout layout = PatternLayout.custom()
+        final PatternLayout layout = PatternLayout.newBuilder()
             .withPattern("%d{UNIX} %m")
             .withConfiguration(ctx.getConfiguration())
             .withHeader("${ctx:header}")
