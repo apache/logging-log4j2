@@ -21,7 +21,10 @@
     <title>Changes</title>
   </properties>
   <body>
-    <release version="2.0-rc2" date="2014-MM-DD" description="Bug fixes and enhancements">
+    <release version="2.0-rc2" date="2014-MM-DD" description="Bug fixes and enhancements">    
+      <action issue="LOG4J2-651" dev="ggregory" type="fix">
+        Log4j 2 throws ArrayIndexOutOfBoundsException.
+      </action>
       <action issue="LOG4J2-654" dev="rpopma" type="add">
         Add log4j-perf module to provide a home for all log4j performance tests.
         Add support for JMH microbenchmark performance tests.
