@@ -14,41 +14,45 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.config.plugins.util;
+package org.apache.logging.log4j.core.config;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.config.Loggers;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
 /**
- * An Appender container.
+ * Container of Logger objects.
  */
-@Plugin(name = "appenders", category = "Core")
-public final class AppendersPlugin {
+@Plugin(name = "loggers", category = "Core")
+public final class LoggersPlugin {
 
-    private AppendersPlugin() {
+    private LoggersPlugin() {
     }
 
     /**
-     * Create a Map of the Appenders.
-     * @param appenders An array of Appenders.
-     * @return The Appender Map.
+     * Create a Loggers object to contain all the Loggers.
+     * @param loggers An array of Loggers.
+     * @return A Loggers object.
      */
     @PluginFactory
-    public static ConcurrentMap<String, Appender> createAppenders(
-                @PluginElement("Appenders") final Appender[] appenders) {
+    public static Loggers createLoggers(@PluginElement("Loggers") final LoggerConfig[] loggers) {
+        final ConcurrentMap<String, LoggerConfig> loggerMap = new ConcurrentHashMap<String, LoggerConfig>();
+        LoggerConfig root = null;
 
-        final ConcurrentMap<String, Appender> map =
-            new ConcurrentHashMap<String, Appender>();
-
-        for (final Appender appender : appenders) {
-                map.put(appender.getName(), appender);
+        for (final LoggerConfig logger : loggers) {
+            if (logger != null) {
+                if (logger.getName().isEmpty()) {
+                    root = logger;
+                }
+                loggerMap.put(logger.getName(), logger);
+            }
         }
 
-        return map;
+        return new Loggers(loggerMap, root);
     }
 }

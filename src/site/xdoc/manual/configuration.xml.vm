@@ -1067,7 +1067,7 @@ public class Bar {
 <pre>
 2011-11-23 17:08:00,769 DEBUG Generated plugins in 0.003374000 seconds
 2011-11-23 17:08:00,789 DEBUG Calling createProperty on class org.apache.logging.log4j.core.config.Property for element property with params(name="filename", value="target/rolling1/rollingtest-${dollar}{sd:type}.log")
-2011-11-23 17:08:00,792 DEBUG Calling configureSubstitutor on class org.apache.logging.log4j.core.config.plugins.util.PropertiesPlugin for element properties with params(properties={filename=target/rolling1/rollingtest-${dollar}{sd:type}.log})
+2011-11-23 17:08:00,792 DEBUG Calling configureSubstitutor on class org.apache.logging.log4j.core.config.PropertiesPlugin for element properties with params(properties={filename=target/rolling1/rollingtest-${dollar}{sd:type}.log})
 2011-11-23 17:08:00,794 DEBUG Generated plugins in 0.001362000 seconds
 2011-11-23 17:08:00,797 DEBUG Calling createFilter on class org.apache.logging.log4j.core.filter.ThresholdFilter for element ThresholdFilter with params(level="debug", onMatch="null", onMismatch="null")
 2011-11-23 17:08:00,800 DEBUG Calling createLayout on class org.apache.logging.log4j.core.layout.PatternLayout for element PatternLayout with params(pattern="%m%n", Configuration(RoutingTest), null, charset="null")
@@ -1080,12 +1080,12 @@ public class Bar {
 2011-11-23 17:08:00,824 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.routing.Route for element Route with params(AppenderRef="List", key="Service", Node=Route)
 2011-11-23 17:08:00,825 DEBUG Calling createRoutes on class org.apache.logging.log4j.core.appender.routing.Routes for element Routes with params(pattern="${dollar}{sd:type}", routes={Route(type=dynamic default), Route(type=static Reference=STDOUT key='Audit'), Route(type=static Reference=List key='Service')})
 2011-11-23 17:08:00,827 DEBUG Calling createAppender on class org.apache.logging.log4j.core.appender.routing.RoutingAppender for element Routing with params(name="Routing", ignoreExceptions="null", Routes({Route(type=dynamic default),Route(type=static Reference=STDOUT key='Audit'),Route(type=static Reference=List key='Service')}), Configuration(RoutingTest), null, null)
-2011-11-23 17:08:00,827 DEBUG Calling createAppenders on class org.apache.logging.log4j.core.config.plugins.util.AppendersPlugin for element appenders with params(appenders={STDOUT, List, Routing})
+2011-11-23 17:08:00,827 DEBUG Calling createAppenders on class org.apache.logging.log4j.core.config.AppendersPlugin for element appenders with params(appenders={STDOUT, List, Routing})
 2011-11-23 17:08:00,828 DEBUG Calling createAppenderRef on class org.apache.logging.log4j.core.config.plugins.AppenderRefPlugin for element AppenderRef with params(ref="Routing")
 2011-11-23 17:08:00,829 DEBUG Calling createLogger on class org.apache.logging.log4j.core.config.LoggerConfig for element logger with params(additivity="false", level="info", name="EventLogger", AppenderRef={Routing}, null)
 2011-11-23 17:08:00,830 DEBUG Calling createAppenderRef on class org.apache.logging.log4j.core.config.plugins.AppenderRefPlugin for element AppenderRef with params(ref="STDOUT")
 2011-11-23 17:08:00,831 DEBUG Calling createLogger on class org.apache.logging.log4j.core.config.LoggerConfig$RootLogger for element root with params(additivity="null", level="error", AppenderRef={STDOUT}, null)
-2011-11-23 17:08:00,833 DEBUG Calling createLoggers on class org.apache.logging.log4j.core.config.plugins.util.LoggersPlugin for element loggers with params(loggers={EventLogger, root})
+2011-11-23 17:08:00,833 DEBUG Calling createLoggers on class org.apache.logging.log4j.core.config.LoggersPlugin for element loggers with params(loggers={EventLogger, root})
 2011-11-23 17:08:00,834 DEBUG Reconfiguration completed
 2011-11-23 17:08:00,846 DEBUG Calling createLayout on class org.apache.logging.log4j.core.layout.PatternLayout for element PatternLayout with params(pattern="%d %p %c{1.} [%t] %m%n", Configuration(RoutingTest), null, charset="null")
 2011-11-23 17:08:00,849 DEBUG Calling createPolicy on class org.apache.logging.log4j.core.appender.rolling.SizeBasedTriggeringPolicy for element SizeBasedTriggeringPolicy with params(size="500")
@@ -1160,7 +1160,7 @@ StatusConsoleListener listener = new StatusConsoleListener(Level.ERROR);
     <td>ClassLoaderContextSelector</td>
     <td>
       Creates the <tt>LoggerContext</tt>s. An application can have one or more active LoggerContexts depending
-      on the circumstances. 
+      on the circumstances.
       See <a href="logsep.html">Log Separation</a> for more details.
       Available context selector implementation classes:<br />
       <tt>org.apache.logging.log4j.core.async.AsyncLoggerContextSelector</tt> - makes <a href="async.html">all loggers asynchronous</a>.<br />
@@ -1216,7 +1216,7 @@ StatusConsoleListener listener = new StatusConsoleListener(Level.ERROR);
       could not successfully create a configuration (e.g. no log4j2.xml file was found).
     </td>
   </tr>
-  
+
   <tr>
     <td>disableThreadContext</td>
     <td>false</td>
@@ -1335,7 +1335,7 @@ StatusConsoleListener listener = new StatusConsoleListener(Level.ERROR);
     <!-- deliberately inserted spaces to allow line break -->
     <td>org.apache.logging.logj..simplelog .logFile</td>
     <td>system.err</td>
-    <td>"system.err" (case-insensitive) logs to System.err, 
+    <td>"system.err" (case-insensitive) logs to System.err,
     "system.out" (case-insensitive) logs to System.out,
     any other value is interpreted as a file name to save SimpleLogger messages to.
     </td>
@@ -1359,7 +1359,7 @@ StatusConsoleListener listener = new StatusConsoleListener(Level.ERROR);
     <td>
       The StatusLogger logs events that occur in the logging system to the console.
       During configuration, AbstractConfiguration registers a StatusConsoleListener with the StatusLogger that may
-      redirect status log events from the default console output to a file. 
+      redirect status log events from the default console output to a file.
       The listener also supports fine-grained filtering.
       This system property specifies the default status log level for the listener to use if the configuration does not
       specify a status level.
