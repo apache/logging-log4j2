@@ -32,6 +32,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.Charsets;
 import org.apache.logging.log4j.core.util.Constants;
@@ -324,7 +325,7 @@ public final class HtmlLayout extends AbstractStringLayout {
     public static HtmlLayout createLayout(
             @PluginAttribute(value = "locationInfo", defaultBooleanValue = false) final boolean locationInfo,
             @PluginAttribute(value = "title", defaultStringValue = DEFAULT_TITLE) final String title,
-            @PluginAttribute(value = "contentType", defaultStringValue = DEFAULT_CONTENT_TYPE) String contentType,
+            @PluginAttribute("contentType") String contentType,
             @PluginAttribute(value = "charset", defaultStringValue = "UTF-8") final Charset charset,
             @PluginAttribute("fontSize") String fontSize,
             @PluginAttribute(value = "fontName", defaultStringValue = DEFAULT_FONT_FAMILY) final String font) {
@@ -343,7 +344,75 @@ public final class HtmlLayout extends AbstractStringLayout {
      * @return an HTML Layout.
      */
     public static HtmlLayout createDefaultLayout() {
-        return new HtmlLayout(false, DEFAULT_TITLE, DEFAULT_CONTENT_TYPE + "; charset=UTF-8", Charsets.UTF_8,
-            DEFAULT_FONT_FAMILY, FontSize.SMALL.getFontSize(), FontSize.SMALL.larger().getFontSize());
+        return newBuilder().build();
+    }
+
+    @PluginBuilderFactory
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    public static class Builder implements org.apache.logging.log4j.core.util.Builder<HtmlLayout> {
+
+        @PluginAttribute(value = "locationInfo", defaultBooleanValue = false)
+        private boolean locationInfo = false;
+
+        @PluginAttribute(value = "title", defaultStringValue = DEFAULT_TITLE)
+        private String title = DEFAULT_TITLE;
+
+        @PluginAttribute(value = "contentType")
+        private String contentType = null; // defer default value in order to use specified charset
+
+        @PluginAttribute(value = "charset", defaultStringValue = "UTF-8")
+        private Charset charset = Charsets.UTF_8;
+
+        @PluginAttribute(value = "fontSize", defaultStringValue = "SMALL")
+        private FontSize fontSize = FontSize.SMALL;
+
+        @PluginAttribute(value = "fontName", defaultStringValue = DEFAULT_FONT_FAMILY)
+        private String fontName = DEFAULT_FONT_FAMILY;
+
+        private Builder() {
+        }
+
+        public Builder withLocationInfo(final boolean locationInfo) {
+            this.locationInfo = locationInfo;
+            return this;
+        }
+
+        public Builder withTitle(final String title) {
+            this.title = title;
+            return this;
+        }
+
+        public Builder withContentType(final String contentType) {
+            this.contentType = contentType;
+            return this;
+        }
+
+        public Builder withCharset(final Charset charset) {
+            this.charset = charset;
+            return this;
+        }
+
+        public Builder withFontSize(final FontSize fontSize) {
+            this.fontSize = fontSize;
+            return this;
+        }
+
+        public Builder withFontName(final String fontName) {
+            this.fontName = fontName;
+            return this;
+        }
+
+        @Override
+        public HtmlLayout build() {
+            // TODO: extract charset from content-type
+            if (contentType == null) {
+                contentType = DEFAULT_CONTENT_TYPE + "; charset=" + charset;
+            }
+            return new HtmlLayout(locationInfo, title, contentType, charset, fontName, fontSize.getFontSize(),
+                fontSize.larger().getFontSize());
+        }
     }
 }
