@@ -51,6 +51,8 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 public class PluginBuilder<T> {
 
+    // TODO: field injection for builder factories annotated with @PluginBuilderFactory
+
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final PluginType<T> pluginType;

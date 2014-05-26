@@ -23,6 +23,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+// TODO: add this to @PluginAttribute instead? or make this an additional annotation instead of a replacement
 /**
  * Identifies a sensitive PluginAttribute. This means that the value should NOT be displayed in log messages anywhere
  * and instead should be hashed.
