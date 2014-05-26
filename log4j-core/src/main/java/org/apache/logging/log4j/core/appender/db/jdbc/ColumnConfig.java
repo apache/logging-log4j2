@@ -130,7 +130,7 @@ public final class ColumnConfig {
         }
         if (isPattern) {
             final PatternLayout layout =
-                PatternLayout.custom()
+                PatternLayout.newBuilder()
                     .withPattern(pattern)
                     .withConfiguration(config)
                     .withAlwaysWriteExceptions(false)

@@ -52,7 +52,7 @@ public class DefaultConfiguration extends AbstractConfiguration {
     public DefaultConfiguration() {
 
         setName(DEFAULT_NAME);
-        final Layout<? extends Serializable> layout = PatternLayout.custom()
+        final Layout<? extends Serializable> layout = PatternLayout.newBuilder()
             .withPattern(DEFAULT_PATTERN)
             .withConfiguration(this)
             .build();

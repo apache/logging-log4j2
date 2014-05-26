@@ -377,7 +377,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private void setToDefault() {
         // TODO: reduce duplication between this method and DefaultConfiguration constructor
         setName(DefaultConfiguration.DEFAULT_NAME);
-        final Layout<? extends Serializable> layout = PatternLayout.custom()
+        final Layout<? extends Serializable> layout = PatternLayout.newBuilder()
             .withPattern(DefaultConfiguration.DEFAULT_PATTERN)
             .withConfiguration(this)
             .build();

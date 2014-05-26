@@ -72,7 +72,7 @@ public class CustomConfigurationTest {
                 break;
             }
         }
-        final Layout<? extends Serializable> layout = PatternLayout.custom()
+        final Layout<? extends Serializable> layout = PatternLayout.newBuilder()
             .withPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
             .withConfiguration(config)
             .build();
