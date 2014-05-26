@@ -193,7 +193,7 @@ public class PluginBuilder<T> {
                     final String name = ((PluginValue) a).value();
                     final String v = node.getValue() != null ? node.getValue() : getAttrValue("value");
                     final String value = configuration.getStrSubstitutor().replace(event, v);
-                    args[i] = TypeConverters.convert(value, types[i], defaultValue);
+                    args[i] = value;
                     sb.append(name).append("=\"").append(value).append('"');
                 } else if (a instanceof PluginAttribute) {
                     final PluginAttribute attribute = (PluginAttribute) a;
