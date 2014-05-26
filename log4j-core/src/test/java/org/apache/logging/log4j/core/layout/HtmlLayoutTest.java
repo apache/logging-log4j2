@@ -27,12 +27,6 @@ import org.apache.logging.log4j.core.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
-import org.apache.logging.log4j.core.config.plugins.util.PluginType;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.Charsets;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.AfterClass;
@@ -76,14 +70,17 @@ public class HtmlLayoutTest {
 
     @Test
     public void testContentType() {
-        final HtmlLayout layout = HtmlLayout.createLayout(true, null, "text/html; charset=UTF-16", null, "small",
-                null);
+        final HtmlLayout layout = HtmlLayout.newBuilder()
+            .withContentType("text/html; charset=UTF-16")
+            .build();
         assertEquals("text/html; charset=UTF-16", layout.getContentType());
+        // TODO: make sure this following bit works as well
+//        assertEquals(Charset.forName("UTF-16"), layout.getCharset());
     }
 
     @Test
     public void testDefaultCharset() {
-        final HtmlLayout layout = HtmlLayout.createLayout(true, null, null, null, "small", null);
+        final HtmlLayout layout = HtmlLayout.createDefaultLayout();
         assertEquals(Charsets.UTF_8, layout.getCharset());
     }
 
@@ -106,17 +103,8 @@ public class HtmlLayoutTest {
             root.removeAppender(appender);
         }
         // set up appender
-        // note: yes, this is a bit of a roundabout way to constructing the layout, but without builder classes, this
-        // is the most reliable way to get the default values for everything
-        // TODO: this could probably be tested more easily using a config file
-        final Node node = new Node();
-        node.getAttributes().put("locationInfo", Boolean.toString(includeLocation));
-        final HtmlLayout layout =
-            new PluginBuilder<HtmlLayout>(new PluginType<HtmlLayout>(HtmlLayout.class, "HtmlLayout", false, false))
-            .withFactoryMethodAnnotatedBy(PluginFactory.class)
-            .withConfiguration(new DefaultConfiguration())
-            .withConfigurationNode(node)
-            .forLogEvent(new Log4jLogEvent())
+        final HtmlLayout layout = HtmlLayout.newBuilder()
+            .withLocationInfo(includeLocation)
             .build();
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
