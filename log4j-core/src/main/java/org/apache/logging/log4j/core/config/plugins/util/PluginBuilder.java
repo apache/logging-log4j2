@@ -18,13 +18,8 @@
 package org.apache.logging.log4j.core.config.plugins.util;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +28,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitor;
 import org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitors;
 import org.apache.logging.log4j.core.util.Assert;
@@ -60,8 +54,6 @@ public class PluginBuilder<T> {
     private Method factory;
     private Annotation[][] annotations;
     private Class<?>[] types;
-    private List<Node> children;
-    private Collection<Node> used;
 
     /**
      * Constructs a PluginBuilder for a given PluginType.
@@ -112,8 +104,6 @@ public class PluginBuilder<T> {
      */
     public PluginBuilder<T> withConfigurationNode(final Node node) {
         this.node = node;
-        this.children = this.node.getChildren();
-        this.used = new HashSet<Node>(this.children.size());
         return this;
     }
 
@@ -155,7 +145,6 @@ public class PluginBuilder<T> {
     }
 
     private Object[] generateParameters() {
-        final StringBuilder sb = new StringBuilder();
         final Object[] args = new Object[annotations.length];
         for (int i = 0; i < annotations.length; i++) {
             final String[] aliases = extractPluginAliases(annotations[i]);
@@ -171,60 +160,6 @@ public class PluginBuilder<T> {
                         .setConversionType(types[i])
                         .setStrSubstitutor(configuration.getStrSubstitutor())
                         .visit(configuration, node, event);
-                } else if (a instanceof PluginElement) {
-                    // TODO: migrate this to PluginElementVisitor
-                    final PluginElement element = (PluginElement) a;
-                    final String name = element.value();
-                    if (types[i].isArray()) {
-                        final Class<?> type = types[i].getComponentType();
-                        sb.append(name).append("={");
-                        final List<Object> values = new ArrayList<Object>();
-                        boolean first = true;
-                        for (final Node child : children) {
-                            final PluginType<?> childType = child.getType();
-                            if (name.equalsIgnoreCase(childType.getElementName()) ||
-                                    type.isAssignableFrom(childType.getPluginClass())) {
-                                if (!first) {
-                                    sb.append(", ");
-                                }
-                                first = false;
-                                used.add(child);
-                                final Object o = child.getObject();
-                                if (o == null) {
-                                    LOGGER.error("Null object returned for {} in {}", child.getName(), node.getName());
-                                    continue;
-                                }
-                                if (o.getClass().isArray()) {
-                                    sb.append(Arrays.toString((Object[]) o));
-                                    args[i] = o;
-                                    break;
-                                }
-                                sb.append(child.toString());
-                                values.add(o);
-                            }
-                        }
-                        sb.append('}');
-                        if (args[i] != null) {
-                            break;
-                        }
-                        if (!(values.isEmpty() || type.isAssignableFrom(values.get(0).getClass()))) {
-                            LOGGER.error(
-                                    "Attempted to assign List containing class {} to array of type {} for attribute {}",
-                                    values.get(0).getClass().getName(), type, name
-                            );
-                            break;
-                        }
-                        args[i] = collectionToArray(values, type);
-                    } else {
-                        final Node namedNode = findNamedNode(name, types[i], children);
-                        if (namedNode == null) {
-                            sb.append("null");
-                        } else {
-                            sb.append(namedNode.getName()).append('(').append(namedNode.toString()).append(')');
-                            used.add(namedNode);
-                            args[i] = namedNode.getObject();
-                        }
-                    }
                 }
             }
         }
@@ -241,27 +176,6 @@ public class PluginBuilder<T> {
             }
         }
         return aliases;
-    }
-
-    private static Object[] collectionToArray(final Collection<?> collection, final Class<?> type) {
-        final Object[] array = (Object[]) Array.newInstance(type, collection.size());
-        int i = 0;
-        for (final Object obj : collection) {
-            array[i] = obj;
-            ++i;
-        }
-        return array;
-    }
-
-    private static Node findNamedNode(final String name, final Class<?> type, final Iterable<Node> nodes) {
-        for (final Node child : nodes) {
-            final PluginType<?> childType = child.getType();
-            if (name.equalsIgnoreCase(childType.getElementName()) ||
-                    type.isAssignableFrom(childType.getPluginClass())) {
-                return child;
-            }
-        }
-        return null;
     }
 
     private void checkForRemainingAttributes() {
@@ -290,8 +204,8 @@ public class PluginBuilder<T> {
     }
 
     private void verifyNodeChildrenUsed() {
-        if (!(pluginType.isDeferChildren() || used.size() == children.size())) {
-            children.removeAll(used);
+        final List<Node> children = node.getChildren();
+        if (!(pluginType.isDeferChildren() || children.isEmpty())) {
             for (final Node child : children) {
                 final String nodeType = node.getType().getElementName();
                 final String start = nodeType.equals(node.getName()) ? node.getName() : nodeType + ' ' + node.getName();
