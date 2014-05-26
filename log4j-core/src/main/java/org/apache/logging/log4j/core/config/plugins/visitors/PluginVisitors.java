@@ -43,6 +43,7 @@ public final class PluginVisitors {
 
     static {
         // register the default PluginVisitor classes
+        // TODO: this could probably be combined with the usual plugin architecture instead
         REGISTRY = new ConcurrentHashMap<Class<? extends Annotation>, Class<? extends PluginVisitor<? extends Annotation>>>();
         registerVisitor(PluginAttribute.class, PluginAttributeVisitor.class);
         registerVisitor(SensitivePluginAttribute.class, SensitivePluginAttributeVisitor.class);
