@@ -36,7 +36,6 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginDefault;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.net.Facility;
@@ -625,14 +624,14 @@ public final class Rfc5424Layout extends AbstractStringLayout {
      */
     @PluginFactory
     public static Rfc5424Layout createLayout(
-            @PluginAttribute("facility") @PluginDefault("LOCAL0") final Facility facility,
+            @PluginAttribute(value = "facility", defaultValue = "LOCAL0") final Facility facility,
             @PluginAttribute("id") final String id,
-            @PluginAttribute("enterpriseNumber") @PluginDefault(DEFAULT_ENTERPRISE_NUMBER) final int enterpriseNumber,
-            @PluginAttribute("includeMDC") @PluginDefault("true") final boolean includeMDC,
-            @PluginAttribute("mdcId") @PluginDefault(DEFAULT_MDCID) final String mdcId,
+            @PluginAttribute(value = "enterpriseNumber", defaultValue = DEFAULT_ENTERPRISE_NUMBER) final int enterpriseNumber,
+            @PluginAttribute(value = "includeMDC", defaultValue = "true") final boolean includeMDC,
+            @PluginAttribute(value = "mdcId", defaultValue = DEFAULT_MDCID) final String mdcId,
             @PluginAttribute("mdcPrefix") final String mdcPrefix,
             @PluginAttribute("eventPrefix") final String eventPrefix,
-            @PluginAttribute("newLine") @PluginDefault("false") final boolean newLine,
+            @PluginAttribute(value = "newLine", defaultValue = "false") final boolean newLine,
             @PluginAttribute("newLineEscape") final String escapeNL,
             @PluginAttribute("appName") final String appName,
             @PluginAttribute("messageId") final String msgId,
@@ -640,7 +639,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             @PluginAttribute("mdcIncludes") String includes,
             @PluginAttribute("mdcRequired") final String required,
             @PluginAttribute("exceptionPattern") final String exceptionPattern,
-            @PluginAttribute("useTlsMessageFormat") @PluginDefault("false") final boolean useTlsMessageFormat, // RFC 5425
+            @PluginAttribute(value = "useTlsMessageFormat", defaultValue = "false") final boolean useTlsMessageFormat, // RFC 5425
             @PluginElement("LoggerFields") final LoggerFields[] loggerFields,
             @PluginConfiguration final Configuration config) {
         final Charset charset = Charsets.UTF_8;

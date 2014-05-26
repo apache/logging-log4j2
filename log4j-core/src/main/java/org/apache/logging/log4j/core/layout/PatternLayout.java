@@ -28,7 +28,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginDefault;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.util.ConfigurablePluginBuilder;
@@ -272,9 +271,9 @@ public final class PatternLayout extends AbstractStringLayout {
             @PluginAttribute("pattern") final String pattern,
             @PluginConfiguration final Configuration config,
             @PluginElement("Replace") final RegexReplacement replace,
-            @PluginAttribute("charset") @PluginDefault("UTF-8") final Charset charset,
-            @PluginAttribute("alwaysWriteExceptions") @PluginDefault("true") final boolean alwaysWriteExceptions,
-            @PluginAttribute("noConsoleNoAnsi") @PluginDefault("false") final boolean noConsoleNoAnsi,
+            @PluginAttribute(value = "charset", defaultValue = "UTF-8") final Charset charset,
+            @PluginAttribute(value = "alwaysWriteExceptions", defaultValue = "true") final boolean alwaysWriteExceptions,
+            @PluginAttribute(value = "noConsoleNoAnsi", defaultValue = "false") final boolean noConsoleNoAnsi,
             @PluginAttribute("header") final String header,
             @PluginAttribute("footer") final String footer) {
         return new PatternLayout(config, replace, pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern, charset,

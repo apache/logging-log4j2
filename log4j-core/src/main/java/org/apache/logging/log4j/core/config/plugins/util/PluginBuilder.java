@@ -33,13 +33,13 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginDefault;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginNode;
 import org.apache.logging.log4j.core.config.plugins.PluginValue;
 import org.apache.logging.log4j.core.config.plugins.SensitivePluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitor;
+import org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitors;
 import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -164,10 +164,19 @@ public class PluginBuilder<T> {
         final Object[] args = new Object[annotations.length];
         for (int i = 0; i < annotations.length; i++) {
             final String[] aliases = extractPluginAliases(annotations[i]);
-            final String defaultValue = extractPluginDefault(annotations[i]);
             for (Annotation a : annotations[i]) {
-                if (a instanceof PluginAliases || a instanceof PluginDefault) {
+                if (a instanceof PluginAliases) {
                     continue; // already processed
+                }
+                // TODO: migrate the rest of this to PluginVisitor classes
+                final PluginVisitor<? extends Annotation> helper = PluginVisitors.findVisitor(a.annotationType());
+                if (helper != null) {
+                    args[i] = helper.setAliases(aliases)
+                        .setAnnotation(a)
+                        .setConversionType(types[i])
+                        .setStrSubstitutor(configuration.getStrSubstitutor())
+                        .visit(configuration, node, event);
+                    continue;
                 }
                 sb.append(sb.length() == 0 ? "with params(" : ", ");
                 if (a instanceof PluginNode) {
@@ -195,19 +204,13 @@ public class PluginBuilder<T> {
                     final String value = configuration.getStrSubstitutor().replace(event, v);
                     args[i] = value;
                     sb.append(name).append("=\"").append(value).append('"');
-                } else if (a instanceof PluginAttribute) {
-                    final PluginAttribute attribute = (PluginAttribute) a;
-                    final String name = attribute.value();
-                    final String value = getReplacedAttributeValue(name, aliases);
-                    args[i] = TypeConverters.convert(value, types[i], defaultValue);
-                    sb.append(name).append("=\"").append(value).append('"');
                 } else if (a instanceof SensitivePluginAttribute) {
                     // LOG4J2-605
                     // we shouldn't be displaying passwords
                     final SensitivePluginAttribute attribute = (SensitivePluginAttribute) a;
                     final String name = attribute.value();
                     final String value = getReplacedAttributeValue(name, aliases);
-                    args[i] = TypeConverters.convert(value, types[i], defaultValue);
+                    args[i] = value; // TODO: merge this with @PluginAttribute
                     sb.append(name).append("=\"").append(NameUtil.md5(value + PluginBuilder.class.getName())).append('"');
                 } else if (a instanceof PluginElement) {
                     final PluginElement element = (PluginElement) a;
@@ -284,15 +287,6 @@ public class PluginBuilder<T> {
         return aliases;
     }
 
-    private static String extractPluginDefault(final Annotation... annotations) {
-        for (final Annotation annotation : annotations) {
-            if (annotation instanceof PluginDefault) {
-                return ((PluginDefault) annotation).value();
-            }
-        }
-        return null;
-    }
-
     private String getReplacedAttributeValue(final String name, final String... aliases) {
         return configuration.getStrSubstitutor().replace(event, getAttrValue(name, aliases));
     }
@@ -301,15 +295,14 @@ public class PluginBuilder<T> {
         final Map<String, String> attrs = node.getAttributes();
         for (final Map.Entry<String, String> entry : attrs.entrySet()) {
             final String key = entry.getKey();
+            final String attr = entry.getValue();
             if (key.equalsIgnoreCase(name)) {
-                final String attr = entry.getValue();
                 attrs.remove(key);
                 return attr;
             }
             if (aliases != null) {
                 for (final String alias : aliases) {
                     if (key.equalsIgnoreCase(alias)) {
-                        final String attr = entry.getValue();
                         attrs.remove(key);
                         return attr;
                     }
