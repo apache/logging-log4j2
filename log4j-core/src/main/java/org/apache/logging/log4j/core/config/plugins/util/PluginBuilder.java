@@ -18,16 +18,21 @@
 package org.apache.logging.log4j.core.config.plugins.util;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitor;
 import org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitors;
 import org.apache.logging.log4j.core.util.Assert;
@@ -35,13 +40,12 @@ import org.apache.logging.log4j.core.util.Builder;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * Builder class to instantiate and configure a Plugin object using a PluginFactory method.
+ * Builder class to instantiate and configure a Plugin object using a PluginFactory method or PluginBuilderFactory
+ * builder class.
  *
  * @param <T> type of Plugin class.
  */
 public class PluginBuilder<T> implements Builder<T> {
-
-    // TODO: field injection for builder factories annotated with @PluginBuilderFactory
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -52,10 +56,6 @@ public class PluginBuilder<T> implements Builder<T> {
     private Node node;
     private LogEvent event;
 
-    private Method factory;
-    private Annotation[][] annotations;
-    private Class<?>[] types;
-
     /**
      * Constructs a PluginBuilder for a given PluginType.
      *
@@ -64,26 +64,6 @@ public class PluginBuilder<T> implements Builder<T> {
     public PluginBuilder(final PluginType<T> pluginType) {
         this.pluginType = pluginType;
         this.clazz = pluginType.getPluginClass();
-    }
-
-    /**
-     * Specifies which annotation denotes a plugin factory method. The method must be static.
-     *
-     * @param annotationType class of annotation marking the plugin factory.
-     * @param <A>            type of annotation.
-     * @return {@code this}
-     * @throws NoSuchMethodException
-     */
-    public <A extends Annotation> PluginBuilder<T> withFactoryMethodAnnotatedBy(final Class<A> annotationType)
-            throws NoSuchMethodException {
-        for (final Method method : clazz.getMethods()) {
-            if (method.isAnnotationPresent(annotationType) && Modifier.isStatic(method.getModifiers())) {
-                factory = method;
-                LOGGER.trace("Using factory method {} on class {}", method.getName(), clazz.getName());
-                return this;
-            }
-        }
-        throw new NoSuchMethodException("No method annotated with " + annotationType.getName() + "was found in " + clazz.getName());
     }
 
     /**
@@ -126,27 +106,91 @@ public class PluginBuilder<T> implements Builder<T> {
      */
     @Override
     public T build() {
-        init();
+        verify();
+        // first try to use a builder class if one is available
         try {
+            final Builder<T> builder = createBuilder(this.clazz);
+            if (builder != null) {
+                injectFields(builder);
+                return builder.build();
+            }
+        } catch (final Exception e) {
+            LOGGER.catching(Level.DEBUG, e);
+            LOGGER.error("Unable to inject fields into builder class for plugin type {}, element {}.", this.clazz,
+                node.getName());
+        }
+        // or fall back to factory method if no builder class is available
+        try {
+            final Method factory = findFactoryMethod(this.clazz);
+            final Object[] params = generateParameters(factory.getParameterTypes(), factory.getParameterAnnotations());
             @SuppressWarnings("unchecked")
-            final T plugin = (T) factory.invoke(null, generateParameters());
+            final T plugin = (T) factory.invoke(null, params);
             return plugin;
         } catch (final Exception e) {
-            LOGGER.error("Unable to invoke method {} in class {} for element {}",
-                    factory.getName(), clazz.getName(), node.getName(), e);
+            LOGGER.catching(Level.DEBUG, e);
+            LOGGER.error("Unable to invoke factory method in class {} for element {}.", this.clazz, this.node.getName());
             return null;
         }
     }
 
-    private void init() {
-        Assert.requireNonNull(factory, "No factory method was found.");
-        Assert.requireNonNull(configuration, "No Configuration object was set.");
-        Assert.requireNonNull(node, "No Node object was set.");
-        annotations = factory.getParameterAnnotations();
-        types = factory.getParameterTypes();
+    private void verify() {
+        Assert.requireNonNull(this.configuration, "No Configuration object was set.");
+        Assert.requireNonNull(this.node, "No Node object was set.");
     }
 
-    private Object[] generateParameters() {
+    private static <T> Builder<T> createBuilder(final Class<T> clazz)
+        throws InvocationTargetException, IllegalAccessException {
+        for (final Method method : clazz.getDeclaredMethods()) {
+            if (method.isAnnotationPresent(PluginBuilderFactory.class) &&
+                Modifier.isStatic(method.getModifiers())) {
+                @SuppressWarnings("unchecked")
+                final Builder<T> builder = (Builder<T>) method.invoke(null);
+                LOGGER.debug("Found builder factory method {}.{}.", clazz, method);
+                return builder;
+            }
+        }
+        LOGGER.debug("No compatible method annotated with {} found in class {}.", PluginBuilderFactory.class, clazz);
+        return null;
+    }
+
+    private void injectFields(final Builder<T> builder) throws IllegalAccessException {
+        final Field[] fields = builder.getClass().getDeclaredFields();
+        for (final Field field : fields) {
+            field.setAccessible(true);
+            final Annotation[] annotations = field.getDeclaredAnnotations();
+            final String[] aliases = extractPluginAliases(annotations);
+            for (final Annotation a : annotations) {
+                if (a instanceof PluginAliases) {
+                    continue; // already processed
+                }
+                final PluginVisitor<? extends Annotation> visitor = PluginVisitors.findVisitor(a.annotationType());
+                if (visitor != null) {
+                    final Object value = visitor.setAliases(aliases)
+                        .setAnnotation(a)
+                        .setConversionType(field.getType())
+                        .setStrSubstitutor(configuration.getStrSubstitutor())
+                        .visit(configuration, node, event);
+                    field.set(builder, value);
+                }
+            }
+        }
+        checkForRemainingAttributes();
+        verifyNodeChildrenUsed();
+    }
+
+    private static <T> Method findFactoryMethod(final Class<T> clazz) {
+        for (final Method method : clazz.getDeclaredMethods()) {
+            if (method.isAnnotationPresent(PluginFactory.class) &&
+                Modifier.isStatic(method.getModifiers())) {
+                LOGGER.debug("Found factory method {}.{}.", clazz, method);
+                return method;
+            }
+        }
+        LOGGER.debug("No compatible method annotated with {} found in class {}.", PluginFactory.class, clazz);
+        return null;
+    }
+
+    private Object[] generateParameters(final Class<?>[] types, final Annotation[][] annotations) {
         final Object[] args = new Object[annotations.length];
         for (int i = 0; i < annotations.length; i++) {
             final String[] aliases = extractPluginAliases(annotations[i]);
@@ -155,9 +199,9 @@ public class PluginBuilder<T> implements Builder<T> {
                 if (a instanceof PluginAliases) {
                     continue; // already processed
                 }
-                final PluginVisitor<? extends Annotation> helper = PluginVisitors.findVisitor(a.annotationType());
-                if (helper != null) {
-                    args[i] = helper.setAliases(aliases)
+                final PluginVisitor<? extends Annotation> visitor = PluginVisitors.findVisitor(a.annotationType());
+                if (visitor != null) {
+                    args[i] = visitor.setAliases(aliases)
                         .setAnnotation(a)
                         .setConversionType(types[i])
                         .setStrSubstitutor(configuration.getStrSubstitutor())

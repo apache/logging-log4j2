@@ -38,7 +38,6 @@ import org.apache.logging.log4j.core.appender.AsyncAppender;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfig;
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
@@ -685,7 +684,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     */
     private <T> Object createPluginObject(final PluginType<T> type, final Node node, final LogEvent event)
     {
-        // TODO: add support for type conversion
         final Class<T> clazz = type.getPluginClass();
 
         if (Map.class.isAssignableFrom(clazz)) {
@@ -704,17 +702,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             }
         }
 
-        try {
-            return new PluginBuilder<T>(type)
-                    .withFactoryMethodAnnotatedBy(PluginFactory.class)
-                    .withConfiguration(this)
-                    .withConfigurationNode(node)
-                    .forLogEvent(event)
-                    .build();
-        } catch (NoSuchMethodException e) {
-            LOGGER.error("No suitable factory method could be found on class {}", clazz, e);
-            return null;
-        }
+        return new PluginBuilder<T>(type)
+                .withConfiguration(this)
+                .withConfigurationNode(node)
+                .forLogEvent(event)
+                .build();
     }
 
     private static <T> Object createPluginMap(final Node node, final Class<T> clazz) throws InstantiationException, IllegalAccessException {
