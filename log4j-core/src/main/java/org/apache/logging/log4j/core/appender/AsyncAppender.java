@@ -35,7 +35,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginDefault;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
@@ -181,13 +180,13 @@ public final class AsyncAppender extends AbstractAppender {
     @PluginFactory
     public static AsyncAppender createAppender(@PluginElement("AppenderRef") final AppenderRef[] appenderRefs,
             @PluginAttribute("errorRef") @PluginAliases("error-ref") final String errorRef,
-            @PluginAttribute("blocking") @PluginDefault("true") final boolean blocking,
-            @PluginAttribute("bufferSize") @PluginDefault(DEFAULT_QUEUE_SIZE) final int size,
+            @PluginAttribute(value = "blocking", defaultValue = "true") final boolean blocking,
+            @PluginAttribute(value = "bufferSize", defaultValue = DEFAULT_QUEUE_SIZE) final int size,
             @PluginAttribute("name") final String name,
-            @PluginAttribute("includeLocation") @PluginDefault("false") final boolean includeLocation,
-            @PluginElement("Filter") final Filter filter, 
+            @PluginAttribute(value = "includeLocation", defaultValue = "false") final boolean includeLocation,
+            @PluginElement("Filter") final Filter filter,
             @PluginConfiguration final Configuration config,
-            @PluginAttribute("ignoreExceptions") @PluginDefault("true") final boolean ignoreExceptions) {
+            @PluginAttribute(value = "ignoreExceptions", defaultValue = "true") final boolean ignoreExceptions) {
         if (name == null) {
             LOGGER.error("No name provided for AsyncAppender");
             return null;
@@ -264,7 +263,7 @@ public final class AsyncAppender extends AbstractAppender {
                 }
             }
             LOGGER.trace("AsyncAppender.AsyncThread stopped. Queue has {} events remaining. " +
-            		"Processed {} and ignored {} events since shutdown started.", 
+            		"Processed {} and ignored {} events since shutdown started.",
             		queue.size(), count, ignored);
         }
 
@@ -273,7 +272,7 @@ public final class AsyncAppender extends AbstractAppender {
          * all registered {@code AppenderControl} objects, and returns {@code true}
          * if at least one appender call was successful, {@code false} otherwise.
          * Any exceptions are silently ignored.
-         * 
+         *
          * @param event the event to forward to the registered appenders
          * @return {@code true} if at least one appender call succeeded, {@code false} otherwise
          */
@@ -310,7 +309,7 @@ public final class AsyncAppender extends AbstractAppender {
         }
         return result;
     }
-    
+
     /**
      * Returns {@code true} if this AsyncAppender will take a snapshot of the stack with
      * every log event to determine the class and method where the logging call
@@ -320,7 +319,7 @@ public final class AsyncAppender extends AbstractAppender {
     public boolean isIncludeLocation() {
         return includeLocation;
     }
-    
+
     /**
      * Returns {@code true} if this AsyncAppender will block when the queue is full,
      * or {@code false} if events are dropped when the queue is full.
@@ -329,7 +328,7 @@ public final class AsyncAppender extends AbstractAppender {
     public boolean isBlocking() {
         return blocking;
     }
-    
+
     /**
      * Returns the name of the appender that any errors are logged to or {@code null}.
      * @return the name of the appender that any errors are logged to or {@code null}
@@ -337,11 +336,11 @@ public final class AsyncAppender extends AbstractAppender {
     public String getErrorRef() {
         return errorRef;
     }
-    
+
     public int getQueueCapacity() {
         return queueSize;
     }
-    
+
     public int getQueueRemainingCapacity() {
         return queue.remainingCapacity();
     }

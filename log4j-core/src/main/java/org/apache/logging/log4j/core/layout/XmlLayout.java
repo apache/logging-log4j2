@@ -22,14 +22,13 @@ import java.util.Map;
 
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginDefault;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.jackson.XmlConstants;
 import org.apache.logging.log4j.core.util.Charsets;
 
 /**
  * Appends a series of {@code event} elements as defined in the <a href="log4j.dtd">log4j.dtd</a>.
- * 
+ *
  * <h4>Complete well-formed XML vs. fragment XML</h4>
  * <p>
  * If you configure {@code complete="true"}, the appender outputs a well-formed XML document where the default namespace is the log4j
@@ -200,7 +199,7 @@ public final class XmlLayout extends AbstractJacksonLayout {
      * <li>XML processing instruction</li>
      * <li>XML root element</li>
      * </ol>
-     * 
+     *
      * @return a byte array containing the header.
      */
     @Override
@@ -223,7 +222,7 @@ public final class XmlLayout extends AbstractJacksonLayout {
 
     /**
      * Returns appropriate XML footer.
-     * 
+     *
      * @return a byte array containing the footer, closing the XML root element.
      */
     @Override
@@ -240,7 +239,7 @@ public final class XmlLayout extends AbstractJacksonLayout {
      * Key: "dtd" Value: "log4j-events.dtd"
      * <p/>
      * Key: "version" Value: "2.0"
-     * 
+     *
      * @return Map of content format keys supporting XmlLayout
      */
     @Override
@@ -262,7 +261,7 @@ public final class XmlLayout extends AbstractJacksonLayout {
 
     /**
      * Creates an XML Layout.
-     * 
+     *
      * @param locationInfo If "true", includes the location information in the generated XML.
      * @param properties If "true", includes the thread context in the generated XML.
      * @param complete If "true", includes the XML header and footer, defaults to "false".
@@ -273,11 +272,11 @@ public final class XmlLayout extends AbstractJacksonLayout {
     @PluginFactory
     public static XmlLayout createLayout(
             // @formatter:off
-            @PluginAttribute("locationInfo") @PluginDefault("false") final boolean locationInfo,
-            @PluginAttribute("properties") @PluginDefault("false") final boolean properties,
-            @PluginAttribute("complete") @PluginDefault("false") final boolean complete,
-            @PluginAttribute("compact") @PluginDefault("false") final boolean compact,
-            @PluginAttribute("charset") @PluginDefault("UTF-8") final Charset charset)
+            @PluginAttribute(value = "locationInfo", defaultValue = "false") final boolean locationInfo,
+            @PluginAttribute(value = "properties", defaultValue = "false") final boolean properties,
+            @PluginAttribute(value = "complete", defaultValue = "false") final boolean complete,
+            @PluginAttribute(value = "compact", defaultValue = "false") final boolean compact,
+            @PluginAttribute(value = "charset", defaultValue = "UTF-8") final Charset charset)
             // @formatter:on
     {
         return new XmlLayout(locationInfo, properties, complete, compact, charset);

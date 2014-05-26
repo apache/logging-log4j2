@@ -25,7 +25,6 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginDefault;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.LoggerFields;
@@ -94,22 +93,22 @@ public class SyslogAppender extends SocketAppender {
     public static SyslogAppender createAppender(
             // @formatter:off
             @PluginAttribute("host") final String host,
-            @PluginAttribute("port") @PluginDefault("0") final int port,
+            @PluginAttribute(value = "port", defaultValue = "0") final int port,
             @PluginAttribute("protocol") final String protocolStr,
             @PluginElement("SSL") final SslConfiguration sslConfig,
-            @PluginAttribute("reconnectionDelay") @PluginDefault("0") final int reconnectionDelay,
-            @PluginAttribute("immediateFail") @PluginDefault("true") final boolean immediateFail,
+            @PluginAttribute(value = "reconnectionDelay", defaultValue = "0") final int reconnectionDelay,
+            @PluginAttribute(value = "immediateFail", defaultValue = "true") final boolean immediateFail,
             @PluginAttribute("name") final String name,
-            @PluginAttribute("immediateFlush") @PluginDefault("true") final boolean immediateFlush,
-            @PluginAttribute("ignoreExceptions") @PluginDefault("true") final boolean ignoreExceptions,
-            @PluginAttribute("facility") @PluginDefault("LOCAL0") final Facility facility,
+            @PluginAttribute(value = "immediateFlush", defaultValue = "true") final boolean immediateFlush,
+            @PluginAttribute(value = "ignoreExceptions", defaultValue = "true") final boolean ignoreExceptions,
+            @PluginAttribute(value = "facility", defaultValue = "LOCAL0") final Facility facility,
             @PluginAttribute("id") final String id,
-            @PluginAttribute("enterpriseNumber") @PluginDefault(Rfc5424Layout.DEFAULT_ENTERPRISE_NUMBER) final int enterpriseNumber,
-            @PluginAttribute("includeMdc") @PluginDefault("true") final boolean includeMdc,
+            @PluginAttribute(value = "enterpriseNumber", defaultValue = Rfc5424Layout.DEFAULT_ENTERPRISE_NUMBER) final int enterpriseNumber,
+            @PluginAttribute(value = "includeMdc", defaultValue = "true") final boolean includeMdc,
             @PluginAttribute("mdcId") final String mdcId,
             @PluginAttribute("mdcPrefix") final String mdcPrefix,
             @PluginAttribute("eventPrefix") final String eventPrefix,
-            @PluginAttribute("newLine") @PluginDefault("false") final boolean newLine,
+            @PluginAttribute(value = "newLine", defaultValue = "false") final boolean newLine,
             @PluginAttribute("newLineEscape") final String escapeNL,
             @PluginAttribute("appName") final String appName,
             @PluginAttribute("messageId") final String msgId,
@@ -119,10 +118,10 @@ public class SyslogAppender extends SocketAppender {
             @PluginAttribute("format") final String format,
             @PluginElement("Filters") final Filter filter,
             @PluginConfiguration final Configuration config,
-            @PluginAttribute("charset") @PluginDefault("UTF-8") final Charset charsetName,
+            @PluginAttribute(value = "charset", defaultValue = "UTF-8") final Charset charsetName,
             @PluginAttribute("exceptionPattern") final String exceptionPattern,
             @PluginElement("LoggerFields") final LoggerFields[] loggerFields,
-            @PluginAttribute("advertise") @PluginDefault("false") final boolean advertise) {
+            @PluginAttribute(value = "advertise", defaultValue = "false") final boolean advertise) {
         // @formatter:on
 
         // TODO: add Protocol to TypeConverters

@@ -22,13 +22,12 @@ import java.util.Map;
 
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginDefault;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.Charsets;
 
 /**
  * Appends a series of JSON events as strings serialized as bytes.
- * 
+ *
  * <h4>Complete well-formed JSON vs. fragment JSON</h4>
  * <p>
  * If you configure {@code complete="true"}, the appender outputs a well-formed JSON document. By default, with {@code complete="false"},
@@ -37,7 +36,7 @@ import org.apache.logging.log4j.core.util.Charsets;
  * <p>
  * A well-formed JSON event follows this pattern:
  * </p>
- * 
+ *
  * <pre>
  * {
   "timeMillis": 1,
@@ -800,7 +799,7 @@ public final class JsonLayout extends AbstractJacksonLayout {
 
     /**
      * Returns appropriate JSON headers.
-     * 
+     *
      * @return a byte array containing the header, opening the JSON array.
      */
     @Override
@@ -816,7 +815,7 @@ public final class JsonLayout extends AbstractJacksonLayout {
 
     /**
      * Returns appropriate JSON footer.
-     * 
+     *
      * @return a byte array containing the footer, closing the JSON array.
      */
     @Override
@@ -844,7 +843,7 @@ public final class JsonLayout extends AbstractJacksonLayout {
 
     /**
      * Creates a JSON Layout.
-     * 
+     *
      * @param locationInfo If "true", includes the location information in the generated JSON.
      * @param properties If "true", includes the thread context in the generated JSON.
      * @param complete If "true", includes the JSON header and footer, defaults to "false".
@@ -855,11 +854,11 @@ public final class JsonLayout extends AbstractJacksonLayout {
     @PluginFactory
     public static AbstractJacksonLayout createLayout(
             // @formatter:off
-            @PluginAttribute("locationInfo") @PluginDefault("false") final boolean locationInfo,
-            @PluginAttribute("properties") @PluginDefault("false") final boolean properties,
-            @PluginAttribute("complete") @PluginDefault("false") final boolean complete,
-            @PluginAttribute("compact") @PluginDefault("false") final boolean compact,
-            @PluginAttribute("charset") @PluginDefault("UTF-8") final Charset charset
+            @PluginAttribute(value = "locationInfo", defaultValue = "false") final boolean locationInfo,
+            @PluginAttribute(value = "properties", defaultValue = "false") final boolean properties,
+            @PluginAttribute(value = "complete", defaultValue = "false") final boolean complete,
+            @PluginAttribute(value = "compact", defaultValue = "false") final boolean compact,
+            @PluginAttribute(value = "charset", defaultValue = "UTF-8") final Charset charset
             // @formatter:on
     ) {
         return new JsonLayout(locationInfo, properties, complete, compact, charset);

@@ -32,7 +32,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginDefault;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.Charsets;
 import org.apache.logging.log4j.core.util.Constants;
@@ -323,12 +322,12 @@ public final class HtmlLayout extends AbstractStringLayout {
      */
     @PluginFactory
     public static HtmlLayout createLayout(
-            @PluginAttribute("locationInfo") @PluginDefault("false") final boolean locationInfo,
-            @PluginAttribute("title") @PluginDefault(DEFAULT_TITLE) final String title,
-            @PluginAttribute("contentType") @PluginDefault(DEFAULT_CONTENT_TYPE) String contentType,
-            @PluginAttribute("charset") @PluginDefault("UTF-8") final Charset charset,
+            @PluginAttribute(value = "locationInfo", defaultValue = "false") final boolean locationInfo,
+            @PluginAttribute(value = "title", defaultValue = DEFAULT_TITLE) final String title,
+            @PluginAttribute(value = "contentType", defaultValue = DEFAULT_CONTENT_TYPE) String contentType,
+            @PluginAttribute(value = "charset", defaultValue = "UTF-8") final Charset charset,
             @PluginAttribute("fontSize") String fontSize,
-            @PluginAttribute("fontName") @PluginDefault(DEFAULT_FONT_FAMILY) final String font) {
+            @PluginAttribute(value = "fontName", defaultValue = DEFAULT_FONT_FAMILY) final String font) {
         final FontSize fs = FontSize.getFontSize(fontSize);
         fontSize = fs.getFontSize();
         final String headerSize = fs.larger().getFontSize();

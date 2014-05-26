@@ -28,7 +28,6 @@ import java.util.regex.Pattern;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginDefault;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Priority;
@@ -135,10 +134,10 @@ public final class SyslogLayout extends AbstractStringLayout {
      */
     @PluginFactory
     public static SyslogLayout createLayout(
-            @PluginAttribute("facility") @PluginDefault("LOCAL0") final Facility facility,
-            @PluginAttribute("newLine") @PluginDefault("false") final boolean includeNewLine,
+            @PluginAttribute(value = "facility", defaultValue = "LOCAL0") final Facility facility,
+            @PluginAttribute(value = "newLine", defaultValue = "false") final boolean includeNewLine,
             @PluginAttribute("newLineEscape") final String escapeNL,
-            @PluginAttribute("charset") @PluginDefault("UTF-8") final Charset charset) {
+            @PluginAttribute(value = "charset", defaultValue = "UTF-8") final Charset charset) {
         return new SyslogLayout(facility, includeNewLine, escapeNL, charset);
     }
 }

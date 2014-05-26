@@ -22,7 +22,6 @@ import java.util.Map;
 
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginDefault;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
@@ -58,7 +57,7 @@ public final class LoggerFields {
 
     /**
      * Create a LoggerFields from KeyValuePairs.
-     * 
+     *
      * @param keyValuePairs
      *            An array of KeyValuePairs.
      * @param sdId
@@ -74,7 +73,7 @@ public final class LoggerFields {
         @PluginElement("LoggerFields") final KeyValuePair[] keyValuePairs,
         @PluginAttribute("sdId") final String sdId,
         @PluginAttribute("enterpriseId") final String enterpriseId,
-        @PluginAttribute("discardIfAllFieldsAreEmpty") @PluginDefault("false") final boolean discardIfAllFieldsAreEmpty) {
+        @PluginAttribute(value = "discardIfAllFieldsAreEmpty", defaultValue = "false") final boolean discardIfAllFieldsAreEmpty) {
         final Map<String, String> map = new HashMap<String, String>();
 
         for (final KeyValuePair keyValuePair : keyValuePairs) {
