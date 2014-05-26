@@ -139,24 +139,22 @@ public final class PatternLayout extends AbstractStringLayout {
         }
     }
 
+    private byte[] strSubstitutorReplace(final byte... b) {
+        if (b != null && config != null) {
+            final Charset cs = getCharset();
+            return config.getStrSubstitutor().replace(new String(b, cs)).getBytes(cs);
+        }
+        return b;
+    }
+
     @Override
     public byte[] getHeader() {
-        byte [] myHeader = super.getHeader();
-        if (myHeader != null) {
-            final Charset cs = getCharset();
-            return config.getStrSubstitutor().replace(new String(myHeader, cs)).getBytes(cs);
-        }
-        return myHeader;
+        return strSubstitutorReplace(super.getHeader());
     }
 
     @Override
     public byte[] getFooter() {
-        byte [] myFooter = super.getFooter();
-        if (myFooter != null) {
-            final Charset cs = getCharset();
-            return config.getStrSubstitutor().replace(new String(myFooter, cs)).getBytes(cs);
-        }
-        return myFooter;
+        return strSubstitutorReplace(super.getFooter());
     }
 
     /**
