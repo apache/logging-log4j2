@@ -166,7 +166,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     public void stop() {
         this.setStopping();
         LOGGER.trace("AbstractConfiguration stopping...");
-        
+
         // LOG4J2-392 first stop AsyncLogger Disruptor thread
         final LoggerContextFactory factory = LogManager.getFactory();
         if (factory instanceof Log4jContextFactory) {
@@ -376,9 +376,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     private void setToDefault() {
+        // TODO: reduce duplication between this method and DefaultConfiguration constructor
         setName(DefaultConfiguration.DEFAULT_NAME);
-        final Layout<? extends Serializable> layout =
-                PatternLayout.createCustomLayout("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n");
+        final Layout<? extends Serializable> layout = PatternLayout.custom()
+            .withPattern(DefaultConfiguration.DEFAULT_PATTERN)
+            .withConfiguration(this)
+            .build();
         final Appender appender = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false",
             "true");
         appender.start();

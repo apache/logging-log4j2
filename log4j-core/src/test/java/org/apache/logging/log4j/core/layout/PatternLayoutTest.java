@@ -84,7 +84,10 @@ public class PatternLayoutTest {
         }
 
         // set up appender
-        final PatternLayout layout = PatternLayout.createCustomLayout(msgPattern, ctx.getConfiguration());
+        final PatternLayout layout = PatternLayout.custom()
+            .withPattern(msgPattern)
+            .withConfiguration(ctx.getConfiguration())
+            .build();
         // FileOutputStream fos = new FileOutputStream(OUTPUT_FILE + "_mdc");
         final FileAppender appender = FileAppender.createAppender(OUTPUT_FILE + "_mdc", "false", "false", "File",
                 "false", "true", "false", null, layout, null, "false", null, null);
@@ -150,7 +153,10 @@ public class PatternLayoutTest {
     @Test
     public void testRegex() throws Exception {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
-        final PatternLayout layout = PatternLayout.createCustomLayout(regexPattern, ctx.getConfiguration());
+        final PatternLayout layout = PatternLayout.custom()
+            .withPattern(regexPattern)
+            .withConfiguration(ctx.getConfiguration())
+            .build();
         final LogEvent event = new Log4jLogEvent(this.getClass().getName(), null,
                 "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world!"), null);
         final byte[] result = layout.toByteArray(event);
@@ -159,7 +165,10 @@ public class PatternLayoutTest {
 
     private void testUnixTime(String pattern) throws Exception {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
-        final PatternLayout layout = PatternLayout.createCustomLayout(pattern + " %m", ctx.getConfiguration());
+        final PatternLayout layout = PatternLayout.custom()
+            .withPattern(pattern + " %m")
+            .withConfiguration(ctx.getConfiguration())
+            .build();
         final LogEvent event1 = new Log4jLogEvent(this.getClass().getName(), null,
                 "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world 1!"), null);
         final byte[] result1 = layout.toByteArray(event1);
@@ -175,7 +184,10 @@ public class PatternLayoutTest {
     @Test
     public void testUnixTime() throws Exception {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
-        final PatternLayout layout = PatternLayout.createCustomLayout("%d{UNIX} %m", ctx.getConfiguration());
+        final PatternLayout layout = PatternLayout.custom()
+            .withPattern("%d{UNIX} %m")
+            .withConfiguration(ctx.getConfiguration())
+            .build();
         final LogEvent event1 = new Log4jLogEvent(this.getClass().getName(), null,
                 "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world 1!"), null);
         final byte[] result1 = layout.toByteArray(event1);
@@ -191,7 +203,10 @@ public class PatternLayoutTest {
     @Test
     public void testUnixTimeMillis() throws Exception {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
-        final PatternLayout layout = PatternLayout.createCustomLayout("%d{UNIX_MILLIS} %m", ctx.getConfiguration());
+        final PatternLayout layout = PatternLayout.custom()
+            .withPattern("%d{UNIX_MILLIS} %m")
+            .withConfiguration(ctx.getConfiguration())
+            .build();
         final LogEvent event1 = new Log4jLogEvent(this.getClass().getName(), null,
                 "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world 1!"), null);
         final byte[] result1 = layout.toByteArray(event1);
@@ -207,8 +222,12 @@ public class PatternLayoutTest {
     @Test
     public void testHeaderFooter() throws Exception {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
-        final PatternLayout layout = PatternLayout
-            .createLayout("%d{UNIX} %m", ctx.getConfiguration(), null, null, true, false, "${ctx:header}", "${ctx:footer}");
+        final PatternLayout layout = PatternLayout.custom()
+            .withPattern("%d{UNIX} %m")
+            .withConfiguration(ctx.getConfiguration())
+            .withHeader("${ctx:header}")
+            .withFooter("${ctx:footer}")
+            .build();
         ThreadContext.put("header", "Hello world Header");
         ThreadContext.put("footer", "Hello world Footer");
         final LogEvent event1 = new Log4jLogEvent(this.getClass().getName(), null,
