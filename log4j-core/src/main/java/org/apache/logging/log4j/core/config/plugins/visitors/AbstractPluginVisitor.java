@@ -117,7 +117,10 @@ public abstract class AbstractPluginVisitor<A extends Annotation> implements Plu
      * @param defaultValue the fallback value to use in case of no value or an error.
      * @return the converted value whether that be based on the given value or the default value.
      */
-    protected Object convert(final String value, final String defaultValue) {
-        return TypeConverters.convert(value, this.conversionType, Strings.trimToNull(defaultValue));
+    protected Object convert(final String value, final Object defaultValue) {
+        if (defaultValue instanceof String) {
+            return TypeConverters.convert(value, this.conversionType, Strings.trimToNull((String) defaultValue));
+        }
+        return TypeConverters.convert(value, this.conversionType, defaultValue);
     }
 }
