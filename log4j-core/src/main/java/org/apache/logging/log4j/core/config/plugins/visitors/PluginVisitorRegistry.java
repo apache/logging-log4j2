@@ -33,7 +33,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Registry for associating Plugin annotations with PluginVisitor implementations.
  */
-public final class PluginVisitors {
+public final class PluginVisitorRegistry {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -53,7 +53,7 @@ public final class PluginVisitors {
         registerVisitor(PluginElement.class, PluginElementVisitor.class);
     }
 
-    private PluginVisitors() {
+    private PluginVisitorRegistry() {
     }
 
     /**
