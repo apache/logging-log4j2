@@ -56,7 +56,7 @@ public class TypeConvertersTest {
                 { null, false, "false", boolean.class },
                 { "invalid", false, "false", boolean.class },
                 // integers
-                { "+42", 42, null, Integer.class },
+                { "42", 42, null, Integer.class },
                 { "53", 53, null, Integer.class },
                 { "-16", -16, null, Integer.class },
                 { "0", 0, null, Integer.class },
@@ -73,7 +73,7 @@ public class TypeConvertersTest {
                 { "55", 55L, null, Long.class },
                 { "1234567890123456789", 1234567890123456789L, null, Long.class },
                 { "123123123L", null, null, Long.class },
-                { "+123123123123", 123123123123L, null, Long.class },
+                { "123123123123", 123123123123L, null, Long.class },
                 { "-987654321", -987654321L, null, Long.class },
                 { "-45l", null, null, Long.class },
                 { "0", 0L, null, Long.class },
