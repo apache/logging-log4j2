@@ -31,6 +31,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitor;
 import org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitors;
 import org.apache.logging.log4j.core.util.Assert;
+import org.apache.logging.log4j.core.util.Builder;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -38,7 +39,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  *
  * @param <T> type of Plugin class.
  */
-public class PluginBuilder<T> {
+public class PluginBuilder<T> implements Builder<T> {
 
     // TODO: field injection for builder factories annotated with @PluginBuilderFactory
 
@@ -123,6 +124,7 @@ public class PluginBuilder<T> {
      *
      * @return the plugin object or {@code null} if there was a problem creating it.
      */
+    @Override
     public T build() {
         init();
         try {
