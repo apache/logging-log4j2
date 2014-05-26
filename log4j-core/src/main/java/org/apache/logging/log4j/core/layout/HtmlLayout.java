@@ -69,7 +69,7 @@ public final class HtmlLayout extends AbstractStringLayout {
     private final String contentType;
 
     /**Possible font sizes */
-    private enum FontSize {
+    public static enum FontSize {
         SMALLER("smaller"), XXSMALL("xx-small"), XSMALL("x-small"), SMALL("small"), MEDIUM("medium"), LARGE("large"),
         XLARGE("x-large"), XXLARGE("xx-large"),  LARGER("larger");
 
