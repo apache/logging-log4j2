@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 
 /**
- * PluginVisitor implementation for {@link org.apache.logging.log4j.core.config.plugins.PluginAttribute}.
+ * PluginVisitor implementation for {@link PluginAttribute}.
  */
 public class PluginAttributeVisitor extends AbstractPluginVisitor<PluginAttribute> {
     public PluginAttributeVisitor() {
