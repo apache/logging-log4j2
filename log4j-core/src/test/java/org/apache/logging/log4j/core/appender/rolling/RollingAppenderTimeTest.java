@@ -18,14 +18,12 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import java.io.File;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExternalResource;
+import org.junit.rules.RuleChain;
 
 import static org.junit.Assert.*;
 
@@ -37,27 +35,19 @@ public class RollingAppenderTimeTest {
     private static final String CONFIG = "log4j-rolling2.xml";
     private static final String DIR = "target/rolling2";
 
-    org.apache.logging.log4j.Logger logger = LogManager.getLogger(RollingAppenderTimeTest.class.getName());
+    private final InitialLoggerContext ctx = new InitialLoggerContext(CONFIG);
 
-    @BeforeClass
-    public static void setupClass() {
-        deleteDir();
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
-        final Configuration config = ctx.getConfiguration();
-    }
-
-    @AfterClass
-    public static void cleanupClass() {
-        //deleteDir();
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
-        ctx.reconfigure();
-        StatusLogger.getLogger().reset();
-    }
+    @Rule
+    public RuleChain chain = RuleChain.outerRule(new ExternalResource() {
+        @Override
+        protected void before() throws Throwable {
+            deleteDir();
+        }
+    }).around(ctx);
 
     @Test
     public void testAppender() throws Exception {
+        final Logger logger = ctx.getLogger();
         logger.debug("This is test message number 1");
         Thread.sleep(1500);
         // Trigger the rollover
