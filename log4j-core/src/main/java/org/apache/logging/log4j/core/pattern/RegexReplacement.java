@@ -69,7 +69,7 @@ public final class RegexReplacement {
      */
     @PluginFactory
     public static RegexReplacement createRegexReplacement(
-            @PluginAttribute("regex") final String regex,
+            @PluginAttribute("regex") final Pattern regex,
             @PluginAttribute("replacement") final String replacement) {
         if (regex == null) {
             LOGGER.error("A regular expression is required for replacement");
@@ -78,8 +78,8 @@ public final class RegexReplacement {
         if (replacement == null) {
             LOGGER.error("A replacement string is required to perform replacement");
         }
-        final Pattern p = Pattern.compile(regex);
-        return new RegexReplacement(p, replacement);
+        // FIXME: should we use Matcher.quoteReplacement() here?
+        return new RegexReplacement(regex, replacement);
     }
 
 }
