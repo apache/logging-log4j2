@@ -52,8 +52,10 @@ public class DefaultConfiguration extends AbstractConfiguration {
     public DefaultConfiguration() {
 
         setName(DEFAULT_NAME);
-        final Layout<? extends Serializable> layout =
-                PatternLayout.createCustomLayout(DEFAULT_PATTERN);
+        final Layout<? extends Serializable> layout = PatternLayout.custom()
+            .withPattern(DEFAULT_PATTERN)
+            .withConfiguration(this)
+            .build();
         final Appender appender =
                 ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false", "true");
         appender.start();

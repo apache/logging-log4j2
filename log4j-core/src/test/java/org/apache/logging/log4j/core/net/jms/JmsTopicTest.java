@@ -100,7 +100,7 @@ public class JmsTopicTest {
         final CompositeFilter serverFilters = CompositeFilter.createFilters(new Filter[]{serverFilter});
         final ListAppender listApp = new ListAppender("Events", serverFilters, null, false, false);
         listApp.start();
-        final PatternLayout layout = PatternLayout.createCustomLayout("%m %ex%n");
+        final PatternLayout layout = PatternLayout.custom().withPattern("%m %ex%n").build();
         final ConsoleAppender console =
                 ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false", "true");
         console.start();

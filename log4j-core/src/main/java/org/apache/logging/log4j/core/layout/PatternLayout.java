@@ -23,12 +23,15 @@ import java.util.Map;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginDefault;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.util.ConfigurablePluginBuilder;
 import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
@@ -176,7 +179,7 @@ public final class PatternLayout extends AbstractStringLayout {
 
     /**
      * Gets the conversion pattern.
-     * 
+     *
      * @return the conversion pattern.
      */
     public String getConversionPattern() {
@@ -245,7 +248,7 @@ public final class PatternLayout extends AbstractStringLayout {
 
     /**
      * Create a pattern layout.
-     * 
+     *
      * @param pattern
      *        The pattern. If not specified, defaults to DEFAULT_CONVERSION_PATTERN.
      * @param config
@@ -286,30 +289,101 @@ public final class PatternLayout extends AbstractStringLayout {
      * @see #DEFAULT_CONVERSION_PATTERN Default conversion pattern
      */
     public static PatternLayout createDefaultLayout() {
-        return createCustomLayout(DEFAULT_CONVERSION_PATTERN);
+        return custom().build();
     }
 
     /**
-     * Creates a PatternLayout using a custom layout and the default options elsewhere.
-     *
-     * @param layout the conversion pattern layout to use.
-     * @return the PatternLayout.
+     * Creates a builder for a custom PatternLayout.
+     * @return a PatternLayout builder.
      */
-    public static PatternLayout createCustomLayout(final String layout) {
-        return createCustomLayout(layout, null);
+    @PluginBuilderFactory
+    public static Builder custom() {
+        return new Builder();
     }
 
     /**
-     * Creates a PatternLayout using a specific Configuration, custom pattern conversion layout, and default options
-     * for everything else.
-     *
-     * @param layout the conversion pattern layout to use.
-     * @param config The Configuration. Some Converters require access to the Interpolator.
-     * @return the PatternLayout.
+     * Custom PatternLayout builder. Use the {@link PatternLayout#custom() builder factory method} to create this.
      */
-    public static PatternLayout createCustomLayout(final String layout, final Configuration config) {
-        return new PatternLayout(
-            config, null, layout, Charsets.UTF_8, true, false, null, null
-        );
+    public static class Builder implements ConfigurablePluginBuilder<PatternLayout> {
+
+        @PluginAttribute("pattern")
+        private String pattern = PatternLayout.DEFAULT_CONVERSION_PATTERN;
+
+        @PluginConfiguration
+        private Configuration configuration = null;
+
+        @PluginElement("Replace")
+        private RegexReplacement regexReplacement = null;
+
+        @PluginAttribute("charset")
+        private Charset charset = Charsets.UTF_8;
+
+        @PluginAttribute("alwaysWriteExceptions")
+        private boolean alwaysWriteExceptions = true;
+
+        @PluginAttribute("noConsoleNoAnsi")
+        private boolean noConsoleNoAnsi = false;
+
+        @PluginAttribute("header")
+        private String header = null;
+
+        @PluginAttribute("footer")
+        private String footer = null;
+
+        private Builder() {
+        }
+
+        // TODO: move javadocs from PluginFactory to here
+
+        public Builder withPattern(final String pattern) {
+            this.pattern = pattern;
+            return this;
+        }
+
+
+        public Builder withConfiguration(final Configuration configuration) {
+            this.configuration = configuration;
+            return this;
+        }
+
+        public Builder withRegexReplacement(final RegexReplacement regexReplacement) {
+            this.regexReplacement = regexReplacement;
+            return this;
+        }
+
+        public Builder withCharset(final Charset charset) {
+            this.charset = charset;
+            return this;
+        }
+
+        public Builder withAlwaysWriteExceptions(final boolean alwaysWriteExceptions) {
+            this.alwaysWriteExceptions = alwaysWriteExceptions;
+            return this;
+        }
+
+        public Builder withNoConsoleNoAnsi(final boolean noConsoleNoAnsi) {
+            this.noConsoleNoAnsi = noConsoleNoAnsi;
+            return this;
+        }
+
+        public Builder withHeader(final String header) {
+            this.header = header;
+            return this;
+        }
+
+        public Builder withFooter(final String footer) {
+            this.footer = footer;
+            return this;
+        }
+
+        @Override
+        public PatternLayout build() {
+            // fall back to DefaultConfiguration
+            if (configuration == null) {
+                configuration = new DefaultConfiguration();
+            }
+            return new PatternLayout(configuration, regexReplacement, pattern, charset, alwaysWriteExceptions,
+                noConsoleNoAnsi, header, footer);
+        }
     }
 }
