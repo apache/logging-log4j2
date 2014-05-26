@@ -38,6 +38,8 @@ import org.apache.logging.log4j.util.EnglishEnums;
  */
 public final class TypeConverters {
 
+    // TODO: this could probably be combined with the usual plugin architecture instead
+
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final Map<Class<?>, TypeConverter<?>> registry =
