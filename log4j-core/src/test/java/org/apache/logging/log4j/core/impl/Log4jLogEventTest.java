@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.util.Clock;
@@ -32,8 +33,6 @@ import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import sun.misc.BASE64Decoder;
 
 import static org.junit.Assert.*;
 
@@ -245,7 +244,7 @@ public class Log4jLogEventTest {
                 + "TG9yZy5hcGFjaGUubG9nZ2luZy5sb2c0ai5jb3JlLmltcGwuVGhyb3dhYmxlUHJveHk7+u0B4IWi\r\n"
                 + "6zkCAAB4cAAAAAA=";
 
-        byte[] binaryDecoded = new BASE64Decoder().decodeBuffer(base64);
+        byte[] binaryDecoded = Base64.decodeBase64(base64);
         final Log4jLogEvent evt2 = deserialize(binaryDecoded);
 
         assertEquals(loggerFQN, evt2.getLoggerFqcn());

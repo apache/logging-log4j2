@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.logging.log4j.core.jackson.Log4jJsonObjectMapper;
 import org.junit.Test;
 
@@ -168,7 +169,7 @@ public class ThrowableProxyTest {
                  "ZVByb3h5O/rtAeCFous5AgAAeHAAAAAA";
 
 
-        byte[] binaryDecoded = new BASE64Decoder().decodeBuffer(base64);
+        byte[] binaryDecoded = Base64.decodeBase64(base64);
         final ThrowableProxy proxy2 = deserialize(binaryDecoded);
 
         assertEquals(this.getClass().getName() + "$DeletedException", proxy2.getName());

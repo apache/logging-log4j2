@@ -207,6 +207,12 @@
       <artifactId>org.apache.felix.framework</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- Other -->
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
