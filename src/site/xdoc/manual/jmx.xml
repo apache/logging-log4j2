@@ -16,7 +16,9 @@
     limitations under the License.
 -->
 
-<document>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
     <properties>
         <title>JMX</title>
 		<author email="remkop@yahoo.com">Remko Popma</author>
@@ -36,8 +38,8 @@
         current configuration directly.
         </p>
       </section>
-      <a name="Enabling_JMX" />
       <section name="Enabling JMX">
+        <a name="Enabling_JMX" />
         <p>JMX support is enabled by default. When Log4j initializes,
         the StatusLogger, ContextSelector, and all LoggerContexts,
           LoggerConfigs and Appenders are instrumented with MBeans.
@@ -45,41 +47,41 @@
         specify system property <code>log4j2.disable.jmx=true</code> when you start
         the Java VM.
         </p>
-		<a name="Local" />
 		<subsection name="Local Monitoring and Management">
-        <p>To perform local monitoring you don't need to specify any system
+      <a name="Local" />
+      <p>To perform local monitoring you don't need to specify any system
         properties. The JConsole tool that is included in the Java JDK can be
         used to monitor your application. Start JConsole by typing
         <code>$JAVA_HOME/bin/jconsole</code> in a command shell.
-        For more details, see Oracle's documentation on 
+        For more details, see Oracle's documentation on
         <a href="http://docs.oracle.com/javase/7/docs/technotes/guides/management/jconsole.html">how to use JConsole</a>.</p>
         </subsection>
-		<a name="Remote" />
 		<subsection name="Remote Monitoring and Management">
-        <p>To enable monitoring and management from remote systems, set the following system property when starting the Java VM.
+      <a name="Remote" />
+      <p>To enable monitoring and management from remote systems, set the following system property when starting the Java VM.
 		</p><p>
         <code>com.sun.management.jmxremote.port=portNum</code>
 		</p><p>
-        In the property above, <code>portNum</code> is the port number through 
+        In the property above, <code>portNum</code> is the port number through
         which you want to enable JMX RMI connections.
         </p><p>
-        For more details, see Oracle's documentation on 
+        For more details, see Oracle's documentation on
         <a href="http://docs.oracle.com/javase/7/docs/technotes/guides/management/agent.html#gdenl">Remote
         Monitoring and Management</a>.</p>
         </subsection>
       </section>
-		<a name="Log4j_MBeans" />
       <section name="Log4j Instrumented Components">
-      <p>The best way to find out which methods and attributes of the various
+        <a name="Log4j_MBeans" />
+        <p>The best way to find out which methods and attributes of the various
       Log4j components are accessible via JMX is to look at the
       <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/jmx/package-summary.html"
       >Javadoc</a> or by exploring directly in JConsole.</p>
       <p>The screenshot below shows the Log4j MBeans in JConsole.</p>
-      <p><img src="../images/jmx-jconsole-mbeans.png" /></p>
+      <p><img src="../images/jmx-jconsole-mbeans.png" alt="JConsole screenshot of the MBeans tab" /></p>
       </section>
-		<a name="ClientGUI" />
       <section name="Client GUI">
-      <p>Log4j includes a basic client GUI that can be used to
+        <a name="ClientGUI" />
+        <p>Log4j includes a basic client GUI that can be used to
         monitor the StatusLogger output and to remotely modify the Log4j
         configuration. The client GUI can be run as a stand-alone application
         or as a JConsole plug-in.</p>
@@ -95,7 +97,7 @@
 		This tab contains the client GUI, with the StatusLogger selected.
 		The screenshot below shows the StatusLogger panel in JConsole.
 		</p>
-        <p><img src="../images/jmx-jconsole-statuslogger.png" /></p>
+        <p><img src="../images/jmx-jconsole-statuslogger.png" alt="JConsole screenshot of the StatusLogger display" /></p>
 		</subsection>
 		<subsection name="Remotely Editing the Log4j Configuration">
 		<p>The client GUI also contains a simple editor that can be used
@@ -103,7 +105,7 @@
 		</p><p>
 		The screenshot below shows the configuration edit panel in JConsole.
 		</p>
-        <p><img src="../images/jmx-jconsole-editconfig.png" /></p>
+        <p><img src="../images/jmx-jconsole-editconfig.png" alt="JConsole screenshot of the configuration file editor" /></p>
         <p>The configuration edit panel provides two ways to modify
         the Log4j configuration: specifying a different configuration location
         URI, or modifying the configuration XML directly in the editor panel.</p>
@@ -115,8 +117,8 @@
         Log4j will keep its original configuration, but the editor panel
         will show the contents of the file you specified. </p>
         <p>
-        The text area showing the contents of the configuration file is 
-        editable, and you can directly modify the configuration in this 
+        The text area showing the contents of the configuration file is
+        editable, and you can directly modify the configuration in this
         editor panel. Clicking the "Reconfigure with XML below" button will
         send the configuration text to the remote application where it
         will be used to reconfigure Log4j on the fly.
@@ -125,9 +127,9 @@
         the text is not permanently stored anywhere.
         </p>
 		</subsection>
-		<a name="ClientStandAlone" />
 		<subsection name="Running the Client GUI as a Stand-alone Application">
-		<p>To run the Log4j JMX Client GUI as a stand-alone application,
+      <a name="ClientStandAlone" />
+      <p>To run the Log4j JMX Client GUI as a stand-alone application,
 		run the following command:
 		</p>
 		<p><code>$JAVA_HOME/bin/java -cp /path/to/log4j-core-2.0.jar:/path/to/log4j-jmx-gui-2.0.jar org.apache.logging.log4j.jmx.gui.ClientGUI &lt;options&gt;</code></p>
@@ -146,9 +148,9 @@
 		<pre>com.sun.management.jmxremote.port=33445
 com.sun.management.jmxremote.authenticate=false
 com.sun.management.jmxremote.ssl=false</pre>
-		<p><b>(Note that this disables <em>all</em> security so this is not recommended 
+		<p><b>(Note that this disables <em>all</em> security so this is not recommended
 		for production environments.
-		Oracle's documentation on 
+		Oracle's documentation on
         <a href="http://docs.oracle.com/javase/7/docs/technotes/guides/management/agent.html#gdenl">Remote
         Monitoring and Management</a> provides details on how to configure
         JMX more securely with password authentication and SSL.)</b></p>
@@ -156,15 +158,15 @@ com.sun.management.jmxremote.ssl=false</pre>
 		<p><code>$JAVA_HOME/bin/java -cp /path/to/log4j-core-2.0.jar:/path/to/log4j-jmx-gui-2.0.jar org.apache.logging.log4j.jmx.gui.ClientGUI localhost:33445</code></p>
 		<p>or on Windows:</p>
 		<p><code>%JAVA_HOME%\bin\java -cp \path\to\log4j-core-2.0.jar;\path\to\log4j-jmx-gui-2.0.jar org.apache.logging.log4j.jmx.gui.ClientGUI localhost:33445</code></p>
-		<p>The screenshot below shows the StatusLogger panel of the client 
+		<p>The screenshot below shows the StatusLogger panel of the client
 		GUI when running as a stand-alone application.</p>
-        <p><img src="../images/jmx-standalone-statuslogger.png" /></p>
-		<p>The screenshot below shows the configuration editor panel of the 
+        <p><img src="../images/jmx-standalone-statuslogger.png" alt="JMX GUI screenshot of StatusLogger display" /></p>
+		<p>The screenshot below shows the configuration editor panel of the
 		client GUI when running as a stand-alone application.</p>
-        <p><img src="../images/jmx-standalone-editconfig.png" /></p>
-		
+        <p><img src="../images/jmx-standalone-editconfig.png" alt="JMX GUI screenshot of configuration editor" /></p>
+
 		</subsection>
       </section>
-      
+
     </body>
 </document>
