@@ -22,6 +22,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.apache.logging.log4j.core.config.plugins.visitors.PluginConfigurationVisitor;
+
 /**
  * Identifies a parameter or field as a Configuration.
  * @see org.apache.logging.log4j.core.config.Configuration
@@ -29,6 +31,6 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.FIELD})
-@PluginVisitorStrategy("org.apache.logging.log4j.core.config.plugins.visitors.PluginConfigurationVisitor")
+@PluginVisitorStrategy(PluginConfigurationVisitor.class)
 public @interface PluginConfiguration {
 }

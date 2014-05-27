@@ -22,6 +22,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.apache.logging.log4j.core.config.plugins.visitors.PluginAttributeVisitor;
+
 /**
  * Identifies a Plugin Attribute and its default value. Note that only one of the defaultFooValue attributes will be
  * used based on the type this annotation is attached to. Thus, for primitive types, the default<i>Type</i>Value
@@ -32,7 +34,7 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.FIELD})
-@PluginVisitorStrategy("org.apache.logging.log4j.core.config.plugins.visitors.PluginAttributeVisitor")
+@PluginVisitorStrategy(PluginAttributeVisitor.class)
 public @interface PluginAttribute {
 
     // TODO: could we allow a blank value and infer the attribute name through reflection?

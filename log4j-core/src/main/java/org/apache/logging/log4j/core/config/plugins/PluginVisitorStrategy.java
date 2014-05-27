@@ -17,11 +17,14 @@
 
 package org.apache.logging.log4j.core.config.plugins;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitor;
 
 /**
  * Meta-annotation to denote the class name to use that implements
@@ -33,8 +36,9 @@ import java.lang.annotation.Target;
 public @interface PluginVisitorStrategy {
 
     /**
-     * The class name to use that implements {@link org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitor}
-     * for the given annotation.
+     * The class to use that implements {@link org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitor}
+     * for the given annotation. The generic type in {@code PluginVisitor} should match the annotation this annotation
+     * is applied to.
      */
-    String value();
+    Class<? extends PluginVisitor<? extends Annotation>> value();
 }

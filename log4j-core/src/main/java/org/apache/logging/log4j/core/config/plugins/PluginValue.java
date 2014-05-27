@@ -22,6 +22,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.apache.logging.log4j.core.config.plugins.visitors.PluginValueVisitor;
+
 /**
  * Identifies a parameter as a value. These correspond with property values generally, but are meant as values to be
  * used as a placeholder value somewhere.
@@ -31,7 +33,7 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
-@PluginVisitorStrategy("org.apache.logging.log4j.core.config.plugins.visitors.PluginValueVisitor")
+@PluginVisitorStrategy(PluginValueVisitor.class)
 public @interface PluginValue {
 
     String value();

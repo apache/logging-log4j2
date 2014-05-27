@@ -23,6 +23,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.apache.logging.log4j.core.config.plugins.visitors.SensitivePluginAttributeVisitor;
+
 // TODO: add this to @PluginAttribute instead? or make this an additional annotation instead of a replacement
 /**
  * Identifies a sensitive PluginAttribute. This means that the value should NOT be displayed in log messages anywhere
@@ -34,7 +36,7 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
-@PluginVisitorStrategy("org.apache.logging.log4j.core.config.plugins.visitors.SensitivePluginAttributeVisitor")
+@PluginVisitorStrategy(SensitivePluginAttributeVisitor.class)
 public @interface SensitivePluginAttribute {
     String value();
 
