@@ -16,7 +16,9 @@
     limitations under the License.
 -->
 
-<document>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
     <properties>
         <title>Overview</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
@@ -55,7 +57,7 @@
 
           <p>As Brian W. Kernighan and Rob Pike put it in their truly excellent
           book <i>"The Practice of Programming":</i></p>
-          
+
           <div class="well">
             As personal choice, we tend not to use debuggers beyond getting a
             stack trace or the value of a variable or two. One reason is that it
@@ -77,11 +79,13 @@
           the log4j API strives to be simple to understand and to use.</p>
         </subsection>
         <subsection name="Log4j 2">
+          <p>
           Log4j 1.x has been widely adopted and used in many applications. However,
           through the years development on it has slowed down. It has become more
           difficult to maintain due to its need to be compliant with very old versions
           of Java.  Its alternative, SLF4J/Logback made many needed improvements to the
           framework. So why bother with Log4j 2? Here are a few of the reasons.
+          </p>
           <ol>
             <li>Log4j 2 is designed to be usable as an audit logging framework. Both Log4j
               1.x and Logback will lose events while reconfiguring. Log4j 2 will not. in
@@ -90,7 +94,7 @@
               to the application</li>
             <li>Log4j 2 contains next-generation lock-free Asynchronous Loggers based
               on the LMAX Disruptor library. In multi-threaded scenarios
-              Asynchronous Loggers have 10 times higher throughput and 
+              Asynchronous Loggers have 10 times higher throughput and
               orders of magnitude lower latency than Log4j 1.x and Logback.</li>
             <li>Log4j 2 uses a Plugin system that makes it extremely easy to extend the
               framework by adding new Appenders, Filters, Layouts, Lookups,
