@@ -16,7 +16,9 @@
     limitations under the License.
 -->
 
-<document>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
     <properties>
         <title>Log4j 2 Guide</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
@@ -25,19 +27,6 @@
     </properties>
 
     <body>
-        <table style="width:70%">
-        <tr>
-        <th style="background-color: #55EECC">Help! Log4j 2 Needs a New logo!</th>
-        </tr><tr>
-        <th style="background-color: #CCFFFF">
-        <p>Log4j 2 will soon move from release candidate to general availability. With this new major release we need a
-          new logo.</p>
-        The logo contest has now closed. Voting will commence soon. Please
-          <a href="http://logging.apache.org/log4j/2.x/mail-lists.html">subscribe to the user mailing list</a> for more
-          information.
-        </th>
-        </tr>
-        </table>
         <section name="Apache Log4j 2">
 
           <p>
@@ -45,31 +34,31 @@
             1.x, and provides many of the improvements available in Logback while fixing some inherent problems in
             Logback's architecture.
           </p>
-          
+
           <p>Some of the features and improvements in Log4j 2 are:</p>
-          
+
           <dl>
             <dt>API Separation</dt>
             <dd>
-              The API for Log4j is separate from the implementation making it clear for application developers 
-              which classes and methods they can use while ensuring forward compatibility. This allows the 
+              The API for Log4j is separate from the implementation making it clear for application developers
+              which classes and methods they can use while ensuring forward compatibility. This allows the
               Log4j team to improve the implementation safely and in a compatible manner.
             </dd>
             <dt>Improved Performance</dt>
             <dd>
               Log4j 2 contains next-generation Asynchronous Loggers based
               on the LMAX Disruptor library. In multi-threaded scenarios
-              Asynchronous Loggers have 10 times higher throughput and 
+              Asynchronous Loggers have 10 times higher throughput and
               orders of magnitude lower latency than Log4j 1.x and Logback.
               See <a href="manual/async.html#Performance">Asynchronous Logging Performance</a>
               for details.
-              Otherwise, Log4j 2 performs faster than Log4j 1.x in critical areas 
+              Otherwise, Log4j 2 performs faster than Log4j 1.x in critical areas
               and similarly to Logback under most circumstances.
               See <a href="performance.html">Performance</a> for more information.
             </dd>
             <dt>Support for multiple APIs</dt>
             <dd>
-              While the Log4j 2 API will provide the best performance, Log4j 2 provides support for the SLF4J and 
+              While the Log4j 2 API will provide the best performance, Log4j 2 provides support for the SLF4J and
               Commons Logging APIs.
             </dd>
             <dt>Automatic Reloading of Configurations</dt>
@@ -79,21 +68,21 @@
             </dd>
             <dt>Advanced Filtering</dt>
             <dd>
-              Like Logback, Log4j 2 supports filtering based on context data, markers, regular expressions, 
-              and other components in the Log event. Filtering can be specified to apply to all events 
-              before being passed to Loggers or as they pass through Appenders. In addition, filters can also 
-              be associated with Loggers. Unlike Logback, you can use a common Filter class in any of these 
+              Like Logback, Log4j 2 supports filtering based on context data, markers, regular expressions,
+              and other components in the Log event. Filtering can be specified to apply to all events
+              before being passed to Loggers or as they pass through Appenders. In addition, filters can also
+              be associated with Loggers. Unlike Logback, you can use a common Filter class in any of these
               circumstances.
             </dd>
             <dt>Plugin Architecture</dt>
             <dd>
-              Log4j uses the plugin pattern to configure components. As such, you do not need to write code 
-              to create and configure an Appender, Layout, Pattern Converter, and so on. Log4j automatically 
+              Log4j uses the plugin pattern to configure components. As such, you do not need to write code
+              to create and configure an Appender, Layout, Pattern Converter, and so on. Log4j automatically
               recognizes plugins and uses them when a configuration references them.
             </dd>
             <dt>Property Support</dt>
             <dd>
-              You can reference properties in a configuration, Log4j will directly replace them, or Log4j will 
+              You can reference properties in a configuration, Log4j will directly replace them, or Log4j will
               pass them to an underlying component that will dynamically resolve them. Properties come from values
               defined in the configuration file, system properties, environment variables, the ThreadContext
               Map, and data present in the event. Users can further customize the property providers by
@@ -107,15 +96,15 @@
               <a href="log4j-users-guide.pdf">PDF</a>.
             </p>
           </subsection>
-          
+
           <subsection name="Requirements">
              <p>
                Log4j 2 requires Java 6.
-               Some features require optional dependencies; the documentation for these features specifies the 
+               Some features require optional dependencies; the documentation for these features specifies the
                dependencies.
             </p>
           </subsection>
-  
+
           <subsection name="News">
             <p>
               Log4j 2 is now available for testing. The API for Log4j 2 is not compatible with Log4j 1.x, however an adapter
