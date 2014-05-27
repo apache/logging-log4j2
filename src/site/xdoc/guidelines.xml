@@ -99,12 +99,12 @@
       <subsection name="Issue Management">
       <p>The Log4j project uses the <a href="https://issues.apache.org/jira/browse/LOG4J2">Jira</a> bug tracking
         system hosted and maintained by the Apache Software Foundation for tracking bugs and enhancements. The
-        project roadmap may be maintained in Jira through its RoadMap feature and through the use of
+        project roadmap may be maintained in JIRA through its RoadMap feature and through the use of
         Story or Epic issues.</p>
       <p>Many issues will be encountered by the project, each resulting in zero or
         more proposed action items. Issues should be raised on the mailing list as
         soon as they are identified. Action items <strong>must</strong> be raised on the mailing
-        list and added to Jira using the appropriate issue type. All action items may be voted
+        list and added to JIRA using the appropriate issue type. All action items may be voted
         on, but not all of them will require a formal vote.</p>
       </subsection>
       <a name="voting"/>
@@ -136,7 +136,7 @@
           many people abstain.</dd>
         <dt><strong>-1</strong></dt>
         <dd>No. On issues where consensus is required, this vote counts as a
-          <strong>veto</strong>. All vetos must include an explanation of why the veto is
+          <strong>veto</strong>. All vetoes must include an explanation of why the veto is
           appropriate. A veto with no explanation is void. No veto can be
           overruled. If you disagree with the veto, you should lobby the person
           who cast the veto. Voters intending to veto an action item should make
@@ -144,15 +144,15 @@
           be remedied as early as possible.</dd>
       </dl>
       <p>An action item requiring <em>consensus approval</em> must receive at least <strong>3
-        binding +1</strong> votes and <strong>no vetos</strong>. An action item requiring <em>majority
+        binding +1</strong> votes and <strong>no vetoes</strong>. An action item requiring <em>majority
         approval</em> must receive at least <strong>3 binding +1</strong> votes and more <strong>+1</strong>
         votes than <strong>-1</strong> votes ( <em>i.e.</em> , a majority with a minimum quorum of
         three positive votes). All other action items are considered to have <em>lazy
           approval</em> until someone votes <strong>-1</strong> , after which point they are decided
         by either consensus or a majority vote, depending upon the type of action
         item.</p>
-      <p>When appropriate, votes should be tallied in the Jira issue. All votes must be either sent to
-        the mailing list or added directly to the Jira issue.</p>
+      <p>When appropriate, votes should be tallied in the JIRA issue. All votes must be either sent to
+        the mailing list or added directly to the JIRA issue.</p>
       </subsection>
       <a name="types-of-action-items"/>
       <subsection name="Types of Action Items">
@@ -256,13 +256,14 @@
         "committed with changes" if the person making the commit made the changes,
         or "committed with contributions from xxxx" if others made contributions to
         the code committed.</p>
-      <p>Example log message:
-        LOG4J2-9999`
-        Check the return code from parsing the content length, to avoid a
-        crash if requests contain an invalid content length.
-        Submitted by: Jane Doe &lt;janedoe example.com&gt;
-        Reviewed by: susiecommitter
-        ` </p>
+      <p>Example log message:</p>
+        <pre><![CDATA[
+LOG4J2-9999
+Check the return code from parsing the content length, to avoid a
+crash if requests contain an invalid content length.
+Submitted by: Jane Doe <janedoe example.com>
+Reviewed by: susiecommitter
+        ]]></pre>
       <h3 id="changes">changes.xml</h3>
       <p>changes.xml is the subset of the information that end users need to see when
         they upgrade from one release to the next:</p>
@@ -319,7 +320,7 @@
         corresponding to the action item for that patch. Afterwords, the patch
         summary in the STATUS file should be updated to point to the Message-ID of
         that message.</p>
-      <p>The patch should be created by using the<CODE>diff -u</CODE>command from
+      <p>The patch should be created by using the <kbd>diff -u</kbd> command from
         the original software file(s) to the modified software file(s). E.g.,
         <code>diff -u http_main.c.orig http_main.c &gt;&gt; patchfile.txt</code>
         or
@@ -336,7 +337,7 @@
       </subsection>
       <a name="teamwork"/>
       <subsection name="Teamwork">
-        Open source projects function best when everyone is aware of the "rules of the road" and abide by them.
+        <p>Open source projects function best when everyone is aware of the "rules of the road" and abide by them.</p>
         <ol>
           <li>Error on the side of caution. If you don’t understand it, don’t touch it and ask on the list. If you think you
             understand it read it again or ask until you are sure you do. Nobody will blame you for asking questions.</li>li>
