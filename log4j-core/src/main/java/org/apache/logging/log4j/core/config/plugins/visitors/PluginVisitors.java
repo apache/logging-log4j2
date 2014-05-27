@@ -49,16 +49,11 @@ public final class PluginVisitors {
             LOGGER.debug("No PluginVisitorStrategy found on annotation [{}]. Ignoring.", annotation);
             return null;
         }
-        final String visitorClassName = strategy.value();
+        final Class<? extends PluginVisitor<A>> visitorClass = (Class<? extends PluginVisitor<A>>) strategy.value();
         try {
-            // if a PluginVisitor is in a different JAR than log4j-core, it can be safely assumed that the
-            // corresponding annotation is in the same JAR as the PluginVisitor implementation. thus, we use that
-            // ClassLoader instead of any default one
-            final Class<? extends PluginVisitor<A>> visitorClass =
-                (Class<? extends PluginVisitor<A>>) annotation.getClassLoader().loadClass(visitorClassName);
             return visitorClass.newInstance();
         } catch (final Exception e) {
-            LOGGER.error("Error loading PluginVisitor [{}] for annotation [{}].", visitorClassName, annotation, e);
+            LOGGER.error("Error loading PluginVisitor [{}] for annotation [{}].", visitorClass, annotation, e);
             return null;
         }
     }
