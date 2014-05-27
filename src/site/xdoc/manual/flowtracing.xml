@@ -16,7 +16,9 @@
     limitations under the License.
 -->
 
-<document>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
     <properties>
         <title>Log4j 2 API</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
@@ -31,12 +33,12 @@
               execution path of applications. These methods generate logging events that can be filtered
               separately from other debug logging. Liberal use of these methods is encouraged as the output has
               been found to
-              <ul>
-                <li>aid in problem diagnosis in development without requiring a debug session</li>
-                <li>aid in problem diagnosis in production where no debugging is possible</li>
-                <li>help educate new developers in learning the application.</li>
-              </ul>
             </p>
+            <ul>
+              <li>aid in problem diagnosis in development without requiring a debug session</li>
+              <li>aid in problem diagnosis in production where no debugging is possible</li>
+              <li>help educate new developers in learning the application.</li>
+            </ul>
             <p>
               The two most used methods are the entry() and exit() methods. entry() should be placed at the
               beginning of methods, except perhaps for simple getters and setters. entry() can be called
