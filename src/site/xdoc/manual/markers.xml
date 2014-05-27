@@ -16,7 +16,9 @@
     limitations under the License.
 -->
 
-<document>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
     <properties>
         <title>Log4j 2 API</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
@@ -24,8 +26,8 @@
 
     <body>
         <section name="Log4j 2 API">
-          <a name="Markers"/>
           <subsection name="Markers">
+            <a name="Markers"/>
             <p>
               One of the primary purpose of a logging framework is to provide the means to generate debugging and
               diagnostic information only when it is needed, and to allow filtering of that information so that it
@@ -82,6 +84,7 @@ public class MyApp {
             </p>
             <p>
               Some important rules about Markers must be considered when using them.
+            </p>
               <ol>
                 <li>Markers must be unique. They are permanently registered by name so care should be taken
                   to insure that Markers used in your application are distinct from those in the application's
@@ -95,7 +98,6 @@ public class MyApp {
                   times longer than evaluating the Marker itself. Even then though, evaluating Markers is
                   inexpensive compared to resolving the callers class name or line number.</li>
               </ol>
-            </p>
           </subsection>
         </section>
     </body>

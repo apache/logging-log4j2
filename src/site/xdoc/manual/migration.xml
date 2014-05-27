@@ -16,7 +16,9 @@
     limitations under the License.
 -->
 
-<document>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
     <properties>
         <title>Migrating from Log4j 1.x</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
@@ -24,64 +26,63 @@
 
     <body>
         <section name="Migrating from Log4j 1.x">
-          <a name="The Log4j 1.x bridge"/>
+          <a name="Log4j1.2Bridge"/>
           <subsection name="Using the Log4j 1.x bridge">
             <p>
               Perhaps the simplest way to convert to using Log4j 2 is to replace the log4j 1.x jar file with
               Log4j 2's <code>log4j-1.2-api.jar</code>. However, to use this successfully applications must meet the
               following requirements:
+            </p>
               <ol>
                 <li>They must not access methods and classes internal to the Log4j 1.x implementation such
-                  as <code>Appender</code>s, <code>LoggerRepository</code> or <code>Category</code>'s 
+                  as <code>Appender</code>s, <code>LoggerRepository</code> or <code>Category</code>'s
                   <code>callAppenders</code> method.</li>
                 <li>They must not programmatically configure Log4j.</li>
-                <li>They must not configure by calling the classes <code>DOMConfigurator</code> or 
+                <li>They must not configure by calling the classes <code>DOMConfigurator</code> or
                   <code>PropertyConfigurator</code>.</li>
               </ol>
-            </p>
           </subsection>
           <subsection name="Converting to the Log4j 2 API">
             <p>For the most part, converting from the Log4j 1.x API to Log4j 2.0 should be fairly simple. Many
               of the log statements will require no modification. However, where necessary the following changes must be
-              made.
+              made.</p>
               <ol>
                 <li>
-                  The main package in version 1 is <code>org.apache.log4j</code>, in version 2.0 it is 
+                  The main package in version 1 is <code>org.apache.log4j</code>, in version 2.0 it is
                   <code>org.apache.logging.log4j</code>
                 </li>
                 <li>
-                  Calls to <code>org.apache.log4j.Logger.getLogger()</code> must be modified to 
+                  Calls to <code>org.apache.log4j.Logger.getLogger()</code> must be modified to
                   <code>org.apache.logging.log4j.LogManager.getLogger()</code>.
                 </li>
                 <li>
-                  Calls to <code>org.apache.log4j.Logger.getRootLogger()</code> or 
-                  <code>org.apache.log4j.LogManager.getRootLogger()</code> must be replaced with 
+                  Calls to <code>org.apache.log4j.Logger.getRootLogger()</code> or
+                  <code>org.apache.log4j.LogManager.getRootLogger()</code> must be replaced with
                   <code>org.apache.logging.log4j.LogManager.getRootLogger()</code>.</li>
                 <li>
                   Calls to <code>org.apache.log4j.Logger.getLogger</code> that accept a <code>LoggerFactory</code> must
-                  remove the <code>org.apache.log4j.spi.LoggerFactory</code> and use one of Log4j 2's other extension 
+                  remove the <code>org.apache.log4j.spi.LoggerFactory</code> and use one of Log4j 2's other extension
                   mechanisms.
                 </li>
                 <li>
-                  Replace calls to <code>org.apache.log4j.Logger.getEffectiveLevel()</code> with 
+                  Replace calls to <code>org.apache.log4j.Logger.getEffectiveLevel()</code> with
                   <code>org.apache.logging.log4j.Logger.getLevel()</code>.
                 </li>
                 <li>
-                  Remove calls to <code>org.apache.log4j.LogManager.shutdown()</code>, they are not needed in version 2 
-                  because the Log4j Core now automatically adds a JVM shutdown hook on start up to perform any Core 
-                  clean ups. 
+                  Remove calls to <code>org.apache.log4j.LogManager.shutdown()</code>, they are not needed in version 2
+                  because the Log4j Core now automatically adds a JVM shutdown hook on start up to perform any Core
+                  clean ups.
                 </li>
                 <li>
-                  Calls to <code>org.apache.log4j.Logger.setLevel()</code> or similar methods are not supported in the API. 
+                  Calls to <code>org.apache.log4j.Logger.setLevel()</code> or similar methods are not supported in the API.
                   Applications should remove these. Equivalent functionality is provided in the Log4j 2 implementation
                   classes but may leave the application susceptible to changes in Log4j 2 internals.
                 </li>
                 <li>
-                  Where appropriate, applications should convert to use parameterized messages instead of String 
+                  Where appropriate, applications should convert to use parameterized messages instead of String
                   concatenation.
                 </li>
               </ol>
-            </p>
           </subsection>
           <subsection name="Configuring Log4j 2">
             <p>
