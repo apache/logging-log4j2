@@ -16,7 +16,9 @@
     limitations under the License.
 -->
 
-<document>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
     <properties>
         <title>Log4j Filters</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
@@ -30,23 +32,27 @@
           one of 3 values - ACCEPT, DENY or NEUTRAL.
         </p>
         <p>
-          Filters may be configured in one of four locations;
-          <ol>
-            <li>Context-wide Filters are configured directly in the configuration. Events that are
+          Filters may be configured in one of four locations:
+        </p>
+        <ol>
+          <li>Context-wide Filters are configured directly in the configuration. Events that are
             rejected by these filters will not be passed to loggers for further processing. Once an
             event has been accepted by a Context-wide filter it will not be evaluated by any other
             Context-wide Filters nor will the Logger's Level be used to filter the event. The event
-            will be evaluated by Logger and Appender Filters however.</li>
-            <li>Logger Filters are configured on a specified Logger. These are evaluated after the
+            will be evaluated by Logger and Appender Filters however.
+          </li>
+          <li>Logger Filters are configured on a specified Logger. These are evaluated after the
             Context-wide Filters and the Log Level for the Logger. Events that are rejected by these
             filters will be discarded and the event will not be passed to a parent Logger regardless
-            of the additivity setting.</li>
-            <li>Appender Filters are used to determine if a specific Appender should handle the
-            formatting and publication of the event.</li>
-            <li>Appender Reference Filters are used to determine if a Logger should route the event to
-            an appender.</li>
-          </ol>
-        </p>
+            of the additivity setting.
+          </li>
+          <li>Appender Filters are used to determine if a specific Appender should handle the
+            formatting and publication of the event.
+          </li>
+          <li>Appender Reference Filters are used to determine if a Logger should route the event to
+            an appender.
+          </li>
+        </ol>
         <a name="BurstFilter"/>
         <subsection name="BurstFilter">
           <p>
@@ -54,6 +60,7 @@
             silently discarding events after the maximum limit has been reached.
           </p>
           <table>
+            <caption align="top">Burst Filter Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -90,12 +97,11 @@
               <td>Action to take when the filter does not match. May be ACCEPT, DENY or NEUTRAL. The default value is
                 DENY.</td>
             </tr>
-            <caption align="top">Burst Filter Parameters</caption>
           </table>
-           <p>
+          <p>
             A configuration containing the BurstFilter might look like:
-
-            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
   <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
@@ -113,7 +119,6 @@
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-          </p>
         </subsection>
         <a name="CompositeFilter"/>
         <subsection name="CompositeFilter">
@@ -122,10 +127,10 @@
             configuration as a filters element and contains other filters to be evaluated. The filters
             element accepts no parameters.
           </p>
-           <p>
+          <p>
             A configuration containing the CompositeFilter might look like:
-
-            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
   <Filters>
     <Marker marker="EVENT" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
@@ -158,7 +163,6 @@
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-          </p>
         </subsection>
         <a name="DynamicThresholdFilter"/>
         <subsection name="DynamicThresholdFilter">
@@ -168,6 +172,7 @@
             debug logging for only that user.
           </p>
           <table>
+            <caption align="top">Dynamic Threshold Filter Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -197,12 +202,11 @@
               <td>Action to take when the filter does not match. May be ACCEPT, DENY or NEUTRAL. The default value is
                 DENY.</td>
             </tr>
-            <caption align="top">Dynamic Threshold Filter Parameters</caption>
           </table>
-           <p>
+          <p>
             Here is a sample configuration containing the DynamicThresholdFilter:
-
-            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
   <DynamicThresholdFilter key="loginId" defaultThreshold="ERROR"
                           onMatch="ACCEPT" onMismatch="NEUTRAL">
@@ -224,7 +228,6 @@
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-          </p>
         </subsection>
         <a name="MapFilter"/>
         <subsection name="MapFilter">
@@ -232,6 +235,7 @@
             The MapFilter allows filtering against data elements that are in a MapMessage.
           </p>
           <table>
+            <caption align="top">Map Filter Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -261,12 +265,11 @@
               <td>Action to take when the filter does not match. May be ACCEPT, DENY or NEUTRAL. The default value is
                 DENY.</td>
             </tr>
-            <caption align="top">Map Filter Parameters</caption>
           </table>
-           <p>
+          <p>
             As in this configuration, the MapFilter can be used to log particular events:
-
-            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
   <MapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
     <KeyValuePair key="eventId" value="Login"/>
@@ -288,12 +291,11 @@
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-          </p>
           <p>
             This sample configuration will exhibit the same behavior as the preceding example since the only
-          logger configured is the root.
-
-            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+            logger configured is the root.
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
   <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
@@ -316,12 +318,11 @@
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-          </p>
           <p>
             This third sample configuration will exhibit the same behavior as the preceding examples since the only
             logger configured is the root and the root is only configured with a single appender reference.
-
-            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
   <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
@@ -344,7 +345,6 @@
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-          </p>
         </subsection>
         <a name="MarkerFilter"/>
         <subsection name="MarkerFilter">
@@ -354,6 +354,7 @@
             or one of its parents.
           </p>
           <table>
+            <caption align="top">Marker Filter Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -377,12 +378,11 @@
               <td>Action to take when the filter does not match. May be ACCEPT, DENY or NEUTRAL. The default value is
                 DENY.</td>
             </tr>
-            <caption align="top">Marker Filter Parameters</caption>
           </table>
-           <p>
-             A sample configuration that only allows the event to be written by the appender if the Marker matches:
-
-            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+          <p>
+            A sample configuration that only allows the event to be written by the appender if the Marker matches:
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
   <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
@@ -400,7 +400,6 @@
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-          </p>
         </subsection>
         <a name="RegexFilter"/>
         <subsection name="RegexFilter">
@@ -408,6 +407,7 @@
             The RegexFilter allows the formatted or unformatted message to be compared against a regular expression.
           </p>
           <table>
+            <caption align="top">Regex Filter Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -437,12 +437,12 @@
               <td>Action to take when the filter does not match. May be ACCEPT, DENY or NEUTRAL. The default value is
                 DENY.</td>
             </tr>
-            <caption align="top">Regex Filter Parameters</caption>
           </table>
-           <p>
-             A sample configuration that only allows the event to be written by the appender if it contains the word "test":
-
-            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+          <p>
+            A sample configuration that only allows the event to be written by the appender if it contains the word
+            "test":
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
   <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
@@ -460,7 +460,6 @@
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-          </p>
         </subsection>
         <a name="StructuredDataFilter"/>
         <subsection name="StructuredDataFilter">
@@ -468,6 +467,7 @@
             The StructuredDataFilter is a MapFilter that also allows filtering on the event id, type and message.
           </p>
           <table>
+            <caption align="top">StructuredData Filter Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -500,12 +500,11 @@
               <td>Action to take when the filter does not match. May be ACCEPT, DENY or NEUTRAL. The default value is
                 DENY.</td>
             </tr>
-            <caption align="top">StructuredData Filter Parameters</caption>
           </table>
-           <p>
+          <p>
             As in this configuration, the StructuredDataFilter can be used to log particular events:
-
-            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
   <StructuredDataFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
     <KeyValuePair key="id" value="Login"/>
@@ -527,7 +526,6 @@
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-          </p>
         </subsection>
         <a name="ThreadContextMapFilter"/>
         <subsection name="ThreadContextMapFilter">
@@ -535,6 +533,7 @@
             The ThreadContextMapFilter allows filtering against data elements that are in the ThreadContext Map.
           </p>
           <table>
+            <caption align="top">ThreadContext Map Filter Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -564,12 +563,11 @@
               <td>Action to take when the filter does not match. May be ACCEPT, DENY or NEUTRAL. The default value is
                 DENY.</td>
             </tr>
-            <caption align="top">ThreadContext Map Filter Parameters</caption>
           </table>
-           <p>
+          <p>
             A configuration containing the ThreadContextMapFilter might look like:
-
-            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
   <ThreadContextMapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
     <KeyValuePair key="User1" value="DEBUG"/>
@@ -591,10 +589,10 @@
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-          </p>
           <p>
             The ThreadContextMapFilter can also be applied to a logger for filtering:
-            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
   <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
@@ -617,7 +615,6 @@
   </Loggers>
 </Configuration>
   ]]></pre>
-          </p>
         </subsection>
         <a name="ThresholdFilter"/>
         <subsection name="ThresholdFilter">
@@ -628,6 +625,7 @@
             be returned since ERROR events are more specific than DEBUG.
           </p>
           <table>
+            <caption align="top">Threshold Filter Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -651,12 +649,11 @@
               <td>Action to take when the filter does not match. May be ACCEPT, DENY or NEUTRAL. The default value is
                 DENY.</td>
             </tr>
-            <caption align="top">Threshold Filter Parameters</caption>
           </table>
-           <p>
-             A sample configuration that only allows the event to be written by the appender if the level matches:
-
-            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+          <p>
+            A sample configuration that only allows the event to be written by the appender if the level matches:
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
   <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
@@ -674,7 +671,6 @@
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-          </p>
         </subsection>
         <a name="TimeFilter"/>
         <subsection name="TimeFilter">
@@ -682,6 +678,7 @@
             The time filter can be used to restrict filter to only a certain portion of the day.
           </p>
           <table>
+            <caption align="top">Time Filter Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -720,13 +717,12 @@
               <td>Action to take when the filter does not match. May be ACCEPT, DENY or NEUTRAL. The default value is
                 DENY.</td>
             </tr>
-            <caption align="top">Time Filter Parameters</caption>
           </table>
-           <p>
-             A sample configuration that only allows the event to be written by the appender from 5:00 to 5:30 am each
-             day using the default timezone:
-
-            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+          <p>
+            A sample configuration that only allows the event to be written by the appender from 5:00 to 5:30 am each
+            day using the default timezone:
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
   <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
@@ -744,7 +740,6 @@
     </Root>
   </Loggers>
 </Configuration>]]></pre>
-          </p>
         </subsection>
       </section>
     </body>
