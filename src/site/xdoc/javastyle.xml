@@ -146,7 +146,7 @@
       <p>Within a group there are no blank lines, and the imported names appear in ASCII sort
       order. (<strong>Note:</strong> this is not the same as the import <em>statements</em> being in
       ASCII sort order; the presence of semicolons warps the result.)</p>
-      <p>IDE settings for ordering imports automatically can be found in the source distributions under 
+      <p>IDE settings for ordering imports automatically can be found in the source distributions under
       <code>src/ide</code>. For example:</p>
       <ul>
         <li>Eclipse: <code>src/ide/eclipse/4.3.2/organize-imports.importorder</code></li>
@@ -163,28 +163,34 @@
       <p>Class members should be grouped in the following order>.</p>
       <ol>
         <li>static variables grouped in the order shown below. Within a group variables may appear in any order.</li>
-        <ol>
-          <li>public</li>
-          <li>protected</li>
-          <li>package</li>
-          <li>private</li>
-        </ol>
+        <li>
+          <ol>
+            <li>public</li>
+            <li>protected</li>
+            <li>package</li>
+            <li>private</li>
+          </ol>
+        </li>
         <li>instance variables grouped in the order shown below. Within a group variables may appear in any order</li>
-        <ol>
-          <li>public</li>
-          <li>protected</li>
-          <li>package</li>
-          <li>private</li>
-        </ol>
+        <li>
+          <ol>
+            <li>public</li>
+            <li>protected</li>
+            <li>package</li>
+            <li>private</li>
+          </ol>
+        </li>
         <li>constructors</li>
         <li>methods may be specified in the following order but may appear in another order if it improves the
           clarity of the program.</li>
-        <ol>
-          <li>public</li>
-          <li>protected</li>
-          <li>package</li>
-          <li>private</li>
-        </ol>
+        <li>
+          <ol>
+            <li>public</li>
+            <li>protected</li>
+            <li>package</li>
+            <li>private</li>
+          </ol>
+        </li>
       </ol>
       <a name="overloads"/>
       <a name="never-split"/>
