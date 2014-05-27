@@ -340,7 +340,7 @@ Reviewed by: susiecommitter
         <p>Open source projects function best when everyone is aware of the "rules of the road" and abide by them.</p>
         <ol>
           <li>Error on the side of caution. If you don’t understand it, don’t touch it and ask on the list. If you think you
-            understand it read it again or ask until you are sure you do. Nobody will blame you for asking questions.</li>li>
+            understand it read it again or ask until you are sure you do. Nobody will blame you for asking questions.</li>
           <li>Don’t break the build - if there is the slightest chance the change you are making could cause unit test
             failures, run all unit tests.  Better yet, get in the habit of always running the unit tests before doing the commit.</li>
           <li>If the build breaks and you have made recent changes then assume you broke it and try to fix it. Although it
