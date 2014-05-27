@@ -44,7 +44,7 @@
           Configuration of Log4j 2 can be accomplished in 1 of 4 ways:
         </p>
           <ol>
-            <li>Through a configuration file written in XML or JSON.</li>
+            <li>Through a configuration file written in XML, JSON, or YAML.</li>
             <li>Programmatically, by creating a ConfigurationFactory and Configuration implementation.</li>
             <li>Programmatically, by calling the APIs exposed in the Configuration interface to add
               components to the default configuration.</li>
