@@ -44,8 +44,8 @@
                 <li>SMTPAppender requires Javax Mail.</li>
                 <li>JMSQueueAppender and JMSTopicAppender require a JMS implementation like
                 <a href="http://activemq.apache.org/">Apache ActiveMQ</a>.</li>
-                <li>Windows color support requires Jansi.</li>
-                <li>The JDBC Appender requires a JDBC driver for the database you choese to write events to.</li>
+                <li>Windows color support requires <a href="http://jansi.fusesource.org/">Jansi</a>.</li>
+                <li>The JDBC Appender requires a JDBC driver for the database you choose to write events to.</li>
                 <li>The JPA Appender requires the Java Persistence API classes, a JPA provider implementation,
                 and a decorated entity that the user implements. It also requires an appropriate JDBC driver.</li>
                 <li>The NoSQL Appender with MongoDB provider requires the MongoDB Java Client driver.</li>
