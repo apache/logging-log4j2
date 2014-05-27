@@ -141,21 +141,12 @@ public class XMLConfigurationFactory extends ConfigurationFactory {
 public static class RootLogger extends LoggerConfig {
 
     @PluginFactory
-    public static LoggerConfig createLogger(@PluginAttr("additivity") String additivity,
-                                            @PluginAttr("level") String loggerLevel,
+    public static LoggerConfig createLogger(@PluginAttribute(value = "additivity", defaultBooleanValue = true) boolean additivity,
+                                            @PluginAttribute(value = "level", defaultStringValue = "ERROR") Level level,
                                             @PluginElement("AppenderRef") AppenderRef[] refs,
                                             @PluginElement("Filters") Filter filter) {
         List<AppenderRef> appenderRefs = Arrays.asList(refs);
-        Level level;
-        try {
-            level = loggerLevel == null ? Level.ERROR : Level.valueOf(loggerLevel.toUpperCase());
-        } catch (Exception ex) {
-            LOGGER.error("Invalid Log level specified: {}. Defaulting to Error", loggerLevel);
-            level = Level.ERROR;
-        }
-        boolean additive = additivity == null ? true : Boolean.parseBoolean(additivity);
-
-        return new LoggerConfig(LogManager.ROOT_LOGGER_NAME, appenderRefs, filter, level, additive);
+        return new LoggerConfig(LogManager.ROOT_LOGGER_NAME, appenderRefs, filter, level, additivity);
     }
 }]]></pre>
           </subsection>
@@ -261,13 +252,9 @@ public final class ThresholdFilter extends AbstractFilter {
      * @return The created ThresholdFilter.
      */
     @PluginFactory
-    public static ThresholdFilter createFilter(@PluginAttr("level") String loggerLevel,
-                                               @PluginAttr("onMatch") String match,
-                                               @PluginAttr("onMismatch") String mismatch) {
-        Level level = loggerLevel == null ? Level.ERROR : Level.toLevel(loggerLevel.toUpperCase());
-        Result onMatch = match == null ? Result.NEUTRAL : Result.valueOf(match.toUpperCase());
-        Result onMismatch = mismatch == null ? Result.DENY : Result.valueOf(mismatch.toUpperCase());
-
+    public static ThresholdFilter createFilter(@PluginAttribute(value = "level", defaultStringValue = "ERROR") Level level,
+                                               @PluginAttribute(value = "onMatch", defaultStringValue = "NEUTRAL") Result onMatch,
+                                               @PluginAttribute(value = "onMismatch", defaultStringValue = "DENY") Result onMismatch) {
         return new ThresholdFilter(level, onMatch, onMismatch);
     }
 }</pre>
@@ -301,12 +288,10 @@ public final class StubAppender extends OutputStreamAppender {
     }
 
     @PluginFactory
-    public static StubAppender createAppender(@PluginAttr("name") String name,
-                                              @PluginAttr("ignoreExceptions") String ignore,
+    public static StubAppender createAppender(@PluginAttribute("name") String name,
+                                              @PluginAttribute("ignoreExceptions") boolean ignoreExceptions,
                                               @PluginElement("Layout") Layout layout,
                                               @PluginElement("Filters") Filter filter) {
-
-        boolean ignoreExceptions = Boolean.parseBoolean(ignore);
 
         if (name == null) {
             LOGGER.error("No name provided for StubAppender");
@@ -318,7 +303,7 @@ public final class StubAppender extends OutputStreamAppender {
             return null;
         }
         if (layout == null) {
-            layout = PatternLayout.createLayout(null, null, null, null);
+            layout = PatternLayout.createDefaultLayout();
         }
         return new StubAppender(name, layout, filter, manager, ignoreExceptions);
     }
@@ -348,24 +333,11 @@ public class SampleLayout extends AbstractStringLayout {
     }
 
     @PluginFactory
-    public static SampleLayout createLayout(@PluginAttr("locationInfo") String locationInfo,
-                                            @PluginAttr("properties") String properties,
-                                            @PluginAttr("complete") String complete,
-                                            @PluginAttr("charset") String charset) {
-        Charset c = Charset.isSupported("UTF-8") ?
-                    Charset.forName("UTF-8") : Charset.defaultCharset();
-        if (charset != null) {
-            if (Charset.isSupported(charset)) {
-                c = Charset.forName(charset);
-            } else {
-                LOGGER.error("Charset " + charset + " is not supported for layout, using " +
-                             c.displayName());
-            }
-        }
-        boolean info = locationInfo == null ? false : Boolean.valueOf(locationInfo);
-        boolean props = properties == null ? false : Boolean.valueOf(properties);
-        boolean comp = complete == null ? false : Boolean.valueOf(complete);
-        return new SampleLayout(info, props, comp, c);
+    public static SampleLayout createLayout(@PluginAttribute("locationInfo") boolean locationInfo,
+                                            @PluginAttribute("properties") boolean properties,
+                                            @PluginAttribute("complete") boolean complete,
+                                            @PluginAttribute(value = "charset", defaultStringValue = "UTF-8") Charset charset) {
+        return new SampleLayout(locationInfo, properties, complete, charset);
     }
 }</pre>
           </subsection>
@@ -405,7 +377,7 @@ public final class QueryConverter extends LogEventPatternConverter {
 }</pre>
           </subsection>
           <subsection name="Custom Plugins">
-
+<!-- TODO: some documentation here! -->
           </subsection>
       </section>
 
