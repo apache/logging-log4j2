@@ -34,6 +34,7 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
+@PluginVisitorStrategy("org.apache.logging.log4j.core.config.plugins.visitors.SensitivePluginAttributeVisitor")
 public @interface SensitivePluginAttribute {
     String value();
 

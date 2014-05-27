@@ -29,5 +29,6 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.FIELD})
+@PluginVisitorStrategy("org.apache.logging.log4j.core.config.plugins.visitors.PluginConfigurationVisitor")
 public @interface PluginConfiguration {
 }
