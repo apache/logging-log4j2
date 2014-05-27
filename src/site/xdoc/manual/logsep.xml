@@ -16,7 +16,9 @@
     limitations under the License.
 -->
 
-<document>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
     <properties>
         <title>Logging Separation</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
@@ -29,8 +31,8 @@
           and each has a need to have its own, separate logging environment. This purpose of this section is to
           discuss some of these cases and ways to accomplish this.
         </p>
-        <a name="Use Cases"/>
         <subsection name="Use Cases">
+          <a name="Use Cases"/>
           <p>
             This section describes some of the use cases where Log4j could be used and what its desired behavior
             might be.
@@ -64,8 +66,8 @@
               File objects, channels, etc.
             </p>
         </subsection>
-        <a name="Approaches"/>
         <subsection name="Approaches">
+          <a name="Approaches"/>
           <h4>The Simple Approach</h4>
             <p>
               The simplest approach for separating logging within applications is to package each application with
@@ -78,6 +80,7 @@
           <h4>Using Context Selectors</h4>
             <p>
               There are a few patterns for achieving the desired state of logging separation using ContextSelectors:
+            </p>
               <ol>
                 <li>Place the logging jars in the container's classpath and set the system property
                   "Log4jContextSelector" to "org.apache.logging.log4j.core.selector.BasicContextSelector". This will
@@ -99,7 +102,6 @@
                   <code>log4jContextName</code> and <code>log4jConfiguration</code> context parameters.
                 </li>
               </ol>
-            </p>
             <p>
               The exact method for setting system properties depends on the container. For Tomcat, edit
               <code>$CATALINA_HOME/conf/catalina.properties</code>. Consult the documentation for other web containers.
