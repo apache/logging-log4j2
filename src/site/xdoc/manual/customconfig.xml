@@ -16,7 +16,9 @@
     limitations under the License.
 -->
 
-<document>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
     <properties>
         <title>Extending Log4j 2 Configuration</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
@@ -93,12 +95,14 @@ public class MyXMLConfiguration extends XMLConfiguration {
             <p>
               Applications sometimes have the need to customize logging separate from the actual configuration.
               Log4j allows this although it suffers from a few limitations:
+            </p>
               <ol>
                 <li>If the configuration file is changed the configuration will be reloaded and the manual changes
                 will be lost.</li>
                 <li>Modification to the running configuration requires that all the methods being called (addAppender
                   and addLogger) be synchronized.</li>
               </ol>
+            <p>
               As such, the recommended approach for customizing a configuration is to extend one of the standard
               Configuration classes, override the setup method to first do super.setup() and then add the custom
               Appenders, Filters and LoggerConfigs to the configuration before it is registered for use.
@@ -107,6 +111,7 @@ public class MyXMLConfiguration extends XMLConfiguration {
               The following example adds an Appender and a new LoggerConfig using that Appender to the current
               configuration.
             </p>
+            <!-- TODO: update code example below with new plugin API -->
             <pre class="prettyprint linenums"><![CDATA[
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         final Configuration config = ctx.getConfiguration();
