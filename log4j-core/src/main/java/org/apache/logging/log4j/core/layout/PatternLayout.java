@@ -265,7 +265,7 @@ public final class PatternLayout extends AbstractStringLayout {
      */
     @PluginFactory
     public static PatternLayout createLayout(
-            @PluginAttribute("pattern") final String pattern,
+            @PluginAttribute(value = "pattern", defaultStringValue = DEFAULT_CONVERSION_PATTERN) final String pattern,
             @PluginConfiguration final Configuration config,
             @PluginElement("Replace") final RegexReplacement replace,
             @PluginAttribute(value = "charset", defaultStringValue = "UTF-8") final Charset charset,
@@ -273,8 +273,16 @@ public final class PatternLayout extends AbstractStringLayout {
             @PluginAttribute(value = "noConsoleNoAnsi", defaultBooleanValue = false) final boolean noConsoleNoAnsi,
             @PluginAttribute("header") final String header,
             @PluginAttribute("footer") final String footer) {
-        return new PatternLayout(config, replace, pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern, charset,
-                alwaysWriteExceptions, noConsoleNoAnsi, header, footer);
+        return newBuilder()
+            .withPattern(pattern)
+            .withConfiguration(config)
+            .withRegexReplacement(replace)
+            .withCharset(charset)
+            .withAlwaysWriteExceptions(alwaysWriteExceptions)
+            .withNoConsoleNoAnsi(noConsoleNoAnsi)
+            .withHeader(header)
+            .withFooter(footer)
+            .build();
     }
 
     /**
