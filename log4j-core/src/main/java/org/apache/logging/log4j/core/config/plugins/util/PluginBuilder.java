@@ -34,7 +34,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitor;
-import org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitorRegistry;
+import org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitors;
 import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.core.util.Builder;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -164,7 +164,7 @@ public class PluginBuilder<T> implements Builder<T> {
                     continue; // already processed
                 }
                 final PluginVisitor<? extends Annotation> visitor =
-                    PluginVisitorRegistry.findVisitor(a.annotationType());
+                    PluginVisitors.findVisitor(a.annotationType());
                 if (visitor != null) {
                     final Object value = visitor.setAliases(aliases)
                         .setAnnotation(a)
@@ -200,7 +200,7 @@ public class PluginBuilder<T> implements Builder<T> {
                 if (a instanceof PluginAliases) {
                     continue; // already processed
                 }
-                final PluginVisitor<? extends Annotation> visitor = PluginVisitorRegistry.findVisitor(
+                final PluginVisitor<? extends Annotation> visitor = PluginVisitors.findVisitor(
                     a.annotationType());
                 if (visitor != null) {
                     args[i] = visitor.setAliases(aliases)
