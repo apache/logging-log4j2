@@ -16,7 +16,9 @@
     limitations under the License.
 -->
 
-<document>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
     <properties>
         <title>Log4j 2 Thread Context</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
@@ -116,19 +118,21 @@ ThreadContext.clear();</pre>
           <h4>Including the ThreadContext when writing logs</h4>
           <p>
             The <a href="../log4j-api/apidocs/org/apache/logging/log4j/core/PatternLayout.html">PatternLayout</a>
-            provides mechanisms to print the contents of the 
-            <a href="../log4j-api/apidocs/org/apache/logging/log4j/ThreadContext.html">ThreadContext</a> 
-            Map and Stack. 
-            <ul>
-              Use <code>%X</code> by itself to include the full contents of the Map.
-            </ul>
-            <ul>
-              Use <code>%X{key}</code> to include the specified key. 
-            </ul>
-            <ul>
-              Use <code>%x</code> to include the full contents of the <a href="http://docs.oracle.com/javase/6/docs/api/java/util/Stack.html">Stack</a>.
-            </ul>
+            provides mechanisms to print the contents of the
+            <a href="../log4j-api/apidocs/org/apache/logging/log4j/ThreadContext.html">ThreadContext</a>
+            Map and Stack.
           </p>
+          <ul>
+            <li>
+              Use <code>%X</code> by itself to include the full contents of the Map.
+            </li>
+            <li>
+              Use <code>%X{key}</code> to include the specified key.
+            </li>
+            <li>
+              Use <code>%x</code> to include the full contents of the <a href="http://docs.oracle.com/javase/6/docs/api/java/util/Stack.html">Stack</a>.
+            </li>
+          </ul>
         </subsection>
       </section>
     </body>

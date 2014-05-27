@@ -26,8 +26,8 @@
 
     <body>
       <section name="Plugins">
-        <a name="Introduction"/>
         <subsection name="Introduction">
+          <a name="Introduction"/>
           <p>
             Log4j 1.x allowed for extension by requiring class attributes on most of the configuration
             declarations. In the case of some elements, notably the PatternLayout, the only way to add
@@ -43,8 +43,8 @@
             sections.
           </p>
         </subsection>
-        <a name="Core"/>
         <subsection name="Core">
+          <a name="Core"/>
           <p>
             Core plugins are those that are directly represented by an element in a configuration file, such as an
             Appender, Logger or Filter. Custom plugins that conform to the rules laid out in the next paragraph
@@ -69,8 +69,8 @@
               <dd>The current Configuration object will be passed to the plugin as a parameter.</dd>
             </dl>
         </subsection>
-        <a name="Converters"/>
         <subsection name="Converters">
+          <a name="Converters"/>
           <p>
             Converters are used by
             <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/layout/PatternLayout.html">PatternLayout</a>
@@ -91,8 +91,8 @@
             RollingFileAppender to construct the name of the file to log to.
           </p>
         </subsection>
-        <a name="KeyProviders"/>
         <subsection name="KeyProviders">
+          <a name="KeyProviders"/>
           <p>
           Some components within Log4j may provide the ability to perform data encryption. These components require
           a secret key to perform the encryption. Applications may provide the key by creating a class that
@@ -100,8 +100,8 @@
           interface.
           </p>
         </subsection>
-        <a name="Lookups"/>
         <subsection name="Lookups">
+          <a name="Lookups"/>
           <p>
             Lookups are perhaps the simplest plugins of all. They must declare their type as "Lookup" on the
             plugin annotation and must implement the StrLookup interface. They will have two methods; a
@@ -111,8 +111,8 @@
             key is the name of the item to locate.
           </p>
         </subsection>
-        <a name="PluginPreloading"/>
         <subsection name="Plugin Preloading">
+          <a name="PluginPreloading"/>
           <!-- FIXME: this documentation could probably be simplified quite a bit thanks to LOG4J2-595 -->
           <p>
           Scanning for annotated classes dynamically takes a bit of time during application initialization. Log4j
@@ -146,22 +146,7 @@
           <h4>Using the Java annotation processor</h4>
           <p>
             Annotated classes marked with <code>@Plugin</code> or <code>@PluginAliases</code> are now automatically
-            preloaded when you include the log4j-core artifact, or more specifically, when you use the following
-            dependency:
-          </p>
-          <!-- FIXME: could this file be renamed to plugins.xml.vm to gain access to ${Log4jReleaseVersion} -->
-          <pre class="prettyprint linenums"><![CDATA[
-<dependencies>
-  <dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-plugin-processor</artifactId>
-    <version>2.0</version>
-  </dependency>
-</dependencies>
-          ]]></pre>
-          <p>
-            Note, however, that explicitly adding this dependency is unnecessary when you include log4j-core as it is
-            used by log4j-core.
+            preloaded when you include the log4j-core artifact.
           </p>
         </subsection>
       </section>
