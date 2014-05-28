@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.core.config.plugins.util;
 
+import java.io.File;
 import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -73,6 +74,7 @@ public final class TypeConverters {
         registry.put(Facility.class, new EnumConverter<Facility>(Facility.class));
         registry.put(Protocol.class, new EnumConverter<Protocol>(Protocol.class));
         registry.put(HtmlLayout.FontSize.class, new EnumConverter<HtmlLayout.FontSize>(HtmlLayout.FontSize.class));
+        registry.put(File.class, new FileConverter());
     }
 
     /**
@@ -153,6 +155,16 @@ public final class TypeConverters {
         @Override
         public String convert(final String s) {
             return s;
+        }
+    }
+
+    /**
+     * Parses Strings into Files
+     */
+    private static class FileConverter implements TypeConverter<File> {
+        @Override
+        public File convert(final String s) {
+            return new File(s);
         }
     }
 

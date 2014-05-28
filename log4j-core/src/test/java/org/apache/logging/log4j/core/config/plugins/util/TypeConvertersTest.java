@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.core.config.plugins.util;
 
+import java.io.File;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collection;
@@ -116,6 +117,7 @@ public class TypeConvertersTest {
                 // arrays
                 { "123", "123".toCharArray(), null, char[].class },
                 { "123", "123".getBytes(Charset.defaultCharset()), null, byte[].class },
+                { "c:/temp", new File("c:/temp"), null, File.class },
             }
         );
     }
