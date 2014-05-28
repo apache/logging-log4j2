@@ -113,6 +113,9 @@ public class TypeConvertersTest {
                 { "Cron", Facility.CRON, null, Facility.class },
                 { "not a real facility", Facility.AUTH, "auth", Facility.class },
                 { null, null, null, Facility.class },
+                // arrays
+                { "123", "123".toCharArray(), null, char[].class },
+                { "123", "123".getBytes(Charset.defaultCharset()), null, byte[].class },
             }
         );
     }
@@ -133,6 +136,11 @@ public class TypeConvertersTest {
     public void testConvert() throws Exception {
         final Object actual = TypeConverters.convert(value, clazz, defaultValue);
         final String assertionMessage = "\nGiven: " + value + "\nDefault: " + defaultValue;
-        assertEquals(assertionMessage, expected, actual);
-    }
+        if (expected != null && expected instanceof char[]) {
+            assertArrayEquals(assertionMessage, (char[]) expected, (char[]) actual);
+        } else if (expected != null && expected instanceof byte[]) {
+            assertArrayEquals(assertionMessage, (byte[]) expected, (byte[]) actual);
+        } else {
+            assertEquals(assertionMessage, expected, actual);
+        }}
 }

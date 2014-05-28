@@ -54,6 +54,8 @@ public final class TypeConverters {
      */
     private TypeConverters() {
         registry.put(String.class, new StringConverter());
+        registry.put(char[].class, new CharArrayConverter());
+        registry.put(byte[].class, new ByteArrayConverter());
         registry.put(Boolean.class, new BooleanConverter());
         registry.put(boolean.class, registry.get(Boolean.class));
         registry.put(Integer.class, new IntegerConverter());
@@ -151,6 +153,26 @@ public final class TypeConverters {
         @Override
         public String convert(final String s) {
             return s;
+        }
+    }
+
+    /**
+     * Parses Strings into char[]s.
+     */
+    private static class CharArrayConverter implements TypeConverter<char[]> {
+        @Override
+        public char[] convert(final String s) {
+            return s.toCharArray();
+        }
+    }
+
+    /**
+     * Parses Strings into byte[]s.
+     */
+    private static class ByteArrayConverter implements TypeConverter<byte[]> {
+        @Override
+        public byte[] convert(final String s) {
+            return s.getBytes(Charset.defaultCharset());
         }
     }
 
