@@ -48,6 +48,9 @@ public class CleanFiles extends ExternalResource {
         for (final File file : files) {
             if (file.exists()) {
                 final boolean deleted = file.delete();
+                if (!deleted) {
+                    file.deleteOnExit();
+                }
                 assertTrue(
                         "Could not delete " + file.toString() + ", last modifed "
                                 + DateFormat.getInstance().format(new Date(file.lastModified())), deleted);
