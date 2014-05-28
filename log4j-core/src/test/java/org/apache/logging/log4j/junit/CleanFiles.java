@@ -47,10 +47,11 @@ public class CleanFiles extends ExternalResource {
     private void clean() {
         for (final File file : files) {
             if (file.exists()) {
+                final boolean deleted = file.delete();
                 assertTrue(
                         "Could not delete " + file.toString() + ", last modifed "
-                                + DateFormat.getInstance().format(new Date(file.lastModified())), file.delete());
-            } 
+                                + DateFormat.getInstance().format(new Date(file.lastModified())), deleted);
+            }
         }
     }
 
