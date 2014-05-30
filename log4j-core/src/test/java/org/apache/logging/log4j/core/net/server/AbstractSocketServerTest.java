@@ -193,7 +193,7 @@ public abstract class AbstractSocketServerTest {
             if (listAppender.getEvents().size() < messages.length) {
                 try {
                     // Let the server-side read the messages.
-                    Thread.sleep(40);
+                    Thread.sleep(50);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
