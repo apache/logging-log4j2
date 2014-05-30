@@ -26,8 +26,8 @@ import org.apache.logging.log4j.core.config.plugins.visitors.PluginAttributeVisi
 import org.apache.logging.log4j.util.Strings;
 
 /**
- * Identifies a Plugin Attribute and its default value. Note that only one of the defaultFooValue attributes will be
- * used based on the type this annotation is attached to. Thus, for primitive types, the default<i>Type</i>Value
+ * Identifies a Plugin Attribute and its default value. Note that only one of the defaultFoo attributes will be
+ * used based on the type this annotation is attached to. Thus, for primitive types, the default<i>Type</i>
  * attribute will be used for some <i>Type</i>. However, for more complex types (including enums), the default
  * string value is used instead and should correspond to the string that would correctly convert to the appropriate
  * enum value using {@link Enum#valueOf(Class, String) Enum.valueOf}.
