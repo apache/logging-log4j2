@@ -194,7 +194,7 @@ public final class TypeConverters {
     private static class BooleanConverter implements TypeConverter<Boolean> {
         @Override
         public Boolean convert(final String s) {
-            return Boolean.parseBoolean(s);
+            return Boolean.valueOf(s);
         }
     }
 
@@ -204,7 +204,7 @@ public final class TypeConverters {
     private static class IntegerConverter implements TypeConverter<Integer> {
         @Override
         public Integer convert(final String s) {
-            return Integer.parseInt(s);
+            return Integer.valueOf(s);
         }
     }
 
@@ -214,7 +214,7 @@ public final class TypeConverters {
     private static class LongConverter implements TypeConverter<Long> {
         @Override
         public Long convert(final String s) {
-            return Long.parseLong(s);
+            return Long.valueOf(s);
         }
     }
 
@@ -224,7 +224,7 @@ public final class TypeConverters {
     private static class FloatConverter implements TypeConverter<Float> {
         @Override
         public Float convert(final String s) {
-            return Float.parseFloat(s);
+            return Float.valueOf(s);
         }
     }
 
@@ -234,7 +234,7 @@ public final class TypeConverters {
     private static class DoubleConverter implements TypeConverter<Double> {
         @Override
         public Double convert(final String s) {
-            return Double.parseDouble(s);
+            return Double.valueOf(s);
         }
     }
 
