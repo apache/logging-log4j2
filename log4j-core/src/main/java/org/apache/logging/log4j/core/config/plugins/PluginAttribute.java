@@ -23,6 +23,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.apache.logging.log4j.core.config.plugins.visitors.PluginAttributeVisitor;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Identifies a Plugin Attribute and its default value. Note that only one of the defaultFooValue attributes will be
@@ -46,7 +47,7 @@ public @interface PluginAttribute {
     /**
      * Specifies the default value this attribute should use if none is provided or if the provided value is invalid.
      */
-    String defaultString() default "";
+    String defaultString() default Strings.EMPTY;
 
     /**
      * Specifies the default integer value to use.
