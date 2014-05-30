@@ -72,4 +72,10 @@ public @interface PluginAttribute {
      * Specifies the default double floating point value to use.
      */
     double defaultDouble() default 0.0d;
+
+    /**
+     * Specifies the default {@link Class} value to use.
+     */
+    Class<?> defaultClass() default Object.class;
+
 }
