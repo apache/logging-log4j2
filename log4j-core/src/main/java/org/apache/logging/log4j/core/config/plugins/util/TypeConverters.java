@@ -48,14 +48,306 @@ public final class TypeConverters {
 
     // TODO: this could probably be combined with the usual plugin architecture instead
 
-    private static final Logger LOGGER = StatusLogger.getLogger();
+    /**
+     * Parses a {@link String} into a {@link BigDecimal}.
+     */
+    private static class BigDecimalConverter implements TypeConverter<BigDecimal> {
+        @Override
+        public BigDecimal convert(final String s) {
+            return new BigDecimal(s);
+        }
+    }
 
-    private final Map<Class<?>, TypeConverter<?>> registry =
-        new ConcurrentHashMap<Class<?>, TypeConverter<?>>();
+    /**
+     * Parses a {@link String} into a {@link BigInteger}.
+     */
+    private static class BigIntegerConverter implements TypeConverter<BigInteger> {
+        @Override
+        public BigInteger convert(final String s) {
+            return new BigInteger(s);
+        }
+    }
+
+    /**
+     * Converts a {@link String} into a {@link Boolean}.
+     */
+    private static class BooleanConverter implements TypeConverter<Boolean> {
+        @Override
+        public Boolean convert(final String s) {
+            return Boolean.valueOf(s);
+        }
+    }
+
+    /**
+     * Converts a {@link String} into a {@code byte[]}.
+     */
+    private static class ByteArrayConverter implements TypeConverter<byte[]> {
+        @Override
+        public byte[] convert(final String s) {
+            return s.getBytes(Charset.defaultCharset());
+        }
+    }
+
+    /**
+     * Converts a {@link String} into a {@link Byte}.
+     */
+    private static class ByteConverter implements TypeConverter<Byte> {
+        @Override
+        public Byte convert(final String s) {
+            return Byte.valueOf(s);
+        }
+    }
+
+    /**
+     * Converts a {@link String} into a {@link Character}.
+     */
+    private static class CharacterConverter implements TypeConverter<Character> {
+        @Override
+        public Character convert(final String s) {
+            if (s.length() != 1) {
+                throw new IllegalArgumentException("Character string must be of length 1: " + s);
+            }
+            return Character.valueOf(s.toCharArray()[0]);
+        }
+    }
+
+    /**
+     * Converts a {@link String} into a {@code char[]}.
+     */
+    private static class CharArrayConverter implements TypeConverter<char[]> {
+        @Override
+        public char[] convert(final String s) {
+            return s.toCharArray();
+        }
+    }
+
+    /**
+     * Converts a {@link String} into a {@link Charset}.
+     */
+    private static class CharsetConverter implements TypeConverter<Charset> {
+        @Override
+        public Charset convert(final String s) {
+            return Charset.forName(s);
+        }
+    }
+
+    /**
+     * Converts a {@link String} into a {@link Classe}.
+     */
+    private static class ClassConverter implements TypeConverter<Class<?>> {
+        @Override
+        public Class<?> convert(final String s) throws ClassNotFoundException {
+            return Loader.loadClass(s);
+        }
+    }
+
+    /**
+     * Converts a {@link String} into a {@link Double}.
+     */
+    private static class DoubleConverter implements TypeConverter<Double> {
+        @Override
+        public Double convert(final String s) {
+            return Double.valueOf(s);
+        }
+    }
+
+    /**
+     * Converts a {@link String} into a {@link Enum}. Returns {@code null} for invalid enum names.
+     *
+     * @param <E> the enum class to parse.
+     */
+    private static class EnumConverter<E extends Enum<E>> implements TypeConverter<E> {
+        private final Class<E> clazz;
+
+        private EnumConverter(final Class<E> clazz) {
+            this.clazz = clazz;
+        }
+
+        @Override
+        public E convert(final String s) {
+            return EnglishEnums.valueOf(clazz, s);
+        }
+    }
+
+    /**
+     * Converts a {@link String} into a {@link File}.
+     */
+    private static class FileConverter implements TypeConverter<File> {
+        @Override
+        public File convert(final String s) {
+            return new File(s);
+        }
+    }
+
+    /**
+     * Converts a {@link String} into a {@link Float}.
+     */
+    private static class FloatConverter implements TypeConverter<Float> {
+        @Override
+        public Float convert(final String s) {
+            return Float.valueOf(s);
+        }
+    }
 
     private static final class Holder {
         private static final TypeConverters INSTANCE = new TypeConverters();
     }
+
+    /**
+     * Converts a {@link String} into a {@link Integer}.
+     */
+    private static class IntegerConverter implements TypeConverter<Integer> {
+        @Override
+        public Integer convert(final String s) {
+            return Integer.valueOf(s);
+        }
+    }
+
+    /**
+     * Converts a {@link String} into a Log4j {@link Level}. Returns {@code null} for invalid level names.
+     */
+    private static class LevelConverter implements TypeConverter<Level> {
+        @Override
+        public Level convert(final String s) {
+            return Level.valueOf(s);
+        }
+    }
+
+    /**
+     * Converts a {@link String} into a {@link Long}.
+     */
+    private static class LongConverter implements TypeConverter<Long> {
+        @Override
+        public Long convert(final String s) {
+            return Long.valueOf(s);
+        }
+    }
+
+    /**
+     * Converts a {@link String} into a {@link Pattern}.
+     */
+    private static class PatternConverter implements TypeConverter<Pattern> {
+        @Override
+        public Pattern convert(final String s) {
+            return Pattern.compile(s);
+        }
+    }
+
+    /**
+     * Converts a {@link String} into a {@link Short}.
+     */
+    private static class ShortConverter implements TypeConverter<Short> {
+        @Override
+        public Short convert(final String s) {
+            return Short.valueOf(s);
+        }
+    }
+
+    /**
+     * Returns the given {@link String}, no conversion takes place.
+     */
+    private static class StringConverter implements TypeConverter<String> {
+        @Override
+        public String convert(final String s) {
+            return s;
+        }
+    }
+
+    /**
+     * Converts a {@link String} into a {@link URI}.
+     */
+    private static class UriConverter implements TypeConverter<URI> {
+        @Override
+        public URI convert(final String s) throws URISyntaxException {
+            return new URI(s);
+        }
+    }
+
+    /**
+     * Converts a {@link String} into a {@link URL}.
+     */
+    private static class UrlConverter implements TypeConverter<URL> {
+        @Override
+        public URL convert(final String s) throws MalformedURLException {
+            return new URL(s);
+        }
+    }
+
+    /**
+     * Converts a String to a given class if a TypeConverter is available for that class. Falls back to the provided
+     * default value if the conversion is unsuccessful. However, if the default value is <em>also</em> invalid, then
+     * {@code null} is returned (along with a nasty status log message).
+     *
+     * @param s     the string to convert
+     * @param clazz the class to try to convert the string to
+     * @param defaultValue the fallback object to use if the conversion is unsuccessful
+     * @return the converted object which may be {@code null} if the string is invalid for the given type
+     * @throws NullPointerException if {@code clazz} is {@code null}
+     * @throws IllegalArgumentException if no TypeConverter exists for the given class
+     */
+    public static Object convert(final String s, final Class<?> clazz, final Object defaultValue) {
+        final TypeConverter<?> converter = findTypeConverter(
+            Assert.requireNonNull(clazz, "No class specified to convert to."));
+        if (converter == null) {
+            throw new IllegalArgumentException("No type converter found for class: " + clazz.getName());
+        }
+        if (s == null) {
+            LOGGER.debug("Null string given to convert. Using default [{}].", defaultValue);
+            return parseDefaultValue(converter, defaultValue);
+        }
+        try {
+            return converter.convert(s);
+        } catch (final Exception e) {
+            LOGGER.warn("Error while converting string [{}] to type [{}]. Using default value [{}].", s, clazz,
+                defaultValue, e);
+            return parseDefaultValue(converter, defaultValue);
+        }
+    }
+
+    /**
+     * Locates a TypeConverter for a specified class.
+     *
+     * @param clazz the class to get a TypeConverter for
+     * @return the associated TypeConverter for that class or {@code null} if none could be found
+     */
+    public static TypeConverter<?> findTypeConverter(final Class<?> clazz) {
+        // TODO: what to do if there's no converter?
+        // supplementary idea: automatically add type converters for enums using EnglishEnums
+        // Idea 1: use reflection to see if the class has a static "valueOf" method and use that
+        // Idea 2: reflect on class's declared methods to see if any methods look suitable (probably too complex)
+        return Holder.INSTANCE.registry.get(clazz);
+    }
+
+    private static Object parseDefaultValue(final TypeConverter<?> converter, final Object defaultValue) {
+        if (defaultValue == null) {
+            return null;
+        }
+        if (!(defaultValue instanceof String)) {
+            return defaultValue;
+        }
+        try {
+            return converter.convert((String) defaultValue);
+        } catch (final Exception e) {
+            LOGGER.debug("Can't parse default value [{}] for type [{}].", defaultValue, converter.getClass(), e);
+            return null;
+        }
+    }
+
+    /**
+     * Registers a TypeConverter for a specified class. This will overwrite any existing TypeConverter that may be
+     * registered for the class.
+     *
+     * @param clazz the class to register the TypeConverter for
+     * @param converter the TypeConverter to register
+     */
+    public static void registerTypeConverter(final Class<?> clazz, final TypeConverter<?> converter) {
+        Holder.INSTANCE.registry.put(clazz, converter);
+    }
+
+    private static final Logger LOGGER = StatusLogger.getLogger();
+
+    private final Map<Class<?>, TypeConverter<?>> registry =
+        new ConcurrentHashMap<Class<?>, TypeConverter<?>>();
 
     /**
      * Constructs default TypeConverter registry. Used solely by singleton instance.
@@ -99,297 +391,5 @@ public final class TypeConverters {
         registry.put(Facility.class, new EnumConverter<Facility>(Facility.class));
         registry.put(Protocol.class, new EnumConverter<Protocol>(Protocol.class));
         registry.put(HtmlLayout.FontSize.class, new EnumConverter<HtmlLayout.FontSize>(HtmlLayout.FontSize.class));
-    }
-
-    /**
-     * Locates a TypeConverter for a specified class.
-     *
-     * @param clazz the class to get a TypeConverter for
-     * @return the associated TypeConverter for that class or {@code null} if none could be found
-     */
-    public static TypeConverter<?> findTypeConverter(final Class<?> clazz) {
-        // TODO: what to do if there's no converter?
-        // supplementary idea: automatically add type converters for enums using EnglishEnums
-        // Idea 1: use reflection to see if the class has a static "valueOf" method and use that
-        // Idea 2: reflect on class's declared methods to see if any methods look suitable (probably too complex)
-        return Holder.INSTANCE.registry.get(clazz);
-    }
-
-    /**
-     * Registers a TypeConverter for a specified class. This will overwrite any existing TypeConverter that may be
-     * registered for the class.
-     *
-     * @param clazz the class to register the TypeConverter for
-     * @param converter the TypeConverter to register
-     */
-    public static void registerTypeConverter(final Class<?> clazz, final TypeConverter<?> converter) {
-        Holder.INSTANCE.registry.put(clazz, converter);
-    }
-
-    /**
-     * Converts a String to a given class if a TypeConverter is available for that class. Falls back to the provided
-     * default value if the conversion is unsuccessful. However, if the default value is <em>also</em> invalid, then
-     * {@code null} is returned (along with a nasty status log message).
-     *
-     * @param s     the string to convert
-     * @param clazz the class to try to convert the string to
-     * @param defaultValue the fallback object to use if the conversion is unsuccessful
-     * @return the converted object which may be {@code null} if the string is invalid for the given type
-     * @throws NullPointerException if {@code clazz} is {@code null}
-     * @throws IllegalArgumentException if no TypeConverter exists for the given class
-     */
-    public static Object convert(final String s, final Class<?> clazz, final Object defaultValue) {
-        final TypeConverter<?> converter = findTypeConverter(
-            Assert.requireNonNull(clazz, "No class specified to convert to."));
-        if (converter == null) {
-            throw new IllegalArgumentException("No type converter found for class: " + clazz.getName());
-        }
-        if (s == null) {
-            LOGGER.debug("Null string given to convert. Using default [{}].", defaultValue);
-            return parseDefaultValue(converter, defaultValue);
-        }
-        try {
-            return converter.convert(s);
-        } catch (final Exception e) {
-            LOGGER.warn("Error while converting string [{}] to type [{}]. Using default value [{}].", s, clazz,
-                defaultValue, e);
-            return parseDefaultValue(converter, defaultValue);
-        }
-    }
-
-    private static Object parseDefaultValue(final TypeConverter<?> converter, final Object defaultValue) {
-        if (defaultValue == null) {
-            return null;
-        }
-        if (!(defaultValue instanceof String)) {
-            return defaultValue;
-        }
-        try {
-            return converter.convert((String) defaultValue);
-        } catch (final Exception e) {
-            LOGGER.debug("Can't parse default value [{}] for type [{}].", defaultValue, converter.getClass(), e);
-            return null;
-        }
-    }
-
-    /**
-     * Returns the given {@link String}, no conversion takes place.
-     */
-    private static class StringConverter implements TypeConverter<String> {
-        @Override
-        public String convert(final String s) {
-            return s;
-        }
-    }
-
-    /**
-     * Converts a {@link String} into a {@link File}.
-     */
-    private static class FileConverter implements TypeConverter<File> {
-        @Override
-        public File convert(final String s) {
-            return new File(s);
-        }
-    }
-
-    /**
-     * Converts a {@link String} into a {@code char[]}.
-     */
-    private static class CharArrayConverter implements TypeConverter<char[]> {
-        @Override
-        public char[] convert(final String s) {
-            return s.toCharArray();
-        }
-    }
-
-    /**
-     * Converts a {@link String} into a {@code byte[]}.
-     */
-    private static class ByteArrayConverter implements TypeConverter<byte[]> {
-        @Override
-        public byte[] convert(final String s) {
-            return s.getBytes(Charset.defaultCharset());
-        }
-    }
-
-    /**
-     * Converts a {@link String} into a {@link Classe}.
-     */
-    private static class ClassConverter implements TypeConverter<Class<?>> {
-        @Override
-        public Class<?> convert(final String s) throws ClassNotFoundException {
-            return Loader.loadClass(s);
-        }
-    }
-
-    /**
-     * Converts a {@link String} into a {@link URI}.
-     */
-    private static class UriConverter implements TypeConverter<URI> {
-        @Override
-        public URI convert(final String s) throws URISyntaxException {
-            return new URI(s);
-        }
-    }
-
-    /**
-     * Converts a {@link String} into a {@link URL}.
-     */
-    private static class UrlConverter implements TypeConverter<URL> {
-        @Override
-        public URL convert(final String s) throws MalformedURLException {
-            return new URL(s);
-        }
-    }
-
-    /**
-     * Converts a {@link String} into a {@link Boolean}.
-     */
-    private static class BooleanConverter implements TypeConverter<Boolean> {
-        @Override
-        public Boolean convert(final String s) {
-            return Boolean.valueOf(s);
-        }
-    }
-
-    /**
-     * Converts a {@link String} into a {@link Byte}.
-     */
-    private static class ByteConverter implements TypeConverter<Byte> {
-        @Override
-        public Byte convert(final String s) {
-            return Byte.valueOf(s);
-        }
-    }
-
-    /**
-     * Converts a {@link String} into a {@link Character}.
-     */
-    private static class CharacterConverter implements TypeConverter<Character> {
-        @Override
-        public Character convert(final String s) {
-            if (s.length() != 1) {
-                throw new IllegalArgumentException("Character string must be of length 1: " + s);
-            }
-            return Character.valueOf(s.toCharArray()[0]);
-        }
-    }
-
-    /**
-     * Converts a {@link String} into a {@link Integer}.
-     */
-    private static class IntegerConverter implements TypeConverter<Integer> {
-        @Override
-        public Integer convert(final String s) {
-            return Integer.valueOf(s);
-        }
-    }
-
-    /**
-     * Converts a {@link String} into a {@link Short}.
-     */
-    private static class ShortConverter implements TypeConverter<Short> {
-        @Override
-        public Short convert(final String s) {
-            return Short.valueOf(s);
-        }
-    }
-
-    /**
-     * Converts a {@link String} into a {@link Long}.
-     */
-    private static class LongConverter implements TypeConverter<Long> {
-        @Override
-        public Long convert(final String s) {
-            return Long.valueOf(s);
-        }
-    }
-
-    /**
-     * Converts a {@link String} into a {@link Float}.
-     */
-    private static class FloatConverter implements TypeConverter<Float> {
-        @Override
-        public Float convert(final String s) {
-            return Float.valueOf(s);
-        }
-    }
-
-    /**
-     * Converts a {@link String} into a {@link Double}.
-     */
-    private static class DoubleConverter implements TypeConverter<Double> {
-        @Override
-        public Double convert(final String s) {
-            return Double.valueOf(s);
-        }
-    }
-
-    /**
-     * Converts a {@link String} into a {@link Pattern}.
-     */
-    private static class PatternConverter implements TypeConverter<Pattern> {
-        @Override
-        public Pattern convert(final String s) {
-            return Pattern.compile(s);
-        }
-    }
-
-    /**
-     * Converts a {@link String} into a {@link Charset}.
-     */
-    private static class CharsetConverter implements TypeConverter<Charset> {
-        @Override
-        public Charset convert(final String s) {
-            return Charset.forName(s);
-        }
-    }
-
-    /**
-     * Parses a {@link String} into a {@link BigDecimal}.
-     */
-    private static class BigDecimalConverter implements TypeConverter<BigDecimal> {
-        @Override
-        public BigDecimal convert(final String s) {
-            return new BigDecimal(s);
-        }
-    }
-
-    /**
-     * Parses a {@link String} into a {@link BigInteger}.
-     */
-    private static class BigIntegerConverter implements TypeConverter<BigInteger> {
-        @Override
-        public BigInteger convert(final String s) {
-            return new BigInteger(s);
-        }
-    }
-
-    /**
-     * Converts a {@link String} into a Log4j {@link Level}. Returns {@code null} for invalid level names.
-     */
-    private static class LevelConverter implements TypeConverter<Level> {
-        @Override
-        public Level convert(final String s) {
-            return Level.valueOf(s);
-        }
-    }
-
-    /**
-     * Converts a {@link String} into a {@link Enum}. Returns {@code null} for invalid enum names.
-     *
-     * @param <E> the enum class to parse.
-     */
-    private static class EnumConverter<E extends Enum<E>> implements TypeConverter<E> {
-        private final Class<E> clazz;
-
-        private EnumConverter(final Class<E> clazz) {
-            this.clazz = clazz;
-        }
-
-        @Override
-        public E convert(final String s) {
-            return EnglishEnums.valueOf(clazz, s);
-        }
     }
 }
