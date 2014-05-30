@@ -17,7 +17,14 @@
 
 package org.apache.logging.log4j.core.config.plugins.util;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.net.URI;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,20 +37,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import static org.junit.Assert.*;
-
 /**
- * Unit tests for the various supported TypeConverter implementations.
+ * Tests {@link TypeConverters}.
  */
 @RunWith(Parameterized.class)
 public class TypeConvertersTest {
 
+    @SuppressWarnings("boxing")
     @Parameterized.Parameters
-    public static Collection<Object[]> data() {
+    public static Collection<Object[]> data() throws Exception {
         return Arrays.asList(
-            //   value, expected, default, type
+            // Array format: value, expected, default, type
             new Object[][]{
-                // booleans
+                // boolean
                 { "true", true, null, Boolean.class },
                 { "false", false, null, Boolean.class },
                 { "True", true, null, Boolean.class },
@@ -56,7 +62,14 @@ public class TypeConvertersTest {
                 { "FALSE", false, "true", boolean.class },
                 { null, false, "false", boolean.class },
                 { "invalid", false, "false", boolean.class },
-                // integers
+                // byte
+                { "42", (byte)42, null, Byte.class },
+                { "53", (byte)53, null, Byte.class },
+                // char
+                { "A", 'A', null, char.class },
+                { "b", 'b', null, char.class },
+                { "b0", null, null, char.class },
+                // integer
                 { "42", 42, null, Integer.class },
                 { "53", 53, null, Integer.class },
                 { "-16", -16, null, Integer.class },
@@ -86,12 +99,11 @@ public class TypeConvertersTest {
                 { "3000", 3000L, "0", long.class },
                 { "-543210", -543210L, "0", long.class },
                 { "22.7", -53L, "-53", long.class },
-                // charsets
-                { "UTF-8", Charsets.UTF_8, null, Charset.class },
-                { "ASCII", Charset.forName("ASCII"), "UTF-8", Charset.class },
-                { "Not a real charset", Charsets.UTF_8, "UTF-8", Charset.class },
-                { null, Charsets.UTF_8, "UTF-8", Charset.class },
-                { null, null, null, Charset.class },
+                // short
+                { "42", (short)42, null, short.class },
+                { "53", (short)53, null, short.class },
+                { "-16", (short)-16, null, Short.class },
+                // Log4j
                 // levels
                 { "ERROR", Level.ERROR, null, Level.class },
                 { "WARN", Level.WARN, null, Level.class },
@@ -117,7 +129,30 @@ public class TypeConvertersTest {
                 // arrays
                 { "123", "123".toCharArray(), null, char[].class },
                 { "123", "123".getBytes(Charset.defaultCharset()), null, byte[].class },
+                // JRE
+                // JRE Charset
+                { "UTF-8", Charsets.UTF_8, null, Charset.class },
+                { "ASCII", Charset.forName("ASCII"), "UTF-8", Charset.class },
+                { "Not a real charset", Charsets.UTF_8, "UTF-8", Charset.class },
+                { null, Charsets.UTF_8, "UTF-8", Charset.class },
+                { null, null, null, Charset.class },
+                // JRE File
                 { "c:/temp", new File("c:/temp"), null, File.class },
+                // JRE Class
+                { TypeConvertersTest.class.getName(), TypeConvertersTest.class, null, Class.class },
+                { "\n", null, null, Class.class },
+                // JRE URL
+                { "http://locahost", new URL("http://locahost"), null, URL.class },
+                { "\n", null, null, URL.class },
+                // JRE URI
+                { "http://locahost", new URI("http://locahost"), null, URI.class },
+                { "\n", null, null, URI.class },
+                // JRE BigInteger
+                { "9223372036854775817000", new BigInteger("9223372036854775817000"), null, BigInteger.class },
+                { "\n", null, null, BigInteger.class },
+                // JRE BigInteger
+                { "9223372036854775817000.99999", new BigDecimal("9223372036854775817000.99999"), null, BigDecimal.class },
+                { "\n", null, null, BigDecimal.class },
             }
         );
     }

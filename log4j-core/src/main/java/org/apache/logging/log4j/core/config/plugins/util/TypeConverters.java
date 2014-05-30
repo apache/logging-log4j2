@@ -18,6 +18,12 @@
 package org.apache.logging.log4j.core.config.plugins.util;
 
 import java.io.File;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,6 +36,7 @@ import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.util.Assert;
+import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.EnglishEnums;
 
@@ -54,27 +61,44 @@ public final class TypeConverters {
      * Constructs default TypeConverter registry. Used solely by singleton instance.
      */
     private TypeConverters() {
-        registry.put(String.class, new StringConverter());
-        registry.put(char[].class, new CharArrayConverter());
-        registry.put(byte[].class, new ByteArrayConverter());
+    	// Primitive wrappers
         registry.put(Boolean.class, new BooleanConverter());
-        registry.put(boolean.class, registry.get(Boolean.class));
-        registry.put(Integer.class, new IntegerConverter());
-        registry.put(int.class, registry.get(Integer.class));
-        registry.put(Long.class, new LongConverter());
-        registry.put(long.class, registry.get(Long.class));
-        registry.put(Float.class, new FloatConverter());
-        registry.put(float.class, registry.get(Float.class));
+        registry.put(Byte.class, new ByteConverter());
+        registry.put(Character.class, new CharacterConverter());
         registry.put(Double.class, new DoubleConverter());
+        registry.put(Float.class, new FloatConverter());
+        registry.put(Integer.class, new IntegerConverter());
+        registry.put(Long.class, new LongConverter());
+        registry.put(Short.class, new ShortConverter());
+    	// Primitives
+        registry.put(boolean.class, registry.get(Boolean.class));
+        registry.put(byte.class, new ByteConverter());
+        registry.put(char[].class, new CharArrayConverter());
         registry.put(double.class, registry.get(Double.class));
+        registry.put(float.class, registry.get(Float.class));
+        registry.put(int.class, registry.get(Integer.class));
+        registry.put(long.class, registry.get(Long.class));
+        registry.put(short.class, registry.get(Short.class));
+    	// Primitive arrays
+        registry.put(byte[].class, new ByteArrayConverter());
+        registry.put(char.class, new CharacterConverter());
+        // Numbers
+        registry.put(BigInteger.class, new BigIntegerConverter());
+        registry.put(BigDecimal.class, new BigDecimalConverter());
+        // JRE
+        registry.put(String.class, new StringConverter());
+        registry.put(Charset.class, new CharsetConverter());        
+        registry.put(File.class, new FileConverter());
+        registry.put(URL.class, new UrlConverter());
+        registry.put(URI.class, new UriConverter());
+        registry.put(Class.class, new ClassConverter());
         registry.put(Pattern.class, new PatternConverter());
-        registry.put(Charset.class, new CharsetConverter());
+        // Log4J 
         registry.put(Level.class, new LevelConverter());
         registry.put(Filter.Result.class, new EnumConverter<Filter.Result>(Filter.Result.class));
         registry.put(Facility.class, new EnumConverter<Facility>(Facility.class));
         registry.put(Protocol.class, new EnumConverter<Protocol>(Protocol.class));
         registry.put(HtmlLayout.FontSize.class, new EnumConverter<HtmlLayout.FontSize>(HtmlLayout.FontSize.class));
-        registry.put(File.class, new FileConverter());
     }
 
     /**
@@ -189,6 +213,36 @@ public final class TypeConverters {
     }
 
     /**
+     * Parses Strings into Classes.
+     */
+    private static class ClassConverter implements TypeConverter<Class<?>> {
+        @Override
+        public Class<?> convert(final String s) throws ClassNotFoundException {
+            return Loader.loadClass(s);
+        }
+    }
+
+    /**
+     * Parses Strings into URIs.
+     */
+    private static class UriConverter implements TypeConverter<URI> {
+        @Override
+        public URI convert(final String s) throws URISyntaxException {
+            return new URI(s);
+        }
+    }
+
+    /**
+     * Parses Strings into URIs.
+     */
+    private static class UrlConverter implements TypeConverter<URL> {
+        @Override
+        public URL convert(final String s) throws MalformedURLException {
+            return new URL(s);
+        }
+    }
+
+    /**
      * Parses strings into booleans.
      */
     private static class BooleanConverter implements TypeConverter<Boolean> {
@@ -199,12 +253,45 @@ public final class TypeConverters {
     }
 
     /**
+     * Parses strings into bytes.
+     */
+    private static class ByteConverter implements TypeConverter<Byte> {
+        @Override
+        public Byte convert(final String s) {
+            return Byte.valueOf(s);
+        }
+    }
+
+    /**
+     * Parses strings into character.
+     */
+    private static class CharacterConverter implements TypeConverter<Character> {
+        @Override
+        public Character convert(final String s) {
+            if (s.length() != 1) {
+                throw new IllegalArgumentException("Character string must be of length 1: " + s);
+            }
+            return Character.valueOf(s.toCharArray()[0]);
+        }
+    }
+
+    /**
      * Parses strings into integers.
      */
     private static class IntegerConverter implements TypeConverter<Integer> {
         @Override
         public Integer convert(final String s) {
             return Integer.valueOf(s);
+        }
+    }
+
+    /**
+     * Parses strings into shorts.
+     */
+    private static class ShortConverter implements TypeConverter<Short> {
+        @Override
+        public Short convert(final String s) {
+            return Short.valueOf(s);
         }
     }
 
@@ -255,6 +342,26 @@ public final class TypeConverters {
         @Override
         public Charset convert(final String s) {
             return Charset.forName(s);
+        }
+    }
+
+    /**
+     * Parses a {@link String} into a {@link BigDecimal}.
+     */
+    private static class BigDecimalConverter implements TypeConverter<BigDecimal> {
+        @Override
+        public BigDecimal convert(final String s) {
+            return new BigDecimal(s);
+        }
+    }
+
+    /**
+     * Parses a {@link String} into a {@link BigInteger}.
+     */
+    private static class BigIntegerConverter implements TypeConverter<BigInteger> {
+        @Override
+        public BigInteger convert(final String s) {
+            return new BigInteger(s);
         }
     }
 
