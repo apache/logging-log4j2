@@ -173,7 +173,7 @@ public final class TypeConverters {
     }
 
     /**
-     * Trivial identity converter.
+     * Returns the given {@link String}, no conversion takes place.
      */
     private static class StringConverter implements TypeConverter<String> {
         @Override
@@ -183,7 +183,7 @@ public final class TypeConverters {
     }
 
     /**
-     * Parses Strings into Files
+     * Converts a {@link String} into a {@link File}.
      */
     private static class FileConverter implements TypeConverter<File> {
         @Override
@@ -193,7 +193,7 @@ public final class TypeConverters {
     }
 
     /**
-     * Parses Strings into char[]s.
+     * Converts a {@link String} into a {@code char[]}.
      */
     private static class CharArrayConverter implements TypeConverter<char[]> {
         @Override
@@ -203,7 +203,7 @@ public final class TypeConverters {
     }
 
     /**
-     * Parses Strings into byte[]s.
+     * Converts a {@link String} into a {@code byte[]}.
      */
     private static class ByteArrayConverter implements TypeConverter<byte[]> {
         @Override
@@ -213,7 +213,7 @@ public final class TypeConverters {
     }
 
     /**
-     * Parses Strings into Classes.
+     * Converts a {@link String} into a {@link Classe}.
      */
     private static class ClassConverter implements TypeConverter<Class<?>> {
         @Override
@@ -223,7 +223,7 @@ public final class TypeConverters {
     }
 
     /**
-     * Parses Strings into URIs.
+     * Converts a {@link String} into a {@link URI}.
      */
     private static class UriConverter implements TypeConverter<URI> {
         @Override
@@ -233,7 +233,7 @@ public final class TypeConverters {
     }
 
     /**
-     * Parses Strings into URIs.
+     * Converts a {@link String} into a {@link URL}.
      */
     private static class UrlConverter implements TypeConverter<URL> {
         @Override
@@ -243,7 +243,7 @@ public final class TypeConverters {
     }
 
     /**
-     * Parses strings into booleans.
+     * Converts a {@link String} into a {@link Boolean}.
      */
     private static class BooleanConverter implements TypeConverter<Boolean> {
         @Override
@@ -253,7 +253,7 @@ public final class TypeConverters {
     }
 
     /**
-     * Parses strings into bytes.
+     * Converts a {@link String} into a {@link Byte}.
      */
     private static class ByteConverter implements TypeConverter<Byte> {
         @Override
@@ -263,7 +263,7 @@ public final class TypeConverters {
     }
 
     /**
-     * Parses strings into character.
+     * Converts a {@link String} into a {@link Character}.
      */
     private static class CharacterConverter implements TypeConverter<Character> {
         @Override
@@ -276,7 +276,7 @@ public final class TypeConverters {
     }
 
     /**
-     * Parses strings into integers.
+     * Converts a {@link String} into a {@link Integer}.
      */
     private static class IntegerConverter implements TypeConverter<Integer> {
         @Override
@@ -286,7 +286,7 @@ public final class TypeConverters {
     }
 
     /**
-     * Parses strings into shorts.
+     * Converts a {@link String} into a {@link Short}.
      */
     private static class ShortConverter implements TypeConverter<Short> {
         @Override
@@ -296,7 +296,7 @@ public final class TypeConverters {
     }
 
     /**
-     * Parses strings into longs.
+     * Converts a {@link String} into a {@link Long}.
      */
     private static class LongConverter implements TypeConverter<Long> {
         @Override
@@ -306,7 +306,7 @@ public final class TypeConverters {
     }
 
     /**
-     * Parses strings into floats.
+     * Converts a {@link String} into a {@link Float}.
      */
     private static class FloatConverter implements TypeConverter<Float> {
         @Override
@@ -316,7 +316,7 @@ public final class TypeConverters {
     }
 
     /**
-     * Parses strings into doubles.
+     * Converts a {@link String} into a {@link Double}.
      */
     private static class DoubleConverter implements TypeConverter<Double> {
         @Override
@@ -326,7 +326,7 @@ public final class TypeConverters {
     }
 
     /**
-     * Parses strings into regular expression Patterns.
+     * Converts a {@link String} into a {@link Pattern}.
      */
     private static class PatternConverter implements TypeConverter<Pattern> {
         @Override
@@ -336,7 +336,7 @@ public final class TypeConverters {
     }
 
     /**
-     * Parses strings into character sets.
+     * Converts a {@link String} into a {@link Charset}.
      */
     private static class CharsetConverter implements TypeConverter<Charset> {
         @Override
@@ -366,7 +366,7 @@ public final class TypeConverters {
     }
 
     /**
-     * Parses strings into Log4j Levels. Returns {@code null} for invalid level names.
+     * Converts a {@link String} into a Log4j {@link Level}. Returns {@code null} for invalid level names.
      */
     private static class LevelConverter implements TypeConverter<Level> {
         @Override
@@ -376,7 +376,7 @@ public final class TypeConverters {
     }
 
     /**
-     * Parses strings into enums. Returns {@code null} for invalid enum names.
+     * Converts a {@link String} into a {@link Enum}. Returns {@code null} for invalid enum names.
      *
      * @param <E> the enum class to parse.
      */
