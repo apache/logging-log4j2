@@ -93,22 +93,22 @@ public class SyslogAppender extends SocketAppender {
     public static SyslogAppender createAppender(
             // @formatter:off
             @PluginAttribute("host") final String host,
-            @PluginAttribute(value = "port", defaultIntValue = 0) final int port,
+            @PluginAttribute(value = "port", defaultInt = 0) final int port,
             @PluginAttribute("protocol") final String protocolStr,
             @PluginElement("SSL") final SslConfiguration sslConfig,
-            @PluginAttribute(value = "reconnectionDelay", defaultIntValue = 0) final int reconnectionDelay,
-            @PluginAttribute(value = "immediateFail", defaultBooleanValue = true) final boolean immediateFail,
+            @PluginAttribute(value = "reconnectionDelay", defaultInt = 0) final int reconnectionDelay,
+            @PluginAttribute(value = "immediateFail", defaultBoolean = true) final boolean immediateFail,
             @PluginAttribute("name") final String name,
-            @PluginAttribute(value = "immediateFlush", defaultBooleanValue = true) final boolean immediateFlush,
-            @PluginAttribute(value = "ignoreExceptions", defaultBooleanValue = true) final boolean ignoreExceptions,
-            @PluginAttribute(value = "facility", defaultStringValue = "LOCAL0") final Facility facility,
+            @PluginAttribute(value = "immediateFlush", defaultBoolean = true) final boolean immediateFlush,
+            @PluginAttribute(value = "ignoreExceptions", defaultBoolean = true) final boolean ignoreExceptions,
+            @PluginAttribute(value = "facility", defaultString = "LOCAL0") final Facility facility,
             @PluginAttribute("id") final String id,
-            @PluginAttribute(value = "enterpriseNumber", defaultIntValue = Rfc5424Layout.DEFAULT_ENTERPRISE_NUMBER) final int enterpriseNumber,
-            @PluginAttribute(value = "includeMdc", defaultBooleanValue = true) final boolean includeMdc,
+            @PluginAttribute(value = "enterpriseNumber", defaultInt = Rfc5424Layout.DEFAULT_ENTERPRISE_NUMBER) final int enterpriseNumber,
+            @PluginAttribute(value = "includeMdc", defaultBoolean = true) final boolean includeMdc,
             @PluginAttribute("mdcId") final String mdcId,
             @PluginAttribute("mdcPrefix") final String mdcPrefix,
             @PluginAttribute("eventPrefix") final String eventPrefix,
-            @PluginAttribute(value = "newLine", defaultBooleanValue = false) final boolean newLine,
+            @PluginAttribute(value = "newLine", defaultBoolean = false) final boolean newLine,
             @PluginAttribute("newLineEscape") final String escapeNL,
             @PluginAttribute("appName") final String appName,
             @PluginAttribute("messageId") final String msgId,
@@ -118,10 +118,10 @@ public class SyslogAppender extends SocketAppender {
             @PluginAttribute("format") final String format,
             @PluginElement("Filters") final Filter filter,
             @PluginConfiguration final Configuration config,
-            @PluginAttribute(value = "charset", defaultStringValue = "UTF-8") final Charset charsetName,
+            @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charsetName,
             @PluginAttribute("exceptionPattern") final String exceptionPattern,
             @PluginElement("LoggerFields") final LoggerFields[] loggerFields,
-            @PluginAttribute(value = "advertise", defaultBooleanValue = false) final boolean advertise) {
+            @PluginAttribute(value = "advertise", defaultBoolean = false) final boolean advertise) {
         // @formatter:on
 
         // TODO: add Protocol to TypeConverters

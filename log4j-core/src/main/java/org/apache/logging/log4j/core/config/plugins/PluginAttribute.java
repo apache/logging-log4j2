@@ -46,30 +46,30 @@ public @interface PluginAttribute {
     /**
      * Specifies the default value this attribute should use if none is provided or if the provided value is invalid.
      */
-    String defaultStringValue() default "";
+    String defaultString() default "";
 
     /**
      * Specifies the default integer value to use.
      */
-    int defaultIntValue() default 0;
+    int defaultInt() default 0;
 
     /**
      * Specifies the default long value to use.
      */
-    long defaultLongValue() default 0L;
+    long defaultLong() default 0L;
 
     /**
      * Specifies the default boolean value to use.
      */
-    boolean defaultBooleanValue() default false;
+    boolean defaultBoolean() default false;
 
     /**
      * Specifies the default floating point value to use.
      */
-    float defaultFloatValue() default 0.0f;
+    float defaultFloat() default 0.0f;
 
     /**
      * Specifies the default double floating point value to use.
      */
-    double defaultDoubleValue() default 0.0d;
+    double defaultDouble() default 0.0d;
 }

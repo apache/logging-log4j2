@@ -46,20 +46,20 @@ public class PluginAttributeVisitor extends AbstractPluginVisitor<PluginAttribut
 
     private Object findDefaultValue(final LogEvent event) {
         if (this.conversionType == int.class || this.conversionType == Integer.class) {
-            return this.annotation.defaultIntValue();
+            return this.annotation.defaultInt();
         }
         if (this.conversionType == long.class || this.conversionType == Long.class) {
-            return this.annotation.defaultLongValue();
+            return this.annotation.defaultLong();
         }
         if (this.conversionType == boolean.class || this.conversionType == Boolean.class) {
-            return this.annotation.defaultBooleanValue();
+            return this.annotation.defaultBoolean();
         }
         if (this.conversionType == float.class || this.conversionType == Float.class) {
-            return this.annotation.defaultFloatValue();
+            return this.annotation.defaultFloat();
         }
         if (this.conversionType == double.class || this.conversionType == Double.class) {
-            return this.annotation.defaultDoubleValue();
+            return this.annotation.defaultDouble();
         }
-        return this.substitutor.replace(event, this.annotation.defaultStringValue());
+        return this.substitutor.replace(event, this.annotation.defaultString());
     }
 }

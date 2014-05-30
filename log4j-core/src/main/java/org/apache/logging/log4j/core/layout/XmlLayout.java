@@ -272,11 +272,11 @@ public final class XmlLayout extends AbstractJacksonLayout {
     @PluginFactory
     public static XmlLayout createLayout(
             // @formatter:off
-            @PluginAttribute(value = "locationInfo", defaultBooleanValue = false) final boolean locationInfo,
-            @PluginAttribute(value = "properties", defaultBooleanValue = false) final boolean properties,
-            @PluginAttribute(value = "complete", defaultBooleanValue = false) final boolean complete,
-            @PluginAttribute(value = "compact", defaultBooleanValue = false) final boolean compact,
-            @PluginAttribute(value = "charset", defaultStringValue = "UTF-8") final Charset charset)
+            @PluginAttribute(value = "locationInfo", defaultBoolean = false) final boolean locationInfo,
+            @PluginAttribute(value = "properties", defaultBoolean = false) final boolean properties,
+            @PluginAttribute(value = "complete", defaultBoolean = false) final boolean complete,
+            @PluginAttribute(value = "compact", defaultBoolean = false) final boolean compact,
+            @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charset)
             // @formatter:on
     {
         return new XmlLayout(locationInfo, properties, complete, compact, charset);
