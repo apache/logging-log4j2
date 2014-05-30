@@ -38,16 +38,25 @@ import org.apache.logging.log4j.util.Strings;
 @PluginVisitorStrategy(PluginAttributeVisitor.class)
 public @interface PluginAttribute {
 
-    // TODO: could we allow a blank value and infer the attribute name through reflection?
     /**
-     * Specifies the name of the attribute (case-insensitive) this annotation corresponds to.
+     * Specifies the default boolean value to use.
      */
-    String value();
+    boolean defaultBoolean() default false;
 
     /**
-     * Specifies the default value this attribute should use if none is provided or if the provided value is invalid.
+     * Specifies the default {@link Class} value to use.
      */
-    String defaultString() default Strings.EMPTY;
+    Class<?> defaultClass() default Object.class;
+
+    /**
+     * Specifies the default double floating point value to use.
+     */
+    double defaultDouble() default 0.0d;
+
+    /**
+     * Specifies the default floating point value to use.
+     */
+    float defaultFloat() default 0.0f;
 
     /**
      * Specifies the default integer value to use.
@@ -60,23 +69,14 @@ public @interface PluginAttribute {
     long defaultLong() default 0L;
 
     /**
-     * Specifies the default boolean value to use.
+     * Specifies the default value this attribute should use if none is provided or if the provided value is invalid.
      */
-    boolean defaultBoolean() default false;
+    String defaultString() default Strings.EMPTY;
 
+    // TODO: could we allow a blank value and infer the attribute name through reflection?
     /**
-     * Specifies the default floating point value to use.
+     * Specifies the name of the attribute (case-insensitive) this annotation corresponds to.
      */
-    float defaultFloat() default 0.0f;
-
-    /**
-     * Specifies the default double floating point value to use.
-     */
-    double defaultDouble() default 0.0d;
-
-    /**
-     * Specifies the default {@link Class} value to use.
-     */
-    Class<?> defaultClass() default Object.class;
+    String value();
 
 }
