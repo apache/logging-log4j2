@@ -323,12 +323,12 @@ public final class HtmlLayout extends AbstractStringLayout {
      */
     @PluginFactory
     public static HtmlLayout createLayout(
-            @PluginAttribute(value = "locationInfo", defaultBooleanValue = false) final boolean locationInfo,
-            @PluginAttribute(value = "title", defaultStringValue = DEFAULT_TITLE) final String title,
+            @PluginAttribute(value = "locationInfo", defaultBoolean = false) final boolean locationInfo,
+            @PluginAttribute(value = "title", defaultString = DEFAULT_TITLE) final String title,
             @PluginAttribute("contentType") String contentType,
-            @PluginAttribute(value = "charset", defaultStringValue = "UTF-8") final Charset charset,
+            @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charset,
             @PluginAttribute("fontSize") String fontSize,
-            @PluginAttribute(value = "fontName", defaultStringValue = DEFAULT_FONT_FAMILY) final String font) {
+            @PluginAttribute(value = "fontName", defaultString = DEFAULT_FONT_FAMILY) final String font) {
         final FontSize fs = FontSize.getFontSize(fontSize);
         fontSize = fs.getFontSize();
         final String headerSize = fs.larger().getFontSize();
@@ -354,22 +354,22 @@ public final class HtmlLayout extends AbstractStringLayout {
 
     public static class Builder implements org.apache.logging.log4j.core.util.Builder<HtmlLayout> {
 
-        @PluginAttribute(value = "locationInfo", defaultBooleanValue = false)
+        @PluginAttribute(value = "locationInfo", defaultBoolean = false)
         private boolean locationInfo = false;
 
-        @PluginAttribute(value = "title", defaultStringValue = DEFAULT_TITLE)
+        @PluginAttribute(value = "title", defaultString = DEFAULT_TITLE)
         private String title = DEFAULT_TITLE;
 
         @PluginAttribute(value = "contentType")
         private String contentType = null; // defer default value in order to use specified charset
 
-        @PluginAttribute(value = "charset", defaultStringValue = "UTF-8")
+        @PluginAttribute(value = "charset", defaultString = "UTF-8")
         private Charset charset = Charsets.UTF_8;
 
-        @PluginAttribute(value = "fontSize", defaultStringValue = "SMALL")
+        @PluginAttribute(value = "fontSize", defaultString = "SMALL")
         private FontSize fontSize = FontSize.SMALL;
 
-        @PluginAttribute(value = "fontName", defaultStringValue = DEFAULT_FONT_FAMILY)
+        @PluginAttribute(value = "fontName", defaultString = DEFAULT_FONT_FAMILY)
         private String fontName = DEFAULT_FONT_FAMILY;
 
         private Builder() {

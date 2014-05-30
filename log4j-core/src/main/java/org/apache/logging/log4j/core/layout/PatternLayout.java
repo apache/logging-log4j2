@@ -265,12 +265,12 @@ public final class PatternLayout extends AbstractStringLayout {
      */
     @PluginFactory
     public static PatternLayout createLayout(
-            @PluginAttribute(value = "pattern", defaultStringValue = DEFAULT_CONVERSION_PATTERN) final String pattern,
+            @PluginAttribute(value = "pattern", defaultString = DEFAULT_CONVERSION_PATTERN) final String pattern,
             @PluginConfiguration final Configuration config,
             @PluginElement("Replace") final RegexReplacement replace,
-            @PluginAttribute(value = "charset", defaultStringValue = "UTF-8") final Charset charset,
-            @PluginAttribute(value = "alwaysWriteExceptions", defaultBooleanValue = true) final boolean alwaysWriteExceptions,
-            @PluginAttribute(value = "noConsoleNoAnsi", defaultBooleanValue = false) final boolean noConsoleNoAnsi,
+            @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charset,
+            @PluginAttribute(value = "alwaysWriteExceptions", defaultBoolean = true) final boolean alwaysWriteExceptions,
+            @PluginAttribute(value = "noConsoleNoAnsi", defaultBoolean = false) final boolean noConsoleNoAnsi,
             @PluginAttribute("header") final String header,
             @PluginAttribute("footer") final String footer) {
         return newBuilder()
@@ -313,7 +313,7 @@ public final class PatternLayout extends AbstractStringLayout {
         // FIXME: it seems rather redundant to repeat default values (same goes for field names)
         // perhaps introduce a @PluginBuilderAttribute that has no values of its own and uses reflection?
 
-        @PluginAttribute(value = "pattern", defaultStringValue = PatternLayout.DEFAULT_CONVERSION_PATTERN)
+        @PluginAttribute(value = "pattern", defaultString = PatternLayout.DEFAULT_CONVERSION_PATTERN)
         private String pattern = PatternLayout.DEFAULT_CONVERSION_PATTERN;
 
         @PluginConfiguration
@@ -322,13 +322,13 @@ public final class PatternLayout extends AbstractStringLayout {
         @PluginElement("Replace")
         private RegexReplacement regexReplacement = null;
 
-        @PluginAttribute(value = "charset", defaultStringValue = "UTF-8")
+        @PluginAttribute(value = "charset", defaultString = "UTF-8")
         private Charset charset = Charsets.UTF_8;
 
-        @PluginAttribute(value = "alwaysWriteExceptions", defaultBooleanValue = true)
+        @PluginAttribute(value = "alwaysWriteExceptions", defaultBoolean = true)
         private boolean alwaysWriteExceptions = true;
 
-        @PluginAttribute(value = "noConsoleNoAnsi", defaultBooleanValue = false)
+        @PluginAttribute(value = "noConsoleNoAnsi", defaultBoolean = false)
         private boolean noConsoleNoAnsi = false;
 
         @PluginAttribute("header")

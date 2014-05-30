@@ -82,10 +82,10 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
     public static ConsoleAppender createAppender(
             @PluginElement("Layout") Layout<? extends Serializable> layout,
             @PluginElement("Filters") final Filter filter,
-            @PluginAttribute(value = "target", defaultStringValue = "SYSTEM_OUT") final String targetStr,
+            @PluginAttribute(value = "target", defaultString = "SYSTEM_OUT") final String targetStr,
             @PluginAttribute("name") final String name,
-            @PluginAttribute(value = "follow", defaultBooleanValue = false) final String follow,
-            @PluginAttribute(value = "ignoreExceptions", defaultBooleanValue = true) final String ignore) {
+            @PluginAttribute(value = "follow", defaultBoolean = false) final String follow,
+            @PluginAttribute(value = "ignoreExceptions", defaultBoolean = true) final String ignore) {
         if (name == null) {
             LOGGER.error("No name provided for ConsoleAppender");
             return null;
