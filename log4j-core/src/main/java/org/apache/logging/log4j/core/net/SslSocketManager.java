@@ -171,8 +171,11 @@ public class SslSocketManager extends TcpSocketManager {
             return socket;
         }
 
-        private SslSocketManager createManager(final String name, final OutputStream os, final Socket socket, final SslConfiguration sslConfig, final InetAddress address, final String host, final int port, final int delay, final boolean immediateFail, final Layout<? extends Serializable> layout) {
-            return new SslSocketManager(name, os, socket, sslConfig, address, host, port, delay, immediateFail, layout);
+        private SslSocketManager createManager(final String name, final OutputStream os, final Socket socket,
+                final SslConfiguration sslConfig, final InetAddress inetAddress, final String host, final int port,
+                final int delay, final boolean immediateFail, final Layout<? extends Serializable> layout) {
+            return new SslSocketManager(name, os, socket, sslConfig, inetAddress, host, port, delay, immediateFail,
+                    layout);
         }
     }
 }
