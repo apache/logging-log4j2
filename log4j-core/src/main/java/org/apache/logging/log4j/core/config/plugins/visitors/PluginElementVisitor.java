@@ -76,15 +76,14 @@ public class PluginElementVisitor extends AbstractPluginVisitor<PluginElement> {
                 array[i] = values.get(i);
             }
             return array;
-        } else {
-            final Node namedNode = findNamedNode(name, node.getChildren());
-            if (namedNode == null) {
-                return null;
-            }
-            LOGGER.debug("{}({})", namedNode.getName(), namedNode.toString());
-            node.getChildren().remove(namedNode);
-            return namedNode.getObject();
         }
+        final Node namedNode = findNamedNode(name, node.getChildren());
+        if (namedNode == null) {
+            return null;
+        }
+        LOGGER.debug("{}({})", namedNode.getName(), namedNode.toString());
+        node.getChildren().remove(namedNode);
+        return namedNode.getObject();
     }
 
     private Node findNamedNode(final String name, final Iterable<Node> children) {
