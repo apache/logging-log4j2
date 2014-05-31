@@ -64,17 +64,17 @@ public class TcpSocketManager extends AbstractSocketManager {
      * @param name The unique name of this connection.
      * @param os The OutputStream.
      * @param sock The Socket.
-     * @param addr The internet address of the host.
+     * @param inetAddress The internet address of the host.
      * @param host The name of the host.
      * @param port The port number on the host.
      * @param delay Reconnection interval.
      * @param immediateFail
      * @param layout The Layout.
      */
-    public TcpSocketManager(final String name, final OutputStream os, final Socket sock, final InetAddress addr,
+    public TcpSocketManager(final String name, final OutputStream os, final Socket sock, final InetAddress inetAddress,
                             final String host, final int port, final int delay, final boolean immediateFail,
                             final Layout<? extends Serializable> layout) {
-        super(name, os, addr, host, port, layout);
+        super(name, os, inetAddress, host, port, layout);
         this.reconnectionDelay = delay;
         this.socket = sock;
         this.immediateFail = immediateFail;
@@ -193,7 +193,7 @@ public class TcpSocketManager extends AbstractSocketManager {
             while (!shutdown) {
                 try {
                     sleep(reconnectionDelay);
-                    final Socket sock = createSocket(address, port);
+                    final Socket sock = createSocket(inetAddress, port);
                     final OutputStream newOS = sock.getOutputStream();
                     synchronized (owner) {
                         try {
