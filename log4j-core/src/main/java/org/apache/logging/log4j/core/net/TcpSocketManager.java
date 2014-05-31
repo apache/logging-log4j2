@@ -256,10 +256,10 @@ public class TcpSocketManager extends AbstractSocketManager {
         @Override
         public TcpSocketManager createManager(final String name, final FactoryData data) {
 
-            InetAddress address;
+            InetAddress inetAddress;
             OutputStream os;
             try {
-                address = InetAddress.getByName(data.host);
+                inetAddress = InetAddress.getByName(data.host);
             } catch (final UnknownHostException ex) {
                 LOGGER.error("Could not find address of " + data.host, ex);
                 return null;
@@ -267,7 +267,7 @@ public class TcpSocketManager extends AbstractSocketManager {
             try {
                 final Socket socket = new Socket(data.host, data.port);
                 os = socket.getOutputStream();
-                return new TcpSocketManager(name, os, socket, address, data.host, data.port, data.delay,
+                return new TcpSocketManager(name, os, socket, inetAddress, data.host, data.port, data.delay,
                     data.immediateFail, data.layout);
             } catch (final IOException ex) {
                 LOGGER.error("TcpSocketManager (" + name + ") " + ex);
@@ -276,7 +276,7 @@ public class TcpSocketManager extends AbstractSocketManager {
             if (data.delay == 0) {
                 return null;
             }
-            return new TcpSocketManager(name, os, null, address, data.host, data.port, data.delay, data.immediateFail,
+            return new TcpSocketManager(name, os, null, inetAddress, data.host, data.port, data.delay, data.immediateFail,
                 data.layout);
         }
     }
