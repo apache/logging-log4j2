@@ -22,7 +22,7 @@ import java.io.OutputStream;
 import org.apache.logging.log4j.core.Layout;
 
 /**
- * Manage an OutputStream so that it can be shared by multiple Appenders and will
+ * Manages an OutputStream so that it can be shared by multiple Appenders and will
  * allow appenders to reconfigure without requiring a new stream.
  */
 public class OutputStreamManager extends AbstractManager {
@@ -48,7 +48,7 @@ public class OutputStreamManager extends AbstractManager {
     }
 
     /**
-     * Create a Manager.
+     * Creates a Manager.
      *
      * @param name The name of the stream to manage.
      * @param data The data to pass to the Manager.
@@ -140,7 +140,7 @@ public class OutputStreamManager extends AbstractManager {
     }
 
     /**
-     * Flush any buffers.
+     * Flushes any buffers.
      */
     public synchronized void flush() {
         try {
