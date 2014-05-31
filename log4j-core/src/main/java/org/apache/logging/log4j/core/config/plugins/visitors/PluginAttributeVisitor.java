@@ -60,6 +60,18 @@ public class PluginAttributeVisitor extends AbstractPluginVisitor<PluginAttribut
         if (this.conversionType == double.class || this.conversionType == Double.class) {
             return this.annotation.defaultDouble();
         }
+        if (this.conversionType == byte.class || this.conversionType == Byte.class) {
+            return this.annotation.defaultByte();
+        }
+        if (this.conversionType == char.class || this.conversionType == Character.class) {
+            return this.annotation.defaultChar();
+        }
+        if (this.conversionType == short.class || this.conversionType == Short.class) {
+            return this.annotation.defaultShort();
+        }
+        if (this.conversionType == Class.class) {
+            return this.annotation.defaultClass();
+        }
         return this.substitutor.replace(event, this.annotation.defaultString());
     }
 }
