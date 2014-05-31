@@ -104,16 +104,16 @@ public class DatagramSocketManager extends AbstractSocketManager {
 
         @Override
         public DatagramSocketManager createManager(final String name, final FactoryData data) {
-            InetAddress address;
+            InetAddress inetAddress;
             final OutputStream os = new DatagramOutputStream(data.host, data.port, data.layout.getHeader(),
                 data.layout.getFooter());
             try {
-                address = InetAddress.getByName(data.host);
+                inetAddress = InetAddress.getByName(data.host);
             } catch (final UnknownHostException ex) {
                 LOGGER.error("Could not find address of " + data.host, ex);
                 return null;
             }
-            return new DatagramSocketManager(name, os, address, data.host, data.port, data.layout);
+            return new DatagramSocketManager(name, os, inetAddress, data.host, data.port, data.layout);
         }
     }
 }
