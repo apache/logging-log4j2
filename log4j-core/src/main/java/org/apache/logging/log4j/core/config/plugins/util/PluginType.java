@@ -56,4 +56,10 @@ public class PluginType<T> implements Serializable {
     public boolean isDeferChildren() {
         return this.deferChildren;
     }
+
+    @Override
+    public String toString() {
+        return "PluginType [pluginClass=" + this.pluginClass + ", elementName=" + this.elementName + ", printObject="
+                + this.printObject + ", deferChildren=" + this.deferChildren + "]";
+    }
 }
