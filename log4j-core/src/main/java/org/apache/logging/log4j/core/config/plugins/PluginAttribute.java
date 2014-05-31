@@ -44,6 +44,16 @@ public @interface PluginAttribute {
     boolean defaultBoolean() default false;
 
     /**
+     * Specifies the default byte value to use.
+     */
+    byte defaultByte() default 0;
+
+    /**
+     * Specifies the default byte value to use.
+     */
+    char defaultChar() default 0;
+
+    /**
      * Specifies the default {@link Class} value to use.
      */
     Class<?> defaultClass() default Object.class;
@@ -67,6 +77,11 @@ public @interface PluginAttribute {
      * Specifies the default long value to use.
      */
     long defaultLong() default 0L;
+
+    /**
+     * Specifies the default long value to use.
+     */
+    short defaultShort() default 0;
 
     /**
      * Specifies the default value this attribute should use if none is provided or if the provided value is invalid.
