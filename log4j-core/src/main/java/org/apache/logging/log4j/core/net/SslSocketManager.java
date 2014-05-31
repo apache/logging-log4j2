@@ -47,16 +47,16 @@ public class SslSocketManager extends TcpSocketManager {
      * @param name          The unique name of this connection.
      * @param os            The OutputStream.
      * @param sock          The Socket.
-     * @param addr          The internet address of the host.
+     * @param inetAddress          The internet address of the host.
      * @param host          The name of the host.
      * @param port          The port number on the host.
      * @param delay         Reconnection interval.
      * @param immediateFail
      * @param layout        The Layout.
      */
-    public SslSocketManager(final String name, final OutputStream os, final Socket sock, final SslConfiguration sslConfig, final InetAddress addr,
+    public SslSocketManager(final String name, final OutputStream os, final Socket sock, final SslConfiguration sslConfig, final InetAddress inetAddress,
                             final String host, final int port, final int delay, final boolean immediateFail, final Layout<? extends Serializable> layout) {
-        super(name, os, sock, addr, host, port, delay, immediateFail, layout);
+        super(name, os, sock, inetAddress, host, port, delay, immediateFail, layout);
         this.sslConfig = sslConfig;
     }
 
