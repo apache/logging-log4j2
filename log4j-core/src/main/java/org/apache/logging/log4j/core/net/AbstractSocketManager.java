@@ -33,7 +33,7 @@ public abstract class AbstractSocketManager extends OutputStreamManager {
     /**
      * The internet address of the host.
      */
-    protected final InetAddress address;
+    protected final InetAddress inetAddress;
     
     /**
      * The name of the host.
@@ -49,14 +49,14 @@ public abstract class AbstractSocketManager extends OutputStreamManager {
      * The Constructor.
      * @param name The unique name of this connection.
      * @param os The OutputStream to manage.
-     * @param addr The internet address.
+     * @param inetAddress The internet address.
      * @param host The target host name.
      * @param port The target port number.
      */
-    public AbstractSocketManager(final String name, final OutputStream os, final InetAddress addr, final String host,
+    public AbstractSocketManager(final String name, final OutputStream os, final InetAddress inetAddress, final String host,
                                  final int port, final Layout<? extends Serializable> layout) {
         super(os, name, layout);
-        this.address = addr;
+        this.inetAddress = inetAddress;
         this.host = host;
         this.port = port;
     }
@@ -72,7 +72,7 @@ public abstract class AbstractSocketManager extends OutputStreamManager {
     {
         final Map<String, String> result = new HashMap<String, String>(super.getContentFormat());
         result.put("port", Integer.toString(port));
-        result.put("address", address.getHostAddress());
+        result.put("address", inetAddress.getHostAddress());
 
         return result;
     }
