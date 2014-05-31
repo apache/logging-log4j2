@@ -122,12 +122,12 @@ public class SslSocketManager extends TcpSocketManager {
 
         @Override
         public SslSocketManager createManager(final String name, final SslFactoryData data) {
-            InetAddress address = null;
+            InetAddress inetAddress = null;
             OutputStream os = null;
             Socket socket = null;
 
             try {
-                address = resolveAddress(data.host);
+                inetAddress = resolveAddress(data.host);
                 socket = createSocket(data);
                 os = socket.getOutputStream();
                 checkDelay(data.delay, os);
@@ -140,7 +140,7 @@ public class SslSocketManager extends TcpSocketManager {
                 LOGGER.catching(Level.DEBUG, e);
                 return null;
             }
-            return createManager(name, os, socket, data.sslConfig, address, data.host, data.port, data.delay, data.immediateFail, data.layout);
+            return createManager(name, os, socket, data.sslConfig, inetAddress, data.host, data.port, data.delay, data.immediateFail, data.layout);
         }
 
         private InetAddress resolveAddress(final String hostName) throws TlsSocketManagerFactoryException {
