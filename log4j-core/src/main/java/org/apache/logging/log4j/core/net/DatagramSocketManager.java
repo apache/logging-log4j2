@@ -38,14 +38,14 @@ public class DatagramSocketManager extends AbstractSocketManager {
      * The Constructor.
      * @param name The unique name of the connection.
      * @param os The OutputStream.
-     * @param address
+     * @param inetAddress
      * @param host The host to connect to.
      * @param port The port on the host.
      * @param layout The layout
      */
-    protected DatagramSocketManager(final String name, final OutputStream os, final InetAddress address, final String host,
+    protected DatagramSocketManager(final String name, final OutputStream os, final InetAddress inetAddress, final String host,
                 final int port, final Layout<? extends Serializable> layout) {
-        super(name, os, address, host, port, layout);
+        super(name, os, inetAddress, host, port, layout);
     }
 
     /**
