@@ -34,10 +34,12 @@ public abstract class AbstractSocketManager extends OutputStreamManager {
      * The internet address of the host.
      */
     protected final InetAddress address;
+    
     /**
      * The name of the host.
      */
     protected final String host;
+    
     /**
      * The port on the host.
      */
