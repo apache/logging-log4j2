@@ -122,7 +122,7 @@ public class PluginBuilder<T> implements Builder<T> {
         // or fall back to factory method if no builder class is available
         try {
             final Method factory = findFactoryMethod(this.clazz);
-            final Object[] params = generateParameters(factory.getParameterTypes(), factory.getParameterAnnotations());
+            final Object[] params = generateParameters(factory);
             @SuppressWarnings("unchecked")
             final T plugin = (T) factory.invoke(null, params);
             return plugin;
@@ -170,8 +170,12 @@ public class PluginBuilder<T> implements Builder<T> {
                         .setAnnotation(a)
                         .setConversionType(field.getType())
                         .setStrSubstitutor(configuration.getStrSubstitutor())
+                        .setMember(field)
                         .visit(configuration, node, event);
-                    field.set(builder, value);
+                    // don't overwrite default values if the visitor gives us no value to inject
+                    if (value != null) {
+                        field.set(builder, value);
+                    }
                 }
             }
         }
@@ -191,7 +195,9 @@ public class PluginBuilder<T> implements Builder<T> {
         return null;
     }
 
-    private Object[] generateParameters(final Class<?>[] types, final Annotation[][] annotations) {
+    private Object[] generateParameters(final Method factory) {
+        final Class<?>[] types = factory.getParameterTypes();
+        final Annotation[][] annotations = factory.getParameterAnnotations();
         final Object[] args = new Object[annotations.length];
         for (int i = 0; i < annotations.length; i++) {
             final String[] aliases = extractPluginAliases(annotations[i]);
@@ -207,6 +213,7 @@ public class PluginBuilder<T> implements Builder<T> {
                         .setAnnotation(a)
                         .setConversionType(types[i])
                         .setStrSubstitutor(configuration.getStrSubstitutor())
+                        .setMember(factory)
                         .visit(configuration, node, event);
                 }
             }
