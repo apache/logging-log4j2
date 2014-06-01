@@ -40,7 +40,7 @@ public class PluginAttributeVisitor extends AbstractPluginVisitor<PluginAttribut
         final String replacedValue = this.substitutor.replace(event, rawValue);
         final Object defaultValue = findDefaultValue(event);
         final Object value = convert(replacedValue, defaultValue);
-        LOGGER.debug("Attribute({}=\"{}\"", name, value);
+        LOGGER.debug("Attribute({}=\"{}\")", name, value);
         return value;
     }
 
