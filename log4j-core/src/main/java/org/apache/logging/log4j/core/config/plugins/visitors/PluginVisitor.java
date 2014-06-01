@@ -18,6 +18,7 @@
 package org.apache.logging.log4j.core.config.plugins.visitors;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Member;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -69,6 +70,16 @@ public interface PluginVisitor<A extends Annotation> {
      * @throws NullPointerException if the argument is {@code null}.
      */
     PluginVisitor<A> setStrSubstitutor(StrSubstitutor substitutor);
+
+    /**
+     * Sets the Member that this visitor is being used for injection upon. For instance, this could be the Field
+     * that is being used for injecting a value, or it could be the factory method being used to inject parameters
+     * into.
+     *
+     * @param member the member this visitor is parsing a value for.
+     * @return {@code this}.
+     */
+    PluginVisitor<A> setMember(Member member);
 
     /**
      * Visits a Node to obtain a value for constructing a Plugin object.

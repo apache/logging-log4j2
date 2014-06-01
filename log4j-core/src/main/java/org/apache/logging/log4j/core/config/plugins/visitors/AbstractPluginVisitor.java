@@ -18,6 +18,7 @@
 package org.apache.logging.log4j.core.config.plugins.visitors;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Member;
 import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
@@ -42,6 +43,7 @@ public abstract class AbstractPluginVisitor<A extends Annotation> implements Plu
     protected String[] aliases;
     protected Class<?> conversionType;
     protected StrSubstitutor substitutor;
+    protected Member member;
 
     /**
      * This constructor must be overridden by implementation classes as a no-arg constructor.
@@ -77,6 +79,12 @@ public abstract class AbstractPluginVisitor<A extends Annotation> implements Plu
     @Override
     public PluginVisitor<A> setStrSubstitutor(StrSubstitutor substitutor) {
         this.substitutor = Assert.requireNonNull(substitutor, "No StrSubstitutor was provided");
+        return this;
+    }
+
+    @Override
+    public PluginVisitor<A> setMember(final Member member) {
+        this.member = member;
         return this;
     }
 
