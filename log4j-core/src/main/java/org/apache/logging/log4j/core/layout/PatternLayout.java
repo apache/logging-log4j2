@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -313,7 +314,7 @@ public final class PatternLayout extends AbstractStringLayout {
         // FIXME: it seems rather redundant to repeat default values (same goes for field names)
         // perhaps introduce a @PluginBuilderAttribute that has no values of its own and uses reflection?
 
-        @PluginAttribute(value = "pattern", defaultString = PatternLayout.DEFAULT_CONVERSION_PATTERN)
+        @PluginBuilderAttribute
         private String pattern = PatternLayout.DEFAULT_CONVERSION_PATTERN;
 
         @PluginConfiguration
@@ -322,19 +323,19 @@ public final class PatternLayout extends AbstractStringLayout {
         @PluginElement("Replace")
         private RegexReplacement regexReplacement = null;
 
-        @PluginAttribute(value = "charset", defaultString = "UTF-8")
+        @PluginBuilderAttribute
         private Charset charset = Charsets.UTF_8;
 
-        @PluginAttribute(value = "alwaysWriteExceptions", defaultBoolean = true)
+        @PluginBuilderAttribute
         private boolean alwaysWriteExceptions = true;
 
-        @PluginAttribute(value = "noConsoleNoAnsi", defaultBoolean = false)
+        @PluginBuilderAttribute
         private boolean noConsoleNoAnsi = false;
 
-        @PluginAttribute("header")
+        @PluginBuilderAttribute
         private String header = null;
 
-        @PluginAttribute("footer")
+        @PluginBuilderAttribute
         private String footer = null;
 
         private Builder() {
