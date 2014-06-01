@@ -32,6 +32,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.Charsets;
@@ -354,22 +355,22 @@ public final class HtmlLayout extends AbstractStringLayout {
 
     public static class Builder implements org.apache.logging.log4j.core.util.Builder<HtmlLayout> {
 
-        @PluginAttribute(value = "locationInfo", defaultBoolean = false)
+        @PluginBuilderAttribute
         private boolean locationInfo = false;
 
-        @PluginAttribute(value = "title", defaultString = DEFAULT_TITLE)
+        @PluginBuilderAttribute
         private String title = DEFAULT_TITLE;
 
-        @PluginAttribute(value = "contentType")
+        @PluginBuilderAttribute
         private String contentType = null; // defer default value in order to use specified charset
 
-        @PluginAttribute(value = "charset", defaultString = "UTF-8")
+        @PluginBuilderAttribute
         private Charset charset = Charsets.UTF_8;
 
-        @PluginAttribute(value = "fontSize", defaultString = "SMALL")
+        @PluginBuilderAttribute
         private FontSize fontSize = FontSize.SMALL;
 
-        @PluginAttribute(value = "fontName", defaultString = DEFAULT_FONT_FAMILY)
+        @PluginBuilderAttribute
         private String fontName = DEFAULT_FONT_FAMILY;
 
         private Builder() {
