@@ -25,6 +25,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.security.Provider;
+import java.security.Security;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
@@ -234,6 +236,16 @@ public final class TypeConverters {
     }
 
     /**
+     * Converts a {@link String} into a {@link Pattern}.
+     */
+    private static class SecurityProviderConverter implements TypeConverter<Provider> {
+        @Override
+        public Provider convert(final String s) {
+            return Security.getProvider(s);
+        }
+    }
+
+    /**
      * Converts a {@link String} into a {@link Short}.
      */
     private static class ShortConverter implements TypeConverter<Short> {
@@ -385,6 +397,7 @@ public final class TypeConverters {
         registry.put(URI.class, new UriConverter());
         registry.put(Class.class, new ClassConverter());
         registry.put(Pattern.class, new PatternConverter());
+        registry.put(Provider.class, new SecurityProviderConverter());
         // Log4J 
         registry.put(Level.class, new LevelConverter());
         registry.put(Filter.Result.class, new EnumConverter<Filter.Result>(Filter.Result.class));
