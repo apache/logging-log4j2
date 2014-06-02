@@ -665,14 +665,29 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
    /**
-    * Invokes a static factory method to create the desired object. Every parameter
-    * must be annotated to identify the appropriate attribute or element to use to
-    * set the value of the parameter.
+    * Invokes a static factory method to either create the desired object or to create a builder object that creates
+    * the desired object. In the case of a factory method, it should be annotated with
+    * {@link org.apache.logging.log4j.core.config.plugins.PluginFactory}, and each parameter should be annotated with
+    * an appropriate plugin annotation depending on what that parameter describes. Parameters annotated with
+    * {@link org.apache.logging.log4j.core.config.plugins.PluginAttribute} must be a type that can be converted from
+    * a string using one of the {@link org.apache.logging.log4j.core.config.plugins.util.TypeConverter TypeConverters}.
+    * Parameters with {@link org.apache.logging.log4j.core.config.plugins.PluginElement} may be any plugin class or an
+    * array of a plugin class. Collections and Maps are currently not supported, although the factory method that is
+    * called can create these from an array.
     *
-    * Parameters annotated with PluginAttribute will always be set as Strings.
-    * Parameters annotated with PluginElement may be Objects or arrays. Collections
-    * and Maps are currently not supported, although the factory method that is called
-    * can create these from an array.
+    * Plugins can also be created using a builder class that implements
+    * {@link org.apache.logging.log4j.core.util.Builder}. In that case, a static method annotated with
+    * {@link org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute} should create the builder class,
+    * and the various fields in the builder class should be annotated similarly to the method parameters. However,
+    * instead of using PluginAttribute, one should use
+    * {@link org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute} where the default value can be
+    * specified as the default field value instead of as an additional annotation parameter.
+    *
+    * In either case, there are also annotations for specifying a
+    * {@link org.apache.logging.log4j.core.config.Configuration}
+    * ({@link org.apache.logging.log4j.core.config.plugins.PluginConfiguration}) or a
+    * {@link org.apache.logging.log4j.core.config.Node}
+    * ({@link org.apache.logging.log4j.core.config.plugins.PluginNode}).
     *
     * Although the happy path works, more work still needs to be done to log incorrect
     * parameters. These will generally result in unhelpful InvocationTargetExceptions.
@@ -681,6 +696,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     * @param node the corresponding configuration node for this plugin to create.
     * @param event the LogEvent that spurred the creation of this plugin
     * @return the created plugin object or {@code null} if there was an error setting it up.
+    * @see org.apache.logging.log4j.core.config.plugins.util.PluginBuilder
+    * @see org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitor
+    * @see org.apache.logging.log4j.core.config.plugins.util.TypeConverter
     */
     private <T> Object createPluginObject(final PluginType<T> type, final Node node, final LogEvent event)
     {
