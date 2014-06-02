@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * Trigger a rollover on every restart. The target file's timestamp is compared with the JVM start time
+ * Triggers a rollover on every restart. The target file's timestamp is compared with the JVM start time
  * and if it is older isTriggeringEvent will return true. After isTriggeringEvent has been called it will
  * always return false.
  */
