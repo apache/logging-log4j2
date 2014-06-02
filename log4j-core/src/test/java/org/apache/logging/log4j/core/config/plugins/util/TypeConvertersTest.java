@@ -26,6 +26,8 @@ import java.math.BigInteger;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.security.Provider;
+import java.security.Security;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -153,6 +155,9 @@ public class TypeConvertersTest {
                 // JRE BigInteger
                 { "9223372036854775817000.99999", new BigDecimal("9223372036854775817000.99999"), null, BigDecimal.class },
                 { "\n", null, null, BigDecimal.class },
+                // JRE Security Provider
+                { Security.getProviders()[0].getName(), Security.getProviders()[0], null, Provider.class },
+                { "\n", null, null, Provider.class },
             }
         );
     }
