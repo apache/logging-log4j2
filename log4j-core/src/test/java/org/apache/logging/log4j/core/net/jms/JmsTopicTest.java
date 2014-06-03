@@ -68,8 +68,8 @@ public class JmsTopicTest {
         StatusLogger.getLogger().registerListener(listener);
         MockContextFactory.setAsInitial();
         context = new InitialContext();
-        context.rebind(FACTORY_NAME, new TopicConnectionFactoryImpl() );
-        context.rebind(TOPIC_NAME, new MockTopic(TOPIC_NAME) );
+        context.rebind(FACTORY_NAME, new TopicConnectionFactoryImpl());
+        context.rebind(TOPIC_NAME, new MockTopic(TOPIC_NAME));
         ((LoggerContext) LogManager.getContext()).reconfigure();
         receiver = new JmsTopicReceiver(FACTORY_NAME, TOPIC_NAME, null, null);
     }

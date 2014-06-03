@@ -62,7 +62,7 @@ public class JmsQueueAppenderTest {
         StatusLogger.getLogger().registerListener(listener);
         MockContextFactory.setAsInitial();
         context = new InitialContext();
-        context.rebind(FACTORY_NAME, new QueueConnectionFactoryImpl() );
+        context.rebind(FACTORY_NAME, new QueueConnectionFactoryImpl());
         context.rebind(QUEUE_NAME, new MockQueue(QUEUE_NAME));
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         receiver = new JmsQueueReceiver(FACTORY_NAME, QUEUE_NAME, null, null);

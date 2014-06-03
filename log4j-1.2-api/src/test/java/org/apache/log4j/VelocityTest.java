@@ -32,7 +32,7 @@ public class VelocityTest {
     public void testVelocity() {
         Velocity.init();
         VelocityContext context = new VelocityContext();
-        context.put( "name", new String("Velocity") );
+        context.put("name", new String("Velocity"));
 
         Template template = Velocity.getTemplate("target/test-classes/hello.vm");
 
