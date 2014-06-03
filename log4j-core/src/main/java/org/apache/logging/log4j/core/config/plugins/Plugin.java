@@ -31,15 +31,26 @@ import org.apache.logging.log4j.util.Strings;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Plugin {
-    
+
     /**
      * Value of the elementType when none is specified.
      */
     String EMPTY = Strings.EMPTY;
 
-    String name();
+    /**
+     * Name of the plugin. If no name is specified, defaults to the simple class name of the annotated element.
+     * Note that this name is case-insensitive.
+     */
+    String name() default EMPTY;
+
+    /**
+     * Category to place the plugin under. Category names are case-sensitive.
+     */
     String category();
+
     String elementType() default EMPTY;
+
     boolean printObject() default false;
+
     boolean deferChildren() default false;
 }
