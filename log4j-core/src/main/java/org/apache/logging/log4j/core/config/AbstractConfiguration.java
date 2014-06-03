@@ -434,6 +434,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * @param name The name of the Appender.
      * @return the Appender with the specified name or null if the Appender cannot be located.
      */
+    @Override
     public Appender getAppender(final String name) {
         return appenders.get(name);
     }
@@ -777,4 +778,5 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
         return buffer.toByteArray();
     }
+
 }

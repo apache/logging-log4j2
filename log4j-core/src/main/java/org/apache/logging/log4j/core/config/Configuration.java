@@ -49,6 +49,13 @@ public interface Configuration extends Filterable {
     LoggerConfig getLoggerConfig(String name);
 
     /**
+     * Returns the Appender with the specified name.
+     * @param name The name of the Appender.
+     * @return the Appender with the specified name or null if the Appender cannot be located.
+     */
+    Appender getAppender(String name);
+
+    /**
      * Returns a Map containing all the Appenders and their name.
      * @return A Map containing each Appender's name and the Appender object.
      */

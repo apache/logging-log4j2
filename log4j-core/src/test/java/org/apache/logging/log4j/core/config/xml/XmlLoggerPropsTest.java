@@ -40,7 +40,7 @@ public class XmlLoggerPropsTest {
 
     private static final String CONFIG = "log4j-loggerprops.xml";
     private static Configuration config;
-    private static ListAppender app;
+    private static ListAppender listAppender;
     private static LoggerContext ctx;
 
     @BeforeClass
@@ -49,12 +49,7 @@ public class XmlLoggerPropsTest {
         System.setProperty("test", "test");
         ctx = (LoggerContext) LogManager.getContext(false);
         config = ctx.getConfiguration();
-        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
-            if (entry.getKey().equals("List")) {
-                app = (ListAppender) entry.getValue();
-                break;
-            }
-        }
+        listAppender = (ListAppender) config.getAppender("List");
     }
 
     @AfterClass
@@ -66,7 +61,7 @@ public class XmlLoggerPropsTest {
 
     @Test
     public void testWithProps() {
-        assertNotNull("No List Appender", app);
+        assertNotNull("No List Appender", listAppender);
 
         try {
             assertTrue("Configuration is not an XmlConfiguration", config instanceof XmlConfiguration);
@@ -74,7 +69,7 @@ public class XmlLoggerPropsTest {
             logger.debug("Test with props");
             logger = LogManager.getLogger("tiny.bubbles");
             logger.debug("Test on root");
-            final List<String> events = app.getMessages();
+            final List<String> events = listAppender.getMessages();
             assertTrue("No events", events.size() > 0);
             assertTrue("Incorrect number of events", events.size() == 2);
             assertTrue("Incorrect value", events.get(0).contains("test=test"));

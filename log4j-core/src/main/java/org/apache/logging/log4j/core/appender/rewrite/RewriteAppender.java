@@ -55,10 +55,9 @@ public final class RewriteAppender extends AbstractAppender {
 
     @Override
     public void start() {
-        final Map<String, Appender> map = config.getAppenders();
         for (final AppenderRef ref : appenderRefs) {
             final String name = ref.getRef();
-            final Appender appender = map.get(name);
+            final Appender appender = config.getAppender(name);
             if (appender != null) {
                 final Filter filter = appender instanceof AbstractAppender ?
                     ((AbstractAppender) appender).getFilter() : null;

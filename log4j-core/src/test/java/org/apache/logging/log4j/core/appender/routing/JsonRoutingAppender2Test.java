@@ -42,7 +42,7 @@ import static org.junit.Assert.*;
 public class JsonRoutingAppender2Test {
     private static final String CONFIG = "log4j-routing2.json";
     private static Configuration config;
-    private static ListAppender app;
+    private static ListAppender listAppender;
     private static LoggerContext ctx;
 
     @BeforeClass
@@ -50,12 +50,7 @@ public class JsonRoutingAppender2Test {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         ctx = (LoggerContext) LogManager.getContext(false);
         config = ctx.getConfiguration();
-        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
-            if (entry.getKey().equals("List")) {
-                app = (ListAppender) entry.getValue();
-                break;
-            }
-        }
+        listAppender = (ListAppender) config.getAppender("List");
         final File file = new File("target/rolling1/rollingtest-Unknown.log");
         file.delete();
     }
@@ -73,7 +68,7 @@ public class JsonRoutingAppender2Test {
     public void routingTest() {
         StructuredDataMessage msg = new StructuredDataMessage("Test", "This is a test", "Service");
         EventLogger.logEvent(msg);
-        final List<LogEvent> list = app.getEvents();
+        final List<LogEvent> list = listAppender.getEvents();
         assertNotNull("No events generated", list);
         assertTrue("Incorrect number of events. Expected 1, got " + list.size(), list.size() == 1);
         msg = new StructuredDataMessage("Test", "This is a test", "Unknown");
