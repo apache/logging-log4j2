@@ -114,8 +114,8 @@ public class PluginManager {
             plugins = REGISTRY.getCategory(category);
             preLoad = false;
         }
-        final ResourceLoader loader = new ClassLoaderResourceLoader(Loader.getClassLoader());
         if (preLoad) {
+            final ResourceLoader loader = new ClassLoaderResourceLoader(Loader.getClassLoader());
             loadPlugins(loader);
         }
         plugins = REGISTRY.getCategory(category);
