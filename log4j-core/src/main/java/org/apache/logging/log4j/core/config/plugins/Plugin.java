@@ -38,10 +38,9 @@ public @interface Plugin {
     String EMPTY = Strings.EMPTY;
 
     /**
-     * Name of the plugin. If no name is specified, defaults to the simple class name of the annotated element.
-     * Note that this name is case-insensitive.
+     * Name of the plugin. Note that this name is case-insensitive.
      */
-    String name() default EMPTY;
+    String name();
 
     /**
      * Category to place the plugin under. Category names are case-sensitive.
