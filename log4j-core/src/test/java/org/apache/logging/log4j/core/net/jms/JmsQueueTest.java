@@ -64,8 +64,8 @@ public class JmsQueueTest {
     @BeforeClass
     public static void setupClass() throws Exception {
         // MockContextFactory becomes the primary JNDI provider
-        final StatusConsoleListener l = new StatusConsoleListener(Level.ERROR);
-        StatusLogger.getLogger().registerListener(l);
+        final StatusConsoleListener listener = new StatusConsoleListener(Level.ERROR);
+        StatusLogger.getLogger().registerListener(listener);
         MockContextFactory.setAsInitial();
         context = new InitialContext();
         context.rebind(FACTORY_NAME, new QueueConnectionFactoryImpl() );
