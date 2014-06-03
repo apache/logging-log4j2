@@ -74,11 +74,10 @@ public final class RoutingAppender extends AbstractAppender {
 
     @Override
     public void start() {
-        final Map<String, Appender> map = config.getAppenders();
         // Register all the static routes.
         for (final Route route : routes.getRoutes()) {
             if (route.getAppenderRef() != null) {
-                final Appender appender = map.get(route.getAppenderRef());
+                final Appender appender = config.getAppender(route.getAppenderRef());
                 if (appender != null) {
                     final String key = route == defaultRoute ? DEFAULT_KEY : route.getKey();
                     appenders.put(key, new AppenderControl(appender, null, null));

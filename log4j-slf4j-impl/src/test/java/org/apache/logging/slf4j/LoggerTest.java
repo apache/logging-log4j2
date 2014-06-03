@@ -169,8 +169,7 @@ public class LoggerTest {
 
     private void verify(final String name, final String expected) {
         //LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-        final Map<String, Appender> list = ctx.getConfiguration().getAppenders();
-        final Appender listApp = list.get(name);
+        final Appender listApp = ctx.getConfiguration().getAppender(name);
         assertNotNull("Missing Appender", listApp);
         assertTrue("Not a ListAppender", listApp instanceof ListAppender);
         final List<String> events = ((ListAppender) listApp).getMessages();

@@ -58,7 +58,7 @@ public class JmsQueueFailoverTest {
     private static final String CONFIG = "log4j-jmsqueue-failover.xml";
 
     private static Configuration config;
-    private static ListAppender app;
+    private static ListAppender listAppender;
     private static LoggerContext ctx;
 
     @BeforeClass
@@ -78,14 +78,9 @@ public class JmsQueueFailoverTest {
     @Before
     public void before() {
         config = ctx.getConfiguration();
-        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
-            if (entry.getKey().equals("List")) {
-                app = (ListAppender) entry.getValue();
-                break;
-            }
-        }
-        assertNotNull("No Appender", app);
-        app.clear();
+        listAppender = (ListAppender) config.getAppender("List");
+        assertNotNull("No Appender", listAppender);
+        listAppender.clear();
         ThreadContext.clearMap();
     }
 
@@ -106,7 +101,7 @@ public class JmsQueueFailoverTest {
         ThreadContext.put("appender", "Failover");
         final Logger logger = LogManager.getLogger(JmsQueueFailoverTest.class);
         logger.debug("Test Message");
-        final List<LogEvent> events = app.getEvents();
+        final List<LogEvent> events = listAppender.getEvents();
         assertNotNull("No events returned", events);
         assertTrue("No events returned", events.size() > 0);
         assertTrue("Incorrect event", "Test Message".equals(events.get(0).getMessage().getFormattedMessage()));
@@ -119,7 +114,7 @@ public class JmsQueueFailoverTest {
         ThreadContext.put("appender", "Failover");
         final Logger logger = LogManager.getLogger(JmsQueueFailoverTest.class);
         logger.debug("Test Message");
-        final List<LogEvent> events = app.getEvents();
+        final List<LogEvent> events = listAppender.getEvents();
         assertNotNull("No events returned", events);
         assertTrue("No events returned", events.size() > 0);
         assertTrue("Incorrect event", "Test Message".equals(events.get(0).getMessage().getFormattedMessage()));
