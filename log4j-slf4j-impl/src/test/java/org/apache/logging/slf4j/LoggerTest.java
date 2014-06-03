@@ -182,10 +182,10 @@ public class LoggerTest {
 
     @Before
     public void cleanup() {
-        final Map<String, Appender> list = ctx.getConfiguration().getAppenders();
-        final Appender listApp = list.get("List");
+        final Map<String, Appender> map = ctx.getConfiguration().getAppenders();
+        final Appender listApp = map.get("List");
         ((ListAppender) listApp).clear();
-        final Appender eventApp = list.get("EventLogger");
+        final Appender eventApp = map.get("EventLogger");
         ((ListAppender) eventApp).clear();
     }
 }
