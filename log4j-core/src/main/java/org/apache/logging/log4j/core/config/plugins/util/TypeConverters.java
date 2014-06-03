@@ -53,7 +53,7 @@ public final class TypeConverters {
     /**
      * Parses a {@link String} into a {@link BigDecimal}.
      */
-    private static class BigDecimalConverter implements TypeConverter<BigDecimal> {
+    public static class BigDecimalConverter implements TypeConverter<BigDecimal> {
         @Override
         public BigDecimal convert(final String s) {
             return new BigDecimal(s);
@@ -63,7 +63,7 @@ public final class TypeConverters {
     /**
      * Parses a {@link String} into a {@link BigInteger}.
      */
-    private static class BigIntegerConverter implements TypeConverter<BigInteger> {
+    public static class BigIntegerConverter implements TypeConverter<BigInteger> {
         @Override
         public BigInteger convert(final String s) {
             return new BigInteger(s);
@@ -73,7 +73,7 @@ public final class TypeConverters {
     /**
      * Converts a {@link String} into a {@link Boolean}.
      */
-    private static class BooleanConverter implements TypeConverter<Boolean> {
+    public static class BooleanConverter implements TypeConverter<Boolean> {
         @Override
         public Boolean convert(final String s) {
             return Boolean.valueOf(s);
@@ -83,7 +83,7 @@ public final class TypeConverters {
     /**
      * Converts a {@link String} into a {@code byte[]}.
      */
-    private static class ByteArrayConverter implements TypeConverter<byte[]> {
+    public static class ByteArrayConverter implements TypeConverter<byte[]> {
         @Override
         public byte[] convert(final String s) {
             return s.getBytes(Charset.defaultCharset());
@@ -93,7 +93,7 @@ public final class TypeConverters {
     /**
      * Converts a {@link String} into a {@link Byte}.
      */
-    private static class ByteConverter implements TypeConverter<Byte> {
+    public static class ByteConverter implements TypeConverter<Byte> {
         @Override
         public Byte convert(final String s) {
             return Byte.valueOf(s);
@@ -103,7 +103,7 @@ public final class TypeConverters {
     /**
      * Converts a {@link String} into a {@link Character}.
      */
-    private static class CharacterConverter implements TypeConverter<Character> {
+    public static class CharacterConverter implements TypeConverter<Character> {
         @Override
         public Character convert(final String s) {
             if (s.length() != 1) {
@@ -116,7 +116,7 @@ public final class TypeConverters {
     /**
      * Converts a {@link String} into a {@code char[]}.
      */
-    private static class CharArrayConverter implements TypeConverter<char[]> {
+    public static class CharArrayConverter implements TypeConverter<char[]> {
         @Override
         public char[] convert(final String s) {
             return s.toCharArray();
@@ -126,7 +126,7 @@ public final class TypeConverters {
     /**
      * Converts a {@link String} into a {@link Charset}.
      */
-    private static class CharsetConverter implements TypeConverter<Charset> {
+    public static class CharsetConverter implements TypeConverter<Charset> {
         @Override
         public Charset convert(final String s) {
             return Charset.forName(s);
@@ -134,9 +134,9 @@ public final class TypeConverters {
     }
 
     /**
-     * Converts a {@link String} into a {@link Classe}.
+     * Converts a {@link String} into a {@link Class}.
      */
-    private static class ClassConverter implements TypeConverter<Class<?>> {
+    public static class ClassConverter implements TypeConverter<Class<?>> {
         @Override
         public Class<?> convert(final String s) throws ClassNotFoundException {
             return Loader.loadClass(s);
@@ -146,7 +146,7 @@ public final class TypeConverters {
     /**
      * Converts a {@link String} into a {@link Double}.
      */
-    private static class DoubleConverter implements TypeConverter<Double> {
+    public static class DoubleConverter implements TypeConverter<Double> {
         @Override
         public Double convert(final String s) {
             return Double.valueOf(s);
@@ -158,7 +158,7 @@ public final class TypeConverters {
      *
      * @param <E> the enum class to parse.
      */
-    private static class EnumConverter<E extends Enum<E>> implements TypeConverter<E> {
+    public static class EnumConverter<E extends Enum<E>> implements TypeConverter<E> {
         private final Class<E> clazz;
 
         private EnumConverter(final Class<E> clazz) {
@@ -174,7 +174,7 @@ public final class TypeConverters {
     /**
      * Converts a {@link String} into a {@link File}.
      */
-    private static class FileConverter implements TypeConverter<File> {
+    public static class FileConverter implements TypeConverter<File> {
         @Override
         public File convert(final String s) {
             return new File(s);
@@ -184,7 +184,7 @@ public final class TypeConverters {
     /**
      * Converts a {@link String} into a {@link Float}.
      */
-    private static class FloatConverter implements TypeConverter<Float> {
+    public static class FloatConverter implements TypeConverter<Float> {
         @Override
         public Float convert(final String s) {
             return Float.valueOf(s);
@@ -198,7 +198,7 @@ public final class TypeConverters {
     /**
      * Converts a {@link String} into a {@link Integer}.
      */
-    private static class IntegerConverter implements TypeConverter<Integer> {
+    public static class IntegerConverter implements TypeConverter<Integer> {
         @Override
         public Integer convert(final String s) {
             return Integer.valueOf(s);
@@ -208,7 +208,7 @@ public final class TypeConverters {
     /**
      * Converts a {@link String} into a Log4j {@link Level}. Returns {@code null} for invalid level names.
      */
-    private static class LevelConverter implements TypeConverter<Level> {
+    public static class LevelConverter implements TypeConverter<Level> {
         @Override
         public Level convert(final String s) {
             return Level.valueOf(s);
@@ -218,7 +218,7 @@ public final class TypeConverters {
     /**
      * Converts a {@link String} into a {@link Long}.
      */
-    private static class LongConverter implements TypeConverter<Long> {
+    public static class LongConverter implements TypeConverter<Long> {
         @Override
         public Long convert(final String s) {
             return Long.valueOf(s);
@@ -228,7 +228,7 @@ public final class TypeConverters {
     /**
      * Converts a {@link String} into a {@link Pattern}.
      */
-    private static class PatternConverter implements TypeConverter<Pattern> {
+    public static class PatternConverter implements TypeConverter<Pattern> {
         @Override
         public Pattern convert(final String s) {
             return Pattern.compile(s);
@@ -238,7 +238,7 @@ public final class TypeConverters {
     /**
      * Converts a {@link String} into a {@link Pattern}.
      */
-    private static class SecurityProviderConverter implements TypeConverter<Provider> {
+    public static class SecurityProviderConverter implements TypeConverter<Provider> {
         @Override
         public Provider convert(final String s) {
             return Security.getProvider(s);
@@ -248,7 +248,7 @@ public final class TypeConverters {
     /**
      * Converts a {@link String} into a {@link Short}.
      */
-    private static class ShortConverter implements TypeConverter<Short> {
+    public static class ShortConverter implements TypeConverter<Short> {
         @Override
         public Short convert(final String s) {
             return Short.valueOf(s);
@@ -258,7 +258,7 @@ public final class TypeConverters {
     /**
      * Returns the given {@link String}, no conversion takes place.
      */
-    private static class StringConverter implements TypeConverter<String> {
+    public static class StringConverter implements TypeConverter<String> {
         @Override
         public String convert(final String s) {
             return s;
@@ -268,7 +268,7 @@ public final class TypeConverters {
     /**
      * Converts a {@link String} into a {@link URI}.
      */
-    private static class UriConverter implements TypeConverter<URI> {
+    public static class UriConverter implements TypeConverter<URI> {
         @Override
         public URI convert(final String s) throws URISyntaxException {
             return new URI(s);
@@ -278,7 +278,7 @@ public final class TypeConverters {
     /**
      * Converts a {@link String} into a {@link URL}.
      */
-    private static class UrlConverter implements TypeConverter<URL> {
+    public static class UrlConverter implements TypeConverter<URL> {
         @Override
         public URL convert(final String s) throws MalformedURLException {
             return new URL(s);
@@ -391,14 +391,14 @@ public final class TypeConverters {
         registry.put(BigDecimal.class, new BigDecimalConverter());
         // JRE
         registry.put(String.class, new StringConverter());
-        registry.put(Charset.class, new CharsetConverter());        
+        registry.put(Charset.class, new CharsetConverter());
         registry.put(File.class, new FileConverter());
         registry.put(URL.class, new UrlConverter());
         registry.put(URI.class, new UriConverter());
         registry.put(Class.class, new ClassConverter());
         registry.put(Pattern.class, new PatternConverter());
         registry.put(Provider.class, new SecurityProviderConverter());
-        // Log4J 
+        // Log4J
         registry.put(Level.class, new LevelConverter());
         registry.put(Filter.Result.class, new EnumConverter<Filter.Result>(Filter.Result.class));
         registry.put(Facility.class, new EnumConverter<Facility>(Facility.class));
