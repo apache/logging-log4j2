@@ -30,7 +30,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Base implementation of a Logger. It is highly recommended that any Logger implementation extend this class.
  */
-public abstract class AbstractLoggerProvider implements LoggerProvider, Serializable {
+public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     private static final long serialVersionUID = 2L;
 
@@ -69,7 +69,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
      */
     public static final Class<? extends MessageFactory> DEFAULT_MESSAGE_FACTORY_CLASS = ParameterizedMessageFactory.class;
 
-    private static final String FQCN = AbstractLoggerProvider.class.getName();
+    private static final String FQCN = AbstractLogger.class.getName();
 
     private static final String THROWING = "throwing";
 
@@ -83,7 +83,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
      * @param logger The logger to check
      * @param messageFactory The message factory to check.
      */
-    public static void checkMessageFactory(final LoggerProvider logger, final MessageFactory messageFactory) {
+    public static void checkMessageFactory(final ExtendedLogger logger, final MessageFactory messageFactory) {
         final String name = logger.getName();
         final MessageFactory loggerMessageFactory = logger.getMessageFactory();
         if (messageFactory != null && !loggerMessageFactory.equals(messageFactory)) {
@@ -107,7 +107,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
     /**
      * Creates a new logger named after the class (or subclass).
      */
-    public AbstractLoggerProvider() {
+    public AbstractLogger() {
         this.name = getClass().getName();
         this.messageFactory = createDefaultMessageFactory();
     }
@@ -117,7 +117,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
      *
      * @param name the logger name
      */
-    public AbstractLoggerProvider(final String name) {
+    public AbstractLogger(final String name) {
         this.name = name;
         this.messageFactory = createDefaultMessageFactory();
     }
@@ -128,7 +128,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
      * @param name the logger name
      * @param messageFactory the message factory, if null then use the default message factory.
      */
-    public AbstractLoggerProvider(final String name, final MessageFactory messageFactory) {
+    public AbstractLogger(final String name, final MessageFactory messageFactory) {
         this.name = name;
         this.messageFactory = messageFactory == null ? createDefaultMessageFactory() : messageFactory;
     }
@@ -1264,7 +1264,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /*
      * (non-Javadoc)
-     * @see org.apache.logging.log4j.spi.LoggerProvider#logIfEnabled(java.lang.String, org.apache.logging.log4j.Level,
+     * @see org.apache.logging.log4j.spi.ExtendedLogger#logIfEnabled(java.lang.String, org.apache.logging.log4j.Level,
      * org.apache.logging.log4j.Marker, org.apache.logging.log4j.message.Message, java.lang.Throwable)
      */
     @Override
@@ -1277,7 +1277,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /*
      * (non-Javadoc)
-     * @see org.apache.logging.log4j.spi.LoggerProvider#logIfEnabled(java.lang.String, org.apache.logging.log4j.Level,
+     * @see org.apache.logging.log4j.spi.ExtendedLogger#logIfEnabled(java.lang.String, org.apache.logging.log4j.Level,
      * org.apache.logging.log4j.Marker, java.lang.Object, java.lang.Throwable)
      */
     @Override
@@ -1290,7 +1290,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /*
      * (non-Javadoc)
-     * @see org.apache.logging.log4j.spi.LoggerProvider#logIfEnabled(java.lang.String, org.apache.logging.log4j.Level,
+     * @see org.apache.logging.log4j.spi.ExtendedLogger#logIfEnabled(java.lang.String, org.apache.logging.log4j.Level,
      * org.apache.logging.log4j.Marker, java.lang.String)
      */
     @Override
@@ -1302,7 +1302,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /*
      * (non-Javadoc)
-     * @see org.apache.logging.log4j.spi.LoggerProvider#logIfEnabled(java.lang.String, org.apache.logging.log4j.Level,
+     * @see org.apache.logging.log4j.spi.ExtendedLogger#logIfEnabled(java.lang.String, org.apache.logging.log4j.Level,
      * org.apache.logging.log4j.Marker, java.lang.String, java.lang.Object[])
      */
     @Override
@@ -1315,7 +1315,7 @@ public abstract class AbstractLoggerProvider implements LoggerProvider, Serializ
 
     /*
      * (non-Javadoc)
-     * @see org.apache.logging.log4j.spi.LoggerProvider#logIfEnabled(java.lang.String, org.apache.logging.log4j.Level,
+     * @see org.apache.logging.log4j.spi.ExtendedLogger#logIfEnabled(java.lang.String, org.apache.logging.log4j.Level,
      * org.apache.logging.log4j.Marker, java.lang.String, java.lang.Throwable)
      */
     @Override

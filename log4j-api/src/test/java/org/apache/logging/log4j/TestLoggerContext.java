@@ -21,26 +21,26 @@ import java.util.Map;
 
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.LoggerContext;
-import org.apache.logging.log4j.spi.LoggerProvider;
+import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**
  *
  */
 public class TestLoggerContext implements LoggerContext {
-    private final Map<String, LoggerProvider> map = new HashMap<String, LoggerProvider>();
+    private final Map<String, ExtendedLogger> map = new HashMap<String, ExtendedLogger>();
 
     @Override
-    public LoggerProvider getLogger(final String name) {
+    public ExtendedLogger getLogger(final String name) {
         if (map.containsKey(name)) {
             return map.get(name);
         }
-        final LoggerProvider logger = new TestLogger(name);
+        final ExtendedLogger logger = new TestLogger(name);
         map.put(name, logger);
         return logger;
     }
 
     @Override
-    public LoggerProvider getLogger(final String name, final MessageFactory messageFactory) {
+    public ExtendedLogger getLogger(final String name, final MessageFactory messageFactory) {
         return new TestLogger(name, messageFactory);
     }
 

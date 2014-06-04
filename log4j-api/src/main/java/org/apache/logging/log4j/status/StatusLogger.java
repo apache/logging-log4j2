@@ -33,14 +33,14 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.simple.SimpleLogger;
-import org.apache.logging.log4j.spi.AbstractLoggerProvider;
+import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
 /**
  * Mechanism to record events that occur in the logging system.
  */
-public final class StatusLogger extends AbstractLoggerProvider {
+public final class StatusLogger extends AbstractLogger {
 
     private static final long serialVersionUID = 2L;
 

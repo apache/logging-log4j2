@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogConfigurationException;
 import org.apache.commons.logging.LogFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.spi.LoggerContext;
-import org.apache.logging.log4j.spi.LoggerProvider;
+import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**
  *
@@ -108,7 +108,7 @@ public class LogFactoryImpl extends LogFactory {
             return getContext(FQCN, false);
         }
 
-        public static LoggerProvider getLogger(final String name) {
+        public static ExtendedLogger getLogger(final String name) {
             return getContext().getLogger(name);
         }
     }

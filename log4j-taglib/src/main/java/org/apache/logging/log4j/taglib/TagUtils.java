@@ -27,7 +27,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.spi.AbstractLoggerProvider;
+import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -75,13 +75,13 @@ final class TagUtils {
             if (logger instanceof Log4jTaglibLogger) {
                 return (Log4jTaglibLogger) logger;
             }
-            if (logger instanceof AbstractLoggerProvider) {
+            if (logger instanceof AbstractLogger) {
                 if (LOGGER.isInfoEnabled() && !WARNED_FOR.contains(logger)) {
                     LOGGER.info("Constructing new Log4jTaglibLogger from AbstractLogger {} name and message factory.",
                             logger.getClass().getName());
                     WARNED_FOR.add(logger);
                 }
-                final AbstractLoggerProvider original = (AbstractLoggerProvider) logger;
+                final AbstractLogger original = (AbstractLogger) logger;
                 return getLogger(context, original.getName(), original.getMessageFactory());
             }
             throw new JspException(

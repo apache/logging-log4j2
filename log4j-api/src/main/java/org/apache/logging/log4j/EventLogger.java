@@ -17,7 +17,7 @@
 package org.apache.logging.log4j;
 
 import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.apache.logging.log4j.spi.LoggerProvider;
+import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**
  *  Logs "Events" that are represented as StructuredDataMessages.
@@ -33,7 +33,7 @@ public final class EventLogger {
 
     private static final String FQCN = EventLogger.class.getName();
 
-    private static final LoggerProvider LOGGER = LogManager.getContext(false).getLogger(NAME);
+    private static final ExtendedLogger LOGGER = LogManager.getContext(false).getLogger(NAME);
 
     private EventLogger() {
     }

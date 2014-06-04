@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.spi.LoggerContext;
-import org.apache.logging.log4j.spi.LoggerProvider;
+import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,7 +98,7 @@ public class Log4jLoggerFactory implements ILoggerFactory {
             return getContext(fqcn, false);
         }
 
-        public static LoggerProvider getLogger(final String name) {
+        public static ExtendedLogger getLogger(final String name) {
             return getContext(FQCN).getLogger(name);
         }
     }

@@ -21,14 +21,14 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.LoggerNameAwareMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.spi.AbstractLoggerProvider;
+import org.apache.logging.log4j.spi.AbstractLogger;
 import org.slf4j.MarkerFactory;
 import org.slf4j.spi.LocationAwareLogger;
 
 /**
  *
  */
-public class SLF4JLogger extends AbstractLoggerProvider {
+public class SLF4JLogger extends AbstractLogger {
 
     private static final long serialVersionUID = 1L;
     private final org.slf4j.Logger logger;

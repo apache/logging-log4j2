@@ -24,12 +24,12 @@ import java.util.Map;
 
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.spi.AbstractLoggerProvider;
+import org.apache.logging.log4j.spi.AbstractLogger;
 
 /**
  *
  */
-public class TestLogger extends AbstractLoggerProvider {
+public class TestLogger extends AbstractLogger {
 
     private static final long serialVersionUID = 1L;
 

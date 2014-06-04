@@ -29,7 +29,7 @@ import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.spi.AbstractLoggerProvider;
+import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -38,7 +38,7 @@ import org.apache.logging.log4j.util.Strings;
  * Logger noticeably impacts performance. The message pattern and parameters are required so that they can be
  * used in global filters.
  */
-public class Logger extends AbstractLoggerProvider {
+public class Logger extends AbstractLogger {
 
     private static final long serialVersionUID = 1L;
 

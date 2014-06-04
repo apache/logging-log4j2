@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.LoggerContext;
-import org.apache.logging.log4j.spi.LoggerProvider;
+import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -36,7 +36,7 @@ public class SLF4JLoggerContext implements LoggerContext {
     }
 
     @Override
-    public LoggerProvider getLogger(final String name) {
+    public ExtendedLogger getLogger(final String name) {
         if (!loggers.containsKey(name)) {
             loggers.putIfAbsent(name, new SLF4JLogger(name, LoggerFactory.getLogger(name)));
         }
@@ -44,7 +44,7 @@ public class SLF4JLoggerContext implements LoggerContext {
     }
 
     @Override
-    public LoggerProvider getLogger(final String name, final MessageFactory messageFactory) {
+    public ExtendedLogger getLogger(final String name, final MessageFactory messageFactory) {
         if (!loggers.containsKey(name)) {
             loggers.putIfAbsent(name, new SLF4JLogger(name, messageFactory, LoggerFactory.getLogger(name)));
         }

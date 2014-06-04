@@ -34,7 +34,7 @@ public interface LoggerContext {
      * @param name The name of the Logger to return.
      * @return The logger with the specified name.
      */
-    LoggerProvider getLogger(String name);
+    ExtendedLogger getLogger(String name);
 
     /**
      * Returns a Logger.
@@ -43,7 +43,7 @@ public interface LoggerContext {
      *                       the logger but will log a warning if mismatched.
      * @return The logger with the specified name.
      */
-    LoggerProvider getLogger(String name, MessageFactory messageFactory);
+    ExtendedLogger getLogger(String name, MessageFactory messageFactory);
 
     /**
      * Detects if a Logger with the specified name exists.
