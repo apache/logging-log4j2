@@ -23,8 +23,8 @@ import org.apache.logging.log4j.core.util.Timer;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.junit.Test;
-
 import org.junit.experimental.categories.Category;
+
 import sun.reflect.Reflection;
 
 import static org.junit.Assert.*;
