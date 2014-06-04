@@ -1,0 +1,21 @@
+<configuration>
+
+  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <file>perftest.log</file>
+    <append>false</append>
+    <encoder>
+      <Pattern>%d %p %c{1} [%t] %X{aKey} %m %ex%n</Pattern>
+      <immediateFlush>false</immediateFlush>
+    </encoder>
+  </appender>
+  <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+    <queueSize>262144</queueSize>
+    <discardingThreshold>0</discardingThreshold>
+    <includeCallerData>false</includeCallerData>
+    <appender-ref ref="FILE" />
+  </appender>
+
+  <root level="debug">
+    <appender-ref ref="ASYNC" />
+  </root>
+</configuration>
