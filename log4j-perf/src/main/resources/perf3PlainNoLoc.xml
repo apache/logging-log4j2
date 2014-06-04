@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="OFF">
+  <Appenders>
+    <RandomAccessFile name="RandomAccessFile" fileName="perftest.log" immediateFlush="false" append="false">
+      <PatternLayout>
+        <Pattern>%d %p %c{1.} [%t] %X{aKey} %m %ex%n</Pattern>
+      </PatternLayout>
+    </RandomAccessFile>
+  </Appenders>
+  <Loggers>
+    <Root level="info" includeLocation="false">
+      <appender-ref ref="RandomAccessFile"/>
+    </Root>
+  </Loggers>
+</Configuration>
