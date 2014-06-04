@@ -31,6 +31,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
+import javax.xml.bind.DatatypeConverter;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Filter;
@@ -82,11 +84,34 @@ public final class TypeConverters {
 
     /**
      * Converts a {@link String} into a {@code byte[]}.
+     * 
+     * The supported formats are:
+     * <ul>
+     * <li>0x0123456789ABCDEF</li>
+     * <li>Base64:ABase64String</li>
+     * <li>String</li>
+     * </ul>
      */
     public static class ByteArrayConverter implements TypeConverter<byte[]> {
+
+        private static final String PREFIX_0x = "0x";
+        private static final String PREFIX_BASE64 = "Base64:";
+
         @Override
-        public byte[] convert(final String s) {
-            return s.getBytes(Charset.defaultCharset());
+        public byte[] convert(final String value) {
+            byte[] bytes;
+            if (value == null || value.isEmpty()) {
+                bytes = new byte[0];
+            } else if (value.startsWith(PREFIX_BASE64)) {
+                String lexicalXSDBase64Binary = value.substring(PREFIX_BASE64.length());
+                bytes = DatatypeConverter.parseBase64Binary(lexicalXSDBase64Binary);
+            } else if (value.startsWith(PREFIX_0x)) {
+                String lexicalXSDHexBinary = value.substring(PREFIX_0x.length());
+                bytes = DatatypeConverter.parseHexBinary(lexicalXSDHexBinary);
+            } else {
+                bytes = value.getBytes(Charset.defaultCharset());
+            }
+            return bytes;
         }
     }
 
@@ -155,8 +180,9 @@ public final class TypeConverters {
 
     /**
      * Converts a {@link String} into a {@link Enum}. Returns {@code null} for invalid enum names.
-     *
-     * @param <E> the enum class to parse.
+     * 
+     * @param <E>
+     *        the enum class to parse.
      */
     public static class EnumConverter<E extends Enum<E>> implements TypeConverter<E> {
         private final Class<E> clazz;
@@ -289,17 +315,22 @@ public final class TypeConverters {
      * Converts a String to a given class if a TypeConverter is available for that class. Falls back to the provided
      * default value if the conversion is unsuccessful. However, if the default value is <em>also</em> invalid, then
      * {@code null} is returned (along with a nasty status log message).
-     *
-     * @param s     the string to convert
-     * @param clazz the class to try to convert the string to
-     * @param defaultValue the fallback object to use if the conversion is unsuccessful
+     * 
+     * @param s
+     *        the string to convert
+     * @param clazz
+     *        the class to try to convert the string to
+     * @param defaultValue
+     *        the fallback object to use if the conversion is unsuccessful
      * @return the converted object which may be {@code null} if the string is invalid for the given type
-     * @throws NullPointerException if {@code clazz} is {@code null}
-     * @throws IllegalArgumentException if no TypeConverter exists for the given class
+     * @throws NullPointerException
+     *         if {@code clazz} is {@code null}
+     * @throws IllegalArgumentException
+     *         if no TypeConverter exists for the given class
      */
     public static Object convert(final String s, final Class<?> clazz, final Object defaultValue) {
-        final TypeConverter<?> converter = findTypeConverter(
-            Assert.requireNonNull(clazz, "No class specified to convert to."));
+        final TypeConverter<?> converter = findTypeConverter(Assert.requireNonNull(clazz,
+                "No class specified to convert to."));
         if (converter == null) {
             throw new IllegalArgumentException("No type converter found for class: " + clazz.getName());
         }
@@ -311,15 +342,16 @@ public final class TypeConverters {
             return converter.convert(s);
         } catch (final Exception e) {
             LOGGER.warn("Error while converting string [{}] to type [{}]. Using default value [{}].", s, clazz,
-                defaultValue, e);
+                    defaultValue, e);
             return parseDefaultValue(converter, defaultValue);
         }
     }
 
     /**
      * Locates a TypeConverter for a specified class.
-     *
-     * @param clazz the class to get a TypeConverter for
+     * 
+     * @param clazz
+     *        the class to get a TypeConverter for
      * @return the associated TypeConverter for that class or {@code null} if none could be found
      */
     public static TypeConverter<?> findTypeConverter(final Class<?> clazz) {
@@ -348,9 +380,11 @@ public final class TypeConverters {
     /**
      * Registers a TypeConverter for a specified class. This will overwrite any existing TypeConverter that may be
      * registered for the class.
-     *
-     * @param clazz the class to register the TypeConverter for
-     * @param converter the TypeConverter to register
+     * 
+     * @param clazz
+     *        the class to register the TypeConverter for
+     * @param converter
+     *        the TypeConverter to register
      */
     public static void registerTypeConverter(final Class<?> clazz, final TypeConverter<?> converter) {
         Holder.INSTANCE.registry.put(clazz, converter);
@@ -358,14 +392,13 @@ public final class TypeConverters {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private final Map<Class<?>, TypeConverter<?>> registry =
-        new ConcurrentHashMap<Class<?>, TypeConverter<?>>();
+    private final Map<Class<?>, TypeConverter<?>> registry = new ConcurrentHashMap<Class<?>, TypeConverter<?>>();
 
     /**
      * Constructs default TypeConverter registry. Used solely by singleton instance.
      */
     private TypeConverters() {
-    	// Primitive wrappers
+        // Primitive wrappers
         registry.put(Boolean.class, new BooleanConverter());
         registry.put(Byte.class, new ByteConverter());
         registry.put(Character.class, new CharacterConverter());
@@ -374,7 +407,7 @@ public final class TypeConverters {
         registry.put(Integer.class, new IntegerConverter());
         registry.put(Long.class, new LongConverter());
         registry.put(Short.class, new ShortConverter());
-    	// Primitives
+        // Primitives
         registry.put(boolean.class, registry.get(Boolean.class));
         registry.put(byte.class, new ByteConverter());
         registry.put(char[].class, new CharArrayConverter());
@@ -383,7 +416,7 @@ public final class TypeConverters {
         registry.put(int.class, registry.get(Integer.class));
         registry.put(long.class, registry.get(Long.class));
         registry.put(short.class, registry.get(Short.class));
-    	// Primitive arrays
+        // Primitive arrays
         registry.put(byte[].class, new ByteArrayConverter());
         registry.put(char.class, new CharacterConverter());
         // Numbers
