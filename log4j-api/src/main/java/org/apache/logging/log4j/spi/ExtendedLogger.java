@@ -25,7 +25,7 @@ import org.apache.logging.log4j.message.Message;
  * Extends the {@code Logger} interface with methods that facilitate implementing or extending {@code Logger}s. Users
  * should not need to use this interface.
  */
-public interface LoggerProvider extends Logger {
+public interface ExtendedLogger extends Logger {
 
     /**
      * Determines if logging is enabled.

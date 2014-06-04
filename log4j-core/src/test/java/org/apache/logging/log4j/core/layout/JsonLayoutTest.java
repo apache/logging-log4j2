@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.jackson.Log4jJsonObjectMapper;
 import org.apache.logging.log4j.core.util.Charsets;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -196,7 +197,7 @@ public class JsonLayoutTest {
         this.checkAt("{", 1, list);
         this.checkContains("\"level\" : \"DEBUG\",", list);
         this.checkContains("\"message\" : \"Here is a quote ' and then a double quote \\\"\",", list);
-        this.checkContains("\"loggerFqcn\" : \"org.apache.logging.log4j.spi.AbstractLoggerProvider\",", list);
+        this.checkContains("\"loggerFqcn\" : \"" + AbstractLogger.class.getName() + "\",", list);
         for (final Appender app : appenders.values()) {
             this.rootLogger.addAppender(app);
         }
@@ -241,7 +242,7 @@ public class JsonLayoutTest {
 
         this.checkAt("[", 0, list);
         this.checkAt("{", 1, list);
-        this.checkContains("\"loggerFqcn\" : \"org.apache.logging.log4j.spi.AbstractLoggerProvider\",", list);
+        this.checkContains("\"loggerFqcn\" : \"" + AbstractLogger.class.getName() + "\",", list);
         this.checkContains("\"level\" : \"DEBUG\",", list);
         this.checkContains("\"message\" : \"starting mdc pattern test\",", list);
         for (final Appender app : appenders.values()) {

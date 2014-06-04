@@ -24,14 +24,14 @@ import org.apache.logging.log4j.message.MessageFactory;
 /**
  * Wrapper class that exposes the protected AbstractLogger methods to support wrapped loggers.
  */
-public class LoggerProviderWrapper extends AbstractLoggerProvider {
+public class ExtendedLoggerWrapper extends AbstractLogger {
 
     private static final long serialVersionUID = 1L;
     
     /**
      * The wrapped Logger.
      */
-    protected final LoggerProvider logger;
+    protected final ExtendedLogger logger;
 
     /**
      * Constructor that wraps and existing Logger.
@@ -39,7 +39,7 @@ public class LoggerProviderWrapper extends AbstractLoggerProvider {
      * @param name The name of the Logger.
      * @param messageFactory TODO
      */
-    public LoggerProviderWrapper(final LoggerProvider logger, final String name, final MessageFactory messageFactory) {
+    public ExtendedLoggerWrapper(final ExtendedLogger logger, final String name, final MessageFactory messageFactory) {
         super(name, messageFactory);
         this.logger = logger;
     }

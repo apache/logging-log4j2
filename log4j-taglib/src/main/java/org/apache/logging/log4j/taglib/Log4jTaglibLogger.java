@@ -18,8 +18,8 @@ package org.apache.logging.log4j.taglib;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.spi.LoggerProvider;
-import org.apache.logging.log4j.spi.LoggerProviderWrapper;
+import org.apache.logging.log4j.spi.ExtendedLogger;
+import org.apache.logging.log4j.spi.ExtendedLoggerWrapper;
 
 /**
  * The bridge between the tag library and the Log4j API ensures that the source information for log events is
@@ -27,10 +27,10 @@ import org.apache.logging.log4j.spi.LoggerProviderWrapper;
  *
  * @since 2.0
  */
-class Log4jTaglibLogger extends LoggerProviderWrapper {
+class Log4jTaglibLogger extends ExtendedLoggerWrapper {
     private static final long serialVersionUID = 1L;
 
-    public Log4jTaglibLogger(final LoggerProvider logger, final String name, final MessageFactory messageFactory) {
+    public Log4jTaglibLogger(final ExtendedLogger logger, final String name, final MessageFactory messageFactory) {
         super(logger, name, messageFactory);
     }
 

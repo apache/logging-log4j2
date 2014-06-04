@@ -28,13 +28,13 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.spi.AbstractLoggerProvider;
+import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  *  This is the default logger that is used when no suitable logging implementation is available.
  */
-public class SimpleLogger extends AbstractLoggerProvider {
+public class SimpleLogger extends AbstractLogger {
 
     private static final long serialVersionUID = 1L;
 

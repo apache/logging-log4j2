@@ -25,9 +25,9 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.spi.AbstractLoggerProvider;
+import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
-import org.apache.logging.log4j.spi.LoggerProvider;
+import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -64,7 +64,7 @@ public class SimpleLoggerContext implements LoggerContext {
 
     private final PrintStream stream;
 
-    private final ConcurrentMap<String, LoggerProvider> loggers = new ConcurrentHashMap<String, LoggerProvider>();
+    private final ConcurrentMap<String, ExtendedLogger> loggers = new ConcurrentHashMap<String, ExtendedLogger>();
 
     public SimpleLoggerContext() {
         props = new PropertiesUtil("log4j2.simplelog.properties");
@@ -97,15 +97,15 @@ public class SimpleLoggerContext implements LoggerContext {
     }
 
     @Override
-    public LoggerProvider getLogger(final String name) {
+    public ExtendedLogger getLogger(final String name) {
         return getLogger(name, null);
     }
 
     @Override
-    public LoggerProvider getLogger(final String name, final MessageFactory messageFactory) {
+    public ExtendedLogger getLogger(final String name, final MessageFactory messageFactory) {
         if (loggers.containsKey(name)) {
-            final LoggerProvider logger = loggers.get(name);
-            AbstractLoggerProvider.checkMessageFactory(logger, messageFactory);
+            final ExtendedLogger logger = loggers.get(name);
+            AbstractLogger.checkMessageFactory(logger, messageFactory);
             return logger;
         }
 

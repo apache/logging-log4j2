@@ -20,7 +20,7 @@ import java.io.Serializable;
 
 import org.apache.commons.logging.Log;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.spi.LoggerProvider;
+import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**
  *
@@ -30,9 +30,9 @@ public class Log4jLog implements Log, Serializable {
     private static final long serialVersionUID = 1L;
     private static final String FQCN = Log4jLog.class.getName();
 
-    private final LoggerProvider logger;
+    private final ExtendedLogger logger;
 
-    public Log4jLog(final LoggerProvider logger) {
+    public Log4jLog(final ExtendedLogger logger) {
         this.logger = logger;
     }
 

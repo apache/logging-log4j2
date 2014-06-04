@@ -42,7 +42,7 @@ import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.spi.AbstractLoggerProvider;
+import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -288,7 +288,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     public Logger getLogger(final String name, final MessageFactory messageFactory) {
         Logger logger = loggers.get(name);
         if (logger != null) {
-            AbstractLoggerProvider.checkMessageFactory(logger, messageFactory);
+            AbstractLogger.checkMessageFactory(logger, messageFactory);
             return logger;
         }
 

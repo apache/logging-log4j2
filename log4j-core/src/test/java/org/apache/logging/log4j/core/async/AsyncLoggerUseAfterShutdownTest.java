@@ -23,7 +23,7 @@ import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.spi.AbstractLoggerProvider;
+import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -56,7 +56,7 @@ public class AsyncLoggerUseAfterShutdownTest {
 
         // call the #logMessage() method to bypass the isEnabled check: 
         // before the LOG4J2-639 fix this would throw a NPE
-        ((AbstractLoggerProvider) log).logMessage("com.foo.Bar", Level.INFO, null, new SimpleMessage("msg"), null);
+        ((AbstractLogger) log).logMessage("com.foo.Bar", Level.INFO, null, new SimpleMessage("msg"), null);
     }
 
 }

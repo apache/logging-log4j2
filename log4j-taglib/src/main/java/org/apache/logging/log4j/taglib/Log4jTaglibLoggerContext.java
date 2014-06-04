@@ -22,9 +22,9 @@ import javax.servlet.ServletContext;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.spi.AbstractLoggerProvider;
+import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
-import org.apache.logging.log4j.spi.LoggerProvider;
+import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**
  * This bridge between the tag library and the Log4j API ensures that instances of {@link Log4jTaglibLogger} are
@@ -61,7 +61,7 @@ final class Log4jTaglibLoggerContext implements LoggerContext {
     public Log4jTaglibLogger getLogger(final String name, final MessageFactory factory) {
         Log4jTaglibLogger logger = this.loggers.get(name);
         if (logger != null) {
-            AbstractLoggerProvider.checkMessageFactory(logger, factory);
+            AbstractLogger.checkMessageFactory(logger, factory);
             return logger;
         }
 
@@ -69,7 +69,7 @@ final class Log4jTaglibLoggerContext implements LoggerContext {
             logger = this.loggers.get(name);
             if (logger == null) {
                 final LoggerContext context = LogManager.getContext(false);
-                final LoggerProvider original = factory == null ?
+                final ExtendedLogger original = factory == null ?
                         context.getLogger(name) : context.getLogger(name, factory);
                 // wrap a logger from an underlying implementation
                 logger = new Log4jTaglibLogger(original, name, original.getMessageFactory());

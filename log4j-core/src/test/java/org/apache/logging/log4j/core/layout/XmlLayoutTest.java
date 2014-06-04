@@ -35,6 +35,7 @@ import org.apache.logging.log4j.core.jackson.Log4jXmlObjectMapper;
 import org.apache.logging.log4j.core.util.Charsets;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -238,7 +239,7 @@ public class XmlLayoutTest {
         final String string = list.get(0);
         assertTrue("Incorrect header: " + string, string.equals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
         assertTrue("Incorrect footer", list.get(list.size() - 1).equals("</Events>"));
-        this.checkContains("loggerFqcn=\"org.apache.logging.log4j.spi.AbstractLoggerProvider\"", list);
+        this.checkContains("loggerFqcn=\"" + AbstractLogger.class.getName() + "\"", list);
         this.checkContains("level=\"DEBUG\"", list);
         this.checkContains(">starting mdc pattern test</Message>", list);
         // this.checkContains("<Message>starting mdc pattern test</Message>", list);

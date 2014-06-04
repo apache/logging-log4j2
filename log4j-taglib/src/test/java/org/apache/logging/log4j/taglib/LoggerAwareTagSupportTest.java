@@ -18,7 +18,7 @@ package org.apache.logging.log4j.taglib;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.spi.AbstractLoggerProvider;
+import org.apache.logging.log4j.spi.AbstractLogger;
 import org.junit.Test;
 import org.springframework.mock.web.MockPageContext;
 
@@ -74,7 +74,7 @@ public class LoggerAwareTagSupportTest {
     public void testGetLoggerWithTaglibLogger() throws Exception {
         this.setUp(null);
 
-        final AbstractLoggerProvider wrapped = (AbstractLoggerProvider)LogManager.getLogger("testGetLoggerWithTaglibLogger");
+        final AbstractLogger wrapped = (AbstractLogger)LogManager.getLogger("testGetLoggerWithTaglibLogger");
         final Log4jTaglibLogger logger = new Log4jTaglibLogger(wrapped, wrapped.getName(), wrapped.getMessageFactory());
 
         this.tag.setLogger(logger);

@@ -140,7 +140,7 @@
           Make Blocking the default WaitStrategy for Async Loggers.
       </action>
       <action issue="LOG4J2-555" dev="rpopma" type="update" due-to="Bruce Brouwer">
-          Introduce LoggerProvider interface to facilitate implementing and extending Loggers.
+          Introduce ExtendedLogger interface to facilitate implementing and extending Loggers.
       </action>
       <action issue="LOG4J2-560" dev="rgoers" type="fix">
           SyslogAppenderTest and RFC5424LayoutTest were failing in Java 8.

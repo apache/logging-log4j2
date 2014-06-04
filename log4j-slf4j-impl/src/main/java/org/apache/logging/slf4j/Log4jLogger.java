@@ -26,7 +26,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.spi.LoggerProvider;
+import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 import org.slf4j.spi.LocationAwareLogger;
@@ -41,11 +41,11 @@ public class Log4jLogger implements LocationAwareLogger, Serializable {
     private static final long serialVersionUID = 7869000638091304316L;
     private static final Marker EVENT_MARKER = MarkerFactory.getMarker("EVENT");
     private final boolean eventLogger;
-    private transient LoggerProvider logger;
+    private transient ExtendedLogger logger;
     private final String name;
     private transient EventDataConverter converter;
 
-    public Log4jLogger(final LoggerProvider logger, final String name) {
+    public Log4jLogger(final ExtendedLogger logger, final String name) {
         this.logger = logger;
         this.eventLogger = "EventLogger".equals(name);
         this.name = name;
