@@ -48,6 +48,15 @@ public class TypeConvertersTest {
     @SuppressWarnings("boxing")
     @Parameterized.Parameters
     public static Collection<Object[]> data() throws Exception {
+        final byte[] byteArray = {
+                (byte) 0xc7,
+                (byte) 0x73,
+                (byte) 0x21,
+                (byte) 0x8c,
+                (byte) 0x7e,
+                (byte) 0xc8,
+                (byte) 0xee,
+                (byte) 0x99 };
         return Arrays.asList(
             // Array format: value, expected, default, type
             new Object[][]{
@@ -131,6 +140,9 @@ public class TypeConvertersTest {
                 // arrays
                 { "123", "123".toCharArray(), null, char[].class },
                 { "123", "123".getBytes(Charset.defaultCharset()), null, byte[].class },
+                { "0xC773218C7EC8EE99", byteArray, null, byte[].class },
+                { "0xc773218c7ec8ee99", byteArray, null, byte[].class },
+                { "Base64:cGxlYXN1cmUu", "pleasure.".getBytes("US-ASCII"), null, byte[].class },
                 // JRE
                 // JRE Charset
                 { "UTF-8", Charsets.UTF_8, null, Charset.class },
