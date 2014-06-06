@@ -100,11 +100,11 @@
       <timezone>America/Chicago</timezone>
     </developer>
     <developer>
-      <id></id>
+      <id>bbrouwer</id>
       <name>Bruce Brouwer</name>
       <email>bruce.brouwer@gmail.com</email>
       <roles>
-        <role>Contributor</role>
+        <role>Committer</role>
       </roles>
       <timezone>America/Detroit</timezone>
     </developer>
