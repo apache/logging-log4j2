@@ -27,6 +27,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * A convenience class to convert property values to specific types.
  */
 public final class OptionConverter {
+    // TODO: use {} in LOGGER messages
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -91,7 +92,7 @@ public final class OptionConverter {
         // Get the value of the property in string form
         final String className = findAndSubst(key, props);
         if (className == null) {
-            LOGGER.error("Could not find value for key " + key);
+            LOGGER.error("Could not find value for key {}", key);
             return defaultValue;
         }
         // Trim className to avoid trailing spaces that cause problems.
@@ -136,8 +137,7 @@ public final class OptionConverter {
             try {
                 return Integer.parseInt(s);
             } catch (final NumberFormatException e) {
-                LOGGER.error('[' + s + "] is not in proper int form.");
-                e.printStackTrace();
+                LOGGER.error("[{}] is not in proper int form.", s, e);
             }
         }
         return defaultValue;
@@ -172,8 +172,8 @@ public final class OptionConverter {
             try {
                 return Long.parseLong(str) * multiplier;
             } catch (final NumberFormatException e) {
-                LOGGER.error('[' + str + "] is not in proper int form.");
-                LOGGER.error('[' + value + "] not in expected format.", e);
+                LOGGER.error("[{}] is not in proper int form.", str);
+                LOGGER.error("[{}] not in expected format.", value, e);
             }
         }
         return defaultValue;
@@ -196,7 +196,7 @@ public final class OptionConverter {
         try {
             return substVars(value, props);
         } catch (final IllegalArgumentException e) {
-            LOGGER.error("Bad option value [" + value + "].", e);
+            LOGGER.error("Bad option value [{}].", value, e);
             return value;
         }
     }
@@ -218,23 +218,15 @@ public final class OptionConverter {
             try {
                 final Class<?> classObj = Loader.loadClass(className);
                 if (!superClass.isAssignableFrom(classObj)) {
-                    LOGGER.error("A \"" + className + "\" object is not assignable to a \"" +
-                        superClass.getName() + "\" variable.");
-                    LOGGER.error("The class \"" + superClass.getName() + "\" was loaded by ");
-                    LOGGER.error("[" + superClass.getClassLoader() + "] whereas object of type ");
-                    LOGGER.error('"' + classObj.getName() + "\" was loaded by ["
-                        + classObj.getClassLoader() + "].");
+                    LOGGER.error("A \"{}\" object is not assignable to a \"{}\" variable.", className,
+                        superClass.getName());
+                    LOGGER.error("The class \"{}\" was loaded by [{}] whereas object of type [{}] was loaded by [{}].",
+                        superClass.getName(), superClass.getClassLoader(), classObj.getName());
                     return defaultValue;
                 }
                 return classObj.newInstance();
-            } catch (final ClassNotFoundException e) {
-                LOGGER.error("Could not instantiate class [" + className + "].", e);
-            } catch (final IllegalAccessException e) {
-                LOGGER.error("Could not instantiate class [" + className + "].", e);
-            } catch (final InstantiationException e) {
-                LOGGER.error("Could not instantiate class [" + className + "].", e);
-            } catch (final RuntimeException e) {
-                LOGGER.error("Could not instantiate class [" + className + "].", e);
+            } catch (final Exception e) {
+                LOGGER.error("Could not instantiate class [{}].", className, e);
             }
         }
         return defaultValue;
