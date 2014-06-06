@@ -136,6 +136,9 @@ public class PluginManager {
         final Enumeration<URL> resources;
         try {
             resources = loader.getResources(PATH + FILENAME);
+            if (resources == null) {
+                return null;
+            }
         } catch (final IOException ioe) {
             LOGGER.warn("Unable to preload plugins", ioe);
             return null;
