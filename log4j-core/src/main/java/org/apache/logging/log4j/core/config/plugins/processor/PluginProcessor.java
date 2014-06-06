@@ -41,27 +41,22 @@ import javax.tools.StandardLocation;
 
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Annotation processor for pre-scanning Log4j 2 plugins.
  */
-@SupportedAnnotationTypes(PluginProcessor.PLUGINS_PACKAGE_NAME + ".*")
+@SupportedAnnotationTypes("org.apache.logging.log4j.core.config.plugins.*")
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class PluginProcessor extends AbstractProcessor {
 
     // TODO: this could be made more abstract to allow for compile-time and run-time plugin processing
 
     /**
-     * Destination package for saving cache file.
+     * The location of the plugin cache data file. This file is written to by this processor, and read from by
+     * {@link org.apache.logging.log4j.core.config.plugins.util.PluginManager}.
      */
-    public static final String PLUGINS_PACKAGE_NAME = "org.apache.logging.log4j.core.config.plugins";
-
-    public static final String DIRECTORY = "org/apache/logging/log4j/core/config/plugins/";
-
-    /**
-     * Name of cache file.
-     */
-    public static final String FILENAME = "Log4j2Plugins.dat";
+    public static final String PLUGIN_CACHE_FILE = "META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat";
 
     private final PluginCache pluginCache = new PluginCache();
 
@@ -104,8 +99,8 @@ public class PluginProcessor extends AbstractProcessor {
     }
 
     private void writeCacheFile(final Element... elements) throws IOException {
-        final FileObject fo = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT, 
-                PLUGINS_PACKAGE_NAME, FILENAME, elements);
+        final FileObject fo = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT,
+            Strings.EMPTY, PLUGIN_CACHE_FILE, elements);
         final OutputStream out = fo.openOutputStream();
         try {
             pluginCache.writeCache(out);

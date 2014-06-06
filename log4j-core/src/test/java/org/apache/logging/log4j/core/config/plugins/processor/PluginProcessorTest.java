@@ -33,15 +33,14 @@ import static org.junit.Assert.*;
 @RunWith(JUnit4.class)
 public class PluginProcessorTest {
 
-    private static final String CACHE_FILE = PluginProcessor.DIRECTORY + PluginProcessor.FILENAME;
-
     private static final PluginCache pluginCache = new PluginCache();
 
     private final Plugin p = FakePlugin.class.getAnnotation(Plugin.class);
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        final Enumeration<URL> resources = PluginProcessor.class.getClassLoader().getResources(CACHE_FILE);
+        final Enumeration<URL> resources =
+            PluginProcessor.class.getClassLoader().getResources(PluginProcessor.PLUGIN_CACHE_FILE);
         pluginCache.loadCacheFiles(resources);
     }
 

@@ -43,9 +43,6 @@ public class PluginManager {
     private static final PluginRegistry<PluginType<?>> REGISTRY =
         new PluginRegistry<PluginType<?>>();
 
-    private static final String PATH = PluginProcessor.DIRECTORY;
-    private static final String FILENAME = PluginProcessor.FILENAME;
-
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private Map<String, PluginType<?>> plugins = new HashMap<String, PluginType<?>>();
@@ -135,7 +132,7 @@ public class PluginManager {
     private static PluginRegistry<PluginType<?>> decode(final ResourceLoader loader) {
         final Enumeration<URL> resources;
         try {
-            resources = loader.getResources(PATH + FILENAME);
+            resources = loader.getResources(PluginProcessor.PLUGIN_CACHE_FILE);
             if (resources == null) {
                 return null;
             }
