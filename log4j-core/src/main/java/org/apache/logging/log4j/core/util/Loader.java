@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.util;
 
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ReflectPermission;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -45,6 +46,12 @@ public final class Loader {
         final String ignoreTCLProp = PropertiesUtil.getProperties().getStringProperty("log4j.ignoreTCL", null);
         if (ignoreTCLProp != null) {
             ignoreTCL = OptionConverter.toBoolean(ignoreTCLProp, true);
+        }
+        final SecurityManager sm = System.getSecurityManager();
+        if (sm != null) {
+            sm.checkPermission(new RuntimePermission("getClassLoader"));
+            sm.checkPermission(new RuntimePermission("getStackTrace"));
+            sm.checkPermission(new ReflectPermission("suppressAccessChecks"));
         }
     }
 
