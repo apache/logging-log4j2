@@ -27,7 +27,6 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * A convenience class to convert property values to specific types.
  */
 public final class OptionConverter {
-    // TODO: use {} in LOGGER messages
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
