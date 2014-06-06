@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="2.0-rc2" date="2014-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-640" dev="mattsicker" type="fix">
+        Fix NPE that can be caused by a null ThreadContextClassLoader.
+      </action>
       <action issue="LOG4J2-655" dev="mattsicker" type="add">
         Add Vagrantfile for testing in GNU+Linux.
       </action>

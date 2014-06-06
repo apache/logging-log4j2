@@ -20,6 +20,8 @@ package org.apache.logging.log4j.core.util;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -35,6 +37,9 @@ public final class Loader {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private static final String TSTR = "Caught Exception while in Loader.getResource. This may be innocuous.";
+
+    private static final PrivilegedAction<ClassLoader> THREAD_CONTEXT_CLASS_LOADER_GETTER =
+        new ThreadContextClassLoaderGetter();
 
     static {
         final String ignoreTCLProp = PropertiesUtil.getProperties().getStringProperty("log4j.ignoreTCL", null);
@@ -202,21 +207,18 @@ public final class Loader {
     }
 
     private static ClassLoader getTcl() {
-        ClassLoader cl;
-        if (System.getSecurityManager() == null) {
-            cl = Thread.currentThread().getContextClassLoader();
-        } else {
-            cl = java.security.AccessController.doPrivileged(
-                new java.security.PrivilegedAction<ClassLoader>() {
-                    @Override
-                    public ClassLoader run() {
-                        return Thread.currentThread().getContextClassLoader();
-                    }
-                }
-            );
-        }
+        return System.getSecurityManager() == null
+            ? THREAD_CONTEXT_CLASS_LOADER_GETTER.run()
+            : AccessController.doPrivileged(THREAD_CONTEXT_CLASS_LOADER_GETTER);
+    }
 
-        return cl;
+    private static class ThreadContextClassLoaderGetter implements PrivilegedAction<ClassLoader> {
+        @Override
+        public ClassLoader run() {
+            final ClassLoader cl = Thread.currentThread().getContextClassLoader();
+            // if the TCCL is null, that means we're using the system CL
+            return cl == null ? ClassLoader.getSystemClassLoader() : cl;
+        }
     }
 
     private static boolean isChild(final ClassLoader loader1, final ClassLoader loader2) {
