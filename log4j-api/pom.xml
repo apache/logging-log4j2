@@ -102,7 +102,7 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Export-Package>*</Export-Package>
+            <Export-Package>org.apache.logging.log4j.*</Export-Package>
           </instructions>
         </configuration>
       </plugin>
