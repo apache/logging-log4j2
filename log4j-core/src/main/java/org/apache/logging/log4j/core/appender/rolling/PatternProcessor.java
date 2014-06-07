@@ -163,10 +163,14 @@ public class PatternProcessor {
         return debugGetNextTime(nextTime);
     }
 
+    public void updateTime() {
+        prevFileTime = nextFileTime;
+    }
+
     private long debugGetNextTime(long nextTime) {
         if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("PatternProcessor.getNextTime returning {}, nextFileTime={}, prevFileTime={}, freq={}", //
-                    format(nextTime), format(nextFileTime), format(prevFileTime), frequency);
+            LOGGER.trace("PatternProcessor.getNextTime returning {}, nextFileTime={}, prevFileTime={}, current={}, freq={}", //
+                    format(nextTime), format(nextFileTime), format(prevFileTime), format(System.currentTimeMillis()), frequency);
         }
         return nextTime;
     }
