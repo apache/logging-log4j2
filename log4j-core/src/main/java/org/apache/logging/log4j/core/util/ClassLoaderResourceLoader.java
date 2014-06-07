@@ -46,4 +46,9 @@ public final class ClassLoaderResourceLoader implements ResourceLoader {
     public Enumeration<URL> getResources(final String name) throws IOException {
         return loader.getResources(name);
     }
+
+    @Override
+    public String toString() {
+        return this.getClass().getCanonicalName() + '(' + loader.toString() + ')';
+    }
 }

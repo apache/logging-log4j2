@@ -50,4 +50,9 @@ public final class BundleResourceLoader implements ResourceLoader {
         final Enumeration<URL> enumeration = bundle.getResources(name);
         return enumeration;
     }
+
+    @Override
+    public String toString() {
+        return this.getClass().getCanonicalName() + ": " + bundle.getSymbolicName();
+    }
 }
