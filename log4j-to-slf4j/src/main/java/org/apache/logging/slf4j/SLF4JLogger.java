@@ -93,11 +93,15 @@ public class SLF4JLogger extends AbstractLogger {
         if (marker == null) {
             return null;
         }
-        final Marker parent = marker.getParent();
-        final org.slf4j.Marker parentMarker = parent == null ? null : getMarker(parent);
         final org.slf4j.Marker slf4jMarker = MarkerFactory.getMarker(marker.getName());
-        if (parentMarker != null && !slf4jMarker.contains(parentMarker)) {
-            slf4jMarker.add(parentMarker);
+        final Marker[] parents = marker.getParents();
+        if (parents != null) {
+            for (final Marker parent : parents) {
+                final org.slf4j.Marker slf4jParent = getMarker(parent);
+                if (!slf4jMarker.contains(slf4jParent)) {
+                    slf4jMarker.add(slf4jParent);
+                }
+            }
         }
         return slf4jMarker;
     }

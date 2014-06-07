@@ -34,14 +34,6 @@ public interface Marker extends Serializable {
     String getName();
 
     /**
-     * Returns the first parent of this Marker.
-     * @return The first parent Marker or {@code null} if this Marker has no parents.
-     * @deprecated Use getParents() instead.
-     */
-    @Deprecated
-    Marker getParent();
-
-    /**
      * Returns a list of parents of this Marker.
      * @return The parent Markers or {@code null} if this Marker has no parents.
      */

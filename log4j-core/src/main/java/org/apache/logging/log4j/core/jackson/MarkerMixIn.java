@@ -67,10 +67,6 @@ abstract class MarkerMixIn implements Marker {
     @JacksonXmlProperty(isAttribute = true)
     public abstract String getName();
 
-    @JsonIgnore
-    @Override
-    public abstract Marker getParent();
-
     @Override
     @JsonProperty(JsonConstants.ELT_PARENTS)
     @JacksonXmlElementWrapper(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_PARENTS)

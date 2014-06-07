@@ -219,11 +219,6 @@ public final class MarkerManager {
         }
 
         @Override
-        public Marker getParent() {
-            return this.parents != null ? parents[0] : null;
-        }
-
-        @Override
         public Marker[] getParents() {
             if (this.parents == null) {
                 return null;

@@ -467,8 +467,8 @@ public class NoSQLDatabaseManagerTest {
             expect(message.getFormattedMessage()).andReturn("Another cool message 02.");
             expect(event.getSource()).andReturn(new StackTraceElement("com.bar.Foo", "anotherMethod03", "Foo.java", 9));
             expect(event.getMarker()).andReturn(
-                    MarkerManager.getMarker("AnotherMarker",
-                            MarkerManager.getMarker("Parent1", MarkerManager.getMarker("Grandparent2"))));
+                    MarkerManager.getMarker("AnotherMarker").addParents(MarkerManager.getMarker("Parent1").addParents(MarkerManager.getMarker("GrandParent1")),
+                            MarkerManager.getMarker("Parent2")));
             expect(event.getThreadName()).andReturn("AnotherThread-B");
             expect(event.getTimeMillis()).andReturn(987654321564L).times(2);
             expect(event.getThrown()).andReturn(exception2);
@@ -505,15 +505,33 @@ public class NoSQLDatabaseManagerTest {
             @SuppressWarnings("unchecked")
             final Map<String, Object> marker = (Map<String, Object>) object.get("marker");
             assertEquals("The marker name is not correct.", "AnotherMarker", marker.get("name"));
-            assertTrue("The marker parent should be a map.", marker.get("parent") instanceof Map);
+
+            assertTrue("The marker parents should be a list.", marker.get("parents") instanceof List);
             @SuppressWarnings("unchecked")
-            final Map<String, Object> parentMarker = (Map<String, Object>) marker.get("parent");
-            assertEquals("The marker parent name is not correct.", "Parent1", parentMarker.get("name"));
-            assertTrue("The marker grandparent should be a map.", parentMarker.get("parent") instanceof Map);
+            final List<Object> markerParents = (List<Object>) marker.get("parents");
+            assertEquals("The marker parents should contain two parents", 2, markerParents.size());
+            
+            assertTrue("The marker parents[0] should be a map.", markerParents.get(0) instanceof Map);
             @SuppressWarnings("unchecked")
-            final Map<String, Object> grandparentMarker = (Map<String, Object>) parentMarker.get("parent");
-            assertEquals("The marker grandparent name is not correct.", "Grandparent2", grandparentMarker.get("name"));
-            assertNull("The grandparent marker should have no parent.", grandparentMarker.get("parent"));
+            final Map<String, Object> parent1 = (Map<String, Object>) markerParents.get(0);
+            assertEquals("The first marker parent name is not correct.", "Parent1", parent1.get("name"));
+            
+            assertTrue("The marker parents[1] should be a map.", markerParents.get(1) instanceof Map);
+            @SuppressWarnings("unchecked")
+            final Map<String, Object> parent2 = (Map<String, Object>) markerParents.get(1);
+            assertEquals("The second marker parent name is not correct.", "Parent2", parent2.get("name"));
+            assertNull("The second marker should have no parent.", parent2.get("parent"));
+
+            assertTrue("The parent1 parents should be a list.", parent1.get("parents") instanceof List);
+            @SuppressWarnings("unchecked")
+            final List<Object> parent1Parents = (List<Object>) parent1.get("parents");
+            assertEquals("The parent1 parents should have only one parent", 1, parent1Parents.size());
+            
+            assertTrue("The parent1Parents[0] should be a map.", parent1Parents.get(0) instanceof Map);
+            @SuppressWarnings("unchecked")
+            final Map<String, Object> parent1parent = (Map<String, Object>) parent1Parents.get(0);
+            assertEquals("The first parent1 parent name is not correct.", "GrandParent1", parent1parent.get("name"));
+            assertNull("The parent1parent marker should have no parent.", parent1parent.get("parent"));
 
             assertTrue("The thrown should be a map.", object.get("thrown") instanceof Map);
             @SuppressWarnings("unchecked")
