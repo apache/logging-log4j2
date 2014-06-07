@@ -92,7 +92,11 @@ public class SizeBasedTriggeringPolicy implements TriggeringPolicy {
      */
     @Override
     public boolean isTriggeringEvent(final LogEvent event) {
-        return manager.getFileSize() > maxFileSize;
+        boolean triggered = manager.getFileSize() > maxFileSize;
+        if (triggered) {
+            manager.getPatternProcessor().updateTime();
+        }
+        return triggered;
     }
 
     @Override
