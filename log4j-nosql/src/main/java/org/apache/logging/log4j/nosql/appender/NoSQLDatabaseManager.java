@@ -87,17 +87,7 @@ public final class NoSQLDatabaseManager<W> extends AbstractDatabaseManager {
         if (marker == null) {
             entity.set("marker", (Object) null);
         } else {
-            final NoSQLObject<W> originalMarkerEntity = this.connection.createObject();
-            NoSQLObject<W> markerEntity = originalMarkerEntity;
-            markerEntity.set("name", marker.getName());
-            while (marker.getParent() != null) {
-                marker = marker.getParent();
-                final NoSQLObject<W> parentMarkerEntity = this.connection.createObject();
-                parentMarkerEntity.set("name", marker.getName());
-                markerEntity.set("parent", parentMarkerEntity);
-                markerEntity = parentMarkerEntity;
-            }
-            entity.set("marker", originalMarkerEntity);
+            entity.set("marker", buildMarkerEntity(marker));
         }
 
         entity.set("threadName", event.getThreadName());
@@ -146,6 +136,22 @@ public final class NoSQLDatabaseManager<W> extends AbstractDatabaseManager {
         }
 
         this.connection.insertObject(entity);
+    }
+
+    private NoSQLObject<W> buildMarkerEntity(Marker marker) {
+        final NoSQLObject<W> entity = this.connection.createObject();
+        entity.set("name", marker.getName());
+
+        final Marker[] parents = marker.getParents();
+        if (parents != null) {
+            @SuppressWarnings("unchecked")
+            final NoSQLObject<W>[] parentEntities = new NoSQLObject[parents.length];
+            for (int i = 0; i < parents.length; i++) {
+                parentEntities[i] = buildMarkerEntity(parents[i]);
+            }
+            entity.set("parents", parentEntities);
+        }
+        return entity;
     }
 
     @Override
