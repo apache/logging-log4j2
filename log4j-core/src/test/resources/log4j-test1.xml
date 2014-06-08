@@ -44,11 +44,11 @@
           <KeyValuePair key="test" value="123"/>
         </ThreadContextMapFilter>
       <AppenderRef ref="STDOUT"/>
-    </Logger>>
+    </Logger>
 
     <Logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
       <AppenderRef ref="File"/>
-    </Logger>>
+    </Logger>
 
     <Root level="error">
       <AppenderRef ref="STDOUT"/>
