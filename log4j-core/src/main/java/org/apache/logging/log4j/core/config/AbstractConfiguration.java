@@ -766,7 +766,15 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
     }
 
-    protected byte[] toByteArray(final InputStream is) throws IOException {
+    /**
+     * Reads an InputStream using buffered reads into a byte array buffer. The given InputStream will remain open
+     * after invocation of this method.
+     *
+     * @param is the InputStream to read into a byte array buffer.
+     * @return a byte array of the InputStream contents.
+     * @throws IOException if the {@code read} method of the provided InputStream throws this exception.
+     */
+    protected static byte[] toByteArray(final InputStream is) throws IOException {
         final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
         int nRead;
