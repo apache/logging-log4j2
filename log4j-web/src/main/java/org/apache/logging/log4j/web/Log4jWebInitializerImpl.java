@@ -16,8 +16,11 @@
  */
 package org.apache.logging.log4j.web;
 
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.ServletContext;
@@ -35,6 +38,7 @@ import org.apache.logging.log4j.core.selector.NamedContextSelector;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NetUtils;
+import org.apache.logging.log4j.core.util.SetUtils;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 
 /**
@@ -92,14 +96,7 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
     }
 
     private void initializeJndi(final String location) {
-        URI configLocation = null;
-        if (location != null) {
-            try {
-                configLocation = FileUtils.getCorrectedFilePathUri(location);
-            } catch (final Exception e) {
-                this.servletContext.log("Unable to convert configuration location [" + location + "] to a URI!", e);
-            }
-        }
+        URI configLocation = getConfigURI(location);;
 
         if (this.name == null) {
             throw new IllegalStateException("A log4jContextName context parameter is required");
@@ -141,7 +138,48 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
             return;
         }
 
-        this.loggerContext = Configurator.initialize(this.name, this.getClassLoader(), location, this.servletContext);
+        URI uri = getConfigURI(location);
+        this.loggerContext = Configurator.initialize(this.name, this.getClassLoader(), uri, this.servletContext);
+    }
+
+    private URI getConfigURI(final String location) {
+        try {
+            String configLocation = location;
+            if (configLocation == null) {
+                String[] paths = SetUtils.prefixSet(servletContext.getResourcePaths("/WEB-INF/"), "/WEB-INF/log4j2");
+                if (paths.length == 1) {
+                    configLocation = paths[0];
+                } else if (paths.length > 1) {
+                    final String prefix = "/WEB-INF/log4j2-" + this.name + ".";
+                    boolean found = false;
+                    for (String str : paths) {
+                        if (str.startsWith(prefix)) {
+                            configLocation = str;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        configLocation = paths[0];
+                    }
+                }
+            }
+            if (configLocation != null) {
+                URL url = servletContext.getResource(configLocation);
+                if (url != null) {
+                    return url.toURI();
+                }
+            }
+        } catch (Exception ex) {
+            // Just try passing the location.
+        }
+        if (location != null) {
+            try {
+                return FileUtils.getCorrectedFilePathUri(location);
+            } catch (final Exception e) {
+                this.servletContext.log("Unable to convert configuration location [" + location + "] to a URI!", e);
+            }
+        }
+        return null;
     }
 
     @Override
