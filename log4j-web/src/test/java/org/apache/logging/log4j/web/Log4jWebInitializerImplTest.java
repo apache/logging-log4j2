@@ -105,6 +105,7 @@ public class Log4jWebInitializerImplTest {
         expect(this.servletContext.getInitParameter(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))
                 .andReturn(null);
         expect(this.servletContext.getServletContextName()).andReturn("helloWorld01");
+        expect(this.servletContext.getResourcePaths("/WEB-INF/")).andReturn(null);
         this.servletContext.setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), capture(loggerContextCapture));
         expectLastCall();
 
@@ -168,6 +169,7 @@ public class Log4jWebInitializerImplTest {
         expect(this.servletContext.getInitParameter(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))
                 .andReturn("false");
         expect(this.servletContext.getServletContextName()).andReturn("helloWorld02");
+        expect(this.servletContext.getResourcePaths("/WEB-INF/")).andReturn(null);
         expect(this.servletContext.getClassLoader()).andReturn(this.getClass().getClassLoader());
         this.servletContext.setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), capture(loggerContextCapture));
         expectLastCall();
@@ -232,6 +234,7 @@ public class Log4jWebInitializerImplTest {
         expect(this.servletContext.getInitParameter(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))
                 .andReturn("nothing");
         expect(this.servletContext.getServletContextName()).andReturn("helloWorld03");
+        expect(this.servletContext.getResourcePaths("/WEB-INF/")).andReturn(null);
         expect(this.servletContext.getClassLoader()).andReturn(this.getClass().getClassLoader());
         this.servletContext.setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), capture(loggerContextCapture));
         expectLastCall();
@@ -276,6 +279,7 @@ public class Log4jWebInitializerImplTest {
         expect(this.servletContext.getInitParameter(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))
                 .andReturn(null);
         expect(this.servletContext.getServletContextName()).andReturn("helloWorld04");
+        expect(this.servletContext.getResourcePaths("/WEB-INF/")).andReturn(null);
         expect(this.servletContext.getClassLoader()).andReturn(this.getClass().getClassLoader());
         this.servletContext.setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), capture(loggerContextCapture));
         expectLastCall();
@@ -319,6 +323,7 @@ public class Log4jWebInitializerImplTest {
         expect(this.servletContext.getInitParameter(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))
                 .andReturn(null);
         expect(this.servletContext.getServletContextName()).andReturn("helloWorld05");
+        expect(this.servletContext.getResourcePaths("/WEB-INF/")).andReturn(null);
         expect(this.servletContext.getClassLoader()).andReturn(this.getClass().getClassLoader());
         this.servletContext.setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), capture(loggerContextCapture));
         expectLastCall();
@@ -354,7 +359,7 @@ public class Log4jWebInitializerImplTest {
         expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONFIG_LOCATION)).andReturn(null);
         expect(this.servletContext.getInitParameter(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))
                 .andReturn("true");
-
+        expect(this.servletContext.getResourcePaths("/WEB-INF/")).andReturn(null);
         replay(this.servletContext);
 
         assertNull("The context should be null.", ContextAnchor.THREAD_CONTEXT.get());
@@ -375,6 +380,7 @@ public class Log4jWebInitializerImplTest {
         expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONFIG_LOCATION)).andReturn(null);
         expect(this.servletContext.getInitParameter(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))
                 .andReturn("true");
+        expect(this.servletContext.getResourcePaths("/WEB-INF/")).andReturn(null);
         this.servletContext.log(anyObject(String.class));
         expectLastCall();
         this.servletContext.setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), capture(loggerContextCapture));
@@ -428,6 +434,7 @@ public class Log4jWebInitializerImplTest {
         expect(this.servletContext.getInitParameter(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))
                 .andReturn(null);
         expect(this.servletContext.getServletContextName()).andReturn("helloWorld01");
+        expect(this.servletContext.getResourcePaths("/WEB-INF/")).andReturn(null);
         this.servletContext.setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), capture(loggerContextCapture));
         expectLastCall();
 
