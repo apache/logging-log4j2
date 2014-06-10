@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.util.NameUtil;
 
 /**
  * PluginVisitor implementation for {@link PluginAttribute}.
@@ -40,7 +41,8 @@ public class PluginAttributeVisitor extends AbstractPluginVisitor<PluginAttribut
         final String replacedValue = this.substitutor.replace(event, rawValue);
         final Object defaultValue = findDefaultValue(event);
         final Object value = convert(replacedValue, defaultValue);
-        LOGGER.debug("Attribute({}=\"{}\")", name, value);
+        final Object debugValue = this.annotation.sensitive() ? NameUtil.md5(value + this.getClass().getName()) : value;
+        LOGGER.debug("Attribute({}=\"{}\")", name, debugValue);
         return value;
     }
 
