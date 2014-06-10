@@ -23,7 +23,6 @@ import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.config.plugins.SensitivePluginAttribute;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.nosql.appender.NoSQLProvider;
@@ -87,7 +86,7 @@ public final class CouchDBProvider implements NoSQLProvider<CouchDBConnection> {
             @PluginAttribute("server") String server,
             @PluginAttribute("port") final String port,
             @PluginAttribute("username") final String username,
-            @SensitivePluginAttribute("password") final String password,
+            @PluginAttribute(value = "password", sensitive = true) final String password,
             @PluginAttribute("factoryClassName") final String factoryClassName,
             @PluginAttribute("factoryMethodName") final String factoryMethodName) {
         CouchDbClient client;

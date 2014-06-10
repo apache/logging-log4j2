@@ -20,21 +20,19 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import com.mongodb.DB;
+import com.mongodb.MongoClient;
+import com.mongodb.ServerAddress;
+import com.mongodb.WriteConcern;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.config.plugins.SensitivePluginAttribute;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.nosql.appender.NoSQLProvider;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import com.mongodb.DB;
-import com.mongodb.MongoClient;
-import com.mongodb.ServerAddress;
-import com.mongodb.WriteConcern;
 
 /**
  * The MongoDB implementation of {@link NoSQLProvider}.
@@ -98,7 +96,7 @@ public final class MongoDBProvider implements NoSQLProvider<MongoDBConnection> {
             @PluginAttribute("server") final String server,
             @PluginAttribute("port") final String port,
             @PluginAttribute("username") final String username,
-            @SensitivePluginAttribute("password") final String password,
+            @PluginAttribute(value = "password", sensitive = true) final String password,
             @PluginAttribute("factoryClassName") final String factoryClassName,
             @PluginAttribute("factoryMethodName") final String factoryMethodName) {
         DB database;

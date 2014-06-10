@@ -23,7 +23,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Identifies a list of aliases for a {@link Plugin}, {@link PluginAttribute}, or {@link SensitivePluginAttribute}.
+ * Identifies a list of aliases for a {@link Plugin} or {@link PluginAttribute}.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
