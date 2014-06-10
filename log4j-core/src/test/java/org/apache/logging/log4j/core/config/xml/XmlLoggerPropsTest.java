@@ -17,11 +17,12 @@
 package org.apache.logging.log4j.core.config.xml;
 
 import java.util.List;
-import java.util.Map;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -72,7 +73,16 @@ public class XmlLoggerPropsTest {
             final List<String> events = listAppender.getMessages();
             assertTrue("No events", events.size() > 0);
             assertTrue("Incorrect number of events", events.size() == 2);
+            assertTrue("Incorrect value", events.get(0).contains("user="));
+            assertTrue("Incorrect value", events.get(0).contains("phrasex=****"));
             assertTrue("Incorrect value", events.get(0).contains("test=test"));
+            assertTrue("Incorrect value", events.get(0).contains("test2=test2default"));
+            assertTrue("Incorrect value", events.get(0).contains("test3=Unknown"));
+            assertTrue("Incorrect value", events.get(1).contains("user="));
+            assertTrue("Incorrect value", events.get(1).contains("phrasex=****"));
+            assertTrue("Incorrect value", events.get(1).contains("test=test"));
+            assertTrue("Incorrect value", events.get(1).contains("test2=test2default"));
+            assertTrue("Incorrect value", events.get(1).contains("test3=Unknown"));
         } finally {
             System.clearProperty("test");
         }
