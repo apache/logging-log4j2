@@ -16,20 +16,25 @@
   ~ limitations under the License.
   -->
 <Configuration status="OFF" strict="false" name="DSI">
+  <Properties>
+     <Property name="test2">test2default</Property>
+  </Properties>
   <Appenders>
     <List name="List">
-      <PatternLayout pattern="[%-5level] %c{1.} user=%X{user} test=%X{test} %msg%n" />
+        <PatternLayout pattern="[%-5level] %c{1.} user=%X{user} phrasex=%X{phrasex} test=%X{test} test2=$${sys:test2} test3=$${sys:test3:-Unknown} %msg%n" />
     </List>
   </Appenders>
 
   <Loggers>
     <Logger name="org.apache.logging.log4j.core" level="debug" additivity="false">
       <Property name="user">$${sys:user.name}</Property>
+      <Property name="phrasex">${sys:user.phrasex:-****}</Property>
       <Property name="test">${sys:test}</Property>
       <AppenderRef ref="List"/>
     </Logger>
     <Root level="debug">
       <Property name="user">${sys:user.name}</Property>
+      <Property name="phrasex">${sys:user.phrasex:-****}</Property>
       <Property name="test">${sys:test}</Property>
       <AppenderRef ref="List" />
     </Root>
