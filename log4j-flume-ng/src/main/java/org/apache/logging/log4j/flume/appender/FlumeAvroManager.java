@@ -195,7 +195,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
         try {
             final Properties props = new Properties();
 
-            props.put("client.type", agents.length > 1 ? "default_failover" : "default");
+            props.put("client.type", "default_failover");
 
             int count = 1;
             final StringBuilder sb = new StringBuilder();
