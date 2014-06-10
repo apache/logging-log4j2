@@ -94,4 +94,10 @@ public @interface PluginAttribute {
      */
     String value();
 
+    /**
+     * Indicates that this attribute is a sensitive one that shouldn't be logged directly. Such attributes will instead
+     * be output as a hashed value.
+     */
+    boolean sensitive() default false;
+
 }
