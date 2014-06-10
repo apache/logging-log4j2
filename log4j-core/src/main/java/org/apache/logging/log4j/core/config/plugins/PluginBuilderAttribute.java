@@ -40,4 +40,10 @@ public @interface PluginBuilderAttribute {
      * of the field (or member) this annotation is attached to will be used.
      */
     String value() default Strings.EMPTY;
+
+    /**
+     * Indicates that this attribute is a sensitive one that shouldn't be logged directly. Such attributes will instead
+     * be output as a hashed value.
+     */
+    boolean sensitive() default false;
 }
