@@ -1258,8 +1258,8 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
               <td>loggerFields</td>
               <td>List of KeyValuePairs</td>
               <td>Allows arbitrary PatternLayout patterns to be included as specified ThreadContext fields; no default
-                specified. To use, include a &gt;LoggerFields&lt; nested element, containing one or more
-                &gt;KeyValuePair&lt; elements. Each &gt;KeyValuePair&lt; must have a key attribute, which
+                specified. To use, include a &lt;LoggerFields&gt; nested element, containing one or more
+                &lt;KeyValuePair&gt; elements. Each &lt;KeyValuePair&gt; must have a key attribute, which
                 specifies the key name which will be used to identify the field within the MDC Structured Data element,
                 and a value attribute, which specifies the PatternLayout pattern to use as the value.</td>
             </tr>
