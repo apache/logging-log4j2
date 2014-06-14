@@ -22,15 +22,20 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
+import org.apache.logging.log4j.spi.MutableThreadContextStack;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -187,5 +192,38 @@ public class RingBufferLogEventTest {
         assertEquals(threadName, other.getThreadName());
         assertEquals(location, other.getSource());
         assertEquals(currentTimeMillis, other.getTimeMillis());
+    }
+    
+    @Test
+    public void testCreateMementoReturnsCopy() {
+        RingBufferLogEvent evt = new RingBufferLogEvent();
+        String loggerName = "logger.name";
+        Marker marker = MarkerManager.getMarker("marked man");
+        String fqcn = "f.q.c.n";
+        Level level = Level.TRACE;
+        Message data = new SimpleMessage("message");
+        Throwable t = new InternalError("not a real error");
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("key", "value");
+        ContextStack contextStack = new MutableThreadContextStack(Arrays.asList("a", "b"));
+        String threadName = "main";
+        StackTraceElement location = null;
+        long currentTimeMillis = 12345;
+        evt.setValues(null, loggerName, marker, fqcn, level, data, t, map,
+                contextStack, threadName, location, currentTimeMillis);
+        
+        LogEvent actual = evt.createMemento();
+        assertEquals(evt.getLoggerName(), actual.getLoggerName());
+        assertEquals(evt.getMarker(), actual.getMarker());
+        assertEquals(evt.getLoggerFqcn(), actual.getLoggerFqcn());
+        assertEquals(evt.getLevel(), actual.getLevel());
+        assertEquals(evt.getMessage(), actual.getMessage());
+        assertEquals(evt.getThrown(), actual.getThrown());
+        assertEquals(evt.getContextMap(), actual.getContextMap());
+        assertEquals(evt.getContextStack(), actual.getContextStack());
+        assertEquals(evt.getThreadName(), actual.getThreadName());
+        assertEquals(evt.getTimeMillis(), actual.getTimeMillis());
+        assertEquals(evt.getSource(), actual.getSource());
+        assertEquals(evt.getThrownProxy(), actual.getThrownProxy());
     }
 }
