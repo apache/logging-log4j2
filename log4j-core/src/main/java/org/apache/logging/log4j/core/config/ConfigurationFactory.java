@@ -149,6 +149,8 @@ public abstract class ConfigurationFactory {
                     for (final WeightedFactory wf : ordered) {
                         addFactory(list, wf.factoryClass);
                     }
+                    // see above comments about double-checked locking
+                    //noinspection NonThreadSafeLazyInitialization
                     factories = Collections.unmodifiableList(list);
                 }
             } finally {
