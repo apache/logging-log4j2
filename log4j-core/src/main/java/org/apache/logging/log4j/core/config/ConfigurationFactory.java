@@ -156,6 +156,7 @@ public abstract class ConfigurationFactory {
             }
         }
 
+        LOGGER.debug("Using configurationFactory {}", configFactory);
         return configFactory;
     }
 
@@ -480,6 +481,7 @@ public abstract class ConfigurationFactory {
                             if (type.equals("*") || config != null && config.endsWith(type)) {
                                 final Configuration c = factory.getConfiguration(source);
                                 if (c != null) {
+                                    LOGGER.debug("Loaded configuration from {}", source);
                                     return c;
                                 }
                                 LOGGER.error("Cannot determine the ConfigurationFactory to use for {}", config);
@@ -548,6 +550,17 @@ public abstract class ConfigurationFactory {
 
         public void setInputStream(final InputStream stream) {
             this.stream = stream;
+        }
+        
+        @Override
+        public String toString() {
+            if (file != null) {
+                return file.getAbsolutePath();
+            }
+            if (location != null) {
+                return location;
+            }
+            return "stream (unknown location)";
         }
     }
 }
