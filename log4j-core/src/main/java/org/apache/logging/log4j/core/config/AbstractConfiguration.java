@@ -22,8 +22,10 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -181,6 +183,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             }
         }
         // similarly, first stop AsyncLoggerConfig Disruptor thread(s)
+        Set<LoggerConfig> alreadyStopped = new HashSet<LoggerConfig>();
         int asyncLoggerConfigCount = 0;
         for (final LoggerConfig logger : loggers.values()) {
             if (logger instanceof AsyncLoggerConfig) {
@@ -191,11 +194,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 // Only *after this* the appenders can be cleared or events will be lost.
                 logger.stop();
                 asyncLoggerConfigCount++;
+                alreadyStopped.add(logger);
             }
         }
         if (root instanceof AsyncLoggerConfig) {
             root.stop();
             asyncLoggerConfigCount++;
+            alreadyStopped.add(root);
         }
         LOGGER.trace("AbstractConfiguration stopped {} AsyncLoggerConfigs.", asyncLoggerConfigCount);
 
@@ -223,15 +228,26 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
         int loggerCount = 0;
         for (final LoggerConfig logger : loggers.values()) {
-            // AsyncLoggerConfig objects may be stopped multiple times, that's okay...
+            // clear appenders, even if this logger is already stopped.
             logger.clearAppenders();
+            
+            // AsyncLoggerConfigHelper decreases its ref count when an AsyncLoggerConfig is stopped.
+            // Stopping the same AsyncLoggerConfig twice results in an incorrect ref count and
+            // the shared Disruptor may be shut down prematurely, resulting in NPE or other errors.
+            if (alreadyStopped.contains(logger)) {
+                continue;
+            }
             logger.stop();
             loggerCount++;
         }
         LOGGER.trace("AbstractConfiguration stopped {} Loggers.", loggerCount);
 
-        // If root is an AsyncLoggerConfig it may already be stopped. Stopping it twice is okay.
-        root.stop();
+        // AsyncLoggerConfigHelper decreases its ref count when an AsyncLoggerConfig is stopped.
+        // Stopping the same AsyncLoggerConfig twice results in an incorrect ref count and
+        // the shared Disruptor may be shut down prematurely, resulting in NPE or other errors.
+        if (!alreadyStopped.contains(root)) {
+            root.stop();
+        }
         super.stop();
         if (advertiser != null && advertisement != null) {
             advertiser.unadvertise(advertisement);
