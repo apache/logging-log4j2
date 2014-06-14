@@ -64,6 +64,16 @@ public final class Loader {
         return getClassLoader(Loader.class, null);
     }
 
+    /**
+     * Returns the ClassLoader of current thread if possible, or falls back to the system ClassLoader if none is
+     * available.
+     *
+     * @return the TCCL.
+     */
+    public static ClassLoader getThreadContextClassLoader() {
+        return getTcl();
+    }
+
     // TODO: this method could use some explanation
     public static ClassLoader getClassLoader(final Class<?> class1, final Class<?> class2) {
 
