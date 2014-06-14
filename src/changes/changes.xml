@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="2.0-rc2" date="2014-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-637" dev="rpopma" type="fix" due-to="Mansoor Sajjad, Jon Wilmoth">
+        JMX: Updating a Logger's level via jConsole now correctly takes effect.
+      </action>
       <action issue="LOG4J2-668" dev="rpopma" type="fix">
         Correctly process log events when combining AsyncLoggers with AsyncAppender.
       </action>

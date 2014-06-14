@@ -320,7 +320,7 @@ public final class Server {
         final Map<String, LoggerConfig> map = ctx.getConfiguration().getLoggers();
         for (final String name : map.keySet()) {
             final LoggerConfig cfg = map.get(name);
-            final LoggerConfigAdmin mbean = new LoggerConfigAdmin(ctx.getName(), cfg);
+            final LoggerConfigAdmin mbean = new LoggerConfigAdmin(ctx, cfg);
             register(mbs, mbean, mbean.getObjectName());
 
             if (cfg instanceof AsyncLoggerConfig) {
