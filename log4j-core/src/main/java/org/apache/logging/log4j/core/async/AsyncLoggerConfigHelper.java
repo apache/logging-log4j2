@@ -332,10 +332,14 @@ class AsyncLoggerConfigHelper {
         }
         // LOG4J2-639: catch NPE if disruptor field was set to null after our check above
         try {
+            LogEvent logEvent = event;
+            if (event instanceof RingBufferLogEvent) {
+                logEvent = ((RingBufferLogEvent) event).createMemento();
+            }
             // Note: do NOT use the temp variable above!
             // That could result in adding a log event to the disruptor after it was shut down,
             // which could cause the publishEvent method to hang and never return.
-            disruptor.getRingBuffer().publishEvent(translator, event, asyncLoggerConfig);
+            disruptor.getRingBuffer().publishEvent(translator, logEvent, asyncLoggerConfig);
         } catch (NullPointerException npe) {
             LOGGER.fatal("Ignoring log event after log4j was shut down.");
         }

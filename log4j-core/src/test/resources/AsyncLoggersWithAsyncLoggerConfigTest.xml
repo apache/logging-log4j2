@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="ERROR">
+  <Appenders>
+    <List name="List">
+      <PatternLayout pattern="%c %m"/>
+    </List>
+  </Appenders>
+  
+  <Loggers>
+    <AsyncRoot level="trace">
+      <AppenderRef ref="List"/>
+    </AsyncRoot>
+  </Loggers>
+</Configuration>
