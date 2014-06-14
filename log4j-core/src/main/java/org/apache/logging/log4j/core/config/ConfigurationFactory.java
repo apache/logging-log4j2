@@ -253,7 +253,7 @@ public abstract class ConfigurationFactory {
         final boolean isClassLoaderScheme = scheme != null && scheme.equals(CLASS_LOADER_SCHEME);
         final boolean isClassPathScheme = scheme != null && !isClassLoaderScheme && scheme.equals(CLASS_PATH_SCHEME);
         if (scheme == null || isClassLoaderScheme || isClassPathScheme) {
-            final ClassLoader loader = this.getClass().getClassLoader();
+            final ClassLoader loader = Loader.getThreadContextClassLoader();
             String path;
             if (isClassLoaderScheme) {
                 path = configLocation.toString().substring(CLASS_LOADER_SCHEME_LENGTH);
