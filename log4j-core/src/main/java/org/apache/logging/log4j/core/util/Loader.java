@@ -64,21 +64,22 @@ public final class Loader {
         return getClassLoader(Loader.class, null);
     }
 
+    // TODO: this method could use some explanation
     public static ClassLoader getClassLoader(final Class<?> class1, final Class<?> class2) {
 
-        ClassLoader loader1 = null;
+        ClassLoader threadContextClassLoader = null;
         try {
-            loader1 = getTcl();
+            threadContextClassLoader = getTcl();
         } catch (final Exception ex) {
             LOGGER.warn("Caught exception locating thread ClassLoader {}", ex.getMessage());
         }
-        final ClassLoader loader2 = class1 == null ? null : class1.getClassLoader();
-        final ClassLoader loader3 = class2 == null ? null : class2.getClass().getClassLoader();
+        final ClassLoader loader1 = class1 == null ? null : class1.getClassLoader();
+        final ClassLoader loader2 = class2 == null ? null : class2.getClassLoader();
 
-        if (isChild(loader1, loader2)) {
-            return isChild(loader1, loader3) ? loader1 : loader3;
+        if (isChild(threadContextClassLoader, loader1)) {
+            return isChild(threadContextClassLoader, loader2) ? threadContextClassLoader : loader2;
         }
-        return isChild(loader2, loader3) ? loader2 : loader3;
+        return isChild(loader1, loader2) ? loader1 : loader2;
     }
 
     /**
@@ -228,12 +229,21 @@ public final class Loader {
         }
     }
 
+    /**
+     * Determines if one ClassLoader is a child of another ClassLoader. Note that a {@code null} ClassLoader is
+     * interpreted as the system ClassLoader as per convention.
+     *
+     * @param loader1 the ClassLoader to check for childhood.
+     * @param loader2 the ClassLoader to check for parenthood.
+     * @return {@code true} if the first ClassLoader is a strict descendant of the second ClassLoader.
+     */
     private static boolean isChild(final ClassLoader loader1, final ClassLoader loader2) {
         if (loader1 != null && loader2 != null) {
             ClassLoader parent = loader1.getParent();
             while (parent != null && parent != loader2) {
                 parent = parent.getParent();
             }
+            // once parent is null, we're at the system CL, which would indicate they have separate ancestry
             return parent != null;
         }
         return loader1 != null;
