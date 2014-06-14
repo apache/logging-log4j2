@@ -164,8 +164,6 @@ public abstract class ConfigurationFactory {
     private static void addFactory(final Collection<ConfigurationFactory> list, final String factoryClass) {
         try {
             addFactory(list, (Class<ConfigurationFactory>) Loader.loadClass(factoryClass));
-        } catch (final ClassNotFoundException ex) {
-            LOGGER.error("Unable to load class {}", factoryClass, ex);
         } catch (final Exception ex) {
             LOGGER.error("Unable to load class {}", factoryClass, ex);
         }
@@ -267,8 +265,6 @@ public abstract class ConfigurationFactory {
             return new ConfigurationSource(configLocation.toURL().openStream(), configLocation.getPath());
         } catch (final MalformedURLException ex) {
             LOGGER.error("Invalid URL {}", configLocation.toString(), ex);
-        } catch (final IOException ex) {
-            LOGGER.error("Unable to access {}", configLocation.toString(), ex);
         } catch (final Exception ex) {
             LOGGER.error("Unable to access {}", configLocation.toString(), ex);
         }
