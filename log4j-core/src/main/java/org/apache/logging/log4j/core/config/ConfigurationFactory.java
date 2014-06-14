@@ -97,13 +97,11 @@ public abstract class ConfigurationFactory {
      * The name of the classloader URI scheme.
      */
     private static final String CLASS_LOADER_SCHEME = "classloader";
-    private static final int CLASS_LOADER_SCHEME_LENGTH = CLASS_LOADER_SCHEME.length() + 1;
 
     /**
      * The name of the classpath URI scheme, synonymous with the classloader URI scheme.
      */
     private static final String CLASS_PATH_SCHEME = "classpath";
-    private static final int CLASS_PATH_SCHEME_LENGTH = CLASS_PATH_SCHEME.length() + 1;
 
     private static volatile List<ConfigurationFactory> factories = null;
 
@@ -255,10 +253,8 @@ public abstract class ConfigurationFactory {
         if (scheme == null || isClassLoaderScheme || isClassPathScheme) {
             final ClassLoader loader = Loader.getThreadContextClassLoader();
             String path;
-            if (isClassLoaderScheme) {
-                path = configLocation.toString().substring(CLASS_LOADER_SCHEME_LENGTH);
-            } else if (isClassPathScheme) {
-                path = configLocation.toString().substring(CLASS_PATH_SCHEME_LENGTH);
+            if (isClassLoaderScheme || isClassPathScheme) {
+                path = configLocation.getSchemeSpecificPart();
             } else {
                 path = configLocation.getPath();
             }
