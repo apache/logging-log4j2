@@ -245,6 +245,12 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
             }
         }
     }
+    
+    @Override
+    public String toString() {
+        final String path = configFile != null ? configFile.getAbsolutePath() : "unknown";
+        return getClass().getSimpleName() + "[location=" + path + "]";
+    }
 
     /**
      * The error that occurred.
