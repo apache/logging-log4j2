@@ -131,6 +131,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     @Override
     public void start() {
+        LOGGER.debug("Starting configuration {}", this);
         this.setStarting();
         pluginManager.collectPlugins();
         final PluginManager levelPlugins = new PluginManager("Level");
@@ -158,6 +159,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
         root.start(); // LOG4J2-336
         super.start();
+        LOGGER.debug("Started configuration {} OK.", this);
     }
 
     /**

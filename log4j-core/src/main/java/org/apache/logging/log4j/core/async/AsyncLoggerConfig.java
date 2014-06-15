@@ -120,6 +120,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
 
     @Override
     public void start() {
+        LOGGER.trace("AsyncLoggerConfig[{}] starting...", getName());
         this.setStarting();
         if (helper == null) {
             helper = new AsyncLoggerConfigHelper(this);
@@ -131,6 +132,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
 
     @Override
     public void stop() {
+        LOGGER.trace("AsyncLoggerConfig[{}] stopping...", getName());
         this.setStopping();
         AsyncLoggerConfigHelper.release();
         super.stop();

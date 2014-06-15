@@ -96,6 +96,7 @@ public class Log4jContextFactory implements LoggerContextFactory {
             if (source != null) {
                 ContextAnchor.THREAD_CONTEXT.set(ctx);
                 final Configuration config = ConfigurationFactory.getInstance().getConfiguration(source);
+                LOGGER.debug("Starting LoggerContext[name={}] from configuration {}", ctx.getName(), source);
                 ctx.start(config);
                 ContextAnchor.THREAD_CONTEXT.remove();
             } else {
@@ -126,6 +127,7 @@ public class Log4jContextFactory implements LoggerContextFactory {
             if (configLocation != null || name != null) {
                 ContextAnchor.THREAD_CONTEXT.set(ctx);
                 final Configuration config = ConfigurationFactory.getInstance().getConfiguration(name, configLocation);
+                LOGGER.debug("Starting LoggerContext[name={}] from configuration at {}", ctx.getName(), configLocation);
                 ctx.start(config);
                 ContextAnchor.THREAD_CONTEXT.remove();
             } else {
