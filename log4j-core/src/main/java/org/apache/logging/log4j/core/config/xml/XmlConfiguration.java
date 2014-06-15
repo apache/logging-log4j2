@@ -241,7 +241,10 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             try {
                 final ConfigurationFactory.ConfigurationSource source =
                     new ConfigurationFactory.ConfigurationSource(new FileInputStream(configFile), configFile);
-                return new XmlConfiguration(source);
+                final XmlConfiguration config = new XmlConfiguration(source);
+                if (config.rootElement == null) {
+                    return null;
+                }
             } catch (final FileNotFoundException ex) {
                 LOGGER.error("Cannot locate file " + configFile, ex);
             }
@@ -318,7 +321,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         }
         return attributes;
     }
-    
+
     @Override
     public String toString() {
         final String path = configFile != null ? configFile.getAbsolutePath() : "unknown";
