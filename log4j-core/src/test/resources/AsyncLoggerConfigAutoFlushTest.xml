@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="off">
+  <Appenders>
+    <File name="File" 
+          fileName="target/AsyncLoggerConfigAutoFlushTest.log" 
+          bufferedIO="true"
+          immediateFlush="false" 
+          append="false">
+      <PatternLayout>
+        <Pattern>%d %p %c{1.} [%t] %X{aKey} %m %location %ex%n</Pattern>
+      </PatternLayout>
+    </File>
+  </Appenders>
+  
+  <Loggers>
+    <AsyncRoot level="info" includeLocation="true">
+      <AppenderRef ref="File"/>
+    </AsyncRoot>
+  </Loggers>
+</Configuration>
