@@ -151,13 +151,17 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         setup();
         setupAdvertisement();
         doConfigure();
+        final Set<LoggerConfig> alreadyStarted = new HashSet<LoggerConfig>();
         for (final LoggerConfig logger : loggers.values()) {
             logger.start();
+            alreadyStarted.add(logger);
         }
         for (final Appender appender : appenders.values()) {
             appender.start();
         }
-        root.start(); // LOG4J2-336
+        if (!alreadyStarted.contains(root)) { // LOG4J2-392
+            root.start(); // LOG4J2-336
+        }
         super.start();
         LOGGER.debug("Started configuration {} OK.", this);
     }
@@ -185,7 +189,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             }
         }
         // similarly, first stop AsyncLoggerConfig Disruptor thread(s)
-        Set<LoggerConfig> alreadyStopped = new HashSet<LoggerConfig>();
+        final Set<LoggerConfig> alreadyStopped = new HashSet<LoggerConfig>();
         int asyncLoggerConfigCount = 0;
         for (final LoggerConfig logger : loggers.values()) {
             if (logger instanceof AsyncLoggerConfig) {
