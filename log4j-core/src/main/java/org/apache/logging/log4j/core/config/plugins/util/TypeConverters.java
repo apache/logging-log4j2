@@ -335,7 +335,8 @@ public final class TypeConverters {
             throw new IllegalArgumentException("No type converter found for class: " + clazz.getName());
         }
         if (s == null) {
-            LOGGER.debug("Null string given to convert. Using default [{}].", defaultValue);
+            // don't debug print here, resulting output is hard to understand
+            //LOGGER.debug("Null string given to convert. Using default [{}].", defaultValue);
             return parseDefaultValue(converter, defaultValue);
         }
         try {
