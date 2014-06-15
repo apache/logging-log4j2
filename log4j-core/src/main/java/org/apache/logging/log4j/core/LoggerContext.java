@@ -137,6 +137,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
 
     @Override
     public void start() {
+        LOGGER.debug("Starting LoggerContext[name={}, {}]...", getName(), this);
         if (configLock.tryLock()) {
             try {
                 if (this.isInitialized() || this.isStopped()) {
@@ -149,6 +150,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
                 configLock.unlock();
             }
         }
+        LOGGER.debug("LoggerContext[name={}, {}] started OK.", getName(), this);
     }
 
     /**
@@ -156,6 +158,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      * @param config The new Configuration.
      */
     public void start(final Configuration config) {
+        LOGGER.debug("Starting LoggerContext[name={}, {}] with configuration {}...", getName(), this, config);
         if (configLock.tryLock()) {
             try {
                 if (this.isInitialized() || this.isStopped()) {
@@ -167,6 +170,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
             }
         }
         setConfiguration(config);
+        LOGGER.debug("LoggerContext[name={}, {}] started OK with configuration {}.", getName(), this, config);
     }
 
     private void setUpShutdownHook() {
@@ -198,6 +202,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
 
     @Override
     public void stop() {
+        LOGGER.debug("Stopping LoggerContext[name={}, {}]...", getName(), this);
         configLock.lock();
         try {
             if (this.isStopped()) {
@@ -218,6 +223,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
             // in finally: unregister MBeans even if an exception occurred while stopping
             Server.unregisterLoggerContext(getName()); // LOG4J2-406, LOG4J2-500
         }
+        LOGGER.debug("Stopped LoggerContext[name={}, {}]...", getName(), this);
     }
 
     private void tearDownShutdownHook() {
@@ -393,7 +399,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      * Reconfigure the context.
      */
     public synchronized void reconfigure() {
-        LOGGER.debug("Reconfiguration started for context[name={}] at {}", name, configLocation);
+        LOGGER.debug("Reconfiguration started for context[name={}] at {} ({})", name, configLocation, this);
         final Configuration instance = ConfigurationFactory.getInstance().getConfiguration(name, configLocation);
         setConfiguration(instance);
         /*
@@ -401,7 +407,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
          * updateLoggers(); if (old != null) { old.stop(); }
          */
 
-        LOGGER.debug("Reconfiguration complete for context[name={}] at {}", name, configLocation);
+        LOGGER.debug("Reconfiguration complete for context[name={}] at {} ({})", name, configLocation, this);
     }
 
     /**
@@ -429,13 +435,13 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      */
     @Override
     public synchronized void onChange(final Reconfigurable reconfigurable) {
-        LOGGER.debug("Reconfiguration started for context {}", name);
+        LOGGER.debug("Reconfiguration started for context {} ({})", name, this);
         final Configuration config = reconfigurable.reconfigure();
         if (config != null) {
             setConfiguration(config);
-            LOGGER.debug("Reconfiguration completed");
+            LOGGER.debug("Reconfiguration completed for {} ({})", name, this);
         } else {
-            LOGGER.debug("Reconfiguration failed");
+            LOGGER.debug("Reconfiguration failed for {} ({})", name, this);
         }
     }
 
@@ -454,9 +460,9 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
 
         @Override
         public void run() {
-            LOGGER.debug("Stopping LoggerContext [{}]", context);
+            LOGGER.debug("ShutdownThread stopping LoggerContext[name={}, {}]...", context.getName(), context);
             context.stop();
-            LOGGER.debug("LoggerContext [{}] stopped.", context);
+            LOGGER.debug("ShutdownThread stopped LoggerContext[name={}, {}].", context.getName(), context);
         }
     }
 
