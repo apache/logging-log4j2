@@ -168,7 +168,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @Override
     public void stop() {
         this.setStopping();
-        LOGGER.trace("AbstractConfiguration stopping...");
+        LOGGER.trace("Stopping {}...", this);
 
         // LOG4J2-392 first stop AsyncLogger Disruptor thread
         final LoggerContextFactory factory = LogManager.getFactory();
@@ -254,6 +254,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         if (advertiser != null && advertisement != null) {
             advertiser.unadvertise(advertisement);
         }
+        LOGGER.debug("Stopped {} OK", this);
     }
 
     @Override
