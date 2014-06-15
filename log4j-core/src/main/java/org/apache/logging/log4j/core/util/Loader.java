@@ -279,7 +279,7 @@ public final class Loader {
             // using the TCCL should work the same as the default ClassLoader (i.e., init or not)
             return Class.forName(className, true, getTcl());
         } catch (final Throwable e) {
-            LOGGER.trace("TCCL didn't work. Trying Class.forName({}).", className, e);
+            LOGGER.trace("TCCL didn't work for class {}: {}.", className, e.toString());
             return loadClassWithDefaultClassLoader(className);
         }
     }
