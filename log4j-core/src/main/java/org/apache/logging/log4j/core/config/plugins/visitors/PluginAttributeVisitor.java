@@ -42,7 +42,11 @@ public class PluginAttributeVisitor extends AbstractPluginVisitor<PluginAttribut
         final Object defaultValue = findDefaultValue(event);
         final Object value = convert(replacedValue, defaultValue);
         final Object debugValue = this.annotation.sensitive() ? NameUtil.md5(value + this.getClass().getName()) : value;
-        LOGGER.debug("Attribute({}=\"{}\")", name, debugValue);
+        if (value != replacedValue) {
+            LOGGER.debug("Attribute({}=\"{}\") - no value specified, using default.", name, debugValue);
+        } else {
+            LOGGER.debug("Attribute({}=\"{}\")", name, debugValue);
+        }
         return value;
     }
 

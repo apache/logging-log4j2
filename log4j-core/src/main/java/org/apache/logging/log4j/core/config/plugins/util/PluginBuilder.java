@@ -109,10 +109,14 @@ public class PluginBuilder<T> implements Builder<T> {
         verify();
         // first try to use a builder class if one is available
         try {
+            LOGGER.debug("Building Plugin[name={}, class={}]. Searching for builder factory method...", pluginType.getElementName(),
+                    pluginType.getPluginClass().getName());
             final Builder<T> builder = createBuilder(this.clazz);
             if (builder != null) {
                 injectFields(builder);
-                return builder.build();
+                T result = builder.build();
+                LOGGER.debug("Built Plugin[name={}] OK from builder factory method.", pluginType.getElementName());
+                return result;
             }
         } catch (final Exception e) {
             LOGGER.catching(Level.DEBUG, e);
@@ -121,10 +125,13 @@ public class PluginBuilder<T> implements Builder<T> {
         }
         // or fall back to factory method if no builder class is available
         try {
+            LOGGER.debug("Still building Plugin[name={}, class={}]. Searching for factory method...", 
+                    pluginType.getElementName(), pluginType.getPluginClass().getName());
             final Method factory = findFactoryMethod(this.clazz);
             final Object[] params = generateParameters(factory);
             @SuppressWarnings("unchecked")
             final T plugin = (T) factory.invoke(null, params);
+            LOGGER.debug("Built Plugin[name={}] OK from factory method.", pluginType.getElementName());
             return plugin;
         } catch (final Exception e) {
             LOGGER.catching(Level.DEBUG, e);
@@ -145,11 +152,11 @@ public class PluginBuilder<T> implements Builder<T> {
                 Modifier.isStatic(method.getModifiers())) {
                 @SuppressWarnings("unchecked")
                 final Builder<T> builder = (Builder<T>) method.invoke(null);
-                LOGGER.debug("Found builder factory method {}.{}.", clazz, method);
+                LOGGER.debug("Found builder factory method [{}]: {}.", method.getName(), method);
                 return builder;
             }
         }
-        LOGGER.debug("No compatible method annotated with {} found in class {}.", PluginBuilderFactory.class, clazz);
+        LOGGER.debug("No builder factory method found in class {}.", clazz.getName());
         return null;
     }
 
@@ -187,21 +194,21 @@ public class PluginBuilder<T> implements Builder<T> {
         for (final Method method : clazz.getDeclaredMethods()) {
             if (method.isAnnotationPresent(PluginFactory.class) &&
                 Modifier.isStatic(method.getModifiers())) {
-                LOGGER.debug("Found factory method {}.{}.", clazz, method);
+                LOGGER.debug("Found factory method [{}]: {}.", method.getName(), method);
                 return method;
             }
         }
-        LOGGER.debug("No compatible method annotated with {} found in class {}.", PluginFactory.class, clazz);
+        LOGGER.debug("No factory method found in class {}.", clazz.getName());
         return null;
     }
 
     private Object[] generateParameters(final Method factory) {
+        LOGGER.debug("Generating parameters for factory method [{}]...", factory.getName());
         final Class<?>[] types = factory.getParameterTypes();
         final Annotation[][] annotations = factory.getParameterAnnotations();
         final Object[] args = new Object[annotations.length];
         for (int i = 0; i < annotations.length; i++) {
             final String[] aliases = extractPluginAliases(annotations[i]);
-            LOGGER.debug("Constructing plugin of type {}", clazz);
             for (Annotation a : annotations[i]) {
                 if (a instanceof PluginAliases) {
                     continue; // already processed
