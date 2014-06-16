@@ -180,6 +180,7 @@
     <docLabel>Site Documentation</docLabel>
     <projectDir />
     <commons.logging.version>1.1.3</commons.logging.version>
+    <osgi.api.version>4.3.1</osgi.api.version>
   </properties>
   <pluginRepositories>
     <pluginRepository>
@@ -298,8 +299,8 @@
       </dependency>
       <dependency>
         <groupId>org.osgi</groupId>
-        <artifactId>core</artifactId>
-        <version>4.3.0</version>
+        <artifactId>org.osgi.core</artifactId>
+        <version>${osgi.api.version}</version>
         <scope>provided</scope>
       </dependency>
       <dependency>
