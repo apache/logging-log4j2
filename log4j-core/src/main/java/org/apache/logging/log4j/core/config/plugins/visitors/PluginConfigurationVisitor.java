@@ -31,9 +31,13 @@ public class PluginConfigurationVisitor extends AbstractPluginVisitor<PluginConf
     }
 
     @Override
-    public Object visit(final Configuration configuration, final Node node, final LogEvent event) {
+    public Object visit(final Configuration configuration, final Node node, final LogEvent event,
+                        final StringBuilder log) {
         if (this.conversionType.isInstance(configuration)) {
-            LOGGER.debug("Configuration({})", configuration.getName());
+            log.append("Configuration");
+            if (configuration.getName() != null) {
+                log.append('(').append(configuration.getName()).append(')');
+            }
             return configuration;
         }
         LOGGER.warn("Variable annotated with @PluginConfiguration is not compatible with type {}.",

@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.util.NameUtil;
 
 /**
  * PluginVisitor for PluginBuilderAttribute. If {@code null} is returned for the
- * {@link #visit(org.apache.logging.log4j.core.config.Configuration, org.apache.logging.log4j.core.config.Node, org.apache.logging.log4j.core.LogEvent)}
+ * {@link #visit(org.apache.logging.log4j.core.config.Configuration, org.apache.logging.log4j.core.config.Node, org.apache.logging.log4j.core.LogEvent, StringBuilder)}
  * method, then the default value of the field should remain untouched.
  *
  * @see org.apache.logging.log4j.core.config.plugins.util.PluginBuilder
@@ -39,7 +39,8 @@ public class PluginBuilderAttributeVisitor extends AbstractPluginVisitor<PluginB
     }
 
     @Override
-    public Object visit(final Configuration configuration, final Node node, final LogEvent event) {
+    public Object visit(final Configuration configuration, final Node node, final LogEvent event,
+                        final StringBuilder log) {
         final String overridden = this.annotation.value();
         final String name = overridden.isEmpty() ? this.member.getName() : overridden;
         final Map<String, String> attributes = node.getAttributes();
@@ -47,7 +48,7 @@ public class PluginBuilderAttributeVisitor extends AbstractPluginVisitor<PluginB
         final String replacedValue = this.substitutor.replace(event, rawValue);
         final Object value = convert(replacedValue, null);
         final Object debugValue = this.annotation.sensitive() ? NameUtil.md5(value + this.getClass().getName()) : value;
-        LOGGER.debug("Attribute({}=\"{}\")", name, debugValue);
+        log.append(name).append("=\"").append(debugValue).append('"');
         return value;
     }
 }

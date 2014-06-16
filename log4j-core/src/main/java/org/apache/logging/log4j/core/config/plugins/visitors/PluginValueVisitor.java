@@ -31,12 +31,13 @@ public class PluginValueVisitor extends AbstractPluginVisitor<PluginValue> {
     }
 
     @Override
-    public Object visit(final Configuration configuration, final Node node, final LogEvent event) {
+    public Object visit(final Configuration configuration, final Node node, final LogEvent event,
+                        final StringBuilder log) {
         final String name = this.annotation.value();
         final String rawValue = node.getValue() != null ? node.getValue() :
             removeAttributeValue(node.getAttributes(), "value");
         final String value = this.substitutor.replace(event, rawValue);
-        LOGGER.debug("{}={}", name, value);
+        log.append(name).append("=\"").append(value).append('"');
         return value;
     }
 }
