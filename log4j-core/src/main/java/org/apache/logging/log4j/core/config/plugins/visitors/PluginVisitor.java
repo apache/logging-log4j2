@@ -87,7 +87,8 @@ public interface PluginVisitor<A extends Annotation> {
      * @param configuration the current Configuration.
      * @param node          the current Node corresponding to the Plugin object being created.
      * @param event         the current LogEvent that caused this Plugin object to be made (optional).
+     * @param log           the StringBuilder being used to build a debug message.
      * @return the converted value to be used for Plugin creation.
      */
-    Object visit(Configuration configuration, Node node, LogEvent event);
+    Object visit(Configuration configuration, Node node, LogEvent event, StringBuilder log);
 }

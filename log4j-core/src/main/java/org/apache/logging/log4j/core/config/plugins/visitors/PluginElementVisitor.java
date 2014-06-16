@@ -38,16 +38,23 @@ public class PluginElementVisitor extends AbstractPluginVisitor<PluginElement> {
     }
 
     @Override
-    public Object visit(final Configuration configuration, final Node node, final LogEvent event) {
+    public Object visit(final Configuration configuration, final Node node, final LogEvent event,
+                        final StringBuilder log) {
         final String name = this.annotation.value();
         if (this.conversionType.isArray()) {
             setConversionType(this.conversionType.getComponentType());
             final List<Object> values = new ArrayList<Object>();
             final Collection<Node> used = new ArrayList<Node>();
+            log.append("={");
+            boolean first = true;
             for (final Node child : node.getChildren()) {
                 final PluginType<?> childType = child.getType();
                 if (name.equalsIgnoreCase(childType.getElementName()) ||
                     this.conversionType.isAssignableFrom(childType.getPluginClass())) {
+                    if (!first) {
+                        log.append(", ");
+                    }
+                    first = false;
                     used.add(child);
                     final Object childObject = child.getObject();
                     if (childObject == null) {
@@ -55,13 +62,14 @@ public class PluginElementVisitor extends AbstractPluginVisitor<PluginElement> {
                         continue;
                     }
                     if (childObject.getClass().isArray()) {
-                        final Object[] o = (Object[]) childObject;
-                        LOGGER.debug("{}={}", name, Arrays.toString(o));
+                        log.append(Arrays.toString((Object[]) childObject)).append('}');
                         return childObject;
                     }
+                    log.append(child.toString());
                     values.add(childObject);
                 }
             }
+            log.append('}');
             // note that we need to return an empty array instead of null if the types are correct
             if (!values.isEmpty() && !this.conversionType.isAssignableFrom(values.get(0).getClass())) {
                 LOGGER.error("Attempted to assign attribute {} to list of type {} which is incompatible with {}.",
@@ -69,7 +77,6 @@ public class PluginElementVisitor extends AbstractPluginVisitor<PluginElement> {
                 return null;
             }
             node.getChildren().removeAll(used);
-            LOGGER.debug("{}={}", name, values);
             // we need to use reflection here because values.toArray() will cause type errors at runtime
             final Object[] array = (Object[]) Array.newInstance(this.conversionType, values.size());
             for (int i = 0; i < array.length; i++) {
@@ -79,9 +86,10 @@ public class PluginElementVisitor extends AbstractPluginVisitor<PluginElement> {
         }
         final Node namedNode = findNamedNode(name, node.getChildren());
         if (namedNode == null) {
+            log.append("null");
             return null;
         }
-        LOGGER.debug("{}({})", namedNode.getName(), namedNode.toString());
+        log.append(namedNode.getName()).append('(').append(namedNode.toString()).append(')');
         node.getChildren().remove(namedNode);
         return namedNode.getObject();
     }

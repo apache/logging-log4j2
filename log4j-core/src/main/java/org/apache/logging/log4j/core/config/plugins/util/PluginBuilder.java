@@ -125,7 +125,7 @@ public class PluginBuilder<T> implements Builder<T> {
         }
         // or fall back to factory method if no builder class is available
         try {
-            LOGGER.debug("Still building Plugin[name={}, class={}]. Searching for factory method...", 
+            LOGGER.debug("Still building Plugin[name={}, class={}]. Searching for factory method...",
                     pluginType.getElementName(), pluginType.getPluginClass().getName());
             final Method factory = findFactoryMethod(this.clazz);
             final Object[] params = generateParameters(factory);
@@ -162,7 +162,9 @@ public class PluginBuilder<T> implements Builder<T> {
 
     private void injectFields(final Builder<T> builder) throws IllegalAccessException {
         final Field[] fields = builder.getClass().getDeclaredFields();
+        final StringBuilder log = new StringBuilder();
         for (final Field field : fields) {
+            log.append(log.length() == 0 ? "with params(" : ", ");
             field.setAccessible(true);
             final Annotation[] annotations = field.getDeclaredAnnotations();
             final String[] aliases = extractPluginAliases(annotations);
@@ -178,7 +180,7 @@ public class PluginBuilder<T> implements Builder<T> {
                         .setConversionType(field.getType())
                         .setStrSubstitutor(configuration.getStrSubstitutor())
                         .setMember(field)
-                        .visit(configuration, node, event);
+                        .visit(configuration, node, event, log);
                     // don't overwrite default values if the visitor gives us no value to inject
                     if (value != null) {
                         field.set(builder, value);
@@ -186,6 +188,11 @@ public class PluginBuilder<T> implements Builder<T> {
                 }
             }
         }
+        if (log.length() > 0) {
+            log.append(')');
+        }
+        LOGGER.debug("Calling build() on class {} for element {} {}", builder.getClass(), node.getName(),
+            log.toString());
         checkForRemainingAttributes();
         verifyNodeChildrenUsed();
     }
@@ -203,11 +210,12 @@ public class PluginBuilder<T> implements Builder<T> {
     }
 
     private Object[] generateParameters(final Method factory) {
-        LOGGER.debug("Generating parameters for factory method [{}]...", factory.getName());
+        final StringBuilder log = new StringBuilder();
         final Class<?>[] types = factory.getParameterTypes();
         final Annotation[][] annotations = factory.getParameterAnnotations();
         final Object[] args = new Object[annotations.length];
         for (int i = 0; i < annotations.length; i++) {
+            log.append(log.length() == 0 ? "with params(" : ", ");
             final String[] aliases = extractPluginAliases(annotations[i]);
             for (Annotation a : annotations[i]) {
                 if (a instanceof PluginAliases) {
@@ -221,12 +229,17 @@ public class PluginBuilder<T> implements Builder<T> {
                         .setConversionType(types[i])
                         .setStrSubstitutor(configuration.getStrSubstitutor())
                         .setMember(factory)
-                        .visit(configuration, node, event);
+                        .visit(configuration, node, event, log);
                 }
             }
         }
+        if (log.length() > 0) {
+            log.append(')');
+        }
         checkForRemainingAttributes();
         verifyNodeChildrenUsed();
+        LOGGER.debug("Calling {} on class {} for element {} {}", factory.getName(), clazz.getName(), node.getName(),
+            log.toString());
         return args;
     }
 

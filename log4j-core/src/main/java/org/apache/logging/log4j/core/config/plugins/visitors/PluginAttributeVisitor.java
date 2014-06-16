@@ -34,7 +34,8 @@ public class PluginAttributeVisitor extends AbstractPluginVisitor<PluginAttribut
     }
 
     @Override
-    public Object visit(final Configuration configuration, final Node node, final LogEvent event) {
+    public Object visit(final Configuration configuration, final Node node, final LogEvent event,
+                        final StringBuilder log) {
         final String name = this.annotation.value();
         final Map<String, String> attributes = node.getAttributes();
         final String rawValue = removeAttributeValue(attributes, name, this.aliases);
@@ -42,11 +43,7 @@ public class PluginAttributeVisitor extends AbstractPluginVisitor<PluginAttribut
         final Object defaultValue = findDefaultValue(event);
         final Object value = convert(replacedValue, defaultValue);
         final Object debugValue = this.annotation.sensitive() ? NameUtil.md5(value + this.getClass().getName()) : value;
-        if (value != replacedValue) {
-            LOGGER.debug("Attribute({}=\"{}\") - no value specified, using default.", name, debugValue);
-        } else {
-            LOGGER.debug("Attribute({}=\"{}\")", name, debugValue);
-        }
+        log.append(name).append("=\"").append(debugValue).append('"');
         return value;
     }
 
