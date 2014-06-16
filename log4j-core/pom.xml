@@ -41,7 +41,7 @@
     <!-- Used for OSGi bundle support -->
     <dependency>
       <groupId>org.osgi</groupId>
-      <artifactId>core</artifactId>
+      <artifactId>org.osgi.core</artifactId>
       <scope>provided</scope>
     </dependency>
     <!-- Required for AsyncLoggers -->
@@ -79,7 +79,7 @@
       <artifactId>woodstox-core-asl</artifactId>
       <version>4.3.0</version>
       <optional>true</optional>
-    </dependency>    
+    </dependency>
     <!-- Required for console color support in Windows -->
     <dependency>
       <groupId>org.fusesource.jansi</groupId>
