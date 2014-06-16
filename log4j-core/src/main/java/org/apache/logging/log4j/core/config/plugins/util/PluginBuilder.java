@@ -156,7 +156,8 @@ public class PluginBuilder<T> implements Builder<T> {
                 return builder;
             }
         }
-        LOGGER.debug("No builder factory method found in class {}.", clazz.getName());
+        LOGGER.debug("No builder factory method found in class {}. Going to try finding a factory method instead.",
+            clazz.getName());
         return null;
     }
 
