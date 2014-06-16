@@ -52,9 +52,12 @@ public final class ProviderUtil {
         try {
             enumResources = cl.getResources(PROVIDER_RESOURCE);
         } catch (final IOException e) {
-            LOGGER.fatal("Unable to locate " + PROVIDER_RESOURCE, e);
+            LOGGER.fatal("Unable to locate {}", PROVIDER_RESOURCE, e);
         }
+        loadProviders(enumResources);
+    }
 
+    protected static void loadProviders(final Enumeration<URL> enumResources) {
         if (enumResources != null) {
             while (enumResources.hasMoreElements()) {
                 final URL url = enumResources.nextElement();
@@ -65,7 +68,7 @@ public final class ProviderUtil {
                     }
                     PROVIDERS.add(new Provider(props, url));
                 } catch (final IOException ioe) {
-                    LOGGER.error("Unable to open " + url.toString(), ioe);
+                    LOGGER.error("Unable to open {}", url, ioe);
                 }
             }
         }
