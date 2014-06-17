@@ -22,7 +22,7 @@
   </properties>
   <body>
     <release version="2.0-rc2" date="2014-MM-DD" description="Bug fixes and enhancements">
-      <action issue="LOG4J2-619" dev="mattsicker" type="fix" due-to="Scott Harrington">
+      <action issue="LOG4J2-619" dev="rgoers" type="fix" due-to="Scott Harrington">
         Invalid XML configuration files do not prevent the config file from being checked again.
       </action>
       <action issue="LOG4J2-637" dev="rpopma" type="fix" due-to="Mansoor Sajjad, Jon Wilmoth">

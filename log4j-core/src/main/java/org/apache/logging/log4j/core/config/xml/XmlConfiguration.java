@@ -242,9 +242,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                 final ConfigurationFactory.ConfigurationSource source =
                     new ConfigurationFactory.ConfigurationSource(new FileInputStream(configFile), configFile);
                 final XmlConfiguration config = new XmlConfiguration(source);
-                if (config.rootElement == null) {
-                    return null;
-                }
+                return (config.rootElement == null) ? null : config;
             } catch (final FileNotFoundException ex) {
                 LOGGER.error("Cannot locate file " + configFile, ex);
             }
