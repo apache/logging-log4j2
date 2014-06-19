@@ -41,24 +41,25 @@
       </p>
       <p class="big-red">
         To avoid problems the Log4j shutdown hook will automatically be disabled when the log4j-web jar is included.
+      </p>
       <a name="Configuration"/>
       <subsection name="Configuration">
         <p>Log4j allows the configuration file to be specified in web.xml using the log4jConfiguration context parameter.
           Log4j will search for configuration files by:
-            <ol>
-                <li>If a location is provided it will be searched for as a servlet context resource. For example,
-                    if log4jConfiguration contains "logging.xml" then Log4j will look for a file with that name in the
-                    root directory of the web application.
-                </li>
-                <li>If no location is defined Log4j will search for a file that starts with "log4j2" in the WEB-INF directory.
-                    If more than one file is found then if a file that starts with "log4j2-<i>name</i>", where <i>name</i> is the
-                    name of the web application, is present it will be used. Otherwise the first file will be used.
-                </li>
-                <li>The "normal" search sequence using the classpath and file URLs will be used to locate the configuration
-                    file.
-                </li>
-            </ol>
-        </p>
+          </p>
+          <ol>
+              <li>If a location is provided it will be searched for as a servlet context resource. For example,
+                  if log4jConfiguration contains "logging.xml" then Log4j will look for a file with that name in the
+                  root directory of the web application.
+              </li>
+              <li>If no location is defined Log4j will search for a file that starts with "log4j2" in the WEB-INF directory.
+                  If more than one file is found then if a file that starts with "log4j2-<i>name</i>", where <i>name</i> is the
+                  name of the web application, is present it will be used. Otherwise the first file will be used.
+              </li>
+              <li>The "normal" search sequence using the classpath and file URLs will be used to locate the configuration
+                  file.
+              </li>
+          </ol>
       </subsection>
       <subsection name="Servlet 3.0 and Newer Web Applications">
         <a name="Servlet-3.0" />
