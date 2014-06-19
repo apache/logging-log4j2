@@ -35,6 +35,7 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationListener;
+import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.Reconfigurable;
@@ -386,10 +387,21 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
         propertyChangeListeners.remove(listener);
     }
 
+    /**
+     * Returns the initial configuration location or {@code null}. The returned value may not be the location of the
+     * current configuration. Use 
+     * {@link #getConfiguration()}.{@link Configuration#getConfigurationSource() getConfigurationSource()}.{@link 
+     * ConfigurationSource#getLocation() getLocation()} to get the actual source of the current configuration.
+     * @return the initial configuration location or {@code null}
+     */
     public synchronized URI getConfigLocation() {
         return configLocation;
     }
 
+    /**
+     * Sets the configLocation to the specified value and reconfigures this context.
+     * @param configLocation the location of the new configuration
+     */
     public synchronized void setConfigLocation(final URI configLocation) {
         this.configLocation = configLocation;
         reconfigure();

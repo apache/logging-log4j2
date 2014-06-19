@@ -50,7 +50,8 @@ public class DefaultConfiguration extends AbstractConfiguration {
      * Constructor to create the default configuration.
      */
     public DefaultConfiguration() {
-
+        super(ConfigurationSource.NULL_SOURCE);
+        
         setName(DEFAULT_NAME);
         final Layout<? extends Serializable> layout = PatternLayout.newBuilder()
             .withPattern(DEFAULT_PATTERN)

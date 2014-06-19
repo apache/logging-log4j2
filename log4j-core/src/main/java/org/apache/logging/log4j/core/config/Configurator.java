@@ -123,7 +123,7 @@ public final class Configurator {
      * @return The LoggerContext.
      */
     public static LoggerContext initialize(final ClassLoader loader,
-                                           final ConfigurationFactory.ConfigurationSource source) {
+                                           final ConfigurationSource source) {
         return initialize(loader, source, null);
     }
 
@@ -136,7 +136,7 @@ public final class Configurator {
      */
 
     public static LoggerContext initialize(final ClassLoader loader,
-                                           final ConfigurationFactory.ConfigurationSource source,
+                                           final ConfigurationSource source,
                                            final Object externalContext)
     {
 

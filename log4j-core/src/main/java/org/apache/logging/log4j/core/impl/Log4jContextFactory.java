@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.util.Constants;
@@ -87,7 +88,7 @@ public class Log4jContextFactory implements LoggerContextFactory {
      * @return The LoggerContext.
      */
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Object externalContext,
-                                    final boolean currentContext, final ConfigurationFactory.ConfigurationSource source) {
+                                    final boolean currentContext, final ConfigurationSource source) {
         final LoggerContext ctx = selector.getContext(fqcn, loader, currentContext, null);
         if (externalContext != null && ctx.getExternalContext() == null) {
             ctx.setExternalContext(externalContext);

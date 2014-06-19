@@ -29,6 +29,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEventListener;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
 import org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory;
 import org.apache.logging.log4j.core.util.Assert;
@@ -68,7 +69,7 @@ public abstract class AbstractSocketServer<T extends InputStream> extends LogEve
                 if (source == null) {
                     try {
                         final URL url = new URL(path);
-                        source = new ConfigurationSource(url.openStream(), path);
+                        source = new ConfigurationSource(url.openStream(), url);
                     } catch (final MalformedURLException mue) {
                         // Ignore this error
                     } catch (final IOException ioe) {

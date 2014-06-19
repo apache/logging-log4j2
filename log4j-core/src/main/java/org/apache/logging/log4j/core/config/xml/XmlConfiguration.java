@@ -18,8 +18,6 @@ package org.apache.logging.log4j.core.config.xml;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -38,7 +36,7 @@ import javax.xml.validation.Validator;
 
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.FileConfigurationMonitor;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.Reconfigurable;
@@ -63,22 +61,14 @@ import org.xml.sax.SAXException;
 public class XmlConfiguration extends AbstractConfiguration implements Reconfigurable {
 
     private static final String XINCLUDE_FIXUP_LANGUAGE = "http://apache.org/xml/features/xinclude/fixup-language";
-
     private static final String XINCLUDE_FIXUP_BASE_URIS = "http://apache.org/xml/features/xinclude/fixup-base-uris";
-
-    private static final String[] VERBOSE_CLASSES = new String[] {ResolverUtil.class.getName()};
-
+    private static final String[] VERBOSE_CLASSES = new String[] { ResolverUtil.class.getName() };
     private static final String LOG4J_XSD = "Log4j-config.xsd";
 
     private final List<Status> status = new ArrayList<Status>();
-
     private Element rootElement;
-
     private boolean strict;
-
     private String schema;
-
-    private final File configFile;
 
     /**
      * Creates a new DocumentBuilder suitable for parsing a configuration file.
@@ -128,8 +118,9 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         }
     }
 
-    public XmlConfiguration(final ConfigurationFactory.ConfigurationSource configSource) {
-        this.configFile = configSource.getFile();
+    public XmlConfiguration(final ConfigurationSource configSource) {
+        super(configSource);
+        final File configFile = configSource.getFile();
         byte[] buffer = null;
 
         try {
@@ -143,8 +134,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             final Document document = newDocumentBuilder().parse(source);
             rootElement = document.getDocumentElement();
             final Map<String, String> attrs = processAttributes(rootNode, rootElement);
-            final StatusConfiguration statusConfig = new StatusConfiguration()
-                    .withVerboseClasses(VERBOSE_CLASSES)
+            final StatusConfiguration statusConfig = new StatusConfiguration().withVerboseClasses(VERBOSE_CLASSES)
                     .withStatus(getDefaultStatus());
             for (final Map.Entry<String, String> entry : attrs.entrySet()) {
                 final String key = entry.getKey();
@@ -237,15 +227,15 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
 
     @Override
     public Configuration reconfigure() {
-        if (configFile != null) {
-            try {
-                final ConfigurationFactory.ConfigurationSource source =
-                    new ConfigurationFactory.ConfigurationSource(new FileInputStream(configFile), configFile);
-                final XmlConfiguration config = new XmlConfiguration(source);
-                return (config.rootElement == null) ? null : config;
-            } catch (final FileNotFoundException ex) {
-                LOGGER.error("Cannot locate file " + configFile, ex);
+        try {
+            final ConfigurationSource source = getConfigurationSource().resetInputStream();
+            if (source == null) {
+                return null;
             }
+            final XmlConfiguration config = new XmlConfiguration(source);
+            return (config.rootElement == null) ? null : config;
+        } catch (final IOException ex) {
+            LOGGER.error("Cannot locate file " + getConfigurationSource(), ex);
         }
         return null;
     }
@@ -322,8 +312,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
 
     @Override
     public String toString() {
-        final String path = configFile != null ? configFile.getAbsolutePath() : "unknown";
-        return getClass().getSimpleName() + "[location=" + path + "]";
+        return getClass().getSimpleName() + "[location=" + getConfigurationSource() + "]";
     }
 
     /**
