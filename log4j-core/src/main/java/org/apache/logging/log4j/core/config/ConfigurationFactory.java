@@ -262,7 +262,7 @@ public abstract class ConfigurationFactory {
             }
         }
         try {
-            return new ConfigurationSource(configLocation.toURL().openStream(), configLocation.getPath());
+            return new ConfigurationSource(configLocation.toURL().openStream(), configLocation.toURL());
         } catch (final MalformedURLException ex) {
             LOGGER.error("Invalid URL {}", configLocation.toString(), ex);
         } catch (final Exception ex) {
@@ -326,7 +326,7 @@ public abstract class ConfigurationFactory {
                 LOGGER.catching(Level.DEBUG, ex);
             }
         }
-        return new ConfigurationSource(is, resource);
+        return new ConfigurationSource(is, url);
     }
 
     /**
@@ -487,74 +487,6 @@ public abstract class ConfigurationFactory {
             }
             LOGGER.error("Cannot process configuration, input source is null");
             return null;
-        }
-    }
-
-    /**
-     * Represents the source for the logging configuration.
-     */
-    public static class ConfigurationSource {
-
-        private File file;
-
-        private String location;
-
-        private InputStream stream;
-
-        public ConfigurationSource() {
-        }
-
-        public ConfigurationSource(final InputStream stream) {
-            this.stream = stream;
-            this.file = null;
-            this.location = null;
-        }
-
-        public ConfigurationSource(final InputStream stream, final File file) {
-            this.stream = stream;
-            this.file = file;
-            this.location = file.getAbsolutePath();
-        }
-
-        public ConfigurationSource(final InputStream stream, final String location) {
-            this.stream = stream;
-            this.location = location;
-            this.file = null;
-        }
-
-        public File getFile() {
-            return file;
-        }
-
-        public void setFile(final File file) {
-            this.file = file;
-        }
-
-        public String getLocation() {
-            return location;
-        }
-
-        public void setLocation(final String location) {
-            this.location = location;
-        }
-
-        public InputStream getInputStream() {
-            return stream;
-        }
-
-        public void setInputStream(final InputStream stream) {
-            this.stream = stream;
-        }
-        
-        @Override
-        public String toString() {
-            if (file != null) {
-                return file.getAbsolutePath();
-            }
-            if (location != null) {
-                return location;
-            }
-            return "stream (unknown location)";
         }
     }
 }

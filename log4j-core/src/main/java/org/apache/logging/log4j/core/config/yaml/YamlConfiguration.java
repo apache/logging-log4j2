@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.config.yaml;
 
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.json.JsonConfiguration;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -25,7 +25,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 public class YamlConfiguration extends JsonConfiguration {
 
-    public YamlConfiguration(ConfigurationFactory.ConfigurationSource configSource) {
+    public YamlConfiguration(ConfigurationSource configSource) {
         super(configSource);
     }
 

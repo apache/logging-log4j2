@@ -18,8 +18,7 @@ package org.apache.logging.log4j.core.config.json;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -28,7 +27,7 @@ import java.util.Map;
 
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.FileConfigurationMonitor;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.Reconfigurable;
@@ -47,16 +46,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class JsonConfiguration extends AbstractConfiguration implements Reconfigurable {
 
-    private static final String[] VERBOSE_CLASSES = new String[]{ResolverUtil.class.getName()};
-
+    private static final String[] VERBOSE_CLASSES = new String[] { ResolverUtil.class.getName() };
     private final List<Status> status = new ArrayList<Status>();
-
     private JsonNode root;
 
-    private final File configFile;
-
-    public JsonConfiguration(final ConfigurationFactory.ConfigurationSource configSource) {
-        this.configFile = configSource.getFile();
+    public JsonConfiguration(final ConfigurationSource configSource) {
+        super(configSource);
+        final File configFile = configSource.getFile();
         byte[] buffer;
         try {
             final InputStream configStream = configSource.getInputStream();
@@ -73,8 +69,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
                 }
             }
             processAttributes(rootNode, root);
-            final StatusConfiguration statusConfig = new StatusConfiguration()
-                    .withVerboseClasses(VERBOSE_CLASSES)
+            final StatusConfiguration statusConfig = new StatusConfiguration().withVerboseClasses(VERBOSE_CLASSES)
                     .withStatus(getDefaultStatus());
             for (final Map.Entry<String, String> entry : rootNode.getAttributes().entrySet()) {
                 final String key = entry.getKey();
@@ -140,14 +135,14 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
 
     @Override
     public Configuration reconfigure() {
-        if (configFile != null) {
-            try {
-                final ConfigurationFactory.ConfigurationSource source =
-                    new ConfigurationFactory.ConfigurationSource(new FileInputStream(configFile), configFile);
-                return new JsonConfiguration(source);
-            } catch (final FileNotFoundException ex) {
-                LOGGER.error("Cannot locate file {}", configFile, ex);
+        try {
+            final ConfigurationSource source = getConfigurationSource().resetInputStream();
+            if (source == null) {
+                return null;
             }
+            return new JsonConfiguration(source);
+        } catch (final IOException ex) {
+            LOGGER.error("Cannot locate file {}", getConfigurationSource(), ex);
         }
         return null;
     }
@@ -212,8 +207,8 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
             t = type.getElementName() + ':' + type.getPluginClass();
         }
 
-        final String p = node.getParent() == null ? "null" : node.getParent().getName() == null ?
-                "root" : node.getParent().getName();
+        final String p = node.getParent() == null ? "null" : node.getParent().getName() == null ? "root" : node
+                .getParent().getName();
         LOGGER.debug("Returning {} with parent {} of type {}", node.getName(), p, t);
         return node;
     }
@@ -245,11 +240,10 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
             }
         }
     }
-    
+
     @Override
     public String toString() {
-        final String path = configFile != null ? configFile.getAbsolutePath() : "unknown";
-        return getClass().getSimpleName() + "[location=" + path + "]";
+        return getClass().getSimpleName() + "[location=" + getConfigurationSource() + "]";
     }
 
     /**

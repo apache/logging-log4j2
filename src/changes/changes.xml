@@ -22,6 +22,12 @@
   </properties>
   <body>
     <release version="2.0-rc2" date="2014-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-539" dev="rpopma" type="fix" due-to="Colin Froggatt">
+        Fixed issue with "Reconfigure using XML below" function in JMX Client GUI.
+        ConfigurationSource is now a top-level class and can be obtained with Configuration.getConfigurationSource().
+        LoggerContext.getConfiguration().getConfigurationSource() 
+        provides a reliable public method for obtaining a logger context's configuration location and content.
+      </action>
       <action issue="LOG4J2-619" dev="rgoers" type="fix" due-to="Scott Harrington">
         Invalid XML configuration files do not prevent the config file from being checked again.
       </action>

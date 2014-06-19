@@ -20,14 +20,15 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
-import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.concurrent.Executor;
@@ -41,19 +42,18 @@ import javax.management.ObjectName;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.config.ConfigurationFactory.ConfigurationSource;
+import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.core.util.Charsets;
 import org.apache.logging.log4j.core.util.Closer;
-import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
 /**
  * Implementation of the {@code LoggerContextAdminMBean} interface.
  */
-public class LoggerContextAdmin extends NotificationBroadcasterSupport
-        implements LoggerContextAdminMBean, PropertyChangeListener {
+public class LoggerContextAdmin extends NotificationBroadcasterSupport implements LoggerContextAdminMBean,
+        PropertyChangeListener {
     private static final int PAGE = 4 * 1024;
     private static final int TEXT_BUFFER = 64 * 1024;
     private static final int BUFFER_SIZE = 2048;
@@ -62,11 +62,10 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
     private final AtomicLong sequenceNo = new AtomicLong();
     private final ObjectName objectName;
     private final LoggerContext loggerContext;
-    private String customConfigText;
 
     /**
-     * Constructs a new {@code LoggerContextAdmin} with the {@code Executor} to
-     * be used for sending {@code Notification}s asynchronously to listeners.
+     * Constructs a new {@code LoggerContextAdmin} with the {@code Executor} to be used for sending {@code Notification}
+     * s asynchronously to listeners.
      *
      * @param executor used to send notifications asynchronously
      * @param loggerContext the instrumented object
@@ -85,8 +84,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
     }
 
     private static MBeanNotificationInfo createNotificationInfo() {
-        final String[] notifTypes = new String[] {//
-                NOTIF_TYPE_RECONFIGURED };
+        final String[] notifTypes = new String[] { NOTIF_TYPE_RECONFIGURED };
         final String name = Notification.class.getName();
         final String description = "Configuration reconfigured";
         return new MBeanNotificationInfo(notifTypes, name, description);
@@ -118,18 +116,24 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
     }
 
     @Override
-    public void setConfigLocationUri(final String configLocation)
-            throws URISyntaxException, IOException {
+    public void setConfigLocationUri(final String configLocation) throws URISyntaxException, IOException {
+        if (configLocation == null || configLocation.isEmpty()) {
+            throw new IllegalArgumentException("Missing configuration location");
+        }
         LOGGER.debug("---------");
-        LOGGER.debug("Remote request to reconfigure using location "
-                + configLocation);
-        final URI uri = FileUtils.getCorrectedFilePathUri(configLocation);
-
-        // validate the location first: invalid location will result in
-        // default configuration being configured, try to avoid that...
-        uri.toURL().openStream().close();
-
-        loggerContext.setConfigLocation(uri);
+        LOGGER.debug("Remote request to reconfigure using location " + configLocation);
+        final File configFile = new File(configLocation);
+        ConfigurationSource configSource = null;
+        if (configFile.exists()) {
+            LOGGER.debug("Opening config file {}", configFile.getAbsolutePath());
+            configSource = new ConfigurationSource(new FileInputStream(configFile), configFile);
+        } else {
+            final URL configURL = new URL(configLocation);
+            LOGGER.debug("Opening config URL {}", configURL);
+            configSource = new ConfigurationSource(configURL.openStream(), configURL);
+        }
+        final Configuration config = ConfigurationFactory.getInstance().getConfiguration(configSource);
+        loggerContext.start(config);
         LOGGER.debug("Completed remote request to reconfigure.");
     }
 
@@ -138,12 +142,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
         if (!LoggerContext.PROPERTY_CONFIG.equals(evt.getPropertyName())) {
             return;
         }
-        // erase custom text if new configuration was read from a location
-        if (loggerContext.getConfiguration().getName() != null) {
-            customConfigText = null;
-        }
-        final Notification notif = new Notification(NOTIF_TYPE_RECONFIGURED,
-                getObjectName(), nextSeqNo(), now(), null);
+        final Notification notif = new Notification(NOTIF_TYPE_RECONFIGURED, getObjectName(), nextSeqNo(), now(), null);
         sendNotification(notif);
     }
 
@@ -154,12 +153,11 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
 
     @Override
     public String getConfigText(final String charsetName) throws IOException {
-        if (customConfigText != null) {
-            return customConfigText;
-        }
         try {
+            final ConfigurationSource source = loggerContext.getConfiguration().getConfigurationSource();
+            final ConfigurationSource copy = source.resetInputStream();
             final Charset charset = Charset.forName(charsetName);
-            return readContents(FileUtils.getCorrectedFilePathUri(getConfigLocationUri()), charset);
+            return readContents(copy.getInputStream(), charset);
         } catch (final Exception ex) {
             final StringWriter sw = new StringWriter(BUFFER_SIZE);
             ex.printStackTrace(new PrintWriter(sw));
@@ -167,41 +165,16 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
         }
     }
 
-    @Override
-    public void setConfigText(final String configText, final String charsetName) {
-        final String old = customConfigText;
-        customConfigText = Assert.requireNonNull(configText, "configText");
-        LOGGER.debug("---------");
-        LOGGER.debug("Remote request to reconfigure from config text.");
-
-        try {
-            final InputStream in = new ByteArrayInputStream(
-                    configText.getBytes(charsetName));
-            final ConfigurationSource source = new ConfigurationSource(in);
-            final Configuration updated = ConfigurationFactory.getInstance()
-                    .getConfiguration(source);
-            loggerContext.start(updated);
-            LOGGER.debug("Completed remote request to reconfigure from config text.");
-        } catch (final Exception ex) {
-            customConfigText = old;
-            final String msg = "Could not reconfigure from config text";
-            LOGGER.error(msg, ex);
-            throw new IllegalArgumentException(msg, ex);
-        }
-    }
-
     /**
-     * 
-     * @param uri
+     * Returns the contents of the specified input stream as a String.
+     * @param in stream to read from
      * @param charset MUST not be null
-     * @return
-     * @throws IOException
+     * @return stream contents
+     * @throws IOException if a problem occurred reading from the stream.
      */
-    private String readContents(final URI uri, final Charset charset) throws IOException {
-        InputStream in = null;
+    private String readContents(final InputStream in, final Charset charset) throws IOException {
         Reader reader = null;
         try {
-            in = uri.toURL().openStream();
             reader = new InputStreamReader(in, charset);
             final StringBuilder result = new StringBuilder(TEXT_BUFFER);
             final char[] buff = new char[PAGE];
@@ -213,6 +186,24 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
         } finally {
             Closer.closeSilent(in);
             Closer.closeSilent(reader);
+        }
+    }
+
+    @Override
+    public void setConfigText(final String configText, final String charsetName) {
+        LOGGER.debug("---------");
+        LOGGER.debug("Remote request to reconfigure from config text.");
+
+        try {
+            final InputStream in = new ByteArrayInputStream(configText.getBytes(charsetName));
+            final ConfigurationSource source = new ConfigurationSource(in);
+            final Configuration updated = ConfigurationFactory.getInstance().getConfiguration(source);
+            loggerContext.start(updated);
+            LOGGER.debug("Completed remote request to reconfigure from config text.");
+        } catch (final Exception ex) {
+            final String msg = "Could not reconfigure from config text";
+            LOGGER.error(msg, ex);
+            throw new IllegalArgumentException(msg, ex);
         }
     }
 

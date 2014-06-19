@@ -52,6 +52,7 @@ import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.selector.ContextSelector;
+import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NameUtil;
@@ -84,41 +85,37 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * The Advertiser which exposes appender configurations to external systems.
      */
     private Advertiser advertiser = new DefaultAdvertiser();
-
     private Node advertiserNode = null;
-
     private Object advertisement;
 
     /**
      *
      */
     protected boolean isShutdownHookEnabled = true;
-
     private String name;
-
     private ConcurrentMap<String, Appender> appenders = new ConcurrentHashMap<String, Appender>();
-
     private ConcurrentMap<String, LoggerConfig> loggers = new ConcurrentHashMap<String, LoggerConfig>();
-
     private final ConcurrentMap<String, String> properties = new ConcurrentHashMap<String, String>();
-
     private final StrLookup tempLookup = new Interpolator(properties);
-
     private final StrSubstitutor subst = new StrSubstitutor(tempLookup);
-
     private LoggerConfig root = new LoggerConfig();
-
     private final ConcurrentMap<String, Object> componentMap = new ConcurrentHashMap<String, Object>();
-
     protected PluginManager pluginManager;
+    private final ConfigurationSource configurationSource;
 
     /**
      * Constructor.
      */
-    protected AbstractConfiguration() {
+    protected AbstractConfiguration(final ConfigurationSource configurationSource) {
+        this.configurationSource = Assert.requireNonNull(configurationSource, "configurationSource is null");
         componentMap.put(Configuration.CONTEXT_PROPERTIES, properties);
         pluginManager = new PluginManager("Core");
         rootNode = new Node();
+    }
+    
+    @Override
+    public ConfigurationSource getConfigurationSource() {
+        return configurationSource;
     }
 
     @Override
@@ -279,7 +276,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
     }
 
-    protected void createAdvertiser(String advertiserString, ConfigurationFactory.ConfigurationSource configSource,
+    protected void createAdvertiser(String advertiserString, ConfigurationSource configSource,
                                     byte[] buffer, String contentType) {
         if (advertiserString != null) {
             Node node = new Node(null, advertiserString, null);

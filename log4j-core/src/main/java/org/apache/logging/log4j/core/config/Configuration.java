@@ -98,4 +98,10 @@ public interface Configuration extends Filterable {
     Advertiser getAdvertiser();
 
     boolean isShutdownHookEnabled();
+    
+    /**
+     * Returns the source of this configuration.
+     * @return the source of this configuration
+     */
+    ConfigurationSource getConfigurationSource();
 }

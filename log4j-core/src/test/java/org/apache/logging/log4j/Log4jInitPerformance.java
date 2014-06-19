@@ -20,7 +20,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import org.apache.logging.log4j.categories.PerformanceTests;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -46,8 +46,8 @@ public class Log4jInitPerformance {
                 "</Loggers>" +
                 "</Configuration>";
         final InputStream is = new ByteArrayInputStream(log4jConfigString.getBytes());
-        final ConfigurationFactory.ConfigurationSource source =
-            new ConfigurationFactory.ConfigurationSource(is);
+        final ConfigurationSource source =
+            new ConfigurationSource(is);
         final long begin = System.currentTimeMillis();
         Configurator.initialize(null, source);
         final long tookForInit = System.currentTimeMillis() - begin;
