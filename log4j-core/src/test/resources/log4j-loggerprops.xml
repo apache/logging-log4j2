@@ -15,7 +15,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="OFF" strict="false" name="DSI">
+<Configuration status="OFF" strict="false" name="DSI" packages="org.apache.logging.log4j">
   <Properties>
      <Property name="test2">test2default</Property>
   </Properties>

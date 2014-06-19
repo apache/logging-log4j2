@@ -21,10 +21,14 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor;
@@ -42,6 +46,10 @@ public class PluginManager {
     // TODO: re-use PluginCache code from plugin processor
     private static final PluginRegistry<PluginType<?>> REGISTRY =
         new PluginRegistry<PluginType<?>>();
+
+    private static final List<String> RESOURCES = new CopyOnWriteArrayList<String>() {{
+        add(PluginProcessor.PLUGIN_CACHE_FILE);
+    }};
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -73,8 +81,8 @@ public class PluginManager {
      * Adds a package name to be scanned for plugins. Must be invoked prior to plugins being collected.
      * @param p The package name.
      */
-    @Deprecated // no more need for this method due to PluginProcessor
     public static void addPackage(final String p) {
+        RESOURCES.add(PluginProcessor.getResourceNameForPackage(p));
     }
 
     /**
@@ -130,10 +138,10 @@ public class PluginManager {
     }
 
     private static PluginRegistry<PluginType<?>> decode(final ResourceLoader loader) {
-        final Enumeration<URL> resources;
+        final List<URL> resources;
         try {
-            resources = loader.getResources(PluginProcessor.PLUGIN_CACHE_FILE);
-            if (resources == null) {
+            resources = preloadResources(loader);
+            if (resources.isEmpty()) {
                 return null;
             }
         } catch (final IOException ioe) {
@@ -141,8 +149,7 @@ public class PluginManager {
             return null;
         }
         final PluginRegistry<PluginType<?>> map = new PluginRegistry<PluginType<?>>();
-        while (resources.hasMoreElements()) {
-            final URL url = resources.nextElement();
+        for (URL url : resources) {
             LOGGER.debug("Found Plugin Map at {}", url.toExternalForm());
             final InputStream is;
             try {
@@ -181,6 +188,17 @@ public class PluginManager {
             }
         }
         return map.isEmpty() ? null : map;
+    }
+
+    private static List<URL> preloadResources(final ResourceLoader loader) throws IOException {
+        final List<URL> resources = new ArrayList<URL>();
+        for(String resource : RESOURCES) {
+            Enumeration<URL> e = loader.getResources(resource);
+            if (null != e) {
+                resources.addAll(Collections.list(e));
+            }
+        }
+        return resources;
     }
 
 }

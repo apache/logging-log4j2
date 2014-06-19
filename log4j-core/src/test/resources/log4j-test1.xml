@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="OFF" name="XMLConfigTest">
+<Configuration status="OFF" name="XMLConfigTest" packages="org.apache.logging.log4j">
   <Properties>
     <Property name="filename">target/test-xml.log</Property>
   </Properties>

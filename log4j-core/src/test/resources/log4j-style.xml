@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="OFF" name="StyleTest">
+<Configuration status="OFF" name="StyleTest" packages="org.apache.logging.log4j">
   <Appenders>
     <List name="List">
        <PatternLayout>

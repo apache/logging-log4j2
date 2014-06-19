@@ -56,9 +56,18 @@ public class PluginProcessor extends AbstractProcessor {
      * The location of the plugin cache data file. This file is written to by this processor, and read from by
      * {@link org.apache.logging.log4j.core.config.plugins.util.PluginManager}.
      */
-    public static final String PLUGIN_CACHE_FILE = "META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat";
+    private static final String PLUGIN_DEFAULT_PACKAGE = "org.apache.logging.log4j.core.config.plugins";
+    public static final String PLUGIN_CACHE_FILE = getResourceNameForPackage(PLUGIN_DEFAULT_PACKAGE);
 
     private final PluginCache pluginCache = new PluginCache();
+
+    public static String getResourceNameForPackage(final String packge) {
+        if (packge.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "All annotated @Plugin classes must reside in a common non-default parent package");
+        }
+        return ("META-INF/" + packge.replace('.', '/') + "/Log4j2Plugins.dat").replace("//", "/");
+    }
 
     @Override
     public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
@@ -99,14 +108,38 @@ public class PluginProcessor extends AbstractProcessor {
     }
 
     private void writeCacheFile(final Element... elements) throws IOException {
+        final String basePackage = findSharedPrefix(elements);
+        final String cacheFile = getResourceNameForPackage(basePackage);
         final FileObject fo = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT,
-            Strings.EMPTY, PLUGIN_CACHE_FILE, elements);
+            Strings.EMPTY, cacheFile, elements);
         final OutputStream out = fo.openOutputStream();
         try {
             pluginCache.writeCache(out);
         } finally {
             out.close();
         }
+    }
+
+    private String findSharedPrefix(final Element... elements) {
+        assert 0 != elements.length : "need at least one entry";
+        CharSequence result = "";
+        for(int i = 0 ; i < elements.length ; ++i) {
+            CharSequence string = processingEnv.getElementUtils().getPackageOf(elements[i]).getQualifiedName();
+            result = 0 == i ? string : findSharedPrefix(result, string);
+        }
+        return "org.apache.logging.log4j.core.".equals(result.toString())
+                ? PLUGIN_DEFAULT_PACKAGE
+                : result.toString();
+    }
+
+    private static CharSequence findSharedPrefix(final CharSequence a, final CharSequence b) {
+        int minLength = Math.min(a.length(), b.length());
+        for (int i = 0; i < minLength; i++) {
+            if (a.charAt(i) != b.charAt(i)) {
+                return a.subSequence(0, i);
+            }
+        }
+        return a.subSequence(0, minLength);
     }
 
     /**

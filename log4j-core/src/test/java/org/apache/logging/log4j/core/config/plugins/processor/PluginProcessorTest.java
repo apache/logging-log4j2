@@ -34,13 +34,14 @@ import static org.junit.Assert.*;
 public class PluginProcessorTest {
 
     private static final PluginCache pluginCache = new PluginCache();
+    private static final String PLUGIN_CACHE_FILE = PluginProcessor.getResourceNameForPackage("org.apache.logging.log4j");
 
     private final Plugin p = FakePlugin.class.getAnnotation(Plugin.class);
 
     @BeforeClass
     public static void setUpClass() throws Exception {
         final Enumeration<URL> resources =
-            PluginProcessor.class.getClassLoader().getResources(PluginProcessor.PLUGIN_CACHE_FILE);
+            PluginProcessor.class.getClassLoader().getResources(PLUGIN_CACHE_FILE);
         pluginCache.loadCacheFiles(resources);
     }
 

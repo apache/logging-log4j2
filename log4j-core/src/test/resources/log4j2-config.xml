@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration name="ConfigTest" status="OFF" monitorInterval="5">
+<Configuration name="ConfigTest" status="OFF" monitorInterval="5" packages="org.apache.logging.log4j">
   <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n"/>
