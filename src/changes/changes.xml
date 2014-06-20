@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="2.0-rc2" date="2014-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-141" dev="rpopma" type="fix" due-to="Joern Huxhorn">
+        Improved documentation regarding log4j status logger.
+      </action>
       <action issue="LOG4J2-539" dev="rpopma" type="fix" due-to="Colin Froggatt">
         Fixed issue with "Reconfigure using XML below" function in JMX Client GUI.
         ConfigurationSource is now a top-level class and can be obtained with Configuration.getConfigurationSource().
