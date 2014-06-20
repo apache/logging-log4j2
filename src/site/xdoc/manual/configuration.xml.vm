@@ -939,7 +939,8 @@ public class Bar {
           <p>
             When configuring Log4j it is sometimes necessary to view the generated status events. This can be
             accomplished by adding the status attribute to the configuration element or a default value can be
-            provided by setting the "Log4jDefaultStatusLevel" system property. The following
+            provided by setting the "Log4jDefaultStatusLevel" system property.  Valid values of the status attribute are
+            "trace", "debug", "info", "warn", "error" and "fatal". The following
             configuration has the status attribute set to debug.
           </p>
 
