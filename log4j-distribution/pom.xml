@@ -188,34 +188,38 @@
       <classifier>javadoc</classifier>
     </dependency>
     <dependency>
-      <groupId>org.apache.logging.log4j.osgi</groupId>
-      <artifactId>log4j-core-osgi-async</artifactId>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-web</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.logging.log4j.osgi</groupId>
-      <artifactId>log4j-core-osgi-jpa</artifactId>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-web</artifactId>
+      <version>${project.version}</version>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-web</artifactId>
+      <version>${project.version}</version>
+      <classifier>javadoc</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-nosql</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.logging.log4j.osgi</groupId>
-      <artifactId>log4j-core-osgi-net</artifactId>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-nosql</artifactId>
       <version>${project.version}</version>
+      <classifier>sources</classifier>
     </dependency>
     <dependency>
-      <groupId>org.apache.logging.log4j.osgi</groupId>
-      <artifactId>log4j-core-osgi-nosql-couchdb</artifactId>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-nosql</artifactId>
       <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j.osgi</groupId>
-      <artifactId>log4j-core-osgi-nosql-mongodb</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j.osgi</groupId>
-      <artifactId>log4j-core-osgi-reduced</artifactId>
-      <version>${project.version}</version>
+      <classifier>javadoc</classifier>
     </dependency>
   </dependencies>
   <build>
@@ -256,7 +260,7 @@
             </goals>
             <phase>package</phase>
           </execution>
-          <execution>
+          <!-- <execution>
             <id>osgi-binary</id>
             <configuration>
               <finalName>apache-log4j-${project.version}</finalName>
@@ -269,7 +273,7 @@
               <goal>single</goal>
             </goals>
             <phase>package</phase>
-          </execution>
+          </execution> -->
         </executions>
       </plugin>
       <plugin>
