@@ -88,7 +88,7 @@
 
 		<a name="troubleshooting" />
         <h4>How do I debug my configuration?</h4>
-        <p>Set configuration <code>status="debug"</code> and you will see
+        <p>Set configuration <code>status="trace"</code> and you will see
 		detailed log4j2-internal
         log statements about what happens during the configuration process.
         This may be useful to trouble-shoot configuration issues.
