@@ -120,7 +120,7 @@ public final class MongoDBConnection implements NoSQLConnection<BasicDBObject, M
             LOGGER.error("Failed to authenticate against MongoDB: " + e.getMessage(), e);
         } catch (final IllegalStateException e) {
             LOGGER.error("Factory-supplied MongoDB database connection already authenticated with different" +
-                    "credentials but lost connection.");
+                    "credentials but lost connection.", e);
         }
     }
 }
