@@ -41,13 +41,15 @@ public class FileManager extends OutputStreamManager {
     private final boolean isAppend;
     private final boolean isLocking;
     private final String advertiseURI;
+    private final int bufferSize;
 
     protected FileManager(final String fileName, final OutputStream os, final boolean append, final boolean locking,
-                          final String advertiseURI, final Layout<? extends Serializable> layout) {
+            final String advertiseURI, final Layout<? extends Serializable> layout, final int bufferSize) {
         super(os, fileName, layout);
         this.isAppend = append;
         this.isLocking = locking;
         this.advertiseURI = advertiseURI;
+        this.bufferSize = bufferSize;
     }
 
     /**
@@ -123,6 +125,15 @@ public class FileManager extends OutputStreamManager {
     public boolean isLocking() {
         return isLocking;
     }
+    
+    /**
+     * Returns the buffer size to use if the appender was configured with BufferedIO=true, otherwise returns a negative
+     * number.
+     * @return the buffer size, or a negative number if the output stream is not buffered
+     */
+    public int getBufferSize() {
+        return bufferSize;
+    }
 
     /**
      * FileManager's content format is specified by: <code>Key: "fileURI" Value: provided "advertiseURI" param</code>.
@@ -188,10 +199,13 @@ public class FileManager extends OutputStreamManager {
             OutputStream os;
             try {
                 os = new FileOutputStream(name, data.append);
+                int bufferSize = data.bufferSize;
                 if (data.bufferedIO) {
-                    os = new BufferedOutputStream(os, data.bufferSize);
+                    os = new BufferedOutputStream(os, bufferSize);
+                } else {
+                    bufferSize = -1; // signals to RollingFileManager not to use BufferedOutputStream
                 }
-                return new FileManager(name, os, data.append, data.locking, data.advertiseURI, data.layout);
+                return new FileManager(name, os, data.append, data.locking, data.advertiseURI, data.layout, bufferSize);
             } catch (final FileNotFoundException ex) {
                 LOGGER.error("FileManager (" + name + ") " + ex);
             }
