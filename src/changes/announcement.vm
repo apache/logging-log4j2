@@ -26,7 +26,8 @@ Log4j that provides significant improvements over its predecessor, Log4j 1.x, an
 many of the improvements available in Logback while fixing some inherent problems in Logback's
 architecture.
 
-This is the ${relCount} release of Log4j 2 and is being made available to encourage use and feedback from the community.
+It is the Log4j team's intention that this will be the final release candidate Log4j 2 before general availability and
+is being made available to encourage use and feedback from the community.
 
 ## Hack to improve layout: replace all pairs of spaces with a single new-line
 $release.description.replaceAll("  ", "

@@ -21,7 +21,7 @@
     <title>Changes</title>
   </properties>
   <body>
-    <release version="2.0-rc2" date="2014-MM-DD" description="Bug fixes and enhancements">
+    <release version="2.0-rc2" date="2014-06-21" description="Bug fixes and enhancements">
       <action issue="LOG4J2-675" dev="rpopma" type="add">
         RollingFile and RollingRandomAccessFile now write the layout footer before rollover.
       </action>
@@ -40,7 +40,7 @@
       <action issue="LOG4J2-539" dev="rpopma" type="fix" due-to="Colin Froggatt">
         Fixed issue with "Reconfigure using XML below" function in JMX Client GUI.
         ConfigurationSource is now a top-level class and can be obtained with Configuration.getConfigurationSource().
-        LoggerContext.getConfiguration().getConfigurationSource() 
+        LoggerContext.getConfiguration().getConfigurationSource()
         provides a reliable public method for obtaining a logger context's configuration location and content.
       </action>
       <action issue="LOG4J2-619" dev="rgoers" type="fix" due-to="Scott Harrington">
