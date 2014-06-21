@@ -2648,7 +2648,9 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <b>BufferSize</b> option. The <code>SMTPAppender</code> keeps only the last
             <code>BufferSize</code> logging events in its cyclic buffer. This keeps
             memory requirements at a reasonable level while still delivering useful
-            application context.
+            application context. All events in the buffer are included in the email.
+            The buffer will contain the most recent events of level TRACE to WARN
+            preceding the event that triggered the email.
           </p>
           <p>
             The default behavior is to trigger sending an email whenever an ERROR or higher
