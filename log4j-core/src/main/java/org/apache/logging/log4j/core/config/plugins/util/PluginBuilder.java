@@ -119,7 +119,7 @@ public class PluginBuilder<T> implements Builder<T> {
                 return result;
             }
         } catch (final Exception e) {
-            LOGGER.catching(Level.DEBUG, e);
+            LOGGER.catching(Level.ERROR, e);
             LOGGER.error("Unable to inject fields into builder class for plugin type {}, element {}.", this.clazz,
                 node.getName());
         }
@@ -134,7 +134,7 @@ public class PluginBuilder<T> implements Builder<T> {
             LOGGER.debug("Built Plugin[name={}] OK from factory method.", pluginType.getElementName());
             return plugin;
         } catch (final Exception e) {
-            LOGGER.catching(Level.DEBUG, e);
+            LOGGER.catching(Level.ERROR, e);
             LOGGER.error("Unable to invoke factory method in class {} for element {}.", this.clazz, this.node.getName());
             return null;
         }
