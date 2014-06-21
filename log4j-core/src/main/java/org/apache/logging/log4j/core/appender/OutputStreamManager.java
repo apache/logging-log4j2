@@ -28,8 +28,7 @@ import org.apache.logging.log4j.core.Layout;
 public class OutputStreamManager extends AbstractManager {
 
     private volatile OutputStream os;
-
-    private final Layout<?> layout;
+    protected final Layout<?> layout;
 
     protected OutputStreamManager(final OutputStream os, final String streamName, final Layout<?> layout) {
         super(streamName);
@@ -66,11 +65,21 @@ public class OutputStreamManager extends AbstractManager {
      */
     @Override
     public void releaseSub() {
+        writeFooter();
+        close();
+    }
+
+    /**
+     * Writes the footer.
+     */
+    protected void writeFooter() {
+        if (layout == null) {
+            return;
+        }
         byte[] footer = layout.getFooter();
         if (footer != null) {
             write(footer);
         }
-        close();
     }
 
     /**

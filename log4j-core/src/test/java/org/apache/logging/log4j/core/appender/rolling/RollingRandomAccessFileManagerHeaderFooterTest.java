@@ -1,0 +1,122 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache license, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
+ */
+package org.apache.logging.log4j.core.appender.rolling;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.nio.charset.Charset;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.layout.HtmlLayout;
+import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+/**
+ *
+ */
+public class RollingRandomAccessFileManagerHeaderFooterTest {
+
+    private static final String DIR = "target/RollingRandomAccessFileAppenderHeaderFooterTest/";
+    private static final String LOGFILE = "target/RollingRandomAccessFileAppenderHeaderFooterTest.log";
+
+    @Rule
+    public InitialLoggerContext init = new InitialLoggerContext("RollingRandomAccessFileAppenderHeaderFooterTest.xml");
+
+    private Logger logger;
+
+    @Before
+    public void setUp() throws Exception {
+        this.logger = this.init.getLogger(RollingRandomAccessFileManagerHeaderFooterTest.class.getName());
+        deleteDir();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        deleteDir();
+    }
+
+    @Test
+    public void testAppender() throws Exception {
+        for (int i = 0; i < 8; ++i) {
+            logger.debug("This is test message number " + i);
+        }
+        Thread.sleep(50);
+        final File dir = new File(DIR);
+        assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
+        final File[] files = dir.listFiles();
+        assertTrue("No files created", files.length > 0);
+        for (final File file : files) {
+            assertHeader(file);
+            assertFooter(file);
+        }
+        final File logFile = new File(LOGFILE);
+        assertTrue("Expected logfile to exist: " + LOGFILE, logFile.exists());
+        assertHeader(logFile);
+    }
+
+    private void assertHeader(File file) throws Exception {
+        HtmlLayout layout = HtmlLayout.createDefaultLayout();
+        String header = new String(layout.getHeader(), Charset.defaultCharset());
+        String withoutTimestamp = header.substring(0, 435);
+        String contents = new String(slurp(file), Charset.defaultCharset());
+        String contentsInitialChunk = contents.substring(0, 435);
+        assertEquals(file.getName(), withoutTimestamp, contentsInitialChunk);
+    }
+
+    private void assertFooter(File file) throws Exception {
+        HtmlLayout layout = HtmlLayout.createDefaultLayout();
+        String footer = new String(layout.getFooter(), Charset.defaultCharset());
+        String contents = new String(slurp(file), Charset.defaultCharset());
+        assertTrue(file.getName(), contents.endsWith(footer));
+    }
+
+    private byte[] slurp(File file) throws Exception {
+        FileInputStream in = null;
+        try {
+            in = new FileInputStream(file);
+            byte[] result = new byte[(int) file.length()];
+            int pos = 0;
+            int length = in.read(result);
+            while (length > 0) {
+                pos += length;
+                length = in.read(result, pos, result.length - pos);
+            }
+            return result;
+        } finally {
+            try {
+                in.close();
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    private static void deleteDir() {
+        final File dir = new File(DIR);
+        if (dir.exists()) {
+            final File[] files = dir.listFiles();
+            for (final File file : files) {
+                file.delete();
+            }
+            dir.delete();
+        }
+    }
+}

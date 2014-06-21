@@ -22,6 +22,12 @@
   </properties>
   <body>
     <release version="2.0-rc2" date="2014-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-675" dev="rpopma" type="add">
+        RollingFile and RollingRandomAccessFile now write the layout footer before rollover.
+      </action>
+      <action issue="LOG4J2-581" dev="rpopma" type="fix" due-to="Alexander Khokhlov">
+        RollingRandomAccessFile now writes the layout header after rollover.
+      </action>
       <action issue="LOG4J2-622" dev="rpopma" type="fix" due-to="Farooq Khan">
         RollingFileManager now correctly honours the bufferedIO configuration after rollover.
       </action>

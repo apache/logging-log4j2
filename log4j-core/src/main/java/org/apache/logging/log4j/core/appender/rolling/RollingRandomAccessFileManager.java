@@ -55,6 +55,26 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
         this.randomAccessFile = raf;
         isEndOfBatch.set(Boolean.FALSE);
         this.buffer = ByteBuffer.allocate(bufferSize);
+        writeHeader();
+    }
+
+    /**
+     * Writes the layout's header to the file if it exists.
+     */
+    private void writeHeader() {
+        if (layout == null) {
+            return;
+        }
+        byte[] header = layout.getHeader();
+        if (header == null) {
+            return;
+        }
+        try {
+            // write to the file, not to the buffer: the buffer may not be empty
+            randomAccessFile.write(header, 0, header.length);
+        } catch (final IOException ioe) {
+            LOGGER.error("Unable to write header", ioe);
+        }
     }
 
     public static RollingRandomAccessFileManager getRollingRandomAccessFileManager(final String fileName,
@@ -99,6 +119,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
         if (isAppend()) {
             randomAccessFile.seek(randomAccessFile.length());
         }
+        writeHeader();
     }
 
     @Override
