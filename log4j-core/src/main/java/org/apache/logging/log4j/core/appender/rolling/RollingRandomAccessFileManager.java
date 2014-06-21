@@ -50,7 +50,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
             final boolean immediateFlush, final int bufferSize, final long size, final long time,
             final TriggeringPolicy policy, final RolloverStrategy strategy,
             final String advertiseURI, final Layout<? extends Serializable> layout) {
-        super(fileName, pattern, os, append, size, time, policy, strategy, advertiseURI, layout);
+        super(fileName, pattern, os, append, size, time, policy, strategy, advertiseURI, layout, bufferSize);
         this.isImmediateFlush = immediateFlush;
         this.randomAccessFile = raf;
         isEndOfBatch.set(Boolean.FALSE);
@@ -75,7 +75,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
 
     @Override
     protected synchronized void write(final byte[] bytes, int offset, int length) {
-        super.write(bytes, offset, length); // writes to dummy output stream
+        super.write(bytes, offset, length); // writes to dummy output stream, needed to track file size
 
         int chunk = 0;
         do {
