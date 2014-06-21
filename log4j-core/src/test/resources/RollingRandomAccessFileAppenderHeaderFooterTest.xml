@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="OFF">
+  <Appenders>
+    <RollingRandomAccessFile name="RollingRandomAccessFile" fileName="target/RollingRandomAccessFileAppenderHeaderFooterTest.log"
+                 filePattern="target/RollingRandomAccessFileAppenderHeaderFooterTest/rolled%i.log" append="false"
+                 immediateFlush="true">
+      <HTMLLayout></HTMLLayout>
+      <Policies>
+      <!--
+        <TimeBasedTriggeringPolicy />
+      -->
+        <SizeBasedTriggeringPolicy size="1024" />
+      </Policies>
+    </RollingRandomAccessFile>
+  </Appenders>
+  
+  <Loggers>
+    <Root level="trace" includeLocation="false">
+      <AppenderRef ref="RollingRandomAccessFile"/>
+    </Root>
+  </Loggers>
+</Configuration>
