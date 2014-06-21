@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="ERROR">
+<Configuration status="ERROR"  packages="org.apache.logging.log4j">
   <Appenders>
     <List name="List">
       <PatternLayout pattern="%c %m"/>
@@ -8,7 +8,7 @@
       <AppenderRef ref="List"/>
     </Async>
   </Appenders>
-  
+
   <Loggers>
     <Root level="trace">
       <AppenderRef ref="Async"/>

@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="OFF" name="FailoverTest">
+<Configuration status="OFF" name="FailoverTest" packages="org.apache.logging.log4j">
   <Appenders>
     <List name="List"/>
     <JMSQueue name="Log4j2Queue" queueBindingName="Log4j2Queue" factoryBindingName="QueueConnectionFactory"

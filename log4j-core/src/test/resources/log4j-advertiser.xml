@@ -17,7 +17,7 @@
 
 -->
 <Configuration status="OFF" dest="target/status.log" name="XMLConfigTest"
-               advertiser="memory">
+               advertiser="memory" packages="org.apache.logging.log4j">
   <ThresholdFilter level="debug"/>
 
   <Appenders>

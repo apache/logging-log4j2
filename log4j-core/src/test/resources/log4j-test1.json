@@ -2,6 +2,7 @@
     "Configuration" : {
         "status": "warn",
         "name": "YAMLConfigTest",
+        "packages": "org.apache.logging.log4j",
 
         "properties" : {
             "property" : {
