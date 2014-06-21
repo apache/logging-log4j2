@@ -56,7 +56,7 @@ public class RingBufferLogEvent implements LogEvent {
     /** The {@code EventFactory} for {@code RingBufferLogEvent}s. */
     public static final Factory FACTORY = new Factory();
 
-    private AsyncLogger asyncLogger;
+    private transient AsyncLogger asyncLogger;
     private String loggerName;
     private Marker marker;
     private String fqcn;
