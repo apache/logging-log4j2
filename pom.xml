@@ -153,7 +153,7 @@
     <slf4j.version>1.7.7</slf4j.version>
     <logback.version>1.0.13</logback.version>
     <log4jParentDir>${basedir}</log4jParentDir>
-    <Log4jReleaseVersion>2.0-rc1</Log4jReleaseVersion>
+    <Log4jReleaseVersion>2.0-rc2</Log4jReleaseVersion>
     <Log4jReleaseCount>eleventh</Log4jReleaseCount>
     <jackson1.version>1.9.13</jackson1.version>
     <jackson2.version>2.3.3</jackson2.version>
