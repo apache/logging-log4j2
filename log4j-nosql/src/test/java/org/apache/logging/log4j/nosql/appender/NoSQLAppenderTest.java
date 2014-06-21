@@ -25,15 +25,6 @@ import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
 
 public class NoSQLAppenderTest {
-    @Before
-    public void setUp() {
-
-    }
-
-    @After
-    public void tearDown() {
-
-    }
 
     @Test
     public void testNoProvider() {
