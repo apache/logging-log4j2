@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
+import org.apache.logging.log4j.core.util.Closer;
 
 /**
  * An {@link AbstractDatabaseManager} implementation for all NoSQL databases.
@@ -50,9 +51,7 @@ public final class NoSQLDatabaseManager<W> extends AbstractDatabaseManager {
 
     @Override
     protected void shutdownInternal() {
-        if (this.connection != null) {
-            this.commitAndClose();
-        }
+        Closer.closeSilent(this.connection);
     }
 
     @Override
