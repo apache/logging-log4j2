@@ -131,9 +131,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             throw new AppenderLoggingException("Failed to commit transaction logging event or flushing buffer.", e);
         } finally {
             try {
-                if (this.statement != null) {
-                    this.statement.close();
-                }
+                Closer.close(this.statement);
             } catch (Exception e) {
                 LOGGER.warn("Failed to close SQL statement logging event or flushing buffer.", e);
             } finally {
@@ -141,9 +139,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             }
 
             try {
-                if (this.connection != null) {
-                    this.connection.close();
-                }
+                Closer.close(this.connection);
             } catch (Exception e) {
                 LOGGER.warn("Failed to close database connection logging event or flushing buffer.", e);
             } finally {
