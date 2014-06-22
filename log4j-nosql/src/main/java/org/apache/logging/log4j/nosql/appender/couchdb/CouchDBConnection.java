@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.nosql.appender.couchdb;
 
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.nosql.appender.NoSQLConnection;
@@ -29,7 +30,7 @@ import org.lightcouch.Response;
  */
 public final class CouchDBConnection implements NoSQLConnection<Map<String, Object>, CouchDBObject> {
     private final CouchDbClient client;
-    private boolean closed = false;
+    private final AtomicBoolean closed = new AtomicBoolean(false);
 
     public CouchDBConnection(final CouchDbClient client) {
         this.client = client;
@@ -60,13 +61,14 @@ public final class CouchDBConnection implements NoSQLConnection<Map<String, Obje
     }
 
     @Override
-    public synchronized void close() {
-        this.closed = true;
-        this.client.shutdown();
+    public void close() {
+        if (this.closed.compareAndSet(false, true)) {
+            this.client.shutdown();
+        }
     }
 
     @Override
-    public synchronized boolean isClosed() {
-        return this.closed;
+    public boolean isClosed() {
+        return this.closed.get();
     }
 }
