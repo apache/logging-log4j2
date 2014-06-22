@@ -116,10 +116,20 @@ public final class Level implements Comparable<Level>, Serializable {
         }
     }
 
+    /**
+     * Gets the integral value of this Level.
+     *
+     * @return the value of this Level.
+     */
     public int intLevel() {
         return this.intLevel;
     }
 
+    /**
+     * Gets the standard Level values as an enum.
+     *
+     * @return an enum of the standard Levels.
+     */
     public StandardLevel getStandardLevel() {
         return standardLevel;
     }
@@ -173,7 +183,11 @@ public final class Level implements Comparable<Level>, Serializable {
         return this.name.hashCode();
     }
 
-
+    /**
+     * Gets the symbolic name of this Level. Equivalent to calling {@link #toString()}.
+     *
+     * @return the name of this Level.
+     */
     public String name() {
         return this.name;
     }
@@ -267,6 +281,19 @@ public final class Level implements Comparable<Level>, Serializable {
         throw new IllegalArgumentException("Unknown level constant [" + levelName + "].");
     }
 
+    /**
+     * Returns the enum constant of the specified enum type with the specified name. The name must match exactly an
+     * identifier used to declare an enum constant in this type. (Extraneous whitespace characters are not permitted.)
+     *
+     * @param enumType the {@code Class} object of the enum type from which to return a constant
+     * @param name     the name of the constant to return
+     * @param <T>      The enum type whose constant is to be returned
+     * @return the enum constant of the specified enum type with the specified name
+     * @throws java.lang.IllegalArgumentException if the specified enum type has no constant with the specified name,
+     *                                            or the specified class object does not represent an enum type
+     * @throws java.lang.NullPointerException     if {@code enumType} or {@code name} are {@code null}
+     * @see java.lang.Enum#valueOf(Class, String)
+     */
     public static <T extends Enum<T>> T valueOf(final Class<T> enumType, final String name) {
         return Enum.valueOf(enumType, name);
     }
