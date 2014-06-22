@@ -71,14 +71,6 @@ public class NoSQLDatabaseManagerTest {
             replay(this.provider, this.connection);
 
             manager.connectAndStart();
-
-            verify(this.provider, this.connection);
-            reset(this.provider, this.connection);
-            expect(this.connection.isClosed()).andReturn(false);
-            this.connection.close();
-            expectLastCall();
-            replay(this.provider, this.connection);
-
             manager.commitAndClose();
         } finally {
             try {
@@ -148,13 +140,6 @@ public class NoSQLDatabaseManagerTest {
             } catch (AppenderLoggingException ignore) {
                 /* */
             }
-
-            verify(this.provider, this.connection, event);
-            reset(this.provider, this.connection);
-            expect(this.connection.isClosed()).andReturn(false);
-            this.connection.close();
-            expectLastCall();
-            replay(this.provider, this.connection);
         } finally {
             try {
                 manager.release();
@@ -242,11 +227,6 @@ public class NoSQLDatabaseManagerTest {
             assertNull("The context stack should be null.", object.get("contextStack"));
 
             verify(this.provider, this.connection, event, message);
-            reset(this.provider, this.connection);
-            expect(this.connection.isClosed()).andReturn(false);
-            this.connection.close();
-            expectLastCall();
-            replay(this.provider, this.connection);
         } finally {
             try {
                 manager.release();
@@ -382,11 +362,6 @@ public class NoSQLDatabaseManagerTest {
             assertEquals("The context stack is not correct.", stack.asList(), object.get("contextStack"));
 
             verify(this.provider, this.connection, event, message);
-            reset(this.provider, this.connection);
-            expect(this.connection.isClosed()).andReturn(false);
-            this.connection.close();
-            expectLastCall();
-            replay(this.provider, this.connection);
         } finally {
             try {
                 manager.release();
@@ -584,11 +559,6 @@ public class NoSQLDatabaseManagerTest {
             assertEquals("The context stack is not correct.", stack.asList(), object.get("contextStack"));
 
             verify(this.provider, this.connection, event, message);
-            reset(this.provider, this.connection);
-            expect(this.connection.isClosed()).andReturn(false);
-            this.connection.close();
-            expectLastCall();
-            replay(this.provider, this.connection);
         } finally {
             try {
                 manager.release();
