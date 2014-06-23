@@ -22,26 +22,26 @@ import java.io.Closeable;
  * Represents a connection to the NoSQL database. Serves as a factory for new (empty) objects and an endpoint for
  * inserted objects.
  *
- * @param <T> Specifies which implementation of {@link NoSQLObject} this connection provides.
- * @param <W> Specifies which type of database object is wrapped by the {@link NoSQLObject} implementation provided.
+ * @param <T> Specifies which implementation of {@link NoSqlObject} this connection provides.
+ * @param <W> Specifies which type of database object is wrapped by the {@link NoSqlObject} implementation provided.
  */
-public interface NoSQLConnection<W, T extends NoSQLObject<W>> extends Closeable {
+public interface NoSqlConnection<W, T extends NoSqlObject<W>> extends Closeable {
     /**
-     * Instantiates and returns a {@link NoSQLObject} instance whose properties can be configured before ultimate
-     * insertion via {@link #insertObject(NoSQLObject)}.
+     * Instantiates and returns a {@link NoSqlObject} instance whose properties can be configured before ultimate
+     * insertion via {@link #insertObject(NoSqlObject)}.
      *
      * @return a new object.
-     * @see NoSQLObject
+     * @see NoSqlObject
      */
     T createObject();
 
     /**
-     * Creates an array of the specified length typed to match the {@link NoSQLObject} implementation appropriate for
+     * Creates an array of the specified length typed to match the {@link NoSqlObject} implementation appropriate for
      * this provider.
      *
      * @param length the length of the array to create.
      * @return a new array.
-     * @see NoSQLObject
+     * @see NoSqlObject
      */
     T[] createList(int length);
 
@@ -50,7 +50,7 @@ public interface NoSQLConnection<W, T extends NoSQLObject<W>> extends Closeable 
      *
      * @param object The object to insert.
      */
-    void insertObject(NoSQLObject<W> object);
+    void insertObject(NoSqlObject<W> object);
 
     /**
      * Closes the underlying connection. This method call should be idempotent. Only the first call should have any
@@ -67,7 +67,7 @@ public interface NoSQLConnection<W, T extends NoSQLObject<W>> extends Closeable 
     /**
      * Indicates whether the underlying connection is closed. If the underlying connection is stateless (such as an
      * HTTP web service), this method would likely always return true. Essentially, this method should only return
-     * {@code true} if a call to {@link #insertObject(NoSQLObject)} <b>will</b> fail due to the state of this object.
+     * {@code true} if a call to {@link #insertObject(NoSqlObject)} <b>will</b> fail due to the state of this object.
      *
      * @return {@code true} if this object is considered closed.
      */

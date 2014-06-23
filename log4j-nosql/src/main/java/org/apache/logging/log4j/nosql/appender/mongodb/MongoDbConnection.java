@@ -19,8 +19,8 @@ package org.apache.logging.log4j.nosql.appender.mongodb;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
-import org.apache.logging.log4j.nosql.appender.NoSQLConnection;
-import org.apache.logging.log4j.nosql.appender.NoSQLObject;
+import org.apache.logging.log4j.nosql.appender.NoSqlConnection;
+import org.apache.logging.log4j.nosql.appender.NoSqlObject;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 import org.bson.BSON;
@@ -35,9 +35,9 @@ import com.mongodb.WriteConcern;
 import com.mongodb.WriteResult;
 
 /**
- * The MongoDB implementation of {@link NoSQLConnection}.
+ * The MongoDB implementation of {@link NoSqlConnection}.
  */
-public final class MongoDBConnection implements NoSQLConnection<BasicDBObject, MongoDBObject> {
+public final class MongoDbConnection implements NoSqlConnection<BasicDBObject, MongoDbObject> {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -57,24 +57,24 @@ public final class MongoDBConnection implements NoSQLConnection<BasicDBObject, M
     private final Mongo mongo;
     private final WriteConcern writeConcern;
 
-    public MongoDBConnection(final DB database, final WriteConcern writeConcern, final String collectionName) {
+    public MongoDbConnection(final DB database, final WriteConcern writeConcern, final String collectionName) {
         this.mongo = database.getMongo();
         this.collection = database.getCollection(collectionName);
         this.writeConcern = writeConcern;
     }
 
     @Override
-    public MongoDBObject createObject() {
-        return new MongoDBObject();
+    public MongoDbObject createObject() {
+        return new MongoDbObject();
     }
 
     @Override
-    public MongoDBObject[] createList(final int length) {
-        return new MongoDBObject[length];
+    public MongoDbObject[] createList(final int length) {
+        return new MongoDbObject[length];
     }
 
     @Override
-    public void insertObject(final NoSQLObject<BasicDBObject> object) {
+    public void insertObject(final NoSqlObject<BasicDBObject> object) {
         try {
             final WriteResult result = this.collection.insert(object.unwrap(), this.writeConcern);
             if (Strings.isNotEmpty(result.getError())) {
@@ -100,7 +100,7 @@ public final class MongoDBConnection implements NoSQLConnection<BasicDBObject, M
     }
 
     /**
-     * To prevent class loading issues during plugin discovery, this code cannot live within MongoDBProvider. This
+     * To prevent class loading issues during plugin discovery, this code cannot live within MongoDbProvider. This
      * is because of how Java treats references to Exception classes different from references to other classes. When
      * Java loads a class, it normally won't load that class's dependent classes until and unless A) they are used, B)
      * the class being loaded extends or implements those classes, or C) those classes are the types of static members

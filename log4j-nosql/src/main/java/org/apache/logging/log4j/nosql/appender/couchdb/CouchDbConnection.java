@@ -20,34 +20,34 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
-import org.apache.logging.log4j.nosql.appender.NoSQLConnection;
-import org.apache.logging.log4j.nosql.appender.NoSQLObject;
+import org.apache.logging.log4j.nosql.appender.NoSqlConnection;
+import org.apache.logging.log4j.nosql.appender.NoSqlObject;
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.Response;
 
 /**
- * The Apache CouchDB implementation of {@link NoSQLConnection}.
+ * The Apache CouchDB implementation of {@link NoSqlConnection}.
  */
-public final class CouchDBConnection implements NoSQLConnection<Map<String, Object>, CouchDBObject> {
+public final class CouchDbConnection implements NoSqlConnection<Map<String, Object>, CouchDbObject> {
     private final CouchDbClient client;
     private final AtomicBoolean closed = new AtomicBoolean(false);
 
-    public CouchDBConnection(final CouchDbClient client) {
+    public CouchDbConnection(final CouchDbClient client) {
         this.client = client;
     }
 
     @Override
-    public CouchDBObject createObject() {
-        return new CouchDBObject();
+    public CouchDbObject createObject() {
+        return new CouchDbObject();
     }
 
     @Override
-    public CouchDBObject[] createList(final int length) {
-        return new CouchDBObject[length];
+    public CouchDbObject[] createList(final int length) {
+        return new CouchDbObject[length];
     }
 
     @Override
-    public void insertObject(final NoSQLObject<Map<String, Object>> object) {
+    public void insertObject(final NoSqlObject<Map<String, Object>> object) {
         try {
             final Response response = this.client.save(object.unwrap());
             if (response.getError() != null && response.getError().length() > 0) {

@@ -19,9 +19,9 @@ package org.apache.logging.log4j.nosql.appender;
 /**
  * Represents a simple POJO object inserted into a NoSQL object.
  *
- * @param <W> Specifies what type of underlying object (such as a MongoDB BasicDBObject) this NoSQLObject wraps.
+ * @param <W> Specifies what type of underlying object (such as a MongoDB BasicDBObject) this NoSqlObject wraps.
  */
-public interface NoSQLObject<W> {
+public interface NoSqlObject<W> {
     /**
      * Sets the value of a property on this object to a String or primitive.
      *
@@ -36,7 +36,7 @@ public interface NoSQLObject<W> {
      * @param field The name of the property
      * @param value The value of the property
      */
-    void set(String field, NoSQLObject<W> value);
+    void set(String field, NoSqlObject<W> value);
 
     /**
      * Sets the value of a property on this object to an array of Strings or primitives.
@@ -52,7 +52,7 @@ public interface NoSQLObject<W> {
      * @param field The name of the property
      * @param values The values for the property
      */
-    void set(String field, NoSQLObject<W>[] values);
+    void set(String field, NoSqlObject<W>[] values);
 
     /**
      * Obtains the underlying NoSQL library-specific object that this object wraps.
