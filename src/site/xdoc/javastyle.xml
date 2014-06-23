@@ -119,7 +119,7 @@
       <a name="package-statement"/>
       <h3>Package statement</h3>
       <p>The package statement is <strong>not line-wrapped</strong>. The column limit
-        <a href="#column-limit">Column limit: 120</a>) does not apply to package statements.</p>
+        (<a href="#column-limit">Column limit: 120</a>) does not apply to package statements.</p>
       <a name="imports"/>
       <a name="import-statements"/>
       <h3>Import statements</h3>
@@ -131,7 +131,7 @@
       <a name="import-line-wrapping"/>
       <h4>No line-wrapping</h4>
       <p>Import statements are <strong>not line-wrapped</strong>. The column limit
-        <a href="#column-limit">Column limit: 120</a>) does not apply to import statements.</p>
+        (<a href="#column-limit">Column limit: 120</a>) does not apply to import statements.</p>
       <a name="import-ordering-and-spacing"/>
       <h4>Ordering and spacing</h4>
       <p>Import statements are divided into the following groups, in this order, with each group
@@ -248,7 +248,7 @@
         <p>Example:</p><pre>
       void doNothing() {}
     </pre><a name="block-indentation"/>
-      <h3>Block indentation: +2 spaces</h3>
+      <h3>Block indentation: +4 spaces</h3>
       <p>Each time a new block or block-like construct is opened, the indent increases by two
         spaces. When the block ends, the indent returns to the previous indent level. The indent level
         applies to both code and comments throughout the block. (See the example in Section 4.1.2,
@@ -311,7 +311,7 @@
         </ol>
         <a name="indentation"/>
         <a name="line-wrapping-indent"/>
-      <h4>Indent continuation lines at least +4 spaces</h4>
+      <h4>Indent continuation lines at least +8 spaces</h4>
         <p>When line-wrapping, each line after the first (each <em>continuation line</em>) is indented
           at least +4 from the original line.</p>
         <p>When there are multiple continuation lines, indentation may be varied beyond +4 as
