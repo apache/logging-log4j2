@@ -249,7 +249,7 @@
       void doNothing() {}
     </pre><a name="block-indentation"/>
       <h3>Block indentation: +4 spaces</h3>
-      <p>Each time a new block or block-like construct is opened, the indent increases by two
+      <p>Each time a new block or block-like construct is opened, the indent increases by four
         spaces. When the block ends, the indent returns to the previous indent level. The indent level
         applies to both code and comments throughout the block. (See the example in Section 4.1.2,
         <a href="#blocks-k-r-style">Nonempty blocks: K &amp; R Style</a>.)</p>
@@ -313,8 +313,8 @@
         <a name="line-wrapping-indent"/>
       <h4>Indent continuation lines at least +8 spaces</h4>
         <p>When line-wrapping, each line after the first (each <em>continuation line</em>) is indented
-          at least +4 from the original line.</p>
-        <p>When there are multiple continuation lines, indentation may be varied beyond +4 as
+          at least +8 from the original line.</p>
+        <p>When there are multiple continuation lines, indentation may be varied beyond +8 as
       desired. In general, two continuation lines use the same indentation level if and only if they
       begin with syntactically parallel elements.</p>
         <p>The section on <a href="#horizontal-alignment">Horizontal alignment</a> addresses
