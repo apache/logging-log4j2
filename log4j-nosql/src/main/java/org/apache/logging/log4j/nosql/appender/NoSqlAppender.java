@@ -27,22 +27,22 @@ import org.apache.logging.log4j.core.util.Booleans;
 
 /**
  * This Appender writes logging events to a NoSQL database using a configured NoSQL provider. It requires
- * implementations of {@link NoSQLObject}, {@link NoSQLConnection}, and {@link NoSQLProvider} to "know" how to write
+ * implementations of {@link NoSqlObject}, {@link NoSqlConnection}, and {@link NoSqlProvider} to "know" how to write
  * events to the chosen NoSQL database. Two provider implementations are provided: MongoDB
  * (org.mongodb:mongo-java-driver:2.11.1 or newer must be on the classpath) and Apache CouchDB
  * (org.lightcouch:lightcouch:0.0.5 or newer must be on the classpath). For examples on how to write your own NoSQL
  * provider, see the simple source code for the MongoDB and CouchDB providers.
  *
- * @see NoSQLObject
- * @see NoSQLConnection
- * @see NoSQLProvider
+ * @see NoSqlObject
+ * @see NoSqlConnection
+ * @see NoSqlProvider
  */
 @Plugin(name = "NoSql", category = "Core", elementType = "appender", printObject = true)
-public final class NoSQLAppender extends AbstractDatabaseAppender<NoSQLDatabaseManager<?>> {
+public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseManager<?>> {
     private final String description;
 
-    private NoSQLAppender(final String name, final Filter filter, final boolean ignoreExceptions,
-                          final NoSQLDatabaseManager<?> manager) {
+    private NoSqlAppender(final String name, final Filter filter, final boolean ignoreExceptions,
+                          final NoSqlDatabaseManager<?> manager) {
         super(name, filter, ignoreExceptions, manager);
         this.description = this.getName() + "{ manager=" + this.getManager() + " }";
     }
@@ -65,12 +65,12 @@ public final class NoSQLAppender extends AbstractDatabaseAppender<NoSQLDatabaseM
      * @return a new NoSQL appender.
      */
     @PluginFactory
-    public static NoSQLAppender createAppender(
+    public static NoSqlAppender createAppender(
             @PluginAttribute("name") final String name,
             @PluginAttribute("ignoreExceptions") final String ignore,
             @PluginElement("Filter") final Filter filter,
             @PluginAttribute("bufferSize") final String bufferSize,
-            @PluginElement("NoSqlProvider") final NoSQLProvider<?> provider) {
+            @PluginElement("NoSqlProvider") final NoSqlProvider<?> provider) {
         if (provider == null) {
             LOGGER.error("NoSQL provider not specified for appender [{}].", name);
             return null;
@@ -82,13 +82,13 @@ public final class NoSQLAppender extends AbstractDatabaseAppender<NoSQLDatabaseM
         final String managerName = "noSqlManager{ description=" + name + ", bufferSize=" + bufferSizeInt
                 + ", provider=" + provider + " }";
 
-        final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSqlDatabaseManager(
+        final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager(
                 managerName, bufferSizeInt, provider
         );
         if (manager == null) {
             return null;
         }
 
-        return new NoSQLAppender(name, filter, ignoreExceptions, manager);
+        return new NoSqlAppender(name, filter, ignoreExceptions, manager);
     }
 }

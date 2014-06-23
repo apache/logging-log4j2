@@ -29,7 +29,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.nosql.appender.couchdb.CouchDBObject;
+import org.apache.logging.log4j.nosql.appender.couchdb.CouchDbObject;
 import org.easymock.Capture;
 import org.easymock.IAnswer;
 import org.junit.After;
@@ -40,15 +40,15 @@ import static org.easymock.EasyMock.*;
 
 import static org.junit.Assert.*;
 
-public class NoSQLDatabaseManagerTest {
-    private NoSQLConnection<Map<String, Object>, CouchDBObject> connection;
-    private NoSQLProvider<NoSQLConnection<Map<String, Object>, CouchDBObject>> provider;
+public class NoSqlDatabaseManagerTest {
+    private NoSqlConnection<Map<String, Object>, CouchDbObject> connection;
+    private NoSqlProvider<NoSqlConnection<Map<String, Object>, CouchDbObject>> provider;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() {
-        this.provider = createStrictMock(NoSQLProvider.class);
-        this.connection = createStrictMock(NoSQLConnection.class);
+        this.provider = createStrictMock(NoSqlProvider.class);
+        this.connection = createStrictMock(NoSqlConnection.class);
     }
 
     @After
@@ -60,7 +60,7 @@ public class NoSQLDatabaseManagerTest {
     public void testConnection() {
         replay(this.provider, this.connection);
 
-        final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSqlDatabaseManager("name", 0, this.provider);
+        final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager("name", 0, this.provider);
 
         assertNotNull("The manager should not be null.", manager);
 
@@ -85,7 +85,7 @@ public class NoSQLDatabaseManagerTest {
     public void testWriteInternalNotConnected01() {
         replay(this.provider, this.connection);
 
-        final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSqlDatabaseManager("name", 0, this.provider);
+        final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager("name", 0, this.provider);
 
         try {
             verify(this.provider, this.connection);
@@ -113,7 +113,7 @@ public class NoSQLDatabaseManagerTest {
 
     @Test
     public void testWriteInternalNotConnected02() {
-        final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSqlDatabaseManager("name", 0, this.provider);
+        final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager("name", 0, this.provider);
 
         try {
             replay(this.provider, this.connection);
@@ -151,7 +151,7 @@ public class NoSQLDatabaseManagerTest {
 
     @Test
     public void testWriteInternal01() {
-        final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSqlDatabaseManager("name", 0, this.provider);
+        final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager("name", 0, this.provider);
 
         try {
             replay(this.provider, this.connection);
@@ -168,16 +168,16 @@ public class NoSQLDatabaseManagerTest {
             verify(this.provider, this.connection);
             reset(this.provider, this.connection);
 
-            final Capture<NoSQLObject<Map<String, Object>>> capture = new Capture<NoSQLObject<Map<String, Object>>>();
+            final Capture<NoSqlObject<Map<String, Object>>> capture = new Capture<NoSqlObject<Map<String, Object>>>();
 
             final LogEvent event = createStrictMock(LogEvent.class);
             final Message message = createStrictMock(Message.class);
 
             expect(this.connection.isClosed()).andReturn(false);
-            expect(this.connection.createObject()).andAnswer(new IAnswer<CouchDBObject>() {
+            expect(this.connection.createObject()).andAnswer(new IAnswer<CouchDbObject>() {
                 @Override
-                public CouchDBObject answer() throws Throwable {
-                    return new CouchDBObject();
+                public CouchDbObject answer() throws Throwable {
+                    return new CouchDbObject();
                 }
             }).atLeastOnce();
             expect(event.getLevel()).andReturn(Level.WARN);
@@ -197,7 +197,7 @@ public class NoSQLDatabaseManagerTest {
 
             manager.writeInternal(event);
 
-            final NoSQLObject<Map<String, Object>> inserted = capture.getValue();
+            final NoSqlObject<Map<String, Object>> inserted = capture.getValue();
             assertNotNull("The inserted value should not be null.", inserted);
             final Map<String, Object> object = inserted.unwrap();
             assertNotNull("The unwrapped object should not be null.", object);
@@ -238,7 +238,7 @@ public class NoSQLDatabaseManagerTest {
 
     @Test
     public void testWriteInternal02() {
-        final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSqlDatabaseManager("name", 0, this.provider);
+        final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager("name", 0, this.provider);
 
         try {
             replay(this.provider, this.connection);
@@ -255,7 +255,7 @@ public class NoSQLDatabaseManagerTest {
             verify(this.provider, this.connection);
             reset(this.provider, this.connection);
 
-            final Capture<NoSQLObject<Map<String, Object>>> capture = new Capture<NoSQLObject<Map<String, Object>>>();
+            final Capture<NoSqlObject<Map<String, Object>>> capture = new Capture<NoSqlObject<Map<String, Object>>>();
 
             final RuntimeException exception = new RuntimeException("This is something cool!");
             final Map<String, String> context = new HashMap<String, String>();
@@ -270,22 +270,22 @@ public class NoSQLDatabaseManagerTest {
             ThreadContext.clearStack();
 
             expect(this.connection.isClosed()).andReturn(false);
-            expect(this.connection.createObject()).andAnswer(new IAnswer<CouchDBObject>() {
+            expect(this.connection.createObject()).andAnswer(new IAnswer<CouchDbObject>() {
                 @Override
-                public CouchDBObject answer() throws Throwable {
-                    return new CouchDBObject();
+                public CouchDbObject answer() throws Throwable {
+                    return new CouchDbObject();
                 }
             }).atLeastOnce();
-            expect(this.connection.createList(anyInt())).andAnswer(new IAnswer<CouchDBObject[]>() {
+            expect(this.connection.createList(anyInt())).andAnswer(new IAnswer<CouchDbObject[]>() {
                 @Override
-                public CouchDBObject[] answer() throws Throwable {
-                    return new CouchDBObject[(Integer) getCurrentArguments()[0]];
+                public CouchDbObject[] answer() throws Throwable {
+                    return new CouchDbObject[(Integer) getCurrentArguments()[0]];
                 }
             });
-            expect(this.connection.createObject()).andAnswer(new IAnswer<CouchDBObject>() {
+            expect(this.connection.createObject()).andAnswer(new IAnswer<CouchDbObject>() {
                 @Override
-                public CouchDBObject answer() throws Throwable {
-                    return new CouchDBObject();
+                public CouchDbObject answer() throws Throwable {
+                    return new CouchDbObject();
                 }
             }).atLeastOnce();
             expect(event.getLevel()).andReturn(Level.DEBUG);
@@ -305,7 +305,7 @@ public class NoSQLDatabaseManagerTest {
 
             manager.writeInternal(event);
 
-            final NoSQLObject<Map<String, Object>> inserted = capture.getValue();
+            final NoSqlObject<Map<String, Object>> inserted = capture.getValue();
             assertNotNull("The inserted value should not be null.", inserted);
             final Map<String, Object> object = inserted.unwrap();
             assertNotNull("The unwrapped object should not be null.", object);
@@ -373,7 +373,7 @@ public class NoSQLDatabaseManagerTest {
 
     @Test
     public void testWriteInternal03() {
-        final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSqlDatabaseManager("name", 0, this.provider);
+        final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager("name", 0, this.provider);
 
         try {
             replay(this.provider, this.connection);
@@ -390,7 +390,7 @@ public class NoSQLDatabaseManagerTest {
             verify(this.provider, this.connection);
             reset(this.provider, this.connection);
 
-            final Capture<NoSQLObject<Map<String, Object>>> capture = new Capture<NoSQLObject<Map<String, Object>>>();
+            final Capture<NoSqlObject<Map<String, Object>>> capture = new Capture<NoSqlObject<Map<String, Object>>>();
 
             final IOException exception1 = new IOException("This is the cause.");
             final SQLException exception2 = new SQLException("This is the result.", exception1);
@@ -406,34 +406,34 @@ public class NoSQLDatabaseManagerTest {
             ThreadContext.clearStack();
 
             expect(this.connection.isClosed()).andReturn(false);
-            expect(this.connection.createObject()).andAnswer(new IAnswer<CouchDBObject>() {
+            expect(this.connection.createObject()).andAnswer(new IAnswer<CouchDbObject>() {
                 @Override
-                public CouchDBObject answer() throws Throwable {
-                    return new CouchDBObject();
+                public CouchDbObject answer() throws Throwable {
+                    return new CouchDbObject();
                 }
             }).atLeastOnce();
-            expect(this.connection.createList(anyInt())).andAnswer(new IAnswer<CouchDBObject[]>() {
+            expect(this.connection.createList(anyInt())).andAnswer(new IAnswer<CouchDbObject[]>() {
                 @Override
-                public CouchDBObject[] answer() throws Throwable {
-                    return new CouchDBObject[(Integer) getCurrentArguments()[0]];
+                public CouchDbObject[] answer() throws Throwable {
+                    return new CouchDbObject[(Integer) getCurrentArguments()[0]];
                 }
             });
-            expect(this.connection.createObject()).andAnswer(new IAnswer<CouchDBObject>() {
+            expect(this.connection.createObject()).andAnswer(new IAnswer<CouchDbObject>() {
                 @Override
-                public CouchDBObject answer() throws Throwable {
-                    return new CouchDBObject();
+                public CouchDbObject answer() throws Throwable {
+                    return new CouchDbObject();
                 }
             }).atLeastOnce();
-            expect(this.connection.createList(anyInt())).andAnswer(new IAnswer<CouchDBObject[]>() {
+            expect(this.connection.createList(anyInt())).andAnswer(new IAnswer<CouchDbObject[]>() {
                 @Override
-                public CouchDBObject[] answer() throws Throwable {
-                    return new CouchDBObject[(Integer) getCurrentArguments()[0]];
+                public CouchDbObject[] answer() throws Throwable {
+                    return new CouchDbObject[(Integer) getCurrentArguments()[0]];
                 }
             });
-            expect(this.connection.createObject()).andAnswer(new IAnswer<CouchDBObject>() {
+            expect(this.connection.createObject()).andAnswer(new IAnswer<CouchDbObject>() {
                 @Override
-                public CouchDBObject answer() throws Throwable {
-                    return new CouchDBObject();
+                public CouchDbObject answer() throws Throwable {
+                    return new CouchDbObject();
                 }
             }).atLeastOnce();
             expect(event.getLevel()).andReturn(Level.DEBUG);
@@ -455,7 +455,7 @@ public class NoSQLDatabaseManagerTest {
 
             manager.writeInternal(event);
 
-            final NoSQLObject<Map<String, Object>> inserted = capture.getValue();
+            final NoSqlObject<Map<String, Object>> inserted = capture.getValue();
             assertNotNull("The inserted value should not be null.", inserted);
             final Map<String, Object> object = inserted.unwrap();
             assertNotNull("The unwrapped object should not be null.", object);

@@ -31,14 +31,14 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NameUtil;
-import org.apache.logging.log4j.nosql.appender.NoSQLProvider;
+import org.apache.logging.log4j.nosql.appender.NoSqlProvider;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * The MongoDB implementation of {@link NoSQLProvider}.
+ * The MongoDB implementation of {@link NoSqlProvider}.
  */
 @Plugin(name = "MongoDb", category = "Core", printObject = true)
-public final class MongoDBProvider implements NoSQLProvider<MongoDBConnection> {
+public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final String collectionName;
@@ -47,7 +47,7 @@ public final class MongoDBProvider implements NoSQLProvider<MongoDBConnection> {
 
     private final WriteConcern writeConcern;
 
-    private MongoDBProvider(final DB database, final WriteConcern writeConcern, final String collectionName,
+    private MongoDbProvider(final DB database, final WriteConcern writeConcern, final String collectionName,
             final String description) {
         this.database = database;
         this.writeConcern = writeConcern;
@@ -56,8 +56,8 @@ public final class MongoDBProvider implements NoSQLProvider<MongoDBConnection> {
     }
 
     @Override
-    public MongoDBConnection getConnection() {
-        return new MongoDBConnection(this.database, this.writeConcern, this.collectionName);
+    public MongoDbConnection getConnection() {
+        return new MongoDbConnection(this.database, this.writeConcern, this.collectionName);
     }
 
     @Override
@@ -88,7 +88,7 @@ public final class MongoDBProvider implements NoSQLProvider<MongoDBConnection> {
      * @return a new MongoDB provider.
      */
     @PluginFactory
-    public static MongoDBProvider createNoSqlProvider(
+    public static MongoDbProvider createNoSqlProvider(
             @PluginAttribute("collectionName") final String collectionName,
             @PluginAttribute("writeConcernConstant") final String writeConcernConstant,
             @PluginAttribute("writeConcernConstantClass") final String writeConcernConstantClassName,
@@ -178,8 +178,8 @@ public final class MongoDBProvider implements NoSQLProvider<MongoDBConnection> {
         if (!database.isAuthenticated()) {
             if (username != null && username.length() > 0 && password != null && password.length() > 0) {
                 description += ", username=" + username + ", passwordHash="
-                        + NameUtil.md5(password + MongoDBProvider.class.getName());
-                MongoDBConnection.authenticate(database, username, password);
+                        + NameUtil.md5(password + MongoDbProvider.class.getName());
+                MongoDbConnection.authenticate(database, username, password);
             } else {
                 LOGGER.error("The database is not already authenticated so you must supply a username and password "
                         + "for the MongoDB provider.");
@@ -210,6 +210,6 @@ public final class MongoDBProvider implements NoSQLProvider<MongoDBConnection> {
             writeConcern = WriteConcern.ACKNOWLEDGED;
         }
 
-        return new MongoDBProvider(database, writeConcern, collectionName, description);
+        return new MongoDbProvider(database, writeConcern, collectionName, description);
     }
 }

@@ -24,11 +24,11 @@ import static org.easymock.EasyMock.*;
 
 import static org.junit.Assert.*;
 
-public class NoSQLAppenderTest {
+public class NoSqlAppenderTest {
 
     @Test
     public void testNoProvider() {
-        final NoSQLAppender appender = NoSQLAppender.createAppender("myName01", null, null, null, null);
+        final NoSqlAppender appender = NoSqlAppender.createAppender("myName01", null, null, null, null);
 
         assertNull("The appender should be null.", appender);
     }
@@ -36,11 +36,11 @@ public class NoSQLAppenderTest {
     @Test
     public void testProvider() {
         @SuppressWarnings("unchecked")
-        final NoSQLProvider<?> provider = createStrictMock(NoSQLProvider.class);
+        final NoSqlProvider<?> provider = createStrictMock(NoSqlProvider.class);
 
         replay(provider);
 
-        final NoSQLAppender appender = NoSQLAppender.createAppender("myName01", null, null, null, provider);
+        final NoSqlAppender appender = NoSqlAppender.createAppender("myName01", null, null, null, provider);
 
         assertNotNull("The appender should not be null.", appender);
         assertEquals("The toString value is not correct.",
@@ -55,11 +55,11 @@ public class NoSQLAppenderTest {
     @Test
     public void testProviderBuffer() {
         @SuppressWarnings("unchecked")
-        final NoSQLProvider<?> provider = createStrictMock(NoSQLProvider.class);
+        final NoSqlProvider<?> provider = createStrictMock(NoSqlProvider.class);
 
         replay(provider);
 
-        final NoSQLAppender appender = NoSQLAppender.createAppender("anotherName02", null, null, "25", provider);
+        final NoSqlAppender appender = NoSqlAppender.createAppender("anotherName02", null, null, "25", provider);
 
         assertNotNull("The appender should not be null.", appender);
         assertEquals("The toString value is not correct.",

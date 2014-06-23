@@ -17,12 +17,12 @@
 package org.apache.logging.log4j.nosql.appender;
 
 /**
- * Implementations of this class are plugins for configuring the {@link NoSQLAppender} with the proper provider
+ * Implementations of this class are plugins for configuring the {@link NoSqlAppender} with the proper provider
  * (MongoDB, etc.).
  *
- * @param <C> Specifies which implementation of {@link NoSQLConnection} this provider provides.
+ * @param <C> Specifies which implementation of {@link NoSqlConnection} this provider provides.
  */
-public interface NoSQLProvider<C extends NoSQLConnection<?, ? extends NoSQLObject<?>>> {
+public interface NoSqlProvider<C extends NoSqlConnection<?, ? extends NoSqlObject<?>>> {
     /**
      * Obtains a connection from this provider. The concept of a connection in this case is not strictly an active
      * duplex UDP or TCP connection to the underlying database. It can be thought of more as a gateway, a path for
@@ -32,7 +32,7 @@ public interface NoSQLProvider<C extends NoSQLConnection<?, ? extends NoSQLObjec
      * brand new connection every time.
      *
      * @return a connection that can be used to create and persist objects to this database.
-     * @see NoSQLConnection
+     * @see NoSqlConnection
      */
     C getConnection();
 

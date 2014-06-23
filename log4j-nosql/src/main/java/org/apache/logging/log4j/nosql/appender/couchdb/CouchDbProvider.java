@@ -25,17 +25,17 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NameUtil;
-import org.apache.logging.log4j.nosql.appender.NoSQLProvider;
+import org.apache.logging.log4j.nosql.appender.NoSqlProvider;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.CouchDbProperties;
 
 /**
- * The Apache CouchDB implementation of {@link NoSQLProvider}.
+ * The Apache CouchDB implementation of {@link NoSqlProvider}.
  */
 @Plugin(name = "CouchDB", category = "Core", printObject = true)
-public final class CouchDBProvider implements NoSQLProvider<CouchDBConnection> {
+public final class CouchDbProvider implements NoSqlProvider<CouchDbConnection> {
     private static final int HTTP = 80;
     private static final int HTTPS = 443;
     private static final Logger LOGGER = StatusLogger.getLogger();
@@ -43,14 +43,14 @@ public final class CouchDBProvider implements NoSQLProvider<CouchDBConnection> {
     private final CouchDbClient client;
     private final String description;
 
-    private CouchDBProvider(final CouchDbClient client, final String description) {
+    private CouchDbProvider(final CouchDbClient client, final String description) {
         this.client = client;
         this.description = "couchDb{ " + description + " }";
     }
 
     @Override
-    public CouchDBConnection getConnection() {
-        return new CouchDBConnection(this.client);
+    public CouchDbConnection getConnection() {
+        return new CouchDbConnection(this.client);
     }
 
     @Override
@@ -80,7 +80,7 @@ public final class CouchDBProvider implements NoSQLProvider<CouchDBConnection> {
      * @return a new Apache CouchDB provider.
      */
     @PluginFactory
-    public static CouchDBProvider createNoSqlProvider(
+    public static CouchDbProvider createNoSqlProvider(
             @PluginAttribute("databaseName") final String databaseName,
             @PluginAttribute("protocol") String protocol,
             @PluginAttribute("server") String server,
@@ -105,7 +105,7 @@ public final class CouchDBProvider implements NoSQLProvider<CouchDBConnection> {
                     final CouchDbProperties properties = (CouchDbProperties) object;
                     client = new CouchDbClient(properties);
                     description = "uri=" + client.getDBUri() + ", username=" + properties.getUsername()
-                            + ", passwordHash=" + NameUtil.md5(password + CouchDBProvider.class.getName())
+                            + ", passwordHash=" + NameUtil.md5(password + CouchDbProvider.class.getName())
                             + ", maxConnections=" + properties.getMaxConnections() + ", connectionTimeout="
                             + properties.getConnectionTimeout() + ", socketTimeout=" + properties.getSocketTimeout();
                 } else if (object == null) {
@@ -154,12 +154,12 @@ public final class CouchDBProvider implements NoSQLProvider<CouchDBConnection> {
 
             client = new CouchDbClient(databaseName, false, protocol, server, portInt, username, password);
             description = "uri=" + client.getDBUri() + ", username=" + username + ", passwordHash="
-                    + NameUtil.md5(password + CouchDBProvider.class.getName());
+                    + NameUtil.md5(password + CouchDbProvider.class.getName());
         } else {
             LOGGER.error("No factory method was provided so the database name is required.");
             return null;
         }
 
-        return new CouchDBProvider(client, description);
+        return new CouchDbProvider(client, description);
     }
 }

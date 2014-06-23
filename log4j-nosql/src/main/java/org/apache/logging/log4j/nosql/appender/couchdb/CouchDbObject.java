@@ -21,15 +21,15 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.nosql.appender.NoSQLObject;
+import org.apache.logging.log4j.nosql.appender.NoSqlObject;
 
 /**
- * The Apache CouchDB implementation of {@link NoSQLObject}.
+ * The Apache CouchDB implementation of {@link NoSqlObject}.
  */
-public final class CouchDBObject implements NoSQLObject<Map<String, Object>> {
+public final class CouchDbObject implements NoSqlObject<Map<String, Object>> {
     private final Map<String, Object> map;
 
-    public CouchDBObject() {
+    public CouchDbObject() {
         this.map = new HashMap<String, Object>();
     }
 
@@ -39,7 +39,7 @@ public final class CouchDBObject implements NoSQLObject<Map<String, Object>> {
     }
 
     @Override
-    public void set(final String field, final NoSQLObject<Map<String, Object>> value) {
+    public void set(final String field, final NoSqlObject<Map<String, Object>> value) {
         this.map.put(field, value.unwrap());
     }
 
@@ -49,9 +49,9 @@ public final class CouchDBObject implements NoSQLObject<Map<String, Object>> {
     }
 
     @Override
-    public void set(final String field, final NoSQLObject<Map<String, Object>>[] values) {
+    public void set(final String field, final NoSqlObject<Map<String, Object>>[] values) {
         final ArrayList<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        for (final NoSQLObject<Map<String, Object>> value : values) {
+        for (final NoSqlObject<Map<String, Object>> value : values) {
             list.add(value.unwrap());
         }
         this.map.put(field, list);

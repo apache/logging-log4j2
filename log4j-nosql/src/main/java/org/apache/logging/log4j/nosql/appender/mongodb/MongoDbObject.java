@@ -18,18 +18,18 @@ package org.apache.logging.log4j.nosql.appender.mongodb;
 
 import java.util.Collections;
 
-import org.apache.logging.log4j.nosql.appender.NoSQLObject;
+import org.apache.logging.log4j.nosql.appender.NoSqlObject;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 
 /**
- * The MongoDB implementation of {@link NoSQLObject}.
+ * The MongoDB implementation of {@link NoSqlObject}.
  */
-public final class MongoDBObject implements NoSQLObject<BasicDBObject> {
+public final class MongoDbObject implements NoSqlObject<BasicDBObject> {
     private final BasicDBObject mongoObject;
 
-    public MongoDBObject() {
+    public MongoDbObject() {
         this.mongoObject = new BasicDBObject();
     }
 
@@ -39,7 +39,7 @@ public final class MongoDBObject implements NoSQLObject<BasicDBObject> {
     }
 
     @Override
-    public void set(final String field, final NoSQLObject<BasicDBObject> value) {
+    public void set(final String field, final NoSqlObject<BasicDBObject> value) {
         this.mongoObject.append(field, value.unwrap());
     }
 
@@ -51,9 +51,9 @@ public final class MongoDBObject implements NoSQLObject<BasicDBObject> {
     }
 
     @Override
-    public void set(final String field, final NoSQLObject<BasicDBObject>[] values) {
+    public void set(final String field, final NoSqlObject<BasicDBObject>[] values) {
         final BasicDBList list = new BasicDBList();
-        for (final NoSQLObject<BasicDBObject> value : values) {
+        for (final NoSqlObject<BasicDBObject> value : values) {
             list.add(value.unwrap());
         }
         this.mongoObject.append(field, list);
