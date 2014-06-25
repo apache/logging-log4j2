@@ -45,11 +45,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -60,23 +58,14 @@ import org.junit.Test;
  */
 public class FlumeAppenderTest {
 
-    private static LoggerContext ctx;
-
     private AvroSource eventSource;
     private Channel channel;
     private Logger avroLogger;
-
     private String testPort;
 
     @BeforeClass
     public static void setupClass() {
         StatusLogger.getLogger().setLevel(Level.OFF);
-        ctx = (LoggerContext) LogManager.getContext();
-    }
-
-    @AfterClass
-    public static void cleanupClass() {
-
     }
 
     @Before
@@ -398,10 +387,6 @@ public class FlumeAppenderTest {
             avroLogger.removeAppender(app);
             app.stop();
         }
-    }
-
-    private Appender getAppender(final Logger logger, final String name) {
-        return logger.getAppenders().get(name);
     }
 
     private String getBody(final Event event) throws IOException {
