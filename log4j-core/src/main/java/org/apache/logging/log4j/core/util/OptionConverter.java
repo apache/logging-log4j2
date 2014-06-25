@@ -62,22 +62,33 @@ public final class OptionConverter {
             c = s.charAt(i++);
             if (c == '\\') {
                 c = s.charAt(i++);
-                if (c == 'n') {
+                switch (c) {
+                case 'n':
                     c = '\n';
-                } else if (c == 'r') {
+                    break;
+                case 'r':
                     c = '\r';
-                } else if (c == 't') {
+                    break;
+                case 't':
                     c = '\t';
-                } else if (c == 'f') {
+                    break;
+                case 'f':
                     c = '\f';
-                } else if (c == '\b') {
+                    break;
+                case 'b':
                     c = '\b';
-                } else if (c == '\"') {
+                    break;
+                case '"':
                     c = '\"';
-                } else if (c == '\'') {
+                    break;
+                case '\'':
                     c = '\'';
-                } else if (c == '\\') {
+                    break;
+                case '\\':
                     c = '\\';
+                    break;
+                default:
+                    // there is no default case.
                 }
             }
             sbuf.append(c);
