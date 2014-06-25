@@ -93,7 +93,7 @@ public class FlumePersistentPerf {
         * Clear out all other appenders associated with this logger to ensure we're
         * only hitting the Avro appender.
         */
-        final int[] ports = findFreePorts(2);
+        final int[] ports = FreePortFinder.findFreePorts(2);
         System.setProperty("primaryPort", Integer.toString(ports[0]));
         System.setProperty("alternatePort", Integer.toString(ports[1]));
         primary = new EventCollector(ports[0]);
@@ -216,27 +216,5 @@ public class FlumePersistentPerf {
             stringMap.put(entry.getKey().toString(), entry.getValue().toString());
         }
         return stringMap;
-    }
-
-    private static int[] findFreePorts(final int count) throws IOException {
-        final int[] ports = new int[count];
-        final ServerSocket[] sockets = new ServerSocket[count];
-        try {
-            for (int i = 0; i < count; ++i) {
-                sockets[i] = new ServerSocket(0);
-                ports[i] = sockets[i].getLocalPort();
-            }
-        } finally {
-            for (int i = 0; i < count; ++i) {
-                if (sockets[i] != null) {
-                    try {
-                        sockets[i].close();
-                    } catch (final Exception ex) {
-                        // Ignore the error.
-                    }
-                }
-            }
-        }
-        return ports;
     }
 }
