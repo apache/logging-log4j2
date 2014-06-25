@@ -19,6 +19,8 @@ package org.apache.logging.log4j.core.net;
 import java.io.IOException;
 import java.net.ServerSocket;
 
+import org.apache.logging.log4j.core.util.Closer;
+
 /**
  * Finds free socket ports.
  */
@@ -43,13 +45,7 @@ public class FreePortFinder {
             }
         } finally {
             for (int i = 0; i < count; ++i) {
-                if (sockets[i] != null) {
-                    try {
-                        sockets[i].close();
-                    } catch (final Exception e) {
-                        // Ignore the error.
-                    }
-                }
+                Closer.closeSilent(sockets[i]);
             }
         }
         return ports;
