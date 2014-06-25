@@ -62,8 +62,6 @@ public class FlumeAppenderTest {
 
     private static LoggerContext ctx;
 
-    private static final int testServerPort = 12345;
-
     private AvroSource eventSource;
     private Channel channel;
     private Logger avroLogger;
@@ -95,7 +93,8 @@ public class FlumeAppenderTest {
          */
         removeAppenders(avroLogger);
         final Context context = new Context();
-        testPort = String.valueOf(testServerPort);
+        final int[] ports = FreePortFinder.findFreePorts(1);
+        testPort = String.valueOf(ports[0]);
         context.put("port", testPort);
         context.put("bind", "0.0.0.0");
         Configurables.configure(eventSource, context);
