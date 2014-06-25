@@ -79,12 +79,12 @@ public final class PatternLayout extends AbstractStringLayout {
     /**
      * Initial converter for pattern.
      */
-    private List<PatternFormatter> formatters;
+    private final List<PatternFormatter> formatters;
 
     /**
      * Conversion pattern.
      */
-    private String conversionPattern;
+    private final String conversionPattern;
 
 
     /**
@@ -147,22 +147,6 @@ public final class PatternLayout extends AbstractStringLayout {
     @Override
     public byte[] getFooter() {
         return strSubstitutorReplace(super.getFooter());
-    }
-
-    /**
-     * Set the <b>ConversionPattern</b> option. This is the string which
-     * controls formatting and consists of a mix of literal content and
-     * conversion specifiers.
-     *
-     * @param conversionPattern conversion pattern.
-     */
-    public void setConversionPattern(final String conversionPattern) {
-        if (conversionPattern == null) {
-            return;
-        }
-        this.conversionPattern = conversionPattern;
-        final PatternParser parser = createPatternParser(this.config);
-        formatters = parser.parse(conversionPattern, this.alwaysWriteExceptions, this.noConsoleNoAnsi);
     }
 
     /**
