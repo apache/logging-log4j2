@@ -32,7 +32,7 @@ import org.apache.logging.log4j.util.Strings;
  * the number of lines to print is explicitly specified.
  */
 @Plugin(name = "ThrowablePatternConverter", category = "Converter")
-@ConverterKeys({"ex", "throwable", "exception" })
+@ConverterKeys({ "ex", "throwable", "exception" })
 public class ThrowablePatternConverter extends LogEventPatternConverter {
 
     private String rawOption;

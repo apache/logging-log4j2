@@ -31,7 +31,7 @@ import org.apache.logging.log4j.core.util.Constants;
  * version of the jar if available.
  */
 @Plugin(name = "ExtendedThrowablePatternConverter", category = "Converter")
-@ConverterKeys({"xEx", "xThrowable", "xException" })
+@ConverterKeys({ "xEx", "xThrowable", "xException" })
 public final class ExtendedThrowablePatternConverter extends ThrowablePatternConverter {
 
     /**

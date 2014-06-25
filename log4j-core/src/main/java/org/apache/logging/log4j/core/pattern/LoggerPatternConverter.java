@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
  * Formats a logger name.
  */
 @Plugin(name = "LoggerPatternConverter", category = "Converter")
-@ConverterKeys({"c", "logger" })
+@ConverterKeys({ "c", "logger" })
 public final class LoggerPatternConverter extends NamePatternConverter {
     /**
      * Singleton.

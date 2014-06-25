@@ -31,7 +31,7 @@ import org.apache.logging.log4j.message.MapMessage;
  * within the Map.
  */
 @Plugin(name = "MapPatternConverter", category = "Converter")
-@ConverterKeys({"K", "map", "MAP" })
+@ConverterKeys({ "K", "map", "MAP" })
 public final class MapPatternConverter extends LogEventPatternConverter {
     /**
      * Name of property to output.

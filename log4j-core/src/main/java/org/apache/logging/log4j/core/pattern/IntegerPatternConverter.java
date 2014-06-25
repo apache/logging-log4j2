@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
  * Formats an integer.
  */
 @Plugin(name = "IntegerPatternConverter", category = "FileConverter")
-@ConverterKeys({"i", "index" })
+@ConverterKeys({ "i", "index" })
 public final class IntegerPatternConverter extends AbstractPatternConverter implements ArrayPatternConverter {
     
     /**

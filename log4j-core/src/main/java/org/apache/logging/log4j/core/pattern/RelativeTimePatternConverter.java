@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
  * Returns the relative time in milliseconds since JVM Startup.
  */
 @Plugin(name = "RelativeTimePatternConverter", category = "Converter")
-@ConverterKeys({"r", "relative" })
+@ConverterKeys({ "r", "relative" })
 public class RelativeTimePatternConverter extends LogEventPatternConverter {
     /**
      * Cached formatted timestamp.

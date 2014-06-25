@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
  * the %d pattern in pattern layout.
  */
 @Plugin(name = "FileDatePatternConverter", category = "FileConverter")
-@ConverterKeys({"d", "date" })
+@ConverterKeys({ "d", "date" })
 public final class FileDatePatternConverter {
     /**
      * Private constructor.

@@ -26,7 +26,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
  * Formats the event sequence number.
  */
 @Plugin(name = "SequenceNumberPatternConverter", category = "Converter")
-@ConverterKeys({"sn", "sequenceNumber" })
+@ConverterKeys({ "sn", "sequenceNumber" })
 public final class SequenceNumberPatternConverter extends LogEventPatternConverter {
 
     private static final AtomicLong SEQUENCE = new AtomicLong();
