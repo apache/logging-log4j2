@@ -239,10 +239,10 @@ public class FlumePersistentAppenderTest {
 
         final int eventsCount = 10000;
 
-        Thread writer1 = new WriterThread(0, eventsCount / 4);
-        Thread writer2 = new WriterThread(eventsCount / 4, eventsCount / 2);
-        Thread writer3 = new WriterThread(eventsCount / 2, (3 * eventsCount) / 4);
-        Thread writer4 = new WriterThread((3 * eventsCount) / 4, eventsCount);
+        final Thread writer1 = new WriterThread(0, eventsCount / 4);
+        final Thread writer2 = new WriterThread(eventsCount / 4, eventsCount / 2);
+        final Thread writer3 = new WriterThread(eventsCount / 2, (3 * eventsCount) / 4);
+        final Thread writer4 = new WriterThread((3 * eventsCount) / 4, eventsCount);
         writer1.start();
         writer2.start();
         writer3.start();
@@ -250,10 +250,10 @@ public class FlumePersistentAppenderTest {
 
 
         final boolean[] fields = new boolean[eventsCount];
-        Thread reader1 = new ReaderThread(0, eventsCount / 4, fields);
-        Thread reader2 = new ReaderThread(eventsCount / 4, eventsCount / 2, fields);
-        Thread reader3 = new ReaderThread(eventsCount / 2, (eventsCount * 3) / 4, fields);
-        Thread reader4 = new ReaderThread((eventsCount * 3) / 4, eventsCount, fields);
+        final Thread reader1 = new ReaderThread(0, eventsCount / 4, fields);
+        final Thread reader2 = new ReaderThread(eventsCount / 4, eventsCount / 2, fields);
+        final Thread reader3 = new ReaderThread(eventsCount / 2, (eventsCount * 3) / 4, fields);
+        final Thread reader4 = new ReaderThread((eventsCount * 3) / 4, eventsCount, fields);
 
         reader1.start();
         reader2.start();
@@ -294,7 +294,7 @@ public class FlumePersistentAppenderTest {
         private final int start;
         private final int stop;
 
-        public WriterThread(int start, int stop) {
+        public WriterThread(final int start, final int stop) {
             this.start = start;
             this.stop = stop;
         }
@@ -315,7 +315,7 @@ public class FlumePersistentAppenderTest {
         private final int stop;
         private final boolean[] fields;
 
-        private ReaderThread(int start, int stop, boolean[] fields) {
+        private ReaderThread(final int start, final int stop, final boolean[] fields) {
             this.start = start;
             this.stop = stop;
             this.fields = fields;

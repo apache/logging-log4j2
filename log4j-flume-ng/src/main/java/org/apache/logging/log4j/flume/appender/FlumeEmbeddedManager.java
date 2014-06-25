@@ -113,7 +113,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
     public void send(final Event event) {
         try {
             agent.put(event);
-        } catch (EventDeliveryException ex) {
+        } catch (final EventDeliveryException ex) {
             throw new LoggingException("Unable to deliver event to Flume Appender " + shortName, ex);
         }
     }
@@ -167,7 +167,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
             try {
                 final Map<String, String> props = createProperties(data.name, data.agents, data.properties,
                     data.batchSize, data.dataDir);
-                EmbeddedAgent agent = new EmbeddedAgent(name);
+                final EmbeddedAgent agent = new EmbeddedAgent(name);
                 agent.configure(props);
                 agent.start();
                 LOGGER.debug("Created Agent " + name);
@@ -214,7 +214,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
 
                 final StringBuilder sb = new StringBuilder();
                 String leading = Strings.EMPTY;
-                int priority = agents.length;
+                final int priority = agents.length;
                 for (int i = 0; i < priority; ++i) {
                     sb.append(leading).append("agent").append(i);
                     leading = " ";
