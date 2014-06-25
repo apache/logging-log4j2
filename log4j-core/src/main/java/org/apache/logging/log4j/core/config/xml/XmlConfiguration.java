@@ -102,7 +102,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             // Alternative: We could specify all features and values with system properties like:
             // -DLog4j.DocumentBuilderFactory.Feature="http://apache.org/xml/features/xinclude/fixup-base-uris true"
             factory.setFeature(XINCLUDE_FIXUP_BASE_URIS, true);
-        } catch (ParserConfigurationException e) {
+        } catch (final ParserConfigurationException e) {
             LOGGER.warn("The DocumentBuilderFactory [{}] does not support the feature [{}].", factory,
                     XINCLUDE_FIXUP_BASE_URIS, e);
         } catch (@SuppressWarnings("ErrorNotRethrown") final AbstractMethodError err) {
@@ -110,7 +110,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         }
         try {
             factory.setFeature(XINCLUDE_FIXUP_LANGUAGE, true);
-        } catch (ParserConfigurationException e) {
+        } catch (final ParserConfigurationException e) {
             LOGGER.warn("The DocumentBuilderFactory [{}] does not support the feature [{}].", factory,
                     XINCLUDE_FIXUP_LANGUAGE, e);
         } catch (@SuppressWarnings("ErrorNotRethrown") final AbstractMethodError err) {
@@ -192,7 +192,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                     LOGGER.error("Error parsing Log4j schema", ex);
                 }
                 if (schema != null) {
-                    Validator validator = schema.newValidator();
+                    final Validator validator = schema.newValidator();
                     try {
                         validator.validate(new StreamSource(new ByteArrayInputStream(buffer)));
                     } catch (final IOException ioe) {

@@ -37,7 +37,7 @@ public class JpaHyperSqlAppenderTest extends AbstractJpaAppenderTest {
 
     @Override
     protected Connection setUpConnection() throws SQLException {
-        Connection connection = DriverManager.getConnection("jdbc:hsqldb:mem:Log4j", USER_ID, PASSWORD);
+        final Connection connection = DriverManager.getConnection("jdbc:hsqldb:mem:Log4j", USER_ID, PASSWORD);
 
         Statement statement = connection.createStatement();
         statement.executeUpdate("CREATE TABLE jpaBaseLogEntry ( " +

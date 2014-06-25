@@ -24,27 +24,27 @@ public class AsyncLoggerThreadNameStrategyTest {
 
     @Test
     public void testDefaultThreadNameIsCached() throws Exception {
-        AsyncLogger.ThreadNameStrategy tns = AsyncLogger.ThreadNameStrategy.create();
+        final AsyncLogger.ThreadNameStrategy tns = AsyncLogger.ThreadNameStrategy.create();
         assertSame(AsyncLogger.ThreadNameStrategy.CACHED, tns);
     }
 
     @Test
     public void testUseCachedThreadNameIfInvalidConfig() throws Exception {
         System.setProperty("AsyncLogger.ThreadNameStrategy", "\\%%InValid ");
-        AsyncLogger.ThreadNameStrategy tns = AsyncLogger.ThreadNameStrategy.create();
+        final AsyncLogger.ThreadNameStrategy tns = AsyncLogger.ThreadNameStrategy.create();
         assertSame(AsyncLogger.ThreadNameStrategy.CACHED, tns);
     }
 
     @Test
     public void testUseUncachedThreadNameIfConfigured() throws Exception {
         System.setProperty("AsyncLogger.ThreadNameStrategy", "UNCACHED");
-        AsyncLogger.ThreadNameStrategy tns = AsyncLogger.ThreadNameStrategy.create();
+        final AsyncLogger.ThreadNameStrategy tns = AsyncLogger.ThreadNameStrategy.create();
         assertSame(AsyncLogger.ThreadNameStrategy.UNCACHED, tns);
     }
 
     @Test
     public void testUncachedThreadNameStrategyReturnsCurrentThreadName() throws Exception {
-        AsyncLogger.Info info = new AsyncLogger.Info(null, "original", false);
+        final AsyncLogger.Info info = new AsyncLogger.Info(null, "original", false);
         final String name1 = "MODIFIED-THREADNAME1";
         Thread.currentThread().setName(name1);
         assertEquals(name1, AsyncLogger.ThreadNameStrategy.UNCACHED.getThreadName(info));
@@ -58,7 +58,7 @@ public class AsyncLoggerThreadNameStrategyTest {
     public void testCachedThreadNameStrategyReturnsCachedThreadName() throws Exception {
         final String original = "Original-ThreadName";
         Thread.currentThread().setName(original);
-        AsyncLogger.Info info = new AsyncLogger.Info(null, original, false);
+        final AsyncLogger.Info info = new AsyncLogger.Info(null, original, false);
         assertEquals(original, AsyncLogger.ThreadNameStrategy.CACHED.getThreadName(info));
 
         final String name2 = "OTHER-THREADNAME2";

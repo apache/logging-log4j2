@@ -194,7 +194,7 @@ public abstract class AbstractSocketServerTest {
                 try {
                     // Let the server-side read the messages.
                     Thread.sleep(50);
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     e.printStackTrace();
                 }
             } else {

@@ -68,7 +68,7 @@ public class LevelTest {
         final String expectedInitialEventLevel;
         final String description;
 
-        Expected(ListAppender appender, int expectedCount, String level, String description) {
+        Expected(final ListAppender appender, final int expectedCount, final String level, final String description) {
             this.appender = appender;
             this.expectedEventCount = expectedCount;
             this.expectedInitialEventLevel = level;
@@ -78,14 +78,14 @@ public class LevelTest {
 
     @Test
     public void testLevelLogging() {
-        Marker marker = MarkerManager.getMarker("marker");
-        Message msg = new ObjectMessage("msg");
-        Throwable t = new Throwable("test");
-        Level[] levels = new Level[] { Level.TRACE, Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR, Level.FATAL };
-        String[] names = new String[] { "levelTest", "levelTest.Trace", "levelTest.Debug", "levelTest.Info",
+        final Marker marker = MarkerManager.getMarker("marker");
+        final Message msg = new ObjectMessage("msg");
+        final Throwable t = new Throwable("test");
+        final Level[] levels = new Level[] { Level.TRACE, Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR, Level.FATAL };
+        final String[] names = new String[] { "levelTest", "levelTest.Trace", "levelTest.Debug", "levelTest.Info",
                 "levelTest.Warn", "levelTest.Error", "levelTest.Fatal" };
-        for (Level level : levels) {
-            for (String name : names) {
+        for (final Level level : levels) {
+            for (final String name : names) {
                 final Logger logger = context.getLogger(name);
                 logger.log(level, msg); // Message
                 logger.log(level, 123); // Object
@@ -107,7 +107,7 @@ public class LevelTest {
         int levelCount = names.length - 1;
 
         final int UNIT = 14;
-        Expected[] expectedResults = new Expected[] { //
+        final Expected[] expectedResults = new Expected[] { //
         new Expected(listAll, UNIT * levelCount, "TRACE", "All"), //
                 new Expected(listTrace, UNIT * levelCount--, "TRACE", "Trace"), //
                 new Expected(listDebug, UNIT * levelCount--, "DEBUG", "Debug"), //
@@ -116,7 +116,7 @@ public class LevelTest {
                 new Expected(listError, UNIT * levelCount--, "ERROR", "Error"), //
                 new Expected(listFatal, UNIT * levelCount--, "FATAL", "Fatal"), //
         };
-        for (Expected expected : expectedResults) {
+        for (final Expected expected : expectedResults) {
             final String description = expected.description;
             final List<LogEvent> events = expected.appender.getEvents();
             assertNotNull(description + ": No events", events);

@@ -22,11 +22,11 @@ package org.apache.logging.log4j.core.net.ssl;
 public class StoreConfigurationException extends Exception {
     private static final long serialVersionUID = 1L;
 
-    public StoreConfigurationException(Exception e) {
+    public StoreConfigurationException(final Exception e) {
         super(e);
     }
 
-    public StoreConfigurationException(String message) {
+    public StoreConfigurationException(final String message) {
         super(message);
     }
 }

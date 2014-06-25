@@ -37,7 +37,7 @@ public final class Integers {
      * @throws NumberFormatException
      *             if the string does not contain a parsable integer.
      */
-    public static int parseInt(String s, int defaultValue) {
+    public static int parseInt(final String s, final int defaultValue) {
         return Strings.isEmpty(s) ? defaultValue : Integer.parseInt(s);
     }
 
@@ -50,7 +50,7 @@ public final class Integers {
      * @throws NumberFormatException
      *             if the string does not contain a parsable integer.
      */
-    public static int parseInt(String s) {
+    public static int parseInt(final String s) {
         return parseInt(s, 0);
     }
 }

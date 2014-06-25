@@ -227,7 +227,7 @@ public abstract class AbstractJpaAppenderTest {
 
             System.out.println("Starting a performance test for JPA Appender for " + this.databaseType + '.');
 
-            long start = System.nanoTime();
+            final long start = System.nanoTime();
 
             for(int i = 0; i < 10000; i++) {
                 if (i % 25 == 0) {
@@ -237,8 +237,8 @@ public abstract class AbstractJpaAppenderTest {
                 }
             }
 
-            long elapsed = System.nanoTime() - start;
-            long elapsedMilli = elapsed / 1000000;
+            final long elapsed = System.nanoTime() - start;
+            final long elapsedMilli = elapsed / 1000000;
 
             final Statement statement = this.connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);

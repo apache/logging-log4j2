@@ -38,8 +38,8 @@ public final class LoggerFields {
     private final String enterpriseId;
     private final boolean discardIfAllFieldsAreEmpty;
 
-    private LoggerFields(final Map<String, String> map, String sdId, String enterpriseId,
-            boolean discardIfAllFieldsAreEmpty) {
+    private LoggerFields(final Map<String, String> map, final String sdId, final String enterpriseId,
+            final boolean discardIfAllFieldsAreEmpty) {
         this.sdId = sdId;
         this.enterpriseId = enterpriseId;
         this.map = Collections.unmodifiableMap(map);

@@ -25,10 +25,10 @@ public class StoreConfigurationTest<T extends StoreConfiguration<?>> {
 
     @Test
     public void equalsWithNotNullValues() {
-        String location = "/to/the/file.jks";
-        String password = "changeit";
-        StoreConfiguration<Object> a = new StoreConfiguration<Object>(location, password);
-        StoreConfiguration<Object> b = new StoreConfiguration<Object>(location, password);
+        final String location = "/to/the/file.jks";
+        final String password = "changeit";
+        final StoreConfiguration<Object> a = new StoreConfiguration<Object>(location, password);
+        final StoreConfiguration<Object> b = new StoreConfiguration<Object>(location, password);
 
         Assert.assertTrue(a.equals(b));
         Assert.assertTrue(b.equals(a));
@@ -36,10 +36,10 @@ public class StoreConfigurationTest<T extends StoreConfiguration<?>> {
 
     @Test
     public void equalsWithNullAndNotNullValues() {
-        String location = "/to/the/file.jks";
-        String password = "changeit";
-        StoreConfiguration<Object> a = new StoreConfiguration<Object>(location, password);
-        StoreConfiguration<Object> b = new StoreConfiguration<Object>(null, null);
+        final String location = "/to/the/file.jks";
+        final String password = "changeit";
+        final StoreConfiguration<Object> a = new StoreConfiguration<Object>(location, password);
+        final StoreConfiguration<Object> b = new StoreConfiguration<Object>(null, null);
 
         Assert.assertTrue(a.equals(b));
         Assert.assertTrue(b.equals(a));
@@ -47,8 +47,8 @@ public class StoreConfigurationTest<T extends StoreConfiguration<?>> {
 
     @Test
     public void equalsWithNullValues() {
-        StoreConfiguration<Object> a = new StoreConfiguration<Object>(null, null);
-        StoreConfiguration<Object> b = new StoreConfiguration<Object>(null, null);
+        final StoreConfiguration<Object> a = new StoreConfiguration<Object>(null, null);
+        final StoreConfiguration<Object> b = new StoreConfiguration<Object>(null, null);
 
         Assert.assertTrue(a.equals(b));
         Assert.assertTrue(b.equals(a));

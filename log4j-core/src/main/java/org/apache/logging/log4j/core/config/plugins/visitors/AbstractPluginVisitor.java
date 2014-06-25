@@ -77,7 +77,7 @@ public abstract class AbstractPluginVisitor<A extends Annotation> implements Plu
     }
 
     @Override
-    public PluginVisitor<A> setStrSubstitutor(StrSubstitutor substitutor) {
+    public PluginVisitor<A> setStrSubstitutor(final StrSubstitutor substitutor) {
         this.substitutor = Assert.requireNonNull(substitutor, "No StrSubstitutor was provided");
         return this;
     }

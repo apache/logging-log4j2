@@ -41,7 +41,7 @@ public abstract class InputStreamLogEventBridge extends AbstractLogEventBridge<I
     
     private final ObjectReader objectReader;
     
-    public InputStreamLogEventBridge(ObjectMapper mapper, final int bufferSize, final Charset charset, final String eventEndMarker) {
+    public InputStreamLogEventBridge(final ObjectMapper mapper, final int bufferSize, final Charset charset, final String eventEndMarker) {
         this.bufferSize = bufferSize;
         this.charset = charset;
         this.eventEndMarker = eventEndMarker;

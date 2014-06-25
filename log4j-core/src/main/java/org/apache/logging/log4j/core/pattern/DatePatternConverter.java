@@ -41,12 +41,12 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     private static class PatternFormatter extends Formatter {
         private final SimpleDateFormat simpleDateFormat;
 
-        PatternFormatter(SimpleDateFormat simpleDateFormat) {
+        PatternFormatter(final SimpleDateFormat simpleDateFormat) {
             this.simpleDateFormat = simpleDateFormat;
         }
 
         @Override
-        String format(long time) {
+        String format(final long time) {
             return simpleDateFormat.format(Long.valueOf(time));
         }
 
@@ -59,7 +59,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     private static class UnixFormatter extends Formatter {
 
         @Override
-        String format(long time) {
+        String format(final long time) {
             return Long.toString(time / 1000);
         }
 
@@ -68,7 +68,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     private static class UnixMillisFormatter extends Formatter {
 
         @Override
-        String format(long time) {
+        String format(final long time) {
             return Long.toString(time);
         }
 

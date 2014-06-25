@@ -167,7 +167,7 @@ public class PatternProcessor {
         prevFileTime = nextFileTime;
     }
 
-    private long debugGetNextTime(long nextTime) {
+    private long debugGetNextTime(final long nextTime) {
         if (LOGGER.isTraceEnabled()) {
             LOGGER.trace("PatternProcessor.getNextTime returning {}, nextFileTime={}, prevFileTime={}, current={}, freq={}", //
                     format(nextTime), format(nextFileTime), format(prevFileTime), format(System.currentTimeMillis()), frequency);
@@ -175,7 +175,7 @@ public class PatternProcessor {
         return nextTime;
     }
 
-    private String format(long time) {
+    private String format(final long time) {
         return new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss.SSS").format(new Date(time));
     }
 
@@ -205,8 +205,8 @@ public class PatternProcessor {
         // for creating the file name of rolled-over files. 
         final long time = prevFileTime == 0 ? System.currentTimeMillis() : prevFileTime;
         formatFileName(buf, new Date(time), obj);
-        LogEvent event = new Log4jLogEvent(time);
-        String fileName = subst.replace(event, buf);
+        final LogEvent event = new Log4jLogEvent(time);
+        final String fileName = subst.replace(event, buf);
         buf.setLength(0);
         buf.append(fileName);
     }

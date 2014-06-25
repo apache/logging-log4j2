@@ -63,11 +63,11 @@ public class ConfigurationTest {
     @Rule
     public TestRule rules;
 
-    private InitialLoggerContext init;
+    private final InitialLoggerContext init;
 
     private LoggerContext ctx;
 
-    private SecureRandom random = new SecureRandom();
+    private final SecureRandom random = new SecureRandom();
 
     public ConfigurationTest(final String configFileName, final String logFileName) {
         this.logFileName = logFileName;

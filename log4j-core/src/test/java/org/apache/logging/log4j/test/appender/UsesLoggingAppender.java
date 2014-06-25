@@ -32,20 +32,20 @@ import org.apache.logging.log4j.test.SomethingThatUsesLogging;
 @Plugin(name = "UsesLoggingAppender", category = "Core", elementType = "appender", printObject = true)
 public final class UsesLoggingAppender extends AbstractAppender {
 
-    private SomethingThatUsesLogging thing;
+    private final SomethingThatUsesLogging thing;
 
-    private UsesLoggingAppender(String name, Filter filter, Layout<?> layout, boolean ignoreExceptions) {
+    private UsesLoggingAppender(final String name, final Filter filter, final Layout<?> layout, final boolean ignoreExceptions) {
         super(name, filter, layout, ignoreExceptions);
         thing = new SomethingThatUsesLogging();
     }
 
     @PluginFactory
-    public static UsesLoggingAppender createAppender(@PluginAttribute("name") String name,
-                                            @PluginAttribute("ignoreExceptions") String ignore,
-                                            @PluginElement("Layout") Layout<?> layout,
-                                            @PluginElement("Filters") Filter filter) {
+    public static UsesLoggingAppender createAppender(@PluginAttribute("name") final String name,
+                                            @PluginAttribute("ignoreExceptions") final String ignore,
+                                            @PluginElement("Layout") final Layout<?> layout,
+                                            @PluginElement("Filters") final Filter filter) {
 
-        boolean ignoreExceptions = Boolean.parseBoolean(ignore);
+        final boolean ignoreExceptions = Boolean.parseBoolean(ignore);
 
         if (name == null) {
             LOGGER.error("No name provided for MyAppender");
@@ -55,13 +55,13 @@ public final class UsesLoggingAppender extends AbstractAppender {
         return new UsesLoggingAppender(name, filter, layout, ignoreExceptions);
     }
 
-    public void append(LogEvent event) {
+    public void append(final LogEvent event) {
         try {
             for (int i = 0; i < 50; i++) {
                 Thread.sleep(10);
                 thing.doSomething();
             }
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
             e.printStackTrace();
         }
         // System.out.print("Log: " + getLayout().toSerializable(event));

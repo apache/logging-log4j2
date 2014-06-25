@@ -123,7 +123,7 @@ public abstract class AbstractSocketServer<T extends InputStream> extends LogEve
      * @return the new thread that running this server.
      */
     public Thread startNewThread() {
-        Thread thread = new Thread(this);
+        final Thread thread = new Thread(this);
         thread.start();
         return thread;
     }

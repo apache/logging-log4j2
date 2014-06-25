@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class SomethingThatUsesLogging {
 
-    private Logger logger;
+    private final Logger logger;
 
     public SomethingThatUsesLogging() {
         logger = LogManager.getLogger();

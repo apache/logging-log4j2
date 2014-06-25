@@ -63,7 +63,7 @@ public class JndiLookupTest {
         contextName = lookup.lookup(JndiLookup.CONTAINER_JNDI_RESOURCE_PATH_PREFIX + TEST_CONTEXT_RESOURCE_NAME);
         assertEquals(TEST_CONTEXT_NAME, contextName);
 
-        String nonExistingResource = lookup.lookup("logging/non-existing-resource");
+        final String nonExistingResource = lookup.lookup("logging/non-existing-resource");
         assertNull(nonExistingResource);
     }
 }

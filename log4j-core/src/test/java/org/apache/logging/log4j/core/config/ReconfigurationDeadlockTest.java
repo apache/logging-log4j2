@@ -41,7 +41,7 @@ public class ReconfigurationDeadlockTest {
     @Test
     public void testReconfig() throws InterruptedException {
 
-        Updater updater = new Updater();
+        final Updater updater = new Updater();
         for (int i = 0; i < THREAD_COUNT; ++i) {
             threads[i] = new LoggerThread(i);
             threads[i].setDaemon(true);
@@ -69,7 +69,7 @@ public class ReconfigurationDeadlockTest {
         }
         updater.shutdown = true;
         if (stillWaiting) {
-            ThreadDumpMessage message = new ThreadDumpMessage("Waiting");
+            final ThreadDumpMessage message = new ThreadDumpMessage("Waiting");
             System.err.print(message.getFormattedMessage());
         }
         for (int i = 0; i < THREAD_COUNT; ++i) {
@@ -86,7 +86,7 @@ public class ReconfigurationDeadlockTest {
         private final Logger logger = LogManager.getRootLogger();
         private final int index;
 
-        public LoggerThread(int i) {
+        public LoggerThread(final int i) {
             index = i;
         }
         @Override
@@ -96,7 +96,7 @@ public class ReconfigurationDeadlockTest {
                 for (i=0; i < 30; ++i) {
                     logger.error("Thread: " + index + ", Test: " + i++);
                 }
-            } catch (Exception ie) {
+            } catch (final Exception ie) {
                 return;
             }
             finished[index] = true;
@@ -112,11 +112,11 @@ public class ReconfigurationDeadlockTest {
             while (!shutdown) {
                 try {
                     Thread.sleep(1000);
-                } catch (InterruptedException e) {
+                } catch (final InterruptedException e) {
                     e.printStackTrace();
                 }
                 // for running from IDE
-                File file = new File("target/test-classes/reconfiguration-deadlock.xml");
+                final File file = new File("target/test-classes/reconfiguration-deadlock.xml");
                 if (file.exists()) {
                     file.setLastModified(System.currentTimeMillis());
                 }

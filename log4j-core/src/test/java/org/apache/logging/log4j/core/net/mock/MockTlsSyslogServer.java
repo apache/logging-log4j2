@@ -39,7 +39,7 @@ public class MockTlsSyslogServer extends MockSyslogServer {
     private TlsSyslogMessageFormat messageFormat = TlsSyslogMessageFormat.SYSLOG;
     private final int loopLen;
 
-    public MockTlsSyslogServer(int loopLen, TlsSyslogMessageFormat format, SSLServerSocket serverSocket) {
+    public MockTlsSyslogServer(final int loopLen, final TlsSyslogMessageFormat format, final SSLServerSocket serverSocket) {
         super(loopLen, serverSocket.getLocalPort());
         this.messageFormat = format;
         this.loopLen = loopLen;
@@ -52,11 +52,11 @@ public class MockTlsSyslogServer extends MockSyslogServer {
             try {
                 this.serverSocket.close();
             }
-            catch (Exception e) {
+            catch (final Exception e) {
 
             }
             this.interrupt();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
     }
@@ -66,7 +66,7 @@ public class MockTlsSyslogServer extends MockSyslogServer {
         try {
             waitForConnection();
             processFrames();
-        } catch (Exception se) {
+        } catch (final Exception se) {
             se.printStackTrace();
         } finally {
             closeSockets();
@@ -75,11 +75,11 @@ public class MockTlsSyslogServer extends MockSyslogServer {
 
     private void waitForConnection() throws IOException {
         clientSocket =  (SSLSocket) serverSocket.accept();
-        InputStream clientSocketInputStream = clientSocket.getInputStream();
+        final InputStream clientSocketInputStream = clientSocket.getInputStream();
         syslogReader = createTLSSyslogReader(clientSocketInputStream);
     }
 
-    private TlsSyslogInputStreamReaderBase createTLSSyslogReader(InputStream inputStream) {
+    private TlsSyslogInputStreamReaderBase createTLSSyslogReader(final InputStream inputStream) {
         switch (messageFormat) {
             case SYSLOG:
                 return new TlsSyslogInputStreamReader(inputStream);
@@ -95,12 +95,12 @@ public class MockTlsSyslogServer extends MockSyslogServer {
             try {
                 clientSocket.close();
             }
-            catch(Exception e) {}
+            catch(final Exception e) {}
         }
         if (serverSocket != null) {
             try {
                 serverSocket.close();
-            } catch (Exception e) {
+            } catch (final Exception e) {
             }
         }
     }
@@ -119,14 +119,14 @@ public class MockTlsSyslogServer extends MockSyslogServer {
             }
             this.notify();
         }
-        catch(Exception e) {
+        catch(final Exception e) {
             this.notify();
             throw new IOException(e);
         }
         return;
     }
 
-    private boolean isEndOfMessages(int count) {
+    private boolean isEndOfMessages(final int count) {
         return count == loopLen;
     }
 

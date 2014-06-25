@@ -21,7 +21,7 @@ public class ProgressConsoleTest {
                 updateProgress(i);
                 try {
                     Thread.sleep(100);
-                } catch (InterruptedException e) {
+                } catch (final InterruptedException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }

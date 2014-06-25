@@ -47,18 +47,18 @@ public class RingBufferLogEventTest {
 
     @Test
     public void testGetLevelReturnsOffIfNullLevelSet() {
-        RingBufferLogEvent evt = new RingBufferLogEvent();
-        String loggerName = null;
-        Marker marker = null;
-        String fqcn = null;
-        Level level = null;
-        Message data = null;
-        Throwable t = null;
-        Map<String, String> map = null;
-        ContextStack contextStack = null;
-        String threadName = null;
-        StackTraceElement location = null;
-        long currentTimeMillis = 0;
+        final RingBufferLogEvent evt = new RingBufferLogEvent();
+        final String loggerName = null;
+        final Marker marker = null;
+        final String fqcn = null;
+        final Level level = null;
+        final Message data = null;
+        final Throwable t = null;
+        final Map<String, String> map = null;
+        final ContextStack contextStack = null;
+        final String threadName = null;
+        final StackTraceElement location = null;
+        final long currentTimeMillis = 0;
         evt.setValues(null, loggerName, marker, fqcn, level, data, t, map,
                 contextStack, threadName, location, currentTimeMillis);
         assertEquals(Level.OFF, evt.getLevel());
@@ -66,18 +66,18 @@ public class RingBufferLogEventTest {
 
     @Test
     public void testGetMessageReturnsNonNullMessage() {
-        RingBufferLogEvent evt = new RingBufferLogEvent();
-        String loggerName = null;
-        Marker marker = null;
-        String fqcn = null;
-        Level level = null;
-        Message data = null;
-        Throwable t = null;
-        Map<String, String> map = null;
-        ContextStack contextStack = null;
-        String threadName = null;
-        StackTraceElement location = null;
-        long currentTimeMillis = 0;
+        final RingBufferLogEvent evt = new RingBufferLogEvent();
+        final String loggerName = null;
+        final Marker marker = null;
+        final String fqcn = null;
+        final Level level = null;
+        final Message data = null;
+        final Throwable t = null;
+        final Map<String, String> map = null;
+        final ContextStack contextStack = null;
+        final String threadName = null;
+        final StackTraceElement location = null;
+        final long currentTimeMillis = 0;
         evt.setValues(null, loggerName, marker, fqcn, level, data, t, map,
                 contextStack, threadName, location, currentTimeMillis);
         assertNotNull(evt.getMessage());
@@ -85,18 +85,18 @@ public class RingBufferLogEventTest {
 
     @Test
     public void testGetMillisReturnsConstructorMillisForNormalMessage() {
-        RingBufferLogEvent evt = new RingBufferLogEvent();
-        String loggerName = null;
-        Marker marker = null;
-        String fqcn = null;
-        Level level = null;
-        Message data = null;
-        Throwable t = null;
-        Map<String, String> map = null;
-        ContextStack contextStack = null;
-        String threadName = null;
-        StackTraceElement location = null;
-        long currentTimeMillis = 123;
+        final RingBufferLogEvent evt = new RingBufferLogEvent();
+        final String loggerName = null;
+        final Marker marker = null;
+        final String fqcn = null;
+        final Level level = null;
+        final Message data = null;
+        final Throwable t = null;
+        final Map<String, String> map = null;
+        final ContextStack contextStack = null;
+        final String threadName = null;
+        final StackTraceElement location = null;
+        final long currentTimeMillis = 123;
         evt.setValues(null, loggerName, marker, fqcn, level, data, t, map,
                 contextStack, threadName, location, currentTimeMillis);
         assertEquals(123, evt.getTimeMillis());
@@ -107,7 +107,7 @@ public class RingBufferLogEventTest {
         private final String msg;
         private final long timestamp;
 
-        public TimeMsg(String msg, long timestamp) {
+        public TimeMsg(final String msg, final long timestamp) {
             this.msg = msg;
             this.timestamp = timestamp;
         }
@@ -140,18 +140,18 @@ public class RingBufferLogEventTest {
 
     @Test
     public void testGetMillisReturnsMsgTimestampForTimestampMessage() {
-        RingBufferLogEvent evt = new RingBufferLogEvent();
-        String loggerName = null;
-        Marker marker = null;
-        String fqcn = null;
-        Level level = null;
-        Message data = new TimeMsg("", 567);
-        Throwable t = null;
-        Map<String, String> map = null;
-        ContextStack contextStack = null;
-        String threadName = null;
-        StackTraceElement location = null;
-        long currentTimeMillis = 123;
+        final RingBufferLogEvent evt = new RingBufferLogEvent();
+        final String loggerName = null;
+        final Marker marker = null;
+        final String fqcn = null;
+        final Level level = null;
+        final Message data = new TimeMsg("", 567);
+        final Throwable t = null;
+        final Map<String, String> map = null;
+        final ContextStack contextStack = null;
+        final String threadName = null;
+        final StackTraceElement location = null;
+        final long currentTimeMillis = 123;
         evt.setValues(null, loggerName, marker, fqcn, level, data, t, map,
                 contextStack, threadName, location, currentTimeMillis);
         assertEquals(567, evt.getTimeMillis());
@@ -159,27 +159,27 @@ public class RingBufferLogEventTest {
 
     @Test
     public void testSerializationDeserialization() throws IOException, ClassNotFoundException {
-        RingBufferLogEvent evt = new RingBufferLogEvent();
-        String loggerName = "logger.name";
-        Marker marker = null;
-        String fqcn = "f.q.c.n";
-        Level level = Level.TRACE;
-        Message data = new SimpleMessage("message");
-        Throwable t = new InternalError("not a real error");
-        Map<String, String> map = null;
-        ContextStack contextStack = null;
-        String threadName = "main";
-        StackTraceElement location = null;
-        long currentTimeMillis = 12345;
+        final RingBufferLogEvent evt = new RingBufferLogEvent();
+        final String loggerName = "logger.name";
+        final Marker marker = null;
+        final String fqcn = "f.q.c.n";
+        final Level level = Level.TRACE;
+        final Message data = new SimpleMessage("message");
+        final Throwable t = new InternalError("not a real error");
+        final Map<String, String> map = null;
+        final ContextStack contextStack = null;
+        final String threadName = "main";
+        final StackTraceElement location = null;
+        final long currentTimeMillis = 12345;
         evt.setValues(null, loggerName, marker, fqcn, level, data, t, map,
                 contextStack, threadName, location, currentTimeMillis);
         
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(baos);
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final ObjectOutputStream out = new ObjectOutputStream(baos);
         out.writeObject(evt);
         
-        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-        RingBufferLogEvent other = (RingBufferLogEvent) in.readObject();
+        final ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+        final RingBufferLogEvent other = (RingBufferLogEvent) in.readObject();
         assertEquals(loggerName, other.getLoggerName());
         assertEquals(marker, other.getMarker());
         assertEquals(fqcn, other.getLoggerFqcn());
@@ -196,23 +196,23 @@ public class RingBufferLogEventTest {
     
     @Test
     public void testCreateMementoReturnsCopy() {
-        RingBufferLogEvent evt = new RingBufferLogEvent();
-        String loggerName = "logger.name";
-        Marker marker = MarkerManager.getMarker("marked man");
-        String fqcn = "f.q.c.n";
-        Level level = Level.TRACE;
-        Message data = new SimpleMessage("message");
-        Throwable t = new InternalError("not a real error");
-        Map<String, String> map = new HashMap<String, String>();
+        final RingBufferLogEvent evt = new RingBufferLogEvent();
+        final String loggerName = "logger.name";
+        final Marker marker = MarkerManager.getMarker("marked man");
+        final String fqcn = "f.q.c.n";
+        final Level level = Level.TRACE;
+        final Message data = new SimpleMessage("message");
+        final Throwable t = new InternalError("not a real error");
+        final Map<String, String> map = new HashMap<String, String>();
         map.put("key", "value");
-        ContextStack contextStack = new MutableThreadContextStack(Arrays.asList("a", "b"));
-        String threadName = "main";
-        StackTraceElement location = null;
-        long currentTimeMillis = 12345;
+        final ContextStack contextStack = new MutableThreadContextStack(Arrays.asList("a", "b"));
+        final String threadName = "main";
+        final StackTraceElement location = null;
+        final long currentTimeMillis = 12345;
         evt.setValues(null, loggerName, marker, fqcn, level, data, t, map,
                 contextStack, threadName, location, currentTimeMillis);
         
-        LogEvent actual = evt.createMemento();
+        final LogEvent actual = evt.createMemento();
         assertEquals(evt.getLoggerName(), actual.getLoggerName());
         assertEquals(evt.getMarker(), actual.getMarker());
         assertEquals(evt.getLoggerFqcn(), actual.getLoggerFqcn());

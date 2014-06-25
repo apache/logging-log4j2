@@ -231,7 +231,7 @@ public class AsyncLogger extends Logger {
             threadlocalInfo.set(info);
         }
         
-        Disruptor<RingBufferLogEvent> temp = disruptor;
+        final Disruptor<RingBufferLogEvent> temp = disruptor;
         if (temp == null) { // LOG4J2-639
             LOGGER.fatal("Ignoring log event after log4j was shut down");
             return;
@@ -278,7 +278,7 @@ public class AsyncLogger extends Logger {
             // That could result in adding a log event to the disruptor after it was shut down,
             // which could cause the publishEvent method to hang and never return.
             disruptor.publishEvent(info.translator);
-        } catch (NullPointerException npe) {
+        } catch (final NullPointerException npe) {
             LOGGER.fatal("Ignoring log event after log4j was shut down.");
         }
     }
@@ -326,7 +326,7 @@ public class AsyncLogger extends Logger {
     /**
      * Returns {@code true} if the specified disruptor still has unprocessed events.
      */
-    private static boolean hasBacklog(Disruptor<?> disruptor) {
+    private static boolean hasBacklog(final Disruptor<?> disruptor) {
         final RingBuffer<?> ringBuffer = disruptor.getRingBuffer();
         return !ringBuffer.hasAvailableCapacity(ringBuffer.getBufferSize());
     }

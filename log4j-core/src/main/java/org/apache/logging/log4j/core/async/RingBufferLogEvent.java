@@ -201,7 +201,7 @@ public class RingBufferLogEvent implements LogEvent {
 
     @Override
     public long getTimeMillis() {
-        Message msg = getMessage();
+        final Message msg = getMessage();
         if (msg instanceof TimestampMessage) { // LOG4J2-455
             return ((TimestampMessage) msg).getTimestamp();
         }
@@ -255,7 +255,7 @@ public class RingBufferLogEvent implements LogEvent {
         );
     }
 
-    private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+    private void writeObject(final java.io.ObjectOutputStream out) throws IOException {
         getThrownProxy(); // initialize the ThrowableProxy before serializing
         out.defaultWriteObject();
     }

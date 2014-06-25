@@ -103,10 +103,10 @@ public final class TypeConverters {
             if (value == null || value.isEmpty()) {
                 bytes = new byte[0];
             } else if (value.startsWith(PREFIX_BASE64)) {
-                String lexicalXSDBase64Binary = value.substring(PREFIX_BASE64.length());
+                final String lexicalXSDBase64Binary = value.substring(PREFIX_BASE64.length());
                 bytes = DatatypeConverter.parseBase64Binary(lexicalXSDBase64Binary);
             } else if (value.startsWith(PREFIX_0x)) {
-                String lexicalXSDHexBinary = value.substring(PREFIX_0x.length());
+                final String lexicalXSDHexBinary = value.substring(PREFIX_0x.length());
                 bytes = DatatypeConverter.parseHexBinary(lexicalXSDHexBinary);
             } else {
                 bytes = value.getBytes(Charset.defaultCharset());

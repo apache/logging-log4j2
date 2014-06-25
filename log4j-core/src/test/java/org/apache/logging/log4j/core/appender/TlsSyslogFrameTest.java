@@ -26,46 +26,46 @@ public class TlsSyslogFrameTest {
 
     @Test
     public void messageSetByConstructor() {
-        TlsSyslogFrame frame = new TlsSyslogFrame(TESTMESSAGE);
-        byte[] representation = frame.getBytes();
-        byte[] expected = getByteRepresentation(TESTMESSAGE);
+        final TlsSyslogFrame frame = new TlsSyslogFrame(TESTMESSAGE);
+        final byte[] representation = frame.getBytes();
+        final byte[] expected = getByteRepresentation(TESTMESSAGE);
         Assert.assertTrue(Arrays.equals(representation, expected));
     }
 
     @Test
     public void messageSetBySetter() {
-        TlsSyslogFrame frame = new TlsSyslogFrame("Some text");
+        final TlsSyslogFrame frame = new TlsSyslogFrame("Some text");
         frame.setMessage(TESTMESSAGE);
-        byte[] representation = frame.getBytes();
-        byte[] expected = getByteRepresentation(TESTMESSAGE);
+        final byte[] representation = frame.getBytes();
+        final byte[] expected = getByteRepresentation(TESTMESSAGE);
         Assert.assertTrue(Arrays.equals(representation, expected));
     }
 
     @Test
     public void checkGetBytes() {
-        TlsSyslogFrame frame = new TlsSyslogFrame(TESTMESSAGE);
-        byte[] representation = frame.getBytes();
-        byte[] expected = getByteRepresentation(TESTMESSAGE);
+        final TlsSyslogFrame frame = new TlsSyslogFrame(TESTMESSAGE);
+        final byte[] representation = frame.getBytes();
+        final byte[] expected = getByteRepresentation(TESTMESSAGE);
         Assert.assertTrue(Arrays.equals(representation, expected));
     }
 
-    private byte[] getByteRepresentation(String message) {
-        String frame = message.length() + Character.toString(TlsSyslogFrame.SPACE) + message;
-        byte[] representation = frame.getBytes();
+    private byte[] getByteRepresentation(final String message) {
+        final String frame = message.length() + Character.toString(TlsSyslogFrame.SPACE) + message;
+        final byte[] representation = frame.getBytes();
         return representation;
     }
 
     @Test
     public void equals() {
-        TlsSyslogFrame first = new TlsSyslogFrame("A message");
-        TlsSyslogFrame second = new TlsSyslogFrame("A message");
+        final TlsSyslogFrame first = new TlsSyslogFrame("A message");
+        final TlsSyslogFrame second = new TlsSyslogFrame("A message");
         Assert.assertTrue(first.equals(second));
     }
 
     @Test
     public void notEquals() {
-        TlsSyslogFrame first = new TlsSyslogFrame("A message");
-        TlsSyslogFrame second = new TlsSyslogFrame("B message");
+        final TlsSyslogFrame first = new TlsSyslogFrame("A message");
+        final TlsSyslogFrame second = new TlsSyslogFrame("B message");
         Assert.assertFalse(first.equals(second));
     }
 }

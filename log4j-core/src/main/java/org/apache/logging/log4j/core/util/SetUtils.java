@@ -27,9 +27,9 @@ import java.util.Set;
 public final class SetUtils {
     private SetUtils() {};
 
-    public static String[] prefixSet(Set<String> set, String prefix) {
-        Set<String> prefixSet = new HashSet<String>();
-        for (String str : set) {
+    public static String[] prefixSet(final Set<String> set, final String prefix) {
+        final Set<String> prefixSet = new HashSet<String>();
+        for (final String str : set) {
             if (str.startsWith(prefix)) {
                 prefixSet.add(str);
             }

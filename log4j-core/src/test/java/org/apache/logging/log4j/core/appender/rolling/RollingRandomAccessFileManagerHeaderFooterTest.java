@@ -73,27 +73,27 @@ public class RollingRandomAccessFileManagerHeaderFooterTest {
         assertHeader(logFile);
     }
 
-    private void assertHeader(File file) throws Exception {
-        HtmlLayout layout = HtmlLayout.createDefaultLayout();
-        String header = new String(layout.getHeader(), Charset.defaultCharset());
-        String withoutTimestamp = header.substring(0, 435);
-        String contents = new String(slurp(file), Charset.defaultCharset());
-        String contentsInitialChunk = contents.substring(0, 435);
+    private void assertHeader(final File file) throws Exception {
+        final HtmlLayout layout = HtmlLayout.createDefaultLayout();
+        final String header = new String(layout.getHeader(), Charset.defaultCharset());
+        final String withoutTimestamp = header.substring(0, 435);
+        final String contents = new String(slurp(file), Charset.defaultCharset());
+        final String contentsInitialChunk = contents.substring(0, 435);
         assertEquals(file.getName(), withoutTimestamp, contentsInitialChunk);
     }
 
-    private void assertFooter(File file) throws Exception {
-        HtmlLayout layout = HtmlLayout.createDefaultLayout();
-        String footer = new String(layout.getFooter(), Charset.defaultCharset());
-        String contents = new String(slurp(file), Charset.defaultCharset());
+    private void assertFooter(final File file) throws Exception {
+        final HtmlLayout layout = HtmlLayout.createDefaultLayout();
+        final String footer = new String(layout.getFooter(), Charset.defaultCharset());
+        final String contents = new String(slurp(file), Charset.defaultCharset());
         assertTrue(file.getName(), contents.endsWith(footer));
     }
 
-    private byte[] slurp(File file) throws Exception {
+    private byte[] slurp(final File file) throws Exception {
         FileInputStream in = null;
         try {
             in = new FileInputStream(file);
-            byte[] result = new byte[(int) file.length()];
+            final byte[] result = new byte[(int) file.length()];
             int pos = 0;
             int length = in.read(result);
             while (length > 0) {
@@ -104,7 +104,7 @@ public class RollingRandomAccessFileManagerHeaderFooterTest {
         } finally {
             try {
                 in.close();
-            } catch (Exception ignored) {
+            } catch (final Exception ignored) {
             }
         }
     }

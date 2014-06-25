@@ -198,7 +198,7 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
      * @throws IOException
      *         if an I/O error occurs when opening the socket.
      */
-    public TcpSocketServer(final int port, final LogEventBridge<T> logEventInput, ServerSocket serverSocket)
+    public TcpSocketServer(final int port, final LogEventBridge<T> logEventInput, final ServerSocket serverSocket)
             throws IOException {
         super(port, logEventInput);
         this.serverSocket = serverSocket;

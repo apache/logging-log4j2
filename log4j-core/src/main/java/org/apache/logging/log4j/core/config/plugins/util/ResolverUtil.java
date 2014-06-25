@@ -172,7 +172,7 @@ public class ResolverUtil {
         while (urls.hasMoreElements()) {
             try {
                 final URL url = urls.nextElement();
-                String urlPath = extractPath(url);
+                final String urlPath = extractPath(url);
 
                 LOGGER.info("Scanning for classes in [" + urlPath + "] matching criteria: " + test);
                 // Check for a jar in a war in JBoss
@@ -314,11 +314,11 @@ public class ResolverUtil {
      * @param jarStream
      * @param source
      */
-    private void close(JarInputStream jarStream, final Object source) {
+    private void close(final JarInputStream jarStream, final Object source) {
         if (jarStream != null) {
             try {
                 jarStream.close();
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 LOGGER.error("Error closing JAR file stream for {}", source, e);
             }
         }

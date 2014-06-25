@@ -104,7 +104,7 @@ public final class FailoverAppender extends AbstractAppender {
             error("FailoverAppender " + getName() + " did not start successfully");
             return;
         }
-        long localCheckMillis = nextCheckMillis;
+        final long localCheckMillis = nextCheckMillis;
         if (localCheckMillis == 0 || System.currentTimeMillis() > localCheckMillis) {
             callAppender(event);
         } else {

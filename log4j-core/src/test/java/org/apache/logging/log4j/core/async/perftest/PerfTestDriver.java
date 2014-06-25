@@ -152,7 +152,7 @@ public class PerfTestDriver {
         long _pct99_99;
         double _latencyRowCount;
         int _throughputRowCount;
-        private long _averageOpsPerSec;
+        private final long _averageOpsPerSec;
 
         // example line: avg=828 99%=1118 99.99%=5028 Count=3125
         public Stats(final String raw) {
@@ -296,7 +296,7 @@ public class PerfTestDriver {
             final ProcessBuilder pb = config.throughputTest(java);
             pb.redirectErrorStream(true); // merge System.out and System.err
             final long t1 = System.nanoTime();
-            int count = config._threadCount >= 4 ? 3 : repeat;
+            final int count = config._threadCount >= 4 ? 3 : repeat;
             runPerfTest(count, x++, config, pb);
             System.out.printf(" took %.1f seconds%n", (System.nanoTime() - t1)
                     / (1000.0 * 1000.0 * 1000.0));

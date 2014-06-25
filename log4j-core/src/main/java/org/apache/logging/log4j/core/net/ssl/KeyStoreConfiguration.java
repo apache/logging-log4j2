@@ -34,8 +34,8 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
 
     private final String keyManagerFactoryAlgorithm;
 
-    public KeyStoreConfiguration(String location, String password, String keyStoreType,
-            String keyManagerFactoryAlgorithm) throws StoreConfigurationException {
+    public KeyStoreConfiguration(final String location, final String password, final String keyStoreType,
+            final String keyManagerFactoryAlgorithm) throws StoreConfigurationException {
         super(location, password, keyStoreType);
         this.keyManagerFactoryAlgorithm = keyManagerFactoryAlgorithm == null ? KeyManagerFactory.getDefaultAlgorithm()
                 : keyManagerFactoryAlgorithm;
@@ -58,17 +58,17 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
     @PluginFactory
     public static KeyStoreConfiguration createKeyStoreConfiguration(
             // @formatter:off
-            @PluginAttribute("location") String location,
-            @PluginAttribute("password") String password,
-            @PluginAttribute("type") String keyStoreType, 
-            @PluginAttribute("keyManagerFactoryAlgorithm") String keyManagerFactoryAlgorithm) throws StoreConfigurationException {
+            @PluginAttribute("location") final String location,
+            @PluginAttribute("password") final String password,
+            @PluginAttribute("type") final String keyStoreType, 
+            @PluginAttribute("keyManagerFactoryAlgorithm") final String keyManagerFactoryAlgorithm) throws StoreConfigurationException {
             // @formatter:on
         return new KeyStoreConfiguration(location, password, keyStoreType, null);
     }
 
     public KeyManagerFactory initKeyManagerFactory() throws NoSuchAlgorithmException, UnrecoverableKeyException,
             KeyStoreException {
-        KeyManagerFactory kmFactory = KeyManagerFactory.getInstance(this.keyManagerFactoryAlgorithm);
+        final KeyManagerFactory kmFactory = KeyManagerFactory.getInstance(this.keyManagerFactoryAlgorithm);
         kmFactory.init(this.getKeyStore(), this.getPasswordAsCharArray());
         return kmFactory;
     }

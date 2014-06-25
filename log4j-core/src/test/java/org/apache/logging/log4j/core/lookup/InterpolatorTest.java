@@ -98,8 +98,8 @@ public class InterpolatorTest {
         assertEquals(TEST_CONTEXT_NAME, value);
         value = lookup.lookup("date:yyyy-MM-dd");
         assertNotNull("No Date", value);
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        String today = format.format(new Date());
+        final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        final String today = format.format(new Date());
         assertEquals(value, today);
 
     }

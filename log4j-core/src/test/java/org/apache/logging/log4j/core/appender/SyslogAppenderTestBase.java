@@ -53,26 +53,26 @@ public class SyslogAppenderTestBase {
         ((LoggerContext) LogManager.getContext()).reconfigure();
     }
 
-    protected void sendAndCheckLegacyBSDMessages(List<String> messagesToSend) throws InterruptedException {
-        for (String message : messagesToSend) {
+    protected void sendAndCheckLegacyBSDMessages(final List<String> messagesToSend) throws InterruptedException {
+        for (final String message : messagesToSend) {
             sendLegacyBSDMessage(message);
         }
         checkTheNumberOfSentAndReceivedMessages();
         checkTheEqualityOfSentAndReceivedMessages();
     }
 
-    protected void sendAndCheckLegacyBSDMessage(String message) throws InterruptedException {
+    protected void sendAndCheckLegacyBSDMessage(final String message) throws InterruptedException {
         sendLegacyBSDMessage(message);
         checkTheNumberOfSentAndReceivedMessages();
         checkTheEqualityOfSentAndReceivedMessages();
     }
 
-    protected void sendLegacyBSDMessage(String message) {
+    protected void sendLegacyBSDMessage(final String message) {
         sentMessages.add(message);
         root.debug(message);
     }
 
-    protected void sendAndCheckStructuredMessages(int numberOfMessages) throws InterruptedException {
+    protected void sendAndCheckStructuredMessages(final int numberOfMessages) throws InterruptedException {
         for (int i = 0; i < numberOfMessages; i++) {
             sendStructuredMessage();
         }
@@ -95,7 +95,7 @@ public class SyslogAppenderTestBase {
         msg.put("FromAccount", "123457");
         msg.put("Amount", "200.00");
         // the msg.toString() doesn't contain the parameters of the ThreadContext, so we must use the line1 string
-        String str = msg.asString(null, null);
+        final String str = msg.asString(null, null);
         sentMessages.add(str);
         root.info(MarkerManager.getMarker("EVENT"), msg);
     }
@@ -106,13 +106,13 @@ public class SyslogAppenderTestBase {
     }
 
     protected void checkTheEqualityOfSentAndReceivedMessages() throws InterruptedException {
-        List<String> receivedMessages = getReceivedMessages(DEFAULT_TIMEOUT_IN_MS);
+        final List<String> receivedMessages = getReceivedMessages(DEFAULT_TIMEOUT_IN_MS);
 
         assertNotNull("No messages received", receivedMessages);
         for (int i = 0; i < receivedMessages.size(); i++) {
-            String receivedMessage = receivedMessages.get(i);
-            String sentMessage = sentMessages.get(i);
-            String suffix =  includeNewLine ? "\n" : Strings.EMPTY;
+            final String receivedMessage = receivedMessages.get(i);
+            final String sentMessage = sentMessages.get(i);
+            final String suffix =  includeNewLine ? "\n" : Strings.EMPTY;
             assertTrue("Incorrect message received: " + receivedMessage,
                     receivedMessage.endsWith(sentMessage + suffix) || receivedMessage.contains(sentMessage));
         }
@@ -127,13 +127,13 @@ public class SyslogAppenderTestBase {
         }
     }
 
-    protected void initRootLogger(Appender appender) {
+    protected void initRootLogger(final Appender appender) {
         root.addAppender(appender);
         root.setAdditive(false);
         root.setLevel(Level.DEBUG);
     }
 
-    protected List<String> getReceivedMessages(int timeOutInMs) throws InterruptedException {
+    protected List<String> getReceivedMessages(final int timeOutInMs) throws InterruptedException {
         synchronized (syslogServer) {
             syslogServer.wait(timeOutInMs);
         }

@@ -62,17 +62,17 @@ public final class Throwables {
      *             deprecated.
      */
     @Deprecated
-    public static void addSuppressed(Throwable throwable, Throwable suppressedThrowable) {
+    public static void addSuppressed(final Throwable throwable, final Throwable suppressedThrowable) {
         if (ADD_SUPPRESSED != null) {
             try {
                 ADD_SUPPRESSED.invoke(throwable, suppressedThrowable);
-            } catch (IllegalAccessException e) {
+            } catch (final IllegalAccessException e) {
                 // Only happens on Java >= 7 if this class has a bug.
                 StatusLogger.getLogger().error(e);
-            } catch (IllegalArgumentException e) {
+            } catch (final IllegalArgumentException e) {
                 // Only happens on Java >= 7 if this class has a bug.
                 StatusLogger.getLogger().error(e);
-            } catch (InvocationTargetException e) {
+            } catch (final InvocationTargetException e) {
                 // Only happens on Java >= 7 if this class has a bug.
                 StatusLogger.getLogger().error(e);
             }
@@ -90,7 +90,7 @@ public final class Throwables {
      *             deprecated.
      */
     @Deprecated
-    public static Throwable[] getSuppressed(Throwable throwable) {
+    public static Throwable[] getSuppressed(final Throwable throwable) {
         if (GET_SUPPRESSED != null) {
             try {
                 return (Throwable[]) GET_SUPPRESSED.invoke(throwable);

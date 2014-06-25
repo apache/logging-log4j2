@@ -40,7 +40,7 @@ public class ConsoleAppenderAnsiStyleLayoutMain {
 
     public static void main(final String[] args) {
         // System.out.println(System.getProperty("java.class.path"));
-        String config = args.length == 0 ? "target/test-classes/log4j2-console-style-ansi.xml" : args[0];
+        final String config = args.length == 0 ? "target/test-classes/log4j2-console-style-ansi.xml" : args[0];
         final LoggerContext ctx = Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(), config);
         try {
             LOG.fatal("Fatal message.");

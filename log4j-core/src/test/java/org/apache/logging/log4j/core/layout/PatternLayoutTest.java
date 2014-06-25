@@ -79,7 +79,7 @@ public class PatternLayoutTest {
         final String mdcMsgPattern4 = "%m : %X{key3}%n";
         final String mdcMsgPattern5 = "%m : %X{key1},%X{key2},%X{key3}%n";
         final Map<String, Appender> appenders = root.getAppenders();
-        for (Appender appender : appenders.values()) {
+        for (final Appender appender : appenders.values()) {
             root.removeAppender(appender);
         }
 
@@ -145,7 +145,7 @@ public class PatternLayoutTest {
 
         appender.stop();
 
-        for (Appender app : appenders.values()) {
+        for (final Appender app : appenders.values()) {
             root.addAppender(app);
         }
     }
@@ -163,7 +163,7 @@ public class PatternLayoutTest {
         assertEquals("org/apache/logging/log4j/core/layout/PatternLayoutTest Hello, world!", new String(result));
     }
 
-    private void testUnixTime(String pattern) throws Exception {
+    private void testUnixTime(final String pattern) throws Exception {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         final PatternLayout layout = PatternLayout.newBuilder()
             .withPattern(pattern + " %m")
@@ -232,7 +232,7 @@ public class PatternLayoutTest {
         ThreadContext.put("footer", "Hello world Footer");
         final LogEvent event1 = new Log4jLogEvent(this.getClass().getName(), null,
             "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world 1!"), null);
-        byte[] header = layout.getHeader();
+        final byte[] header = layout.getHeader();
         assertNotNull("No header", header);
         assertTrue("expected \"Hello world Header\", actual \"" + new String(header) + '"', new String(header).equals(new String("Hello world Header")));
     }

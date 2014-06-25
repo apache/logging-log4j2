@@ -165,7 +165,7 @@ public class Log4jLogEvent implements LogEvent {
      * @param timestamp The timestamp of the event.
      */
     private Log4jLogEvent(final String loggerName, final Marker marker, final String loggerFQCN, final Level level,
-            final Message message, final Throwable thrown, ThrowableProxy thrownProxy, 
+            final Message message, final Throwable thrown, final ThrowableProxy thrownProxy, 
             final Map<String, String> contextMap, final ThreadContext.ContextStack contextStack, 
             final String threadName, final StackTraceElement source, final long timestamp) {
         this.loggerName = loggerName;
@@ -413,7 +413,7 @@ public class Log4jLogEvent implements LogEvent {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -421,7 +421,7 @@ public class Log4jLogEvent implements LogEvent {
             return false;
         }
 
-        Log4jLogEvent that = (Log4jLogEvent) o;
+        final Log4jLogEvent that = (Log4jLogEvent) o;
 
         if (endOfBatch != that.endOfBatch) {
             return false;

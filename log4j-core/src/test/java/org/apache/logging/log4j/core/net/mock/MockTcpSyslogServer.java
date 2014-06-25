@@ -26,7 +26,7 @@ public class MockTcpSyslogServer extends MockSyslogServer {
     private boolean shutdown = false;
     private Thread thread;
 
-    public MockTcpSyslogServer(int numberOfMessagesToReceive, int port) throws IOException {
+    public MockTcpSyslogServer(final int numberOfMessagesToReceive, final int port) throws IOException {
         super(numberOfMessagesToReceive, port);
         sock = new ServerSocket(port);
     }
@@ -36,7 +36,7 @@ public class MockTcpSyslogServer extends MockSyslogServer {
         this.shutdown = true;
         try {
             sock.close();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
         thread.interrupt();

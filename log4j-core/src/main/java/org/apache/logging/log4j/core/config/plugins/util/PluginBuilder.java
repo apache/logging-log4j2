@@ -114,7 +114,7 @@ public class PluginBuilder<T> implements Builder<T> {
             final Builder<T> builder = createBuilder(this.clazz);
             if (builder != null) {
                 injectFields(builder);
-                T result = builder.build();
+                final T result = builder.build();
                 LOGGER.debug("Built Plugin[name={}] OK from builder factory method.", pluginType.getElementName());
                 return result;
             }
@@ -218,7 +218,7 @@ public class PluginBuilder<T> implements Builder<T> {
         for (int i = 0; i < annotations.length; i++) {
             log.append(log.length() == 0 ? "with params(" : ", ");
             final String[] aliases = extractPluginAliases(annotations[i]);
-            for (Annotation a : annotations[i]) {
+            for (final Annotation a : annotations[i]) {
                 if (a instanceof PluginAliases) {
                     continue; // already processed
                 }

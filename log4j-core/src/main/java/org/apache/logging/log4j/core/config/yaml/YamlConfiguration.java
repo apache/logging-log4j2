@@ -25,7 +25,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 public class YamlConfiguration extends JsonConfiguration {
 
-    public YamlConfiguration(ConfigurationSource configSource) {
+    public YamlConfiguration(final ConfigurationSource configSource) {
         super(configSource);
     }
 

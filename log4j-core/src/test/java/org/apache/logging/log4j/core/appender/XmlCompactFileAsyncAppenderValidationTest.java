@@ -68,7 +68,7 @@ public class XmlCompactFileAsyncAppenderValidationTest {
         this.validateXmlSchema(file);
     }
 
-    private void validateXmlSchema(File file) throws SAXException, IOException {
+    private void validateXmlSchema(final File file) throws SAXException, IOException {
         final URL schemaFile = this.getClass().getClassLoader().getResource("Log4j-events.xsd");
         final Source xmlFile = new StreamSource(file);
         final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);

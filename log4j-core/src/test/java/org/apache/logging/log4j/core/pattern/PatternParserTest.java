@@ -114,7 +114,7 @@ public class PatternParserTest {
         testNestedPatternHighlight(Level.FATAL, "\u001B[1;31m");
     }
 
-    private void testNestedPatternHighlight(Level level, String expectedStart) {
+    private void testNestedPatternHighlight(final Level level, final String expectedStart) {
         final List<PatternFormatter> formatters = parser.parse(nestedPatternHighlight);
         assertNotNull(formatters);
         final Throwable t = new Throwable();

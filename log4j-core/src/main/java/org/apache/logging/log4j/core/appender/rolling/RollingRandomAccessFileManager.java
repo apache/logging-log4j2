@@ -65,7 +65,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
         if (layout == null) {
             return;
         }
-        byte[] header = layout.getHeader();
+        final byte[] header = layout.getHeader();
         if (header == null) {
             return;
         }
@@ -198,7 +198,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
                 if (raf != null) {
                     try {
                         raf.close();
-                    } catch (IOException e) {
+                    } catch (final IOException e) {
                         LOGGER.error("Cannot close RandomAccessFile {}", name, e);
                     }
                 }

@@ -88,19 +88,19 @@ public class SyslogAppenderTest extends SyslogAppenderTestBase {
         appender.stop();
     }
 
-    protected void initUDPTestEnvironment(String messageFormat) throws SocketException {
+    protected void initUDPTestEnvironment(final String messageFormat) throws SocketException {
         syslogServer = MockSyslogServerFactory.createUDPSyslogServer(1, PORTNUM);
         syslogServer.start();
         initAppender("udp", messageFormat);
     }
 
-    protected void initTCPTestEnvironment(String messageFormat) throws IOException {
+    protected void initTCPTestEnvironment(final String messageFormat) throws IOException {
         syslogServer = MockSyslogServerFactory.createTCPSyslogServer(1, PORTNUM);
         syslogServer.start();
         initAppender("tcp", messageFormat);
     }
 
-    protected void initAppender(String transportFormat, String messageFormat) {
+    protected void initAppender(final String transportFormat, final String messageFormat) {
         appender = createAppender(transportFormat, messageFormat);
         appender.start();
        initRootLogger(appender);

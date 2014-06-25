@@ -81,7 +81,7 @@ public final class StyleConverter extends LogEventPatternConverter implements An
      * @param noAnsi
      *            If true, do not output ANSI escape codes.
      */
-    private StyleConverter(final List<PatternFormatter> patternFormatters, final String style, boolean noAnsi) {
+    private StyleConverter(final List<PatternFormatter> patternFormatters, final String style, final boolean noAnsi) {
         super("style", "style");
         this.patternFormatters = patternFormatters;
         this.style = style;
@@ -126,7 +126,7 @@ public final class StyleConverter extends LogEventPatternConverter implements An
      */
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         sb.append(super.toString());
         sb.append("[style=");
         sb.append(style);

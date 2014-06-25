@@ -113,8 +113,8 @@ public final class PatternLayout extends AbstractStringLayout {
      * @param header
      */
     private PatternLayout(final Configuration config, final RegexReplacement replace, final String pattern,
-                          final Charset charset, final boolean alwaysWriteExceptions, boolean noConsoleNoAnsi,
-                          String header, String footer) {
+                          final Charset charset, final boolean alwaysWriteExceptions, final boolean noConsoleNoAnsi,
+                          final String header, final String footer) {
         super(charset);
         this.replace = replace;
         this.conversionPattern = pattern;

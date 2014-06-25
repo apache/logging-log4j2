@@ -65,7 +65,7 @@ public class PatternFormatter {
      */
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         sb.append(super.toString());
         sb.append("[converter=");
         sb.append(converter);

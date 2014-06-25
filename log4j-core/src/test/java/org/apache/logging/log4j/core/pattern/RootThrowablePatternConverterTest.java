@@ -56,10 +56,10 @@ public class RootThrowablePatternConverterTest {
         try {
             try {
                 throw new NullPointerException("null pointer");
-            } catch (NullPointerException e) {
+            } catch (final NullPointerException e) {
                 throw new IllegalArgumentException("IllegalArgument", e);
             }
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             parent = e;
         }
         final LogEvent event = new Log4jLogEvent("testLogger", null, this.getClass().getName(), Level.DEBUG,

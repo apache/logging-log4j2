@@ -65,7 +65,7 @@ public class RoutingDefaultAppenderTest {
         assertTrue("Incorrect number of events. Expected 1, got " + list.size(), list.size() == 1);
         msg = new StructuredDataMessage("Test", "This is a test", "Alert");
         EventLogger.logEvent(msg);
-        File file = new File(LOG_FILE);
+        final File file = new File(LOG_FILE);
         assertTrue("Alert file was not created", file.exists());
     }
 }

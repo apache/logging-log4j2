@@ -60,7 +60,7 @@ public final class ZipCompressAction extends AbstractAction {
      *                     does not cause an exception to be thrown or affect return value.
      * @param level TODO
      */
-    public ZipCompressAction(final File source, final File destination, final boolean deleteSource, int level) {
+    public ZipCompressAction(final File source, final File destination, final boolean deleteSource, final int level) {
         if (source == null) {
             throw new NullPointerException("source");
         }
@@ -97,7 +97,7 @@ public final class ZipCompressAction extends AbstractAction {
      * @return true if source file compressed.
      * @throws IOException on IO exception.
      */
-    public static boolean execute(final File source, final File destination, final boolean deleteSource, int level)
+    public static boolean execute(final File source, final File destination, final boolean deleteSource, final int level)
         throws IOException {
         if (source.exists()) {
             final FileInputStream fis = new FileInputStream(source);
