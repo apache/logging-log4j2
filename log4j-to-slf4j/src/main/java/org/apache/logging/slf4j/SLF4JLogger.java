@@ -151,7 +151,7 @@ public class SLF4JLogger extends AbstractLogger {
     }
 
     @Override
-    public void logMessage(String fqcn, Level level, Marker marker, Message message, Throwable t) {
+    public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message, final Throwable t) {
         if (locationAwareLogger != null) {
             if (message instanceof LoggerNameAwareMessage) {
                 ((LoggerNameAwareMessage) message).setLoggerName(getName());

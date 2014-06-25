@@ -36,21 +36,21 @@ public class WebLookupTest {
     @Test
     public void testLookup() throws Exception {
         ContextAnchor.THREAD_CONTEXT.remove();
-        ServletContext servletContext = new MockServletContext();
+        final ServletContext servletContext = new MockServletContext();
         servletContext.setAttribute("TestAttr", "AttrValue");
         servletContext.setInitParameter("TestParam", "ParamValue");
         servletContext.setAttribute("Name1", "Ben");
         servletContext.setInitParameter("Name2", "Jerry");
-        Log4jWebLifeCycle initializer = Log4jWebInitializerImpl.getLog4jWebInitializer(servletContext);
+        final Log4jWebLifeCycle initializer = Log4jWebInitializerImpl.getLog4jWebInitializer(servletContext);
         try {
             initializer.start();
             initializer.setLoggerContext();
-            LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
+            final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
             assertNotNull("No LoggerContext", ctx);
             assertNotNull("No ServletContext", ctx.getExternalContext());
-            Configuration config = ctx.getConfiguration();
+            final Configuration config = ctx.getConfiguration();
             assertNotNull("No Configuration", config);
-            StrSubstitutor substitutor = config.getStrSubstitutor();
+            final StrSubstitutor substitutor = config.getStrSubstitutor();
             assertNotNull("No Interpolator", substitutor);
             String value = substitutor.replace("${web:initParam.TestParam}");
             assertNotNull("No value for TestParam", value);
@@ -74,24 +74,24 @@ public class WebLookupTest {
     @Test
     public void testLookup2() throws Exception {
         ContextAnchor.THREAD_CONTEXT.remove();
-        ServletContext servletContext = new MockServletContext();
+        final ServletContext servletContext = new MockServletContext();
         servletContext.setAttribute("TestAttr", "AttrValue");
         servletContext.setInitParameter("myapp.logdir", "target");
         servletContext.setAttribute("Name1", "Ben");
         servletContext.setInitParameter("Name2", "Jerry");
         servletContext.setInitParameter("log4jConfiguration", "log4j-webvar.xml");
-        Log4jWebLifeCycle initializer = Log4jWebInitializerImpl.getLog4jWebInitializer(servletContext);
+        final Log4jWebLifeCycle initializer = Log4jWebInitializerImpl.getLog4jWebInitializer(servletContext);
         initializer.start();
         initializer.setLoggerContext();
-        LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
+        final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
         assertNotNull("No LoggerContext", ctx);
         assertNotNull("No ServletContext", ctx.getExternalContext());
-        Configuration config = ctx.getConfiguration();
+        final Configuration config = ctx.getConfiguration();
         assertNotNull("No Configuration", config);
-        Map<String, Appender> appenders = config.getAppenders();
-        for (Map.Entry<String, Appender> entry : appenders.entrySet()) {
+        final Map<String, Appender> appenders = config.getAppenders();
+        for (final Map.Entry<String, Appender> entry : appenders.entrySet()) {
             if (entry.getKey().equals("file")) {
-                FileAppender fa = (FileAppender) entry.getValue();
+                final FileAppender fa = (FileAppender) entry.getValue();
                 assertEquals("target/myapp.log", fa.getFileName());
             }
         }
