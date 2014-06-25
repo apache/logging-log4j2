@@ -223,7 +223,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
         worker.shutdown();
         try {
             worker.join(SHUTDOWN_WAIT * MILLIS_PER_SECOND);
-        } catch (InterruptedException ie) {
+        } catch (final InterruptedException ie) {
             // Ignore the exception and shutdown.
         }
         threadPool.shutdown();
@@ -315,13 +315,13 @@ public class FlumePersistentManager extends FlumeAvroManager {
                             txn = null;
                         }
                     }
-                } catch (LockConflictException lce) {
+                } catch (final LockConflictException lce) {
                     exception = lce;
                     if (txn != null) {
                         try {
                             txn.abort();
                             txn = null;
-                        } catch (Exception ex) {
+                        } catch (final Exception ex) {
                             LOGGER.trace("Ignoring exception while aborting transaction during lock conflict.");
                         }
                     }
@@ -329,7 +329,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                 }
                 try {
                     Thread.sleep(LOCK_TIMEOUT_SLEEP_MILLIS);
-                } catch (InterruptedException ie) {
+                } catch (final InterruptedException ie) {
                     // Ignore the error
                 }
             }
@@ -518,14 +518,14 @@ public class FlumePersistentManager extends FlumeAvroManager {
             LOGGER.trace("WriterThread started - batch size = " + batchSize + ", delay = " + manager.delay);
             long nextBatch = System.currentTimeMillis() + manager.delay;
             while (!shutdown) {
-                long now = System.currentTimeMillis();
-                long dbCount = database.count();
+                final long now = System.currentTimeMillis();
+                final long dbCount = database.count();
                 dbCounter.set(dbCount);
                 if (dbCount >= batchSize || dbCount > 0 && nextBatch <= now) {
                     nextBatch = now + manager.delay;
                     try {
                         boolean errors = false;
-                        DatabaseEntry key = new DatabaseEntry();
+                        final DatabaseEntry key = new DatabaseEntry();
                         final DatabaseEntry data = new DatabaseEntry();
 
                         gate.close();
@@ -591,13 +591,13 @@ public class FlumePersistentManager extends FlumeAvroManager {
                                             txn = null;
                                         }
                                     }
-                                } catch (LockConflictException lce) {
+                                } catch (final LockConflictException lce) {
                                     exception = lce;
                                     if (cursor != null) {
                                         try {
                                             cursor.close();
                                             cursor = null;
-                                        } catch (Exception ex) {
+                                        } catch (final Exception ex) {
                                             LOGGER.trace("Ignored exception closing cursor during lock conflict.");
                                         }
                                     }
@@ -605,14 +605,14 @@ public class FlumePersistentManager extends FlumeAvroManager {
                                         try {
                                             txn.abort();
                                             txn = null;
-                                        } catch (Exception ex) {
+                                        } catch (final Exception ex) {
                                             LOGGER.trace("Ignored exception aborting tx during lock conflict.");
                                         }
                                     }
                                 }
                                 try {
                                     Thread.sleep(LOCK_TIMEOUT_SLEEP_MILLIS);
-                                } catch (InterruptedException ie) {
+                                } catch (final InterruptedException ie) {
                                     // Ignore the error
                                 }
                             }
@@ -644,7 +644,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
             }
 
             if (batchSize > 1 && database.count() > 0) {
-                DatabaseEntry key = new DatabaseEntry();
+                final DatabaseEntry key = new DatabaseEntry();
                 final DatabaseEntry data = new DatabaseEntry();
                 try {
                     sendBatch(key, data);
@@ -655,7 +655,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
             LOGGER.trace("WriterThread exiting");
         }
 
-        private boolean sendBatch(DatabaseEntry key, DatabaseEntry data) throws Exception {
+        private boolean sendBatch(DatabaseEntry key, final DatabaseEntry data) throws Exception {
             boolean errors = false;
             OperationStatus status;
             Cursor cursor = database.openCursor(null, CursorConfig.DEFAULT);
@@ -707,7 +707,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                                     try {
                                         cursor.close();
                                         cursor = null;
-                                    } catch (Exception ex) {
+                                    } catch (final Exception ex) {
                                         LOGGER.trace("Ignored exception closing cursor during lock conflict.");
                                     }
                                 }
@@ -715,7 +715,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                                     try {
                                         txn.abort();
                                         txn = null;
-                                    } catch (Exception ex) {
+                                    } catch (final Exception ex) {
                                         LOGGER.trace("Ignored exception aborting transaction during lock conflict.");
                                     }
                                 }
@@ -725,13 +725,13 @@ public class FlumePersistentManager extends FlumeAvroManager {
                                     txn.abort();
                                 }
                             }
-                        } catch (LockConflictException lce) {
+                        } catch (final LockConflictException lce) {
                             exception = lce;
                             if (cursor != null) {
                                 try {
                                     cursor.close();
                                     cursor = null;
-                                } catch (Exception ex) {
+                                } catch (final Exception ex) {
                                     LOGGER.trace("Ignored exception closing cursor during lock conflict.");
                                 }
                             }
@@ -739,7 +739,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                                 try {
                                     txn.abort();
                                     txn = null;
-                                } catch (Exception ex) {
+                                } catch (final Exception ex) {
                                     LOGGER.trace("Ignored exception aborting transaction during lock conflict.");
                                 }
                             }
@@ -755,7 +755,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                         }
                         try {
                             Thread.sleep(LOCK_TIMEOUT_SLEEP_MILLIS);
-                        } catch (InterruptedException ie) {
+                        } catch (final InterruptedException ie) {
                             // Ignore the error
                         }
                     }
@@ -855,7 +855,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
             isOpen = false;
         }
 
-        public synchronized void waitForOpen(long timeout) throws InterruptedException {
+        public synchronized void waitForOpen(final long timeout) throws InterruptedException {
             wait(timeout);
         }
     }

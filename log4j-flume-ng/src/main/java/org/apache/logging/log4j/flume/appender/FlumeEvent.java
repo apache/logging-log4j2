@@ -159,7 +159,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
 
     protected void addContextData(final String prefix, final Map<String, String> fields,
                                   final Map<String, String> context) {
-        Map<String, String> map = new HashMap<String, String>();
+        final Map<String, String> map = new HashMap<String, String>();
         for (final Map.Entry<String, String> entry : context.entrySet()) {
             if (entry.getKey() != null && entry.getValue() != null) {
                 fields.put(prefix + entry.getKey(), entry.getValue());
