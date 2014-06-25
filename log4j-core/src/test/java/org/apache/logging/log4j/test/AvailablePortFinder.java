@@ -46,7 +46,7 @@ public final class AvailablePortFinder {
     /**
      * We'll hold open the lowest port in this process
      * so parallel processes won't use the same block
-     * of ports.   They'll go up to the next block.
+     * of ports. They'll go up to the next block.
      */
     private static final ServerSocket LOCK;
 
