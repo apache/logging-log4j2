@@ -141,7 +141,7 @@ public final class MarkerManager {
             int count = 0;
             int size = parents.length;
             if (localParents != null) {
-                for (Marker parent : parents) {
+                for (final Marker parent : parents) {
                     if (!(contains(parent, localParents) || parent.isInstanceOf(this))) {
                         ++count;
                     }
@@ -158,7 +158,7 @@ public final class MarkerManager {
                 System.arraycopy(localParents, 0, markers, 0, localParents.length);
             }
             int index = localParents == null ? 0 : localParents.length;
-            for (Marker parent : parents) {
+            for (final Marker parent : parents) {
                 if (localParents == null || !(contains(parent, localParents) || parent.isInstanceOf(this))) {
                     markers[index++] = parent;
                 }

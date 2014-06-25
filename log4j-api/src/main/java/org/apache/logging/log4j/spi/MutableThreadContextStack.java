@@ -176,7 +176,7 @@ public class MutableThreadContextStack implements ThreadContextStack {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
@@ -186,7 +186,7 @@ public class MutableThreadContextStack implements ThreadContextStack {
         if (!(obj instanceof ThreadContextStack)) {
             return false;
         }
-        ThreadContextStack other = (ThreadContextStack) obj;
+        final ThreadContextStack other = (ThreadContextStack) obj;
         final List<String> otherAsList = other.asList();
         if (this.list == null) {
             if (otherAsList != null) {

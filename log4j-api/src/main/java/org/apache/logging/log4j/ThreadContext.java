@@ -66,7 +66,7 @@ public final class ThreadContext  {
         }
 
         @Override
-        public void push(String message) {
+        public void push(final String message) {
             throw new UnsupportedOperationException();
         }
 
@@ -81,12 +81,12 @@ public final class ThreadContext  {
         }
 
         @Override
-        public void trim(int depth) {
+        public void trim(final int depth) {
             // Do nothing
         }
 
         @Override
-        public boolean equals(Object o) {
+        public boolean equals(final Object o) {
             // Similar to java.util.Collections.EmptyList.equals(Object)
             return (o instanceof Collection) && ((Collection<?>) o).isEmpty();
         }
@@ -103,32 +103,32 @@ public final class ThreadContext  {
         }
 
         @Override
-        public <T> T[] toArray(T[] a) {
+        public <T> T[] toArray(final T[] a) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public boolean add(String e) {
+        public boolean add(final String e) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public boolean containsAll(Collection<?> c) {
+        public boolean containsAll(final Collection<?> c) {
             return false;
         }
 
         @Override
-        public boolean addAll(Collection<? extends String> c) {
+        public boolean addAll(final Collection<? extends String> c) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public boolean removeAll(Collection<?> c) {
+        public boolean removeAll(final Collection<?> c) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public boolean retainAll(Collection<?> c) {
+        public boolean retainAll(final Collection<?> c) {
             throw new UnsupportedOperationException();
         }
 

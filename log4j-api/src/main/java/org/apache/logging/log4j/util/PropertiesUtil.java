@@ -54,8 +54,8 @@ public final class PropertiesUtil {
      *            or a URL.
      * @return a new Properties object
      */
-    static Properties loadClose(InputStream in, Object source) {
-        Properties props = new Properties();
+    static Properties loadClose(final InputStream in, final Object source) {
+        final Properties props = new Properties();
         if (null != in) {
             try {
                 props.load(in);
@@ -75,27 +75,28 @@ public final class PropertiesUtil {
     public PropertiesUtil(final String propsLocn) {
         final ClassLoader loader = ProviderUtil.findClassLoader();
         @SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
+        final
         Properties properties = new Properties();
             try {
-                Enumeration<URL> enumeration = loader.getResources(propsLocn);
+                final Enumeration<URL> enumeration = loader.getResources(propsLocn);
                 while (enumeration.hasMoreElements()) {
                     final URL url = enumeration.nextElement();
                     final InputStream in = url.openStream();
                     try {
                         properties.load(in);
-                    } catch (IOException ioe) {
+                    } catch (final IOException ioe) {
                         LOGGER.error("Unable to read {}", url.toString());
                     } finally {
                         try {
                             in.close();
-                        } catch (IOException ioe) {
+                        } catch (final IOException ioe) {
                             LOGGER.error("Unable to close {}", url.toString(), ioe);
                         }
                     }
 
                 }
 
-            } catch (IOException ioe) {
+            } catch (final IOException ioe) {
                 LOGGER.error("Unable to access {}", propsLocn, ioe);
             }
         this.props = properties;

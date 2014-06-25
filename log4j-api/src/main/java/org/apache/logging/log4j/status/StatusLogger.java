@@ -96,7 +96,7 @@ public final class StatusLogger extends AbstractLogger {
         listenersLock.writeLock().lock();
         try {
             listeners.add(listener);
-            Level lvl = listener.getStatusLevel();
+            final Level lvl = listener.getStatusLevel();
             if (listenersLevel < lvl.intLevel()) {
                 listenersLevel = lvl.intLevel();
             }
@@ -115,8 +115,8 @@ public final class StatusLogger extends AbstractLogger {
         try {
             listeners.remove(listener);
             int lowest = Level.toLevel(DEFAULT_STATUS_LEVEL, Level.WARN).intLevel();
-            for (StatusListener l : listeners) {
-                int level = l.getStatusLevel().intLevel();
+            for (final StatusListener l : listeners) {
+                final int level = l.getStatusLevel().intLevel();
                 if (lowest < level) {
                     lowest = level;
                 }

@@ -194,7 +194,7 @@ public class DefaultThreadContextMapTest {
     @Test
     public void testThreadLocalNotInheritableByDefault() {
         System.clearProperty(DefaultThreadContextMap.INHERITABLE_MAP);
-        ThreadLocal<Map<String, String>> threadLocal = DefaultThreadContextMap.createThreadLocalMap(true);
+        final ThreadLocal<Map<String, String>> threadLocal = DefaultThreadContextMap.createThreadLocalMap(true);
         assertFalse(threadLocal instanceof InheritableThreadLocal<?>);
     }
     
@@ -202,7 +202,7 @@ public class DefaultThreadContextMapTest {
     public void testThreadLocalInheritableIfConfigured() {
         System.setProperty(DefaultThreadContextMap.INHERITABLE_MAP, "true");
         try {
-            ThreadLocal<Map<String, String>> threadLocal = DefaultThreadContextMap.createThreadLocalMap(true);
+            final ThreadLocal<Map<String, String>> threadLocal = DefaultThreadContextMap.createThreadLocalMap(true);
             assertTrue(threadLocal instanceof InheritableThreadLocal<?>);
         } finally {
             System.clearProperty(DefaultThreadContextMap.INHERITABLE_MAP);
