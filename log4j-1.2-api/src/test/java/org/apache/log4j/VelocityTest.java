@@ -31,12 +31,12 @@ public class VelocityTest {
     @Test
     public void testVelocity() {
         Velocity.init();
-        VelocityContext context = new VelocityContext();
+        final VelocityContext context = new VelocityContext();
         context.put("name", new String("Velocity"));
 
-        Template template = Velocity.getTemplate("target/test-classes/hello.vm");
+        final Template template = Velocity.getTemplate("target/test-classes/hello.vm");
 
-        StringWriter sw = new StringWriter();
+        final StringWriter sw = new StringWriter();
 
         template.merge(context, sw);
     }
