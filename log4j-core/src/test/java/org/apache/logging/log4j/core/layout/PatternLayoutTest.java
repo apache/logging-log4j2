@@ -71,7 +71,7 @@ public class PatternLayoutTest {
      * Test case for MDC conversion pattern.
      */
     @Test
-    public void mdcPattern() throws Exception {
+    public void testMdcPattern() throws Exception {
 
         final String mdcMsgPattern1 = "%m : %X%n";
         final String mdcMsgPattern2 = "%m : %X{key1}%n";
