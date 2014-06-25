@@ -47,6 +47,7 @@ public final class SerializedLayout extends AbstractLayout<LogEvent> {
     }
 
     private SerializedLayout() {
+        super(null, null);
     }
 
     /**

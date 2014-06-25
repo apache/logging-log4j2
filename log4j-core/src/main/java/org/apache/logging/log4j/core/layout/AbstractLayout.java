@@ -24,24 +24,44 @@ import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Abstract base class for Layouts.
- * @param <T> The Class that the Layout will format the LogEvent into.
+ * 
+ * @param <T>
+ *        The Class that the Layout will format the LogEvent into.
  */
 public abstract class AbstractLayout<T extends Serializable> implements Layout<T> {
+
+    /**
+     * Constructs a layout with an optional header and footer.
+     * 
+     * @param header
+     *        The header to include when the stream is opened. May be null.
+     * @param footer
+     *        The footer to add when the stream is closed. May be null.
+     */
+    public AbstractLayout(byte[] header, byte[] footer) {
+        super();
+        this.header = header;
+        this.footer = footer;
+    }
+
     /**
      * Allow subclasses access to the status logger without creating another instance.
      */
     protected static final Logger LOGGER = StatusLogger.getLogger();
+
     /**
      * The header to include when the stream is opened. May be null.
      */
-    protected byte[] header;
+    protected final byte[] header;
+
     /**
      * The footer to add when the stream is closed. May be null.
      */
-    protected byte[] footer;
+    protected final byte[] footer;
 
     /**
      * Returns the header, if one is available.
+     * 
      * @return A byte array containing the header.
      */
     @Override
@@ -50,27 +70,12 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
     }
 
     /**
-     * Set the header.
-     * @param header The header.
-     */
-    public void setHeader(final byte[] header) {
-        this.header = header;
-    }
-
-    /**
      * Returns the footer, if one is available.
+     * 
      * @return A byte array containing the footer.
      */
     @Override
     public byte[] getFooter() {
         return footer;
-    }
-
-    /**
-     * Set the footer.
-     * @param footer The footer.
-     */
-    public void setFooter(final byte[] footer) {
-        this.footer = footer;
     }
 }

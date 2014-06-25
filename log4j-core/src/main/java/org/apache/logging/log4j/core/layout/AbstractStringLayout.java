@@ -31,14 +31,20 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
      */
     private final Charset charset;
 
-    protected AbstractStringLayout(final Charset charset) {
+    protected AbstractStringLayout(final Charset charset, byte[] header, byte[] footer) {
+        super(header, footer);
         this.charset = charset == null ? Charsets.UTF_8 : charset;
+    }
+
+    protected AbstractStringLayout(final Charset charset) {
+        this(charset, null, null);
     }
 
     /**
      * Formats the Log Event as a byte array.
      *
-     * @param event The Log Event.
+     * @param event
+     *        The Log Event.
      * @return The formatted event as a byte array.
      */
     @Override
