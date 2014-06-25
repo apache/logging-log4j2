@@ -74,28 +74,28 @@ public class Log4j2AsyncAppenderBenchmark {
     @GenerateMicroBenchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
-    public boolean throughputBaseline(NormalState e) {
+    public boolean throughputBaseline(final NormalState e) {
         return e.logger.isInfoEnabled();
     }
 
     @GenerateMicroBenchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
-    public void throughput(NormalState e) {
+    public void throughput(final NormalState e) {
         e.logger.info(TEST);
     }
 
     @GenerateMicroBenchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public boolean latencyBaseline(NormalState e) {
+    public boolean latencyBaseline(final NormalState e) {
         return e.logger.isInfoEnabled();
     }
 
     @GenerateMicroBenchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public void latency(NormalState e) {
+    public void latency(final NormalState e) {
         e.logger.info(TEST);
     }
 }

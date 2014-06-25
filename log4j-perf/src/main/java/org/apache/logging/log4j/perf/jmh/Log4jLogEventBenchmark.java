@@ -38,20 +38,20 @@ public class Log4jLogEventBenchmark {
     }
 
     @GenerateMicroBenchmark
-    public void testBaseline(BlackHole bh) {
+    public void testBaseline(final BlackHole bh) {
     }
 
     @GenerateMicroBenchmark
-    public void testNoException(BlackHole bh) {
-        Throwable t = null;
-        Log4jLogEvent event = new Log4jLogEvent("a.b.c", null, "a.b.c", Level.INFO, MESSAGE, t);
+    public void testNoException(final BlackHole bh) {
+        final Throwable t = null;
+        final Log4jLogEvent event = new Log4jLogEvent("a.b.c", null, "a.b.c", Level.INFO, MESSAGE, t);
         bh.consume(event);
     }
 
     @GenerateMicroBenchmark
-    public void testException(BlackHole bh) {
-        Throwable t = ERROR;
-        Log4jLogEvent event = new Log4jLogEvent("a.b.c", null, "a.b.c", Level.INFO, MESSAGE, t);
+    public void testException(final BlackHole bh) {
+        final Throwable t = ERROR;
+        final Log4jLogEvent event = new Log4jLogEvent("a.b.c", null, "a.b.c", Level.INFO, MESSAGE, t);
         bh.consume(event);
     }
 
