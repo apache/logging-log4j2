@@ -35,7 +35,7 @@ public class OutputStreamManager extends AbstractManager {
         this.os = os;
         this.layout = layout;
         if (layout != null) {
-            byte[] header = layout.getHeader();
+            final byte[] header = layout.getHeader();
             if (header != null) {
                 try {
                     this.os.write(header, 0, header.length);
@@ -76,7 +76,7 @@ public class OutputStreamManager extends AbstractManager {
         if (layout == null) {
             return;
         }
-        byte[] footer = layout.getFooter();
+        final byte[] footer = layout.getFooter();
         if (footer != null) {
             write(footer);
         }
@@ -95,7 +95,7 @@ public class OutputStreamManager extends AbstractManager {
     }
 
     protected void setOutputStream(final OutputStream os) {
-        byte[] header = layout.getHeader();
+        final byte[] header = layout.getHeader();
         if (header != null) {
             try {
                 os.write(header, 0, header.length);

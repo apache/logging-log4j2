@@ -46,7 +46,7 @@ public class JacksonIssue429MyNamesTest {
         }
 
         @Override
-        public StackTraceElement deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException,
+        public StackTraceElement deserialize(final JsonParser jp, final DeserializationContext ctxt) throws IOException,
                 JsonProcessingException {
             JsonToken t = jp.getCurrentToken();
             // Must get an Object
@@ -55,7 +55,7 @@ public class JacksonIssue429MyNamesTest {
                 int lineNumber = -1;
 
                 while ((t = jp.nextValue()) != JsonToken.END_OBJECT) {
-                    String propName = jp.getCurrentName();
+                    final String propName = jp.getCurrentName();
                     if ("class".equals(propName)) {
                         className = jp.getText();
                     } else if ("file".equals(propName)) {
@@ -93,7 +93,7 @@ public class JacksonIssue429MyNamesTest {
 
     private final ObjectMapper MAPPER = objectMapper();
 
-    protected String aposToQuotes(String json) {
+    protected String aposToQuotes(final String json) {
         return json.replace("'", "\"");
     }
 
@@ -104,7 +104,7 @@ public class JacksonIssue429MyNamesTest {
     @Test
     public void testStackTraceElementWithCustom() throws Exception {
         // first, via bean that contains StackTraceElement
-        StackTraceBean bean = MAPPER
+        final StackTraceBean bean = MAPPER
                 .readValue(
                         aposToQuotes("{'Location':{'class':'package.SomeClass','method':'someMethod','file':'SomeClass.java','line':13}}"),
                         StackTraceBean.class);
@@ -113,12 +113,12 @@ public class JacksonIssue429MyNamesTest {
         Assert.assertEquals(StackTraceBean.NUM, bean.location.getLineNumber());
 
         // and then directly, iff registered
-        ObjectMapper mapper = new ObjectMapper();
-        SimpleModule module = new SimpleModule();
+        final ObjectMapper mapper = new ObjectMapper();
+        final SimpleModule module = new SimpleModule();
         module.addDeserializer(StackTraceElement.class, new MyStackTraceElementDeserializer());
         mapper.registerModule(module);
 
-        StackTraceElement elem = mapper.readValue(
+        final StackTraceElement elem = mapper.readValue(
                 aposToQuotes("{'class':'package.SomeClass','method':'someMethod','file':'SomeClass.java','line':13}"),
                 StackTraceElement.class);
         Assert.assertNotNull(elem);

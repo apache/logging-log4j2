@@ -71,7 +71,7 @@ public class FileAppenderTest {
         final FileAppender appender = FileAppender.createAppender(FILENAME, "true", "false", "test", "false", "false",
                 "false", bufferSizeStr, layout, null, "false", null, null);
         appender.start();
-        File file = new File(FILENAME);
+        final File file = new File(FILENAME);
         assertTrue("Appender did not start", appender.isStarted());
         long curLen = file.length();
         long prevLen = curLen;

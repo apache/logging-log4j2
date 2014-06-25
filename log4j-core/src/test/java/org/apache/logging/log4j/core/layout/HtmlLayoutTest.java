@@ -99,7 +99,7 @@ public class HtmlLayoutTest {
 
     private void testLayout(final boolean includeLocation) throws Exception {
         final Map<String, Appender> appenders = root.getAppenders();
-        for (Appender appender : appenders.values()) {
+        for (final Appender appender : appenders.values()) {
             root.removeAppender(appender);
         }
         // set up appender
@@ -133,11 +133,11 @@ public class HtmlLayoutTest {
         appender.stop();
 
         final List<String> list = appender.getMessages();
-        StringBuilder sb = new StringBuilder();
-        for (String string : list) {
+        final StringBuilder sb = new StringBuilder();
+        for (final String string : list) {
             sb.append(string);
         }
-        String html = sb.toString();
+        final String html = sb.toString();
         assertTrue("Incorrect number of lines. Require at least 85 " + list.size(), list.size() > 85);
         final String string = list.get(3);
         assertTrue("Incorrect header: " + string, string.equals("<meta charset=\"UTF-8\"/>"));
@@ -150,7 +150,7 @@ public class HtmlLayoutTest {
         } else {
             assertFalse("Location should not be in the output table", html.contains("<td>HtmlLayoutTest.java:"));
         }
-        for (Appender app : appenders.values()) {
+        for (final Appender app : appenders.values()) {
             root.addAppender(app);
         }
     }

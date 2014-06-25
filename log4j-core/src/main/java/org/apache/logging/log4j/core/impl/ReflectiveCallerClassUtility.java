@@ -145,16 +145,16 @@ public final class ReflectiveCallerClassUtility {
      * @param depth The depth of the caller to retrieve.
      * @return the caller class, or {@code null} if {@code getCallerClass(int)} is not supported.
      */
-    public static Class<?> getCaller(int depth) {
+    public static Class<?> getCaller(final int depth) {
         if (!GET_CALLER_CLASS_SUPPORTED) {
             return null;
         }
 
         try {
             return (Class<?>) GET_CALLER_CLASS_METHOD.invoke(null, depth + 1 + JAVA_7U25_COMPENSATION_OFFSET);
-        } catch (IllegalAccessException ignore) {
+        } catch (final IllegalAccessException ignore) {
             LOGGER.warn("Should not have failed to call getCallerClass.");
-        } catch (InvocationTargetException ignore) {
+        } catch (final InvocationTargetException ignore) {
             LOGGER.warn("Should not have failed to call getCallerClass.");
         }
         return null;

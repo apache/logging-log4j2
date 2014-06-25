@@ -155,7 +155,7 @@ public final class PatternParser {
     }
 
     public List<PatternFormatter> parse(final String pattern, final boolean alwaysWriteExceptions,
-            boolean noConsoleNoAnsi) {
+            final boolean noConsoleNoAnsi) {
         final List<PatternFormatter> list = new ArrayList<PatternFormatter>();
         final List<PatternConverter> converters = new ArrayList<PatternConverter>();
         final List<FormattingInfo> fields = new ArrayList<FormattingInfo>();
@@ -450,7 +450,7 @@ public final class PatternParser {
      * @return converter or null.
      */
     private PatternConverter createConverter(final String converterId, final StringBuilder currentLiteral,
-            final Map<String, Class<PatternConverter>> rules, final List<String> options, boolean noConsoleNoAnsi) {
+            final Map<String, Class<PatternConverter>> rules, final List<String> options, final boolean noConsoleNoAnsi) {
         String converterName = converterId;
         Class<PatternConverter> converterClass = null;
 

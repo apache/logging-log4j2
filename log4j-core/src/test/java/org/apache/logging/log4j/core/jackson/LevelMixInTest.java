@@ -37,7 +37,7 @@ public class LevelMixInTest {
         private final Level level = Level.DEBUG;
 
         @Override
-        public boolean equals(Object obj) {
+        public boolean equals(final Object obj) {
             if (this == obj) {
                 return true;
             }

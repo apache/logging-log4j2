@@ -171,7 +171,7 @@ public class ConfigurationSource {
         if (this == NULL_SOURCE) {
             return "NULL_SOURCE";
         }
-        int length = data == null ? -1 : data.length;
+        final int length = data == null ? -1 : data.length;
         return "stream (" + length + " bytes, unknown location)";
     }
 }

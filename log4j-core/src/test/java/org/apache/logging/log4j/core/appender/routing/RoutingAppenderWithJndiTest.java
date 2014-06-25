@@ -65,11 +65,11 @@ public class RoutingAppenderWithJndiTest {
         // default route when there's no jndi resource
         StructuredDataMessage msg = new StructuredDataMessage("Test", "This is a message from unknown context", "Context");
         EventLogger.logEvent(msg);
-        File defaultLogFile = new File("target/routingbyjndi/routingbyjnditest-unknown.log");
+        final File defaultLogFile = new File("target/routingbyjndi/routingbyjnditest-unknown.log");
         assertTrue("The default log file was not created", defaultLogFile.exists());
 
         // now set jndi resource to Application1
-        Context context = new InitialContext();
+        final Context context = new InitialContext();
         context.bind(JNDI_CONTEXT_NAME, "Application1");
 
         msg = new StructuredDataMessage("Test", "This is a message from Application1", "Context");
@@ -97,7 +97,7 @@ public class RoutingAppenderWithJndiTest {
         context.rebind("java:comp/env/logging/context-name", "Application3");
         msg = new StructuredDataMessage("Test", "This is a message from Application3", "Context");
         EventLogger.logEvent(msg);
-        File application3LogFile = new File("target/routingbyjndi/routingbyjnditest-Application3.log");
+        final File application3LogFile = new File("target/routingbyjndi/routingbyjnditest-Application3.log");
         assertTrue("The Application3 log file was not created", application3LogFile.exists());
 
         // now set jndi resource to Application4
@@ -105,7 +105,7 @@ public class RoutingAppenderWithJndiTest {
         context.rebind("java:comp/env/logging/context-name", "Application4");
         msg = new StructuredDataMessage("Test", "This is a message from Application4", "Context");
         EventLogger.logEvent(msg);
-        File application4LogFile = new File("target/routingbyjndi/routingbyjnditest-Application4.log");
+        final File application4LogFile = new File("target/routingbyjndi/routingbyjnditest-Application4.log");
         assertTrue("The Application3 log file was not created", application4LogFile.exists());
     }
 }

@@ -30,21 +30,21 @@ public class RingBufferAdmin implements RingBufferAdminMBean {
     private final RingBuffer<?> ringBuffer;
     private final ObjectName objectName;
 
-    public static RingBufferAdmin forAsyncLogger(RingBuffer<?> ringBuffer, String contextName) {
+    public static RingBufferAdmin forAsyncLogger(final RingBuffer<?> ringBuffer, final String contextName) {
         final String ctxName = Server.escape(contextName);
         final String name = String.format(PATTERN_ASYNC_LOGGER, ctxName);
         return new RingBufferAdmin(ringBuffer, name);
     }
 
-    public static RingBufferAdmin forAsyncLoggerConfig(RingBuffer<?> ringBuffer, 
-            String contextName, String configName) {
+    public static RingBufferAdmin forAsyncLoggerConfig(final RingBuffer<?> ringBuffer, 
+            final String contextName, final String configName) {
         final String ctxName = Server.escape(contextName);
         final String cfgName = Server.escape(configName);
         final String name = String.format(PATTERN_ASYNC_LOGGER_CONFIG, ctxName, cfgName);
         return new RingBufferAdmin(ringBuffer, name);
     }
     
-    protected RingBufferAdmin(RingBuffer<?> ringBuffer, String mbeanName) {
+    protected RingBufferAdmin(final RingBuffer<?> ringBuffer, final String mbeanName) {
         this.ringBuffer = Assert.requireNonNull(ringBuffer, "ringbuffer");        
         try {
             objectName = new ObjectName(mbeanName);

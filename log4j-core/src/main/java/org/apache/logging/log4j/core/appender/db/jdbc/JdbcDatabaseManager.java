@@ -70,7 +70,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             this.connection = this.connectionSource.getConnection();
             this.connection.setAutoCommit(false);
             this.statement = this.connection.prepareStatement(this.sqlStatement);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             throw new AppenderLoggingException(
                     "Cannot write logging event or flush buffer; JDBC manager cannot connect to the database.", e
             );
@@ -127,12 +127,12 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             if (this.connection != null && !this.connection.isClosed()) {
                 this.connection.commit();
             }
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             throw new AppenderLoggingException("Failed to commit transaction logging event or flushing buffer.", e);
         } finally {
             try {
                 Closer.close(this.statement);
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 LOGGER.warn("Failed to close SQL statement logging event or flushing buffer.", e);
             } finally {
                 this.statement = null;
@@ -140,7 +140,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
 
             try {
                 Closer.close(this.connection);
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 LOGGER.warn("Failed to close database connection logging event or flushing buffer.", e);
             } finally {
                 this.connection = null;

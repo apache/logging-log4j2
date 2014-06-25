@@ -30,7 +30,7 @@ import static org.junit.Assert.*;
  */
 public class LevelPatternConverterTest {
 
-    private void testLevelLength(int length, String debug, String warn) {
+    private void testLevelLength(final int length, final String debug, final String warn) {
         final Message msg = new SimpleMessage("Hello");
         LogEvent event = new Log4jLogEvent("MyLogger", null, null, Level.DEBUG, msg, null);
         final StringBuilder sb = new StringBuilder();

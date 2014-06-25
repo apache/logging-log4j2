@@ -27,7 +27,7 @@ public class TlsSyslogFrame {
     private String message;
     private int messageLengthInBytes;
 
-    public TlsSyslogFrame(String message) {
+    public TlsSyslogFrame(final String message) {
         setMessage(message);
     }
 
@@ -35,7 +35,7 @@ public class TlsSyslogFrame {
         return this.message;
     }
 
-    public void setMessage(String message) {
+    public void setMessage(final String message) {
         this.message = message;
         setLengthInBytes();
     }
@@ -45,30 +45,30 @@ public class TlsSyslogFrame {
     }
 
     public byte[] getBytes() {
-        String frame = toString();
+        final String frame = toString();
         return frame.getBytes(Charset.defaultCharset());
     }
 
     @Override
     public String toString() {
-        String length = Integer.toString(messageLengthInBytes);
+        final String length = Integer.toString(messageLengthInBytes);
         return length + SPACE + message;
     }
 
     @Override
-    public boolean equals(Object frame) {
+    public boolean equals(final Object frame) {
         return super.equals(frame);
     }
 
-    public boolean equals(TlsSyslogFrame frame) {
+    public boolean equals(final TlsSyslogFrame frame) {
         return isLengthEquals(frame) && isMessageEquals(frame);
     }
 
-    private boolean isLengthEquals(TlsSyslogFrame frame) {
+    private boolean isLengthEquals(final TlsSyslogFrame frame) {
         return this.messageLengthInBytes == frame.messageLengthInBytes;
     }
 
-    private boolean isMessageEquals(TlsSyslogFrame frame) {
+    private boolean isMessageEquals(final TlsSyslogFrame frame) {
         return this.message.equals(frame.message);
     }
 }

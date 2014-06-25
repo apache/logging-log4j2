@@ -31,35 +31,35 @@ public class SslConfigurationTest {
 
     @Test
     public void emptyConfigurationDoesntCauseNullSSLSocketFactory() {
-        SslConfiguration sc = SslConfiguration.createSSLConfiguration(null, null, null);
-        SSLSocketFactory factory = sc.getSslSocketFactory();
+        final SslConfiguration sc = SslConfiguration.createSSLConfiguration(null, null, null);
+        final SSLSocketFactory factory = sc.getSslSocketFactory();
         Assert.assertTrue(factory != null);
     }
 
     @Test
     public void emptyConfigurationHasDefaultTrustStore() throws IOException {
-        SslConfiguration sc = SslConfiguration.createSSLConfiguration(null, null, null);
-        SSLSocketFactory factory = sc.getSslSocketFactory();
-        SSLSocket clientSocket = (SSLSocket) factory.createSocket(TLS_TEST_HOST, TLS_TEST_PORT);
+        final SslConfiguration sc = SslConfiguration.createSSLConfiguration(null, null, null);
+        final SSLSocketFactory factory = sc.getSslSocketFactory();
+        final SSLSocket clientSocket = (SSLSocket) factory.createSocket(TLS_TEST_HOST, TLS_TEST_PORT);
         Assert.assertTrue(true);
     }
 
     @Test(expected = IOException.class)
     public void connectionFailsWithoutValidServerCertificate() throws IOException, StoreConfigurationException {
-        TrustStoreConfiguration tsc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE, null, null, null);
-        SslConfiguration sc = SslConfiguration.createSSLConfiguration(null, null, tsc);
-        SSLSocketFactory factory = sc.getSslSocketFactory();
-        SSLSocket clientSocket = (SSLSocket) factory.createSocket(TLS_TEST_HOST, TLS_TEST_PORT);
-        OutputStream os = clientSocket.getOutputStream();
+        final TrustStoreConfiguration tsc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE, null, null, null);
+        final SslConfiguration sc = SslConfiguration.createSSLConfiguration(null, null, tsc);
+        final SSLSocketFactory factory = sc.getSslSocketFactory();
+        final SSLSocket clientSocket = (SSLSocket) factory.createSocket(TLS_TEST_HOST, TLS_TEST_PORT);
+        final OutputStream os = clientSocket.getOutputStream();
         os.write("GET config/login_verify2?".getBytes());
         Assert.assertTrue(false);
     }
 
     @Test
     public void loadKeyStoreWithoutPassword() throws StoreConfigurationException {
-        KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, null, null, null);
-        SslConfiguration sslConf = SslConfiguration.createSSLConfiguration(null, ksc, null);
-        SSLSocketFactory factory = sslConf.getSslSocketFactory();
+        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, null, null, null);
+        final SslConfiguration sslConf = SslConfiguration.createSSLConfiguration(null, ksc, null);
+        final SSLSocketFactory factory = sslConf.getSslSocketFactory();
         Assert.assertTrue(true);
     }
 }

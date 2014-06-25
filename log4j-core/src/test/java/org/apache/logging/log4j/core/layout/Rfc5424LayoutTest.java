@@ -122,17 +122,17 @@ public class Rfc5424LayoutTest {
             assertTrue("Expected line 3 to end with: " + line3 + " Actual " + list.get(2), list.get(2).endsWith(line3));
             assertTrue("Expected line 4 to end with: " + line4 + " Actual " + list.get(3), list.get(3).endsWith(line4));
 
-            for (String frame : list) {
+            for (final String frame : list) {
                 int length = -1;
-                int frameLength = frame.length();
-                int firstSpacePosition = frame.indexOf(' ');
-                String messageLength = frame.substring(0, firstSpacePosition);
+                final int frameLength = frame.length();
+                final int firstSpacePosition = frame.indexOf(' ');
+                final String messageLength = frame.substring(0, firstSpacePosition);
                 try {
                     length = Integer.parseInt(messageLength);
                     // the ListAppender removes the ending newline, so we expect one less size
                     assertEquals(frameLength, messageLength.length() + length);
                 }
-                catch (NumberFormatException e) {
+                catch (final NumberFormatException e) {
                     assertTrue("Not a valid RFC 5425 frame", false);
                 }
             }
@@ -299,12 +299,12 @@ public class Rfc5424LayoutTest {
 
     @Test
     public void testLoggerFields() {
-        String[] fields = new String[] {
+        final String[] fields = new String[] {
                 "[BAZ@32473 baz=\"org.apache.logging.log4j.core.layout.Rfc5424LayoutTest.testLoggerFields\"]",
                 "[RequestContext@3692 bar=\"org.apache.logging.log4j.core.layout.Rfc5424LayoutTest.testLoggerFields\"]",
                 "[SD-ID@32473 source=\"org.apache.logging.log4j.core.layout.Rfc5424LayoutTest.testLoggerFields\"]"
         };
-        List<String> expectedToContain = Arrays.asList(fields);
+        final List<String> expectedToContain = Arrays.asList(fields);
 
         for (final Appender appender : root.getAppenders().values()) {
             root.removeAppender(appender);
@@ -332,9 +332,9 @@ public class Rfc5424LayoutTest {
 
             final List<String> list = appender.getMessages();
             assertTrue("Not enough list entries", list.size() > 0);
-            String message =  list.get(0);
+            final String message =  list.get(0);
             assertTrue("No class/method", message.contains("Rfc5424LayoutTest.testLoggerFields"));
-            for (String value : expectedToContain) {
+            for (final String value : expectedToContain) {
                 Assert.assertTrue("Message expected to contain " + value + " but did not", message.contains(value));
             }
             appender.clear();
@@ -348,9 +348,9 @@ public class Rfc5424LayoutTest {
 
     @Test
     public void testDiscardEmptyLoggerFields() {
-        String mdcId = "RequestContext";
+        final String mdcId = "RequestContext";
 
-        List<String> expectedToContain = Arrays.asList(
+        final List<String> expectedToContain = Arrays.asList(
                 "[BAZ@32473 baz=\"org.apache.logging.log4j.core.layout.Rfc5424LayoutTest.testLoggerFields\"]"  +
                         "[RequestContext@3692 bar=\"org.apache.logging.log4j.core.layout.Rfc5424LayoutTest.testLoggerFields\"]"
         );
@@ -381,7 +381,7 @@ public class Rfc5424LayoutTest {
 
             final List<String> list = appender.getMessages();
             assertTrue("Not enough list entries", list.size() > 0);
-            String message =  list.get(0);
+            final String message =  list.get(0);
             Assert.assertTrue("SD-ID should have been discarded", !message.contains("SD-ID"));
             Assert.assertTrue("BAZ should have been included", message.contains("BAZ"));
             Assert.assertTrue(mdcId + "should have been included", message.contains(mdcId));
@@ -396,9 +396,9 @@ public class Rfc5424LayoutTest {
 
     @Test
     public void testSubstituteStructuredData() {
-        String mdcId = "RequestContext";
+        final String mdcId = "RequestContext";
 
-        String expectedToContain = "ATM - MSG-ID - Message";
+        final String expectedToContain = "ATM - MSG-ID - Message";
 
         for (final Appender appender : root.getAppenders().values()) {
             root.removeAppender(appender);
@@ -417,7 +417,7 @@ public class Rfc5424LayoutTest {
         try {
             final List<String> list = appender.getMessages();
             assertTrue("Not enough list entries", list.size() > 0);
-            String message =  list.get(0);
+            final String message =  list.get(0);
             Assert.assertTrue("Not the expected message received", message.contains(expectedToContain));
             appender.clear();
         } finally {
@@ -447,7 +447,7 @@ public class Rfc5424LayoutTest {
         try {
             final List<String> list = appender.getMessages();
             assertTrue("Not enough list entries", list.size() > 0);
-            String message =  list.get(0);
+            final String message =  list.get(0);
             assertTrue("Incorrect message. Expected - Hello World, Actual - " + message, message.contains("Hello World"));
         } finally {
             root.removeAppender(appender);

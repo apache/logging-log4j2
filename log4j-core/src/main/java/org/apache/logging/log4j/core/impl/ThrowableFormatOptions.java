@@ -202,7 +202,7 @@ public final class ThrowableFormatOptions {
         int lines = DEFAULT.lines;
         String separator = DEFAULT.separator;
         List<String> packages = DEFAULT.packages;
-        for (String rawOption : options) {
+        for (final String rawOption : options) {
             if (rawOption != null) {
                 final String option = rawOption.trim();
                 if (option.isEmpty()) {

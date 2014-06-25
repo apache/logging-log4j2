@@ -86,7 +86,7 @@ public class SerializedLayoutTest {
     @Test
     public void testLayout() throws Exception {
         final Map<String, Appender> appenders = root.getAppenders();
-        for (Appender appender : appenders.values()) {
+        for (final Appender appender : appenders.values()) {
             root.removeAppender(appender);
         }
         // set up appender
@@ -136,7 +136,7 @@ public class SerializedLayoutTest {
             assertTrue("Incorrect event", event.toString().equals(expected[i]));
             ++i;
         }
-        for (Appender app : appenders.values()) {
+        for (final Appender app : appenders.values()) {
             root.addAppender(app);
         }
     }
@@ -149,7 +149,7 @@ public class SerializedLayoutTest {
             "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world!"), throwable);
         final byte[] result = layout.toByteArray(event);
         assertNotNull(result);
-        FileOutputStream fos = new FileOutputStream(DAT_PATH);
+        final FileOutputStream fos = new FileOutputStream(DAT_PATH);
         fos.write(layout.getHeader());
         fos.write(result);
         fos.close();
@@ -158,9 +158,9 @@ public class SerializedLayoutTest {
     @Test
     public void testDeserialization() throws Exception {
         testSerialization();
-        File file = new File(DAT_PATH);
-        FileInputStream fis = new FileInputStream(file);
-        ObjectInputStream ois = new ObjectInputStream(fis);
+        final File file = new File(DAT_PATH);
+        final FileInputStream fis = new FileInputStream(file);
+        final ObjectInputStream ois = new ObjectInputStream(fis);
         final LogEvent event = (LogEvent) ois.readObject();
         assertNotNull(event);
     }

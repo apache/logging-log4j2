@@ -89,8 +89,8 @@ class AsyncLoggerConfigHelper {
             = new EventTranslatorTwoArg<Log4jEventWrapper, LogEvent, AsyncLoggerConfig>() {
 
         @Override
-        public void translateTo(Log4jEventWrapper ringBufferElement, long sequence, 
-                LogEvent logEvent, AsyncLoggerConfig loggerConfig) {
+        public void translateTo(final Log4jEventWrapper ringBufferElement, final long sequence, 
+                final LogEvent logEvent, final AsyncLoggerConfig loggerConfig) {
             ringBufferElement.event = logEvent;
             ringBufferElement.loggerConfig = loggerConfig;
         }
@@ -283,7 +283,7 @@ class AsyncLoggerConfigHelper {
     /**
      * Returns {@code true} if the specified disruptor still has unprocessed events.
      */
-    private static boolean hasBacklog(Disruptor<?> disruptor) {
+    private static boolean hasBacklog(final Disruptor<?> disruptor) {
         final RingBuffer<?> ringBuffer = disruptor.getRingBuffer();
         return !ringBuffer.hasAvailableCapacity(ringBuffer.getBufferSize());
     }
@@ -316,7 +316,7 @@ class AsyncLoggerConfigHelper {
      *          calling thread needs to process the event itself
      */
     public boolean callAppendersFromAnotherThread(final LogEvent event) {
-        Disruptor<Log4jEventWrapper> temp = disruptor;
+        final Disruptor<Log4jEventWrapper> temp = disruptor;
         if (temp == null) { // LOG4J2-639
             LOGGER.fatal("Ignoring log event after log4j was shut down");
             return true;
@@ -340,7 +340,7 @@ class AsyncLoggerConfigHelper {
             // That could result in adding a log event to the disruptor after it was shut down,
             // which could cause the publishEvent method to hang and never return.
             disruptor.getRingBuffer().publishEvent(translator, logEvent, asyncLoggerConfig);
-        } catch (NullPointerException npe) {
+        } catch (final NullPointerException npe) {
             LOGGER.fatal("Ignoring log event after log4j was shut down.");
         }
         return true;
@@ -353,7 +353,7 @@ class AsyncLoggerConfigHelper {
      * @param contextName name of the {@code LoggerContext}
      * @param loggerConfigName name of the logger config
      */
-    public RingBufferAdmin createRingBufferAdmin(String contextName, String loggerConfigName) {
+    public RingBufferAdmin createRingBufferAdmin(final String contextName, final String loggerConfigName) {
         return RingBufferAdmin.forAsyncLoggerConfig(disruptor.getRingBuffer(), contextName, loggerConfigName);
     }
 

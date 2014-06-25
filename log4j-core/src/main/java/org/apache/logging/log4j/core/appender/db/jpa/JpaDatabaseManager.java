@@ -74,7 +74,7 @@ public final class JpaDatabaseManager extends AbstractDatabaseManager {
             this.entityManager = this.entityManagerFactory.createEntityManager();
             this.transaction = this.entityManager.getTransaction();
             this.transaction.begin();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new AppenderLoggingException(
                     "Cannot write logging event or flush buffer; manager cannot create EntityManager or transaction.", e
             );
@@ -114,7 +114,7 @@ public final class JpaDatabaseManager extends AbstractDatabaseManager {
             if (this.transaction != null && this.transaction.isActive()) {
                 this.transaction.commit();
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             if (this.transaction != null && this.transaction.isActive()) {
                 this.transaction.rollback();
             }
@@ -124,7 +124,7 @@ public final class JpaDatabaseManager extends AbstractDatabaseManager {
                 if (this.entityManager != null && this.entityManager.isOpen()) {
                     this.entityManager.close();
                 }
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 LOGGER.warn("Failed to close entity manager while logging event or flushing buffer.", e);
             } finally {
                 this.entityManager = null;

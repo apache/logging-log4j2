@@ -69,7 +69,7 @@ public final class AvailablePortFinder {
         while (ss == null) {
             try {
                 ss = new ServerSocket(port);
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 ss = null;
                 port += 200;
             }
@@ -94,7 +94,7 @@ public final class AvailablePortFinder {
      * @return the available port
      */
     public static synchronized int getNextAvailable() {
-        int next = getNextAvailable(currentMinPort.get());
+        final int next = getNextAvailable(currentMinPort.get());
         currentMinPort.set(next + 1);
         return next;
     }
@@ -107,7 +107,7 @@ public final class AvailablePortFinder {
      * @throws NoSuchElementException if there are no ports available
      * @return the available port
      */
-    public static synchronized int getNextAvailable(int fromPort) {
+    public static synchronized int getNextAvailable(final int fromPort) {
         if (fromPort < currentMinPort.get() || fromPort > MAX_PORT_NUMBER) {
             throw new IllegalArgumentException("From port number not in valid range: " + fromPort);
         }
@@ -129,7 +129,7 @@ public final class AvailablePortFinder {
      * @return <tt>true</tt> if the port is available, or <tt>false</tt> if not
      * @throws IllegalArgumentException is thrown if the port number is out of range
      */
-    public static synchronized boolean available(int port) throws IllegalArgumentException {
+    public static synchronized boolean available(final int port) throws IllegalArgumentException {
         if (port < currentMinPort.get() || port > MAX_PORT_NUMBER) {
             throw new IllegalArgumentException("Invalid start currentMinPort: " + port);
         }
@@ -142,7 +142,7 @@ public final class AvailablePortFinder {
             ds = new DatagramSocket(port);
             ds.setReuseAddress(true);
             return true;
-        } catch (IOException e) {
+        } catch (final IOException e) {
             // Do nothing
         } finally {
             Closer.closeSilent(ds);

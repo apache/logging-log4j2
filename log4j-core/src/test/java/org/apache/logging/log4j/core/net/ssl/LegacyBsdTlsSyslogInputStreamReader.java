@@ -26,7 +26,7 @@ import org.apache.logging.log4j.util.Strings;
 public class LegacyBsdTlsSyslogInputStreamReader extends TlsSyslogInputStreamReaderBase {
     private final ByteArrayOutputStream buffer;
 
-    public LegacyBsdTlsSyslogInputStreamReader(InputStream inputStream) {
+    public LegacyBsdTlsSyslogInputStreamReader(final InputStream inputStream) {
         super(inputStream, TlsSyslogMessageFormat.LEGACY_BSD);
         buffer = new ByteArrayOutputStream();
     }
@@ -36,7 +36,7 @@ public class LegacyBsdTlsSyslogInputStreamReader extends TlsSyslogInputStreamRea
         String message = Strings.EMPTY;
         try {
             while (true) {
-                int b = inputStream.read();
+                final int b = inputStream.read();
                 if (b == -1) {
                     throw new EOFException("The stream has been closed or the end of stream has been reached");
                 }
@@ -46,7 +46,7 @@ public class LegacyBsdTlsSyslogInputStreamReader extends TlsSyslogInputStreamRea
                 }
             }
         }
-        catch (EOFException e) {
+        catch (final EOFException e) {
             if (buffer.size() > 0) {
                 message = buffer.toString();
                 buffer.reset();

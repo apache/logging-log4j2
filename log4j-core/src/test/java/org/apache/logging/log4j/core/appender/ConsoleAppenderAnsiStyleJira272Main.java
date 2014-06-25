@@ -37,7 +37,7 @@ public class ConsoleAppenderAnsiStyleJira272Main {
 
     public static void main(final String[] args) {
         // System.out.println(System.getProperty("java.class.path"));
-        String config = args.length == 0 ? "target/test-classes/log4j2-272.xml" : args[0];
+        final String config = args.length == 0 ? "target/test-classes/log4j2-272.xml" : args[0];
         final LoggerContext ctx = Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(), config);
         try {
             LOG.fatal("Fatal message.");
@@ -48,7 +48,7 @@ public class ConsoleAppenderAnsiStyleJira272Main {
             LOG.trace("Trace message.");
             try {
                 throw new NullPointerException();
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 LOG.error("Error message.", e);
                 LOG.catching(Level.ERROR, e);
             }

@@ -66,7 +66,7 @@ public final class FileUtils {
             }
         }
         try {
-            String fileName = uri.toURL().getFile();
+            final String fileName = uri.toURL().getFile();
             if (new File(fileName).exists()) { // LOG4J2-466
                 return new File(fileName); // allow files with '+' char in name
             }
@@ -112,7 +112,7 @@ public final class FileUtils {
      * @return the URI.
      * @throws URISyntaxException if instantiating the URI threw a {@code URISyntaxException}.
      */
-    public static URI getCorrectedFilePathUri(String uri) throws URISyntaxException {
+    public static URI getCorrectedFilePathUri(final String uri) throws URISyntaxException {
         return new URI(WINDOWS_DIRECTORY_SEPARATOR.matcher(uri).replaceAll("/"));
     }
 }

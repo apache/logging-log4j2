@@ -66,7 +66,7 @@ public class CustomConfigurationTest {
         ctx.reconfigure();
         final Configuration config = ctx.getConfiguration();
         assertTrue("Configuration is not an XmlConfiguration", config instanceof XmlConfiguration);
-        for (StatusListener listener : StatusLogger.getLogger().getListeners()) {
+        for (final StatusListener listener : StatusLogger.getLogger().getListeners()) {
             if (listener instanceof StatusConsoleListener) {
                 assertSame(listener.getStatusLevel(), Level.INFO);
                 break;
@@ -76,19 +76,19 @@ public class CustomConfigurationTest {
             .withPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
             .withConfiguration(config)
             .build();
-        Appender appender = FileAppender.createAppender(LOG_FILE, "false", "false", "File", "true",
+        final Appender appender = FileAppender.createAppender(LOG_FILE, "false", "false", "File", "true",
             "false", "false", "4000", layout, null, "false", null, config);
         appender.start();
         config.addAppender(appender);
-        AppenderRef ref = AppenderRef.createAppenderRef("File", null, null);
-        AppenderRef[] refs = new AppenderRef[] {ref};
+        final AppenderRef ref = AppenderRef.createAppenderRef("File", null, null);
+        final AppenderRef[] refs = new AppenderRef[] {ref};
 
-        LoggerConfig loggerConfig = LoggerConfig.createLogger("false", Level.INFO, "org.apache.logging.log4j",
+        final LoggerConfig loggerConfig = LoggerConfig.createLogger("false", Level.INFO, "org.apache.logging.log4j",
             "true", refs, null, config, null );
         loggerConfig.addAppender(appender, null, null);
         config.addLogger("org.apache.logging.log4j", loggerConfig);
         ctx.updateLoggers();
-        Logger logger = ctx.getLogger(CustomConfigurationTest.class.getName());
+        final Logger logger = ctx.getLogger(CustomConfigurationTest.class.getName());
         logger.info("This is a test");
         final File file = new File(LOG_FILE);
         assertTrue("log file not created", file.exists());

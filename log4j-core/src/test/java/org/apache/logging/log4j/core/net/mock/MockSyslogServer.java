@@ -24,7 +24,7 @@ public class MockSyslogServer extends Thread {
     protected int port;
     private final int numberOfMessagesToReceive;
 
-    public MockSyslogServer(int numberOfMessagesToReceive, int port) {
+    public MockSyslogServer(final int numberOfMessagesToReceive, final int port) {
         this.numberOfMessagesToReceive = numberOfMessagesToReceive;
         this.messageList = new ArrayList<String>();
         this.port = port;

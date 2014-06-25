@@ -138,7 +138,7 @@ public final class AsyncAppender extends AbstractAppender {
             }
             logEvent = ((RingBufferLogEvent) logEvent).createMemento();
         }
-        Log4jLogEvent coreEvent = (Log4jLogEvent) logEvent;
+        final Log4jLogEvent coreEvent = (Log4jLogEvent) logEvent;
         boolean appendSuccessful = false;
         if (blocking) {
             if (isAppenderThread.get() == Boolean.TRUE && queue.remainingCapacity() == 0) {
@@ -236,7 +236,7 @@ public final class AsyncAppender extends AbstractAppender {
                 }
                 final Log4jLogEvent event = Log4jLogEvent.deserialize(s);
                 event.setEndOfBatch(queue.isEmpty());
-                boolean success = callAppenders(event);
+                final boolean success = callAppenders(event);
                 if (!success && errorAppender != null) {
                     try {
                         errorAppender.callAppender(event);

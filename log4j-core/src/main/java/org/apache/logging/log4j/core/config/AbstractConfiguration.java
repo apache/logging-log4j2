@@ -174,7 +174,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         // LOG4J2-392 first stop AsyncLogger Disruptor thread
         final LoggerContextFactory factory = LogManager.getFactory();
         if (factory instanceof Log4jContextFactory) {
-            ContextSelector selector = ((Log4jContextFactory) factory).getSelector();
+            final ContextSelector selector = ((Log4jContextFactory) factory).getSelector();
             if (selector instanceof AsyncLoggerContextSelector) { // all loggers are async
                 // TODO until LOG4J2-493 is fixed we can only stop AsyncLogger once!
                 // but LoggerContext.setConfiguration will call config.stop()
@@ -276,11 +276,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
     }
 
-    protected void createAdvertiser(String advertiserString, ConfigurationSource configSource,
-                                    byte[] buffer, String contentType) {
+    protected void createAdvertiser(final String advertiserString, final ConfigurationSource configSource,
+                                    final byte[] buffer, final String contentType) {
         if (advertiserString != null) {
-            Node node = new Node(null, advertiserString, null);
-            Map<String, String> attributes = node.getAttributes();
+            final Node node = new Node(null, advertiserString, null);
+            final Map<String, String> attributes = node.getAttributes();
             attributes.put("content", new String(buffer));
             attributes.put("contentType", contentType);
             attributes.put("name", "configuration");
@@ -294,7 +294,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private void setupAdvertisement() {
         if (advertiserNode != null)
         {
-            String name = advertiserNode.getName();
+            final String name = advertiserNode.getName();
             @SuppressWarnings("unchecked")
             final PluginType<Advertiser> type = (PluginType<Advertiser>) pluginManager.getPluginType(name);
             if (type != null)
@@ -326,7 +326,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @SuppressWarnings("unchecked")
     protected void doConfigure() {
         if (rootNode.hasChildren() && rootNode.getChildren().get(0).getName().equalsIgnoreCase("Properties")) {
-            Node first = rootNode.getChildren().get(0);
+            final Node first = rootNode.getChildren().get(0);
             createConfiguration(first, null);
             if (first.getObject() != null) {
                 subst.setVariableResolver((StrLookup) first.getObject());

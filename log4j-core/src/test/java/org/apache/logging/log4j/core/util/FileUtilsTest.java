@@ -32,9 +32,9 @@ public class FileUtilsTest {
 
     @Test
     public void testFileFromUriWithPlusCharactersInName() throws Exception {
-        String config = "target/test-classes/log4j+config+with+plus+characters.xml";
-        URI uri = new URI(config);
-        File file = FileUtils.fileFromUri(uri);
+        final String config = "target/test-classes/log4j+config+with+plus+characters.xml";
+        final URI uri = new URI(config);
+        final File file = FileUtils.fileFromUri(uri);
         assertEquals("log4j+config+with+plus+characters.xml", file.getName());
         assertTrue("file exists", file.exists());
     }
@@ -42,17 +42,17 @@ public class FileUtilsTest {
     @Test
     public void testFileFromUriWithPlusCharactersConvertedToSpacesIfFileDoesNotExist()
             throws Exception {
-        String config = "NON-EXISTING-PATH/this+file+does+not+exist.xml";
-        URI uri = new URI(config);
-        File file = FileUtils.fileFromUri(uri);
+        final String config = "NON-EXISTING-PATH/this+file+does+not+exist.xml";
+        final URI uri = new URI(config);
+        final File file = FileUtils.fileFromUri(uri);
         assertEquals("this file does not exist.xml", file.getName());
         assertFalse("file does not exist", file.exists());
     }
 
     @Test
     public void testGetCorrectedFilePathUriWithoutBackslashes() throws URISyntaxException {
-        String config = "file:///path/to/something/on/unix";
-        URI uri = FileUtils.getCorrectedFilePathUri(config);
+        final String config = "file:///path/to/something/on/unix";
+        final URI uri = FileUtils.getCorrectedFilePathUri(config);
 
         assertNotNull("The URI should not be null.", uri);
         assertEquals("The URI is not correct.", "file:///path/to/something/on/unix", uri.toString());
@@ -60,8 +60,8 @@ public class FileUtilsTest {
 
     @Test
     public void testGetCorrectedFilePathUriWithBackslashes() throws URISyntaxException {
-        String config = "file:///D:\\path\\to\\something/on/windows";
-        URI uri = FileUtils.getCorrectedFilePathUri(config);
+        final String config = "file:///D:\\path\\to\\something/on/windows";
+        final URI uri = FileUtils.getCorrectedFilePathUri(config);
 
         assertNotNull("The URI should not be null.", uri);
         assertEquals("The URI is not correct.", "file:///D:/path/to/something/on/windows", uri.toString());

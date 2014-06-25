@@ -45,7 +45,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
 
     protected RandomAccessFileManager(final RandomAccessFile file,
             final String fileName, final OutputStream os,
-            final boolean immediateFlush, int bufferSize,
+            final boolean immediateFlush, final int bufferSize,
             final String advertiseURI, final Layout<? extends Serializable> layout) {
         super(os, fileName, layout);
         this.isImmediateFlush = immediateFlush;
@@ -69,7 +69,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
      * @return A RandomAccessFileManager for the File.
      */
     public static RandomAccessFileManager getFileManager(final String fileName, final boolean append,
-            final boolean isFlush, int bufferSize, final String advertiseURI,
+            final boolean isFlush, final int bufferSize, final String advertiseURI,
             final Layout<? extends Serializable> layout) {
         return (RandomAccessFileManager) getManager(fileName, new FactoryData(append,
                 isFlush, bufferSize, advertiseURI, layout), FACTORY);
@@ -186,7 +186,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
          * @param bufferSize TODO
          */
         public FactoryData(final boolean append, final boolean immediateFlush,
-                int bufferSize, final String advertiseURI, final Layout<? extends Serializable> layout) {
+                final int bufferSize, final String advertiseURI, final Layout<? extends Serializable> layout) {
             this.append = append;
             this.immediateFlush = immediateFlush;
             this.bufferSize = bufferSize;

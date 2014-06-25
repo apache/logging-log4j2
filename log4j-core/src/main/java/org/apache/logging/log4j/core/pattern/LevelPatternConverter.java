@@ -108,7 +108,7 @@ public final class LevelPatternConverter extends LogEventPatternConverter {
      * @return The abbreviated level name, or the whole level name if the {@code length} is greater than the level name
      *         length,
      */
-    private static String left(final Level level, int length) {
+    private static String left(final Level level, final int length) {
         final String string = level.toString();
         if (length >= string.length()) {
             return string;

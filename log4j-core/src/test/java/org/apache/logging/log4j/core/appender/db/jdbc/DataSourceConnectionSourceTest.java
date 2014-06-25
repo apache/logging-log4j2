@@ -67,9 +67,9 @@ public class DataSourceConnectionSourceTest {
     @BeforeClass
     public static void beforeClass() {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         ctx.reconfigure();
-        StatusLogger logger = StatusLogger.getLogger();
+        final StatusLogger logger = StatusLogger.getLogger();
         logger.setLevel(Level.FATAL);
     }
 

@@ -42,19 +42,19 @@ public class ResourceBundleLookup implements StrLookup {
         if (key == null) {
             return null;
         }
-        String[] keys = key.split(":");
-        int keyLen = keys.length;
+        final String[] keys = key.split(":");
+        final int keyLen = keys.length;
         if (keyLen != 2) {
             // throw new IllegalArgumentException("Bad key format " + key + ", format is BundleName:Value");
             // log?
             return null;
         }
-        String bundleName = keys[0];
-        String bundleKey = keys[1];
+        final String bundleName = keys[0];
+        final String bundleKey = keys[1];
         try {
             // The ResourceBundle class caches bundles, no need to cache here.
             return ResourceBundle.getBundle(bundleName).getString(bundleKey);
-        } catch (MissingResourceException e) {
+        } catch (final MissingResourceException e) {
             // log?
             return null;
         }

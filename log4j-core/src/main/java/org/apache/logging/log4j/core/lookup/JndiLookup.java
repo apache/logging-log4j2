@@ -59,7 +59,7 @@ public class JndiLookup implements StrLookup {
         try {
             ctx = new InitialContext();
             return (String) ctx.lookup(convertJndiName(key));
-        } catch (NamingException e) {
+        } catch (final NamingException e) {
             return null;
         } finally {
             Closer.closeSilent(ctx);

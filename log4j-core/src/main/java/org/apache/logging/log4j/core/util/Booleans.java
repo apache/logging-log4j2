@@ -33,7 +33,7 @@ public final class Booleans {
      * @param defaultValue The default value to use if {@code s} is neither {@code "true"} nor {@code "false"}
      * @return the {@code boolean} value represented by the argument, or {@code defaultValue}.
      */
-    public static boolean parseBoolean(String s, boolean defaultValue) {
+    public static boolean parseBoolean(final String s, final boolean defaultValue) {
         return "true".equalsIgnoreCase(s) || (defaultValue && !"false".equalsIgnoreCase(s));
     }
 

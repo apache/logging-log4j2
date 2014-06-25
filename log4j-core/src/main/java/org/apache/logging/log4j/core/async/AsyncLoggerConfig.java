@@ -144,7 +144,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
      * 
      * @param contextName name of the {@code LoggerContext}
      */
-    public RingBufferAdmin createRingBufferAdmin(String contextName) {
+    public RingBufferAdmin createRingBufferAdmin(final String contextName) {
         return helper.createRingBufferAdmin(contextName, getName());
     }
 

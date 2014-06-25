@@ -51,7 +51,7 @@ public class LateConfigTest {
         assertNotNull("No configuration", cfg);
         assertTrue("Not set to default configuration", cfg instanceof DefaultConfiguration);
         final File file = new File(CONFIG);
-        LoggerContext loggerContext = (LoggerContext) LogManager.getContext(null, false, file.toURI());
+        final LoggerContext loggerContext = (LoggerContext) LogManager.getContext(null, false, file.toURI());
         assertNotNull("No Logger Context", loggerContext);
         final Configuration newConfig = loggerContext.getConfiguration();
         assertTrue("Configuration not reset", cfg != newConfig);

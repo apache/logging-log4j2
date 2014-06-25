@@ -40,10 +40,10 @@ public abstract class AbstractAppender extends AbstractFilterable
 
     private final String name;
 
-    public static int parseInt(String s, int defaultValue) {
+    public static int parseInt(final String s, final int defaultValue) {
         try {
             return Integers.parseInt(s, defaultValue);
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
             LOGGER.error("Could not parse \"{}\" as an integer,  using default value {}: {}", s, defaultValue, e);
             return defaultValue;
         }

@@ -67,7 +67,7 @@ public class MarkerAttributeConverterTest {
 
         assertNotNull("The reversed value should not be null.", reversed);
         assertEquals("The reversed value is not correct.", "testConvert02", marker.getName());
-        Marker[] parents = marker.getParents();
+        final Marker[] parents = marker.getParents();
         assertNotNull("The first parent should not be null.", parents);
         assertNotNull("The first parent should not be null.", parents[0]);
         assertEquals("The first parent is not correct.", "anotherConvert02", parents[0].getName());
