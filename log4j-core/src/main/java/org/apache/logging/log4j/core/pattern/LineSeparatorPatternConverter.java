@@ -27,39 +27,40 @@ import org.apache.logging.log4j.core.util.Constants;
 @ConverterKeys({ "n" })
 public final class LineSeparatorPatternConverter extends LogEventPatternConverter {
 
-  /**
-   * Singleton.
-   */
-  private static final LineSeparatorPatternConverter INSTANCE =
-    new LineSeparatorPatternConverter();
+    /**
+     * Singleton.
+     */
+    private static final LineSeparatorPatternConverter INSTANCE = new LineSeparatorPatternConverter();
 
-  /**
-   * Line separator.
-   */
-  private final String lineSep;
+    /**
+     * Line separator.
+     */
+    private final String lineSep;
 
-  /**
-   * Private constructor.
-   */
-  private LineSeparatorPatternConverter() {
-    super("Line Sep", "lineSep");
-    lineSep = Constants.LINE_SEPARATOR;
-  }
+    /**
+     * Private constructor.
+     */
+    private LineSeparatorPatternConverter() {
+        super("Line Sep", "lineSep");
+        lineSep = Constants.LINE_SEPARATOR;
+    }
 
-  /**
-   * Obtains an instance of pattern converter.
-   * @param options options, may be null.
-   * @return instance of pattern converter.
-   */
-  public static LineSeparatorPatternConverter newInstance(final String[] options) {
-    return INSTANCE;
-  }
+    /**
+     * Obtains an instance of pattern converter.
+     * 
+     * @param options
+     *        options, may be null.
+     * @return instance of pattern converter.
+     */
+    public static LineSeparatorPatternConverter newInstance(final String[] options) {
+        return INSTANCE;
+    }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-public void format(final LogEvent event, final StringBuilder toAppendTo) {
-    toAppendTo.append(lineSep);
-  }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void format(final LogEvent event, final StringBuilder toAppendTo) {
+        toAppendTo.append(lineSep);
+    }
 }
