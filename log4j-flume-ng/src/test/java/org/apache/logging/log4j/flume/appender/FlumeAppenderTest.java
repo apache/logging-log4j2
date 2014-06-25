@@ -127,8 +127,7 @@ public class FlumeAppenderTest {
     }
 
     @Test
-    public void testLog4jAvroAppender() throws InterruptedException,
-            IOException {
+    public void testLog4jAvroAppender() throws IOException {
         final Agent[] agents = new Agent[] { Agent.createAgent("localhost",
                 testPort) };
         final FlumeAppender avroAppender = FlumeAppender.createAppender(agents,
@@ -157,7 +156,7 @@ public class FlumeAppenderTest {
     }
 
     @Test
-    public void testStructured() throws InterruptedException, IOException {
+    public void testStructured() throws IOException {
         final Agent[] agents = new Agent[] { Agent.createAgent("localhost",
                 testPort) };
         final FlumeAppender avroAppender = FlumeAppender.createAppender(agents,
@@ -197,7 +196,7 @@ public class FlumeAppenderTest {
     }
 
     @Test
-    public void testMultiple() throws InterruptedException, IOException {
+    public void testMultiple() throws IOException {
         final Agent[] agents = new Agent[] { Agent.createAgent("localhost",
                 testPort) };
         final FlumeAppender avroAppender = FlumeAppender.createAppender(agents,
@@ -231,7 +230,7 @@ public class FlumeAppenderTest {
     }
 
     @Test
-    public void testBatch() throws InterruptedException, IOException {
+    public void testBatch() throws IOException {
         final Agent[] agents = new Agent[] { Agent.createAgent("localhost",
                 testPort) };
         final FlumeAppender avroAppender = FlumeAppender.createAppender(agents,
