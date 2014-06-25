@@ -61,100 +61,55 @@ public class PatternLayoutTest {
     @After
     public void after() {
         ThreadContext.clearMap();
+
     }
 
     LoggerContext ctx = (LoggerContext) LogManager.getContext();
 
     Logger root = ctx.getLogger("");
 
-    /**
-     * Test case for MDC conversion pattern.
-     */
     @Test
-    public void testMdcPattern() throws Exception {
+    public void testMdcPattern1() throws Exception {
+        testMdcPattern("%m : %X", "Hello : {}", false);
+    }
 
-        final String mdcMsgPattern1 = "%m : %X%n";
-        final String mdcMsgPattern2 = "%m : %X{key1}%n";
-        final String mdcMsgPattern3 = "%m : %X{key2}%n";
-        final String mdcMsgPattern4 = "%m : %X{key3}%n";
-        final String mdcMsgPattern5 = "%m : %X{key1},%X{key2},%X{key3}%n";
-        final Map<String, Appender> appenders = root.getAppenders();
-        for (final Appender appender : appenders.values()) {
-            root.removeAppender(appender);
+    @Test
+    public void testMdcPattern2() throws Exception {
+        testMdcPattern("%m : %X{key1}", "Hello : value1", true);
+    }
+
+    @Test
+    public void testMdcPattern3() throws Exception {
+        testMdcPattern("%m : %X{key2}", "Hello : value2", true);
+    }
+
+    @Test
+    public void testMdcPattern4() throws Exception {
+        testMdcPattern("%m : %X{key3}", "Hello : ", true);
+    }
+
+    @Test
+    public void testMdcPattern5() throws Exception {
+        testMdcPattern("%m : %X{key1}, %X{key2}, %X{key3}", "Hello : value1, value2, ", true);
+    }
+
+    private void testMdcPattern(String patternStr, String expectedStr, boolean useThreadContext) throws Exception {
+        final PatternLayout layout = PatternLayout.newBuilder().withPattern(patternStr)
+                .withConfiguration(ctx.getConfiguration()).build();
+        if (useThreadContext) {
+            ThreadContext.put("key1", "value1");
+            ThreadContext.put("key2", "value2");
         }
-
-        // set up appender
-        final PatternLayout layout = PatternLayout.newBuilder()
-            .withPattern(msgPattern)
-            .withConfiguration(ctx.getConfiguration())
-            .build();
-        final FileAppender appender = FileAppender.createAppender(OUTPUT_FILE + "_mdc", "false", "false", "File",
-                "false", "true", "false", null, layout, null, "false", null, null);
-        appender.start();
-
-        // set appender on root and set level to debug
-        root.addAppender(appender);
-        root.setLevel(Level.DEBUG);
-
-        // output starting message
-        root.debug("starting mdc pattern test");
-
-        layout.setConversionPattern(mdcMsgPattern1);
-        root.debug("empty mdc, no key specified in pattern");
-
-        layout.setConversionPattern(mdcMsgPattern2);
-        root.debug("empty mdc, key1 in pattern");
-
-        layout.setConversionPattern(mdcMsgPattern3);
-        root.debug("empty mdc, key2 in pattern");
-
-        layout.setConversionPattern(mdcMsgPattern4);
-        root.debug("empty mdc, key3 in pattern");
-
-        layout.setConversionPattern(mdcMsgPattern5);
-        root.debug("empty mdc, key1, key2, and key3 in pattern");
-
-        ThreadContext.put("key1", "value1");
-        ThreadContext.put("key2", "value2");
-
-        layout.setConversionPattern(mdcMsgPattern1);
-        root.debug("filled mdc, no key specified in pattern");
-
-        layout.setConversionPattern(mdcMsgPattern2);
-        root.debug("filled mdc, key1 in pattern");
-
-        layout.setConversionPattern(mdcMsgPattern3);
-        root.debug("filled mdc, key2 in pattern");
-
-        layout.setConversionPattern(mdcMsgPattern4);
-        root.debug("filled mdc, key3 in pattern");
-
-        layout.setConversionPattern(mdcMsgPattern5);
-        root.debug("filled mdc, key1, key2, and key3 in pattern");
-
-        ThreadContext.remove("key1");
-        ThreadContext.remove("key2");
-
-        layout.setConversionPattern(msgPattern);
-        root.debug("finished mdc pattern test");
-
-        assertTrue(Compare.compare(this.getClass(), OUTPUT_FILE + "_mdc", WITNESS_FILE + "_mdc"));
-
-        root.removeAppender(appender);
-
-        appender.stop();
-
-        for (final Appender app : appenders.values()) {
-            root.addAppender(app);
-        }
+        final LogEvent event = new Log4jLogEvent(this.getClass().getName(), null,
+                "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello"), null);
+        final byte[] result = layout.toByteArray(event);
+        assertEquals(expectedStr, new String(result));
     }
 
     @Test
     public void testRegex() throws Exception {
-        final PatternLayout layout = PatternLayout.newBuilder()
-            .withPattern(regexPattern)
-            .withConfiguration(ctx.getConfiguration())
-            .build();
+        final PatternLayout layout = PatternLayout.newBuilder().withPattern(regexPattern)
+                .withConfiguration(ctx.getConfiguration()).build();
         final LogEvent event = new Log4jLogEvent(this.getClass().getName(), null,
                 "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world!"), null);
         final byte[] result = layout.toByteArray(event);
@@ -162,10 +117,8 @@ public class PatternLayoutTest {
     }
 
     private void testUnixTime(final String pattern) throws Exception {
-        final PatternLayout layout = PatternLayout.newBuilder()
-            .withPattern(pattern + " %m")
-            .withConfiguration(ctx.getConfiguration())
-            .build();
+        final PatternLayout layout = PatternLayout.newBuilder().withPattern(pattern + " %m")
+                .withConfiguration(ctx.getConfiguration()).build();
         final LogEvent event1 = new Log4jLogEvent(this.getClass().getName(), null,
                 "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world 1!"), null);
         final byte[] result1 = layout.toByteArray(event1);
@@ -180,10 +133,8 @@ public class PatternLayoutTest {
 
     @Test
     public void testUnixTime() throws Exception {
-        final PatternLayout layout = PatternLayout.newBuilder()
-            .withPattern("%d{UNIX} %m")
-            .withConfiguration(ctx.getConfiguration())
-            .build();
+        final PatternLayout layout = PatternLayout.newBuilder().withPattern("%d{UNIX} %m")
+                .withConfiguration(ctx.getConfiguration()).build();
         final LogEvent event1 = new Log4jLogEvent(this.getClass().getName(), null,
                 "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world 1!"), null);
         final byte[] result1 = layout.toByteArray(event1);
@@ -198,10 +149,8 @@ public class PatternLayoutTest {
 
     @Test
     public void testUnixTimeMillis() throws Exception {
-        final PatternLayout layout = PatternLayout.newBuilder()
-            .withPattern("%d{UNIX_MILLIS} %m")
-            .withConfiguration(ctx.getConfiguration())
-            .build();
+        final PatternLayout layout = PatternLayout.newBuilder().withPattern("%d{UNIX_MILLIS} %m")
+                .withConfiguration(ctx.getConfiguration()).build();
         final LogEvent event1 = new Log4jLogEvent(this.getClass().getName(), null,
                 "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world 1!"), null);
         final byte[] result1 = layout.toByteArray(event1);
@@ -216,30 +165,27 @@ public class PatternLayoutTest {
 
     @Test
     public void testHeaderFooter() throws Exception {
-        final PatternLayout layout = PatternLayout.newBuilder()
-            .withPattern("%d{UNIX} %m")
-            .withConfiguration(ctx.getConfiguration())
-            .withHeader("${ctx:header}")
-            .withFooter("${ctx:footer}")
-            .build();
+        final PatternLayout layout = PatternLayout.newBuilder().withPattern("%d{UNIX} %m")
+                .withConfiguration(ctx.getConfiguration()).withHeader("${ctx:header}").withFooter("${ctx:footer}")
+                .build();
         ThreadContext.put("header", "Hello world Header");
         ThreadContext.put("footer", "Hello world Footer");
         final LogEvent event1 = new Log4jLogEvent(this.getClass().getName(), null,
-            "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world 1!"), null);
+                "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world 1!"), null);
         final byte[] header = layout.getHeader();
         assertNotNull("No header", header);
-        assertTrue("expected \"Hello world Header\", actual \"" + new String(header) + '"', new String(header).equals(new String("Hello world Header")));
+        assertTrue("expected \"Hello world Header\", actual \"" + new String(header) + '"',
+                new String(header).equals(new String("Hello world Header")));
     }
 
     @Test
     public void testSpecialChars() throws Exception {
-        final PatternLayout layout = PatternLayout.newBuilder()
-            .withPattern("\\\\%level\\t%msg\\n\\t%logger\\r\\n\\f")
-            .withConfiguration(ctx.getConfiguration())
-            .build();
+        final PatternLayout layout = PatternLayout.newBuilder().withPattern("\\\\%level\\t%msg\\n\\t%logger\\r\\n\\f")
+                .withConfiguration(ctx.getConfiguration()).build();
         final LogEvent event = new Log4jLogEvent(this.getClass().getName(), null,
                 "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world!"), null);
         final byte[] result = layout.toByteArray(event);
-        assertEquals("\\INFO\tHello, world!\n\torg.apache.logging.log4j.core.layout.PatternLayoutTest\r\n\f", new String(result));
+        assertEquals("\\INFO\tHello, world!\n\torg.apache.logging.log4j.core.layout.PatternLayoutTest\r\n\f",
+                new String(result));
     }
 }
