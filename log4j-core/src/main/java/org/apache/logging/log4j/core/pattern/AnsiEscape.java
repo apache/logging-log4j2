@@ -34,9 +34,13 @@ import org.apache.logging.log4j.util.EnglishEnums;
 public enum AnsiEscape {
 
     /**
-     * Escape prefix.
+     * The Control Sequence Introducer (or Control Sequence Initiator).
+     * <p>
+     * Most sequences are more than two characters and start with the characters ESC and [ (the left bracket).
+     * </p>
      */
-    PREFIX("\u001b["),
+    CSI("\u001b["),
+    
     /**
      * Escape suffix.
      */
@@ -224,7 +228,7 @@ public enum AnsiEscape {
      * @return the default style
      */
     public static String getDefaultStyle() {
-        return PREFIX.getCode() + SUFFIX.getCode();
+        return CSI.getCode() + SUFFIX.getCode();
     }
 
     /**
@@ -309,7 +313,7 @@ public enum AnsiEscape {
         if (names == null) {
             return getDefaultStyle();
         }
-        final StringBuilder sb = new StringBuilder(AnsiEscape.PREFIX.getCode());
+        final StringBuilder sb = new StringBuilder(AnsiEscape.CSI.getCode());
         boolean first = true;
         for (final String name : names) {
             try {
