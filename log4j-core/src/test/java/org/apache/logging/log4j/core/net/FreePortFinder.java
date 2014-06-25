@@ -19,8 +19,20 @@ package org.apache.logging.log4j.core.net;
 import java.io.IOException;
 import java.net.ServerSocket;
 
+/**
+ * Finds free socket ports.
+ */
 public class FreePortFinder {
 
+    /**
+     * Finds free socket ports
+     * 
+     * @param count
+     *        How many ports to find
+     * @return An array of free port numbers.
+     * @throws IOException
+     *         if an I/O error occurs finding sockets
+     */
     public static int[] findFreePorts(final int count) throws IOException {
         final int[] ports = new int[count];
         final ServerSocket[] sockets = new ServerSocket[count];
