@@ -52,7 +52,7 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
     @Override
     protected void shutdownInternal() {
         // NoSQL doesn't use transactions, so all we need to do here is simply close the client
-        Closer.closeSilent(this.connection);
+        Closer.closeSilently(this.connection);
     }
 
     @Override
