@@ -60,14 +60,14 @@ public class LoggingController {
         if (threadCount != null && threadCount.length() > 0) {
             try {
                 numThreads = Integer.parseInt(threadCount);
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 System.out.println("Invalid threadCount specified: " + threadCount);
             }
         }
         if (interval != null && interval.length() > 0) {
             try {
                 timeBase = Integer.parseInt(interval);
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 System.out.println("Invalid interval specified: " + interval);
             }
         }
