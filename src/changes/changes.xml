@@ -25,6 +25,9 @@
       <action issue="LOG4J2-682" dev="ggregory" type="fix" due-to="Scott Harrington">
         Special characters (tab and so on) in PatternLayout do not work.
       </action>
+      <action issue="LOG4J2-685" dev="ggregory" type="update">
+        Make org.apache.logging.log4j.core.layout.AbstractLayout immutable.
+      </action>
     </release>
     <release version="2.0-rc2" date="2014-06-21" description="Bug fixes and enhancements">
       <action issue="LOG4J2-675" dev="rpopma" type="add">
