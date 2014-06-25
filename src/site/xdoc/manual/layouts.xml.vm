@@ -142,7 +142,9 @@
             A conversion pattern is composed of literal text and format control expressions called
             <em>conversion specifiers</em>.
           </p>
-          <p><i>Note that any literal text may be included in the conversion pattern.</i>
+          <p><i>Note that any literal text, including <b>Special Characters</b>, may be included in the conversion
+            pattern.</i> Special Characters include <b>\t</b>, <b>\n</b>, <b>\r</b>, <b>\f</b>. Use <b>\\</b> to
+            insert a single backslash into the output.
           </p>
           <p>Each conversion specifier starts with a percent sign (%) and is followed by optional <em>format
             modifiers</em> and a <em>conversion character</em>. The conversion character specifies the type of

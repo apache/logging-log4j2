@@ -237,5 +237,16 @@ public class PatternLayoutTest {
         assertTrue("expected \"Hello world Header\", actual \"" + new String(header) + '"', new String(header).equals(new String("Hello world Header")));
     }
 
-
+    @Test
+    public void testSpecialChars() throws Exception {
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        final PatternLayout layout = PatternLayout.newBuilder()
+            .withPattern("\\\\%level\\t%msg\\n\\t%logger\\r\\n\\f")
+            .withConfiguration(ctx.getConfiguration())
+            .build();
+        final LogEvent event = new Log4jLogEvent(this.getClass().getName(), null,
+                "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world!"), null);
+        final byte[] result = layout.toByteArray(event);
+        assertEquals("\\INFO\tHello, world!\n\torg.apache.logging.log4j.core.layout.PatternLayoutTest\r\n\f", new String(result));
+    }
 }

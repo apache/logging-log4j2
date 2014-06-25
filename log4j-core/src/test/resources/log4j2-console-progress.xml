@@ -19,7 +19,7 @@
 <Configuration status="OFF">
   <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
-      <PatternLayout pattern="%highlight{%-5level: %msg%throwable}" />
+      <PatternLayout pattern="%highlight{%-5level: %msg%throwable}\r" />
     </Console>
   </Appenders>
   <Loggers>

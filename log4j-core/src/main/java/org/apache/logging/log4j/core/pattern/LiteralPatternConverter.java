@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.util.OptionConverter;
 
 
 /**
@@ -41,7 +42,7 @@ public final class LiteralPatternConverter extends LogEventPatternConverter impl
      */
     public LiteralPatternConverter(final Configuration config, final String literal) {
         super("Literal", "literal");
-        this.literal = literal;
+        this.literal = OptionConverter.convertSpecialChars(literal);
         this.config = config;
         substitute = config != null && literal.contains("${");
     }
