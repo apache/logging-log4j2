@@ -37,27 +37,27 @@ public class BundleTestInfo {
      */
     public BundleTestInfo() {
         // get a raw POM view, not a fully realized POM object.
-        MavenXpp3Reader reader = new MavenXpp3Reader();
+        final MavenXpp3Reader reader = new MavenXpp3Reader();
         FileReader fileReader;
         final String fileName = "pom.xml";
         try {
             fileReader = new FileReader(fileName);
-        } catch (FileNotFoundException e) {
+        } catch (final FileNotFoundException e) {
             throw new IllegalStateException("Could not find " + fileName, e);
         }
         try {
-            Model model = reader.read(fileReader);
+            final Model model = reader.read(fileReader);
             this.project = new MavenProject(model);
-        } catch (FileNotFoundException e) {
+        } catch (final FileNotFoundException e) {
             throw new IllegalStateException(e);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new IllegalStateException(e);
-        } catch (XmlPullParserException e) {
+        } catch (final XmlPullParserException e) {
             throw new IllegalStateException(e);
         } finally {
             try {
                 fileReader.close();
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 throw new IllegalStateException(e);
             }
         }

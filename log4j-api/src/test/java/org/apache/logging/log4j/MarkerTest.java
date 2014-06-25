@@ -33,13 +33,13 @@ public class MarkerTest {
 
     @Test
     public void testGetMarker() {
-        Marker expected = MarkerManager.getMarker("A");
+        final Marker expected = MarkerManager.getMarker("A");
         assertNull(expected.getParents());
     }
 
     @Test
     public void testGetMarkerWithParents() {
-        Marker expected = MarkerManager.getMarker("A");
+        final Marker expected = MarkerManager.getMarker("A");
         final Marker p1 = MarkerManager.getMarker("P1");
         p1.addParents(MarkerManager.getMarker("PP1"));
         final Marker p2 = MarkerManager.getMarker("P2");
@@ -86,7 +86,7 @@ public class MarkerTest {
         final Marker existing = MarkerManager.getMarker("EXISTING");
         final Marker test1 = MarkerManager.getMarker("TEST1").setParents(existing);
         test1.addParents(parent);
-        Marker[] parents = test1.getParents();
+        final Marker[] parents = test1.getParents();
         test1.addParents(existing);
         assertTrue("duplicate add allowed", parents.length == test1.getParents().length);
         test1.addParents(existing, MarkerManager.getMarker("EXTRA"));

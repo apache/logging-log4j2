@@ -105,7 +105,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
@@ -113,7 +113,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
             return false;
         }
         if (obj instanceof DefaultThreadContextStack) {
-            DefaultThreadContextStack other = (DefaultThreadContextStack) obj;
+            final DefaultThreadContextStack other = (DefaultThreadContextStack) obj;
             if (this.useStack != other.useStack) {
                 return false;
             }
@@ -121,7 +121,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         if (!(obj instanceof ThreadContextStack)) {
             return false;
         }
-        ThreadContextStack other = (ThreadContextStack) obj;
+        final ThreadContextStack other = (ThreadContextStack) obj;
         final List<String> otherAsList = other.asList();
         final List<String> list = stack.get();
         if (list == null) {

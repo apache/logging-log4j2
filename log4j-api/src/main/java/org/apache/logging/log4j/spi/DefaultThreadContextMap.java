@@ -161,7 +161,7 @@ public class DefaultThreadContextMap implements ThreadContextMap {
 
     @Override
     public String toString() {
-        Map<String, String> map = localMap.get();
+        final Map<String, String> map = localMap.get();
         return map == null ? "{}" : map.toString();
     }
 
@@ -169,14 +169,14 @@ public class DefaultThreadContextMap implements ThreadContextMap {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        Map<String, String> map = this.localMap.get();
+        final Map<String, String> map = this.localMap.get();
         result = prime * result + ((map == null) ? 0 : map.hashCode());
         result = prime * result + (this.useMap ? 1231 : 1237);
         return result;
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
@@ -184,7 +184,7 @@ public class DefaultThreadContextMap implements ThreadContextMap {
             return false;
         }
         if (obj instanceof DefaultThreadContextMap) {
-            DefaultThreadContextMap other = (DefaultThreadContextMap) obj;
+            final DefaultThreadContextMap other = (DefaultThreadContextMap) obj;
             if (this.useMap != other.useMap) {
                 return false;
             }
@@ -192,9 +192,9 @@ public class DefaultThreadContextMap implements ThreadContextMap {
         if (!(obj instanceof ThreadContextMap)) {
             return false;
         }
-        ThreadContextMap other = (ThreadContextMap) obj;
-        Map<String, String> map = this.localMap.get();
-        Map<String, String> otherMap = other.getImmutableMapOrNull(); 
+        final ThreadContextMap other = (ThreadContextMap) obj;
+        final Map<String, String> map = this.localMap.get();
+        final Map<String, String> otherMap = other.getImmutableMapOrNull(); 
         if (map == null) {
             if (otherMap != null) {
                 return false;

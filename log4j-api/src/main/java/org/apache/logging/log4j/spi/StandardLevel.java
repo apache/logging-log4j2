@@ -86,9 +86,9 @@ public enum StandardLevel {
      * @param intLevel The integer value of the Level.
      * @return The StandardLevel.
      */
-    public static StandardLevel getStandardLevel(int intLevel) {
+    public static StandardLevel getStandardLevel(final int intLevel) {
         StandardLevel level = StandardLevel.OFF;
-        for (StandardLevel lvl : levelSet) {
+        for (final StandardLevel lvl : levelSet) {
             if (lvl.intLevel() > intLevel) {
                 break;
             }

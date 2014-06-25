@@ -59,7 +59,7 @@ public class OsgiRule extends ExternalResource {
         if (framework != null) {
             try {
                 framework.stop();
-            } catch (BundleException e) {
+            } catch (final BundleException e) {
                 throw new RuntimeException(e);
             } finally {
                 framework = null;

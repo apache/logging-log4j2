@@ -165,12 +165,12 @@ public final class Level implements Comparable<Level>, Serializable {
     }
 
     @Override
-    public int compareTo(Level other) {
+    public int compareTo(final Level other) {
         return intLevel < other.intLevel ? -1 : (intLevel > other.intLevel ? 1 : 0);
     }
 
     @Override
-    public boolean equals(Object other) {
+    public boolean equals(final Object other) {
         return other instanceof Level && other == this;
     }
 
@@ -205,13 +205,13 @@ public final class Level implements Comparable<Level>, Serializable {
      * @throws java.lang.IllegalArgumentException if the name is null or intValue is less than zero.
      */
     public static Level forName(final String name, final int intValue) {
-        Level level = levels.get(name);
+        final Level level = levels.get(name);
         if (level != null) {
             return level;
         }
         try {
             return new Level(name, intValue);
-        } catch (IllegalStateException ex) {
+        } catch (final IllegalStateException ex) {
             // The level was added by something else so just return that one.
             return levels.get(name);
         }
@@ -250,7 +250,7 @@ public final class Level implements Comparable<Level>, Serializable {
         if (name == null) {
             return defaultLevel;
         }
-        Level level = levels.get(name.toUpperCase(Locale.ENGLISH));
+        final Level level = levels.get(name.toUpperCase(Locale.ENGLISH));
         return level == null ? defaultLevel : level;
     }
 
@@ -259,7 +259,7 @@ public final class Level implements Comparable<Level>, Serializable {
      * @return An array of Levels.
      */
     public static Level[] values() {
-        Collection<Level> values = Level.levels.values();
+        final Collection<Level> values = Level.levels.values();
         return values.toArray(new Level[values.size()]);
     }
 

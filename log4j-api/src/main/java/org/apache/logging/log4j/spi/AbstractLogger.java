@@ -1356,9 +1356,9 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * @param params Arguments specified by the format.
      */
     @Override
-    public void printf(Level level, Marker marker, String format, Object... params) {
+    public void printf(final Level level, final Marker marker, final String format, final Object... params) {
         if (isEnabled(level, marker, format, params)) {
-            Message msg = new StringFormattedMessage(format, params);
+            final Message msg = new StringFormattedMessage(format, params);
             logMessage(FQCN, level, marker, msg, msg.getThrowable());
         }
     }
@@ -1371,9 +1371,9 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * @param params Arguments specified by the format.
      */
     @Override
-    public void printf(Level level, String format, Object... params) {
+    public void printf(final Level level, final String format, final Object... params) {
         if (isEnabled(level, null, format, params)) {
-            Message msg = new StringFormattedMessage(format, params);
+            final Message msg = new StringFormattedMessage(format, params);
             logMessage(FQCN, level, null, msg, msg.getThrowable());
         }
     }
