@@ -62,27 +62,27 @@ public class SimpleBenchmark {
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @GenerateMicroBenchmark
-    public void testBaselineThroughput(BlackHole bh) {
+    public void testBaselineThroughput(final BlackHole bh) {
     }
 
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @GenerateMicroBenchmark
-    public void testIsDebugEnabledThroughput(BlackHole bh) {
+    public void testIsDebugEnabledThroughput(final BlackHole bh) {
         bh.consume(logger.isDebugEnabled());
     }
 
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @GenerateMicroBenchmark
-    public void testIsEnabledLevelThroughput(BlackHole bh) {
+    public void testIsEnabledLevelThroughput(final BlackHole bh) {
         bh.consume(logger.isEnabled(Level.DEBUG));
     }
 
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     @GenerateMicroBenchmark
-    public void testDebugDisabledThroughput(BlackHole bh) {
+    public void testDebugDisabledThroughput(final BlackHole bh) {
         logger.debug(msg);
     }
 
@@ -90,27 +90,27 @@ public class SimpleBenchmark {
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     @GenerateMicroBenchmark
-    public void testBaselineResponseTime(BlackHole bh) {
+    public void testBaselineResponseTime(final BlackHole bh) {
     }
 
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     @GenerateMicroBenchmark
-    public void testIsDebugEnabledResponseTime(BlackHole bh) {
+    public void testIsDebugEnabledResponseTime(final BlackHole bh) {
         bh.consume(logger.isDebugEnabled());
     }
 
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     @GenerateMicroBenchmark
-    public void testIsEnabledLevelResponseTime(BlackHole bh) {
+    public void testIsEnabledLevelResponseTime(final BlackHole bh) {
         bh.consume(logger.isEnabled(Level.DEBUG));
     }
 
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     @GenerateMicroBenchmark
-    public void testDebugDisabledResponseTime(BlackHole bh) {
+    public void testDebugDisabledResponseTime(final BlackHole bh) {
         logger.debug(msg);
     }
 }
