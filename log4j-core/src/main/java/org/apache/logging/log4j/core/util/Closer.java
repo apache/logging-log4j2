@@ -24,6 +24,7 @@ import java.net.ServerSocket;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+
 import javax.naming.Context;
 import javax.naming.NamingException;
 
@@ -41,7 +42,7 @@ public final class Closer {
      *
      * @param closeable the resource to close, may be {@code null}
      */
-    public static void closeSilent(Closeable closeable) {
+    public static void closeSilent(final Closeable closeable) {
         try {
             if (closeable != null) {
                 closeable.close();
@@ -57,7 +58,7 @@ public final class Closer {
      * @param closeable the resource to close, may be {@code null}
      * @throws IOException if a problem occurred closing the specified resource
      */
-    public static void close(Closeable closeable) throws IOException {
+    public static void close(final Closeable closeable) throws IOException {
         if (closeable != null) {
             closeable.close();
         }
@@ -68,7 +69,7 @@ public final class Closer {
      *
      * @param serverSocket the resource to close, may be {@code null}
      */
-    public static void closeSilent(ServerSocket serverSocket) {
+    public static void closeSilent(final ServerSocket serverSocket) {
         try {
             if (serverSocket != null) {
                 serverSocket.close();
@@ -84,7 +85,7 @@ public final class Closer {
      * @param serverSocket the resource to close, may be {@code null}
      * @throws IOException if a problem occurred closing the specified resource
      */
-    public static void close(ServerSocket serverSocket) throws IOException {
+    public static void close(final ServerSocket serverSocket) throws IOException {
         if (serverSocket != null) {
             serverSocket.close();
         }
@@ -95,7 +96,7 @@ public final class Closer {
      *
      * @param datagramSocket the resource to close, may be {@code null}
      */
-    public static void closeSilent(DatagramSocket datagramSocket) {
+    public static void closeSilent(final DatagramSocket datagramSocket) {
         try {
             if (datagramSocket != null) {
                 datagramSocket.close();
@@ -111,7 +112,7 @@ public final class Closer {
      * @param datagramSocket the resource to close, may be {@code null}
      * @throws IOException if a problem occurred closing the specified resource
      */
-    public static void close(DatagramSocket datagramSocket) throws IOException {
+    public static void close(final DatagramSocket datagramSocket) throws IOException {
         if (datagramSocket != null) {
             datagramSocket.close();
         }
@@ -123,7 +124,7 @@ public final class Closer {
      *
      * @param statement the resource to close, may be {@code null}
      */
-    public static void closeSilent(Statement statement) {
+    public static void closeSilent(final Statement statement) {
         try {
             if (statement != null) {
                 statement.close();
@@ -139,7 +140,7 @@ public final class Closer {
      * @param statement the resource to close, may be {@code null}
      * @throws SQLException if a problem occurred closing the specified resource
      */
-    public static void close(Statement statement) throws SQLException {
+    public static void close(final Statement statement) throws SQLException {
         if (statement != null) {
             statement.close();
         }
@@ -151,7 +152,7 @@ public final class Closer {
      *
      * @param connection the resource to close, may be {@code null}
      */
-    public static void closeSilent(Connection connection) {
+    public static void closeSilent(final Connection connection) {
         try {
             if (connection != null) {
                 connection.close();
@@ -167,7 +168,7 @@ public final class Closer {
      * @param connection the resource to close, may be {@code null}
      * @throws SQLException if a problem occurred closing the specified resource
      */
-    public static void close(Connection connection) throws SQLException {
+    public static void close(final Connection connection) throws SQLException {
         if (connection != null) {
             connection.close();
         }
@@ -178,7 +179,7 @@ public final class Closer {
      *
      * @param context the JNDI Context to close, may be {@code null}
      */
-    public static void closeSilent(Context context) {
+    public static void closeSilent(final Context context) {
         try {
             close(context);
         } catch (final NamingException ignored) {
@@ -192,7 +193,7 @@ public final class Closer {
      * @param context the JNDI Context to close, may be {@code null}
      * @throws NamingException if a problem occurred closing the specified JNDI Context
      */
-    public static void close(Context context) throws NamingException {
+    public static void close(final Context context) throws NamingException {
         if (context != null) {
             context.close();
         }
