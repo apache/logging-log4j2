@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.util.Constants;
  * Formats a line separator.
  */
 @Plugin(name = "LineSeparatorPatternConverter", category = "Converter")
-@ConverterKeys({"n" })
+@ConverterKeys({ "n" })
 public final class LineSeparatorPatternConverter extends LogEventPatternConverter {
 
   /**
