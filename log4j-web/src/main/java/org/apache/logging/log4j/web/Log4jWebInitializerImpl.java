@@ -96,7 +96,7 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
     }
 
     private void initializeJndi(final String location) {
-        URI configLocation = getConfigURI(location);;
+        final URI configLocation = getConfigURI(location);;
 
         if (this.name == null) {
             throw new IllegalStateException("A log4jContextName context parameter is required");
@@ -138,7 +138,7 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
             return;
         }
 
-        URI uri = getConfigURI(location);
+        final URI uri = getConfigURI(location);
         this.loggerContext = Configurator.initialize(this.name, this.getClassLoader(), uri, this.servletContext);
     }
 
@@ -146,13 +146,13 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
         try {
             String configLocation = location;
             if (configLocation == null) {
-                String[] paths = SetUtils.prefixSet(servletContext.getResourcePaths("/WEB-INF/"), "/WEB-INF/log4j2");
+                final String[] paths = SetUtils.prefixSet(servletContext.getResourcePaths("/WEB-INF/"), "/WEB-INF/log4j2");
                 if (paths.length == 1) {
                     configLocation = paths[0];
                 } else if (paths.length > 1) {
                     final String prefix = "/WEB-INF/log4j2-" + this.name + ".";
-                    boolean found = false;
-                    for (String str : paths) {
+                    final boolean found = false;
+                    for (final String str : paths) {
                         if (str.startsWith(prefix)) {
                             configLocation = str;
                             break;
@@ -164,12 +164,12 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
                 }
             }
             if (configLocation != null) {
-                URL url = servletContext.getResource(configLocation);
+                final URL url = servletContext.getResource(configLocation);
                 if (url != null) {
                     return url.toURI();
                 }
             }
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             // Just try passing the location.
         }
         if (location != null) {
@@ -218,7 +218,7 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
     }
 
     @Override
-    public void wrapExecution(Runnable runnable) {
+    public void wrapExecution(final Runnable runnable) {
         this.setLoggerContext();
 
         try {

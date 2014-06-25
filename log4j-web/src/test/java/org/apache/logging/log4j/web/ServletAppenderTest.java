@@ -40,24 +40,24 @@ public class ServletAppenderTest {
     @Test
     public void testAppender() throws Exception {
         ContextAnchor.THREAD_CONTEXT.remove();
-        ServletContext servletContext = new MockServletContext();
+        final ServletContext servletContext = new MockServletContext();
         servletContext.setAttribute("TestAttr", "AttrValue");
         servletContext.setInitParameter("TestParam", "ParamValue");
         servletContext.setAttribute("Name1", "Ben");
         servletContext.setInitParameter("Name2", "Jerry");
         servletContext.setInitParameter(Log4jWebSupport.LOG4J_CONFIG_LOCATION, CONFIG);
-        Log4jWebLifeCycle initializer = Log4jWebInitializerImpl.getLog4jWebInitializer(servletContext);
+        final Log4jWebLifeCycle initializer = Log4jWebInitializerImpl.getLog4jWebInitializer(servletContext);
         try {
             initializer.start();
             initializer.setLoggerContext();
-            LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
+            final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
             assertNotNull("No LoggerContext", ctx);
             assertNotNull("No ServletContext", ctx.getExternalContext());
-            Configuration configuration = ctx.getConfiguration();
+            final Configuration configuration = ctx.getConfiguration();
             assertNotNull("No configuration", configuration);
-            Appender appender = configuration.getAppender("Servlet");
+            final Appender appender = configuration.getAppender("Servlet");
             assertNotNull("No ServletAppender", appender);
-            Logger logger = LogManager.getLogger("Test");
+            final Logger logger = LogManager.getLogger("Test");
             logger.info("This is a test");
 
         } catch (final IllegalStateException e) {

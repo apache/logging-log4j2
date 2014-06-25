@@ -64,15 +64,15 @@ public class SerializeTest {
 
     @Test
     public void testLogger() throws Exception {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(logger);
-        byte[] data = baos.toByteArray();
+        final byte[] data = baos.toByteArray();
         assertNotNull("No data", data);
         assertTrue("No data", data.length > 0);
-        ByteArrayInputStream bais = new ByteArrayInputStream(data);
-        ObjectInputStream ois = new ObjectInputStream(bais);
-        Logger copy = (org.slf4j.Logger) ois.readObject();
+        final ByteArrayInputStream bais = new ByteArrayInputStream(data);
+        final ObjectInputStream ois = new ObjectInputStream(bais);
+        final Logger copy = (org.slf4j.Logger) ois.readObject();
         assertNotNull("Unable to restore logger", copy);
     }
 }

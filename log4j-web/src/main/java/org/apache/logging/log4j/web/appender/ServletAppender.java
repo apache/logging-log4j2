@@ -43,13 +43,13 @@ public class ServletAppender extends AbstractAppender {
     private final ServletContext servletContext;
 
     private ServletAppender(final String name, final AbstractStringLayout layout, final Filter filter,
-                            ServletContext servletContext, boolean ignoreExceptions) {
+                            final ServletContext servletContext, final boolean ignoreExceptions) {
         super(name, filter, layout, ignoreExceptions);
         this.servletContext = servletContext;
     }
 
     @Override
-    public void append(LogEvent event) {
+    public void append(final LogEvent event) {
         servletContext.log(((AbstractStringLayout) getLayout()).toSerializable(event));
     }
 
@@ -72,7 +72,7 @@ public class ServletAppender extends AbstractAppender {
             LOGGER.error("No name provided for ConsoleAppender");
             return null;
         }
-        ServletContext servletContext = getServletContext();
+        final ServletContext servletContext = getServletContext();
         if (servletContext == null) {
             LOGGER.error("No servlet context is available");
             return null;
@@ -93,7 +93,7 @@ public class ServletAppender extends AbstractAppender {
             lc = (LoggerContext) LogManager.getContext(false);
         }
         if (lc != null) {
-            Object obj = lc.getExternalContext();
+            final Object obj = lc.getExternalContext();
             return obj != null && obj instanceof ServletContext ? (ServletContext) obj : null;
         }
         return null;

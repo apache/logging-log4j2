@@ -39,34 +39,34 @@ public class WebLookup implements StrLookup {
             lc = (LoggerContext) LogManager.getContext(false);
         }
         if (lc != null) {
-            Object obj = lc.getExternalContext();
+            final Object obj = lc.getExternalContext();
             return obj != null && obj instanceof ServletContext ? (ServletContext) obj : null;
         }
         return null;
     }
 
     @Override
-    public String lookup(String key) {
-        ServletContext ctx = getServletContext();
+    public String lookup(final String key) {
+        final ServletContext ctx = getServletContext();
         if (ctx == null) {
             return null;
         }
 
         if (key.startsWith(ATTR_PREFIX)) {
-            String attrName = key.substring(ATTR_PREFIX.length());
-            Object attrValue = ctx.getAttribute(attrName);
+            final String attrName = key.substring(ATTR_PREFIX.length());
+            final Object attrValue = ctx.getAttribute(attrName);
             return attrValue == null ? null : attrValue.toString();
         }
 
         if (key.startsWith(INIT_PARAM_PREFIX)) {
-            String paramName = key.substring(INIT_PARAM_PREFIX.length());
+            final String paramName = key.substring(INIT_PARAM_PREFIX.length());
             return ctx.getInitParameter(paramName);
         }
 
         if ("rootDir".equals(key)) {
-            String root = ctx.getRealPath("/");
+            final String root = ctx.getRealPath("/");
             if (root == null) {
-                String msg = "Failed to resolve web:rootDir -- " +
+                final String msg = "Failed to resolve web:rootDir -- " +
                         "servlet container unable to translate virtual path " +
                         " to real path (probably not deployed as exploded";
                 throw new IllegalStateException(msg);
@@ -115,7 +115,7 @@ public class WebLookup implements StrLookup {
     }
 
     @Override
-    public String lookup(LogEvent event, String key) {
+    public String lookup(final LogEvent event, final String key) {
         return lookup(key);
     }
 }

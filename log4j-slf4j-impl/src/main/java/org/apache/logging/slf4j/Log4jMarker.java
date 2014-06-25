@@ -36,7 +36,7 @@ public class Log4jMarker implements Marker {
 
     private final org.apache.logging.log4j.Marker marker;
 
-    public Log4jMarker(org.apache.logging.log4j.Marker marker) {
+    public Log4jMarker(final org.apache.logging.log4j.Marker marker) {
         this.marker = marker;
     }
 
@@ -45,13 +45,13 @@ public class Log4jMarker implements Marker {
     }
 
     @Override
-    public void add(Marker marker) {
-        Marker m = factory.getMarker(marker.getName());
+    public void add(final Marker marker) {
+        final Marker m = factory.getMarker(marker.getName());
         this.marker.addParents(((Log4jMarker)m).getLog4jMarker());
     }
 
     @Override
-    public boolean remove(Marker marker) {
+    public boolean remove(final Marker marker) {
         return this.marker.remove(MarkerManager.getMarker(marker.getName()));
     }
 
@@ -73,20 +73,20 @@ public class Log4jMarker implements Marker {
     @Override
     @SuppressWarnings("rawtypes")
     public Iterator iterator() {
-        List<Marker> parents = new ArrayList<Marker>();
-        for (org.apache.logging.log4j.Marker m : this.marker.getParents()) {
+        final List<Marker> parents = new ArrayList<Marker>();
+        for (final org.apache.logging.log4j.Marker m : this.marker.getParents()) {
             parents.add(factory.getMarker(m.getName()));
         }
         return parents.iterator();
     }
 
     @Override
-    public boolean contains(org.slf4j.Marker marker) {
+    public boolean contains(final org.slf4j.Marker marker) {
         return this.marker.isInstanceOf(marker.getName());
     }
 
     @Override
-    public boolean contains(String s) {
+    public boolean contains(final String s) {
         return this.marker.isInstanceOf(s);
     }
 }
