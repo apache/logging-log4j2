@@ -59,7 +59,7 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
     protected void connectAndStart() {
         try {
             this.connection = this.provider.getConnection();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new AppenderLoggingException("Failed to get connection from NoSQL connection provider.", e);
         }
     }
@@ -83,7 +83,7 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
             entity.set("source", this.convertStackTraceElement(source));
         }
 
-        Marker marker = event.getMarker();
+        final Marker marker = event.getMarker();
         if (marker == null) {
             entity.set("marker", (Object) null);
         } else {
@@ -138,7 +138,7 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
         this.connection.insertObject(entity);
     }
 
-    private NoSqlObject<W> buildMarkerEntity(Marker marker) {
+    private NoSqlObject<W> buildMarkerEntity(final Marker marker) {
         final NoSqlObject<W> entity = this.connection.createObject();
         entity.set("name", marker.getName());
 

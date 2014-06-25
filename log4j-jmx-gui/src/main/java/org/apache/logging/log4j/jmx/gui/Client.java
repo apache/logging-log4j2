@@ -76,7 +76,7 @@ public class Client {
     private void init() throws MalformedObjectNameException, IOException {
     }
 
-    private Set<ObjectName> find(String pattern) throws JMException, IOException {
+    private Set<ObjectName> find(final String pattern) throws JMException, IOException {
         final ObjectName search = new ObjectName(String.format(pattern, "*"));
         final Set<ObjectName> result = connection.queryNames(search, null);
         return result;
@@ -91,7 +91,7 @@ public class Client {
      * @throws JMException If a management error occurred
      */
     public List<LoggerContextAdminMBean> getLoggerContextAdmins() throws JMException, IOException {
-        List<LoggerContextAdminMBean> result = new ArrayList<LoggerContextAdminMBean>();
+        final List<LoggerContextAdminMBean> result = new ArrayList<LoggerContextAdminMBean>();
         final Set<ObjectName> contextNames = find(LoggerContextAdminMBean.PATTERN);
         for (final ObjectName contextName : contextNames) {
             result.add(getLoggerContextAdmin(contextName));
@@ -99,7 +99,7 @@ public class Client {
         return result;
     }
 
-    public LoggerContextAdminMBean getLoggerContextAdmin(ObjectName name) {
+    public LoggerContextAdminMBean getLoggerContextAdmin(final ObjectName name) {
         final LoggerContextAdminMBean ctx = JMX.newMBeanProxy(connection, //
                 name, //
                 LoggerContextAdminMBean.class, false);
@@ -137,7 +137,7 @@ public class Client {
      * @throws MalformedObjectNameException If an object name is malformed
      * @throws IOException If an I/O error occurred
      */
-    public StatusLoggerAdminMBean getStatusLoggerAdmin(String contextName)
+    public StatusLoggerAdminMBean getStatusLoggerAdmin(final String contextName)
             throws MalformedObjectNameException, IOException {
         final String pattern = StatusLoggerAdminMBean.PATTERN;
         final String mbean = String.format(pattern, Server.escape(contextName));
@@ -163,7 +163,7 @@ public class Client {
      * @return {@code true} if the specified {@code ObjectName} is for a
      *         {@code LoggerContextAdminMBean}, {@code false} otherwise
      */
-    public boolean isLoggerContext(ObjectName mbeanName) {
+    public boolean isLoggerContext(final ObjectName mbeanName) {
         return Server.DOMAIN.equals(mbeanName.getDomain()) //
                 && mbeanName.getKeyPropertyList().containsKey("type") //
                 && mbeanName.getKeyPropertyList().size() == 1;
@@ -177,7 +177,7 @@ public class Client {
      *            {@code LoggerContextAdminMBean}
      * @return {@code ObjectName} of the {@code StatusLoggerAdminMBean}
      */
-    public ObjectName getStatusLoggerObjectName(ObjectName loggerContextObjName) {
+    public ObjectName getStatusLoggerObjectName(final ObjectName loggerContextObjName) {
         if (!isLoggerContext(loggerContextObjName)) {
             throw new IllegalArgumentException("Not a LoggerContext: " + loggerContextObjName);
         }
@@ -185,7 +185,7 @@ public class Client {
         final String name = String.format(StatusLoggerAdminMBean.PATTERN, cxtName);
         try {
             return new ObjectName(name);
-        } catch (MalformedObjectNameException ex) {
+        } catch (final MalformedObjectNameException ex) {
             throw new IllegalStateException(name, ex);
         }
     }

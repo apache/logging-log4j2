@@ -44,7 +44,7 @@ public final class MongoDbConnection implements NoSqlConnection<BasicDBObject, M
     static {
         BSON.addEncodingHook(Level.class, new Transformer() {
             @Override
-            public Object transform(Object o) {
+            public Object transform(final Object o) {
                 if (o instanceof Level) {
                     return ((Level) o).name();
                 }

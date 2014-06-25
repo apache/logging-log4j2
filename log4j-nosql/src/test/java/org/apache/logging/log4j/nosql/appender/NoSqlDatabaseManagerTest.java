@@ -97,7 +97,7 @@ public class NoSqlDatabaseManagerTest {
             try {
                 manager.writeInternal(event);
                 fail("Expected AppenderLoggingException.");
-            } catch (AppenderLoggingException ignore) {
+            } catch (final AppenderLoggingException ignore) {
                 /* */
             }
 
@@ -137,7 +137,7 @@ public class NoSqlDatabaseManagerTest {
             try {
                 manager.writeInternal(event);
                 fail("Expected AppenderLoggingException.");
-            } catch (AppenderLoggingException ignore) {
+            } catch (final AppenderLoggingException ignore) {
                 /* */
             }
         } finally {

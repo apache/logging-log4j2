@@ -81,8 +81,8 @@ public class ClientGui extends JPanel implements NotificationListener {
         populateWidgets();
 
         // register for Notifications if LoggerContext MBean was added/removed
-        ObjectName addRemoveNotifs = MBeanServerDelegate.DELEGATE_NAME;
-        NotificationFilterSupport filter = new NotificationFilterSupport();
+        final ObjectName addRemoveNotifs = MBeanServerDelegate.DELEGATE_NAME;
+        final NotificationFilterSupport filter = new NotificationFilterSupport();
         filter.enableType(Server.DOMAIN); // only interested in Log4J2 MBeans
         client.getConnection().addNotificationListener(addRemoveNotifs, this, null, null);
     }
@@ -101,21 +101,21 @@ public class ClientGui extends JPanel implements NotificationListener {
 
     private void addWidgetForLoggerContext(final LoggerContextAdminMBean ctx) throws MalformedObjectNameException,
             IOException, InstanceNotFoundException {
-        JTabbedPane contextTabs = new JTabbedPane();
+        final JTabbedPane contextTabs = new JTabbedPane();
         contextObjNameToTabbedPaneMap.put(ctx.getObjectName(), contextTabs);
         tabbedPaneContexts.addTab("LoggerContext: " + ctx.getName(), contextTabs);
 
-        String contextName = ctx.getName();
-        StatusLoggerAdminMBean status = client.getStatusLoggerAdmin(contextName);
+        final String contextName = ctx.getName();
+        final StatusLoggerAdminMBean status = client.getStatusLoggerAdmin(contextName);
         if (status != null) {
-            JTextArea text = createTextArea();
+            final JTextArea text = createTextArea();
             final String[] messages = status.getStatusDataHistory();
             for (final String message : messages) {
                 text.append(message + '\n');
             }
             statusLogTextAreaMap.put(ctx.getObjectName(), text);
             registerListeners(status);
-            JScrollPane scroll = scroll(text);
+            final JScrollPane scroll = scroll(text);
             contextTabs.addTab("StatusLogger", scroll);
         }
 
@@ -123,8 +123,8 @@ public class ClientGui extends JPanel implements NotificationListener {
         contextTabs.addTab("Configuration", editor);
     }
 
-    private void removeWidgetForLoggerContext(ObjectName loggerContextObjName) throws JMException, IOException {
-        Component tab = contextObjNameToTabbedPaneMap.get(loggerContextObjName);
+    private void removeWidgetForLoggerContext(final ObjectName loggerContextObjName) throws JMException, IOException {
+        final Component tab = contextObjNameToTabbedPaneMap.get(loggerContextObjName);
         if (tab != null) {
             tabbedPaneContexts.remove(tab);
         }
@@ -133,12 +133,12 @@ public class ClientGui extends JPanel implements NotificationListener {
         try {
             // System.out.println("Remove listener for " + objName);
             client.getConnection().removeNotificationListener(objName, this);
-        } catch (ListenerNotFoundException ignored) {
+        } catch (final ListenerNotFoundException ignored) {
         }
     }
 
     private JTextArea createTextArea() {
-        JTextArea result = new JTextArea();
+        final JTextArea result = new JTextArea();
         result.setEditable(false);
         result.setBackground(this.getBackground());
         result.setForeground(Color.black);
@@ -166,7 +166,7 @@ public class ClientGui extends JPanel implements NotificationListener {
         return scrollStatusLog;
     }
 
-    private void registerListeners(StatusLoggerAdminMBean status) throws InstanceNotFoundException,
+    private void registerListeners(final StatusLoggerAdminMBean status) throws InstanceNotFoundException,
             MalformedObjectNameException, IOException {
         final NotificationFilterSupport filter = new NotificationFilterSupport();
         filter.enableType(StatusLoggerAdminMBean.NOTIF_TYPE_MESSAGE);
@@ -187,15 +187,15 @@ public class ClientGui extends JPanel implements NotificationListener {
 
     private void handleNotificationInAwtEventThread(final Notification notif, final Object paramObject) {
         if (StatusLoggerAdminMBean.NOTIF_TYPE_MESSAGE.equals(notif.getType())) {
-            JTextArea text = statusLogTextAreaMap.get(paramObject);
+            final JTextArea text = statusLogTextAreaMap.get(paramObject);
             if (text != null) {
                 text.append(notif.getMessage() + '\n');
             }
             return;
         }
         if (notif instanceof MBeanServerNotification) {
-            MBeanServerNotification mbsn = (MBeanServerNotification) notif;
-            ObjectName mbeanName = mbsn.getMBeanName();
+            final MBeanServerNotification mbsn = (MBeanServerNotification) notif;
+            final ObjectName mbeanName = mbsn.getMBeanName();
             if (MBeanServerNotification.REGISTRATION_NOTIFICATION.equals(notif.getType())) {
                 onMBeanRegistered(mbeanName);
             } else if (MBeanServerNotification.UNREGISTRATION_NOTIFICATION.equals(notif.getType())) {
@@ -209,12 +209,12 @@ public class ClientGui extends JPanel implements NotificationListener {
      *
      * @param mbeanName ObjectName of the registered Log4J2 MBean
      */
-    private void onMBeanRegistered(ObjectName mbeanName) {
+    private void onMBeanRegistered(final ObjectName mbeanName) {
         if (client.isLoggerContext(mbeanName)) {
             try {
-                LoggerContextAdminMBean ctx = client.getLoggerContextAdmin(mbeanName);
+                final LoggerContextAdminMBean ctx = client.getLoggerContextAdmin(mbeanName);
                 addWidgetForLoggerContext(ctx);
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 handle("Could not add tab for new MBean " + mbeanName, ex);
             }
         }
@@ -225,21 +225,21 @@ public class ClientGui extends JPanel implements NotificationListener {
      *
      * @param mbeanName ObjectName of the unregistered Log4J2 MBean
      */
-    private void onMBeanUnregistered(ObjectName mbeanName) {
+    private void onMBeanUnregistered(final ObjectName mbeanName) {
         if (client.isLoggerContext(mbeanName)) {
             try {
                 removeWidgetForLoggerContext(mbeanName);
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 handle("Could not remove tab for " + mbeanName, ex);
             }
         }
     }
 
-    private void handle(String msg, Exception ex) {
+    private void handle(final String msg, final Exception ex) {
         System.err.println(msg);
         ex.printStackTrace();
 
-        StringWriter sw = new StringWriter(INITIAL_STRING_WRITER_SIZE);
+        final StringWriter sw = new StringWriter(INITIAL_STRING_WRITER_SIZE);
         ex.printStackTrace(new PrintWriter(sw));
         JOptionPane.showMessageDialog(this, sw.toString(), msg, JOptionPane.ERROR_MESSAGE);
     }
