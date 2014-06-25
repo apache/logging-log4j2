@@ -88,7 +88,6 @@ public class PatternLayoutTest {
             .withPattern(msgPattern)
             .withConfiguration(ctx.getConfiguration())
             .build();
-        // FileOutputStream fos = new FileOutputStream(OUTPUT_FILE + "_mdc");
         final FileAppender appender = FileAppender.createAppender(OUTPUT_FILE + "_mdc", "false", "false", "File",
                 "false", "true", "false", null, layout, null, "false", null, null);
         appender.start();
