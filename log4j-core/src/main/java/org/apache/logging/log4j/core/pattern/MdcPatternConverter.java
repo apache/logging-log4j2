@@ -31,7 +31,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
  * when this pattern converter has the option set.
  */
  @Plugin(name = "MdcPatternConverter", category = "Converter")
-@ConverterKeys({"X", "mdc", "MDC" })
+@ConverterKeys({ "X", "mdc", "MDC" })
 public final class MdcPatternConverter extends LogEventPatternConverter {
     /**
      * Name of property to output.

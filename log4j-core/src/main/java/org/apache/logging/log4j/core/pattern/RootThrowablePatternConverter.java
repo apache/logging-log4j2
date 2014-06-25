@@ -31,7 +31,7 @@ import org.apache.logging.log4j.core.util.Constants;
  * version of the jar if available.
  */
 @Plugin(name = "RootThrowablePatternConverter", category = "Converter")
-@ConverterKeys({"rEx", "rThrowable", "rException" })
+@ConverterKeys({ "rEx", "rThrowable", "rException" })
 public final class RootThrowablePatternConverter extends ThrowablePatternConverter {
 
     /**
