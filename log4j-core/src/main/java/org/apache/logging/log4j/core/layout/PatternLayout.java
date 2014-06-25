@@ -36,7 +36,6 @@ import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.core.pattern.RegexReplacement;
 import org.apache.logging.log4j.core.util.Charsets;
-import org.apache.logging.log4j.core.util.OptionConverter;
 
 /**
  * <p>A flexible layout configurable with pattern string. The goal of this class
@@ -85,7 +84,7 @@ public final class PatternLayout extends AbstractStringLayout {
     /**
      * Conversion pattern.
      */
-    private final String conversionPattern;
+    private String conversionPattern;
 
 
     /**
@@ -166,12 +165,12 @@ public final class PatternLayout extends AbstractStringLayout {
      * @param conversionPattern conversion pattern.
      */
     public void setConversionPattern(final String conversionPattern) {
-        final String pattern = OptionConverter.convertSpecialChars(conversionPattern);
-        if (pattern == null) {
+        if (conversionPattern == null) {
             return;
         }
+        this.conversionPattern = conversionPattern;
         final PatternParser parser = createPatternParser(this.config);
-        formatters = parser.parse(pattern, this.alwaysWriteExceptions, this.noConsoleNoAnsi);
+        formatters = parser.parse(conversionPattern, this.alwaysWriteExceptions, this.noConsoleNoAnsi);
     }
 
     /**

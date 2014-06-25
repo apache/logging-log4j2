@@ -21,6 +21,11 @@
     <title>Changes</title>
   </properties>
   <body>
+    <release version="2.0-???" date="2014-0M-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-682" dev="ggregory" type="fix" due-to="Scott Harrington">
+        Special characters (tab and so on) in PatternLayout do not work.
+      </action>
+    </release>
     <release version="2.0-rc2" date="2014-06-21" description="Bug fixes and enhancements">
       <action issue="LOG4J2-675" dev="rpopma" type="add">
         RollingFile and RollingRandomAccessFile now write the layout footer before rollover.
