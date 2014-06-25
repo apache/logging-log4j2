@@ -114,7 +114,7 @@ public final class PatternLayout extends AbstractStringLayout {
     private PatternLayout(final Configuration config, final RegexReplacement replace, final String pattern,
                           final Charset charset, final boolean alwaysWriteExceptions, final boolean noConsoleNoAnsi,
                           final String header, final String footer) {
-        super(charset);
+        super(charset, toBytes(header, charset), toBytes(footer, charset));
         this.replace = replace;
         this.conversionPattern = pattern;
         this.config = config;
@@ -122,21 +122,13 @@ public final class PatternLayout extends AbstractStringLayout {
         this.noConsoleNoAnsi = noConsoleNoAnsi;
         final PatternParser parser = createPatternParser(config);
         this.formatters = parser.parse(pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern, this.alwaysWriteExceptions, this.noConsoleNoAnsi);
-        if (charset != null) {
-            if (header != null) {
-                setHeader(header.getBytes(charset));
-            }
-            if (footer != null) {
-                setFooter(footer.getBytes(charset));
-            }
-        } else {
-            if (header != null) {
-                setHeader(header.getBytes());
-            }
-            if (footer != null) {
-                setFooter(footer.getBytes());
-            }
+    }
+
+    private static byte[] toBytes(String str, Charset charset) {
+        if (str != null) {
+            return str.getBytes(charset != null ? charset : Charset.defaultCharset());
         }
+        return null;
     }
 
     private byte[] strSubstitutorReplace(final byte... b) {
