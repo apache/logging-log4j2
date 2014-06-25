@@ -184,8 +184,8 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
             }
             return result.toString();
         } finally {
-            Closer.closeSilent(in);
-            Closer.closeSilent(reader);
+            Closer.closeSilently(in);
+            Closer.closeSilently(reader);
         }
     }
 

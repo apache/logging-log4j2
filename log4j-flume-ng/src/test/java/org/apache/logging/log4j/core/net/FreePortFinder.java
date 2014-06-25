@@ -45,7 +45,7 @@ public class FreePortFinder {
             }
         } finally {
             for (int i = 0; i < count; ++i) {
-                Closer.closeSilent(sockets[i]);
+                Closer.closeSilently(sockets[i]);
             }
         }
         return ports;

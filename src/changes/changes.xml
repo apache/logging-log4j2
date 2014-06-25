@@ -31,6 +31,9 @@
       <action issue="LOG4J2-686" dev="ggregory" type="fix">
         Core's OptionConverter support for \b is broken (affects PatternLayout).
       </action>      
+      <action issue="LOG4J2-687" dev="ggregory" type="fix">
+        Rename org.apache.logging.log4j.core.util.Closer.closeSilent() to closeSilently().
+      </action>      
     </release>
     <release version="2.0-rc2" date="2014-06-21" description="Bug fixes and enhancements">
       <action issue="LOG4J2-675" dev="rpopma" type="add">

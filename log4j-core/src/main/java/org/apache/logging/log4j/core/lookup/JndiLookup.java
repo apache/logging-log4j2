@@ -62,7 +62,7 @@ public class JndiLookup implements StrLookup {
         } catch (final NamingException e) {
             return null;
         } finally {
-            Closer.closeSilent(ctx);
+            Closer.closeSilently(ctx);
         }
     }
 

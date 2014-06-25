@@ -117,7 +117,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             throw new AppenderLoggingException("Failed to insert record for log event in JDBC manager: " +
                     e.getMessage(), e);
         } finally {
-            Closer.closeSilent(reader);
+            Closer.closeSilently(reader);
         }
     }
 

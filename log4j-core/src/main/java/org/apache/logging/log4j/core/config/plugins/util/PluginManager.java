@@ -177,7 +177,7 @@ public class PluginManager {
             } catch (final IOException ex) {
                 LOGGER.warn("Unable to preload plugins", ex);
             } finally {
-                Closer.closeSilent(dis);
+                Closer.closeSilently(dis);
             }
         }
         return map.isEmpty() ? null : map;

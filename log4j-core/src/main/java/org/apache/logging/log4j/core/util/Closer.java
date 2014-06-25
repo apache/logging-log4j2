@@ -42,7 +42,7 @@ public final class Closer {
      *
      * @param closeable the resource to close, may be {@code null}
      */
-    public static void closeSilent(final Closeable closeable) {
+    public static void closeSilently(final Closeable closeable) {
         try {
             if (closeable != null) {
                 closeable.close();
@@ -69,7 +69,7 @@ public final class Closer {
      *
      * @param serverSocket the resource to close, may be {@code null}
      */
-    public static void closeSilent(final ServerSocket serverSocket) {
+    public static void closeSilently(final ServerSocket serverSocket) {
         try {
             if (serverSocket != null) {
                 serverSocket.close();
@@ -96,7 +96,7 @@ public final class Closer {
      *
      * @param datagramSocket the resource to close, may be {@code null}
      */
-    public static void closeSilent(final DatagramSocket datagramSocket) {
+    public static void closeSilently(final DatagramSocket datagramSocket) {
         try {
             if (datagramSocket != null) {
                 datagramSocket.close();
@@ -124,7 +124,7 @@ public final class Closer {
      *
      * @param statement the resource to close, may be {@code null}
      */
-    public static void closeSilent(final Statement statement) {
+    public static void closeSilently(final Statement statement) {
         try {
             if (statement != null) {
                 statement.close();
@@ -152,7 +152,7 @@ public final class Closer {
      *
      * @param connection the resource to close, may be {@code null}
      */
-    public static void closeSilent(final Connection connection) {
+    public static void closeSilently(final Connection connection) {
         try {
             if (connection != null) {
                 connection.close();
@@ -179,7 +179,7 @@ public final class Closer {
      *
      * @param context the JNDI Context to close, may be {@code null}
      */
-    public static void closeSilent(final Context context) {
+    public static void closeSilently(final Context context) {
         try {
             close(context);
         } catch (final NamingException ignored) {

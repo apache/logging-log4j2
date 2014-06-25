@@ -78,7 +78,7 @@ public final class AvailablePortFinder {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
-                Closer.closeSilent(LOCK);
+                Closer.closeSilently(LOCK);
             }
         });
         currentMinPort.set(port + 1);
@@ -145,8 +145,8 @@ public final class AvailablePortFinder {
         } catch (final IOException e) {
             // Do nothing
         } finally {
-            Closer.closeSilent(ds);
-            Closer.closeSilent(ss);
+            Closer.closeSilently(ds);
+            Closer.closeSilently(ss);
         }
 
         return false;

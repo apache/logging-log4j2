@@ -141,7 +141,7 @@ public final class Throwables {
             }
             lines.add(ex.toString());
         } finally {
-            Closer.closeSilent(reader);
+            Closer.closeSilently(reader);
         }
         return lines;
     }
