@@ -151,7 +151,6 @@ public class PatternLayoutTest {
 
     @Test
     public void testRegex() throws Exception {
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         final PatternLayout layout = PatternLayout.newBuilder()
             .withPattern(regexPattern)
             .withConfiguration(ctx.getConfiguration())
@@ -163,7 +162,6 @@ public class PatternLayoutTest {
     }
 
     private void testUnixTime(final String pattern) throws Exception {
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         final PatternLayout layout = PatternLayout.newBuilder()
             .withPattern(pattern + " %m")
             .withConfiguration(ctx.getConfiguration())
@@ -182,7 +180,6 @@ public class PatternLayoutTest {
 
     @Test
     public void testUnixTime() throws Exception {
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         final PatternLayout layout = PatternLayout.newBuilder()
             .withPattern("%d{UNIX} %m")
             .withConfiguration(ctx.getConfiguration())
@@ -201,7 +198,6 @@ public class PatternLayoutTest {
 
     @Test
     public void testUnixTimeMillis() throws Exception {
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         final PatternLayout layout = PatternLayout.newBuilder()
             .withPattern("%d{UNIX_MILLIS} %m")
             .withConfiguration(ctx.getConfiguration())
@@ -220,7 +216,6 @@ public class PatternLayoutTest {
 
     @Test
     public void testHeaderFooter() throws Exception {
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         final PatternLayout layout = PatternLayout.newBuilder()
             .withPattern("%d{UNIX} %m")
             .withConfiguration(ctx.getConfiguration())
@@ -238,7 +233,6 @@ public class PatternLayoutTest {
 
     @Test
     public void testSpecialChars() throws Exception {
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         final PatternLayout layout = PatternLayout.newBuilder()
             .withPattern("\\\\%level\\t%msg\\n\\t%logger\\r\\n\\f")
             .withConfiguration(ctx.getConfiguration())
