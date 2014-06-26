@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="2.0-???" date="2014-0M-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-690" dev="rgoers" type="fix" due-to="Philip Helger">
+        Log4j Web test dependencies should be in scope "test" in the pom.
+      </action>
       <action issue="LOG4J2-682" dev="ggregory" type="fix" due-to="Scott Harrington">
         Special characters (tab and so on) in PatternLayout do not work.
       </action>
@@ -30,16 +33,16 @@
       </action>
       <action issue="LOG4J2-686" dev="ggregory" type="fix">
         Core's OptionConverter support for \b is broken (affects PatternLayout).
-      </action>      
+      </action>
       <action issue="LOG4J2-687" dev="ggregory" type="fix">
         Rename org.apache.logging.log4j.core.util.Closer.closeSilent() to closeSilently().
-      </action>      
+      </action>
       <action issue="LOG4J2-688" dev="ggregory" type="fix">
         Make org.apache.logging.log4j.core.layout.PatternLayout immutable.
-      </action>      
+      </action>
       <action issue="LOG4J2-689" dev="ggregory" type="update">
         Update Jackson to 2.4.1.
-      </action>      
+      </action>
     </release>
     <release version="2.0-rc2" date="2014-06-21" description="Bug fixes and enhancements">
       <action issue="LOG4J2-675" dev="rpopma" type="add">
