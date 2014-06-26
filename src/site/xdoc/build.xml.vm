@@ -39,7 +39,7 @@
         obtained by downloading it using the instructions at <a href="./download.html">Log4j Downloads</a>.
       </p>
       <p>
-        Log4j 2.x uses Maven 2 or 3 as its build tool. To build and install Log4j in your local Maven cache, from
+        Log4j 2.x uses Maven 3 as its build tool. To build and install Log4j in your local Maven cache, from
         the root directory run:
       </p>
       <pre>mvn install</pre>
