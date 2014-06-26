@@ -37,6 +37,9 @@
       <action issue="LOG4J2-688" dev="ggregory" type="fix">
         Make org.apache.logging.log4j.core.layout.PatternLayout immutable.
       </action>      
+      <action issue="LOG4J2-689" dev="ggregory" type="update">
+        Update Jackson to 2.4.1.
+      </action>      
     </release>
     <release version="2.0-rc2" date="2014-06-21" description="Bug fixes and enhancements">
       <action issue="LOG4J2-675" dev="rpopma" type="add">
