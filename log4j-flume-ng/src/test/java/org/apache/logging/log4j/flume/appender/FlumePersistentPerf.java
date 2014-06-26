@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.management.ManagementFactory;
 import java.net.InetSocketAddress;
-import java.net.ServerSocket;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,9 +47,9 @@ import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.net.FreePortFinder;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.test.AvailablePortFinder;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -94,11 +93,12 @@ public class FlumePersistentPerf {
         * Clear out all other appenders associated with this logger to ensure we're
         * only hitting the Avro appender.
         */
-        final int[] ports = FreePortFinder.findFreePorts(2);
-        System.setProperty("primaryPort", Integer.toString(ports[0]));
-        System.setProperty("alternatePort", Integer.toString(ports[1]));
-        primary = new EventCollector(ports[0]);
-        alternate = new EventCollector(ports[1]);
+        int primaryPort = AvailablePortFinder.getNextAvailable();
+        int altPort = AvailablePortFinder.getNextAvailable();
+        System.setProperty("primaryPort", Integer.toString(primaryPort));
+        System.setProperty("alternatePort", Integer.toString(altPort));
+        primary = new EventCollector(primaryPort);
+        alternate = new EventCollector(altPort);
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         ctx = (LoggerContext) LogManager.getContext(false);
         ctx.reconfigure();

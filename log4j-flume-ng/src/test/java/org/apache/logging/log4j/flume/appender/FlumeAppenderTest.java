@@ -45,9 +45,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.net.FreePortFinder;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.test.AvailablePortFinder;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -83,8 +83,7 @@ public class FlumeAppenderTest {
          */
         removeAppenders(avroLogger);
         final Context context = new Context();
-        final int[] ports = FreePortFinder.findFreePorts(1);
-        testPort = String.valueOf(ports[0]);
+        testPort = String.valueOf(AvailablePortFinder.getNextAvailable());
         context.put("port", testPort);
         context.put("bind", "0.0.0.0");
         Configurables.configure(eventSource, context);
