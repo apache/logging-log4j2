@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="2.0-???" date="2014-0M-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-692" dev="rgoers" type="fix">
+        Update documentation to specify only Maven 3 is supported.
+      </action>
       <action issue="LOG4J2-690" dev="rgoers" type="fix" due-to="Philip Helger">
         Log4j Web test dependencies should be in scope "test" in the pom.
       </action>
