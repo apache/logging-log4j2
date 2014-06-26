@@ -114,7 +114,7 @@ public final class AvailablePortFinder {
 
         for (int i = fromPort; i <= MAX_PORT_NUMBER; i++) {
             if (available(i)) {
-                LOG.info("getNextAvailable({}) -> {}", fromPort, i);
+                LOG.debug("getNextAvailable({}) -> {}", fromPort, i);
                 return i;
             }
         }
