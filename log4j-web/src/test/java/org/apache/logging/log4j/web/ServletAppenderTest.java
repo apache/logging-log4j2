@@ -59,11 +59,11 @@ public class ServletAppenderTest {
             assertNotNull("No ServletAppender", appender);
             final Logger logger = LogManager.getLogger("Test");
             logger.info("This is a test");
-
         } catch (final IllegalStateException e) {
             fail("Failed to initialize Log4j properly." + e.getMessage());
+        } finally {
+            initializer.stop();
+            ContextAnchor.THREAD_CONTEXT.remove();
         }
-        initializer.stop();
-        ContextAnchor.THREAD_CONTEXT.remove();
     }
 }
