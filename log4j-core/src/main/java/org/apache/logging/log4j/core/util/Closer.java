@@ -44,9 +44,7 @@ public final class Closer {
      */
     public static void closeSilently(final Closeable closeable) {
         try {
-            if (closeable != null) {
-                closeable.close();
-            }
+            close(closeable);
         } catch (final Exception ignored) {
             // ignored
         }
@@ -71,9 +69,7 @@ public final class Closer {
      */
     public static void closeSilently(final ServerSocket serverSocket) {
         try {
-            if (serverSocket != null) {
-                serverSocket.close();
-            }
+            close(serverSocket);
         } catch (final Exception ignored) {
             // ignored
         }
@@ -98,9 +94,7 @@ public final class Closer {
      */
     public static void closeSilently(final DatagramSocket datagramSocket) {
         try {
-            if (datagramSocket != null) {
-                datagramSocket.close();
-            }
+            close(datagramSocket);
         } catch (final Exception ignored) {
             // ignored
         }
@@ -126,9 +120,7 @@ public final class Closer {
      */
     public static void closeSilently(final Statement statement) {
         try {
-            if (statement != null) {
-                statement.close();
-            }
+            close(statement);
         } catch (final Exception ignored) {
             // ignored
         }
@@ -154,9 +146,7 @@ public final class Closer {
      */
     public static void closeSilently(final Connection connection) {
         try {
-            if (connection != null) {
-                connection.close();
-            }
+            close(connection);
         } catch (final Exception ignored) {
             // ignored
         }
