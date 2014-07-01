@@ -77,7 +77,7 @@ public abstract class AbstractJmsManager extends AbstractManager {
         try {
             return ctx.lookup(name);
         } catch (final NameNotFoundException e) {
-            LOGGER.warn("Could not find name [" + name + "].");
+            LOGGER.warn("Could not find name [{}].", name);
             throw e;
         }
     }
@@ -148,7 +148,7 @@ public abstract class AbstractJmsManager extends AbstractManager {
             }
             producer.send(msg);
         } catch (final JMSException ex) {
-            LOGGER.error("Could not publish message via JMS " + getName());
+            LOGGER.error("Could not publish message via JMS {}", getName());
             throw ex;
         }
     }
