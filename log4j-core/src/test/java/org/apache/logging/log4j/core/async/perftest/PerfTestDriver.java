@@ -152,7 +152,7 @@ public class PerfTestDriver {
         long _pct99_99;
         double _latencyRowCount;
         int _throughputRowCount;
-        private final long _averageOpsPerSec;
+        private long _averageOpsPerSec;
 
         // example line: avg=828 99%=1118 99.99%=5028 Count=3125
         public Stats(final String raw) {
