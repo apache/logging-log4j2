@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
+import org.apache.logging.log4j.nosql.appender.DefaultNoSqlObject;
 import org.apache.logging.log4j.nosql.appender.NoSqlConnection;
 import org.apache.logging.log4j.nosql.appender.NoSqlObject;
 import org.lightcouch.CouchDbClient;
@@ -28,7 +29,7 @@ import org.lightcouch.Response;
 /**
  * The Apache CouchDB implementation of {@link NoSqlConnection}.
  */
-public final class CouchDbConnection implements NoSqlConnection<Map<String, Object>, CouchDbObject> {
+public final class CouchDbConnection implements NoSqlConnection<Map<String, Object>, DefaultNoSqlObject> {
     private final CouchDbClient client;
     private final AtomicBoolean closed = new AtomicBoolean(false);
 
@@ -37,13 +38,13 @@ public final class CouchDbConnection implements NoSqlConnection<Map<String, Obje
     }
 
     @Override
-    public CouchDbObject createObject() {
-        return new CouchDbObject();
+    public DefaultNoSqlObject createObject() {
+        return new DefaultNoSqlObject();
     }
 
     @Override
-    public CouchDbObject[] createList(final int length) {
-        return new CouchDbObject[length];
+    public DefaultNoSqlObject[] createList(final int length) {
+        return new DefaultNoSqlObject[length];
     }
 
     @Override

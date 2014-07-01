@@ -29,7 +29,6 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.nosql.appender.couchdb.CouchDbObject;
 import org.easymock.Capture;
 import org.easymock.IAnswer;
 import org.junit.After;
@@ -41,8 +40,8 @@ import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
 
 public class NoSqlDatabaseManagerTest {
-    private NoSqlConnection<Map<String, Object>, CouchDbObject> connection;
-    private NoSqlProvider<NoSqlConnection<Map<String, Object>, CouchDbObject>> provider;
+    private NoSqlConnection<Map<String, Object>, DefaultNoSqlObject> connection;
+    private NoSqlProvider<NoSqlConnection<Map<String, Object>, DefaultNoSqlObject>> provider;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -174,10 +173,10 @@ public class NoSqlDatabaseManagerTest {
             final Message message = createStrictMock(Message.class);
 
             expect(this.connection.isClosed()).andReturn(false);
-            expect(this.connection.createObject()).andAnswer(new IAnswer<CouchDbObject>() {
+            expect(this.connection.createObject()).andAnswer(new IAnswer<DefaultNoSqlObject>() {
                 @Override
-                public CouchDbObject answer() throws Throwable {
-                    return new CouchDbObject();
+                public DefaultNoSqlObject answer() throws Throwable {
+                    return new DefaultNoSqlObject();
                 }
             }).atLeastOnce();
             expect(event.getLevel()).andReturn(Level.WARN);
@@ -270,22 +269,22 @@ public class NoSqlDatabaseManagerTest {
             ThreadContext.clearStack();
 
             expect(this.connection.isClosed()).andReturn(false);
-            expect(this.connection.createObject()).andAnswer(new IAnswer<CouchDbObject>() {
+            expect(this.connection.createObject()).andAnswer(new IAnswer<DefaultNoSqlObject>() {
                 @Override
-                public CouchDbObject answer() throws Throwable {
-                    return new CouchDbObject();
+                public DefaultNoSqlObject answer() throws Throwable {
+                    return new DefaultNoSqlObject();
                 }
             }).atLeastOnce();
-            expect(this.connection.createList(anyInt())).andAnswer(new IAnswer<CouchDbObject[]>() {
+            expect(this.connection.createList(anyInt())).andAnswer(new IAnswer<DefaultNoSqlObject[]>() {
                 @Override
-                public CouchDbObject[] answer() throws Throwable {
-                    return new CouchDbObject[(Integer) getCurrentArguments()[0]];
+                public DefaultNoSqlObject[] answer() throws Throwable {
+                    return new DefaultNoSqlObject[(Integer) getCurrentArguments()[0]];
                 }
             });
-            expect(this.connection.createObject()).andAnswer(new IAnswer<CouchDbObject>() {
+            expect(this.connection.createObject()).andAnswer(new IAnswer<DefaultNoSqlObject>() {
                 @Override
-                public CouchDbObject answer() throws Throwable {
-                    return new CouchDbObject();
+                public DefaultNoSqlObject answer() throws Throwable {
+                    return new DefaultNoSqlObject();
                 }
             }).atLeastOnce();
             expect(event.getLevel()).andReturn(Level.DEBUG);
@@ -406,34 +405,34 @@ public class NoSqlDatabaseManagerTest {
             ThreadContext.clearStack();
 
             expect(this.connection.isClosed()).andReturn(false);
-            expect(this.connection.createObject()).andAnswer(new IAnswer<CouchDbObject>() {
+            expect(this.connection.createObject()).andAnswer(new IAnswer<DefaultNoSqlObject>() {
                 @Override
-                public CouchDbObject answer() throws Throwable {
-                    return new CouchDbObject();
+                public DefaultNoSqlObject answer() throws Throwable {
+                    return new DefaultNoSqlObject();
                 }
             }).atLeastOnce();
-            expect(this.connection.createList(anyInt())).andAnswer(new IAnswer<CouchDbObject[]>() {
+            expect(this.connection.createList(anyInt())).andAnswer(new IAnswer<DefaultNoSqlObject[]>() {
                 @Override
-                public CouchDbObject[] answer() throws Throwable {
-                    return new CouchDbObject[(Integer) getCurrentArguments()[0]];
+                public DefaultNoSqlObject[] answer() throws Throwable {
+                    return new DefaultNoSqlObject[(Integer) getCurrentArguments()[0]];
                 }
             });
-            expect(this.connection.createObject()).andAnswer(new IAnswer<CouchDbObject>() {
+            expect(this.connection.createObject()).andAnswer(new IAnswer<DefaultNoSqlObject>() {
                 @Override
-                public CouchDbObject answer() throws Throwable {
-                    return new CouchDbObject();
+                public DefaultNoSqlObject answer() throws Throwable {
+                    return new DefaultNoSqlObject();
                 }
             }).atLeastOnce();
-            expect(this.connection.createList(anyInt())).andAnswer(new IAnswer<CouchDbObject[]>() {
+            expect(this.connection.createList(anyInt())).andAnswer(new IAnswer<DefaultNoSqlObject[]>() {
                 @Override
-                public CouchDbObject[] answer() throws Throwable {
-                    return new CouchDbObject[(Integer) getCurrentArguments()[0]];
+                public DefaultNoSqlObject[] answer() throws Throwable {
+                    return new DefaultNoSqlObject[(Integer) getCurrentArguments()[0]];
                 }
             });
-            expect(this.connection.createObject()).andAnswer(new IAnswer<CouchDbObject>() {
+            expect(this.connection.createObject()).andAnswer(new IAnswer<DefaultNoSqlObject>() {
                 @Override
-                public CouchDbObject answer() throws Throwable {
-                    return new CouchDbObject();
+                public DefaultNoSqlObject answer() throws Throwable {
+                    return new DefaultNoSqlObject();
                 }
             }).atLeastOnce();
             expect(event.getLevel()).andReturn(Level.DEBUG);
