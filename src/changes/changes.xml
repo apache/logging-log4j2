@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="2.0-???" date="2014-0M-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-694" dev="mattsicker" type="fix">
+        Fix strange compilation error that popped up in a test class.
+      </action>
       <action issue="LOG4J2-692" dev="rgoers" type="fix">
         Update documentation to specify only Maven 3 is supported.
       </action>
