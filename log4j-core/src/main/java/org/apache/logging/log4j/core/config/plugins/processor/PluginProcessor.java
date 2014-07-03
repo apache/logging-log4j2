@@ -28,7 +28,6 @@ import java.util.concurrent.ConcurrentMap;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementVisitor;
@@ -47,7 +46,6 @@ import org.apache.logging.log4j.util.Strings;
  * Annotation processor for pre-scanning Log4j 2 plugins.
  */
 @SupportedAnnotationTypes("org.apache.logging.log4j.core.config.plugins.*")
-@SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class PluginProcessor extends AbstractProcessor {
 
     // TODO: this could be made more abstract to allow for compile-time and run-time plugin processing
@@ -59,6 +57,11 @@ public class PluginProcessor extends AbstractProcessor {
     public static final String PLUGIN_CACHE_FILE = "META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat";
 
     private final PluginCache pluginCache = new PluginCache();
+
+    @Override
+    public SourceVersion getSupportedSourceVersion() {
+        return SourceVersion.latest();
+    }
 
     @Override
     public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
