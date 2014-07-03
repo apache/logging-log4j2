@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="2.0-???" date="2014-0M-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-683" dev="mattsicker" type="fix" due-to="Jurriaan Mous">
+        Fix annotation processor warnings on JDK 1.7+.
+      </action>
       <action issue="LOG4J2-694" dev="mattsicker" type="fix">
         Fix strange compilation error that popped up in a test class.
       </action>
