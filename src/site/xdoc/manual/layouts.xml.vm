@@ -217,6 +217,11 @@ WARN  [main]: Message 2</pre>
               <td>String</td>
               <td>The optional footer string to include at the bottom of each log file.</td>
             </tr>
+            <tr>
+              <td>noConsoleNoAnsi</td>
+              <td>boolean</td>
+              <td>If <code>true</code> (default is false) and <code>System.console()</code> is null, do not output ANSI escape codes.</td>
+            </tr>
             <caption align="top">PatternLayout Parameters</caption>
           </table>
           <table>
