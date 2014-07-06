@@ -29,7 +29,9 @@ import org.apache.logging.log4j.core.selector.ContextSelector;
  */
 public class AsyncLoggerContextSelector implements ContextSelector {
 
-    private static final AsyncLoggerContext CONTEXT = new AsyncLoggerContext("AsyncLoggerContext");
+    // LOG4J2-666 ensure unique name across separate instances created by webapp classloaders
+    private static final AsyncLoggerContext CONTEXT = new AsyncLoggerContext("AsyncLoggerContext@"
+            + AsyncLoggerContext.class.hashCode());
 
     @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
@@ -44,7 +46,8 @@ public class AsyncLoggerContextSelector implements ContextSelector {
     }
 
     @Override
-    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext, final URI configLocation) {
+    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext,
+            final URI configLocation) {
         return CONTEXT;
     }
 
