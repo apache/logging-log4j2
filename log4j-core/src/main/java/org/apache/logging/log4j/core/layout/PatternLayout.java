@@ -234,9 +234,9 @@ public final class PatternLayout extends AbstractStringLayout {
      * @param noConsoleNoAnsi
      *        If {@code "true"} (default is false) and {@link System#console()} is null, do not output ANSI escape codes
      * @param header
-     *        The footer to place at the end of the document, once.
-     * @param footer
      *        The footer to place at the top of the document, once.
+     * @param footer
+     *        The footer to place at the bottom of the document, once.
      * @return The PatternLayout.
      */
     @PluginFactory

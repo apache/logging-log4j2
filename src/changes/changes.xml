@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="2.0-???" date="2014-0M-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-699" dev="rpopma" type="fix">
+        PatternLayout manual page missing documentation on header/footer.
+      </action>
       <action issue="LOG4J2-625" dev="rpopma" type="fix">
         Fixed Serialization error with SocketAppender and Async Loggers.
         (Fixed in RC2, but wasn't included in release notes.)

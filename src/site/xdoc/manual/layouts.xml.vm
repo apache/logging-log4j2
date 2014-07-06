@@ -207,6 +207,16 @@ WARN  [main]: Message 2</pre>
                 <code>false</code> disables this behavior and allows you to exclude exceptions from your pattern
                 output.</td>
             </tr>
+            <tr>
+              <td>header</td>
+              <td>String</td>
+              <td>The optional header string to include at the top of each log file.</td>
+            </tr>
+            <tr>
+              <td>footer</td>
+              <td>String</td>
+              <td>The optional footer string to include at the bottom of each log file.</td>
+            </tr>
             <caption align="top">PatternLayout Parameters</caption>
           </table>
           <table>
