@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="2.0-???" date="2014-0M-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-666" dev="rpopma" type="fix">
+        AsyncLoggerContextSelector should ensure that different AsyncLoggerContext objects created by web app classloaders have unique names.
+      </action>
       <action issue="LOG4J2-683" dev="mattsicker" type="fix" due-to="Jurriaan Mous">
         Fix annotation processor warnings on JDK 1.7+.
       </action>
