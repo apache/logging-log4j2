@@ -86,12 +86,6 @@
       <artifactId>jansi</artifactId>
       <optional>true</optional>
     </dependency>
-    <!-- Used for JMS appenders (needs an implementation of course) -->
-    <dependency>
-      <groupId>org.jboss.spec.javax.jms</groupId>
-      <artifactId>jboss-jms-api_1.1_spec</artifactId>
-      <scope>provided</scope>
-    </dependency>
     <!-- Required for SMTPAppender -->
     <dependency>
       <groupId>com.sun.mail</groupId>
