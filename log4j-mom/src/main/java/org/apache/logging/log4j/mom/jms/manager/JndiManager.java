@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.mom.jms.manager;
 
 import java.util.Properties;
-
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -44,6 +43,19 @@ public class JndiManager extends AbstractManager {
         this.context = context;
     }
 
+    /**
+     * Gets a JndiManager with the provided configuration information.
+     *
+     * @param initialContextFactoryName Fully qualified class name of an implementation of
+     *                                  {@link javax.naming.spi.InitialContextFactory}.
+     * @param providerURL               The provider URL to use for the JNDI connection (specific to the above factory).
+     * @param urlPkgPrefixes            A colon-separated list of package prefixes for the class name of the factory
+     *                                  class that will create a URL context factory
+     * @param securityPrincipal         The name of the identity of the Principal.
+     * @param securityCredentials       The security credentials of the Principal.
+     * @param additionalProperties      Any additional JNDI environment properties to set or {@code null} for none.
+     * @return the JndiManager for the provided parameters.
+     */
     public static JndiManager getJndiManager(final String initialContextFactoryName,
                                              final String providerURL,
                                              final String urlPkgPrefixes,
@@ -85,6 +97,14 @@ public class JndiManager extends AbstractManager {
         Closer.closeSilently(this.context);
     }
 
+    /**
+     * Looks up a named object through this JNDI context.
+     *
+     * @param name name of the object to look up.
+     * @param <T>  the type of the object.
+     * @return the named object if it could be located.
+     * @throws NamingException
+     */
     @SuppressWarnings("unchecked")
     public <T> T lookup(final String name) throws NamingException {
         return (T) this.context.lookup(name);
