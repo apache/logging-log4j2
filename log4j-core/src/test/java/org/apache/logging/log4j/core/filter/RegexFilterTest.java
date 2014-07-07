@@ -16,20 +16,22 @@
  */
 package org.apache.logging.log4j.core.filter;
 
-import java.util.regex.Pattern;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Filter.Result;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.plugins.util.TypeConverters;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -41,29 +43,41 @@ public class RegexFilterTest {
     }
 
     @Test
-    public void testThresholds() {
-        RegexFilter filter = RegexFilter.createFilter(Pattern.compile(".* test .*"), false, null, null);
+    public void testThresholds() throws Exception {
+        RegexFilter filter = RegexFilter.createFilter(".* test .*", null, false, null, null);
         filter.start();
         assertTrue(filter.isStarted());
         assertSame(Filter.Result.NEUTRAL,
-            filter.filter(null, Level.DEBUG, null, "This is a test message", (Throwable) null));
+                filter.filter(null, Level.DEBUG, null, "This is a test message", (Throwable) null));
         assertSame(Filter.Result.DENY, filter.filter(null, Level.ERROR, null, "This is not a test", (Throwable) null));
-        LogEvent event = new Log4jLogEvent(null, null, null, Level.DEBUG, new SimpleMessage("Another test message"), null);
+        LogEvent event = new Log4jLogEvent(null, null, null, Level.DEBUG, new SimpleMessage("Another test message"),
+                null);
         assertSame(Filter.Result.NEUTRAL, filter.filter(event));
         event = new Log4jLogEvent(null, null, null, Level.ERROR, new SimpleMessage("test"), null);
         assertSame(Filter.Result.DENY, filter.filter(event));
-        filter = RegexFilter.createFilter((Pattern) TypeConverters.convert("* test *", Pattern.class, null), false, null, null);
+        filter = RegexFilter.createFilter(null, null, false, null, null);
         assertNull(filter);
     }
 
     @Test
-    public void testNoMsg() {
-        final RegexFilter filter = RegexFilter.createFilter(Pattern.compile(".* test .*"), false, null, null);
+    public void testDotAllPattern() throws Exception {
+        String singleLine = "test single line matches";
+        String multiLine = "test multi line matches\nsome more lines";
+        RegexFilter filter = RegexFilter.createFilter(".*line.*", new String[] { "DOTALL", "COMMENTS" }, false,
+                Filter.Result.DENY, Filter.Result.ACCEPT);
+        Result singleLineResult = filter.filter(null, null, null, singleLine, (Throwable) null);
+        Result multiLineResult = filter.filter(null, null, null, multiLine, (Throwable) null);
+        assertThat(singleLineResult, equalTo(Result.DENY));
+        assertThat(multiLineResult, equalTo(Result.DENY));
+    }
+
+    @Test
+    public void testNoMsg() throws Exception {
+        final RegexFilter filter = RegexFilter.createFilter(".* test .*", null, false, null, null);
         filter.start();
         assertTrue(filter.isStarted());
         assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (String) null, (Throwable) null));
         assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (Message) null, (Throwable) null));
         assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, null, (Object[]) null));
-
     }
 }
