@@ -1,0 +1,105 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache license, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
+ */
+package org.apache.logging.log4j.mom.jms.manager;
+
+import java.util.Properties;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.appender.AbstractManager;
+import org.apache.logging.log4j.core.appender.ManagerFactory;
+import org.apache.logging.log4j.core.util.Closer;
+import org.apache.logging.log4j.status.StatusLogger;
+
+/**
+ * JNDI context manager. Mainly useful for finding JMS objects and configuring the InitialContext.
+ */
+public class JndiManager extends AbstractManager {
+
+    private static final Logger LOGGER = StatusLogger.getLogger();
+
+    private static final JndiManagerFactory FACTORY = new JndiManagerFactory();
+
+    private final Context context;
+
+    private JndiManager(String name, Context context) {
+        super(name);
+        this.context = context;
+    }
+
+    public static JndiManager getJndiManager(final String initialContextFactoryName,
+                                             final String providerURL,
+                                             final String urlPkgPrefixes,
+                                             final String securityPrincipal,
+                                             final String securityCredentials,
+                                             final Properties additionalProperties) {
+        final String name = JndiManager.class.getName() + '@' + JndiManager.class.hashCode();
+        if (initialContextFactoryName == null) {
+            return getManager(name, FACTORY, null);
+        }
+        final Properties properties = new Properties();
+        properties.setProperty(Context.INITIAL_CONTEXT_FACTORY, initialContextFactoryName);
+        if (providerURL != null) {
+            properties.setProperty(Context.PROVIDER_URL, providerURL);
+        } else {
+            LOGGER.warn("The JNDI InitialContextFactory class name [{}] was provided, but there was no associated " +
+                "provider URL. This is likely to cause problems.", initialContextFactoryName);
+        }
+        if (urlPkgPrefixes != null) {
+            properties.setProperty(Context.URL_PKG_PREFIXES, urlPkgPrefixes);
+        }
+        if (securityPrincipal != null) {
+            properties.setProperty(Context.SECURITY_PRINCIPAL, securityPrincipal);
+            if (securityCredentials != null) {
+                properties.setProperty(Context.SECURITY_CREDENTIALS, securityCredentials);
+            } else {
+                LOGGER.warn("A security principal [{}] was provided, but with no corresponding security credentials.",
+                    securityPrincipal);
+            }
+        }
+        if (additionalProperties != null) {
+            properties.putAll(additionalProperties);
+        }
+        return getManager(name, FACTORY, properties);
+    }
+
+    @Override
+    protected void releaseSub() {
+        Closer.closeSilently(this.context);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T lookup(final String name) throws NamingException {
+        return (T) this.context.lookup(name);
+    }
+
+    private static class JndiManagerFactory implements ManagerFactory<JndiManager, Properties> {
+
+        @Override
+        public JndiManager createManager(String name, Properties data) {
+            try {
+                return new JndiManager(name, new InitialContext(data));
+            } catch (final NamingException e) {
+                LOGGER.error("Error creating JNDI InitialContext.", e);
+                return null;
+            }
+        }
+    }
+}
