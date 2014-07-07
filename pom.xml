@@ -160,6 +160,7 @@
     <spring.version>3.2.8.RELEASE</spring.version>
     <flumeVersion>1.5.0</flumeVersion>
     <disruptor.version>3.2.1</disruptor.version>
+    <activemq.version>5.10.0</activemq.version>
     <!-- Configuration properties for the OSGi maven-bundle-plugin -->
     <project.version.osgi>2.0.0.RC2-SNAPSHOT</project.version.osgi>
     <osgi.symbolicName>org.apache.logging.${project.artifactId}</osgi.symbolicName>
@@ -491,6 +492,16 @@
         <artifactId>jboss-jms-api_1.1_spec</artifactId>
         <version>1.0.1.Final</version>
         <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.activemq</groupId>
+        <artifactId>activemq-broker</artifactId>
+        <version>${activemq.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.qpid</groupId>
+        <artifactId>proton-j</artifactId>
+        <version>0.7</version>
       </dependency>
       <dependency>
         <groupId>org.mockejb</groupId>
