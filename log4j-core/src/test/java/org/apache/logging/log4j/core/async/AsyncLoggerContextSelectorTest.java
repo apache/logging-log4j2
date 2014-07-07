@@ -51,11 +51,11 @@ public class AsyncLoggerContextSelectorTest {
     }
 
     @Test
-    public void testContextNameIsAsyncLoggerContext() {
+    public void testContextNameIsAsyncLoggerContextWithClassHashCode() {
         final AsyncLoggerContextSelector selector = new AsyncLoggerContextSelector();
         final LoggerContext context = selector.getContext(null, null, false);
-
-        assertEquals("AsyncLoggerContext", context.getName());
+        final String expectedContextName = "AsyncLoggerContext@" + AsyncLoggerContext.class.hashCode();
+        assertEquals(expectedContextName, context.getName());
     }
 
 }
