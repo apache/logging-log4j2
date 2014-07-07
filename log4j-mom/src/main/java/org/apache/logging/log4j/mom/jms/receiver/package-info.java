@@ -22,4 +22,4 @@
  * the running process. Of course, use of these classes as standalone executables are entirely optional and can
  * be used directly in your application (e.g., through your Spring {@code beans.xml} configuration).
  */
-package org.apache.logging.log4j.core.net.jms;
+package org.apache.logging.log4j.mom.jms.receiver;

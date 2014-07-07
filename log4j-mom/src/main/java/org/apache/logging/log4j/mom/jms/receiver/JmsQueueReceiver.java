@@ -14,48 +14,49 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.net.jms;
+package org.apache.logging.log4j.mom.jms.receiver;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
 import javax.jms.JMSException;
+import javax.jms.Queue;
+import javax.jms.QueueConnection;
+import javax.jms.QueueConnectionFactory;
+import javax.jms.QueueReceiver;
+import javax.jms.QueueSession;
 import javax.jms.Session;
-import javax.jms.Topic;
-import javax.jms.TopicConnection;
-import javax.jms.TopicConnectionFactory;
-import javax.jms.TopicSession;
-import javax.jms.TopicSubscriber;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 /**
- * Receives Topic messages that contain LogEvents. This implementation expects that all messages
- * are serialized log events.
+ * Receives Log Events over a JMS Queue. This implementation expects that all messages will
+ * contain a serialized LogEvent.
  */
-public class JmsTopicReceiver extends AbstractJmsReceiver {
+public class JmsQueueReceiver extends AbstractJmsReceiver {
 
     /**
      * Constructor.
-     * @param tcfBindingName The TopicConnectionFactory binding name.
-     * @param topicBindingName The Topic binding name.
-     * @param username The userid to connect to the topic.
-     * @param password The password to connect to the topic.
+     * @param qcfBindingName The QueueConnectionFactory binding name.
+     * @param queueBindingName The Queue binding name.
+     * @param username The userid to connect to the queue.
+     * @param password The password to connect to the queue.
      */
-    public JmsTopicReceiver(final String tcfBindingName, final String topicBindingName, final String username,
+    public JmsQueueReceiver(final String qcfBindingName, final String queueBindingName, final String username,
                             final String password) {
+
         try {
             final Context ctx = new InitialContext();
-            TopicConnectionFactory topicConnectionFactory;
-            topicConnectionFactory = (TopicConnectionFactory) lookup(ctx, tcfBindingName);
-            final TopicConnection topicConnection = topicConnectionFactory.createTopicConnection(username, password);
-            topicConnection.start();
-            final TopicSession topicSession = topicConnection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
-            final Topic topic = (Topic) ctx.lookup(topicBindingName);
-            final TopicSubscriber topicSubscriber = topicSession.createSubscriber(topic);
-            topicSubscriber.setMessageListener(this);
+            QueueConnectionFactory queueConnectionFactory;
+            queueConnectionFactory = (QueueConnectionFactory) lookup(ctx, qcfBindingName);
+            final QueueConnection queueConnection = queueConnectionFactory.createQueueConnection(username, password);
+            queueConnection.start();
+            final QueueSession queueSession = queueConnection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+            final Queue queue = (Queue) ctx.lookup(queueBindingName);
+            final QueueReceiver queueReceiver = queueSession.createReceiver(queue);
+            queueReceiver.setMessageListener(this);
         } catch (final JMSException e) {
             logger.error("Could not read JMS message.", e);
         } catch (final NamingException e) {
@@ -75,17 +76,17 @@ public class JmsTopicReceiver extends AbstractJmsReceiver {
             usage("Wrong number of arguments.");
         }
 
-        final String tcfBindingName = args[0];
-        final String topicBindingName = args[1];
+        final String qcfBindingName = args[0];
+        final String queueBindingName = args[1];
         final String username = args[2];
         final String password = args[3];
 
-        new JmsTopicReceiver(tcfBindingName, topicBindingName, username, password);
+        new JmsQueueReceiver(qcfBindingName, queueBindingName, username, password);
 
         final Charset enc = Charset.defaultCharset();
         final BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in, enc));
         // Loop until the word "exit" is typed
-        System.out.println("Type \"exit\" to quit JmsTopicReceiver.");
+        System.out.println("Type \"exit\" to quit JmsQueueReceiver.");
         while (true) {
             final String line = stdin.readLine();
             if (line == null || line.equalsIgnoreCase("exit")) {
@@ -96,10 +97,11 @@ public class JmsTopicReceiver extends AbstractJmsReceiver {
         }
     }
 
+
     private static void usage(final String msg) {
         System.err.println(msg);
-        System.err.println("Usage: java " + JmsTopicReceiver.class.getName()
-            + " TopicConnectionFactoryBindingName TopicBindingName username password");
+        System.err.println("Usage: java " + JmsQueueReceiver.class.getName()
+            + " QueueConnectionFactoryBindingName QueueBindingName username password");
         System.exit(1);
     }
 }

@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.net.jms;
+package org.apache.logging.log4j.mom.jms.appender;
 
 import java.util.List;
 import java.util.Map;
@@ -30,10 +30,11 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
-import org.apache.logging.log4j.core.appender.jms.JmsQueueAppender;
 import org.apache.logging.log4j.core.filter.AbstractFilter;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.mom.jms.receiver.AbstractJmsReceiver;
+import org.apache.logging.log4j.mom.jms.receiver.JmsTopicReceiver;
 import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
@@ -41,8 +42,8 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockejb.jms.MockQueue;
-import org.mockejb.jms.QueueConnectionFactoryImpl;
+import org.mockejb.jms.MockTopic;
+import org.mockejb.jms.TopicConnectionFactoryImpl;
 import org.mockejb.jndi.MockContextFactory;
 
 import static org.junit.Assert.*;
@@ -50,16 +51,16 @@ import static org.junit.Assert.*;
 /**
  *
  */
-public class JmsQueueTest {
+public class JmsTopicTest {
 
-    private static final String FACTORY_NAME = "TestQueueConnectionFactory";
-    private static final String QUEUE_NAME = "TestQueue";
+    private static final String FACTORY_NAME = "TestTopicConnectionFactory";
+    private static final String TOPIC_NAME = "TestTopic";
 
     private static Context context;
     private static AbstractJmsReceiver receiver;
 
     LoggerContext ctx = (LoggerContext) LogManager.getContext();
-    Logger root = ctx.getLogger("JmsQueueTest");
+    Logger root = ctx.getLogger("JmsTopicTest");
 
     @BeforeClass
     public static void setupClass() throws Exception {
@@ -68,10 +69,10 @@ public class JmsQueueTest {
         StatusLogger.getLogger().registerListener(listener);
         MockContextFactory.setAsInitial();
         context = new InitialContext();
-        context.rebind(FACTORY_NAME, new QueueConnectionFactoryImpl());
-        context.rebind(QUEUE_NAME, new MockQueue(QUEUE_NAME));
+        context.rebind(FACTORY_NAME, new TopicConnectionFactoryImpl());
+        context.rebind(TOPIC_NAME, new MockTopic(TOPIC_NAME));
         ((LoggerContext) LogManager.getContext()).reconfigure();
-        receiver = new JmsQueueReceiver(FACTORY_NAME, QUEUE_NAME, null, null);
+        receiver = new JmsTopicReceiver(FACTORY_NAME, TOPIC_NAME, null, null);
     }
 
     @AfterClass
@@ -94,14 +95,15 @@ public class JmsQueueTest {
         final Filter clientFilter = new MessageFilter(Filter.Result.NEUTRAL, Filter.Result.DENY);
         final Filter serverFilter = new MessageFilter(Filter.Result.DENY, Filter.Result.NEUTRAL);
         final CompositeFilter clientFilters = CompositeFilter.createFilters(new Filter[]{clientFilter});
-        final JmsQueueAppender appender = JmsQueueAppender.createAppender("Test", null, null, null, null, null, FACTORY_NAME,
-                QUEUE_NAME, null, null, null, clientFilters, "true");
+        final JmsTopicAppender appender = JmsTopicAppender.createAppender("Test", null, null, null, null, null, FACTORY_NAME,
+                TOPIC_NAME, null, null, null, clientFilters, "true");
         appender.start();
         final CompositeFilter serverFilters = CompositeFilter.createFilters(new Filter[]{serverFilter});
         final ListAppender listApp = new ListAppender("Events", serverFilters, null, false, false);
         listApp.start();
         final PatternLayout layout = PatternLayout.newBuilder().withPattern("%m %ex%n").build();
-        final ConsoleAppender console = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false", "true");
+        final ConsoleAppender console =
+                ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false", "true");
         console.start();
         final Logger serverLogger = ctx.getLogger(JmsTopicReceiver.class.getName());
         serverLogger.addAppender(console);

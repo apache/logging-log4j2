@@ -989,6 +989,7 @@
     <module>log4j-nosql</module>
     <module>log4j-web</module>
     <module>log4j-perf</module>
+    <module>log4j-mom</module>
   </modules>
   <profiles>
     <profile>
