@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.mom.jms.receiver;
+package org.apache.logging.log4j.mom.jms.manager;
 
 import java.io.Serializable;
 import java.util.Properties;
@@ -91,26 +91,27 @@ public abstract class AbstractJmsManager extends AbstractManager {
      * @param securityPrincipalName The name of the identity of the Principal.
      * @param securityCredentials The security credentials of the Principal.
      * @return The Properties.
+     * @see javax.naming.Context
      */
     protected static Properties getEnvironment(final String factoryName, final String providerURL,
                                                final String urlPkgPrefixes, final String securityPrincipalName,
                                                final String securityCredentials) {
         final Properties props = new Properties();
         if (factoryName != null) {
-            props.put(Context.INITIAL_CONTEXT_FACTORY, factoryName);
+            props.setProperty(Context.INITIAL_CONTEXT_FACTORY, factoryName);
             if (providerURL != null) {
-                props.put(Context.PROVIDER_URL, providerURL);
+                props.setProperty(Context.PROVIDER_URL, providerURL);
             } else {
                 LOGGER.warn("The InitialContext factory name has been provided without a ProviderURL. " +
                     "This is likely to cause problems");
             }
             if (urlPkgPrefixes != null) {
-                props.put(Context.URL_PKG_PREFIXES, urlPkgPrefixes);
+                props.setProperty(Context.URL_PKG_PREFIXES, urlPkgPrefixes);
             }
             if (securityPrincipalName != null) {
-                props.put(Context.SECURITY_PRINCIPAL, securityPrincipalName);
+                props.setProperty(Context.SECURITY_PRINCIPAL, securityPrincipalName);
                 if (securityCredentials != null) {
-                    props.put(Context.SECURITY_CREDENTIALS, securityCredentials);
+                    props.setProperty(Context.SECURITY_CREDENTIALS, securityCredentials);
                 } else {
                     LOGGER.warn("SecurityPrincipalName has been set without SecurityCredentials. " +
                         "This is likely to cause problems.");

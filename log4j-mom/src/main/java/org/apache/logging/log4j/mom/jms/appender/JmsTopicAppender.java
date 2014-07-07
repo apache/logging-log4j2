@@ -28,7 +28,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
-import org.apache.logging.log4j.mom.jms.receiver.JmsTopicManager;
+import org.apache.logging.log4j.mom.jms.manager.JmsTopicManager;
 import org.apache.logging.log4j.core.util.Booleans;
 
 /**
