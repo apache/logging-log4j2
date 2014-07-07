@@ -1,0 +1,14 @@
+<Configuration name="JmsAppenderTest" status="OFF">
+  <Appenders>
+    <JMS name="JmsQueueAppender"
+         factoryBindingName="jms/activemq"
+         destinationBindingName="jms/destination">
+      <PatternLayout pattern="%m"/>
+    </JMS>
+  </Appenders>
+  <Loggers>
+    <Root level="info">
+      <AppenderRef ref="JmsQueueAppender"/>
+    </Root>
+  </Loggers>
+</Configuration>
