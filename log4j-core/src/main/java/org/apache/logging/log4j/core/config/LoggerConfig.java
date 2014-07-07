@@ -370,20 +370,22 @@ public class LoggerConfig extends AbstractFilterable {
      * loggerConfig.
      */
     private void waitForCompletion() {
-        if (shutdown.compareAndSet(false, true)) {
-            int retries = 0;
-            while (counter.get() > 0) {
-                shutdownLock.lock();
-                try {
-                    noLogEvents.await(retries + 1, TimeUnit.SECONDS);
-                } catch (final InterruptedException ie) {
-                    if (++retries > MAX_RETRIES) {
-                        break;
+        shutdownLock.lock();
+        try {
+            if (shutdown.compareAndSet(false, true)) {
+                int retries = 0;
+                while (counter.get() > 0) {
+                    try {
+                        noLogEvents.await(retries + 1, TimeUnit.SECONDS);
+                    } catch (final InterruptedException ie) {
+                        if (++retries > MAX_RETRIES) {
+                            break;
+                        }
                     }
-                } finally {
-                    shutdownLock.unlock();
                 }
             }
+        } finally {
+            shutdownLock.unlock();
         }
     }
 
