@@ -57,7 +57,7 @@ public class RegexFilterTest {
     }
 
     @Test
-    public void TestNoMsg() {
+    public void testNoMsg() {
         final RegexFilter filter = RegexFilter.createFilter(Pattern.compile(".* test .*"), false, null, null);
         filter.start();
         assertTrue(filter.isStarted());
