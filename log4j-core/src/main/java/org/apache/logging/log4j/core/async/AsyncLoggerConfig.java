@@ -170,7 +170,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
             @PluginElement("AppenderRef") final AppenderRef[] refs,
             @PluginElement("Properties") final Property[] properties,
             @PluginConfiguration final Configuration config,
-            @PluginElement("Filters") final Filter filter) {
+            @PluginElement("Filter") final Filter filter) {
         if (loggerName == null) {
             LOGGER.error("Loggers cannot be configured without a name");
             return null;
@@ -212,7 +212,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
                 @PluginElement("AppenderRef") final AppenderRef[] refs,
                 @PluginElement("Properties") final Property[] properties,
                 @PluginConfiguration final Configuration config,
-                @PluginElement("Filters") final Filter filter) {
+                @PluginElement("Filter") final Filter filter) {
             final List<AppenderRef> appenderRefs = Arrays.asList(refs);
             Level level;
             try {

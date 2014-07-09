@@ -181,7 +181,7 @@ public final class RoutingAppender extends AbstractAppender {
             @PluginElement("Routes") final Routes routes,
             @PluginConfiguration final Configuration config,
             @PluginElement("RewritePolicy") final RewritePolicy rewritePolicy,
-            @PluginElement("Filters") final Filter filter) {
+            @PluginElement("Filter") final Filter filter) {
 
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         if (name == null) {

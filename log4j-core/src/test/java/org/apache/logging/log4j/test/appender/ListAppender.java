@@ -163,7 +163,7 @@ public class ListAppender extends AbstractAppender {
             @PluginAttribute("entryPerNewLine") final String newLine,
             @PluginAttribute("raw") final String raw,
             @PluginElement("Layout") final Layout<? extends Serializable> layout,
-            @PluginElement("Filters") final Filter filter) {
+            @PluginElement("Filter") final Filter filter) {
 
         if (name == null) {
             LOGGER.error("No name provided for ListAppender");

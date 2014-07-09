@@ -81,7 +81,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
     @PluginFactory
     public static ConsoleAppender createAppender(
             @PluginElement("Layout") Layout<? extends Serializable> layout,
-            @PluginElement("Filters") final Filter filter,
+            @PluginElement("Filter") final Filter filter,
             @PluginAttribute(value = "target", defaultString = "SYSTEM_OUT") final String targetStr,
             @PluginAttribute("name") final String name,
             @PluginAttribute(value = "follow", defaultBoolean = false) final String follow,

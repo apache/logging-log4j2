@@ -181,7 +181,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
                                                @PluginAttribute("lockTimeoutRetries") final String lockTimeoutRetries,
                                                @PluginElement("FlumeEventFactory") final FlumeEventFactory factory,
                                                @PluginElement("Layout") Layout<? extends Serializable> layout,
-                                               @PluginElement("Filters") final Filter filter) {
+                                               @PluginElement("Filter") final Filter filter) {
 
         final boolean embed = embedded != null ? Boolean.parseBoolean(embedded) :
             (agents == null || agents.length == 0) && properties != null && properties.length > 0;

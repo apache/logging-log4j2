@@ -43,7 +43,7 @@ public final class UsesLoggingAppender extends AbstractAppender {
     public static UsesLoggingAppender createAppender(@PluginAttribute("name") final String name,
                                             @PluginAttribute("ignoreExceptions") final String ignore,
                                             @PluginElement("Layout") final Layout<?> layout,
-                                            @PluginElement("Filters") final Filter filter) {
+                                            @PluginElement("Filter") final Filter filter) {
 
         final boolean ignoreExceptions = Boolean.parseBoolean(ignore);
 
