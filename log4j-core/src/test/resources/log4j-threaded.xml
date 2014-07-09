@@ -28,9 +28,9 @@
       <PatternLayout pattern="%d %p %C{1.} [%t] %m%n"/>
     </Console>
     <List name="List">
-      <filters>
+      <Filters>
         <ThresholdFilter level="error"/>
-      </filters>
+      </Filters>
     </List>
   </Appenders>
 

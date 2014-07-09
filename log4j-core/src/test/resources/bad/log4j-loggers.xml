@@ -32,9 +32,9 @@
       </PatternLayout>
     </File>
     <List name="List">
-      <filters>
+      <Filters>
         <ThresholdFilter level="error"/>
-      </filters>
+      </Filters>
     </List>
   </Appenders>
 
