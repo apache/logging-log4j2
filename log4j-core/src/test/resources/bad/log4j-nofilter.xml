@@ -32,17 +32,17 @@
       </PatternLayout>
     </File>
     <List name="List">
-      <filters>
+      <Filters>
         <ThresholdFilter level="error"/>
-      </filters>
+      </Filters>
     </List>
   </Appenders>
 
   <Loggers>
     <Logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
-        <filters>
+        <Filters>
           <!-- This isn't really an error -->
-        </filters>
+        </Filters>
       <AppenderRef ref="STDOUT"/>
     </Logger>>
 
