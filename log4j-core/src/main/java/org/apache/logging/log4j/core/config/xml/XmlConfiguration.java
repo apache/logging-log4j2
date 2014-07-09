@@ -106,7 +106,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             LOGGER.warn("The DocumentBuilderFactory [{}] does not support the feature [{}].", factory,
                     XINCLUDE_FIXUP_BASE_URIS, e);
         } catch (@SuppressWarnings("ErrorNotRethrown") final AbstractMethodError err) {
-            LOGGER.warn("The DocumentBuilderFactory is out of date and does not support setFeature: {}", factory);
+            LOGGER.warn("The DocumentBuilderFactory is out of date and does not support setFeature: {}", factory, err);
         }
         try {
             factory.setFeature(XINCLUDE_FIXUP_LANGUAGE, true);
@@ -114,7 +114,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             LOGGER.warn("The DocumentBuilderFactory [{}] does not support the feature [{}].", factory,
                     XINCLUDE_FIXUP_LANGUAGE, e);
         } catch (@SuppressWarnings("ErrorNotRethrown") final AbstractMethodError err) {
-            LOGGER.warn("The DocumentBuilderFactory is out of date and does not support setFeature: {}", factory);
+            LOGGER.warn("The DocumentBuilderFactory is out of date and does not support setFeature: {}", factory, err);
         }
     }
 
@@ -180,7 +180,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             try {
                 is = Loader.getResourceAsStream(schema, XmlConfiguration.class.getClassLoader());
             } catch (final Exception ex) {
-                LOGGER.error("Unable to access schema {}", this.schema);
+                LOGGER.error("Unable to access schema {}", this.schema, ex);
             }
             if (is != null) {
                 final Source src = new StreamSource(is, LOG4J_XSD);

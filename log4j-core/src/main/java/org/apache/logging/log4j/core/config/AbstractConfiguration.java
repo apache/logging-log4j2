@@ -139,9 +139,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 try {
                     // Cause the class to be initialized if it isn't already.
                     Loader.initializeClass(type.getPluginClass().getName(), type.getPluginClass().getClassLoader());
-                } catch (final Exception ex) {
-                    LOGGER.error("Unable to initialize {} due to {}: {}", type.getPluginClass().getName(),
-                            ex.getClass().getSimpleName(), ex.getMessage());
+                } catch (final Exception e) {
+                    LOGGER.error("Unable to initialize {} due to {}", type.getPluginClass().getName(), e.getClass()
+                            .getSimpleName(), e);
                 }
             }
         }
@@ -728,16 +728,16 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         if (Map.class.isAssignableFrom(clazz)) {
             try {
                 return createPluginMap(node, clazz);
-            } catch (final Exception ex) {
-                LOGGER.warn("Unable to create Map for {} of class {}", type.getElementName(), clazz);
+            } catch (final Exception e) {
+                LOGGER.warn("Unable to create Map for {} of class {}", type.getElementName(), clazz, e);
             }
         }
 
         if (Collection.class.isAssignableFrom(clazz)) {
             try {
                 return createPluginCollection(node, clazz);
-            } catch (final Exception ex) {
-                LOGGER.warn("Unable to create List for {} of class {}", type.getElementName(), clazz);
+            } catch (final Exception e) {
+                LOGGER.warn("Unable to create List for {} of class {}", type.getElementName(), clazz, e);
             }
         }
 
