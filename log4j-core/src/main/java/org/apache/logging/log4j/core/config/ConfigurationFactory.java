@@ -141,7 +141,7 @@ public abstract class ConfigurationFactory {
                                 ordered.add(new WeightedFactory(weight, clazz));
                             }
                         } catch (final Exception ex) {
-                            LOGGER.warn("Unable to add class {}", type.getPluginClass());
+                            LOGGER.warn("Unable to add class {}", type.getPluginClass(), ex);
                         }
                     }
                     for (final WeightedFactory wf : ordered) {

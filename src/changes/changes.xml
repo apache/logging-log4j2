@@ -69,6 +69,9 @@
       <action issue="LOG4J2-689" dev="ggregory" type="update">
         Update Jackson to 2.4.1.
       </action>
+      <action issue="LOG4J2-707" dev="ggregory" type="fix">
+        Some exceptions are not logged when configuration problems are detected.
+      </action>
     </release>
     <release version="2.0-rc2" date="2014-06-21" description="Bug fixes and enhancements">
       <action issue="LOG4J2-675" dev="rpopma" type="add">
