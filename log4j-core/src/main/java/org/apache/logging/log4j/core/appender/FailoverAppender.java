@@ -182,7 +182,7 @@ public final class FailoverAppender extends AbstractAppender {
             @PluginElement("Failovers") final String[] failovers,
             @PluginAttribute("retryInterval") final String retryIntervalString,
             @PluginConfiguration final Configuration config,
-            @PluginElement("Filters") final Filter filter,
+            @PluginElement("Filter") final Filter filter,
             @PluginAttribute("ignoreExceptions") final String ignore) {
         if (name == null) {
             LOGGER.error("A name for the Appender must be specified");

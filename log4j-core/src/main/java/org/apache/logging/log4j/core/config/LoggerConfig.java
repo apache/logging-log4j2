@@ -457,7 +457,7 @@ public class LoggerConfig extends AbstractFilterable {
             @PluginElement("AppenderRef") final AppenderRef[] refs,
             @PluginElement("Properties") final Property[] properties,
             @PluginConfiguration final Configuration config,
-            @PluginElement("Filters") final Filter filter) {
+            @PluginElement("Filter") final Filter filter) {
         if (loggerName == null) {
             LOGGER.error("Loggers cannot be configured without a name");
             return null;
@@ -497,7 +497,7 @@ public class LoggerConfig extends AbstractFilterable {
                 @PluginElement("AppenderRef") final AppenderRef[] refs,
                 @PluginElement("Properties") final Property[] properties,
                 @PluginConfiguration final Configuration config,
-                @PluginElement("Filters") final Filter filter) {
+                @PluginElement("Filter") final Filter filter) {
             final List<AppenderRef> appenderRefs = Arrays.asList(refs);
             final Level actualLevel = level == null ? Level.ERROR : level;
             final boolean additive = Booleans.parseBoolean(additivity, true);

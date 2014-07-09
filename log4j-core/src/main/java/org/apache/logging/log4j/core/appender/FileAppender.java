@@ -108,7 +108,7 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             @PluginAttribute("bufferedIo") final String bufferedIo,
             @PluginAttribute("bufferSize") final String bufferSizeStr,
             @PluginElement("Layout") Layout<? extends Serializable> layout,
-            @PluginElement("Filters") final Filter filter,
+            @PluginElement("Filter") final Filter filter,
             @PluginAttribute("advertise") final String advertise,
             @PluginAttribute("advertiseUri") final String advertiseUri,
             @PluginConfiguration final Configuration config) {

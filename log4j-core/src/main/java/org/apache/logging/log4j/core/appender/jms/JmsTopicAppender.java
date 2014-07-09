@@ -91,7 +91,7 @@ public final class JmsTopicAppender extends AbstractAppender {
             @PluginAttribute("userName") final String userName,
             @PluginAttribute("password") final String password,
             @PluginElement("Layout") Layout<? extends Serializable> layout,
-            @PluginElement("Filters") final Filter filter,
+            @PluginElement("Filter") final Filter filter,
             @PluginAttribute("ignoreExceptions") final String ignore) {
 
         if (name == null) {

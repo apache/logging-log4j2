@@ -116,7 +116,7 @@ public class SyslogAppender extends SocketAppender {
             @PluginAttribute("mdcIncludes") final String includes,
             @PluginAttribute("mdcRequired") final String required,
             @PluginAttribute("format") final String format,
-            @PluginElement("Filters") final Filter filter,
+            @PluginElement("Filter") final Filter filter,
             @PluginConfiguration final Configuration config,
             @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charsetName,
             @PluginAttribute("exceptionPattern") final String exceptionPattern,

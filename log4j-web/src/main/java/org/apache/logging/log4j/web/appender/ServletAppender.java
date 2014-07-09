@@ -65,7 +65,7 @@ public class ServletAppender extends AbstractAppender {
     @PluginFactory
     public static ServletAppender createAppender(
             @PluginElement("Layout") Layout<? extends Serializable> layout,
-            @PluginElement("Filters") final Filter filter,
+            @PluginElement("Filter") final Filter filter,
             @PluginAttribute("name") final String name,
             @PluginAttribute(value = "ignoreExceptions", defaultBoolean = true) final String ignore) {
         if (name == null) {

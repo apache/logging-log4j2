@@ -136,7 +136,7 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
             @PluginAttribute("bufferSize") final String bufferSizeStr,
             @PluginAttribute("ignoreExceptions") final String ignore,
             @PluginElement("Layout") Layout<? extends Serializable> layout,
-            @PluginElement("Filters") final Filter filter,
+            @PluginElement("Filter") final Filter filter,
             @PluginAttribute("advertise") final String advertise,
             @PluginAttribute("advertiseURI") final String advertiseURI,
             @PluginConfiguration final Configuration config) {
