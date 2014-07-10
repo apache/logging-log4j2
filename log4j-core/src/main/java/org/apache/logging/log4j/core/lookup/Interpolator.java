@@ -72,7 +72,15 @@ public class Interpolator implements StrLookup {
         // TODO: this ought to use the PluginManager
         lookups.put("sys", new SystemPropertiesLookup());
         lookups.put("env", new EnvironmentLookup());
-        lookups.put("jndi", new JndiLookup());
+        try {
+            lookups.put("jndi", new JndiLookup());
+        } catch (Exception e) {
+            // [LOG4J2-703] We might be on Android
+            // java.lang.VerifyError: org/apache/logging/log4j/core/lookup/JndiLookup
+            LOGGER.warn(
+                    "JNDI lookup class is not available because this JRE does not support JNDI. JNDI string lookups will not be available, continuing configuration.",
+                    e);
+        }
         lookups.put("date", new DateLookup());
         lookups.put("ctx", new ContextMapLookup());
         if (Loader.isClassAvailable("javax.servlet.ServletContext")) {
