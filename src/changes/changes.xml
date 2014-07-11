@@ -78,6 +78,9 @@
       <action issue="LOG4J2-707" dev="ggregory" type="fix">
         Some exceptions are not logged when configuration problems are detected.
       </action>
+      <action issue="LOG4J2-709" dev="ggregory" type="update">
+        Update Apache Commons Logging to 1.2 from 1.1.3.
+      </action>
     </release>
     <release version="2.0-rc2" date="2014-06-21" description="Bug fixes and enhancements">
       <action issue="LOG4J2-675" dev="rpopma" type="add">
