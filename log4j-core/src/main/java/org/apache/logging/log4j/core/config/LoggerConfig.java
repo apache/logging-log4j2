@@ -266,7 +266,7 @@ public class LoggerConfig extends AbstractFilterable {
      * @return the logging Level.
      */
     public Level getLevel() {
-        return level;
+        return level == null ? parent.getLevel() : level;
     }
 
     /**
@@ -464,11 +464,10 @@ public class LoggerConfig extends AbstractFilterable {
         }
 
         final List<AppenderRef> appenderRefs = Arrays.asList(refs);
-        final Level actualLevel = level == null ? Level.ERROR : level;
         final String name = loggerName.equals("root") ? Strings.EMPTY : loggerName;
         final boolean additive = Booleans.parseBoolean(additivity, true);
 
-        return new LoggerConfig(name, appenderRefs, filter, actualLevel, additive,
+        return new LoggerConfig(name, appenderRefs, filter, level, additive,
                 properties, config, includeLocation(includeLocation));
     }
 
