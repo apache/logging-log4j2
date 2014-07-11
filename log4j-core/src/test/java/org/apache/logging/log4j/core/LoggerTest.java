@@ -21,10 +21,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
@@ -216,6 +218,17 @@ public class LoggerTest {
         localLogger.error("Test parent additivity");
         final List<LogEvent> events = app.getEvents();
         assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 1, events.size());
+    }
+
+    @Test
+    public void testLevelInheritence() throws Exception {
+        final Configuration config = context.getConfiguration();
+        LoggerConfig loggerConfig = config.getLoggerConfig("org.apache.logging.log4j.core.LoggerTest");
+        assertNotNull(loggerConfig);
+        assertEquals(loggerConfig.getName(), "org.apache.logging.log4j.core.LoggerTest");
+        assertEquals(loggerConfig.getLevel(), Level.DEBUG);
+        final Logger localLogger = context.getLogger("org.apache.logging.log4j.core.LoggerTest");
+        assertTrue("Incorrect level - expected DEBUG, actual " + localLogger.getLevel(), localLogger.getLevel() == Level.DEBUG);
     }
 }
 
