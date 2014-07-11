@@ -74,7 +74,7 @@ public class Interpolator implements StrLookup {
         lookups.put("env", new EnvironmentLookup());
         try {
             lookups.put("jndi", new JndiLookup());
-        } catch (Exception e) {
+        } catch (Throwable e) {
             // [LOG4J2-703] We might be on Android
             // java.lang.VerifyError: org/apache/logging/log4j/core/lookup/JndiLookup
             LOGGER.warn(
