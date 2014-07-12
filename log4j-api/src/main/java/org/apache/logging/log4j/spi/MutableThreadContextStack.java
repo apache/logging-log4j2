@@ -21,6 +21,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.logging.log4j.ThreadContext.ContextStack;
+
 /**
  *
  */
@@ -32,6 +34,14 @@ public class MutableThreadContextStack implements ThreadContextStack {
      * The underlying list (never null).
      */
     private final List<String> list;
+    private boolean frozen;
+
+    /**
+     * Constructs an empty MutableThreadContextStack.
+     */
+    public MutableThreadContextStack() {
+        this(new ArrayList<String>());
+    }
 
     public MutableThreadContextStack(final List<String> list) {
         this.list = new ArrayList<String>(list);
@@ -41,8 +51,15 @@ public class MutableThreadContextStack implements ThreadContextStack {
         this.list = new ArrayList<String>(stack.list);
     }
 
+    private void checkInvariants() {
+        if (frozen) {
+            throw new UnsupportedOperationException("context stack has been frozen");
+        }
+    }
+
     @Override
     public String pop() {
+        checkInvariants();
         if (list.isEmpty()) {
             return null;
         }
@@ -62,6 +79,7 @@ public class MutableThreadContextStack implements ThreadContextStack {
 
     @Override
     public void push(final String message) {
+        checkInvariants();
         list.add(message);
     }
 
@@ -77,6 +95,7 @@ public class MutableThreadContextStack implements ThreadContextStack {
 
     @Override
     public void trim(final int depth) {
+        checkInvariants();
         if (depth < 0) {
             throw new IllegalArgumentException("Maximum stack depth cannot be negative");
         }
@@ -99,6 +118,7 @@ public class MutableThreadContextStack implements ThreadContextStack {
 
     @Override
     public void clear() {
+        checkInvariants();
         list.clear();
     }
 
@@ -134,11 +154,13 @@ public class MutableThreadContextStack implements ThreadContextStack {
 
     @Override
     public boolean add(final String s) {
+        checkInvariants();
         return list.add(s);
     }
 
     @Override
     public boolean remove(final Object o) {
+        checkInvariants();
         return list.remove(o);
     }
 
@@ -149,16 +171,19 @@ public class MutableThreadContextStack implements ThreadContextStack {
 
     @Override
     public boolean addAll(final Collection<? extends String> strings) {
+        checkInvariants();
         return list.addAll(strings);
     }
 
     @Override
     public boolean removeAll(final Collection<?> objects) {
+        checkInvariants();
         return list.removeAll(objects);
     }
 
     @Override
     public boolean retainAll(final Collection<?> objects) {
+        checkInvariants();
         return list.retainAll(objects);
     }
 
@@ -196,5 +221,21 @@ public class MutableThreadContextStack implements ThreadContextStack {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public ContextStack getImmutableStackOrNull() {
+        return copy();
+    }
+
+    /**
+     * "Freezes" this context stack so it becomes immutable: all mutator methods will throw an exception from now on.
+     */
+    public void freeze() {
+        frozen = true;
+    }
+    
+    public boolean isFrozen() {
+        return frozen;
     }
 }

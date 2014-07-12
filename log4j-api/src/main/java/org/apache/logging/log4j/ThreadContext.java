@@ -142,6 +142,10 @@ public final class ThreadContext  {
             return 0;
         }
 
+        @Override
+        public ContextStack getImmutableStackOrNull() {
+            return this;
+        }
     }
 
     /**
@@ -169,12 +173,14 @@ public final class ThreadContext  {
     /**
      * Empty, immutable Map.
      */
-    @SuppressWarnings("PublicStaticCollectionField")
+    // ironically, this annotation gives an "unsupported @SuppressWarnings" warning in Eclipse
+    @SuppressWarnings("PublicStaticCollectionField") // I like irony, so I won't delete it...
     public static final Map<String, String> EMPTY_MAP = Collections.emptyMap();
 
     /**
      * Empty, immutable ContextStack.
      */
+    // ironically, this annotation gives an "unsupported @SuppressWarnings" warning in Eclipse
     @SuppressWarnings("PublicStaticCollectionField")
     public static final ThreadContextStack EMPTY_STACK = new EmptyThreadContextStack();
 
@@ -352,7 +358,8 @@ public final class ThreadContext  {
      * @return an immutable copy of the ThreadContext stack.
      */
     public static ContextStack getImmutableStack() {
-        return contextStack;
+        ContextStack result = contextStack.getImmutableStackOrNull();
+        return result == null ? EMPTY_STACK : result;
     }
 
     /**
@@ -527,8 +534,16 @@ public final class ThreadContext  {
 
         /**
          * Returns a copy of the ContextStack.
-         * @return a copy of the ContextStack.s
+         * @return a copy of the ContextStack.
          */
         ContextStack copy();
+
+        /**
+         * Returns a ContextStack with the same contents as this ContextStack or {@code null}.
+         * Attempts to modify the returned stack may or may not throw an exception, but will not affect the contents
+         * of this ContextStack.
+         * @return a ContextStack with the same contents as this ContextStack or {@code null}.
+         */
+        ContextStack getImmutableStackOrNull();
     }
 }
