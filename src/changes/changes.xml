@@ -22,6 +22,10 @@
   </properties>
   <body>
     <release version="2.0-???" date="2014-0M-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-705" dev="rpopma" type="fix">
+        Fixed issue where Async Logger does not log thread context stack data.
+        API change: added method getImmutableStackOrNull() to ThreadContext.ContextStack interface.
+      </action>
       <action issue="LOG4J2-631" dev="rpopma" type="fix">
         Update docs to clarify how to use formatter logger and standard logger together.
       </action>
