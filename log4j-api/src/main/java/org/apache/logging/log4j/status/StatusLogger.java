@@ -17,17 +17,21 @@
 package org.apache.logging.log4j.status;
 
 import java.io.Closeable;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
@@ -60,20 +64,19 @@ public final class StatusLogger extends AbstractLogger {
 
     private static final StatusLogger STATUS_LOGGER = new StatusLogger();
 
-    private final SimpleLogger logger;
-
-    private final Collection<StatusListener> listeners = new CopyOnWriteArrayList<StatusListener>();
-    private final ReadWriteLock listenersLock = new ReentrantReadWriteLock();
-
+    private final Lock lock = new ReentrantLock();
+    private final LoggerFilters sysOut;
+    private final LoggerFilters sysErr;
+    private final Map<File, LoggerFilters> files = new HashMap<File, LoggerFilters>();
+    private final Collection<ListenerLevel> listeners = new CopyOnWriteArrayList<ListenerLevel>();
     private final Queue<StatusData> messages = new BoundedQueue<StatusData>(MAX_ENTRIES);
-    private final Lock msgLock = new ReentrantLock();
 
-    private int listenersLevel;
+    private Level defaultLogLevel = Level.toLevel(DEFAULT_STATUS_LEVEL, Level.WARN);
+    private Level registeredLogLevel = null;
 
     private StatusLogger() {
-        this.logger = new SimpleLogger("StatusLogger", Level.ERROR, false, true, false, false, Strings.EMPTY, null, PROPS,
-            System.err);
-        this.listenersLevel = Level.toLevel(DEFAULT_STATUS_LEVEL, Level.WARN).intLevel();
+        sysErr = new LoggerFilters("System.err", defaultLogLevel, System.err);
+        sysOut = new LoggerFilters("System.out", Level.OFF, System.out);
     }
 
     /**
@@ -85,68 +88,167 @@ public final class StatusLogger extends AbstractLogger {
     }
 
     public void setLevel(final Level level) {
-        logger.setLevel(level);
+        lock.lock();
+        try {
+            defaultLogLevel = level;
+            if (!hasRegistrations()) {
+                sysErr.logger.setLevel(level);
+            }
+        } finally {
+            lock.unlock();
+        }
+    }
+    public void registerSystemOutFilter(final StatusFilter filter, final Level level) {
+        registerFilter(sysOut, filter, level);
+    }
+
+    public boolean removeSystemOutFilter(final StatusFilter filter) {
+        return removeFilter(sysOut, filter);
+    }
+
+    public void registerSystemErrFilter(final StatusFilter filter, final Level level) {
+        registerFilter(sysErr, filter, level);
+    }
+
+    public boolean removeSystemErrFilter(final StatusFilter filter) {
+        return removeFilter(sysErr, filter);
+    }
+
+    public void registerFileFilter(final File file, final StatusFilter filter, final Level level) throws FileNotFoundException {
+        lock.lock();
+        try {
+            LoggerFilters filtered = files.get(file);
+            if (filtered == null) {
+                filtered = new LoggerFilters(file.toString(), level, new PrintStream(file));
+                files.put(file, filtered);
+            }
+            registerFilter(filtered, filter, level);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public boolean removeFileFilter(final File file, final StatusFilter filter) {
+        lock.lock();
+        try {
+            LoggerFilters filtered = files.get(file);
+            if (filtered != null && filtered.remove(filter)) {
+                if (filtered.isEmpty()) {
+                    files.remove(file);
+                    closeSilently(filtered);
+                }
+                updateRegisteredLevel();
+                return true;
+            }
+        } finally {
+            lock.unlock();
+        }
+        return false;
+    }
+
+    private void registerFilter(final LoggerFilters filtered, final StatusFilter filter, final Level level) {
+        lock.lock();
+        try {
+            filtered.add(filter, level);
+            updateRegisteredLevel(level);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    private boolean removeFilter(final LoggerFilters filtered, final StatusFilter filter) {
+        lock.lock();
+        try {
+            if (filtered.remove(filter)) {
+                updateRegisteredLevel();
+                return true;
+            }
+        } finally {
+            lock.unlock();
+        }
+        return false;
     }
 
     /**
      * Register a new listener.
      * @param listener The StatusListener to register.
      */
-    public void registerListener(final StatusListener listener) {
-        listenersLock.writeLock().lock();
+    public void registerListener(final StatusListener listener, final Level level) {
+        lock.lock();
         try {
-            listeners.add(listener);
-            final Level lvl = listener.getStatusLevel();
-            if (listenersLevel < lvl.intLevel()) {
-                listenersLevel = lvl.intLevel();
-            }
+            listeners.add(new ListenerLevel(listener, level));
+            updateRegisteredLevel(level);
         } finally {
-            listenersLock.writeLock().unlock();
+            lock.unlock();
         }
     }
-
     /**
      * Remove a StatusListener.
+     * 
      * @param listener The StatusListener to remove.
      */
-    public void removeListener(final StatusListener listener) {
-        closeSilently(listener);
-        listenersLock.writeLock().lock();
+    public boolean removeListener(final StatusListener listener) {
+        lock.lock();
         try {
-            listeners.remove(listener);
-            int lowest = Level.toLevel(DEFAULT_STATUS_LEVEL, Level.WARN).intLevel();
-            for (final StatusListener l : listeners) {
-                final int level = l.getStatusLevel().intLevel();
-                if (lowest < level) {
-                    lowest = level;
+            for (final Iterator<ListenerLevel> i = listeners.iterator(); i.hasNext(); ) {
+                final ListenerLevel listenerLevel = i.next();
+                if (listenerLevel.listener == listener) {
+                    listeners.remove(listenerLevel);
+                    updateRegisteredLevel();
+                    return true;
                 }
             }
-            listenersLevel = lowest;
         } finally {
-            listenersLock.writeLock().unlock();
+            lock.unlock();
         }
+        return false;
     }
 
-    /**
-     * Returns a thread safe Iterable for the StatusListener.
-     * @return An Iterable for the list of StatusListeners.
-     */
-    public Iterable<StatusListener> getListeners() {
-        return listeners;
+    private boolean hasRegistrations() {
+        return registeredLogLevel != null;
+    }
+
+    private void updateRegisteredLevel(Level level) {
+        registeredLogLevel = leastSpecificOf(level, registeredLogLevel);
+    }
+
+    private void updateRegisteredLevel() {
+        Level level = null;
+        for (ListenerLevel listener : listeners) {
+            level = leastSpecificOf(level, listener.level);
+        }
+        level = leastSpecificOf(level, sysOut.leastSpecificLevel());
+        level = leastSpecificOf(level, sysErr.leastSpecificLevel());
+        for (LoggerFilters file : files.values()) {
+            level = leastSpecificOf(level, file.leastSpecificLevel());
+        }
+        registeredLogLevel = level;
+    }
+
+    private static Level leastSpecificOf(Level first, Level second) {
+        if (first == null) {
+            return second;
+        } else if (second == null || first.isLessSpecificThan(second)) {
+            return first;
+        }
+        return second;
     }
 
     /**
      * Clears the list of status events and listeners.
      */
     public void reset() {
-        listenersLock.writeLock().lock();
+        lock.lock();
         try {
-            for (final StatusListener listener : listeners) {
-                closeSilently(listener);
-            }
-        } finally {
             listeners.clear();
-            listenersLock.writeLock().unlock();
+            sysOut.filters.clear();
+            sysErr.filters.clear();
+            for (LoggerFilters file : files.values()) {
+                closeSilently(file);
+            }
+            files.clear();
+        } finally {
+            lock.unlock();
             // note this should certainly come after the unlock to avoid unnecessary nested locking
             clear();
         }
@@ -164,11 +266,11 @@ public final class StatusLogger extends AbstractLogger {
      * @return The list of StatusData objects.
      */
     public List<StatusData> getStatusData() {
-        msgLock.lock();
+        lock.lock();
         try {
             return new ArrayList<StatusData>(messages);
         } finally {
-            msgLock.unlock();
+            lock.unlock();
         }
     }
 
@@ -176,17 +278,17 @@ public final class StatusLogger extends AbstractLogger {
      * Clears the list of status events.
      */
     public void clear() {
-        msgLock.lock();
+        lock.lock();
         try {
             messages.clear();
         } finally {
-            msgLock.unlock();
+            lock.unlock();
         }
     }
 
     @Override
     public Level getLevel() {
-        return logger.getLevel();
+        return registeredLogLevel;
     }
 
     /**
@@ -203,21 +305,37 @@ public final class StatusLogger extends AbstractLogger {
         if (fqcn != null) {
             element = getStackTraceElement(fqcn, Thread.currentThread().getStackTrace());
         }
-        final StatusData data = new StatusData(element, level, msg, t);
-        msgLock.lock();
+        final StatusData data = new StatusData(element, level, marker, msg, t);
+        lock.lock();
         try {
             messages.add(data);
         } finally {
-            msgLock.unlock();
+            lock.unlock();
         }
-        if (listeners.size() > 0) {
-            for (final StatusListener listener : listeners) {
-                if (data.getLevel().isMoreSpecificThan(listener.getStatusLevel())) {
-                    listener.log(data);
+        if (hasRegistrations()) {
+            logMessage(sysOut, fqcn, data);
+            logMessage(sysErr, fqcn, data);
+            for (LoggerFilters file : files.values()) {
+                logMessage(file, fqcn, data);
+            }
+            for (final ListenerLevel listener : listeners) {
+                if (listener.level.isLessSpecificThan(level)) {
+                    listener.listener.log(data);
                 }
             }
         } else {
-            logger.logMessage(fqcn, level, marker, msg, t);
+            sysErr.logger.logMessage(fqcn, level, marker, msg, t);
+        }
+    }
+
+    private void logMessage(final LoggerFilters filtered, final String fqcn, final StatusData data) {
+        if (filtered.logger.isEnabled(data.getLevel())) {
+            for (FilterLevel filter : filtered.filters) {
+                if (filter.filter.isEnabled(data)) {
+                    filtered.logger.logMessage(fqcn, data.getLevel(), data.getMarker(), data.getMessage(), data.getThrowable());
+                    break;
+                }
+            }
         }
     }
 
@@ -267,10 +385,10 @@ public final class StatusLogger extends AbstractLogger {
 
     @Override
     public boolean isEnabled(final Level level, final Marker marker) {
-        if (listeners.size() > 0) {
-            return listenersLevel >= level.intLevel();
+        if (hasRegistrations()) {
+            return level.isMoreSpecificThan(registeredLogLevel);
         }
-        return logger.isEnabled(level, marker);
+        return sysErr.logger.isEnabled(level, marker);
     }
 
     /**
@@ -289,10 +407,77 @@ public final class StatusLogger extends AbstractLogger {
 
         @Override
         public boolean add(final E object) {
-            while (messages.size() > size) {
-                messages.poll();
+            while (size() > size) {
+                poll();
             }
             return super.add(object);
+        }
+    }
+
+    private static class LoggerFilters implements Closeable {
+        final SimpleLogger logger;
+        final Collection<FilterLevel> filters = new CopyOnWriteArrayList<FilterLevel>();
+
+        LoggerFilters(final String name, final Level level, final PrintStream out) {
+            logger = new SimpleLogger(name, level, false, true, false, false, Strings.EMPTY, null, PROPS, out);
+        }
+
+        boolean isEmpty() {
+            return filters.isEmpty();
+        }
+
+        public void close() throws IOException {
+            filters.clear();
+            logger.close();
+        }
+
+        void add(final StatusFilter filter, final Level level) {
+            filters.add(new FilterLevel(filter, level));
+            if (level.isLessSpecificThan(logger.getLevel())) {
+                logger.setLevel(level);
+            }
+        }
+
+        boolean remove(final StatusFilter filter) {
+            for (final Iterator<FilterLevel> i = filters.iterator(); i.hasNext();) {
+                final FilterLevel existing = i.next();
+                if (existing.filter == filter) {
+                    filters.remove(existing);
+                    logger.setLevel(leastSpecificLevel());
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        Level leastSpecificLevel() {
+            Level level = Level.OFF;
+            for (FilterLevel existing : filters) {
+                if (existing.level.isLessSpecificThan(level)) {
+                    level = existing.level;
+                }
+            }
+            return level;
+        }
+    }
+
+    private static class FilterLevel {
+        final StatusFilter filter;
+        final Level level;
+
+        FilterLevel(final StatusFilter filter, final Level level) {
+            this.filter = filter;
+            this.level = level;
+        }
+    }
+
+    private static class ListenerLevel {
+        final StatusListener listener;
+        final Level level;
+
+        ListenerLevel(final StatusListener listener, final Level level) {
+            this.listener = listener;
+            this.level = level;
         }
     }
 }

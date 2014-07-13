@@ -17,6 +17,8 @@
 package org.apache.logging.log4j.simple;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -34,7 +36,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 /**
  *  This is the default logger that is used when no suitable logging implementation is available.
  */
-public class SimpleLogger extends AbstractLogger {
+public class SimpleLogger extends AbstractLogger implements Closeable {
 
     private static final long serialVersionUID = 1L;
 
@@ -178,4 +180,8 @@ public class SimpleLogger extends AbstractLogger {
         this.stream = stream;
     }
 
+    @Override
+    public void close() throws IOException {
+        this.stream.close();
+    }
 }

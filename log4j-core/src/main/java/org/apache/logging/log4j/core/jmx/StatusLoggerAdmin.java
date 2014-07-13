@@ -63,7 +63,7 @@ public class StatusLoggerAdmin extends NotificationBroadcasterSupport implements
         } catch (final Exception e) {
             throw new IllegalStateException(e);
         }
-        StatusLogger.getLogger().registerListener(this);
+        StatusLogger.getLogger().registerListener(this, level);
     }
 
     private static MBeanNotificationInfo createNotificationInfo() {
@@ -95,13 +95,10 @@ public class StatusLoggerAdmin extends NotificationBroadcasterSupport implements
     }
 
     @Override
-    public Level getStatusLevel() {
-        return this.level;
-    }
-
-    @Override
     public void setLevel(final String level) {
         this.level = Level.toLevel(level, Level.ERROR);
+        StatusLogger.getLogger().removeListener(this);
+        StatusLogger.getLogger().registerListener(this, this.level);
     }
 
     @Override

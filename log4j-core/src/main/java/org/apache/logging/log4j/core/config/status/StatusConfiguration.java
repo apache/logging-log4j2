@@ -29,7 +29,6 @@ import java.util.LinkedList;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.util.FileUtils;
-import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
 
