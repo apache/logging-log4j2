@@ -66,9 +66,6 @@ public abstract class StatusConsoleListener implements StatusListener {
     }
 
     protected boolean isEnabledFor(final StatusData data) {
-        if (level.isMoreSpecificThan(data.getLevel())) {
-        	return false;
-        } 
         if (filters == null) {
         	return true;
         }

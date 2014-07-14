@@ -23,7 +23,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
 
 /**
@@ -35,7 +34,6 @@ public class StatusData implements Serializable {
     private final long timestamp;
     private final StackTraceElement caller;
     private final Level level;
-    private final Marker marker;
     private final Message msg;
     private final Throwable throwable;
 
@@ -46,11 +44,10 @@ public class StatusData implements Serializable {
      * @param msg The message String.
      * @param t The Error or Exception that occurred.
      */
-    public StatusData(final StackTraceElement caller, final Level level, final Marker marker, final Message msg, final Throwable t) {
+    StatusData(final StackTraceElement caller, final Level level, final Message msg, final Throwable t) {
         this.timestamp = System.currentTimeMillis();
         this.caller = caller;
         this.level = level;
-        this.marker = marker;
         this.msg = msg;
         this.throwable = t;
     }
@@ -77,14 +74,6 @@ public class StatusData implements Serializable {
      */
     public Level getLevel() {
         return level;
-    }
-    
-    /**
-     * Returns the logging marker for the event.
-     * @return The logging marker.
-     */
-    public Marker getMarker() {
-        return marker;
     }
 
     /**

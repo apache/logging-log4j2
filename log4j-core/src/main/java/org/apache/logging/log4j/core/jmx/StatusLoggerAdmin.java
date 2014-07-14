@@ -95,6 +95,11 @@ public class StatusLoggerAdmin extends NotificationBroadcasterSupport implements
     }
 
     @Override
+    public Level getStatusLevel() {
+        return this.level;
+    }
+
+    @Override
     public void setLevel(final String level) {
         this.level = Level.toLevel(level, Level.ERROR);
     }
@@ -113,15 +118,13 @@ public class StatusLoggerAdmin extends NotificationBroadcasterSupport implements
      */
     @Override
     public void log(final StatusData data) {
-        if (level.isLessSpecificThan(data.getLevel())) {
-	    	final Notification notifMsg = new Notification(NOTIF_TYPE_MESSAGE, getObjectName(), nextSeqNo(), now(),
-	                data.getFormattedStatus());
-	        sendNotification(notifMsg);
-	
-	        final Notification notifData = new Notification(NOTIF_TYPE_DATA, getObjectName(), nextSeqNo(), now());
-	        notifData.setUserData(data);
-	        sendNotification(notifData);
-        }
+        final Notification notifMsg = new Notification(NOTIF_TYPE_MESSAGE, getObjectName(), nextSeqNo(), now(),
+                data.getFormattedStatus());
+        sendNotification(notifMsg);
+
+        final Notification notifData = new Notification(NOTIF_TYPE_DATA, getObjectName(), nextSeqNo(), now());
+        notifData.setUserData(data);
+        sendNotification(notifData);
     }
 
     /**

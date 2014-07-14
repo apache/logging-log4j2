@@ -186,7 +186,7 @@ public final class StatusLogger extends AbstractLogger {
         if (fqcn != null) {
             element = getStackTraceElement(fqcn, Thread.currentThread().getStackTrace());
         }
-        final StatusData data = new StatusData(element, level, marker, msg, t);
+        final StatusData data = new StatusData(element, level, msg, t);
         msgLock.lock();
         try {
             messages.add(data);
@@ -195,7 +195,9 @@ public final class StatusLogger extends AbstractLogger {
         }
         if (listeners.size() > 0) {
             for (final StatusListener listener : listeners) {
-                listener.log(data);
+                if (data.getLevel().isMoreSpecificThan(listener.getStatusLevel())) {
+                    listener.log(data);
+                }
             }
         } else {
             logger.logMessage(fqcn, level, marker, msg, t);
