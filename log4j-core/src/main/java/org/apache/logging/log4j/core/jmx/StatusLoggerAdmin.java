@@ -63,7 +63,7 @@ public class StatusLoggerAdmin extends NotificationBroadcasterSupport implements
         } catch (final Exception e) {
             throw new IllegalStateException(e);
         }
-        StatusLogger.getLogger().registerListener(this, level);
+        StatusLogger.getLogger().registerListener(this);
     }
 
     private static MBeanNotificationInfo createNotificationInfo() {
@@ -97,8 +97,6 @@ public class StatusLoggerAdmin extends NotificationBroadcasterSupport implements
     @Override
     public void setLevel(final String level) {
         this.level = Level.toLevel(level, Level.ERROR);
-        StatusLogger.getLogger().removeListener(this);
-        StatusLogger.getLogger().registerListener(this, this.level);
     }
 
     @Override
@@ -115,13 +113,15 @@ public class StatusLoggerAdmin extends NotificationBroadcasterSupport implements
      */
     @Override
     public void log(final StatusData data) {
-        final Notification notifMsg = new Notification(NOTIF_TYPE_MESSAGE, getObjectName(), nextSeqNo(), now(),
-                data.getFormattedStatus());
-        sendNotification(notifMsg);
-
-        final Notification notifData = new Notification(NOTIF_TYPE_DATA, getObjectName(), nextSeqNo(), now());
-        notifData.setUserData(data);
-        sendNotification(notifData);
+        if (level.isLessSpecificThan(data.getLevel())) {
+	    	final Notification notifMsg = new Notification(NOTIF_TYPE_MESSAGE, getObjectName(), nextSeqNo(), now(),
+	                data.getFormattedStatus());
+	        sendNotification(notifMsg);
+	
+	        final Notification notifData = new Notification(NOTIF_TYPE_DATA, getObjectName(), nextSeqNo(), now());
+	        notifData.setUserData(data);
+	        sendNotification(notifData);
+        }
     }
 
     /**

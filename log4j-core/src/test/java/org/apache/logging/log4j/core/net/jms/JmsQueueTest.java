@@ -31,10 +31,10 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.appender.jms.JmsQueueAppender;
+import org.apache.logging.log4j.core.config.status.StatusStdOutListener;
 import org.apache.logging.log4j.core.filter.AbstractFilter;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.After;
@@ -64,7 +64,8 @@ public class JmsQueueTest {
     @BeforeClass
     public static void setupClass() throws Exception {
         // MockContextFactory becomes the primary JNDI provider
-        final StatusConsoleListener listener = new StatusConsoleListener(Level.ERROR);
+        final StatusStdOutListener listener = new StatusStdOutListener();
+        listener.setLevel(Level.ERROR);
         StatusLogger.getLogger().registerListener(listener);
         MockContextFactory.setAsInitial();
         context = new InitialContext();

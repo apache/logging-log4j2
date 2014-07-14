@@ -17,18 +17,11 @@
 
 package org.apache.logging.log4j.core.config.status;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -37,8 +30,6 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 public class StatusConfiguration {
 
-    @SuppressWarnings("UseOfSystemOutOrSystemErr")
-    private static final PrintStream DEFAULT_STREAM = System.out;
     private static final Level DEFAULT_STATUS = Level.ERROR;
     private static final Verbosity DEFAULT_VERBOSITY = Verbosity.QUIET;
 
@@ -47,7 +38,7 @@ public class StatusConfiguration {
 
     private volatile boolean initialized = false;
 
-    private PrintStream destination = DEFAULT_STREAM;
+    private Class<? extends StatusConsoleListener> destination = StatusStdOutListener.class;
     private Level status = DEFAULT_STATUS;
     private Verbosity verbosity = DEFAULT_VERBOSITY;
     private String[] verboseClasses;
@@ -93,33 +84,15 @@ public class StatusConfiguration {
      * @return {@code this}
      */
     public StatusConfiguration withDestination(final String destination) {
-        try {
-            this.destination = parseStreamName(destination);
-        } catch (final URISyntaxException e) {
-            this.error("Could not parse URI [" + destination + "]. Falling back to default of stdout.");
-            this.destination = DEFAULT_STREAM;
-        } catch (final FileNotFoundException e) {
-            this.error("File could not be found at [" + destination + "]. Falling back to default of stdout.");
-            this.destination = DEFAULT_STREAM;
-        }
+    	if ("out".equalsIgnoreCase(destination)) {
+    		this.destination = StatusStdOutListener.class;
+    	} else if ("err".equalsIgnoreCase(destination)) {
+    		this.destination = StatusStdErrListener.class;
+    	} else {
+    		this.error("Invalid destination [" + destination + "]. Only 'out' or 'err' are supported. Defaulting to 'out'.");
+    		this.destination = StatusStdOutListener.class;
+    	}
         return this;
-    }
-
-    private PrintStream parseStreamName(final String name) throws URISyntaxException, FileNotFoundException {
-        if (name == null || name.equalsIgnoreCase("out")) {
-            return DEFAULT_STREAM;
-        }
-        if (name.equalsIgnoreCase("err")) {
-            return System.err;
-        }
-        final URI destination = FileUtils.getCorrectedFilePathUri(name);
-        final File output = FileUtils.fileFromUri(destination);
-        if (output == null) {
-            // don't want any NPEs, no sir
-            return DEFAULT_STREAM;
-        }
-        final FileOutputStream fos = new FileOutputStream(output);
-        return new PrintStream(fos, true);
     }
 
     /**
@@ -192,7 +165,7 @@ public class StatusConfiguration {
     private boolean configureExistingStatusConsoleListener() {
         boolean configured = false;
         for (final StatusListener statusListener : this.logger.getListeners()) {
-            if (statusListener instanceof StatusConsoleListener) {
+        	if (this.destination.isInstance(statusListener)) {
                 final StatusConsoleListener listener = (StatusConsoleListener) statusListener;
                 listener.setLevel(this.status);
                 if (this.verbosity == Verbosity.QUIET) {
@@ -206,11 +179,17 @@ public class StatusConfiguration {
 
 
     private void registerNewStatusConsoleListener() {
-        final StatusConsoleListener listener = new StatusConsoleListener(this.status, this.destination);
-        if (this.verbosity == Verbosity.QUIET) {
-            listener.setFilters(this.verboseClasses);
-        }
-        this.logger.registerListener(listener);
+        StatusConsoleListener listener;
+		try {
+			listener = this.destination.newInstance();
+	        listener.setLevel(this.status);
+	        if (this.verbosity == Verbosity.QUIET) {
+	            listener.setFilters(this.verboseClasses);
+	        }
+	        this.logger.registerListener(listener);
+		} catch (ReflectiveOperationException e) {
+			logger.error("Cannot create listener of type " + destination.getClass());
+		}
     }
 
     private void migrateSavedLogMessages() {
