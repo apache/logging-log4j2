@@ -22,7 +22,7 @@ import javax.naming.NamingException;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.util.Closer;
+import org.apache.logging.log4j.core.util.JndiCloser;
 
 /**
  * Looks up keys from JNDI resources.
@@ -62,7 +62,7 @@ public class JndiLookup implements StrLookup {
         } catch (final NamingException e) {
             return null;
         } finally {
-            Closer.closeSilently(ctx);
+            JndiCloser.closeSilently(ctx);
         }
     }
 
