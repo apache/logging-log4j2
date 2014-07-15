@@ -135,11 +135,15 @@ public abstract class AbstractDatabaseManager extends AbstractManager {
     public final synchronized void flush() {
         if (this.isRunning() && this.buffer.size() > 0) {
             this.connectAndStart();
-            for (final LogEvent event : this.buffer) {
-                this.writeInternal(event);
+            try {
+                for (final LogEvent event : this.buffer) {
+                    this.writeInternal(event);
+                }
+            } finally {
+                this.commitAndClose();
+                // not sure if this should be done when writing the events failed
+                this.buffer.clear();
             }
-            this.commitAndClose();
-            this.buffer.clear();
         }
     }
 
@@ -156,8 +160,11 @@ public abstract class AbstractDatabaseManager extends AbstractManager {
             }
         } else {
             this.connectAndStart();
-            this.writeInternal(event);
-            this.commitAndClose();
+            try {
+                this.writeInternal(event);
+            } finally {
+                this.commitAndClose();
+            }
         }
     }
 

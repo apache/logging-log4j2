@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="?" date="2014-mm-dd" description="?">
+      <action issue="LOG4J2-657" dev="popmarem" type="fix" due-to="Stefan Wehner">
+        Fixed AbstractDatabaseManager to close connection on writeInternal error.
+      </action>
       <action issue="LOG4J2-713" dev="ggregory" type="fix" due-to="Nelson Melina">
         Android: java.lang.VerifyError: org/apache/logging/log4j/core/util/Closer
       </action>
