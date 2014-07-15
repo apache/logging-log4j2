@@ -34,7 +34,6 @@ import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.config.plugins.util.ResolverUtil;
-import org.apache.logging.log4j.core.config.status.StatusConfiguration;
 import org.apache.logging.log4j.core.util.Patterns;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -69,19 +68,11 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
                 }
             }
             processAttributes(rootNode, root);
-            final StatusConfiguration statusConfig = new StatusConfiguration().withVerboseClasses(VERBOSE_CLASSES)
-                    .withStatus(getDefaultStatus());
             for (final Map.Entry<String, String> entry : rootNode.getAttributes().entrySet()) {
                 final String key = entry.getKey();
                 final String value = getStrSubstitutor().replace(entry.getValue());
-                if ("status".equalsIgnoreCase(key)) {
-                    statusConfig.withStatus(value);
-                } else if ("dest".equalsIgnoreCase(key)) {
-                    statusConfig.withDestination(value);
-                } else if ("shutdownHook".equalsIgnoreCase(key)) {
+                if ("shutdownHook".equalsIgnoreCase(key)) {
                     isShutdownHookEnabled = !"disable".equalsIgnoreCase(value);
-                } else if ("verbose".equalsIgnoreCase(entry.getKey())) {
-                    statusConfig.withVerbosity(value);
                 } else if ("packages".equalsIgnoreCase(key)) {
                     final String[] packages = value.split(Patterns.COMMA_SEPARATOR);
                     for (final String p : packages) {
@@ -98,7 +89,6 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
                     createAdvertiser(value, configSource, buffer, "application/json");
                 }
             }
-            statusConfig.initialize();
             if (getName() == null) {
                 setName(configSource.getLocation());
             }

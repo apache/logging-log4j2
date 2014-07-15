@@ -44,7 +44,7 @@ public class StatusData implements Serializable {
      * @param msg The message String.
      * @param t The Error or Exception that occurred.
      */
-    StatusData(final StackTraceElement caller, final Level level, final Message msg, final Throwable t) {
+    public StatusData(final StackTraceElement caller, final Level level, final Message msg, final Throwable t) {
         this.timestamp = System.currentTimeMillis();
         this.caller = caller;
         this.level = level;

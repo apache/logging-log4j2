@@ -18,6 +18,7 @@ package org.apache.logging.log4j.status;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -53,7 +54,7 @@ public final class StatusLogger extends AbstractLogger {
     private static final String NOT_AVAIL = "?";
 
     private static final PropertiesUtil PROPS = new PropertiesUtil("log4j2.StatusLogger.properties");
-
+    
     private static final int MAX_ENTRIES = PROPS.getIntegerProperty(MAX_STATUS_ENTRIES, 200);
 
     private static final StatusLogger STATUS_LOGGER = new StatusLogger();
@@ -67,8 +68,11 @@ public final class StatusLogger extends AbstractLogger {
     private final Lock msgLock = new ReentrantLock();
 
     private StatusLogger() {
-        this.logger = new SimpleLogger("StatusLogger", Level.ERROR, false, true, false, false, Strings.EMPTY, null, PROPS,
-            System.err);
+    	final Level consoleLevel = Level.toLevel(PROPS.getStringProperty("log4j2.StatusLogger.console.level"), Level.ERROR);
+    	final PrintStream consoleDest ="out".equalsIgnoreCase(PROPS.getStringProperty("log4j2.StatusLogger.console.destination")) ? System.out : System.err; 
+    			
+		this.logger = new SimpleLogger("StatusLogger", consoleLevel, false,
+				true, false, false, Strings.EMPTY, null, PROPS, consoleDest);
     }
 
     /**
@@ -182,6 +186,7 @@ public final class StatusLogger extends AbstractLogger {
      */
     @Override
     public void logMessage(final String fqcn, final Level level, final Marker marker, final Message msg, final Throwable t) {
+        logger.logMessage(fqcn, level, marker, msg, t);
         StackTraceElement element = null;
         if (fqcn != null) {
             element = getStackTraceElement(fqcn, Thread.currentThread().getStackTrace());
@@ -193,14 +198,10 @@ public final class StatusLogger extends AbstractLogger {
         } finally {
             msgLock.unlock();
         }
-        if (listeners.size() > 0) {
-            for (final StatusListener listener : listeners) {
-                if (data.getLevel().isMoreSpecificThan(listener.getStatusLevel())) {
-                    listener.log(data);
-                }
+        for (final StatusListener listener : listeners) {
+            if (data.getLevel().isMoreSpecificThan(listener.getStatusLevel())) {
+                listener.log(data);
             }
-        } else {
-            logger.logMessage(fqcn, level, marker, msg, t);
         }
     }
 
@@ -250,10 +251,15 @@ public final class StatusLogger extends AbstractLogger {
 
     @Override
     public boolean isEnabled(final Level level, final Marker marker) {
-        if (listeners.isEmpty()) {
-            return false;
+        if (logger.isEnabled(level)) {
+        	return true;
         }
-        return logger.isEnabled(level, marker);
+    	for (StatusListener listener : listeners) {
+    		if (level.isLessSpecificThan(listener.getStatusLevel())) {
+    			return true;
+    		}
+    	}
+        return false;
     }
 
     /**
