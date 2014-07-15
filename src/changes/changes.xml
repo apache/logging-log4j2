@@ -22,8 +22,11 @@
   </properties>
   <body>
     <release version="?" date="2014-mm-dd" description="?">
-      <action issue="LOG4J2-713" dev="rpopma" type="fix">
+      <action issue="LOG4J2-713" dev="rpopma" type="fix" due-to="Nelson Melina">
         Android: java.lang.VerifyError: org/apache/logging/log4j/core/util/Closer
+      </action>
+      <action issue="LOG4J2-703" dev="ggregory" type="fix" due-to="Nelson Melina">
+        Android: Could not find class 'javax.naming.InitialContext', referenced from method org.apache.logging.log4j.core.lookup.JndiLookup.lookup.
       </action>
     </release> 
     <release version="2.0" date="2014-07-12" description="GA Release">
@@ -40,9 +43,6 @@
       </action>
       <action issue="LOG4J2-441" dev="rgoers" type="fix">
         LoggerConfigs with no Level now inherit the Level from their parent.
-      </action>
-      <action issue="LOG4J2-703" dev="ggregory" type="fix" due-to="Nelson Melina">
-        Android: Could not find class 'javax.naming.InitialContext', referenced from method org.apache.logging.log4j.core.lookup.JndiLookup.lookup.
       </action>
       <action issue="LOG4J2-696" dev="ggregory" type="add">
         RegexFilter does not match multiline log messages.
