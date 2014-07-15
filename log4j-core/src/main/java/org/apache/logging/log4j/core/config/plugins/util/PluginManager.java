@@ -171,6 +171,8 @@ public class PluginManager {
                             types.put(key, pluginType);
                         } catch (final ClassNotFoundException e) {
                             LOGGER.info("Plugin [{}] could not be loaded due to missing classes.", className, e);
+                        } catch (final VerifyError e) {
+                            LOGGER.info("Plugin [{}] could not be loaded due to verification error.", className, e);
                         }
                     }
                 }
