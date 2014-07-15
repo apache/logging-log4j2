@@ -73,9 +73,10 @@ public class Interpolator implements StrLookup {
         lookups.put("sys", new SystemPropertiesLookup());
         lookups.put("env", new EnvironmentLookup());
         try {
-            lookups.put("jndi", new JndiLookup());
-        } catch (Throwable e) {
             // [LOG4J2-703] We might be on Android
+            lookups.put("jndi", (StrLookup) Class.forName("org.apache.logging.log4j.core.lookup.JndiLookup")
+                    .newInstance());
+        } catch (Throwable e) {
             // java.lang.VerifyError: org/apache/logging/log4j/core/lookup/JndiLookup
             LOGGER.warn(
                     "JNDI lookup class is not available because this JRE does not support JNDI. JNDI string lookups will not be available, continuing configuration.",
