@@ -22,7 +22,7 @@
   </properties>
   <body>
     <release version="?" date="2014-mm-dd" description="?">
-      <action issue="LOG4J2-713" dev="rpopma" type="fix" due-to="Nelson Melina">
+      <action issue="LOG4J2-713" dev="ggregory" type="fix" due-to="Nelson Melina">
         Android: java.lang.VerifyError: org/apache/logging/log4j/core/util/Closer
       </action>
       <action issue="LOG4J2-703" dev="ggregory" type="fix" due-to="Nelson Melina">
