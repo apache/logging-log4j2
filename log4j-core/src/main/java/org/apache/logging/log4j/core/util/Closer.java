@@ -25,9 +25,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import javax.naming.Context;
-import javax.naming.NamingException;
-
 /**
  * Helper class for closing resources.
  */
@@ -161,31 +158,6 @@ public final class Closer {
     public static void close(final Connection connection) throws SQLException {
         if (connection != null) {
             connection.close();
-        }
-    }
-
-    /**
-     * Closes the specified {@code Context}, ignoring any exceptions thrown by the close operation.
-     *
-     * @param context the JNDI Context to close, may be {@code null}
-     */
-    public static void closeSilently(final Context context) {
-        try {
-            close(context);
-        } catch (final NamingException ignored) {
-            // ignored
-        }
-    }
-
-    /**
-     * Closes the specified {@code Context}.
-     *
-     * @param context the JNDI Context to close, may be {@code null}
-     * @throws NamingException if a problem occurred closing the specified JNDI Context
-     */
-    public static void close(final Context context) throws NamingException {
-        if (context != null) {
-            context.close();
         }
     }
 

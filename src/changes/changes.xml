@@ -21,6 +21,11 @@
     <title>Changes</title>
   </properties>
   <body>
+    <release version="?" date="2014-mm-dd" description="?">
+      <action issue="LOG4J2-713" dev="rpopma" type="fix">
+        Android: java.lang.VerifyError: org/apache/logging/log4j/core/util/Closer
+      </action>
+    </release> 
     <release version="2.0" date="2014-07-12" description="GA Release">
       <action issue="LOG4J2-705" dev="rpopma" type="fix">
         Fixed issue where Async Logger does not log thread context stack data.
