@@ -57,6 +57,8 @@ public final class StatusLogger extends AbstractLogger {
     
     private static final int MAX_ENTRIES = PROPS.getIntegerProperty(MAX_STATUS_ENTRIES, 200);
 
+    private static final String DEFAULT_STATUS_LEVEL = PROPS.getStringProperty("log4j2.StatusLogger.level");
+
     private static final StatusLogger STATUS_LOGGER = new StatusLogger();
 
     private final SimpleLogger logger;
@@ -68,11 +70,8 @@ public final class StatusLogger extends AbstractLogger {
     private final Lock msgLock = new ReentrantLock();
 
     private StatusLogger() {
-    	final Level consoleLevel = Level.toLevel(PROPS.getStringProperty("log4j2.StatusLogger.console.level"), Level.ERROR);
-    	final PrintStream consoleDest ="out".equalsIgnoreCase(PROPS.getStringProperty("log4j2.StatusLogger.console.destination")) ? System.out : System.err; 
-    			
-		this.logger = new SimpleLogger("StatusLogger", consoleLevel, false,
-				true, false, false, Strings.EMPTY, null, PROPS, consoleDest);
+        this.logger = new SimpleLogger("StatusLogger", Level.ERROR, false, true, false, false, Strings.EMPTY, null, PROPS,
+                System.err);
     }
 
     /**
@@ -186,7 +185,6 @@ public final class StatusLogger extends AbstractLogger {
      */
     @Override
     public void logMessage(final String fqcn, final Level level, final Marker marker, final Message msg, final Throwable t) {
-        logger.logMessage(fqcn, level, marker, msg, t);
         StackTraceElement element = null;
         if (fqcn != null) {
             element = getStackTraceElement(fqcn, Thread.currentThread().getStackTrace());
@@ -198,10 +196,14 @@ public final class StatusLogger extends AbstractLogger {
         } finally {
             msgLock.unlock();
         }
-        for (final StatusListener listener : listeners) {
-            if (data.getLevel().isMoreSpecificThan(listener.getStatusLevel())) {
-                listener.log(data);
+        if (listeners.size() > 0) {
+            for (final StatusListener listener : listeners) {
+                if (data.getLevel().isMoreSpecificThan(listener.getStatusLevel())) {
+                    listener.log(data);
+                }
             }
+        } else {
+            logger.logMessage(fqcn, level, marker, msg, t);
         }
     }
 
@@ -251,8 +253,8 @@ public final class StatusLogger extends AbstractLogger {
 
     @Override
     public boolean isEnabled(final Level level, final Marker marker) {
-        if (logger.isEnabled(level)) {
-        	return true;
+        if (listeners.isEmpty()) {
+        	return logger.isEnabled(level);
         }
     	for (StatusListener listener : listeners) {
     		if (level.isLessSpecificThan(listener.getStatusLevel())) {
