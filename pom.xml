@@ -161,7 +161,6 @@
     <flumeVersion>1.5.0</flumeVersion>
     <disruptor.version>3.2.1</disruptor.version>
     <!-- Configuration properties for the OSGi maven-bundle-plugin -->
-    <project.version.osgi>2.0.0.RC2-SNAPSHOT</project.version.osgi>
     <osgi.symbolicName>org.apache.logging.${project.artifactId}</osgi.symbolicName>
     <osgi.export>org.apache.logging.log4j.*;version=${project.version};-noimport:=true</osgi.export>
     <osgi.import>*</osgi.import>
@@ -628,11 +627,6 @@
               <phase>process-classes</phase>
             </execution>
           </executions>
-          <configuration>
-            <instructions>
-              <Bundle-Version>${project.version.osgi}</Bundle-Version>
-            </instructions>
-          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
