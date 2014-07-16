@@ -41,6 +41,7 @@ import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.core.util.Assert;
+import org.apache.logging.log4j.core.util.Environment;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
@@ -365,10 +366,12 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
 
         firePropertyChangeEvent(new PropertyChangeEvent(this, PROPERTY_CONFIG, prev, config));
 
-        try {
-            Server.reregisterMBeansAfterReconfigure();
-        } catch (final Exception ex) {
-            LOGGER.error("Could not reconfigure JMX", ex);
+        if (!Environment.isAndroid()) { // LOG4J2-716: Android has no java.lang.management
+            try {
+                Server.reregisterMBeansAfterReconfigure();
+            } catch (final Exception ex) {
+                LOGGER.error("Could not reconfigure JMX", ex);
+            }
         }
         return prev;
     }
