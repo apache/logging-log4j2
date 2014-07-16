@@ -43,6 +43,7 @@ import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.config.plugins.util.ResolverUtil;
+import org.apache.logging.log4j.core.config.status.StatusConfiguration;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Patterns;
 import org.w3c.dom.Attr;
@@ -133,11 +134,19 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             final Document document = newDocumentBuilder().parse(source);
             rootElement = document.getDocumentElement();
             final Map<String, String> attrs = processAttributes(rootNode, rootElement);
+            final StatusConfiguration statusConfig = new StatusConfiguration().withVerboseClasses(VERBOSE_CLASSES)
+                    .withStatus(getDefaultStatus());
             for (final Map.Entry<String, String> entry : attrs.entrySet()) {
                 final String key = entry.getKey();
                 final String value = getStrSubstitutor().replace(entry.getValue());
-                if ("shutdownHook".equalsIgnoreCase(key)) {
+                if ("status".equalsIgnoreCase(key)) {
+                    statusConfig.withStatus(value);
+                } else if ("dest".equalsIgnoreCase(key)) {
+                    statusConfig.withDestination(value);
+                } else if ("shutdownHook".equalsIgnoreCase(key)) {
                     isShutdownHookEnabled = !"disable".equalsIgnoreCase(value);
+                } else if ("verbose".equalsIgnoreCase(key)) {
+                    statusConfig.withVerbosity(value);
                 } else if ("packages".equalsIgnoreCase(key)) {
                     final String[] packages = value.split(Patterns.COMMA_SEPARATOR);
                     for (final String p : packages) {
@@ -158,6 +167,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                     createAdvertiser(value, configSource, buffer, "text/xml");
                 }
             }
+            statusConfig.initialize();
         } catch (final SAXException domEx) {
             LOGGER.error("Error parsing " + configSource.getLocation(), domEx);
         } catch (final IOException ioe) {

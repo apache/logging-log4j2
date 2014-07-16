@@ -86,7 +86,7 @@ public class JmsTopicFailoverTest {
     private static void setupQueue() throws Exception {
         // MockContextFactory becomes the primary JNDI provider
         final StatusStdOutListener listener = new StatusStdOutListener();
-        listener.setLevel(Level.ERROR);
+        listener.setStatusLevel(Level.ERROR);
         StatusLogger.getLogger().registerListener(listener);
         MockContextFactory.setAsInitial();
         context = new InitialContext();

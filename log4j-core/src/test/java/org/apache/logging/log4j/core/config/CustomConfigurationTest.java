@@ -69,7 +69,7 @@ public class CustomConfigurationTest {
         assertTrue("Configuration is not an XmlConfiguration", config instanceof XmlConfiguration);
         for (final StatusListener listener : StatusLogger.getLogger().getListeners()) {
             if (listener instanceof StatusConsoleListener) {
-                assertSame(((StatusConsoleListener) listener).getLevel(), Level.INFO);
+                assertSame(((StatusConsoleListener) listener).getStatusLevel(), Level.INFO);
                 break;
             }
         }
