@@ -354,7 +354,13 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
         final Configuration prev = this.config;
         config.addListener(this);
         final ConcurrentMap<String, String> map = config.getComponent(Configuration.CONTEXT_PROPERTIES);
-        map.putIfAbsent("hostName", NetUtils.getLocalHostname());
+        
+        try { // LOG4J2-719 network access may throw android.os.NetworkOnMainThreadException
+            map.putIfAbsent("hostName", NetUtils.getLocalHostname());
+        } catch (Exception ex) {
+            LOGGER.debug("Ignoring {}, setting hostName to 'unknown'", ex.toString());
+            map.putIfAbsent("hostName", "unknown");
+        }
         map.putIfAbsent("contextName", name);
         config.start();
         this.config = config;
