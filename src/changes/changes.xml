@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="?" date="2014-mm-dd" description="?">
+      <action issue="LOG4J2-716" dev="popmarem" type="fix">
+        Automatically disable log4j JMX when detecting we are running on Android.
+      </action>
       <action issue="LOG4J2-657" dev="popmarem" type="fix" due-to="Stefan Wehner">
         Fixed AbstractDatabaseManager to close connection on writeInternal error.
       </action>
