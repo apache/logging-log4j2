@@ -41,7 +41,6 @@ import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.core.util.Assert;
-import org.apache.logging.log4j.core.util.Environment;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
@@ -357,7 +356,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
         
         try { // LOG4J2-719 network access may throw android.os.NetworkOnMainThreadException
             map.putIfAbsent("hostName", NetUtils.getLocalHostname());
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             LOGGER.debug("Ignoring {}, setting hostName to 'unknown'", ex.toString());
             map.putIfAbsent("hostName", "unknown");
         }
@@ -372,12 +371,10 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
 
         firePropertyChangeEvent(new PropertyChangeEvent(this, PROPERTY_CONFIG, prev, config));
 
-        if (!Environment.isAndroid()) { // LOG4J2-716: Android has no java.lang.management
-            try {
-                Server.reregisterMBeansAfterReconfigure();
-            } catch (final Exception ex) {
-                LOGGER.error("Could not reconfigure JMX", ex);
-            }
+        try {
+            Server.reregisterMBeansAfterReconfigure();
+        } catch (final Throwable t) { // LOG4J2-716: Android has no java.lang.management
+            LOGGER.error("Could not reconfigure JMX", t);
         }
         return prev;
     }
