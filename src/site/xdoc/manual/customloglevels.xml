@@ -1,0 +1,231 @@
+<?xml version="1.0"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+    <properties>
+        <title>Custom Log Levels</title>
+        <author email="rpopma@apache.org">Remko Popma</author>
+    </properties>
+
+    <body>
+      <a name="top" />
+      <section name="Custom Log Levels">
+        <p>
+          Log4J 2 supports custom log levels. The <tt>Level.forName()</tt> method creates a new
+          level for the specified name. By calling the Logger.log() method and passing this
+          custom log level you can log messages at this level:
+        </p>
+            <pre class="prettyprint">
+final Logger logger = LogManager.getLogger();
+final Level VERBOSE = Level.forName("VERBOSE", 550);
+
+logger.log(VERBOSE, "a verbose message");
+logger.log(VERBOSE, "another message");</pre>
+        <p>When defining a custom log level, the <tt>intLevel</tt> parameter (550 in the example above) determines
+           where the custom level exists in relation to the standard levels built-in to Log4J 2.
+           For reference, the table below shows the <tt>intLevel</tt> of the built-in log levels.
+         </p>
+         <table style="width: 30%">
+          <caption align="top">Standard log levels built-in to Log4J</caption>
+          <tr>
+            <th>Standard Level</th>
+            <th>intLevel</th>
+          </tr>
+          <tr>
+            <td>OFF</td>
+            <td align="right">0</td>
+          </tr>
+          <tr>
+            <td>FATAL</td>
+            <td align="right">100</td>
+          </tr>
+          <tr>
+            <td>ERROR</td>
+            <td align="right">200</td>
+          </tr>
+          <tr>
+            <td>WARN</td>
+            <td align="right">300</td>
+          </tr>
+          <tr>
+            <td>INFO</td>
+            <td align="right">400</td>
+          </tr>
+          <tr>
+            <td>DEBUG</td>
+            <td align="right">500</td>
+          </tr>
+          <tr>
+            <td>TRACE</td>
+            <td align="right">600</td>
+          </tr>
+          <tr>
+            <td>ALL</td>
+            <td align="right"><tt>Integer.MAX_VALUE</tt></td>
+          </tr>
+        </table>          
+         
+          <a name="StandardLoggerInterface" />
+          <subsection name="Convenience Methods for the Built-in Log Levels">
+            <p>
+              The built-in log levels have a set of convenience methods on the Logger
+              interface that makes them easier to use. For example, the Logger interface
+              has fourteen <tt>debug()</tt> methods that support the DEBUG level:
+            </p>
+            <pre class="prettyprint">
+// convenience methods for the built-in DEBUG level
+debug(Marker, Message)
+debug(Marker, Message, Throwable)
+debug(Marker, Object)
+debug(Marker, Object, Throwable)
+debug(Marker, String)
+debug(Marker, String, Object...)
+debug(Marker, String, Throwable)
+debug(Message)
+debug(Message, Throwable)
+debug(Object)
+debug(Object, Throwable)
+debug(String)
+debug(String, Object...)
+debug(String, Throwable)</pre>
+            <p>
+              Similar methods exist for the other built-in levels.
+            </p>
+            <p>It would be nice to have the same ease of use with custom levels,
+               so that after declaring a custom VERBOSE level, we would be able to
+               use code like this:
+            </p>
+            <pre class="prettyprint">
+logger.verbose("a verbose message"); // no need to pass the VERBOSE level as a parameter
+logger.verbose("another message");</pre>
+          </subsection>
+          <a name="AddingOrReplacingLevels" />
+          <subsection name="Adding or Replacing Log Levels">
+            <p>In the above example, a convenience method was <em>added</em> to the Logger interface,
+               in addition to the existing trace(), debug(), info(), ... methods for the built-in log levels.
+            </p>
+            <p>There is another use case, Domain Specific Language loggers, where we want to <em>replace</em>
+               the existing trace(), debug(), info(), ... methods with all-custom methods.
+            </p>
+            <p>
+              For example, for medical devices we could have only <tt>critical()</tt>, <tt>warning()</tt>,
+              and <tt>advisory()</tt> methods. 
+              Another example could be a game that has only <tt>defcon1()</tt>, <tt>defcon2()</tt>,
+              and <tt>defcon3()</tt> levels.
+            </p>
+            <p>
+              If it were possible to hide existing log levels, users could customize the
+              Logger interface to match their requirements. Some people may not want to
+              have a FATAL or a TRACE level, for example. They would like to be able to
+              create a custom Logger that only has debug(), info(), warn() and error() methods.
+            </p>
+          </subsection>
+          <a name="CustomLoggers" />
+          <subsection name="Generating Source Code for a Custom Logger Wrapper">
+            <p>
+              Common Log4J usage is to get an instance of the <tt>Logger</tt> interface from the
+              <tt>LogManager</tt> and call the methods on this interface.
+              However, the custom log Levels are not known in advance, so Log4J cannot provide
+              an interface with convenience methods for these custom log Levels.
+            </p>
+            <p>
+              To solve this, Log4J ships with a tool that generates source code for a
+              Logger wrapper. The generated wrapper class has convenience methods for each
+              custom log level, making custom levels just as easy to use as the built-in levels.
+            </p>
+            <p>
+              There are two flavors of wrappers: ones that <em><b>extend</b></em> the Logger
+              API (adding methods to the built-in levels) and ones that <em><b>customize</b></em>
+              the Logger API (replacing the built-in methods).
+            </p>
+            <p>When generating the source code for a wrapper class, you need to specify:</p>
+            <ul>
+              <li>the fully qualified name of the class to generate
+              </li>
+              <li>the list of custom levels to support and their <tt>intLevel</tt> relative strength
+              </li>
+              <li>whether to extend <tt>Logger</tt> (and keep the existing built-in methods)
+                or have only methods for the custom log levels
+              </li>
+            </ul>
+            <p>You would then include the generated source code in the project
+              where you want to use custom log levels.</p>
+          </subsection>
+          <a name="ExampleUsage" />
+          <subsection name="Example Usage of a Generated Logger Wrapper">
+            <p>
+              Here is an example of how one would use a generated logger wrapper with
+              custom levels DIAG, NOTICE and VERBOSE:
+            </p>
+            <pre class="prettyprint linenums">
+// ExtLogger is a generated logger wrapper
+import com.mycompany.myproject.ExtLogger;
+
+public class MyService {
+    // instead of Logger logger = LogManager.getLogger(MyService.class):
+    private static final ExtLogger logger = ExtLogger.create(MyService.class);
+    
+    public void someMethod() {
+        // ...
+        logger.trace("the built-in TRACE level");
+        logger.verbose("a custom level: a VERBOSE message");
+        logger.debug("the built-in DEBUG level");
+        logger.notice("a custom level: a NOTICE message");
+        logger.info("the built-in INFO level");
+        logger.diag("a custom level: a DIAG message");
+        logger.warn("the built-in WARN level");
+        logger.error("the built-in ERROR level");
+        logger.fatal("the built-in FATAL level");
+        // ...
+    }
+    ...
+}</pre>
+          </subsection>
+          <a name="CodeGen" />
+          <subsection name="Generating Extended Loggers">
+            <p>
+              Use the following command to generate a logger wrapper that adds methods to the built-in ones:
+            </p>
+            <pre class="prettyprint">
+java org.apache.logging.log4j.core.tools.Generate$ExtendedLogger com.mycomp.ExtLogger DIAG=350 NOTICE=450 VERBOSE=550 > ExtLogger.java</pre>
+            <p>
+              This will generate source code for a logger wrapper that has the convenience methods
+              for the built-in levels <em>as well as</em> the specified custom levels. The tool prints the
+              generated source code to the console,
+              so we added "&gt; <em>filename</em>" to redirect the output to a file.
+            </p>
+          </subsection>
+          <subsection name="Generating Custom Loggers">
+            <p>
+              Use the following command to generate a logger wrapper that hides the built-in levels and has only custom levels:
+            </p>
+            <pre class="prettyprint">
+java org.apache.logging.log4j.core.tools.Generate$CustomLogger com.mycomp.MyLogger DEFCON1=350 DEFCON2=450 DEFCON3=550 > MyLogger.java</pre>
+            <p>
+              This will generate source code for a logger wrapper that <em>only</em> has convenience
+              methods for the specified custom levels, <em>not</em> for the built-in levels.
+              The tool prints the generated source code to the console,
+              so we added "&gt; <em>filename</em>" to redirect the output to a file.
+            </p>
+          </subsection>
+      </section>
+
+    </body>
+</document>
