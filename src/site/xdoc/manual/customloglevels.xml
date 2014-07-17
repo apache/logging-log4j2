@@ -109,7 +109,7 @@ debug(String, Throwable)</pre>
               Similar methods exist for the other built-in levels.
             </p>
             <p>It would be nice to have the same ease of use with custom levels,
-               so that after declaring a custom VERBOSE level, we would be able to
+               so that after declaring a custom VERBOSE level, we could
                use code like this:
             </p>
             <pre class="prettyprint">
