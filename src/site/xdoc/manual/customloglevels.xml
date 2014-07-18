@@ -204,12 +204,13 @@ public class MyService {
               Use the following command to generate a logger wrapper that adds methods to the built-in ones:
             </p>
             <pre class="prettyprint">
-java org.apache.logging.log4j.core.tools.Generate$ExtendedLogger com.mycomp.ExtLogger DIAG=350 NOTICE=450 VERBOSE=550 > ExtLogger.java</pre>
+java -cp log4j-core-2.0.jar org.apache.logging.log4j.core.tools.Generate$ExtendedLogger \
+        com.mycomp.ExtLogger DIAG=350 NOTICE=450 VERBOSE=550 > com/mycomp/ExtLogger.java</pre>
             <p>
               This will generate source code for a logger wrapper that has the convenience methods
               for the built-in levels <em>as well as</em> the specified custom levels. The tool prints the
-              generated source code to the console,
-              so we added "&gt; <em>filename</em>" to redirect the output to a file.
+              generated source code to the console.
+              By appending " &gt; <em>filename</em>" the output can be redirected to a file.
             </p>
           </subsection>
           <subsection name="Generating Custom Loggers">
@@ -217,12 +218,13 @@ java org.apache.logging.log4j.core.tools.Generate$ExtendedLogger com.mycomp.ExtL
               Use the following command to generate a logger wrapper that hides the built-in levels and has only custom levels:
             </p>
             <pre class="prettyprint">
-java org.apache.logging.log4j.core.tools.Generate$CustomLogger com.mycomp.MyLogger DEFCON1=350 DEFCON2=450 DEFCON3=550 > MyLogger.java</pre>
+java -cp log4j-core-2.0.jar org.apache.logging.log4j.core.tools.Generate$CustomLogger \
+        com.mycomp.MyLogger DEFCON1=350 DEFCON2=450 DEFCON3=550 > com/mycomp/MyLogger.java</pre>
             <p>
               This will generate source code for a logger wrapper that <em>only</em> has convenience
               methods for the specified custom levels, <em>not</em> for the built-in levels.
-              The tool prints the generated source code to the console,
-              so we added "&gt; <em>filename</em>" to redirect the output to a file.
+              The tool prints the generated source code to the console.
+              By appending " &gt; <em>filename</em>" the output can be redirected to a file.
             </p>
           </subsection>
       </section>
