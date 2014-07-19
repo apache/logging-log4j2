@@ -22,6 +22,7 @@
     <properties>
         <title>Log4j 2 Plugins</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
+        <author email="mattsicker@apache.org">Matt Sicker</author>
     </properties>
 
     <body>
