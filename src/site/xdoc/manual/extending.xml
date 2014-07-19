@@ -383,6 +383,7 @@ public final class QueryConverter extends LogEventPatternConverter {
 }</pre>
           </subsection>
           <subsection name="Custom Plugins">
+            <p>See the <a href="plugins.html">Plugins</a> section of the manual.</p>
 <!-- TODO: some documentation here! -->
           </subsection>
       </section>
