@@ -96,7 +96,7 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
     }
 
     private void initializeJndi(final String location) {
-        final URI configLocation = getConfigURI(location);;
+        final URI configLocation = getConfigURI(location);
 
         if (this.name == null) {
             throw new IllegalStateException("A log4jContextName context parameter is required");
