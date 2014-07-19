@@ -16,13 +16,10 @@
  */
 package org.apache.logging.log4j.web;
 
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
 import javax.servlet.ServletContext;
 
 import org.apache.logging.log4j.LogManager;
@@ -45,7 +42,6 @@ import org.apache.logging.log4j.spi.LoggerContextFactory;
  * This class initializes and deinitializes Log4j no matter how the initialization occurs.
  */
 final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWebLifeCycle {
-    private static final Object MUTEX = new Object();
 
     static {
         if (Loader.isClassAvailable("org.apache.logging.log4j.core.web.JNDIContextFilter")) {
@@ -66,6 +62,20 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
     private Log4jWebInitializerImpl(final ServletContext servletContext) {
         this.servletContext = servletContext;
         this.map.put("hostName", NetUtils.getLocalHostname());
+    }
+
+    /**
+     * Initializes the Log4jWebLifeCycle attribute of a ServletContext. Those who wish to obtain this object should
+     * use the {@link org.apache.logging.log4j.web.WebLoggerContextUtils#getWebLifeCycle(javax.servlet.ServletContext)}
+     * method instead.
+     *
+     * @param servletContext the ServletContext to initialize
+     * @return a new Log4jWebLifeCycle
+     */
+    protected static Log4jWebInitializerImpl initialize(final ServletContext servletContext) {
+        final Log4jWebInitializerImpl initializer = new Log4jWebInitializerImpl(servletContext);
+        servletContext.setAttribute(SUPPORT_ATTRIBUTE, initializer);
+        return initializer;
     }
 
     @Override
@@ -248,13 +258,6 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
      * @return the initializer, never {@code null}.
      */
     static Log4jWebLifeCycle getLog4jWebInitializer(final ServletContext servletContext) {
-        synchronized (MUTEX) {
-            Log4jWebLifeCycle initializer = (Log4jWebLifeCycle) servletContext.getAttribute(SUPPORT_ATTRIBUTE);
-            if (initializer == null) {
-                initializer = new Log4jWebInitializerImpl(servletContext);
-                servletContext.setAttribute(SUPPORT_ATTRIBUTE, initializer);
-            }
-            return initializer;
-        }
+        return WebLoggerContextUtils.getWebLifeCycle(servletContext);
     }
 }
