@@ -71,6 +71,7 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
      *
      * @param servletContext the ServletContext to initialize
      * @return a new Log4jWebLifeCycle
+     * @since 2.0.1
      */
     protected static Log4jWebInitializerImpl initialize(final ServletContext servletContext) {
         final Log4jWebInitializerImpl initializer = new Log4jWebInitializerImpl(servletContext);

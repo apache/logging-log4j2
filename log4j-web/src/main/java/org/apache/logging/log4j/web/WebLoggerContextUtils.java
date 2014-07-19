@@ -27,6 +27,8 @@ import org.apache.logging.log4j.core.LoggerContext;
  * particular ServletContext. These methods are most particularly useful for asynchronous servlets where the
  * <abbr title="Thread Context ClassLoader">TCCL</abbr> is potentially different from the TCCL used by the
  * Servlet container that bootstrapped Log4j.
+ *
+ * @since 2.0.1
  */
 public final class WebLoggerContextUtils {
     private WebLoggerContextUtils() {
@@ -40,6 +42,7 @@ public final class WebLoggerContextUtils {
      * @param servletContext the ServletContext to locate a LoggerContext for
      * @return the LoggerContext for the given ServletContext
      * @throws java.lang.IllegalStateException if no LoggerContext could be found on the given ServletContext
+     * @since 2.0.1
      */
     public static LoggerContext getWebLoggerContext(final ServletContext servletContext) {
         return (LoggerContext) servletContext.getAttribute(Log4jWebSupport.CONTEXT_ATTRIBUTE);
@@ -50,6 +53,7 @@ public final class WebLoggerContextUtils {
      *
      * @param servletContext the ServletContext to locate a LoggerContext for
      * @return the LoggerContext for the given ServletContext or {@code null} if none was set
+     * @since 2.0.1
      */
     public static LoggerContext getRequiredWebLoggerContext(final ServletContext servletContext) {
         final LoggerContext loggerContext = getWebLoggerContext(servletContext);
@@ -66,6 +70,7 @@ public final class WebLoggerContextUtils {
      *
      * @param servletContext the ServletContext to get the Log4jWebLifeCycle for
      * @return the Log4jWebLifeCycle for the given ServletContext
+     * @since 2.0.1
      */
     public static Log4jWebLifeCycle getWebLifeCycle(final ServletContext servletContext) {
         WEB_SUPPORT_LOOKUP.lock();
@@ -88,6 +93,7 @@ public final class WebLoggerContextUtils {
      * @param servletContext the ServletContext to locate a LoggerContext for
      * @param runnable       the Runnable to wrap execution for
      * @return a wrapped Runnable
+     * @since 2.0.1
      */
     public static Runnable wrapExecutionContext(final ServletContext servletContext, final Runnable runnable) {
         return new Runnable() {
