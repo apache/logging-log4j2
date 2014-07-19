@@ -23,7 +23,7 @@
         <title>Extending Log4j 2</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
     </properties>
-
+<!-- TODO: add in documentation regarding plugin builders, factories, and typed attributes -->
     <body>
       <section name="Extending Log4j">
         <p>
@@ -270,7 +270,7 @@ public final class ThresholdFilter extends AbstractFilter {
               Appenders are passed an event, (usually) invoke a Layout to format the event, and then "publish"
               the event in whatever manner is desired. Appenders are declared as Plugins with a type of "Core"
               and an elementType of "appender". The name attribute on the Plugin annotation specifies the name
-              of the element users must provide in their configuration to use the Appender. Appender's should
+              of the element users must provide in their configuration to use the Appender. Appenders should
               specify printObject as "true" if the toString method renders the values of the attributes passed
               to the Appender.
             </p>
