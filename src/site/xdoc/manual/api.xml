@@ -48,7 +48,7 @@
 import org.apache.logging.log4j.Logger;
 
 public class HelloWorld {
-    private static Logger logger = LogManager.getLogger("HelloWorld");
+    private static final Logger logger = LogManager.getLogger("HelloWorld");
     public static void main(String[] args) {
         logger.info("Hello, World!");
     }
@@ -128,13 +128,13 @@ logger.printf(Level.INFO, "Logging in user %1$s with birthday %2$tm %2$te,%2$tY"
             <pre class="prettyprint linenums">package org.apache.test;
 
 public class MyTest {
-    private static Logger logger = LogManager.getLogger(MyTest.class.getName());
+    private static final Logger logger = LogManager.getLogger(MyTest.class.getName());
 }
             </pre>
             <pre class="prettyprint linenums">package org.apache.test;
 
 public class MyTest {
-    private static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 }
             </pre>
           </subsection>
