@@ -44,10 +44,12 @@
             disable it. In that case, it would be important to add another compiler pass to your build process that
             only handles annotation processing using the Log4j 2 annotation processor class,
             <code>org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor</code>. To do this using
-            Apache Maven, add the following execution to your <i>maven-compiler-plugin</i> build plugin:
+            Apache Maven, add the following execution to your <i>maven-compiler-plugin</i> (version 2.2 or higher)
+            build plugin:
           </p>
           <pre class="prettyprint linenums"><![CDATA[
 <plugin>
+  <groupId>org.apache.maven.plugins</groupId>
   <artifactId>maven-compiler-plugin</artifactId>
   <version>3.1</version>
   <executions>
@@ -58,7 +60,7 @@
       </goals>
       <phase>process-classes</phase>
       <configuration>
-        <process>only</process>
+        <proc>only</proc>
         <annotationProcessors>
           <annotationProcessor>org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor</annotationProcessor>
         </annotationProcessors>
