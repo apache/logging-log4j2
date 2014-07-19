@@ -372,11 +372,6 @@ public class Bar {
                 <td>The name of the configuration.</td>
               </tr>
               <tr>
-                <td>packages</td>
-                <td>A comma separated list of package names to search for plugins. Plugins are only loaded
-                  once per classloader so changing this value may not have any effect upon reconfiguration.</td>
-              </tr>
-              <tr>
                 <td>schema</td>
                 <td>Identifies the location for the classloader to located the XML Schema to use to validate
                   the configuration. Only valid when strict is set to true. If not set no schema validation
@@ -490,8 +485,7 @@ public class Bar {
           </p>
           <pre class="prettyprint linenums"><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="debug" strict="true" name="XMLConfigTest"
-               packages="org.apache.logging.log4j.test">
+<Configuration status="debug" strict="true" name="XMLConfigTest">
   <Properties>
     <Property name="filename">target/test.log</Property>
   </Properties>
@@ -551,7 +545,6 @@ public class Bar {
           </p>
           <pre class="prettyprint linenums">
 { "configuration": { "status": "error", "name": "RoutingTest",
-                     "packages": "org.apache.logging.log4j.test",
       "properties": {
         "property": { "name": "filename",
                       "value" : "target/rolling1/rollingtest-${dollar}${dollar}{sd:type}.log" }
@@ -597,7 +590,6 @@ public class Bar {
             declare multiple loggers as an array.
           </p>
            <pre class="prettyprint linenums">{ "configuration": { "status": "debug", "name": "RoutingTest",
-                      "packages": "org.apache.logging.log4j.test",
       "properties": {
         "property": { "name": "filename",
                       "value" : "target/rolling1/rollingtest-${dollar}${dollar}{sd:type}.log" }
@@ -730,7 +722,7 @@ public class Bar {
             shows how multiple filters can be configured on the ConsoleAppender.
           </p>
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="debug" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
+<Configuration status="debug" name="XMLConfigTest">
   <Properties>
     <Property name="filename">target/test.log</Property>
   </Properties>
@@ -796,7 +788,7 @@ public class Bar {
             shows the filename for the rolling file appender being declared as a property.
           </p>
 <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="debug" name="RoutingTest" packages="org.apache.logging.log4j.test">
+<Configuration status="debug" name="RoutingTest">
   <Properties>
     <Property name="filename">target/rolling1/rollingtest-${dollar}${dollar}{sd:type}.log</Property>
   </Properties>
@@ -945,8 +937,7 @@ public class Bar {
           </p>
 
 <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>;
-<Configuration status="debug" name="RoutingTest"
-               packages="org.apache.logging.log4j.test">
+<Configuration status="debug" name="RoutingTest">
   <Properties>
     <Property name="filename">target/rolling1/rollingtest-${dollar}${dollar}{sd:type}.log</Property>
   </Properties>
