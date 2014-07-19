@@ -86,7 +86,7 @@
               pass them to an underlying component that will dynamically resolve them. Properties come from values
               defined in the configuration file, system properties, environment variables, the ThreadContext
               Map, and data present in the event. Users can further customize the property providers by
-              adding their own <a href="../lookups.html">Lookup</a> Plugin.
+              adding their own <a href="manual/lookups.html">Lookup</a> Plugin.
             </dd>
           </dl>
 
@@ -107,7 +107,7 @@
 
           <subsection name="News">
             <p>
-              Log4j 2 is now available for testing. The API for Log4j 2 is not compatible with Log4j 1.x, however an adapter
+              Log4j 2 is now available for production! The API for Log4j 2 is not compatible with Log4j 1.x, however an adapter
               is available to allow applications to continue to use the Log4j 1.x API. Adapters are also available for
               Apache Commons Logging and SLF4J.
             </p>
