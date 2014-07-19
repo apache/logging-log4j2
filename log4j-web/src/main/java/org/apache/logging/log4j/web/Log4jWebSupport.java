@@ -22,12 +22,14 @@ import org.apache.logging.log4j.spi.LoggerContext;
  * Specifies an interface for setting and clearing a thread-bound {@link LoggerContext} in a Java EE web application.
  * Also defines constants for context parameter and attribute names. In most cases you will never need to use this
  * directly because the Log4j filter handles this task automatically. However, in async operations you should wrap
- * code that executes in separate threads with {@link #setLoggerContext} and {@link #clearLoggerContext}.<br>
- * <br>
+ * code that executes in separate threads with {@link #setLoggerContext} and {@link #clearLoggerContext}.
+ *
+ * <p>
  * You can obtain the instance of this for your web application by retrieving the {@link javax.servlet.ServletContext}
  * attribute named {@code org.apache.logging.log4j.core.web.Log4jWebSupport.INSTANCE}. If needed, you can also obtain
  * the {@link LoggerContext} instance for your web application by retrieving the {@code ServletContext} attribute named
  * {@code org.apache.logging.log4j.spi.LoggerContext.INSTANCE}.
+ * </p>
  */
 public interface Log4jWebSupport {
     /**
