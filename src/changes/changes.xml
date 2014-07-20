@@ -28,7 +28,7 @@
       <action issue="LOG4J2-595" dev="mattsicker" type="update">
         IMPORTANT! Custom plugins are no longer detected through the packages attribute in the Configuration
         element due to a change related to this issue in RC2. Plugins that rely on this attribute should be
-        re-compiled will the latest version of log4j-core. For more information, see the
+        re-compiled with the latest version of log4j-core. For more information, see the
         <a href="manual/plugins.html">Plugins Manual</a> for more details.
       </action>
       <action issue="LOG4J2-725" dev="mattsicker" type="add">
