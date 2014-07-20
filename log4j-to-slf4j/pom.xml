@@ -86,6 +86,7 @@
         <configuration>
           <instructions>
             <Export-Package>org.apache.logging.slf4j</Export-Package>
+            <Provide-Capability>org.apache.logging.log4j.spi.LoggerContextFactory</Provide-Capability>
           </instructions>
         </configuration>
       </plugin>
