@@ -17,18 +17,16 @@
 
 package org.apache.logging.log4j.core.config.plugins.osgi;
 
-import org.apache.logging.log4j.LogManager;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
-import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.util.BundleResourceLoader;
-import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
-import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
-import org.osgi.framework.BundleListener;
+import org.osgi.framework.SynchronousBundleListener;
 
 /**
  * OSGi BundleActivator.
@@ -37,23 +35,18 @@ public final class Activator implements org.osgi.framework.BundleActivator {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
+    private final AtomicReference<BundleContext> context = new AtomicReference<BundleContext>();
+
     @Override
     public void start(final BundleContext context) throws Exception {
-        registerLoggerContextFactory();
-        context.addBundleListener(new Listener());
-        // done after the BundleListener as to not miss any new bundle installs in the interim
-        scanInstalledBundlesForPlugins(context);
-    }
-
-    private void registerLoggerContextFactory() {
-        final LoggerContextFactory current = LogManager.getFactory();
-        if (!(current instanceof Log4jContextFactory)) {
-            LOGGER.debug("Replacing LogManager LoggerContextFactory.");
-            LogManager.setFactory(new Log4jContextFactory());
+        if (this.context.compareAndSet(null, context)) {
+            context.addBundleListener(new Listener());
+            // done after the BundleListener as to not miss any new bundle installs in the interim
+            scanInstalledBundlesForPlugins(context);
         }
     }
 
-    private void scanInstalledBundlesForPlugins(final BundleContext context) {
+    private static void scanInstalledBundlesForPlugins(final BundleContext context) {
         final Bundle[] bundles = context.getBundles();
         for (final Bundle bundle : bundles) {
             if (bundle.getState() == Bundle.ACTIVE) {
@@ -70,14 +63,11 @@ public final class Activator implements org.osgi.framework.BundleActivator {
 
     @Override
     public void stop(final BundleContext context) throws Exception {
-        unregisterLoggerContextFactory();
+        // not much can be done that isn't already automated by the framework
+        this.context.compareAndSet(context, null);
     }
 
-    private void unregisterLoggerContextFactory() {
-        LogManager.setFactory(new SimpleLoggerContextFactory());
-    }
-
-    private static class Listener implements BundleListener {
+    private static class Listener implements SynchronousBundleListener {
 
         @Override
         public void bundleChanged(final BundleEvent event) {
