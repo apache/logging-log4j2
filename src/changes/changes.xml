@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="?" date="2014-mm-dd" description="?">
+      <action issue="LOG4J2-373" dev="mattsicker" type="fix">
+        Fixed ClassLoader issues in loading Log4j providers in an OSGi environment.
+      </action>
       <action issue="LOG4J2-595" dev="mattsicker" type="update">
         IMPORTANT! Custom plugins are no longer detected through the packages attribute in the Configuration
         element due to a change related to this issue in RC2. Plugins that rely on this attribute should be
