@@ -29,7 +29,6 @@ import java.util.NoSuchElementException;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.DefaultThreadContextStack;
-import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextStack;
@@ -220,29 +219,25 @@ public final class ThreadContext  {
                     contextMap = (ThreadContextMap) clazz.newInstance();
                 }
             } catch (final ClassNotFoundException cnfe) {
-                LOGGER.error("Unable to locate configured LoggerContextFactory {}", threadContextMapName);
+                LOGGER.error("Unable to locate configured ThreadContextMap {}", threadContextMapName);
             } catch (final Exception ex) {
-                LOGGER.error("Unable to create configured LoggerContextFactory {}", threadContextMapName, ex);
+                LOGGER.error("Unable to create configured ThreadContextMap {}", threadContextMapName, ex);
             }
         }
         if (contextMap == null && ProviderUtil.hasProviders()) {
-            final LoggerContextFactory factory = LogManager.getFactory();
+            final String factoryClassName = LogManager.getFactory().getClass().getName();
             for (final Provider provider : ProviderUtil.getProviders()) {
-                threadContextMapName = provider.getThreadContextMap();
-                final String factoryClassName = provider.getClassName();
-                if (threadContextMapName != null && factory.getClass().getName().equals(factoryClassName)) {
-                    try {
-                        final Class<?> clazz = cl.loadClass(threadContextMapName);
-                        if (ThreadContextMap.class.isAssignableFrom(clazz)) {
-                            contextMap = (ThreadContextMap) clazz.newInstance();
+                if (factoryClassName.equals(provider.getClassName())) {
+                    final Class<? extends ThreadContextMap> clazz = provider.loadThreadContextMap();
+                    if (clazz != null) {
+                        try {
+                            contextMap = clazz.newInstance();
                             break;
+                        } catch (final Exception e) {
+                            LOGGER.error("Unable to locate or load configured ThreadContextMap {}",
+                                provider.getThreadContextMap(), e);
+                            contextMap = new DefaultThreadContextMap(useMap);
                         }
-                    } catch (final ClassNotFoundException cnfe) {
-                        LOGGER.error("Unable to locate configured LoggerContextFactory {}", threadContextMapName);
-                        contextMap = new DefaultThreadContextMap(useMap);
-                    } catch (final Exception ex) {
-                        LOGGER.error("Unable to create configured LoggerContextFactory {}", threadContextMapName, ex);
-                        contextMap = new DefaultThreadContextMap(useMap);
                     }
                 }
             }
