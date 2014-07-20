@@ -28,6 +28,7 @@ import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ProviderUtil;
 import org.apache.logging.log4j.util.Strings;
@@ -39,7 +40,11 @@ public class LogManager {
 
     private static volatile LoggerContextFactory factory;
 
-    private static final String FACTORY_PROPERTY_NAME = "log4j2.loggerContextFactory";
+    /**
+     * Log4j property to set to the fully qualified class name of a custom implementation of
+     * {@link org.apache.logging.log4j.spi.LoggerContextFactory}.
+     */
+    public static final String FACTORY_PROPERTY_NAME = "log4j2.loggerContextFactory";
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -55,18 +60,18 @@ public class LogManager {
     static {
         // Shortcut binding to force a specific logging implementation.
         final PropertiesUtil managerProps = PropertiesUtil.getProperties();
-        final String factoryClass = managerProps.getStringProperty(FACTORY_PROPERTY_NAME);
-        final ClassLoader cl = ProviderUtil.findClassLoader();
-        if (factoryClass != null) {
+        final String factoryClassName = managerProps.getStringProperty(FACTORY_PROPERTY_NAME);
+        final ClassLoader cl = LoaderUtil.getThreadContextClassLoader();
+        if (factoryClassName != null) {
             try {
-                final Class<?> clazz = cl.loadClass(factoryClass);
+                final Class<?> clazz = cl.loadClass(factoryClassName);
                 if (LoggerContextFactory.class.isAssignableFrom(clazz)) {
                     factory = (LoggerContextFactory) clazz.newInstance();
                 }
             } catch (final ClassNotFoundException cnfe) {
-                LOGGER.error("Unable to locate configured LoggerContextFactory {}", factoryClass);
+                LOGGER.error("Unable to locate configured LoggerContextFactory {}", factoryClassName);
             } catch (final Exception ex) {
-                LOGGER.error("Unable to create configured LoggerContextFactory {}", factoryClass, ex);
+                LOGGER.error("Unable to create configured LoggerContextFactory {}", factoryClassName, ex);
             }
         }
 
@@ -75,29 +80,18 @@ public class LogManager {
 
             if (ProviderUtil.hasProviders()) {
                 for (final Provider provider : ProviderUtil.getProviders()) {
-                    final String className = provider.getClassName();
-                    if (className != null) {
+                    final Class<? extends LoggerContextFactory> factoryClass = provider.loadLoggerContextFactory();
+                    if (factoryClass != null) {
                         try {
-                            final Class<?> clazz = cl.loadClass(className);
-                            if (LoggerContextFactory.class.isAssignableFrom(clazz)) {
-                                factories.put(provider.getPriority(), (LoggerContextFactory) clazz.newInstance());
-                            } else {
-                                LOGGER.error("{} does not implement {}", className, LoggerContextFactory.class.getName());
-                            }
-                        } catch (final ClassNotFoundException cnfe) {
-                            LOGGER.error("Unable to locate class {} specified in {}", className,
-                                provider.getUrl().toString(), cnfe);
-                        } catch (final IllegalAccessException iae) {
-                            LOGGER.error("Unable to create class {} specified in {}", className,
-                                provider.getUrl().toString(), iae);
+                            factories.put(provider.getPriority(), factoryClass.newInstance());
                         } catch (final Exception e) {
-                            LOGGER.error("Unable to create class {} specified in {}", className,
+                            LOGGER.error("Unable to create class {} specified in {}", factoryClass.getName(),
                                 provider.getUrl().toString(), e);
                         }
                     }
                 }
 
-                if (factories.size() == 0) {
+                if (factories.isEmpty()) {
                     LOGGER.error("Unable to locate a logging implementation, using SimpleLogger");
                     factory = new SimpleLoggerContextFactory();
                 } else {
@@ -145,6 +139,7 @@ public class LogManager {
      * <p>
      * WARNING - The LoggerContext returned by this method may not be the LoggerContext used to create a Logger
      * for the calling class.
+     * </p>
      * @return  The current LoggerContext.
      */
     public static LoggerContext getContext() {
