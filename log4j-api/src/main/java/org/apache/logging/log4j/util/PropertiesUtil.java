@@ -73,7 +73,7 @@ public final class PropertiesUtil {
     }
 
     public PropertiesUtil(final String propsLocn) {
-        final ClassLoader loader = ProviderUtil.findClassLoader();
+        final ClassLoader loader = LoaderUtil.getThreadContextClassLoader();
         @SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
         final
         Properties properties = new Properties();
