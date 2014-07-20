@@ -126,7 +126,7 @@ public final class AvailablePortFinder {
      * Checks to see if a specific port is available.
      *
      * @param port the port number to check for availability
-     * @return <tt>true</tt> if the port is available, or <tt>false</tt> if not
+     * @return {@code true} if the port is available, or {@code false} if not
      * @throws IllegalArgumentException is thrown if the port number is out of range
      */
     public static synchronized boolean available(final int port) throws IllegalArgumentException {
