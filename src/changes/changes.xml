@@ -22,6 +22,12 @@
   </properties>
   <body>
     <release version="?" date="2014-mm-dd" description="?">
+      <action issue="LOG4J2-595" dev="mattsicker" type="update">
+        IMPORTANT! Custom plugins are no longer detected through the packages attribute in the Configuration
+        element due to a change related to this issue in RC2. Plugins that rely on this attribute should be
+        re-compiled will the latest version of log4j-core. For more information, see the
+        <a href="manual/plugins.html">Plugins Manual</a> for more details.
+      </action>
       <action issue="LOG4J2-725" dev="mattsicker" type="add">
         Added WebLoggerContextUtils class to log4j-web for helper methods useful for asynchronous servlets.
       </action>
@@ -270,8 +276,8 @@
         Add support for multiple parents to Markers.
       </action>
       <action issue="LOG4J2-595" dev="mattsicker" type="add">
-          Introduce Java annotation processor as alternative plugin pre-caching mechanism. This is available in the
-          log4j-plugin-processor module.
+        Introduce Java annotation processor as the new plugin pre-caching mechanism. This is available in log4j-core.
+        All custom plugins created before this should be re-built against the current log4j-core.
       </action>
       <action issue="LOG4J2-564" dev="mattsicker" type="fix">
           Renamed SLF4J logger class to Log4jLogger.
