@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="?" date="2014-mm-dd" description="?">
+      <action issue="LOG4J2-725" dev="mattsicker" type="add">
+        Added WebLoggerContextUtils class to log4j-web for helper methods useful for asynchronous servlets.
+      </action>
       <action issue="LOG4J2-710" dev="popmarem" type="add">
         Added documentation for Custom Levels and Custom Loggers.
       </action>
