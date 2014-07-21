@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.util.BundleResourceLoader;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.SynchronousBundleListener;
@@ -31,7 +32,7 @@ import org.osgi.framework.SynchronousBundleListener;
 /**
  * OSGi BundleActivator.
  */
-public final class Activator implements org.osgi.framework.BundleActivator {
+public final class Activator implements BundleActivator, SynchronousBundleListener {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -40,7 +41,7 @@ public final class Activator implements org.osgi.framework.BundleActivator {
     @Override
     public void start(final BundleContext context) throws Exception {
         if (this.context.compareAndSet(null, context)) {
-            context.addBundleListener(new Listener());
+            context.addBundleListener(this);
             // done after the BundleListener as to not miss any new bundle installs in the interim
             scanInstalledBundlesForPlugins(context);
         }
@@ -57,7 +58,7 @@ public final class Activator implements org.osgi.framework.BundleActivator {
     }
 
     private static void scanBundleForPlugins(final Bundle bundle) {
-        LOGGER.debug("Scanning bundle [{}] for plugins.", bundle.getSymbolicName());
+        LOGGER.trace("Scanning bundle [{}] for plugins.", bundle.getSymbolicName());
         PluginManager.loadPlugins(new BundleResourceLoader(bundle));
     }
 
@@ -67,18 +68,15 @@ public final class Activator implements org.osgi.framework.BundleActivator {
         this.context.compareAndSet(context, null);
     }
 
-    private static class Listener implements SynchronousBundleListener {
+    @Override
+    public void bundleChanged(BundleEvent event) {
+        switch (event.getType()) {
+            case BundleEvent.STARTED:
+                scanBundleForPlugins(event.getBundle());
+                break;
 
-        @Override
-        public void bundleChanged(final BundleEvent event) {
-            switch (event.getType()) {
-                case BundleEvent.STARTED:
-                    scanBundleForPlugins(event.getBundle());
-                    break;
-
-                default:
-                    break;
-            }
+            default:
+                break;
         }
     }
 }
