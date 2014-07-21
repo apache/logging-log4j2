@@ -16,10 +16,8 @@
  */
 package org.apache.logging.log4j.util;
 
-import java.io.IOException;
 import java.net.URL;
 import java.security.Permission;
-import java.util.Enumeration;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -29,6 +27,7 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.SynchronousBundleListener;
+import org.osgi.framework.wiring.BundleWiring;
 
 /**
  * OSGi bundle activator. Used for locating an implementation of
@@ -42,10 +41,6 @@ public class Activator implements BundleActivator, SynchronousBundleListener {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    static {
-        checkPermission(new RuntimePermission("createClassLoader"));
-    }
-
     private static void checkPermission(final Permission permission) {
         if (SECURITY_MANAGER != null) {
             SECURITY_MANAGER.checkPermission(permission);
@@ -53,16 +48,24 @@ public class Activator implements BundleActivator, SynchronousBundleListener {
     }
 
     private void loadProvider(final Bundle bundle) {
+        if (bundle.getState() == Bundle.UNINSTALLED) {
+            return;
+        }
         try {
             checkPermission(new AdminPermission(bundle, AdminPermission.RESOURCE));
             final URL url = bundle.getEntry(ProviderUtil.PROVIDER_RESOURCE);
             if (url != null) {
                 checkPermission(new AdminPermission(bundle, AdminPermission.CLASS));
-                ProviderUtil.loadProvider(url, new BundleDelegatingClassLoader(bundle));
+                ProviderUtil.loadProvider(url, getBundleClassLoader(bundle));
             }
         } catch (final Exception e) {
             LOGGER.warn("Problem checking bundle {} for Log4j 2 provider.", bundle.getSymbolicName(), e);
         }
+    }
+
+    private static ClassLoader getBundleClassLoader(Bundle bundle) {
+        final BundleWiring wiring = bundle.adapt(BundleWiring.class);
+        return wiring.getClassLoader();
     }
 
     @Override
@@ -76,7 +79,7 @@ public class Activator implements BundleActivator, SynchronousBundleListener {
 
     @Override
     public void stop(final BundleContext context) throws Exception {
-
+        context.removeBundleListener(this);
     }
 
     @Override
@@ -92,30 +95,4 @@ public class Activator implements BundleActivator, SynchronousBundleListener {
         }
     }
 
-    /**
-     * ClassLoader that delegates to an OSGi Bundle.
-     */
-    public static class BundleDelegatingClassLoader extends ClassLoader {
-
-        private final Bundle bundle;
-
-        public BundleDelegatingClassLoader(final Bundle bundle) {
-            this.bundle = bundle;
-        }
-
-        @Override
-        protected Class<?> findClass(String name) throws ClassNotFoundException {
-            return bundle.loadClass(name);
-        }
-
-        @Override
-        protected URL findResource(String name) {
-            return bundle.getResource(name);
-        }
-
-        @Override
-        protected Enumeration<URL> findResources(String name) throws IOException {
-            return bundle.getResources(name);
-        }
-    }
 }
