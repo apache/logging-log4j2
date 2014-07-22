@@ -159,7 +159,7 @@
     <jackson2.version>2.4.1</jackson2.version>
     <spring.version>3.2.8.RELEASE</spring.version>
     <flumeVersion>1.5.0</flumeVersion>
-    <disruptor.version>3.2.1</disruptor.version>
+    <disruptor.version>3.3.0</disruptor.version>
     <!-- Configuration properties for the OSGi maven-bundle-plugin -->
     <osgi.symbolicName>org.apache.logging.${project.artifactId}</osgi.symbolicName>
     <osgi.export>org.apache.logging.log4j.*;version=${project.version};-noimport:=true</osgi.export>
