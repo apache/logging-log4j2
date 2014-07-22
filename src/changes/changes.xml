@@ -55,6 +55,9 @@
       <action issue="LOG4J2-732" dev="ggregory" type="updated">
         Update to LMAX Disruptor 3.3.0 from 3.2.1.
       </action>
+      <action issue="LOG4J2-733" dev="ggregory" type="updated">
+        Update to latest Jackson jars from the 2.4.1.X line.
+      </action>
     </release> 
     <release version="2.0" date="2014-07-12" description="GA Release">
       <action issue="LOG4J2-705" dev="rpopma" type="fix">
