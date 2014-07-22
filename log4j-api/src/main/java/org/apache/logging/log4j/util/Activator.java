@@ -21,6 +21,7 @@ import java.security.Permission;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.osgi.framework.AdaptPermission;
 import org.osgi.framework.AdminPermission;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
@@ -56,6 +57,7 @@ public class Activator implements BundleActivator, SynchronousBundleListener {
             final URL url = bundle.getEntry(ProviderUtil.PROVIDER_RESOURCE);
             if (url != null) {
                 checkPermission(new AdminPermission(bundle, AdminPermission.CLASS));
+                checkPermission(new AdaptPermission(BundleWiring.class.getName(), bundle, AdaptPermission.ADAPT));
                 ProviderUtil.loadProvider(url, getBundleClassLoader(bundle));
             }
         } catch (final Exception e) {
