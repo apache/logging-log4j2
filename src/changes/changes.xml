@@ -23,7 +23,7 @@
   <body>
     <release version="?" date="2014-mm-dd" description="?">
       <action issue="LOG4J2-736" dev="mattsicker" type="fix">
-        Fixed log4j-bom so that it won't
+        Fixed log4j-bom so that it won't specify a default scope on any third party dependencies.
       </action>
       <action issue="LOG4J2-735" dev="mattsicker" type="fix">
         Fixed log4j-bom so that it won't interfere with spring-bom and others.
