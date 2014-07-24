@@ -18,8 +18,10 @@ package org.apache.logging.log4j.util;
 
 import java.net.URL;
 import java.security.Permission;
+import java.util.List;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.osgi.framework.AdaptPermission;
 import org.osgi.framework.AdminPermission;
@@ -28,6 +30,7 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.SynchronousBundleListener;
+import org.osgi.framework.wiring.BundleWire;
 import org.osgi.framework.wiring.BundleWiring;
 
 /**
@@ -54,24 +57,29 @@ public class Activator implements BundleActivator, SynchronousBundleListener {
         }
         try {
             checkPermission(new AdminPermission(bundle, AdminPermission.RESOURCE));
-            final URL url = bundle.getEntry(ProviderUtil.PROVIDER_RESOURCE);
-            if (url != null) {
-                checkPermission(new AdminPermission(bundle, AdminPermission.CLASS));
-                checkPermission(new AdaptPermission(BundleWiring.class.getName(), bundle, AdaptPermission.ADAPT));
-                ProviderUtil.loadProvider(url, getBundleClassLoader(bundle));
-            }
+            checkPermission(new AdaptPermission(BundleWiring.class.getName(), bundle, AdaptPermission.ADAPT));
+            loadProvider(bundle.adapt(BundleWiring.class));
+        } catch (final SecurityException e) {
+            LOGGER.debug("Cannot access bundle [{}] contents. Ignoring.", bundle.getSymbolicName(), e);
         } catch (final Exception e) {
             LOGGER.warn("Problem checking bundle {} for Log4j 2 provider.", bundle.getSymbolicName(), e);
         }
     }
 
-    private static ClassLoader getBundleClassLoader(Bundle bundle) {
-        final BundleWiring wiring = bundle.adapt(BundleWiring.class);
-        return wiring.getClassLoader();
+    private void loadProvider(BundleWiring provider) {
+        final List<URL> urls = provider.findEntries("META-INF", "log4j-provider.properties", 0);
+        for (final URL url : urls) {
+            ProviderUtil.loadProvider(url, provider.getClassLoader());
+        }
     }
 
     @Override
     public void start(final BundleContext context) throws Exception {
+        final BundleWiring self = context.getBundle().adapt(BundleWiring.class);
+        final List<BundleWire> required = self.getRequiredWires(LoggerContextFactory.class.getName());
+        for (BundleWire wire : required) {
+            loadProvider(wire.getProviderWiring());
+        }
         context.addBundleListener(this);
         final Bundle[] bundles = context.getBundles();
         for (final Bundle bundle : bundles) {
