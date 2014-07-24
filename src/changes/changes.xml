@@ -22,6 +22,12 @@
   </properties>
   <body>
     <release version="?" date="2014-mm-dd" description="?">
+      <action issue="LOG4J2-736" dev="mattsicker" type="fix">
+        Fixed log4j-bom so that it won't
+      </action>
+      <action issue="LOG4J2-735" dev="mattsicker" type="fix">
+        Fixed log4j-bom so that it won't interfere with spring-bom and others.
+      </action>
       <action issue="LOG4J2-731" dev="mattsicker" type="fix">
         Updated documentation regarding extensions to LoggerContextFactory and Log4j 2 providers.
       </action>
