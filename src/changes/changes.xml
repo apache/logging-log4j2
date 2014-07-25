@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="?" date="2014-mm-dd" description="?">
+      <action issue="LOG4J2-740" dev="mattsicker" type="fix" due-to="Kosta Krauth">
+        Fixed typo in webapp manual regarding sample web.xml file.
+      </action>
       <action issue="LOG4J2-738" dev="ggregory" type="fix" due-to="Timothy Stack">
         RollingFileManager deadlock if async action thread fails to start.
       </action>
