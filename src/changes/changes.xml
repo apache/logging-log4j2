@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="?" date="2014-mm-dd" description="?">
+      <action issue="LOG4J2-742" dev="ggreory" type="fix" due-to="Pascal Chollet">
+        XInclude not working with relative path.
+      </action>
       <action issue="LOG4J2-740" dev="mattsicker" type="fix" due-to="Kosta Krauth">
         Fixed typo in webapp manual regarding sample web.xml file.
       </action>

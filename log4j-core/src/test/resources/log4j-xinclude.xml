@@ -19,9 +19,9 @@
 <Configuration xmlns:xi="http://www.w3.org/2001/XInclude"
   status="OFF" name="XMLConfigTest">
   <Properties>
-    <Property name="filename">target/test.log</Property>
+    <Property name="filename">target/test-xinclude.log</Property>
   </Properties>
   <ThresholdFilter level="debug"/>
-  <xi:include href="target/test-classes/log4j-xinclude-appenders.xml" />
-  <xi:include href="target/test-classes/log4j-xinclude-loggers.xml" />
+  <xi:include href="log4j-xinclude-appenders.xml" />
+  <xi:include href="log4j-xinclude-loggers.xml" />
 </Configuration>
