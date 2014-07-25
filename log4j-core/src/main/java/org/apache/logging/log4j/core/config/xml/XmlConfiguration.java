@@ -131,6 +131,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                 configStream.close();
             }
             final InputSource source = new InputSource(new ByteArrayInputStream(buffer));
+            source.setSystemId(configSource.getLocation());
             final Document document = newDocumentBuilder().parse(source);
             rootElement = document.getDocumentElement();
             final Map<String, String> attrs = processAttributes(rootNode, rootElement);
