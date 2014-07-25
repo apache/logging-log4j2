@@ -143,12 +143,12 @@
           using the following <code>web.xml</code> code:
         </p>
           <pre class="prettyprint linenums"><![CDATA[    <listener>
-        <listener-class>org.apache.logging.log4j.core.web.Log4jServletContextListener</listener-class>
+        <listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class>
     </listener>
 
     <filter>
         <filter-name>log4jServletFilter</filter-name>
-        <filter-class>org.apache.logging.log4j.core.web.Log4jServletFilter</filter-class>
+        <filter-class>org.apache.logging.log4j.web.Log4jServletFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>log4jServletFilter</filter-name>
