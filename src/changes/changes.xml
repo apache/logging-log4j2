@@ -21,7 +21,7 @@
     <title>Changes</title>
   </properties>
   <body>
-    <release version="?" date="2014-mm-dd" description="?">
+    <release version="2.0.1" date="2014-mm-dd" description="?">
       <action issue="LOG4J2-742" dev="ggreory" type="fix" due-to="Pascal Chollet">
         XInclude not working with relative path.
       </action>
