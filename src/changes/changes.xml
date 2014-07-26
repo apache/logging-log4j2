@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="2.0.1" date="2014-mm-dd" description="?">
+      <action issue="LOG4J2-670" dev="rpopma" type="fix">
+        DatePatternConverter ISO8601_PATTERN now conforms to ISO8601.
+      </action>
       <action issue="LOG4J2-741" dev="rpopma" type="fix">
         Reinstate the package configuration attribute for discovering custom plugins.
       </action>

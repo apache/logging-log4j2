@@ -112,7 +112,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     /**
      * SimpleTimePattern for ISO8601_BASIC.
      */
-    private static final String ISO8601_BASIC_PATTERN = "yyyyMMdd HHmmss,SSS";
+    private static final String ISO8601_BASIC_PATTERN = "yyyyMMdd'T'HHmmss,SSS";
 
     /**
      * ISO8601 string literal.
@@ -122,7 +122,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     /**
      * SimpleTimePattern for ISO8601.
      */
-    private static final String ISO8601_PATTERN = "yyyy-MM-dd HH:mm:ss,SSS";
+    static final String ISO8601_PATTERN = "yyyy-MM-dd'T'HH:mm:ss,SSS";
 
     /**
      * UNIX formatter in seconds (standard).
