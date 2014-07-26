@@ -46,7 +46,6 @@ public final class BundleResourceLoader implements ResourceLoader {
 
     @Override
     public Enumeration<URL> getResources(final String name) throws IOException {
-        @SuppressWarnings("unchecked") // some versions of the OSGi API are using raw types
         final Enumeration<URL> enumeration = bundle.getResources(name);
         return enumeration;
     }
