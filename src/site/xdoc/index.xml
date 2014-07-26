@@ -107,7 +107,7 @@
 
           <subsection name="News">
             <p>
-              Log4j 2 is now available for production! The API for Log4j 2 is not compatible with Log4j 1.x, however an adapter
+              Log4j 2 is now available for production. The API for Log4j 2 is not compatible with Log4j 1.x, however an adapter
               is available to allow applications to continue to use the Log4j 1.x API. Adapters are also available for
               Apache Commons Logging and SLF4J.
             </p>
