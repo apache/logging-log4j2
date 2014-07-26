@@ -22,7 +22,10 @@
   </properties>
   <body>
     <release version="2.0.1" date="2014-mm-dd" description="?">
-      <action issue="LOG4J2-742" dev="ggreory" type="fix" due-to="Pascal Chollet">
+      <action issue="LOG4J2-741" dev="rpopma" type="fix">
+        Reinstate the package configuration attribute for discovering custom plugins.
+      </action>
+      <action issue="LOG4J2-742" dev="ggregory" type="fix" due-to="Pascal Chollet">
         XInclude not working with relative path.
       </action>
       <action issue="LOG4J2-740" dev="mattsicker" type="fix" due-to="Kosta Krauth">
@@ -42,12 +45,6 @@
       </action>
       <action issue="LOG4J2-373" dev="mattsicker" type="fix">
         Fixed ClassLoader issues in loading Log4j providers in an OSGi environment.
-      </action>
-      <action issue="LOG4J2-595" dev="mattsicker" type="update">
-        IMPORTANT! Custom plugins are no longer detected through the packages attribute in the Configuration
-        element due to a change related to this issue in RC2. Plugins that rely on this attribute should be
-        re-compiled with the latest version of log4j-core. For more information, see the
-        <a href="manual/plugins.html">Plugins Manual</a> for more details.
       </action>
       <action issue="LOG4J2-725" dev="mattsicker" type="add">
         Added WebLoggerContextUtils class to log4j-web for helper methods useful for asynchronous servlets.
