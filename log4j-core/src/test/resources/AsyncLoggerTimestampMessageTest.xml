@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="ERROR">
+  <Appenders>
+    <RandomAccessFile name="RandomAccessFile" fileName="target/AsyncLoggerTimestampMessageTest.log"
+	    		immediateFlush="false" append="false">
+      <PatternLayout>
+        <Pattern>%d{UNIX_MILLIS} %m%n</Pattern>
+      </PatternLayout>
+    </RandomAccessFile>
+  </Appenders>
+  
+  <Loggers>
+    <Root level="info" includeLocation="false">
+      <AppenderRef ref="RandomAccessFile"/>
+    </Root>
+  </Loggers>
+</Configuration>

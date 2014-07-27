@@ -18,7 +18,7 @@
 <configuration>
  <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
    <encoder>
-     <Pattern>%d{ISO8601} %5p [%t] %c{0} %X{transactionId} - %m%n</Pattern>
+     <Pattern>%d %5p [%t] %c{0} %X{transactionId} - %m%n</Pattern>
    </encoder>
  </appender>
 

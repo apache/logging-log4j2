@@ -329,6 +329,7 @@ WARN  [main]: Message 2</pre>
                     SimpleDateFormat</a>.
                 </p>
                 <p>The predefined formats are
+                  <code>DEFAULT</code>,
                   <code>ABSOLUTE</code>,
                   <code>COMPACT</code>,
                   <code>DATE</code>,
@@ -345,12 +346,16 @@ WARN  [main]: Message 2</pre>
                       <th>Example</th>
                     </tr>
                     <tr>
-                      <td>%d{ISO8601}</td>
+                      <td>%d{DEFAULT}</td>
                       <td>2012-11-02 14:34:02,781</td>
                     </tr>
                     <tr>
+                      <td>%d{ISO8601}</td>
+                      <td>2012-11-02T14:34:02,781</td>
+                    </tr>
+                    <tr>
                       <td>%d{ISO8601_BASIC}</td>
-                      <td>20121102 143402,781</td>
+                      <td>20121102T143402,781</td>
                     </tr>
                     <tr>
                       <td>%d{ABSOLUTE}</td>
