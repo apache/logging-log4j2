@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="2.0.1" date="2014-mm-dd" description="?">
+      <action issue="LOG4J2-750" dev="ggregory" type="fix" due-to="Mike Calmus ">
+        Webapp configuration page has incorrect class name.
+      </action>      
       <action issue="LOG4J2-749" dev="rpopma" type="fix" due-to="Scott Harrington">
         Retain the default date pattern after fixing the ISO8601 pattern.
       </action>

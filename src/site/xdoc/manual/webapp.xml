@@ -172,8 +172,8 @@
           and uses the standard pattern for locating the Log4j configuration file. There are three context parameters
           that you can use to control this behavior. The first, <code>isLog4jContextSelectorNamed</code>, specifies
           whether the context should be selected using the
-          <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/selector/JNDIContextSelector.html"
-            >JNDIContextSelector</a>. If <code>isLog4jContextSelectorNamed</code> is not specified or is anything other
+          <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/selector/JndiContextSelector.html"
+            >JndiContextSelector</a>. If <code>isLog4jContextSelectorNamed</code> is not specified or is anything other
           than <code>true</code>, it is assumed to be <code>false</code>.
         </p>
         <p>
@@ -204,7 +204,7 @@
         <param-name>log4jConfiguration</param-name>
         <param-value>file:///etc/myApp/myLogging.xml</param-value>
     </context-param>]]></pre>
-        <h4>Use the <code>JNDIContextSelector</code></h4>
+        <h4>Use the <code>JndiContextSelector</code></h4>
         <pre class="prettyprint linenums"><![CDATA[    <context-param>
         <param-name>isLog4jContextSelectorNamed</param-name>
         <param-value>true</param-value>
@@ -219,7 +219,7 @@
     </context-param>]]></pre>
         <p>
           Note that in this case you must also set the "Log4jContextSelector" system property to
-          "org.apache.logging.log4j.core.selector.JNDIContextSelector."
+          "org.apache.logging.log4j.core.selector.JndiContextSelector."
         </p>
       </subsection>
       <subsection name="Using Web Application Information During the Configuration">

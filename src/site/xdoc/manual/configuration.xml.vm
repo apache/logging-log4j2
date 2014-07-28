@@ -1171,7 +1171,7 @@ StatusConsoleListener listener = new StatusConsoleListener(Level.ERROR);
       <tt>org.apache.logging.log4j.core.async.AsyncLoggerContextSelector</tt> - makes <a href="async.html">all loggers asynchronous</a>.<br />
       <tt>org.apache.logging.log4j.core.selector.BasicContextSelector</tt> - creates a single shared LoggerContext.<br />
       <tt>org.apache.logging.log4j.core.selector.ClassLoaderContextSelector</tt> - separate LoggerContexts for each web application.<br />
-      <tt>org.apache.logging.log4j.core.selector.JNDIContextSelector</tt> - use JNDI to locate each web application's LoggerContext.
+      <tt>org.apache.logging.log4j.core.selector.JndiContextSelector</tt> - use JNDI to locate each web application's LoggerContext.
     </td>
   </tr>
   <tr>
