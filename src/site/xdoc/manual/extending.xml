@@ -78,7 +78,7 @@
               <dd>Uses either a LoggerContext that has been stored in a ThreadLocal or a common LoggerContext.</dd>
               <dt>ClassLoaderContextSelector</dt>
               <dd>Associates LoggerContexts with the ClassLoader that created the caller of the getLogger call.</dd>
-              <dt>JNDIContextSelector</dt>
+              <dt>JndiContextSelector</dt>
               <dd>Locates the LoggerContext by querying JNDI.</dd>
             </dl>
           </subsection>
