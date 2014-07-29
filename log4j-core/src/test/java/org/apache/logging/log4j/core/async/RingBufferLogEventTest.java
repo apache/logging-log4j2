@@ -34,7 +34,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.message.TimestampMessage;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
 import org.junit.Test;
 
@@ -100,61 +99,6 @@ public class RingBufferLogEventTest {
         evt.setValues(null, loggerName, marker, fqcn, level, data, t, map,
                 contextStack, threadName, location, currentTimeMillis);
         assertEquals(123, evt.getTimeMillis());
-    }
-
-    static class TimeMsg implements Message, TimestampMessage {
-        private static final long serialVersionUID = -2038413535672337079L;
-        private final String msg;
-        private final long timestamp;
-
-        public TimeMsg(final String msg, final long timestamp) {
-            this.msg = msg;
-            this.timestamp = timestamp;
-        }
-
-        @Override
-        public long getTimestamp() {
-            return timestamp;
-        }
-
-        @Override
-        public String getFormattedMessage() {
-            return msg;
-        }
-
-        @Override
-        public String getFormat() {
-            return null;
-        }
-
-        @Override
-        public Object[] getParameters() {
-            return null;
-        }
-
-        @Override
-        public Throwable getThrowable() {
-            return null;
-        }
-    }
-
-    @Test
-    public void testGetMillisReturnsMsgTimestampForTimestampMessage() {
-        final RingBufferLogEvent evt = new RingBufferLogEvent();
-        final String loggerName = null;
-        final Marker marker = null;
-        final String fqcn = null;
-        final Level level = null;
-        final Message data = new TimeMsg("", 567);
-        final Throwable t = null;
-        final Map<String, String> map = null;
-        final ContextStack contextStack = null;
-        final String threadName = null;
-        final StackTraceElement location = null;
-        final long currentTimeMillis = 123;
-        evt.setValues(null, loggerName, marker, fqcn, level, data, t, map,
-                contextStack, threadName, location, currentTimeMillis);
-        assertEquals(567, evt.getTimeMillis());
     }
 
     @Test
