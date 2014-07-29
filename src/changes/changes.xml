@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="2.0.1" date="2014-mm-dd" description="?">
+      <action issue="LOG4J2-744" dev="rpopma" type="fix" due-to="Scott Harrington">
+        Avoid unnecessary Clock calls when TimestampMessage is logged.
+      </action>      
       <action issue="LOG4J2-704" dev="rpopma" type="fix">
         Improved error message if configuration file not found.
       </action>      

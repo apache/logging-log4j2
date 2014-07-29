@@ -98,7 +98,11 @@ public class Log4jLogEvent implements LogEvent {
         this(loggerName, marker, loggerFQCN, level, message, t,
             createMap(properties),
             ThreadContext.getDepth() == 0 ? null : ThreadContext.cloneStack(), null,
-            null, clock.currentTimeMillis()); // LOG4J2-628 use log4j.Clock for timestamps
+            null,
+            // LOG4J2-628 use log4j.Clock for timestamps
+            // LOG4J2-744 unless TimestampMessage already has one
+            message instanceof TimestampMessage ? ((TimestampMessage) message).getTimestamp() :
+                clock.currentTimeMillis());
     }
 
     /**

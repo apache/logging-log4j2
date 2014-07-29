@@ -33,6 +33,7 @@ import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.message.TimestampMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import com.lmax.disruptor.BlockingWaitStrategy;
@@ -270,7 +271,9 @@ public class AsyncLogger extends Logger {
                 // System.currentTimeMillis());
                 // CoarseCachedClock: 20% faster than system clock, 16ms gaps
                 // CachedClock: 10% faster than system clock, smaller gaps
-                clock.currentTimeMillis());
+                // LOG4J2-744 avoid calling clock altogether if message has the timestamp
+                message instanceof TimestampMessage ? ((TimestampMessage) message).getTimestamp() :
+                        clock.currentTimeMillis());
 
         // LOG4J2-639: catch NPE if disruptor field was set to null after our check above
         try {
