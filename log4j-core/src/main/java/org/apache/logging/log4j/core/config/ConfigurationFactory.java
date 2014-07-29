@@ -261,6 +261,10 @@ public abstract class ConfigurationFactory {
                 return source;
             }
         }
+        if (!configLocation.isAbsolute()) { // LOG4J2-704 avoid confusing error message thrown by uri.toURL()
+            LOGGER.error("File not found in file system or classpath: {}", configLocation.toString());
+            return null;
+        }
         try {
             return new ConfigurationSource(configLocation.toURL().openStream(), configLocation.toURL());
         } catch (final MalformedURLException ex) {
