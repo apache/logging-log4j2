@@ -21,7 +21,7 @@
     <title>Changes</title>
   </properties>
   <body>
-    <release version="2.0.1" date="2014-mm-dd" description="?">
+    <release version="2.0.1" date="2014-07-29" description="Bug fixes">
       <action issue="LOG4J2-744" dev="rpopma" type="fix" due-to="Scott Harrington">
         Avoid unnecessary Clock calls when TimestampMessage is logged.
       </action>      
