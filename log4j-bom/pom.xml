@@ -12,11 +12,6 @@
   <artifactId>log4j-bom</artifactId>
   <version>2.0.1</version>
   <packaging>pom</packaging>
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/logging/log4j/log4j2/tags/log4j-2.0.1</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/logging/log4j/log4j2/tags/log4j-2.0.1</developerConnection>
-    <url>http://svn.apache.org/viewvc/logging/log4j/log4j2/tags/log4j-2.0.1</url>
-  </scm>
   <dependencyManagement>
     <dependencies>
       <!-- Log4j API -->
