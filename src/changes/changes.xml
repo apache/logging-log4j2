@@ -21,6 +21,11 @@
     <title>Changes</title>
   </properties>
   <body>
+    <release version="2.1" date="2014-0?-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-756" dev="rpopma" type="fix" due-to="Scott Harrington">
+        Prevent JUnit test from creating unnecessary Log4j2Plugins.dat during build.
+      </action>      
+    </release> 
     <release version="2.0.1" date="2014-07-29" description="Bug fixes">
       <action issue="LOG4J2-744" dev="rpopma" type="fix" due-to="Scott Harrington">
         Avoid unnecessary Clock calls when TimestampMessage is logged.

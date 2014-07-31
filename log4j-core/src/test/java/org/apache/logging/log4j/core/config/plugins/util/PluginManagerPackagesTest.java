@@ -97,7 +97,9 @@ public class PluginManagerPackagesTest {
         Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(f));
 
         // compile generated source
-        compiler.getTask(null, fileManager, diagnostics, null, null, compilationUnits).call();
+        // (switch off annotation processing: no need to create Log4j2Plugins.dat)
+        List<String> options = Arrays.asList("-proc:none");
+        compiler.getTask(null, fileManager, diagnostics, options, null, compilationUnits).call();
 
         // check we don't have any compilation errors
         List<String> errors = new ArrayList<String>();
