@@ -69,16 +69,16 @@
       <action issue="LOG4J2-725" dev="mattsicker" type="add">
         Added WebLoggerContextUtils class to log4j-web for helper methods useful for asynchronous servlets.
       </action>
-      <action issue="LOG4J2-710" dev="popmarem" type="add">
+      <action issue="LOG4J2-710" dev="rpopma" type="add">
         Added documentation for Custom Levels and Custom Loggers.
       </action>
-      <action issue="LOG4J2-719" dev="popmarem" type="fix">
+      <action issue="LOG4J2-719" dev="rpopma" type="fix">
         Correctly handle NetworkOnMainThreadException thrown on Android during Log4j2 initialization.
       </action>
-      <action issue="LOG4J2-716" dev="popmarem" type="fix">
+      <action issue="LOG4J2-716" dev="rpopma" type="fix">
         Automatically disable log4j JMX when detecting we are running on Android.
       </action>
-      <action issue="LOG4J2-657" dev="popmarem" type="fix" due-to="Stefan Wehner">
+      <action issue="LOG4J2-657" dev="rpopma" type="fix" due-to="Stefan Wehner">
         Fixed AbstractDatabaseManager to close connection on writeInternal error.
       </action>
       <action issue="LOG4J2-713" dev="ggregory" type="fix" due-to="Nelson Melina">
