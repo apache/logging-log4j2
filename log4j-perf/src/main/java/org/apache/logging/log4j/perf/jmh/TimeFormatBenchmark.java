@@ -32,7 +32,7 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 
 /**
- * Tests performance of various clock implementation.
+ * Tests performance of various time format implementation.
  */
 // ============================== HOW TO RUN THIS TEST: ====================================
 //
