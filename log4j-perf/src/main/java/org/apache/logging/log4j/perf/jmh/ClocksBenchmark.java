@@ -72,7 +72,7 @@ public class ClocksBenchmark {
     @GenerateMicroBenchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public long langSystemCurrentTimeMillis() {
+    public long systemCurrentTimeMillis() {
         return System.currentTimeMillis();
     }
 
