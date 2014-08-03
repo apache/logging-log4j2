@@ -15,6 +15,7 @@
  * limitations under the license.
  */
 /**
- * Log4j 2 JMX support.
+ * Classes and interfaces for serializing and deserializing Log4j 2 log events to XML and JSON using the Jackson
+ * library.
  */
-package org.apache.logging.log4j.core.jmx;
+package org.apache.logging.log4j.core.jackson;

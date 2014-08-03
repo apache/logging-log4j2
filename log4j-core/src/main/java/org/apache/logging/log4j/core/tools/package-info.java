@@ -15,6 +15,6 @@
  * limitations under the license.
  */
 /**
- * Log4j 2.0 command line tools.
+ * Log4j 2 command line tools.
  */
 package org.apache.logging.log4j.core.tools;

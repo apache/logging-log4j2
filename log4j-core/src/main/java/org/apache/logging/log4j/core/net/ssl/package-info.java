@@ -15,6 +15,6 @@
  * limitations under the license.
  */
 /**
- * Log4j 2.0 SSL support
+ * Log4j 2 SSL support
  */
 package org.apache.logging.log4j.core.net.ssl;

@@ -38,7 +38,7 @@
           href="http://www.opensource.org">open source</a> initiative. The
           latest log4j version, including full-source code, class files and
           documentation can be found at <a
-          href="http://logging.apache.org/log4j/2.0/index.html"><b>http://logging.apache.org/log4j/2.0/index.html</b></a>.
+          href="http://logging.apache.org/log4j/2.x/index.html"><b>http://logging.apache.org/log4j/2.x/index.html</b></a>.
           </p>
 
           <p>Inserting log statements into code is a low-tech method for

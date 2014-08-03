@@ -15,6 +15,6 @@
  * limitations under the license.
  */
 /**
- * Log4j 2 JMX support.
+ * Classes and interfaces supporting configuration of Log4j 2 with XML.
  */
-package org.apache.logging.log4j.core.jmx;
+package org.apache.logging.log4j.core.config.xml;

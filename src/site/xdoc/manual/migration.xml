@@ -43,12 +43,12 @@
               </ol>
           </subsection>
           <subsection name="Converting to the Log4j 2 API">
-            <p>For the most part, converting from the Log4j 1.x API to Log4j 2.0 should be fairly simple. Many
+            <p>For the most part, converting from the Log4j 1.x API to Log4j 2 should be fairly simple. Many
               of the log statements will require no modification. However, where necessary the following changes must be
               made.</p>
               <ol>
                 <li>
-                  The main package in version 1 is <code>org.apache.log4j</code>, in version 2.0 it is
+                  The main package in version 1 is <code>org.apache.log4j</code>, in version 2 it is
                   <code>org.apache.logging.log4j</code>
                 </li>
                 <li>

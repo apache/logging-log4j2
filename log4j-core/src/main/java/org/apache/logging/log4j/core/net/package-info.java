@@ -15,7 +15,7 @@
  * limitations under the license.
  */
 /**
- * Log4j 2.0 network support. This package (and subpackages) include support for:
+ * Log4j 2 network support. This package (and subpackages) include support for:
  * <ul>
  *     <li>Java Message System appenders (both queue-based and topic-based)</li>
  *     <li>Zeroconf support for finding logging systems</li>
