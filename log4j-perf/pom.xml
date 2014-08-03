@@ -80,7 +80,6 @@
     <dependency>
       <groupId>com.lmax</groupId>
       <artifactId>disruptor</artifactId>
-      <version>3.2.1</version>
     </dependency>
   </dependencies>
 
@@ -128,7 +127,7 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Export-Package>org.apache.logging.log4j.jcl</Export-Package>
+            <Export-Package>org.apache.logging.log4j.perf.jmh</Export-Package>
           </instructions>
         </configuration>
       </plugin>
