@@ -45,37 +45,33 @@ public class Log4jLogEventBenchmark {
     }
 
     @GenerateMicroBenchmark
-    public void testNoException(final BlackHole bh) {
-        final Throwable t = null;
-        final Log4jLogEvent event = new Log4jLogEvent("a.b.c", null, "a.b.c", Level.INFO, MESSAGE, t);
-        bh.consume(event);
+    public LogEvent createLogEventWithoutException() {
+        return new Log4jLogEvent("a.b.c", null, "a.b.c", Level.INFO, MESSAGE, null);
     }
 
     @GenerateMicroBenchmark
-    public void testNoExceptionUsingBuilder(final BlackHole bh) {
-        final LogEvent event = Log4jLogEvent.newBuilder()
+    public LogEvent createLogEventWithoutExceptionUsingBuilder() {
+        return Log4jLogEvent.newBuilder()
             .setLoggerName("a.b.c")
             .setLoggerFqcn("a.b.c")
             .setLevel(Level.INFO)
             .setMessage(MESSAGE)
             .build();
-        bh.consume(event);
     }
 
     @GenerateMicroBenchmark
-    public void testException(final BlackHole bh) {
-        final LogEvent event = Log4jLogEvent.newBuilder()
+    public LogEvent createLogEventWithExceptionUsingBuilder() {
+        return Log4jLogEvent.newBuilder()
             .setLoggerName("a.b.c")
             .setLoggerFqcn("a.b.c")
             .setLevel(Level.INFO)
             .setMessage(MESSAGE)
             .setThrown(ERROR)
             .build();
-        bh.consume(event);
     }
 
     @GenerateMicroBenchmark
-    public void testSourceLocation(final BlackHole bh) {
+    public StackTraceElement getSourceLocationOfLogEvent() {
         final LogEvent event = Log4jLogEvent.newBuilder()
             .setLoggerName(this.getClass().getName())
             .setLoggerFqcn(this.getClass().getName())
@@ -83,22 +79,19 @@ public class Log4jLogEventBenchmark {
             .setMessage(MESSAGE)
             .build();
         event.setIncludeLocation(true);
-        final StackTraceElement source = event.getSource();
-        bh.consume(source);
+        return event.getSource();
     }
 
     @GenerateMicroBenchmark
-    public void testSerializationWithoutException(final BlackHole bh) {
+    public Serializable createSerializableLogEventProxyWithoutException() {
         final Log4jLogEvent event = new Log4jLogEvent("a.b.c", null, "a.b.c", Level.INFO, MESSAGE, null);
-        final Serializable serializable = Log4jLogEvent.serialize(event, false);
-        bh.consume(serializable);
+        return Log4jLogEvent.serialize(event, false);
     }
 
     @GenerateMicroBenchmark
-    public void testSerializationWithException(final BlackHole bh) {
+    public Serializable createSerializableLogEventProxyWithException(final BlackHole bh) {
         final Log4jLogEvent event = new Log4jLogEvent("a.b.c", null, "a.b.c", Level.INFO, MESSAGE, ERROR);
-        final Serializable serializable = Log4jLogEvent.serialize(event, false);
-        bh.consume(serializable);
+        return Log4jLogEvent.serialize(event, false);
     }
 
     // ============================== HOW TO RUN THIS TEST: ====================================
