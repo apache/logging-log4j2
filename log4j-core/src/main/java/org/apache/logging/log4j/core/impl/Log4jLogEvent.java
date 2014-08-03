@@ -58,6 +58,55 @@ public class Log4jLogEvent implements LogEvent {
     private boolean includeLocation;
     private boolean endOfBatch = false;
 
+    public static class Builder implements org.apache.logging.log4j.core.util.Builder<LogEvent> {
+
+        private String loggerFqcn;
+        private Marker marker;
+        private Level level;
+        private String loggerName;
+        private Message message;
+        private Throwable thrown;
+
+        public Builder setLoggerFqcn(String loggerFqcn) {
+            this.loggerFqcn = loggerFqcn;
+            return this;
+        }
+
+        public Builder setMarker(Marker marker) {
+            this.marker = marker;
+            return this;
+        }
+
+        public Builder setLevel(Level level) {
+            this.level = level;
+            return this;
+        }
+
+        public Builder setLoggerName(String loggerName) {
+            this.loggerName = loggerName;
+            return this;
+        }
+
+        public Builder setMessage(Message message) {
+            this.message = message;
+            return this;
+        }
+
+        public Builder setThrown(Throwable thrown) {
+            this.thrown = thrown;
+            return this;
+        }
+
+        @Override
+        public Log4jLogEvent build() {
+            return new Log4jLogEvent(loggerName, marker, loggerFqcn, level, message, thrown);
+        }
+    }
+
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
     public Log4jLogEvent() {
         this(clock.currentTimeMillis());
     }
