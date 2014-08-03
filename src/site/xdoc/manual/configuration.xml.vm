@@ -1147,7 +1147,7 @@ StatusConsoleListener listener = new StatusConsoleListener(Level.ERROR);
           Below follows a number of system properties that can be used to control Log4j 2 behaviour.
         </p>
 <table>
-  <caption align="top">Log4J-2.0 System Properties</caption>
+  <caption align="top">Log4j 2 System Properties</caption>
   <tr>
     <th>System Property</th>
     <th>Default Value</th>

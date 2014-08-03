@@ -15,6 +15,6 @@
  * limitations under the license.
  */
 /**
- * Configuration of Log4j 2.0.
+ * Configuration of Log4j 2.
  */
 package org.apache.logging.log4j.core.config;

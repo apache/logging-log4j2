@@ -71,7 +71,7 @@
               ContextSelector to be used.
             </p>
             <p>
-              Log4j provides three ContextSelectors:
+              Log4j provides four ContextSelectors:
             </p>
             <dl>
               <dt>BasicContextSelector</dt>
@@ -80,6 +80,8 @@
               <dd>Associates LoggerContexts with the ClassLoader that created the caller of the getLogger call.</dd>
               <dt>JndiContextSelector</dt>
               <dd>Locates the LoggerContext by querying JNDI.</dd>
+              <dt>AsyncLoggerContextSelector</dt>
+              <dd>Creates a LoggerContext that ensures that all loggers are AsyncLoggers.</dd>
             </dl>
           </subsection>
           <subsection name="ConfigurationFactory">

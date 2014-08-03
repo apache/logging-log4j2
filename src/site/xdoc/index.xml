@@ -48,7 +48,7 @@
             <dd>
               Log4j 2 contains next-generation Asynchronous Loggers based
               on the LMAX Disruptor library. In multi-threaded scenarios
-              Asynchronous Loggers have 10 times higher throughput and
+              Asynchronous Loggers have 18 times higher throughput and
               orders of magnitude lower latency than Log4j 1.x and Logback.
               See <a href="manual/async.html#Performance">Asynchronous Logging Performance</a>
               for details.
