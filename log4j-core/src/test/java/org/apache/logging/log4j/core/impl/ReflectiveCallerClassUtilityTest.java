@@ -14,20 +14,25 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
 package org.apache.logging.log4j.core.impl;
 
+import org.junit.Before;
 import org.junit.Test;
 import sun.reflect.Reflection;
 
 import static org.junit.Assert.assertSame;
+import static org.junit.Assume.assumeTrue;
 
-/**
- * Verifies that ReflectiveCallerClassUtility behaves as expected compared to {@code sun.reflect.Reflection}.
- */
-public class ReflectionComparison {
+public class ReflectiveCallerClassUtilityTest {
+
+    @Before
+    public void setUp() throws Exception {
+        assumeTrue(ReflectiveCallerClassUtility.isSupported());
+    }
 
     @Test
-    public void testBothMethodsReturnTheSame() {
+    public void testGetCaller() throws Exception {
         for (int i = 1; i <= 6; i++) {
             assertSame(String.format("%d is not the same", i),
                 Reflection.getCallerClass(i + ReflectiveCallerClassUtility.JAVA_7U25_COMPENSATION_OFFSET),
@@ -35,5 +40,4 @@ public class ReflectionComparison {
             );
         }
     }
-
 }
