@@ -16,98 +16,24 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import java.lang.reflect.Constructor;
-
-import org.apache.logging.log4j.categories.PerformanceTests;
-import org.apache.logging.log4j.core.util.Timer;
-import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
 import sun.reflect.Reflection;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertSame;
 
 /**
- * Tests the cost of invoking Reflection.getCallerClass via reflection vs calling it directly.
+ * Verifies that ReflectiveCallerClassUtility behaves as expected compared to {@code sun.reflect.Reflection}.
  */
-@Category(PerformanceTests.class)
 public class ReflectionComparison {
 
-    private static final int COUNT = 1000000;
-
-    @Test
-    public void testReflection() {
-        final Timer timer = new Timer("Reflection", COUNT);
-        timer.start();
-        for (int i= 0; i < COUNT; ++i) {
-            ReflectiveCallerClassUtility.getCaller(3);
-        }
-        timer.stop();
-        System.out.println(timer.toString());
-    }
-
-    @SuppressWarnings("deprecation") // yeah, yeah, we know that they're trying to remove this API
-    @Test
-    public void testDirectly() {
-        final Timer timer = new Timer("Directly", COUNT);
-        timer.start();
-        for (int i= 0; i < COUNT; ++i) {
-
-            Reflection.getCallerClass(3);
-        }
-        timer.stop();
-        System.out.println(timer.toString());
-    }
-
-    @SuppressWarnings("deprecation")
     @Test
     public void testBothMethodsReturnTheSame() {
-        assertSame("1 is not the same.",
-                Reflection.getCallerClass(1 + ReflectiveCallerClassUtility.JAVA_7U25_COMPENSATION_OFFSET),
-                ReflectiveCallerClassUtility.getCaller(1));
-        assertSame("2 is not the same.",
-                Reflection.getCallerClass(2 + ReflectiveCallerClassUtility.JAVA_7U25_COMPENSATION_OFFSET),
-                ReflectiveCallerClassUtility.getCaller(2));
-        assertSame("3 is not the same.",
-                Reflection.getCallerClass(3 + ReflectiveCallerClassUtility.JAVA_7U25_COMPENSATION_OFFSET),
-                ReflectiveCallerClassUtility.getCaller(3));
-        assertSame("4 is not the same.",
-                Reflection.getCallerClass(4 + ReflectiveCallerClassUtility.JAVA_7U25_COMPENSATION_OFFSET),
-                ReflectiveCallerClassUtility.getCaller(4));
-        assertSame("5 is not the same.",
-                Reflection.getCallerClass(5 + ReflectiveCallerClassUtility.JAVA_7U25_COMPENSATION_OFFSET),
-                ReflectiveCallerClassUtility.getCaller(5));
-        assertSame("6 is not the same.",
-                Reflection.getCallerClass(6 + ReflectiveCallerClassUtility.JAVA_7U25_COMPENSATION_OFFSET),
-                ReflectiveCallerClassUtility.getCaller(6));
-    }
-
-    @Test
-    public void testCreateObjects() throws Exception {
-        Timer timer = new Timer("CreatObjects", COUNT);
-        timer.start();
-        for (int i = 0; i < COUNT; ++i) {
-            new StringFormattedMessage("Hello %1", i);
+        for (int i = 1; i <= 6; i++) {
+            assertSame(String.format("%d is not the same", i),
+                Reflection.getCallerClass(i + ReflectiveCallerClassUtility.JAVA_7U25_COMPENSATION_OFFSET),
+                ReflectiveCallerClassUtility.getCaller(i)
+            );
         }
-        timer.stop();
-        System.out.println(timer.toString());
-        final Class<? extends Message> clazz = StringFormattedMessage.class;
-
-        timer = new Timer("ReflectionObject", COUNT);
-        timer.start();
-
-        for (int i = 0; i < COUNT; ++i) {
-            createMessage(clazz, "Hello %1", i);
-        }
-        timer.stop();
-        System.out.println(timer.toString());
-    }
-
-    private Message createMessage(final Class<? extends Message> clazz, final String msg, final Object... params) throws Exception {
-        final Constructor<? extends Message> constructor = clazz.getConstructor(String.class, Object[].class);
-        return constructor.newInstance(msg, params);
     }
 
 }
