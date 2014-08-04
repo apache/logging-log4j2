@@ -34,7 +34,13 @@ import org.apache.logging.log4j.util.ProviderUtil;
 import org.apache.logging.log4j.util.Strings;
 
 /**
- * The anchor point for the logging system.
+ * The anchor point for the logging system. The most common usage of this class is to obtain a named
+ * {@link Logger}. The method {@link #getLogger()} is provided as the most convenient way to obtain a named Logger
+ * based on the calling class name. This class also provides method for obtaining named Loggers that use
+ * {@link String#format(String, Object...)} style messages instead of the default type of parameterized messages.
+ * These are obtained through the {@link #getFormatterLogger(Class)} family of methods. Other service provider methods
+ * are given through the {@link #getContext()} and {@link #getFactory()} family of methods; these methods are not
+ * normally useful for typical usage of Log4j.
  */
 public class LogManager {
 
