@@ -84,6 +84,7 @@
           <p>
           Appenders using this layout should have their <code>charset</code> set to <code>UTF-8</code> or
           <code>UTF-16</code>, otherwise events containing non-ASCII characters could result in corrupted log files.
+          The default charset is <code>UTF-8</code>.
           </p>
           <h4>Pretty vs. compact XML</h4>
           <p>
