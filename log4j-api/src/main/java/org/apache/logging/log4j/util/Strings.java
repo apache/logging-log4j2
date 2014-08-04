@@ -18,6 +18,7 @@ package org.apache.logging.log4j.util;
 
 /**
  * <em>Consider this class private.</em>
+ * @see <a href="http://commons.apache.org/proper/commons-lang/">Apache Commons Lang</a>
  */
 public final class Strings {
 
