@@ -43,7 +43,7 @@
         <subsection name="JSONLayout">
           <!-- From Javadoc of org.apache.logging.log4j.core.layout.JSONLayout -->
           <p>
-          Appends a series of JSON events as strings serialized as bytes..
+          Appends a series of JSON events as strings serialized as bytes.
           </p>
           <h4>Complete well-formed JSON vs. fragment JSON</h4>
           <p>
