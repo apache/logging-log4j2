@@ -20,7 +20,9 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 /**
- * Utility class for ClassLoaders. Consider this class private.
+ * <em>Consider this class private.</em> Utility class for ClassLoaders.
+ * @see ClassLoader
+ * @see Thread#getContextClassLoader()
  */
 // TODO: migrate any other useful methods from Loader in log4j-core
 public final class LoaderUtil {
@@ -35,6 +37,11 @@ public final class LoaderUtil {
         }
     }
 
+    /**
+     * Gets the current Thread ClassLoader. Returns the system ClassLoader if the TCCL is {@code null}.
+     *
+     * @return the current ThreadContextClassLoader.
+     */
     public static ClassLoader getThreadContextClassLoader() {
         return System.getSecurityManager() == null
             ? TCCL_GETTER.run()
