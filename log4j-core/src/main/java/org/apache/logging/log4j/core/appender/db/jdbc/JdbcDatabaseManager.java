@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.appender.db.jdbc;
 
 import java.io.StringReader;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -43,6 +44,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
 
     private Connection connection;
     private PreparedStatement statement;
+    private boolean isBatchSupported;
 
     private JdbcDatabaseManager(final String name, final int bufferSize, final ConnectionSource connectionSource,
                                 final String sqlStatement, final List<Column> columns) {
@@ -53,8 +55,11 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
     }
 
     @Override
-    protected void startupInternal() {
-        // nothing to see here
+    protected void startupInternal() throws Exception {
+        this.connection = this.connectionSource.getConnection();
+        final DatabaseMetaData metaData = this.connection.getMetaData();
+        this.isBatchSupported = metaData.supportsBatchUpdates();
+        Closer.closeSilently(this.connection);
     }
 
     @Override
@@ -109,7 +114,9 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                 }
             }
 
-            if (this.statement.executeUpdate() == 0) {
+            if (this.isBatchSupported) {
+                this.statement.addBatch();
+            } else if (this.statement.executeUpdate() == 0) {
                 throw new AppenderLoggingException(
                         "No records inserted in database table for log event in JDBC manager.");
             }
@@ -125,6 +132,9 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
     protected void commitAndClose() {
         try {
             if (this.connection != null && !this.connection.isClosed()) {
+                if (this.isBatchSupported) {
+                    this.statement.executeBatch();
+                }
                 this.connection.commit();
             }
         } catch (final SQLException e) {
