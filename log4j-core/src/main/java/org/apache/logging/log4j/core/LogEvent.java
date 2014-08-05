@@ -27,7 +27,17 @@ import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.Message;
 
 /**
- *
+ * Provides contextual information about a logged message. A LogEvent must be {@link java.io.Serializable} so that it
+ * may be transmitted over a network connection, output in a
+ * {@link org.apache.logging.log4j.core.layout.SerializedLayout}, and many other uses. Besides containing a
+ * {@link org.apache.logging.log4j.message.Message}, a LogEvent has a corresponding
+ * {@link org.apache.logging.log4j.Level} that the message was logged at. If a
+ * {@link org.apache.logging.log4j.Marker} was used, then it is included here. The contents of the
+ * {@link org.apache.logging.log4j.ThreadContext} at the time of the log call are provided via
+ * {@link #getContextMap()} and {@link #getContextStack()}. If a {@link java.lang.Throwable} was included in the log
+ * call, then it is provided via {@link #getThrown()}. When this class is serialized, the attached Throwable will
+ * be wrapped into a {@link org.apache.logging.log4j.core.impl.ThrowableProxy} so that it may be safely serialized
+ * and deserialized properly without causing problems if the exception class is not available on the other end.
  */
 public interface LogEvent extends Serializable {
 
@@ -62,14 +72,14 @@ public interface LogEvent extends Serializable {
     /**
      * Gets the logger name.
      * 
-     * @return logger name, may be null.
+     * @return logger name, may be {@code null}.
      */
     String getLoggerName();
 
     /**
      * Gets the Marker associated with the event.
      * 
-     * @return Marker
+     * @return Marker or {@code null} if no Marker was defined on this LogEvent
      */
     Marker getMarker();
 
