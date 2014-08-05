@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="2.1" date="2014-0?-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-759" dev="rpopma" type="fix">
+        Fixed various minor site/documentation issues, mostly versioning related.
+      </action>      
       <action issue="LOG4J2-756" dev="rpopma" type="fix" due-to="Scott Harrington">
         Prevent JUnit test from creating unnecessary Log4j2Plugins.dat during build.
       </action>      
