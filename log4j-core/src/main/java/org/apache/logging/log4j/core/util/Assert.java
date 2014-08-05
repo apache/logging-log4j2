@@ -31,7 +31,7 @@ public final class Assert {
      * </p>
      * <p>
      * Usage:
-     *
+     * </p>
      * <pre>
      * // earlier you would write this:
      * public SomeConstructor(Object param) {
@@ -49,9 +49,9 @@ public final class Assert {
      *
      * @param <T> the type of the parameter to check and return
      * @param object the parameter to check
-     * @param message name of the parameter to use in the error message if
-     *            {@code null}
+     * @param message message to populate the NPE with if necessary
      * @return the specified parameter
+     * @throws NullPointerException if {@code object} is {@code null}
      */
     public static <T> T requireNonNull(final T object, final String message) {
         if (object == null) {
