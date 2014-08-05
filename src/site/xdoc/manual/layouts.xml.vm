@@ -381,7 +381,7 @@ WARN  [main]: Message 2</pre>
                     </tr>
                     <tr>
                       <td>%d{HH:mm:ss}{GMT+0}</td>
-                      <td>18:34:02,781</td>
+                      <td>18:34:02</td>
                     </tr>
                     <tr>
                       <td>%d{UNIX}</td>
