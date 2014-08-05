@@ -89,9 +89,9 @@
 		<p>To run the Log4j JMX Client GUI as a JConsole Plug-in,
 		start JConsole with the following command:
 		</p>
-		<p><code>$JAVA_HOME/bin/jconsole -pluginpath /path/to/log4j-api-2.0.jar:/path/to/log4j-core-2.0.jar:/path/to/log4j-jmx-gui-2.0.jar</code></p>
+		<p><code>$JAVA_HOME/bin/jconsole -pluginpath /path/to/log4j-api-${project.version}.jar:/path/to/log4j-core-${project.version}.jar:/path/to/log4j-jmx-gui-${project.version}.jar</code></p>
 		<p>or on Windows:</p>
-		<p><code>%JAVA_HOME%\bin\jconsole -pluginpath \path\to\log4j-api-2.0.jar;\path\to\log4j-core-2.0.jar;\path\to\log4j-jmx-gui-2.0.jar</code></p>
+		<p><code>%JAVA_HOME%\bin\jconsole -pluginpath \path\to\log4j-api-${project.version}.jar;\path\to\log4j-core-${project.version}.jar;\path\to\log4j-jmx-gui-${project.version}.jar</code></p>
 		<p>If you execute the above command and connect to your application,
 		you will see an extra "Log4j 2" tab in the JConsole window.
 		This tab contains the client GUI, with the StatusLogger selected.
@@ -132,9 +132,9 @@
       <p>To run the Log4j JMX Client GUI as a stand-alone application,
 		run the following command:
 		</p>
-		<p><code>$JAVA_HOME/bin/java -cp /path/to/log4j-api-2.0.jar:/path/to/log4j-core-2.0.jar:/path/to/log4j-jmx-gui-2.0.jar org.apache.logging.log4j.jmx.gui.ClientGui &lt;options&gt;</code></p>
+		<p><code>$JAVA_HOME/bin/java -cp /path/to/log4j-api-${project.version}.jar:/path/to/log4j-core-${project.version}.jar:/path/to/log4j-jmx-gui-${project.version}.jar org.apache.logging.log4j.jmx.gui.ClientGui &lt;options&gt;</code></p>
 		<p>or on Windows:</p>
-		<p><code>%JAVA_HOME%\bin\java -cp \path\to\log4j-api-2.0.jar;\path\to\log4j-core-2.0.jar;\path\to\log4j-jmx-gui-2.0.jar org.apache.logging.log4j.jmx.gui.ClientGui &lt;options&gt;</code></p>
+		<p><code>%JAVA_HOME%\bin\java -cp \path\to\log4j-api-${project.version}.jar;\path\to\log4j-core-${project.version}.jar;\path\to\log4j-jmx-gui-${project.version}.jar org.apache.logging.log4j.jmx.gui.ClientGui &lt;options&gt;</code></p>
 		<p>Where <code>options</code> are one of the following:</p>
 		<ul>
 		<li><code>&lt;host&gt;:&lt;port&gt;</code></li>
@@ -155,9 +155,9 @@ com.sun.management.jmxremote.ssl=false</pre>
         Monitoring and Management</a> provides details on how to configure
         JMX more securely with password authentication and SSL.)</b></p>
 		<p>Then you can run the client with this command:</p>
-		<p><code>$JAVA_HOME/bin/java -cp /path/to/log4j-api-2.0.jar:/path/to/log4j-core-2.0.jar:/path/to/log4j-jmx-gui-2.0.jar org.apache.logging.log4j.jmx.gui.ClientGui localhost:33445</code></p>
+		<p><code>$JAVA_HOME/bin/java -cp /path/to/log4j-api-${project.version}.jar:/path/to/log4j-core-${project.version}.jar:/path/to/log4j-jmx-gui-${project.version}.jar org.apache.logging.log4j.jmx.gui.ClientGui localhost:33445</code></p>
 		<p>or on Windows:</p>
-		<p><code>%JAVA_HOME%\bin\java -cp \path\to\log4j-api-2.0.jar;\path\to\log4j-core-2.0.jar;\path\to\log4j-jmx-gui-2.0.jar org.apache.logging.log4j.jmx.gui.ClientGui localhost:33445</code></p>
+		<p><code>%JAVA_HOME%\bin\java -cp \path\to\log4j-api-${project.version}.jar;\path\to\log4j-core-${project.version}.jar;\path\to\log4j-jmx-gui-${project.version}.jar org.apache.logging.log4j.jmx.gui.ClientGui localhost:33445</code></p>
 		<p>The screenshot below shows the StatusLogger panel of the client
 		GUI when running as a stand-alone application.</p>
         <p><img src="../images/jmx-standalone-statuslogger.png" alt="JMX GUI screenshot of StatusLogger display" /></p>
