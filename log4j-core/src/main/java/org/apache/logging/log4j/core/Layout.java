@@ -66,6 +66,8 @@ public interface Layout<T extends Serializable> {
      */
     byte[] toByteArray(LogEvent event);
 
+    // TODO: it would be nice to provide ByteBuffers alongside the byte[]s
+
     /**
      * Formats the event as an Object that can be serialized.
      *
