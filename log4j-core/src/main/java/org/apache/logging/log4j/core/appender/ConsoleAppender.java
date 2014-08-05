@@ -121,9 +121,8 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
             return printStream;
         }
         try {
-            final ClassLoader loader = Loader.getClassLoader();
             // We type the parameter as a wildcard to avoid a hard reference to Jansi.
-            final Class<?> clazz = loader.loadClass(JANSI_CLASS);
+            final Class<?> clazz = Loader.loadClass(JANSI_CLASS);
             final Constructor<?> constructor = clazz.getConstructor(OutputStream.class);
             return (OutputStream) constructor.newInstance(printStream);
         } catch (final ClassNotFoundException cnfe) {
