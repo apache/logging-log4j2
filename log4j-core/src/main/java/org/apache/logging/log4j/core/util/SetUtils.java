@@ -25,7 +25,7 @@ import java.util.Set;
  *
  */
 public final class SetUtils {
-    private SetUtils() {};
+    private SetUtils() {}
 
     public static String[] prefixSet(final Set<String> set, final String prefix) {
         final Set<String> prefixSet = new HashSet<String>();
