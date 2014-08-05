@@ -33,6 +33,13 @@ import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.Strings;
 
 /**
+ * The core implementation of the {@link org.apache.logging.log4j.Logger} interface. Besides providing an
+ * implementation of all the Logger methods, this class also provides some convenience methods for Log4j 1.x
+ * compatibility as well as access to the {@link org.apache.logging.log4j.core.Filter Filters} and
+ * {@link org.apache.logging.log4j.core.Appender Appenders} associated with this Logger. Note that access to these
+ * underlying objects is provided primarily for use in unit tests or bridging legacy Log4j 1.x code. Future versions
+ * of this class may or may not include the various methods that are noted as not being part of the public API.
+ *
  * @doubt All the isEnabled methods could be pushed into a filter interface.  Not sure of the utility of having
  * isEnabled be able to examine the message pattern and parameters. (RG) Moving the isEnabled methods out of
  * Logger noticeably impacts performance. The message pattern and parameters are required so that they can be
@@ -45,8 +52,10 @@ public class Logger extends AbstractLogger {
     /**
      * config should be consistent across threads.
      */
+    // FIXME: non-serializable object in serializable class
     protected volatile PrivateConfig config;
 
+    // FIXME: ditto to the above
     private final LoggerContext context;
 
     /**
@@ -156,6 +165,7 @@ public class Logger extends AbstractLogger {
      * This method is not exposed through the public API and is used primarily for unit testing.
      * @return An Iterator over all the Filters associated with the Logger.
      */
+    // FIXME: this really ought to be an Iterable instead of an Iterator
     public Iterator<Filter> getFilters() {
         final Filter filter = config.loggerConfig.getFilter();
         if (filter == null) {
