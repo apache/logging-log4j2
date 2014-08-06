@@ -22,6 +22,12 @@
   </properties>
   <body>
     <release version="2.0.2" date="2014-0?-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-765" dev="rpopma" type="fix">
+        Improve warning message when missing log4j-core in the classpath.
+      </action>      
+      <action issue="LOG4J2-722" dev="rpopma" type="fix">
+        Clarified in documentation that Commons Logging jar is required when using log4j-jcl.
+      </action>      
       <action issue="LOG4J2-722" dev="rpopma" type="fix">
         Clarified in documentation that Commons Logging jar is required when using log4j-jcl.
       </action>      

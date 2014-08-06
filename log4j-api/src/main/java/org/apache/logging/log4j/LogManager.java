@@ -98,7 +98,7 @@ public class LogManager {
                 }
 
                 if (factories.isEmpty()) {
-                    LOGGER.error("Unable to locate a logging implementation, using SimpleLogger");
+                    LOGGER.error("Log4j2 could not find a logging implementation. Please add log4j-core to the classpath. Using SimpleLogger to log to the console...");
                     factory = new SimpleLoggerContextFactory();
                 } else {
                     final StringBuilder sb = new StringBuilder("Multiple logging implementations found: \n");
@@ -112,7 +112,7 @@ public class LogManager {
 
                 }
             } else {
-                LOGGER.error("Unable to locate a logging implementation, using SimpleLogger");
+                LOGGER.error("Log4j2 could not find a logging implementation. Please add log4j-core to the classpath. Using SimpleLogger to log to the console...");
                 factory = new SimpleLoggerContextFactory();
             }
         }
