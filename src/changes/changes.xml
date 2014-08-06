@@ -21,7 +21,10 @@
     <title>Changes</title>
   </properties>
   <body>
-    <release version="2.1" date="2014-0?-??" description="Bug fixes and enhancements">
+    <release version="2.0.2" date="2014-0?-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-730" dev="rpopma" type="update">
+        Allow Log4jContextFactory subclasses to specify a custom ContextSelector.
+      </action>      
       <action issue="LOG4J2-759" dev="rpopma" type="fix">
         Fixed various minor site/documentation issues, mostly versioning related.
       </action>      
