@@ -434,7 +434,11 @@ public abstract class ConfigurationFactory {
                     }
                 }
             }
-            return config != null ? config : new DefaultConfiguration();
+            if (config != null) {
+                return config;
+            }
+            LOGGER.error("No log4j2 configuration file found. Using default configuration: logging only errors to the console.");
+            return new DefaultConfiguration();
         }
 
         private Configuration getConfiguration(final boolean isTest, final String name) {
