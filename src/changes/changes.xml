@@ -22,7 +22,10 @@
   </properties>
   <body>
     <release version="2.0.2" date="2014-0?-??" description="Bug fixes and enhancements">
-      <action issue="LOG4J2-723" dev="rpopma" type="update">
+      <action issue="LOG4J2-722" dev="rpopma" type="fix">
+        Clarified in documentation that Commons Logging API jar is required when using log4j-jcl.
+      </action>      
+      <action issue="LOG4J2-723" dev="rpopma" type="fix">
         Clarified in documentation that SLF4J API jar is required when using log4j-slf4j-impl.
       </action>      
       <action issue="LOG4J2-730" dev="rpopma" type="update">
