@@ -62,11 +62,7 @@ public class MapLookup implements StrLookup {
         if (map == null) {
             return null;
         }
-        final String obj = map.get(key);
-        if (obj == null) {
-            return null;
-        }
-        return obj;
+        return map.get(key);
     }
 
     @Override
