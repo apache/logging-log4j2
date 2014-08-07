@@ -75,7 +75,7 @@ public class JndiLookup implements StrLookup {
      */
     private String convertJndiName(String jndiName) {
         if (!jndiName.startsWith(CONTAINER_JNDI_RESOURCE_PATH_PREFIX) && jndiName.indexOf(':') == -1) {
-            jndiName = CONTAINER_JNDI_RESOURCE_PATH_PREFIX + jndiName;
+            return CONTAINER_JNDI_RESOURCE_PATH_PREFIX + jndiName;
         }
         return jndiName;
     }
