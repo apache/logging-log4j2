@@ -31,9 +31,6 @@
       <action issue="LOG4J2-722" dev="rpopma" type="fix">
         Clarified in documentation that Commons Logging jar is required when using log4j-jcl.
       </action>      
-      <action issue="LOG4J2-722" dev="rpopma" type="fix">
-        Clarified in documentation that Commons Logging jar is required when using log4j-jcl.
-      </action>      
       <action issue="LOG4J2-723" dev="rpopma" type="fix">
         Clarified in documentation that SLF4J API jar is required when using log4j-slf4j-impl.
       </action>      
