@@ -51,9 +51,10 @@ public class MapLookup implements StrLookup {
 
     /**
      * Looks up a String key to a String value using the map.
-     * <p/>
+     * <p>
      * If the map is null, then null is returned.
      * The map result object is converted to a string using toString().
+     * </p>
      *
      * @param key the key to be looked up, may be null
      * @return the matching value, null if no match
