@@ -27,6 +27,7 @@ import org.apache.logging.log4j.message.MapMessage;
  */
 @Plugin(name = "map", category = "Lookup")
 public class MapLookup implements StrLookup {
+    
     /**
      * Map keys are variable names and value.
      */
