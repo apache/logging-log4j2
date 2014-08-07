@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * The Interpolator is a StrLookup that acts as a proxy for all the other StrLookups.
+ * Proxies all the other StrLookups.
  */
 public class Interpolator implements StrLookup {
 
