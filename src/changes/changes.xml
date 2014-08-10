@@ -22,33 +22,36 @@
   </properties>
   <body>
     <release version="2.0.2" date="2014-0?-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-769" dev="rpopma" type="fix" due-to="Scott Harrington">
+        Startup takes a long time if you have empty packages attribute.
+      </action>
       <action issue="LOG4J2-763" dev="rpopma" type="fix">
         Improved FormattedMessage, StringFormattedMessage, LocalizedMessage, MessageFormatMessage and
         ObjectMessage for asynchronous logging to ensure the formatted message does not change even if
         parameters are modified by the application. (ParameterizedMessage was already safe.)
         Improved documentation.
-      </action>      
+      </action>
       <action issue="LOG4J2-729" dev="rpopma" type="fix">
         Emit warning message to console if no configuration file found.
-      </action>      
+      </action>
       <action issue="LOG4J2-765" dev="rpopma" type="fix">
         Improve warning message when missing log4j-core in the classpath.
-      </action>      
+      </action>
       <action issue="LOG4J2-722" dev="rpopma" type="fix">
         Clarified in documentation that Commons Logging jar is required when using log4j-jcl.
-      </action>      
+      </action>
       <action issue="LOG4J2-723" dev="rpopma" type="fix">
         Clarified in documentation that SLF4J API jar is required when using log4j-slf4j-impl.
-      </action>      
+      </action>
       <action issue="LOG4J2-730" dev="rpopma" type="update">
         Allow Log4jContextFactory subclasses to specify a custom ContextSelector.
-      </action>      
+      </action>
       <action issue="LOG4J2-759" dev="rpopma" type="fix">
         Fixed various minor site/documentation issues, mostly versioning related.
-      </action>      
+      </action>
       <action issue="LOG4J2-756" dev="rpopma" type="fix" due-to="Scott Harrington">
         Prevent JUnit test from creating unnecessary Log4j2Plugins.dat during build.
-      </action>      
+      </action>
     </release> 
     <release version="2.0.1" date="2014-07-29" description="Bug fixes">
       <action issue="LOG4J2-744" dev="rpopma" type="fix" due-to="Scott Harrington">
