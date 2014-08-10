@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +52,7 @@ public class PatternParserTest {
     private final String mdcMsgPattern4 = "%m : %X{key3}%n";
     private final String mdcMsgPattern5 = "%m : %X{key1},%X{key2},%X{key3}%n";
 
+    private static String badPattern = "[%d{yyyyMMdd HH:mm:ss,SSS] %-5p [%c{10}] - %m%n";
     private static String customPattern = "[%d{yyyyMMdd HH:mm:ss,SSS}] %-5p [%-25.25c{1}:%-4L] - %m%n";
     private static String nestedPatternHighlight =
             "%highlight{%d{dd MMM yyyy HH:mm:ss,SSS}{GMT+0} [%t] %-5level: %msg%n%throwable}";
@@ -100,8 +102,33 @@ public class PatternParserTest {
             formatter.format(event, buf);
         }
         final String str = buf.toString();
-        final String expected = "INFO  [PatternParserTest        :93  ] - Hello, world" + Constants.LINE_SEPARATOR;
+        final String expected = "INFO  [PatternParserTest        :95  ] - Hello, world" + Constants.LINE_SEPARATOR;
         assertTrue("Expected to end with: " + expected + ". Actual: " + str, str.endsWith(expected));
+    }
+    
+    @Test
+    public void testBadPattern() {
+        final Calendar cal = Calendar.getInstance();
+        cal.set(2001, Calendar.FEBRUARY, 3, 4, 5, 6);
+        cal.set(Calendar.MILLISECOND, 789);
+        final long timestamp = cal.getTimeInMillis();
+        
+        final List<PatternFormatter> formatters = parser.parse(badPattern);
+        assertNotNull(formatters);
+        final Throwable t = new Throwable();
+        final StackTraceElement[] elements = t.getStackTrace();
+        final LogEvent event = new Log4jLogEvent("a.b.c", null,
+            Logger.class.getName(), Level.INFO, new SimpleMessage("Hello, world"), null,
+            null, null, "Thread1", elements[0], timestamp);
+        final StringBuilder buf = new StringBuilder();
+        for (final PatternFormatter formatter : formatters) {
+            formatter.format(event, buf);
+        }
+        final String str = buf.toString();
+        
+        // eats all characters until the closing '}' character
+        final String expected = "[2001-02-03 04:05:06,789] - Hello, world";
+        assertTrue("Expected to start with: " + expected + ". Actual: " + str, str.startsWith(expected));
     }
 
     @Test
