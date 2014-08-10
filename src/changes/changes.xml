@@ -22,6 +22,12 @@
   </properties>
   <body>
     <release version="2.0.2" date="2014-0?-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-763" dev="rpopma" type="fix">
+        Improved FormattedMessage, StringFormattedMessage, LocalizedMessage, MessageFormatMessage and
+        ObjectMessage for asynchronous logging to ensure the formatted message does not change even if
+        parameters are modified by the application. (ParameterizedMessage was already safe.)
+        Improved documentation.
+      </action>      
       <action issue="LOG4J2-729" dev="rpopma" type="fix">
         Emit warning message to console if no configuration file found.
       </action>      

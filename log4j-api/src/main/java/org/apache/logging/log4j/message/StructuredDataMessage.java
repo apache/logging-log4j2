@@ -22,6 +22,11 @@ import org.apache.logging.log4j.util.EnglishEnums;
 
 /**
  * Represents a Message that conforms to an RFC 5424 StructuredData element along with the syslog message.
+ * <p>
+ * Thread-safety note: the contents of this message can be modified after construction.
+ * When using asynchronous loggers and appenders it is not recommended to modify this message after the message is
+ * logged, because it is undefined whether the logged message string will contain the old values or the modified
+ * values.
  *
  * @see <a href="https://tools.ietf.org/html/rfc5424">RFC 5424</a>
  */
