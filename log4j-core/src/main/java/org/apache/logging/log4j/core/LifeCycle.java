@@ -25,12 +25,12 @@ package org.apache.logging.log4j.core;
  * When the {@link #stop()} is called, this goes into the {@link State#STOPPING} state. After successfully being
  * stopped, this goes into the {@link State#STOPPED} state. In most circumstances, implementation classes should
  * store their {@link State} in a {@code volatile} field or inside an
- * {@link java.util.concurrent.atomic.AtomicReference}.
+ * {@link java.util.concurrent.atomic.AtomicReference} dependant on synchronization and concurrency requirements.
  */
 public interface LifeCycle {
     
     /**
-     * Status of a life cycle like a {@link LoggerContext}..
+     * Status of a life cycle like a {@link LoggerContext}.
      */
     public enum State {
         /** Initialized but not yet started. */
