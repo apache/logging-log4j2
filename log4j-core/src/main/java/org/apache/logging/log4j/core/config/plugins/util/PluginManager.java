@@ -81,9 +81,12 @@ public class PluginManager {
     /**
      * Adds a package name to be scanned for plugins. Must be invoked prior to plugins being collected.
      * 
-     * @param p The package name.
+     * @param p The package name. Ignored if {@code null} or empty.
      */
     public static void addPackage(final String p) {
+        if (p == null || p.isEmpty()) {
+            return;
+        }
         if (PACKAGES.addIfAbsent(p)) {
             // set of available plugins could have changed, reset plugin cache for newly-retrieved managers
             REGISTRY.clear(); // TODO confirm if this is correct
