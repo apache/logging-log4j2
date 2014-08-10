@@ -74,7 +74,9 @@ public class PluginManager {
     @Deprecated
     // use PluginProcessor instead
     public static void main(final String[] args) {
-        System.err.println("WARNING: this tool is superseded by the annotation processor included in log4j-core.");
+        System.err.println("ERROR: this tool is superseded by the annotation processor included in log4j-core.");
+        System.err.println("If the annotation processor does not work for you, please see the manual page:");
+        System.err.println("http://logging.apache.org/log4j/2.x/manual/configuration.html#ConfigurationSyntax");
         System.exit(-1);
     }
 
