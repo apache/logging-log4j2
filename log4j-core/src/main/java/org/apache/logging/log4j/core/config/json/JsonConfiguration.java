@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -74,6 +75,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
             for (final Map.Entry<String, String> entry : rootNode.getAttributes().entrySet()) {
                 final String key = entry.getKey();
                 final String value = getStrSubstitutor().replace(entry.getValue());
+                // TODO: this duplicates a lot of the XmlConfiguration constructor
                 if ("status".equalsIgnoreCase(key)) {
                     statusConfig.withStatus(value);
                 } else if ("dest".equalsIgnoreCase(key)) {
@@ -83,10 +85,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
                 } else if ("verbose".equalsIgnoreCase(entry.getKey())) {
                     statusConfig.withVerbosity(value);
                 } else if ("packages".equalsIgnoreCase(key)) {
-                    final String[] packages = value.split(Patterns.COMMA_SEPARATOR);
-                    for (final String p : packages) {
-                        PluginManager.addPackage(p);
-                    }
+                    PluginManager.addPackages(Arrays.asList(value.split(Patterns.COMMA_SEPARATOR)));
                 } else if ("name".equalsIgnoreCase(key)) {
                     setName(value);
                 } else if ("monitorInterval".equalsIgnoreCase(key)) {

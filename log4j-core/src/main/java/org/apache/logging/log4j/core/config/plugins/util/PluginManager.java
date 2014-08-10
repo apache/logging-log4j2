@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -93,6 +94,18 @@ public class PluginManager {
             // set of available plugins could have changed, reset plugin cache for newly-retrieved managers
             REGISTRY.clear(); // TODO confirm if this is correct
         }
+    }
+
+    /**
+     * Adds a list of package names to be scanned for plugins. Convenience method for {@link #addPackage(String)}.
+     *
+     * @param packages collection of package names to add. Ignored if {@code null} or empty.
+     */
+    public static void addPackages(final Collection<String> packages) {
+        if (packages == null || packages.isEmpty()) {
+            return;
+        }
+        PACKAGES.addAllAbsent(packages);
     }
 
     /**
