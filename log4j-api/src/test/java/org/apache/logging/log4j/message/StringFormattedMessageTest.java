@@ -60,4 +60,16 @@ public class StringFormattedMessageTest {
         final Throwable t = msg.getThrowable();
         assertNotNull("No Throwable", t);
     }
+
+    @Test
+    public void testSafeWithMutableParams() { // LOG4J2-763
+        final String testMsg = "Test message %s";
+        final Mutable param = new Mutable().set("abc");
+        StringFormattedMessage msg = new StringFormattedMessage(testMsg, param);
+
+        // modify parameter before calling msg.getFormattedMessage
+        param.set("XYZ");
+        String actual = msg.getFormattedMessage();
+        assertEquals("Should use initial param value", "Test message abc", actual);
+    }
 }

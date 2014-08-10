@@ -124,6 +124,26 @@
 						logging in addition to synchronous
 						logging for the audit trail.)
 					</li>
+					<li>In some rare cases, care must be taken with mutable messages.
+					  Most of the time you don't need to worry about this. Log4 will ensure that log messages like 
+					  <code>logger.debug("My object is {}", myObject)</code> will use the state of the
+					  <code>myObject</code> parameter at the time of the call to <code>logger.debug()</code>.
+					  The log message will not change even if <code>myObject</code> is modified later.
+					  It is safe to asynchronously log mutable objects because most 
+					  <a href="../log4j-api/apidocs/org/apache/logging/log4j/message/Message.html">Message</a>
+					  implementations built-in to Log4j take a snapshot of the parameters.
+					  There are some exceptions however: 
+					  <a href="../log4j-api/apidocs/org/apache/logging/log4j/message/MapMessage.html">MapMessage</a>
+					  and
+					  <a href="../log4j-api/apidocs/org/apache/logging/log4j/message/StructuredDataMessage.html">StructuredDataMessage</a>
+					  are mutable by design: fields can be added to these messages after the message object was created.
+					  These messages should not be modified after they are logged with asynchronous loggers or
+					  asynchronous appenders; you may or may not see the modifications in the resulting log output.
+					  Similarly, custom  
+					  <a href="../log4j-api/apidocs/org/apache/logging/log4j/message/Message.html">Message</a>
+					  implementations should be designed with asynchronous use in mind, and either take a snapshot
+					  of their parameters at construction time, or document their thread-safety characteristics.
+					</li>
 				</ul>
 			</subsection>
 			<a name="AllAsync" />

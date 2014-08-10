@@ -78,6 +78,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
         this.baseName = baseName;
         this.resourceBundle = null;
         this.locale = locale;
+        getFormattedMessage(); // LOG4J2-763 take snapshot of parameters at message construction time
     }
 
     public LocalizedMessage(final ResourceBundle bundle, final Locale locale, final String key,
@@ -88,6 +89,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
         this.baseName = null;
         this.resourceBundle = bundle;
         this.locale = locale;
+        getFormattedMessage(); // LOG4J2-763 take snapshot of parameters at message construction time
     }
 
     public LocalizedMessage(final Locale locale, final String key, final Object[] arguments) {

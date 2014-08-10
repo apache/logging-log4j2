@@ -83,4 +83,16 @@ public class FormattedMessageTest {
         result = msg.getFormattedMessage();
         assertEquals(testMsg, result);
     }
+
+    @Test
+    public void testSafeWithMutableParams() { // LOG4J2-763
+        final String testMsg = "Test message %s";
+        final Mutable param = new Mutable().set("abc");
+        FormattedMessage msg = new FormattedMessage(testMsg, param);
+
+        // modify parameter before calling msg.getFormattedMessage
+        param.set("XYZ");
+        String actual = msg.getFormattedMessage();
+        assertEquals("Should use initial param value", "Test message abc", actual);
+    }
 }
