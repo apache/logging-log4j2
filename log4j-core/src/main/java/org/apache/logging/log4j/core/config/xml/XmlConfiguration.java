@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -149,10 +150,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                 } else if ("verbose".equalsIgnoreCase(key)) {
                     statusConfig.withVerbosity(value);
                 } else if ("packages".equalsIgnoreCase(key)) {
-                    final String[] packages = value.split(Patterns.COMMA_SEPARATOR);
-                    for (final String p : packages) {
-                        PluginManager.addPackage(p);
-                    }
+                    PluginManager.addPackages(Arrays.asList(value.split(Patterns.COMMA_SEPARATOR)));
                 } else if ("name".equalsIgnoreCase(key)) {
                     setName(value);
                 } else if ("strict".equalsIgnoreCase(key)) {
