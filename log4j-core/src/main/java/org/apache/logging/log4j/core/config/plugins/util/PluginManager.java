@@ -39,6 +39,7 @@ import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.ResourceLoader;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Loads and manages all the plugins.
@@ -87,7 +88,7 @@ public class PluginManager {
      * @param p The package name. Ignored if {@code null} or empty.
      */
     public static void addPackage(final String p) {
-        if (p == null || p.isEmpty()) {
+        if (Strings.isBlank(p)) {
             return;
         }
         if (PACKAGES.addIfAbsent(p)) {
@@ -99,13 +100,14 @@ public class PluginManager {
     /**
      * Adds a list of package names to be scanned for plugins. Convenience method for {@link #addPackage(String)}.
      *
-     * @param packages collection of package names to add. Ignored if {@code null} or empty.
+     * @param packages collection of package names to add. Empty and null package names are ignored.
      */
     public static void addPackages(final Collection<String> packages) {
-        if (packages == null || packages.isEmpty()) {
-            return;
+        for (String pkg : packages) {
+            if (Strings.isNotBlank(pkg)) {
+                PACKAGES.addIfAbsent(pkg);
+            }
         }
-        PACKAGES.addAllAbsent(packages);
     }
 
     /**
