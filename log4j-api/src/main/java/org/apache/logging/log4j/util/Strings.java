@@ -75,6 +75,27 @@ public final class Strings {
     }
 
     /**
+     * Checks if a String is blank. A blank string is one that is {@code null}, empty, or when trimmed using
+     * {@link String#trim()} is still not empty.
+     *
+     * @param s the String to check, may be {@code null}
+     * @return {@code true} if the String is {@code null}, empty, or trims to empty.
+     */
+    public static boolean isBlank(final String s) {
+        return s == null || s.trim().isEmpty();
+    }
+
+    /**
+     * Checks if a String is not blank. The opposite of {@link #isBlank(String)}.
+     *
+     * @param s the String to check, may be {@code null}
+     * @return {@code true} if the String is non-{@code null} and has content after being trimmed.
+     */
+    public static boolean isNotBlank(final String s) {
+        return !isBlank(s);
+    }
+
+    /**
      * <p>Removes control characters (char &lt;= 32) from both
      * ends of this String returning {@code null} if the String is
      * empty ("") after the trim or if it is {@code null}.
