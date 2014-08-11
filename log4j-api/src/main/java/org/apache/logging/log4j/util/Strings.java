@@ -76,7 +76,7 @@ public final class Strings {
 
     /**
      * Checks if a String is blank. A blank string is one that is {@code null}, empty, or when trimmed using
-     * {@link String#trim()} is still not empty.
+     * {@link String#trim()} is empty.
      *
      * @param s the String to check, may be {@code null}
      * @return {@code true} if the String is {@code null}, empty, or trims to empty.
