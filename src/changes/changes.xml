@@ -22,9 +22,12 @@
   </properties>
   <body>
     <release version="2.0.2" date="2014-0?-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-773" dev="rpopma" type="fix">
+        Site: log4j-core component pages were still using the old logo.
+      </action>
       <action issue="LOG4J2-760" dev="rpopma" type="fix">
         Documentation improvement: link to dependency tree from log4j-core component page,
-        link to log4j-component page from FAQ page.
+        link to log4j-core component page from FAQ page.
       </action>
       <action issue="LOG4J2-679" dev="rpopma" type="fix">
         Resolved race condition that caused log file rotation to fail with error: "Unable to create directory ..."
