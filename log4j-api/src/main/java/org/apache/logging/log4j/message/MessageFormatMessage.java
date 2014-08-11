@@ -49,7 +49,6 @@ public class MessageFormatMessage implements Message {
         if (arguments != null && arguments.length > 0 && arguments[arguments.length - 1] instanceof Throwable) {
             this.throwable = (Throwable) arguments[arguments.length - 1];
         }
-        getFormattedMessage(); // LOG4J2-763 take snapshot of parameters at message construction time
     }
 
     /**

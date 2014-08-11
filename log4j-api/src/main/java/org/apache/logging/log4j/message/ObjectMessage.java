@@ -29,7 +29,7 @@ public class ObjectMessage implements Message {
     private static final long serialVersionUID = -5903272448334166185L;
 
     private transient Object obj;
-    private final String objectString;
+    private transient String objectString;
 
     /**
      * Create the ObjectMessage.
@@ -40,9 +40,6 @@ public class ObjectMessage implements Message {
             obj = "null";
         }
         this.obj = obj;
-        
-        // LOG4J2-763: take snapshot of parameters at message construction time
-        objectString = String.valueOf(obj);
     }
 
     /**
@@ -51,6 +48,10 @@ public class ObjectMessage implements Message {
      */
     @Override
     public String getFormattedMessage() {
+        // LOG4J2-763: cache formatted string in case obj changes later
+        if (objectString == null) {
+            objectString = String.valueOf(obj);
+        }
         return objectString;
     }
 
@@ -60,7 +61,7 @@ public class ObjectMessage implements Message {
      */
     @Override
     public String getFormat() {
-        return objectString;
+        return getFormattedMessage();
     }
 
     /**
@@ -69,7 +70,7 @@ public class ObjectMessage implements Message {
      */
     @Override
     public Object[] getParameters() {
-        return new Object[]{obj};
+        return new Object[] { obj };
     }
 
     @Override
@@ -82,8 +83,7 @@ public class ObjectMessage implements Message {
         }
 
         final ObjectMessage that = (ObjectMessage) o;
-
-        return !(obj != null ? !obj.equals(that.obj) : that.obj != null);
+        return obj == null ? that.obj == null : obj.equals(that.obj);
     }
 
     @Override
@@ -93,7 +93,7 @@ public class ObjectMessage implements Message {
 
     @Override
     public String toString() {
-        return "ObjectMessage[obj=" + objectString + ']';
+        return "ObjectMessage[obj=" + getFormattedMessage() + ']';
     }
 
     private void writeObject(final ObjectOutputStream out) throws IOException {
@@ -101,7 +101,7 @@ public class ObjectMessage implements Message {
         if (obj instanceof Serializable) {
             out.writeObject(obj);
         } else {
-            out.writeObject(obj.toString());
+            out.writeObject(String.valueOf(obj));
         }
     }
 
