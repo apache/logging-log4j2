@@ -41,13 +41,25 @@ public class ObjectMessageTest {
     }
 
     @Test
-    public void testSafeWithMutableParams() { // LOG4J2-763
+    public void testUnsafeWithMutableParams() { // LOG4J2-763
         final Mutable param = new Mutable().set("abc");
-        ObjectMessage msg = new ObjectMessage(param);
+        final ObjectMessage msg = new ObjectMessage(param);
 
         // modify parameter before calling msg.getFormattedMessage
         param.set("XYZ");
-        String actual = msg.getFormattedMessage();
+        final String actual = msg.getFormattedMessage();
+        assertEquals("Expected most recent param value", "XYZ", actual);
+    }
+
+    @Test
+    public void testSafeAfterGetFormattedMessageIsCalled() { // LOG4J2-763
+        final Mutable param = new Mutable().set("abc");
+        final ObjectMessage msg = new ObjectMessage(param);
+
+        // modify parameter after calling msg.getFormattedMessage
+        msg.getFormattedMessage();
+        param.set("XYZ");
+        final String actual = msg.getFormattedMessage();
         assertEquals("Should use initial param value", "abc", actual);
     }
 }

@@ -138,6 +138,7 @@ public final class AsyncAppender extends AbstractAppender {
             }
             logEvent = ((RingBufferLogEvent) logEvent).createMemento();
         }
+        logEvent.getMessage().getFormattedMessage(); // LOG4J2-763: ask message to freeze parameters
         final Log4jLogEvent coreEvent = (Log4jLogEvent) logEvent;
         boolean appendSuccessful = false;
         if (blocking) {

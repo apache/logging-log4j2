@@ -226,6 +226,7 @@ public class AsyncLogger extends Logger {
 
     @Override
     public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message, final Throwable thrown) {
+        // TODO refactor to reduce size to <= 35 bytecodes to allow JVM to inline it
         Info info = threadlocalInfo.get();
         if (info == null) {
             info = new Info(new RingBufferLogEventTranslator(), Thread.currentThread().getName(), false);
@@ -245,6 +246,7 @@ public class AsyncLogger extends Logger {
             config.loggerConfig.log(getName(), fqcn, marker, level, message, thrown);
             return;
         }
+        message.getFormattedMessage(); // LOG4J2-763: ask message to freeze parameters
         final boolean includeLocation = config.loggerConfig.isIncludeLocation();
         info.translator.setValues(this, getName(), marker, fqcn, level, message, //
                 // don't construct ThrowableProxy until required

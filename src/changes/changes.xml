@@ -29,8 +29,7 @@
         Startup takes a long time if you have empty packages attribute.
       </action>
       <action issue="LOG4J2-763" dev="rpopma" type="fix" due-to="Stephen Connolly">
-        Improved FormattedMessage, StringFormattedMessage, LocalizedMessage, MessageFormatMessage and
-        ObjectMessage for asynchronous logging to ensure the formatted message does not change even if
+        Improved asynchronous loggers and appenders to ensure the formatted message does not change even if
         parameters are modified by the application. (ParameterizedMessage was already safe.)
         Improved documentation.
       </action>

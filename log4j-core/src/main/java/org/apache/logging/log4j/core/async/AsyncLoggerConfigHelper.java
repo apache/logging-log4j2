@@ -316,6 +316,7 @@ class AsyncLoggerConfigHelper {
      *          calling thread needs to process the event itself
      */
     public boolean callAppendersFromAnotherThread(final LogEvent event) {
+        // TODO refactor to reduce size to <= 35 bytecodes to allow JVM to inline it
         final Disruptor<Log4jEventWrapper> temp = disruptor;
         if (temp == null) { // LOG4J2-639
             LOGGER.fatal("Ignoring log event after log4j was shut down");
@@ -336,6 +337,8 @@ class AsyncLoggerConfigHelper {
             if (event instanceof RingBufferLogEvent) {
                 logEvent = ((RingBufferLogEvent) event).createMemento();
             }
+            logEvent.getMessage().getFormattedMessage(); // LOG4J2-763: ask message to freeze parameters
+
             // Note: do NOT use the temp variable above!
             // That could result in adding a log event to the disruptor after it was shut down,
             // which could cause the publishEvent method to hang and never return.
