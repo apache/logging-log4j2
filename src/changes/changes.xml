@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="2.0.2" date="2014-0?-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-679" dev="rpopma" type="fix">
+        Resolved race condition that caused log file rotation to fail with error: "Unable to create directory ..."
+      </action>
       <action issue="LOG4J2-726" dev="rpopma" type="fix">
         Prevent application from hanging when PatternLayout configuration has opening '{' but no closing '}'.
       </action>
