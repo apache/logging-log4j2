@@ -77,7 +77,11 @@ public class FileRenameAction extends AbstractAction {
         if (renameEmptyFiles || source.length() > 0) {
             final File parent = destination.getParentFile();
             if (parent != null && !parent.exists()) {
-                if (!parent.mkdirs()) {
+                // LOG4J2-679: ignore mkdirs() result: in multithreaded scenarios,
+                // if one thread succeeds the other thread returns false
+                // even though directories have been created. Check if dir exists instead.
+                parent.mkdirs();
+                if (!parent.exists()) {
                     LOGGER.error("Unable to create directory {}", parent.getAbsolutePath());
                     return false;
                 }
