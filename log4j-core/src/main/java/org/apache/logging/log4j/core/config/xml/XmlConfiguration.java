@@ -45,6 +45,7 @@ import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.config.plugins.util.ResolverUtil;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
+import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Patterns;
 import org.w3c.dom.Attr;
@@ -129,7 +130,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             try {
                 buffer = toByteArray(configStream);
             } finally {
-                configStream.close();
+                Closer.closeSilently(configStream);
             }
             final InputSource source = new InputSource(new ByteArrayInputStream(buffer));
             source.setSystemId(configSource.getLocation());
@@ -168,11 +169,11 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             }
             statusConfig.initialize();
         } catch (final SAXException domEx) {
-            LOGGER.error("Error parsing " + configSource.getLocation(), domEx);
+            LOGGER.error("Error parsing {}", configSource.getLocation(), domEx);
         } catch (final IOException ioe) {
-            LOGGER.error("Error parsing " + configSource.getLocation(), ioe);
+            LOGGER.error("Error parsing {}", configSource.getLocation(), ioe);
         } catch (final ParserConfigurationException pex) {
-            LOGGER.error("Error parsing " + configSource.getLocation(), pex);
+            LOGGER.error("Error parsing {}", configSource.getLocation(), pex);
         }
         if (strict && schema != null && buffer != null) {
             InputStream is = null;
@@ -217,7 +218,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         constructHierarchy(rootNode, rootElement);
         if (status.size() > 0) {
             for (final Status s : status) {
-                LOGGER.error("Error processing element " + s.name + ": " + s.errorType);
+                LOGGER.error("Error processing element {}: {}", s.name, s.errorType);
             }
             return;
         }
@@ -234,7 +235,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             final XmlConfiguration config = new XmlConfiguration(source);
             return (config.rootElement == null) ? null : config;
         } catch (final IOException ex) {
-            LOGGER.error("Cannot locate file " + getConfigurationSource(), ex);
+            LOGGER.error("Cannot locate file {}", getConfigurationSource(), ex);
         }
         return null;
     }
