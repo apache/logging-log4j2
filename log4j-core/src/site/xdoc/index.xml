@@ -24,12 +24,10 @@
 
     <body>
         <section name="Log4j 2 Implementation">
-
             <p>
               The Log4j 2 implementation provides the functional components of the logging system.
               Users are free to create their own plugins and include them in the logging configuration.
             </p>
-
         </section>
 
         <section name="Requirements">
@@ -37,6 +35,11 @@
                 Log4j 2 requires Java 6. Some features may require optional
                 <a href="dependencies.html">dependencies</a>. These dependencies are specified in the
                 documentation for those features.
+            </p>
+            <p>
+              Below is a list of Log4j features that require external dependencies.
+              See the <a href="dependencies.html#Dependency_Tree">Dependency Tree</a>
+              for the exact list of JAR files needed for these features.
             </p>
             <ul>
                 <li>JSON configuration requires the Jackson Data Processor.</li>
