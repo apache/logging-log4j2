@@ -18,4 +18,4 @@
 /**
  * Collection of OSGi-specific classes for bundles.
  */
-package org.apache.logging.log4j.core.config.plugins.osgi;
+package org.apache.logging.log4j.core.osgi;

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.logging.log4j.core.config.plugins.osgi;
+package org.apache.logging.log4j.core.osgi;
 
 import java.util.concurrent.atomic.AtomicReference;
 

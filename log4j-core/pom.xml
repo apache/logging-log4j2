@@ -284,7 +284,7 @@
             <Bundle-SymbolicName>org.apache.logging.log4j.core</Bundle-SymbolicName>
             <!-- TODO: exclude internal classes from export -->
             <Export-Package>org.apache.logging.log4j.core.*</Export-Package>
-            <Bundle-Activator>org.apache.logging.log4j.core.config.plugins.osgi.Activator</Bundle-Activator>
+            <Bundle-Activator>org.apache.logging.log4j.core.osgi.Activator</Bundle-Activator>
             <Provide-Capability>org.apache.logging.log4j.spi.LoggerContextFactory</Provide-Capability>
           </instructions>
         </configuration>
