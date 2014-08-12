@@ -99,7 +99,7 @@ public class ObjectMessageTest {
         ObjectMessage other = SerialUtil.deserialize(SerialUtil.serialize(msg));
 
 // TODO this fails: msg.obj.equals(other.obj) is false...
-// TODO our equals() implementation does not match the serialization mechanism
+// TODO ObjectMessage.equals() implementation does not match the serialization mechanism
         assertEquals(msg, other);
     }
 }
