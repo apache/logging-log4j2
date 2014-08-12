@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.message;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
+
+import org.apache.log4j.util.SerialUtil;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -61,5 +66,40 @@ public class ObjectMessageTest {
         param.set("XYZ");
         final String actual = msg.getFormattedMessage();
         assertEquals("Should use initial param value", "abc", actual);
+    }
+    
+    @Test
+    public void testSerializeWithSerializableParam() {
+        BigDecimal big = BigDecimal.valueOf(123.456);
+        ObjectMessage msg = new ObjectMessage(big);
+        ObjectMessage other = SerialUtil.deserialize(SerialUtil.serialize(msg));
+        assertEquals(msg, other);
+    }
+    
+    @Test
+    public void testDeserializeNonSerializableParamNotEqualIfToStringDiffers() {
+        ObjectMessageTest nonSerializable = new ObjectMessageTest();
+        assertFalse(nonSerializable instanceof Serializable);
+        ObjectMessage msg = new ObjectMessage(nonSerializable);
+        ObjectMessage other = SerialUtil.deserialize(SerialUtil.serialize(msg));
+        assertNotEquals("Expected different: toString is different", msg, other);
+    }
+    
+    @Ignore
+    @Test
+    public void testDeserializeNonSerializableParamEqualIfToStringSame() {
+        class NonSerializable {
+            public boolean equals(Object other) {
+                return other instanceof NonSerializable; // a very lenient equals()
+            }
+        }
+        NonSerializable nonSerializable = new NonSerializable();
+        assertFalse(nonSerializable instanceof Serializable);
+        ObjectMessage msg = new ObjectMessage(nonSerializable);
+        ObjectMessage other = SerialUtil.deserialize(SerialUtil.serialize(msg));
+
+// TODO this fails: msg.obj.equals(other.obj) is false...
+// TODO our equals() implementation does not match the serialization mechanism
+        assertEquals(msg, other);
     }
 }
