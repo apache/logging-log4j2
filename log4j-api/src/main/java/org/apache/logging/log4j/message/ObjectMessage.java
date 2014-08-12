@@ -83,7 +83,11 @@ public class ObjectMessage implements Message {
         }
 
         final ObjectMessage that = (ObjectMessage) o;
-        return obj == null ? that.obj == null : obj.equals(that.obj);
+        return obj == null ? that.obj == null : equalObjectsOrStrings(obj, that.obj);
+    }
+    
+    private boolean equalObjectsOrStrings(Object left, Object right) {
+        return left.equals(right) || String.valueOf(left).equals(String.valueOf(right));
     }
 
     @Override

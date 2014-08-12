@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 import org.apache.log4j.util.SerialUtil;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -77,16 +76,6 @@ public class ObjectMessageTest {
     }
     
     @Test
-    public void testDeserializeNonSerializableParamNotEqualIfToStringDiffers() {
-        ObjectMessageTest nonSerializable = new ObjectMessageTest();
-        assertFalse(nonSerializable instanceof Serializable);
-        ObjectMessage msg = new ObjectMessage(nonSerializable);
-        ObjectMessage other = SerialUtil.deserialize(SerialUtil.serialize(msg));
-        assertNotEquals("Expected different: toString is different", msg, other);
-    }
-    
-    @Ignore
-    @Test
     public void testDeserializeNonSerializableParamEqualIfToStringSame() {
         class NonSerializable {
             public boolean equals(Object other) {
@@ -98,8 +87,7 @@ public class ObjectMessageTest {
         ObjectMessage msg = new ObjectMessage(nonSerializable);
         ObjectMessage other = SerialUtil.deserialize(SerialUtil.serialize(msg));
 
-// TODO this fails: msg.obj.equals(other.obj) is false...
-// TODO ObjectMessage.equals() implementation does not match the serialization mechanism
         assertEquals(msg, other);
+        assertEquals(other, msg);
     }
 }
