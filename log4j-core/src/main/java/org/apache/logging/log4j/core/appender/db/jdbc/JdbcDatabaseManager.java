@@ -36,7 +36,6 @@ import org.apache.logging.log4j.core.util.Closer;
  * An {@link AbstractDatabaseManager} implementation for relational databases accessed via JDBC.
  */
 public final class JdbcDatabaseManager extends AbstractDatabaseManager {
-    private static final JDBCDatabaseManagerFactory FACTORY = new JDBCDatabaseManagerFactory();
 
     private final List<Column> columns;
     private final ConnectionSource connectionSource;
@@ -174,8 +173,17 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                                                              final ColumnConfig[] columnConfigs) {
 
         return AbstractDatabaseManager.getManager(
-                name, new FactoryData(bufferSize, connectionSource, tableName, columnConfigs), FACTORY
+                name, new FactoryData(bufferSize, connectionSource, tableName, columnConfigs), getFactory()
         );
+    }
+
+    // the usual lazy singleton
+    private static class Holder {
+        private static final JDBCDatabaseManagerFactory INSTANCE = new JDBCDatabaseManagerFactory();
+    }
+
+    private static JDBCDatabaseManagerFactory getFactory() {
+        return Holder.INSTANCE;
     }
 
     /**
