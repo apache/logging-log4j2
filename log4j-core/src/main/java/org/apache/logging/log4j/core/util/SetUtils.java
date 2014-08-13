@@ -27,6 +27,13 @@ import java.util.Set;
 public final class SetUtils {
     private SetUtils() {}
 
+    /**
+     * Extracts the Strings from a Set that start with a given prefix.
+     *
+     * @param set    a Set of Strings (assumed to all be non-{@code null})
+     * @param prefix the prefix to look for in the string set
+     * @return an array of the matching strings from the given set
+     */
     public static String[] prefixSet(final Set<String> set, final String prefix) {
         final Set<String> prefixSet = new HashSet<String>();
         for (final String str : set) {
