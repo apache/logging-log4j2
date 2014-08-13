@@ -162,10 +162,11 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
                     configLocation = paths[0];
                 } else if (paths.length > 1) {
                     final String prefix = "/WEB-INF/log4j2-" + this.name + ".";
-                    final boolean found = false;
+                    boolean found = false;
                     for (final String str : paths) {
                         if (str.startsWith(prefix)) {
                             configLocation = str;
+                            found = true;
                             break;
                         }
                     }
