@@ -41,12 +41,14 @@ import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Creates MBeans to instrument various classes in the log4j class hierarchy.
  * <p>
  * All instrumentation for Log4j 2 classes can be disabled by setting system
  * property {@code -Dlog4j2.disable.jmx=true}.
+ * </p>
  */
 public final class Server {
 
@@ -111,7 +113,7 @@ public final class Server {
 
     public static void reregisterMBeansAfterReconfigure() {
         // avoid creating Platform MBean Server if JMX disabled
-        if (Boolean.getBoolean(PROPERTY_DISABLE_JMX)) {
+        if (PropertiesUtil.getProperties().getBooleanProperty(PROPERTY_DISABLE_JMX)) {
             LOGGER.debug("JMX disabled for log4j2. Not registering MBeans.");
             return;
         }
@@ -120,7 +122,7 @@ public final class Server {
     }
 
     public static void reregisterMBeansAfterReconfigure(final MBeanServer mbs) {
-        if (Boolean.getBoolean(PROPERTY_DISABLE_JMX)) {
+        if (PropertiesUtil.getProperties().getBooleanProperty(PROPERTY_DISABLE_JMX)) {
             LOGGER.debug("JMX disabled for log4j2. Not registering MBeans.");
             return;
         }
