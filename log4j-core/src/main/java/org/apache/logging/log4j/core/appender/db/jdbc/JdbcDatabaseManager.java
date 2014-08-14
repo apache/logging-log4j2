@@ -37,6 +37,8 @@ import org.apache.logging.log4j.core.util.Closer;
  */
 public final class JdbcDatabaseManager extends AbstractDatabaseManager {
 
+    private static final JDBCDatabaseManagerFactory INSTANCE = new JDBCDatabaseManagerFactory();
+
     private final List<Column> columns;
     private final ConnectionSource connectionSource;
     private final String sqlStatement;
@@ -177,13 +179,8 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         );
     }
 
-    // the usual lazy singleton
-    private static class Holder {
-        private static final JDBCDatabaseManagerFactory INSTANCE = new JDBCDatabaseManagerFactory();
-    }
-
     private static JDBCDatabaseManagerFactory getFactory() {
-        return Holder.INSTANCE;
+        return INSTANCE;
     }
 
     /**
