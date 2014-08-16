@@ -15,7 +15,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<!-- TODO: turn this into a velocity template for all the version numbers -->
+#set($dollar = '$')
 <document>
     <properties>
         <title>Flume Next Gen Appender</title>
@@ -39,6 +39,7 @@
               The persistent agent uses Berkeley DB. The following dependency should be added to your pom.xml
               in addition to the log4j-flume-ng dependency.
             </p>
+            <!-- TODO: use variables for dependency versions -->
             <pre class="prettyprint linenums"><![CDATA[  <dependencyManagement>
     <dependencies>
       <dependency>
@@ -79,9 +80,9 @@
   <description>App to test log4j appender</description>
 
   <properties>
-    <log4j.version>2.0-rc2</log4j.version>
-    <slf4j.version>1.7.6</slf4j.version>
-    <jackson.version>1.9.13</jackson.version>
+    <log4j.version>${Log4jReleaseVersion}</log4j.version>
+    <slf4j.version>${slf4j.version}</slf4j.version>
+    <jackson.version>${jackson1.version}</jackson.version>
   </properties>
 
   <dependencyManagement>
@@ -89,62 +90,62 @@
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
-        <version>${slf4j.version}</version>
+        <version>${dollar}{slf4j.version}</version>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-ext</artifactId>
-        <version>${slf4j.version></version>
+        <version>${dollar}{slf4j.version></version>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-api</artifactId>
-        <version>${log4j2_version}</version>
+        <version>${dollar}{log4j.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-1.2-api</artifactId>
-        <version>${log4j2_version}</version>
+        <version>${dollar}{log4j.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-core</artifactId>
-        <version>${log4j2_version}</version>
+        <version>${dollar}{log4j.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-flume-ng</artifactId>
-        <version>${log4j2_version}</version>
+        <version>${dollar}{log4j.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-slf4j-impl</artifactId>
-        <version>${log4j2_version}</version>
+        <version>${dollar}{log4j.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-jcl</artifactId>
-        <version>${log4j2_version}</version>
+        <version>${dollar}{log4j.version}</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.jackson</groupId>
         <artifactId>jackson-core-asl</artifactId>
-        <version>${jackson.version}</version>
+        <version>${dollar}{jackson.version}</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.jackson</groupId>
         <artifactId>jackson-mapper-asl</artifactId>
-        <version>${jackson.version}</version>
+        <version>${dollar}{jackson.version}</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.jackson</groupId>
         <artifactId>jackson-jaxrs</artifactId>
-        <version>${jackson.version}</version>
+        <version>${dollar}{jackson.version}</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.jackson</groupId>
         <artifactId>jackson-xc</artifactId>
-        <version>${jackson.version}</version>
+        <version>${dollar}{jackson.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
