@@ -15,7 +15,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<!-- TODO: turn this into a velocity template for all the version numbers -->
+<!-- TODO: use properties for dynamic dependency versions -->
 <document>
     <properties>
         <title>NoSQL Appenders</title>
@@ -27,44 +27,48 @@
 
             <p>
               The NoSQL Appenders allow applications to send events to NoSQL repositories.
+              To use it, you need both the <code>log4j-nosql</code> as well as the appropriate
+              driver for your NoSQL database type.
             </p>
           <subsection name="CouchDB">
             <p>
-              Need something about CouchDB.
+                <a href="https://couchdb.apache.org/">Apache CouchDB</a> is supported through the
+                <a href="http://www.lightcouch.org/">LightCouch</a> driver.
             </p>
             <pre class="prettyprint linenums"><![CDATA[  <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId></groupId>
-        <artifactId></artifactId>
-        <version></version>
+        <groupId>org.lightcouch</groupId>
+        <artifactId>lightcouch</artifactId>
+        <version>0.0.6</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
   <dependencies>
     <dependency>
-      <groupId></groupId>
-      <artifactId></artifactId>
+      <groupId>org.lightcouch</groupId>
+      <artifactId>lightcouch</artifactId>
     </dependency>
   </dependencies>]]></pre>
           </subsection>
           <subsection name="MongoDB">
             <p>
-              Need something about MongoDB
+                <a href="http://www.mongodb.org/">MongoDB</a> is supported through the
+                <a href="http://docs.mongodb.org/ecosystem/drivers/java/">Java MongoDB Driver</a>.
             </p>
             <pre class="prettyprint linenums"><![CDATA[  <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId></groupId>
-        <artifactId></artifactId>
-        <version></version>
+        <groupId>org.mongodb</groupId>
+        <artifactId>mongo-java-driver</artifactId>
+        <version>2.12.3</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
   <dependencies>
     <dependency>
-      <groupId></groupId>
-      <artifactId></artifactId>
+      <groupId>org.mongodb</groupId>
+      <artifactId>mongo-java-driver</artifactId>
     </dependency>
   </dependencies>]]></pre>
           </subsection>
