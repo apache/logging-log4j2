@@ -153,8 +153,8 @@
     <slf4j.version>1.7.7</slf4j.version>
     <logback.version>1.0.13</logback.version>
     <log4jParentDir>${basedir}</log4jParentDir>
-    <Log4jReleaseVersion>2.0.1</Log4jReleaseVersion>
-    <Log4jReleaseCount>fifteenth</Log4jReleaseCount>
+    <Log4jReleaseVersion>2.0.2</Log4jReleaseVersion>
+    <Log4jReleaseCount>sixteenth</Log4jReleaseCount>
     <jackson1.version>1.9.13</jackson1.version>
     <jackson2.version>2.4.1</jackson2.version>
     <spring.version>3.2.8.RELEASE</spring.version>
