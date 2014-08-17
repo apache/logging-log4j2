@@ -928,8 +928,18 @@
         <configuration>
           <excludes>
             <exclude>src/main/resources/META-INF/services/**/*</exclude>
+            <!-- IntelliJ files -->
             <exclude>.idea/**/*</exclude>
             <exclude>src/test/resources/**/*</exclude>
+            <!-- VM metadata -->
+            <exclude>.vagrant/**/*</exclude>
+            <!-- IDE settings imports -->
+            <exclude>src/ide/**/*</exclude>
+            <!-- does it even make sense to apply a license to a GPG signature? -->
+            <exclude>**/*.asc</exclude>
+            <!-- jQuery is MIT-licensed, but RAT can't figure it out -->
+            <exclude>src/site/resources/js/jquery.js</exclude>
+            <exclude>src/site/resources/js/jquery.min.js</exclude>
           </excludes>
         </configuration>
       </plugin>
