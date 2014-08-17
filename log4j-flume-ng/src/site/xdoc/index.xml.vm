@@ -95,7 +95,7 @@
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-ext</artifactId>
-        <version>${dollar}{slf4j.version></version>
+        <version>${dollar}{slf4j.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
