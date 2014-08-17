@@ -37,7 +37,7 @@ import org.apache.logging.log4j.core.util.Closer;
  */
 public final class JdbcDatabaseManager extends AbstractDatabaseManager {
 
-    private static final JDBCDatabaseManagerFactory INSTANCE = new JDBCDatabaseManagerFactory();
+    private static final JdbcDatabaseManagerFactory INSTANCE = new JdbcDatabaseManagerFactory();
 
     private final List<Column> columns;
     private final ConnectionSource connectionSource;
@@ -179,12 +179,12 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         );
     }
 
-    private static JDBCDatabaseManagerFactory getFactory() {
+    private static JdbcDatabaseManagerFactory getFactory() {
         return INSTANCE;
     }
 
     /**
-     * Encapsulates data that {@link JDBCDatabaseManagerFactory} uses to create managers.
+     * Encapsulates data that {@link JdbcDatabaseManagerFactory} uses to create managers.
      */
     private static final class FactoryData extends AbstractDatabaseManager.AbstractFactoryData {
         private final ColumnConfig[] columnConfigs;
@@ -203,7 +203,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
     /**
      * Creates managers.
      */
-    private static final class JDBCDatabaseManagerFactory implements ManagerFactory<JdbcDatabaseManager, FactoryData> {
+    private static final class JdbcDatabaseManagerFactory implements ManagerFactory<JdbcDatabaseManager, FactoryData> {
         @Override
         public JdbcDatabaseManager createManager(final String name, final FactoryData data) {
             final StringBuilder columnPart = new StringBuilder();
