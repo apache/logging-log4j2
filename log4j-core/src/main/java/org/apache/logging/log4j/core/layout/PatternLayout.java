@@ -35,7 +35,6 @@ import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.core.pattern.RegexReplacement;
-import org.apache.logging.log4j.core.util.Charsets;
 
 /**
  * <p>A flexible layout configurable with pattern string. The goal of this class
@@ -298,8 +297,9 @@ public final class PatternLayout extends AbstractStringLayout {
         @PluginElement("Replace")
         private RegexReplacement regexReplacement = null;
 
+        // LOG4J2-783 use platform default by default
         @PluginBuilderAttribute
-        private Charset charset = Charsets.UTF_8;
+        private Charset charset = Charset.defaultCharset();
 
         @PluginBuilderAttribute
         private boolean alwaysWriteExceptions = true;

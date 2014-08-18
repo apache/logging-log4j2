@@ -21,6 +21,11 @@
     <title>Changes</title>
   </properties>
   <body>
+    <release version="2.?.?" date="2014-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-783" dev="rpopma" type="fix" due-to="Minglei Lee">
+        PatternLayout should use platform character encoding by default, not UTF-8.
+      </action>
+    </release> 
     <release version="2.0.2" date="2014-08-16" description="Bug fixes and enhancements">
       <action issue="LOG4J2-775" dev="ggregory" type="update">
         Update Apache Flume to 1.5.0.1 from 1.5.0.
