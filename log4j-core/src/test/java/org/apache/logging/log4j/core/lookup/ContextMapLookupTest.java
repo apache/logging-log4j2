@@ -16,8 +16,18 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import java.io.File;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
+import org.junit.rules.TestRule;
+import org.junit.runner.Description;
+import org.junit.runners.model.Statement;
 
 import static org.junit.Assert.*;
 
@@ -29,6 +39,33 @@ public class ContextMapLookupTest {
     private static final String TESTKEY = "TestKey";
     private static final String TESTVAL = "TestValue";
 
+    private InitialLoggerContext context = new InitialLoggerContext("ContextMapLookupTest.xml");
+
+    @Rule
+    public RuleChain chain = RuleChain.outerRule(new TestRule() {
+        @Override
+        public Statement apply(final Statement base, final Description description) {
+            return new Statement() {
+                @Override
+                public void evaluate() throws Throwable {
+                    final File logFile = new File("target",
+                        description.getClassName() + '.' + description.getMethodName() + ".log");
+                    ThreadContext.put("testClassName", description.getClassName());
+                    ThreadContext.put("testMethodName", description.getMethodName());
+                    try {
+                        base.evaluate();
+                    } finally {
+                        ThreadContext.remove("testClassName");
+                        ThreadContext.remove("testMethodName");
+                        if (logFile.exists()) {
+                            logFile.deleteOnExit();
+                        }
+                    }
+                }
+            };
+        }
+    }).around(context);
+
     @Test
     public void testLookup() {
         ThreadContext.put(TESTKEY, TESTVAL);
@@ -37,5 +74,19 @@ public class ContextMapLookupTest {
         assertEquals(TESTVAL, value);
         value = lookup.lookup("BadKey");
         assertNull(value);
+    }
+
+    /**
+     * Demonstrates the use of ThreadContext in determining what log file name to use in a unit test.
+     * Inspired by LOG4J2-786. Note that this only works because the ThreadContext is prepared
+     * <em>before</em> the Logger instance is obtained. This use of ThreadContext and the associated
+     * ContextMapLookup can be used in many other ways in a config file.
+     */
+    @Test
+    public void testFileLog() throws Exception {
+        final Logger logger = LogManager.getLogger();
+        logger.info("Hello from testFileLog!");
+        final File logFile = new File("target", this.getClass().getName() + ".testFileLog.log");
+        assertTrue(logFile.exists());
     }
 }
