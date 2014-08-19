@@ -82,10 +82,10 @@
   </PatternLayout>
 </File>]]></pre>
         </subsection>
-        <subsection name="JNDILookup">
-          <a name="JNDILookup"/>
+        <subsection name="JndiLookup">
+          <a name="JndiLookup"/>
           <p>
-            The JNDILookup allows variables to be retrieved via JNDI. By default the key will be prefixed with
+            The JndiLookup allows variables to be retrieved via JNDI. By default the key will be prefixed with
             java:comp/env/, however if the key contains a ":" no prefix will be added.
           </p>
           <pre class="prettyprint linenums"><![CDATA[
