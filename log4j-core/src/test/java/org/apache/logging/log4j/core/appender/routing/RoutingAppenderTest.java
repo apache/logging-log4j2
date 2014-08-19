@@ -51,7 +51,7 @@ public class RoutingAppenderTest {
 
     @Before
     public void setUp() throws Exception {
-        this.app = (ListAppender) this.init.getAppender("List");
+        this.app = this.init.getListAppender("List");
     }
 
     @After
