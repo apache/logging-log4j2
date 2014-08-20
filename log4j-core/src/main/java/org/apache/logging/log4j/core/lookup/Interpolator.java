@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * Proxies all the other StrLookups.
+ * Proxies all the other {@link StrLookup}s.
  */
 public class Interpolator implements StrLookup {
 
@@ -72,6 +72,8 @@ public class Interpolator implements StrLookup {
         // TODO: this ought to use the PluginManager
         lookups.put("sys", new SystemPropertiesLookup());
         lookups.put("env", new EnvironmentLookup());
+        lookups.put("main", MapLookup.MAIN_SINGLETON);
+        // JNDI
         try {
             // [LOG4J2-703] We might be on Android
             lookups.put("jndi",
@@ -80,6 +82,17 @@ public class Interpolator implements StrLookup {
             // java.lang.VerifyError: org/apache/logging/log4j/core/lookup/JndiLookup
             LOGGER.warn(
                     "JNDI lookup class is not available because this JRE does not support JNDI. JNDI string lookups will not be available, continuing configuration.",
+                    e);
+        }
+        // JMX input args
+        try {
+            // We might be on Android
+            lookups.put("jmx-input",
+                Loader.newCheckedInstanceOf("org.apache.logging.log4j.core.lookup.JmxRuntimeInputArgumentsLookup", StrLookup.class));
+        } catch (Throwable e) {
+            // java.lang.VerifyError: org/apache/logging/log4j/core/lookup/JmxRuntimeInputArgumentsLookup
+            LOGGER.warn(
+                    "JMX runtime input lookup class is not available because this JRE does not support JMX. JMX lookups will not be available, continuing configuration.",
                     e);
         }
         lookups.put("date", new DateLookup());

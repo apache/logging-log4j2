@@ -869,6 +869,14 @@ public class Bar {
                 <td>System environment variables</td>
               </tr>
               <tr>
+                <td>jmx-input</td>
+                <td>A JVM input argument accessed through JMX, but not a main argument; see <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/management/RuntimeMXBean.html#getInputArguments--">RuntimeMXBean.html#getInputArguments()</a></td>
+              </tr>
+              <tr>
+                <td>main</td>
+                <td>A value set with <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/MapLookup.html#setMainArguments%28java.lang.String[]%29">MapLookup.setMainArguments(String[])</a></td>
+              </tr>
+              <tr>
                 <td>map</td>
                 <td>A value from a MapMessage</td>
               </tr>

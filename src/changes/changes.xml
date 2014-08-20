@@ -21,9 +21,15 @@
     <title>Changes</title>
   </properties>
   <body>
-    <release version="2.?.?" date="2014-??-??" description="Bug fixes and enhancements">
+    <release version="2.?.?" date="2014-??-??" description="Bug fixes and enhancements">    
       <action issue="LOG4J2-783" dev="rpopma" type="fix" due-to="Minglei Lee">
         PatternLayout should use platform character encoding by default, not UTF-8.
+      </action>
+      <action issue="LOG4J2-771" dev="ggregory" type="add">
+        Add lookup for application main arguments.
+      </action>
+      <action issue="LOG4J2-787" dev="ggregory" type="add">
+        Add lookup for JVM arguments.
       </action>
     </release> 
     <release version="2.0.2" date="2014-08-16" description="Bug fixes and enhancements">
