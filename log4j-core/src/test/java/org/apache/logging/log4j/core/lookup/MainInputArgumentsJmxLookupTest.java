@@ -18,50 +18,40 @@ package org.apache.logging.log4j.core.lookup;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.HashMap;
-
 import org.junit.Test;
 
 /**
- * Tests {@link MapLookup}.
+ * Tests {@link JmxRuntimeInputArgumentsLookup} from the command line, not a JUnit test.
+ * 
+ * From an IDE or CLI: --file foo.txt
+ * 
+ * @since 2.1
  */
-public class MapLookupTest {
+public class MainInputArgumentsJmxLookupTest {
 
-    @Test
-    public void testEmptyMap() {
-        final MapLookup lookup = new MapLookup(new HashMap<String, String>());
-        assertEquals(null, lookup.lookup(null));
-        assertEquals(null, lookup.lookup("X"));
+    public static void main(String[] args) {
+        new MainInputArgumentsJmxLookupTest().callFromMain();
     }
 
     @Test
     public void testMap() {
-        final HashMap<String, String> map = new HashMap<String, String>();
-        map.put("A", "B");
-        final MapLookup lookup = new MapLookup(map);
-        assertEquals(null, lookup.lookup(null));
-        assertEquals("B", lookup.lookup("A"));
-    }
-
-    @Test
-    public void testNullMap() {
-        final MapLookup lookup = new MapLookup();
+        JmxRuntimeInputArgumentsLookup lookup = JmxRuntimeInputArgumentsLookup.JMX_SINGLETON;
         assertEquals(null, lookup.lookup(null));
         assertEquals(null, lookup.lookup("X"));
-    }
-
-    @Test
-    public void testMainMap() {
-        MapLookup.setMainArguments(new String[] {
-                "--file",
-                "foo.txt" });
-        MapLookup lookup = MapLookup.MAIN_SINGLETON;
-        assertEquals(null, lookup.lookup(null));
-        assertEquals(null, lookup.lookup("X"));
-        assertEquals("--file", lookup.lookup("0"));
-        assertEquals("foo.txt", lookup.lookup("1"));
-        assertEquals("foo.txt", lookup.lookup("--file"));
         assertEquals(null, lookup.lookup("foo.txt"));
+    }
+
+    public void callFromMain() {
+        JmxRuntimeInputArgumentsLookup lookup = JmxRuntimeInputArgumentsLookup.JMX_SINGLETON;
+        assertEquals(null, lookup.lookup(null));
+        assertEquals(null, lookup.lookup("X"));
+        // Eclipse adds -Dfile.encoding=Cp1252
+        // assertEquals("--file", lookup.lookup("0"));
+        // assertEquals("foo.txt", lookup.lookup("1"));
+        //
+        // JMX does not include the main arguments.
+        // assertEquals("foo.txt", lookup.lookup("--file"));
+        // assertEquals(null, lookup.lookup("foo.txt"));
     }
 
 }
