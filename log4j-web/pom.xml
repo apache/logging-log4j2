@@ -151,7 +151,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
-        <version>2.5.2</version>
+        <version>${findbugs.plugin.version}</version>
         <configuration>
           <fork>true</fork>
           <jvmArgs>-Duser.language=en</jvmArgs>
