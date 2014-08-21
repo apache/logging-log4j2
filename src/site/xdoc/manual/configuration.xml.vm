@@ -869,8 +869,11 @@ public class Bar {
                 <td>System environment variables</td>
               </tr>
               <tr>
-                <td>jmx-input</td>
-                <td>A JVM input argument accessed through JMX, but not a main argument; see <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/management/RuntimeMXBean.html#getInputArguments--">RuntimeMXBean.html#getInputArguments()</a></td>
+                <td>jvmrunargs</td>
+                <td>
+                  A JVM input argument accessed through JMX, but not a main argument; 
+                  see <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/management/RuntimeMXBean.html#getInputArguments--">RuntimeMXBean.html#getInputArguments()</a>.
+                  Not available on Android.</td>
               </tr>
               <tr>
                 <td>main</td>

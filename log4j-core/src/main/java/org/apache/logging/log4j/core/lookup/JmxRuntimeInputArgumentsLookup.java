@@ -12,7 +12,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
  * @see java.lang.management.RuntimeMXBean#getInputArguments()
  * @since 2.1
  */
-@Plugin(name = "jmx-input", category = "Lookup")
+@Plugin(name = "jvmrunargs", category = "Lookup")
 public class JmxRuntimeInputArgumentsLookup extends MapLookup {
 
     static {
