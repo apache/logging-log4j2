@@ -87,7 +87,7 @@ public class Interpolator implements StrLookup {
         // JMX input args
         try {
             // We might be on Android
-            lookups.put("jmx-input",
+            lookups.put("jvmrunargs",
                 Loader.newCheckedInstanceOf("org.apache.logging.log4j.core.lookup.JmxRuntimeInputArgumentsLookup", StrLookup.class));
         } catch (Throwable e) {
             // java.lang.VerifyError: org/apache/logging/log4j/core/lookup/JmxRuntimeInputArgumentsLookup
