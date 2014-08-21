@@ -22,6 +22,13 @@ public class JmxRuntimeInputArgumentsLookup extends MapLookup {
 
     public static final JmxRuntimeInputArgumentsLookup JMX_SINGLETON;
 
+    /**
+     * Constructor when used directly as a plugin.
+     */
+    public JmxRuntimeInputArgumentsLookup() {
+        super();
+    }
+
     public JmxRuntimeInputArgumentsLookup(Map<String, String> map) {
         super(map);
     }
