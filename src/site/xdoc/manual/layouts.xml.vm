@@ -93,6 +93,45 @@
           <code>compact="true"</code>,  then no end-of-line or indentation is used. Message content may contain,
           of course, escaped end-of-lines.
           </p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>charset</td>
+              <td>String</td>
+              <td>The character set to use when converting the HTML String to a byte array. The value must be
+                a valid <a href="http://download.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html">Charset</a>.
+                If not specified, UTF-8 will be used.</td>
+            </tr>
+            <tr>
+              <td>compact</td>
+              <td>boolean</td>
+              <td>If true, the appender does not use end-of-lines and indentation. Defaults to false.</td>
+            </tr>
+            <tr>
+              <td>complete</td>
+              <td>boolean</td>
+              <td>If true, the appender includes the JSON header and footer. Defaults to false.</td>
+            </tr>
+            <tr>
+              <td>properties</td>
+              <td>boolean</td>
+              <td>If true, the appender includes the thread context in the generated JSON. Defaults to false.</td>
+            </tr>
+            <tr>
+              <td>locationInfo</td>
+              <td>boolean</td>
+              <td>
+              <p>If true, the appender includes the location information in the generated JSON. Defaults to false.</p>
+              <p>Generating <a href="#LocationInformation">location information</a>
+                is an expensive operation and may impact performance. Use with caution.</p>
+              </td>
+            </tr>
+            <caption align="top">JSON Layout Parameters</caption>
+          </table>
         </subsection>
         <a name="HTMLLayout"/>
         <subsection name="HTMLLayout">
