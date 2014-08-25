@@ -54,6 +54,8 @@ public abstract class AbstractSocketServerTest {
 
     private class ThreadFilter extends AbstractFilter {
 
+        private static final long serialVersionUID = 1L;
+
         public ThreadFilter(final Result onMatch, final Result onMismatch) {
             super(onMatch, onMismatch);
         }

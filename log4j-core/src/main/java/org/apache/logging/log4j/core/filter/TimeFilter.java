@@ -31,6 +31,9 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
  */
 @Plugin(name = "TimeFilter", category = "Core", elementType = "filter", printObject = true)
 public final class TimeFilter extends AbstractFilter {
+
+    private static final long serialVersionUID = 1L;
+
     /**
      * Length of hour in milliseconds.
      */

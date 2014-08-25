@@ -42,6 +42,8 @@ import org.apache.logging.log4j.message.Message;
 @Plugin(name = "RegexFilter", category = "Core", elementType = "filter", printObject = true)
 public final class RegexFilter extends AbstractFilter {
 
+    private static final long serialVersionUID = 1L;
+
     private static final int DEFAULT_PATTERN_FLAGS = 0;
     private final Pattern pattern;
     private final boolean useRawMessage;

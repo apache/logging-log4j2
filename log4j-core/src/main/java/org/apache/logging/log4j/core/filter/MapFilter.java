@@ -38,6 +38,9 @@ import org.apache.logging.log4j.message.Message;
  */
 @Plugin(name = "MapFilter", category = "Core", elementType = "filter", printObject = true)
 public class MapFilter extends AbstractFilter {
+    
+    private static final long serialVersionUID = 1L;
+
     private final Map<String, List<String>> map;
 
     private final boolean isAnd;
