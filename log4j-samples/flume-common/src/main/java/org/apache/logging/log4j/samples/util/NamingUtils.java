@@ -45,11 +45,7 @@ public class NamingUtils {
     }
 
     public static String getGetterName(final String fieldName, final String type) {
-        if ("boolean".equals(type)) {
-            return "is" + upperFirst(fieldName);
-        } else {
-            return "get" + upperFirst(fieldName);
-        }
+        return ("boolean".equals(type) ? "is" : "get") + upperFirst(fieldName);
     }
 
     public static void main(final String[] args) {
