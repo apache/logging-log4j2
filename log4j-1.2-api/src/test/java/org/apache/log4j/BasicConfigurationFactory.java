@@ -47,6 +47,8 @@ public class BasicConfigurationFactory extends ConfigurationFactory {
 
     public class BasicConfiguration extends AbstractConfiguration {
 
+        private static final long serialVersionUID = -2716784321395089563L;
+
         private static final String DEFAULT_LEVEL = "org.apache.logging.log4j.level";
 
         public BasicConfiguration() {
