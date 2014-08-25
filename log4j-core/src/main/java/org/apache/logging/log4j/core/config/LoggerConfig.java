@@ -490,6 +490,8 @@ public class LoggerConfig extends AbstractFilterable {
     @Plugin(name = "root", category = "Core", printObject = true)
     public static class RootLogger extends LoggerConfig {
 
+        private static final long serialVersionUID = 1L;
+
         @PluginFactory
         public static LoggerConfig createLogger(
                 @PluginAttribute("additivity") final String additivity,

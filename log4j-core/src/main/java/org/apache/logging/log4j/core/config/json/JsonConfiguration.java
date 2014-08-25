@@ -47,6 +47,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class JsonConfiguration extends AbstractConfiguration implements Reconfigurable {
 
+    private static final long serialVersionUID = 1L;
     private static final String[] VERBOSE_CLASSES = new String[] { ResolverUtil.class.getName() };
     private final List<Status> status = new ArrayList<Status>();
     private JsonNode root;
