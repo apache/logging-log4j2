@@ -26,22 +26,22 @@ import java.lang.management.ThreadInfo;
  */
 class ExtendedThreadInformation implements ThreadInformation {
 
-    private final ThreadInfo info;
+    private final ThreadInfo threadInfo;
 
 
     public ExtendedThreadInformation(final ThreadInfo thread) {
-        this.info = thread;
+        this.threadInfo = thread;
     }
 
     @Override
     public void printThreadInfo(final StringBuilder sb) {
-        sb.append('"').append(info.getThreadName()).append('"');
-        sb.append(" Id=").append(info.getThreadId()).append(' ');
-        formatState(sb, info);
-        if (info.isSuspended()) {
+        sb.append('"').append(threadInfo.getThreadName()).append('"');
+        sb.append(" Id=").append(threadInfo.getThreadId()).append(' ');
+        formatState(sb, threadInfo);
+        if (threadInfo.isSuspended()) {
             sb.append(" (suspended)");
         }
-        if (info.isInNative()) {
+        if (threadInfo.isInNative()) {
             sb.append(" (in native)");
         }
         sb.append('\n');
@@ -53,29 +53,29 @@ class ExtendedThreadInformation implements ThreadInformation {
         for (final StackTraceElement element : stack) {
             sb.append("\tat ").append(element.toString());
             sb.append('\n');
-            if (i == 0 && info.getLockInfo() != null) {
-                final Thread.State ts = info.getThreadState();
+            if (i == 0 && threadInfo.getLockInfo() != null) {
+                final Thread.State ts = threadInfo.getThreadState();
                 switch (ts) {
                     case BLOCKED:
                         sb.append("\t-  blocked on ");
-                        formatLock(sb, info.getLockInfo());
+                        formatLock(sb, threadInfo.getLockInfo());
                         sb.append('\n');
                         break;
                     case WAITING:
                         sb.append("\t-  waiting on ");
-                        formatLock(sb, info.getLockInfo());
+                        formatLock(sb, threadInfo.getLockInfo());
                         sb.append('\n');
                         break;
                     case TIMED_WAITING:
                         sb.append("\t-  waiting on ");
-                        formatLock(sb, info.getLockInfo());
+                        formatLock(sb, threadInfo.getLockInfo());
                         sb.append('\n');
                         break;
                     default:
                 }
             }
 
-            for (final MonitorInfo mi : info.getLockedMonitors()) {
+            for (final MonitorInfo mi : threadInfo.getLockedMonitors()) {
                 if (mi.getLockedStackDepth() == i) {
                     sb.append("\t-  locked ");
                     formatLock(sb, mi);
@@ -85,7 +85,7 @@ class ExtendedThreadInformation implements ThreadInformation {
             ++i;
         }
 
-        final LockInfo[] locks = info.getLockedSynchronizers();
+        final LockInfo[] locks = threadInfo.getLockedSynchronizers();
         if (locks.length > 0) {
             sb.append("\n\tNumber of locked synchronizers = ").append(locks.length).append('\n');
             for (final LockInfo li : locks) {
