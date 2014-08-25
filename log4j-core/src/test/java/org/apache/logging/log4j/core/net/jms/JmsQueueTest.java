@@ -122,6 +122,9 @@ public class JmsQueueTest {
     }
 
     private class MessageFilter extends AbstractFilter {
+        
+        private static final long serialVersionUID = 1L;
+
         public MessageFilter(final Result onMatch, final Result onMismatch) {
             super(onMatch, onMismatch);
         }

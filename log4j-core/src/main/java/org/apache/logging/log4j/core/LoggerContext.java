@@ -58,6 +58,8 @@ import static org.apache.logging.log4j.core.util.ShutdownRegistrationStrategy.SH
  */
 public class LoggerContext extends AbstractLifeCycle implements org.apache.logging.log4j.spi.LoggerContext, ConfigurationListener {
 
+    private static final long serialVersionUID = 1L;
+
     private static final boolean SHUTDOWN_HOOK_ENABLED =
         PropertiesUtil.getProperties().getBooleanProperty(ShutdownRegistrationStrategy.SHUTDOWN_HOOK_ENABLED, true);
 

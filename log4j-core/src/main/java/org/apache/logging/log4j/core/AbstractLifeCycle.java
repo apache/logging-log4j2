@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core;
 
+import java.io.Serializable;
+
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -24,7 +26,9 @@ import org.apache.logging.log4j.status.StatusLogger;
  * Wraps a {@link LifeCycle.State}.
  * </p>
  */
-public class AbstractLifeCycle implements LifeCycle {
+public class AbstractLifeCycle implements LifeCycle, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Allow subclasses access to the status logger without creating another instance.
