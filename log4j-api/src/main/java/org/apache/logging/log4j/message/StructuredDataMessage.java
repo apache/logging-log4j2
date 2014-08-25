@@ -314,13 +314,13 @@ public class StructuredDataMessage extends MapMessage {
 
     private String asXML() {
         final StringBuilder sb = new StringBuilder();
-        final StructuredDataId id = getId();
-        if (id == null || id.getName() == null || type == null) {
+        final StructuredDataId sdId = getId();
+        if (sdId == null || sdId.getName() == null || type == null) {
             return sb.toString();
         }
         sb.append("<StructuredData>\n");
         sb.append("<type>").append(type).append("</type>\n");
-        sb.append("<id>").append(id).append("</id>\n");
+        sb.append("<id>").append(sdId).append("</id>\n");
         super.asXml(sb);
         sb.append("</StructuredData>\n");
         return sb.toString();
