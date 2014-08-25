@@ -256,17 +256,17 @@ public class StructuredDataMessage extends MapMessage {
             }
             sb.append(getType()).append(' ');
         }
-        StructuredDataId id = getId();
-        if (id != null) {
-            id = id.makeId(structuredDataId);
+        StructuredDataId sdId = getId();
+        if (sdId != null) {
+            sdId = sdId.makeId(structuredDataId);
         } else {
-            id = structuredDataId;
+            sdId = structuredDataId;
         }
-        if (id == null || id.getName() == null) {
+        if (sdId == null || sdId.getName() == null) {
             return sb.toString();
         }
         sb.append('[');
-        sb.append(id);
+        sb.append(sdId);
         sb.append(' ');
         appendMap(sb);
         sb.append(']');
