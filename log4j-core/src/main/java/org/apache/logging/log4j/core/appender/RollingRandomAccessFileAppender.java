@@ -47,6 +47,8 @@ import org.apache.logging.log4j.core.util.Integers;
 @Plugin(name = "RollingRandomAccessFile", category = "Core", elementType = "appender", printObject = true)
 public final class RollingRandomAccessFileAppender extends AbstractOutputStreamAppender<RollingFileManager> {
 
+    private static final long serialVersionUID = 1L;
+
     private final String fileName;
     private final String filePattern;
     private Object advertisement;
