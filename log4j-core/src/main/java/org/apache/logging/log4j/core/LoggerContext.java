@@ -196,20 +196,22 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
                 ShutdownRegistrationStrategy.SHUTDOWN_REGISTRATION_STRATEGY);
             if (shutdownStrategyClassName != null) {
                 try {
-                    shutdownRegistrationStrategy =
-                        Loader.newCheckedInstanceOf(shutdownStrategyClassName, ShutdownRegistrationStrategy.class);
+                    shutdownRegistrationStrategy = Loader.newCheckedInstanceOf(shutdownStrategyClassName,
+                            ShutdownRegistrationStrategy.class);
                 } catch (final Exception e) {
-                    LOGGER.error(SHUTDOWN_HOOK_MARKER, "There was an error loading the ShutdownRegistrationStrategy [{}]. " +
-                        "Falling back to DefaultShutdownRegistrationStrategy.", shutdownStrategyClassName, e);
+                    LOGGER.error(SHUTDOWN_HOOK_MARKER,
+                            "There was an error loading the ShutdownRegistrationStrategy [{}]. "
+                                    + "Falling back to DefaultShutdownRegistrationStrategy.",
+                            shutdownStrategyClassName, e);
                     shutdownRegistrationStrategy = new DefaultShutdownRegistrationStrategy();
                 }
-            }
-            try {
-                shutdownRegistrationStrategy.registerShutdownHook(hook);
-            } catch (final IllegalStateException ise) {
-                LOGGER.fatal(SHUTDOWN_HOOK_MARKER, "Unable to register shutdown hook because JVM is shutting down.");
-            } catch (final SecurityException se) {
-                LOGGER.error(SHUTDOWN_HOOK_MARKER, "Unable to register shutdown hook due to security restrictions");
+                try {
+                    shutdownRegistrationStrategy.registerShutdownHook(hook);
+                } catch (final IllegalStateException ise) {
+                    LOGGER.fatal(SHUTDOWN_HOOK_MARKER, "Unable to register shutdown hook because JVM is shutting down.");
+                } catch (final SecurityException se) {
+                    LOGGER.error(SHUTDOWN_HOOK_MARKER, "Unable to register shutdown hook due to security restrictions");
+                }
             }
         }
     }
@@ -245,8 +247,9 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     }
 
     private void tearDownShutdownHook() {
-        if (shutdownThread != null && shutdownThread.get() != null) {
-            shutdownRegistrationStrategy.unregisterShutdownHook(shutdownThread.get());
+        Thread thread = shutdownThread.get();
+        if (shutdownRegistrationStrategy != null && shutdownThread != null && thread != null) {
+            shutdownRegistrationStrategy.unregisterShutdownHook(thread);
             LOGGER.debug(SHUTDOWN_HOOK_MARKER, "Enqueue shutdown hook for garbage collection.");
             shutdownThread.enqueue();
         }
