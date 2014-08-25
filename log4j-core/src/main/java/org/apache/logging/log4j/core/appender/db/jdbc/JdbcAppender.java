@@ -36,6 +36,8 @@ import org.apache.logging.log4j.core.util.Booleans;
  */
 @Plugin(name = "JDBC", category = "Core", elementType = "appender", printObject = true)
 public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseManager> {
+    private static final long serialVersionUID = 1L;
+
     private final String description;
 
     private JdbcAppender(final String name, final Filter filter, final boolean ignoreExceptions,

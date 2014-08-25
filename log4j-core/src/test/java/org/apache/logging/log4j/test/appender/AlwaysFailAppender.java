@@ -29,6 +29,8 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 @Plugin(name="AlwaysFail", category ="Core",elementType="appender",printObject=true)
 public class AlwaysFailAppender extends AbstractAppender {
 
+    private static final long serialVersionUID = 1L;
+
     private AlwaysFailAppender(final String name) {
         super(name, null, null, false);
     }

@@ -39,6 +39,8 @@ import org.apache.logging.log4j.core.layout.SerializedLayout;
 @Plugin(name = "List", category = "Core", elementType = "appender", printObject = true)
 public class ListAppender extends AbstractAppender {
 
+    private static final long serialVersionUID = 1L;
+
     // Use CopyOnWriteArrayList?
     
     private final List<LogEvent> events = new ArrayList<LogEvent>();

@@ -39,6 +39,7 @@ import org.apache.logging.log4j.core.util.Integers;
 @Plugin(name = "Flume", category = "Core", elementType = "appender", printObject = true)
 public final class FlumeAppender extends AbstractAppender implements FlumeEventFactory {
 
+    private static final long serialVersionUID = 1L;
     private static final String[] EXCLUDED_PACKAGES = {"org.apache.flume", "org.apache.avro"};
     private static final int DEFAULT_MAX_DELAY = 60000;
 

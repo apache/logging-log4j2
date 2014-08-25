@@ -17,13 +17,18 @@
 
 package org.apache.logging.log4j.core.util;
 
+import java.io.Serializable;
+
 /**
  * ShutdownRegistrationStrategy that simply uses {@link Runtime#addShutdownHook(Thread)}. If no strategy is specified,
  * this one is used for shutdown hook registration.
  *
  * @since 2.1
  */
-public class DefaultShutdownRegistrationStrategy implements ShutdownRegistrationStrategy {
+public class DefaultShutdownRegistrationStrategy implements ShutdownRegistrationStrategy, Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     @Override
     public void registerShutdownHook(final Thread hook) {
         Runtime.getRuntime().addShutdownHook(hook);

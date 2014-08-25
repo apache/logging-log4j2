@@ -64,6 +64,8 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  */
 public abstract class AbstractConfiguration extends AbstractFilterable implements Configuration {
 
+    private static final long serialVersionUID = 1L;
+
     private static final int BUF_SIZE = 16384;
 
     /**

@@ -39,6 +39,8 @@ import org.apache.logging.log4j.util.Strings;
  */
 @Plugin(name = "JPA", category = "Core", elementType = "appender", printObject = true)
 public final class JpaAppender extends AbstractDatabaseAppender<JpaDatabaseManager> {
+    private static final long serialVersionUID = 1L;
+
     private final String description;
 
     private JpaAppender(final String name, final Filter filter, final boolean ignoreExceptions,

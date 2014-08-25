@@ -45,6 +45,7 @@ import org.apache.logging.log4j.core.util.Booleans;
  */
 @Plugin(name = "Routing", category = "Core", elementType = "appender", printObject = true)
 public final class RoutingAppender extends AbstractAppender {
+    private static final long serialVersionUID = 1L;
     private static final String DEFAULT_KEY = "ROUTING_APPENDER_DEFAULT";
     private final Routes routes;
     private final Route defaultRoute;

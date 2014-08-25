@@ -33,6 +33,8 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  */
 public class DefaultConfiguration extends AbstractConfiguration {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * The name of the default configuration.
      */

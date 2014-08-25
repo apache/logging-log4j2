@@ -32,6 +32,9 @@ import org.apache.logging.log4j.core.util.Integers;
  */
 public abstract class AbstractAppender extends AbstractFilterable
     implements Appender {
+
+    private static final long serialVersionUID = 1L;
+
     private final boolean ignoreExceptions;
 
     private ErrorHandler handler = new DefaultErrorHandler(this);

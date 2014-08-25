@@ -61,6 +61,8 @@ import org.apache.logging.log4j.util.Strings;
 @Plugin(name = "logger", category = "Core", printObject = true)
 public class LoggerConfig extends AbstractFilterable {
 
+    private static final long serialVersionUID = 1L;
+
     private static final int MAX_RETRIES = 3;
     private static LogEventFactory LOG_EVENT_FACTORY = null;
 

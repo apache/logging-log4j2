@@ -37,6 +37,8 @@ import org.apache.logging.log4j.core.util.Booleans;
 @Plugin(name = "JMSQueue", category = "Core", elementType = "appender", printObject = true)
 public final class JmsQueueAppender extends AbstractAppender {
 
+    private static final long serialVersionUID = 1L;
+
     private final JmsQueueManager manager;
 
     private JmsQueueAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
