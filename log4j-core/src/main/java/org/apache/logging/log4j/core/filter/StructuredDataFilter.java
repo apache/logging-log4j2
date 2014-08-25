@@ -39,6 +39,8 @@ import org.apache.logging.log4j.message.StructuredDataMessage;
 @Plugin(name = "StructuredDataFilter", category = "Core", elementType = "filter", printObject = true)
 public final class StructuredDataFilter extends MapFilter {
 
+    private static final long serialVersionUID = 1L;
+
     private StructuredDataFilter(final Map<String, List<String>> map, final boolean oper, final Result onMatch,
                                  final Result onMismatch) {
         super(map, oper, onMatch, onMismatch);

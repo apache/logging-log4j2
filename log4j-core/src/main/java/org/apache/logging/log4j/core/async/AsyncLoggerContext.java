@@ -27,6 +27,8 @@ import org.apache.logging.log4j.message.MessageFactory;
  */
 public class AsyncLoggerContext extends LoggerContext {
 
+    private static final long serialVersionUID = 1L;
+
     public AsyncLoggerContext(final String name) {
         super(name);
     }
