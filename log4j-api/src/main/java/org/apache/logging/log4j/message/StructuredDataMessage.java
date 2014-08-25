@@ -302,7 +302,7 @@ public class StructuredDataMessage extends MapMessage {
         if (formats != null && formats.length > 0) {
             for (final String format : formats) {
                 if (Format.XML.name().equalsIgnoreCase(format)) {
-                    return asXML();
+                    return asXml();
                 } else if (Format.FULL.name().equalsIgnoreCase(format)) {
                     return asString(Format.FULL, null);
                 }
@@ -312,7 +312,7 @@ public class StructuredDataMessage extends MapMessage {
         return asString(Format.FULL, null);
     }
 
-    private String asXML() {
+    private String asXml() {
         final StringBuilder sb = new StringBuilder();
         final StructuredDataId sdId = getId();
         if (sdId == null || sdId.getName() == null || type == null) {
