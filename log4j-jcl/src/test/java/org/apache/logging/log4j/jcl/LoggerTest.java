@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.jcl;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
