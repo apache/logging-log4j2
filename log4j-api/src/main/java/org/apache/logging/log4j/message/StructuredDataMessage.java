@@ -250,8 +250,8 @@ public class StructuredDataMessage extends MapMessage {
         final StringBuilder sb = new StringBuilder();
         final boolean full = Format.FULL.equals(format);
         if (full) {
-            final String type = getType();
-            if (type == null) {
+            final String myType = getType();
+            if (myType == null) {
                 return sb.toString();
             }
             sb.append(getType()).append(' ');
