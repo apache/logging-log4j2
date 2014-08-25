@@ -40,6 +40,9 @@ import java.io.Serializable;
  */
 @Plugin(name = "Servlet", category = "Core", elementType = "appender", printObject = true)
 public class ServletAppender extends AbstractAppender {
+    
+    private static final long serialVersionUID = 1L;
+
     private final ServletContext servletContext;
 
     private ServletAppender(final String name, final AbstractStringLayout layout, final Filter filter,

@@ -29,6 +29,8 @@ import org.apache.logging.log4j.core.filter.Filterable;
  */
 public class AppenderControl extends AbstractFilterable {
 
+    private static final long serialVersionUID = 1L;
+
     private final ThreadLocal<AppenderControl> recursive = new ThreadLocal<AppenderControl>();
 
     private final Appender appender;

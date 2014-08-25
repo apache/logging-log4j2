@@ -29,6 +29,8 @@ import org.apache.logging.log4j.core.filter.CompositeFilter;
  */
 public class InMemoryAppender extends AbstractOutputStreamAppender<InMemoryAppender.InMemoryManager> {
 
+    private static final long serialVersionUID = 1L;
+
     public InMemoryAppender(final String name, final Layout<? extends Serializable> layout, final CompositeFilter filters,
                             final boolean ignoreExceptions) {
         super(name, layout, filters, ignoreExceptions, true, new InMemoryManager(name, layout));

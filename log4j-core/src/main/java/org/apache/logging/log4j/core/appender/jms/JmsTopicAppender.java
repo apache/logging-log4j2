@@ -37,6 +37,8 @@ import org.apache.logging.log4j.core.util.Booleans;
 @Plugin(name = "JMSTopic", category = "Core", elementType = "appender", printObject = true)
 public final class JmsTopicAppender extends AbstractAppender {
 
+    private static final long serialVersionUID = 1L;
+
     private final JmsTopicManager manager;
 
     private JmsTopicAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,

@@ -490,6 +490,8 @@ public class LoggerTest {
 
     private static class CountingAppender extends AbstractAppender {
 
+        private static final long serialVersionUID = 1L;
+
         int counter;
 
         CountingAppender() {

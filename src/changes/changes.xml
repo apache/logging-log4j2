@@ -40,6 +40,9 @@
       <action issue="LOG4J2-800" dev="ggregory" type="update">
         All life cycle implementations should be serializable.
       </action>      
+      <action issue="LOG4J2-801" dev="ggregory" type="update">
+        org.apache.logging.log4j.core.Logger should be serializable.
+      </action>      
     </release> 
     <release version="2.0.2" date="2014-08-16" description="Bug fixes and enhancements">
       <action issue="LOG4J2-775" dev="ggregory" type="update">

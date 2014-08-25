@@ -32,6 +32,8 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 @Plugin(name="FailOnce", category ="Core",elementType="appender",printObject=true)
 public class FailOnceAppender extends AbstractAppender {
 
+    private static final long serialVersionUID = 1L;
+
     boolean fail = true;
 
     private final List<LogEvent> events = new ArrayList<LogEvent>();

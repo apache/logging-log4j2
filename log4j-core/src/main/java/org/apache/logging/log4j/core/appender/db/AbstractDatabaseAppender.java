@@ -36,6 +36,8 @@ import org.apache.logging.log4j.core.appender.AppenderLoggingException;
  * @param <T> Specifies which type of {@link AbstractDatabaseManager} this Appender requires.
  */
 public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager> extends AbstractAppender {
+    private static final long serialVersionUID = 1L;
+
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
     private final Lock readLock = lock.readLock();
     private final Lock writeLock = lock.writeLock();
