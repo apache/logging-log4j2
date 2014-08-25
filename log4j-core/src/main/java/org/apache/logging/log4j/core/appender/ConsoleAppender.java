@@ -48,6 +48,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 @Plugin(name = "Console", category = "Core", elementType = "appender", printObject = true)
 public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputStreamManager> {
 
+    private static final long serialVersionUID = 1L;
     private static final String JANSI_CLASS = "org.fusesource.jansi.WindowsAnsiOutputStream";
     private static ConsoleManagerFactory factory = new ConsoleManagerFactory();
 
