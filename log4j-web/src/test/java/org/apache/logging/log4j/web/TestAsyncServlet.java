@@ -28,6 +28,9 @@ import org.apache.logging.log4j.Logger;
 
 // TODO: write an integration test that deploys this Servlet 3.0 class to Tomcat and Jetty
 public class TestAsyncServlet extends HttpServlet {
+
+    private static final long serialVersionUID = 1L;
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         final AsyncContext asyncContext = req.startAsync();
