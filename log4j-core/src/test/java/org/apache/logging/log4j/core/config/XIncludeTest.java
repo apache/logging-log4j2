@@ -71,7 +71,7 @@ public class XIncludeTest {
     public XIncludeTest(final String configFileName, final String logFileName) {
         this.logFileName = logFileName;
         this.init = new InitialLoggerContext(configFileName);
-        rules = RuleChain.outerRule(new CleanFiles(logFileName)).around(this.init);
+        this.rules = RuleChain.outerRule(new CleanFiles(logFileName)).around(this.init);
     }
 
     @Parameters
