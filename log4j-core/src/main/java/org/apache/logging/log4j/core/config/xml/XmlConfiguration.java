@@ -72,7 +72,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
     private final List<Status> status = new ArrayList<Status>();
     private Element rootElement;
     private boolean strict;
-    private String schema;
+    private String schemaResource;
 
     /**
      * Creates a new DocumentBuilder suitable for parsing a configuration file.
@@ -159,7 +159,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                 } else if ("strict".equalsIgnoreCase(key)) {
                     strict = Boolean.parseBoolean(value);
                 } else if ("schema".equalsIgnoreCase(key)) {
-                    schema = value;
+                    schemaResource = value;
                 } else if ("monitorInterval".equalsIgnoreCase(key)) {
                     final int interval = Integer.parseInt(value);
                     if (interval > 0 && configFile != null) {
@@ -177,12 +177,12 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         } catch (final ParserConfigurationException pex) {
             LOGGER.error("Error parsing {}", configSource.getLocation(), pex);
         }
-        if (strict && schema != null && buffer != null) {
+        if (strict && schemaResource != null && buffer != null) {
             InputStream is = null;
             try {
-                is = Loader.getResourceAsStream(schema, XmlConfiguration.class.getClassLoader());
+                is = Loader.getResourceAsStream(schemaResource, XmlConfiguration.class.getClassLoader());
             } catch (final Exception ex) {
-                LOGGER.error("Unable to access schema {}", this.schema, ex);
+                LOGGER.error("Unable to access schema {}", this.schemaResource, ex);
             }
             if (is != null) {
                 final Source src = new StreamSource(is, LOG4J_XSD);
