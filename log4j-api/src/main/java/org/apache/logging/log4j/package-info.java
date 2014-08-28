@@ -25,7 +25,7 @@
  * </p>
  * <p>
  *     {@link org.apache.logging.log4j.Marker} objects can be obtained through the
- *     {@link org.apache.logging.log4j.MarkerManager}. The <abbr title="Mapped Diagnostic Context">MDC</abbr> can be
+ *     {@link org.apache.logging.log4j.MarkerManager}. The MDC (Mapped Diagnostic Context) can be
  *     used through the {@link org.apache.logging.log4j.ThreadContext} class.
  * </p>
  *
