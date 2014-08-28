@@ -90,20 +90,18 @@ public final class Loader {
     /**
      * This method will search for {@code resource} in different
      * places. The search order is as follows:
-     * <p/>
+     *
      * <ol>
-     * <p/>
-     * <p><li>Search for {@code resource} using the thread context
+     *
+     * <li>Search for {@code resource} using the thread context
      * class loader under Java2. If that fails, search for
      * {@code resource} using the class loader that loaded this
      * class ({@code Loader}). Under JDK 1.1, only the the class
-     * loader that loaded this class ({@code Loader}) is used.
-     * <p/>
-     * <p><li>Try one last time with
+     * loader that loaded this class ({@code Loader}) is used.</li>
+     * <li>Try one last time with
      * {@code ClassLoader.getSystemResource(resource)}, that is is
      * using the system class loader in JDK 1.2 and virtual machine's
-     * built-in class loader in JDK 1.1.
-     * <p/>
+     * built-in class loader in JDK 1.1.</li>
      * </ol>
      * @param resource The resource to load.
      * @param defaultLoader The default ClassLoader.
@@ -155,20 +153,17 @@ public final class Loader {
     /**
      * This method will search for {@code resource} in different
      * places. The search order is as follows:
-     * <p/>
+     *
      * <ol>
-     * <p/>
-     * <p><li>Search for {@code resource} using the thread context
+     * <li>Search for {@code resource} using the thread context
      * class loader under Java2. If that fails, search for
      * {@code resource} using the class loader that loaded this
      * class ({@code Loader}). Under JDK 1.1, only the the class
-     * loader that loaded this class ({@code Loader}) is used.
-     * <p/>
-     * <p><li>Try one last time with
+     * loader that loaded this class ({@code Loader}) is used.</li>
+     * <li>Try one last time with
      * {@code ClassLoader.getSystemResource(resource)}, that is is
      * using the system class loader in JDK 1.2 and virtual machine's
-     * built-in class loader in JDK 1.1.
-     * <p/>
+     * built-in class loader in JDK 1.1.</li>
      * </ol>
      * @param resource The resource to load.
      * @param defaultLoader The default ClassLoader.
