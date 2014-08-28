@@ -167,7 +167,7 @@ public final class UuidUtil {
      * <li>Digits 14-16 are a sequence number that is incremented each time a UUID is generated.</li>
      * <li>Digit 17 is the variant (with a value of binary 10) and 10 bits of the sequence number</li>
      * <li>Digit 18 is final 16 bits of the sequence number.</li>
-     * <li>Digits 19-32 represent the system the application is running on.
+     * <li>Digits 19-32 represent the system the application is running on.</li>
      * </ol>
      *
      * @return universally unique identifiers (UUID)
