@@ -27,10 +27,10 @@ import java.util.Set;
 /**
  * Handles messages that consist of a format string containing '{}' to represent each replaceable token, and
  * the parameters.
- * <p/>
- * This class was originally written for Lillith (http://mac.freshmeat.net/projects/lilith-viewer) by
- * Joern Huxhorn where it is licensed under the LGPL. It has been relicensed here with his permission
- * providing that this attribution remain.
+ * <p>
+ * This class was originally written for <a href="http://lilithapp.com/">Lilith</a> by Joern Huxhorn where it is
+ * licensed under the LGPL. It has been relicensed here with his permission providing that this attribution remain.
+ * </p>
  */
 public class ParameterizedMessage implements Message {
 
@@ -101,13 +101,12 @@ public class ParameterizedMessage implements Message {
     }
 
     /**
-     * <p>This method returns a ParameterizedMessage which contains the arguments converted to String
-     * as well as an optional Throwable.</p>
-     * <p/>
+     * Constructs a ParameterizedMessage which contains the arguments converted to String as well as an optional
+     * Throwable.
+     *
      * <p>If the last argument is a Throwable and is NOT used up by a placeholder in the message pattern it is returned
-     * in ParameterizedMessage.getThrowable() and won't be contained in the created String[].<br/>
-     * If it is used up ParameterizedMessage.getThrowable() will return null even if the last argument was a
-     * Throwable!</p>
+     * in {@link #getThrowable()} and won't be contained in the created String[].
+     * If it is used up {@link #getThrowable()} will return null even if the last argument was a Throwable!</p>
      *
      * @param messagePattern the message pattern that to be checked for placeholders.
      * @param arguments      the argument array to be converted.
@@ -346,14 +345,16 @@ public class ParameterizedMessage implements Message {
      * Primitive arrays are converted using their respective Arrays.toString methods while
      * special handling is implemented for "container types", i.e. Object[], Map and Collection because those could
      * contain themselves.
-     * <p/>
+     * <p>
      * It should be noted that neither AbstractMap.toString() nor AbstractCollection.toString() implement such a
      * behavior. They only check if the container is directly contained in itself, but not if a contained container
      * contains the original one. Because of that, Arrays.toString(Object[]) isn't safe either.
      * Confusing? Just read the last paragraph again and check the respective toString() implementation.
-     * <p/>
+     * </p>
+     * <p>
      * This means, in effect, that logging would produce a usable output even if an ordinary System.out.println(o)
      * would produce a relatively hard-to-debug StackOverflowError.
+     * </p>
      * @param o The object.
      * @return The String representation.
      */
@@ -375,17 +376,20 @@ public class ParameterizedMessage implements Message {
      * Primitive arrays are converted using their respective Arrays.toString methods while
      * special handling is implemented for "container types", i.e. Object[], Map and Collection because those could
      * contain themselves.
-     * <p/>
+     * <p>
      * dejaVu is used in case of those container types to prevent an endless recursion.
-     * <p/>
+     * </p>
+     * <p>
      * It should be noted that neither AbstractMap.toString() nor AbstractCollection.toString() implement such a
      * behavior.
      * They only check if the container is directly contained in itself, but not if a contained container contains the
      * original one. Because of that, Arrays.toString(Object[]) isn't safe either.
      * Confusing? Just read the last paragraph again and check the respective toString() implementation.
-     * <p/>
+     * </p>
+     * <p>
      * This means, in effect, that logging would produce a usable output even if an ordinary System.out.println(o)
      * would produce a relatively hard-to-debug StackOverflowError.
+     * </p>
      *
      * @param o      the Object to convert into a String
      * @param str    the StringBuilder that o will be appended to
@@ -514,17 +518,19 @@ public class ParameterizedMessage implements Message {
     /**
      * This method returns the same as if Object.toString() would not have been
      * overridden in obj.
-     * <p/>
+     * <p>
      * Note that this isn't 100% secure as collisions can always happen with hash codes.
-     * <p/>
+     * </p>
+     * <p>
      * Copied from Object.hashCode():
+     * </p>
+     * <blockquote>
      * As much as is reasonably practical, the hashCode method defined by
      * class {@code Object} does return distinct integers for distinct
      * objects. (This is typically implemented by converting the internal
      * address of the object into an integer, but this implementation
-     * technique is not required by the
-     * Java<font size="-2"><sup>TM</sup></font>
-     * programming language.)
+     * technique is not required by the Java&#8482; programming language.)
+     * </blockquote>
      *
      * @param obj the Object that is to be converted into an identity string.
      * @return the identity string as also defined in Object.toString()
