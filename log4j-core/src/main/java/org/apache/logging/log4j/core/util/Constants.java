@@ -21,38 +21,32 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 /**
  * Log4j Constants.
  */
-public final class Constants {
+public interface Constants {
 
     /**
      * Name of the system property to use to identify the LogEvent factory.
      */
-    public static final String LOG4J_LOG_EVENT_FACTORY = "Log4jLogEventFactory";
+    String LOG4J_LOG_EVENT_FACTORY = "Log4jLogEventFactory";
 
     /**
      * Name of the system property to use to identify the ContextSelector Class.
      */
-    public static final String LOG4J_CONTEXT_SELECTOR = "Log4jContextSelector";
+    String LOG4J_CONTEXT_SELECTOR = "Log4jContextSelector";
 
-    public static final String LOG4J_DEFAULT_STATUS_LEVEL = "Log4jDefaultStatusLevel";
+    String LOG4J_DEFAULT_STATUS_LEVEL = "Log4jDefaultStatusLevel";
 
     /**
      * JNDI context name string literal.
      */
-    public static final String JNDI_CONTEXT_NAME = "java:comp/env/log4j/context-name";
+    String JNDI_CONTEXT_NAME = "java:comp/env/log4j/context-name";
 
     /**
      * Line separator.
      */
-    public static final String LINE_SEPARATOR = PropertiesUtil.getProperties().getStringProperty("line.separator", "\n");
+    String LINE_SEPARATOR = PropertiesUtil.getProperties().getStringProperty("line.separator", "\n");
 
     /**
      * Number of milliseconds in a second.
      */
-    public static final int MILLIS_IN_SECONDS = 1000;
-
-    /**
-     * Prevent class instantiation.
-     */
-    private Constants() {
-    }
+    int MILLIS_IN_SECONDS = 1000;
 }
