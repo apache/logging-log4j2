@@ -51,7 +51,7 @@ public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
      *        The KeyStore type, null defaults to {@code "JKS"}.
      * @param trustManagerFactoryAlgorithm
      *        TODO
-     * @return
+     * @return a new TrustStoreConfiguration
      * @throws StoreConfigurationException
      */
     @PluginFactory
