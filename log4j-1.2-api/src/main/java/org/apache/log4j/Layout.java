@@ -69,10 +69,15 @@ public abstract class Layout {
      * object, then the layout should return {@code true}.
      * If ignoresThrowable is true, the appender is responsible for
      * rendering the throwable.
-     * <p/>
-     * <p>The {@link SimpleLayout}, {@link TTCCLayout}, {@link
-     * PatternLayout} all return {@code true}. The {@link
-     * org.apache.log4j.xml.XMLLayout} returns {@code false}.
+     * <p>
+     * The <a href="/log4j/1.2/apidocs/org/apache/log4j/SimpleLayout.html">SimpleLayout</a>,
+     * <a href="/log4j/1.2/apidocs/org/apache/log4j/TTCCLayout.html">TTCCLayout</a>,
+     * <a href="/log4j/1.2/apidocs/org/apache/log4j/PatternLayout.html">PatternLayout</a>
+     * all return {@code true}. The
+     * <a href="/log4j/1.2/apidocs/org/apache/log4j/xml/XMLLayout.html">XMLLayout</a>
+     * returns {@code false}.
+     * </p>
+     *
      * @return true if the Layout ignores Throwables.
      *
      * @since 0.8.4
