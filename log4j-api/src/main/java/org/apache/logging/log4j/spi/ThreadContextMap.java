@@ -19,16 +19,16 @@ package org.apache.logging.log4j.spi;
 import java.util.Map;
 
 /**
- *
+ * Service provider interface to implement custom MDC behavior for {@link org.apache.logging.log4j.ThreadContext}.
  */
 public interface ThreadContextMap {
     /**
      * Put a context value (the <code>o</code> parameter) as identified
      * with the <code>key</code> parameter into the current thread's
      * context map.
-     * <p/>
+     *
      * <p>If the current thread does not have a context map it is
-     * created as a side effect.
+     * created as a side effect.</p>
      * @param key The key name.
      * @param value The key value.
      */
@@ -36,8 +36,8 @@ public interface ThreadContextMap {
 
     /**
      * Get the context identified by the <code>key</code> parameter.
-     * <p/>
-     * <p>This method has no side effects.
+     *
+     * <p>This method has no side effects.</p>
      * @param key The key to locate.
      * @return The value associated with the key or null.
      */
