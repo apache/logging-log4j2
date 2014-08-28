@@ -115,8 +115,8 @@ public interface LogEvent extends Serializable {
 
     /**
      * Gets throwable associated with logging request.
-     * <p>
-     * Convenience method for {@code ThrowableProxy.getThrowable();}
+     *
+     * <p>Convenience method for {@code ThrowableProxy.getThrowable();}</p>
      * 
      * @return throwable, may be null.
      */
