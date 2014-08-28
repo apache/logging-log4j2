@@ -178,13 +178,11 @@ public final class OptionConverter {
             multiplier = ONE_K * ONE_K * ONE_K;
             str = str.substring(0, index);
         }
-        if (str != null) {
-            try {
-                return Long.parseLong(str) * multiplier;
-            } catch (final NumberFormatException e) {
-                LOGGER.error("[{}] is not in proper int form.", str);
-                LOGGER.error("[{}] not in expected format.", value, e);
-            }
+        try {
+            return Long.parseLong(str) * multiplier;
+        } catch (final NumberFormatException e) {
+            LOGGER.error("[{}] is not in proper int form.", str);
+            LOGGER.error("[{}] not in expected format.", value, e);
         }
         return defaultValue;
     }
