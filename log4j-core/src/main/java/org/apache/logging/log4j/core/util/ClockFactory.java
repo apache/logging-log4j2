@@ -43,14 +43,17 @@ public final class ClockFactory {
      * this method returns an instance of {@link CachedClock}. If system
      * property {@code log4j.Clock=CoarseCachedClock} is specified, this
      * method returns an instance of {@link CoarseCachedClock}.
+     * </p>
      * <p>
      * If another value is specified, this value is taken as the fully qualified
      * class name of a class that implements the {@code Clock} interface. An
      * object of this class is instantiated and returned.
+     * </p>
      * <p>
      * If no value is specified, or if the specified value could not correctly
      * be instantiated or did not implement the {@code Clock} interface, then an
      * instance of {@link SystemClock} is returned.
+     * </p>
      *
      * @return a {@code Clock} instance
      */
