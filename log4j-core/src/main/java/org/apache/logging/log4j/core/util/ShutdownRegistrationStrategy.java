@@ -46,7 +46,7 @@ public interface ShutdownRegistrationStrategy {
     /**
      * Adds a shutdown hook to be executed upon JVM exit.
      *
-     * @param hook a Thread in the {@link Thread.State#NEW} state
+     * @param hook a Thread in the {@code State.NEW} state
      * @throws IllegalStateException If the virtual machine is already in the process of shutting down
      */
     void registerShutdownHook(Thread hook);
