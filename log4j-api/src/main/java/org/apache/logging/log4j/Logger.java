@@ -22,11 +22,31 @@ import org.apache.logging.log4j.message.MessageFactory;
 /**
  * This is the central interface in the log4j package. Most logging operations, except configuration, are done through
  * this interface.
+ *
+ * <p>
+ * The canonical way to obtain a Logger for a class is through {@link LogManager#getLogger()}. Typically, each class
+ * gets its own Logger named after its fully qualified class name (the default Logger name when obtained through the
+ * {@link LogManager#getLogger()} method). Thus, the simplest way to use this would be like so:
+ * </p>
+ * <pre>
+ *     public class MyClass {
+ *         private static final Logger LOGGER = LogManager.getLogger();
+ *         // ...
+ *     }
+ * </pre>
+ * <p>
+ * For ease of filtering, searching, sorting, etc., it is generally a good idea to create Loggers for each class rather
+ * than sharing Loggers. Instead, {@link Marker Markers} should be used for shared, filterable identification.
+ * </p>
+ * <p>
+ * For service provider implementations, it is recommended to extend the
+ * {@link org.apache.logging.log4j.spi.AbstractLogger} class rather than implementing this interface directly.
+ * </p>
  */
 public interface Logger {
 
     /**
-     * Logs an exception or error that has been caught.
+     * Logs an exception or error that has been caught to a specific logging level.
      *
      * @param level The logging Level.
      * @param t The Throwable.
@@ -34,7 +54,10 @@ public interface Logger {
     void catching(Level level, Throwable t);
 
     /**
-     * Logs an exception or error that has been caught.
+     * Logs an exception or error that has been caught. Normally, one may wish to provide additional information with
+     * an exception while logging it; in these cases, one would not use this method. In other cases where simply
+     * logging the fact that an exception was swallowed somewhere (e.g., at the top of the stack trace in a
+     * {@code main()} method), this method is ideal for it.
      *
      * @param t The Throwable.
      */
@@ -160,12 +183,21 @@ public interface Logger {
     void debug(String message, Throwable t);
 
     /**
-     * Logs entry to a method.
+     * Logs entry to a method. Used when the method in question has no parameters or when the parameters should not be
+     * logged.
      */
     void entry();
 
     /**
-     * Logs entry to a method.
+     * Logs entry to a method along with its parameters. For example,
+     * <pre>
+     *     public void doSomething(String foo, int bar) {
+     *         LOGGER.entry(foo, bar);
+     *         // do something
+     *     }
+     * </pre>
+     * <p>The use of methods such as this are more effective when combined with aspect-oriented programming or other
+     * bytecode manipulation tools. It can be rather tedious (and messy) to use this type of method manually.</p>
      *
      * @param params The parameters to the method.
      * @doubt Use of varargs results in array creation which can be a substantial portion of no-op case. LogMF/LogSF
@@ -305,13 +337,15 @@ public interface Logger {
     void error(String message, Throwable t);
 
     /**
-     * Logs exit from a method.
+     * Logs exit from a method. Used for methods that do not return anything.
      */
     void exit();
 
     /**
-     * Logs exiting from a method with the result. This may be coded as <br />
-     * return logger.exit(myResult);
+     * Logs exiting from a method with the result. This may be coded as:
+     * <pre>
+     *     return LOGGER.exit(myResult);
+     * </pre>
      *
      * @param <R> The type of the parameter and object being returned.
      * @param result The result being returned from the method call.
@@ -866,8 +900,10 @@ public interface Logger {
     void printf(Level level, String format, Object... params);
 
     /**
-     * Logs an exception or error to be thrown. This may be coded as <br />
-     * throw logger.throwing(debug, myException);
+     * Logs an exception or error to be thrown. This may be coded as:
+     * <pre>
+     *     throw logger.throwing(Level.DEBUG, myException);
+     * </pre>
      *
      * @param <T> the Throwable type.
      * @param level The logging Level.
@@ -877,8 +913,10 @@ public interface Logger {
     <T extends Throwable> T throwing(Level level, T t);
 
     /**
-     * Logs an exception or error to be thrown. This may be coded as <br />
-     * throw logger.throwing(myException);
+     * Logs an exception or error to be thrown. This may be coded as:
+     * <pre>
+     *     throw logger.throwing(myException);
+     * </pre>
      *
      * @param <T> the Throwable type.
      * @param t The Throwable.
@@ -914,14 +952,11 @@ public interface Logger {
     /**
      * Logs a message at the {@link Level#TRACE TRACE} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
-     * <p/>
-     * <p>
-     * See {@link #debug(String)} form for more detailed information.
-     * </p>
      *
      * @param marker the marker data specific to this log statement
      * @param message the message object to log.
      * @param t the exception to log, including its stack trace.
+     * @see #debug(String)
      */
     void trace(Marker marker, Object message, Throwable t);
 
@@ -946,14 +981,11 @@ public interface Logger {
     /**
      * Logs a message at the {@link Level#TRACE TRACE} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
-     * <p/>
-     * <p>
-     * See {@link #debug(String)} form for more detailed information.
-     * </p>
      *
      * @param marker the marker data specific to this log statement
      * @param message the message object to log.
      * @param t the exception to log, including its stack trace.
+     * @see #debug(String)
      */
     void trace(Marker marker, String message, Throwable t);
 
@@ -982,13 +1014,10 @@ public interface Logger {
     /**
      * Logs a message at the {@link Level#TRACE TRACE} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
-     * <p/>
-     * <p>
-     * See {@link #debug(String)} form for more detailed information.
-     * </p>
      *
      * @param message the message object to log.
      * @param t the exception to log, including its stack trace.
+     * @see #debug(String)
      */
     void trace(Object message, Throwable t);
 
@@ -1011,13 +1040,10 @@ public interface Logger {
     /**
      * Logs a message at the {@link Level#TRACE TRACE} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
-     * <p/>
-     * <p>
-     * See {@link #debug(String)} form for more detailed information.
-     * </p>
      *
      * @param message the message object to log.
      * @param t the exception to log, including its stack trace.
+     * @see #debug(String)
      */
     void trace(String message, Throwable t);
 
