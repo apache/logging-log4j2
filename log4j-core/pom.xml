@@ -106,6 +106,13 @@
       <scope>compile</scope>
       <optional>true</optional>
     </dependency>
+    <!-- Used by ShadedResourceTransformer -->
+    <dependency>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-shade-plugin</artifactId>
+      <version>2.3</version>
+      <optional>true</optional>
+    </dependency>
 
     <!-- TEST DEPENDENCIES -->
 
