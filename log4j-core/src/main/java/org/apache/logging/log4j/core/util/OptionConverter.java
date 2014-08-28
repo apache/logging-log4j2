@@ -245,7 +245,7 @@ public final class OptionConverter {
      * Perform variable substitution in string <code>val</code> from the
      * values of keys found in the system propeties.
      *
-     * <p>The variable substitution delimiters are <b>${</b> and <b>}</b>.
+     * <p>The variable substitution delimiters are <b>${</b> and <b>}</b>.</p>
      *
      * <p>For example, if the System properties contains "key=value", then
      * the call</p>
@@ -257,7 +257,7 @@ public final class OptionConverter {
      * </p>
      * <p>If no value could be found for the specified key, then the
      * <code>props</code> parameter is searched, if the value could not
-     * be found there, then substitution defaults to the empty string.
+     * be found there, then substitution defaults to the empty string.</p>
      *
      * <p>For example, if system properties contains no value for the key
      * "inexistentKey", then the call
