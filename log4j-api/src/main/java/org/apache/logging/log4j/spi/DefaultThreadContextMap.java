@@ -62,16 +62,6 @@ public class DefaultThreadContextMap implements ThreadContextMap {
         return new ThreadLocal<Map<String, String>>();
     }
 
-    /**
-     * Put a context value (the <code>o</code> parameter) as identified
-     * with the <code>key</code> parameter into the current thread's
-     * context map.
-     * <p/>
-     * <p>If the current thread does not have a context map it is
-     * created as a side effect.
-     * @param key The key name.
-     * @param value The key value.
-     */
     @Override
     public void put(final String key, final String value) {
         if (!useMap) {
@@ -83,24 +73,12 @@ public class DefaultThreadContextMap implements ThreadContextMap {
         localMap.set(Collections.unmodifiableMap(map));
     }
 
-    /**
-     * Get the context identified by the <code>key</code> parameter.
-     * <p/>
-     * <p>This method has no side effects.
-     * @param key The key to locate.
-     * @return The value associated with the key or null.
-     */
     @Override
     public String get(final String key) {
         final Map<String, String> map = localMap.get();
         return map == null ? null : map.get(key);
     }
 
-    /**
-     * Remove the the context identified by the <code>key</code>
-     * parameter.
-     * @param key The key to remove.
-     */
     @Override
     public void remove(final String key) {
         final Map<String, String> map = localMap.get();
@@ -111,48 +89,28 @@ public class DefaultThreadContextMap implements ThreadContextMap {
         }
     }
 
-    /**
-     * Clear the context.
-     */
     @Override
     public void clear() {
         localMap.remove();
     }
 
-    /**
-     * Determine if the key is in the context.
-     * @param key The key to locate.
-     * @return True if the key is in the context, false otherwise.
-     */
     @Override
     public boolean containsKey(final String key) {
         final Map<String, String> map = localMap.get();
         return map != null && map.containsKey(key);
     }
 
-    /**
-     * Returns a non-{@code null} mutable copy of the ThreadContext Map.
-     * @return a non-{@code null} mutable copy of the context.
-     */
     @Override
     public Map<String, String> getCopy() {
         final Map<String, String> map = localMap.get();
         return map == null ? new HashMap<String, String>() : new HashMap<String, String>(map);
     }
 
-    /**
-     * Returns either {@code null} or an immutable view of the context Map.
-     * @return the Context Map.
-     */
     @Override
     public Map<String, String> getImmutableMapOrNull() {
         return localMap.get();
     }
 
-    /**
-     * Returns true if the Map is empty.
-     * @return true if the Map is empty, false otherwise.
-     */
     @Override
     public boolean isEmpty() {
         final Map<String, String> map = localMap.get();
