@@ -146,9 +146,7 @@ public class ParameterizedMessage implements Message {
             resultArgCount--;
         }
         argArray = new Object[resultArgCount];
-        for (int i = 0; i < resultArgCount; ++i) {
-            argArray[i] = arguments[i];
-        }
+        System.arraycopy(arguments, 0, argArray, 0, resultArgCount);
 
         String[] strArgs;
         if (argsCount == 1 && throwable == null && arguments.length > 1) {
