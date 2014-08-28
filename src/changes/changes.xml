@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="2.?.?" date="2014-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-663" dev="mattsicker" type="fix" due-to="Florian Brunner">
+        Fix OSGi Import-Package problem with the JMS API.
+      </action>
       <action issue="LOG4J2-793" dev="mattsicker" type="add">
         Add support for custom SLF4J Markers in log4j-slf4j-impl module.
       </action>

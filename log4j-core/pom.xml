@@ -91,6 +91,7 @@
       <groupId>org.jboss.spec.javax.jms</groupId>
       <artifactId>jboss-jms-api_1.1_spec</artifactId>
       <scope>provided</scope>
+      <optional>true</optional>
     </dependency>
     <!-- Required for SMTPAppender -->
     <dependency>
