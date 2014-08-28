@@ -26,9 +26,9 @@ import org.apache.logging.log4j.util.EnglishEnums;
  * Interface that must be implemented to allow custom event filtering. It is highly recommended that
  * applications make use of the Filters provided with this implementation before creating their own.
  *
- * This interface supports "global" filters (i.e. - all events must pass through them first), attached to
+ * <p>This interface supports "global" filters (i.e. - all events must pass through them first), attached to
  * specific loggers and associated with Appenders. It is recommended that, where possible, Filter implementations
- * create a generic filtering method that can be called from any of the filter methods.
+ * create a generic filtering method that can be called from any of the filter methods.</p>
  */
 public interface Filter extends LifeCycle {
 
