@@ -141,9 +141,9 @@
     </license>
   </licenses>
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/logging/log4j/log4j2/tags/log4j-2.0.2</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/logging/log4j/log4j2/tags/log4j-2.0.2</developerConnection>
-    <url>http://svn.apache.org/viewvc/logging/log4j/log4j2/tags/log4j-2.0.2</url>
+    <connection>scm:git:http://git-wip-us.apache.org/repos/asf/logging-log4j2.git</connection>
+    <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/logging-log4j2.git</developerConnection>
+    <url>https://git-wip-us.apache.org/repos/asf?p=logging-log4j2.git;a=summary</url>
   </scm>
   <organization>
     <name>Apache Software Foundation</name>
@@ -887,7 +887,7 @@
             <reports>
               <report>index</report>
               <report>dependencies</report>
-              <report>dependency-info</report>              
+              <report>dependency-info</report>
               <report>dependency-convergence</report>
               <report>dependency-management</report>
               <report>project-team</report>
