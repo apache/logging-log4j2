@@ -394,7 +394,8 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
 
         try {
             Server.reregisterMBeansAfterReconfigure();
-        } catch (final Throwable t) { // LOG4J2-716: Android has no java.lang.management
+        } catch (final Throwable t) { 
+            // LOG4J2-716: Android has no java.lang.management
             LOGGER.error("Could not reconfigure JMX", t);
         }
         return prev;
