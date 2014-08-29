@@ -36,7 +36,6 @@ public class JdbcH2AppenderTest extends AbstractJdbcAppenderTest {
     /**
      * Referred from log4j2-h2-factory-method.xml.
      */
-    @SuppressWarnings("unused")
     public static Connection getConfigConnection() throws SQLException {
         return DriverManager.getConnection("jdbc:h2:mem:Log4j", USER_ID, PASSWORD);
     }
