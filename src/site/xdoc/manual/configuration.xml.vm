@@ -788,7 +788,7 @@ public class Bar {
             Log4j 2 supports the ability to specify tokens in the configuration as references to properties defined
             elsewhere. Some of these properties will be resolved when the configuration file is interpreted while
             others may be passed to components where they will be evaluated at runtime. To accomplish this, Log4j
-            uses variations of Apache Commons Lang's
+            uses variations of <a href="https://commons.apache.org/proper/commons-lang/">Apache Commons Lang</a>'s
             <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/StrSubstitutor">StrSubstitutor</a>
             and <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/StrLookup">StrLookup</a>
             classes. In a manner similar to Ant or Maven, this allows variables declared as <code>${name}</code>
