@@ -144,6 +144,7 @@
     <connection>scm:git:http://git-wip-us.apache.org/repos/asf/logging-log4j2.git</connection>
     <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/logging-log4j2.git</developerConnection>
     <url>https://git-wip-us.apache.org/repos/asf?p=logging-log4j2.git;a=summary</url>
+    <tag>HEAD</tag>
   </scm>
   <organization>
     <name>Apache Software Foundation</name>
