@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.spi;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -33,12 +33,17 @@ public class DefaultThreadContextStack implements ThreadContextStack {
 
     private static final long serialVersionUID = 5050501L;
 
-    private static final ThreadLocal<List<String>> stack = new ThreadLocal<List<String>>();
+    private static final ThreadLocal<MutableThreadContextStack> stack = new ThreadLocal<MutableThreadContextStack>();
 
     private final boolean useStack;
 
     public DefaultThreadContextStack(final boolean useStack) {
         this.useStack = useStack;
+    }
+    
+    private MutableThreadContextStack getNonNullStackCopy() {
+        final MutableThreadContextStack values = stack.get();
+        return (MutableThreadContextStack) (values == null ? new MutableThreadContextStack() : values.copy());
     }
 
     @Override
@@ -46,10 +51,10 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         if (!useStack) {
             return false;
         }
-        final List<String> list = stack.get();
-        final List<String> copy = list == null ? new ArrayList<String>() : new ArrayList<String>(list);
+        final MutableThreadContextStack copy = getNonNullStackCopy();
         copy.add(s);
-        stack.set(Collections.unmodifiableList(copy));
+        copy.freeze();
+        stack.set(copy);
         return true;
     }
 
@@ -58,20 +63,20 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         if (!useStack || strings.isEmpty()) {
             return false;
         }
-        final List<String> list = stack.get();
-        final List<String> copy = list == null ? new ArrayList<String>() : new ArrayList<String>(list);
+        final MutableThreadContextStack copy = getNonNullStackCopy();
         copy.addAll(strings);
-        stack.set(Collections.unmodifiableList(copy));
+        copy.freeze();
+        stack.set(copy);
         return true;
     }
 
     @Override
     public List<String> asList() {
-        final List<String> list = stack.get();
-        if (list == null) {
+        final MutableThreadContextStack values = stack.get();
+        if (values == null) {
             return Collections.emptyList();
         }
-        return list;
+        return values.asList();
     }
 
     @Override
@@ -81,8 +86,8 @@ public class DefaultThreadContextStack implements ThreadContextStack {
 
     @Override
     public boolean contains(final Object o) {
-        final List<String> result = stack.get();
-        return result != null && result.contains(o);
+        final MutableThreadContextStack values = stack.get();
+        return values != null && values.contains(o);
     }
 
     @Override
@@ -91,17 +96,17 @@ public class DefaultThreadContextStack implements ThreadContextStack {
             return true; // looks counter-intuitive, but see
                          // j.u.AbstractCollection
         }
-        final List<String> list = stack.get();
-        return list != null && list.containsAll(objects);
+        final MutableThreadContextStack values = stack.get();
+        return values != null && values.containsAll(objects);
     }
 
     @Override
     public ThreadContextStack copy() {
-        List<String> result = null;
-        if (!useStack || (result = stack.get()) == null) {
-            return new MutableThreadContextStack(new ArrayList<String>());
+        MutableThreadContextStack values = null;
+        if (!useStack || (values = stack.get()) == null) {
+            return new MutableThreadContextStack();
         }
-        return new MutableThreadContextStack(result);
+        return values.copy();
     }
 
     @Override
@@ -122,58 +127,52 @@ public class DefaultThreadContextStack implements ThreadContextStack {
             return false;
         }
         final ThreadContextStack other = (ThreadContextStack) obj;
-        final List<String> otherAsList = other.asList();
-        final List<String> list = stack.get();
-        if (list == null) {
-            if (otherAsList != null) {
-                return false;
-            }
-        } else if (!list.equals(otherAsList)) {
-            return false;
+        final MutableThreadContextStack values = stack.get();
+        if (values == null) {
+            return other == null;
         }
-        return true;
+        return values.equals(other);
     }
 
     @Override
     public int getDepth() {
-        final List<String> list = stack.get();
-        return list == null ? 0 : list.size();
+        final MutableThreadContextStack values = stack.get();
+        return values == null ? 0 : values.getDepth();
     }
 
     @Override
     public int hashCode() {
-        final List<String> list = stack.get();
+        final MutableThreadContextStack values = stack.get();
         final int prime = 31;
         int result = 1;
         // Factor in the stack itself to compare vs. other implementors.
-        result = prime * result + ((list == null) ? 0 : list.hashCode());
+        result = prime * result + ((values == null) ? 0 : values.hashCode());
         return result;
     }
 
     @Override
     public boolean isEmpty() {
-        final List<String> result = stack.get();
-        return result == null || result.isEmpty();
+        final MutableThreadContextStack values = stack.get();
+        return values == null || values.isEmpty();
     }
 
     @Override
     public Iterator<String> iterator() {
-        final List<String> immutable = stack.get();
-        if (immutable == null) {
+        final MutableThreadContextStack values = stack.get();
+        if (values == null) {
             final List<String> empty = Collections.emptyList();
             return empty.iterator();
         }
-        return immutable.iterator();
+        return values.iterator();
     }
 
     @Override
     public String peek() {
-        final List<String> list = stack.get();
-        if (list == null || list.size() == 0) {
+        final MutableThreadContextStack values = stack.get();
+        if (values == null || values.size() == 0) {
             return null;
         }
-        final int last = list.size() - 1;
-        return list.get(last);
+        return values.peek();
     }
 
     @Override
@@ -181,14 +180,14 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         if (!useStack) {
             return Strings.EMPTY;
         }
-        final List<String> list = stack.get();
-        if (list == null || list.size() == 0) {
+        final MutableThreadContextStack values = stack.get();
+        if (values == null || values.size() == 0) {
             throw new NoSuchElementException("The ThreadContext stack is empty");
         }
-        final List<String> copy = new ArrayList<String>(list);
-        final int last = copy.size() - 1;
-        final String result = copy.remove(last);
-        stack.set(Collections.unmodifiableList(copy));
+        final MutableThreadContextStack copy = (MutableThreadContextStack) values.copy();
+        final String result = copy.pop();
+        copy.freeze();
+        stack.set(copy);
         return result;
     }
 
@@ -205,13 +204,14 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         if (!useStack) {
             return false;
         }
-        final List<String> list = stack.get();
-        if (list == null || list.size() == 0) {
+        final MutableThreadContextStack values = stack.get();
+        if (values == null || values.size() == 0) {
             return false;
         }
-        final List<String> copy = new ArrayList<String>(list);
+        final MutableThreadContextStack copy = (MutableThreadContextStack) values.copy();
         final boolean result = copy.remove(o);
-        stack.set(Collections.unmodifiableList(copy));
+        copy.freeze();
+        stack.set(copy);
         return result;
     }
 
@@ -220,13 +220,14 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         if (!useStack || objects.isEmpty()) {
             return false;
         }
-        final List<String> list = stack.get();
-        if (list == null || list.isEmpty()) {
+        final MutableThreadContextStack values = stack.get();
+        if (values == null || values.isEmpty()) {
             return false;
         }
-        final List<String> copy = new ArrayList<String>(list);
+        final MutableThreadContextStack copy = (MutableThreadContextStack) values.copy();
         final boolean result = copy.removeAll(objects);
-        stack.set(Collections.unmodifiableList(copy));
+        copy.freeze();
+        stack.set(copy);
         return result;
     }
 
@@ -235,25 +236,26 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         if (!useStack || objects.isEmpty()) {
             return false;
         }
-        final List<String> list = stack.get();
-        if (list == null || list.isEmpty()) {
+        final MutableThreadContextStack values = stack.get();
+        if (values == null || values.isEmpty()) {
             return false;
         }
-        final List<String> copy = new ArrayList<String>(list);
+        final MutableThreadContextStack copy = (MutableThreadContextStack) values.copy();
         final boolean result = copy.retainAll(objects);
-        stack.set(Collections.unmodifiableList(copy));
+        copy.freeze();
+        stack.set(copy);
         return result;
     }
 
     @Override
     public int size() {
-        final List<String> result = stack.get();
-        return result == null ? 0 : result.size();
+        final MutableThreadContextStack values = stack.get();
+        return values == null ? 0 : values.size();
     }
 
     @Override
     public Object[] toArray() {
-        final List<String> result = stack.get();
+        final MutableThreadContextStack result = stack.get();
         if (result == null) {
             return new String[0];
         }
@@ -262,7 +264,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
 
     @Override
     public <T> T[] toArray(final T[] ts) {
-        final List<String> result = stack.get();
+        final MutableThreadContextStack result = stack.get();
         if (result == null) {
             if (ts.length > 0) { // as per the contract of j.u.List#toArray(T[])
                 ts[0] = null;
@@ -274,8 +276,8 @@ public class DefaultThreadContextStack implements ThreadContextStack {
 
     @Override
     public String toString() {
-        final List<String> list = stack.get();
-        return list == null ? "[]" : list.toString();
+        final MutableThreadContextStack values = stack.get();
+        return values == null ? "[]" : values.toString();
     }
 
     @Override
@@ -283,15 +285,21 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         if (depth < 0) {
             throw new IllegalArgumentException("Maximum stack depth cannot be negative");
         }
-        final List<String> list = stack.get();
-        if (list == null) {
+        final MutableThreadContextStack values = stack.get();
+        if (values == null) {
             return;
         }
-        final List<String> copy = new ArrayList<String>();
-        final int count = Math.min(depth, list.size());
-        for (int i = 0; i < count; i++) {
-            copy.add(list.get(i));
-        }
+        final MutableThreadContextStack copy = (MutableThreadContextStack) values.copy();
+        copy.trim(depth);
+        copy.freeze();
         stack.set(copy);
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.logging.log4j.ThreadContext.ContextStack#getImmutableStackOrNull()
+     */
+    @Override
+    public ContextStack getImmutableStackOrNull() {
+        return stack.get();
     }
 }

@@ -40,12 +40,16 @@
         <h4>Which JAR files do I need?</h4>
         <p>You need at least the log4j-api-2.0 and the log4j-core-2.0 jar files.</p>
         <p>The other jars are necessary if your application calls the API
-        of another logging framework and you want to route logging calls to the Log4j 2.0 implementation.</p>
+        of another logging framework and you want to route logging calls to the Log4j 2 implementation.</p>
         <p><img src="images/whichjar.png" alt="Diagram showing which JARs correspond to which systems" /></p>
-        <p>You can use the log4j-to-slf4j adapter jar when your application calls the Log4j 2.0 API and you
+        <p>You can use the log4j-to-slf4j adapter jar when your application calls the Log4j 2 API and you
         want to route logging calls to a SLF4J implementation.</p>
         <p><img src="images/whichjar-slf4j.png" alt="Diagram showing the dependency flow to use Log4j 2 API with SLF4J" /></p>
-
+        <p>Some of the Log4j components have features with optional dependencies.
+          The component page will have more detail.
+          For example, the <a href="log4j-core/index.html">log4j-core component page</a>
+          has an outline of which log4j-core features have external dependencies.</p>
+        
 		<a name="config_location" />
         <h4>How do I specify the configuration file location?</h4>
         <p>By default, Log4j looks for a configuration file named <b>log4j2.xml</b> (not log4j.xml) in the classpath.

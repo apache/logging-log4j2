@@ -49,9 +49,7 @@ public class FormattedMessage implements Message {
     }
 
     public FormattedMessage(final String messagePattern, final Object[] arguments) {
-        this.messagePattern = messagePattern;
-        this.argArray = arguments;
-        this.throwable = null;
+        this(messagePattern, arguments, null);
     }
 
     /**
@@ -60,9 +58,7 @@ public class FormattedMessage implements Message {
      * @param arg The parameter.
      */
     public FormattedMessage(final String messagePattern, final Object arg) {
-        this.messagePattern = messagePattern;
-        this.argArray = new Object[] {arg};
-        this.throwable = null;
+        this(messagePattern, new Object[] {arg}, null);
     }
 
     /**

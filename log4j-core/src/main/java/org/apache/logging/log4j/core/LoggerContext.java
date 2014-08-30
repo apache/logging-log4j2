@@ -30,8 +30,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationListener;
@@ -41,10 +39,15 @@ import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.core.util.Assert;
+import org.apache.logging.log4j.core.util.DefaultShutdownRegistrationStrategy;
+import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NetUtils;
+import org.apache.logging.log4j.core.util.ShutdownRegistrationStrategy;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
+
+import static org.apache.logging.log4j.core.util.ShutdownRegistrationStrategy.SHUTDOWN_HOOK_MARKER;
 
 /**
  * The LoggerContext is the anchor for the logging system. It maintains a list
@@ -55,11 +58,12 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  */
 public class LoggerContext extends AbstractLifeCycle implements org.apache.logging.log4j.spi.LoggerContext, ConfigurationListener {
 
+    private static final long serialVersionUID = 1L;
+
     private static final boolean SHUTDOWN_HOOK_ENABLED =
-        PropertiesUtil.getProperties().getBooleanProperty("log4j.shutdownHookEnabled", true);
+        PropertiesUtil.getProperties().getBooleanProperty(ShutdownRegistrationStrategy.SHUTDOWN_HOOK_ENABLED, true);
 
     public static final String PROPERTY_CONFIG = "config";
-    private static final Marker SHUTDOWN_HOOK = MarkerManager.getMarker("SHUTDOWN HOOK");
     private static final Configuration NULL_CONFIGURATION = new NullConfiguration();
 
     private final ConcurrentMap<String, Logger> loggers = new ConcurrentHashMap<String, Logger>();
@@ -80,6 +84,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      * SoftReference here to prevent possible cyclic memory references.
      */
     private Reference<Thread> shutdownThread;
+    private ShutdownRegistrationStrategy shutdownRegistrationStrategy;
 
     private final Lock configLock = new ReentrantLock();
 
@@ -176,7 +181,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
 
     private void setUpShutdownHook() {
         if (config.isShutdownHookEnabled() && SHUTDOWN_HOOK_ENABLED) {
-            LOGGER.debug(SHUTDOWN_HOOK, "Shutdown hook enabled. Registering a new one.");
+            LOGGER.debug(SHUTDOWN_HOOK_MARKER, "Shutdown hook enabled. Registering a new one.");
             shutdownThread = new SoftReference<Thread>(
                     new Thread(new ShutdownThread(this), "log4j-shutdown")
             );
@@ -187,12 +192,26 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     private void addShutdownHook() {
         final Thread hook = getShutdownThread();
         if (hook != null) {
-            try {
-                Runtime.getRuntime().addShutdownHook(hook);
-            } catch (final IllegalStateException ise) {
-                LOGGER.warn(SHUTDOWN_HOOK, "Unable to register shutdown hook due to JVM state");
-            } catch (final SecurityException se) {
-                LOGGER.warn(SHUTDOWN_HOOK, "Unable to register shutdown hook due to security restrictions");
+            final String shutdownStrategyClassName = PropertiesUtil.getProperties().getStringProperty(
+                ShutdownRegistrationStrategy.SHUTDOWN_REGISTRATION_STRATEGY);
+            if (shutdownStrategyClassName != null) {
+                try {
+                    shutdownRegistrationStrategy = Loader.newCheckedInstanceOf(shutdownStrategyClassName,
+                            ShutdownRegistrationStrategy.class);
+                } catch (final Exception e) {
+                    LOGGER.error(SHUTDOWN_HOOK_MARKER,
+                            "There was an error loading the ShutdownRegistrationStrategy [{}]. "
+                                    + "Falling back to DefaultShutdownRegistrationStrategy.",
+                            shutdownStrategyClassName, e);
+                    shutdownRegistrationStrategy = new DefaultShutdownRegistrationStrategy();
+                }
+                try {
+                    shutdownRegistrationStrategy.registerShutdownHook(hook);
+                } catch (final IllegalStateException ise) {
+                    LOGGER.fatal(SHUTDOWN_HOOK_MARKER, "Unable to register shutdown hook because JVM is shutting down.");
+                } catch (final SecurityException se) {
+                    LOGGER.error(SHUTDOWN_HOOK_MARKER, "Unable to register shutdown hook due to security restrictions");
+                }
             }
         }
     }
@@ -228,8 +247,10 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     }
 
     private void tearDownShutdownHook() {
-        if (shutdownThread != null) {
-            LOGGER.debug(SHUTDOWN_HOOK, "Enqueue shutdown hook for garbage collection.");
+        Thread thread = this.getShutdownThread();
+        if (shutdownRegistrationStrategy != null && thread != null) {
+            shutdownRegistrationStrategy.unregisterShutdownHook(thread);
+            LOGGER.debug(SHUTDOWN_HOOK_MARKER, "Enqueue shutdown hook for garbage collection.");
             shutdownThread.enqueue();
         }
     }
@@ -353,7 +374,13 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
         final Configuration prev = this.config;
         config.addListener(this);
         final ConcurrentMap<String, String> map = config.getComponent(Configuration.CONTEXT_PROPERTIES);
-        map.putIfAbsent("hostName", NetUtils.getLocalHostname());
+        
+        try { // LOG4J2-719 network access may throw android.os.NetworkOnMainThreadException
+            map.putIfAbsent("hostName", NetUtils.getLocalHostname());
+        } catch (final Exception ex) {
+            LOGGER.debug("Ignoring {}, setting hostName to 'unknown'", ex.toString());
+            map.putIfAbsent("hostName", "unknown");
+        }
         map.putIfAbsent("contextName", name);
         config.start();
         this.config = config;
@@ -367,8 +394,9 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
 
         try {
             Server.reregisterMBeansAfterReconfigure();
-        } catch (final Exception ex) {
-            LOGGER.error("Could not reconfigure JMX", ex);
+        } catch (final Throwable t) { 
+            // LOG4J2-716: Android has no java.lang.management
+            LOGGER.error("Could not reconfigure JMX", t);
         }
         return prev;
     }

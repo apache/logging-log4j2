@@ -85,7 +85,7 @@
         <item name="Context Map" href="/manual/lookups.html#ContextMapLookup"/>
         <item name="Date" href="/manual/lookups.html#DateLookcup"/>
         <item name="Environment" href="/manual/lookups.html#EnvironmentLookup"/>
-        <item name="JNDI" href="/manual/lookups.html#JNDILookup"/>
+        <item name="JNDI" href="/manual/lookups.html#JndiLookup"/>
         <item name="Map" href="/manual/lookups.html#MapLookup"/>
         <item name="Structured Data" href="/manual/lookups.html#StructuredDataLookup"/>
         <item name="System Properties" href="/manual/lookups.html#SystemPropertiesLookup"/>
@@ -165,6 +165,13 @@
       <item name="Extending Log4j Configuration" href="/manual/customconfig.html" collapse="true">
         <item name="ConfigurationFactory" href="/manual/custom.config#ConfigurationFactory"/>
         <item name="Manual" href="/manual/custom.config#AddingToCurrent"/>
+      </item>
+
+      <item name="Custom Log Levels" href="/manual/customloglevels.html" collapse="true">
+        <item name="Adding or Replacing Levels" href="/manual/customloglevels.html#AddingOrReplacingLevels"/>
+        <item name="Custom Loggers" href="/manual/customloglevels.html#CustomLoggers"/>
+        <item name="Custom Logger Example" href="/manual/customloglevels.html#ExampleUsage"/>
+        <item name="Code Generation Tool" href="/manual/customloglevels.html#CodeGen"/>
       </item>
     </menu>
 

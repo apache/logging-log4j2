@@ -40,6 +40,9 @@ import java.io.Serializable;
  */
 @Plugin(name = "Servlet", category = "Core", elementType = "appender", printObject = true)
 public class ServletAppender extends AbstractAppender {
+    
+    private static final long serialVersionUID = 1L;
+
     private final ServletContext servletContext;
 
     private ServletAppender(final String name, final AbstractStringLayout layout, final Filter filter,
@@ -65,7 +68,7 @@ public class ServletAppender extends AbstractAppender {
     @PluginFactory
     public static ServletAppender createAppender(
             @PluginElement("Layout") Layout<? extends Serializable> layout,
-            @PluginElement("Filters") final Filter filter,
+            @PluginElement("Filter") final Filter filter,
             @PluginAttribute("name") final String name,
             @PluginAttribute(value = "ignoreExceptions", defaultBoolean = true) final String ignore) {
         if (name == null) {

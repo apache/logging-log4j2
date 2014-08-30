@@ -65,7 +65,7 @@ public interface StatusLoggerAdminMBean {
 
     /**
      * Returns the {@code ObjectName} that this status logger mbean is registered with.
-     * @return
+     * @return the ObjectName of this StatusLogger MBean
      */
     public ObjectName getObjectName();
     
@@ -76,10 +76,12 @@ public interface StatusLoggerAdminMBean {
      * <p>
      * Note that the returned objects may contain {@code Throwable}s from
      * external libraries.
-     *
+     * </p>
+     * <p>
      * JMX clients calling this method must be prepared to deal with the errors
      * that occur if they do not have the class definition for such
      * {@code Throwable}s in their classpath.
+     * </p>
      *
      * @return the most recent messages logged by the {@code StatusLogger}.
      */

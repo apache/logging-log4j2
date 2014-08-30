@@ -42,6 +42,8 @@ import org.apache.logging.log4j.core.util.Constants;
 @Plugin(name = "Failover", category = "Core", elementType = "appender", printObject = true)
 public final class FailoverAppender extends AbstractAppender {
 
+    private static final long serialVersionUID = 1L;
+
     private static final int DEFAULT_INTERVAL_SECONDS = 60;
 
     private final String primaryRef;
@@ -182,7 +184,7 @@ public final class FailoverAppender extends AbstractAppender {
             @PluginElement("Failovers") final String[] failovers,
             @PluginAttribute("retryInterval") final String retryIntervalString,
             @PluginConfiguration final Configuration config,
-            @PluginElement("Filters") final Filter filter,
+            @PluginElement("Filter") final Filter filter,
             @PluginAttribute("ignoreExceptions") final String ignore) {
         if (name == null) {
             LOGGER.error("A name for the Appender must be specified");

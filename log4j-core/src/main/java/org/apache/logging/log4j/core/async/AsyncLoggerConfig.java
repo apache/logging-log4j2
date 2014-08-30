@@ -67,6 +67,8 @@ import org.apache.logging.log4j.util.Strings;
 @Plugin(name = "asyncLogger", category = "Core", printObject = true)
 public class AsyncLoggerConfig extends LoggerConfig {
 
+    private static final long serialVersionUID = 1L;
+
     private AsyncLoggerConfigHelper helper;
 
     /**
@@ -170,7 +172,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
             @PluginElement("AppenderRef") final AppenderRef[] refs,
             @PluginElement("Properties") final Property[] properties,
             @PluginConfiguration final Configuration config,
-            @PluginElement("Filters") final Filter filter) {
+            @PluginElement("Filter") final Filter filter) {
         if (loggerName == null) {
             LOGGER.error("Loggers cannot be configured without a name");
             return null;
@@ -204,6 +206,8 @@ public class AsyncLoggerConfig extends LoggerConfig {
     @Plugin(name = "asyncRoot", category = "Core", printObject = true)
     public static class RootLogger extends LoggerConfig {
 
+        private static final long serialVersionUID = 1L;
+
         @PluginFactory
         public static LoggerConfig createLogger(
                 @PluginAttribute("additivity") final String additivity,
@@ -212,7 +216,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
                 @PluginElement("AppenderRef") final AppenderRef[] refs,
                 @PluginElement("Properties") final Property[] properties,
                 @PluginConfiguration final Configuration config,
-                @PluginElement("Filters") final Filter filter) {
+                @PluginElement("Filter") final Filter filter) {
             final List<AppenderRef> appenderRefs = Arrays.asList(refs);
             Level level;
             try {

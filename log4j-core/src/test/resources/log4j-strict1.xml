@@ -25,17 +25,17 @@
   <Appenders>
     <appender type="Console" name="STDOUT">
       <layout type="PatternLayout" pattern="%m MDC%X%n"/>
-      <filters>
+      <Filters>
         <Filter type="MarkerFilter" marker="FLOW" onMatch="DENY" onMismatch="NEUTRAL"/>
         <Filter type="MarkerFilter" marker="EXCEPTION" onMatch="DENY" onMismatch="ACCEPT"/>
-      </filters>
+      </Filters>
     </appender>
     <appender type="Console" name="FLOW">
       <layout type="PatternLayout" pattern="%C{1}.%M %m %ex%n"/>
-      <filters>
+      <Filters>
         <Filter type="MarkerFilter" marker="FLOW" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
         <Filter type="MarkerFilter" marker="EXCEPTION" onMatch="ACCEPT" onMismatch="DENY"/>
-      </filters>
+      </Filters>
     </appender>
     <appender type="File" name="File" fileName="${filename}">
       <layout type="PatternLayout">

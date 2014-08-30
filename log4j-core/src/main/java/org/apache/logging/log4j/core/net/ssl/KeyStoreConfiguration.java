@@ -52,7 +52,7 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
      *        The KeyStore type, null defaults to {@code "JKS"}.
      * @param keyManagerFactoryAlgorithm
      *        TODO
-     * @return
+     * @return a new KeyStoreConfiguration
      * @throws StoreConfigurationException
      */
     @PluginFactory

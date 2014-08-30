@@ -20,9 +20,9 @@
   <Properties>
     <Property name="filename">target/rolling2/rollingtest.log</Property>
   </Properties>
-  <filters>
+  <Filters>
     <ThresholdFilter level="debug"/>
-  </filters>
+  </Filters>
 
   <Appenders>
     <Console name="STDOUT">
@@ -35,9 +35,9 @@
       <TimeBasedTriggeringPolicy interval="2" modulate="true"/>
     </RollingFile>
     <List name="List">
-      <filters>
+      <Filters>
         <ThresholdFilter level="error"/>
-      </filters>
+      </Filters>
     </List>
   </Appenders>
 

@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<!-- TODO: use properties for dynamic dependency versions -->
+<document>
+    <properties>
+        <title>NoSQL Appenders</title>
+        <author email="rgoers@apache.org">Ralph Goers</author>
+    </properties>
+
+    <body>
+        <section name="NoSQL Appenders">
+
+            <p>
+              The NoSQL Appenders allow applications to send events to NoSQL repositories.
+              To use it, you need both the <code>log4j-nosql</code> as well as the appropriate
+              driver for your NoSQL database type.
+            </p>
+          <subsection name="CouchDB">
+            <p>
+                <a href="https://couchdb.apache.org/">Apache CouchDB</a> is supported through the
+                <a href="http://www.lightcouch.org/">LightCouch</a> driver.
+            </p>
+            <pre class="prettyprint linenums"><![CDATA[  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.lightcouch</groupId>
+        <artifactId>lightcouch</artifactId>
+        <version>0.0.6</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.lightcouch</groupId>
+      <artifactId>lightcouch</artifactId>
+    </dependency>
+  </dependencies>]]></pre>
+          </subsection>
+          <subsection name="MongoDB">
+            <p>
+                <a href="http://www.mongodb.org/">MongoDB</a> is supported through the
+                <a href="http://docs.mongodb.org/ecosystem/drivers/java/">Java MongoDB Driver</a>.
+            </p>
+            <pre class="prettyprint linenums"><![CDATA[  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.mongodb</groupId>
+        <artifactId>mongo-java-driver</artifactId>
+        <version>2.12.3</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.mongodb</groupId>
+      <artifactId>mongo-java-driver</artifactId>
+    </dependency>
+  </dependencies>]]></pre>
+          </subsection>
+
+        </section>
+
+        <section name="Requirements">
+           <p>
+             The NoSQL Appenders requires at least Java 6.
+          </p>
+        </section>
+
+    </body>
+</document>

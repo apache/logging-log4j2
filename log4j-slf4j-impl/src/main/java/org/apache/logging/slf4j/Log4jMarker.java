@@ -26,7 +26,7 @@ import org.slf4j.Marker;
 import org.slf4j.impl.StaticMarkerBinder;
 
 /**
- *
+ * Log4j/SLF4J {@link org.slf4j.Marker} type bridge.
  */
 public class Log4jMarker implements Marker {
 
@@ -36,6 +36,10 @@ public class Log4jMarker implements Marker {
 
     private final org.apache.logging.log4j.Marker marker;
 
+    /**
+     * Constructs a Log4jMarker using an existing Log4j {@link org.apache.logging.log4j.Marker}.
+     * @param marker The Log4j Marker upon which to base this Marker.
+     */
     public Log4jMarker(final org.apache.logging.log4j.Marker marker) {
         this.marker = marker;
     }

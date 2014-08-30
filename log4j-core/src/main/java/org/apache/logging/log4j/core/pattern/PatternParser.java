@@ -252,7 +252,9 @@ public final class PatternParser {
             int depth = 0;
             do {
                 end = pattern.indexOf('}', i);
-                if (end != -1) {
+                if (end == -1) {
+                    break;
+                } else {
                     final int next = pattern.indexOf("{", i);
                     if (next != -1 && next < end) {
                         i = end + 1;

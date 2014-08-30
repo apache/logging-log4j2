@@ -15,6 +15,6 @@
  * limitations under the license.
  */
 /**
- * Log4j 2.0 JMX support.
+ * Log4j 2 JMX support.
  */
 package org.apache.logging.log4j.core.jmx;

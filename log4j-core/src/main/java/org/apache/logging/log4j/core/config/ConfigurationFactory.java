@@ -141,7 +141,7 @@ public abstract class ConfigurationFactory {
                                 ordered.add(new WeightedFactory(weight, clazz));
                             }
                         } catch (final Exception ex) {
-                            LOGGER.warn("Unable to add class {}", type.getPluginClass());
+                            LOGGER.warn("Unable to add class {}", type.getPluginClass(), ex);
                         }
                     }
                     for (final WeightedFactory wf : ordered) {
@@ -260,6 +260,10 @@ public abstract class ConfigurationFactory {
             if (source != null) {
                 return source;
             }
+        }
+        if (!configLocation.isAbsolute()) { // LOG4J2-704 avoid confusing error message thrown by uri.toURL()
+            LOGGER.error("File not found in file system or classpath: {}", configLocation.toString());
+            return null;
         }
         try {
             return new ConfigurationSource(configLocation.toURL().openStream(), configLocation.toURL());
@@ -430,7 +434,11 @@ public abstract class ConfigurationFactory {
                     }
                 }
             }
-            return config != null ? config : new DefaultConfiguration();
+            if (config != null) {
+                return config;
+            }
+            LOGGER.error("No log4j2 configuration file found. Using default configuration: logging only errors to the console.");
+            return new DefaultConfiguration();
         }
 
         private Configuration getConfiguration(final boolean isTest, final String name) {

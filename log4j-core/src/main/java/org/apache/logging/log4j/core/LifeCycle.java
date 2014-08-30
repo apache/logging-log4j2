@@ -18,12 +18,19 @@
 package org.apache.logging.log4j.core;
 
 /**
- *
+ * All proper Java frameworks implement some sort of object life cycle. In Log4j, the main interface for handling
+ * the life cycle context of an object is this one. An object first starts in the {@link State#INITIALIZED} state
+ * by default to indicate the class has been loaded. From here, calling the {@link #start()} method will change this
+ * state to {@link State#STARTING}. After successfully being started, this state is changed to {@link State#STARTED}.
+ * When the {@link #stop()} is called, this goes into the {@link State#STOPPING} state. After successfully being
+ * stopped, this goes into the {@link State#STOPPED} state. In most circumstances, implementation classes should
+ * store their {@link State} in a {@code volatile} field or inside an
+ * {@link java.util.concurrent.atomic.AtomicReference} dependant on synchronization and concurrency requirements.
  */
 public interface LifeCycle {
     
     /**
-     * Status of a life cycle like a {@link LoggerContext}..
+     * Status of a life cycle like a {@link LoggerContext}.
      */
     public enum State {
         /** Initialized but not yet started. */

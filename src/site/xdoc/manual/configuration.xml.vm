@@ -788,7 +788,7 @@ public class Bar {
             Log4j 2 supports the ability to specify tokens in the configuration as references to properties defined
             elsewhere. Some of these properties will be resolved when the configuration file is interpreted while
             others may be passed to components where they will be evaluated at runtime. To accomplish this, Log4j
-            uses variations of Apache Commons Lang's
+            uses variations of <a href="https://commons.apache.org/proper/commons-lang/">Apache Commons Lang</a>'s
             <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/StrSubstitutor">StrSubstitutor</a>
             and <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/StrLookup">StrLookup</a>
             classes. In a manner similar to Ant or Maven, this allows variables declared as <code>${name}</code>
@@ -867,6 +867,17 @@ public class Bar {
               <tr>
                 <td>env</td>
                 <td>System environment variables</td>
+              </tr>
+              <tr>
+                <td>jvmrunargs</td>
+                <td>
+                  A JVM input argument accessed through JMX, but not a main argument; 
+                  see <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/management/RuntimeMXBean.html#getInputArguments--">RuntimeMXBean.html#getInputArguments()</a>.
+                  Not available on Android.</td>
+              </tr>
+              <tr>
+                <td>main</td>
+                <td>A value set with <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/MapLookup.html#setMainArguments%28java.lang.String[]%29">MapLookup.setMainArguments(String[])</a></td>
               </tr>
               <tr>
                 <td>map</td>
@@ -1147,7 +1158,7 @@ StatusConsoleListener listener = new StatusConsoleListener(Level.ERROR);
           Below follows a number of system properties that can be used to control Log4j 2 behaviour.
         </p>
 <table>
-  <caption align="top">Log4J-2.0 System Properties</caption>
+  <caption align="top">Log4j 2 System Properties</caption>
   <tr>
     <th>System Property</th>
     <th>Default Value</th>
@@ -1171,7 +1182,7 @@ StatusConsoleListener listener = new StatusConsoleListener(Level.ERROR);
       <tt>org.apache.logging.log4j.core.async.AsyncLoggerContextSelector</tt> - makes <a href="async.html">all loggers asynchronous</a>.<br />
       <tt>org.apache.logging.log4j.core.selector.BasicContextSelector</tt> - creates a single shared LoggerContext.<br />
       <tt>org.apache.logging.log4j.core.selector.ClassLoaderContextSelector</tt> - separate LoggerContexts for each web application.<br />
-      <tt>org.apache.logging.log4j.core.selector.JNDIContextSelector</tt> - use JNDI to locate each web application's LoggerContext.
+      <tt>org.apache.logging.log4j.core.selector.JndiContextSelector</tt> - use JNDI to locate each web application's LoggerContext.
     </td>
   </tr>
   <tr>

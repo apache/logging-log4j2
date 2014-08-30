@@ -126,8 +126,7 @@ public class PerfTestDriver {
         @Override
         public int compareTo(final Setup other) {
             // largest ops/sec first
-            return (int) Math.signum(other.stats.averageOpsPerSec
-                    - stats.averageOpsPerSec);
+            return Long.signum(other.stats.averageOpsPerSec - stats.averageOpsPerSec);
         }
 
         public String description() {

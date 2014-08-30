@@ -33,6 +33,7 @@ import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.message.TimestampMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import com.lmax.disruptor.BlockingWaitStrategy;
@@ -225,6 +226,7 @@ public class AsyncLogger extends Logger {
 
     @Override
     public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message, final Throwable thrown) {
+        // TODO refactor to reduce size to <= 35 bytecodes to allow JVM to inline it
         Info info = threadlocalInfo.get();
         if (info == null) {
             info = new Info(new RingBufferLogEventTranslator(), Thread.currentThread().getName(), false);
@@ -244,6 +246,7 @@ public class AsyncLogger extends Logger {
             config.loggerConfig.log(getName(), fqcn, marker, level, message, thrown);
             return;
         }
+        message.getFormattedMessage(); // LOG4J2-763: ask message to freeze parameters
         final boolean includeLocation = config.loggerConfig.isIncludeLocation();
         info.translator.setValues(this, getName(), marker, fqcn, level, message, //
                 // don't construct ThrowableProxy until required
@@ -270,7 +273,9 @@ public class AsyncLogger extends Logger {
                 // System.currentTimeMillis());
                 // CoarseCachedClock: 20% faster than system clock, 16ms gaps
                 // CachedClock: 10% faster than system clock, smaller gaps
-                clock.currentTimeMillis());
+                // LOG4J2-744 avoid calling clock altogether if message has the timestamp
+                message instanceof TimestampMessage ? ((TimestampMessage) message).getTimestamp() :
+                        clock.currentTimeMillis());
 
         // LOG4J2-639: catch NPE if disruptor field was set to null after our check above
         try {

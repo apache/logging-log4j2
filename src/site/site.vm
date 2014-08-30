@@ -506,7 +506,7 @@
 			#set ( $currentYear = ${currentDate.year} + 1900 )
 				<p>Copyright &copy; ${project.inceptionYear}-${currentYear} <a class="external" href="$project.organization.url">${project.organization.name}</a>. All Rights Reserved.</p>
 				<p>Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, and the Apache Logging project logo are trademarks of The Apache Software Foundation.</p>
-				<p>Site powered by <a class="external" href="http://twitter.github.com/bootstrap/">Twitter Bootstrap</a>. Icons from <a class="external" href="http://glyphicons.com/">Glyphicons Free</a>.</p>
+				<p>Site powered by <a class="external" href="http://getbootstrap.com/">Twitter Bootstrap</a>. Icons from <a class="external" href="http://glyphicons.com/">Glyphicons Free</a>.</p>
 			</div>
 		</div>
 	</body>

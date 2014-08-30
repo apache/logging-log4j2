@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.message;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
+
+import org.apache.log4j.util.SerialUtil;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -38,5 +42,52 @@ public class ObjectMessageTest {
         final ObjectMessage msg = new ObjectMessage(testMsg);
         final String result = msg.getFormattedMessage();
         assertEquals(testMsg, result);
+    }
+
+    @Test
+    public void testUnsafeWithMutableParams() { // LOG4J2-763
+        final Mutable param = new Mutable().set("abc");
+        final ObjectMessage msg = new ObjectMessage(param);
+
+        // modify parameter before calling msg.getFormattedMessage
+        param.set("XYZ");
+        final String actual = msg.getFormattedMessage();
+        assertEquals("Expected most recent param value", "XYZ", actual);
+    }
+
+    @Test
+    public void testSafeAfterGetFormattedMessageIsCalled() { // LOG4J2-763
+        final Mutable param = new Mutable().set("abc");
+        final ObjectMessage msg = new ObjectMessage(param);
+
+        // modify parameter after calling msg.getFormattedMessage
+        msg.getFormattedMessage();
+        param.set("XYZ");
+        final String actual = msg.getFormattedMessage();
+        assertEquals("Should use initial param value", "abc", actual);
+    }
+    
+    @Test
+    public void testSerializeWithSerializableParam() {
+        BigDecimal big = BigDecimal.valueOf(123.456);
+        ObjectMessage msg = new ObjectMessage(big);
+        ObjectMessage other = SerialUtil.deserialize(SerialUtil.serialize(msg));
+        assertEquals(msg, other);
+    }
+    
+    @Test
+    public void testDeserializeNonSerializableParamEqualIfToStringSame() {
+        class NonSerializable {
+            public boolean equals(Object other) {
+                return other instanceof NonSerializable; // a very lenient equals()
+            }
+        }
+        NonSerializable nonSerializable = new NonSerializable();
+        assertFalse(nonSerializable instanceof Serializable);
+        ObjectMessage msg = new ObjectMessage(nonSerializable);
+        ObjectMessage other = SerialUtil.deserialize(SerialUtil.serialize(msg));
+
+        assertEquals(msg, other);
+        assertEquals(other, msg);
     }
 }

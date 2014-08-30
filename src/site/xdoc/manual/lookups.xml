@@ -82,10 +82,10 @@
   </PatternLayout>
 </File>]]></pre>
         </subsection>
-        <subsection name="JNDILookup">
-          <a name="JNDILookup"/>
+        <subsection name="JndiLookup">
+          <a name="JndiLookup"/>
           <p>
-            The JNDILookup allows variables to be retrieved via JNDI. By default the key will be prefixed with
+            The JndiLookup allows variables to be retrieved via JNDI. By default the key will be prefixed with
             java:comp/env/, however if the key contains a ":" no prefix will be added.
           </p>
           <pre class="prettyprint linenums"><![CDATA[
@@ -98,11 +98,12 @@
         <subsection name="MapLookup">
           <a name="MapLookup"/>
           <p>
-            The MapLookup serves two purposes.
+            The MapLookup serves several purposes.
           </p>
             <ol>
               <li>Provide the base for Properties declared in the configuration file.</li>
               <li>Retrieve values from MapMessages in LogEvents.</li>
+              <li>Retrieve values set with <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/MapLookup.html#setMainArguments%28java.lang.String[]%29">MapLookup.setMainArguments(String[])</a></li>
             </ol>
           <p>
             The first item simply means that the MapLookup is used to substitute properties that are defined

@@ -61,6 +61,8 @@ import org.apache.logging.log4j.util.Strings;
 @Plugin(name = "logger", category = "Core", printObject = true)
 public class LoggerConfig extends AbstractFilterable {
 
+    private static final long serialVersionUID = 1L;
+
     private static final int MAX_RETRIES = 3;
     private static LogEventFactory LOG_EVENT_FACTORY = null;
 
@@ -266,7 +268,7 @@ public class LoggerConfig extends AbstractFilterable {
      * @return the logging Level.
      */
     public Level getLevel() {
-        return level;
+        return level == null ? parent.getLevel() : level;
     }
 
     /**
@@ -370,20 +372,22 @@ public class LoggerConfig extends AbstractFilterable {
      * loggerConfig.
      */
     private void waitForCompletion() {
-        if (shutdown.compareAndSet(false, true)) {
-            int retries = 0;
-            while (counter.get() > 0) {
-                shutdownLock.lock();
-                try {
-                    noLogEvents.await(retries + 1, TimeUnit.SECONDS);
-                } catch (final InterruptedException ie) {
-                    if (++retries > MAX_RETRIES) {
-                        break;
+        shutdownLock.lock();
+        try {
+            if (shutdown.compareAndSet(false, true)) {
+                int retries = 0;
+                while (counter.get() > 0) {
+                    try {
+                        noLogEvents.await(retries + 1, TimeUnit.SECONDS);
+                    } catch (final InterruptedException ie) {
+                        if (++retries > MAX_RETRIES) {
+                            break;
+                        }
                     }
-                } finally {
-                    shutdownLock.unlock();
                 }
             }
+        } finally {
+            shutdownLock.unlock();
         }
     }
 
@@ -455,18 +459,17 @@ public class LoggerConfig extends AbstractFilterable {
             @PluginElement("AppenderRef") final AppenderRef[] refs,
             @PluginElement("Properties") final Property[] properties,
             @PluginConfiguration final Configuration config,
-            @PluginElement("Filters") final Filter filter) {
+            @PluginElement("Filter") final Filter filter) {
         if (loggerName == null) {
             LOGGER.error("Loggers cannot be configured without a name");
             return null;
         }
 
         final List<AppenderRef> appenderRefs = Arrays.asList(refs);
-        final Level actualLevel = level == null ? Level.ERROR : level;
         final String name = loggerName.equals("root") ? Strings.EMPTY : loggerName;
         final boolean additive = Booleans.parseBoolean(additivity, true);
 
-        return new LoggerConfig(name, appenderRefs, filter, actualLevel, additive,
+        return new LoggerConfig(name, appenderRefs, filter, level, additive,
                 properties, config, includeLocation(includeLocation));
     }
 
@@ -487,6 +490,8 @@ public class LoggerConfig extends AbstractFilterable {
     @Plugin(name = "root", category = "Core", printObject = true)
     public static class RootLogger extends LoggerConfig {
 
+        private static final long serialVersionUID = 1L;
+
         @PluginFactory
         public static LoggerConfig createLogger(
                 @PluginAttribute("additivity") final String additivity,
@@ -495,7 +500,7 @@ public class LoggerConfig extends AbstractFilterable {
                 @PluginElement("AppenderRef") final AppenderRef[] refs,
                 @PluginElement("Properties") final Property[] properties,
                 @PluginConfiguration final Configuration config,
-                @PluginElement("Filters") final Filter filter) {
+                @PluginElement("Filter") final Filter filter) {
             final List<AppenderRef> appenderRefs = Arrays.asList(refs);
             final Level actualLevel = level == null ? Level.ERROR : level;
             final boolean additive = Booleans.parseBoolean(additivity, true);

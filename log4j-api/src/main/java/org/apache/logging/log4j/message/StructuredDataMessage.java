@@ -22,6 +22,11 @@ import org.apache.logging.log4j.util.EnglishEnums;
 
 /**
  * Represents a Message that conforms to an RFC 5424 StructuredData element along with the syslog message.
+ * <p>
+ * Thread-safety note: the contents of this message can be modified after construction.
+ * When using asynchronous loggers and appenders it is not recommended to modify this message after the message is
+ * logged, because it is undefined whether the logged message string will contain the old values or the modified
+ * values.
  *
  * @see <a href="https://tools.ietf.org/html/rfc5424">RFC 5424</a>
  */
@@ -245,23 +250,23 @@ public class StructuredDataMessage extends MapMessage {
         final StringBuilder sb = new StringBuilder();
         final boolean full = Format.FULL.equals(format);
         if (full) {
-            final String type = getType();
-            if (type == null) {
+            final String myType = getType();
+            if (myType == null) {
                 return sb.toString();
             }
             sb.append(getType()).append(' ');
         }
-        StructuredDataId id = getId();
-        if (id != null) {
-            id = id.makeId(structuredDataId);
+        StructuredDataId sdId = getId();
+        if (sdId != null) {
+            sdId = sdId.makeId(structuredDataId);
         } else {
-            id = structuredDataId;
+            sdId = structuredDataId;
         }
-        if (id == null || id.getName() == null) {
+        if (sdId == null || sdId.getName() == null) {
             return sb.toString();
         }
         sb.append('[');
-        sb.append(id);
+        sb.append(sdId);
         sb.append(' ');
         appendMap(sb);
         sb.append(']');
@@ -297,7 +302,7 @@ public class StructuredDataMessage extends MapMessage {
         if (formats != null && formats.length > 0) {
             for (final String format : formats) {
                 if (Format.XML.name().equalsIgnoreCase(format)) {
-                    return asXML();
+                    return asXml();
                 } else if (Format.FULL.name().equalsIgnoreCase(format)) {
                     return asString(Format.FULL, null);
                 }
@@ -307,15 +312,15 @@ public class StructuredDataMessage extends MapMessage {
         return asString(Format.FULL, null);
     }
 
-    private String asXML() {
+    private String asXml() {
         final StringBuilder sb = new StringBuilder();
-        final StructuredDataId id = getId();
-        if (id == null || id.getName() == null || type == null) {
+        final StructuredDataId sdId = getId();
+        if (sdId == null || sdId.getName() == null || type == null) {
             return sb.toString();
         }
         sb.append("<StructuredData>\n");
         sb.append("<type>").append(type).append("</type>\n");
-        sb.append("<id>").append(id).append("</id>\n");
+        sb.append("<id>").append(sdId).append("</id>\n");
         super.asXml(sb);
         sb.append("</StructuredData>\n");
         return sb.toString();

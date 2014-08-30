@@ -19,11 +19,19 @@ package org.apache.logging.log4j.spi;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import org.apache.logging.log4j.ThreadContext.ContextStack;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class DefaultThreadContextStackTest {
+
+    @Before
+    public void before() {
+        // clear the thread-local map
+        new DefaultThreadContextMap(true).clear();
+    }
 
     @Test
     public void testEqualsVsSameKind() {
@@ -53,10 +61,38 @@ public class DefaultThreadContextStackTest {
     }
 
     @Test
-    public void testHashCodeVsMutable() {
-        final DefaultThreadContextStack stack1 = createStack();
-        final MutableThreadContextStack stack2 = MutableThreadContextStackTest.createStack();
-        assertEquals(stack1.hashCode(), stack2.hashCode());
+    public void testImmutableOrNullReturnsNullIfUseStackIsFalse() {
+        final DefaultThreadContextStack stack = new DefaultThreadContextStack(false);
+        stack.clear();
+        assertEquals(null, stack.getImmutableStackOrNull());
+    }
+
+    @Test
+    public void testImmutableOrNullReturnsNullIfStackIsEmpty() {
+        final DefaultThreadContextStack stack = new DefaultThreadContextStack(true);
+        stack.clear();
+        assertTrue(stack.isEmpty());
+        assertEquals(null, stack.getImmutableStackOrNull());
+    }
+
+    @Test
+    public void testImmutableOrNullReturnsCopyOfContents() {
+        final DefaultThreadContextStack stack = createStack();
+        assertTrue(!stack.isEmpty());
+        final ContextStack actual = stack.getImmutableStackOrNull();
+        assertNotNull(actual);
+        assertEquals(stack, actual);
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testModifyingImmutableOrNullThrowsException() {
+        final DefaultThreadContextStack stack = createStack();
+        final int originalSize = stack.size();
+        assertTrue(originalSize > 0);
+        final ContextStack actual = stack.getImmutableStackOrNull();
+        assertEquals(originalSize, actual.size());
+
+        actual.pop();
     }
 
     @Test
@@ -215,7 +251,7 @@ public class DefaultThreadContextStackTest {
     public void testToArray() {
         final DefaultThreadContextStack stack = createStack();
 
-        final String[] expecteds = {"msg1", "msg2", "msg3"};
+        final String[] expecteds = { "msg1", "msg2", "msg3" };
         assertArrayEquals(expecteds, stack.toArray());
     }
 
@@ -223,8 +259,8 @@ public class DefaultThreadContextStackTest {
     public void testToArrayTArray() {
         final DefaultThreadContextStack stack = createStack();
 
-        final String[] expecteds = {"msg1", "msg2", "msg3"};
-        final String[] result = new String[3] ;
+        final String[] expecteds = { "msg1", "msg2", "msg3" };
+        final String[] result = new String[3];
         assertArrayEquals(expecteds, stack.toArray(result));
         assertSame(result, stack.toArray(result));
     }

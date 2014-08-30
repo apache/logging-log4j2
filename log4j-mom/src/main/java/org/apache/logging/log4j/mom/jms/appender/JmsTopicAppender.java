@@ -37,6 +37,8 @@ import org.apache.logging.log4j.core.util.Booleans;
 @Plugin(name = "JMSTopic", category = "Core", elementType = "appender", printObject = true)
 public final class JmsTopicAppender extends AbstractAppender {
 
+    private static final long serialVersionUID = 1L;
+
     private final JmsTopicManager manager;
 
     private JmsTopicAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
@@ -91,7 +93,7 @@ public final class JmsTopicAppender extends AbstractAppender {
             @PluginAttribute("userName") final String userName,
             @PluginAttribute("password") final String password,
             @PluginElement("Layout") Layout<? extends Serializable> layout,
-            @PluginElement("Filters") final Filter filter,
+            @PluginElement("Filter") final Filter filter,
             @PluginAttribute("ignoreExceptions") final String ignore) {
 
         if (name == null) {

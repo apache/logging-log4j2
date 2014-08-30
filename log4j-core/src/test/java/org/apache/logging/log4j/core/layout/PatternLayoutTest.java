@@ -16,20 +16,18 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import java.util.Map;
+import java.nio.charset.Charset;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.util.Compare;
+import org.apache.logging.log4j.core.util.Charsets;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -170,8 +168,6 @@ public class PatternLayoutTest {
                 .build();
         ThreadContext.put("header", "Hello world Header");
         ThreadContext.put("footer", "Hello world Footer");
-        final LogEvent event1 = new Log4jLogEvent(this.getClass().getName(), null,
-                "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world 1!"), null);
         final byte[] header = layout.getHeader();
         assertNotNull("No header", header);
         assertTrue("expected \"Hello world Header\", actual \"" + new String(header) + '"',
@@ -187,5 +183,19 @@ public class PatternLayoutTest {
         final byte[] result = layout.toByteArray(event);
         assertEquals("\\INFO\tHello, world!\n\torg.apache.logging.log4j.core.layout.PatternLayoutTest\r\n\f",
                 new String(result));
+    }
+    
+    @Test
+    public void testUsePlatformDefaultIfNoCharset() throws Exception {
+        final PatternLayout layout = PatternLayout.newBuilder().withPattern("%m")
+                .withConfiguration(ctx.getConfiguration()).build();
+        assertEquals(Charset.defaultCharset(), layout.getCharset());
+    }
+    
+    @Test
+    public void testUseSpecifiedCharsetIfExists() throws Exception {
+        final PatternLayout layout = PatternLayout.newBuilder().withPattern("%m")
+                .withConfiguration(ctx.getConfiguration()).withCharset(Charsets.UTF_8).build();
+        assertEquals(Charsets.UTF_8, layout.getCharset());
     }
 }

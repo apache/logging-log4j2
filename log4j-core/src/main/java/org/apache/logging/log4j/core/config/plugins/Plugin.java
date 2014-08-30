@@ -47,6 +47,11 @@ public @interface Plugin {
      */
     String category();
 
+    /**
+     * Name of the corresponding category of elements this plugin belongs under. For example, {@code appender} would
+     * indicate an {@link org.apache.logging.log4j.core.Appender} plugin which would be in the
+     * {@code <Appenders/>} element of a {@link org.apache.logging.log4j.core.config.Configuration}.
+     */
     String elementType() default EMPTY;
 
     boolean printObject() default false;

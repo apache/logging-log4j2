@@ -105,6 +105,17 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     private static final String DATE_AND_TIME_PATTERN = "dd MMM yyyy HH:mm:ss,SSS";
 
     /**
+     * DEFAULT string literal.
+     */
+    private static final String DEFAULT_FORMAT = "DEFAULT";
+
+    /**
+     * SimpleTimePattern for DEFAULT.
+     */
+    // package private for unit tests
+    static final String DEFAULT_PATTERN = "yyyy-MM-dd HH:mm:ss,SSS";
+
+    /**
      * ISO8601_BASIC string literal.
      */
     private static final String ISO8601_BASIC_FORMAT = "ISO8601_BASIC";
@@ -112,17 +123,19 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     /**
      * SimpleTimePattern for ISO8601_BASIC.
      */
-    private static final String ISO8601_BASIC_PATTERN = "yyyyMMdd HHmmss,SSS";
+    private static final String ISO8601_BASIC_PATTERN = "yyyyMMdd'T'HHmmss,SSS";
 
     /**
      * ISO8601 string literal.
      */
-    private static final String ISO8601_FORMAT = "ISO8601";
+    // package private for unit tests
+    static final String ISO8601_FORMAT = "ISO8601";
 
     /**
      * SimpleTimePattern for ISO8601.
      */
-    private static final String ISO8601_PATTERN = "yyyy-MM-dd HH:mm:ss,SSS";
+    // package private for unit tests
+    static final String ISO8601_PATTERN = "yyyy-MM-dd'T'HH:mm:ss,SSS";
 
     /**
      * UNIX formatter in seconds (standard).
@@ -169,7 +182,9 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         String pattern = null;
         Formatter tempFormatter = null;
 
-        if (patternOption == null || patternOption.equalsIgnoreCase(ISO8601_FORMAT)) {
+        if (patternOption == null || patternOption.equalsIgnoreCase(DEFAULT_FORMAT)) {
+            pattern = DEFAULT_PATTERN;
+        } else if (patternOption.equalsIgnoreCase(ISO8601_FORMAT)) {
             pattern = ISO8601_PATTERN;
         } else if (patternOption.equalsIgnoreCase(ISO8601_BASIC_FORMAT)) {
             pattern = ISO8601_BASIC_PATTERN;
@@ -195,8 +210,8 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
             } catch (final IllegalArgumentException e) {
                 LOGGER.warn("Could not instantiate SimpleDateFormat with pattern " + patternOption, e);
 
-                // default to the ISO8601 format
-                tempFormat = new SimpleDateFormat(ISO8601_PATTERN);
+                // default to the DEFAULT format
+                tempFormat = new SimpleDateFormat(DEFAULT_PATTERN);
             }
 
             // if the option list contains a TZ option, then set it.

@@ -15,6 +15,6 @@
  * limitations under the license.
  */
 /**
- * Log4j 2.0 Appenders.
+ * Log4j 2 Appenders.
  */
 package org.apache.logging.log4j.core.appender;

@@ -20,9 +20,13 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.util.Closer;
+import org.apache.logging.log4j.core.util.JndiCloser;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Looks up keys from JNDI resources.
@@ -30,7 +34,10 @@ import org.apache.logging.log4j.core.util.Closer;
 @Plugin(name = "jndi", category = "Lookup")
 public class JndiLookup implements StrLookup {
 
-    /** JNDI resourcce path prefix used in a J2EE container */
+    private static final Logger LOGGER = StatusLogger.getLogger();
+    private static final Marker LOOKUP = MarkerManager.getMarker("LOOKUP");
+
+    /** JNDI resource path prefix used in a J2EE container */
     static final String CONTAINER_JNDI_RESOURCE_PATH_PREFIX = "java:comp/env/";
 
     /**
@@ -54,15 +61,16 @@ public class JndiLookup implements StrLookup {
         if (key == null) {
             return null;
         }
-
+        final String jndiName = convertJndiName(key);
         Context ctx = null;
         try {
             ctx = new InitialContext();
-            return (String) ctx.lookup(convertJndiName(key));
+            return (String) ctx.lookup(jndiName);
         } catch (final NamingException e) {
+            LOGGER.warn(LOOKUP, "Error looking up JNDI resource [{}].", jndiName, e);
             return null;
         } finally {
-            Closer.closeSilently(ctx);
+            JndiCloser.closeSilently(ctx);
         }
     }
 
@@ -75,9 +83,8 @@ public class JndiLookup implements StrLookup {
      */
     private String convertJndiName(String jndiName) {
         if (!jndiName.startsWith(CONTAINER_JNDI_RESOURCE_PATH_PREFIX) && jndiName.indexOf(':') == -1) {
-            jndiName = CONTAINER_JNDI_RESOURCE_PATH_PREFIX + jndiName;
+            return CONTAINER_JNDI_RESOURCE_PATH_PREFIX + jndiName;
         }
-
         return jndiName;
     }
 }

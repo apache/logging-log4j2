@@ -49,6 +49,7 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 @Plugin(name = "Async", category = "Core", elementType = "appender", printObject = true)
 public final class AsyncAppender extends AbstractAppender {
 
+    private static final long serialVersionUID = 1L;
     private static final int DEFAULT_QUEUE_SIZE = 128;
     private static final String SHUTDOWN = "Shutdown";
 
@@ -138,6 +139,7 @@ public final class AsyncAppender extends AbstractAppender {
             }
             logEvent = ((RingBufferLogEvent) logEvent).createMemento();
         }
+        logEvent.getMessage().getFormattedMessage(); // LOG4J2-763: ask message to freeze parameters
         final Log4jLogEvent coreEvent = (Log4jLogEvent) logEvent;
         boolean appendSuccessful = false;
         if (blocking) {

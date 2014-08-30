@@ -31,11 +31,13 @@ import org.apache.logging.log4j.core.appender.AppenderLoggingException;
  * An abstract Appender for writing events to a database of some type, be it relational or NoSQL. All database appenders
  * should inherit from this base appender. Three implementations are currently provided:
  * {@link org.apache.logging.log4j.core.appender.db.jdbc JDBC}, {@link org.apache.logging.log4j.core.appender.db.jpa
- * JPA}, and {@link org.apache.logging.log4j.nosql.appender NoSQL}.
+ * JPA}, and <a href="/log4j/2.x/log4j-nosql/apidocs/">NoSQL</a>.
  *
  * @param <T> Specifies which type of {@link AbstractDatabaseManager} this Appender requires.
  */
 public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager> extends AbstractAppender {
+    private static final long serialVersionUID = 1L;
+
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
     private final Lock readLock = lock.readLock();
     private final Lock writeLock = lock.writeLock();

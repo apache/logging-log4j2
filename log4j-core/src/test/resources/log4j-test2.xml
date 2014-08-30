@@ -29,17 +29,17 @@
     </RollingFile>
     <Console name="STDOUT">
       <PatternLayout pattern="%m MDC%X%n"/>
-      <filters>
+      <Filters>
         <MarkerFilter marker="FLOW" onMatch="DENY" onMismatch="NEUTRAL"/>
         <MarkerFilter marker="EXCEPTION" onMatch="DENY" onMismatch="ACCEPT"/>
-      </filters>
+      </Filters>
     </Console>
     <Console name="FLOW">
       <PatternLayout pattern="%C{1}.%M %m %ex%n"/>
-      <filters>
+      <Filters>
         <MarkerFilter marker="FLOW" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
         <MarkerFilter marker="EXCEPTION" onMatch="ACCEPT" onMismatch="DENY"/>
-      </filters>
+      </Filters>
     </Console>
     <File name="File" fileName="target/test.log">
       <PatternLayout>
@@ -62,7 +62,7 @@
         <KeyValuePair key="test" value="123"/>
       </ThreadContextMapFilter>
       <AppenderRef ref="STDOUT"/>
-    </Logger>>
+    </Logger>
 
     <Logger name="org.apache.logging.log4j.hosttest" level="debug" additivity="false">
       <!-- User appender-ref alias to prove it works -->
@@ -74,6 +74,13 @@
       <AppenderRef ref="NoThrowable"/>
     </Logger>
 
+    <Logger name="org.apache.logging.log4j.core.LoggerTest" additivity="false">
+      <AppenderRef ref="List"/>
+    </Logger>
+
+    <Logger name="org.apache.logging.log4j.core" level="debug" additivity="false">
+      <AppenderRef ref="STDOUT"/>
+    </Logger>
 
     <Logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
       <AppenderRef ref="File"/>

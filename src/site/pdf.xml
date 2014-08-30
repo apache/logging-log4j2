@@ -39,10 +39,11 @@
     <item name="Layouts" ref="/manual/layouts.xml.vm"/>
     <item name="Filters" ref="/manual/filters.xml"/>
     <item name="Async Loggers" ref="/manual/async.xml" />
-    <item name="JMX" ref="/manual/jmx.xml"/>
+    <item name="JMX" ref="/manual/jmx.xml.vm"/>
     <item name="Logging Separation" ref="/manual/logsep.xml"/>
     <item name="Extending Log4j" ref="/manual/extending.xml"/>
-    <item name="Extending Log4j Configuration" ref="/manual/customconfig.html"/>
+    <item name="Extending Log4j Configuration" ref="/manual/customconfig.xml"/>
+    <item name="Custom Log Levels" ref="/manual/customloglevels.xml.vm" />
   </toc>
 
   <cover>

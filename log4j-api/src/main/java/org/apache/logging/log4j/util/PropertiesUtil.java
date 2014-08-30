@@ -28,7 +28,8 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * <em>Consider this class private.</em>
  * <p>
- * Helps access properties.
+ * Helps access properties. This utility provides a method to override system properties by specifying properties
+ * in a properties file.
  * </p>
  */
 public final class PropertiesUtil {
@@ -39,6 +40,11 @@ public final class PropertiesUtil {
 
     private final Properties props;
 
+    /**
+     * Constructs a PropertiesUtil using a given Properties object as its source of defined properties.
+     *
+     * @param props the Properties to use by default
+     */
     public PropertiesUtil(final Properties props) {
         this.props = props;
     }
@@ -72,8 +78,15 @@ public final class PropertiesUtil {
         return props;
     }
 
+    /**
+     * Constructs a PropertiesUtil for a given properties file name on the classpath. The properties specified in this
+     * file are used by default. If a property is not defined in this file, then the equivalent system property is
+     * used.
+     *
+     * @param propsLocn the location of properties file to load
+     */
     public PropertiesUtil(final String propsLocn) {
-        final ClassLoader loader = ProviderUtil.findClassLoader();
+        final ClassLoader loader = LoaderUtil.getThreadContextClassLoader();
         @SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
         final
         Properties properties = new Properties();
@@ -102,10 +115,21 @@ public final class PropertiesUtil {
         this.props = properties;
     }
 
+    /**
+     * Returns the PropertiesUtil used by Log4j.
+     *
+     * @return the main Log4j PropertiesUtil instance.
+     */
     public static PropertiesUtil getProperties() {
         return LOG4J_PROPERTIES;
     }
 
+    /**
+     * Gets the named property as a String.
+     *
+     * @param name the name of the property to look up
+     * @return the String value of the property or {@code null} if undefined.
+     */
     public String getStringProperty(final String name) {
         String prop = null;
         try {
@@ -116,7 +140,14 @@ public final class PropertiesUtil {
         return prop == null ? props.getProperty(name) : prop;
     }
 
-
+    /**
+     * Gets the named property as an integer.
+     *
+     * @param name         the name of the property to look up
+     * @param defaultValue the default value to use if the property is undefined
+     * @return the parsed integer value of the property or {@code defaultValue} if it was undefined or could not be
+     * parsed.
+     */
     public int getIntegerProperty(final String name, final int defaultValue) {
         String prop = null;
         try {
@@ -137,7 +168,14 @@ public final class PropertiesUtil {
         return defaultValue;
     }
 
-
+    /**
+     * Gets the named property as a long.
+     *
+     * @param name         the name of the property to look up
+     * @param defaultValue the default value to use if the property is undefined
+     * @return the parsed long value of the property or {@code defaultValue} if it was undefined or could not be
+     * parsed.
+     */
     public long getLongProperty(final String name, final long defaultValue) {
         String prop = null;
         try {
@@ -158,15 +196,37 @@ public final class PropertiesUtil {
         return defaultValue;
     }
 
+    /**
+     * Gets the named property as a String.
+     *
+     * @param name         the name of the property to look up
+     * @param defaultValue the default value to use if the property is undefined
+     * @return the String value of the property or {@code defaultValue} if undefined.
+     */
     public String getStringProperty(final String name, final String defaultValue) {
         final String prop = getStringProperty(name);
         return (prop == null) ? defaultValue : prop;
     }
 
+    /**
+     * Gets the named property as a boolean value. If the property matches the string {@code "true"} (case-insensitive),
+     * then it is returned as the boolean value {@code true}. Any other non-{@code null} text in the property is
+     * considered {@code false}.
+     *
+     * @param name the name of the property to look up
+     * @return the boolean value of the property or {@code false} if undefined.
+     */
     public boolean getBooleanProperty(final String name) {
         return getBooleanProperty(name, false);
     }
 
+    /**
+     * Gets the named property as a boolean value.
+     *
+     * @param name         the name of the property to look up
+     * @param defaultValue the default value to use if the property is undefined
+     * @return the boolean value of the property or {@code defaultValue} if undefined.
+     */
     public boolean getBooleanProperty(final String name, final boolean defaultValue) {
         final String prop = getStringProperty(name);
         return (prop == null) ? defaultValue : "true".equalsIgnoreCase(prop);

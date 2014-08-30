@@ -75,7 +75,7 @@ public class SQLMessage implements Message {
       QUERY
   };
 
-  prviate final SQLType type;
+  private final SQLType type;
   private final String table;
   private final Map<String, String> cols;
 
@@ -215,7 +215,7 @@ public class MyApp {
         <p>
           A MultiformatMessage will have a getFormats method and a getFormattedMessage method that accepts and array
           of format Strings. The getFormats method may be called by a Layout to provide it information on what
-          formatting optionsthe Message supports. The Layout may then call getFormattedMessage with one or more
+          formatting options the Message supports. The Layout may then call getFormattedMessage with one or more
           for the formats. If the Message doesn't recognize the format name it will simply format the data using its
           default format. An example of this is the StructuredDataMessage which accepts a format String of "XML"
           which will cause it to format the event data as XML instead of the RFC 5424 format.

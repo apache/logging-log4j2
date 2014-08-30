@@ -301,7 +301,7 @@ public class ResolverUtil {
             loadImplementationsInJar(test, parent, jarFile.getPath(), jarStream);
         } catch (final FileNotFoundException ex) {
             LOGGER.error("Could not search jar file '" + jarFile + "' for classes matching criteria: " + test
-                    + " file not found");
+                    + " file not found", ex);
         } catch (final IOException ioe) {
             LOGGER.error("Could not search jar file '" + jarFile + "' for classes matching criteria: " + test
                     + " due to an IOException", ioe);
@@ -382,8 +382,7 @@ public class ResolverUtil {
                 }
             }
         } catch (final Throwable t) {
-            LOGGER.warn("Could not examine class '" + fqn + "' due to a " +
-                t.getClass().getName() + " with message: " + t.getMessage());
+            LOGGER.warn("Could not examine class '" + fqn, t);
         }
     }
 

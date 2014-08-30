@@ -48,7 +48,7 @@
 import org.apache.logging.log4j.Logger;
 
 public class HelloWorld {
-    private static Logger logger = LogManager.getLogger("HelloWorld");
+    private static final Logger logger = LogManager.getLogger("HelloWorld");
     public static void main(String[] args) {
         logger.info("Hello, World!");
     }
@@ -100,7 +100,21 @@ logger.debug("Long.MAX_VALUE = %,d", Long.MAX_VALUE);
 2012-12-12 11:56:19,643 [main] DEBUG: Integer.MAX_VALUE = 2,147,483,647
 2012-12-12 11:56:19,643 [main] DEBUG: Long.MAX_VALUE = 9,223,372,036,854,775,807
 </pre>
-          <h4>Logger names</h4>
+          <h4>Mixing Loggers with Formatter Loggers</h4>
+          <p>
+          Formatter loggers give fine-grained control over the output format, but have the drawback
+          that the correct type must be specified (for example, passing anything other than a decimal integer
+          for a %d format parameter gives an exception).
+          </p>
+          <p>
+          If your main usage is to use {}-style parameters, but occasionally you need fine-grained
+          control over the output format, you can use the <code>printf</code> method:</p>
+            <pre class="prettyprint linenums">public static Logger logger = LogManager.getLogger("Foo");
+
+logger.debug("Opening connection to {}...", someDataSource);
+logger.printf(Level.INFO, "Logging in user %1$s with birthday %2$tm %2$te,%2$tY", user.getName(), user.getBirthdayCalendar());
+</pre>
+          <h4>Logger Names</h4>
             <p>
               Most logging implementations use a hierarchical scheme for matching logger names with logging
               configuration. In this scheme the logger name hierarchy is represented by '.' characters in the
@@ -114,13 +128,13 @@ logger.debug("Long.MAX_VALUE = %,d", Long.MAX_VALUE);
             <pre class="prettyprint linenums">package org.apache.test;
 
 public class MyTest {
-    private static Logger logger = LogManager.getLogger(MyTest.class.getName());
+    private static final Logger logger = LogManager.getLogger(MyTest.class.getName());
 }
             </pre>
             <pre class="prettyprint linenums">package org.apache.test;
 
 public class MyTest {
-    private static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 }
             </pre>
           </subsection>

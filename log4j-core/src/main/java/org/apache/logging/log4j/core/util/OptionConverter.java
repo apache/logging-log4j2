@@ -115,8 +115,8 @@ public final class OptionConverter {
      * returned. If <code>value</code> is "false", then
      * {@code false} is returned. Otherwise, <code>default</code> is
      * returned.
-     * <p/>
-     * <p>Case of value is unimportant.
+     *
+     * <p>Case of value is unimportant.</p>
      * @param value The value to convert.
      * @param defaultValue The default value.
      * @return true or false, depending on the value and/or default.
@@ -178,13 +178,11 @@ public final class OptionConverter {
             multiplier = ONE_K * ONE_K * ONE_K;
             str = str.substring(0, index);
         }
-        if (str != null) {
-            try {
-                return Long.parseLong(str) * multiplier;
-            } catch (final NumberFormatException e) {
-                LOGGER.error("[{}] is not in proper int form.", str);
-                LOGGER.error("[{}] not in expected format.", value, e);
-            }
+        try {
+            return Long.parseLong(str) * multiplier;
+        } catch (final NumberFormatException e) {
+            LOGGER.error("[{}] is not in proper int form.", str);
+            LOGGER.error("[{}] not in expected format.", value, e);
         }
         return defaultValue;
     }
@@ -246,33 +244,33 @@ public final class OptionConverter {
     /**
      * Perform variable substitution in string <code>val</code> from the
      * values of keys found in the system propeties.
-     * <p/>
-     * <p>The variable substitution delimiters are <b>${</b> and <b>}</b>.
-     * <p/>
+     *
+     * <p>The variable substitution delimiters are <b>${</b> and <b>}</b>.</p>
+     *
      * <p>For example, if the System properties contains "key=value", then
-     * the call
+     * the call</p>
      * <pre>
      * String s = OptionConverter.substituteVars("Value of key is ${key}.");
      * </pre>
-     * <p/>
+     * <p>
      * will set the variable <code>s</code> to "Value of key is value.".
-     * <p/>
+     * </p>
      * <p>If no value could be found for the specified key, then the
      * <code>props</code> parameter is searched, if the value could not
-     * be found there, then substitution defaults to the empty string.
-     * <p/>
+     * be found there, then substitution defaults to the empty string.</p>
+     *
      * <p>For example, if system properties contains no value for the key
      * "inexistentKey", then the call
-     * <p/>
+     * </p>
      * <pre>
      * String s = OptionConverter.subsVars("Value of inexistentKey is [${inexistentKey}]");
      * </pre>
+     * <p>
      * will set <code>s</code> to "Value of inexistentKey is []"
-     * <p/>
+     * </p>
      * <p>An {@link java.lang.IllegalArgumentException} is thrown if
      * <code>val</code> contains a start delimeter "${" which is not
      * balanced by a stop delimeter "}". </p>
-     * <p/>
      *
      * @param val The string on which variable substitution is performed.
      * @param props The properties to use for substitution.

@@ -39,6 +39,7 @@ import org.apache.logging.log4j.core.util.Booleans;
  */
 @Plugin(name = "NoSql", category = "Core", elementType = "appender", printObject = true)
 public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseManager<?>> {
+    private static final long serialVersionUID = 1L;
     private final String description;
 
     private NoSqlAppender(final String name, final Filter filter, final boolean ignoreExceptions,

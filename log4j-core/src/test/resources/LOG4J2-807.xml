@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration name="asynRootConfig" monitorInterval="5" status="debug">
+  <Appenders>
+    <RandomAccessFile name="FILE_APPENDER" fileName="LOG4J2-807.log" immediateFlush="false" append="true">
+      <PatternLayout>
+        <Pattern>%d %-5p [%c{1.}] %m%n</Pattern>
+      </PatternLayout>
+    </RandomAccessFile>
+  </Appenders>
+  <Loggers>
+    <asyncRoot level="debug">
+      <AppenderRef ref="FILE_APPENDER" />
+    </asyncRoot>
+  </Loggers>
+</Configuration>

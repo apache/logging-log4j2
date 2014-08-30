@@ -41,20 +41,30 @@ public class Log4jContextFactory implements LoggerContextFactory {
     private ContextSelector selector;
 
     /**
-     * Initializes the ContextSelector.
+     * Initializes the ContextSelector from system property {@link Constants#LOG4J_CONTEXT_SELECTOR}.
      */
     public Log4jContextFactory() {
+        this(createContextSelector());
+    }
+
+    /**
+     * Initializes this factory's ContextSelector with the specified selector.
+     * @param selector the selector to use
+     */
+    public Log4jContextFactory(final ContextSelector selector) {
+        this.selector = selector;
+    }
+
+    private static ContextSelector createContextSelector() {
         final String sel = PropertiesUtil.getProperties().getStringProperty(Constants.LOG4J_CONTEXT_SELECTOR);
         if (sel != null) {
             try {
-                selector = Loader.newCheckedInstanceOf(sel, ContextSelector.class);
+                return Loader.newCheckedInstanceOf(sel, ContextSelector.class);
             } catch (final Exception ex) {
                 LOGGER.error("Unable to create context {}", sel, ex);
             }
         }
-        if (selector == null) {
-            selector = new ClassLoaderContextSelector();
-        }
+        return new ClassLoaderContextSelector();
     }
 
     /**

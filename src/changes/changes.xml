@@ -21,7 +21,168 @@
     <title>Changes</title>
   </properties>
   <body>
-    <release version="2.0-???" date="2014-0M-DD" description="Bug fixes and enhancements">
+    <release version="2.?.?" date="2014-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-663" dev="mattsicker" type="fix" due-to="Florian Brunner">
+        Fix OSGi Import-Package problem with the JMS API.
+      </action>
+      <action issue="LOG4J2-793" dev="mattsicker" type="add">
+        Add support for custom SLF4J Markers in log4j-slf4j-impl module.
+      </action>
+      <action issue="LOG4J2-783" dev="rpopma" type="fix" due-to="Minglei Lee">
+        PatternLayout should use platform character encoding by default, not UTF-8.
+      </action>
+      <action issue="LOG4J2-771" dev="ggregory" type="add">
+        Add lookup for application main arguments.
+      </action>
+      <action issue="LOG4J2-787" dev="ggregory" type="add">
+        Add lookup for JVM arguments.
+      </action>
+      <action issue="LOG4J2-790" dev="ggregory" type="update">
+        Update Jackson to 2.4.2 from 2.4.1 (for XML and JSON processing).
+      </action>
+      <action issue="LOG4J2-766" dev="ggregory" type="update" due-to="Bruno P. Kinoshita">
+        Incomplete documentation for JSONLayout.
+      </action>      
+      <action issue="LOG4J2-800" dev="ggregory" type="update">
+        All life cycle implementations should be serializable.
+      </action>      
+      <action issue="LOG4J2-801" dev="ggregory" type="update">
+        org.apache.logging.log4j.core.Logger should be serializable.
+      </action>      
+    </release> 
+    <release version="2.0.2" date="2014-08-16" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-775" dev="ggregory" type="update">
+        Update Apache Flume to 1.5.0.1 from 1.5.0.
+      </action>
+      <action issue="LOG4J2-773" dev="rpopma" type="fix">
+        Site: log4j-core component pages were still using the old logo.
+      </action>
+      <action issue="LOG4J2-760" dev="rpopma" type="fix">
+        Documentation improvement: link to dependency tree from log4j-core component page,
+        link to log4j-core component page from FAQ page.
+      </action>
+      <action issue="LOG4J2-679" dev="rpopma" type="fix">
+        Resolved race condition that caused log file rotation to fail with error: "Unable to create directory ..."
+      </action>
+      <action issue="LOG4J2-726" dev="rpopma" type="fix">
+        Prevent application from hanging when PatternLayout configuration has opening '{' but no closing '}'.
+      </action>
+      <action issue="LOG4J2-769" dev="rpopma" type="fix" due-to="Scott Harrington">
+        Startup takes a long time if you have empty packages attribute.
+      </action>
+      <action issue="LOG4J2-763" dev="rpopma" type="fix" due-to="Stephen Connolly">
+        Improved asynchronous loggers and appenders to ensure the formatted message does not change even if
+        parameters are modified by the application. (ParameterizedMessage was already safe.)
+        Improved documentation.
+      </action>
+      <action issue="LOG4J2-729" dev="rpopma" type="fix">
+        Emit warning message to console if no configuration file found.
+      </action>
+      <action issue="LOG4J2-765" dev="rpopma" type="fix">
+        Improve warning message when missing log4j-core in the classpath.
+      </action>
+      <action issue="LOG4J2-722" dev="rpopma" type="fix">
+        Clarified in documentation that Commons Logging jar is required when using log4j-jcl.
+      </action>
+      <action issue="LOG4J2-723" dev="rpopma" type="fix">
+        Clarified in documentation that SLF4J API jar is required when using log4j-slf4j-impl.
+      </action>
+      <action issue="LOG4J2-730" dev="rpopma" type="update">
+        Allow Log4jContextFactory subclasses to specify a custom ContextSelector.
+      </action>
+      <action issue="LOG4J2-759" dev="rpopma" type="fix">
+        Fixed various minor site/documentation issues, mostly versioning related.
+      </action>
+      <action issue="LOG4J2-756" dev="rpopma" type="fix" due-to="Scott Harrington">
+        Prevent JUnit test from creating unnecessary Log4j2Plugins.dat during build.
+      </action>
+    </release> 
+    <release version="2.0.1" date="2014-07-29" description="Bug fixes">
+      <action issue="LOG4J2-744" dev="rpopma" type="fix" due-to="Scott Harrington">
+        Avoid unnecessary Clock calls when TimestampMessage is logged.
+      </action>      
+      <action issue="LOG4J2-704" dev="rpopma" type="fix">
+        Improved error message if configuration file not found.
+      </action>      
+      <action issue="LOG4J2-750" dev="ggregory" type="fix" due-to="Mike Calmus">
+        Webapp configuration page has incorrect class name.
+      </action>      
+      <action issue="LOG4J2-749" dev="rpopma" type="fix" due-to="Scott Harrington">
+        Retain the default date pattern after fixing the ISO8601 pattern.
+      </action>
+      <action issue="LOG4J2-670" dev="rpopma" type="fix">
+        DatePatternConverter ISO8601_PATTERN now conforms to ISO8601.
+      </action>
+      <action issue="LOG4J2-741" dev="rpopma" type="fix">
+        Reinstate the package configuration attribute for discovering custom plugins.
+      </action>
+      <action issue="LOG4J2-742" dev="ggregory" type="fix" due-to="Pascal Chollet">
+        XInclude not working with relative path.
+      </action>
+      <action issue="LOG4J2-740" dev="mattsicker" type="fix" due-to="Kosta Krauth">
+        Fixed typo in webapp manual regarding sample web.xml file.
+      </action>
+      <action issue="LOG4J2-738" dev="ggregory" type="fix" due-to="Timothy Stack">
+        RollingFileManager deadlock if async action thread fails to start.
+      </action>
+      <action issue="LOG4J2-736" dev="mattsicker" type="fix">
+        Fixed log4j-bom so that it won't specify a default scope on any third party dependencies.
+      </action>
+      <action issue="LOG4J2-735" dev="mattsicker" type="fix">
+        Fixed log4j-bom so that it won't interfere with spring-bom and others.
+      </action>
+      <action issue="LOG4J2-731" dev="mattsicker" type="fix">
+        Updated documentation regarding extensions to LoggerContextFactory and Log4j 2 providers.
+      </action>
+      <action issue="LOG4J2-373" dev="mattsicker" type="fix">
+        Fixed ClassLoader issues in loading Log4j providers in an OSGi environment.
+      </action>
+      <action issue="LOG4J2-725" dev="mattsicker" type="add">
+        Added WebLoggerContextUtils class to log4j-web for helper methods useful for asynchronous servlets.
+      </action>
+      <action issue="LOG4J2-710" dev="rpopma" type="add">
+        Added documentation for Custom Levels and Custom Loggers.
+      </action>
+      <action issue="LOG4J2-719" dev="rpopma" type="fix">
+        Correctly handle NetworkOnMainThreadException thrown on Android during Log4j2 initialization.
+      </action>
+      <action issue="LOG4J2-716" dev="rpopma" type="fix">
+        Automatically disable log4j JMX when detecting we are running on Android.
+      </action>
+      <action issue="LOG4J2-657" dev="rpopma" type="fix" due-to="Stefan Wehner">
+        Fixed AbstractDatabaseManager to close connection on writeInternal error.
+      </action>
+      <action issue="LOG4J2-713" dev="ggregory" type="fix" due-to="Nelson Melina">
+        Android: java.lang.VerifyError: org/apache/logging/log4j/core/util/Closer
+      </action>
+      <action issue="LOG4J2-703" dev="ggregory" type="fix" due-to="Nelson Melina">
+        Android: Could not find class 'javax.naming.InitialContext', referenced from method org.apache.logging.log4j.core.lookup.JndiLookup.lookup.
+      </action>
+      <action issue="LOG4J2-732" dev="ggregory" type="updated">
+        Update to LMAX Disruptor 3.3.0 from 3.2.1.
+      </action>
+      <action issue="LOG4J2-733" dev="ggregory" type="updated">
+        Update to latest Jackson jars from the 2.4.1.X line.
+      </action>
+    </release> 
+    <release version="2.0" date="2014-07-12" description="GA Release">
+      <action issue="LOG4J2-705" dev="rpopma" type="fix">
+        Fixed issue where Async Logger does not log thread context stack data.
+        API change: added method getImmutableStackOrNull() to ThreadContext.ContextStack interface.
+      </action>
+      <action issue="LOG4J2-631" dev="rpopma" type="fix">
+        Update docs to clarify how to use formatter logger and standard logger together.
+      </action>
+      <action issue="LOG4J2-519" dev="rpopma" type="add">
+        Added support for generating custom logger wrappers that replace the existing log levels
+        and extended logger wrappers that add custom log levels to the existing ones.
+      </action>
+      <action issue="LOG4J2-441" dev="rgoers" type="fix">
+        LoggerConfigs with no Level now inherit the Level from their parent.
+      </action>
+      <action issue="LOG4J2-696" dev="ggregory" type="add">
+        RegexFilter does not match multiline log messages.
+      </action>
       <action issue="LOG4J2-699" dev="rpopma" type="fix">
         PatternLayout manual page missing documentation on header/footer.
       </action>
@@ -65,6 +226,12 @@
       </action>
       <action issue="LOG4J2-689" dev="ggregory" type="update">
         Update Jackson to 2.4.1.
+      </action>
+      <action issue="LOG4J2-707" dev="ggregory" type="fix">
+        Some exceptions are not logged when configuration problems are detected.
+      </action>
+      <action issue="LOG4J2-709" dev="ggregory" type="update">
+        Update Apache Commons Logging to 1.2 from 1.1.3.
       </action>
     </release>
     <release version="2.0-rc2" date="2014-06-21" description="Bug fixes and enhancements">
@@ -224,8 +391,8 @@
         Add support for multiple parents to Markers.
       </action>
       <action issue="LOG4J2-595" dev="mattsicker" type="add">
-          Introduce Java annotation processor as alternative plugin pre-caching mechanism. This is available in the
-          log4j-plugin-processor module.
+        Introduce Java annotation processor as the new plugin pre-caching mechanism. This is available in log4j-core.
+        All custom plugins created before this should be re-built against the current log4j-core.
       </action>
       <action issue="LOG4J2-564" dev="mattsicker" type="fix">
           Renamed SLF4J logger class to Log4jLogger.

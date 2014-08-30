@@ -43,6 +43,7 @@ import org.apache.logging.log4j.util.EnglishEnums;
 @Plugin(name = "Syslog", category = "Core", elementType = "appender", printObject = true)
 public class SyslogAppender extends SocketAppender {
 
+    private static final long serialVersionUID = 1L;
     protected static final String RFC5424 = "RFC5424";
 
     protected SyslogAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
@@ -116,7 +117,7 @@ public class SyslogAppender extends SocketAppender {
             @PluginAttribute("mdcIncludes") final String includes,
             @PluginAttribute("mdcRequired") final String required,
             @PluginAttribute("format") final String format,
-            @PluginElement("Filters") final Filter filter,
+            @PluginElement("Filter") final Filter filter,
             @PluginConfiguration final Configuration config,
             @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charsetName,
             @PluginAttribute("exceptionPattern") final String exceptionPattern,

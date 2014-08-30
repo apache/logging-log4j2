@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +45,7 @@ import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.config.plugins.util.ResolverUtil;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
+import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Patterns;
 import org.w3c.dom.Attr;
@@ -60,6 +62,8 @@ import org.xml.sax.SAXException;
  */
 public class XmlConfiguration extends AbstractConfiguration implements Reconfigurable {
 
+    private static final long serialVersionUID = 1L;
+
     private static final String XINCLUDE_FIXUP_LANGUAGE = "http://apache.org/xml/features/xinclude/fixup-language";
     private static final String XINCLUDE_FIXUP_BASE_URIS = "http://apache.org/xml/features/xinclude/fixup-base-uris";
     private static final String[] VERBOSE_CLASSES = new String[] { ResolverUtil.class.getName() };
@@ -68,7 +72,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
     private final List<Status> status = new ArrayList<Status>();
     private Element rootElement;
     private boolean strict;
-    private String schema;
+    private String schemaResource;
 
     /**
      * Creates a new DocumentBuilder suitable for parsing a configuration file.
@@ -106,7 +110,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             LOGGER.warn("The DocumentBuilderFactory [{}] does not support the feature [{}].", factory,
                     XINCLUDE_FIXUP_BASE_URIS, e);
         } catch (@SuppressWarnings("ErrorNotRethrown") final AbstractMethodError err) {
-            LOGGER.warn("The DocumentBuilderFactory is out of date and does not support setFeature: {}", factory);
+            LOGGER.warn("The DocumentBuilderFactory is out of date and does not support setFeature: {}", factory, err);
         }
         try {
             factory.setFeature(XINCLUDE_FIXUP_LANGUAGE, true);
@@ -114,7 +118,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             LOGGER.warn("The DocumentBuilderFactory [{}] does not support the feature [{}].", factory,
                     XINCLUDE_FIXUP_LANGUAGE, e);
         } catch (@SuppressWarnings("ErrorNotRethrown") final AbstractMethodError err) {
-            LOGGER.warn("The DocumentBuilderFactory is out of date and does not support setFeature: {}", factory);
+            LOGGER.warn("The DocumentBuilderFactory is out of date and does not support setFeature: {}", factory, err);
         }
     }
 
@@ -128,9 +132,10 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             try {
                 buffer = toByteArray(configStream);
             } finally {
-                configStream.close();
+                Closer.closeSilently(configStream);
             }
             final InputSource source = new InputSource(new ByteArrayInputStream(buffer));
+            source.setSystemId(configSource.getLocation());
             final Document document = newDocumentBuilder().parse(source);
             rootElement = document.getDocumentElement();
             final Map<String, String> attrs = processAttributes(rootNode, rootElement);
@@ -148,16 +153,13 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                 } else if ("verbose".equalsIgnoreCase(key)) {
                     statusConfig.withVerbosity(value);
                 } else if ("packages".equalsIgnoreCase(key)) {
-                    final String[] packages = value.split(Patterns.COMMA_SEPARATOR);
-                    for (final String p : packages) {
-                        PluginManager.addPackage(p);
-                    }
+                    PluginManager.addPackages(Arrays.asList(value.split(Patterns.COMMA_SEPARATOR)));
                 } else if ("name".equalsIgnoreCase(key)) {
                     setName(value);
                 } else if ("strict".equalsIgnoreCase(key)) {
                     strict = Boolean.parseBoolean(value);
                 } else if ("schema".equalsIgnoreCase(key)) {
-                    schema = value;
+                    schemaResource = value;
                 } else if ("monitorInterval".equalsIgnoreCase(key)) {
                     final int interval = Integer.parseInt(value);
                     if (interval > 0 && configFile != null) {
@@ -169,18 +171,18 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             }
             statusConfig.initialize();
         } catch (final SAXException domEx) {
-            LOGGER.error("Error parsing " + configSource.getLocation(), domEx);
+            LOGGER.error("Error parsing {}", configSource.getLocation(), domEx);
         } catch (final IOException ioe) {
-            LOGGER.error("Error parsing " + configSource.getLocation(), ioe);
+            LOGGER.error("Error parsing {}", configSource.getLocation(), ioe);
         } catch (final ParserConfigurationException pex) {
-            LOGGER.error("Error parsing " + configSource.getLocation(), pex);
+            LOGGER.error("Error parsing {}", configSource.getLocation(), pex);
         }
-        if (strict && schema != null && buffer != null) {
+        if (strict && schemaResource != null && buffer != null) {
             InputStream is = null;
             try {
-                is = Loader.getResourceAsStream(schema, XmlConfiguration.class.getClassLoader());
+                is = Loader.getResourceAsStream(schemaResource, XmlConfiguration.class.getClassLoader());
             } catch (final Exception ex) {
-                LOGGER.error("Unable to access schema {}", this.schema);
+                LOGGER.error("Unable to access schema {}", this.schemaResource, ex);
             }
             if (is != null) {
                 final Source src = new StreamSource(is, LOG4J_XSD);
@@ -218,7 +220,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         constructHierarchy(rootNode, rootElement);
         if (status.size() > 0) {
             for (final Status s : status) {
-                LOGGER.error("Error processing element " + s.name + ": " + s.errorType);
+                LOGGER.error("Error processing element {}: {}", s.name, s.errorType);
             }
             return;
         }
@@ -235,7 +237,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             final XmlConfiguration config = new XmlConfiguration(source);
             return (config.rootElement == null) ? null : config;
         } catch (final IOException ex) {
-            LOGGER.error("Cannot locate file " + getConfigurationSource(), ex);
+            LOGGER.error("Cannot locate file {}", getConfigurationSource(), ex);
         }
         return null;
     }

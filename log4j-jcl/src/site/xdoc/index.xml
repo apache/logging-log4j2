@@ -34,14 +34,16 @@
 
         <section name="Requirements">
            <p>
-             The Commons Logging Bridge requires at least Java 6 and is dependent on the Log4j 2 API.
+             The Commons Logging Bridge requires at least Java 6 and is dependent on the Log4j 2 API
+             and Commons Logging.
           </p>
         </section>
 
       <section name="Usage">
         <p>
           Using the Commons Logging Bridge is straightforward. Simply add the bridge jar along with
-          the other Log4j 2 jars and all logging done using the Commons Logging API will be routed to Log4j.
+          the other Log4j 2 jars and the Commons Logging jar, and all logging done using the
+          Commons Logging API will be routed to Log4j.
         </p>
       </section>
 

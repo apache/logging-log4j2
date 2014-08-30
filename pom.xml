@@ -21,7 +21,7 @@
   <artifactId>log4j</artifactId>
   <packaging>pom</packaging>
   <name>Apache Log4j 2</name>
-  <version>2.0-SNAPSHOT</version>
+  <version>2.1-SNAPSHOT</version>
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
@@ -34,8 +34,8 @@
     <url>http://issues.apache.org/jira/browse/LOG4J2</url>
   </issueManagement>
   <ciManagement>
-    <system>Gump</system>
-    <url>http://vmgump.apache.org/gump/public/logging-log4j-20/logging-log4j-20/index.html</url>
+    <system>Buildbot</system>
+    <url>http://ci.apache.org/builders/log4j2-nightly/</url>
   </ciManagement>
   <inceptionYear>1999</inceptionYear>
   <developers>
@@ -95,7 +95,7 @@
       <email>mattsicker@apache.org</email>
       <organization>Peapod</organization>
       <roles>
-        <role>Committer</role>
+        <role>PMC Member</role>
       </roles>
       <timezone>America/Chicago</timezone>
     </developer>
@@ -141,9 +141,10 @@
     </license>
   </licenses>
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/logging/log4j/log4j2/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/logging/log4j/log4j2/trunk</developerConnection>
-    <url>http://svn.apache.org/viewvc/logging/log4j/log4j2/trunk</url>
+    <connection>scm:git:http://git-wip-us.apache.org/repos/asf/logging-log4j2.git</connection>
+    <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/logging-log4j2.git</developerConnection>
+    <url>https://git-wip-us.apache.org/repos/asf?p=logging-log4j2.git;a=summary</url>
+    <tag>HEAD</tag>
   </scm>
   <organization>
     <name>Apache Software Foundation</name>
@@ -153,10 +154,10 @@
     <slf4j.version>1.7.7</slf4j.version>
     <logback.version>1.0.13</logback.version>
     <log4jParentDir>${basedir}</log4jParentDir>
-    <Log4jReleaseVersion>2.0-rc2</Log4jReleaseVersion>
-    <Log4jReleaseCount>thirteenth</Log4jReleaseCount>
+    <Log4jReleaseVersion>2.0.2</Log4jReleaseVersion>
+    <Log4jReleaseCount>sixteenth</Log4jReleaseCount>
     <jackson1.version>1.9.13</jackson1.version>
-    <jackson2.version>2.4.1</jackson2.version>
+    <jackson2.version>2.4.2</jackson2.version>
     <spring.version>3.2.8.RELEASE</spring.version>
     <flumeVersion>1.5.0</flumeVersion>
     <disruptor.version>3.2.1</disruptor.version>
@@ -172,15 +173,18 @@
     <changes.plugin.version>2.9</changes.plugin.version>
     <javadoc.plugin.version>2.9.1</javadoc.plugin.version>
     <surefire.plugin.version>2.17</surefire.plugin.version>
+    <checkstyle.plugin.version>2.12.1</checkstyle.plugin.version>
     <rat.plugin.version>0.10</rat.plugin.version>
     <pdf.plugin.version>1.2</pdf.plugin.version>
     <cobertura.plugin.version>2.5.2</cobertura.plugin.version>
+    <release.plugin.version>2.5</release.plugin.version>
+    <scm.plugin.version>1.9.1</scm.plugin.version>
     <manifestfile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestfile>
     <maven.compile.source>1.6</maven.compile.source>
     <maven.compile.target>1.6</maven.compile.target>
     <docLabel>Site Documentation</docLabel>
     <projectDir />
-    <commons.logging.version>1.1.3</commons.logging.version>
+    <commons.logging.version>1.2</commons.logging.version>
     <osgi.api.version>4.3.1</osgi.api.version>
   </properties>
   <pluginRepositories>
@@ -217,25 +221,21 @@
         <groupId>org.eclipse.osgi</groupId>
         <artifactId>org.eclipse.osgi</artifactId>
         <version>3.6.0.v20100517</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.felix</groupId>
         <artifactId>org.apache.felix.framework</artifactId>
         <version>4.2.1</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-core</artifactId>
         <version>3.1.0</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>commons-codec</groupId>
         <artifactId>commons-codec</artifactId>
         <version>1.9</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>ch.qos.logback</groupId>
@@ -460,7 +460,7 @@
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
-        <version>2.4.1.1</version>
+        <version>${jackson2.version}</version>
         <optional>true</optional>
       </dependency>
       <dependency>
@@ -639,11 +639,6 @@
               <phase>process-classes</phase>
             </execution>
           </executions>
-          <configuration>
-            <instructions>
-              <Bundle-Version>${project.version.osgi}</Bundle-Version>
-            </instructions>
-          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -653,12 +648,17 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
-          <version>2.2.2</version>
+          <version>${release.plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-scm-plugin</artifactId>
+          <version>${scm.plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>2.12</version>
+          <version>${checkstyle.plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -914,6 +914,7 @@
             <reports>
               <report>index</report>
               <report>dependencies</report>
+              <report>dependency-info</report>
               <report>dependency-convergence</report>
               <report>dependency-management</report>
               <report>project-team</report>
@@ -926,9 +927,9 @@
           </reportSet>
         </reportSets>
         <configuration>
-          <webAccessUrl>https://svn.apache.org/repos/asf/logging/log4j/log4j2/trunk${projectDir}</webAccessUrl>
-          <anonymousConnection>scm:svn:http://svn.apache.org/repos/asf/logging/log4j/log4j2/trunk${projectDir}</anonymousConnection>
-          <developerConnection>scm:svn:https://svn.apache.org/repos/asf/logging/log4j/log4j2/trunk${projectDir}</developerConnection>
+          <webAccessUrl>https://git-wip-us.apache.org/repos/asf?p=logging-log4j2.git;a=summary</webAccessUrl>
+          <anonymousConnection>scm:git:http://git-wip-us.apache.org/repos/asf/logging-log4j2.git</anonymousConnection>
+          <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/logging-log4j2.git</developerConnection>
         </configuration>
       </plugin>
       <!-- Surefire report -->
@@ -954,8 +955,18 @@
         <configuration>
           <excludes>
             <exclude>src/main/resources/META-INF/services/**/*</exclude>
+            <!-- IntelliJ files -->
             <exclude>.idea/**/*</exclude>
             <exclude>src/test/resources/**/*</exclude>
+            <!-- VM metadata -->
+            <exclude>.vagrant/**/*</exclude>
+            <!-- IDE settings imports -->
+            <exclude>src/ide/**/*</exclude>
+            <!-- does it even make sense to apply a license to a GPG signature? -->
+            <exclude>**/*.asc</exclude>
+            <!-- jQuery is MIT-licensed, but RAT can't figure it out -->
+            <exclude>src/site/resources/js/jquery.js</exclude>
+            <exclude>src/site/resources/js/jquery.min.js</exclude>
           </excludes>
         </configuration>
       </plugin>
@@ -1001,6 +1012,7 @@
     <module>log4j-web</module>
     <module>log4j-perf</module>
     <module>log4j-mom</module>
+    <module>log4j-streams</module>
   </modules>
   <profiles>
     <profile>

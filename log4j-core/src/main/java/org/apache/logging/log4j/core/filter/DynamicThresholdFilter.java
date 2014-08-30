@@ -36,6 +36,9 @@ import org.apache.logging.log4j.message.Message;
  */
 @Plugin(name = "DynamicThresholdFilter", category = "Core", elementType = "filter", printObject = true)
 public final class DynamicThresholdFilter extends AbstractFilter {
+    
+    private static final long serialVersionUID = 1L;
+
     private Map<String, Level> levelMap = new HashMap<String, Level>();
     private Level defaultThreshold = Level.ERROR;
     private final String key;

@@ -44,6 +44,9 @@ import org.apache.logging.log4j.util.EnglishEnums;
  */
 @Plugin(name = "Socket", category = "Core", elementType = "appender", printObject = true)
 public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketManager> {
+
+    private static final long serialVersionUID = 1L;
+
     private Object advertisement;
     private final Advertiser advertiser;
 
@@ -113,7 +116,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
             @PluginAttribute("immediateFlush") final String immediateFlush,
             @PluginAttribute("ignoreExceptions") final String ignore,
             @PluginElement("Layout") Layout<? extends Serializable> layout,
-            @PluginElement("Filters") final Filter filter,
+            @PluginElement("Filter") final Filter filter,
             @PluginAttribute("advertise") final String advertise, 
             @PluginConfiguration final Configuration config) {
             // @formatter:on

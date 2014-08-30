@@ -24,14 +24,15 @@ import org.apache.logging.log4j.core.LogEvent;
  * This class represents the simplest form of a string to string map.
  * It has a benefit over a map in that it can create the result on
  * demand based on the key.
+ * </p>
  * <p>
  * This class comes complete with various factory methods.
  * If these do not suffice, you can subclass and implement your own matcher.
+ * </p>
  * <p>
  * For example, it would be possible to implement a lookup that used the
  * key as a primary key, and looked up the value on demand from the database
- *
- * @version $Id$
+ * </p>
  */
 public interface StrLookup {
     /**
@@ -40,17 +41,20 @@ public interface StrLookup {
      * The internal implementation may use any mechanism to return the value.
      * The simplest implementation is to use a Map. However, virtually any
      * implementation is possible.
+     * </p>
      * <p>
      * For example, it would be possible to implement a lookup that used the
      * key as a primary key, and looked up the value on demand from the database
      * Or, a numeric based implementation could be created that treats the key
      * as an integer, increments the value and return the result as a string -
      * converting 1 to 2, 15 to 16 etc.
+     * </p>
      * <p>
-     * The {@link #lookup(String)} method always returns a String, regardless of
+     * This method always returns a String, regardless of
      * the underlying data, by converting it as necessary. For example:
+     * </p>
      * <pre>
-     * Map<String, Object> map = new HashMap<String, Object>();
+     * Map&lt;String, Object&gt; map = new HashMap&lt;String, Object&gt;();
      * map.put("number", new Integer(2));
      * assertEquals("2", StrLookup.mapLookup(map).lookup("number"));
      * </pre>
@@ -65,17 +69,20 @@ public interface StrLookup {
      * The internal implementation may use any mechanism to return the value.
      * The simplest implementation is to use a Map. However, virtually any
      * implementation is possible.
+     * </p>
      * <p>
      * For example, it would be possible to implement a lookup that used the
      * key as a primary key, and looked up the value on demand from the database
      * Or, a numeric based implementation could be created that treats the key
      * as an integer, increments the value and return the result as a string -
      * converting 1 to 2, 15 to 16 etc.
+     * </p>
      * <p>
-     * The {@link #lookup(String)} method always returns a String, regardless of
+     * This method always returns a String, regardless of
      * the underlying data, by converting it as necessary. For example:
+     * </p>
      * <pre>
-     * Map<String, Object> map = new HashMap<String, Object>();
+     * Map&lt;String, Object&gt; map = new HashMap&lt;String, Object&gt;();
      * map.put("number", new Integer(2));
      * assertEquals("2", StrLookup.mapLookup(map).lookup("number"));
      * </pre>

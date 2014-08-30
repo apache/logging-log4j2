@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Level;
  */
 public class NullConfiguration extends AbstractConfiguration {
 
+    private static final long serialVersionUID = 1L;
     public static final String NULL_NAME = "Null";
 
     public NullConfiguration() {

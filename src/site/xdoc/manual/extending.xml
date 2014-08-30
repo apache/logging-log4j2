@@ -23,7 +23,7 @@
         <title>Extending Log4j 2</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
     </properties>
-
+<!-- TODO: add in documentation regarding plugin builders, factories, and typed attributes -->
     <body>
       <section name="Extending Log4j">
         <p>
@@ -32,27 +32,28 @@
         </p>
           <subsection name="LoggerContextFactory">
             <p>
-              The LoggerContextFactory binds the Log4j API to its implementation. The Log4j LogManager
-              locates a LoggerContextFactory by locating all instances of META-INF/log4j-provider.xml, a
-              file that conforms to the java.util.Properties DTD, and then inspecting each to verify that it
-              specifies a value for the "Log4jAPIVersion" property that conforms to the version required by the
-              LogManager. If more than one valid implementation is located the value for "FactoryPriority" will
-              be used to identify the factory with the highest priority.
-              Finally, the value of the "LoggerContextFactory" property will be used to locate the
-              LoggerContextFactory. In Log4j 2 this is provided by Log4jContextFactory.
+              The <code>LoggerContextFactory</code> binds the Log4j API to its implementation. The Log4j
+              <code>LogManager</code> locates a <code>LoggerContextFactory</code> by locating all instances of
+              <code>META-INF/log4j-provider.properties</code>, a standard <code>java.util.Properties</code> file,
+              and then inspecting each to verify that it specifies a value for the <var>Log4jAPIVersion</var> property
+              that conforms to the version required by the <code>LogManager</code>. If more than one valid
+              implementation is located the value for <var>FactoryPriority</var> will be used to identify the factory
+              with the highest priority. Finally, the value of the <var>LoggerContextFactory</var> property will be
+              used to locate the <code>LoggerContextFactory</code>. In Log4j 2 this is provided by
+              <code>Log4jContextFactory</code>.
             </p>
             <p>
               Applications may change the LoggerContextFactory that will be used by
             </p>
             <ol>
-              <li>Implementing a new LoggerContextFactory and creating a log4j-provider.xml to reference it making
-                sure that it has the highest priority.
+              <li>Implementing a new <code>LoggerContextFactory</code> and creating a <code>log4j-provider.properties</code>
+                to reference it making sure that it has the highest priority.
               </li>
-              <li>Create a new log4j-provider.xml and configure it with the desired LoggerContextFactory making
-                sure that it has the highest priority.
+              <li>Create a new <code>log4j-provider.xml</code> and configure it with the desired
+                <code>LoggerContextFactory</code> making sure that it has the highest priority.
               </li>
-              <li>Setting the system property "log4j2.loggerContextFactory" to the name of the LoggerContextFactory
-                class to use.
+              <li>Setting the system property <var>log4j2.loggerContextFactory</var> to the name of the
+                <code>LoggerContextFactory</code> class to use.
               </li>
               <li>Setting the property "log4j2.loggerContextFactory" in a properties file named
                 "log4j2.LogManager.properties" to the name of the LoggerContextFactory class to use. The properties
@@ -70,15 +71,17 @@
               ContextSelector to be used.
             </p>
             <p>
-              Log4j provides three ContextSelectors:
+              Log4j provides four ContextSelectors:
             </p>
             <dl>
               <dt>BasicContextSelector</dt>
               <dd>Uses either a LoggerContext that has been stored in a ThreadLocal or a common LoggerContext.</dd>
               <dt>ClassLoaderContextSelector</dt>
               <dd>Associates LoggerContexts with the ClassLoader that created the caller of the getLogger call.</dd>
-              <dt>JNDIContextSelector</dt>
+              <dt>JndiContextSelector</dt>
               <dd>Locates the LoggerContext by querying JNDI.</dd>
+              <dt>AsyncLoggerContextSelector</dt>
+              <dd>Creates a LoggerContext that ensures that all loggers are AsyncLoggers.</dd>
             </dl>
           </subsection>
           <subsection name="ConfigurationFactory">
@@ -270,7 +273,7 @@ public final class ThresholdFilter extends AbstractFilter {
               Appenders are passed an event, (usually) invoke a Layout to format the event, and then "publish"
               the event in whatever manner is desired. Appenders are declared as Plugins with a type of "Core"
               and an elementType of "appender". The name attribute on the Plugin annotation specifies the name
-              of the element users must provide in their configuration to use the Appender. Appender's should
+              of the element users must provide in their configuration to use the Appender. Appenders should
               specify printObject as "true" if the toString method renders the values of the attributes passed
               to the Appender.
             </p>
@@ -383,6 +386,7 @@ public final class QueryConverter extends LogEventPatternConverter {
 }</pre>
           </subsection>
           <subsection name="Custom Plugins">
+            <p>See the <a href="plugins.html">Plugins</a> section of the manual.</p>
 <!-- TODO: some documentation here! -->
           </subsection>
       </section>

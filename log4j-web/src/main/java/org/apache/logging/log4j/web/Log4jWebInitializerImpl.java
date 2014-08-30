@@ -16,13 +16,10 @@
  */
 package org.apache.logging.log4j.web;
 
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
 import javax.servlet.ServletContext;
 
 import org.apache.logging.log4j.LogManager;
@@ -45,7 +42,8 @@ import org.apache.logging.log4j.spi.LoggerContextFactory;
  * This class initializes and deinitializes Log4j no matter how the initialization occurs.
  */
 final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWebLifeCycle {
-    private static final Object MUTEX = new Object();
+
+    private static final long serialVersionUID = 1L;
 
     static {
         if (Loader.isClassAvailable("org.apache.logging.log4j.core.web.JNDIContextFilter")) {
@@ -66,6 +64,21 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
     private Log4jWebInitializerImpl(final ServletContext servletContext) {
         this.servletContext = servletContext;
         this.map.put("hostName", NetUtils.getLocalHostname());
+    }
+
+    /**
+     * Initializes the Log4jWebLifeCycle attribute of a ServletContext. Those who wish to obtain this object should
+     * use the {@link org.apache.logging.log4j.web.WebLoggerContextUtils#getWebLifeCycle(javax.servlet.ServletContext)}
+     * method instead.
+     *
+     * @param servletContext the ServletContext to initialize
+     * @return a new Log4jWebLifeCycle
+     * @since 2.0.1
+     */
+    protected static Log4jWebInitializerImpl initialize(final ServletContext servletContext) {
+        final Log4jWebInitializerImpl initializer = new Log4jWebInitializerImpl(servletContext);
+        servletContext.setAttribute(SUPPORT_ATTRIBUTE, initializer);
+        return initializer;
     }
 
     @Override
@@ -96,7 +109,7 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
     }
 
     private void initializeJndi(final String location) {
-        final URI configLocation = getConfigURI(location);;
+        final URI configLocation = getConfigURI(location);
 
         if (this.name == null) {
             throw new IllegalStateException("A log4jContextName context parameter is required");
@@ -151,10 +164,11 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
                     configLocation = paths[0];
                 } else if (paths.length > 1) {
                     final String prefix = "/WEB-INF/log4j2-" + this.name + ".";
-                    final boolean found = false;
+                    boolean found = false;
                     for (final String str : paths) {
                         if (str.startsWith(prefix)) {
                             configLocation = str;
+                            found = true;
                             break;
                         }
                     }
@@ -248,13 +262,6 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
      * @return the initializer, never {@code null}.
      */
     static Log4jWebLifeCycle getLog4jWebInitializer(final ServletContext servletContext) {
-        synchronized (MUTEX) {
-            Log4jWebLifeCycle initializer = (Log4jWebLifeCycle) servletContext.getAttribute(SUPPORT_ATTRIBUTE);
-            if (initializer == null) {
-                initializer = new Log4jWebInitializerImpl(servletContext);
-                servletContext.setAttribute(SUPPORT_ATTRIBUTE, initializer);
-            }
-            return initializer;
-        }
+        return WebLoggerContextUtils.getWebLifeCycle(servletContext);
     }
 }

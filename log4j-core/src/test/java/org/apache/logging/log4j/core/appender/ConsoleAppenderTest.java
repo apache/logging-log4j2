@@ -69,5 +69,4 @@ public class ConsoleAppenderTest {
         assertFalse("Appender did not stop", app.isStarted());
     }
 
-
 }

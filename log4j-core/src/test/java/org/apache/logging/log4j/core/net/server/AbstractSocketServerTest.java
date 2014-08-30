@@ -54,6 +54,8 @@ public abstract class AbstractSocketServerTest {
 
     private class ThreadFilter extends AbstractFilter {
 
+        private static final long serialVersionUID = 1L;
+
         public ThreadFilter(final Result onMatch, final Result onMismatch) {
             super(onMatch, onMismatch);
         }
@@ -188,7 +190,7 @@ public abstract class AbstractSocketServerTest {
         for (final String message : messages) {
             rootLogger.debug(message);
         }
-        final int MAX_TRIES = 200;
+        final int MAX_TRIES = 400;
         for (int i = 0; i < MAX_TRIES; i++) {
             if (listAppender.getEvents().size() < messages.length) {
                 try {

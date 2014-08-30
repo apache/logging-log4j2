@@ -26,6 +26,11 @@ import org.apache.logging.log4j.util.Strings;
 
 /**
  * Represents a Message that consists of a Map.
+ * <p>
+ * Thread-safety note: the contents of this message can be modified after construction.
+ * When using asynchronous loggers and appenders it is not recommended to modify this message after the message is
+ * logged, because it is undefined whether the logged message string will contain the old values or the modified
+ * values.
  */
 public class MapMessage implements MultiformatMessage {
     /**

@@ -64,4 +64,28 @@ public class LocalizedMessageTest {
         assertEquals("This is test number 1 with string argument Test.", msg.getFormattedMessage());
     }
 
+    @Test
+    public void testUnsafeWithMutableParams() { // LOG4J2-763
+        final String testMsg = "Test message %s";
+        final Mutable param = new Mutable().set("abc");
+        final LocalizedMessage msg = new LocalizedMessage(testMsg, param);
+
+        // modify parameter before calling msg.getFormattedMessage
+        param.set("XYZ");
+        final String actual = msg.getFormattedMessage();
+        assertEquals("Expected most recent param value", "Test message XYZ", actual);
+    }
+
+    @Test
+    public void testSafeAfterGetFormattedMessageIsCalled() { // LOG4J2-763
+        final String testMsg = "Test message %s";
+        final Mutable param = new Mutable().set("abc");
+        final LocalizedMessage msg = new LocalizedMessage(testMsg, param);
+
+        // modify parameter after calling msg.getFormattedMessage
+        msg.getFormattedMessage();
+        param.set("XYZ");
+        final String actual = msg.getFormattedMessage();
+        assertEquals("Should use initial param value", "Test message abc", actual);
+    }
 }

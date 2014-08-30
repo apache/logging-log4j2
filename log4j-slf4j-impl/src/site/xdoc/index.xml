@@ -35,15 +35,15 @@
         <section name="Requirements">
            <p>
              The Log4j 2 SLF4J Binding requires at least Java 6 and has a dependency 
-             on the Log4j 2 API.
+             on the Log4j 2 API as well as the SLF4J API.
           </p>
         </section>
 
       <section name="Usage">
         <p>
           The SLF4J binding provided in this component cause all the SLF4J APIs to be routed to Log4j 2. Simply
-          include the Log4j 2 SLF4J Binding jar along with the Log4j 2 jars to cause all SLF4J logging to be handled
-          by Log4j 2.
+          include the Log4j 2 SLF4J Binding jar along with the Log4j 2 jars and SLF4J API jar to cause all SLF4J
+          logging to be handled by Log4j 2.
         </p>
            <p>
              <b><em>Use of the Log4j 2 SLF4J Binding (log4j-slf4j-impl-2.0.jar) together with 

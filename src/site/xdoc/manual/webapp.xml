@@ -22,6 +22,7 @@
   <properties>
     <title>Log4j 2 Web Applications</title>
     <author email="nickwilliams@apache.org">Nick Williams</author>
+    <author email="mattsicker@apache.org">Matt Sicker</author>
   </properties>
 
   <body>
@@ -142,12 +143,12 @@
           using the following <code>web.xml</code> code:
         </p>
           <pre class="prettyprint linenums"><![CDATA[    <listener>
-        <listener-class>org.apache.logging.log4j.core.web.Log4jServletContextListener</listener-class>
+        <listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class>
     </listener>
 
     <filter>
         <filter-name>log4jServletFilter</filter-name>
-        <filter-class>org.apache.logging.log4j.core.web.Log4jServletFilter</filter-class>
+        <filter-class>org.apache.logging.log4j.web.Log4jServletFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>log4jServletFilter</filter-name>
@@ -171,8 +172,8 @@
           and uses the standard pattern for locating the Log4j configuration file. There are three context parameters
           that you can use to control this behavior. The first, <code>isLog4jContextSelectorNamed</code>, specifies
           whether the context should be selected using the
-          <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/selector/JNDIContextSelector.html"
-            >JNDIContextSelector</a>. If <code>isLog4jContextSelectorNamed</code> is not specified or is anything other
+          <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/selector/JndiContextSelector.html"
+            >JndiContextSelector</a>. If <code>isLog4jContextSelectorNamed</code> is not specified or is anything other
           than <code>true</code>, it is assumed to be <code>false</code>.
         </p>
         <p>
@@ -203,7 +204,7 @@
         <param-name>log4jConfiguration</param-name>
         <param-value>file:///etc/myApp/myLogging.xml</param-value>
     </context-param>]]></pre>
-        <h4>Use the <code>JNDIContextSelector</code></h4>
+        <h4>Use the <code>JndiContextSelector</code></h4>
         <pre class="prettyprint linenums"><![CDATA[    <context-param>
         <param-name>isLog4jContextSelectorNamed</param-name>
         <param-value>true</param-value>
@@ -218,7 +219,7 @@
     </context-param>]]></pre>
         <p>
           Note that in this case you must also set the "Log4jContextSelector" system property to
-          "org.apache.logging.log4j.core.selector.JNDIContextSelector."
+          "org.apache.logging.log4j.core.selector.JndiContextSelector."
         </p>
       </subsection>
       <subsection name="Using Web Application Information During the Configuration">
@@ -285,63 +286,110 @@
         </p>
         <p>
           Thankfully, Log4j provides a simple mechanism for binding the <code>LoggerContext</code> to asynchronous
-          threads in these special circumstances. The key is to obtain a
-          <a href="../log4j-core/apidocs/org/apache/logging/log4j/web/Log4jWebSupport.html"
-              >Log4jWebSupport</a> instance from the <code>ServletContext</code> attributes, call its
-          <code>setLoggerContext</code> method as the very first line of code in your asynchronous thread, and call
-          its <code>clearLoggerContext</code> method as the very last line of code in your asynchronous thread. The
-          following code demonstrates this. It uses the container thread pool to execute asynchronous request
-          processing, passing an anonymous inner <code>Runnable</code> to the <code>start</code> method.
+          threads in these special circumstances. The simplest way to do this is to wrap the <code>Runnable</code>
+          instance that is passed to the <code>AsyncContext.start()</code> method.
         </p>
-        <pre class="prettyprint linenums"><![CDATA[public class AsyncServlet extends HttpServlet
-{
+        <pre class="prettyprint linenums"><![CDATA[
+import java.io.IOException;
+import javax.servlet.AsyncContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.web.WebLoggerContextUtils;
+
+public class TestAsyncServlet extends HttpServlet {
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException
-    {
-        final AsyncContext context = request.startAsync(request, response);
-        context.setTimeout(timeout);
-        context.start(new Runnable() {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        final AsyncContext asyncContext = req.startAsync();
+        asyncContext.start(WebLoggerContextUtils.wrapExecutionContext(getServletContext(), new Runnable() {
             @Override
             public void run() {
-                Log4jWebSupport support = (Log4jWebSupport)this.getServletContext()
-                        .getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE);
-                support.setLoggerContext();
+                final Logger logger = LogManager.getLogger(TestAsyncServlet.class);
+                logger.info("Hello, servlet!");
+            }
+        }));
+    }
+}
+        ]]></pre>
+        <p>
+          This can be slightly more convenient when using Java 1.8 and lambda functions as demonstrated below.
+        </p>
+        <pre class="prettyprint linenums"><![CDATA[
+import java.io.IOException;
+import javax.servlet.AsyncContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.web.WebLoggerContextUtils;
+
+public class TestAsyncServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        final AsyncContext asyncContext = req.startAsync();
+        asyncContext.start(WebLoggerContextUtils.wrapExecutionContext(this.getServletContext(), () -> {
+            final Logger logger = LogManager.getLogger(TestAsyncServlet.class);
+            logger.info("Hello, servlet!");
+        }));
+    }
+}
+        ]]></pre>
+        <p>
+          Alternatively, you can obtain the
+          <a href="../log4j-core/apidocs/org/apache/logging/log4j/web/Log4jWebLifeCycle.html">Log4jWebLifeCycle</a>
+          instance from the <code>ServletContext</code> attributes, call its <code>setLoggerContext</code> method as
+          the very first line of code in your asynchronous thread, and call its <code>clearLoggerContext</code> method
+          as the very last line of code in your asynchronous thread. The following code demonstrates this. It uses the
+          container thread pool to execute asynchronous request processing, passing an anonymous inner
+          <code>Runnable</code> to the <code>start</code> method.
+        </p>
+        <pre class="prettyprint linenums"><![CDATA[
+import java.io.IOException;
+import javax.servlet.AsyncContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.web.Log4jWebLifeCycle;
+import org.apache.logging.log4j.web.WebLoggerContextUtils;
+
+public class TestAsyncServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+         final AsyncContext asyncContext = req.startAsync();
+        asyncContext.start(new Runnable() {
+            @Override
+            public void run() {
+                final Log4jWebLifeCycle webLifeCycle =
+                    WebLoggerContextUtils.getWebLifeCycle(TestAsyncServlet.this.getServletContext());
+                webLifeCycle.setLoggerContext();
                 try {
-                    // miscellaneous asynchronous request handling
+                    final Logger logger = LogManager.getLogger(TestAsyncServlet.class);
+                    logger.info("Hello, servlet!");
                 } finally {
-                    support.clearLoggerContext();
+                    webLifeCycle.clearLoggerContext();
                 }
             }
         });
-    }
-}]]></pre>
+   }
+}
+        ]]></pre>
         <p>
           Note that you <em>must</em> call <code>clearLoggerContext</code> once your thread is finished
           processing. Failing to do so will result in memory leaks. If using a thread pool, it can even disrupt the
           logging of other web applications in your container. For that reason, the example here shows clearing the
-          context in a <code>finally</code> block, which will always execute. As a shortcut, you can use the
-          <code>wrapExecution</code> method, which takes care of setting the context, executing the code you pass in,
-          and clearing the context in a finally black. This is especially convenient when using Java 8 lambdas.
+          context in a <code>finally</code> block, which will always execute.
         </p>
-        <pre class="prettyprint linenums"><![CDATA[public class AsyncServlet extends HttpServlet
-{
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException
-    {
-        final AsyncContext context = request.startAsync(request, response);
-        context.setTimeout(timeout);
-        context.start(() -> {
-            Log4jWebSupport support = (Log4jWebSupport)this.getServletContext()
-                    .getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE);
-            support.wrapExecution(() -> {
-                // miscellaneous asynchronous request handling
-            });
-        });
-    }
-}]]></pre>
       </subsection>
     </section>
   </body>

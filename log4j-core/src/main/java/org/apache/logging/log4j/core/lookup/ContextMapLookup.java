@@ -21,7 +21,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 
 /**
- * Looks up keys from system properties.
+ * Looks up keys from {@link ThreadContext} objects..
  */
 @Plugin(name = "ctx", category = "Lookup")
 public class ContextMapLookup implements StrLookup {

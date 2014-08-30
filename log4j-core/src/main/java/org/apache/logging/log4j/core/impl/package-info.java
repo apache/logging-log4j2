@@ -15,6 +15,6 @@
  * limitations under the license.
  */
 /**
- * Log4j 2.0 private implementation classes.
+ * Log4j 2 private implementation classes.
  */
 package org.apache.logging.log4j.core.impl;

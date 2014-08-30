@@ -86,6 +86,14 @@
           <td><a href="log4j-jmx-gui/apidocs/index.html">Log4j JMX GUI</a></td>
           <td>A Java Swing-based client for remotely viewing the status logger and editing the Log4j configuration.</td>
         </tr>
+        <tr>
+          <td><a href="log4j-web/apidocs/index.html">Log4j Web Application Support</a></td>
+          <td>Additional classes that enable multiple configurations within a Servlet Container.</td>
+        </tr>
+        <tr>
+          <td><a href="log4j-nosql/apidocs/index.html">Log4j NoSQL Support</a></td>
+          <td>Additional Appenders for NoSQL databases such as MongoDB and CouchDB.</td>
+        </tr>
       </table>
     </section>
   </body>

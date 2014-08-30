@@ -15,6 +15,6 @@
  * limitations under the license.
  */
 /**
- * Log4j 2.0 Lookups.
+ * Log4j 2 Lookups.
  */
 package org.apache.logging.log4j.core.lookup;

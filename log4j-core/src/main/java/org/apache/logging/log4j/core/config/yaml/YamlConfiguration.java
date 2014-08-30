@@ -25,6 +25,8 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 public class YamlConfiguration extends JsonConfiguration {
 
+    private static final long serialVersionUID = 1L;
+
     public YamlConfiguration(final ConfigurationSource configSource) {
         super(configSource);
     }

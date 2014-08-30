@@ -18,10 +18,10 @@ package org.apache.logging.log4j.util;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Properties;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.spi.Provider;
@@ -32,7 +32,10 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 public final class ProviderUtil {
 
-    private static final String PROVIDER_RESOURCE = "META-INF/log4j-provider.properties";
+    /**
+     * Resource name for a Log4j 2 provider properties file.
+     */
+    protected static final String PROVIDER_RESOURCE = "META-INF/log4j-provider.properties";
     private static final String API_VERSION = "Log4jAPIVersion";
 
     private static final String[] COMPATIBLE_API_VERSIONS = {
@@ -41,7 +44,7 @@ public final class ProviderUtil {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private static final Collection<Provider> PROVIDERS = new ArrayList<Provider>();
+    private static final Collection<Provider> PROVIDERS = new CopyOnWriteArraySet<Provider>();
 
     private ProviderUtil() {
     }
@@ -54,23 +57,33 @@ public final class ProviderUtil {
         } catch (final IOException e) {
             LOGGER.fatal("Unable to locate {}", PROVIDER_RESOURCE, e);
         }
-        loadProviders(enumResources);
+        loadProviders(enumResources, cl);
     }
 
-    protected static void loadProviders(final Enumeration<URL> enumResources) {
+    protected static void loadProviders(final Enumeration<URL> enumResources, ClassLoader cl) {
         if (enumResources != null) {
             while (enumResources.hasMoreElements()) {
                 final URL url = enumResources.nextElement();
-                try {
-                    final Properties props = PropertiesUtil.loadClose(url.openStream(), url);
-                    if (!validVersion(props.getProperty(API_VERSION))) {
-                        continue;
-                    }
-                    PROVIDERS.add(new Provider(props, url));
-                } catch (final IOException ioe) {
-                    LOGGER.error("Unable to open {}", url, ioe);
-                }
+                loadProvider(url, cl);
             }
+        }
+    }
+
+    /**
+     * Loads an individual Provider implementation. This method is really only useful for the OSGi bundle activator
+     * and this class itself.
+     *
+     * @param url the URL to the provider properties file
+     * @param cl the ClassLoader to load the provider classes with
+     */
+    protected static void loadProvider(final URL url, final ClassLoader cl) {
+        try {
+            final Properties props = PropertiesUtil.loadClose(url.openStream(), url);
+            if (validVersion(props.getProperty(API_VERSION))) {
+                PROVIDERS.add(new Provider(props, url, cl));
+            }
+        } catch (final IOException e) {
+            LOGGER.error("Unable to open {}", url, e);
         }
     }
 
@@ -83,24 +96,7 @@ public final class ProviderUtil {
     }
 
     public static ClassLoader findClassLoader() {
-        ClassLoader cl;
-        if (System.getSecurityManager() == null) {
-            cl = Thread.currentThread().getContextClassLoader();
-        } else {
-            cl = java.security.AccessController.doPrivileged(
-                new java.security.PrivilegedAction<ClassLoader>() {
-                    @Override
-                    public ClassLoader run() {
-                        return Thread.currentThread().getContextClassLoader();
-                    }
-                }
-            );
-        }
-        if (cl == null) {
-            cl = ProviderUtil.class.getClassLoader();
-        }
-
-        return cl;
+        return LoaderUtil.getThreadContextClassLoader();
     }
 
     private static boolean validVersion(final String version) {

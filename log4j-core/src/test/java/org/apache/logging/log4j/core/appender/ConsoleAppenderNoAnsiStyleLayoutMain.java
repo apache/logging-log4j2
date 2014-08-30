@@ -50,6 +50,8 @@ public class ConsoleAppenderNoAnsiStyleLayoutMain {
             LOG.debug("Debug message.");
             LOG.trace("Trace message.");
             LOG.error("Error message.", new IOException("test"));
+            // This will log the stack trace as well:
+            LOG.error("Error message {}", "Hi", new IOException("test"));
         } finally {
             Configurator.shutdown(ctx);
         }

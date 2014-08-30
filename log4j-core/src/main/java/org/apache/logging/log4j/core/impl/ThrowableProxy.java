@@ -224,7 +224,7 @@ public class ThrowableProxy implements Serializable {
             final ExtendedStackTraceElement[] extStackTrace, final List<String> ignorePackages) {
         if (ignorePackages == null || ignorePackages.isEmpty()) {
             for (int i = 0; i < extStackTrace.length; ++i) {
-                this.formatEntry(causedTrace[i], extStackTrace[i], sb);
+                this.formatEntry(extStackTrace[i], sb);
             }
         } else {
             int count = 0;
@@ -238,7 +238,7 @@ public class ThrowableProxy implements Serializable {
                         }
                         count = 0;
                     }
-                    this.formatEntry(causedTrace[i], extStackTrace[i], sb);
+                    this.formatEntry(extStackTrace[i], sb);
                 } else {
                     ++count;
                 }
@@ -256,8 +256,7 @@ public class ThrowableProxy implements Serializable {
         }
     }
 
-    private void formatEntry(final StackTraceElement element, final ExtendedStackTraceElement extStackTraceElement,
-            final StringBuilder sb) {
+    private void formatEntry(final ExtendedStackTraceElement extStackTraceElement, final StringBuilder sb) {
         sb.append("\tat ");
         sb.append(extStackTraceElement);
         sb.append('\n');

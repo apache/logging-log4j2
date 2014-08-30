@@ -48,6 +48,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 @Plugin(name = "Console", category = "Core", elementType = "appender", printObject = true)
 public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputStreamManager> {
 
+    private static final long serialVersionUID = 1L;
     private static final String JANSI_CLASS = "org.fusesource.jansi.WindowsAnsiOutputStream";
     private static ConsoleManagerFactory factory = new ConsoleManagerFactory();
 
@@ -81,7 +82,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
     @PluginFactory
     public static ConsoleAppender createAppender(
             @PluginElement("Layout") Layout<? extends Serializable> layout,
-            @PluginElement("Filters") final Filter filter,
+            @PluginElement("Filter") final Filter filter,
             @PluginAttribute(value = "target", defaultString = "SYSTEM_OUT") final String targetStr,
             @PluginAttribute("name") final String name,
             @PluginAttribute(value = "follow", defaultBoolean = false) final String follow,
@@ -121,9 +122,8 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
             return printStream;
         }
         try {
-            final ClassLoader loader = Loader.getClassLoader();
             // We type the parameter as a wildcard to avoid a hard reference to Jansi.
-            final Class<?> clazz = loader.loadClass(JANSI_CLASS);
+            final Class<?> clazz = Loader.loadClass(JANSI_CLASS);
             final Constructor<?> constructor = clazz.getConstructor(OutputStream.class);
             return (OutputStream) constructor.newInstance(printStream);
         } catch (final ClassNotFoundException cnfe) {

@@ -39,6 +39,7 @@ import org.apache.logging.log4j.core.util.Integers;
 @Plugin(name = "File", category = "Core", elementType = "appender", printObject = true)
 public final class FileAppender extends AbstractOutputStreamAppender<FileManager> {
 
+    private static final long serialVersionUID = 1L;
     private static final int DEFAULT_BUFFER_SIZE = 8192;
     private final String fileName;
     private final Advertiser advertiser;
@@ -108,7 +109,7 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             @PluginAttribute("bufferedIo") final String bufferedIo,
             @PluginAttribute("bufferSize") final String bufferSizeStr,
             @PluginElement("Layout") Layout<? extends Serializable> layout,
-            @PluginElement("Filters") final Filter filter,
+            @PluginElement("Filter") final Filter filter,
             @PluginAttribute("advertise") final String advertise,
             @PluginAttribute("advertiseUri") final String advertiseUri,
             @PluginConfiguration final Configuration config) {

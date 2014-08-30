@@ -39,6 +39,8 @@ import org.apache.logging.log4j.message.Message;
 @Plugin(name = "filters", category = "Core", printObject = true)
 public final class CompositeFilter extends AbstractLifeCycle implements Iterable<Filter>, Filter {
 
+    private static final long serialVersionUID = 1L;
+
     private final List<Filter> filters;
 
     private CompositeFilter() {

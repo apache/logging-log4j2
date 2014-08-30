@@ -16,14 +16,21 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Looks up keys from system properties.
  */
 @Plugin(name = "sys", category = "Lookup")
 public class SystemPropertiesLookup implements StrLookup {
+
+    private static final Logger LOGGER = StatusLogger.getLogger();
+    private static final Marker LOOKUP = MarkerManager.getMarker("LOOKUP");
 
     /**
      * Looks up the value for the key.
@@ -35,7 +42,7 @@ public class SystemPropertiesLookup implements StrLookup {
         try {
             return System.getProperty(key);
         } catch (final Exception ex) {
-            // Should this be logged?
+            LOGGER.warn(LOOKUP, "Error while getting system property [{}].", key, ex);
             return null;
         }
     }
@@ -48,11 +55,6 @@ public class SystemPropertiesLookup implements StrLookup {
      */
     @Override
     public String lookup(final LogEvent event, final String key) {
-        try {
-            return System.getProperty(key);
-        } catch (final Exception ex) {
-            // Should this be logged?
-            return null;
-        }
+        return lookup(key);
     }
 }

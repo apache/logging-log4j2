@@ -54,7 +54,8 @@ Download Apache Log4j 2
 % gpg --verify apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.asc
 ---
 
-    Apache Log4j 2 is signed by Ralph Goers  B3D8E1BA
+~~    Apache Log4j 2 is signed by Ralph Goers  B3D8E1BA
+    Apache Log4j ${Log4jReleaseVersion} is signed by Matt Sicker (FA1C814D)
 
     Alternatively, you can verify the MD5 signature on the files. A unix program called md5 or md5sum is included
     in many unix distributions.

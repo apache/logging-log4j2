@@ -29,7 +29,6 @@ import java.util.NoSuchElementException;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.DefaultThreadContextStack;
-import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextStack;
@@ -142,6 +141,10 @@ public final class ThreadContext  {
             return 0;
         }
 
+        @Override
+        public ContextStack getImmutableStackOrNull() {
+            return this;
+        }
     }
 
     /**
@@ -169,12 +172,14 @@ public final class ThreadContext  {
     /**
      * Empty, immutable Map.
      */
-    @SuppressWarnings("PublicStaticCollectionField")
+    // ironically, this annotation gives an "unsupported @SuppressWarnings" warning in Eclipse
+    @SuppressWarnings("PublicStaticCollectionField") // I like irony, so I won't delete it...
     public static final Map<String, String> EMPTY_MAP = Collections.emptyMap();
 
     /**
      * Empty, immutable ContextStack.
      */
+    // ironically, this annotation gives an "unsupported @SuppressWarnings" warning in Eclipse
     @SuppressWarnings("PublicStaticCollectionField")
     public static final ThreadContextStack EMPTY_STACK = new EmptyThreadContextStack();
 
@@ -214,29 +219,25 @@ public final class ThreadContext  {
                     contextMap = (ThreadContextMap) clazz.newInstance();
                 }
             } catch (final ClassNotFoundException cnfe) {
-                LOGGER.error("Unable to locate configured LoggerContextFactory {}", threadContextMapName);
+                LOGGER.error("Unable to locate configured ThreadContextMap {}", threadContextMapName);
             } catch (final Exception ex) {
-                LOGGER.error("Unable to create configured LoggerContextFactory {}", threadContextMapName, ex);
+                LOGGER.error("Unable to create configured ThreadContextMap {}", threadContextMapName, ex);
             }
         }
         if (contextMap == null && ProviderUtil.hasProviders()) {
-            final LoggerContextFactory factory = LogManager.getFactory();
+            final String factoryClassName = LogManager.getFactory().getClass().getName();
             for (final Provider provider : ProviderUtil.getProviders()) {
-                threadContextMapName = provider.getThreadContextMap();
-                final String factoryClassName = provider.getClassName();
-                if (threadContextMapName != null && factory.getClass().getName().equals(factoryClassName)) {
-                    try {
-                        final Class<?> clazz = cl.loadClass(threadContextMapName);
-                        if (ThreadContextMap.class.isAssignableFrom(clazz)) {
-                            contextMap = (ThreadContextMap) clazz.newInstance();
+                if (factoryClassName.equals(provider.getClassName())) {
+                    final Class<? extends ThreadContextMap> clazz = provider.loadThreadContextMap();
+                    if (clazz != null) {
+                        try {
+                            contextMap = clazz.newInstance();
                             break;
+                        } catch (final Exception e) {
+                            LOGGER.error("Unable to locate or load configured ThreadContextMap {}",
+                                provider.getThreadContextMap(), e);
+                            contextMap = new DefaultThreadContextMap(useMap);
                         }
-                    } catch (final ClassNotFoundException cnfe) {
-                        LOGGER.error("Unable to locate configured LoggerContextFactory {}", threadContextMapName);
-                        contextMap = new DefaultThreadContextMap(useMap);
-                    } catch (final Exception ex) {
-                        LOGGER.error("Unable to create configured LoggerContextFactory {}", threadContextMapName, ex);
-                        contextMap = new DefaultThreadContextMap(useMap);
                     }
                 }
             }
@@ -254,9 +255,9 @@ public final class ThreadContext  {
      * Puts a context value (the <code>value</code> parameter) as identified
      * with the <code>key</code> parameter into the current thread's
      * context map.
-     * <p/>
+     *
      * <p>If the current thread does not have a context map it is
-     * created as a side effect.
+     * created as a side effect.</p>
      * @param key The key name.
      * @param value The key value.
      */
@@ -266,8 +267,8 @@ public final class ThreadContext  {
 
     /**
      * Gets the context value identified by the <code>key</code> parameter.
-     * <p/>
-     * <p>This method has no side effects.
+     *
+     * <p>This method has no side effects.</p>
      * @param key The key to locate.
      * @return The value associated with the key or null.
      */
@@ -352,7 +353,8 @@ public final class ThreadContext  {
      * @return an immutable copy of the ThreadContext stack.
      */
     public static ContextStack getImmutableStack() {
-        return contextStack;
+        ContextStack result = contextStack.getImmutableStackOrNull();
+        return result == null ? EMPTY_STACK : result;
     }
 
     /**
@@ -379,9 +381,9 @@ public final class ThreadContext  {
 
     /**
      * Returns the value of the last item placed on the stack.
-     * <p/>
+     *
      * <p>The returned value is the value that was pushed last. If no
-     * context is available, then the empty string "" is returned.
+     * context is available, then the empty string "" is returned.</p>
      *
      * @return String The innermost diagnostic context.
      */
@@ -392,9 +394,9 @@ public final class ThreadContext  {
     /**
      * Looks at the last diagnostic context at the top of this NDC
      * without removing it.
-     * <p/>
+     *
      * <p>The returned value is the value that was pushed last. If no
-     * context is available, then the empty string "" is returned.
+     * context is available, then the empty string "" is returned.</p>
      *
      * @return String The innermost diagnostic context.
      */
@@ -404,9 +406,9 @@ public final class ThreadContext  {
 
     /**
      * Pushes new diagnostic context information for the current thread.
-     * <p/>
+     *
      * <p>The contents of the <code>message</code> parameter is
-     * determined solely by the client.
+     * determined solely by the client.</p>
      *
      * @param message The new diagnostic context information.
      */
@@ -415,11 +417,11 @@ public final class ThreadContext  {
     }
     /**
      * Pushes new diagnostic context information for the current thread.
-     * <p/>
+     *
      * <p>The contents of the <code>message</code> and args parameters are
      * determined solely by the client. The message will be treated as a format String
      * and tokens will be replaced with the String value of the arguments in accordance
-     * with ParameterizedMessage.
+     * with ParameterizedMessage.</p>
      *
      * @param message The new diagnostic context information.
      * @param args Parameters for the message.
@@ -430,12 +432,12 @@ public final class ThreadContext  {
 
     /**
      * Removes the diagnostic context for this thread.
-     * <p/>
+     *
      * <p>Each thread that created a diagnostic context by calling
      * {@link #push} should call this method before exiting. Otherwise,
      * the memory used by the <b>thread</b> cannot be reclaimed by the
-     * VM.
-     * <p/>
+     * VM.</p>
+     *
      * <p>As this is such an important problem in heavy duty systems and
      * because it is difficult to always guarantee that the remove
      * method is called before exiting a thread, this method has been
@@ -444,7 +446,7 @@ public final class ThreadContext  {
      * occasionally forget to call {@link #remove} before exiting a
      * thread. However, you must call <code>remove</code> sometime. If
      * you never call it, then your application is sure to run out of
-     * memory.
+     * memory.</p>
      */
     public static void removeStack() {
         contextStack.clear();
@@ -455,26 +457,26 @@ public final class ThreadContext  {
      * depth is smaller or equal to <code>maxDepth</code>, then no
      * action is taken. If the current depth is larger than newDepth
      * then all elements at maxDepth or higher are discarded.
-     * <p/>
+     *
      * <p>This method is a convenient alternative to multiple {@link
      * #pop} calls. Moreover, it is often the case that at the end of
      * complex call sequences, the depth of the ThreadContext is
      * unpredictable. The <code>trim</code> method circumvents
-     * this problem.
-     * <p/>
-     * <p>For example, the combination
+     * this problem.</p>
+     *
+     * <p>For example, the combination</p>
      * <pre>
      * void foo() {
-     * &nbsp;  int depth = ThreadContext.getDepth();
-     * <p/>
-     * &nbsp;  ... complex sequence of calls
-     * <p/>
-     * &nbsp;  ThreadContext.trim(depth);
+     *     final int depth = ThreadContext.getDepth();
+     *
+     *     // ... complex sequence of calls
+     *
+     *     ThreadContext.trim(depth);
      * }
      * </pre>
-     * <p/>
-     * ensures that between the entry and exit of foo the depth of the
-     * diagnostic stack is conserved.
+     *
+     * <p>ensures that between the entry and exit of {@code foo} the depth of the
+     * diagnostic stack is conserved.</p>
      *
      * @see #getDepth
      * @param depth The number of elements to keep.
@@ -527,8 +529,16 @@ public final class ThreadContext  {
 
         /**
          * Returns a copy of the ContextStack.
-         * @return a copy of the ContextStack.s
+         * @return a copy of the ContextStack.
          */
         ContextStack copy();
+
+        /**
+         * Returns a ContextStack with the same contents as this ContextStack or {@code null}.
+         * Attempts to modify the returned stack may or may not throw an exception, but will not affect the contents
+         * of this ContextStack.
+         * @return a ContextStack with the same contents as this ContextStack or {@code null}.
+         */
+        ContextStack getImmutableStackOrNull();
     }
 }

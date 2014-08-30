@@ -15,6 +15,6 @@
  * limitations under the license.
  */
 /**
- * Log4j 2.0 Filter support.
+ * Log4j 2 Filter support.
  */
 package org.apache.logging.log4j.core.filter;

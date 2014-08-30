@@ -18,6 +18,7 @@ package org.apache.logging.log4j.util;
 
 /**
  * <em>Consider this class private.</em>
+ * @see <a href="http://commons.apache.org/proper/commons-lang/">Apache Commons Lang</a>
  */
 public final class Strings {
 
@@ -71,6 +72,27 @@ public final class Strings {
      */
     public static boolean isNotEmpty(final CharSequence cs) {
         return !isEmpty(cs);
+    }
+
+    /**
+     * Checks if a String is blank. A blank string is one that is {@code null}, empty, or when trimmed using
+     * {@link String#trim()} is empty.
+     *
+     * @param s the String to check, may be {@code null}
+     * @return {@code true} if the String is {@code null}, empty, or trims to empty.
+     */
+    public static boolean isBlank(final String s) {
+        return s == null || s.trim().isEmpty();
+    }
+
+    /**
+     * Checks if a String is not blank. The opposite of {@link #isBlank(String)}.
+     *
+     * @param s the String to check, may be {@code null}
+     * @return {@code true} if the String is non-{@code null} and has content after being trimmed.
+     */
+    public static boolean isNotBlank(final String s) {
+        return !isBlank(s);
     }
 
     /**

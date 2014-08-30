@@ -32,6 +32,8 @@ import org.apache.logging.log4j.test.SomethingThatUsesLogging;
 @Plugin(name = "UsesLoggingAppender", category = "Core", elementType = "appender", printObject = true)
 public final class UsesLoggingAppender extends AbstractAppender {
 
+    private static final long serialVersionUID = 1L;
+
     private final SomethingThatUsesLogging thing;
 
     private UsesLoggingAppender(final String name, final Filter filter, final Layout<?> layout, final boolean ignoreExceptions) {
@@ -43,7 +45,7 @@ public final class UsesLoggingAppender extends AbstractAppender {
     public static UsesLoggingAppender createAppender(@PluginAttribute("name") final String name,
                                             @PluginAttribute("ignoreExceptions") final String ignore,
                                             @PluginElement("Layout") final Layout<?> layout,
-                                            @PluginElement("Filters") final Filter filter) {
+                                            @PluginElement("Filter") final Filter filter) {
 
         final boolean ignoreExceptions = Boolean.parseBoolean(ignore);
 

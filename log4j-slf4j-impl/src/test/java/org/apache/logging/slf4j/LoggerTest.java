@@ -18,22 +18,17 @@ package org.apache.logging.slf4j;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+import org.slf4j.Marker;
 import org.slf4j.ext.EventData;
 import org.slf4j.ext.EventLogger;
 import org.slf4j.ext.XLogger;
@@ -48,22 +43,9 @@ import static org.junit.Assert.*;
 public class LoggerTest {
 
     private static final String CONFIG = "log4j-test1.xml";
-    private static LoggerContext ctx;
 
-    @BeforeClass
-    public static void setupClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        ctx = (LoggerContext) LogManager.getContext(false);
-        ctx.reconfigure();
-        ctx.getConfiguration();
-    }
-
-    @AfterClass
-    public static void cleanupClass() {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        ctx.reconfigure();
-        StatusLogger.getLogger().reset();
-    }
+    @ClassRule
+    public static InitialLoggerContext ctx = new InitialLoggerContext(CONFIG);
 
     Logger logger = LoggerFactory.getLogger("LoggerTest");
     XLogger xlogger = XLoggerFactory.getXLogger("LoggerTest");
@@ -135,6 +117,16 @@ public class LoggerTest {
         verify("List", "o.a.l.s.LoggerTest Debug message MDC{}" + Constants.LINE_SEPARATOR);
     }
 
+    /**
+     * @issue LOG4J2-793
+     */
+    @Test
+    public void supportsCustomSLF4JMarkers() {
+        final Marker marker = new CustomFlatMarker("TEST");
+        logger.debug(marker, "Test");
+        verify("List", "o.a.l.s.LoggerTest Test MDC{}" + Constants.LINE_SEPARATOR);
+    }
+
     @Test
     public void testRootLogger() {
         final Logger l = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
@@ -168,23 +160,18 @@ public class LoggerTest {
     }
 
     private void verify(final String name, final String expected) {
-        //LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-        final Appender listApp = ctx.getConfiguration().getAppender(name);
+        final ListAppender listApp = ctx.getListAppender(name);
         assertNotNull("Missing Appender", listApp);
-        assertTrue("Not a ListAppender", listApp instanceof ListAppender);
-        final List<String> events = ((ListAppender) listApp).getMessages();
+        final List<String> events = listApp.getMessages();
         assertTrue("Incorrect number of messages. Expected 1 Actual " + events.size(), events.size()== 1);
         final String actual = events.get(0);
         assertEquals("Incorrect message. Expected " + expected + ". Actual " + actual, expected, actual);
-        ((ListAppender) listApp).clear();
+        listApp.clear();
     }
 
     @Before
     public void cleanup() {
-        final Map<String, Appender> map = ctx.getConfiguration().getAppenders();
-        final Appender listApp = map.get("List");
-        ((ListAppender) listApp).clear();
-        final Appender eventApp = map.get("EventLogger");
-        ((ListAppender) eventApp).clear();
+        ctx.getListAppender("List").clear();
+        ctx.getListAppender("EventLogger").clear();
     }
 }

@@ -30,7 +30,7 @@
 
     <Logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
       <AppenderRef ref="File"/>
-    </Logger>>
+    </Logger>
 
     <Root level="trace">
       <AppenderRef ref="List"/>

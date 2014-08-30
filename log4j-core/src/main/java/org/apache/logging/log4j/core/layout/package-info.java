@@ -15,6 +15,6 @@
  * limitations under the license.
  */
 /**
- * Log4j 2.0 Layout support.
+ * Log4j 2 Layout support.
  */
 package org.apache.logging.log4j.core.layout;

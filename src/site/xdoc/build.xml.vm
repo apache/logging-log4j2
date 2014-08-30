@@ -40,9 +40,13 @@
       </p>
       <p>
         Log4j 2.x uses Maven 3 as its build tool. To build and install Log4j in your local Maven cache, from
-        the root directory run:
+        the root directory run: <kbd>mvn install</kbd>
       </p>
-      <pre>mvn install</pre>
+      <p class="bg-warning">Note that in order to build the website, you need to use
+          <a href="http://maven.apache.org/download.cgi#Maven_3.0.5">Maven 3.0.5</a> due to plugin compatibility
+          issues as documented in
+          <a href="http://jira.codehaus.org/browse/MSITE-695">MSITE-695</a>.
+      </p>
       <p>
         Then to build the full site, you must use a local staging directory:
       </p>
@@ -50,13 +54,11 @@
 [Windows] mvn site:stage-deploy -DstagingSiteURL=file:///%HOME%/log4j
 [Unix] mvn site:stage-deploy -DstagingSiteURL=file:///$HOME/log4j</pre>
       <p>
-        To rebuild only what's changed and execute the tests, run:
+          To rebuild only what's changed and execute the tests, run: <kbd>mvn test</kbd>
       </p>
-      <pre>mvn test</pre>
       <p>
-        To rebuild from scratch, add "clean", for example:
+          To rebuild from scratch, add "clean", for example: <kbd>mvn clean test</kbd>
       </p>
-      <pre>mvn clean test</pre>
 
 		</section>
 	</body>

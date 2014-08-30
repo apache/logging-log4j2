@@ -17,6 +17,6 @@
 
 /**
  * Java annotation processor for pre-scanning Log4j 2 plugins. This is provided as an alternative to using the
- * executable {@link org.apache.logging.log4j.core.config.plugins.PluginManager} class in your build process.
+ * executable {@link org.apache.logging.log4j.core.config.plugins.util.PluginManager} class in your build process.
  */
 package org.apache.logging.log4j.core.config.plugins.processor;

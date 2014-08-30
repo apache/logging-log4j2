@@ -21,11 +21,10 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ReflectPermission;
 import java.net.URL;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -39,9 +38,6 @@ public final class Loader {
 
     private static final String TSTR = "Caught Exception while in Loader.getResource. This may be innocuous.";
 
-    private static final PrivilegedAction<ClassLoader> THREAD_CONTEXT_CLASS_LOADER_GETTER =
-        new ThreadContextClassLoaderGetter();
-
     static {
         final String ignoreTCLProp = PropertiesUtil.getProperties().getStringProperty("log4j.ignoreTCL", null);
         if (ignoreTCLProp != null) {
@@ -49,7 +45,6 @@ public final class Loader {
         }
         final SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
-            sm.checkPermission(new RuntimePermission("getClassLoader"));
             sm.checkPermission(new RuntimePermission("getStackTrace"));
             sm.checkPermission(new ReflectPermission("suppressAccessChecks"));
         }
@@ -71,7 +66,7 @@ public final class Loader {
      * @return the TCCL.
      */
     public static ClassLoader getThreadContextClassLoader() {
-        return getTcl();
+        return LoaderUtil.getThreadContextClassLoader();
     }
 
     // TODO: this method could use some explanation
@@ -95,20 +90,18 @@ public final class Loader {
     /**
      * This method will search for {@code resource} in different
      * places. The search order is as follows:
-     * <p/>
+     *
      * <ol>
-     * <p/>
-     * <p><li>Search for {@code resource} using the thread context
+     *
+     * <li>Search for {@code resource} using the thread context
      * class loader under Java2. If that fails, search for
      * {@code resource} using the class loader that loaded this
      * class ({@code Loader}). Under JDK 1.1, only the the class
-     * loader that loaded this class ({@code Loader}) is used.
-     * <p/>
-     * <p><li>Try one last time with
+     * loader that loaded this class ({@code Loader}) is used.</li>
+     * <li>Try one last time with
      * {@code ClassLoader.getSystemResource(resource)}, that is is
      * using the system class loader in JDK 1.2 and virtual machine's
-     * built-in class loader in JDK 1.1.
-     * <p/>
+     * built-in class loader in JDK 1.1.</li>
      * </ol>
      * @param resource The resource to load.
      * @param defaultLoader The default ClassLoader.
@@ -160,20 +153,17 @@ public final class Loader {
     /**
      * This method will search for {@code resource} in different
      * places. The search order is as follows:
-     * <p/>
+     *
      * <ol>
-     * <p/>
-     * <p><li>Search for {@code resource} using the thread context
+     * <li>Search for {@code resource} using the thread context
      * class loader under Java2. If that fails, search for
      * {@code resource} using the class loader that loaded this
      * class ({@code Loader}). Under JDK 1.1, only the the class
-     * loader that loaded this class ({@code Loader}) is used.
-     * <p/>
-     * <p><li>Try one last time with
+     * loader that loaded this class ({@code Loader}) is used.</li>
+     * <li>Try one last time with
      * {@code ClassLoader.getSystemResource(resource)}, that is is
      * using the system class loader in JDK 1.2 and virtual machine's
-     * built-in class loader in JDK 1.1.
-     * <p/>
+     * built-in class loader in JDK 1.1.</li>
      * </ol>
      * @param resource The resource to load.
      * @param defaultLoader The default ClassLoader.
@@ -225,18 +215,7 @@ public final class Loader {
     }
 
     private static ClassLoader getTcl() {
-        return System.getSecurityManager() == null
-            ? THREAD_CONTEXT_CLASS_LOADER_GETTER.run()
-            : AccessController.doPrivileged(THREAD_CONTEXT_CLASS_LOADER_GETTER);
-    }
-
-    private static class ThreadContextClassLoaderGetter implements PrivilegedAction<ClassLoader> {
-        @Override
-        public ClassLoader run() {
-            final ClassLoader cl = Thread.currentThread().getContextClassLoader();
-            // if the TCCL is null, that means we're using the system CL
-            return cl == null ? ClassLoader.getSystemClassLoader() : cl;
-        }
+        return LoaderUtil.getThreadContextClassLoader();
     }
 
     /**
