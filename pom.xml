@@ -499,11 +499,6 @@
         <version>${activemq.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.qpid</groupId>
-        <artifactId>proton-j</artifactId>
-        <version>0.7</version>
-      </dependency>
-      <dependency>
         <groupId>org.mockejb</groupId>
         <artifactId>mockejb</artifactId>
         <version>0.6-beta2</version>
@@ -1011,7 +1006,7 @@
     <module>log4j-nosql</module>
     <module>log4j-web</module>
     <module>log4j-perf</module>
-    <module>log4j-mom</module>
+    <module>log4j-jms</module>
     <module>log4j-streams</module>
   </modules>
   <profiles>
