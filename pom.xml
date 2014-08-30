@@ -669,6 +669,13 @@
             <showDeprecation>true</showDeprecation>
             <showWarnings>true</showWarnings>
             <encoding>UTF-8</encoding>
+            <fork>true</fork>
+            <meminitial>256</meminitial>
+            <maxmem>1024</maxmem>
+            <compilerArguments>
+              <Xmaxwarns>10000</Xmaxwarns>
+              <Xlint/>
+            </compilerArguments>
           </configuration>
         </plugin>
         <plugin>
@@ -1199,6 +1206,14 @@
             <artifactId>maven-failsafe-plugin</artifactId>
             <configuration>
               <argLine>-XX:MaxPermSize=512m</argLine>
+            </configuration>
+          </plugin>
+          <plugin>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <compilerArgs>
+                <arg>-XX:MaxPermSize=512m</arg>
+              </compilerArgs>
             </configuration>
           </plugin>
         </plugins>
