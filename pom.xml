@@ -34,8 +34,8 @@
     <url>http://issues.apache.org/jira/browse/LOG4J2</url>
   </issueManagement>
   <ciManagement>
-    <system>Gump</system>
-    <url>http://vmgump.apache.org/gump/public/logging-log4j-20/logging-log4j-20/index.html</url>
+    <system>Buildbot</system>
+    <url>http://ci.apache.org/builders/log4j2-nightly/</url>
   </ciManagement>
   <inceptionYear>1999</inceptionYear>
   <developers>
