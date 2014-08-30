@@ -24,7 +24,7 @@ import javax.naming.NamingException;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
-import org.apache.logging.log4j.core.util.Closer;
+import org.apache.logging.log4j.core.util.JndiCloser;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -94,7 +94,7 @@ public class JndiManager extends AbstractManager {
 
     @Override
     protected void releaseSub() {
-        Closer.closeSilently(this.context);
+        JndiCloser.closeSilently(this.context);
     }
 
     /**
