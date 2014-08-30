@@ -900,9 +900,9 @@
           </reportSet>
         </reportSets>
         <configuration>
-          <webAccessUrl>https://svn.apache.org/repos/asf/logging/log4j/log4j2/trunk${projectDir}</webAccessUrl>
-          <anonymousConnection>scm:svn:http://svn.apache.org/repos/asf/logging/log4j/log4j2/trunk${projectDir}</anonymousConnection>
-          <developerConnection>scm:svn:https://svn.apache.org/repos/asf/logging/log4j/log4j2/trunk${projectDir}</developerConnection>
+          <webAccessUrl>https://git-wip-us.apache.org/repos/asf?p=logging-log4j2.git;a=summary</webAccessUrl>
+          <anonymousConnection>scm:git:http://git-wip-us.apache.org/repos/asf/logging-log4j2.git</anonymousConnection>
+          <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/logging-log4j2.git</developerConnection>
         </configuration>
       </plugin>
       <!-- Surefire report -->
