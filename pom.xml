@@ -910,9 +910,10 @@
           </reportSet>
         </reportSets>
         <configuration>
-          <webAccessUrl>https://git-wip-us.apache.org/repos/asf?p=logging-log4j2.git;a=summary</webAccessUrl>
-          <anonymousConnection>scm:git:http://git-wip-us.apache.org/repos/asf/logging-log4j2.git</anonymousConnection>
-          <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/logging-log4j2.git</developerConnection>
+          <!-- you'd think these would be the defaults, right? -->
+          <webAccessUrl>${project.scm.url}</webAccessUrl>
+          <anonymousConnection>${project.scm.connection}</anonymousConnection>
+          <developerConnection>${project.scm.developerConnection}</developerConnection>
         </configuration>
       </plugin>
       <!-- Surefire report -->
