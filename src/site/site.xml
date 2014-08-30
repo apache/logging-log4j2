@@ -15,8 +15,18 @@
  limitations under the license.
 
 -->
-<project name="Log4j">
+<project name="Log4j"
+         xmlns="http://maven.apache.org/DECORATION/1.4.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/DECORATION/1.4.0 http://maven.apache.org/xsd/decoration-1.4.0.xsd">
   <body>
+    <links>
+      <item name="Logging Wiki" href="http://wiki.apache.org/logging"/>
+      <item name="Apache" href="http://www.apache.org/"/>
+      <item name="Logging Services" href="http://logging.apache.org/"/>
+      <item name="Sonar" href="https://analysis.apache.org/dashboard/index/org.apache.logging.log4j:log4j"/>
+    </links>
+
     <menu name="Apache Log4j™ 2" inherit="top" img="icon-home">
       <item name="About" href="/index.html"/>
       <item name="Download" href="/download.html"/>
@@ -207,12 +217,5 @@
       <item name="Surefire Report" href="/surefire-report.html" />
       <item name="RAT Report" href="/rat-report.html" />
     </menu>
-
-    <links>
-      <item name="Logging Wiki" href="http://wiki.apache.org/logging"/>
-      <item name="Apache" href="http://www.apache.org/"/>
-      <item name="Logging Services" href="http://logging.apache.org/"/>
-      <item name="Sonar" href="https://analysis.apache.org/dashboard/index/org.apache.logging.log4j:log4j"/>
-    </links>
   </body>
 </project>
