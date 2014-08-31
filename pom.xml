@@ -1209,14 +1209,6 @@
               <argLine>-XX:MaxPermSize=512m</argLine>
             </configuration>
           </plugin>
-          <plugin>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <configuration>
-              <compilerArgs>
-                <arg>-XX:MaxPermSize=512m</arg>
-              </compilerArgs>
-            </configuration>
-          </plugin>
         </plugins>
       </build>
     </profile>
