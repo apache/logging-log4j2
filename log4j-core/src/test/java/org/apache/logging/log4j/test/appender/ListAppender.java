@@ -21,9 +21,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -176,5 +178,16 @@ public class ListAppender extends AbstractAppender {
         final boolean r = Boolean.parseBoolean(raw);
 
         return new ListAppender(name, filter, layout, nl, r);
+    }
+
+    /**
+     * Gets the named ListAppender if it has been registered.
+     *
+     * @param name the name of the ListAppender
+     * @return the named ListAppender or {@code null} if it does not exist
+     * @see org.apache.logging.log4j.junit.InitialLoggerContext#getListAppender(String)
+     */
+    public static ListAppender getListAppender(final String name) {
+        return ((ListAppender) ((LoggerContext) LogManager.getContext(false)).getConfiguration().getAppender(name));
     }
 }
