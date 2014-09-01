@@ -17,13 +17,9 @@
 
 package org.apache.logging.log4j.core.config.plugins.processor;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Set;
-import java.util.concurrent.ConcurrentMap;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAliases;
+import org.apache.logging.log4j.util.Strings;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
@@ -37,10 +33,13 @@ import javax.lang.model.util.SimpleElementVisitor6;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
-
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAliases;
-import org.apache.logging.log4j.util.Strings;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Annotation processor for pre-scanning Log4j 2 plugins.
@@ -92,7 +91,7 @@ public class PluginProcessor extends AbstractProcessor {
         for (final Element element : elements) {
             final Plugin plugin = element.getAnnotation(Plugin.class);
             final PluginEntry entry = element.accept(pluginVisitor, plugin);
-            final ConcurrentMap<String, PluginEntry> category = pluginCache.getCategory(entry.getCategory());
+            final Map<String, PluginEntry> category = pluginCache.getCategory(entry.getCategory());
             category.put(entry.getKey(), entry);
             final Collection<PluginEntry> entries = element.accept(pluginAliasesVisitor, plugin);
             for (final PluginEntry pluginEntry : entries) {

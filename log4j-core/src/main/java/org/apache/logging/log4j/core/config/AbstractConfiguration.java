@@ -16,20 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
@@ -58,6 +44,21 @@ import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.util.PropertiesUtil;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * The base Configuration. Many configuration implementations will extend this class.
@@ -102,6 +103,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private final StrSubstitutor subst = new StrSubstitutor(tempLookup);
     private LoggerConfig root = new LoggerConfig();
     private final ConcurrentMap<String, Object> componentMap = new ConcurrentHashMap<String, Object>();
+    protected final List<String> pluginPackages = new ArrayList<String>();
     protected PluginManager pluginManager;
     private final ConfigurationSource configurationSource;
 
@@ -121,6 +123,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     @Override
+    public List<String> getPluginPackages() {
+        return pluginPackages;
+    }
+
+    @Override
     public Map<String, String> getProperties() {
         return properties;
     }
@@ -132,9 +139,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     public void start() {
         LOGGER.debug("Starting configuration {}", this);
         this.setStarting();
-        pluginManager.collectPlugins();
+        pluginManager.collectPlugins(pluginPackages);
         final PluginManager levelPlugins = new PluginManager("Level");
-        levelPlugins.collectPlugins();
+        levelPlugins.collectPlugins(pluginPackages);
         final Map<String, PluginType<?>> plugins = levelPlugins.getPlugins();
         if (plugins != null) {
             for (final PluginType<?> type : plugins.values()) {
@@ -336,7 +343,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         } else {
             final Map<String, String> map = (Map<String, String>) componentMap.get(CONTEXT_PROPERTIES);
             final StrLookup lookup = map == null ? null : new MapLookup(map);
-            subst.setVariableResolver(new Interpolator(lookup));
+            subst.setVariableResolver(new Interpolator(lookup, pluginPackages));
         }
 
         boolean setLoggers = false;

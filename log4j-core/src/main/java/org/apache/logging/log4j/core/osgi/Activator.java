@@ -17,10 +17,8 @@
 
 package org.apache.logging.log4j.core.osgi;
 
-import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
+import org.apache.logging.log4j.core.config.plugins.util.PluginRegistry;
 import org.apache.logging.log4j.core.util.BundleResourceLoader;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.osgi.framework.Bundle;
@@ -28,6 +26,8 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.SynchronousBundleListener;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * OSGi BundleActivator.
@@ -59,20 +59,32 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
 
     private static void scanBundleForPlugins(final Bundle bundle) {
         LOGGER.trace("Scanning bundle [{}] for plugins.", bundle.getSymbolicName());
-        PluginManager.loadPlugins(new BundleResourceLoader(bundle));
+        PluginRegistry.getInstance().loadFromBundle(bundle.getBundleId(), new BundleResourceLoader(bundle));
+    }
+
+    private static void stopBundlePlugins(final Bundle bundle) {
+        LOGGER.trace("Stopping bundle [{}] plugins.", bundle.getSymbolicName());
+        // TODO: plugin lifecycle code
+        PluginRegistry.getInstance().clearBundlePlugins(bundle.getBundleId());
     }
 
     @Override
     public void stop(final BundleContext context) throws Exception {
         // not much can be done that isn't already automated by the framework
         this.context.compareAndSet(context, null);
+        // TODO: shut down log4j
     }
 
     @Override
     public void bundleChanged(BundleEvent event) {
         switch (event.getType()) {
+            // FIXME: STARTING instead of STARTED?
             case BundleEvent.STARTED:
                 scanBundleForPlugins(event.getBundle());
+                break;
+
+            case BundleEvent.STOPPING:
+                stopBundlePlugins(event.getBundle());
                 break;
 
             default:
