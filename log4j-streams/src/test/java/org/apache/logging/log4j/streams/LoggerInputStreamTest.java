@@ -84,7 +84,7 @@ public class LoggerInputStreamTest extends StreamTesting {
     @Test
     public void testRead_IgnoresWindowsNewline() throws IOException {
         final byte[] bytes = new byte[1024];
-        int len = in.read(bytes);
+        final int len = in.read(bytes);
         read.write(bytes, 0, len);
         assertMessages(FIRST);
         assertEquals(FIRST + "\r\n" + LAST, read.toString());
@@ -98,7 +98,7 @@ public class LoggerInputStreamTest extends StreamTesting {
         in = new LoggerInputStream(wrapped, getLogger(), LEVEL);
 
         final byte[] bytes = new byte[1024];
-        int len = in.read(bytes);
+        final int len = in.read(bytes);
         read.write(bytes, 0, len);
         assertMessages(FIRST, LAST);
         assertEquals(FIRST + '\n' + LAST + '\n', read.toString());

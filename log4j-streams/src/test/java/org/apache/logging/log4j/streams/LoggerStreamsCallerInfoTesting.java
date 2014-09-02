@@ -41,8 +41,8 @@ public class LoggerStreamsCallerInfoTesting {
         ((ListAppender) ctx.getAppender("ClassAndMethod")).clear();
     }
 
-    public void assertMessages(final String msg, int size, String methodName) {
-        ListAppender appender = (ListAppender) ctx.getAppender("ClassAndMethod");
+    public void assertMessages(final String msg, final int size, final String methodName) {
+        final ListAppender appender = (ListAppender) ctx.getAppender("ClassAndMethod");
         assertEquals(msg + ".size", size, appender.getMessages().size());
         for (final String message : appender.getMessages()) {
             assertEquals(msg + " has incorrect caller info", this.getClass().getName() + '.' + methodName, message);

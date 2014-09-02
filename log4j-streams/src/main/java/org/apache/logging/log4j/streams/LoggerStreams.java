@@ -114,7 +114,7 @@ public class LoggerStreams {
         public LoggerPrintStream create(final OutputStream out, final Charset charset) {
             try {
                 return new LoggerPrintStream(out, autoFlush, charset, logger, level, marker);
-            } catch (UnsupportedEncodingException e) {
+            } catch (final UnsupportedEncodingException e) {
                 // Should never occur because the constructor must throw this
                 throw new IllegalArgumentException("Invalid charset", e);
             }

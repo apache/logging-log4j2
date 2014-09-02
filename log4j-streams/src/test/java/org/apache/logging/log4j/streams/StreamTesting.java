@@ -51,7 +51,7 @@ public class StreamTesting {
     }
 
     protected void assertMessages(final String... messages) {
-        List<String> actualMsgs = ((ListAppender) ctx.getAppender("UnitTest")).getMessages();
+        final List<String> actualMsgs = ((ListAppender) ctx.getAppender("UnitTest")).getMessages();
         assertEquals("Unexpected number of results.", messages.length, actualMsgs.size());
         for (int i = 0; i < messages.length; i++) {
             final String start = LEVEL.name() + ' ' + messages[i];

@@ -56,8 +56,8 @@ public class LoggerWriterTest extends StreamTesting {
     @Test
     public void testWrite_CharArray_Offset_Length() throws Exception {
         final char[] chars = FIRST.toCharArray();
-        int middle = chars.length / 2;
-        int length = chars.length - middle;
+        final int middle = chars.length / 2;
+        final int length = chars.length - middle;
         final String right = new String(chars, middle, length);
         writer.write(chars, middle, length);
         assertMessages();
@@ -68,7 +68,7 @@ public class LoggerWriterTest extends StreamTesting {
 
     @Test
     public void testWrite_Character() throws Exception {
-        for (char c : FIRST.toCharArray()) {
+        for (final char c : FIRST.toCharArray()) {
             writer.write(c);
             assertMessages();
         }

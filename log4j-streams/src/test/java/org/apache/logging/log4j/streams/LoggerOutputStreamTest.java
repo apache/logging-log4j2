@@ -45,7 +45,7 @@ public class LoggerOutputStreamTest extends StreamTesting {
 
     @Test
     public void testWrite_Int() throws Exception {
-        for (byte b : "int".getBytes()) {
+        for (final byte b : "int".getBytes()) {
             out.write(b);
             assertMessages();
         }
@@ -67,8 +67,8 @@ public class LoggerOutputStreamTest extends StreamTesting {
     @Test
     public void testWrite_ByteArray_Offset_Length() throws Exception {
         final byte[] bytes = "byte[]".getBytes();
-        int middle = bytes.length/2;
-        int length = bytes.length - middle;
+        final int middle = bytes.length/2;
+        final int length = bytes.length - middle;
         final String right = new String(bytes, middle, length);
         out.write(bytes, middle, length);
         assertMessages();

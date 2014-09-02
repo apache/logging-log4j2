@@ -94,7 +94,7 @@ public class LoggerReaderTest extends StreamTesting {
     @Test
     public void testRead_IgnoresWindowsNewline() throws IOException {
         final char[] chars = new char[1024];
-        int len = reader.read(chars);
+        final int len = reader.read(chars);
         read.write(chars, 0, len);
         if (!(reader instanceof BufferedReader)) {
             assertMessages(FIRST);
@@ -110,7 +110,7 @@ public class LoggerReaderTest extends StreamTesting {
         reader = createReader();
 
         final char[] chars = new char[1024];
-        int len = reader.read(chars);
+        final int len = reader.read(chars);
         read.write(chars, 0, len);
         assertMessages(FIRST, LAST);
         assertEquals(FIRST + '\n' + LAST + '\n', read.toString());

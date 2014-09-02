@@ -44,7 +44,7 @@ public class LoggerPrintWriterTest extends LoggerWriterTest {
 
     @Test
     public void testPrint_char() throws Exception {
-        for (char c : FIRST.toCharArray()) {
+        for (final char c : FIRST.toCharArray()) {
             print.print(c);
             assertMessages();
         }
