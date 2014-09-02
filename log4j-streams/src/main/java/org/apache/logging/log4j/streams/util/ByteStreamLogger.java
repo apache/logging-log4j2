@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.logging.log4j.streams.helpers;
+package org.apache.logging.log4j.streams.util;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -26,7 +26,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.spi.ExtendedLogger;
-import org.apache.logging.log4j.streams.helpers.ByteStreamLogger;
+import org.apache.logging.log4j.streams.util.ByteStreamLogger;
 
 /**
  * Input stream that logs each line read to a pre-defined level. Can also be configured with a
