@@ -29,6 +29,8 @@ import org.apache.logging.log4j.message.Message;
  * <em>not</em> use the {@link java.util.logging.Handler} class.</strong> Instead, logging is delegated to the
  * underlying Log4j {@link org.apache.logging.log4j.core.Logger} which uses
  * {@link org.apache.logging.log4j.core.Appender Appenders} instead.
+ *
+ * @since 2.1
  */
 public class Logger extends java.util.logging.Logger {
 

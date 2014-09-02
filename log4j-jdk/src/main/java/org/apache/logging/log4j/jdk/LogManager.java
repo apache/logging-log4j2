@@ -27,6 +27,8 @@ import org.apache.logging.log4j.status.StatusLogger;
  * Log4j implementation of {@link java.util.logging.LogManager}. Note that the system property
  * {@code java.util.logging.manager} must be set to {@code org.apache.logging.log4j.jdk.LogManager} in order to use
  * this adaptor. This LogManager requires the {@code log4j-core} library to be available as well as {@code log4j-api}.
+ *
+ * @since 2.1
  */
 public class LogManager extends java.util.logging.LogManager {
 

@@ -21,6 +21,8 @@ import org.apache.logging.log4j.Level;
 
 /**
  * Utility class to convert between JDK Levels and Log4j 2 Levels.
+ *
+ * @since 2.1
  */
 public final class Levels {
 

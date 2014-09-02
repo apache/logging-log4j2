@@ -24,6 +24,8 @@ import org.apache.logging.log4j.spi.LoggerContext;
 
 /**
  * {@link Logger} registry implementation.
+ *
+ * @since 2.1
  */
 public class LoggerRegistry extends AbstractExternalLoggerContextRegistry<Logger> {
 
