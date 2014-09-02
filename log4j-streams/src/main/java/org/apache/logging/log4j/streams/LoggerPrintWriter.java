@@ -29,6 +29,11 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
 /**
  * Logs each line written to a pre-defined level. Can also be configured with a Marker. This class provides an interface
  * that follows the {@link java.io.PrintWriter} methods in spirit, but doesn't require output to any external writer.
+ * <p>
+ * Integration with JDBC logging can be as simple as:
+ * </p>
+ * <pre>DriverManager.setLogWriter(new LoggerPrintWriter(LogManager.getLogger(), Level.DEBUG));
+ * </pre>
  */
 public class LoggerPrintWriter extends PrintWriter {
     private static final String FQCN = LoggerPrintWriter.class.getName();
