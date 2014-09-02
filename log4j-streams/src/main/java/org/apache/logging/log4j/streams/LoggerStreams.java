@@ -73,8 +73,8 @@ public class LoggerStreams {
             return new BufferedBuilder(logger, level, marker, 0);
         }
 
-        public LoggerWriter create(final Writer writer) {
-            return new LoggerWriter(writer, logger, level, marker);
+        public LoggerWriterFilter create(final Writer writer) {
+            return new LoggerWriterFilter(writer, logger, level, marker);
         }
     }
 

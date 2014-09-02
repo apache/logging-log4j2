@@ -29,7 +29,7 @@ import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 
-public class LoggerOutputStreamTest extends StreamTesting {
+public class LoggerOutputStreamTest extends AbstractStreamTest {
     protected ByteArrayOutputStream wrapped;
     protected OutputStream out;
 

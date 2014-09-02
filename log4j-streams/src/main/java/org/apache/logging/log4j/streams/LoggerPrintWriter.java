@@ -35,11 +35,11 @@ public class LoggerPrintWriter extends PrintWriter {
     private static final String FQCN = LoggerPrintWriter.class.getName();
 
     public LoggerPrintWriter(final Logger logger, final Level level) {
-        this(null, false, (ExtendedLogger) logger, FQCN, level, null);
+        this((ExtendedLogger) logger, false, FQCN, level, null);
     }
 
     public LoggerPrintWriter(final Logger logger, final Level level, final Marker marker) {
-        this(null, false, (ExtendedLogger) logger, FQCN, level, marker);
+        this((ExtendedLogger) logger, false, FQCN, level, marker);
     }
 
     public LoggerPrintWriter(final Writer writer, final Logger logger, final Level level) {
@@ -58,9 +58,16 @@ public class LoggerPrintWriter extends PrintWriter {
         this(writer, autoFlush, (ExtendedLogger) logger, FQCN, level, marker);
     }
 
+    @SuppressWarnings("resource")
     public LoggerPrintWriter(final Writer writer, final boolean autoFlush, final ExtendedLogger logger, final String fqcn,
             final Level level, final Marker marker) {
-        super(new LoggerWriter(writer, logger, fqcn, level, marker), autoFlush);
+        super(new LoggerWriterFilter(writer, logger, fqcn, level, marker), autoFlush);
+    }
+
+    @SuppressWarnings("resource")
+    public LoggerPrintWriter(final ExtendedLogger logger, final boolean autoFlush, final String fqcn,
+            final Level level, final Marker marker) {
+        super(new LoggerWriter(logger, fqcn, level, marker), autoFlush);
     }
 
     @Override

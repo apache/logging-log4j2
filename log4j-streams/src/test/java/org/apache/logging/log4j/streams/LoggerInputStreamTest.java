@@ -27,7 +27,7 @@ import java.io.InputStream;
 import org.junit.Before;
 import org.junit.Test;
 
-public class LoggerInputStreamTest extends StreamTesting {
+public class LoggerInputStreamTest extends AbstractStreamTest {
     protected ByteArrayInputStream wrapped;
     protected ByteArrayOutputStream read;
     protected InputStream in;

@@ -28,7 +28,7 @@ import java.nio.CharBuffer;
 import org.junit.Before;
 import org.junit.Test;
 
-public class LoggerReaderTest extends StreamTesting {
+public class LoggerReaderTest extends AbstractStreamTest {
     protected StringReader wrapped;
     protected StringWriter read;
     protected Reader reader;

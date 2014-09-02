@@ -20,15 +20,20 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.io.Writer;
 
 import org.junit.Test;
 
-public class LoggerPrintWriterTest extends LoggerWriterTest {
+public class LoggerPrintWriterTest extends AbstractLoggerWriterTest {
     private PrintWriter print; 
 
+    protected StringWriter createWriter() {
+        return new StringWriter();
+    }
+
     @Override
-    protected Writer createWriter() {
+    protected Writer createWriterWrapper() {
         print = new LoggerPrintWriter(wrapped, getLogger(), LEVEL);
         return print;
     }

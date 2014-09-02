@@ -29,10 +29,8 @@ import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Before;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 
-@Ignore
-public class StreamTesting {
+public abstract class AbstractStreamTest {
     protected final static String NEWLINE = System.getProperty("line.separator");
     protected final static Level LEVEL = Level.ERROR;
     protected final static String FIRST = "first";

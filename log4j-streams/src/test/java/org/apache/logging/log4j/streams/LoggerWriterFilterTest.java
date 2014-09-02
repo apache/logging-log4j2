@@ -3,14 +3,14 @@ package org.apache.logging.log4j.streams;
 import java.io.StringWriter;
 import java.io.Writer;
 
-public class LoggerWriterTest extends AbstractLoggerWriterTest {
+public class LoggerWriterFilterTest extends AbstractLoggerWriterTest {
 
     protected StringWriter createWriter() {
-        return null;
+        return new StringWriter();
     }
 
     protected Writer createWriterWrapper() {
-        return new LoggerWriter(getLogger(), LEVEL);
+        return new LoggerWriterFilter(wrapped, getLogger(), LEVEL);
     }
 
 }
