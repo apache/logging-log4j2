@@ -35,8 +35,8 @@ public abstract class AbstractLoggerWriterTest extends AbstractStreamTest {
 
     @Before
     public void createStream() {
-        wrapped = createWriter();
-        writer = createWriterWrapper();
+        this.wrapped = createWriter();
+        this.writer = createWriterWrapper();
     }
 
     protected abstract StringWriter createWriter();
@@ -45,21 +45,21 @@ public abstract class AbstractLoggerWriterTest extends AbstractStreamTest {
 
     @Test
     public void testClose_HasRemainingData() throws IOException {
-        writer.write(FIRST);
+        this.writer.write(FIRST);
         assertMessages();
-        writer.close();
+        this.writer.close();
         assertMessages(FIRST);
-        if (wrapped != null) {
-            assertEquals(FIRST, wrapped.toString());
+        if (this.wrapped != null) {
+            assertEquals(FIRST, this.wrapped.toString());
         }
     }
 
     @Test
     public void testClose_NoRemainingData() throws IOException {
-        writer.close();
+        this.writer.close();
         assertMessages();
-        if (wrapped != null) {
-            assertEquals("", wrapped.toString());
+        if (this.wrapped != null) {
+            assertEquals("", this.wrapped.toString());
         }
     }
 
@@ -79,25 +79,25 @@ public abstract class AbstractLoggerWriterTest extends AbstractStreamTest {
     @Test
     public void testWrite_Character() throws Exception {
         for (final char c : FIRST.toCharArray()) {
-            writer.write(c);
+            this.writer.write(c);
             assertMessages();
         }
-        writer.write('\n');
+        this.writer.write('\n');
         assertMessages(FIRST);
-        if (wrapped != null) {
-            assertEquals(FIRST + '\n', wrapped.toString());
+        if (this.wrapped != null) {
+            assertEquals(FIRST + '\n', this.wrapped.toString());
         }
     }
 
     @Test
     public void testWrite_CharArray() throws Exception {
         final char[] chars = FIRST.toCharArray();
-        writer.write(chars);
+        this.writer.write(chars);
         assertMessages();
-        writer.write('\n');
+        this.writer.write('\n');
         assertMessages(FIRST);
-        if (wrapped != null) {
-            assertEquals(FIRST + '\n', wrapped.toString());
+        if (this.wrapped != null) {
+            assertEquals(FIRST + '\n', this.wrapped.toString());
         }
     }
 
@@ -107,32 +107,32 @@ public abstract class AbstractLoggerWriterTest extends AbstractStreamTest {
         final int middle = chars.length / 2;
         final int length = chars.length - middle;
         final String right = new String(chars, middle, length);
-        writer.write(chars, middle, length);
+        this.writer.write(chars, middle, length);
         assertMessages();
-        writer.write('\n');
+        this.writer.write('\n');
         assertMessages(right);
-        if (wrapped != null) {
-            assertEquals(FIRST.substring(middle, FIRST.length()) + '\n', wrapped.toString());
+        if (this.wrapped != null) {
+            assertEquals(FIRST.substring(middle, FIRST.length()) + '\n', this.wrapped.toString());
         }
     }
 
     @Test
     public void testWrite_IgnoresWindowsNewline() throws IOException {
-        writer.write(FIRST + "\r\n");
-        writer.write(LAST);
-        writer.close();
+        this.writer.write(FIRST + "\r\n");
+        this.writer.write(LAST);
+        this.writer.close();
         assertMessages(FIRST, LAST);
-        if (wrapped != null) {
-            assertEquals(FIRST + "\r\n" + LAST, wrapped.toString());
+        if (this.wrapped != null) {
+            assertEquals(FIRST + "\r\n" + LAST, this.wrapped.toString());
         }
     }
 
     @Test
     public void testWrite_MultipleLines() throws IOException {
-        writer.write(FIRST + '\n' + LAST + '\n');
+        this.writer.write(FIRST + '\n' + LAST + '\n');
         assertMessages(FIRST, LAST);
-        if (wrapped != null) {
-            assertEquals(FIRST + '\n' + LAST + '\n', wrapped.toString());
+        if (this.wrapped != null) {
+            assertEquals(FIRST + '\n' + LAST + '\n', this.wrapped.toString());
         }
     }
 }

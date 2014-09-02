@@ -32,24 +32,24 @@ public class ByteStreamLogger {
 
         @Override
         public int read() throws IOException {
-            buf.flip();
+            ByteStreamLogger.this.buf.flip();
             int result = -1;
-            if (buf.limit() > 0) {
-                result = buf.get() & 0xFF;
+            if (ByteStreamLogger.this.buf.limit() > 0) {
+                result = ByteStreamLogger.this.buf.get() & 0xFF;
             }
-            buf.compact();
+            ByteStreamLogger.this.buf.compact();
             return result;
         }
 
         @Override
         public int read(final byte[] bytes, final int off, final int len) throws IOException {
-            buf.flip();
+            ByteStreamLogger.this.buf.flip();
             int result = -1;
-            if (buf.limit() > 0) {
-                result = Math.min(len, buf.limit());
-                buf.get(bytes, off, result);
+            if (ByteStreamLogger.this.buf.limit() > 0) {
+                result = Math.min(len, ByteStreamLogger.this.buf.limit());
+                ByteStreamLogger.this.buf.get(bytes, off, result);
             }
-            buf.compact();
+            ByteStreamLogger.this.buf.compact();
             return result;
         }
     }
@@ -70,66 +70,66 @@ public class ByteStreamLogger {
         this.logger = logger;
         this.level = level;
         this.marker = marker;
-        in = new ByteBufferInputStream();
-        reader = new InputStreamReader(in, charset);
+        this.in = new ByteBufferInputStream();
+        this.reader = new InputStreamReader(this.in, charset);
     }
 
     public void close(final String fqcn) {
-        synchronized (msg) {
-            closed = true;
+        synchronized (this.msg) {
+            this.closed = true;
             logEnd(fqcn);
 //            in.close();
         }
     }
 
     private void extractMessages(final String fqcn) throws IOException {
-        if (closed) {
+        if (this.closed) {
             return;
         }
-        int read = reader.read(msgBuf);
+        int read = this.reader.read(this.msgBuf);
         while (read > 0) {
             int off = 0;
             for (int pos = 0; pos < read; pos++) {
-                switch (msgBuf[pos]) {
+                switch (this.msgBuf[pos]) {
                 case '\r':
-                    msg.append(msgBuf, off, pos - off);
+                    this.msg.append(this.msgBuf, off, pos - off);
                     off = pos + 1;
                     break;
                 case '\n':
-                    msg.append(msgBuf, off, pos - off);
+                    this.msg.append(this.msgBuf, off, pos - off);
                     off = pos + 1;
                     log(fqcn);
                     break;
                 }
             }
-            msg.append(msgBuf, off, read - off);
-            read = reader.read(msgBuf);
+            this.msg.append(this.msgBuf, off, read - off);
+            read = this.reader.read(this.msgBuf);
         }
     }
 
     private void log(final String fqcn) {
         // convert to string now so async loggers work
-        logger.logIfEnabled(fqcn, level, marker, msg.toString());
-        msg.setLength(0);
+        this.logger.logIfEnabled(fqcn, this.level, this.marker, this.msg.toString());
+        this.msg.setLength(0);
     }
     
     private void logEnd(final String fqcn) {
-        if (msg.length() > 0) {
+        if (this.msg.length() > 0) {
             log(fqcn);
         }
     }
 
     public void put(final String fqcn, final byte[] b, int off, int len) throws IOException {
         if (len >= 0) {
-            synchronized (msg) {
-                while (len > buf.remaining()) {
-                    final int remaining = buf.remaining();
-                    buf.put(b, off, remaining);
+            synchronized (this.msg) {
+                while (len > this.buf.remaining()) {
+                    final int remaining = this.buf.remaining();
+                    this.buf.put(b, off, remaining);
                     len -= remaining;
                     off += remaining;
                     extractMessages(fqcn);
                 }
-                buf.put(b, off, len);
+                this.buf.put(b, off, len);
                 extractMessages(fqcn);
             }
         } else {
@@ -139,8 +139,8 @@ public class ByteStreamLogger {
 
     public void put(final String fqcn, final int b) throws IOException {
         if (b >= 0) {
-            synchronized (msg) {
-                buf.put((byte) (b & 0xFF));
+            synchronized (this.msg) {
+                this.buf.put((byte) (b & 0xFF));
                 extractMessages(fqcn);
             }
         } else {

@@ -63,14 +63,14 @@ public class LoggerInputStream extends FilterInputStream {
 
     @Override
     public void close() throws IOException {
-        logger.close(fqcn);
+        this.logger.close(this.fqcn);
         super.close();
     }
 
     @Override
     public int read() throws IOException {
         final int b = super.read();
-        logger.put(fqcn, b);
+        this.logger.put(this.fqcn, b);
         return b;
     }
 
@@ -82,12 +82,12 @@ public class LoggerInputStream extends FilterInputStream {
     @Override
     public int read(final byte[] b, final int off, final int len) throws IOException {
         final int bytesRead = super.read(b, off, len);
-        logger.put(fqcn, b, off, bytesRead);
+        this.logger.put(this.fqcn, b, off, bytesRead);
         return bytesRead;
     }
 
     @Override
     public String toString() {
-        return LoggerInputStream.class.getSimpleName() + "{stream=" + in + '}';
+        return LoggerInputStream.class.getSimpleName() + "{stream=" + this.in + '}';
     }
 }

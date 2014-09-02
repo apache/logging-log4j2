@@ -28,14 +28,14 @@ public class LoggerBufferedReaderTest extends LoggerReaderTest {
     
     @Override
     protected Reader createReader() {
-        return reader = new LoggerBufferedReader(wrapped, getLogger(), LEVEL);
+        return this.reader = new LoggerBufferedReader(this.wrapped, getLogger(), LEVEL);
     }
 
     @Test
     public void testReadLine() throws Exception {
-        assertEquals("first line", FIRST, reader.readLine());
+        assertEquals("first line", FIRST, this.reader.readLine());
         assertMessages(FIRST);
-        assertEquals("second line", LAST, reader.readLine());
+        assertEquals("second line", LAST, this.reader.readLine());
         assertMessages(FIRST, LAST);
     }
 }

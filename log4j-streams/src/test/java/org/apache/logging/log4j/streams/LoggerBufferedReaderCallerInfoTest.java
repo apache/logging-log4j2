@@ -30,55 +30,55 @@ public class LoggerBufferedReaderCallerInfoTest extends LoggerStreamsCallerInfoT
     
     @Test
     public void close() throws Exception {
-        logReader.readLine();
+        this.logReader.readLine();
         assertMessages("before close", 3, "close");
-        logReader.close();
+        this.logReader.close();
         assertMessages("after close", 4, "close");
     }
 
     @Test
     public void read() throws Exception {
-        logReader.read();
+        this.logReader.read();
 
         assertMessages("read", 3, "read");
-        logReader.close();
+        this.logReader.close();
     }
 
     @Test
     public void readCbuf() throws Exception {
-        logReader.read(new char[2]);
+        this.logReader.read(new char[2]);
 
         assertMessages("read", 3, "readCbuf");
-        logReader.close();
+        this.logReader.close();
     }
 
     @Test
     public void readCbufOffset() throws Exception {
-        logReader.read(new char[2], 0, 2);
+        this.logReader.read(new char[2], 0, 2);
 
         assertMessages("read", 3, "readCbufOffset");
-        logReader.close();
+        this.logReader.close();
     }
 
     @Test
     public void readCharBuffer() throws Exception {
-        logReader.read(CharBuffer.allocate(2));
+        this.logReader.read(CharBuffer.allocate(2));
 
         assertMessages("read", 3, "readCharBuffer");
-        logReader.close();
+        this.logReader.close();
     }
 
     @Test
     public void readLine() throws Exception {
-        logReader.readLine();
+        this.logReader.readLine();
 
         assertMessages("read", 3, "readLine");
-        logReader.close();
+        this.logReader.close();
     }
 
     @Before
     public void setupReader() {
         final Reader srcReader = new StringReader("a\nb\nc\nd");
-        logReader = new LoggerBufferedReader(srcReader, getLogger(), Level.WARN);
+        this.logReader = new LoggerBufferedReader(srcReader, getLogger(), Level.WARN);
     }
 }

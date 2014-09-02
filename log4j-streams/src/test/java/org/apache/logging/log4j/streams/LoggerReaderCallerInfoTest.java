@@ -29,29 +29,29 @@ public class LoggerReaderCallerInfoTest extends LoggerStreamsCallerInfoTesting {
     
     @Test
     public void read() throws Exception {
-        logReader.read();
+        this.logReader.read();
         assertMessages("before read int size", 0, "read");
-        logReader.read();
+        this.logReader.read();
         assertMessages("after read int size", 1, "read");
 
-        logReader.read(new char[2]);
+        this.logReader.read(new char[2]);
         assertMessages("after read bytes size", 2, "read");
 
-        logReader.read(new char[2], 0, 2);
+        this.logReader.read(new char[2], 0, 2);
         assertMessages("after read bytes offset size", 3, "read");
 
-        logReader.read(CharBuffer.allocate(2));
+        this.logReader.read(CharBuffer.allocate(2));
         assertMessages("after read charBuffer size", 4, "read");
 
-        logReader.read();
+        this.logReader.read();
         assertMessages("before close size", 4, "read");
-        logReader.close();
+        this.logReader.close();
         assertMessages("after close size", 5, "read");
     }
 
     @Before
     public void setupReader() {
         final Reader srcReader = new StringReader("a\nb\nc\nd\ne");
-        logReader = new LoggerReader(srcReader, getLogger(), LEVEL);
+        this.logReader = new LoggerReader(srcReader, getLogger(), LEVEL);
     }
 }

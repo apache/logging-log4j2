@@ -258,7 +258,7 @@ public class LoggerPrintStream extends PrintStream {
 
     @Override
     public String toString() {
-        return LoggerPrintStream.class.getSimpleName() + "{stream=" + out + '}';
+        return LoggerPrintStream.class.getSimpleName() + "{stream=" + this.out + '}';
     }
 
     @Override

@@ -28,39 +28,39 @@ public class LoggerBufferedInputStreamCallerInfoTest extends LoggerStreamsCaller
     
     @Test
     public void close() throws Exception {
-        logIn.read();
+        this.logIn.read();
         assertMessages("before close", 3, "close");
-        logIn.close();
+        this.logIn.close();
         assertMessages("after close", 4, "close");
     }
     
     @Test
     public void read() throws Exception {
-        logIn.read();
+        this.logIn.read();
 
         assertMessages("read", 3, "read");
-        logIn.close();
+        this.logIn.close();
     }
 
     @Test
     public void readBytes() throws Exception {
-        logIn.read(new byte[2]);
+        this.logIn.read(new byte[2]);
 
         assertMessages("read", 3, "readBytes");
-        logIn.close();
+        this.logIn.close();
     }
 
     @Test
     public void readBytesOffsetLen() throws Exception {
-        logIn.read(new byte[2], 0, 2);
+        this.logIn.read(new byte[2], 0, 2);
 
         assertMessages("read", 3, "readBytesOffsetLen");
-        logIn.close();
+        this.logIn.close();
     }
 
     @Before
     public void setupStreams() {
         final InputStream srcInputStream = new ByteArrayInputStream("a\nb\nc\nd".getBytes());
-        logIn = new LoggerBufferedInputStream(srcInputStream, getLogger(), LEVEL);
+        this.logIn = new LoggerBufferedInputStream(srcInputStream, getLogger(), LEVEL);
     }
 }

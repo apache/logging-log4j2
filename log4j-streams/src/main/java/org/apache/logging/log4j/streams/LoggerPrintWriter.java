@@ -229,7 +229,7 @@ public class LoggerPrintWriter extends PrintWriter {
 
     @Override
     public String toString() {
-        return LoggerPrintWriter.class.getSimpleName() + "{stream=" + out + '}';
+        return LoggerPrintWriter.class.getSimpleName() + "{stream=" + this.out + '}';
     }
 
     @Override

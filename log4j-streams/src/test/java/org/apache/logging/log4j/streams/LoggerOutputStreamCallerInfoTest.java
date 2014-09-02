@@ -26,25 +26,25 @@ public class LoggerOutputStreamCallerInfoTest extends LoggerStreamsCallerInfoTes
     
     @Before
     public void setupStreams() {
-        logOut = new LoggerOutputStream(getLogger(), Level.WARN);
+        this.logOut = new LoggerOutputStream(getLogger(), Level.WARN);
     }
     
     @Test
     public void write() throws Exception {
-        logOut.write('a');
+        this.logOut.write('a');
         assertMessages("before write int", 0, "write");
-        logOut.write('\n');
+        this.logOut.write('\n');
         assertMessages("after write int", 1, "write");
         
-        logOut.write("b\n".getBytes());
+        this.logOut.write("b\n".getBytes());
         assertMessages("after write byte array", 2, "write");
 
-        logOut.write("c\n".getBytes(), 0, 2);
+        this.logOut.write("c\n".getBytes(), 0, 2);
         assertMessages("after write byte array offset size", 3, "write");
 
-        logOut.write('d');
+        this.logOut.write('d');
         assertMessages("before close size", 3, "write");
-        logOut.close();
+        this.logOut.close();
         assertMessages("after close size", 4, "write");
     }
 }

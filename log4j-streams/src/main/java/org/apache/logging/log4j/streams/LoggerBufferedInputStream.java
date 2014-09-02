@@ -100,6 +100,6 @@ public class LoggerBufferedInputStream extends BufferedInputStream {
 
     @Override
     public String toString() {
-        return LoggerBufferedInputStream.class.getSimpleName() + "{stream=" + in + '}';
+        return LoggerBufferedInputStream.class.getSimpleName() + "{stream=" + this.in + '}';
     }
 }

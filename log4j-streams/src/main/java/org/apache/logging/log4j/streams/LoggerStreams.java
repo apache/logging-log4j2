@@ -44,32 +44,32 @@ public class LoggerStreams {
         }
 
         public LoggerBufferedInputStream create(final InputStream in) {
-            if (size > 0) {
-                return new LoggerBufferedInputStream(in, size, logger, level, marker);
+            if (this.size > 0) {
+                return new LoggerBufferedInputStream(in, this.size, this.logger, this.level, this.marker);
             }
-            return new LoggerBufferedInputStream(in, logger, level, marker);
+            return new LoggerBufferedInputStream(in, this.logger, this.level, this.marker);
         }
 
         public LoggerBufferedInputStream create(final InputStream in, final Charset charset) {
-            if (size > 0) {
-                return new LoggerBufferedInputStream(in, charset, size, logger, level, marker);
+            if (this.size > 0) {
+                return new LoggerBufferedInputStream(in, charset, this.size, this.logger, this.level, this.marker);
             }
-            return new LoggerBufferedInputStream(in, charset, logger, level, marker);
+            return new LoggerBufferedInputStream(in, charset, this.logger, this.level, this.marker);
         }
 
         public LoggerBufferedReader create(final Reader reader) {
-            if (size > 0) {
-                return new LoggerBufferedReader(reader, size, logger, level, marker);
+            if (this.size > 0) {
+                return new LoggerBufferedReader(reader, this.size, this.logger, this.level, this.marker);
             }
-            return new LoggerBufferedReader(reader, logger, level, marker);
+            return new LoggerBufferedReader(reader, this.logger, this.level, this.marker);
         }
 
         public BufferedBuilder marker(final Marker marker) {
-            return new BufferedBuilder(logger, level, marker, size);
+            return new BufferedBuilder(this.logger, this.level, marker, this.size);
         }
 
         public BufferedBuilder size(final int size) {
-            return new BufferedBuilder(logger, level, marker, size);
+            return new BufferedBuilder(this.logger, this.level, this.marker, size);
         }
     }
 
@@ -85,19 +85,19 @@ public class LoggerStreams {
         }
 
         public BufferedBuilder buffered() {
-            return new BufferedBuilder(logger, level, marker, 0);
+            return new BufferedBuilder(this.logger, this.level, this.marker, 0);
         }
 
         public LoggerWriterFilter create(final Writer writer) {
-            return new LoggerWriterFilter(writer, logger, level, marker);
+            return new LoggerWriterFilter(writer, this.logger, this.level, this.marker);
         }
 
         public Builder marker(final Marker marker) {
-            return new Builder(logger, level, marker);
+            return new Builder(this.logger, this.level, marker);
         }
 
         public PrintingBuilder printing() {
-            return new PrintingBuilder(logger, level, marker, false);
+            return new PrintingBuilder(this.logger, this.level, this.marker, false);
         }
     }
 
@@ -119,16 +119,16 @@ public class LoggerStreams {
         }
 
         public PrintingBuilder autoFlush(final boolean autoFlush) {
-            return new PrintingBuilder(logger, level, marker, autoFlush);
+            return new PrintingBuilder(this.logger, this.level, this.marker, autoFlush);
         }
 
         public LoggerPrintStream create(final OutputStream out) {
-            return new LoggerPrintStream(out, autoFlush, logger, level, marker);
+            return new LoggerPrintStream(out, this.autoFlush, this.logger, this.level, this.marker);
         }
 
         public LoggerPrintStream create(final OutputStream out, final Charset charset) {
             try {
-                return new LoggerPrintStream(out, autoFlush, charset, logger, level, marker);
+                return new LoggerPrintStream(out, this.autoFlush, charset, this.logger, this.level, this.marker);
             } catch (final UnsupportedEncodingException e) {
                 // Should never occur because the constructor must throw this
                 throw new IllegalArgumentException("Invalid charset", e);
@@ -136,11 +136,11 @@ public class LoggerStreams {
         }
 
         public LoggerPrintWriter create(final Writer writer) {
-            return new LoggerPrintWriter(writer, autoFlush, logger, level, marker);
+            return new LoggerPrintWriter(writer, this.autoFlush, this.logger, this.level, this.marker);
         }
 
         public PrintingBuilder marker(final Marker marker) {
-            return new PrintingBuilder(logger, level, marker, autoFlush);
+            return new PrintingBuilder(this.logger, this.level, marker, this.autoFlush);
         }
     }
 

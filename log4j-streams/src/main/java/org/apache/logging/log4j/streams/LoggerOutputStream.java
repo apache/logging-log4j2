@@ -82,45 +82,45 @@ public class LoggerOutputStream extends OutputStream {
 
     @Override
     public void close() throws IOException {
-        if (out != null) {
-            out.close();
+        if (this.out != null) {
+            this.out.close();
         }
-        logger.close(fqcn);
+        this.logger.close(this.fqcn);
     }
 
     @Override
     public void flush() throws IOException {
-        if (out != null) {
-            out.flush();
+        if (this.out != null) {
+            this.out.flush();
         }
     }
 
     @Override
     public String toString() {
-        return LoggerOutputStream.class.getSimpleName() + "{stream=" + out + '}';
+        return LoggerOutputStream.class.getSimpleName() + "{stream=" + this.out + '}';
     }
 
     @Override
     public void write(final byte[] b) throws IOException {
-        if (out != null) {
-            out.write(b);
+        if (this.out != null) {
+            this.out.write(b);
         }
-        logger.put(fqcn, b, 0, b.length);
+        this.logger.put(this.fqcn, b, 0, b.length);
     }
 
     @Override
     public void write(final byte[] b, final int off, final int len) throws IOException {
-        if (out != null) {
-            out.write(b, off, len);
+        if (this.out != null) {
+            this.out.write(b, off, len);
         }
-        logger.put(fqcn, b, off, len);
+        this.logger.put(this.fqcn, b, off, len);
     }
 
     @Override
     public void write(final int b) throws IOException {
-        if (out != null) {
-            out.write(b);
+        if (this.out != null) {
+            this.out.write(b);
         }
-        logger.put(fqcn, (byte) (b & 0xFF));
+        this.logger.put(this.fqcn, (byte) (b & 0xFF));
     }
 }

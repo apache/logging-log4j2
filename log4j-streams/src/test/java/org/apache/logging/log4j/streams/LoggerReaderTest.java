@@ -34,108 +34,108 @@ public class LoggerReaderTest extends AbstractStreamTest {
     protected Reader reader;
 
     protected Reader createReader() {
-        return new LoggerReader(wrapped, getLogger(), LEVEL);
+        return new LoggerReader(this.wrapped, getLogger(), LEVEL);
     }
     
     @Before
     public void createStream() {
-        wrapped = new StringReader(FIRST + "\r\n" + LAST);
-        read = new StringWriter();
-        reader = createReader();
+        this.wrapped = new StringReader(FIRST + "\r\n" + LAST);
+        this.read = new StringWriter();
+        this.reader = createReader();
     }
 
     @Test
     public void testClose_HasRemainingData() throws IOException {
         final char[] chars = new char[1024];
-        reader.read(chars);
-        if (!(reader instanceof BufferedReader)) {
+        this.reader.read(chars);
+        if (!(this.reader instanceof BufferedReader)) {
             assertMessages(FIRST);
         }
-        reader.close();
+        this.reader.close();
         assertMessages(FIRST, LAST);
     }
 
     @Test
     public void testClose_NoRemainingData() throws IOException {
-        wrapped = new StringReader(FIRST + '\n');
-        reader = createReader();
+        this.wrapped = new StringReader(FIRST + '\n');
+        this.reader = createReader();
 
         final char[] chars = new char[1024];
-        reader.read(chars);
+        this.reader.read(chars);
         assertMessages(FIRST);
-        reader.close();
+        this.reader.close();
         assertMessages(FIRST);
     }
 
     @Test
     public void testRead_CharArray() throws Exception {
         final char[] chars = new char[FIRST.length()];
-        assertEquals("len", FIRST.length(), reader.read(chars));
-        if (!(reader instanceof BufferedReader)) {
+        assertEquals("len", FIRST.length(), this.reader.read(chars));
+        if (!(this.reader instanceof BufferedReader)) {
             assertMessages();
         }
-        reader.read(chars);
+        this.reader.read(chars);
         assertMessages(FIRST);
     }
 
     @Test
     public void testRead_CharArray_Offset_Length() throws Exception {
         final char[] chars = new char[1024];
-        assertEquals("len", FIRST.length(), reader.read(chars, 0, FIRST.length()));
-        if (!(reader instanceof BufferedReader)) {
+        assertEquals("len", FIRST.length(), this.reader.read(chars, 0, FIRST.length()));
+        if (!(this.reader instanceof BufferedReader)) {
             assertMessages();
         }
-        reader.read(chars);
-        reader.close();
+        this.reader.read(chars);
+        this.reader.close();
         assertMessages(FIRST, LAST);
     }
 
     @Test
     public void testRead_CharBuffer() throws Exception {
         final CharBuffer chars = CharBuffer.allocate(1024);
-        assertEquals("len", FIRST.length() + LAST.length() + 2, reader.read(chars));
-        reader.close();
+        assertEquals("len", FIRST.length() + LAST.length() + 2, this.reader.read(chars));
+        this.reader.close();
         assertMessages(FIRST, LAST);
     }
 
     @Test
     public void testRead_IgnoresWindowsNewline() throws IOException {
         final char[] chars = new char[1024];
-        final int len = reader.read(chars);
-        read.write(chars, 0, len);
-        if (!(reader instanceof BufferedReader)) {
+        final int len = this.reader.read(chars);
+        this.read.write(chars, 0, len);
+        if (!(this.reader instanceof BufferedReader)) {
             assertMessages(FIRST);
         }
-        assertEquals(FIRST + "\r\n" + LAST, read.toString());
-        reader.close();
+        assertEquals(FIRST + "\r\n" + LAST, this.read.toString());
+        this.reader.close();
         assertMessages(FIRST, LAST);
     }
 
     @Test
     public void testRead_int() throws Exception {
         for (int i = 0; i < FIRST.length(); i++) {
-            read.write(reader.read());
+            this.read.write(this.reader.read());
         }
-        if (!(reader instanceof BufferedReader)) {
+        if (!(this.reader instanceof BufferedReader)) {
             assertMessages();
         }
-        assertEquals("carriage return", '\r', reader.read());
-        if (!(reader instanceof BufferedReader)) {
+        assertEquals("carriage return", '\r', this.reader.read());
+        if (!(this.reader instanceof BufferedReader)) {
             assertMessages();
         }
-        assertEquals("newline", '\n', reader.read());
+        assertEquals("newline", '\n', this.reader.read());
         assertMessages(FIRST);
     }
 
     @Test
     public void testRead_MultipleLines() throws IOException {
-        wrapped = new StringReader(FIRST + "\n" + LAST + '\n');
-        reader = createReader();
+        this.wrapped = new StringReader(FIRST + "\n" + LAST + '\n');
+        this.reader = createReader();
 
         final char[] chars = new char[1024];
-        final int len = reader.read(chars);
-        read.write(chars, 0, len);
+        final int len = this.reader.read(chars);
+        this.read.write(chars, 0, len);
         assertMessages(FIRST, LAST);
-        assertEquals(FIRST + '\n' + LAST + '\n', read.toString());
+        assertEquals(FIRST + '\n' + LAST + '\n', this.read.toString());
     }
 }

@@ -35,90 +35,90 @@ public class LoggerPrintWriterTest extends AbstractLoggerWriterTest {
 
     @Override
     protected Writer createWriterWrapper() {
-        print = new LoggerPrintWriter(wrapped, getLogger(), LEVEL);
-        return print;
+        this.print = new LoggerPrintWriter(this.wrapped, getLogger(), LEVEL);
+        return this.print;
     }
 
     @Test
     public void testFormat() throws Exception {
-        assertSame(print, print.format("[%s]", FIRST));
+        assertSame(this.print, this.print.format("[%s]", FIRST));
         assertMessages();
-        print.println();
+        this.print.println();
         assertMessages("[" + FIRST + "]");
-        assertEquals("[" + FIRST + "]" + NEWLINE, wrapped.toString());
+        assertEquals("[" + FIRST + "]" + NEWLINE, this.wrapped.toString());
     }
 
     @Test
     public void testPrint_boolean() throws Exception {
-        print.print(true);
+        this.print.print(true);
         assertMessages();
-        print.println();
+        this.print.println();
         assertMessages("true");
-        assertEquals("true" + NEWLINE, wrapped.toString());
+        assertEquals("true" + NEWLINE, this.wrapped.toString());
     }
 
     @Test
     public void testPrint_char() throws Exception {
         for (final char c : FIRST.toCharArray()) {
-            print.print(c);
+            this.print.print(c);
             assertMessages();
         }
-        print.println();
+        this.print.println();
         assertMessages(FIRST);
-        assertEquals(FIRST + NEWLINE, wrapped.toString());
+        assertEquals(FIRST + NEWLINE, this.wrapped.toString());
     }
 
     @Test
     public void testPrint_CharacterArray() throws Exception {
-        print.print(FIRST.toCharArray());
+        this.print.print(FIRST.toCharArray());
         assertMessages();
-        print.println();
+        this.print.println();
         assertMessages(FIRST);
-        assertEquals(FIRST + NEWLINE, wrapped.toString());
+        assertEquals(FIRST + NEWLINE, this.wrapped.toString());
     }
 
     @Test
     public void testPrint_int() throws Exception {
-        print.print(12);
+        this.print.print(12);
         assertMessages();
-        print.println();
+        this.print.println();
         assertMessages("12");
-        assertEquals("12" + NEWLINE, wrapped.toString());
+        assertEquals("12" + NEWLINE, this.wrapped.toString());
     }
 
     @Test
     public void testPrint_long() throws Exception {
-        print.print(12L);
+        this.print.print(12L);
         assertMessages();
-        print.println();
+        this.print.println();
         assertMessages("12");
-        assertEquals("12" + NEWLINE, wrapped.toString());
+        assertEquals("12" + NEWLINE, this.wrapped.toString());
     }
 
     @Test
     public void testPrint_Object() throws Exception {
-        print.print((Object) FIRST);
+        this.print.print((Object) FIRST);
         assertMessages();
-        print.println();
+        this.print.println();
         assertMessages(FIRST);
-        assertEquals(FIRST + NEWLINE, wrapped.toString());
+        assertEquals(FIRST + NEWLINE, this.wrapped.toString());
     }
 
     @Test
     public void testPrint_String() throws Exception {
-        print.print(FIRST);
+        this.print.print(FIRST);
         assertMessages();
-        print.println();
+        this.print.println();
         assertMessages(FIRST);
-        assertEquals(FIRST + NEWLINE, wrapped.toString());
+        assertEquals(FIRST + NEWLINE, this.wrapped.toString());
     }
 
     @Test
     public void testPrintf() throws Exception {
-        assertSame(print,  print.printf("<<<%s>>>", FIRST));
+        assertSame(this.print,  this.print.printf("<<<%s>>>", FIRST));
         assertMessages();
-        print.println();
+        this.print.println();
         assertMessages("<<<" + FIRST + ">>>");
-        assertEquals("<<<" + FIRST + ">>>" + NEWLINE, wrapped.toString());
+        assertEquals("<<<" + FIRST + ">>>" + NEWLINE, this.wrapped.toString());
     }
 }

@@ -51,7 +51,7 @@ public class LoggerWriter extends Writer {
 
     @Override
     public void close() throws IOException {
-        logger.close(fqcn);
+        this.logger.close(this.fqcn);
     }
 
     @Override
@@ -60,31 +60,31 @@ public class LoggerWriter extends Writer {
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + "[fqcn=" + fqcn + ", logger=" + logger + "]";
+        return this.getClass().getSimpleName() + "[fqcn=" + this.fqcn + ", logger=" + this.logger + "]";
     }
 
     @Override
     public void write(final char[] cbuf) throws IOException {
-        logger.put(fqcn, cbuf, 0, cbuf.length);
+        this.logger.put(this.fqcn, cbuf, 0, cbuf.length);
     }
 
     @Override
     public void write(final char[] cbuf, final int off, final int len) throws IOException {
-        logger.put(fqcn, cbuf, off, len);
+        this.logger.put(this.fqcn, cbuf, off, len);
     }
 
     @Override
     public void write(final int c) throws IOException {
-        logger.put(fqcn, (char) c);
+        this.logger.put(this.fqcn, (char) c);
     }
 
     @Override
     public void write(final String str) throws IOException {
-        logger.put(fqcn, str, 0, str.length());
+        this.logger.put(this.fqcn, str, 0, str.length());
     }
 
     @Override
     public void write(final String str, final int off, final int len) throws IOException {
-        logger.put(fqcn, str, off, len);
+        this.logger.put(this.fqcn, str, off, len);
     }
 }

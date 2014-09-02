@@ -37,20 +37,20 @@ public class CharStreamLogger {
     }
 
     public void close(final String fqcn) {
-        synchronized (msg) {
-            closed = true;
+        synchronized (this.msg) {
+            this.closed = true;
             logEnd(fqcn);
         }
     }
 
     private void log(final String fqcn) {
         // convert to string now so async loggers work
-        logger.logIfEnabled(fqcn, level, marker, msg.toString());
-        msg.setLength(0);
+        this.logger.logIfEnabled(fqcn, this.level, this.marker, this.msg.toString());
+        this.msg.setLength(0);
     }
 
     private void logEnd(final String fqcn) {
-        if (msg.length() > 0) {
+        if (this.msg.length() > 0) {
             log(fqcn);
         }
     }
@@ -61,8 +61,8 @@ public class CharStreamLogger {
 
     public void put(final String fqcn, final CharSequence str, final int off, final int len) {
         if (len >= 0) {
-            synchronized (msg) {
-                if (closed) {
+            synchronized (this.msg) {
+                if (this.closed) {
                     return;
                 }
                 int start = off;
@@ -72,7 +72,7 @@ public class CharStreamLogger {
                     switch (c) {
                     case '\r':
                     case '\n':
-                        msg.append(str, start, pos);
+                        this.msg.append(str, start, pos);
                         start = pos + 1;
                         if (c == '\n') {
                             log(fqcn);
@@ -80,7 +80,7 @@ public class CharStreamLogger {
                         break;
                     }
                 }
-                msg.append(str, start, end);
+                this.msg.append(str, start, end);
             }
         } else {
             logEnd(fqcn);
@@ -89,8 +89,8 @@ public class CharStreamLogger {
 
     public void put(final String fqcn, final int c) {
         if (c >= 0) {
-            synchronized (msg) {
-                if (closed) {
+            synchronized (this.msg) {
+                if (this.closed) {
                     return;
                 }
                 switch (c) {
@@ -100,7 +100,7 @@ public class CharStreamLogger {
                 case '\r':
                     break;
                 default:
-                    msg.append((char) c);
+                    this.msg.append((char) c);
                 }
             }
         } else {

@@ -12,7 +12,7 @@ public class LoggerWriterFilterTest extends AbstractLoggerWriterTest {
 
     @Override
     protected Writer createWriterWrapper() {
-        return new LoggerWriterFilter(wrapped, getLogger(), LEVEL);
+        return new LoggerWriterFilter(this.wrapped, getLogger(), LEVEL);
     }
 
 }

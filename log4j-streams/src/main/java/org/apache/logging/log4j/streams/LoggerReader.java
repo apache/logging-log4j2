@@ -56,13 +56,13 @@ public class LoggerReader extends FilterReader {
     @Override
     public void close() throws IOException {
         super.close();
-        logger.close(fqcn);
+        this.logger.close(this.fqcn);
     }
 
     @Override
     public int read() throws IOException {
         final int c = super.read();
-        logger.put(fqcn, c);
+        this.logger.put(this.fqcn, c);
         return c;
     }
 
@@ -74,7 +74,7 @@ public class LoggerReader extends FilterReader {
     @Override
     public int read(final char[] cbuf, final int off, final int len) throws IOException {
         final int charsRead = super.read(cbuf, off, len);
-        logger.put(fqcn, cbuf, off, charsRead);
+        this.logger.put(this.fqcn, cbuf, off, charsRead);
         return charsRead;
     }
 
@@ -91,6 +91,6 @@ public class LoggerReader extends FilterReader {
 
     @Override
     public String toString() {
-        return LoggerReader.class.getSimpleName() + "{stream=" + in + '}';
+        return LoggerReader.class.getSimpleName() + "{stream=" + this.in + '}';
     }
 }

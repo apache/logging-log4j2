@@ -34,29 +34,29 @@ public class LoggerOutputStreamTest extends AbstractStreamTest {
     protected OutputStream out;
 
     protected OutputStream createOutputStream() {
-        return new LoggerOutputStream(wrapped, getLogger(), Level.ERROR);
+        return new LoggerOutputStream(this.wrapped, getLogger(), Level.ERROR);
     }
 
     @Before
     public void createStream() {
-        wrapped = new ByteArrayOutputStream();
-        out = createOutputStream();
+        this.wrapped = new ByteArrayOutputStream();
+        this.out = createOutputStream();
     }
 
     @Test
     public void testClose_HasRemainingData() throws IOException {
-        out.write(FIRST.getBytes());
+        this.out.write(FIRST.getBytes());
         assertMessages();
-        out.close();
+        this.out.close();
         assertMessages(FIRST);
-        assertEquals(FIRST, wrapped.toString());
+        assertEquals(FIRST, this.wrapped.toString());
     }
 
     @Test
     public void testClose_NoRemainingData() throws IOException {
-        out.close();
+        this.out.close();
         assertMessages();
-        assertEquals("", wrapped.toString());
+        assertEquals("", this.wrapped.toString());
     }
 
     @Test
@@ -75,11 +75,11 @@ public class LoggerOutputStreamTest extends AbstractStreamTest {
     @Test
     public void testWrite_ByteArray() throws Exception {
         final byte[] bytes = "byte[]".getBytes();
-        out.write(bytes);
+        this.out.write(bytes);
         assertMessages();
-        out.write('\n');
+        this.out.write('\n');
         assertMessages("byte[]");
-        assertEquals("byte[]\n", wrapped.toString());
+        assertEquals("byte[]\n", this.wrapped.toString());
     }
 
     @Test
@@ -88,38 +88,38 @@ public class LoggerOutputStreamTest extends AbstractStreamTest {
         final int middle = bytes.length/2;
         final int length = bytes.length - middle;
         final String right = new String(bytes, middle, length);
-        out.write(bytes, middle, length);
+        this.out.write(bytes, middle, length);
         assertMessages();
-        out.write('\n');
+        this.out.write('\n');
         assertMessages(right);
-        assertEquals("byte[]".substring(middle, bytes.length) + '\n', wrapped.toString());
+        assertEquals("byte[]".substring(middle, bytes.length) + '\n', this.wrapped.toString());
     }
 
     @Test
     public void testWrite_IgnoresWindowsNewline() throws IOException {
-        out.write(FIRST.getBytes());
-        out.write("\r\n".getBytes());
-        out.write(LAST.getBytes());
-        out.close();
+        this.out.write(FIRST.getBytes());
+        this.out.write("\r\n".getBytes());
+        this.out.write(LAST.getBytes());
+        this.out.close();
         assertMessages(FIRST, LAST);
-        assertEquals(FIRST + "\r\n" + LAST, wrapped.toString());
+        assertEquals(FIRST + "\r\n" + LAST, this.wrapped.toString());
     }
 
     @Test
     public void testWrite_Int() throws Exception {
         for (final byte b : "int".getBytes()) {
-            out.write(b);
+            this.out.write(b);
             assertMessages();
         }
-        out.write('\n');
+        this.out.write('\n');
         assertMessages("int");
-        assertEquals("int" + '\n', wrapped.toString());
+        assertEquals("int" + '\n', this.wrapped.toString());
     }
 
     @Test
     public void testWrite_MultipleLines() throws IOException {
-        out.write((FIRST + '\n' + LAST + '\n').getBytes());
+        this.out.write((FIRST + '\n' + LAST + '\n').getBytes());
         assertMessages(FIRST, LAST);
-        assertEquals(FIRST + '\n' + LAST + '\n', wrapped.toString());
+        assertEquals(FIRST + '\n' + LAST + '\n', this.wrapped.toString());
     }
 }
