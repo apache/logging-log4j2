@@ -31,7 +31,9 @@ public final class LoaderUtil {
 
     public static final String IGNORE_TCCL_PROPERTY = "log4j.ignoreTCL";
 
-    private static final boolean IGNORE_TCCL;
+    // this variable must be lazily loaded; otherwise, we get a nice circular class loading problem where LoaderUtil
+    // wants to use PropertiesUtil, but then PropertiesUtil wants to use LoaderUtil.
+    private static Boolean ignoreTCCL;
 
     private static final PrivilegedAction<ClassLoader> TCCL_GETTER = new ThreadContextClassLoaderGetter();
 
@@ -40,8 +42,6 @@ public final class LoaderUtil {
         if (sm != null) {
             sm.checkPermission(new RuntimePermission("getClassLoader"));
         }
-        final String ignoreTccl = PropertiesUtil.getProperties().getStringProperty(IGNORE_TCCL_PROPERTY, null);
-        IGNORE_TCCL = ignoreTccl != null && !"false".equalsIgnoreCase(ignoreTccl.trim());
     }
 
     /**
@@ -73,7 +73,7 @@ public final class LoaderUtil {
      * @throws ClassNotFoundException if the specified class name could not be found
      */
     public static Class<?> loadClass(final String className) throws ClassNotFoundException {
-        if (IGNORE_TCCL) {
+        if (isIgnoreTccl()) {
             return Class.forName(className);
         }
         try {
@@ -123,5 +123,14 @@ public final class LoaderUtil {
         throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException,
         IllegalAccessException {
         return clazz.cast(newInstanceOf(className));
+    }
+
+    private static boolean isIgnoreTccl() {
+        // we need to lazily initialize this, but concurrent access is not an issue
+        if (ignoreTCCL == null) {
+            final String ignoreTccl = PropertiesUtil.getProperties().getStringProperty(IGNORE_TCCL_PROPERTY, null);
+            ignoreTCCL = ignoreTccl != null && !"false".equalsIgnoreCase(ignoreTccl.trim());
+        }
+        return ignoreTCCL;
     }
 }
