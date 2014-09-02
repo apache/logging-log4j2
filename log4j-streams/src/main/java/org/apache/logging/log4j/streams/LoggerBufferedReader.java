@@ -34,16 +34,16 @@ public class LoggerBufferedReader extends BufferedReader {
         super(new LoggerReader(reader, logger, FQCN, level, marker));
     }
 
-    public LoggerBufferedReader(final Reader reader, final int sz, final ExtendedLogger logger, final String fqcn, final Level level, final Marker marker) {
-        super(new LoggerReader(reader, logger, FQCN, level, marker), sz);
+    public LoggerBufferedReader(final Reader reader, final int size, final ExtendedLogger logger, final String fqcn, final Level level, final Marker marker) {
+        super(new LoggerReader(reader, logger, FQCN, level, marker), size);
     }
 
-    public LoggerBufferedReader(final Reader reader, final int sz, final Logger logger, final Level level) {
-        this(reader, sz, (ExtendedLogger) logger, FQCN, level, null);
+    public LoggerBufferedReader(final Reader reader, final int size, final Logger logger, final Level level) {
+        this(reader, size, (ExtendedLogger) logger, FQCN, level, null);
     }
 
-    public LoggerBufferedReader(final Reader reader, final int sz, final Logger logger, final Level level, final Marker marker) {
-        this(reader, sz, (ExtendedLogger) logger, FQCN, level, marker);
+    public LoggerBufferedReader(final Reader reader, final int size, final Logger logger, final Level level, final Marker marker) {
+        this(reader, size, (ExtendedLogger) logger, FQCN, level, marker);
     }
 
     public LoggerBufferedReader(final Reader reader, final Logger logger, final Level level) {

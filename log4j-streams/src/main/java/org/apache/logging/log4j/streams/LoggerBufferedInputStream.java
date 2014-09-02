@@ -58,16 +58,16 @@ public class LoggerBufferedInputStream extends BufferedInputStream {
         this(in, Charset.defaultCharset(), logger, fqcn, level, marker);
     }
 
-    public LoggerBufferedInputStream(final InputStream in, final int sz, final ExtendedLogger logger, final String fqcn, final Level level, final Marker marker) {
-        this(in, Charset.defaultCharset(), sz, logger, fqcn, level, marker);
+    public LoggerBufferedInputStream(final InputStream in, final int size, final ExtendedLogger logger, final String fqcn, final Level level, final Marker marker) {
+        this(in, Charset.defaultCharset(), size, logger, fqcn, level, marker);
     }
 
-    public LoggerBufferedInputStream(final InputStream in, final int sz, final Logger logger, final Level level) {
-        this(in, sz, (ExtendedLogger) logger, FQCN, level, null);
+    public LoggerBufferedInputStream(final InputStream in, final int size, final Logger logger, final Level level) {
+        this(in, size, (ExtendedLogger) logger, FQCN, level, null);
     }
 
-    public LoggerBufferedInputStream(final InputStream in, final int sz, final Logger logger, final Level level, final Marker marker) {
-        this(in, sz, (ExtendedLogger) logger, FQCN, level, marker);
+    public LoggerBufferedInputStream(final InputStream in, final int size, final Logger logger, final Level level, final Marker marker) {
+        this(in, size, (ExtendedLogger) logger, FQCN, level, marker);
     }
 
     public LoggerBufferedInputStream(final InputStream in, final Logger logger, final Level level) {
