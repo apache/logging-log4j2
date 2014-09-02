@@ -28,11 +28,10 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.streams.util.ByteStreamLogger;
 
 /**
- * Output stream that logs each line written to a pre-defined level. Can also be configured with a
- * Marker. This class provides an interface that follows the {@link java.io.OutputStream} methods in
- * spirit, but doesn't require output to any external stream. This class should <em>not</em> be used
- * as a stream for an underlying logger unless it's being used as a bridge. Otherwise, infinite
- * loops may occur!
+ * Logs each line written to a pre-defined level. Can also be configured with a Marker. This class provides an interface
+ * that follows the {@link java.io.OutputStream} methods in spirit, but doesn't require output to any external stream.
+ * This class should <em>not</em> be used as a stream for an underlying logger unless it's being used as a bridge.
+ * Otherwise, infinite loops may occur!
  */
 public class LoggerOutputStream extends OutputStream {
     private static final String FQCN = LoggerOutputStream.class.getName();
@@ -57,8 +56,8 @@ public class LoggerOutputStream extends OutputStream {
         this(null, Charset.defaultCharset(), (ExtendedLogger) logger, FQCN, level, marker);
     }
 
-    public LoggerOutputStream(final OutputStream out, final Charset charset, final ExtendedLogger logger, final String fqcn, final Level level,
-            final Marker marker) {
+    public LoggerOutputStream(final OutputStream out, final Charset charset, final ExtendedLogger logger,
+            final String fqcn, final Level level, final Marker marker) {
         this.out = out;
         this.logger = new ByteStreamLogger(logger, level, marker, charset);
         this.fqcn = fqcn;
@@ -68,7 +67,8 @@ public class LoggerOutputStream extends OutputStream {
         this(out, charset, (ExtendedLogger) logger, FQCN, level, null);
     }
 
-    public LoggerOutputStream(final OutputStream out, final Charset charset, final Logger logger, final Level level, final Marker marker) {
+    public LoggerOutputStream(final OutputStream out, final Charset charset, final Logger logger, final Level level,
+            final Marker marker) {
         this(out, charset, (ExtendedLogger) logger, FQCN, level, marker);
     }
 

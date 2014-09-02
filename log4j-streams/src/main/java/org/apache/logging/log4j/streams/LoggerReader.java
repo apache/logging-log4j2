@@ -29,9 +29,8 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.streams.util.CharStreamLogger;
 
 /**
- * Writer that logs each line written to a pre-defined level. Can also be configured with a Marker.
- * This class provides an interface that follows the {@link java.io.Writer} methods in spirit, but
- * doesn't require output to any external writer.
+ * Logs each line written to a pre-defined level. Can also be configured with a Marker. This class provides an interface
+ * that follows the {@link java.io.Writer} methods in spirit, but doesn't require output to any external writer.
  */
 public class LoggerReader extends FilterReader {
     private static final String FQCN = LoggerReader.class.getName();
@@ -39,7 +38,8 @@ public class LoggerReader extends FilterReader {
     private final CharStreamLogger logger;
     private final String fqcn;
 
-    public LoggerReader(final Reader reader, final ExtendedLogger logger, final String fqcn, final Level level, final Marker marker) {
+    public LoggerReader(final Reader reader, final ExtendedLogger logger, final String fqcn, final Level level,
+            final Marker marker) {
         super(reader);
         this.logger = new CharStreamLogger(logger, level, marker);
         this.fqcn = fqcn;

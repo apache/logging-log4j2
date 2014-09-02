@@ -29,8 +29,7 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.streams.util.ByteStreamLogger;
 
 /**
- * Input stream that logs each line read to a pre-defined level. Can also be configured with a
- * Marker.
+ * Logs each line read to a pre-defined level. Can also be configured with a Marker.
  */
 public class LoggerInputStream extends FilterInputStream {
     private static final String FQCN = LoggerInputStream.class.getName();
@@ -38,7 +37,8 @@ public class LoggerInputStream extends FilterInputStream {
     private final String fqcn;
     private final ByteStreamLogger logger;
 
-    public LoggerInputStream(final InputStream in, final Charset charset, final ExtendedLogger logger, final String fqcn, final Level level, final Marker marker) {
+    public LoggerInputStream(final InputStream in, final Charset charset, final ExtendedLogger logger,
+            final String fqcn, final Level level, final Marker marker) {
         super(in);
         this.logger = new ByteStreamLogger(logger, level, marker, charset);
         this.fqcn = fqcn;
@@ -48,7 +48,8 @@ public class LoggerInputStream extends FilterInputStream {
         this(in, charset, (ExtendedLogger) logger, FQCN, level, null);
     }
 
-    public LoggerInputStream(final InputStream in, final Charset charset, final Logger logger, final Level level, final Marker marker) {
+    public LoggerInputStream(final InputStream in, final Charset charset, final Logger logger, final Level level,
+            final Marker marker) {
         this(in, charset, (ExtendedLogger) logger, FQCN, level, marker);
     }
 

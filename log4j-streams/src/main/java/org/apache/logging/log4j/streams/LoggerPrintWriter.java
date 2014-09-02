@@ -27,9 +27,8 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**
- * Print Writer that logs each line written to a pre-defined level. Can also be configured with a
- * Marker. This class provides an interface that follows the {@link java.io.PrintWriter} methods in
- * spirit, but doesn't require output to any external writer. 
+ * Logs each line written to a pre-defined level. Can also be configured with a Marker. This class provides an interface
+ * that follows the {@link java.io.PrintWriter} methods in spirit, but doesn't require output to any external writer.
  */
 public class LoggerPrintWriter extends PrintWriter {
     private static final String FQCN = LoggerPrintWriter.class.getName();
@@ -49,8 +48,8 @@ public class LoggerPrintWriter extends PrintWriter {
     }
 
     @SuppressWarnings("resource")
-    public LoggerPrintWriter(final Writer writer, final boolean autoFlush, final ExtendedLogger logger, final String fqcn,
-            final Level level, final Marker marker) {
+    public LoggerPrintWriter(final Writer writer, final boolean autoFlush, final ExtendedLogger logger,
+            final String fqcn, final Level level, final Marker marker) {
         super(new LoggerWriterFilter(writer, logger, fqcn, level, marker), autoFlush);
     }
 
@@ -58,7 +57,8 @@ public class LoggerPrintWriter extends PrintWriter {
         this(writer, autoFlush, (ExtendedLogger) logger, FQCN, level, null);
     }
 
-    public LoggerPrintWriter(final Writer writer, final boolean autoFlush, final Logger logger, final Level level, final Marker marker) {
+    public LoggerPrintWriter(final Writer writer, final boolean autoFlush, final Logger logger, final Level level,
+            final Marker marker) {
         this(writer, autoFlush, (ExtendedLogger) logger, FQCN, level, marker);
     }
 
@@ -75,24 +75,24 @@ public class LoggerPrintWriter extends PrintWriter {
         super.append(c);
         return this;
     }
-    
+
     @Override
     public LoggerPrintWriter append(final CharSequence csq) {
         super.append(csq);
         return this;
     }
-    
+
     @Override
     public LoggerPrintWriter append(final CharSequence csq, final int start, final int end) {
         super.append(csq, start, end);
         return this;
     }
-    
+
     @Override
     public boolean checkError() {
         return super.checkError();
     }
-    
+
     @Override
     public void close() {
         super.close();
@@ -241,7 +241,7 @@ public class LoggerPrintWriter extends PrintWriter {
     public void write(final int c) {
         super.write(c);
     }
-    
+
     @Override
     public void write(final String s) {
         super.write(s);
