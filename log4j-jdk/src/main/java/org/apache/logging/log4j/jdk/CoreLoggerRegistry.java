@@ -18,33 +18,18 @@ package org.apache.logging.log4j.jdk;
 
 import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.spi.AbstractExternalLoggerContextRegistry;
 import org.apache.logging.log4j.spi.LoggerContext;
 
 /**
- * {@link Logger} registry implementation.
+ * {@link Logger} registry implementation that uses log4j-core.
  *
  * @since 2.1
  */
-public class LoggerRegistry extends AbstractExternalLoggerContextRegistry<Logger> {
+public class CoreLoggerRegistry extends AbstractLoggerRegistry {
 
     @Override
     public Logger newLogger(final String name, final LoggerContext context) {
-        return new org.apache.logging.log4j.jdk.Logger((org.apache.logging.log4j.core.Logger) context.getLogger(name));
-    }
-
-    @Override
-    public LoggerContext getContext() {
-        return PrivateManager.getContext();
-    }
-
-    private static class PrivateManager extends LogManager {
-        private static final String FQCN = java.util.logging.LogManager.class.getName();
-
-        public static LoggerContext getContext() {
-            return getContext(FQCN, false);
-        }
+        return new CoreLogger((org.apache.logging.log4j.core.Logger) context.getLogger(name));
     }
 
 }

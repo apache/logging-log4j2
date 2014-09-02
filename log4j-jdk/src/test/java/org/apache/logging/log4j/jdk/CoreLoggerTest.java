@@ -17,7 +17,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.*;
 
-public class LoggerTest {
+public class CoreLoggerTest {
 
     public static final String LOGGER_NAME = "Test";
     private Logger logger;
@@ -72,7 +72,7 @@ public class LoggerTest {
         assertThat(events, hasSize(1));
         final LogEvent event = events.get(0);
         assertThat(event.getLevel(), equalTo(Level.INFO));
-        final String levelName = event.getContextMap().get(org.apache.logging.log4j.jdk.Logger.LEVEL);
+        final String levelName = event.getContextMap().get(ApiLogger.LEVEL);
         assertThat(levelName, equalTo(CustomJdkLevel.TEST.getName()));
     }
 

@@ -22,11 +22,13 @@ import java.util.logging.Logger;
 
 import org.apache.logging.log4j.spi.ExternalLoggerContextRegistry;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
  * Log4j implementation of {@link java.util.logging.LogManager}. Note that the system property
  * {@code java.util.logging.manager} must be set to {@code org.apache.logging.log4j.jdk.LogManager} in order to use
- * this adaptor. This LogManager requires the {@code log4j-core} library to be available as well as {@code log4j-api}.
+ * this adaptor. This LogManager requires the {@code log4j-api} library to be available. If {@code log4j-core} is
+ * also available, then more features of {@link java.util.logging.Logger} are supported.
  *
  * @since 2.1
  */
@@ -34,7 +36,24 @@ public class LogManager extends java.util.logging.LogManager {
 
     private static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
 
-    private final ExternalLoggerContextRegistry<Logger> registry = new LoggerRegistry();
+    static {
+        // find out if log4j-core is available
+        String registryClassName;
+        try {
+            LoaderUtil.loadClass("org.apache.logging.log4j.core.Logger");
+            registryClassName = "org.apache.logging.log4j.jdk.CoreLoggerRegistry";
+        } catch (final ClassNotFoundException ignored) {
+            registryClassName = "org.apache.logging.log4j.jdk.ApiLoggerRegistry";
+        }
+        LOGGER.debug("Attempting to use {}", registryClassName);
+        try {
+            REGISTRY = LoaderUtil.newCheckedInstanceOf(registryClassName, AbstractLoggerRegistry.class);
+        } catch (final Exception e) {
+            throw LOGGER.throwing(new ExceptionInInitializerError(e));
+        }
+    }
+
+    private static final ExternalLoggerContextRegistry<Logger> REGISTRY;
 
     public LogManager() {
         super();
@@ -51,12 +70,12 @@ public class LogManager extends java.util.logging.LogManager {
     @Override
     public Logger getLogger(final String name) {
         LOGGER.trace("Call to LogManager.getLogger({})", name);
-        return registry.getLogger(name);
+        return REGISTRY.getLogger(name);
     }
 
     @Override
     public Enumeration<String> getLoggerNames() {
-        return Collections.enumeration(registry.getLoggersInContext(registry.getContext()).keySet());
+        return Collections.enumeration(REGISTRY.getLoggersInContext(REGISTRY.getContext()).keySet());
     }
 
 }
