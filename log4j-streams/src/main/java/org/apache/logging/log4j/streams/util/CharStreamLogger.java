@@ -103,8 +103,8 @@ public class CharStreamLogger {
     }
 
     private void log(final String fqcn) {
-        logger.logIfEnabled(fqcn, level, marker, msg.toString()); // convert to string now so async loggers
-                                                         // work
+        // convert to string now so async loggers work
+        logger.logIfEnabled(fqcn, level, marker, msg.toString());
         msg.setLength(0);
     }
 }
