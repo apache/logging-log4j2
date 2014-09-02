@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentMap;
  * @param <L> the external logger class for this registry (e.g., {@code org.slf4j.Logger})
  * @since 2.1
  */
-public interface ExternalLoggerContextRegistry<L> {
+public interface LoggerAdapter<L> {
 
     /**
      * Gets a named logger linked to the {@link LoggerContext} returned by {@link #getContext()}. If no logger of

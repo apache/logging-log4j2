@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogConfigurationException;
 import org.apache.commons.logging.LogFactory;
-import org.apache.logging.log4j.spi.ExternalLoggerContextRegistry;
+import org.apache.logging.log4j.spi.LoggerAdapter;
 
 /**
  * Log4j binding for Commons Logging.
@@ -30,13 +30,13 @@ import org.apache.logging.log4j.spi.ExternalLoggerContextRegistry;
  */
 public class LogFactoryImpl extends LogFactory {
 
-    private final ExternalLoggerContextRegistry<Log> registry = new LogRegistry();
+    private final LoggerAdapter<Log> adapter = new LogAdapter();
 
     private final ConcurrentMap<String, Object> attributes = new ConcurrentHashMap<String, Object>();
 
     @Override
     public Log getInstance(final String name) throws LogConfigurationException {
-        return registry.getLogger(name);
+        return adapter.getLogger(name);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class LogFactoryImpl extends LogFactory {
      */
     @Override
     public void release() {
-        registry.stop();
+        adapter.stop();
     }
 
     @Override

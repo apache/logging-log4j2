@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.logging.Logger;
 
-import org.apache.logging.log4j.spi.ExternalLoggerContextRegistry;
+import org.apache.logging.log4j.spi.LoggerAdapter;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 
@@ -35,6 +35,7 @@ import org.apache.logging.log4j.util.LoaderUtil;
 public class LogManager extends java.util.logging.LogManager {
 
     private static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
+    private static final LoggerAdapter<Logger> ADAPTER;
 
     static {
         // find out if log4j-core is available
@@ -47,13 +48,11 @@ public class LogManager extends java.util.logging.LogManager {
         }
         LOGGER.debug("Attempting to use {}", registryClassName);
         try {
-            REGISTRY = LoaderUtil.newCheckedInstanceOf(registryClassName, AbstractLoggerRegistry.class);
+            ADAPTER = LoaderUtil.newCheckedInstanceOf(registryClassName, AbstractLoggerAdapter.class);
         } catch (final Exception e) {
             throw LOGGER.throwing(new ExceptionInInitializerError(e));
         }
     }
-
-    private static final ExternalLoggerContextRegistry<Logger> REGISTRY;
 
     public LogManager() {
         super();
@@ -70,12 +69,12 @@ public class LogManager extends java.util.logging.LogManager {
     @Override
     public Logger getLogger(final String name) {
         LOGGER.trace("Call to LogManager.getLogger({})", name);
-        return REGISTRY.getLogger(name);
+        return ADAPTER.getLogger(name);
     }
 
     @Override
     public Enumeration<String> getLoggerNames() {
-        return Collections.enumeration(REGISTRY.getLoggersInContext(REGISTRY.getContext()).keySet());
+        return Collections.enumeration(ADAPTER.getLoggersInContext(ADAPTER.getContext()).keySet());
     }
 
 }

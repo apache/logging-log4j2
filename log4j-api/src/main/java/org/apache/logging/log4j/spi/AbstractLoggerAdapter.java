@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentMap;
  * Provides an abstract base class to use for implementing ExternalLoggerContextRegistry.
  * @since 2.1
  */
-public abstract class AbstractExternalLoggerContextRegistry<L> implements ExternalLoggerContextRegistry<L> {
+public abstract class AbstractLoggerAdapter<L> implements LoggerAdapter<L> {
 
     /**
      * A map to store loggers for their given LoggerContexts.

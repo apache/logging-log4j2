@@ -19,14 +19,14 @@ package org.apache.logging.log4j.jcl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.spi.AbstractExternalLoggerContextRegistry;
+import org.apache.logging.log4j.spi.AbstractLoggerAdapter;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
 
 /**
  * Commons Logging registry.
  */
-public class LogRegistry extends AbstractExternalLoggerContextRegistry<Log> {
+public class LogAdapter extends AbstractLoggerAdapter<Log> {
 
     @Override
     public Log newLogger(final String name, final LoggerContext context) {

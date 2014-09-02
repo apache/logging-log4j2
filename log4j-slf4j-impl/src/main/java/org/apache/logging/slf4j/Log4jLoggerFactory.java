@@ -17,7 +17,7 @@
 package org.apache.logging.slf4j;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.spi.AbstractExternalLoggerContextRegistry;
+import org.apache.logging.log4j.spi.AbstractLoggerAdapter;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.slf4j.ILoggerFactory;
@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 /**
  *
  */
-public class Log4jLoggerFactory extends AbstractExternalLoggerContextRegistry<Logger> implements ILoggerFactory {
+public class Log4jLoggerFactory extends AbstractLoggerAdapter<Logger> implements ILoggerFactory {
 
     private static final String FQCN = Log4jLoggerFactory.class.getName();
     private static final String PACKAGE = "org.slf4j";
