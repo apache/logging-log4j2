@@ -56,6 +56,7 @@ public class LoggerWriter extends Writer {
 
     @Override
     public void flush() throws IOException {
+        // do nothing
     }
 
     @Override
