@@ -27,12 +27,6 @@ public class LoggerInputStreamCallerInfoTest extends LoggerStreamsCallerInfoTest
 
     private LoggerInputStream logIn;
     
-    @Before
-    public void setupStreams() {
-        final InputStream srcInputStream = new ByteArrayInputStream("a\nb\nc\nd".getBytes());
-        logIn = new LoggerInputStream(srcInputStream, getLogger(), Level.WARN);
-    }
-    
     @Test
     public void read() throws Exception {
         logIn.read();
@@ -50,5 +44,11 @@ public class LoggerInputStreamCallerInfoTest extends LoggerStreamsCallerInfoTest
         assertMessages("before close size", 3, "read");
         logIn.close();
         assertMessages("after close size", 4, "read");
+    }
+    
+    @Before
+    public void setupStreams() {
+        final InputStream srcInputStream = new ByteArrayInputStream("a\nb\nc\nd".getBytes());
+        logIn = new LoggerInputStream(srcInputStream, getLogger(), Level.WARN);
     }
 }

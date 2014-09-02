@@ -38,6 +38,13 @@ public class LoggerWriterFilter extends FilterWriter {
     private final CharStreamLogger logger;
     private final String fqcn;
 
+    public LoggerWriterFilter(final Writer out, final ExtendedLogger logger, final String fqcn, final Level level,
+            final Marker marker) {
+        super(out);
+        this.logger = new CharStreamLogger(logger, level, marker);
+        this.fqcn = fqcn;
+    }
+
     public LoggerWriterFilter(final Writer out, final Logger logger, final Level level) {
         this(out, (ExtendedLogger) logger, FQCN, level, null);
     }
@@ -46,17 +53,20 @@ public class LoggerWriterFilter extends FilterWriter {
         this(out, (ExtendedLogger) logger, FQCN, level, marker);
     }
 
-    public LoggerWriterFilter(final Writer out, final ExtendedLogger logger, final String fqcn, final Level level,
-            final Marker marker) {
-        super(out);
-        this.logger = new CharStreamLogger(logger, level, marker);
-        this.fqcn = fqcn;
+    @Override
+    public void close() throws IOException {
+        out.close();
+        logger.close(fqcn);
     }
 
     @Override
-    public void write(final int c) throws IOException {
-        out.write(c);
-        logger.put(fqcn, (char) c);
+    public void flush() throws IOException {
+        out.flush();
+    }
+
+    @Override
+    public String toString() {
+        return LoggerWriterFilter.class.getSimpleName() + "{writer=" + out + '}';
     }
 
     @Override
@@ -72,6 +82,12 @@ public class LoggerWriterFilter extends FilterWriter {
     }
 
     @Override
+    public void write(final int c) throws IOException {
+        out.write(c);
+        logger.put(fqcn, (char) c);
+    }
+
+    @Override
     public void write(final String str) throws IOException {
         out.write(str);
         logger.put(fqcn, str, 0, str.length());
@@ -81,21 +97,5 @@ public class LoggerWriterFilter extends FilterWriter {
     public void write(final String str, final int off, final int len) throws IOException {
         out.write(str, off, len);
         logger.put(fqcn, str, off, len);
-    }
-
-    @Override
-    public void flush() throws IOException {
-        out.flush();
-    }
-
-    @Override
-    public void close() throws IOException {
-        out.close();
-        logger.close(fqcn);
-    }
-
-    @Override
-    public String toString() {
-        return LoggerWriterFilter.class.getSimpleName() + "{writer=" + out + '}';
     }
 }

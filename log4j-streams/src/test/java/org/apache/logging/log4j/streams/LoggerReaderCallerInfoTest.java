@@ -27,12 +27,6 @@ public class LoggerReaderCallerInfoTest extends LoggerStreamsCallerInfoTesting {
 
     LoggerReader logReader;
     
-    @Before
-    public void setupReader() {
-        final Reader srcReader = new StringReader("a\nb\nc\nd\ne");
-        logReader = new LoggerReader(srcReader, getLogger(), LEVEL);
-    }
-
     @Test
     public void read() throws Exception {
         logReader.read();
@@ -53,5 +47,11 @@ public class LoggerReaderCallerInfoTest extends LoggerStreamsCallerInfoTesting {
         assertMessages("before close size", 4, "read");
         logReader.close();
         assertMessages("after close size", 5, "read");
+    }
+
+    @Before
+    public void setupReader() {
+        final Reader srcReader = new StringReader("a\nb\nc\nd\ne");
+        logReader = new LoggerReader(srcReader, getLogger(), LEVEL);
     }
 }

@@ -31,22 +31,17 @@ import org.junit.Before;
 import org.junit.ClassRule;
 
 public abstract class AbstractStreamTest {
+    protected static Logger getLogger() {
+        return ctx.getLogger("UnitTestLogger");
+    }
     protected final static String NEWLINE = System.getProperty("line.separator");
     protected final static Level LEVEL = Level.ERROR;
     protected final static String FIRST = "first";
+
     protected final static String LAST = "last";
 
     @ClassRule
     public static InitialLoggerContext ctx = new InitialLoggerContext("log4j2-streams-unit-test.xml");
-
-    protected static Logger getLogger() {
-        return ctx.getLogger("UnitTestLogger");
-    }
-
-    @Before
-    public void clearAppender() {
-        ((ListAppender) ctx.getAppender("UnitTest")).clear();
-    }
 
     protected void assertMessages(final String... messages) {
         final List<String> actualMsgs = ((ListAppender) ctx.getAppender("UnitTest")).getMessages();
@@ -55,5 +50,10 @@ public abstract class AbstractStreamTest {
             final String start = LEVEL.name() + ' ' + messages[i];
             assertThat(actualMsgs.get(i), startsWith(start));
         }
+    }
+
+    @Before
+    public void clearAppender() {
+        ((ListAppender) ctx.getAppender("UnitTest")).clear();
     }
 }

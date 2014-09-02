@@ -33,25 +33,43 @@ public class LoggerOutputStreamTest extends AbstractStreamTest {
     protected ByteArrayOutputStream wrapped;
     protected OutputStream out;
 
+    protected OutputStream createOutputStream() {
+        return new LoggerOutputStream(wrapped, getLogger(), Level.ERROR);
+    }
+
     @Before
     public void createStream() {
         wrapped = new ByteArrayOutputStream();
         out = createOutputStream();
     }
 
-    protected OutputStream createOutputStream() {
-        return new LoggerOutputStream(wrapped, getLogger(), Level.ERROR);
+    @Test
+    public void testClose_HasRemainingData() throws IOException {
+        out.write(FIRST.getBytes());
+        assertMessages();
+        out.close();
+        assertMessages(FIRST);
+        assertEquals(FIRST, wrapped.toString());
     }
 
     @Test
-    public void testWrite_Int() throws Exception {
-        for (final byte b : "int".getBytes()) {
-            out.write(b);
-            assertMessages();
-        }
-        out.write('\n');
-        assertMessages("int");
-        assertEquals("int" + '\n', wrapped.toString());
+    public void testClose_NoRemainingData() throws IOException {
+        out.close();
+        assertMessages();
+        assertEquals("", wrapped.toString());
+    }
+
+    @Test
+    public void testFlush() throws IOException {
+        final OutputStream out = EasyMock.createMock("out", OutputStream.class);
+        out.flush(); // expect the flush to come through to the mocked OutputStream
+        out.close();
+        replay(out);
+        
+        final LoggerOutputStream los = new LoggerOutputStream(out, getLogger(), LEVEL);
+        los.flush();
+        los.close();
+        verify(out);
     }
 
     @Test
@@ -88,38 +106,20 @@ public class LoggerOutputStreamTest extends AbstractStreamTest {
     }
 
     @Test
+    public void testWrite_Int() throws Exception {
+        for (final byte b : "int".getBytes()) {
+            out.write(b);
+            assertMessages();
+        }
+        out.write('\n');
+        assertMessages("int");
+        assertEquals("int" + '\n', wrapped.toString());
+    }
+
+    @Test
     public void testWrite_MultipleLines() throws IOException {
         out.write((FIRST + '\n' + LAST + '\n').getBytes());
         assertMessages(FIRST, LAST);
         assertEquals(FIRST + '\n' + LAST + '\n', wrapped.toString());
-    }
-
-    @Test
-    public void testFlush() throws IOException {
-        final OutputStream out = EasyMock.createMock("out", OutputStream.class);
-        out.flush(); // expect the flush to come through to the mocked OutputStream
-        out.close();
-        replay(out);
-        
-        final LoggerOutputStream los = new LoggerOutputStream(out, getLogger(), LEVEL);
-        los.flush();
-        los.close();
-        verify(out);
-    }
-
-    @Test
-    public void testClose_NoRemainingData() throws IOException {
-        out.close();
-        assertMessages();
-        assertEquals("", wrapped.toString());
-    }
-
-    @Test
-    public void testClose_HasRemainingData() throws IOException {
-        out.write(FIRST.getBytes());
-        assertMessages();
-        out.close();
-        assertMessages(FIRST);
-        assertEquals(FIRST, wrapped.toString());
     }
 }

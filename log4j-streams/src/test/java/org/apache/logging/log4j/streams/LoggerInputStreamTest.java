@@ -32,30 +32,35 @@ public class LoggerInputStreamTest extends AbstractStreamTest {
     protected ByteArrayOutputStream read;
     protected InputStream in;
 
+    protected InputStream createInputStream() {
+        return new LoggerInputStream(wrapped, getLogger(), LEVEL);
+    }
+
     @Before
     public void createStream() {
         wrapped = new ByteArrayInputStream((FIRST + "\r\n" + LAST).getBytes());
         read = new ByteArrayOutputStream();
         in = createInputStream();
     }
-
-    protected InputStream createInputStream() {
-        return new LoggerInputStream(wrapped, getLogger(), LEVEL);
-    }
     
     @Test
-    public void testRead_int() throws Exception {
-        for (int i = 0; i < FIRST.length(); i++) {
-            read.write(in.read());
-        }
-        if (!(in instanceof BufferedInputStream)) {
-            assertMessages();
-        }
-        assertEquals("carriage return", '\r', in.read());
-        if (!(in instanceof BufferedInputStream)) {
-            assertMessages();
-        }
-        assertEquals("newline", '\n', in.read());
+    public void testClose_HasRemainingData() throws IOException {
+        final byte[] bytes = new byte[1024];
+        in.read(bytes);
+        assertMessages(FIRST);
+        in.close();
+        assertMessages(FIRST, LAST);
+    }
+
+    @Test
+    public void testClose_NoRemainingData() throws IOException {
+        wrapped = new ByteArrayInputStream((FIRST + '\n').getBytes());
+        in = new LoggerInputStream(wrapped, getLogger(), LEVEL);
+
+        final byte[] bytes = new byte[1024];
+        in.read(bytes);
+        assertMessages(FIRST);
+        in.close();
         assertMessages(FIRST);
     }
 
@@ -93,6 +98,22 @@ public class LoggerInputStreamTest extends AbstractStreamTest {
     }
 
     @Test
+    public void testRead_int() throws Exception {
+        for (int i = 0; i < FIRST.length(); i++) {
+            read.write(in.read());
+        }
+        if (!(in instanceof BufferedInputStream)) {
+            assertMessages();
+        }
+        assertEquals("carriage return", '\r', in.read());
+        if (!(in instanceof BufferedInputStream)) {
+            assertMessages();
+        }
+        assertEquals("newline", '\n', in.read());
+        assertMessages(FIRST);
+    }
+
+    @Test
     public void testRead_MultipleLines() throws IOException {
         wrapped = new ByteArrayInputStream((FIRST + "\n" + LAST + '\n').getBytes());
         in = new LoggerInputStream(wrapped, getLogger(), LEVEL);
@@ -102,26 +123,5 @@ public class LoggerInputStreamTest extends AbstractStreamTest {
         read.write(bytes, 0, len);
         assertMessages(FIRST, LAST);
         assertEquals(FIRST + '\n' + LAST + '\n', read.toString());
-    }
-
-    @Test
-    public void testClose_NoRemainingData() throws IOException {
-        wrapped = new ByteArrayInputStream((FIRST + '\n').getBytes());
-        in = new LoggerInputStream(wrapped, getLogger(), LEVEL);
-
-        final byte[] bytes = new byte[1024];
-        in.read(bytes);
-        assertMessages(FIRST);
-        in.close();
-        assertMessages(FIRST);
-    }
-
-    @Test
-    public void testClose_HasRemainingData() throws IOException {
-        final byte[] bytes = new byte[1024];
-        in.read(bytes);
-        assertMessages(FIRST);
-        in.close();
-        assertMessages(FIRST, LAST);
     }
 }

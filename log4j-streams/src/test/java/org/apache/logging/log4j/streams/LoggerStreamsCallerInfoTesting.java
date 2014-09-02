@@ -27,19 +27,14 @@ import org.junit.ClassRule;
 
 public class LoggerStreamsCallerInfoTesting {
 
-    protected final static Level LEVEL = Level.WARN;
-    
-    @ClassRule
-    public static InitialLoggerContext ctx = new InitialLoggerContext("log4j2-streams-calling-info.xml");
-
     protected static Logger getLogger() {
         return ctx.getLogger("ClassAndMethodLogger");
     }
+    
+    protected final static Level LEVEL = Level.WARN;
 
-    @Before
-    public void clearAppender() {
-        ((ListAppender) ctx.getAppender("ClassAndMethod")).clear();
-    }
+    @ClassRule
+    public static InitialLoggerContext ctx = new InitialLoggerContext("log4j2-streams-calling-info.xml");
 
     public void assertMessages(final String msg, final int size, final String methodName) {
         final ListAppender appender = (ListAppender) ctx.getAppender("ClassAndMethod");
@@ -47,5 +42,10 @@ public class LoggerStreamsCallerInfoTesting {
         for (final String message : appender.getMessages()) {
             assertEquals(msg + " has incorrect caller info", this.getClass().getName() + '.' + methodName, message);
         }
+    }
+
+    @Before
+    public void clearAppender() {
+        ((ListAppender) ctx.getAppender("ClassAndMethod")).clear();
     }
 }

@@ -26,10 +26,12 @@ public class LoggerBufferedInputStreamCallerInfoTest extends LoggerStreamsCaller
 
     private LoggerBufferedInputStream logIn;
     
-    @Before
-    public void setupStreams() {
-        final InputStream srcInputStream = new ByteArrayInputStream("a\nb\nc\nd".getBytes());
-        logIn = new LoggerBufferedInputStream(srcInputStream, getLogger(), LEVEL);
+    @Test
+    public void close() throws Exception {
+        logIn.read();
+        assertMessages("before close", 3, "close");
+        logIn.close();
+        assertMessages("after close", 4, "close");
     }
     
     @Test
@@ -56,11 +58,9 @@ public class LoggerBufferedInputStreamCallerInfoTest extends LoggerStreamsCaller
         logIn.close();
     }
 
-    @Test
-    public void close() throws Exception {
-        logIn.read();
-        assertMessages("before close", 3, "close");
-        logIn.close();
-        assertMessages("after close", 4, "close");
+    @Before
+    public void setupStreams() {
+        final InputStream srcInputStream = new ByteArrayInputStream("a\nb\nc\nd".getBytes());
+        logIn = new LoggerBufferedInputStream(srcInputStream, getLogger(), LEVEL);
     }
 }

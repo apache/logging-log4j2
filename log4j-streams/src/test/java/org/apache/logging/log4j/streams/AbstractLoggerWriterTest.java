@@ -44,6 +44,52 @@ public abstract class AbstractLoggerWriterTest extends AbstractStreamTest {
     protected abstract Writer createWriterWrapper();
 
     @Test
+    public void testClose_HasRemainingData() throws IOException {
+        writer.write(FIRST);
+        assertMessages();
+        writer.close();
+        assertMessages(FIRST);
+        if (wrapped != null) {
+            assertEquals(FIRST, wrapped.toString());
+        }
+    }
+
+    @Test
+    public void testClose_NoRemainingData() throws IOException {
+        writer.close();
+        assertMessages();
+        if (wrapped != null) {
+            assertEquals("", wrapped.toString());
+        }
+    }
+
+    @Test
+    public void testFlush() throws IOException {
+        final OutputStream out = EasyMock.createMock(OutputStream.class);
+        out.flush(); // expect the flush to come through to the mocked OutputStream
+        out.close();
+        replay(out);
+
+        final LoggerOutputStream los = new LoggerOutputStream(out, getLogger(), LEVEL);
+        los.flush();
+        los.close();
+        verify(out);
+    }
+
+    @Test
+    public void testWrite_Character() throws Exception {
+        for (final char c : FIRST.toCharArray()) {
+            writer.write(c);
+            assertMessages();
+        }
+        writer.write('\n');
+        assertMessages(FIRST);
+        if (wrapped != null) {
+            assertEquals(FIRST + '\n', wrapped.toString());
+        }
+    }
+
+    @Test
     public void testWrite_CharArray() throws Exception {
         final char[] chars = FIRST.toCharArray();
         writer.write(chars);
@@ -71,19 +117,6 @@ public abstract class AbstractLoggerWriterTest extends AbstractStreamTest {
     }
 
     @Test
-    public void testWrite_Character() throws Exception {
-        for (final char c : FIRST.toCharArray()) {
-            writer.write(c);
-            assertMessages();
-        }
-        writer.write('\n');
-        assertMessages(FIRST);
-        if (wrapped != null) {
-            assertEquals(FIRST + '\n', wrapped.toString());
-        }
-    }
-
-    @Test
     public void testWrite_IgnoresWindowsNewline() throws IOException {
         writer.write(FIRST + "\r\n");
         writer.write(LAST);
@@ -100,39 +133,6 @@ public abstract class AbstractLoggerWriterTest extends AbstractStreamTest {
         assertMessages(FIRST, LAST);
         if (wrapped != null) {
             assertEquals(FIRST + '\n' + LAST + '\n', wrapped.toString());
-        }
-    }
-
-    @Test
-    public void testFlush() throws IOException {
-        final OutputStream out = EasyMock.createMock(OutputStream.class);
-        out.flush(); // expect the flush to come through to the mocked OutputStream
-        out.close();
-        replay(out);
-
-        final LoggerOutputStream los = new LoggerOutputStream(out, getLogger(), LEVEL);
-        los.flush();
-        los.close();
-        verify(out);
-    }
-
-    @Test
-    public void testClose_NoRemainingData() throws IOException {
-        writer.close();
-        assertMessages();
-        if (wrapped != null) {
-            assertEquals("", wrapped.toString());
-        }
-    }
-
-    @Test
-    public void testClose_HasRemainingData() throws IOException {
-        writer.write(FIRST);
-        assertMessages();
-        writer.close();
-        assertMessages(FIRST);
-        if (wrapped != null) {
-            assertEquals(FIRST, wrapped.toString());
         }
     }
 }

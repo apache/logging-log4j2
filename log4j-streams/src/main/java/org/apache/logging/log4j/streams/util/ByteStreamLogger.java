@@ -28,8 +28,33 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
 public class ByteStreamLogger {
-    private static final int BUFFER_SIZE = 1024;
+    private class ByteBufferInputStream extends InputStream {
 
+        @Override
+        public int read() throws IOException {
+            buf.flip();
+            int result = -1;
+            if (buf.limit() > 0) {
+                result = buf.get() & 0xFF;
+            }
+            buf.compact();
+            return result;
+        }
+
+        @Override
+        public int read(final byte[] bytes, final int off, final int len) throws IOException {
+            buf.flip();
+            int result = -1;
+            if (buf.limit() > 0) {
+                result = Math.min(len, buf.limit());
+                buf.get(bytes, off, result);
+            }
+            buf.compact();
+            return result;
+        }
+    }
+
+    private static final int BUFFER_SIZE = 1024;
     private final ExtendedLogger logger;
     private final Level level;
     private final Marker marker;
@@ -38,6 +63,7 @@ public class ByteStreamLogger {
     private final char[] msgBuf = new char[BUFFER_SIZE];
     private final StringBuilder msg = new StringBuilder();
     private boolean closed;
+
     private final ByteBuffer buf = ByteBuffer.allocate(BUFFER_SIZE);
 
     public ByteStreamLogger(final ExtendedLogger logger, final Level level, final Marker marker, final Charset charset) {
@@ -46,35 +72,6 @@ public class ByteStreamLogger {
         this.marker = marker;
         in = new ByteBufferInputStream();
         reader = new InputStreamReader(in, charset);
-    }
-
-    public void put(final String fqcn, final int b) throws IOException {
-        if (b >= 0) {
-            synchronized (msg) {
-                buf.put((byte) (b & 0xFF));
-                extractMessages(fqcn);
-            }
-        } else {
-            logEnd(fqcn);
-        }
-    }
-
-    public void put(final String fqcn, final byte[] b, int off, int len) throws IOException {
-        if (len >= 0) {
-            synchronized (msg) {
-                while (len > buf.remaining()) {
-                    final int remaining = buf.remaining();
-                    buf.put(b, off, remaining);
-                    len -= remaining;
-                    off += remaining;
-                    extractMessages(fqcn);
-                }
-                buf.put(b, off, len);
-                extractMessages(fqcn);
-            }
-        } else {
-            logEnd(fqcn);
-        }
     }
 
     public void close(final String fqcn) {
@@ -109,6 +106,12 @@ public class ByteStreamLogger {
             read = reader.read(msgBuf);
         }
     }
+
+    private void log(final String fqcn) {
+        // convert to string now so async loggers work
+        logger.logIfEnabled(fqcn, level, marker, msg.toString());
+        msg.setLength(0);
+    }
     
     private void logEnd(final String fqcn) {
         if (msg.length() > 0) {
@@ -116,35 +119,32 @@ public class ByteStreamLogger {
         }
     }
 
-    private void log(final String fqcn) {
-        // convert to string now so async loggers work
-        logger.logIfEnabled(fqcn, level, marker, msg.toString());
-        msg.setLength(0);
+    public void put(final String fqcn, final byte[] b, int off, int len) throws IOException {
+        if (len >= 0) {
+            synchronized (msg) {
+                while (len > buf.remaining()) {
+                    final int remaining = buf.remaining();
+                    buf.put(b, off, remaining);
+                    len -= remaining;
+                    off += remaining;
+                    extractMessages(fqcn);
+                }
+                buf.put(b, off, len);
+                extractMessages(fqcn);
+            }
+        } else {
+            logEnd(fqcn);
+        }
     }
 
-    private class ByteBufferInputStream extends InputStream {
-
-        @Override
-        public int read() throws IOException {
-            buf.flip();
-            int result = -1;
-            if (buf.limit() > 0) {
-                result = buf.get() & 0xFF;
+    public void put(final String fqcn, final int b) throws IOException {
+        if (b >= 0) {
+            synchronized (msg) {
+                buf.put((byte) (b & 0xFF));
+                extractMessages(fqcn);
             }
-            buf.compact();
-            return result;
-        }
-
-        @Override
-        public int read(final byte[] bytes, final int off, final int len) throws IOException {
-            buf.flip();
-            int result = -1;
-            if (buf.limit() > 0) {
-                result = Math.min(len, buf.limit());
-                buf.get(bytes, off, result);
-            }
-            buf.compact();
-            return result;
+        } else {
+            logEnd(fqcn);
         }
     }
 }

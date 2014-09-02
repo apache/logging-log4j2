@@ -36,24 +36,22 @@ public class CharStreamLogger {
         this.marker = marker;
     }
 
-    public void put(final String fqcn, final int c) {
-        if (c >= 0) {
-            synchronized (msg) {
-                if (closed) {
-                    return;
-                }
-                switch (c) {
-                case '\n':
-                    log(fqcn);
-                    break;
-                case '\r':
-                    break;
-                default:
-                    msg.append((char) c);
-                }
-            }
-        } else {
+    public void close(final String fqcn) {
+        synchronized (msg) {
+            closed = true;
             logEnd(fqcn);
+        }
+    }
+
+    private void log(final String fqcn) {
+        logger.logIfEnabled(fqcn, level, marker, msg.toString()); // convert to string now so async loggers
+                                                         // work
+        msg.setLength(0);
+    }
+
+    private void logEnd(final String fqcn) {
+        if (msg.length() > 0) {
+            log(fqcn);
         }
     }
 
@@ -89,22 +87,24 @@ public class CharStreamLogger {
         }
     }
 
-    public void close(final String fqcn) {
-        synchronized (msg) {
-            closed = true;
+    public void put(final String fqcn, final int c) {
+        if (c >= 0) {
+            synchronized (msg) {
+                if (closed) {
+                    return;
+                }
+                switch (c) {
+                case '\n':
+                    log(fqcn);
+                    break;
+                case '\r':
+                    break;
+                default:
+                    msg.append((char) c);
+                }
+            }
+        } else {
             logEnd(fqcn);
         }
-    }
-
-    private void logEnd(final String fqcn) {
-        if (msg.length() > 0) {
-            log(fqcn);
-        }
-    }
-
-    private void log(final String fqcn) {
-        logger.logIfEnabled(fqcn, level, marker, msg.toString()); // convert to string now so async loggers
-                                                         // work
-        msg.setLength(0);
     }
 }

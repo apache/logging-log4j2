@@ -32,6 +32,15 @@ public class LoggerPrintStreamTest extends LoggerOutputStreamTest {
     }
 
     @Test
+    public void testFormat() throws Exception {
+        assertSame(print, print.format("[%s]", FIRST));
+        assertMessages();
+        print.println();
+        assertMessages("[" + FIRST + "]");
+        assertEquals("[" + FIRST + "]" + NEWLINE, wrapped.toString());
+    }
+
+    @Test
     public void testPrint_boolean() throws Exception {
         print.print(true);
         assertMessages();
@@ -46,6 +55,15 @@ public class LoggerPrintStreamTest extends LoggerOutputStreamTest {
             print.print(c);
             assertMessages();
         }
+        print.println();
+        assertMessages(FIRST);
+        assertEquals(FIRST + NEWLINE, wrapped.toString());
+    }
+
+    @Test
+    public void testPrint_CharacterArray() throws Exception {
+        print.print(FIRST.toCharArray());
+        assertMessages();
         print.println();
         assertMessages(FIRST);
         assertEquals(FIRST + NEWLINE, wrapped.toString());
@@ -70,8 +88,8 @@ public class LoggerPrintStreamTest extends LoggerOutputStreamTest {
     }
 
     @Test
-    public void testPrint_CharacterArray() throws Exception {
-        print.print(FIRST.toCharArray());
+    public void testPrint_Object() throws Exception {
+        print.print((Object) FIRST);
         assertMessages();
         print.println();
         assertMessages(FIRST);
@@ -88,29 +106,11 @@ public class LoggerPrintStreamTest extends LoggerOutputStreamTest {
     }
 
     @Test
-    public void testPrint_Object() throws Exception {
-        print.print((Object) FIRST);
-        assertMessages();
-        print.println();
-        assertMessages(FIRST);
-        assertEquals(FIRST + NEWLINE, wrapped.toString());
-    }
-
-    @Test
     public void testPrintf() throws Exception {
         assertSame(print,  print.printf("<<<%s>>>", FIRST));
         assertMessages();
         print.println();
         assertMessages("<<<" + FIRST + ">>>");
         assertEquals("<<<" + FIRST + ">>>" + NEWLINE, wrapped.toString());
-    }
-
-    @Test
-    public void testFormat() throws Exception {
-        assertSame(print, print.format("[%s]", FIRST));
-        assertMessages();
-        print.println();
-        assertMessages("[" + FIRST + "]");
-        assertEquals("[" + FIRST + "]" + NEWLINE, wrapped.toString());
     }
 }

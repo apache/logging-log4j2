@@ -26,29 +26,12 @@ public class LoggerPrintWriterCallerInfoTest extends LoggerStreamsCallerInfoTest
 
     private LoggerPrintWriter logOut;
     
-    @Before
-    public void setupStreams() {
-        logOut = new LoggerPrintWriter(getLogger(), Level.WARN);
-    }
-    
     @Test
-    public void write_int() throws Exception {
-        logOut.write('a');
-        assertMessages("write int", 0, "write_int");
-        logOut.write('\n');
-        assertMessages("write newline", 1, "write_int");
-    }
-    
-    @Test
-    public void write_bytes() throws Exception {
-        logOut.write("b\n".toCharArray());
-        assertMessages("write", 1, "write_bytes");
-    }
-    
-    @Test
-    public void write_bytes_offset() throws Exception {
-        logOut.write("c\n".toCharArray(), 0, 2);
-        assertMessages("write", 1, "write_bytes_offset");
+    public void close() throws Exception {
+        logOut.print("a\nb");
+        assertMessages("before close size", 1, "close");
+        logOut.close();
+        assertMessages("after close size", 2, "close");
     }
     
     @Test
@@ -116,14 +99,6 @@ public class LoggerPrintWriterCallerInfoTest extends LoggerStreamsCallerInfoTest
     }
     
     @Test
-    public void print_string() throws Exception {
-        logOut.print("a");
-        assertMessages("print", 0, "print_string");
-        logOut.println("b");
-        assertMessages("println", 1, "print_string");
-    }
-    
-    @Test
     public void print_printf() throws Exception {
         logOut.printf("a\n");
         assertMessages("println", 1, "print_printf");
@@ -136,10 +111,35 @@ public class LoggerPrintWriterCallerInfoTest extends LoggerStreamsCallerInfoTest
     }
     
     @Test
-    public void close() throws Exception {
-        logOut.print("a\nb");
-        assertMessages("before close size", 1, "close");
-        logOut.close();
-        assertMessages("after close size", 2, "close");
+    public void print_string() throws Exception {
+        logOut.print("a");
+        assertMessages("print", 0, "print_string");
+        logOut.println("b");
+        assertMessages("println", 1, "print_string");
+    }
+    
+    @Before
+    public void setupStreams() {
+        logOut = new LoggerPrintWriter(getLogger(), Level.WARN);
+    }
+    
+    @Test
+    public void write_bytes() throws Exception {
+        logOut.write("b\n".toCharArray());
+        assertMessages("write", 1, "write_bytes");
+    }
+    
+    @Test
+    public void write_bytes_offset() throws Exception {
+        logOut.write("c\n".toCharArray(), 0, 2);
+        assertMessages("write", 1, "write_bytes_offset");
+    }
+    
+    @Test
+    public void write_int() throws Exception {
+        logOut.write('a');
+        assertMessages("write int", 0, "write_int");
+        logOut.write('\n');
+        assertMessages("write newline", 1, "write_int");
     }
 }

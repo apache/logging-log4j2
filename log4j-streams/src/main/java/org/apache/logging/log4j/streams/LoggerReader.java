@@ -39,6 +39,12 @@ public class LoggerReader extends FilterReader {
     private final CharStreamLogger logger;
     private final String fqcn;
 
+    public LoggerReader(final Reader reader, final ExtendedLogger logger, final String fqcn, final Level level, final Marker marker) {
+        super(reader);
+        this.logger = new CharStreamLogger(logger, level, marker);
+        this.fqcn = fqcn;
+    }
+
     public LoggerReader(final Reader reader, final Logger logger, final Level level) {
         this(reader, (ExtendedLogger) logger, FQCN, level, null);
     }
@@ -47,10 +53,10 @@ public class LoggerReader extends FilterReader {
         this(reader, (ExtendedLogger) logger, FQCN, level, marker);
     }
 
-    public LoggerReader(final Reader reader, final ExtendedLogger logger, final String fqcn, final Level level, final Marker marker) {
-        super(reader);
-        this.logger = new CharStreamLogger(logger, level, marker);
-        this.fqcn = fqcn;
+    @Override
+    public void close() throws IOException {
+        super.close();
+        logger.close(fqcn);
     }
 
     @Override
@@ -81,12 +87,6 @@ public class LoggerReader extends FilterReader {
             target.put(cbuf, 0, charsRead);
         }
         return charsRead;
-    }
-
-    @Override
-    public void close() throws IOException {
-        super.close();
-        logger.close(fqcn);
     }
 
     @Override

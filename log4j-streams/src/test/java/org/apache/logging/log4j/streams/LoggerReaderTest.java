@@ -33,30 +33,37 @@ public class LoggerReaderTest extends AbstractStreamTest {
     protected StringWriter read;
     protected Reader reader;
 
+    protected Reader createReader() {
+        return new LoggerReader(wrapped, getLogger(), LEVEL);
+    }
+    
     @Before
     public void createStream() {
         wrapped = new StringReader(FIRST + "\r\n" + LAST);
         read = new StringWriter();
         reader = createReader();
     }
-    
-    protected Reader createReader() {
-        return new LoggerReader(wrapped, getLogger(), LEVEL);
+
+    @Test
+    public void testClose_HasRemainingData() throws IOException {
+        final char[] chars = new char[1024];
+        reader.read(chars);
+        if (!(reader instanceof BufferedReader)) {
+            assertMessages(FIRST);
+        }
+        reader.close();
+        assertMessages(FIRST, LAST);
     }
 
     @Test
-    public void testRead_int() throws Exception {
-        for (int i = 0; i < FIRST.length(); i++) {
-            read.write(reader.read());
-        }
-        if (!(reader instanceof BufferedReader)) {
-            assertMessages();
-        }
-        assertEquals("carriage return", '\r', reader.read());
-        if (!(reader instanceof BufferedReader)) {
-            assertMessages();
-        }
-        assertEquals("newline", '\n', reader.read());
+    public void testClose_NoRemainingData() throws IOException {
+        wrapped = new StringReader(FIRST + '\n');
+        reader = createReader();
+
+        final char[] chars = new char[1024];
+        reader.read(chars);
+        assertMessages(FIRST);
+        reader.close();
         assertMessages(FIRST);
     }
 
@@ -105,6 +112,22 @@ public class LoggerReaderTest extends AbstractStreamTest {
     }
 
     @Test
+    public void testRead_int() throws Exception {
+        for (int i = 0; i < FIRST.length(); i++) {
+            read.write(reader.read());
+        }
+        if (!(reader instanceof BufferedReader)) {
+            assertMessages();
+        }
+        assertEquals("carriage return", '\r', reader.read());
+        if (!(reader instanceof BufferedReader)) {
+            assertMessages();
+        }
+        assertEquals("newline", '\n', reader.read());
+        assertMessages(FIRST);
+    }
+
+    @Test
     public void testRead_MultipleLines() throws IOException {
         wrapped = new StringReader(FIRST + "\n" + LAST + '\n');
         reader = createReader();
@@ -114,28 +137,5 @@ public class LoggerReaderTest extends AbstractStreamTest {
         read.write(chars, 0, len);
         assertMessages(FIRST, LAST);
         assertEquals(FIRST + '\n' + LAST + '\n', read.toString());
-    }
-
-    @Test
-    public void testClose_NoRemainingData() throws IOException {
-        wrapped = new StringReader(FIRST + '\n');
-        reader = createReader();
-
-        final char[] chars = new char[1024];
-        reader.read(chars);
-        assertMessages(FIRST);
-        reader.close();
-        assertMessages(FIRST);
-    }
-
-    @Test
-    public void testClose_HasRemainingData() throws IOException {
-        final char[] chars = new char[1024];
-        reader.read(chars);
-        if (!(reader instanceof BufferedReader)) {
-            assertMessages(FIRST);
-        }
-        reader.close();
-        assertMessages(FIRST, LAST);
     }
 }

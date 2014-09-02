@@ -28,10 +28,12 @@ public class LoggerBufferedReaderCallerInfoTest extends LoggerStreamsCallerInfoT
 
     LoggerBufferedReader logReader;
     
-    @Before
-    public void setupReader() {
-        final Reader srcReader = new StringReader("a\nb\nc\nd");
-        logReader = new LoggerBufferedReader(srcReader, getLogger(), Level.WARN);
+    @Test
+    public void close() throws Exception {
+        logReader.readLine();
+        assertMessages("before close", 3, "close");
+        logReader.close();
+        assertMessages("after close", 4, "close");
     }
 
     @Test
@@ -74,11 +76,9 @@ public class LoggerBufferedReaderCallerInfoTest extends LoggerStreamsCallerInfoT
         logReader.close();
     }
 
-    @Test
-    public void close() throws Exception {
-        logReader.readLine();
-        assertMessages("before close", 3, "close");
-        logReader.close();
-        assertMessages("after close", 4, "close");
+    @Before
+    public void setupReader() {
+        final Reader srcReader = new StringReader("a\nb\nc\nd");
+        logReader = new LoggerBufferedReader(srcReader, getLogger(), Level.WARN);
     }
 }

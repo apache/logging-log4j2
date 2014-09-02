@@ -38,26 +38,32 @@ public class LoggerInputStream extends FilterInputStream {
     private final String fqcn;
     private final ByteStreamLogger logger;
 
-    public LoggerInputStream(final InputStream in, final Logger logger, final Level level) {
-        this(in, Charset.defaultCharset(), (ExtendedLogger) logger, FQCN, level, null);
+    public LoggerInputStream(final InputStream in, final Charset charset, final ExtendedLogger logger, final String fqcn, final Level level, final Marker marker) {
+        super(in);
+        this.logger = new ByteStreamLogger(logger, level, marker, charset);
+        this.fqcn = fqcn;
     }
 
     public LoggerInputStream(final InputStream in, final Charset charset, final Logger logger, final Level level) {
         this(in, charset, (ExtendedLogger) logger, FQCN, level, null);
     }
 
-    public LoggerInputStream(final InputStream in, final Logger logger, final Level level, final Marker marker) {
-        this(in, Charset.defaultCharset(), (ExtendedLogger) logger, FQCN, level, marker);
-    }
-
     public LoggerInputStream(final InputStream in, final Charset charset, final Logger logger, final Level level, final Marker marker) {
         this(in, charset, (ExtendedLogger) logger, FQCN, level, marker);
     }
 
-    public LoggerInputStream(final InputStream in, final Charset charset, final ExtendedLogger logger, final String fqcn, final Level level, final Marker marker) {
-        super(in);
-        this.logger = new ByteStreamLogger(logger, level, marker, charset);
-        this.fqcn = fqcn;
+    public LoggerInputStream(final InputStream in, final Logger logger, final Level level) {
+        this(in, Charset.defaultCharset(), (ExtendedLogger) logger, FQCN, level, null);
+    }
+
+    public LoggerInputStream(final InputStream in, final Logger logger, final Level level, final Marker marker) {
+        this(in, Charset.defaultCharset(), (ExtendedLogger) logger, FQCN, level, marker);
+    }
+
+    @Override
+    public void close() throws IOException {
+        logger.close(fqcn);
+        super.close();
     }
 
     @Override
@@ -77,12 +83,6 @@ public class LoggerInputStream extends FilterInputStream {
         final int bytesRead = super.read(b, off, len);
         logger.put(fqcn, b, off, bytesRead);
         return bytesRead;
-    }
-
-    @Override
-    public void close() throws IOException {
-        logger.close(fqcn);
-        super.close();
     }
 
     @Override

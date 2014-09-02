@@ -37,22 +37,30 @@ public class LoggerWriter extends Writer {
     private final CharStreamLogger logger;
     private final String fqcn;
 
-    public LoggerWriter(final Logger logger, final Level level, final Marker marker) {
-        this((ExtendedLogger) logger, FQCN, level, marker);
+    public LoggerWriter(final ExtendedLogger logger, final String fqcn, final Level level, final Marker marker) {
+        this.logger = new CharStreamLogger(logger, level, marker);
+        this.fqcn = fqcn;
     }
 
     public LoggerWriter(final Logger logger, final Level level) {
         this((ExtendedLogger) logger, FQCN, level, null);
     }
 
-    public LoggerWriter(final ExtendedLogger logger, final String fqcn, final Level level, final Marker marker) {
-        this.logger = new CharStreamLogger(logger, level, marker);
-        this.fqcn = fqcn;
+    public LoggerWriter(final Logger logger, final Level level, final Marker marker) {
+        this((ExtendedLogger) logger, FQCN, level, marker);
     }
 
     @Override
-    public void write(final int c) throws IOException {
-        logger.put(fqcn, (char) c);
+    public void close() throws IOException {
+        logger.close(fqcn);
+    }
+
+    @Override
+    public void flush() throws IOException {
+    }
+
+    public String toString() {
+        return this.getClass().getSimpleName() + "[fqcn=" + fqcn + ", logger=" + logger + "]";
     }
 
     @Override
@@ -66,6 +74,11 @@ public class LoggerWriter extends Writer {
     }
 
     @Override
+    public void write(final int c) throws IOException {
+        logger.put(fqcn, (char) c);
+    }
+
+    @Override
     public void write(final String str) throws IOException {
         logger.put(fqcn, str, 0, str.length());
     }
@@ -73,18 +86,5 @@ public class LoggerWriter extends Writer {
     @Override
     public void write(final String str, final int off, final int len) throws IOException {
         logger.put(fqcn, str, off, len);
-    }
-
-    @Override
-    public void flush() throws IOException {
-    }
-
-    @Override
-    public void close() throws IOException {
-        logger.close(fqcn);
-    }
-
-    public String toString() {
-        return this.getClass().getSimpleName() + "[fqcn=" + fqcn + ", logger=" + logger + "]";
     }
 }

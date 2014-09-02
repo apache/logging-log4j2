@@ -41,36 +41,20 @@ public class LoggerOutputStream extends OutputStream {
     private final ByteStreamLogger logger;
     private final String fqcn;
 
-    public LoggerOutputStream(final Logger logger, final Level level) {
-        this(null, Charset.defaultCharset(), (ExtendedLogger) logger, FQCN, level, null);
-    }
-
     public LoggerOutputStream(final Charset charset, final Logger logger, final Level level) {
         this(null, charset, (ExtendedLogger) logger, FQCN, level, null);
-    }
-
-    public LoggerOutputStream(final Logger logger, final Level level, final Marker marker) {
-        this(null, Charset.defaultCharset(), (ExtendedLogger) logger, FQCN, level, marker);
     }
 
     public LoggerOutputStream(final Charset charset, final Logger logger, final Level level, final Marker marker) {
         this(null, charset, (ExtendedLogger) logger, FQCN, level, marker);
     }
 
-    public LoggerOutputStream(final OutputStream out, final Logger logger, final Level level) {
-        this(out, Charset.defaultCharset(), (ExtendedLogger) logger, FQCN, level, null);
+    public LoggerOutputStream(final Logger logger, final Level level) {
+        this(null, Charset.defaultCharset(), (ExtendedLogger) logger, FQCN, level, null);
     }
 
-    public LoggerOutputStream(final OutputStream out, final Charset charset, final Logger logger, final Level level) {
-        this(out, charset, (ExtendedLogger) logger, FQCN, level, null);
-    }
-
-    public LoggerOutputStream(final OutputStream out, final Logger logger, final Level level, final Marker marker) {
-        this(out, Charset.defaultCharset(), (ExtendedLogger) logger, FQCN, level, marker);
-    }
-
-    public LoggerOutputStream(final OutputStream out, final Charset charset, final Logger logger, final Level level, final Marker marker) {
-        this(out, charset, (ExtendedLogger) logger, FQCN, level, marker);
+    public LoggerOutputStream(final Logger logger, final Level level, final Marker marker) {
+        this(null, Charset.defaultCharset(), (ExtendedLogger) logger, FQCN, level, marker);
     }
 
     public LoggerOutputStream(final OutputStream out, final Charset charset, final ExtendedLogger logger, final String fqcn, final Level level,
@@ -80,12 +64,40 @@ public class LoggerOutputStream extends OutputStream {
         this.fqcn = fqcn;
     }
 
+    public LoggerOutputStream(final OutputStream out, final Charset charset, final Logger logger, final Level level) {
+        this(out, charset, (ExtendedLogger) logger, FQCN, level, null);
+    }
+
+    public LoggerOutputStream(final OutputStream out, final Charset charset, final Logger logger, final Level level, final Marker marker) {
+        this(out, charset, (ExtendedLogger) logger, FQCN, level, marker);
+    }
+
+    public LoggerOutputStream(final OutputStream out, final Logger logger, final Level level) {
+        this(out, Charset.defaultCharset(), (ExtendedLogger) logger, FQCN, level, null);
+    }
+
+    public LoggerOutputStream(final OutputStream out, final Logger logger, final Level level, final Marker marker) {
+        this(out, Charset.defaultCharset(), (ExtendedLogger) logger, FQCN, level, marker);
+    }
+
     @Override
-    public void write(final int b) throws IOException {
+    public void close() throws IOException {
         if (out != null) {
-            out.write(b);
+            out.close();
         }
-        logger.put(fqcn, (byte) (b & 0xFF));
+        logger.close(fqcn);
+    }
+
+    @Override
+    public void flush() throws IOException {
+        if (out != null) {
+            out.flush();
+        }
+    }
+
+    @Override
+    public String toString() {
+        return LoggerOutputStream.class.getSimpleName() + "{stream=" + out + '}';
     }
 
     @Override
@@ -105,22 +117,10 @@ public class LoggerOutputStream extends OutputStream {
     }
 
     @Override
-    public void flush() throws IOException {
+    public void write(final int b) throws IOException {
         if (out != null) {
-            out.flush();
+            out.write(b);
         }
-    }
-
-    @Override
-    public void close() throws IOException {
-        if (out != null) {
-            out.close();
-        }
-        logger.close(fqcn);
-    }
-
-    @Override
-    public String toString() {
-        return LoggerOutputStream.class.getSimpleName() + "{stream=" + out + '}';
+        logger.put(fqcn, (byte) (b & 0xFF));
     }
 }
