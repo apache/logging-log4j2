@@ -1004,7 +1004,7 @@
     <module>log4j-web</module>
     <module>log4j-perf</module>
     <module>log4j-streams</module>
-    <module>log4j-jdk</module>
+    <module>log4j-jul</module>
   </modules>
   <profiles>
     <profile>
