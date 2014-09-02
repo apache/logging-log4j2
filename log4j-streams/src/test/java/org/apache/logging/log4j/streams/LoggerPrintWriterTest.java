@@ -28,6 +28,7 @@ import org.junit.Test;
 public class LoggerPrintWriterTest extends AbstractLoggerWriterTest {
     private PrintWriter print; 
 
+    @Override
     protected StringWriter createWriter() {
         return new StringWriter();
     }

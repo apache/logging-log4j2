@@ -59,6 +59,7 @@ public class LoggerWriter extends Writer {
     public void flush() throws IOException {
     }
 
+    @Override
     public String toString() {
         return this.getClass().getSimpleName() + "[fqcn=" + fqcn + ", logger=" + logger + "]";
     }

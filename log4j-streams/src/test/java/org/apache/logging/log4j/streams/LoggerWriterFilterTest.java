@@ -5,10 +5,12 @@ import java.io.Writer;
 
 public class LoggerWriterFilterTest extends AbstractLoggerWriterTest {
 
+    @Override
     protected StringWriter createWriter() {
         return new StringWriter();
     }
 
+    @Override
     protected Writer createWriterWrapper() {
         return new LoggerWriterFilter(wrapped, getLogger(), LEVEL);
     }
