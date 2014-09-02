@@ -25,24 +25,17 @@ import java.net.URL;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Load resources (or images) from various sources.
  */
 public final class Loader {
 
-    private static boolean ignoreTCL = false;
-
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private static final String TSTR = "Caught Exception while in Loader.getResource. This may be innocuous.";
 
     static {
-        final String ignoreTCLProp = PropertiesUtil.getProperties().getStringProperty("log4j.ignoreTCL", null);
-        if (ignoreTCLProp != null) {
-            ignoreTCL = OptionConverter.toBoolean(ignoreTCLProp, true);
-        }
         final SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
             sm.checkPermission(new RuntimePermission("getStackTrace"));
@@ -55,7 +48,6 @@ public final class Loader {
      * @return the ClassLoader.
      */
     public static ClassLoader getClassLoader() {
-
         return getClassLoader(Loader.class, null);
     }
 
@@ -248,23 +240,7 @@ public final class Loader {
      * @throws ClassNotFoundException if the Class could not be found.
      */
     public static Class<?> loadClass(final String className) throws ClassNotFoundException {
-        // Just call Class.forName(className) if we are instructed to ignore the TCL.
-        if (ignoreTCL) {
-            LOGGER.trace("Ignoring TCCL. Trying Class.forName({}).", className);
-            return loadClassWithDefaultClassLoader(className);
-        }
-        try {
-            LOGGER.trace("Trying TCCL for class {}.", className);
-            // using the TCCL should work the same as the default ClassLoader (i.e., init or not)
-            return Class.forName(className, true, getTcl());
-        } catch (final Throwable e) {
-            LOGGER.trace("TCCL didn't work for class {}: {}.", className, e.toString());
-            return loadClassWithDefaultClassLoader(className);
-        }
-    }
-
-    private static Class<?> loadClassWithDefaultClassLoader(final String className) throws ClassNotFoundException {
-        return Class.forName(className);
+        return LoaderUtil.loadClass(className);
     }
 
     /**
@@ -314,14 +290,7 @@ public final class Loader {
                    InstantiationException,
                    NoSuchMethodException,
                    InvocationTargetException {
-        final Class<?> clazz = loadClass(className);
-        try {
-            return clazz.getConstructor().newInstance();
-        } catch (final NoSuchMethodException e) {
-            // try the default-default constructor
-            //noinspection ClassNewInstance
-            return clazz.newInstance();
-        }
+        return LoaderUtil.newInstanceOf(className);
     }
 
     /**
@@ -344,7 +313,7 @@ public final class Loader {
                    IllegalAccessException,
                    InvocationTargetException,
                    InstantiationException {
-        return clazz.cast(newInstanceOf(className));
+        return LoaderUtil.newCheckedInstanceOf(className, clazz);
     }
 
     /**
