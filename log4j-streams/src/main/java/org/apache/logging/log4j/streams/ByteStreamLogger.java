@@ -119,17 +119,19 @@ public class ByteStreamLogger {
         }
     }
 
-    public void put(final String fqcn, final byte[] b, int off, int len) throws IOException {
-        if (len >= 0) {
+    public void put(final String fqcn, final byte[] b, final int off, final int len) throws IOException {
+        int curLen = len;
+        int curOff = off;
+        if (curLen >= 0) {
             synchronized (this.msg) {
-                while (len > this.buf.remaining()) {
+                while (curLen > this.buf.remaining()) {
                     final int remaining = this.buf.remaining();
-                    this.buf.put(b, off, remaining);
-                    len -= remaining;
-                    off += remaining;
+                    this.buf.put(b, curOff, remaining);
+                    curLen -= remaining;
+                    curOff += remaining;
                     extractMessages(fqcn);
                 }
-                this.buf.put(b, off, len);
+                this.buf.put(b, curOff, curLen);
                 extractMessages(fqcn);
             }
         } else {
