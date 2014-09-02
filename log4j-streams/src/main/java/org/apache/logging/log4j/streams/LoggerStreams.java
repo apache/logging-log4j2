@@ -152,6 +152,10 @@ public class LoggerStreams {
         return new Builder(logger, Level.ERROR, null);
     }
 
+    public static Builder fatal(final Logger logger) {
+        return new Builder(logger, Level.FATAL, null);
+    }
+
     public static Builder info(final Logger logger) {
         return new Builder(logger, Level.INFO, null);
     }
