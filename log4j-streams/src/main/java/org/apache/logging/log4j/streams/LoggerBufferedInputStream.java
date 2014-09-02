@@ -34,16 +34,16 @@ public class LoggerBufferedInputStream extends BufferedInputStream {
         super(new LoggerInputStream(in, charset, logger, fqcn, level, marker));
     }
 
-    public LoggerBufferedInputStream(final InputStream in, final Charset charset, final int sz, final ExtendedLogger logger, final String fqcn, final Level level, final Marker marker) {
-        super(new LoggerInputStream(in, charset, logger, fqcn, level, marker), sz);
+    public LoggerBufferedInputStream(final InputStream in, final Charset charset, final int size, final ExtendedLogger logger, final String fqcn, final Level level, final Marker marker) {
+        super(new LoggerInputStream(in, charset, logger, fqcn, level, marker), size);
     }
 
-    public LoggerBufferedInputStream(final InputStream in, final Charset charset, final int sz, final Logger logger, final Level level) {
-        this(in, charset, sz, (ExtendedLogger) logger, FQCN, level, null);
+    public LoggerBufferedInputStream(final InputStream in, final Charset charset, final int size, final Logger logger, final Level level) {
+        this(in, charset, size, (ExtendedLogger) logger, FQCN, level, null);
     }
 
-    public LoggerBufferedInputStream(final InputStream in, final Charset charset, final int sz, final Logger logger, final Level level, final Marker marker) {
-        this(in, charset, sz, (ExtendedLogger) logger, FQCN, level, marker);
+    public LoggerBufferedInputStream(final InputStream in, final Charset charset, final int size, final Logger logger, final Level level, final Marker marker) {
+        this(in, charset, size, (ExtendedLogger) logger, FQCN, level, marker);
     }
 
     public LoggerBufferedInputStream(final InputStream in, final Charset charset, final Logger logger, final Level level) {
