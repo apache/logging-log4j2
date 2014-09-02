@@ -28,7 +28,7 @@ public class LoggerBufferedReaderTest extends LoggerReaderTest {
     
     @Override
     protected Reader createReader() {
-        return this.reader = new LoggerBufferedReader(wrapped, getLogger(), LEVEL);
+        return reader = new LoggerBufferedReader(wrapped, getLogger(), LEVEL);
     }
 
     @Test

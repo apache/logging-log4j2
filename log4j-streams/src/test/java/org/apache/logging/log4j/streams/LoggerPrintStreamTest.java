@@ -28,7 +28,7 @@ public class LoggerPrintStreamTest extends LoggerOutputStreamTest {
 
     @Override
     protected OutputStream createOutputStream() {
-        return this.print = new LoggerPrintStream(wrapped, getLogger(), LEVEL);
+        return print = new LoggerPrintStream(wrapped, getLogger(), LEVEL);
     }
 
     @Test

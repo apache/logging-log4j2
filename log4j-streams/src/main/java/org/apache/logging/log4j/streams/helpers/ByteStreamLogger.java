@@ -44,8 +44,8 @@ public class ByteStreamLogger {
         this.logger = logger;
         this.level = level;
         this.marker = marker;
-        this.in = new ByteBufferInputStream();
-        this.reader = new InputStreamReader(in, charset);
+        in = new ByteBufferInputStream();
+        reader = new InputStreamReader(in, charset);
     }
 
     public void put(final String fqcn, final int b) throws IOException {

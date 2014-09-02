@@ -29,8 +29,8 @@ public class LoggerPrintWriterTest extends LoggerWriterTest {
 
     @Override
     protected Writer createWriter() {
-        this.print = new LoggerPrintWriter(wrapped, getLogger(), LEVEL);
-        return this.print;
+        print = new LoggerPrintWriter(wrapped, getLogger(), LEVEL);
+        return print;
     }
 
     @Test
