@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.io;
 
-import static org.junit.Assert.assertEquals;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Before;
 import org.junit.ClassRule;
+
+import static org.junit.Assert.*;
 
 public class LoggerStreamsCallerInfoTesting {
 
@@ -41,7 +41,7 @@ public class LoggerStreamsCallerInfoTesting {
     public static InitialLoggerContext ctx = new InitialLoggerContext("log4j2-streams-calling-info.xml");
 
     public void assertMessages(final String msg, final int size, final String methodName) {
-        final ListAppender appender = (ListAppender) ctx.getAppender("ClassAndMethod");
+        final ListAppender appender = ctx.getListAppender("ClassAndMethod");
         assertEquals(msg + ".size", size, appender.getMessages().size());
         for (final String message : appender.getMessages()) {
             assertEquals(msg + " has incorrect caller info", this.getClass().getName() + '.' + methodName, message);
@@ -50,6 +50,6 @@ public class LoggerStreamsCallerInfoTesting {
 
     @Before
     public void clearAppender() {
-        ((ListAppender) ctx.getAppender("ClassAndMethod")).clear();
+        ctx.getListAppender("ClassAndMethod").clear();
     }
 }
