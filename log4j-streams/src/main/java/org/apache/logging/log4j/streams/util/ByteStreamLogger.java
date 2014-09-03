@@ -58,7 +58,7 @@ public class ByteStreamLogger {
     private final ExtendedLogger logger;
     private final Level level;
     private final Marker marker;
-    private final ByteBufferInputStream in;
+    private final ByteBufferInputStream inputStream;
     private final InputStreamReader reader;
     private final char[] msgBuf = new char[BUFFER_SIZE];
     private final StringBuilder msg = new StringBuilder();
@@ -70,8 +70,8 @@ public class ByteStreamLogger {
         this.logger = logger;
         this.level = level;
         this.marker = marker;
-        this.in = new ByteBufferInputStream();
-        this.reader = new InputStreamReader(this.in, charset);
+        this.inputStream = new ByteBufferInputStream();
+        this.reader = new InputStreamReader(this.inputStream, charset);
     }
 
     public void close(final String fqcn) {
