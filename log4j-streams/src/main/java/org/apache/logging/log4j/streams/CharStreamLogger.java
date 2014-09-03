@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.logging.log4j.streams.util;
+package org.apache.logging.log4j.streams;
 
 import java.nio.CharBuffer;
 
@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
-public class CharStreamLogger {
+class CharStreamLogger {
     private final ExtendedLogger logger;
     private final Level level;
     private final Marker marker;

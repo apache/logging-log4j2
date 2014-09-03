@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.logging.log4j.streams.util;
+package org.apache.logging.log4j.streams;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +27,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
-public class ByteStreamLogger {
+class ByteStreamLogger {
     private class ByteBufferInputStream extends InputStream {
 
         @Override
