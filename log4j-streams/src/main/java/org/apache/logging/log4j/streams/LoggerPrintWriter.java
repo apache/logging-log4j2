@@ -54,7 +54,7 @@ public class LoggerPrintWriter extends PrintWriter {
     @SuppressWarnings("resource")
     public LoggerPrintWriter(final Writer writer, final boolean autoFlush, final ExtendedLogger logger,
             final String fqcn, final Level level, final Marker marker) {
-        super(new LoggerWriterFilter(writer, logger, fqcn, level, marker), autoFlush);
+        super(new LoggerFilterWriter(writer, logger, fqcn, level, marker), autoFlush);
     }
 
     public LoggerPrintWriter(final Writer writer, final boolean autoFlush, final ExtendedLogger logger, final Level level) {

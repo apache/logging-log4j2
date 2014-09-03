@@ -3,7 +3,7 @@ package org.apache.logging.log4j.streams;
 import java.io.StringWriter;
 import java.io.Writer;
 
-public class LoggerWriterFilterTest extends AbstractLoggerWriterTest {
+public class LoggerFilterWriterTest extends AbstractLoggerWriterTest {
 
     @Override
     protected StringWriter createWriter() {
@@ -12,7 +12,7 @@ public class LoggerWriterFilterTest extends AbstractLoggerWriterTest {
 
     @Override
     protected Writer createWriterWrapper() {
-        return new LoggerWriterFilter(this.wrapped, getExtendedLogger(), LEVEL);
+        return new LoggerFilterWriter(this.wrapped, getExtendedLogger(), LEVEL);
     }
 
 }

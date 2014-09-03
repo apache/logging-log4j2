@@ -30,24 +30,24 @@ import org.apache.logging.log4j.streams.util.CharStreamLogger;
  * Logs each line written to a pre-defined level. Can also be configured with a Marker. This class provides an interface
  * that follows the {@link java.io.Writer} methods in spirit, but doesn't require output to any external out.
  */
-public class LoggerWriterFilter extends FilterWriter {
-    private static final String FQCN = LoggerWriterFilter.class.getName();
+public class LoggerFilterWriter extends FilterWriter {
+    private static final String FQCN = LoggerFilterWriter.class.getName();
 
     private final CharStreamLogger logger;
     private final String fqcn;
 
-    public LoggerWriterFilter(final Writer out, final ExtendedLogger logger, final String fqcn, final Level level,
+    public LoggerFilterWriter(final Writer out, final ExtendedLogger logger, final String fqcn, final Level level,
             final Marker marker) {
         super(out);
         this.logger = new CharStreamLogger(logger, level, marker);
         this.fqcn = fqcn;
     }
 
-    public LoggerWriterFilter(final Writer out, final ExtendedLogger logger, final Level level) {
+    public LoggerFilterWriter(final Writer out, final ExtendedLogger logger, final Level level) {
         this(out, logger, FQCN, level, null);
     }
 
-    public LoggerWriterFilter(final Writer out, final ExtendedLogger logger, final Level level, final Marker marker) {
+    public LoggerFilterWriter(final Writer out, final ExtendedLogger logger, final Level level, final Marker marker) {
         this(out, logger, FQCN, level, marker);
     }
 
@@ -64,7 +64,7 @@ public class LoggerWriterFilter extends FilterWriter {
 
     @Override
     public String toString() {
-        return LoggerWriterFilter.class.getSimpleName() + "{writer=" + this.out + '}';
+        return LoggerFilterWriter.class.getSimpleName() + "{writer=" + this.out + '}';
     }
 
     @Override
