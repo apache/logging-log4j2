@@ -17,26 +17,20 @@
 
 package org.apache.logging.log4j.io;
 
-import static org.hamcrest.core.StringStartsWith.startsWith;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-
 import java.util.List;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Before;
 import org.junit.ClassRule;
 
+import static org.hamcrest.core.StringStartsWith.startsWith;
+import static org.junit.Assert.*;
+
 public abstract class AbstractStreamTest {
-    
-    protected static Logger getLogger() {
-        return getExtendedLogger();
-    }
-    
+
     protected static ExtendedLogger getExtendedLogger() {
         return ctx.getLogger("UnitTestLogger");
     }
