@@ -22,7 +22,6 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.streams.util.ByteStreamLogger;
