@@ -23,7 +23,6 @@ import java.io.Reader;
 import java.nio.CharBuffer;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
@@ -38,20 +37,20 @@ public class LoggerBufferedReader extends BufferedReader {
         super(new LoggerReader(reader, logger, FQCN, level, marker), size);
     }
 
-    public LoggerBufferedReader(final Reader reader, final int size, final Logger logger, final Level level) {
-        this(reader, size, (ExtendedLogger) logger, FQCN, level, null);
+    public LoggerBufferedReader(final Reader reader, final int size, final ExtendedLogger logger, final Level level) {
+        this(reader, size, logger, FQCN, level, null);
     }
 
-    public LoggerBufferedReader(final Reader reader, final int size, final Logger logger, final Level level, final Marker marker) {
-        this(reader, size, (ExtendedLogger) logger, FQCN, level, marker);
+    public LoggerBufferedReader(final Reader reader, final int size, final ExtendedLogger logger, final Level level, final Marker marker) {
+        this(reader, size, logger, FQCN, level, marker);
     }
 
-    public LoggerBufferedReader(final Reader reader, final Logger logger, final Level level) {
-        this(reader, (ExtendedLogger) logger, FQCN, level, null);
+    public LoggerBufferedReader(final Reader reader, final ExtendedLogger logger, final Level level) {
+        this(reader, logger, FQCN, level, null);
     }
 
-    public LoggerBufferedReader(final Reader reader, final Logger logger, final Level level, final Marker marker) {
-        this(reader, (ExtendedLogger) logger, FQCN, level, marker);
+    public LoggerBufferedReader(final Reader reader, final ExtendedLogger logger, final Level level, final Marker marker) {
+        this(reader, logger, FQCN, level, marker);
     }
     
     @Override

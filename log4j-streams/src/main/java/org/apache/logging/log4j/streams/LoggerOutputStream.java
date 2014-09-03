@@ -40,20 +40,20 @@ public class LoggerOutputStream extends OutputStream {
     private final ByteStreamLogger logger;
     private final String fqcn;
 
-    public LoggerOutputStream(final Charset charset, final Logger logger, final Level level) {
-        this(null, charset, (ExtendedLogger) logger, FQCN, level, null);
+    public LoggerOutputStream(final Charset charset, final ExtendedLogger logger, final Level level) {
+        this(null, charset, logger, FQCN, level, null);
     }
 
-    public LoggerOutputStream(final Charset charset, final Logger logger, final Level level, final Marker marker) {
-        this(null, charset, (ExtendedLogger) logger, FQCN, level, marker);
+    public LoggerOutputStream(final Charset charset, final ExtendedLogger logger, final Level level, final Marker marker) {
+        this(null, charset, logger, FQCN, level, marker);
     }
 
-    public LoggerOutputStream(final Logger logger, final Level level) {
-        this(null, Charset.defaultCharset(), (ExtendedLogger) logger, FQCN, level, null);
+    public LoggerOutputStream(final ExtendedLogger logger, final Level level) {
+        this(null, Charset.defaultCharset(), logger, FQCN, level, null);
     }
 
-    public LoggerOutputStream(final Logger logger, final Level level, final Marker marker) {
-        this(null, Charset.defaultCharset(), (ExtendedLogger) logger, FQCN, level, marker);
+    public LoggerOutputStream(final ExtendedLogger logger, final Level level, final Marker marker) {
+        this(null, Charset.defaultCharset(), logger, FQCN, level, marker);
     }
 
     public LoggerOutputStream(final OutputStream out, final Charset charset, final ExtendedLogger logger,
@@ -63,21 +63,21 @@ public class LoggerOutputStream extends OutputStream {
         this.fqcn = fqcn;
     }
 
-    public LoggerOutputStream(final OutputStream out, final Charset charset, final Logger logger, final Level level) {
-        this(out, charset, (ExtendedLogger) logger, FQCN, level, null);
+    public LoggerOutputStream(final OutputStream out, final Charset charset, final ExtendedLogger logger, final Level level) {
+        this(out, charset, logger, FQCN, level, null);
     }
 
-    public LoggerOutputStream(final OutputStream out, final Charset charset, final Logger logger, final Level level,
+    public LoggerOutputStream(final OutputStream out, final Charset charset, final ExtendedLogger logger, final Level level,
             final Marker marker) {
-        this(out, charset, (ExtendedLogger) logger, FQCN, level, marker);
+        this(out, charset, logger, FQCN, level, marker);
     }
 
-    public LoggerOutputStream(final OutputStream out, final Logger logger, final Level level) {
-        this(out, Charset.defaultCharset(), (ExtendedLogger) logger, FQCN, level, null);
+    public LoggerOutputStream(final OutputStream out, final ExtendedLogger logger, final Level level) {
+        this(out, Charset.defaultCharset(), logger, FQCN, level, null);
     }
 
-    public LoggerOutputStream(final OutputStream out, final Logger logger, final Level level, final Marker marker) {
-        this(out, Charset.defaultCharset(), (ExtendedLogger) logger, FQCN, level, marker);
+    public LoggerOutputStream(final OutputStream out, final ExtendedLogger logger, final Level level, final Marker marker) {
+        this(out, Charset.defaultCharset(), logger, FQCN, level, marker);
     }
 
     @Override

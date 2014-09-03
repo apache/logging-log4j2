@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.Writer;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.streams.util.CharStreamLogger;
@@ -41,12 +40,12 @@ public class LoggerWriter extends Writer {
         this.fqcn = fqcn;
     }
 
-    public LoggerWriter(final Logger logger, final Level level) {
-        this((ExtendedLogger) logger, FQCN, level, null);
+    public LoggerWriter(final ExtendedLogger logger, final Level level) {
+        this(logger, FQCN, level, null);
     }
 
-    public LoggerWriter(final Logger logger, final Level level, final Marker marker) {
-        this((ExtendedLogger) logger, FQCN, level, marker);
+    public LoggerWriter(final ExtendedLogger logger, final Level level, final Marker marker) {
+        this(logger, FQCN, level, marker);
     }
 
     @Override

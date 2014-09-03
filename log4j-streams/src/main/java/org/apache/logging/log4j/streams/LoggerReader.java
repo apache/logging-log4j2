@@ -23,7 +23,6 @@ import java.io.Reader;
 import java.nio.CharBuffer;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.streams.util.CharStreamLogger;
@@ -45,12 +44,12 @@ public class LoggerReader extends FilterReader {
         this.fqcn = fqcn;
     }
 
-    public LoggerReader(final Reader reader, final Logger logger, final Level level) {
-        this(reader, (ExtendedLogger) logger, FQCN, level, null);
+    public LoggerReader(final Reader reader, final ExtendedLogger logger, final Level level) {
+        this(reader, logger, FQCN, level, null);
     }
 
-    public LoggerReader(final Reader reader, final Logger logger, final Level level, final Marker marker) {
-        this(reader, (ExtendedLogger) logger, FQCN, level, marker);
+    public LoggerReader(final Reader reader, final ExtendedLogger logger, final Level level, final Marker marker) {
+        this(reader, logger, FQCN, level, marker);
     }
 
     @Override

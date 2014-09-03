@@ -26,14 +26,21 @@ import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Before;
 import org.junit.ClassRule;
 
 public abstract class AbstractStreamTest {
+    
     protected static Logger getLogger() {
+        return getExtendedLogger();
+    }
+    
+    protected static ExtendedLogger getExtendedLogger() {
         return ctx.getLogger("UnitTestLogger");
     }
+    
     protected final static String NEWLINE = System.getProperty("line.separator");
     protected final static Level LEVEL = Level.ERROR;
     protected final static String FIRST = "first";

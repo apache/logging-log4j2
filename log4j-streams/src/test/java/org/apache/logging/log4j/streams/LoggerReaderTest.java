@@ -34,7 +34,7 @@ public class LoggerReaderTest extends AbstractStreamTest {
     protected Reader reader;
 
     protected Reader createReader() {
-        return new LoggerReader(this.wrapped, getLogger(), LEVEL);
+        return new LoggerReader(this.wrapped, getExtendedLogger(), LEVEL);
     }
     
     @Before

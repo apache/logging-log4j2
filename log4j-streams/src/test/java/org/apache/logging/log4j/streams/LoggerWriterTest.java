@@ -28,7 +28,7 @@ public class LoggerWriterTest extends AbstractLoggerWriterTest {
 
     @Override
     protected Writer createWriterWrapper() {
-        return new LoggerWriter(getLogger(), LEVEL);
+        return new LoggerWriter(getExtendedLogger(), LEVEL);
     }
 
 }

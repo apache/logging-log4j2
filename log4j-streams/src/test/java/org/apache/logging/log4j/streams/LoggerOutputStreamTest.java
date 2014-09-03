@@ -34,7 +34,7 @@ public class LoggerOutputStreamTest extends AbstractStreamTest {
     protected OutputStream out;
 
     protected OutputStream createOutputStream() {
-        return new LoggerOutputStream(this.wrapped, getLogger(), Level.ERROR);
+        return new LoggerOutputStream(this.wrapped, getExtendedLogger(), Level.ERROR);
     }
 
     @Before
@@ -66,7 +66,7 @@ public class LoggerOutputStreamTest extends AbstractStreamTest {
         out.close();
         replay(out);
         
-        final LoggerOutputStream los = new LoggerOutputStream(out, getLogger(), LEVEL);
+        final LoggerOutputStream los = new LoggerOutputStream(out, getExtendedLogger(), LEVEL);
         los.flush();
         los.close();
         verify(out);

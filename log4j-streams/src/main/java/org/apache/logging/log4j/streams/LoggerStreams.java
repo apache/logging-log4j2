@@ -25,18 +25,18 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.spi.ExtendedLogger;
 
 public class LoggerStreams {
 
     public static class BufferedBuilder {
-        private final Logger logger;
+        private final ExtendedLogger logger;
         private final Level level;
         private final Marker marker;
         private final int size;
 
-        BufferedBuilder(final Logger logger, final Level level, final Marker marker, final int size) {
+        BufferedBuilder(final ExtendedLogger logger, final Level level, final Marker marker, final int size) {
             this.logger = logger;
             this.level = level;
             this.marker = marker;
@@ -74,11 +74,11 @@ public class LoggerStreams {
     }
 
     public static class Builder {
-        private final Logger logger;
+        private final ExtendedLogger logger;
         private final Level level;
         private final Marker marker;
 
-        Builder(final Logger logger, final Level level, final Marker marker) {
+        Builder(final ExtendedLogger logger, final Level level, final Marker marker) {
             this.logger = logger;
             this.level = level;
             this.marker = marker;
@@ -102,12 +102,12 @@ public class LoggerStreams {
     }
 
     public static class PrintingBuilder {
-        private final Logger logger;
+        private final ExtendedLogger logger;
         private final Level level;
         private final Marker marker;
         private final boolean autoFlush;
 
-        PrintingBuilder(final Logger logger, final Level level, final Marker marker, final boolean autoFlush) {
+        PrintingBuilder(final ExtendedLogger logger, final Level level, final Marker marker, final boolean autoFlush) {
             this.logger = logger;
             this.level = level;
             this.marker = marker;
@@ -144,27 +144,27 @@ public class LoggerStreams {
         }
     }
 
-    public static Builder debug(final Logger logger) {
+    public static Builder debug(final ExtendedLogger logger) {
         return new Builder(logger, Level.DEBUG, null);
     }
 
-    public static Builder error(final Logger logger) {
+    public static Builder error(final ExtendedLogger logger) {
         return new Builder(logger, Level.ERROR, null);
     }
 
-    public static Builder fatal(final Logger logger) {
+    public static Builder fatal(final ExtendedLogger logger) {
         return new Builder(logger, Level.FATAL, null);
     }
 
-    public static Builder info(final Logger logger) {
+    public static Builder info(final ExtendedLogger logger) {
         return new Builder(logger, Level.INFO, null);
     }
 
-    public static Builder trace(final Logger logger) {
+    public static Builder trace(final ExtendedLogger logger) {
         return new Builder(logger, Level.TRACE, null);
     }
 
-    public static Builder warn(final Logger logger) {
+    public static Builder warn(final ExtendedLogger logger) {
         return new Builder(logger, Level.WARN, null);
     }
 }
