@@ -25,210 +25,82 @@ import java.nio.charset.Charset;
 import java.util.Locale;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**
- * Output stream that logs each line written to a pre-defined level. Can also be configured with a
- * Marker. This class provides an interface that follows the {@link java.io.PrintStream} methods in
- * spirit, but doesn't require output to any external stream. This class should <em>not</em> be used
- * as a stream for an underlying logger unless it's being used as a bridge. Otherwise, infinite
- * loops may occur!
+ * Logs each line written to a pre-defined level. Can also be configured with a Marker. This class provides an interface
+ * that follows the {@link java.io.PrintStream} methods in spirit, but doesn't require output to any external stream.
+ * This class should <em>not</em> be used as a stream for an underlying logger unless it's being used as a bridge.
+ * Otherwise, infinite loops may occur!
  */
 public class LoggerPrintStream extends PrintStream {
     private static final String FQCN = LoggerPrintStream.class.getName();
 
-    public LoggerPrintStream(final Logger logger, final Level level) {
-        this(null, false, (ExtendedLogger) logger, FQCN, level, null);
-    }
-
-    public LoggerPrintStream(final Charset charset, final Logger logger, final Level level) throws UnsupportedEncodingException {
-        this(null, false, charset, (ExtendedLogger) logger, FQCN, level, null);
-    }
-
-    public LoggerPrintStream(final Logger logger, final Level level, final Marker marker) {
-        this(null, false, (ExtendedLogger) logger, FQCN, level, marker);
-    }
-
-    public LoggerPrintStream(final Charset charset, final Logger logger, final Level level, final Marker marker) throws UnsupportedEncodingException {
-        this(null, false, charset, (ExtendedLogger) logger, FQCN, level, marker);
-    }
-
-    public LoggerPrintStream(final OutputStream out, final Logger logger, final Level level) {
-        this(out, false, (ExtendedLogger) logger, FQCN, level, null);
-    }
-
-    public LoggerPrintStream(final OutputStream out, final Charset charset, final Logger logger, final Level level) throws UnsupportedEncodingException {
-        this(out, false, charset, (ExtendedLogger) logger, FQCN, level, null);
-    }
-
-    public LoggerPrintStream(final OutputStream out, final Logger logger, final Level level, final Marker marker) {
-        this(out, false, (ExtendedLogger) logger, FQCN, level, marker);
-    }
-
-    public LoggerPrintStream(final OutputStream out, final Charset charset, final Logger logger, final Level level, final Marker marker)
+    public LoggerPrintStream(final Charset charset, final ExtendedLogger logger, final Level level)
             throws UnsupportedEncodingException {
-        this(out, false, charset, (ExtendedLogger) logger, FQCN, level, marker);
+        this(null, false, charset, logger, FQCN, level, null);
     }
 
-    public LoggerPrintStream(final OutputStream out, final boolean autoFlush, final Logger logger, final Level level) {
-        this(out, autoFlush, (ExtendedLogger) logger, FQCN, level, null);
-    }
-
-    public LoggerPrintStream(final OutputStream out, final boolean autoFlush, final Charset charset, final Logger logger, final Level level)
+    public LoggerPrintStream(final Charset charset, final ExtendedLogger logger, final Level level, final Marker marker)
             throws UnsupportedEncodingException {
-        this(out, autoFlush, charset, (ExtendedLogger) logger, FQCN, level, null);
+        this(null, false, charset, logger, FQCN, level, marker);
     }
 
-    public LoggerPrintStream(final OutputStream out, final boolean autoFlush, final Logger logger, final Level level, final Marker marker) {
-        this(out, autoFlush, (ExtendedLogger) logger, FQCN, level, marker);
+    public LoggerPrintStream(final ExtendedLogger logger, final Level level) {
+        this(null, false, logger, FQCN, level, null);
     }
 
-    public LoggerPrintStream(final OutputStream out, final boolean autoFlush, final Charset charset, final Logger logger, final Level level, final Marker marker)
+    public LoggerPrintStream(final ExtendedLogger logger, final Level level, final Marker marker) {
+        this(null, false, logger, FQCN, level, marker);
+    }
+
+    public LoggerPrintStream(final OutputStream out, final boolean autoFlush, final Charset charset,
+            final ExtendedLogger logger, final String fqcn, final Level level, final Marker marker)
             throws UnsupportedEncodingException {
-        this(out, autoFlush, charset, (ExtendedLogger) logger, FQCN, level, marker);
-    }
-
-    public LoggerPrintStream(final OutputStream out, final boolean autoFlush, final ExtendedLogger logger, final String fqcn, final Level level, final Marker marker) {
-        super(new LoggerOutputStream(out, Charset.defaultCharset(), logger, fqcn, level, marker), autoFlush);
-    }
-
-    public LoggerPrintStream(final OutputStream out, final boolean autoFlush, final Charset charset, final ExtendedLogger logger, final String fqcn,
-            final Level level, final Marker marker) throws UnsupportedEncodingException {
         super(new LoggerOutputStream(out, charset, logger, fqcn, level, marker), autoFlush, charset.name());
     }
 
-    @Override
-    public void write(final int b) {
-        super.write(b);
+    public LoggerPrintStream(final OutputStream out, final boolean autoFlush, final Charset charset,
+            final ExtendedLogger logger, final Level level) throws UnsupportedEncodingException {
+        this(out, autoFlush, charset, logger, FQCN, level, null);
     }
 
-    @Override
-    public void write(final byte[] b) throws IOException {
-        super.write(b);
+    public LoggerPrintStream(final OutputStream out, final boolean autoFlush, final Charset charset,
+            final ExtendedLogger logger, final Level level, final Marker marker) throws UnsupportedEncodingException {
+        this(out, autoFlush, charset, logger, FQCN, level, marker);
     }
 
-    @Override
-    public void write(final byte[] b, final int off, final int len) {
-        super.write(b, off, len);
+    public LoggerPrintStream(final OutputStream out, final boolean autoFlush, final ExtendedLogger logger,
+            final String fqcn, final Level level, final Marker marker) {
+        super(new LoggerOutputStream(out, Charset.defaultCharset(), logger, fqcn, level, marker), autoFlush);
     }
 
-    @Override
-    public void flush() {
-        super.flush();
+    public LoggerPrintStream(final OutputStream out, final boolean autoFlush, final ExtendedLogger logger, final Level level) {
+        this(out, autoFlush, logger, FQCN, level, null);
     }
 
-    @Override
-    public void close() {
-        super.close();
+    public LoggerPrintStream(final OutputStream out, final boolean autoFlush, final ExtendedLogger logger, final Level level,
+            final Marker marker) {
+        this(out, autoFlush, logger, FQCN, level, marker);
     }
 
-    @Override
-    public void print(final boolean b) {
-        super.print(b);
+    public LoggerPrintStream(final OutputStream out, final Charset charset, final ExtendedLogger logger, final Level level)
+            throws UnsupportedEncodingException {
+        this(out, false, charset, logger, FQCN, level, null);
     }
 
-    @Override
-    public void print(final char c) {
-        super.print(c);
+    public LoggerPrintStream(final OutputStream out, final Charset charset, final ExtendedLogger logger, final Level level,
+            final Marker marker) throws UnsupportedEncodingException {
+        this(out, false, charset, logger, FQCN, level, marker);
     }
 
-    @Override
-    public void print(final int i) {
-        super.print(i);
+    public LoggerPrintStream(final OutputStream out, final ExtendedLogger logger, final Level level) {
+        this(out, false, logger, FQCN, level, null);
     }
 
-    @Override
-    public void print(final long l) {
-        super.print(l);
-    }
-
-    @Override
-    public void print(final float f) {
-        super.print(f);
-    }
-
-    @Override
-    public void print(final double d) {
-        super.print(d);
-    }
-
-    @Override
-    public void print(final char[] s) {
-        super.print(s);
-    }
-
-    @Override
-    public void print(final String s) {
-        super.print(s);
-    }
-
-    @Override
-    public void print(final Object obj) {
-        super.print(obj);
-    }
-
-    @Override
-    public void println() {
-        super.println();
-    }
-
-    @Override
-    public void println(final boolean x) {
-        super.println(x);
-    }
-
-    @Override
-    public void println(final char x) {
-        super.println(x);
-    }
-
-    @Override
-    public void println(final int x) {
-        super.println(x);
-    }
-
-    @Override
-    public void println(final long x) {
-        super.println(x);
-    }
-
-    @Override
-    public void println(final float x) {
-        super.println(x);
-    }
-
-    @Override
-    public void println(final double x) {
-        super.println(x);
-    }
-
-    @Override
-    public void println(final char[] x) {
-        super.println(x);
-    }
-
-    @Override
-    public void println(final String x) {
-        super.println(x);
-    }
-
-    @Override
-    public void println(final Object x) {
-        super.println(x);
-    }
-
-    @Override
-    public LoggerPrintStream printf(final String format, final Object... args) {
-        super.printf(format, args);
-        return this;
-    }
-
-    @Override
-    public LoggerPrintStream printf(final Locale l, final String format, final Object... args) {
-        super.printf(l, format, args);
-        return this;
+    public LoggerPrintStream(final OutputStream out, final ExtendedLogger logger, final Level level, final Marker marker) {
+        this(out, false, logger, FQCN, level, marker);
     }
 
     @Override
@@ -250,9 +122,18 @@ public class LoggerPrintStream extends PrintStream {
     }
 
     @Override
-    public LoggerPrintStream format(final String format, final Object... args) {
-        super.format(format, args);
-        return this;
+    public boolean checkError() {
+        return super.checkError();
+    }
+
+    @Override
+    public void close() {
+        super.close();
+    }
+
+    @Override
+    public void flush() {
+        super.flush();
     }
 
     @Override
@@ -262,12 +143,135 @@ public class LoggerPrintStream extends PrintStream {
     }
 
     @Override
-    public boolean checkError() {
-        return super.checkError();
+    public LoggerPrintStream format(final String format, final Object... args) {
+        super.format(format, args);
+        return this;
+    }
+
+    @Override
+    public void print(final boolean b) {
+        super.print(b);
+    }
+
+    @Override
+    public void print(final char c) {
+        super.print(c);
+    }
+
+    @Override
+    public void print(final char[] s) {
+        super.print(s);
+    }
+
+    @Override
+    public void print(final double d) {
+        super.print(d);
+    }
+
+    @Override
+    public void print(final float f) {
+        super.print(f);
+    }
+
+    @Override
+    public void print(final int i) {
+        super.print(i);
+    }
+
+    @Override
+    public void print(final long l) {
+        super.print(l);
+    }
+
+    @Override
+    public void print(final Object obj) {
+        super.print(obj);
+    }
+
+    @Override
+    public void print(final String s) {
+        super.print(s);
+    }
+
+    @Override
+    public LoggerPrintStream printf(final Locale l, final String format, final Object... args) {
+        super.printf(l, format, args);
+        return this;
+    }
+
+    @Override
+    public LoggerPrintStream printf(final String format, final Object... args) {
+        super.printf(format, args);
+        return this;
+    }
+
+    @Override
+    public void println() {
+        super.println();
+    }
+
+    @Override
+    public void println(final boolean x) {
+        super.println(x);
+    }
+
+    @Override
+    public void println(final char x) {
+        super.println(x);
+    }
+
+    @Override
+    public void println(final char[] x) {
+        super.println(x);
+    }
+
+    @Override
+    public void println(final double x) {
+        super.println(x);
+    }
+
+    @Override
+    public void println(final float x) {
+        super.println(x);
+    }
+
+    @Override
+    public void println(final int x) {
+        super.println(x);
+    }
+
+    @Override
+    public void println(final long x) {
+        super.println(x);
+    }
+
+    @Override
+    public void println(final Object x) {
+        super.println(x);
+    }
+
+    @Override
+    public void println(final String x) {
+        super.println(x);
     }
 
     @Override
     public String toString() {
-        return LoggerPrintStream.class.getSimpleName() + "{stream=" + out + '}';
+        return LoggerPrintStream.class.getSimpleName() + "{stream=" + this.out + '}';
+    }
+
+    @Override
+    public void write(final byte[] b) throws IOException {
+        super.write(b);
+    }
+
+    @Override
+    public void write(final byte[] b, final int off, final int len) {
+        super.write(b, off, len);
+    }
+
+    @Override
+    public void write(final int b) {
+        super.write(b);
     }
 }

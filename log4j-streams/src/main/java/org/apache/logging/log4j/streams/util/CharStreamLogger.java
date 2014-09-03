@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.logging.log4j.streams.helpers;
+package org.apache.logging.log4j.streams.util;
 
 import java.nio.CharBuffer;
 
@@ -36,24 +36,22 @@ public class CharStreamLogger {
         this.marker = marker;
     }
 
-    public void put(final String fqcn, final int c) {
-        if (c >= 0) {
-            synchronized (msg) {
-                if (closed) {
-                    return;
-                }
-                switch (c) {
-                case '\n':
-                    log(fqcn);
-                    break;
-                case '\r':
-                    break;
-                default:
-                    msg.append((char) c);
-                }
-            }
-        } else {
+    public void close(final String fqcn) {
+        synchronized (this.msg) {
+            this.closed = true;
             logEnd(fqcn);
+        }
+    }
+
+    private void log(final String fqcn) {
+        // convert to string now so async loggers work
+        this.logger.logIfEnabled(fqcn, this.level, this.marker, this.msg.toString());
+        this.msg.setLength(0);
+    }
+
+    private void logEnd(final String fqcn) {
+        if (this.msg.length() > 0) {
+            log(fqcn);
         }
     }
 
@@ -63,8 +61,8 @@ public class CharStreamLogger {
 
     public void put(final String fqcn, final CharSequence str, final int off, final int len) {
         if (len >= 0) {
-            synchronized (msg) {
-                if (closed) {
+            synchronized (this.msg) {
+                if (this.closed) {
                     return;
                 }
                 int start = off;
@@ -74,7 +72,7 @@ public class CharStreamLogger {
                     switch (c) {
                     case '\r':
                     case '\n':
-                        msg.append(str, start, pos);
+                        this.msg.append(str, start, pos);
                         start = pos + 1;
                         if (c == '\n') {
                             log(fqcn);
@@ -82,29 +80,31 @@ public class CharStreamLogger {
                         break;
                     }
                 }
-                msg.append(str, start, end);
+                this.msg.append(str, start, end);
             }
         } else {
             logEnd(fqcn);
         }
     }
 
-    public void close(final String fqcn) {
-        synchronized (msg) {
-            closed = true;
+    public void put(final String fqcn, final int c) {
+        if (c >= 0) {
+            synchronized (this.msg) {
+                if (this.closed) {
+                    return;
+                }
+                switch (c) {
+                case '\n':
+                    log(fqcn);
+                    break;
+                case '\r':
+                    break;
+                default:
+                    this.msg.append((char) c);
+                }
+            }
+        } else {
             logEnd(fqcn);
         }
-    }
-
-    private void logEnd(final String fqcn) {
-        if (msg.length() > 0) {
-            log(fqcn);
-        }
-    }
-
-    private void log(final String fqcn) {
-        logger.logIfEnabled(fqcn, level, marker, msg.toString()); // convert to string now so async loggers
-                                                         // work
-        msg.setLength(0);
     }
 }

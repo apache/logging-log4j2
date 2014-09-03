@@ -23,14 +23,12 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.spi.ExtendedLogger;
-import org.apache.logging.log4j.streams.helpers.ByteStreamLogger;
+import org.apache.logging.log4j.streams.util.ByteStreamLogger;
 
 /**
- * Input stream that logs each line read to a pre-defined level. Can also be configured with a
- * Marker.
+ * Logs each line read to a pre-defined level. Can also be configured with a Marker.
  */
 public class LoggerInputStream extends FilterInputStream {
     private static final String FQCN = LoggerInputStream.class.getName();
@@ -38,32 +36,40 @@ public class LoggerInputStream extends FilterInputStream {
     private final String fqcn;
     private final ByteStreamLogger logger;
 
-    public LoggerInputStream(final InputStream in, final Logger logger, final Level level) {
-        this(in, Charset.defaultCharset(), (ExtendedLogger) logger, FQCN, level, null);
-    }
-
-    public LoggerInputStream(final InputStream in, final Charset charset, final Logger logger, final Level level) {
-        this(in, charset, (ExtendedLogger) logger, FQCN, level, null);
-    }
-
-    public LoggerInputStream(final InputStream in, final Logger logger, final Level level, final Marker marker) {
-        this(in, Charset.defaultCharset(), (ExtendedLogger) logger, FQCN, level, marker);
-    }
-
-    public LoggerInputStream(final InputStream in, final Charset charset, final Logger logger, final Level level, final Marker marker) {
-        this(in, charset, (ExtendedLogger) logger, FQCN, level, marker);
-    }
-
-    public LoggerInputStream(final InputStream in, final Charset charset, final ExtendedLogger logger, final String fqcn, final Level level, final Marker marker) {
+    public LoggerInputStream(final InputStream in, final Charset charset, final ExtendedLogger logger,
+            final String fqcn, final Level level, final Marker marker) {
         super(in);
         this.logger = new ByteStreamLogger(logger, level, marker, charset);
         this.fqcn = fqcn;
     }
 
+    public LoggerInputStream(final InputStream in, final Charset charset, final ExtendedLogger logger, final Level level) {
+        this(in, charset, logger, FQCN, level, null);
+    }
+
+    public LoggerInputStream(final InputStream in, final Charset charset, final ExtendedLogger logger, final Level level,
+            final Marker marker) {
+        this(in, charset, logger, FQCN, level, marker);
+    }
+
+    public LoggerInputStream(final InputStream in, final ExtendedLogger logger, final Level level) {
+        this(in, Charset.defaultCharset(), logger, FQCN, level, null);
+    }
+
+    public LoggerInputStream(final InputStream in, final ExtendedLogger logger, final Level level, final Marker marker) {
+        this(in, Charset.defaultCharset(), logger, FQCN, level, marker);
+    }
+
+    @Override
+    public void close() throws IOException {
+        this.logger.close(this.fqcn);
+        super.close();
+    }
+
     @Override
     public int read() throws IOException {
         final int b = super.read();
-        logger.put(fqcn, b);
+        this.logger.put(this.fqcn, b);
         return b;
     }
 
@@ -75,18 +81,12 @@ public class LoggerInputStream extends FilterInputStream {
     @Override
     public int read(final byte[] b, final int off, final int len) throws IOException {
         final int bytesRead = super.read(b, off, len);
-        logger.put(fqcn, b, off, bytesRead);
+        this.logger.put(this.fqcn, b, off, bytesRead);
         return bytesRead;
     }
 
     @Override
-    public void close() throws IOException {
-        logger.close(fqcn);
-        super.close();
-    }
-
-    @Override
     public String toString() {
-        return LoggerInputStream.class.getSimpleName() + "{stream=" + in + '}';
+        return LoggerInputStream.class.getSimpleName() + "{stream=" + this.in + '}';
     }
 }

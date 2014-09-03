@@ -22,187 +22,56 @@ import java.io.Writer;
 import java.util.Locale;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**
- * Print Writer that logs each line written to a pre-defined level. Can also be configured with a
- * Marker. This class provides an interface that follows the {@link java.io.PrintWriter} methods in
- * spirit, but doesn't require output to any external writer. 
+ * Logs each line written to a pre-defined level. Can also be configured with a Marker. This class provides an interface
+ * that follows the {@link java.io.PrintWriter} methods in spirit, but doesn't require output to any external writer.
+ * <p>
+ * Integration with JDBC logging can be as simple as:
+ * </p>
+ * <pre>DriverManager.setLogWriter(new LoggerPrintWriter((ExtendedLogger) LogManager.getLogger(), Level.DEBUG));
+ * </pre>
  */
 public class LoggerPrintWriter extends PrintWriter {
     private static final String FQCN = LoggerPrintWriter.class.getName();
 
-    public LoggerPrintWriter(final Logger logger, final Level level) {
-        this(null, false, (ExtendedLogger) logger, FQCN, level, null);
-    }
-
-    public LoggerPrintWriter(final Logger logger, final Level level, final Marker marker) {
-        this(null, false, (ExtendedLogger) logger, FQCN, level, marker);
-    }
-
-    public LoggerPrintWriter(final Writer writer, final Logger logger, final Level level) {
-        this(writer, false, (ExtendedLogger) logger, FQCN, level, null);
-    }
-
-    public LoggerPrintWriter(final Writer writer, final Logger logger, final Level level, final Marker marker) {
-        this(writer, false, (ExtendedLogger) logger, FQCN, level, marker);
-    }
-
-    public LoggerPrintWriter(final Writer writer, final boolean autoFlush, final Logger logger, final Level level) {
-        this(writer, autoFlush, (ExtendedLogger) logger, FQCN, level, null);
-    }
-
-    public LoggerPrintWriter(final Writer writer, final boolean autoFlush, final Logger logger, final Level level, final Marker marker) {
-        this(writer, autoFlush, (ExtendedLogger) logger, FQCN, level, marker);
-    }
-
-    public LoggerPrintWriter(final Writer writer, final boolean autoFlush, final ExtendedLogger logger, final String fqcn,
+    @SuppressWarnings("resource")
+    public LoggerPrintWriter(final ExtendedLogger logger, final boolean autoFlush, final String fqcn,
             final Level level, final Marker marker) {
-        super(new LoggerWriter(writer, logger, fqcn, level, marker), autoFlush);
+        super(new LoggerWriter(logger, fqcn, level, marker), autoFlush);
     }
 
-    @Override
-    public void write(final int c) {
-        super.write(c);
-    }
-    
-    @Override
-    public void write(final char[] buf) {
-        super.write(buf);
-    }
-    
-    @Override
-    public void write(final char[] buf, final int off, final int len) {
-        super.write(buf, off, len);
-    }
-    
-    @Override
-    public void write(final String s) {
-        super.write(s);
-    }
-    
-    @Override
-    public void write(final String s, final int off, final int len) {
-        super.write(s, off, len);
+    public LoggerPrintWriter(final ExtendedLogger logger, final Level level) {
+        this(logger, false, FQCN, level, null);
     }
 
-    @Override
-    public void flush() {
-        super.flush();
+    public LoggerPrintWriter(final ExtendedLogger logger, final Level level, final Marker marker) {
+        this(logger, false, FQCN, level, marker);
     }
 
-    @Override
-    public void close() {
-        super.close();
+    @SuppressWarnings("resource")
+    public LoggerPrintWriter(final Writer writer, final boolean autoFlush, final ExtendedLogger logger,
+            final String fqcn, final Level level, final Marker marker) {
+        super(new LoggerFilterWriter(writer, logger, fqcn, level, marker), autoFlush);
     }
 
-    @Override
-    public void print(final boolean b) {
-        super.print(b);
+    public LoggerPrintWriter(final Writer writer, final boolean autoFlush, final ExtendedLogger logger, final Level level) {
+        this(writer, autoFlush, logger, FQCN, level, null);
     }
 
-    @Override
-    public void print(final char c) {
-        super.print(c);
+    public LoggerPrintWriter(final Writer writer, final boolean autoFlush, final ExtendedLogger logger, final Level level,
+            final Marker marker) {
+        this(writer, autoFlush, logger, FQCN, level, marker);
     }
 
-    @Override
-    public void print(final int i) {
-        super.print(i);
+    public LoggerPrintWriter(final Writer writer, final ExtendedLogger logger, final Level level) {
+        this(writer, false, logger, FQCN, level, null);
     }
 
-    @Override
-    public void print(final long l) {
-        super.print(l);
-    }
-
-    @Override
-    public void print(final float f) {
-        super.print(f);
-    }
-
-    @Override
-    public void print(final double d) {
-        super.print(d);
-    }
-
-    @Override
-    public void print(final char[] s) {
-        super.print(s);
-    }
-
-    @Override
-    public void print(final String s) {
-        super.print(s);
-    }
-
-    @Override
-    public void print(final Object obj) {
-        super.print(obj);
-    }
-
-    @Override
-    public void println() {
-        super.println();
-    }
-
-    @Override
-    public void println(final boolean x) {
-        super.println(x);
-    }
-
-    @Override
-    public void println(final char x) {
-        super.println(x);
-    }
-
-    @Override
-    public void println(final int x) {
-        super.println(x);
-    }
-
-    @Override
-    public void println(final long x) {
-        super.println(x);
-    }
-
-    @Override
-    public void println(final float x) {
-        super.println(x);
-    }
-
-    @Override
-    public void println(final double x) {
-        super.println(x);
-    }
-
-    @Override
-    public void println(final char[] x) {
-        super.println(x);
-    }
-
-    @Override
-    public void println(final String x) {
-        super.println(x);
-    }
-
-    @Override
-    public void println(final Object x) {
-        super.println(x);
-    }
-
-    @Override
-    public LoggerPrintWriter printf(final String format, final Object... args) {
-        super.printf(format, args);
-        return this;
-    }
-
-    @Override
-    public LoggerPrintWriter printf(final Locale l, final String format, final Object... args) {
-        super.printf(l, format, args);
-        return this;
+    public LoggerPrintWriter(final Writer writer, final ExtendedLogger logger, final Level level, final Marker marker) {
+        this(writer, false, logger, FQCN, level, marker);
     }
 
     @Override
@@ -224,9 +93,18 @@ public class LoggerPrintWriter extends PrintWriter {
     }
 
     @Override
-    public LoggerPrintWriter format(final String format, final Object... args) {
-        super.format(format, args);
-        return this;
+    public boolean checkError() {
+        return super.checkError();
+    }
+
+    @Override
+    public void close() {
+        super.close();
+    }
+
+    @Override
+    public void flush() {
+        super.flush();
     }
 
     @Override
@@ -234,14 +112,147 @@ public class LoggerPrintWriter extends PrintWriter {
         super.format(l, format, args);
         return this;
     }
-    
+
     @Override
-    public boolean checkError() {
-        return super.checkError();
+    public LoggerPrintWriter format(final String format, final Object... args) {
+        super.format(format, args);
+        return this;
+    }
+
+    @Override
+    public void print(final boolean b) {
+        super.print(b);
+    }
+
+    @Override
+    public void print(final char c) {
+        super.print(c);
+    }
+
+    @Override
+    public void print(final char[] s) {
+        super.print(s);
+    }
+
+    @Override
+    public void print(final double d) {
+        super.print(d);
+    }
+
+    @Override
+    public void print(final float f) {
+        super.print(f);
+    }
+
+    @Override
+    public void print(final int i) {
+        super.print(i);
+    }
+
+    @Override
+    public void print(final long l) {
+        super.print(l);
+    }
+
+    @Override
+    public void print(final Object obj) {
+        super.print(obj);
+    }
+
+    @Override
+    public void print(final String s) {
+        super.print(s);
+    }
+
+    @Override
+    public LoggerPrintWriter printf(final Locale l, final String format, final Object... args) {
+        super.printf(l, format, args);
+        return this;
+    }
+
+    @Override
+    public LoggerPrintWriter printf(final String format, final Object... args) {
+        super.printf(format, args);
+        return this;
+    }
+
+    @Override
+    public void println() {
+        super.println();
+    }
+
+    @Override
+    public void println(final boolean x) {
+        super.println(x);
+    }
+
+    @Override
+    public void println(final char x) {
+        super.println(x);
+    }
+
+    @Override
+    public void println(final char[] x) {
+        super.println(x);
+    }
+
+    @Override
+    public void println(final double x) {
+        super.println(x);
+    }
+
+    @Override
+    public void println(final float x) {
+        super.println(x);
+    }
+
+    @Override
+    public void println(final int x) {
+        super.println(x);
+    }
+
+    @Override
+    public void println(final long x) {
+        super.println(x);
+    }
+
+    @Override
+    public void println(final Object x) {
+        super.println(x);
+    }
+
+    @Override
+    public void println(final String x) {
+        super.println(x);
     }
 
     @Override
     public String toString() {
-        return LoggerPrintWriter.class.getSimpleName() + "{stream=" + out + '}';
+        return LoggerPrintWriter.class.getSimpleName() + "{stream=" + this.out + '}';
+    }
+
+    @Override
+    public void write(final char[] buf) {
+        super.write(buf);
+    }
+
+    @Override
+    public void write(final char[] buf, final int off, final int len) {
+        super.write(buf, off, len);
+    }
+
+    @Override
+    public void write(final int c) {
+        super.write(c);
+    }
+
+    @Override
+    public void write(final String s) {
+        super.write(s);
+    }
+
+    @Override
+    public void write(final String s, final int off, final int len) {
+        super.write(s, off, len);
     }
 }

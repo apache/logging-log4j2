@@ -26,120 +26,120 @@ public class LoggerPrintStreamCallerInfoTest extends LoggerStreamsCallerInfoTest
 
     private LoggerPrintStream logOut;
     
-    @Before
-    public void setupStreams() {
-        logOut = new LoggerPrintStream(getLogger(), Level.WARN);
-    }
-    
     @Test
-    public void write_int() throws Exception {
-        logOut.write('a');
-        assertMessages("write int", 0, "write_int");
-        logOut.write('\n');
-        assertMessages("write newline", 1, "write_int");
-    }
-    
-    @Test
-    public void write_bytes() throws Exception {
-        logOut.write("b\n".getBytes());
-        assertMessages("write", 1, "write_bytes");
-    }
-    
-    @Test
-    public void write_bytes_offset() throws Exception {
-        logOut.write("c\n".getBytes(), 0, 2);
-        assertMessages("write", 1, "write_bytes_offset");
+    public void close() throws Exception {
+        this.logOut.print("a\nb");
+        assertMessages("before close size", 1, "close");
+        this.logOut.close();
+        assertMessages("after close size", 2, "close");
     }
     
     @Test
     public void print_boolean() throws Exception {
-        logOut.print(true);
+        this.logOut.print(true);
         assertMessages("print", 0, "print_boolean");
-        logOut.println(true);
+        this.logOut.println(true);
         assertMessages("println", 1, "print_boolean");
     }
     
     @Test
     public void print_char() throws Exception {
-        logOut.print('a');
+        this.logOut.print('a');
         assertMessages("print", 0, "print_char");
-        logOut.println('b');
+        this.logOut.println('b');
         assertMessages("println", 1, "print_char");
     }
     
     @Test
     public void print_chararray() throws Exception {
-        logOut.print("a".toCharArray());
+        this.logOut.print("a".toCharArray());
         assertMessages("print", 0, "print_chararray");
-        logOut.println("b".toCharArray());
+        this.logOut.println("b".toCharArray());
         assertMessages("println", 1, "print_chararray");
     }
     
     @Test
     public void print_double() throws Exception {
-        logOut.print(1D);
+        this.logOut.print(1D);
         assertMessages("print", 0, "print_double");
-        logOut.println(2D);
+        this.logOut.println(2D);
         assertMessages("println", 1, "print_double");
     }
     
     @Test
     public void print_float() throws Exception {
-        logOut.print(1f);
+        this.logOut.print(1f);
         assertMessages("print", 0, "print_float");
-        logOut.println(2f);
+        this.logOut.println(2f);
         assertMessages("println", 1, "print_float");
     }
     
     @Test
     public void print_int() throws Exception {
-        logOut.print(1);
+        this.logOut.print(1);
         assertMessages("print", 0, "print_int");
-        logOut.println(2);
+        this.logOut.println(2);
         assertMessages("println", 1, "print_int");
     }
     
     @Test
     public void print_long() throws Exception {
-        logOut.print(1L);
+        this.logOut.print(1L);
         assertMessages("print", 0, "print_long");
-        logOut.println(2L);
+        this.logOut.println(2L);
         assertMessages("println", 1, "print_long");
     }
     
     @Test
     public void print_object() throws Exception {
-        logOut.print((Object) 'a');
+        this.logOut.print((Object) 'a');
         assertMessages("print", 0, "print_object");
-        logOut.println((Object) 'b');
+        this.logOut.println((Object) 'b');
         assertMessages("println", 1, "print_object");
     }
     
     @Test
-    public void print_string() throws Exception {
-        logOut.print("a");
-        assertMessages("print", 0, "print_string");
-        logOut.println("b");
-        assertMessages("println", 1, "print_string");
-    }
-    
-    @Test
     public void print_printf() throws Exception {
-        logOut.printf("a\n");
+        this.logOut.printf("a\n");
         assertMessages("println", 1, "print_printf");
     }
     
     @Test
     public void print_printf_locale() throws Exception {
-        logOut.printf(Locale.getDefault(), "a\n");
+        this.logOut.printf(Locale.getDefault(), "a\n");
         assertMessages("println", 1, "print_printf_locale");
     }
     
     @Test
-    public void close() throws Exception {
-        logOut.print("a\nb");
-        assertMessages("before close size", 1, "close");
-        logOut.close();
-        assertMessages("after close size", 2, "close");
+    public void print_string() throws Exception {
+        this.logOut.print("a");
+        assertMessages("print", 0, "print_string");
+        this.logOut.println("b");
+        assertMessages("println", 1, "print_string");
+    }
+    
+    @Before
+    public void setupStreams() {
+        this.logOut = new LoggerPrintStream(getLogger(), Level.WARN);
+    }
+    
+    @Test
+    public void write_bytes() throws Exception {
+        this.logOut.write("b\n".getBytes());
+        assertMessages("write", 1, "write_bytes");
+    }
+    
+    @Test
+    public void write_bytes_offset() throws Exception {
+        this.logOut.write("c\n".getBytes(), 0, 2);
+        assertMessages("write", 1, "write_bytes_offset");
+    }
+    
+    @Test
+    public void write_int() throws Exception {
+        this.logOut.write('a');
+        assertMessages("write int", 0, "write_int");
+        this.logOut.write('\n');
+        assertMessages("write newline", 1, "write_int");
     }
 }

@@ -25,74 +25,93 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.spi.ExtendedLogger;
 
 public class LoggerStreams {
 
-    public static Builder trace(final Logger logger) {
-        return new Builder(logger, Level.TRACE, null);
-    }
+    public static class BufferedBuilder {
+        private final ExtendedLogger logger;
+        private final Level level;
+        private final Marker marker;
+        private final int size;
 
-    public static Builder debug(final Logger logger) {
-        return new Builder(logger, Level.DEBUG, null);
-    }
+        BufferedBuilder(final ExtendedLogger logger, final Level level, final Marker marker, final int size) {
+            this.logger = logger;
+            this.level = level;
+            this.marker = marker;
+            this.size = size;
+        }
 
-    public static Builder info(final Logger logger) {
-        return new Builder(logger, Level.INFO, null);
-    }
+        public LoggerBufferedInputStream create(final InputStream in) {
+            if (this.size > 0) {
+                return new LoggerBufferedInputStream(in, this.size, this.logger, this.level, this.marker);
+            }
+            return new LoggerBufferedInputStream(in, this.logger, this.level, this.marker);
+        }
 
-    public static Builder warn(final Logger logger) {
-        return new Builder(logger, Level.WARN, null);
-    }
+        public LoggerBufferedInputStream create(final InputStream in, final Charset charset) {
+            if (this.size > 0) {
+                return new LoggerBufferedInputStream(in, charset, this.size, this.logger, this.level, this.marker);
+            }
+            return new LoggerBufferedInputStream(in, charset, this.logger, this.level, this.marker);
+        }
 
-    public static Builder error(final Logger logger) {
-        return new Builder(logger, Level.ERROR, null);
+        public LoggerBufferedReader create(final Reader reader) {
+            if (this.size > 0) {
+                return new LoggerBufferedReader(reader, this.size, this.logger, this.level, this.marker);
+            }
+            return new LoggerBufferedReader(reader, this.logger, this.level, this.marker);
+        }
+
+        public BufferedBuilder marker(final Marker marker) {
+            return new BufferedBuilder(this.logger, this.level, marker, this.size);
+        }
+
+        public BufferedBuilder size(final int size) {
+            return new BufferedBuilder(this.logger, this.level, this.marker, size);
+        }
     }
 
     public static class Builder {
-        private final Logger logger;
+        private final ExtendedLogger logger;
         private final Level level;
         private final Marker marker;
 
-        Builder(final Logger logger, final Level level, final Marker marker) {
+        Builder(final ExtendedLogger logger, final Level level, final Marker marker) {
             this.logger = logger;
             this.level = level;
             this.marker = marker;
         }
 
+        public BufferedBuilder buffered() {
+            return new BufferedBuilder(this.logger, this.level, this.marker, 0);
+        }
+
+        public LoggerFilterWriter create(final Writer writer) {
+            return new LoggerFilterWriter(writer, this.logger, this.level, this.marker);
+        }
+
         public Builder marker(final Marker marker) {
-            return new Builder(logger, level, marker);
+            return new Builder(this.logger, this.level, marker);
         }
 
         public PrintingBuilder printing() {
-            return new PrintingBuilder(logger, level, marker, false);
-        }
-
-        public BufferedBuilder buffered() {
-            return new BufferedBuilder(logger, level, marker, 0);
-        }
-
-        public LoggerWriter create(final Writer writer) {
-            return new LoggerWriter(writer, logger, level, marker);
+            return new PrintingBuilder(this.logger, this.level, this.marker, false);
         }
     }
 
     public static class PrintingBuilder {
-        private final Logger logger;
+        private final ExtendedLogger logger;
         private final Level level;
         private final Marker marker;
         private final boolean autoFlush;
 
-        PrintingBuilder(final Logger logger, final Level level, final Marker marker, final boolean autoFlush) {
+        PrintingBuilder(final ExtendedLogger logger, final Level level, final Marker marker, final boolean autoFlush) {
             this.logger = logger;
             this.level = level;
             this.marker = marker;
             this.autoFlush = autoFlush;
-        }
-
-        public PrintingBuilder marker(final Marker marker) {
-            return new PrintingBuilder(logger, level, marker, autoFlush);
         }
 
         public PrintingBuilder autoFlush() {
@@ -100,67 +119,52 @@ public class LoggerStreams {
         }
 
         public PrintingBuilder autoFlush(final boolean autoFlush) {
-            return new PrintingBuilder(logger, level, marker, autoFlush);
-        }
-
-        public LoggerPrintWriter create(final Writer writer) {
-            return new LoggerPrintWriter(writer, autoFlush, logger, level, marker);
+            return new PrintingBuilder(this.logger, this.level, this.marker, autoFlush);
         }
 
         public LoggerPrintStream create(final OutputStream out) {
-            return new LoggerPrintStream(out, autoFlush, logger, level, marker);
+            return new LoggerPrintStream(out, this.autoFlush, this.logger, this.level, this.marker);
         }
 
         public LoggerPrintStream create(final OutputStream out, final Charset charset) {
             try {
-                return new LoggerPrintStream(out, autoFlush, charset, logger, level, marker);
-            } catch (UnsupportedEncodingException e) {
+                return new LoggerPrintStream(out, this.autoFlush, charset, this.logger, this.level, this.marker);
+            } catch (final UnsupportedEncodingException e) {
                 // Should never occur because the constructor must throw this
                 throw new IllegalArgumentException("Invalid charset", e);
             }
         }
+
+        public LoggerPrintWriter create(final Writer writer) {
+            return new LoggerPrintWriter(writer, this.autoFlush, this.logger, this.level, this.marker);
+        }
+
+        public PrintingBuilder marker(final Marker marker) {
+            return new PrintingBuilder(this.logger, this.level, marker, this.autoFlush);
+        }
     }
 
-    public static class BufferedBuilder {
-        private final Logger logger;
-        private final Level level;
-        private final Marker marker;
-        private final int size;
+    public static Builder debug(final ExtendedLogger logger) {
+        return new Builder(logger, Level.DEBUG, null);
+    }
 
-        BufferedBuilder(final Logger logger, final Level level, final Marker marker, final int size) {
-            this.logger = logger;
-            this.level = level;
-            this.marker = marker;
-            this.size = size;
-        }
+    public static Builder error(final ExtendedLogger logger) {
+        return new Builder(logger, Level.ERROR, null);
+    }
 
-        public BufferedBuilder marker(final Marker marker) {
-            return new BufferedBuilder(logger, level, marker, size);
-        }
+    public static Builder fatal(final ExtendedLogger logger) {
+        return new Builder(logger, Level.FATAL, null);
+    }
 
-        public BufferedBuilder size(final int size) {
-            return new BufferedBuilder(logger, level, marker, size);
-        }
+    public static Builder info(final ExtendedLogger logger) {
+        return new Builder(logger, Level.INFO, null);
+    }
 
-        public LoggerBufferedReader create(final Reader reader) {
-            if (size > 0) {
-                return new LoggerBufferedReader(reader, size, logger, level, marker);
-            }
-            return new LoggerBufferedReader(reader, logger, level, marker);
-        }
+    public static Builder trace(final ExtendedLogger logger) {
+        return new Builder(logger, Level.TRACE, null);
+    }
 
-        public LoggerBufferedInputStream create(final InputStream in) {
-            if (size > 0) {
-                return new LoggerBufferedInputStream(in, size, logger, level, marker);
-            }
-            return new LoggerBufferedInputStream(in, logger, level, marker);
-        }
-
-        public LoggerBufferedInputStream create(final InputStream in, final Charset charset) {
-            if (size > 0) {
-                return new LoggerBufferedInputStream(in, charset, size, logger, level, marker);
-            }
-            return new LoggerBufferedInputStream(in, charset, logger, level, marker);
-        }
+    public static Builder warn(final ExtendedLogger logger) {
+        return new Builder(logger, Level.WARN, null);
     }
 }

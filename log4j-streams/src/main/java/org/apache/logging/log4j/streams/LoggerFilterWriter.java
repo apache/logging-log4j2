@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.streams;
 
+import java.io.FilterWriter;
 import java.io.IOException;
 import java.io.Writer;
 
@@ -27,64 +28,72 @@ import org.apache.logging.log4j.streams.util.CharStreamLogger;
 
 /**
  * Logs each line written to a pre-defined level. Can also be configured with a Marker. This class provides an interface
- * that follows the {@link java.io.Writer} methods in spirit, but doesn't require output to any external writer.
+ * that follows the {@link java.io.Writer} methods in spirit, but doesn't require output to any external out.
  */
-public class LoggerWriter extends Writer {
-    private static final String FQCN = LoggerWriter.class.getName();
+public class LoggerFilterWriter extends FilterWriter {
+    private static final String FQCN = LoggerFilterWriter.class.getName();
 
     private final CharStreamLogger logger;
     private final String fqcn;
 
-    public LoggerWriter(final ExtendedLogger logger, final String fqcn, final Level level, final Marker marker) {
+    public LoggerFilterWriter(final Writer out, final ExtendedLogger logger, final String fqcn, final Level level,
+            final Marker marker) {
+        super(out);
         this.logger = new CharStreamLogger(logger, level, marker);
         this.fqcn = fqcn;
     }
 
-    public LoggerWriter(final ExtendedLogger logger, final Level level) {
-        this(logger, FQCN, level, null);
+    public LoggerFilterWriter(final Writer out, final ExtendedLogger logger, final Level level) {
+        this(out, logger, FQCN, level, null);
     }
 
-    public LoggerWriter(final ExtendedLogger logger, final Level level, final Marker marker) {
-        this(logger, FQCN, level, marker);
+    public LoggerFilterWriter(final Writer out, final ExtendedLogger logger, final Level level, final Marker marker) {
+        this(out, logger, FQCN, level, marker);
     }
 
     @Override
     public void close() throws IOException {
+        this.out.close();
         this.logger.close(this.fqcn);
     }
 
     @Override
     public void flush() throws IOException {
-        // do nothing
+        this.out.flush();
     }
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + "[fqcn=" + this.fqcn + ", logger=" + this.logger + "]";
+        return LoggerFilterWriter.class.getSimpleName() + "{writer=" + this.out + '}';
     }
 
     @Override
     public void write(final char[] cbuf) throws IOException {
+        this.out.write(cbuf);
         this.logger.put(this.fqcn, cbuf, 0, cbuf.length);
     }
 
     @Override
     public void write(final char[] cbuf, final int off, final int len) throws IOException {
+        this.out.write(cbuf, off, len);
         this.logger.put(this.fqcn, cbuf, off, len);
     }
 
     @Override
     public void write(final int c) throws IOException {
+        this.out.write(c);
         this.logger.put(this.fqcn, (char) c);
     }
 
     @Override
     public void write(final String str) throws IOException {
+        this.out.write(str);
         this.logger.put(this.fqcn, str, 0, str.length());
     }
 
     @Override
     public void write(final String str, final int off, final int len) throws IOException {
+        this.out.write(str, off, len);
         this.logger.put(this.fqcn, str, off, len);
     }
 }

@@ -24,18 +24,18 @@ import java.io.Reader;
 import org.junit.Test;
 
 public class LoggerBufferedReaderTest extends LoggerReaderTest {
-    private BufferedReader reader;
+    private BufferedReader bufferedReader;
     
     @Override
     protected Reader createReader() {
-        return this.reader = new LoggerBufferedReader(wrapped, getLogger(), LEVEL);
+        return this.bufferedReader = new LoggerBufferedReader(this.wrapped, getExtendedLogger(), LEVEL);
     }
 
     @Test
     public void testReadLine() throws Exception {
-        assertEquals("first line", FIRST, reader.readLine());
+        assertEquals("first line", FIRST, this.bufferedReader.readLine());
         assertMessages(FIRST);
-        assertEquals("second line", LAST, reader.readLine());
+        assertEquals("second line", LAST, this.bufferedReader.readLine());
         assertMessages(FIRST, LAST);
     }
 }

@@ -23,15 +23,13 @@ import java.io.Reader;
 import java.nio.CharBuffer;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.spi.ExtendedLogger;
-import org.apache.logging.log4j.streams.helpers.CharStreamLogger;
+import org.apache.logging.log4j.streams.util.CharStreamLogger;
 
 /**
- * Writer that logs each line written to a pre-defined level. Can also be configured with a Marker.
- * This class provides an interface that follows the {@link java.io.Writer} methods in spirit, but
- * doesn't require output to any external writer.
+ * Logs each line written to a pre-defined level. Can also be configured with a Marker. This class provides an interface
+ * that follows the {@link java.io.Writer} methods in spirit, but doesn't require output to any external writer.
  */
 public class LoggerReader extends FilterReader {
     private static final String FQCN = LoggerReader.class.getName();
@@ -39,24 +37,31 @@ public class LoggerReader extends FilterReader {
     private final CharStreamLogger logger;
     private final String fqcn;
 
-    public LoggerReader(final Reader reader, final Logger logger, final Level level) {
-        this(reader, (ExtendedLogger) logger, FQCN, level, null);
-    }
-
-    public LoggerReader(final Reader reader, final Logger logger, final Level level, final Marker marker) {
-        this(reader, (ExtendedLogger) logger, FQCN, level, marker);
-    }
-
-    public LoggerReader(final Reader reader, final ExtendedLogger logger, final String fqcn, final Level level, final Marker marker) {
+    public LoggerReader(final Reader reader, final ExtendedLogger logger, final String fqcn, final Level level,
+            final Marker marker) {
         super(reader);
         this.logger = new CharStreamLogger(logger, level, marker);
         this.fqcn = fqcn;
     }
 
+    public LoggerReader(final Reader reader, final ExtendedLogger logger, final Level level) {
+        this(reader, logger, FQCN, level, null);
+    }
+
+    public LoggerReader(final Reader reader, final ExtendedLogger logger, final Level level, final Marker marker) {
+        this(reader, logger, FQCN, level, marker);
+    }
+
+    @Override
+    public void close() throws IOException {
+        super.close();
+        this.logger.close(this.fqcn);
+    }
+
     @Override
     public int read() throws IOException {
         final int c = super.read();
-        logger.put(fqcn, c);
+        this.logger.put(this.fqcn, c);
         return c;
     }
 
@@ -68,7 +73,7 @@ public class LoggerReader extends FilterReader {
     @Override
     public int read(final char[] cbuf, final int off, final int len) throws IOException {
         final int charsRead = super.read(cbuf, off, len);
-        logger.put(fqcn, cbuf, off, charsRead);
+        this.logger.put(this.fqcn, cbuf, off, charsRead);
         return charsRead;
     }
 
@@ -84,13 +89,7 @@ public class LoggerReader extends FilterReader {
     }
 
     @Override
-    public void close() throws IOException {
-        super.close();
-        logger.close(fqcn);
-    }
-
-    @Override
     public String toString() {
-        return LoggerReader.class.getSimpleName() + "{stream=" + in + '}';
+        return LoggerReader.class.getSimpleName() + "{stream=" + this.in + '}';
     }
 }
