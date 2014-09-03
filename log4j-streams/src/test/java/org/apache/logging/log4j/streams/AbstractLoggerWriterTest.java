@@ -70,7 +70,7 @@ public abstract class AbstractLoggerWriterTest extends AbstractStreamTest {
         out.close();
         replay(out);
 
-        final LoggerOutputStream los = new LoggerOutputStream(out, getExtendedLogger(), LEVEL);
+        final LoggerFilterOutputStream los = new LoggerFilterOutputStream(out, getExtendedLogger(), LEVEL);
         los.flush();
         los.close();
         verify(out);

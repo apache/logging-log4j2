@@ -36,19 +36,19 @@ public class LoggerFilterWriter extends FilterWriter {
     private final CharStreamLogger logger;
     private final String fqcn;
 
-    public LoggerFilterWriter(final Writer out, final ExtendedLogger logger, final String fqcn, final Level level,
-            final Marker marker) {
-        super(out);
-        this.logger = new CharStreamLogger(logger, level, marker);
-        this.fqcn = fqcn;
-    }
-
     public LoggerFilterWriter(final Writer out, final ExtendedLogger logger, final Level level) {
         this(out, logger, FQCN, level, null);
     }
 
     public LoggerFilterWriter(final Writer out, final ExtendedLogger logger, final Level level, final Marker marker) {
         this(out, logger, FQCN, level, marker);
+    }
+
+    public LoggerFilterWriter(final Writer out, final ExtendedLogger logger, final String fqcn, final Level level,
+            final Marker marker) {
+        super(out);
+        this.logger = new CharStreamLogger(logger, level, marker);
+        this.fqcn = fqcn;
     }
 
     @Override

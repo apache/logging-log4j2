@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.streams;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
 import org.apache.logging.log4j.Level;
@@ -119,7 +120,7 @@ public class LoggerPrintStreamCallerInfoTest extends LoggerStreamsCallerInfoTest
     }
     
     @Before
-    public void setupStreams() {
+    public void setupStreams() throws UnsupportedEncodingException {
         this.logOut = new LoggerPrintStream(getLogger(), Level.WARN);
     }
     

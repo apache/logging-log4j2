@@ -51,12 +51,6 @@ public class LoggerPrintWriter extends PrintWriter {
         this(logger, false, FQCN, level, marker);
     }
 
-    @SuppressWarnings("resource")
-    public LoggerPrintWriter(final Writer writer, final boolean autoFlush, final ExtendedLogger logger,
-            final String fqcn, final Level level, final Marker marker) {
-        super(new LoggerFilterWriter(writer, logger, fqcn, level, marker), autoFlush);
-    }
-
     public LoggerPrintWriter(final Writer writer, final boolean autoFlush, final ExtendedLogger logger, final Level level) {
         this(writer, autoFlush, logger, FQCN, level, null);
     }
@@ -64,6 +58,12 @@ public class LoggerPrintWriter extends PrintWriter {
     public LoggerPrintWriter(final Writer writer, final boolean autoFlush, final ExtendedLogger logger, final Level level,
             final Marker marker) {
         this(writer, autoFlush, logger, FQCN, level, marker);
+    }
+
+    @SuppressWarnings("resource")
+    public LoggerPrintWriter(final Writer writer, final boolean autoFlush, final ExtendedLogger logger,
+            final String fqcn, final Level level, final Marker marker) {
+        super(new LoggerFilterWriter(writer, logger, fqcn, level, marker), autoFlush);
     }
 
     public LoggerPrintWriter(final Writer writer, final ExtendedLogger logger, final Level level) {

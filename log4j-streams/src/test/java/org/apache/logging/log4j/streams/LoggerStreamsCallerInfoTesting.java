@@ -27,8 +27,12 @@ import org.junit.ClassRule;
 
 public class LoggerStreamsCallerInfoTesting {
 
-    protected static Logger getLogger() {
+    protected static Logger getExtendedLogger() {
         return ctx.getLogger("ClassAndMethodLogger");
+    }
+    
+    protected static Logger getLogger() {
+        return getExtendedLogger();
     }
     
     protected final static Level LEVEL = Level.WARN;

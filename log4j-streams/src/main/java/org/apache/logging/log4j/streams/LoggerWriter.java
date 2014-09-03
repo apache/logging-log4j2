@@ -35,17 +35,17 @@ public class LoggerWriter extends Writer {
     private final CharStreamLogger logger;
     private final String fqcn;
 
-    public LoggerWriter(final ExtendedLogger logger, final String fqcn, final Level level, final Marker marker) {
-        this.logger = new CharStreamLogger(logger, level, marker);
-        this.fqcn = fqcn;
-    }
-
     public LoggerWriter(final ExtendedLogger logger, final Level level) {
         this(logger, FQCN, level, null);
     }
 
     public LoggerWriter(final ExtendedLogger logger, final Level level, final Marker marker) {
         this(logger, FQCN, level, marker);
+    }
+
+    public LoggerWriter(final ExtendedLogger logger, final String fqcn, final Level level, final Marker marker) {
+        this.logger = new CharStreamLogger(logger, level, marker);
+        this.fqcn = fqcn;
     }
 
     @Override

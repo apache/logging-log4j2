@@ -36,13 +36,6 @@ public class LoggerInputStream extends FilterInputStream {
     private final String fqcn;
     private final ByteStreamLogger logger;
 
-    public LoggerInputStream(final InputStream in, final Charset charset, final ExtendedLogger logger,
-            final String fqcn, final Level level, final Marker marker) {
-        super(in);
-        this.logger = new ByteStreamLogger(logger, level, marker, charset);
-        this.fqcn = fqcn;
-    }
-
     public LoggerInputStream(final InputStream in, final Charset charset, final ExtendedLogger logger, final Level level) {
         this(in, charset, logger, FQCN, level, null);
     }
@@ -50,6 +43,13 @@ public class LoggerInputStream extends FilterInputStream {
     public LoggerInputStream(final InputStream in, final Charset charset, final ExtendedLogger logger, final Level level,
             final Marker marker) {
         this(in, charset, logger, FQCN, level, marker);
+    }
+
+    public LoggerInputStream(final InputStream in, final Charset charset, final ExtendedLogger logger,
+            final String fqcn, final Level level, final Marker marker) {
+        super(in);
+        this.logger = new ByteStreamLogger(logger, level, marker, charset);
+        this.fqcn = fqcn;
     }
 
     public LoggerInputStream(final InputStream in, final ExtendedLogger logger, final Level level) {

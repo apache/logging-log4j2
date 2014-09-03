@@ -29,12 +29,16 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
 public class LoggerBufferedReader extends BufferedReader {
     private static final String FQCN = LoggerBufferedReader.class.getName();
 
-    public LoggerBufferedReader(final Reader reader, final ExtendedLogger logger, final String fqcn, final Level level, final Marker marker) {
-        super(new LoggerReader(reader, logger, FQCN, level, marker));
+    public LoggerBufferedReader(final Reader reader, final ExtendedLogger logger, final Level level) {
+        this(reader, logger, FQCN, level, null);
     }
 
-    public LoggerBufferedReader(final Reader reader, final int size, final ExtendedLogger logger, final String fqcn, final Level level, final Marker marker) {
-        super(new LoggerReader(reader, logger, FQCN, level, marker), size);
+    public LoggerBufferedReader(final Reader reader, final ExtendedLogger logger, final Level level, final Marker marker) {
+        this(reader, logger, FQCN, level, marker);
+    }
+
+    public LoggerBufferedReader(final Reader reader, final ExtendedLogger logger, final String fqcn, final Level level, final Marker marker) {
+        super(new LoggerReader(reader, logger, FQCN, level, marker));
     }
 
     public LoggerBufferedReader(final Reader reader, final int size, final ExtendedLogger logger, final Level level) {
@@ -45,12 +49,8 @@ public class LoggerBufferedReader extends BufferedReader {
         this(reader, size, logger, FQCN, level, marker);
     }
 
-    public LoggerBufferedReader(final Reader reader, final ExtendedLogger logger, final Level level) {
-        this(reader, logger, FQCN, level, null);
-    }
-
-    public LoggerBufferedReader(final Reader reader, final ExtendedLogger logger, final Level level, final Marker marker) {
-        this(reader, logger, FQCN, level, marker);
+    public LoggerBufferedReader(final Reader reader, final int size, final ExtendedLogger logger, final String fqcn, final Level level, final Marker marker) {
+        super(new LoggerReader(reader, logger, FQCN, level, marker), size);
     }
     
     @Override

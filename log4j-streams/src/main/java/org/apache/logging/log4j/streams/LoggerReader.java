@@ -37,19 +37,19 @@ public class LoggerReader extends FilterReader {
     private final CharStreamLogger logger;
     private final String fqcn;
 
-    public LoggerReader(final Reader reader, final ExtendedLogger logger, final String fqcn, final Level level,
-            final Marker marker) {
-        super(reader);
-        this.logger = new CharStreamLogger(logger, level, marker);
-        this.fqcn = fqcn;
-    }
-
     public LoggerReader(final Reader reader, final ExtendedLogger logger, final Level level) {
         this(reader, logger, FQCN, level, null);
     }
 
     public LoggerReader(final Reader reader, final ExtendedLogger logger, final Level level, final Marker marker) {
         this(reader, logger, FQCN, level, marker);
+    }
+
+    public LoggerReader(final Reader reader, final ExtendedLogger logger, final String fqcn, final Level level,
+            final Marker marker) {
+        super(reader);
+        this.logger = new CharStreamLogger(logger, level, marker);
+        this.fqcn = fqcn;
     }
 
     @Override

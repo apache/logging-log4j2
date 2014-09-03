@@ -26,7 +26,7 @@ public class LoggerOutputStreamCallerInfoTest extends LoggerStreamsCallerInfoTes
     
     @Before
     public void setupStreams() {
-        this.logOut = new LoggerOutputStream(getLogger(), Level.WARN);
+        this.logOut = new LoggerOutputStream(getExtendedLogger(), Level.WARN);
     }
     
     @Test
