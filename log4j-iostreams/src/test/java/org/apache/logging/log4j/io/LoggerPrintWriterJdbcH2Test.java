@@ -38,7 +38,6 @@ public class LoggerPrintWriterJdbcH2Test {
         this.listAppender = listAppender;
     }
 
-    @SuppressWarnings("resource")
     public void setLogWriter(PrintWriter printWriter) {
         DriverManager.setLogWriter(printWriter);
     }
