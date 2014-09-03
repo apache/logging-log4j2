@@ -1,5 +1,6 @@
 package org.apache.logging.log4j.io;
 
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -11,14 +12,18 @@ import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.util.Strings;
+import org.h2.jdbcx.JdbcDataSource;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class LoggerPrintWriterJdbcH2Test {
     @ClassRule
     public static InitialLoggerContext context = new InitialLoggerContext("log4j2-jdbc-driver-manager.xml");
+
+    private static final String H2_URL = "jdbc:h2:mem:Log4j";
 
     private static final String PASSWORD = Strings.EMPTY;
 
@@ -26,35 +31,59 @@ public class LoggerPrintWriterJdbcH2Test {
 
     private ListAppender listAppender;
 
+    private LoggerPrintWriter createLoggerPrintWriter() {
+        return new LoggerPrintWriter((ExtendedLogger) LogManager.getLogger(), Level.ALL);
+    }
+
     private ListAppender getListAppender() {
         return listAppender;
     }
 
     protected Connection newConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:h2:mem:Log4j", USER_ID, PASSWORD);
+        return DriverManager.getConnection(H2_URL, USER_ID, PASSWORD);
     }
 
     private void setListAppender(ListAppender listAppender) {
         this.listAppender = listAppender;
     }
 
-    public void setLogWriter(PrintWriter printWriter) {
-        DriverManager.setLogWriter(printWriter);
-    }
-
     @Before
     public void setUp() throws Exception {
         this.setListAppender(context.getListAppender("List").clear());
+        Assert.assertEquals(0, this.getListAppender().getMessages().size());
+    }
+
+    @Test
+    @Ignore("DataSource#setLogWriter() has no effect in H2, it uses its own internal logging and an SLF4J bridge.")
+    public void testDataSource_setLogWriter() throws SQLException {
+        JdbcDataSource dataSource = new JdbcDataSource();
+        dataSource.setUrl(H2_URL);
+        dataSource.setUser(USER_ID);
+        dataSource.setPassword(PASSWORD);
+        dataSource.setLogWriter(createLoggerPrintWriter());
+        // dataSource.setLogWriter(new PrintWriter(new OutputStreamWriter(System.out)));
+        Connection conn = dataSource.getConnection();
+        try {
+            conn.prepareCall("select 1");
+        } finally {
+            conn.close();
+        }
+        Assert.assertTrue(this.getListAppender().getMessages().size() > 0);
     }
 
     @Test
     public void testDriverManager_setLogWriter() throws SQLException {
-        Assert.assertEquals(0, this.getListAppender().getMessages().size());
-        this.setLogWriter(new LoggerPrintWriter((ExtendedLogger) LogManager.getLogger(), Level.ALL));
+        DriverManager.setLogWriter(createLoggerPrintWriter());
+        // DriverManager.setLogWriter(new PrintWriter(new OutputStreamWriter(System.out)));
         try {
-            this.newConnection().close();
+            Connection conn = this.newConnection();
+            try {
+                conn.rollback();
+            } finally {
+                conn.close();
+            }
         } finally {
-            this.setLogWriter(null);
+            DriverManager.setLogWriter(null);
         }
         Assert.assertTrue(this.getListAppender().getMessages().size() > 0);
     }
