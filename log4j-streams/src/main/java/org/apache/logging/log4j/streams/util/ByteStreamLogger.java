@@ -119,7 +119,7 @@ public class ByteStreamLogger {
         }
     }
 
-    public void put(final String fqcn, final byte[] b, int off, int len) throws IOException {
+    public void put(final String fqcn, final byte[] b, final int off, final int len) throws IOException {
         int curOff = off;
         int curLen = len;
         if (curLen >= 0) {
