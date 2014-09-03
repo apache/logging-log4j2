@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.logging.log4j.io.util;
+package org.apache.logging.log4j.io;
 
 import java.nio.CharBuffer;
 

@@ -23,7 +23,6 @@ import java.io.Writer;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.spi.ExtendedLogger;
-import org.apache.logging.log4j.io.util.CharStreamLogger;
 
 /**
  * Logs each line written to a pre-defined level. Can also be configured with a Marker. This class provides an interface
