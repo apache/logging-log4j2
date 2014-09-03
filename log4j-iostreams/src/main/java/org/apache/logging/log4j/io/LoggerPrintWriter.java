@@ -34,6 +34,9 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
  * <pre>DriverManager.setLogWriter(new LoggerPrintWriter((ExtendedLogger) LogManager.getLogger(), Level.DEBUG));
  * </pre>
  */
+// TODO 
+// All method implementations that call only super are apparently required for the unit tests to pass.
+// Not sure if this a bug in the tests or a feature.
 public class LoggerPrintWriter extends PrintWriter {
     private static final String FQCN = LoggerPrintWriter.class.getName();
 
