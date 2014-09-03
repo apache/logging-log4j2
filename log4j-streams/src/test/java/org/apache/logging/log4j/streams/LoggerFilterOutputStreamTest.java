@@ -21,16 +21,16 @@ import java.io.OutputStream;
 
 import org.apache.logging.log4j.Level;
 
-public class LoggerOutputStreamTest extends AbstractLoggerOutputStreamTest {
+public class LoggerFilterOutputStreamTest extends AbstractLoggerOutputStreamTest {
 
     @Override
     protected ByteArrayOutputStream createOutputStream() {
-        return null;
+        return new ByteArrayOutputStream();
     }
 
     @Override
     protected OutputStream createOutputStreamWrapper() {
-        return new LoggerOutputStream(getExtendedLogger(), Level.ERROR);
+        return new LoggerFilterOutputStream(this.wrapped, getExtendedLogger(), Level.ERROR);
     }
 
 }

@@ -19,15 +19,21 @@ package org.apache.logging.log4j.streams;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
+import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 
 import org.junit.Test;
 
-public class LoggerPrintStreamTest extends LoggerOutputStreamTest {
+public class LoggerPrintStreamTest extends AbstractLoggerOutputStreamTest {
     private LoggerPrintStream print;
 
     @Override
-    protected OutputStream createOutputStream() {
+    protected ByteArrayOutputStream createOutputStream() {
+        return new ByteArrayOutputStream();
+    }
+
+    @Override
+    protected OutputStream createOutputStreamWrapper() {
         return this.print = new LoggerPrintStream(this.wrapped, getExtendedLogger(), LEVEL);
     }
 
