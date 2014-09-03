@@ -37,8 +37,8 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
 public class LoggerPrintStream extends PrintStream {
     private static final String FQCN = LoggerPrintStream.class.getName();
 
-    public LoggerPrintStream(ExtendedLogger logger, boolean autoFlush, Charset charset, String fqcn, Level level,
-            Marker marker) throws UnsupportedEncodingException {
+    public LoggerPrintStream(final ExtendedLogger logger, final boolean autoFlush, final Charset charset,
+            final String fqcn, final Level level, final Marker marker) throws UnsupportedEncodingException {
         super(new LoggerOutputStream(logger, level, marker, charset, fqcn), autoFlush, charset.name());
     }
 
