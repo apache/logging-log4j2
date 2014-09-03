@@ -18,25 +18,31 @@ package org.apache.logging.log4j.simple;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.junit.LogManagerLoggerContextFactoryRule;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 public class SimpleLoggerTest {
 
-    Logger logger = LogManager.getLogger("TestError");
+    @ClassRule
+    public static final LogManagerLoggerContextFactoryRule rule = new LogManagerLoggerContextFactoryRule(
+            new SimpleLoggerContextFactory());
+
+    private Logger logger = LogManager.getLogger("TestError");
 
     @Test
     public void testString() {
-        logger.info("Hello");
+        logger.error("Logging without args");
     }
 
     @Test
     public void testMissingMessageArg() {
-        logger.info("Hello {}");
+        logger.error("Logging without args {}");
     }
 
     @Test
     public void testEmptyObjectArray() {
-        logger.info(new Object[0]);
+        logger.error(new Object[0]);
     }
 
     /**
@@ -44,6 +50,14 @@ public class SimpleLoggerTest {
      */
     @Test
     public void testMessageWithEmptyObjectArray() {
-        logger.info("Hello {} {}", new Object[0]);
+        logger.error("Logging with an empty Object[] {} {}", new Object[0]);
+    }
+
+    /**
+     * Tests LOG4J2-811.
+     */
+    @Test
+    public void testMessageWithShortArray() {
+        logger.error("Logging with a size 1 Object[] {} {}", new Object[] { "only one param" });
     }
 }
