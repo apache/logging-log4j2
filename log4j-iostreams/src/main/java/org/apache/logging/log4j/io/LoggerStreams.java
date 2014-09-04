@@ -253,12 +253,10 @@ public class LoggerStreams {
         if (this.buffered) {
             if (this.bufferSize > 0) {
                 return new LoggerBufferedReader(in, this.bufferSize, this.logger, this.fqcn, this.level, this.marker);
-            } else {
-                return new LoggerBufferedReader(in, this.logger, this.fqcn, this.level, this.marker);
             }
-        } else {
-            return new LoggerReader(in, this.logger, this.fqcn, this.level, this.marker);
+            return new LoggerBufferedReader(in, this.logger, this.fqcn, this.level, this.marker);
         }
+        return new LoggerReader(in, this.logger, this.fqcn, this.level, this.marker);
     }
 
     /**
@@ -270,9 +268,8 @@ public class LoggerStreams {
     public Writer buildWriter() {
         if (this.writer == null) {
             return new LoggerWriter(this.logger, this.fqcn, this.level, this.marker);
-        } else {
-            return new LoggerFilterWriter(this.writer, this.logger, this.fqcn, this.level, this.marker);
         }
+        return new LoggerFilterWriter(this.writer, this.logger, this.fqcn, this.level, this.marker);
     }
 
     /**
@@ -285,9 +282,8 @@ public class LoggerStreams {
     public PrintWriter buildPrintWriter() {
         if (this.writer == null) {
             return new LoggerPrintWriter(this.logger, this.autoFlush, this.fqcn, this.level, this.marker);
-        } else {
-            return new LoggerPrintWriter(this.writer, this.autoFlush, this.logger, this.fqcn, this.level, this.marker);
         }
+        return new LoggerPrintWriter(this.writer, this.autoFlush, this.logger, this.fqcn, this.level, this.marker);
     }
 
     /**
@@ -303,9 +299,8 @@ public class LoggerStreams {
             if (this.bufferSize > 0) {
                 return new LoggerBufferedInputStream(in, this.charset, this.bufferSize, this.logger, this.fqcn,
                     this.level, this.marker);
-            } else {
-                return new LoggerBufferedInputStream(in, this.charset, this.logger, this.fqcn, this.level, this.marker);
             }
+            return new LoggerBufferedInputStream(in, this.charset, this.logger, this.fqcn, this.level, this.marker);
         }
         return new LoggerInputStream(in, this.charset, this.logger, this.fqcn, this.level, this.marker);
     }
@@ -320,10 +315,9 @@ public class LoggerStreams {
     public OutputStream buildOutputStream() {
         if (this.outputStream == null) {
             return new LoggerOutputStream(this.logger, this.level, this.marker, this.charset, this.fqcn);
-        } else {
-            return new LoggerFilterOutputStream(this.outputStream, this.charset, this.logger, this.fqcn, this.level,
-                this.marker);
         }
+        return new LoggerFilterOutputStream(this.outputStream, this.charset, this.logger, this.fqcn, this.level,
+            this.marker);
     }
 
     /**
@@ -339,10 +333,9 @@ public class LoggerStreams {
             if (this.outputStream == null) {
                 return new LoggerPrintStream(this.logger, this.autoFlush, this.charset, this.fqcn, this.level,
                     this.marker);
-            } else {
-                return new LoggerPrintStream(this.outputStream, this.autoFlush, this.charset, this.logger, this.fqcn,
-                    this.level, this.marker);
             }
+            return new LoggerPrintStream(this.outputStream, this.autoFlush, this.charset, this.logger, this.fqcn,
+                this.level, this.marker);
         } catch (final UnsupportedEncodingException e) {
             // this exception shouldn't really happen since we use Charset and not String
             throw new LoggingException(e);
