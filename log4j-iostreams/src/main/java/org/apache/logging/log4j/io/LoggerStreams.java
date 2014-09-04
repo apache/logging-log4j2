@@ -33,7 +33,22 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**
- * Builder class to wrap {@link org.apache.logging.log4j.Logger Loggers} into Java IO compatible classes.
+ * Builder class to wrap {@link Logger Loggers} into Java IO compatible classes.
+ *
+ * <p>Both the {@link InputStream}/{@link OutputStream} and {@link Reader}/{@link Writer} family of classes are
+ * supported. {@link OutputStream} and {@link Writer} instances can be wrapped by a filtered version of their
+ * corresponding classes ({@link java.io.FilterOutputStream} and {@link java.io.FilterWriter}) in order to log all
+ * lines written to these instances. {@link InputStream} and {@link Reader} instances can be wrapped by a sort of
+ * wiretapped version of their respective classes; all lines read from these instances will be logged.</p>
+ *
+ * <p>The main feature, however, is the ability to create a {@link PrintWriter}, {@link PrintStream}, {@link Writer},
+ * {@link java.io.BufferedWriter}, {@link OutputStream}, or {@link java.io.BufferedOutputStream} that is backed by a
+ * {@link Logger}. The main inspiration for this feature is the JDBC API which uses a PrintWriter to perform debug
+ * logging. In order to properly integrate APIs like JDBC into Log4j, create a PrintWriter using this class.</p>
+ *
+ * <p>All LoggerStreams support configuration of the logging {@link Level} it should use (defaults to the level of
+ * the underlying Logger), and an optional {@link Marker}. The other configurable objects are explained in more
+ * detail below.</p>
  *
  * @since 2.1
  */
@@ -64,10 +79,24 @@ public class LoggerStreams {
         return new LoggerStreams(logger);
     }
 
+    /**
+     * Creates a new builder using a Logger name. The name provided is used to get a Logger from
+     * {@link LogManager#getLogger(String)} which will be wrapped into a LoggerStream.
+     *
+     * @param loggerName the name of the Logger to wrap into a LoggerStream
+     * @return a new LoggerStream builder
+     */
     public static LoggerStreams forLogger(final String loggerName) {
         return new LoggerStreams(LogManager.getLogger(loggerName));
     }
 
+    /**
+     * Creates a new builder using a Logger named after a given Class. The Class provided is used to get a Logger from
+     * {@link LogManager#getLogger(Class)} which will be wrapped into a LoggerStream.
+     *
+     * @param clazz the Class to use as the Logger name to wrap into a LoggerStream
+     * @return a new LoggerStream builder
+     */
     public static LoggerStreams forLogger(final Class<?> clazz) {
         return new LoggerStreams(LogManager.getLogger(clazz));
     }
@@ -81,21 +110,44 @@ public class LoggerStreams {
         this.logger = (ExtendedLogger) logger;
     }
 
+    /**
+     * Specifies the {@link Level} to log at. If no Level is configured, then the Level of the wrapped Logger will be
+     * used.
+     *
+     * @param level the Level to use for logging
+     * @return {@code this}
+     */
     public LoggerStreams setLevel(final Level level) {
         this.level = level;
         return this;
     }
 
+    /**
+     * Specifies an optional {@link Marker} to use in all logging messages. If no Marker is specified, then no Marker
+     * will be used.
+     *
+     * @param marker the Marker to associate with all logging messages
+     * @return {@code this}
+     */
     public LoggerStreams setMarker(final Marker marker) {
         this.marker = marker;
         return this;
     }
 
+    // FIXME: without making this entire class more properly extensible, this field is pointless
     public LoggerStreams setWrapperClassName(final String fqcn) {
         this.fqcn = fqcn;
         return this;
     }
 
+    /**
+     * Indicates whether or not a built {@link PrintWriter} or {@link PrintStream} should automatically flush when
+     * one of the {@code println}, {@code printf}, or {@code format} methods are invoked, or when a new line character
+     * is printed.
+     *
+     * @param autoFlush if {@code true}, then {@code println}, {@code printf}, and {@code format} will auto flush
+     * @return {@code this}
+     */
     public LoggerStreams setAutoFlush(final boolean autoFlush) {
         this.autoFlush = autoFlush;
         return this;
@@ -115,36 +167,86 @@ public class LoggerStreams {
         return this;
     }
 
+    /**
+     * Configures the buffer size to use when building a {@link java.io.BufferedReader} or
+     * {@link java.io.BufferedInputStream} LoggerStream.
+     *
+     * @param bufferSize the buffer size to use or a non-positive integer to use the default size
+     * @return {@code this}
+     */
     public LoggerStreams setBufferSize(final int bufferSize) {
         this.bufferSize = bufferSize;
         return this;
     }
 
+    /**
+     * Specifies the character set to use when building an {@link InputStream}, {@link OutputStream}, or
+     * {@link PrintStream}. If no character set is specified, then {@link java.nio.charset.Charset#defaultCharset()}
+     * is used.
+     *
+     * @param charset the character set to use when building a *Stream
+     * @return {@code this}
+     */
     public LoggerStreams setCharset(final Charset charset) {
         this.charset = charset;
         return this;
     }
 
+    /**
+     * Configures a {@link Reader} to be wiretapped when building a Reader. This must be set to a non-{@code null}
+     * value in order to call {@link #buildReader()}.
+     *
+     * @param reader the Reader to wiretap
+     * @return {@code this}
+     */
     public LoggerStreams filter(final Reader reader) {
         this.reader = reader;
         return this;
     }
 
+    /**
+     * Configures a {@link Writer} to be written to in addition to the underlying Logger. If no Writer is specified,
+     * then the built Writer or PrintWriter will only write to the underlying Logger.
+     *
+     * @param writer the Writer to write to in addition to the Logger
+     * @return {@code this}
+     */
     public LoggerStreams filter(final Writer writer) {
         this.writer = writer;
         return this;
     }
 
+    /**
+     * Configures an {@link InputStream} to be wiretapped when building an InputStream. This must be set to a
+     * non-{@code null} value in order to call {@link #buildInputStream()}.
+     *
+     * @param inputStream the InputStream to wiretap
+     * @return {@code this}
+     */
     public LoggerStreams filter(final InputStream inputStream) {
         this.inputStream = inputStream;
         return this;
     }
 
+    /**
+     * Configures an {@link OutputStream} to be written to in addition to the underlying Logger. If no OutputStream is
+     * specified, then the built OutputStream or PrintStream will only write to the underlying Logger.
+     *
+     * @param outputStream the OutputStream to write to in addition to the Logger
+     * @return {@code this}
+     */
     public LoggerStreams filter(final OutputStream outputStream) {
         this.outputStream = outputStream;
         return this;
     }
 
+    /**
+     * Builds a new {@link Reader} that is wiretapped by its underlying Logger. If buffering is enabled, then a
+     * {@link java.io.BufferedReader} will be returned.
+     *
+     * @return a new Reader wiretapped by a Logger
+     * @throws IllegalStateException if no Reader was configured for this builder
+     */
     public Reader buildReader() {
         final Reader r = requireNonNull(this.reader, "reader");
         if (this.buffered) {
@@ -154,11 +256,16 @@ public class LoggerStreams {
                 return new LoggerBufferedReader(r, this.logger, this.fqcn, this.level, this.marker);
             }
         } else {
-            return new LoggerReader(requireNonNull(this.reader, "reader"), this.logger, this.fqcn, this.level,
-                this.marker);
+            return new LoggerReader(r, this.logger, this.fqcn, this.level, this.marker);
         }
     }
 
+    /**
+     * Builds a new {@link Writer} that is backed by a Logger and optionally writes to another Writer as well. If no
+     * Writer is configured for this builder, then the returned Writer will only write to its underlying Logger.
+     *
+     * @return a new Writer or {@link java.io.FilterWriter} backed by a Logger
+     */
     public Writer buildWriter() {
         if (this.writer == null) {
             return new LoggerWriter(this.logger, this.fqcn, this.level, this.marker);
@@ -167,6 +274,13 @@ public class LoggerStreams {
         }
     }
 
+    /**
+     * Builds a new {@link PrintWriter} that is backed by a Logger and optionally writes to another Writer as well. If
+     * no Writer is configured for this builder, then the returned PrintWriter will only write to its underlying
+     * Logger.
+     *
+     * @return a new PrintWriter that optionally writes to another Writer in addition to its underlying Logger
+     */
     public PrintWriter buildPrintWriter() {
         if (this.writer == null) {
             return new LoggerPrintWriter(this.logger, this.autoFlush, this.fqcn, this.level, this.marker);
@@ -175,6 +289,13 @@ public class LoggerStreams {
         }
     }
 
+    /**
+     * Builds a new {@link InputStream} that is wiretapped by its underlying Logger. If buffering is enabled, then a
+     * {@link java.io.BufferedInputStream} will be returned.
+     *
+     * @return a new InputStream wiretapped by a Logger
+     * @throws IllegalStateException if no InputStream was configured for this builder
+     */
     public InputStream buildInputStream() {
         final InputStream i = requireNonNull(this.inputStream, "inputStream");
         if (this.buffered) {
@@ -185,10 +306,16 @@ public class LoggerStreams {
                 return new LoggerBufferedInputStream(i, this.charset, this.logger, this.fqcn, this.level, this.marker);
             }
         }
-        return new LoggerInputStream(requireNonNull(this.inputStream, "inputStream"), this.charset, this.logger,
-            this.fqcn, this.level, this.marker);
+        return new LoggerInputStream(i, this.charset, this.logger, this.fqcn, this.level, this.marker);
     }
 
+    /**
+     * Builds a new {@link OutputStream} that is backed by a Logger and optionally writes to another OutputStream as
+     * well. If no OutputStream is configured for this builder, then the returned OutputStream will only write to its
+     * underlying Logger.
+     *
+     * @return a new OutputStream that optionally writes to another OutputStream in addition to its underlying Logger
+     */
     public OutputStream buildOutputStream() {
         if (this.outputStream == null) {
             return new LoggerOutputStream(this.logger, this.level, this.marker, this.charset, this.fqcn);
@@ -198,6 +325,14 @@ public class LoggerStreams {
         }
     }
 
+    /**
+     * Builds a new {@link PrintStream} that is backed by a Logger and optionally writes to another OutputStream as
+     * well. If no OutputStream is configured for this builder, then the returned PrintStream will only write to its
+     * underlying Logger.
+     *
+     * @return a new PrintStream that optionally writes to another OutputStream in addition to its underlying Logger
+     * @throws LoggingException if the configured character set is unsupported by {@link PrintStream}
+     */
     public PrintStream buildPrintStream() {
         try {
             if (this.outputStream == null) {
