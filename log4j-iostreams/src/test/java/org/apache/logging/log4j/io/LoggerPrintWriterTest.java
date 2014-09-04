@@ -35,7 +35,7 @@ public class LoggerPrintWriterTest extends AbstractLoggerWriterTest {
     @Override
     protected Writer createWriterWrapper() {
         this.print =
-            LoggerStreams.forLogger(getExtendedLogger())
+            IoBuilder.forLogger(getExtendedLogger())
                 .filter(this.wrapped)
                 .setLevel(LEVEL)
                 .buildPrintWriter();

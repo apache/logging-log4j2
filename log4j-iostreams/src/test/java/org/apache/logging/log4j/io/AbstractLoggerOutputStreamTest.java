@@ -70,7 +70,7 @@ public abstract class AbstractLoggerOutputStreamTest extends AbstractStreamTest 
         replay(out);
 
         final OutputStream filteredOut =
-            LoggerStreams.forLogger(getExtendedLogger())
+            IoBuilder.forLogger(getExtendedLogger())
                 .filter(out)
                 .setLevel(LEVEL)
                 .buildOutputStream();

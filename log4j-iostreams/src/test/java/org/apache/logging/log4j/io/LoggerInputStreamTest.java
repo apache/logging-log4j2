@@ -33,7 +33,7 @@ public class LoggerInputStreamTest extends AbstractStreamTest {
     protected InputStream in;
 
     protected InputStream createInputStream() {
-        return LoggerStreams.forLogger(getExtendedLogger())
+        return IoBuilder.forLogger(getExtendedLogger())
             .filter(this.wrapped)
             .setLevel(LEVEL)
             .buildInputStream();

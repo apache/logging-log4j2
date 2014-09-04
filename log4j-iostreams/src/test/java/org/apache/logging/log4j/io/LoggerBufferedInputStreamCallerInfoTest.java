@@ -23,7 +23,7 @@ import java.io.InputStream;
 import org.junit.Before;
 import org.junit.Test;
 
-public class LoggerBufferedInputStreamCallerInfoTest extends LoggerStreamsCallerInfoTesting {
+public class LoggerBufferedInputStreamCallerInfoTest extends IoBuilderCallerInfoTesting {
 
     private BufferedInputStream logIn;
 
@@ -63,7 +63,7 @@ public class LoggerBufferedInputStreamCallerInfoTest extends LoggerStreamsCaller
     public void setupStreams() {
         final InputStream srcInputStream = new ByteArrayInputStream("a\nb\nc\nd".getBytes());
         this.logIn = (BufferedInputStream)
-            LoggerStreams.forLogger(getLogger())
+            IoBuilder.forLogger(getLogger())
                 .filter(srcInputStream)
                 .setLevel(LEVEL)
                 .setBuffered(true)

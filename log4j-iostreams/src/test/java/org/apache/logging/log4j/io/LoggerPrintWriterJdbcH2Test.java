@@ -29,7 +29,7 @@ public class LoggerPrintWriterJdbcH2Test {
     private ListAppender listAppender;
 
     private PrintWriter createLoggerPrintWriter() {
-        return LoggerStreams.forLogger(context.getLogger()).setLevel(Level.ALL).buildPrintWriter();
+        return IoBuilder.forLogger(context.getLogger()).setLevel(Level.ALL).buildPrintWriter();
     }
 
     private ListAppender getListAppender() {

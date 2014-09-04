@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Level;
 import org.junit.Before;
 import org.junit.Test;
 
-public class LoggerInputStreamCallerInfoTest extends LoggerStreamsCallerInfoTesting {
+public class LoggerInputStreamCallerInfoTest extends IoBuilderCallerInfoTesting {
 
     private InputStream logIn;
 
@@ -49,7 +49,7 @@ public class LoggerInputStreamCallerInfoTest extends LoggerStreamsCallerInfoTest
     @Before
     public void setupStreams() {
         final InputStream srcInputStream = new ByteArrayInputStream("a\nb\nc\nd".getBytes());
-        this.logIn = LoggerStreams.forLogger(getLogger())
+        this.logIn = IoBuilder.forLogger(getLogger())
             .filter(srcInputStream)
             .setLevel(Level.WARN)
             .buildInputStream();

@@ -15,6 +15,6 @@
  * limitations under the license.
  */
 /**
- * TODO: introduction to LoggerStreams
+ * TODO: introduction to IoBuilder
  */
 package org.apache.logging.log4j.io;

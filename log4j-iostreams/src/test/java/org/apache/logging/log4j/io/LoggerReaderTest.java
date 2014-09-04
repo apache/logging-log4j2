@@ -34,7 +34,7 @@ public class LoggerReaderTest extends AbstractStreamTest {
     protected Reader reader;
 
     protected Reader createReader() {
-        return LoggerStreams.forLogger(getExtendedLogger())
+        return IoBuilder.forLogger(getExtendedLogger())
             .filter(this.wrapped)
             .setLevel(LEVEL)
             .buildReader();

@@ -34,7 +34,7 @@ public class LoggerPrintStreamTest extends AbstractLoggerOutputStreamTest {
 
     @Override
     protected OutputStream createOutputStreamWrapper() {
-        return this.print = LoggerStreams.forLogger(getExtendedLogger())
+        return this.print = IoBuilder.forLogger(getExtendedLogger())
             .filter(this.wrapped)
             .setLevel(LEVEL)
             .buildPrintStream();

@@ -23,7 +23,7 @@ import java.nio.CharBuffer;
 import org.junit.Before;
 import org.junit.Test;
 
-public class LoggerReaderCallerInfoTest extends LoggerStreamsCallerInfoTesting {
+public class LoggerReaderCallerInfoTest extends IoBuilderCallerInfoTesting {
 
     Reader logReader;
     
@@ -52,7 +52,7 @@ public class LoggerReaderCallerInfoTest extends LoggerStreamsCallerInfoTesting {
     @Before
     public void setupReader() {
         final Reader srcReader = new StringReader("a\nb\nc\nd\ne");
-        this.logReader = LoggerStreams.forLogger(getLogger())
+        this.logReader = IoBuilder.forLogger(getLogger())
             .filter(srcReader)
             .setLevel(LEVEL)
             .buildReader();

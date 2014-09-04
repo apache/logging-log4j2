@@ -24,7 +24,7 @@ public class LoggerBufferedInputStreamTest extends LoggerInputStreamTest {
 
     @Override
     protected InputStream createInputStream() {
-        return LoggerStreams.forLogger(getExtendedLogger())
+        return IoBuilder.forLogger(getExtendedLogger())
             .filter(this.wrapped)
             .setLevel(Level.ERROR)
             .setBuffered(true)

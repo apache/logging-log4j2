@@ -30,7 +30,7 @@ public class LoggerOutputStreamTest extends AbstractLoggerOutputStreamTest {
 
     @Override
     protected OutputStream createOutputStreamWrapper() {
-        return LoggerStreams.forLogger(getExtendedLogger())
+        return IoBuilder.forLogger(getExtendedLogger())
             .setLevel(Level.ERROR)
             .buildOutputStream();
     }

@@ -22,13 +22,13 @@ import org.apache.logging.log4j.Level;
 import org.junit.Before;
 import org.junit.Test;
 
-public class LoggerOutputStreamCallerInfoTest extends LoggerStreamsCallerInfoTesting {
+public class LoggerOutputStreamCallerInfoTest extends IoBuilderCallerInfoTesting {
 
     private OutputStream logOut;
     
     @Before
     public void setupStreams() {
-        this.logOut = LoggerStreams.forLogger(getExtendedLogger()).setLevel(Level.WARN).buildOutputStream();
+        this.logOut = IoBuilder.forLogger(getExtendedLogger()).setLevel(Level.WARN).buildOutputStream();
     }
     
     @Test

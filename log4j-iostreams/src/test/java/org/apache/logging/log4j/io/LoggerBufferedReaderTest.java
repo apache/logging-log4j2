@@ -29,7 +29,7 @@ public class LoggerBufferedReaderTest extends LoggerReaderTest {
     @Override
     protected Reader createReader() {
         return this.bufferedReader = (BufferedReader)
-            LoggerStreams.forLogger(getExtendedLogger())
+            IoBuilder.forLogger(getExtendedLogger())
                 .filter(this.wrapped)
                 .setLevel(LEVEL)
                 .setBuffered(true)

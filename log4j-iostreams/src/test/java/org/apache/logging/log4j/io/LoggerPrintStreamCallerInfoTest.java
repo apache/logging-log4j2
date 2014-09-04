@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Level;
 import org.junit.Before;
 import org.junit.Test;
 
-public class LoggerPrintStreamCallerInfoTest extends LoggerStreamsCallerInfoTesting {
+public class LoggerPrintStreamCallerInfoTest extends IoBuilderCallerInfoTesting {
 
     private PrintStream logOut;
 
@@ -121,7 +121,7 @@ public class LoggerPrintStreamCallerInfoTest extends LoggerStreamsCallerInfoTest
     
     @Before
     public void setupStreams() {
-        this.logOut = LoggerStreams.forLogger(getLogger())
+        this.logOut = IoBuilder.forLogger(getLogger())
             .setLevel(Level.WARN)
             .buildPrintStream();
     }

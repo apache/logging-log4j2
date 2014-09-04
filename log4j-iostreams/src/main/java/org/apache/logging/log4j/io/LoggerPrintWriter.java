@@ -33,7 +33,7 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
  * </p>
  * <pre>
  *     Logger logger = LogManager.getLogger();
- *     PrintWriter pw = LoggerStreams.forLogger(logger).setLevel(Level.DEBUG).buildPrintWriter();
+ *     PrintWriter pw = IoBuilder.forLogger(logger).setLevel(Level.DEBUG).buildPrintWriter();
  *     DriverManager.setLogWriter(pw);
  *     DataSource ds = ...
  *     ds.setLogWriter(pw);

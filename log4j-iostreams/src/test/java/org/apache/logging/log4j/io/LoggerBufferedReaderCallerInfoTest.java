@@ -25,7 +25,7 @@ import org.apache.logging.log4j.Level;
 import org.junit.Before;
 import org.junit.Test;
 
-public class LoggerBufferedReaderCallerInfoTest extends LoggerStreamsCallerInfoTesting {
+public class LoggerBufferedReaderCallerInfoTest extends IoBuilderCallerInfoTesting {
 
     BufferedReader logReader;
     
@@ -81,7 +81,7 @@ public class LoggerBufferedReaderCallerInfoTest extends LoggerStreamsCallerInfoT
     public void setupReader() {
         final Reader srcReader = new StringReader("a\nb\nc\nd");
         this.logReader = (BufferedReader)
-            LoggerStreams.forLogger(getLogger())
+            IoBuilder.forLogger(getLogger())
                 .filter(srcReader)
                 .setLevel(Level.WARN)
                 .setBuffered(true)

@@ -25,7 +25,7 @@ import org.junit.ClassRule;
 
 import static org.junit.Assert.*;
 
-public class LoggerStreamsCallerInfoTesting {
+public class IoBuilderCallerInfoTesting {
 
     protected static Logger getExtendedLogger() {
         return ctx.getLogger("ClassAndMethodLogger");
