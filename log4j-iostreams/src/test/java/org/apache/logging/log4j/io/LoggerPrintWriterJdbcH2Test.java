@@ -1,13 +1,12 @@
 package org.apache.logging.log4j.io;
 
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
-import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.util.Strings;
 import org.h2.jdbcx.JdbcDataSource;
@@ -29,8 +28,8 @@ public class LoggerPrintWriterJdbcH2Test {
 
     private ListAppender listAppender;
 
-    private LoggerPrintWriter createLoggerPrintWriter() {
-        return new LoggerPrintWriter((ExtendedLogger) LogManager.getLogger(), Level.ALL);
+    private PrintWriter createLoggerPrintWriter() {
+        return LoggerStreams.forLogger(context.getLogger()).setLevel(Level.ALL).buildPrintWriter();
     }
 
     private ListAppender getListAppender() {
