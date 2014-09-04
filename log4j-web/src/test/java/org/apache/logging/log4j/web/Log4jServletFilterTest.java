@@ -26,7 +26,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.createStrictMock;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.reset;
+import static org.easymock.EasyMock.same;
+import static org.easymock.EasyMock.verify;
 
 public class Log4jServletFilterTest {
     private FilterConfig filterConfig;
@@ -52,8 +59,6 @@ public class Log4jServletFilterTest {
     @Test
     public void testInitAndDestroy() throws Exception {
         expect(this.filterConfig.getServletContext()).andReturn(this.servletContext);
-        this.servletContext.log(anyObject(String.class));
-        expectLastCall();
         expect(this.servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).andReturn(this.initializer);
         this.initializer.clearLoggerContext();
         expectLastCall();
@@ -65,8 +70,6 @@ public class Log4jServletFilterTest {
         verify(this.filterConfig, this.servletContext, this.initializer);
         reset(this.filterConfig, this.servletContext, this.initializer);
 
-        this.servletContext.log(anyObject(String.class));
-        expectLastCall();
         this.initializer.setLoggerContext();
         expectLastCall();
 
@@ -85,8 +88,6 @@ public class Log4jServletFilterTest {
     @Test
     public void testDoFilterFirstTime() throws Exception {
         expect(this.filterConfig.getServletContext()).andReturn(this.servletContext);
-        this.servletContext.log(anyObject(String.class));
-        expectLastCall();
         expect(this.servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).andReturn(this.initializer);
         this.initializer.clearLoggerContext();
         expectLastCall();
@@ -122,8 +123,6 @@ public class Log4jServletFilterTest {
     @Test
     public void testDoFilterSecondTime() throws Exception {
         expect(this.filterConfig.getServletContext()).andReturn(this.servletContext);
-        this.servletContext.log(anyObject(String.class));
-        expectLastCall();
         expect(this.servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).andReturn(this.initializer);
         this.initializer.clearLoggerContext();
         expectLastCall();

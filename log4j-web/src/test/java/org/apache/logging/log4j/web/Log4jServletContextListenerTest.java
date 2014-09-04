@@ -24,8 +24,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.easymock.EasyMock.*;
-
+import static org.easymock.EasyMock.createStrictMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.reset;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.*;
 
 public class Log4jServletContextListenerTest {
@@ -52,8 +56,6 @@ public class Log4jServletContextListenerTest {
     @Test
     public void testInitAndDestroy() throws Exception {
         expect(this.event.getServletContext()).andReturn(this.servletContext);
-        this.servletContext.log(anyObject(String.class));
-        expectLastCall();
         expect(this.servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).andReturn(this.initializer);
         this.initializer.start();
         expectLastCall();
@@ -67,8 +69,6 @@ public class Log4jServletContextListenerTest {
         verify(this.event, this.servletContext, this.initializer);
         reset(this.event, this.servletContext, this.initializer);
 
-        this.servletContext.log(anyObject(String.class));
-        expectLastCall();
         this.initializer.clearLoggerContext();
         expectLastCall();
         this.initializer.stop();
@@ -82,8 +82,6 @@ public class Log4jServletContextListenerTest {
     @Test
     public void testInitFailure() throws Exception {
         expect(this.event.getServletContext()).andReturn(this.servletContext);
-        this.servletContext.log(anyObject(String.class));
-        expectLastCall();
         expect(this.servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).andReturn(this.initializer);
         this.initializer.start();
         expectLastCall().andThrow(new IllegalStateException(Strings.EMPTY));

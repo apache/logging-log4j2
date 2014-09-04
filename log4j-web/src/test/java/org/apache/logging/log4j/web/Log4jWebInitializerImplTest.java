@@ -26,8 +26,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.easymock.EasyMock.*;
-
+import static org.easymock.EasyMock.capture;
+import static org.easymock.EasyMock.createStrictMock;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.reset;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.*;
 
 public class Log4jWebInitializerImplTest {
@@ -140,8 +146,6 @@ public class Log4jWebInitializerImplTest {
         verify(this.servletContext);
         reset(this.servletContext);
 
-        this.servletContext.log(anyObject(String.class));
-        expectLastCall();
         this.servletContext.removeAttribute(Log4jWebSupport.CONTEXT_ATTRIBUTE);
         expectLastCall();
 
@@ -205,8 +209,6 @@ public class Log4jWebInitializerImplTest {
         verify(this.servletContext);
         reset(this.servletContext);
 
-        this.servletContext.log(anyObject(String.class));
-        expectLastCall();
         this.servletContext.removeAttribute(Log4jWebSupport.CONTEXT_ATTRIBUTE);
         expectLastCall();
 
@@ -260,8 +262,6 @@ public class Log4jWebInitializerImplTest {
         verify(this.servletContext);
         reset(this.servletContext);
 
-        this.servletContext.log(anyObject(String.class));
-        expectLastCall();
         this.servletContext.removeAttribute(Log4jWebSupport.CONTEXT_ATTRIBUTE);
         expectLastCall();
 
@@ -297,8 +297,6 @@ public class Log4jWebInitializerImplTest {
         verify(this.servletContext);
         reset(this.servletContext);
 
-        this.servletContext.log(anyObject(String.class));
-        expectLastCall();
         this.servletContext.removeAttribute(Log4jWebSupport.CONTEXT_ATTRIBUTE);
         expectLastCall();
 
@@ -341,8 +339,6 @@ public class Log4jWebInitializerImplTest {
         verify(this.servletContext);
         reset(this.servletContext);
 
-        this.servletContext.log(anyObject(String.class));
-        expectLastCall();
         this.servletContext.removeAttribute(Log4jWebSupport.CONTEXT_ATTRIBUTE);
         expectLastCall();
 
@@ -381,8 +377,6 @@ public class Log4jWebInitializerImplTest {
         expect(this.servletContext.getInitParameter(Log4jWebSupport.IS_LOG4J_CONTEXT_SELECTOR_NAMED))
                 .andReturn("true");
         expect(this.servletContext.getResourcePaths("/WEB-INF/")).andReturn(null);
-        this.servletContext.log(anyObject(String.class));
-        expectLastCall();
         this.servletContext.setAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE), capture(loggerContextCapture));
         expectLastCall();
 
@@ -476,8 +470,6 @@ public class Log4jWebInitializerImplTest {
         verify(this.servletContext, runnable);
         reset(this.servletContext);
 
-        this.servletContext.log(anyObject(String.class));
-        expectLastCall();
         this.servletContext.removeAttribute(Log4jWebSupport.CONTEXT_ATTRIBUTE);
         expectLastCall();
 
