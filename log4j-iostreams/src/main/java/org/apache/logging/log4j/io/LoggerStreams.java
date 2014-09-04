@@ -249,15 +249,15 @@ public class LoggerStreams {
      * @throws IllegalStateException if no Reader was configured for this builder
      */
     public Reader buildReader() {
-        final Reader r = requireNonNull(this.reader, "reader");
+        final Reader in = requireNonNull(this.reader, "reader");
         if (this.buffered) {
             if (this.bufferSize > 0) {
-                return new LoggerBufferedReader(r, this.bufferSize, this.logger, this.fqcn, this.level, this.marker);
+                return new LoggerBufferedReader(in, this.bufferSize, this.logger, this.fqcn, this.level, this.marker);
             } else {
-                return new LoggerBufferedReader(r, this.logger, this.fqcn, this.level, this.marker);
+                return new LoggerBufferedReader(in, this.logger, this.fqcn, this.level, this.marker);
             }
         } else {
-            return new LoggerReader(r, this.logger, this.fqcn, this.level, this.marker);
+            return new LoggerReader(in, this.logger, this.fqcn, this.level, this.marker);
         }
     }
 
@@ -298,16 +298,16 @@ public class LoggerStreams {
      * @throws IllegalStateException if no InputStream was configured for this builder
      */
     public InputStream buildInputStream() {
-        final InputStream i = requireNonNull(this.inputStream, "inputStream");
+        final InputStream in = requireNonNull(this.inputStream, "inputStream");
         if (this.buffered) {
             if (this.bufferSize > 0) {
-                return new LoggerBufferedInputStream(i, this.charset, this.bufferSize, this.logger, this.fqcn,
+                return new LoggerBufferedInputStream(in, this.charset, this.bufferSize, this.logger, this.fqcn,
                     this.level, this.marker);
             } else {
-                return new LoggerBufferedInputStream(i, this.charset, this.logger, this.fqcn, this.level, this.marker);
+                return new LoggerBufferedInputStream(in, this.charset, this.logger, this.fqcn, this.level, this.marker);
             }
         }
-        return new LoggerInputStream(i, this.charset, this.logger, this.fqcn, this.level, this.marker);
+        return new LoggerInputStream(in, this.charset, this.logger, this.fqcn, this.level, this.marker);
     }
 
     /**
