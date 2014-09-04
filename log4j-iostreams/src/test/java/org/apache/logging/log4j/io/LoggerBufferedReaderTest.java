@@ -16,19 +16,24 @@
  */
 package org.apache.logging.log4j.io;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.BufferedReader;
 import java.io.Reader;
 
 import org.junit.Test;
 
+import static org.junit.Assert.*;
+
 public class LoggerBufferedReaderTest extends LoggerReaderTest {
     private BufferedReader bufferedReader;
-    
+
     @Override
     protected Reader createReader() {
-        return this.bufferedReader = new LoggerBufferedReader(this.wrapped, getExtendedLogger(), LEVEL);
+        return this.bufferedReader = (BufferedReader)
+            LoggerStreams.forLogger(getExtendedLogger())
+                .filter(this.wrapped)
+                .setLevel(LEVEL)
+                .setBuffered(true)
+                .buildReader();
     }
 
     @Test

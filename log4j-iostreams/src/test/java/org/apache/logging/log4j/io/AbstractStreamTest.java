@@ -17,26 +17,19 @@
 
 package org.apache.logging.log4j.io;
 
-import static org.hamcrest.core.StringStartsWith.startsWith;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-
 import java.util.List;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.apache.logging.log4j.spi.ExtendedLogger;
-import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Before;
 import org.junit.ClassRule;
 
+import static org.hamcrest.core.StringStartsWith.startsWith;
+import static org.junit.Assert.*;
+
 public abstract class AbstractStreamTest {
-    
-    protected static Logger getLogger() {
-        return getExtendedLogger();
-    }
-    
+
     protected static ExtendedLogger getExtendedLogger() {
         return ctx.getLogger("UnitTestLogger");
     }
@@ -51,7 +44,7 @@ public abstract class AbstractStreamTest {
     public static InitialLoggerContext ctx = new InitialLoggerContext("log4j2-streams-unit-test.xml");
 
     protected void assertMessages(final String... messages) {
-        final List<String> actualMsgs = ((ListAppender) ctx.getAppender("UnitTest")).getMessages();
+        final List<String> actualMsgs = ctx.getListAppender("UnitTest").getMessages();
         assertEquals("Unexpected number of results.", messages.length, actualMsgs.size());
         for (int i = 0; i < messages.length; i++) {
             final String start = LEVEL.name() + ' ' + messages[i];
@@ -61,6 +54,6 @@ public abstract class AbstractStreamTest {
 
     @Before
     public void clearAppender() {
-        ((ListAppender) ctx.getAppender("UnitTest")).clear();
+        ctx.getListAppender("UnitTest").clear();
     }
 }

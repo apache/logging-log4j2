@@ -38,30 +38,11 @@ public class LoggerFilterOutputStream extends FilterOutputStream {
     private final ByteStreamLogger logger;
     private final String fqcn;
 
-    public LoggerFilterOutputStream(final OutputStream out, final Charset charset, final ExtendedLogger logger,
-            final Level level) {
-        this(out, charset, logger, FQCN, level, null);
-    }
-
-    public LoggerFilterOutputStream(final OutputStream out, final Charset charset, final ExtendedLogger logger,
-            final Level level, final Marker marker) {
-        this(out, charset, logger, FQCN, level, marker);
-    }
-
-    public LoggerFilterOutputStream(final OutputStream out, final Charset charset, final ExtendedLogger logger,
-            final String fqcn, final Level level, final Marker marker) {
+    protected LoggerFilterOutputStream(final OutputStream out, final Charset charset, final ExtendedLogger logger,
+                                       final String fqcn, final Level level, final Marker marker) {
         super(out);
         this.logger = new ByteStreamLogger(logger, level, marker, charset);
-        this.fqcn = fqcn;
-    }
-
-    public LoggerFilterOutputStream(final OutputStream out, final ExtendedLogger logger, final Level level) {
-        this(out, Charset.defaultCharset(), logger, FQCN, level, null);
-    }
-
-    public LoggerFilterOutputStream(final OutputStream out, final ExtendedLogger logger, final Level level,
-            final Marker marker) {
-        this(out, Charset.defaultCharset(), logger, FQCN, level, marker);
+        this.fqcn = fqcn == null ? FQCN : fqcn;
     }
 
     @Override

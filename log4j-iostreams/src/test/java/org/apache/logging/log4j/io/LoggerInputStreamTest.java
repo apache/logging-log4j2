@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.io;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -27,13 +25,18 @@ import java.io.InputStream;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.*;
+
 public class LoggerInputStreamTest extends AbstractStreamTest {
     protected ByteArrayInputStream wrapped;
     protected ByteArrayOutputStream read;
     protected InputStream in;
 
     protected InputStream createInputStream() {
-        return new LoggerInputStream(this.wrapped, getExtendedLogger(), LEVEL);
+        return LoggerStreams.forLogger(getExtendedLogger())
+            .filter(this.wrapped)
+            .setLevel(LEVEL)
+            .buildInputStream();
     }
 
     @Before
@@ -55,7 +58,7 @@ public class LoggerInputStreamTest extends AbstractStreamTest {
     @Test
     public void testClose_NoRemainingData() throws IOException {
         this.wrapped = new ByteArrayInputStream((FIRST + '\n').getBytes());
-        this.in = new LoggerInputStream(this.wrapped, getExtendedLogger(), LEVEL);
+        this.in = createInputStream();
 
         final byte[] bytes = new byte[1024];
         this.in.read(bytes);
@@ -116,7 +119,7 @@ public class LoggerInputStreamTest extends AbstractStreamTest {
     @Test
     public void testRead_MultipleLines() throws IOException {
         this.wrapped = new ByteArrayInputStream((FIRST + "\n" + LAST + '\n').getBytes());
-        this.in = new LoggerInputStream(this.wrapped, getExtendedLogger(), LEVEL);
+        this.in = createInputStream();
 
         final byte[] bytes = new byte[1024];
         final int len = this.in.read(bytes);

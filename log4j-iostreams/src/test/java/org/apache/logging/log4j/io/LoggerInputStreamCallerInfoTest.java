@@ -25,8 +25,8 @@ import org.junit.Test;
 
 public class LoggerInputStreamCallerInfoTest extends LoggerStreamsCallerInfoTesting {
 
-    private LoggerInputStream logIn;
-    
+    private InputStream logIn;
+
     @Test
     public void read() throws Exception {
         this.logIn.read();
@@ -49,6 +49,9 @@ public class LoggerInputStreamCallerInfoTest extends LoggerStreamsCallerInfoTest
     @Before
     public void setupStreams() {
         final InputStream srcInputStream = new ByteArrayInputStream("a\nb\nc\nd".getBytes());
-        this.logIn = new LoggerInputStream(srcInputStream, getLogger(), Level.WARN);
+        this.logIn = LoggerStreams.forLogger(getLogger())
+            .filter(srcInputStream)
+            .setLevel(Level.WARN)
+            .buildInputStream();
     }
 }

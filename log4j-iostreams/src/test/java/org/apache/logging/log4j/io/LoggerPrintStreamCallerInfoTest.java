@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.io;
 
-import java.io.UnsupportedEncodingException;
+import java.io.PrintStream;
 import java.util.Locale;
 
 import org.apache.logging.log4j.Level;
@@ -25,8 +25,8 @@ import org.junit.Test;
 
 public class LoggerPrintStreamCallerInfoTest extends LoggerStreamsCallerInfoTesting {
 
-    private LoggerPrintStream logOut;
-    
+    private PrintStream logOut;
+
     @Test
     public void close() throws Exception {
         this.logOut.print("a\nb");
@@ -120,8 +120,10 @@ public class LoggerPrintStreamCallerInfoTest extends LoggerStreamsCallerInfoTest
     }
     
     @Before
-    public void setupStreams() throws UnsupportedEncodingException {
-        this.logOut = new LoggerPrintStream(getLogger(), Level.WARN);
+    public void setupStreams() {
+        this.logOut = LoggerStreams.forLogger(getLogger())
+            .setLevel(Level.WARN)
+            .buildPrintStream();
     }
     
     @Test

@@ -37,77 +37,22 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
 public class LoggerPrintStream extends PrintStream {
     private static final String FQCN = LoggerPrintStream.class.getName();
 
-    public LoggerPrintStream(final ExtendedLogger logger, final boolean autoFlush, final Charset charset,
-            final String fqcn, final Level level, final Marker marker) throws UnsupportedEncodingException {
-        super(new LoggerOutputStream(logger, level, marker, charset, fqcn), autoFlush, charset.name());
+    protected LoggerPrintStream(final ExtendedLogger logger, final boolean autoFlush, final Charset charset,
+                                final String fqcn, final Level level, final Marker marker)
+        throws UnsupportedEncodingException {
+        super(new LoggerOutputStream(logger, level, marker, ensureNonNull(charset), fqcn == null ? FQCN : fqcn),
+            autoFlush, ensureNonNull(charset).name());
     }
 
-    public LoggerPrintStream(final ExtendedLogger logger, final Level level) throws UnsupportedEncodingException {
-        this(logger, false, Charset.defaultCharset(), FQCN, level, null);
+    protected LoggerPrintStream(final OutputStream out, final boolean autoFlush, final Charset charset,
+                                final ExtendedLogger logger, final String fqcn, final Level level, final Marker marker)
+        throws UnsupportedEncodingException {
+        super(new LoggerFilterOutputStream(out, ensureNonNull(charset), logger, fqcn == null ? FQCN : fqcn, level,
+            marker), autoFlush, ensureNonNull(charset).name());
     }
 
-    public LoggerPrintStream(final ExtendedLogger logger, final Level level, final Charset charset)
-            throws UnsupportedEncodingException {
-        this(logger, false, charset, FQCN, level, null);
-    }
-
-    public LoggerPrintStream(final ExtendedLogger logger, final Level level, final Marker marker)
-            throws UnsupportedEncodingException {
-        this(logger, false, Charset.defaultCharset(), FQCN, level, marker);
-    }
-
-    public LoggerPrintStream(final ExtendedLogger logger, final Level level, final Marker marker, final Charset charset)
-            throws UnsupportedEncodingException {
-        this(logger, false, charset, FQCN, level, marker);
-    }
-
-    public LoggerPrintStream(final OutputStream out, final boolean autoFlush, final Charset charset,
-            final ExtendedLogger logger, final Level level) throws UnsupportedEncodingException {
-        this(out, autoFlush, charset, logger, FQCN, level, null);
-    }
-
-    public LoggerPrintStream(final OutputStream out, final boolean autoFlush, final Charset charset,
-            final ExtendedLogger logger, final Level level, final Marker marker) throws UnsupportedEncodingException {
-        this(out, autoFlush, charset, logger, FQCN, level, marker);
-    }
-
-    public LoggerPrintStream(final OutputStream out, final boolean autoFlush, final Charset charset,
-            final ExtendedLogger logger, final String fqcn, final Level level, final Marker marker)
-            throws UnsupportedEncodingException {
-        super(new LoggerFilterOutputStream(out, charset, logger, fqcn, level, marker), autoFlush, charset.name());
-    }
-
-    public LoggerPrintStream(final OutputStream out, final boolean autoFlush, final ExtendedLogger logger,
-            final Level level) {
-        this(out, autoFlush, logger, FQCN, level, null);
-    }
-
-    public LoggerPrintStream(final OutputStream out, final boolean autoFlush, final ExtendedLogger logger,
-            final Level level, final Marker marker) {
-        this(out, autoFlush, logger, FQCN, level, marker);
-    }
-
-    public LoggerPrintStream(final OutputStream out, final boolean autoFlush, final ExtendedLogger logger,
-            final String fqcn, final Level level, final Marker marker) {
-        super(new LoggerFilterOutputStream(out, Charset.defaultCharset(), logger, fqcn, level, marker), autoFlush);
-    }
-
-    public LoggerPrintStream(final OutputStream out, final Charset charset, final ExtendedLogger logger,
-            final Level level) throws UnsupportedEncodingException {
-        this(out, false, charset, logger, FQCN, level, null);
-    }
-
-    public LoggerPrintStream(final OutputStream out, final Charset charset, final ExtendedLogger logger,
-            final Level level, final Marker marker) throws UnsupportedEncodingException {
-        this(out, false, charset, logger, FQCN, level, marker);
-    }
-
-    public LoggerPrintStream(final OutputStream out, final ExtendedLogger logger, final Level level) {
-        this(out, false, logger, FQCN, level, null);
-    }
-
-    public LoggerPrintStream(final OutputStream out, final ExtendedLogger logger, final Level level, final Marker marker) {
-        this(out, false, logger, FQCN, level, marker);
+    private static Charset ensureNonNull(final Charset charset) {
+        return charset == null ? Charset.defaultCharset() : charset;
     }
 
     @Override
