@@ -59,7 +59,7 @@ public class Log4jServletFilter implements Filter {
         if (request.getAttribute(ALREADY_FILTERED_ATTRIBUTE) != null) {
             chain.doFilter(request, response);
         } else {
-            request.setAttribute(ALREADY_FILTERED_ATTRIBUTE, true);
+            request.setAttribute(ALREADY_FILTERED_ATTRIBUTE, Boolean.TRUE);
 
             try {
                 this.initializer.setLoggerContext();
