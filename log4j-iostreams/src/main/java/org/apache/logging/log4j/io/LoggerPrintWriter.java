@@ -38,6 +38,8 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
  *     DataSource ds = ...
  *     ds.setLogWriter(pw);
  * </pre>
+ * 
+ * @since 2.1
  */
 // TODO 
 // All method implementations that call only super are apparently required for the unit tests to pass.

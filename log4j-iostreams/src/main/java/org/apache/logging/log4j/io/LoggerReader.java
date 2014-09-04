@@ -28,6 +28,8 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**
  * Logs each line read to a pre-defined level. Can also be configured with a Marker.
+ * 
+ * @since 2.1
  */
 public class LoggerReader extends FilterReader {
     private static final String FQCN = LoggerReader.class.getName();

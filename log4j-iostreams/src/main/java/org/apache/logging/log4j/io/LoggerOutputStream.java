@@ -30,6 +30,8 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
  * that follows the {@link java.io.OutputStream} methods in spirit, but doesn't require output to any external stream.
  * This class should <em>not</em> be used as a stream for an underlying logger unless it's being used as a bridge.
  * Otherwise, infinite loops may occur!
+ * 
+ * @since 2.1
  */
 public class LoggerOutputStream extends OutputStream {
     private static final String FQCN = LoggerOutputStream.class.getName();

@@ -27,6 +27,10 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
+/**
+ * 
+ * @since 2.1
+ */
 public class ByteStreamLogger {
     private class ByteBufferInputStream extends InputStream {
 

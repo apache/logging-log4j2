@@ -28,6 +28,8 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
 /**
  * Logs each line written to a pre-defined level. Can also be configured with a Marker. This class provides an interface
  * that follows the {@link java.io.Writer} methods in spirit, but doesn't require output to any external out.
+ * 
+ * @since 2.1
  */
 public class LoggerFilterWriter extends FilterWriter {
     private static final String FQCN = LoggerFilterWriter.class.getName();
