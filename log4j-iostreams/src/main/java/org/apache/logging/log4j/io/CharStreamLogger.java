@@ -32,7 +32,7 @@ public class CharStreamLogger {
 
     public CharStreamLogger(final ExtendedLogger logger, final Level level, final Marker marker) {
         this.logger = logger;
-        this.level = level;
+        this.level = level == null ? logger.getLevel() : level;
         this.marker = marker;
     }
 
