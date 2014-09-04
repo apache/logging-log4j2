@@ -72,8 +72,8 @@ public class LoggerStreams {
      *
      * @param logger the Logger to wrap into a LoggerStream
      * @return a new LoggerStream builder
-     * @throws IncompatibleLoggerException if {@code logger} does not implement {@link ExtendedLogger} or if
-     *                                     {@code logger} is {@code null}
+     * @throws UnsupportedOperationException if {@code logger} does not implement {@link ExtendedLogger} or if
+     *                                       {@code logger} is {@code null}
      */
     public static LoggerStreams forLogger(final Logger logger) {
         return new LoggerStreams(logger);
@@ -105,7 +105,8 @@ public class LoggerStreams {
 
     private LoggerStreams(final Logger logger) {
         if (!(logger instanceof ExtendedLogger)) {
-            throw new IncompatibleLoggerException(logger);
+            throw new UnsupportedOperationException("The provided Logger [" + String.valueOf(logger) +
+                "] does not implement " + ExtendedLogger.class.getName());
         }
         this.logger = (ExtendedLogger) logger;
     }
