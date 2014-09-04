@@ -37,26 +37,10 @@ public class LoggerOutputStream extends OutputStream {
     private final ByteStreamLogger logger;
     private final String fqcn;
 
-    public LoggerOutputStream(final ExtendedLogger logger, final Level level) {
-        this(logger, level, null, Charset.defaultCharset(), FQCN);
-    }
-
-    public LoggerOutputStream(final ExtendedLogger logger, final Level level, final Charset charset) {
-        this(logger, level, null, charset, FQCN);
-    }
-
-    public LoggerOutputStream(final ExtendedLogger logger, final Level level, final Marker marker) {
-        this(logger, level, marker, Charset.defaultCharset(), FQCN);
-    }
-
-    public LoggerOutputStream(final ExtendedLogger logger, final Level level, final Marker marker, final Charset charset) {
-        this(logger, level, marker, charset, FQCN);
-    }
-
-    public LoggerOutputStream(final ExtendedLogger logger, final Level level, final Marker marker,
-            final Charset charset, final String fqcn) {
+    protected LoggerOutputStream(final ExtendedLogger logger, final Level level, final Marker marker,
+                                 final Charset charset, final String fqcn) {
         this.logger = new ByteStreamLogger(logger, level, marker, charset);
-        this.fqcn = fqcn;
+        this.fqcn = fqcn == null ? FQCN : fqcn;
     }
 
     @Override

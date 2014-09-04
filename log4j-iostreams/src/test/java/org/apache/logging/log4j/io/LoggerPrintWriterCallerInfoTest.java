@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.io;
 
+import java.io.PrintWriter;
 import java.util.Locale;
 
 import org.apache.logging.log4j.Level;
@@ -24,7 +25,7 @@ import org.junit.Test;
 
 public class LoggerPrintWriterCallerInfoTest extends LoggerStreamsCallerInfoTesting {
 
-    private LoggerPrintWriter logOut;
+    private PrintWriter logOut;
     
     @Test
     public void close() throws Exception {
@@ -120,7 +121,9 @@ public class LoggerPrintWriterCallerInfoTest extends LoggerStreamsCallerInfoTest
     
     @Before
     public void setupStreams() {
-        this.logOut = new LoggerPrintWriter(getLogger(), Level.WARN);
+        this.logOut = LoggerStreams.forLogger(getLogger())
+            .setLevel(Level.WARN)
+            .buildPrintWriter();
     }
     
     @Test

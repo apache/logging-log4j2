@@ -16,17 +16,19 @@
  */
 package org.apache.logging.log4j.io;
 
+import java.io.OutputStream;
+
 import org.apache.logging.log4j.Level;
 import org.junit.Before;
 import org.junit.Test;
 
 public class LoggerOutputStreamCallerInfoTest extends LoggerStreamsCallerInfoTesting {
 
-    private LoggerOutputStream logOut;
+    private OutputStream logOut;
     
     @Before
     public void setupStreams() {
-        this.logOut = new LoggerOutputStream(getExtendedLogger(), Level.WARN);
+        this.logOut = LoggerStreams.forLogger(getExtendedLogger()).setLevel(Level.WARN).buildOutputStream();
     }
     
     @Test

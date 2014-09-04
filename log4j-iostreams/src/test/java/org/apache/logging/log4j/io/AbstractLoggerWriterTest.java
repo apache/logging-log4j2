@@ -16,10 +16,6 @@
  */
 package org.apache.logging.log4j.io;
 
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringWriter;
@@ -28,6 +24,10 @@ import java.io.Writer;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.*;
 
 public abstract class AbstractLoggerWriterTest extends AbstractStreamTest {
     protected StringWriter wrapped;
@@ -70,9 +70,13 @@ public abstract class AbstractLoggerWriterTest extends AbstractStreamTest {
         out.close();
         replay(out);
 
-        final LoggerFilterOutputStream los = new LoggerFilterOutputStream(out, getExtendedLogger(), LEVEL);
-        los.flush();
-        los.close();
+        final OutputStream filteredOut =
+            LoggerStreams.forLogger(getExtendedLogger())
+                .filter(out)
+                .setLevel(LEVEL)
+                .buildOutputStream();
+        filteredOut.flush();
+        filteredOut.close();
         verify(out);
     }
 

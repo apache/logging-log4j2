@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.io;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
@@ -24,8 +25,8 @@ import org.junit.Test;
 
 public class LoggerBufferedInputStreamCallerInfoTest extends LoggerStreamsCallerInfoTesting {
 
-    private LoggerBufferedInputStream logIn;
-    
+    private BufferedInputStream logIn;
+
     @Test
     public void close() throws Exception {
         this.logIn.read();
@@ -61,6 +62,11 @@ public class LoggerBufferedInputStreamCallerInfoTest extends LoggerStreamsCaller
     @Before
     public void setupStreams() {
         final InputStream srcInputStream = new ByteArrayInputStream("a\nb\nc\nd".getBytes());
-        this.logIn = new LoggerBufferedInputStream(srcInputStream, getLogger(), LEVEL);
+        this.logIn = (BufferedInputStream)
+            LoggerStreams.forLogger(getLogger())
+                .filter(srcInputStream)
+                .setLevel(LEVEL)
+                .setBuffered(true)
+                .buildInputStream();
     }
 }

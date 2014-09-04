@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.io;
 
+import java.io.BufferedReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.nio.CharBuffer;
@@ -26,7 +27,7 @@ import org.junit.Test;
 
 public class LoggerBufferedReaderCallerInfoTest extends LoggerStreamsCallerInfoTesting {
 
-    LoggerBufferedReader logReader;
+    BufferedReader logReader;
     
     @Test
     public void close() throws Exception {
@@ -79,6 +80,11 @@ public class LoggerBufferedReaderCallerInfoTest extends LoggerStreamsCallerInfoT
     @Before
     public void setupReader() {
         final Reader srcReader = new StringReader("a\nb\nc\nd");
-        this.logReader = new LoggerBufferedReader(srcReader, getLogger(), Level.WARN);
+        this.logReader = (BufferedReader)
+            LoggerStreams.forLogger(getLogger())
+                .filter(srcReader)
+                .setLevel(Level.WARN)
+                .setBuffered(true)
+                .buildReader();
     }
 }

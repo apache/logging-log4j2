@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.io;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -28,13 +26,18 @@ import java.nio.CharBuffer;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.*;
+
 public class LoggerReaderTest extends AbstractStreamTest {
     protected StringReader wrapped;
     protected StringWriter read;
     protected Reader reader;
 
     protected Reader createReader() {
-        return new LoggerReader(this.wrapped, getExtendedLogger(), LEVEL);
+        return LoggerStreams.forLogger(getExtendedLogger())
+            .filter(this.wrapped)
+            .setLevel(LEVEL)
+            .buildReader();
     }
     
     @Before

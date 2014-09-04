@@ -25,7 +25,7 @@ import org.junit.Test;
 
 public class LoggerReaderCallerInfoTest extends LoggerStreamsCallerInfoTesting {
 
-    LoggerReader logReader;
+    Reader logReader;
     
     @Test
     public void read() throws Exception {
@@ -52,6 +52,9 @@ public class LoggerReaderCallerInfoTest extends LoggerStreamsCallerInfoTesting {
     @Before
     public void setupReader() {
         final Reader srcReader = new StringReader("a\nb\nc\nd\ne");
-        this.logReader = new LoggerReader(srcReader, getLogger(), LEVEL);
+        this.logReader = LoggerStreams.forLogger(getLogger())
+            .filter(srcReader)
+            .setLevel(LEVEL)
+            .buildReader();
     }
 }

@@ -24,6 +24,10 @@ public class LoggerBufferedInputStreamTest extends LoggerInputStreamTest {
 
     @Override
     protected InputStream createInputStream() {
-        return new LoggerBufferedInputStream(this.wrapped, getExtendedLogger(), Level.ERROR);
+        return LoggerStreams.forLogger(getExtendedLogger())
+            .filter(this.wrapped)
+            .setLevel(Level.ERROR)
+            .setBuffered(true)
+            .buildInputStream();
     }
 }

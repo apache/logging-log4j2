@@ -31,7 +31,12 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
  * <p>
  * Integration with JDBC logging can be as simple as:
  * </p>
- * <pre>DriverManager.setLogWriter(new LoggerPrintWriter((ExtendedLogger) LogManager.getLogger(), Level.DEBUG));
+ * <pre>
+ *     Logger logger = LogManager.getLogger();
+ *     PrintWriter pw = LoggerStreams.forLogger(logger).setLevel(Level.DEBUG).buildPrintWriter();
+ *     DriverManager.setLogWriter(pw);
+ *     DataSource ds = ...
+ *     ds.setLogWriter(pw);
  * </pre>
  */
 // TODO 
@@ -40,41 +45,14 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
 public class LoggerPrintWriter extends PrintWriter {
     private static final String FQCN = LoggerPrintWriter.class.getName();
 
-    @SuppressWarnings("resource")
-    public LoggerPrintWriter(final ExtendedLogger logger, final boolean autoFlush, final String fqcn,
-            final Level level, final Marker marker) {
-        super(new LoggerWriter(logger, fqcn, level, marker), autoFlush);
+    protected LoggerPrintWriter(final ExtendedLogger logger, final boolean autoFlush, final String fqcn,
+                                final Level level, final Marker marker) {
+        super(new LoggerWriter(logger, fqcn == null ? FQCN : fqcn, level, marker), autoFlush);
     }
 
-    public LoggerPrintWriter(final ExtendedLogger logger, final Level level) {
-        this(logger, false, FQCN, level, null);
-    }
-
-    public LoggerPrintWriter(final ExtendedLogger logger, final Level level, final Marker marker) {
-        this(logger, false, FQCN, level, marker);
-    }
-
-    public LoggerPrintWriter(final Writer writer, final boolean autoFlush, final ExtendedLogger logger, final Level level) {
-        this(writer, autoFlush, logger, FQCN, level, null);
-    }
-
-    public LoggerPrintWriter(final Writer writer, final boolean autoFlush, final ExtendedLogger logger, final Level level,
-            final Marker marker) {
-        this(writer, autoFlush, logger, FQCN, level, marker);
-    }
-
-    @SuppressWarnings("resource")
-    public LoggerPrintWriter(final Writer writer, final boolean autoFlush, final ExtendedLogger logger,
-            final String fqcn, final Level level, final Marker marker) {
-        super(new LoggerFilterWriter(writer, logger, fqcn, level, marker), autoFlush);
-    }
-
-    public LoggerPrintWriter(final Writer writer, final ExtendedLogger logger, final Level level) {
-        this(writer, false, logger, FQCN, level, null);
-    }
-
-    public LoggerPrintWriter(final Writer writer, final ExtendedLogger logger, final Level level, final Marker marker) {
-        this(writer, false, logger, FQCN, level, marker);
+    protected LoggerPrintWriter(final Writer writer, final boolean autoFlush, final ExtendedLogger logger,
+                                final String fqcn, final Level level, final Marker marker) {
+        super(new LoggerFilterWriter(writer, logger, fqcn == null ? FQCN : fqcn, level, marker), autoFlush);
     }
 
     @Override
