@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.net.ssl;
 
 import java.security.KeyManagementException;
-import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
