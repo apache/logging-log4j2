@@ -33,7 +33,7 @@
         </i>
       </p>
       <p>
-        Log4j 2.x is hosted in the Apache Software Foundation's subversion repository. Details on obtaining the
+        Log4j 2 is hosted in the Apache Software Foundation's Git repository. Details on obtaining the
         most current source code can be found at
         <a href="./source-repository.html">Log4j Source Repository</a>. The source from the latest release may be
         obtained by downloading it using the instructions at <a href="./download.html">Log4j Downloads</a>.
