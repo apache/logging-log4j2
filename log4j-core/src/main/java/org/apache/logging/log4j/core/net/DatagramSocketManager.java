@@ -73,12 +73,10 @@ public class DatagramSocketManager extends AbstractSocketManager {
      * @return Map of content format keys supporting DatagramSocketManager
      */
     @Override
-    public Map<String, String> getContentFormat()
-    {
+    public Map<String, String> getContentFormat() {
         final Map<String, String> result = new HashMap<String, String>(super.getContentFormat());
         result.put("protocol", "udp");
         result.put("direction", "out");
-
         return result;
     }
 
