@@ -46,7 +46,7 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
  * {@link Logger}. The main inspiration for this feature is the JDBC API which uses a PrintWriter to perform debug
  * logging. In order to properly integrate APIs like JDBC into Log4j, create a PrintWriter using this class.</p>
  *
- * <p>All IoBuilder support configuration of the logging {@link Level} it should use (defaults to the level of
+ * <p>All LoggerStreams support configuration of the logging {@link Level} it should use (defaults to the level of
  * the underlying Logger), and an optional {@link Marker}. The other configurable objects are explained in more
  * detail below.</p>
  *
@@ -70,8 +70,8 @@ public class IoBuilder {
      * Creates a new builder for a given {@link Logger}. The Logger instance must implement {@link ExtendedLogger} or
      * an exception will be thrown.
      *
-     * @param logger the Logger to wrap into a IoBuilder
-     * @return a new IoBuilder builder
+     * @param logger the Logger to wrap into a LoggerStream
+     * @return a new IoBuilder
      * @throws UnsupportedOperationException if {@code logger} does not implement {@link ExtendedLogger} or if
      *                                       {@code logger} is {@code null}
      */
@@ -81,10 +81,10 @@ public class IoBuilder {
 
     /**
      * Creates a new builder using a Logger name. The name provided is used to get a Logger from
-     * {@link LogManager#getLogger(String)} which will be wrapped into a IoBuilder.
+     * {@link LogManager#getLogger(String)} which will be wrapped into a LoggerStream.
      *
-     * @param loggerName the name of the Logger to wrap into a IoBuilder
-     * @return a new IoBuilder builder
+     * @param loggerName the name of the Logger to wrap into a LoggerStream
+     * @return a new IoBuilder
      */
     public static IoBuilder forLogger(final String loggerName) {
         return new IoBuilder(LogManager.getLogger(loggerName));
@@ -92,10 +92,10 @@ public class IoBuilder {
 
     /**
      * Creates a new builder using a Logger named after a given Class. The Class provided is used to get a Logger from
-     * {@link LogManager#getLogger(Class)} which will be wrapped into a IoBuilder.
+     * {@link LogManager#getLogger(Class)} which will be wrapped into a LoggerStream.
      *
-     * @param clazz the Class to use as the Logger name to wrap into a IoBuilder
-     * @return a new IoBuilder builder
+     * @param clazz the Class to use as the Logger name to wrap into a LoggerStream
+     * @return a new IoBuilder
      */
     public static IoBuilder forLogger(final Class<?> clazz) {
         return new IoBuilder(LogManager.getLogger(clazz));
@@ -160,7 +160,7 @@ public class IoBuilder {
      * to {@link java.io.BufferedReader} and {@link java.io.BufferedInputStream} respectively. This option does not
      * have any effect on the other built variants.
      *
-     * @param buffered indicates whether or not an input IoBuilder should be buffered
+     * @param buffered indicates whether or not a wrapped {@link InputStream} or {@link Reader} should be buffered
      * @return {@code this}
      */
     public IoBuilder setBuffered(final boolean buffered) {
@@ -170,7 +170,7 @@ public class IoBuilder {
 
     /**
      * Configures the buffer size to use when building a {@link java.io.BufferedReader} or
-     * {@link java.io.BufferedInputStream} IoBuilder.
+     * {@link java.io.BufferedInputStream} LoggerStream.
      *
      * @param bufferSize the buffer size to use or a non-positive integer to use the default size
      * @return {@code this}
@@ -185,7 +185,7 @@ public class IoBuilder {
      * {@link PrintStream}. If no character set is specified, then {@link java.nio.charset.Charset#defaultCharset()}
      * is used.
      *
-     * @param charset the character set to use when building a *Stream
+     * @param charset the character set to use when building an InputStream, OutputStream, or PrintStream
      * @return {@code this}
      */
     public IoBuilder setCharset(final Charset charset) {
