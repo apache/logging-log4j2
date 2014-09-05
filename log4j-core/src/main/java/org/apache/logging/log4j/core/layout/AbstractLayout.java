@@ -31,20 +31,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 public abstract class AbstractLayout<T extends Serializable> implements Layout<T> {
 
     /**
-     * Constructs a layout with an optional header and footer.
-     * 
-     * @param header
-     *        The header to include when the stream is opened. May be null.
-     * @param footer
-     *        The footer to add when the stream is closed. May be null.
-     */
-    public AbstractLayout(byte[] header, byte[] footer) {
-        super();
-        this.header = header;
-        this.footer = footer;
-    }
-
-    /**
      * Allow subclasses access to the status logger without creating another instance.
      */
     protected static final Logger LOGGER = StatusLogger.getLogger();
@@ -60,13 +46,17 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
     protected final byte[] footer;
 
     /**
-     * Returns the header, if one is available.
+     * Constructs a layout with an optional header and footer.
      * 
-     * @return A byte array containing the header.
+     * @param header
+     *        The header to include when the stream is opened. May be null.
+     * @param footer
+     *        The footer to add when the stream is closed. May be null.
      */
-    @Override
-    public byte[] getHeader() {
-        return header;
+    public AbstractLayout(byte[] header, byte[] footer) {
+        super();
+        this.header = header;
+        this.footer = footer;
     }
 
     /**
@@ -77,5 +67,15 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
     @Override
     public byte[] getFooter() {
         return footer;
+    }
+
+    /**
+     * Returns the header, if one is available.
+     * 
+     * @return A byte array containing the header.
+     */
+    @Override
+    public byte[] getHeader() {
+        return header;
     }
 }
