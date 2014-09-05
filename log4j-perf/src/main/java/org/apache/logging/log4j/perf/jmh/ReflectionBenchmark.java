@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.perf.jmh;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Random;
+
 import org.apache.logging.log4j.core.impl.ReflectiveCallerClassUtility;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StringFormattedMessage;
@@ -24,12 +28,7 @@ import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.logic.BlackHole;
 import sun.reflect.Reflection;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Random;
 
 /**
  * <p>Benchmarks the different ways the caller class can be obtained.
@@ -58,21 +57,21 @@ public class ReflectionBenchmark {
     }
 
     @GenerateMicroBenchmark
-    public void testBaseline(final BlackHole bh) {
+    public void testBaseline() {
     }
 
     @GenerateMicroBenchmark
-    public String getCallerClassNameFromStackTrace(final BlackHole bh) {
+    public String getCallerClassNameFromStackTrace() {
         return new Throwable().getStackTrace()[3].getClassName();
     }
 
     @GenerateMicroBenchmark
-    public String getCallerClassNameReflectively(final BlackHole bh) {
+    public String getCallerClassNameReflectively() {
         return ReflectiveCallerClassUtility.getCaller(3).getName();
     }
 
     @GenerateMicroBenchmark
-    public String getCallerClassNameSunReflection(final BlackHole bh) {
+    public String getCallerClassNameSunReflection() {
         return Reflection.getCallerClass(3).getName();
     }
 
@@ -82,12 +81,12 @@ public class ReflectionBenchmark {
     }
 
     @GenerateMicroBenchmark
-    public Class<?> getReflectiveCallerClassUtility(final BlackHole bh) {
+    public Class<?> getReflectiveCallerClassUtility() {
         return ReflectiveCallerClassUtility.getCaller(3);
     }
 
     @GenerateMicroBenchmark
-    public Class<?> getDirectSunReflection(final BlackHole bh) {
+    public Class<?> getDirectSunReflection() {
         return Reflection.getCallerClass(3);
     }
 
