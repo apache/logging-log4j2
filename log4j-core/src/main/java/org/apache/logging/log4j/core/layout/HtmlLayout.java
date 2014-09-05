@@ -204,16 +204,6 @@ public final class HtmlLayout extends AbstractStringLayout {
         return sbuf.toString();
     }
 
-    /**
-     * HtmlLayout's format is sufficiently specified via the content type.  The format could be defined via a DTD,
-     * but isn't at this time - returning empty Map/unspecified.
-     * @return empty Map
-     */
-    @Override
-    public Map<String, String> getContentFormat() {
-        return new HashMap<String, String>();
-    }
-
     @Override
     /**
      * @return The content type.

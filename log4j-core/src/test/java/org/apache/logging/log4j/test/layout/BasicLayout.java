@@ -17,8 +17,6 @@
 package org.apache.logging.log4j.test.layout;
 
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -47,11 +45,6 @@ public class BasicLayout extends AbstractStringLayout {
     @Override
     public String toSerializable(final LogEvent event) {
         return event.getMessage().getFormattedMessage() + Constants.LINE_SEPARATOR;
-    }
-
-    @Override
-    public Map<String, String> getContentFormat() {
-        return new HashMap<String, String>();
     }
 
     /**

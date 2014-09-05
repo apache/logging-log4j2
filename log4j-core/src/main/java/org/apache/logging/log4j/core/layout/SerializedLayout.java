@@ -99,15 +99,6 @@ public final class SerializedLayout extends AbstractLayout<LogEvent> {
     }
 
     /**
-     * SerializedLayout's format is sufficiently specified via the content type, use empty Map/unspecified.
-     * @return empty Map
-     */
-    @Override
-    public Map<String, String> getContentFormat() {
-        return new HashMap<String, String>();
-    }
-
-    /**
      * SerializedLayout returns a binary stream.
      * @return The content type.
      */

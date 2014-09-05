@@ -17,6 +17,8 @@
 package org.apache.logging.log4j.core.layout;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Layout;
@@ -57,6 +59,11 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
         super();
         this.header = header;
         this.footer = footer;
+    }
+
+    @Override
+    public Map<String, String> getContentFormat() {
+        return new HashMap<String, String>();
     }
 
     /**
