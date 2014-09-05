@@ -31,13 +31,25 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
      */
     private final Charset charset;
 
+    protected AbstractStringLayout(final Charset charset) {
+        this(charset, null, null);
+    }
+
     protected AbstractStringLayout(final Charset charset, byte[] header, byte[] footer) {
         super(header, footer);
         this.charset = charset == null ? Charsets.UTF_8 : charset;
     }
 
-    protected AbstractStringLayout(final Charset charset) {
-        this(charset, null, null);
+    protected Charset getCharset() {
+        return charset;
+    }
+
+    /**
+     * @return The default content type for Strings.
+     */
+    @Override
+    public String getContentType() {
+        return "text/plain";
     }
 
     /**
@@ -50,17 +62,5 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
     @Override
     public byte[] toByteArray(final LogEvent event) {
         return toSerializable(event).getBytes(charset);
-    }
-
-    /**
-     * @return The default content type for Strings.
-     */
-    @Override
-    public String getContentType() {
-        return "text/plain";
-    }
-
-    protected Charset getCharset() {
-        return charset;
     }
 }
