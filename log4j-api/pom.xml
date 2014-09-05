@@ -113,7 +113,6 @@
               *
             </Import-Package>
             <Bundle-Activator>org.apache.logging.log4j.util.Activator</Bundle-Activator>
-            <Require-Capability>org.apache.logging.log4j.spi.LoggerContextFactory</Require-Capability>
           </instructions>
         </configuration>
       </plugin>
