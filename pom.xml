@@ -151,12 +151,15 @@
     <url>http://www.apache.org</url>
   </organization>
   <properties>
-    <!-- note that any properties you want available in velocity templates must not use periods! -->
-    <slf4j.version>1.7.7</slf4j.version>
-    <logback.version>1.0.13</logback.version>
+    <!-- make sure to update these for each release! -->
     <log4jParentDir>${basedir}</log4jParentDir>
     <Log4jReleaseVersion>2.0.2</Log4jReleaseVersion>
     <Log4jReleaseCount>sixteenth</Log4jReleaseCount>
+    <Log4jReleaseManager>Matt Sicker</Log4jReleaseManager>
+    <Log4jReleaseKey>FA1C814D</Log4jReleaseKey>
+    <!-- note that any properties you want available in velocity templates must not use periods! -->
+    <slf4j.version>1.7.7</slf4j.version>
+    <logback.version>1.0.13</logback.version>
     <jackson1.version>1.9.13</jackson1.version>
     <jackson2.version>2.4.2</jackson2.version>
     <spring.version>3.2.8.RELEASE</spring.version>
