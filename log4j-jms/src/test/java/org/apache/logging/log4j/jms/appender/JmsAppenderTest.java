@@ -1,4 +1,4 @@
-package org.apache.logging.log4j.mom.jms.appender;
+package org.apache.logging.log4j.jms.appender;
 
 import javax.jms.Message;
 import javax.jms.ObjectMessage;

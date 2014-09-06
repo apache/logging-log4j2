@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.mom.jms.appender;
+package org.apache.logging.log4j.jms.appender;
 
 import java.io.Serializable;
 import javax.jms.JMSException;
@@ -32,8 +32,8 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
-import org.apache.logging.log4j.mom.jms.manager.JmsManager;
-import org.apache.logging.log4j.mom.jms.manager.JndiManager;
+import org.apache.logging.log4j.jms.manager.JmsManager;
+import org.apache.logging.log4j.jms.manager.JndiManager;
 
 /**
  * Generic JMS Appender plugin for both queues and topics. This Appender replaces the previous split ones. However,

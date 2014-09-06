@@ -17,4 +17,4 @@
 /**
  * Appender classes for using JMS. These are directly configured through your log4j2 configuration file.
  */
-package org.apache.logging.log4j.mom.jms.appender;
+package org.apache.logging.log4j.jms.appender;
