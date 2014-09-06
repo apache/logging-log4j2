@@ -14,12 +14,11 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.net.jms;
+package org.apache.logging.log4j.jms.receiver;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
-
 import javax.jms.JMSException;
 import javax.jms.Session;
 import javax.jms.Topic;

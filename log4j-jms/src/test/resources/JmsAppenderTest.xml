@@ -16,15 +16,28 @@
  limitations under the License.
 
 -->
-<Configuration name="ConfigTest" status="OFF" monitorInterval="5">
+<Configuration name="JmsAppenderTest" status="OFF">
   <Appenders>
-    <JMSQueue name="JMSQueue" factoryBindingName="TestQueueConnectionFactory" queueBindingName="TestQueue">
-      <PatternLayout pattern="%m%n"/>
+    <JMS name="JmsAppender"
+         factoryBindingName="jms/queues"
+         destinationBindingName="jms/destination">
+      <PatternLayout pattern="%m"/>
+    </JMS>
+    <!-- backwards compatibility tests -->
+    <JMSQueue name="JmsQueueAppender"
+              factoryBindingName="jms/queues"
+              queueBindingName="jms/queue">
+      <SerializedLayout/>
     </JMSQueue>
+    <JMSTopic name="JmsTopicAppender"
+              factoryBindingName="jms/topics"
+              topicBindingName="jms/topic">
+      <SerializedLayout/>
+    </JMSTopic>
   </Appenders>
   <Loggers>
-    <Root level="error">
-      <AppenderRef ref="JMSQueue"/>
+    <Root level="info">
+      <AppenderRef ref="JmsQueueAppender"/>
     </Root>
   </Loggers>
 </Configuration>

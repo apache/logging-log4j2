@@ -14,10 +14,9 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.net.jms;
+package org.apache.logging.log4j.jms.receiver;
 
 import java.io.Serializable;
-
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
 import javax.naming.Context;

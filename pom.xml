@@ -183,6 +183,7 @@
     <projectDir />
     <commons.logging.version>1.2</commons.logging.version>
     <osgi.api.version>4.3.1</osgi.api.version>
+    <activemq.version>5.10.0</activemq.version>
   </properties>
   <pluginRepositories>
     <pluginRepository>
@@ -489,6 +490,11 @@
         <artifactId>jboss-jms-api_1.1_spec</artifactId>
         <version>1.0.1.Final</version>
         <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.activemq</groupId>
+        <artifactId>activemq-broker</artifactId>
+        <version>${activemq.version}</version>
       </dependency>
       <dependency>
         <groupId>org.mockejb</groupId>
@@ -1007,6 +1013,7 @@
     <module>log4j-web</module>
     <module>log4j-perf</module>
     <module>log4j-iostreams</module>
+    <module>log4j-jms</module>
   </modules>
   <profiles>
     <profile>
