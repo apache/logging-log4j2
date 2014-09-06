@@ -1,6 +1,7 @@
 package org.apache.logging.log4j.mom.jms.appender;
 
 import javax.jms.Message;
+import javax.jms.ObjectMessage;
 import javax.jms.TextMessage;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -8,16 +9,17 @@ import javax.naming.InitialContext;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.util.Closer;
+import org.apache.logging.log4j.core.util.JndiCloser;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockejb.jms.MockQueue;
+import org.mockejb.jms.MockTopic;
 import org.mockejb.jms.QueueConnectionFactoryImpl;
+import org.mockejb.jms.TopicConnectionFactoryImpl;
 import org.mockejb.jndi.MockContextFactory;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -25,55 +27,96 @@ import static org.junit.Assert.*;
 
 public class JmsAppenderTest {
 
-    private static final String CONNECTION_FACTORY_NAME = "jms/activemq";
+    private static final String CONNECTION_FACTORY_NAME = "jms/queues";
+    private static final String TOPIC_FACTORY_NAME = "jms/topics";
     private static final String DESTINATION_NAME = "jms/destination";
+    private static final String QUEUE_NAME = "jms/queue";
+    private static final String TOPIC_NAME = "jms/topic";
     private static final String LOG_MESSAGE = "Hello, world!";
 
     private static Context context;
 
-    private JmsAppender appender;
+    private static MockQueue destination;
     private static MockQueue queue;
+    private static MockTopic topic;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
         MockContextFactory.setAsInitial();
         context = new InitialContext();
         context.rebind(CONNECTION_FACTORY_NAME, new QueueConnectionFactoryImpl());
-        queue = new MockQueue(DESTINATION_NAME);
-        context.rebind(DESTINATION_NAME, queue);
+        context.rebind(TOPIC_FACTORY_NAME, new TopicConnectionFactoryImpl());
+        destination = new MockQueue(DESTINATION_NAME);
+        context.rebind(DESTINATION_NAME, destination);
+        queue = new MockQueue(QUEUE_NAME);
+        context.rebind(QUEUE_NAME, queue);
+        topic = new MockTopic(TOPIC_NAME);
+        context.rebind(TOPIC_NAME, topic);
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        Closer.closeSilently(context);
+        JndiCloser.close(context);
     }
 
     @Rule
     public InitialLoggerContext ctx = new InitialLoggerContext("JmsAppenderTest.xml");
 
-    @Before
-    public void setUp() throws Exception {
-        appender = (JmsAppender) ctx.getAppender("JmsQueueAppender");
-        assertEquals(0, queue.size());
-    }
-
     @Test
     public void testAppendToQueue() throws Exception {
-        final String loggerName = this.getClass().getName();
-        final long now = System.currentTimeMillis();
-        final LogEvent event = createLogEvent(loggerName, now);
+        assertEquals(0, destination.size());
+        final JmsAppender appender = (JmsAppender) ctx.getRequiredAppender("JmsAppender");
+        final LogEvent event = createLogEvent();
         appender.append(event);
-        assertEquals(1, queue.size());
-        final Message message = queue.getMessageAt(0);
+        assertEquals(1, destination.size());
+        final Message message = destination.getMessageAt(0);
         assertNotNull(message);
         assertThat(message, instanceOf(TextMessage.class));
         final TextMessage textMessage = (TextMessage) message;
         assertEquals(LOG_MESSAGE, textMessage.getText());
     }
 
-    private static Log4jLogEvent createLogEvent(String loggerName, long now) {
-        return Log4jLogEvent.createEvent(loggerName, null, loggerName, Level.INFO,
-            new SimpleMessage(LOG_MESSAGE), null, null, null, null, Thread.currentThread().getName(), null, now);
+    @Test
+    public void testJmsQueueAppenderCompatibility() throws Exception {
+        assertEquals(0, queue.size());
+        final JmsAppender appender = (JmsAppender) ctx.getRequiredAppender("JmsQueueAppender");
+        final LogEvent expected = createLogEvent();
+        appender.append(expected);
+        assertEquals(1, queue.size());
+        final Message message = queue.getMessageAt(0);
+        assertNotNull(message);
+        assertThat(message, instanceOf(ObjectMessage.class));
+        final ObjectMessage objectMessage = (ObjectMessage) message;
+        final Object o = objectMessage.getObject();
+        assertThat(o, instanceOf(LogEvent.class));
+        final LogEvent actual = (LogEvent) o;
+        assertEquals(expected.getMessage().getFormattedMessage(), actual.getMessage().getFormattedMessage());
+    }
+
+    @Test
+    public void testJmsTopicAppenderCompatibility() throws Exception {
+        assertEquals(0, topic.size());
+        final JmsAppender appender = (JmsAppender) ctx.getRequiredAppender("JmsTopicAppender");
+        final LogEvent expected = createLogEvent();
+        appender.append(expected);
+        assertEquals(1, topic.size());
+        final Message message = topic.getMessageAt(0);
+        assertNotNull(message);
+        assertThat(message, instanceOf(ObjectMessage.class));
+        final ObjectMessage objectMessage = (ObjectMessage) message;
+        final Object o = objectMessage.getObject();
+        assertThat(o, instanceOf(LogEvent.class));
+        final LogEvent actual = (LogEvent) o;
+        assertEquals(expected.getMessage().getFormattedMessage(), actual.getMessage().getFormattedMessage());
+    }
+
+    private static Log4jLogEvent createLogEvent() {
+        return Log4jLogEvent.newBuilder()
+            .setLoggerName(JmsAppenderTest.class.getName())
+            .setLoggerFqcn(JmsAppenderTest.class.getName())
+            .setLevel(Level.INFO)
+            .setMessage(new SimpleMessage(LOG_MESSAGE))
+            .build();
     }
 
 }

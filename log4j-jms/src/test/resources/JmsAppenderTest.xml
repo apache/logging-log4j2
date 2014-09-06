@@ -18,11 +18,22 @@
 -->
 <Configuration name="JmsAppenderTest" status="OFF">
   <Appenders>
-    <JMS name="JmsQueueAppender"
-         factoryBindingName="jms/activemq"
+    <JMS name="JmsAppender"
+         factoryBindingName="jms/queues"
          destinationBindingName="jms/destination">
       <PatternLayout pattern="%m"/>
     </JMS>
+    <!-- backwards compatibility tests -->
+    <JMSQueue name="JmsQueueAppender"
+              factoryBindingName="jms/queues"
+              queueBindingName="jms/queue">
+      <SerializedLayout/>
+    </JMSQueue>
+    <JMSTopic name="JmsTopicAppender"
+              factoryBindingName="jms/topics"
+              topicBindingName="jms/topic">
+      <SerializedLayout/>
+    </JMSTopic>
   </Appenders>
   <Loggers>
     <Root level="info">
