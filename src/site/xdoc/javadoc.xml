@@ -44,6 +44,10 @@
           <td>The standard implementation, also called the Log4j 2 Core, that contains Appenders, Filters, and more.</td>
         </tr>
         <tr>
+          <td><a href="log4j-iostreams/apidocs/index.html">Log4j IO Streams</a></td>
+          <td>Extra classes for dealing with older APIs that expect classes from <code>java.io</code> for logging.</td>
+        </tr>
+        <tr>
           <td><a href="log4j-taglib/apidocs/index.html">JSP Tag Library</a></td>
           <td>The tag library that enables Java-free logging in JavaServer Pages™ using Log4j 2.</td>
         </tr>
@@ -93,6 +97,10 @@
         <tr>
           <td><a href="log4j-nosql/apidocs/index.html">Log4j NoSQL Support</a></td>
           <td>Additional Appenders for NoSQL databases such as MongoDB and CouchDB.</td>
+        </tr>
+        <tr>
+          <td><a href="log4j-jms/apidocs/index.html">Log4j JMS Support</a></td>
+          <td>Additional Appenders and Receivers for the Java Message Service.</td>
         </tr>
       </table>
     </section>
