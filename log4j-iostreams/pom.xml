@@ -31,7 +31,7 @@
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Streaming Documentation</docLabel>
-    <projectDir>/slf4j-streams</projectDir>
+    <projectDir>/log4j-iostreams</projectDir>
   </properties>
   <dependencies>
     <dependency>
