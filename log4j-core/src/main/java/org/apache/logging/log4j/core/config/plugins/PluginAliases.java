@@ -23,11 +23,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Identifies a list of aliases for a {@link Plugin} or {@link PluginAttribute}.
+ * Identifies a list of aliases for a {@link Plugin}, {@link PluginAttribute}, or {@link PluginBuilderAttribute}.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.TYPE})
+@Target({ElementType.PARAMETER, ElementType.TYPE, ElementType.FIELD})
 public @interface PluginAliases {
 
     String[] value();
