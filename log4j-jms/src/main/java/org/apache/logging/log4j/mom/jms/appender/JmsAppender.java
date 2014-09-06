@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -35,10 +36,11 @@ import org.apache.logging.log4j.mom.jms.manager.JmsManager;
 import org.apache.logging.log4j.mom.jms.manager.JndiManager;
 
 /**
- * Generic JMS appender plugin for both queues and topics.
+ * Generic JMS Appender plugin for both queues and topics. This Appender replaces the previous split ones. However,
+ * configurations set up for the 2.0 version of the JMS appenders will still work.
  */
 @Plugin(name = "JMS", category = "Core", elementType = "appender", printObject = true)
-// TODO: use @PluginAliases to make the separated plugins work through this one
+@PluginAliases({"JMSQueue", "JMSTopic"})
 public class JmsAppender extends AbstractAppender {
 
     private final JmsManager manager;
@@ -53,7 +55,7 @@ public class JmsAppender extends AbstractAppender {
     }
 
     @Override
-    public void append(LogEvent event) {
+    public void append(final LogEvent event) {
         try {
             final Message message = this.manager.createMessage(getLayout().toSerializable(event));
             message.setJMSTimestamp(event.getTimeMillis());
@@ -92,6 +94,7 @@ public class JmsAppender extends AbstractAppender {
         private String factoryBindingName;
 
         @PluginBuilderAttribute
+        @PluginAliases({"queueBindingName", "topicBindingName"})
         private String destinationBindingName;
 
         @PluginBuilderAttribute
