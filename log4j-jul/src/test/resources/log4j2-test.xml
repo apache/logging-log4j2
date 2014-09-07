@@ -15,14 +15,14 @@
   ~ limitations under the License.
   -->
 
-<Configuration name="LoggerTest" status="DEBUG">
+<Configuration name="LoggerTest" status="OFF">
   <Appenders>
     <List name="TestAppender"/>
     <List name="StringAppender">
       <PatternLayout pattern="%class"/>
     </List>
     <Console name="Console" target="SYSTEM_ERR">
-      <BasicLayout/>
+      <PatternLayout pattern="%highlight{%p - %m%n}"/>
     </Console>
   </Appenders>
   <Loggers>
@@ -31,6 +31,9 @@
     </Logger>
     <Logger name="Test.CallerClass" level="DEBUG" additivity="false">
       <AppenderRef ref="StringAppender"/>
+    </Logger>
+    <Logger name="global" level="DEBUG" additivity="false">
+      <AppenderRef ref="TestAppender"/>
     </Logger>
     <Root level="ERROR">
       <AppenderRef ref="Console"/>
