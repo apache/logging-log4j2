@@ -33,17 +33,18 @@ public class Log4jLoggerFactory extends AbstractLoggerAdapter<Logger> implements
     private static final String PACKAGE = "org.slf4j";
 
     @Override
-    public Logger newLogger(final String name, final LoggerContext context) {
+    protected Logger newLogger(final String name, final LoggerContext context) {
         final String key = Logger.ROOT_LOGGER_NAME.equals(name) ? LogManager.ROOT_LOGGER_NAME : name;
         return new Log4jLogger(context.getLogger(key), name);
     }
 
     @Override
-    public LoggerContext getContext() {
+    protected LoggerContext getContext() {
         final Throwable t = new Throwable();
         boolean next = false;
         boolean pkg = false;
         String fqcn = LoggerFactory.class.getName();
+        // TODO: update with LOG4J2-809
         for (final StackTraceElement element : t.getStackTrace()) {
             if (FQCN.equals(element.getClassName())) {
                 next = true;

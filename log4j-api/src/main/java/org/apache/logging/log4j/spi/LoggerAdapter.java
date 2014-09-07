@@ -13,29 +13,12 @@ import java.util.concurrent.ConcurrentMap;
 public interface LoggerAdapter<L> {
 
     /**
-     * Gets a named logger linked to the {@link LoggerContext} returned by {@link #getContext()}. If no logger of
-     * the given name exists, then a new logger will be created using {@link #newLogger(String, LoggerContext)}.
+     * Gets a named logger. Implementations should defer to the abstract methods in {@link AbstractLoggerAdapter}.
      *
      * @param name the name of the logger to get
      * @return the named logger
      */
     L getLogger(String name);
-
-    /**
-     * Creates a new named logger for a given {@link LoggerContext}.
-     *
-     * @param name    the name of the logger to create
-     * @param context the LoggerContext this logger will be associated with
-     * @return the new named logger
-     */
-    L newLogger(String name, LoggerContext context);
-
-    /**
-     * Gets the {@link LoggerContext} that should be used to look up or create loggers.
-     *
-     * @return the LoggerContext to be used for lookup and creation purposes
-     */
-    LoggerContext getContext();
 
     /**
      * Gets or creates the ConcurrentMap of named loggers for a given LoggerContext.

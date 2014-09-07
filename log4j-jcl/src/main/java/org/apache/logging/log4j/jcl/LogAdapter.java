@@ -29,12 +29,12 @@ import org.apache.logging.log4j.spi.LoggerContext;
 public class LogAdapter extends AbstractLoggerAdapter<Log> {
 
     @Override
-    public Log newLogger(final String name, final LoggerContext context) {
+    protected Log newLogger(final String name, final LoggerContext context) {
         return new Log4jLog(PrivateManager.getLogger(name));
     }
 
     @Override
-    public LoggerContext getContext() {
+    protected LoggerContext getContext() {
         return PrivateManager.getContext();
     }
 

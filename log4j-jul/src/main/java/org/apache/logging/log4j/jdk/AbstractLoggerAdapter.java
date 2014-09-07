@@ -29,7 +29,7 @@ import org.apache.logging.log4j.spi.LoggerContext;
 public abstract class AbstractLoggerAdapter extends org.apache.logging.log4j.spi.AbstractLoggerAdapter<Logger> {
 
     @Override
-    public LoggerContext getContext() {
+    protected LoggerContext getContext() {
         return PrivateManager.getContext();
     }
 

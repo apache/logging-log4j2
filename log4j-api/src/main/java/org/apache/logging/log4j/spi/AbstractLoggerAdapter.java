@@ -56,6 +56,24 @@ public abstract class AbstractLoggerAdapter<L> implements LoggerAdapter<L> {
         }
     }
 
+    /**
+     * Creates a new named logger for a given {@link LoggerContext}.
+     *
+     * @param name    the name of the logger to create
+     * @param context the LoggerContext this logger will be associated with
+     * @return the new named logger
+     */
+    protected abstract L newLogger(final String name, final LoggerContext context);
+
+    /**
+     * Gets the {@link LoggerContext} that should be used to look up or create loggers. This is similar in spirit to
+     * the {@code ContextSelector} class in {@code log4j-core}. However, implementations can rely on their own
+     * framework's separation of contexts instead (or simply use a singleton).
+     *
+     * @return the LoggerContext to be used for lookup and creation purposes
+     */
+    protected abstract LoggerContext getContext();
+
     @Override
     public void stop() {
         registry.clear();

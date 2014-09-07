@@ -28,7 +28,7 @@ import org.apache.logging.log4j.spi.LoggerContext;
 public class CoreLoggerAdapter extends AbstractLoggerAdapter {
 
     @Override
-    public Logger newLogger(final String name, final LoggerContext context) {
+    protected Logger newLogger(final String name, final LoggerContext context) {
         return new CoreLogger((org.apache.logging.log4j.core.Logger) context.getLogger(name));
     }
 

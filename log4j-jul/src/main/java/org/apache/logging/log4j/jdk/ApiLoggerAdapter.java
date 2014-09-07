@@ -28,7 +28,7 @@ import org.apache.logging.log4j.spi.LoggerContext;
  */
 public class ApiLoggerAdapter extends AbstractLoggerAdapter {
     @Override
-    public Logger newLogger(final String name, final LoggerContext context) {
+    protected Logger newLogger(final String name, final LoggerContext context) {
         return new ApiLogger(context.getLogger(name));
     }
 }
