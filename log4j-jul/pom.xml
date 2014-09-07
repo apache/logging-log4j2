@@ -27,7 +27,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>log4j-jul</artifactId>
-  <name>Log4j JUL Adaptor</name>
+  <name>Apache Log4j JUL Adaptor</name>
   <description>Log4j implementation of java.util.logging</description>
 
   <dependencies>
