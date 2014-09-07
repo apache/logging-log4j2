@@ -23,34 +23,53 @@ import java.security.PrivilegedAction;
 /**
  * <em>Consider this class private.</em> Utility class for ClassLoaders.
  * @see ClassLoader
+ * @see RuntimePermission
  * @see Thread#getContextClassLoader()
+ * @see ClassLoader#getSystemClassLoader()
  */
-// TODO: migrate any other useful methods from Loader in log4j-core
 public final class LoaderUtil {
     private LoaderUtil() {}
 
     public static final String IGNORE_TCCL_PROPERTY = "log4j.ignoreTCL";
 
+    private static final SecurityManager SECURITY_MANAGER = System.getSecurityManager();
+
     // this variable must be lazily loaded; otherwise, we get a nice circular class loading problem where LoaderUtil
     // wants to use PropertiesUtil, but then PropertiesUtil wants to use LoaderUtil.
     private static Boolean ignoreTCCL;
 
+    private static final boolean GET_CLASS_LOADER_DISABLED;
+
     private static final PrivilegedAction<ClassLoader> TCCL_GETTER = new ThreadContextClassLoaderGetter();
 
     static {
-        final SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            sm.checkPermission(new RuntimePermission("getClassLoader"));
+        if (SECURITY_MANAGER != null) {
+            boolean getClassLoaderDisabled;
+            try {
+                SECURITY_MANAGER.checkPermission(new RuntimePermission("getClassLoader"));
+                getClassLoaderDisabled = false;
+            } catch (final SecurityException ignored) {
+                getClassLoaderDisabled = true;
+            }
+            GET_CLASS_LOADER_DISABLED = getClassLoaderDisabled;
+        } else {
+            GET_CLASS_LOADER_DISABLED = false;
         }
     }
 
     /**
      * Gets the current Thread ClassLoader. Returns the system ClassLoader if the TCCL is {@code null}.
+     * If running with a {@link SecurityManager} that does not allow access to the Thread ClassLoader or system
+     * ClassLoader, then the ClassLoader for this class is returned.
      *
      * @return the current ThreadContextClassLoader.
      */
     public static ClassLoader getThreadContextClassLoader() {
-        return System.getSecurityManager() == null
+        if (GET_CLASS_LOADER_DISABLED) {
+            // we can at least get this class's ClassLoader regardless of security context
+            return LoaderUtil.class.getClassLoader();
+        }
+        return SECURITY_MANAGER == null
             ? TCCL_GETTER.run()
             : AccessController.doPrivileged(TCCL_GETTER);
     }
@@ -101,6 +120,7 @@ public final class LoaderUtil {
         try {
             return clazz.getConstructor().newInstance();
         } catch (final NoSuchMethodException e) {
+            // FIXME: looking at the code for Class.newInstance(), this seems to do the same thing as above
             return clazz.newInstance();
         }
     }
