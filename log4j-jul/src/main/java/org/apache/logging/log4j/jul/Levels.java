@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.logging.log4j.jdk;
+package org.apache.logging.log4j.jul;
 
 import org.apache.logging.log4j.Level;
 

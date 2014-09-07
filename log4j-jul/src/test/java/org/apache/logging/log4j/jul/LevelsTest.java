@@ -1,4 +1,4 @@
-package org.apache.logging.log4j.jdk;
+package org.apache.logging.log4j.jul;
 
 import java.util.Arrays;
 import java.util.Collection;

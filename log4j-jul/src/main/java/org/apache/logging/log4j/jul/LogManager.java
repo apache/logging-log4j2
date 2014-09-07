@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.jdk;
+package org.apache.logging.log4j.jul;
 
 import java.util.Collections;
 import java.util.Enumeration;
@@ -27,12 +27,12 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Log4j implementation of {@link java.util.logging.LogManager}. Note that the system property
- * {@code java.util.logging.manager} must be set to {@code org.apache.logging.log4j.jdk.LogManager} in order to use
+ * {@code java.util.logging.manager} must be set to {@code org.apache.logging.log4j.jul.LogManager} in order to use
  * this adaptor. This LogManager requires the {@code log4j-api} library to be available. If {@code log4j-core} is
  * also available, then more features of {@link java.util.logging.Logger} are supported.
  *
  * <p>To override the default {@link AbstractLoggerAdapter} that is used, specify the Log4j property
- * {@code org.apache.logging.log4j.jdk.LoggerAdapter} and set it to the fully qualified class name of a custom
+ * {@code org.apache.logging.log4j.jul.LoggerAdapter} and set it to the fully qualified class name of a custom
  * implementation. All implementations must have a default constructor.</p>
  *
  * @since 2.1
@@ -44,7 +44,7 @@ public class LogManager extends java.util.logging.LogManager {
      * default, when this property is not set, an appropriate LoggerAdaptor is chosen based on the presence of
      * {@code log4j-core}.
      */
-    public static final String LOGGER_ADAPTOR_PROPERTY = "org.apache.logging.log4j.jdk.LoggerAdapter";
+    public static final String LOGGER_ADAPTOR_PROPERTY = "org.apache.logging.log4j.jul.LoggerAdapter";
 
     private static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
     private final AbstractLoggerAdapter loggerAdapter;
@@ -68,9 +68,9 @@ public class LogManager extends java.util.logging.LogManager {
             try {
                 // find out if log4j-core is available
                 LoaderUtil.loadClass("org.apache.logging.log4j.core.Logger");
-                adapterClassName = "org.apache.logging.log4j.jdk.CoreLoggerAdapter";
+                adapterClassName = "org.apache.logging.log4j.jul.CoreLoggerAdapter";
             } catch (final ClassNotFoundException ignored) {
-                adapterClassName = "org.apache.logging.log4j.jdk.ApiLoggerAdapter";
+                adapterClassName = "org.apache.logging.log4j.jul.ApiLoggerAdapter";
             }
             LOGGER.debug("Attempting to use {}", adapterClassName);
             try {

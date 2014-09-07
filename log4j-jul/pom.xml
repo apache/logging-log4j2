@@ -65,7 +65,7 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Export-Package>org.apache.logging.log4j.jdk</Export-Package>
+            <Export-Package>org.apache.logging.log4j.jul</Export-Package>
           </instructions>
         </configuration>
       </plugin>

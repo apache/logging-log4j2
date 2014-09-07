@@ -40,11 +40,11 @@
     <section name="Usage">
       <p>
         To use the JDK Logging Adaptor, you must set the system property <code>java.util.logging.manager</code> to
-        <a class="javadoc" href="apidocs/org/apache/logging/log4j/jdk/LogManager.html">org.apache.logging.log4j.jdk.LogManager</a>
+        <a class="javadoc" href="apidocs/org/apache/logging/log4j/jul/LogManager.html">org.apache.logging.log4j.jul.LogManager</a>
       </p>
       <p>
         This must be done either through the command line (i.e., using the
-        <code>-Djava.util.logging.manager=org.apache.logging.log4j.jdk.LogManager</code> argument) or by using
+        <code>-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager</code> argument) or by using
         <code>System.setProperty()</code> before any calls are made to <code>LogManager</code> or <code>Logger</code>.
       </p>
     </section>

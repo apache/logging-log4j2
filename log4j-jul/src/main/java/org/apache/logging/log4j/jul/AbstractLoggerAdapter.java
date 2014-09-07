@@ -14,22 +14,31 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.jdk;
+package org.apache.logging.log4j.jul;
 
 import java.util.logging.Logger;
 
 import org.apache.logging.log4j.spi.LoggerContext;
 
 /**
- * {@link Logger} registry implementation that uses log4j-core.
+ * Abstract Logger registry. Due to the optionality of using log4j-core, there are two registries available at runtime
+ * to create: {@link ApiLoggerAdapter} and {@link CoreLoggerAdapter}.
  *
  * @since 2.1
  */
-public class CoreLoggerAdapter extends AbstractLoggerAdapter {
+public abstract class AbstractLoggerAdapter extends org.apache.logging.log4j.spi.AbstractLoggerAdapter<Logger> {
 
     @Override
-    protected Logger newLogger(final String name, final LoggerContext context) {
-        return new CoreLogger((org.apache.logging.log4j.core.Logger) context.getLogger(name));
+    protected LoggerContext getContext() {
+        return PrivateManager.getContext();
+    }
+
+    private static class PrivateManager extends org.apache.logging.log4j.LogManager {
+        private static final String FQCN = java.util.logging.LogManager.class.getName();
+
+        public static LoggerContext getContext() {
+            return getContext(FQCN, false);
+        }
     }
 
 }
