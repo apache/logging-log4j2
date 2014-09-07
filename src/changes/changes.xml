@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.?.?" date="2014-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-780" dev="mattsicker" type="update">
+        Update Spring Framework to 3.2.11.RELEASE from 3.2.8.RELEASE.
+      </action>
       <action issue="LOG4J2-815" dev="mattsicker" type="update">
         Unify the two JMS appenders into a single appender. Note that the JMS appender is now in the log4j-jms module.
       </action>
