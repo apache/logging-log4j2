@@ -32,7 +32,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * also available, then more features of {@link java.util.logging.Logger} are supported.
  *
  * <p>To override the default {@link AbstractLoggerAdapter} that is used, specify the Log4j property
- * {@code org.apache.logging.log4j.jul.LoggerAdapter} and set it to the fully qualified class name of a custom
+ * {@code log4j.jul.LoggerAdapter} and set it to the fully qualified class name of a custom
  * implementation. All implementations must have a default constructor.</p>
  *
  * @since 2.1
@@ -44,7 +44,7 @@ public class LogManager extends java.util.logging.LogManager {
      * default, when this property is not set, an appropriate LoggerAdaptor is chosen based on the presence of
      * {@code log4j-core}.
      */
-    public static final String LOGGER_ADAPTOR_PROPERTY = "org.apache.logging.log4j.jul.LoggerAdapter";
+    public static final String LOGGER_ADAPTOR_PROPERTY = "log4j.jul.LoggerAdapter";
 
     private static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
     private final AbstractLoggerAdapter loggerAdapter;
