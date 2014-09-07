@@ -40,6 +40,7 @@ public class CoreLoggerTest {
     @After
     public void tearDown() throws Exception {
         eventAppender.clear();
+        stringAppender.clear();
     }
 
     @Test
@@ -97,5 +98,19 @@ public class CoreLoggerTest {
     public void testGlobalLoggerName() throws Exception {
         final Logger root = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
         assertThat(root.getName(), equalTo(Logger.GLOBAL_LOGGER_NAME));
+    }
+
+    @Test
+    public void testGlobalLogger() throws Exception {
+        final Logger root = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+        root.info("Test info message");
+        root.config("Test info message");
+        root.log(CustomJdkLevel.TEST, "Test info message");
+        final List<LogEvent> events = eventAppender.getEvents();
+        assertThat(events, hasSize(3));
+        for (final LogEvent event : events) {
+            final String message = event.getMessage().getFormattedMessage();
+            assertThat(message, equalTo("Test info message"));
+        }
     }
 }
