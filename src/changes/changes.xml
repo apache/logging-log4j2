@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.?.?" date="2014-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-782" dev="mattsicker" type="fix">
+        Remove invalid Oracle Maven repository.
+      </action>
       <action issue="LOG4J2-780" dev="mattsicker" type="update">
         Update Spring Framework to 3.2.11.RELEASE from 3.2.8.RELEASE.
       </action>
