@@ -44,7 +44,7 @@ public class CoreLogger extends ApiLogger {
     @Override
     public void setLevel(final Level level) throws SecurityException {
         logger.setLevel(Levels.toLevel(level));
-        super.setLevel(level);
+        super.doSetLevel(level);
     }
 
     /**

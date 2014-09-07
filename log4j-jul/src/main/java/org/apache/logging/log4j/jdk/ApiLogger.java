@@ -32,6 +32,8 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
  * Consult the documentation for your Log4j Provider for more details.
  * <p>Note that the methods {@link #getParent()} and {@link #setLevel(java.util.logging.Level)} are not supported by
  * this implementation. If you need support for these methods, then you'll need to use log4j-core.</p>
+ * <p>Also note that {@link #setParent(java.util.logging.Logger)} is explicitly unsupported. Parent loggers are
+ * determined using the syntax of the logger name; not through an arbitrary graph of loggers.</p>
  */
 public class ApiLogger extends Logger {
 
@@ -97,4 +99,32 @@ public class ApiLogger extends Logger {
         return logger.getName();
     }
 
+    @Override
+    public void setLevel(final Level newLevel) throws SecurityException {
+        throw new UnsupportedOperationException("Cannot set level through log4j-api");
+    }
+
+    /**
+     * Provides access to {@link Logger#setLevel(java.util.logging.Level)}. This method should only be used by child
+     * classes.
+     *
+     * @see Logger#setLevel(java.util.logging.Level)
+     */
+    protected void doSetLevel(final Level newLevel) throws SecurityException {
+        super.setLevel(newLevel);
+    }
+
+    @Override
+    public Logger getParent() {
+        throw new UnsupportedOperationException("Cannot get parent logger through log4j-api");
+    }
+
+    /**
+     * Unsupported operation.
+     * @throws UnsupportedOperationException always
+     */
+    @Override
+    public void setParent(final Logger parent) {
+        throw new UnsupportedOperationException("Cannot set parent logger");
+    }
 }
