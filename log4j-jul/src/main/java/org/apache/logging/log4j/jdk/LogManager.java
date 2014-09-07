@@ -20,9 +20,10 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.logging.Logger;
 
-import org.apache.logging.log4j.spi.LoggerAdapter;
+import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Log4j implementation of {@link java.util.logging.LogManager}. Note that the system property
@@ -30,32 +31,55 @@ import org.apache.logging.log4j.util.LoaderUtil;
  * this adaptor. This LogManager requires the {@code log4j-api} library to be available. If {@code log4j-core} is
  * also available, then more features of {@link java.util.logging.Logger} are supported.
  *
+ * <p>To override the default {@link AbstractLoggerAdapter} that is used, specify the Log4j property
+ * {@code org.apache.logging.log4j.jdk.LoggerAdapter} and set it to the fully qualified class name of a custom
+ * implementation. All implementations must have a default constructor.</p>
+ *
  * @since 2.1
  */
 public class LogManager extends java.util.logging.LogManager {
 
-    private static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
-    private static final LoggerAdapter<Logger> ADAPTER;
+    /**
+     * Name of the Log4j property to set to override the {@link AbstractLoggerAdapter} to be used. By
+     * default, when this property is not set, an appropriate LoggerAdaptor is chosen based on the presence of
+     * {@code log4j-core}.
+     */
+    public static final String LOGGER_ADAPTOR_PROPERTY = "org.apache.logging.log4j.jdk.LoggerAdapter";
 
-    static {
-        // find out if log4j-core is available
-        String registryClassName;
-        try {
-            LoaderUtil.loadClass("org.apache.logging.log4j.core.Logger");
-            registryClassName = "org.apache.logging.log4j.jdk.CoreLoggerRegistry";
-        } catch (final ClassNotFoundException ignored) {
-            registryClassName = "org.apache.logging.log4j.jdk.ApiLoggerRegistry";
-        }
-        LOGGER.debug("Attempting to use {}", registryClassName);
-        try {
-            ADAPTER = LoaderUtil.newCheckedInstanceOf(registryClassName, AbstractLoggerAdapter.class);
-        } catch (final Exception e) {
-            throw LOGGER.throwing(new ExceptionInInitializerError(e));
-        }
-    }
+    private static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
+    private final AbstractLoggerAdapter loggerAdapter;
 
     public LogManager() {
         super();
+        AbstractLoggerAdapter adapter = null;
+        final String overrideAdaptorClassName =
+            PropertiesUtil.getProperties().getStringProperty(LOGGER_ADAPTOR_PROPERTY);
+        if (overrideAdaptorClassName != null) {
+            try {
+                LOGGER.info("Trying to use LoggerAdaptor [{}] specified by Log4j property.", overrideAdaptorClassName);
+                adapter = LoaderUtil.newCheckedInstanceOf(overrideAdaptorClassName, AbstractLoggerAdapter.class);
+            } catch (final Exception e) {
+                LOGGER.error("Specified LoggerAdapter [{}] is incompatible.", overrideAdaptorClassName, e);
+            }
+        }
+        if (adapter == null) {
+            // default adapter
+            String adapterClassName;
+            try {
+                // find out if log4j-core is available
+                LoaderUtil.loadClass("org.apache.logging.log4j.core.Logger");
+                adapterClassName = "org.apache.logging.log4j.jdk.CoreLoggerAdapter";
+            } catch (final ClassNotFoundException ignored) {
+                adapterClassName = "org.apache.logging.log4j.jdk.ApiLoggerAdapter";
+            }
+            LOGGER.debug("Attempting to use {}", adapterClassName);
+            try {
+                adapter = LoaderUtil.newCheckedInstanceOf(adapterClassName, AbstractLoggerAdapter.class);
+            } catch (final Exception e) {
+                throw LOGGER.throwing(new LoggingException(e));
+            }
+        }
+        loggerAdapter = adapter;
         LOGGER.info("Registered Log4j as the java.util.logging.LogManager.");
     }
 
@@ -69,12 +93,12 @@ public class LogManager extends java.util.logging.LogManager {
     @Override
     public Logger getLogger(final String name) {
         LOGGER.trace("Call to LogManager.getLogger({})", name);
-        return ADAPTER.getLogger(name);
+        return loggerAdapter.getLogger(name);
     }
 
     @Override
     public Enumeration<String> getLoggerNames() {
-        return Collections.enumeration(ADAPTER.getLoggersInContext(ADAPTER.getContext()).keySet());
+        return Collections.enumeration(loggerAdapter.getLoggersInContext(loggerAdapter.getContext()).keySet());
     }
 
 }
