@@ -1289,7 +1289,7 @@ StatusConsoleListener listener = new StatusConsoleListener(Level.ERROR);
   </tr>
   <tr>
     <td>log4j.ignoreTCL</td>
-    <td>true</td>
+    <td>false</td>
     <td>
       If <tt>true</tt>, classes are only loaded with the default class loader.
       Otherwise, an attempt is made to load classes with the current thread's context class loader
@@ -1451,6 +1451,15 @@ StatusConsoleListener listener = new StatusConsoleListener(Level.ERROR);
     </td>
     <td>
       See <a href="async.html#SysPropsMixedSync-Async">Mixed Async/Synchronous Logger System Properties</a> for details.
+    </td>
+  </tr>
+  <tr>
+    <td>log4j.jul.LoggerAdapter</td>
+    <td>org.apache.logging.log4j.jul.ApiLoggerAdapter</td>
+    <td>
+      Default LoggerAdapter to use in the JUL adapter. By default, if log4j-core is available, then the class
+      <code>org.apache.logging.log4j.jul.CoreLoggerAdapter</code> will be used. Otherwise, the
+      <code>ApiLogggerAdapter</code> will be used. Custom implementations must provide a public default constructor.
     </td>
   </tr>
 </table>
