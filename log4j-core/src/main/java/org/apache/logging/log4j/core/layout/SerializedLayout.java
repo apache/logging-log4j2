@@ -20,9 +20,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -96,15 +93,6 @@ public final class SerializedLayout extends AbstractLayout<LogEvent> {
     @Override
     public byte[] getHeader() {
         return serializedHeader;
-    }
-
-    /**
-     * SerializedLayout's format is sufficiently specified via the content type, use empty Map/unspecified.
-     * @return empty Map
-     */
-    @Override
-    public Map<String, String> getContentFormat() {
-        return new HashMap<String, String>();
     }
 
     /**

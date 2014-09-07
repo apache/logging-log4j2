@@ -151,12 +151,15 @@
     <url>http://www.apache.org</url>
   </organization>
   <properties>
-    <!-- note that any properties you want available in velocity templates must not use periods! -->
-    <slf4j.version>1.7.7</slf4j.version>
-    <logback.version>1.0.13</logback.version>
+    <!-- make sure to update these for each release! -->
     <log4jParentDir>${basedir}</log4jParentDir>
     <Log4jReleaseVersion>2.0.2</Log4jReleaseVersion>
     <Log4jReleaseCount>sixteenth</Log4jReleaseCount>
+    <Log4jReleaseManager>Matt Sicker</Log4jReleaseManager>
+    <Log4jReleaseKey>FA1C814D</Log4jReleaseKey>
+    <!-- note that any properties you want available in velocity templates must not use periods! -->
+    <slf4j.version>1.7.7</slf4j.version>
+    <logback.version>1.0.13</logback.version>
     <jackson1.version>1.9.13</jackson1.version>
     <jackson2.version>2.4.2</jackson2.version>
     <spring.version>3.2.8.RELEASE</spring.version>
@@ -180,6 +183,7 @@
     <projectDir />
     <commons.logging.version>1.2</commons.logging.version>
     <osgi.api.version>4.3.1</osgi.api.version>
+    <activemq.version>5.10.0</activemq.version>
   </properties>
   <pluginRepositories>
     <pluginRepository>
@@ -486,6 +490,11 @@
         <artifactId>jboss-jms-api_1.1_spec</artifactId>
         <version>1.0.1.Final</version>
         <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.activemq</groupId>
+        <artifactId>activemq-broker</artifactId>
+        <version>${activemq.version}</version>
       </dependency>
       <dependency>
         <groupId>org.mockejb</groupId>
@@ -1003,7 +1012,8 @@
     <module>log4j-nosql</module>
     <module>log4j-web</module>
     <module>log4j-perf</module>
-    <module>log4j-streams</module>
+    <module>log4j-iostreams</module>
+    <module>log4j-jms</module>
     <module>log4j-jul</module>
   </modules>
   <profiles>

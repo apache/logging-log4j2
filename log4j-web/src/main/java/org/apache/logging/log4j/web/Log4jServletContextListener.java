@@ -20,6 +20,9 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
+
 /**
  * In environments older than Servlet 3.0, this initializer is responsible for starting up Log4j logging before anything
  * else happens in application initialization. In all environments, this shuts down Log4j after the application shuts
@@ -27,13 +30,15 @@ import javax.servlet.ServletContextListener;
  */
 public class Log4jServletContextListener implements ServletContextListener {
 
+    private static final Logger LOGGER = StatusLogger.getLogger();
+
     private ServletContext servletContext;
     private Log4jWebLifeCycle initializer;
 
     @Override
     public void contextInitialized(final ServletContextEvent event) {
         this.servletContext = event.getServletContext();
-        this.servletContext.log("Log4jServletContextListener ensuring that Log4j starts up properly.");
+        LOGGER.debug("Log4jServletContextListener ensuring that Log4j starts up properly.");
 
         this.initializer = Log4jWebInitializerImpl.getLog4jWebInitializer(this.servletContext);
         try {
@@ -49,7 +54,7 @@ public class Log4jServletContextListener implements ServletContextListener {
         if (this.servletContext == null || this.initializer == null) {
             throw new IllegalStateException("Context destroyed before it was initialized.");
         }
-        this.servletContext.log("Log4jServletContextListener ensuring that Log4j shuts down properly.");
+        LOGGER.debug("Log4jServletContextListener ensuring that Log4j shuts down properly.");
 
         this.initializer.clearLoggerContext(); // the application is finished shutting down now
         this.initializer.stop();

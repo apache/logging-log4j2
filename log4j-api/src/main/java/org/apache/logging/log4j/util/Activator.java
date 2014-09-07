@@ -45,6 +45,10 @@ public class Activator implements BundleActivator, SynchronousBundleListener {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
+    // until we have at least one Provider, we'll lock ProviderUtil which locks LogManager.<clinit> by extension.
+    // this variable needs to be reset once the lock has been released
+    private boolean lockingProviderUtil;
+
     private static void checkPermission(final Permission permission) {
         if (SECURITY_MANAGER != null) {
             SECURITY_MANAGER.checkPermission(permission);
@@ -75,6 +79,8 @@ public class Activator implements BundleActivator, SynchronousBundleListener {
 
     @Override
     public void start(final BundleContext context) throws Exception {
+        ProviderUtil.STARTUP_LOCK.lock();
+        lockingProviderUtil = true;
         final BundleWiring self = context.getBundle().adapt(BundleWiring.class);
         final List<BundleWire> required = self.getRequiredWires(LoggerContextFactory.class.getName());
         for (BundleWire wire : required) {
@@ -85,19 +91,28 @@ public class Activator implements BundleActivator, SynchronousBundleListener {
         for (final Bundle bundle : bundles) {
             loadProvider(bundle);
         }
+        unlockIfReady();
+    }
+
+    private void unlockIfReady() {
+        if (lockingProviderUtil && !ProviderUtil.PROVIDERS.isEmpty()) {
+            ProviderUtil.STARTUP_LOCK.unlock();
+            lockingProviderUtil = false;
+        }
     }
 
     @Override
     public void stop(final BundleContext context) throws Exception {
         context.removeBundleListener(this);
+        unlockIfReady();
     }
 
     @Override
     public void bundleChanged(final BundleEvent event) {
         switch (event.getType()) {
             case BundleEvent.STARTED:
-                // FIXME: LogManager won't see this update if it happens after LogManager is loaded
                 loadProvider(event.getBundle());
+                unlockIfReady();
                 break;
 
             default:

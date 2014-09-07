@@ -87,12 +87,12 @@
           are inappropriate for public discussion, such as legal, personal, or
           security issues prior to a published fix. Subscription to the list is
           only open (actually: mandatory) to Apache Logging's Project Management
-          Comittee.</dd>
-        <dt><strong>Subversion</strong></dt>
+          Committee.</dd>
+        <dt><strong>Git</strong></dt>
         <dd>All of the Apache products are maintained in shared information
-          repositories using <a href="source-repository.html">Subversion</a>. Only some of the
+          repositories using <a href="source-repository.html">Git</a>. Only some of the
           Apache developers have write access to the Apache Logging repositories; everyone
-          has <a href="http://svn.apache.org/repos/asf/logging/log4j/log4j2">read access</a>.</dd>
+          has <a href="https://git-wip-us.apache.org/repos/asf?p=logging-log4j2.git;a=summary">read access</a>.</dd>
       </dl>
       </subsection>
       <a name="issues"/>
@@ -233,13 +233,13 @@
         change can be included in any public release.</p>
       </subsection>
       <a name="changelogs"/>
-      <subsection name="changes.xml and Subversion logs">
+      <subsection name="changes.xml and Git logs">
       <p>Many code changes should be noted in the changes.xml file, and all should be
-        documented in Subversion commit messages. Often the text of the Subversion
+        documented in Git commit messages. Often the text of the Git
         log and the changes.xml entry are the same, but the distinct requirements
         sometimes result in different information.</p>
-      <h3 id="subversion-log">Subversion log</h3>
-      <p>The Subversion commit log message contains any information needed by</p>
+      <h3 id="subversion-log">Git log</h3>
+      <p>The Git commit log message contains any information needed by</p>
       <ul>
         <li>
           <p>fellow developers or other people researching source code changes/fixes</p>

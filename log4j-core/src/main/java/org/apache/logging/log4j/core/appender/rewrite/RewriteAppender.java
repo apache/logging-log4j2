@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rewrite;
 
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 

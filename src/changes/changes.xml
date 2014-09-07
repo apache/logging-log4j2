@@ -24,6 +24,12 @@
   </properties>
   <body>
     <release version="2.?.?" date="2014-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-796" dev="rpopma" type="fix">
+        Fixed issue where log4j-to-slf4j did not work correctly with SLF4J Simple Logger.
+      </action>
+      <action issue="LOG4J2-811" dev="ggregory" type="fix" due-to="Yogesh Rao">
+        SimpleLogger throws ArrayIndexOutOfBoundsException for an empty array.
+      </action>
       <action issue="LOG4J2-663" dev="mattsicker" type="fix" due-to="Florian Brunner">
         Fix OSGi Import-Package problem with the JMS API.
       </action>

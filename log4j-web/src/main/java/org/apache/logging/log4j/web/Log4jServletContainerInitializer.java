@@ -18,12 +18,14 @@ package org.apache.logging.log4j.web;
 
 import java.util.EnumSet;
 import java.util.Set;
-
 import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * In a Servlet 3.0 or newer environment, this initializer is responsible for starting up Log4j logging before anything
@@ -32,20 +34,22 @@ import javax.servlet.ServletException;
  */
 public class Log4jServletContainerInitializer implements ServletContainerInitializer {
 
+    private static final Logger LOGGER = StatusLogger.getLogger();
+
     @Override
     public void onStartup(final Set<Class<?>> classes, final ServletContext servletContext) throws ServletException {
         if (servletContext.getMajorVersion() > 2 && servletContext.getEffectiveMajorVersion() > 2 &&
                 !"true".equalsIgnoreCase(servletContext.getInitParameter(
                         Log4jWebSupport.IS_LOG4J_AUTO_INITIALIZATION_DISABLED
                 ))) {
-            servletContext.log("Log4jServletContainerInitializer starting up Log4j in Servlet 3.0+ environment.");
+            LOGGER.debug("Log4jServletContainerInitializer starting up Log4j in Servlet 3.0+ environment.");
 
             final FilterRegistration.Dynamic filter =
                     servletContext.addFilter("log4jServletFilter", Log4jServletFilter.class);
             if (filter == null) {
-                servletContext.log("WARNING: In a Servlet 3.0+ application, you should not define a " +
-                        "log4jServletFilter in web.xml. Log4j 2 normally does this for you automatically. Log4j 2 " +
-                        "web auto-initialization has been canceled.");
+                LOGGER.warn("WARNING: In a Servlet 3.0+ application, you should not define a " +
+                    "log4jServletFilter in web.xml. Log4j 2 normally does this for you automatically. Log4j 2 " +
+                    "web auto-initialization has been canceled.");
                 return;
             }
 

@@ -161,22 +161,22 @@ public class SLF4JLogger extends AbstractLogger {
         } else {
             switch (level.getStandardLevel()) {
                 case DEBUG :
-                    logger.debug(fqcn, getMarker(marker), message.getFormattedMessage(), message.getParameters(), t);
+                    logger.debug(getMarker(marker), message.getFormattedMessage(), message.getParameters(), t);
                     break;
                 case TRACE :
-                    logger.trace(fqcn, getMarker(marker), message.getFormattedMessage(), message.getParameters(), t);
+                    logger.trace(getMarker(marker), message.getFormattedMessage(), message.getParameters(), t);
                     break;
                 case INFO :
-                    logger.info(fqcn, getMarker(marker), message.getFormattedMessage(), message.getParameters(), t);
+                    logger.info(getMarker(marker), message.getFormattedMessage(), message.getParameters(), t);
                     break;
                 case WARN :
-                    logger.warn(fqcn, getMarker(marker), message.getFormattedMessage(), message.getParameters(), t);
+                    logger.warn(getMarker(marker), message.getFormattedMessage(), message.getParameters(), t);
                     break;
                 case ERROR :
-                    logger.error(fqcn, getMarker(marker), message.getFormattedMessage(), message.getParameters(), t);
+                    logger.error(getMarker(marker), message.getFormattedMessage(), message.getParameters(), t);
                     break;
                 default :
-                    logger.error(fqcn, getMarker(marker), message.getFormattedMessage(), message.getParameters(), t);
+                    logger.error(getMarker(marker), message.getFormattedMessage(), message.getParameters(), t);
                     break;
             }
         }

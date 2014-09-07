@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.perf.jmh;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Random;
+
 import org.apache.logging.log4j.core.impl.ReflectiveCallerClassUtility;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StringFormattedMessage;
@@ -24,12 +28,7 @@ import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.logic.BlackHole;
 import sun.reflect.Reflection;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Random;
 
 /**
  * <p>Benchmarks the different ways the caller class can be obtained.
@@ -58,46 +57,56 @@ public class ReflectionBenchmark {
     }
 
     @GenerateMicroBenchmark
-    public void testBaseline(final BlackHole bh) {
+    public void baseline() {
     }
 
     @GenerateMicroBenchmark
-    public String getCallerClassNameFromStackTrace(final BlackHole bh) {
+    public String test01_getCallerClassNameFromStackTrace() {
         return new Throwable().getStackTrace()[3].getClassName();
     }
 
     @GenerateMicroBenchmark
-    public String getCallerClassNameReflectively(final BlackHole bh) {
+    public String test02_getCallerClassNameFromThreadStackTrace() {
+        return Thread.currentThread().getStackTrace()[3].getClassName();
+    }
+
+    @GenerateMicroBenchmark
+    public String test03_getCallerClassNameReflectively() {
         return ReflectiveCallerClassUtility.getCaller(3).getName();
     }
 
     @GenerateMicroBenchmark
-    public String getCallerClassNameSunReflection(final BlackHole bh) {
+    public String test04_getCallerClassNameSunReflection() {
         return Reflection.getCallerClass(3).getName();
     }
 
     @GenerateMicroBenchmark
-    public Class<?> getStackTraceClassForClassName() throws ClassNotFoundException {
+    public Class<?> test05_getStackTraceClassForClassName() throws ClassNotFoundException {
         return Class.forName(new Throwable().getStackTrace()[3].getClassName());
     }
 
     @GenerateMicroBenchmark
-    public Class<?> getReflectiveCallerClassUtility(final BlackHole bh) {
+    public Class<?> test06_getThreadStackTraceClassForClassName() throws ClassNotFoundException {
+        return Class.forName(Thread.currentThread().getStackTrace()[3].getClassName());
+    }
+
+    @GenerateMicroBenchmark
+    public Class<?> test07_getReflectiveCallerClassUtility() {
         return ReflectiveCallerClassUtility.getCaller(3);
     }
 
     @GenerateMicroBenchmark
-    public Class<?> getDirectSunReflection(final BlackHole bh) {
+    public Class<?> test08_getDirectSunReflection() {
         return Reflection.getCallerClass(3);
     }
 
     @GenerateMicroBenchmark
-    public Message getMessageUsingNew(final RandomInteger rng) {
+    public Message test09_getMessageUsingNew(final RandomInteger rng) {
         return new StringFormattedMessage("Hello %i", rng.random);
     }
 
     @GenerateMicroBenchmark
-    public Message getMessageUsingReflection(final RandomInteger rng)
+    public Message test10_getMessageUsingReflection(final RandomInteger rng)
         throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         final Constructor<? extends Message> constructor = StringFormattedMessage.class.getConstructor(String.class,
             Object[].class);

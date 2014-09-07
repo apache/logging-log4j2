@@ -911,6 +911,7 @@ public class ConnectionFactory {
     }
 }]]></pre>
         </subsection>
+        <!-- TODO: JMSAppender and consolidation of Queue/Topic versions -->
         <a name="JMSQueueAppender"/>
         <subsection name="JMSQueueAppender">
           <p>The JMSQueueAppender sends the formatted log event to a JMS Queue.</p>

@@ -108,8 +108,11 @@
         <configuration>
           <instructions>
             <Export-Package>org.apache.logging.log4j.*</Export-Package>
+            <Import-Package>
+              sun.reflect;resolution:=optional,
+              *
+            </Import-Package>
             <Bundle-Activator>org.apache.logging.log4j.util.Activator</Bundle-Activator>
-            <Require-Capability>org.apache.logging.log4j.spi.LoggerContextFactory</Require-Capability>
           </instructions>
         </configuration>
       </plugin>

@@ -86,13 +86,6 @@
       <artifactId>jansi</artifactId>
       <optional>true</optional>
     </dependency>
-    <!-- Used for JMS appenders (needs an implementation of course) -->
-    <dependency>
-      <groupId>org.jboss.spec.javax.jms</groupId>
-      <artifactId>jboss-jms-api_1.1_spec</artifactId>
-      <scope>provided</scope>
-      <optional>true</optional>
-    </dependency>
     <!-- Required for SMTPAppender -->
     <dependency>
       <groupId>com.sun.mail</groupId>
@@ -285,8 +278,11 @@
             <Bundle-SymbolicName>org.apache.logging.log4j.core</Bundle-SymbolicName>
             <!-- TODO: exclude internal classes from export -->
             <Export-Package>org.apache.logging.log4j.core.*</Export-Package>
+            <Import-Package>
+              sun.reflect;resolution:=optional,
+              *
+            </Import-Package>
             <Bundle-Activator>org.apache.logging.log4j.core.osgi.Activator</Bundle-Activator>
-            <Provide-Capability>org.apache.logging.log4j.spi.LoggerContextFactory</Provide-Capability>
           </instructions>
         </configuration>
       </plugin>

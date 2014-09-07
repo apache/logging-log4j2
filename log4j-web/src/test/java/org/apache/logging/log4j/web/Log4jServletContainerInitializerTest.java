@@ -18,7 +18,6 @@ package org.apache.logging.log4j.web;
 
 import java.util.EnumSet;
 import java.util.EventListener;
-
 import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import javax.servlet.FilterRegistration;
@@ -30,8 +29,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.easymock.EasyMock.*;
-
+import static org.easymock.EasyMock.capture;
+import static org.easymock.EasyMock.createStrictMock;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.*;
 
 public class Log4jServletContainerInitializerTest {
@@ -107,8 +111,6 @@ public class Log4jServletContainerInitializerTest {
         expect(this.servletContext.getEffectiveMajorVersion()).andReturn(3);
         expect(this.servletContext.getInitParameter(Log4jWebSupport.IS_LOG4J_AUTO_INITIALIZATION_DISABLED))
                 .andReturn(null);
-        this.servletContext.log(anyObject(String.class));
-        expectLastCall();
         expect(this.servletContext.addFilter(eq("log4jServletFilter"), capture(filterCapture))).andReturn(registration);
         expect(this.servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).andReturn(this.initializer);
         this.initializer.start();
@@ -139,16 +141,12 @@ public class Log4jServletContainerInitializerTest {
     @Test
     public void testOnStartupCanceledDueToPreExistingFilter() throws Exception {
         final Capture<Class<? extends Filter>> filterCapture = new Capture<Class<? extends Filter>>();
-        final Capture<String> logCapture = new Capture<String>();
 
         expect(this.servletContext.getMajorVersion()).andReturn(3);
         expect(this.servletContext.getEffectiveMajorVersion()).andReturn(3);
         expect(this.servletContext.getInitParameter(Log4jWebSupport.IS_LOG4J_AUTO_INITIALIZATION_DISABLED))
                 .andReturn("false");
-        this.servletContext.log(anyObject(String.class));
-        expectLastCall();
         expect(this.servletContext.addFilter(eq("log4jServletFilter"), capture(filterCapture))).andReturn(null);
-        this.servletContext.log(capture(logCapture));
 
         replay(this.servletContext, this.initializer);
 
@@ -156,10 +154,6 @@ public class Log4jServletContainerInitializerTest {
 
         assertNotNull("The filter should not be null.", filterCapture.getValue());
         assertSame("The filter is not correct.", Log4jServletFilter.class, filterCapture.getValue());
-
-        assertNotNull("The second log message should not be null.", logCapture.getValue());
-        assertTrue("The second log message (" + logCapture.getValue() + ") is not correct.",
-                logCapture.getValue().startsWith("WARNING: "));
     }
 
     @Test
@@ -173,8 +167,6 @@ public class Log4jServletContainerInitializerTest {
         expect(this.servletContext.getEffectiveMajorVersion()).andReturn(3);
         expect(this.servletContext.getInitParameter(Log4jWebSupport.IS_LOG4J_AUTO_INITIALIZATION_DISABLED))
                 .andReturn("balderdash");
-        this.servletContext.log(anyObject(String.class));
-        expectLastCall();
         expect(this.servletContext.addFilter(eq("log4jServletFilter"), capture(filterCapture))).andReturn(registration);
         expect(this.servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).andReturn(this.initializer);
         this.initializer.start();

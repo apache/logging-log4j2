@@ -153,8 +153,7 @@ public class TcpSocketManager extends AbstractSocketManager {
      * @return Map of content format keys supporting TcpSocketManager
      */
     @Override
-    public Map<String, String> getContentFormat()
-    {
+    public Map<String, String> getContentFormat() {
         final Map<String, String> result = new HashMap<String, String>(super.getContentFormat());
         result.put("protocol", "tcp");
         result.put("direction", "out");

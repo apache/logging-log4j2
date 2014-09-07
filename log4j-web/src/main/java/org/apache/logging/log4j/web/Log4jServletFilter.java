@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.web;
 
 import java.io.IOException;
-
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -25,6 +24,9 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * This is responsible for the following:
@@ -39,6 +41,8 @@ import javax.servlet.ServletResponse;
  */
 public class Log4jServletFilter implements Filter {
 
+    private static final Logger LOGGER = StatusLogger.getLogger();
+
     static final String ALREADY_FILTERED_ATTRIBUTE = Log4jServletFilter.class.getName() + ".FILTERED";
 
     private ServletContext servletContext;
@@ -47,7 +51,7 @@ public class Log4jServletFilter implements Filter {
     @Override
     public void init(final FilterConfig filterConfig) throws ServletException {
         this.servletContext = filterConfig.getServletContext();
-        this.servletContext.log("Log4jServletFilter initialized.");
+        LOGGER.debug("Log4jServletFilter initialized.");
 
         this.initializer = Log4jWebInitializerImpl.getLog4jWebInitializer(this.servletContext);
         this.initializer.clearLoggerContext(); // the application is mostly finished starting up now
@@ -59,7 +63,7 @@ public class Log4jServletFilter implements Filter {
         if (request.getAttribute(ALREADY_FILTERED_ATTRIBUTE) != null) {
             chain.doFilter(request, response);
         } else {
-            request.setAttribute(ALREADY_FILTERED_ATTRIBUTE, true);
+            request.setAttribute(ALREADY_FILTERED_ATTRIBUTE, Boolean.TRUE);
 
             try {
                 this.initializer.setLoggerContext();
@@ -76,7 +80,7 @@ public class Log4jServletFilter implements Filter {
         if (this.servletContext == null || this.initializer == null) {
             throw new IllegalStateException("Filter destroyed before it was initialized.");
         }
-        this.servletContext.log("Log4jServletFilter destroyed.");
+        LOGGER.debug("Log4jServletFilter destroyed.");
 
         this.initializer.setLoggerContext(); // the application is just now starting to shut down
     }

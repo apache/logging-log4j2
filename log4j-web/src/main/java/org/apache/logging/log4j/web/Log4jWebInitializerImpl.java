@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.ServletContext;
 
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -37,11 +38,14 @@ import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.SetUtils;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * This class initializes and deinitializes Log4j no matter how the initialization occurs.
  */
 final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWebLifeCycle {
+
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private static final long serialVersionUID = 1L;
 
@@ -128,17 +132,15 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
                 }
                 ContextAnchor.THREAD_CONTEXT.remove();
             } else {
-                // won't it be amusing if the servlet container uses Log4j as its ServletContext logger?
-                this.servletContext.log("Potential problem: Selector is not an instance of NamedContextSelector.");
+                LOGGER.warn("Potential problem: Selector is not an instance of NamedContextSelector.");
                 return;
             }
         } else {
-            this.servletContext.log("Potential problem: Factory is not an instance of Log4jContextFactory.");
+            LOGGER.warn("Potential problem: LoggerContextFactory is not an instance of Log4jContextFactory.");
             return;
         }
         this.loggerContext = context;
-        this.servletContext.log("Created logger context for [" + this.name + "] using [" +
-                context.getClass().getClassLoader() + "].");
+        LOGGER.debug("Created logger context for [{}] using [{}].", this.name, context.getClass().getClassLoader());
     }
 
     private void initializeNonJndi(final String location) {
@@ -147,7 +149,7 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
         }
 
         if (this.name == null && location == null) {
-            this.servletContext.log("No Log4j context configuration provided. This is very unusual.");
+            LOGGER.error("No Log4j context configuration provided. This is very unusual.");
             return;
         }
 
@@ -190,7 +192,7 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
             try {
                 return FileUtils.getCorrectedFilePathUri(location);
             } catch (final Exception e) {
-                this.servletContext.log("Unable to convert configuration location [" + location + "] to a URI!", e);
+                LOGGER.error("Unable to convert configuration location [{}] to a URI", location, e);
             }
         }
         return null;
@@ -206,7 +208,7 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
         if (this.isStarted()) {
             this.setStopping();
             if (this.loggerContext != null) {
-                this.servletContext.log("Removing LoggerContext for [" + this.name + "].");
+                LOGGER.debug("Removing LoggerContext for [{}].", this.name);
                 this.servletContext.removeAttribute(CONTEXT_ATTRIBUTE);
                 if (this.namedContextSelector != null) {
                     this.namedContextSelector.removeContext(this.name);

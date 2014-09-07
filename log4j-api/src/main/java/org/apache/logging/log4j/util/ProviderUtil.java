@@ -20,8 +20,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Properties;
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.spi.Provider;
@@ -44,12 +46,13 @@ public final class ProviderUtil {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private static final Collection<Provider> PROVIDERS = new CopyOnWriteArraySet<Provider>();
+    protected static final Collection<Provider> PROVIDERS = new HashSet<Provider>();
+    protected static final Lock STARTUP_LOCK = new ReentrantLock();
+    // STARTUP_LOCK guards INSTANCE for lazy initialization; this allows the OSGi Activator to pause the startup and
+    // wait for a Provider to be installed. See LOG4J2-373
+    private static volatile ProviderUtil INSTANCE;
 
     private ProviderUtil() {
-    }
-
-    static {
         final ClassLoader cl = findClassLoader();
         Enumeration<URL> enumResources = null;
         try {
@@ -88,11 +91,30 @@ public final class ProviderUtil {
     }
 
     public static Iterable<Provider> getProviders() {
+        lazyInit();
         return PROVIDERS;
     }
 
     public static boolean hasProviders() {
+        lazyInit();
         return !PROVIDERS.isEmpty();
+    }
+
+    protected static void lazyInit() {
+        //noinspection DoubleCheckedLocking
+        if (INSTANCE == null) {
+            try {
+                STARTUP_LOCK.lockInterruptibly();
+                if (INSTANCE == null) {
+                    INSTANCE = new ProviderUtil();
+                }
+            } catch (final InterruptedException e) {
+                LOGGER.fatal("Interrupted before Log4j Providers could be loaded.", e);
+                Thread.currentThread().interrupt();
+            } finally {
+                STARTUP_LOCK.unlock();
+            }
+        }
     }
 
     public static ClassLoader findClassLoader() {

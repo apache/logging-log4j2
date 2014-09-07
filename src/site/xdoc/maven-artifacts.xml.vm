@@ -288,6 +288,8 @@ dependencies {
   compile group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '${Log4jReleaseVersion}'
 }
 ]]></pre>
+        <!-- TODO: NoSQL dependencies -->
+        <!-- TODO: JMS dependencies -->
       </subsection>
     </section>
   </body>
