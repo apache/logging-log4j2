@@ -1349,7 +1349,7 @@ StatusConsoleListener listener = new StatusConsoleListener(Level.ERROR);
   </tr>
   <tr>
     <!-- deliberately inserted spaces to allow line break -->
-    <td>org.apache.logging.logj..simplelog .logFile</td>
+    <td>org.apache.logging.logj.simplelog .logFile</td>
     <td>system.err</td>
     <td>"system.err" (case-insensitive) logs to System.err,
     "system.out" (case-insensitive) logs to System.out,
