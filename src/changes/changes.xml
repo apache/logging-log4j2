@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.?.?" date="2014-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-608" dev="mattsicker" type="add">
+        Add java.util.logging implementation based on log4j-api. See log4j-jul documentation for more details.
+      </action>
       <action issue="LOG4J2-796" dev="rpopma" type="fix">
         Fixed issue where log4j-to-slf4j did not work correctly with SLF4J Simple Logger.
       </action>
