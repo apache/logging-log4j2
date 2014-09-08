@@ -14,13 +14,17 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
 package org.apache.logging.log4j.core.util;
 
+import java.io.InvalidObjectException;
+import java.io.ObjectInputStream;
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 
 /**
  * Key/Value pair configuration item.
@@ -67,18 +71,47 @@ public final class KeyValuePair implements Serializable {
         return key + '=' + value;
     }
 
-    /**
-     * Create a Key/Value pair.
-     * @param key The key.
-     * @param value The value.
-     * @return A KeyValuePair.
-     */
-    @PluginFactory
-    public static KeyValuePair createPair(
-            @PluginAttribute("key") final String key,
-            @PluginAttribute("value") final  String value) {
+    @PluginBuilderFactory
+    public static Builder newBuilder() {
+        return new Builder();
+    }
 
-        return new KeyValuePair(key, value);
+    protected Object writeReplace() throws ObjectStreamException {
+        return newBuilder().setKey(this.key).setValue(this.value);
+    }
+
+    private void readObject(final ObjectInputStream stream) throws InvalidObjectException {
+        throw new InvalidObjectException("Builder proxy required");
+    }
+
+    public static class Builder implements org.apache.logging.log4j.core.util.Builder<KeyValuePair>, Serializable {
+
+        private static final long serialVersionUID = 1L;
+
+        @PluginBuilderAttribute
+        private String key;
+
+        @PluginBuilderAttribute
+        private String value;
+
+        public Builder setKey(final String key) {
+            this.key = key;
+            return this;
+        }
+
+        public Builder setValue(final String value) {
+            this.value = value;
+            return this;
+        }
+
+        @Override
+        public KeyValuePair build() {
+            return new KeyValuePair(key, value);
+        }
+
+        protected Object readResolve() throws ObjectStreamException {
+            return new KeyValuePair(key, value);
+        }
     }
 
     @Override
