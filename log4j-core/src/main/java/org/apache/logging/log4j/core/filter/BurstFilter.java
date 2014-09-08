@@ -14,6 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
 package org.apache.logging.log4j.core.filter;
 
 import java.util.Iterator;
@@ -28,8 +29,8 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.message.Message;
 
 /**
@@ -57,7 +58,7 @@ public final class BurstFilter extends AbstractFilter {
 
     private static final long serialVersionUID = 1L;
 
-    private static final long NANOS_IN_SECONDS =  1000000000;
+    private static final long NANOS_IN_SECONDS = 1000000000;
 
     private static final int DEFAULT_RATE = 10;
 
@@ -216,30 +217,78 @@ public final class BurstFilter extends AbstractFilter {
         }
     }
 
-    /**
-     * @param level  The logging level.
-     * @param rate   The average number of events per second to allow.
-     * @param maxBurst  The maximum number of events that can occur before events are filtered for exceeding the
-     * average rate. The default is 10 times the rate.
-     * @param match  The Result to return when the filter matches. Defaults to Result.NEUTRAL.
-     * @param mismatch The Result to return when the filter does not match. The default is Result.DENY.
-     * @return A BurstFilter.
-     */
-    @PluginFactory
-    public static BurstFilter createFilter(
-            @PluginAttribute("level") final Level level,
-            @PluginAttribute("rate") final Float rate,
-            @PluginAttribute("maxBurst") final Long maxBurst,
-            @PluginAttribute("onMatch") final Result match,
-            @PluginAttribute("onMismatch") final Result mismatch) {
-        final Result onMatch = match == null ? Result.NEUTRAL : match;
-        final Result onMismatch = mismatch == null ? Result.DENY : mismatch;
-        final Level actualLevel = level == null ? Level.WARN : level;
-        float eventRate = rate == null ? DEFAULT_RATE : rate;
-        if (eventRate <= 0) {
-            eventRate = DEFAULT_RATE;
+    @PluginBuilderFactory
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    public static class Builder implements org.apache.logging.log4j.core.util.Builder<BurstFilter> {
+
+        @PluginBuilderAttribute
+        private Level level = Level.WARN;
+
+        @PluginBuilderAttribute
+        private float rate = DEFAULT_RATE;
+
+        @PluginBuilderAttribute
+        private long maxBurst;
+
+        @PluginBuilderAttribute
+        private Result onMatch = Result.NEUTRAL;
+
+        @PluginBuilderAttribute
+        private Result onMismatch = Result.DENY;
+
+        /**
+         * Sets the logging level to use.
+         */
+        public Builder setLevel(final Level level) {
+            this.level = level;
+            return this;
         }
-        final long max = maxBurst == null ? (long) (eventRate * DEFAULT_RATE_MULTIPLE) : maxBurst;
-        return new BurstFilter(actualLevel, eventRate, max, onMatch, onMismatch);
+
+        /**
+         * Sets the average number of events per second to allow. This must be a positive number.
+         */
+        public Builder setRate(final float rate) {
+            this.rate = rate;
+            return this;
+        }
+
+        /**
+         * Sets the maximum number of events that can occur before events are filtered for exceeding the average rate.
+         * The default is 10 times the rate.
+         */
+        public Builder setMaxBurst(final long maxBurst) {
+            this.maxBurst = maxBurst;
+            return this;
+        }
+
+        /**
+         * Sets the Result to return when the filter matches. Defaults to Result.NEUTRAL.
+         */
+        public Builder setOnMatch(final Result onMatch) {
+            this.onMatch = onMatch;
+            return this;
+        }
+
+        /**
+         * Sets the Result to return when the filter does not match. The default is Result.DENY.
+         */
+        public Builder setOnMismatch(final Result onMismatch) {
+            this.onMismatch = onMismatch;
+            return this;
+        }
+
+        @Override
+        public BurstFilter build() {
+            if (this.rate <= 0) {
+                this.rate = DEFAULT_RATE;
+            }
+            if (this.maxBurst <= 0) {
+                this.maxBurst = (long) (this.rate * DEFAULT_RATE_MULTIPLE);
+            }
+            return new BurstFilter(this.level, this.rate, this.maxBurst, this.onMatch, this.onMismatch);
+        }
     }
 }
