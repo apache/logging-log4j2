@@ -14,6 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
 package org.apache.logging.log4j.jul;
 
 import java.util.logging.Filter;
@@ -62,7 +63,7 @@ public class ApiLogger extends Logger {
 
     ApiLogger(final ExtendedLogger logger) {
         super(logger.getName(), null);
-        super.setLevel(Levels.toJavaLevel(logger.getLevel()));
+        super.setLevel(LevelTranslator.toJavaLevel(logger.getLevel()));
         this.logger = logger;
     }
 
@@ -74,7 +75,7 @@ public class ApiLogger extends Logger {
         ThreadContext.put(THREAD_ID, Integer.toString(record.getThreadID()));
         ThreadContext.put(SEQUENCE_NUMBER, Long.toString(record.getSequenceNumber()));
         ThreadContext.put(LEVEL, record.getLevel().getName());
-        final org.apache.logging.log4j.Level level = Levels.toLevel(record.getLevel());
+        final org.apache.logging.log4j.Level level = LevelTranslator.toLevel(record.getLevel());
         final Message message = logger.getMessageFactory().newMessage(record.getMessage(), record.getParameters());
         final Throwable thrown = record.getThrown();
         logger.logIfEnabled(FQCN, level, null, message, thrown);
@@ -91,7 +92,7 @@ public class ApiLogger extends Logger {
 
     @Override
     public boolean isLoggable(final Level level) {
-        return logger.isEnabled(Levels.toLevel(level));
+        return logger.isEnabled(LevelTranslator.toLevel(level));
     }
 
     @Override

@@ -14,6 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
 package org.apache.logging.log4j.jul;
 
 import java.util.logging.Level;
@@ -43,7 +44,7 @@ public class CoreLogger extends ApiLogger {
 
     @Override
     public void setLevel(final Level level) throws SecurityException {
-        logger.setLevel(Levels.toLevel(level));
+        logger.setLevel(LevelTranslator.toLevel(level));
         super.doSetLevel(level);
     }
 
