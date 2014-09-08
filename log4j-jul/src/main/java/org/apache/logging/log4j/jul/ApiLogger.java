@@ -35,6 +35,8 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
  * this implementation. If you need support for these methods, then you'll need to use log4j-core.</p>
  * <p>Also note that {@link #setParent(java.util.logging.Logger)} is explicitly unsupported. Parent loggers are
  * determined using the syntax of the logger name; not through an arbitrary graph of loggers.</p>
+ * 
+ * @since 2.1
  */
 public class ApiLogger extends Logger {
 
