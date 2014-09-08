@@ -16,8 +16,15 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
+import java.io.Serializable;
 import java.util.Map;
 
+import org.apache.logging.log4j.AbstractSerializationTest;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
@@ -33,13 +40,18 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.After;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
-
 /**
  *
  */
-public class DynamicThresholdFilterTest {
+public class DynamicThresholdFilterTest extends AbstractSerializationTest {
+
+    protected Serializable[] createSerializationTestFixtures() {
+        final KeyValuePair[] pairs = new KeyValuePair[] {
+                new KeyValuePair("testuser", "DEBUG"),
+                new KeyValuePair("JohnDoe", "warn") };
+        return new Serializable[] { DynamicThresholdFilter.createFilter("userid", new KeyValuePair[0], Level.ERROR,
+                null, null) };
+    }
 
     @After
     public void cleanup() {
@@ -52,9 +64,11 @@ public class DynamicThresholdFilterTest {
     public void testFilter() {
         ThreadContext.put("userid", "testuser");
         ThreadContext.put("organization", "apache");
-        final KeyValuePair[] pairs = new KeyValuePair[] { new KeyValuePair("testuser", "DEBUG"),
-                                                    new KeyValuePair("JohnDoe", "warn")};
-        final DynamicThresholdFilter filter = DynamicThresholdFilter.createFilter("userid", pairs, Level.ERROR, null, null);
+        final KeyValuePair[] pairs = new KeyValuePair[] {
+                new KeyValuePair("testuser", "DEBUG"),
+                new KeyValuePair("JohnDoe", "warn") };
+        final DynamicThresholdFilter filter = DynamicThresholdFilter.createFilter("userid", pairs, Level.ERROR, null,
+                null);
         filter.start();
         assertTrue(filter.isStarted());
         assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.DEBUG, null, null, (Throwable) null));
