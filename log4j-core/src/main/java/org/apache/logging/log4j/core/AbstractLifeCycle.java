@@ -28,17 +28,43 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 public class AbstractLifeCycle implements LifeCycle, Serializable {
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * Allow subclasses access to the status logger without creating another instance.
      */
     protected static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
 
+    private static final long serialVersionUID = 1L;
+
     private volatile LifeCycle.State state = LifeCycle.State.INITIALIZED;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        AbstractLifeCycle other = (AbstractLifeCycle) obj;
+        if (state != other.state) {
+            return false;
+        }
+        return true;
+    }
 
     public LifeCycle.State getState() {
         return this.state;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((state == null) ? 0 : state.hashCode());
+        return result;
     }
 
     public boolean isInitialized() {

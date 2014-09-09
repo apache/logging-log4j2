@@ -39,85 +39,6 @@ public final class DynamicThresholdFilter extends AbstractFilter {
     
     private static final long serialVersionUID = 1L;
 
-    private Map<String, Level> levelMap = new HashMap<String, Level>();
-    private Level defaultThreshold = Level.ERROR;
-    private final String key;
-
-    private DynamicThresholdFilter(final String key, final Map<String, Level> pairs, final Level defaultLevel,
-                                   final Result onMatch, final Result onMismatch) {
-        super(onMatch, onMismatch);
-        if (key == null) {
-            throw new NullPointerException("key cannot be null");
-        }
-        this.key = key;
-        this.levelMap = pairs;
-        this.defaultThreshold = defaultLevel;
-    }
-
-    public String getKey() {
-        return this.key;
-    }
-
-    @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-                         final Object... params) {
-        return filter(level);
-    }
-
-    @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg,
-                         final Throwable t) {
-        return filter(level);
-    }
-
-    @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg,
-                         final Throwable t) {
-        return filter(level);
-    }
-
-    @Override
-    public Result filter(final LogEvent event) {
-        return filter(event.getLevel());
-    }
-
-    private Result filter(final Level level) {
-        final Object value = ThreadContext.get(key);
-        if (value != null) {
-            Level ctxLevel = levelMap.get(value);
-            if (ctxLevel == null) {
-                ctxLevel = defaultThreshold;
-            }
-            return level.isMoreSpecificThan(ctxLevel) ? onMatch : onMismatch;
-        }
-        return Result.NEUTRAL;
-
-    }
-
-    public Map<String, Level> getLevelMap() {
-        return levelMap;
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder();
-        sb.append("key=").append(key);
-        sb.append(", default=").append(defaultThreshold);
-        if (levelMap.size() > 0) {
-            sb.append('{');
-            boolean first = true;
-            for (final Map.Entry<String, Level> entry : levelMap.entrySet()) {
-                if (!first) {
-                    sb.append(", ");
-                    first = false;
-                }
-                sb.append(entry.getKey()).append('=').append(entry.getValue());
-            }
-            sb.append('}');
-        }
-        return sb.toString();
-    }
-
     /**
      * Create the DynamicThresholdFilter.
      * @param key The name of the key to compare.
@@ -140,5 +61,130 @@ public final class DynamicThresholdFilter extends AbstractFilter {
         }
         final Level level = defaultThreshold == null ? Level.ERROR : defaultThreshold;
         return new DynamicThresholdFilter(key, map, level, onMatch, onMismatch);
+    }
+    private Level defaultThreshold = Level.ERROR;
+    private final String key;
+
+    private Map<String, Level> levelMap = new HashMap<String, Level>();
+
+    private DynamicThresholdFilter(final String key, final Map<String, Level> pairs, final Level defaultLevel,
+                                   final Result onMatch, final Result onMismatch) {
+        super(onMatch, onMismatch);
+        if (key == null) {
+            throw new NullPointerException("key cannot be null");
+        }
+        this.key = key;
+        this.levelMap = pairs;
+        this.defaultThreshold = defaultLevel;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        DynamicThresholdFilter other = (DynamicThresholdFilter) obj;
+        if (defaultThreshold == null) {
+            if (other.defaultThreshold != null) {
+                return false;
+            }
+        } else if (!defaultThreshold.equals(other.defaultThreshold)) {
+            return false;
+        }
+        if (key == null) {
+            if (other.key != null) {
+                return false;
+            }
+        } else if (!key.equals(other.key)) {
+            return false;
+        }
+        if (levelMap == null) {
+            if (other.levelMap != null) {
+                return false;
+            }
+        } else if (!levelMap.equals(other.levelMap)) {
+            return false;
+        }
+        return true;
+    }
+
+    private Result filter(final Level level) {
+        final Object value = ThreadContext.get(key);
+        if (value != null) {
+            Level ctxLevel = levelMap.get(value);
+            if (ctxLevel == null) {
+                ctxLevel = defaultThreshold;
+            }
+            return level.isMoreSpecificThan(ctxLevel) ? onMatch : onMismatch;
+        }
+        return Result.NEUTRAL;
+
+    }
+
+    @Override
+    public Result filter(final LogEvent event) {
+        return filter(event.getLevel());
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg,
+                         final Throwable t) {
+        return filter(level);
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg,
+                         final Throwable t) {
+        return filter(level);
+    }
+
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+                         final Object... params) {
+        return filter(level);
+    }
+
+    public String getKey() {
+        return this.key;
+    }
+
+    public Map<String, Level> getLevelMap() {
+        return levelMap;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((defaultThreshold == null) ? 0 : defaultThreshold.hashCode());
+        result = prime * result + ((key == null) ? 0 : key.hashCode());
+        result = prime * result + ((levelMap == null) ? 0 : levelMap.hashCode());
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("key=").append(key);
+        sb.append(", default=").append(defaultThreshold);
+        if (levelMap.size() > 0) {
+            sb.append('{');
+            boolean first = true;
+            for (final Map.Entry<String, Level> entry : levelMap.entrySet()) {
+                if (!first) {
+                    sb.append(", ");
+                    first = false;
+                }
+                sb.append(entry.getKey()).append('=').append(entry.getValue());
+            }
+            sb.append('}');
+        }
+        return sb.toString();
     }
 }
