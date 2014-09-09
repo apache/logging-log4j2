@@ -14,10 +14,13 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
 package org.apache.logging.log4j.jul;
 
 import java.util.logging.Logger;
 
+import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.message.MessageFormatMessageFactory;
 import org.apache.logging.log4j.spi.LoggerContext;
 
 /**
@@ -27,8 +30,11 @@ import org.apache.logging.log4j.spi.LoggerContext;
  * @since 2.1
  */
 public class ApiLoggerAdapter extends AbstractLoggerAdapter {
+
+    private static final MessageFactory MESSAGE_FACTORY = new MessageFormatMessageFactory();
+
     @Override
     protected Logger newLogger(final String name, final LoggerContext context) {
-        return new ApiLogger(context.getLogger(name));
+        return new ApiLogger(context.getLogger(name, MESSAGE_FACTORY));
     }
 }
