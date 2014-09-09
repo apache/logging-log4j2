@@ -62,6 +62,8 @@ import org.apache.logging.log4j.util.Strings;
 @Plugin(name = "Rfc5424Layout", category = "Core", elementType = "layout", printObject = true)
 public final class Rfc5424Layout extends AbstractStringLayout {
 
+    private static final long serialVersionUID = 1L;
+
     private static final String LF = "\n";
 
     /**

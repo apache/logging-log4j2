@@ -187,6 +187,8 @@ import org.apache.logging.log4j.core.util.Charsets;
 @Plugin(name = "XmlLayout", category = "Core", elementType = "layout", printObject = true)
 public final class XmlLayout extends AbstractJacksonLayout {
 
+    private static final long serialVersionUID = 1L;
+
     private static final String ROOT_TAG = "Events";
 
     protected XmlLayout(final boolean locationInfo, final boolean properties, final boolean complete, final boolean compact, final Charset charset) {

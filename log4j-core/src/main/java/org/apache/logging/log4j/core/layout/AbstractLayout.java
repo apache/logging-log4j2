@@ -30,7 +30,9 @@ import org.apache.logging.log4j.status.StatusLogger;
  * @param <T>
  *        The Class that the Layout will format the LogEvent into.
  */
-public abstract class AbstractLayout<T extends Serializable> implements Layout<T> {
+public abstract class AbstractLayout<T extends Serializable> implements Layout<T>, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Allow subclasses access to the status logger without creating another instance.

@@ -26,6 +26,8 @@ import org.apache.logging.log4j.core.util.Charsets;
  */
 public abstract class AbstractStringLayout extends AbstractLayout<String> {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * The charset for the formatted message.
      */

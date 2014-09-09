@@ -51,6 +51,9 @@ import org.apache.logging.log4j.core.pattern.RegexReplacement;
  */
 @Plugin(name = "PatternLayout", category = "Core", elementType = "layout", printObject = true)
 public final class PatternLayout extends AbstractStringLayout {
+    
+    private static final long serialVersionUID = 1L;
+
     /**
      * Default pattern string for log output. Currently set to the
      * string <b>"%m%n"</b> which just prints the application supplied

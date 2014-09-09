@@ -39,6 +39,9 @@ import org.apache.logging.log4j.core.util.NetUtils;
  */
 @Plugin(name = "SyslogLayout", category = "Core", elementType = "layout", printObject = true)
 public final class SyslogLayout extends AbstractStringLayout {
+
+    private static final long serialVersionUID = 1L;
+
     /**
      * Match newlines in a platform-independent manner.
      */

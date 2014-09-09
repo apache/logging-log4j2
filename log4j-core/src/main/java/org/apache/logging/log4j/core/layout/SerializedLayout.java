@@ -30,6 +30,8 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 @Plugin(name = "SerializedLayout", category = "Core", elementType = "layout", printObject = true)
 public final class SerializedLayout extends AbstractLayout<LogEvent> {
 
+    private static final long serialVersionUID = 1L;
+
     private static byte[] serializedHeader;
 
     static {

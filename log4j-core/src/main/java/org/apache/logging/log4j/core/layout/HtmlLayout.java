@@ -45,6 +45,8 @@ import org.apache.logging.log4j.core.util.Transform;
 @Plugin(name = "HtmlLayout", category = "Core", elementType = "layout", printObject = true)
 public final class HtmlLayout extends AbstractStringLayout {
 
+    private static final long serialVersionUID = 1L;
+
     private static final int BUF_SIZE = 256;
 
     private static final String TRACE_PREFIX = "<br />&nbsp;&nbsp;&nbsp;&nbsp;";
