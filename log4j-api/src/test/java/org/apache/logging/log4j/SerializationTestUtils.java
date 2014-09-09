@@ -18,32 +18,19 @@ package org.apache.logging.log4j;
 
 import java.io.Serializable;
 
-import org.junit.Test;
+import org.apache.commons.lang3.SerializationUtils;
+import org.junit.Assert;
 
 /**
- * Subclasses tests {@link Serializable} objects.
+ * Tests {@link Serializable} objects.
  */
-public abstract class AbstractSerializationTest {
+public class SerializationTestUtils {
 
-    /**
-     * Creates the {@link Serializable} objects to test.
-     * 
-     * @return new serializables.
-     */
-    protected abstract Serializable[] createSerializationTestFixtures();
-
-    @Test
-    public void testSerializationRoundtripNoException() {
-        for (Serializable serializable : createSerializationTestFixtures()) {
-            SerializationTestUtils.roundtripNoException(serializable);
-        }
+    public static void roundtripNoException(Serializable serializable) {
+        SerializationUtils.roundtrip(serializable);
     }
 
-    @Test
-    public void testSerializationRoundtripEquals() {
-        Serializable[] serializables = createSerializationTestFixtures();
-        for (Serializable serializable : serializables) {
-            SerializationTestUtils.roundtripEquals(serializable);
-        }
+    public static void roundtripEquals(Serializable serializable) {
+        Assert.assertEquals(serializable, SerializationUtils.roundtrip(serializable));
     }
 }
