@@ -7,7 +7,7 @@ import java.util.Collection;
 import org.apache.logging.log4j.AbstractSerializationTest;
 import org.junit.runners.Parameterized.Parameters;
 
-public class KeyValuePairTest extends AbstractSerializationTest {
+public class KeyValuePairSerializationTest extends AbstractSerializationTest {
 
     @Parameters
     public static Collection<Object[]> data() {
@@ -16,7 +16,7 @@ public class KeyValuePairTest extends AbstractSerializationTest {
                 { new KeyValuePair("JohnDoe", "warn") } });
     }
 
-    public KeyValuePairTest(Serializable serializable) {
+    public KeyValuePairSerializationTest(Serializable serializable) {
         super(serializable);
     }
 

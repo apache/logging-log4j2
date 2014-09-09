@@ -25,14 +25,14 @@ import org.junit.Ignore;
 import org.junit.runners.Parameterized.Parameters;
 
 @Ignore
-public class StatusLoggerTest extends AbstractSerializationTest {
+public class StatusLoggerSerializationTest extends AbstractSerializationTest {
 
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] { { StatusLogger.getLogger() } });
     }
 
-    public StatusLoggerTest(Serializable serializable) {
+    public StatusLoggerSerializationTest(Serializable serializable) {
         super(serializable);
     }
 
