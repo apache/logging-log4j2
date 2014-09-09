@@ -51,9 +51,8 @@ public class Logger extends AbstractLogger {
     private static final long serialVersionUID = 1L;
 
     /**
-     * config should be consistent across threads.
+     * Config should be consistent across threads.
      */
-    // FIXME: non-serializable object in serializable class
     protected volatile PrivateConfig config;
 
     // FIXME: ditto to the above
