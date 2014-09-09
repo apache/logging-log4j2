@@ -31,7 +31,9 @@ public class LoggerSerializationTest extends AbstractSerializationTest {
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-                { LogManager.getLogger() },                
+                { new LoggerContext("").getLogger("", null) },
+                { LogManager.getRootLogger() },
+                { LogManager.getLogger() },
                 { LogManager.getLogger("test") } });
     }
 
