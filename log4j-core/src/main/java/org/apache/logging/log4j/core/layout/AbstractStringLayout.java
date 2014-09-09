@@ -31,6 +31,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
     /**
      * The charset for the formatted message.
      */
+    // TODO: Charset is not serializable. Implement read/writeObject() ?
     private final Charset charset;
 
     protected AbstractStringLayout(final Charset charset) {
