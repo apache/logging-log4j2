@@ -32,7 +32,9 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
  * underlying Log4j {@link org.apache.logging.log4j.Logger} which may be implemented in one of many different ways.
  * Consult the documentation for your Log4j Provider for more details.
  * <p>Note that the methods {@link #getParent()} and {@link #setLevel(java.util.logging.Level)} are not supported by
- * this implementation. If you need support for these methods, then you'll need to use log4j-core.</p>
+ * this implementation. If you need support for these methods, then you'll need to use log4j-core. The
+ * {@link #getParent()} method will not fail (thanks to JUL API limitations), but it won't necessarily be
+ * accurate!</p>
  * <p>Also note that {@link #setParent(java.util.logging.Logger)} is explicitly unsupported. Parent loggers are
  * determined using the syntax of the logger name; not through an arbitrary graph of loggers.</p>
  * 
@@ -115,11 +117,6 @@ public class ApiLogger extends Logger {
      */
     protected void doSetLevel(final Level newLevel) throws SecurityException {
         super.setLevel(newLevel);
-    }
-
-    @Override
-    public Logger getParent() {
-        throw new UnsupportedOperationException("Cannot get parent logger through log4j-api");
     }
 
     /**

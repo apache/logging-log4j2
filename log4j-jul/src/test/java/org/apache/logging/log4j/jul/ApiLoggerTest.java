@@ -14,6 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
 package org.apache.logging.log4j.jul;
 
 import java.util.List;
@@ -125,9 +126,10 @@ public class ApiLoggerTest {
         }
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void testGetParentFails() throws Exception {
-        logger.getParent();
+    @Test
+    public void testGetParent() throws Exception {
+        final Logger parent = logger.getParent();
+        assertNull("No parent logger should be automatically set up using log4j-api", parent);
     }
 
     @Test(expected = UnsupportedOperationException.class)
