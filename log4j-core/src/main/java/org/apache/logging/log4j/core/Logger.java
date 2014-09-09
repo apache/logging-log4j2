@@ -248,6 +248,7 @@ public class Logger extends AbstractLogger {
     /**
      * The binding between a Logger and its configuration.
      */
+    // TODO: Should not be Serializable per EJ item 74 (2nd Ed)?
     protected class PrivateConfig implements Serializable {
         private static final long serialVersionUID = 1L;
         // config fields are public to make them visible to Logger subclasses
