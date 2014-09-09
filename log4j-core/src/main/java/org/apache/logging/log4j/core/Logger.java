@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -248,7 +249,8 @@ public class Logger extends AbstractLogger {
     /**
      * The binding between a Logger and its configuration.
      */
-    protected class PrivateConfig {
+    protected class PrivateConfig implements Serializable {
+        private static final long serialVersionUID = 1L;
         // config fields are public to make them visible to Logger subclasses
         public final LoggerConfig loggerConfig;
         public final Configuration config;
