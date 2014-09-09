@@ -49,14 +49,9 @@ public class DynamicThresholdFilterTest extends AbstractSerializationTest {
         final KeyValuePair[] pairs = new KeyValuePair[] {
                 new KeyValuePair("testuser", "DEBUG"),
                 new KeyValuePair("JohnDoe", "warn") };
-        // @formatter:off
         return new Serializable[] {
-                DynamicThresholdFilter.createFilter("userid", new KeyValuePair[0], Level.ERROR,
-                null, null),
-                DynamicThresholdFilter.createFilter("userid", pairs, Level.ERROR,
-                null, null)
-        };
-        // @formatter:on
+                DynamicThresholdFilter.createFilter("userid", new KeyValuePair[0], Level.ERROR, null, null),
+                DynamicThresholdFilter.createFilter("userid", pairs, Level.ERROR, null, null) };
     }
 
     @After
