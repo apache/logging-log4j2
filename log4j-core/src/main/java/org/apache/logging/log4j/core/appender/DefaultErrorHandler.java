@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.io.Serializable;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.ErrorHandler;
@@ -25,7 +27,9 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  *
  */
-public class DefaultErrorHandler implements ErrorHandler {
+public class DefaultErrorHandler implements ErrorHandler, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
