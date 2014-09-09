@@ -19,31 +19,29 @@ package org.apache.logging.log4j;
 import java.io.Serializable;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 /**
  * Subclasses tests {@link Serializable} objects.
  */
+@RunWith(Parameterized.class)
 public abstract class AbstractSerializationTest {
 
-    /**
-     * Creates the {@link Serializable} objects to test.
-     * 
-     * @return new serializables.
-     */
-    protected abstract Serializable[] createSerializationTestFixtures();
+    private Serializable serializable;
 
-    @Test
-    public void testSerializationRoundtripNoException() {
-        for (Serializable serializable : createSerializationTestFixtures()) {
-            SerializationTestUtils.roundtripNoException(serializable);
-        }
+    public AbstractSerializationTest(Serializable serializable) {
+        super();
+        this.serializable = serializable;
     }
 
     @Test
     public void testSerializationRoundtripEquals() {
-        Serializable[] serializables = createSerializationTestFixtures();
-        for (Serializable serializable : serializables) {
-            SerializationTestUtils.roundtripEquals(serializable);
-        }
+        SerializationTestUtils.roundtripEquals(serializable);
+    }
+
+    @Test
+    public void testSerializationRoundtripNoException() {
+        SerializationTestUtils.roundtripNoException(serializable);
     }
 }

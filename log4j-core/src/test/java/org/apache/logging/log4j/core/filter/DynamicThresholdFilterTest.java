@@ -21,15 +21,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import java.io.Serializable;
 import java.util.Map;
 
-import org.apache.logging.log4j.AbstractSerializationTest;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.Filter.Result;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -44,17 +41,7 @@ import org.junit.Test;
 /**
  *
  */
-public class DynamicThresholdFilterTest extends AbstractSerializationTest {
-
-    protected Serializable[] createSerializationTestFixtures() {
-        final KeyValuePair[] pairs = new KeyValuePair[] {
-                new KeyValuePair("testuser", "DEBUG"),
-                new KeyValuePair("JohnDoe", "warn") };
-        return new Serializable[] {
-                DynamicThresholdFilter.createFilter("userid", new KeyValuePair[0], Level.ERROR, Result.ACCEPT, Result.DENY),
-                DynamicThresholdFilter.createFilter("userid", new KeyValuePair[0], Level.ERROR, null, null),
-                DynamicThresholdFilter.createFilter("userid", pairs, Level.ERROR, null, null) };
-    }
+public class DynamicThresholdFilterTest {
 
     @After
     public void cleanup() {

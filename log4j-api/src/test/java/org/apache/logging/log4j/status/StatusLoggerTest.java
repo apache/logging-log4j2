@@ -17,15 +17,23 @@
 package org.apache.logging.log4j.status;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.apache.logging.log4j.AbstractSerializationTest;
 import org.junit.Ignore;
+import org.junit.runners.Parameterized.Parameters;
 
 @Ignore
 public class StatusLoggerTest extends AbstractSerializationTest {
 
-    @Override
-    protected Serializable[] createSerializationTestFixtures() {
-        return new StatusLogger[] { StatusLogger.getLogger() };
+    @Parameters
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][] { { StatusLogger.getLogger() } });
     }
+
+    public StatusLoggerTest(Serializable serializable) {
+        super(serializable);
+    }
+
 }
