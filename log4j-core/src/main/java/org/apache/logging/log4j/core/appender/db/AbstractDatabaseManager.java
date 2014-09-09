@@ -14,8 +14,10 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
 package org.apache.logging.log4j.core.appender.db;
 
+import java.io.Flushable;
 import java.util.ArrayList;
 
 import org.apache.logging.log4j.core.LogEvent;
@@ -25,7 +27,7 @@ import org.apache.logging.log4j.core.appender.ManagerFactory;
 /**
  * Manager that allows database appenders to have their configuration reloaded without losing events.
  */
-public abstract class AbstractDatabaseManager extends AbstractManager {
+public abstract class AbstractDatabaseManager extends AbstractManager implements Flushable {
     private final ArrayList<LogEvent> buffer;
     private final int bufferSize;
 
