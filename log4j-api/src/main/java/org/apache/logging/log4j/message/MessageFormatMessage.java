@@ -29,6 +29,9 @@ import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Handles messages that consist of a format string conforming to java.text.MessageFormat.
+ *
+ * @serial In version 2.1, due to a bug in the serialization format, the serialization format was changed along with
+ * its {@code serialVersionUID} value.
  */
 public class MessageFormatMessage implements Message {
 
