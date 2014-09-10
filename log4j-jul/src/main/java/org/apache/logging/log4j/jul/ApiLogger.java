@@ -22,7 +22,6 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
@@ -42,33 +41,13 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
  */
 public class ApiLogger extends Logger {
 
-    private static final String FQCN = java.util.logging.Logger.class.getName();
-
-    private static final String PREFIX = "log4j.jul.";
-
-    /**
-     * The {@link org.apache.logging.log4j.ThreadContext} key where the value of {@link java.util.logging.LogRecord#getThreadID()} will be stored.
-     */
-    public static final String THREAD_ID = PREFIX + "threadID";
-
-    /**
-     * The {@link org.apache.logging.log4j.ThreadContext} key where the value of {@link java.util.logging.LogRecord#getSequenceNumber()} will be stored.
-     */
-    public static final String SEQUENCE_NUMBER = PREFIX + "sequenceNumber";
-
-    /**
-     * The {@link org.apache.logging.log4j.ThreadContext} key where the name of the {@link java.util.logging.Level} will be stored. This is particularly useful
-     * for custom Level implementations as well as for obtaining the exact Level that was used rather than the
-     * equivalent Log4j {@link org.apache.logging.log4j.Level}.
-     */
-    public static final String LEVEL = PREFIX + "level";
-
-    private final ExtendedLogger logger;
+    private final WrappedLogger logger;
+    private static final String FQCN = ApiLogger.class.getName();
 
     ApiLogger(final ExtendedLogger logger) {
         super(logger.getName(), null);
         super.setLevel(LevelTranslator.toJavaLevel(logger.getLevel()));
-        this.logger = logger;
+        this.logger = new WrappedLogger(logger);
     }
 
     @Override
@@ -76,16 +55,10 @@ public class ApiLogger extends Logger {
         if (isFiltered(record)) {
             return;
         }
-        ThreadContext.put(THREAD_ID, Integer.toString(record.getThreadID()));
-        ThreadContext.put(SEQUENCE_NUMBER, Long.toString(record.getSequenceNumber()));
-        ThreadContext.put(LEVEL, record.getLevel().getName());
         final org.apache.logging.log4j.Level level = LevelTranslator.toLevel(record.getLevel());
         final Message message = logger.getMessageFactory().newMessage(record.getMessage(), record.getParameters());
         final Throwable thrown = record.getThrown();
         logger.logIfEnabled(FQCN, level, null, message, thrown);
-        ThreadContext.remove(THREAD_ID);
-        ThreadContext.remove(SEQUENCE_NUMBER);
-        ThreadContext.remove(LEVEL);
     }
 
     // support for Logger.getFilter()/Logger.setFilter()
@@ -126,5 +99,137 @@ public class ApiLogger extends Logger {
     @Override
     public void setParent(final Logger parent) {
         throw new UnsupportedOperationException("Cannot set parent logger");
+    }
+
+    @Override
+    public void log(final Level level, final String msg) {
+        logger.log(LevelTranslator.toLevel(level), msg);
+    }
+
+    @Override
+    public void log(final Level level, final String msg, final Object param1) {
+        logger.log(LevelTranslator.toLevel(level), msg, param1);
+    }
+
+    @Override
+    public void log(final Level level, final String msg, final Object[] params) {
+        logger.log(LevelTranslator.toLevel(level), msg, params);
+    }
+
+    @Override
+    public void log(final Level level, final String msg, final Throwable thrown) {
+        logger.log(LevelTranslator.toLevel(level), msg, thrown);
+    }
+
+    @Override
+    public void logp(final Level level, final String sourceClass, final String sourceMethod, final String msg) {
+        log(level, msg);
+    }
+
+    @Override
+    public void logp(final Level level, final String sourceClass, final String sourceMethod, final String msg,
+                     final Object param1) {
+        log(level, msg, param1);
+    }
+
+    @Override
+    public void logp(final Level level, final String sourceClass, final String sourceMethod, final String msg,
+                     final Object[] params) {
+        log(level, msg, params);
+    }
+
+    @Override
+    public void logp(final Level level, final String sourceClass, final String sourceMethod, final String msg,
+                     final Throwable thrown) {
+        log(level, msg, thrown);
+    }
+
+    @Override
+    public void logrb(final Level level, final String sourceClass, final String sourceMethod, final String bundleName,
+                      final String msg) {
+        log(level, msg);
+    }
+
+    @Override
+    public void logrb(final Level level, final String sourceClass, final String sourceMethod, final String bundleName,
+                      final String msg, final Object param1) {
+        log(level, msg, param1);
+    }
+
+    @Override
+    public void logrb(final Level level, final String sourceClass, final String sourceMethod, final String bundleName,
+                      final String msg, final Object[] params) {
+        log(level, msg, params);
+    }
+
+    @Override
+    public void logrb(final Level level, final String sourceClass, final String sourceMethod, final String bundleName,
+                      final String msg, final Throwable thrown) {
+        log(level, msg, thrown);
+    }
+
+    @Override
+    public void entering(final String sourceClass, final String sourceMethod) {
+        logger.entry();
+    }
+
+    @Override
+    public void entering(final String sourceClass, final String sourceMethod, final Object param1) {
+        logger.entry(param1);
+    }
+
+    @Override
+    public void entering(final String sourceClass, final String sourceMethod, final Object[] params) {
+        logger.entry(params);
+    }
+
+    @Override
+    public void exiting(final String sourceClass, final String sourceMethod) {
+        logger.exit();
+    }
+
+    @Override
+    public void exiting(final String sourceClass, final String sourceMethod, final Object result) {
+        logger.exit(result);
+    }
+
+    @Override
+    public void throwing(final String sourceClass, final String sourceMethod, final Throwable thrown) {
+        logger.throwing(thrown);
+    }
+
+    @Override
+    public void severe(final String msg) {
+        logger.logIfEnabled(FQCN, org.apache.logging.log4j.Level.ERROR, null, msg);
+    }
+
+    @Override
+    public void warning(final String msg) {
+        logger.logIfEnabled(FQCN, org.apache.logging.log4j.Level.WARN, null, msg);
+    }
+
+    @Override
+    public void info(final String msg) {
+        logger.logIfEnabled(FQCN, org.apache.logging.log4j.Level.INFO, null, msg);
+    }
+
+    @Override
+    public void config(final String msg) {
+        logger.logIfEnabled(FQCN, LevelTranslator.CONFIG, null, msg);
+    }
+
+    @Override
+    public void fine(final String msg) {
+        logger.logIfEnabled(FQCN, LevelTranslator.FINE, null, msg);
+    }
+
+    @Override
+    public void finer(final String msg) {
+        logger.logIfEnabled(FQCN, LevelTranslator.FINER, null, msg);
+    }
+
+    @Override
+    public void finest(final String msg) {
+        logger.logIfEnabled(FQCN, LevelTranslator.FINEST, null, msg);
     }
 }
