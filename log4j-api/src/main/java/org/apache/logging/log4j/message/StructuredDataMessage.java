@@ -14,6 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
 package org.apache.logging.log4j.message;
 
 import java.util.Map;
@@ -27,6 +28,7 @@ import org.apache.logging.log4j.util.EnglishEnums;
  * When using asynchronous loggers and appenders it is not recommended to modify this message after the message is
  * logged, because it is undefined whether the logged message string will contain the old values or the modified
  * values.
+ * </p>
  *
  * @see <a href="https://tools.ietf.org/html/rfc5424">RFC 5424</a>
  */
@@ -53,7 +55,7 @@ public class StructuredDataMessage extends MapMessage {
     }
 
     /**
-     * Constructor based on a String id.
+     * Creates a StructuredDataMessage using an ID (max 32 characters), message, and type (max 32 characters).
      * @param id The String id.
      * @param msg The message.
      * @param type The message type.
@@ -64,7 +66,8 @@ public class StructuredDataMessage extends MapMessage {
         this.type = type;
     }
     /**
-     * Constructor based on a String id.
+     * Creates a StructuredDataMessage using an ID (max 32 characters), message, type (max 32 characters), and an
+     * initial map of structured data to include.
      * @param id The String id.
      * @param msg The message.
      * @param type The message type.
@@ -79,7 +82,7 @@ public class StructuredDataMessage extends MapMessage {
     }
 
     /**
-     * Constructor based on a StructuredDataId.
+     * Creates a StructuredDataMessage using a StructuredDataId, message, and type (max 32 characters).
      * @param id The StructuredDataId.
      * @param msg The message.
      * @param type The message type.
@@ -91,7 +94,8 @@ public class StructuredDataMessage extends MapMessage {
     }
 
     /**
-     * Constructor based on a StructuredDataId.
+     * Creates a StructuredDataMessage using a StructuredDataId, message, type (max 32 characters), and an initial map
+     * of structured data to include.
      * @param id The StructuredDataId.
      * @param msg The message.
      * @param type The message type.
@@ -141,7 +145,7 @@ public class StructuredDataMessage extends MapMessage {
     }
 
     /**
-     * Returns the id.
+     * Returns this message id.
      * @return the StructuredDataId.
      */
     public StructuredDataId getId() {
@@ -149,7 +153,7 @@ public class StructuredDataMessage extends MapMessage {
     }
 
     /**
-     * Sets the id from a String.
+     * Sets the id from a String. This ID can be at most 32 characters long.
      * @param id The String id.
      */
     protected void setId(final String id) {
@@ -165,7 +169,7 @@ public class StructuredDataMessage extends MapMessage {
     }
 
     /**
-     * Sets the type.
+     * Returns this message type.
      * @return the type.
      */
     public String getType() {
