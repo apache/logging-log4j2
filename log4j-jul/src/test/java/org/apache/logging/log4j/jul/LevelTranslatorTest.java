@@ -30,37 +30,40 @@ import static org.junit.Assert.*;
 @RunWith(Parameterized.class)
 public class LevelTranslatorTest {
 
-    private final java.util.logging.Level level;
-    private final Level expectedLevel;
+    private final java.util.logging.Level javaLevel;
+    private final Level log4jLevel;
 
-    public LevelTranslatorTest(final java.util.logging.Level level, final Level expectedLevel) {
-        this.level = level;
-        this.expectedLevel = expectedLevel;
+    public LevelTranslatorTest(final java.util.logging.Level javaLevel, final Level log4jLevel) {
+        this.javaLevel = javaLevel;
+        this.log4jLevel = log4jLevel;
     }
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(
             new Object[][]{
-                {CustomJdkLevel.TEST, Level.INFO},
-                {CustomJdkLevel.DEFCON_2, Level.ERROR},
-                {CustomJdkLevel.DEFCON_1, Level.FATAL},
                 {java.util.logging.Level.OFF, Level.OFF},
                 {java.util.logging.Level.ALL, Level.ALL},
                 {java.util.logging.Level.SEVERE, Level.ERROR},
                 {java.util.logging.Level.WARNING, Level.WARN},
                 {java.util.logging.Level.INFO, Level.INFO},
-                {java.util.logging.Level.CONFIG, Level.INFO},
-                {java.util.logging.Level.FINE, Level.DEBUG},
-                {java.util.logging.Level.FINER, Level.DEBUG},
-                {java.util.logging.Level.FINEST, Level.TRACE}
+                {java.util.logging.Level.CONFIG, LevelTranslator.CONFIG},
+                {java.util.logging.Level.FINE, LevelTranslator.FINE},
+                {java.util.logging.Level.FINER, LevelTranslator.FINER},
+                {java.util.logging.Level.FINEST, LevelTranslator.FINEST}
             }
         );
     }
 
     @Test
     public void testToLevel() throws Exception {
-        final Level actualLevel = LevelTranslator.toLevel(level);
-        assertEquals(expectedLevel, actualLevel);
+        final Level actualLevel = LevelTranslator.toLevel(javaLevel);
+        assertEquals(log4jLevel, actualLevel);
+    }
+
+    @Test
+    public void testToJavaLevel() throws Exception {
+        final java.util.logging.Level actualLevel = LevelTranslator.toJavaLevel(log4jLevel);
+        assertEquals(javaLevel, actualLevel);
     }
 }

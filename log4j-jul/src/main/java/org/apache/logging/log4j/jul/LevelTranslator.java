@@ -17,10 +17,11 @@
 
 package org.apache.logging.log4j.jul;
 
-import java.util.IdentityHashMap;
-import java.util.Map;
-
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Utility class to convert between JDK Levels and Log4j 2 Levels.
@@ -29,37 +30,31 @@ import org.apache.logging.log4j.Level;
  */
 public final class LevelTranslator {
 
-    private static final int JDK_SEVERE = java.util.logging.Level.SEVERE.intValue();    // ERROR
-    private static final int JDK_WARNING = java.util.logging.Level.WARNING.intValue();  // WARN
-    private static final int JDK_INFO = java.util.logging.Level.INFO.intValue();        // INFO
-    private static final int JDK_CONFIG = java.util.logging.Level.CONFIG.intValue();    // INFO
-    private static final int JDK_FINE = java.util.logging.Level.FINE.intValue();        // DEBUG
-    private static final int JDK_FINER = java.util.logging.Level.FINER.intValue();      // DEBUG
-    private static final int JDK_FINEST = java.util.logging.Level.FINEST.intValue();    // TRACE
+    public static final String LEVEL_CONVERTER_PROPERTY = "log4j.jul.levelConverter";
 
-    // standard level mappings
-    private static final Map<java.util.logging.Level, Level> JDK_TO_LOG4J =
-        new IdentityHashMap<java.util.logging.Level, Level>(10);
-    private static final Map<Level, java.util.logging.Level> LOG4J_TO_JDK =
-        new IdentityHashMap<Level, java.util.logging.Level>(10);
+    public static final Level FINEST = Level.forName("FINEST", Level.TRACE.intLevel() + 100);
+    public static final Level FINER = Level.forName("FINER", Level.TRACE.intLevel());
+    public static final Level FINE = Level.forName("FINE", Level.DEBUG.intLevel());
+    public static final Level CONFIG = Level.forName("CONFIG", Level.INFO.intLevel() + 50);
+
+    private static final Logger LOGGER = StatusLogger.getLogger();
+    private static final LevelConverter LEVEL_CONVERTER;
 
     static {
-        JDK_TO_LOG4J.put(java.util.logging.Level.OFF, Level.OFF);
-        JDK_TO_LOG4J.put(java.util.logging.Level.FINEST, Level.TRACE);
-        JDK_TO_LOG4J.put(java.util.logging.Level.FINER, Level.DEBUG);
-        JDK_TO_LOG4J.put(java.util.logging.Level.FINE, Level.DEBUG);
-        JDK_TO_LOG4J.put(java.util.logging.Level.CONFIG, Level.INFO);
-        JDK_TO_LOG4J.put(java.util.logging.Level.INFO, Level.INFO);
-        JDK_TO_LOG4J.put(java.util.logging.Level.WARNING, Level.WARN);
-        JDK_TO_LOG4J.put(java.util.logging.Level.SEVERE, Level.ERROR);
-        JDK_TO_LOG4J.put(java.util.logging.Level.ALL, Level.ALL);
-        LOG4J_TO_JDK.put(Level.OFF, java.util.logging.Level.OFF);
-        LOG4J_TO_JDK.put(Level.TRACE, java.util.logging.Level.FINEST);
-        LOG4J_TO_JDK.put(Level.DEBUG, java.util.logging.Level.FINE);
-        LOG4J_TO_JDK.put(Level.INFO, java.util.logging.Level.INFO);
-        LOG4J_TO_JDK.put(Level.WARN, java.util.logging.Level.WARNING);
-        LOG4J_TO_JDK.put(Level.ERROR, java.util.logging.Level.SEVERE);
-        LOG4J_TO_JDK.put(Level.ALL, java.util.logging.Level.ALL);
+        final String levelConverterClassName =
+            PropertiesUtil.getProperties().getStringProperty(LEVEL_CONVERTER_PROPERTY);
+        if (levelConverterClassName != null) {
+            LevelConverter levelConverter;
+            try {
+                levelConverter = LoaderUtil.newCheckedInstanceOf(levelConverterClassName, LevelConverter.class);
+            } catch (final Exception e) {
+                LOGGER.error("Could not create custom LevelConverter [{}].", levelConverterClassName, e);
+                levelConverter = new DefaultLevelConverter();
+            }
+            LEVEL_CONVERTER = levelConverter;
+        } else {
+            LEVEL_CONVERTER = new DefaultLevelConverter();
+        }
     }
 
     /**
@@ -69,40 +64,7 @@ public final class LevelTranslator {
      * @return converted Level.
      */
     public static Level toLevel(final java.util.logging.Level level) {
-        final Level standardLevel = JDK_TO_LOG4J.get(level);
-        if (standardLevel != null) {
-            return standardLevel;
-        }
-        final int value = level.intValue();
-        if (value == Integer.MAX_VALUE) {
-            return Level.OFF;
-        }
-        if (value == Integer.MIN_VALUE) {
-            return Level.ALL;
-        }
-        if (value <= JDK_FINEST) { // up to 300
-            return Level.TRACE;
-        }
-        if (value <= JDK_FINER) { // 301 to 400
-            return Level.DEBUG;
-        }
-        if (value <= JDK_FINE) { // 401 to 500
-            return Level.DEBUG;
-        }
-        if (value <= JDK_CONFIG) { // 501 to 700
-            return Level.INFO;
-        }
-        if (value <= JDK_INFO) { // 701 to 800
-            return Level.INFO;
-        }
-        if (value <= JDK_WARNING) { // 801 to 900
-            return Level.WARN;
-        }
-        if (value <= JDK_SEVERE) { // 901 to 1000
-            return Level.ERROR;
-        }
-        // 1001+
-        return Level.FATAL;
+        return LEVEL_CONVERTER.toLevel(level);
     }
 
     /**
@@ -112,11 +74,7 @@ public final class LevelTranslator {
      * @return converted Level.
      */
     public static java.util.logging.Level toJavaLevel(final Level level) {
-        final java.util.logging.Level standardLevel = LOG4J_TO_JDK.get(level);
-        if (standardLevel != null) {
-            return standardLevel;
-        }
-        return java.util.logging.Level.parse(level.name());
+        return LEVEL_CONVERTER.toJavaLevel(level);
     }
 
     private LevelTranslator() {
