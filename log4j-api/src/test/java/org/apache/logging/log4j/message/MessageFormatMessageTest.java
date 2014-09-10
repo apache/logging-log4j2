@@ -14,8 +14,10 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
 package org.apache.logging.log4j.message;
 
+import org.apache.logging.log4j.SerializationTestUtils;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -85,5 +87,20 @@ public class MessageFormatMessageTest {
         param.set("XYZ");
         final String actual = msg.getFormattedMessage();
         assertEquals("Should use initial param value", "Test message abc", actual);
+    }
+
+    @Test
+    public void testSerializationWithParameters() throws Exception {
+        SerializationTestUtils.roundtripEquals(new MessageFormatMessage("Test {0} {1}", "message", "test"));
+    }
+
+    @Test
+    public void testSerializationWithNoParameters() throws Exception {
+        SerializationTestUtils.roundtripEquals(new MessageFormatMessage("Test"));
+    }
+
+    @Test
+    public void testSerializationWithNonStringParameters() throws Exception {
+        SerializationTestUtils.roundtripEquals(new MessageFormatMessage("{0}{1}{2}", 3, '.', 14L));
     }
 }
