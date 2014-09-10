@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.?.?" date="2014-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-391" dev="rgoers" type="fix" due-to="Kamal Bahadur">
+        FlumePersistentManager now handles LockConflictExceptions in Berkeley Db when sending a batch.
+      </action>
       <action issue="LOG4J2-782" dev="mattsicker" type="fix">
         Remove invalid Oracle Maven repository.
       </action>
@@ -62,17 +65,17 @@
       </action>
       <action issue="LOG4J2-766" dev="ggregory" type="update" due-to="Bruno P. Kinoshita">
         Incomplete documentation for JSONLayout.
-      </action>      
+      </action>
       <action issue="LOG4J2-800" dev="ggregory" type="update">
         All life cycle implementations should be serializable.
-      </action>      
+      </action>
       <action issue="LOG4J2-801" dev="ggregory" type="update">
         org.apache.logging.log4j.core.Logger should be serializable.
-      </action>      
+      </action>
       <action issue="LOG4J2-810" dev="ggregory" type="update">
         Update javax.mail to 1.5.2 from 1.5.0.
-      </action>      
-    </release> 
+      </action>
+    </release>
     <release version="2.0.2" date="2014-08-16" description="Bug fixes and enhancements">
       <action issue="LOG4J2-775" dev="ggregory" type="update">
         Update Apache Flume to 1.5.0.1 from 1.5.0.
@@ -119,17 +122,17 @@
       <action issue="LOG4J2-756" dev="rpopma" type="fix" due-to="Scott Harrington">
         Prevent JUnit test from creating unnecessary Log4j2Plugins.dat during build.
       </action>
-    </release> 
+    </release>
     <release version="2.0.1" date="2014-07-29" description="Bug fixes">
       <action issue="LOG4J2-744" dev="rpopma" type="fix" due-to="Scott Harrington">
         Avoid unnecessary Clock calls when TimestampMessage is logged.
-      </action>      
+      </action>
       <action issue="LOG4J2-704" dev="rpopma" type="fix">
         Improved error message if configuration file not found.
-      </action>      
+      </action>
       <action issue="LOG4J2-750" dev="ggregory" type="fix" due-to="Mike Calmus">
         Webapp configuration page has incorrect class name.
-      </action>      
+      </action>
       <action issue="LOG4J2-749" dev="rpopma" type="fix" due-to="Scott Harrington">
         Retain the default date pattern after fixing the ISO8601 pattern.
       </action>
@@ -187,7 +190,7 @@
       <action issue="LOG4J2-733" dev="ggregory" type="updated">
         Update to latest Jackson jars from the 2.4.1.X line.
       </action>
-    </release> 
+    </release>
     <release version="2.0" date="2014-07-12" description="GA Release">
       <action issue="LOG4J2-705" dev="rpopma" type="fix">
         Fixed issue where Async Logger does not log thread context stack data.

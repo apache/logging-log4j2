@@ -658,18 +658,34 @@ public class FlumePersistentManager extends FlumeAvroManager {
         private boolean sendBatch(DatabaseEntry key, final DatabaseEntry data) throws Exception {
             boolean errors = false;
             OperationStatus status;
-            Cursor cursor = database.openCursor(null, CursorConfig.DEFAULT);
+            Cursor cursor = null;
             try {
-                status = cursor.getFirst(key, data, null);
+            	final BatchEvent batch = new BatchEvent();
+            	for (int retryIndex = 0; retryIndex < lockTimeoutRetryCount; ++retryIndex) {
+            		try {
+            			cursor = database.openCursor(null, CursorConfig.DEFAULT);
+            			status = cursor.getFirst(key, data, null);
 
-                final BatchEvent batch = new BatchEvent();
-                for (int i = 0; status == OperationStatus.SUCCESS && i < batchSize; ++i) {
-                    final SimpleEvent event = createEvent(data);
-                    if (event != null) {
-                        batch.addEvent(event);
+            			for (int i = 0; status == OperationStatus.SUCCESS && i < batchSize; ++i) {
+            				final SimpleEvent event = createEvent(data);
+            				if (event != null) {
+            					batch.addEvent(event);
+            				}
+            				status = cursor.getNext(key, data, null);
+            			}
+            			break;
+            		} catch (final LockConflictException lce) {
+            			if (cursor != null) {
+            				try {
+                                cursor.close();
+                                cursor = null;
+                            } catch (final Exception ex) {
+                                LOGGER.trace("Ignored exception closing cursor during lock conflict.");
+                            }
+                        }
                     }
-                    status = cursor.getNext(key, data, null);
-                }
+            	}
+
                 try {
                     manager.send(batch);
                 } catch (final Exception ioe) {
@@ -677,8 +693,10 @@ public class FlumePersistentManager extends FlumeAvroManager {
                     errors = true;
                 }
                 if (!errors) {
-                    cursor.close();
-                    cursor = null;
+                	if (cursor != null) {
+	                    cursor.close();
+	                    cursor = null;
+                	}
                     Transaction txn = null;
                     Exception exception = null;
                     for (int retryIndex = 0; retryIndex < lockTimeoutRetryCount; ++retryIndex) {
