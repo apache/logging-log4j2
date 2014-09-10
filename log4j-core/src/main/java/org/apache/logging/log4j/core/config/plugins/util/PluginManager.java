@@ -14,6 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
 package org.apache.logging.log4j.core.config.plugins.util;
 
 import java.io.BufferedInputStream;
@@ -196,14 +197,18 @@ public class PluginManager {
     }
 
     private void reportPluginLoadDuration(final boolean preLoad, long elapsed) {
-        final StringBuilder sb = new StringBuilder("Generated plugins in ");
-        DecimalFormat numFormat = new DecimalFormat("#0.000000");
+        final DecimalFormat numFormat = new DecimalFormat("#0.000000");
         final double seconds = elapsed / (1000.0 * 1000.0 * 1000.0);
-        sb.append(numFormat.format(seconds)).append(" seconds, packages: ");
-        sb.append(PACKAGES);
-        sb.append(", preload: ");
-        sb.append(preLoad);
-        sb.append(".");
+        final StringBuilder sb = new StringBuilder()
+            .append("Plugin category ")
+            .append(category)
+            .append(" loaded in ")
+            .append(numFormat.format(seconds))
+            .append(" seconds, packages: ")
+            .append(PACKAGES)
+            .append(", preload: ")
+            .append(preLoad)
+            .append(".");
         LOGGER.debug(sb.toString());
     }
 
@@ -304,7 +309,7 @@ public class PluginManager {
         public String toString() {
             final StringBuilder msg = new StringBuilder("annotated with @" + Plugin.class.getSimpleName());
             if (isA != null) {
-                msg.append(" is assignable to " + isA.getSimpleName());
+                msg.append(" is assignable to ").append(isA.getSimpleName());
             }
             return msg.toString();
         }
