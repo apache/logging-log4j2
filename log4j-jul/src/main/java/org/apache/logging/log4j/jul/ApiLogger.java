@@ -220,12 +220,12 @@ public class ApiLogger extends Logger {
 
     @Override
     public void fine(final String msg) {
-        logger.logIfEnabled(FQCN, LevelTranslator.FINE, null, msg);
+        logger.logIfEnabled(FQCN, org.apache.logging.log4j.Level.DEBUG, null, msg);
     }
 
     @Override
     public void finer(final String msg) {
-        logger.logIfEnabled(FQCN, LevelTranslator.FINER, null, msg);
+        logger.logIfEnabled(FQCN, org.apache.logging.log4j.Level.TRACE, null, msg);
     }
 
     @Override

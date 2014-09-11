@@ -48,8 +48,8 @@ public class LevelTranslatorTest {
                 {java.util.logging.Level.WARNING, Level.WARN},
                 {java.util.logging.Level.INFO, Level.INFO},
                 {java.util.logging.Level.CONFIG, LevelTranslator.CONFIG},
-                {java.util.logging.Level.FINE, LevelTranslator.FINE},
-                {java.util.logging.Level.FINER, LevelTranslator.FINER},
+                {java.util.logging.Level.FINE, Level.DEBUG},
+                {java.util.logging.Level.FINER, Level.TRACE},
                 {java.util.logging.Level.FINEST, LevelTranslator.FINEST}
             }
         );

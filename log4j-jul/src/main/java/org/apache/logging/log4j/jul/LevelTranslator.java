@@ -33,8 +33,6 @@ public final class LevelTranslator {
     public static final String LEVEL_CONVERTER_PROPERTY = "log4j.jul.levelConverter";
 
     public static final Level FINEST = Level.forName("FINEST", Level.TRACE.intLevel() + 100);
-    public static final Level FINER = Level.forName("FINER", Level.TRACE.intLevel());
-    public static final Level FINE = Level.forName("FINE", Level.DEBUG.intLevel());
     public static final Level CONFIG = Level.forName("CONFIG", Level.INFO.intLevel() + 50);
 
     private static final Logger LOGGER = StatusLogger.getLogger();
