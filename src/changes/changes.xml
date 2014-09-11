@@ -23,7 +23,7 @@
     <title>Changes</title>
   </properties>
   <body>
-    <release version="2.?.?" date="2014-??-??" description="Bug fixes and enhancements">
+    <release version="2.1" date="2014-??-??" description="Bug fixes and enhancements">
       <action issue="LOG4J2-391" dev="rgoers" type="fix" due-to="Kamal Bahadur">
         FlumePersistentManager now handles LockConflictExceptions in Berkeley Db when sending a batch.
       </action>
