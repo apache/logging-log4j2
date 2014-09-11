@@ -33,6 +33,7 @@ import java.util.Collection;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.layout.GelfLayout;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.util.Charsets;
 import org.junit.Test;
@@ -137,6 +138,8 @@ public class TypeConvertersTest {
                 { "Cron", Facility.CRON, null, Facility.class },
                 { "not a real facility", Facility.AUTH, "auth", Facility.class },
                 { null, null, null, Facility.class },
+                // GELF compression types
+                { "GZIP", GelfLayout.CompressionType.GZIP, "GZIP", GelfLayout.CompressionType.class },
                 // arrays
                 { "123", "123".toCharArray(), null, char[].class },
                 { "123", "123".getBytes(Charset.defaultCharset()), null, byte[].class },

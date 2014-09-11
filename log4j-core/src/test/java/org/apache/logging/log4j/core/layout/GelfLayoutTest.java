@@ -21,6 +21,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.*;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.layout.GelfLayout.CompressionType;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.AfterClass;
@@ -72,7 +73,7 @@ public class GelfLayoutTest {
         // set up appender
         final GelfLayout layout = GelfLayout.createLayout(HOSTNAME, new KeyValuePair[] {
                 new KeyValuePair(KEY1, VALUE1),
-                new KeyValuePair(KEY2, VALUE2), }, 1024);
+                new KeyValuePair(KEY2, VALUE2), }, CompressionType.GZIP, 1024);
         // ConsoleAppender appender = new ConsoleAppender("Console", layout);
         final ListAppender eventAppender = new ListAppender("Events", null, null, true, false);
         final ListAppender appender = new ListAppender("Layouted", null, layout, true, false);

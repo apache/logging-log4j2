@@ -23,6 +23,7 @@ import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Map;
+import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPOutputStream;
 
 import org.apache.logging.log4j.Level;
@@ -62,6 +63,10 @@ import org.apache.logging.log4j.status.StatusLogger;
 @Plugin(name = "GelfLayout", category = "Core", elementType = "layout", printObject = true)
 public final class GelfLayout extends AbstractStringLayout {
 
+    public static enum CompressionType {
+        GZIP, ZLIB, NONE
+    }
+
     private static final byte[] EMPTY_BYTES = new byte[0];
     private static final char C = ',';
     private static final int COMPRESSION_THRESHOLD = 1024;
@@ -77,9 +82,11 @@ public final class GelfLayout extends AbstractStringLayout {
             @PluginAttribute("host") final String host,
             @PluginElement("AdditionalField") final KeyValuePair[] additionalFields,
             @PluginAttribute(value = "compressionThreshold", 
+                defaultString = "GZIP") final CompressionType compressionType,
+            @PluginAttribute(value = "compressionThreshold", 
                 defaultInt= COMPRESSION_THRESHOLD) final int compressionThreshold) {
             // @formatter:on
-        return new GelfLayout(host, additionalFields, compressionThreshold);
+        return new GelfLayout(host, additionalFields, compressionType, compressionThreshold);
     }
 
     static String formatTimestamp(final long timeMillis) {
@@ -92,17 +99,31 @@ public final class GelfLayout extends AbstractStringLayout {
 
     private final int compressionThreshold;
 
-    public GelfLayout(final String host, final KeyValuePair[] additionalFields, final int compressionThreshold) {
+    private CompressionType compressionType;
+
+    public GelfLayout(final String host, final KeyValuePair[] additionalFields, CompressionType compressionType,
+            final int compressionThreshold) {
         super(Charsets.UTF_8);
         this.host = host;
         this.additionalFields = additionalFields;
+        this.compressionType = compressionType;
         this.compressionThreshold = compressionThreshold;
     }
 
     private byte[] compress(final byte[] bytes) {
         try {
             final ByteArrayOutputStream baos = new ByteArrayOutputStream(compressionThreshold / 8);
-            final GZIPOutputStream stream = new GZIPOutputStream(baos);
+            DeflaterOutputStream stream;
+            switch (compressionType) {
+            case GZIP:
+                stream = new GZIPOutputStream(baos);
+                break;
+            case ZLIB:
+                stream = new DeflaterOutputStream(baos);
+                break;
+            default:
+                return bytes;
+            }
             stream.write(bytes);
             stream.finish();
             stream.close();

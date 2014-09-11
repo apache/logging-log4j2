@@ -36,6 +36,7 @@ import javax.xml.bind.DatatypeConverter;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.layout.GelfLayout;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Protocol;
@@ -336,7 +337,7 @@ public final class TypeConverters {
         }
         if (s == null) {
             // don't debug print here, resulting output is hard to understand
-            //LOGGER.debug("Null string given to convert. Using default [{}].", defaultValue);
+            // LOGGER.debug("Null string given to convert. Using default [{}].", defaultValue);
             return parseDefaultValue(converter, defaultValue);
         }
         try {
@@ -437,6 +438,8 @@ public final class TypeConverters {
         registry.put(Filter.Result.class, new EnumConverter<Filter.Result>(Filter.Result.class));
         registry.put(Facility.class, new EnumConverter<Facility>(Facility.class));
         registry.put(Protocol.class, new EnumConverter<Protocol>(Protocol.class));
+        registry.put(GelfLayout.CompressionType.class, new EnumConverter<GelfLayout.CompressionType>(
+                GelfLayout.CompressionType.class));
         registry.put(HtmlLayout.FontSize.class, new EnumConverter<HtmlLayout.FontSize>(HtmlLayout.FontSize.class));
     }
 }
