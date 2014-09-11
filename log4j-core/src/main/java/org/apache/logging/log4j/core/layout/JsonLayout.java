@@ -792,6 +792,8 @@ import org.apache.logging.log4j.core.util.Charsets;
 @Plugin(name = "JsonLayout", category = "Core", elementType = "layout", printObject = true)
 public final class JsonLayout extends AbstractJacksonLayout {
 
+    static final String CONTENT_TYPE = "application/json";
+    
     private static final long serialVersionUID = 1L;
 
     protected JsonLayout(final boolean locationInfo, final boolean properties, final boolean complete, final boolean compact,
@@ -840,7 +842,7 @@ public final class JsonLayout extends AbstractJacksonLayout {
      * @return The content type.
      */
     public String getContentType() {
-        return "application/json; charset=" + this.getCharset();
+        return CONTENT_TYPE + "; charset=" + this.getCharset();
     }
 
     /**

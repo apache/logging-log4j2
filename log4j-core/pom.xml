@@ -201,6 +201,12 @@
       <artifactId>org.apache.felix.framework</artifactId>
       <scope>test</scope>
     </dependency>
+    <!--  GELF -->
+    <dependency>
+      <groupId>net.javacrumbs.json-unit</groupId>
+      <artifactId>json-unit</artifactId>
+      <scope>test</scope>
+    </dependency>
     <!-- Other -->
     <dependency>
       <groupId>commons-codec</groupId>
