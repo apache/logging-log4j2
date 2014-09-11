@@ -49,7 +49,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * <pre>
  * &lt;Appenders&gt;
  *        &lt;Socket name="Graylog" protocol="udp" host="graylog.domain.com" port="12201"&gt;
- *            &lt;GelfLayout host="someserver"&gt;
+ *            &lt;GelfLayout host="someserver" compressionType="GZIP" compressionThreshold="1024"&gt;
  *                &lt;KeyValuePair key="additionalField1" value="additional value 1"/&gt;
  *                &lt;KeyValuePair key="additionalField2" value="additional value 2"/&gt;
  *            &lt;/GelfLayout&gt;
