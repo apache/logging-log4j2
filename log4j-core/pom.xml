@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!--
   ~ Licensed to the Apache Software Foundation (ASF) under one or more
   ~ contributor license agreements. See the NOTICE file distributed with
@@ -99,6 +100,13 @@
       <scope>compile</scope>
       <optional>true</optional>
     </dependency>
+    <!-- Used for JMS appenders (needs an implementation of course) -->
+    <dependency>
+      <groupId>org.jboss.spec.javax.jms</groupId>
+      <artifactId>jboss-jms-api_1.1_spec</artifactId>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
 
     <!-- TEST DEPENDENCIES -->
 
@@ -172,6 +180,11 @@
     <dependency>
       <groupId>org.mockejb</groupId>
       <artifactId>mockejb</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.activemq</groupId>
+      <artifactId>activemq-broker</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

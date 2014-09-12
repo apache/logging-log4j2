@@ -14,7 +14,8 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.jms.receiver;
+
+package org.apache.logging.log4j.core.net.mom.jms;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

@@ -14,7 +14,8 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.jms.appender;
+
+package org.apache.logging.log4j.core.appender.mom;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,10 +31,9 @@ import javax.jms.ObjectMessage;
 import org.apache.activemq.jndi.ActiveMQInitialContextFactory;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.JndiManager;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
-import org.apache.logging.log4j.jms.manager.JmsManager;
-import org.apache.logging.log4j.jms.manager.JndiManager;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.AfterClass;
 import org.junit.Before;

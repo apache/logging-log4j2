@@ -14,7 +14,8 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.jms.manager;
+
+package org.apache.logging.log4j.core.appender;
 
 import java.util.Properties;
 import javax.naming.Context;
@@ -22,13 +23,11 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.appender.AbstractManager;
-import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.util.JndiCloser;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * JNDI context manager. Mainly useful for finding JMS objects and configuring the InitialContext.
+ * JNDI {@link javax.naming.Context} manager.
  */
 public class JndiManager extends AbstractManager {
 

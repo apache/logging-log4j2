@@ -14,7 +14,8 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.jms.manager;
+
+package org.apache.logging.log4j.core.appender.mom;
 
 import java.io.Serializable;
 import javax.jms.Connection;
@@ -29,6 +30,7 @@ import javax.naming.NamingException;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.AbstractManager;
+import org.apache.logging.log4j.core.appender.JndiManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 

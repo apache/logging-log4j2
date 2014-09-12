@@ -14,7 +14,8 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.jms.appender;
+
+package org.apache.logging.log4j.core.appender.mom;
 
 import javax.jms.Message;
 import javax.jms.ObjectMessage;
