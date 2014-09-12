@@ -25,7 +25,7 @@
   </parent>
   <artifactId>log4j-flume-ng</artifactId>
   <packaging>jar</packaging>
-  <name>Apache Log4j Flume NG Bridge</name>
+  <name>Apache Log4j Flume Bridge</name>
   <description>Log4j 2.0 Flume Appender</description>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
