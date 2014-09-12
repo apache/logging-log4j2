@@ -58,8 +58,8 @@ import org.apache.logging.log4j.status.StatusLogger;
  * &lt;/Appenders&gt;
  * </pre>
  *
- * @see http://graylog2.org/gelf
- * @see http://graylog2.org/resources/gelf/specification
+ * @see <a href="http://graylog2.org/gelf">GELF home page</a>
+ * @see <a href="http://graylog2.org/resources/gelf/specification">GELF specification</a>
  */
 @Plugin(name = "GelfLayout", category = "Core", elementType = "layout", printObject = true)
 public final class GelfLayout extends AbstractStringLayout {
