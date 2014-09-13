@@ -38,6 +38,8 @@ public interface Builder<T> {
      * unspecified attributes for the plugin.
      *
      * @return the configured plugin instance.
+     * @throws org.apache.logging.log4j.core.config.ConfigurationException if there was an error building the plugin
+     * object.
      */
     T build();
 }
