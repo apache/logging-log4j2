@@ -319,16 +319,17 @@
 							<tt>SystemClock</tt>
 						</td>
 						<td>
-							Implementation of the
+							<p>Implementation of the
 							<tt>org.apache.logging.log4j.core.helpers.Clock</tt>
 							interface that is used for timestamping the log
 							events when all loggers are asynchronous.
 							<br />
 							By default, <tt>System.currentTimeMillis</tt>
 							is called on every log event.
-							<br />
+							</p>
+                            <p>
 							<tt>CachedClock</tt>
-							is an optimization where
+							is an optimization intended for low-latency applications where
 							time stamps are generated from a clock that
 							updates its internal time in a background thread once
 							every millisecond, or every 1024 log events,
@@ -338,11 +339,14 @@
 							Unless you are logging many
 							events, you may see "jumps"
 							of 10-16 milliseconds between log time stamps.
-							<br />
+                            The use of a background thread may cause issues
+                            for web applications and OSGi applications
+                            so CachedClock is not recommended for this kind
+                            of applications.
+							</p><p>
 							You can also specify a fully qualified class name
 							of a custom class that implements the
-							<tt>Clock</tt>
-							interface.
+							<tt>Clock</tt> interface.</p>
 						</td>
 					</tr>
 				</table>
