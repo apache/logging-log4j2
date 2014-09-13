@@ -32,7 +32,7 @@ import org.apache.logging.log4j.core.config.plugins.visitors.PluginValueVisitor;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
+@Target({ElementType.PARAMETER, ElementType.FIELD})
 @PluginVisitorStrategy(PluginValueVisitor.class)
 public @interface PluginValue {
 
