@@ -42,13 +42,13 @@ public final class PluginVisitors {
      * @param <A>        the Plugin annotation type.
      * @return a PluginVisitor instance if one could be created, or {@code null} otherwise.
      */
-    @SuppressWarnings("unchecked") // we're keeping track of types, thanks
     public static <A extends Annotation> PluginVisitor<A> findVisitor(final Class<A> annotation) {
         final PluginVisitorStrategy strategy = annotation.getAnnotation(PluginVisitorStrategy.class);
         if (strategy == null) {
             LOGGER.debug("No PluginVisitorStrategy found on annotation [{}]. Ignoring.", annotation);
             return null;
         }
+        @SuppressWarnings("unchecked")
         final Class<? extends PluginVisitor<A>> visitorClass = (Class<? extends PluginVisitor<A>>) strategy.value();
         try {
             return visitorClass.newInstance();
