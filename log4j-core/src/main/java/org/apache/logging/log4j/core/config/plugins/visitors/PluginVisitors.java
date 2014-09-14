@@ -39,22 +39,36 @@ public final class PluginVisitors {
      * data to be useful. Such data is passed through both the setters and the visit method.
      *
      * @param annotation the Plugin annotation class to find a PluginVisitor for.
-     * @param <A>        the Plugin annotation type.
      * @return a PluginVisitor instance if one could be created, or {@code null} otherwise.
      */
-    public static <A extends Annotation> PluginVisitor<A> findVisitor(final Class<A> annotation) {
-        final PluginVisitorStrategy strategy = annotation.getAnnotation(PluginVisitorStrategy.class);
-        if (strategy == null) {
+    public static PluginVisitor<? extends Annotation> findVisitor(final Class<? extends Annotation> annotation) {
+        final Class<? extends PluginVisitor<? extends Annotation>> visitorClass = findVisitorStrategy(annotation);
+        if (visitorClass == null) {
             LOGGER.debug("No PluginVisitorStrategy found on annotation [{}]. Ignoring.", annotation);
             return null;
         }
-        @SuppressWarnings("unchecked")
-        final Class<? extends PluginVisitor<A>> visitorClass = (Class<? extends PluginVisitor<A>>) strategy.value();
         try {
             return visitorClass.newInstance();
         } catch (final Exception e) {
             LOGGER.error("Error loading PluginVisitor [{}] for annotation [{}].", visitorClass, annotation, e);
             return null;
         }
+    }
+
+    private static Class<? extends PluginVisitor<? extends Annotation>> findVisitorStrategy(
+        final Class<? extends Annotation> annotation) {
+        final PluginVisitorStrategy strategy = annotation.getAnnotation(PluginVisitorStrategy.class);
+        if (strategy != null) {
+            return strategy.value();
+        }
+        final Annotation[] annotations = annotation.getDeclaredAnnotations();
+        for (final Annotation a : annotations) {
+            final PluginVisitorStrategy fallbackStrategy = a.annotationType().getAnnotation(
+                PluginVisitorStrategy.class);
+            if (fallbackStrategy != null) {
+                return fallbackStrategy.value();
+            }
+        }
+        return null;
     }
 }
