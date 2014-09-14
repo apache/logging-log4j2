@@ -24,6 +24,10 @@
   </properties>
   <body>
     <release version="2.1" date="2014-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-745" dev="mattsicker" type="fix" due-to="Scott Harrington">
+        Avoid ConverterKey plugin clashes by using a more predictable plugin loading infrastructure.
+        Plugins have been segmented into three parts: class path, user-specified packages, and OSGi bundles.
+      </action>
       <action issue="LOG4J2-753" dev="rpopma" type="fix">
         Improved CachedClock performance.
       </action>
