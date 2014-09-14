@@ -30,12 +30,12 @@ import java.security.Security;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
-
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.layout.GelfLayout;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.net.Facility;
@@ -441,5 +441,7 @@ public final class TypeConverters {
         registry.put(GelfLayout.CompressionType.class, new EnumConverter<GelfLayout.CompressionType>(
                 GelfLayout.CompressionType.class));
         registry.put(HtmlLayout.FontSize.class, new EnumConverter<HtmlLayout.FontSize>(HtmlLayout.FontSize.class));
+        registry.put(ConsoleAppender.Target.class, new EnumConverter<ConsoleAppender.Target>(
+            ConsoleAppender.Target.class));
     }
 }
