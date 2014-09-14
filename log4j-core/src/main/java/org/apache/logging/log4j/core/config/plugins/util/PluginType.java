@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.config.plugins.util;
 
 
-import java.io.Serializable;
+import org.apache.logging.log4j.core.config.plugins.processor.PluginEntry;
 
 /**
  * Plugin Descriptor. This is a memento object for Plugin annotations paired to their annotated classes.
@@ -25,20 +25,19 @@ import java.io.Serializable;
  * @param <T> The plug-in class, which can be any kind of class.
  * @see org.apache.logging.log4j.core.config.plugins.Plugin
  */
-public class PluginType<T> implements Serializable {
+public class PluginType<T> {
 
-    private static final long serialVersionUID = 4743255148794846612L;
-
+    private final PluginEntry pluginEntry;
     private final Class<T> pluginClass;
     private final String elementName;
-    private final boolean printObject;
-    private final boolean deferChildren;
 
-    public PluginType(final Class<T> clazz, final String name, final boolean printObj, final boolean deferChildren) {
-        this.pluginClass = clazz;
-        this.elementName = name;
-        this.printObject = printObj;
-        this.deferChildren = deferChildren;
+    /**
+     * @since 2.1
+     */
+    public PluginType(final PluginEntry pluginEntry, final Class<T> pluginClass, final String elementName) {
+        this.pluginEntry = pluginEntry;
+        this.pluginClass = pluginClass;
+        this.elementName = elementName;
     }
 
     public Class<T> getPluginClass() {
@@ -49,17 +48,36 @@ public class PluginType<T> implements Serializable {
         return this.elementName;
     }
 
+    /**
+     * @since 2.1
+     */
+    public String getKey() {
+        return this.pluginEntry.getKey();
+    }
+
     public boolean isObjectPrintable() {
-        return this.printObject;
+        return this.pluginEntry.isPrintable();
     }
 
     public boolean isDeferChildren() {
-        return this.deferChildren;
+        return this.pluginEntry.isDefer();
+    }
+
+    /**
+     * @since 2.1
+     */
+    public String getCategory() {
+        return this.pluginEntry.getCategory();
     }
 
     @Override
     public String toString() {
-        return "PluginType [pluginClass=" + this.pluginClass + ", elementName=" + this.elementName + ", printObject="
-                + this.printObject + ", deferChildren=" + this.deferChildren + "]";
+        return "PluginType [pluginClass=" + pluginClass +
+                ", key=" + pluginEntry.getKey() +
+                ", elementName=" + pluginEntry.getName() +
+                ", isObjectPrintable=" + pluginEntry.isPrintable() +
+                ", isDeferChildren==" + pluginEntry.isDefer() +
+                ", category=" + pluginEntry.getCategory() +
+                "]";
     }
 }

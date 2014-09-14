@@ -9,3 +9,6 @@ Copyright 2005-2006 Tim Fennell
 
 Dumbster SMTP test server
 Copyright 2004 Jason Paul Kitchen
+
+TypeUtil.java
+Copyright 2002-2012 Ramnivas Laddad, Juergen Hoeller, Chris Beams

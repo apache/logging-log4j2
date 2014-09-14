@@ -17,6 +17,8 @@
 
 package org.apache.logging.log4j.core.config.plugins.processor;
 
+import org.apache.logging.log4j.core.util.Closer;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
@@ -25,16 +27,25 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentMap;
-
-import org.apache.logging.log4j.core.config.plugins.util.PluginRegistry;
 
 /**
  *
  */
 public class PluginCache {
-    private final transient PluginRegistry<PluginEntry> pluginCategories = new PluginRegistry<PluginEntry>();
+    private final Map<String, Map<String, PluginEntry>> categories =
+        new LinkedHashMap<String, Map<String, PluginEntry>>();
+
+    /**
+     * Returns all categories of plugins in this cache.
+     *
+     * @return all categories of plugins in this cache.
+     * @since 2.1
+     */
+    public Map<String, Map<String, PluginEntry>> getAllCategories() {
+        return categories;
+    }
 
     /**
      * Gets or creates a category of plugins.
@@ -42,8 +53,12 @@ public class PluginCache {
      * @param category name of category to look up.
      * @return plugin mapping of names to plugin entries.
      */
-    public ConcurrentMap<String, PluginEntry> getCategory(final String category) {
-        return pluginCategories.getCategory(category);
+    public Map<String, PluginEntry> getCategory(final String category) {
+        final String key = category.toLowerCase();
+        if (!categories.containsKey(key)) {
+            categories.put(key, new LinkedHashMap<String, PluginEntry>());
+        }
+        return categories.get(key);
     }
 
     /**
@@ -52,11 +67,14 @@ public class PluginCache {
      * @param os destination to save cache to.
      * @throws IOException
      */
+    // NOTE: if this file format is to be changed, the filename should change and this format should still be readable
     public void writeCache(final OutputStream os) throws IOException {
         final DataOutputStream out = new DataOutputStream(new BufferedOutputStream(os));
         try {
-            out.writeInt(pluginCategories.getCategoryCount());
-            for (final Map.Entry<String, ConcurrentMap<String, PluginEntry>> category : pluginCategories.getCategories()) {
+            // See PluginManager.readFromCacheFiles for the corresponding decoder. Format may not be changed
+            // without breaking existing Log4j2Plugins.dat files.
+            out.writeInt(categories.size());
+            for (final Map.Entry<String, Map<String, PluginEntry>> category : categories.entrySet()) {
                 out.writeUTF(category.getKey());
                 final Map<String, PluginEntry> m = category.getValue();
                 out.writeInt(m.size());
@@ -70,7 +88,7 @@ public class PluginCache {
                 }
             }
         } finally {
-            out.close();
+            Closer.closeSilently(out);
         }
     }
 
@@ -81,7 +99,7 @@ public class PluginCache {
      * @throws IOException
      */
     public void loadCacheFiles(final Enumeration<URL> resources) throws IOException {
-        pluginCategories.clear();
+        categories.clear();
         while (resources.hasMoreElements()) {
             final URL url = resources.nextElement();
             final DataInputStream in = new DataInputStream(new BufferedInputStream(url.openStream()));
@@ -89,7 +107,7 @@ public class PluginCache {
                 final int count = in.readInt();
                 for (int i = 0; i < count; i++) {
                     final String category = in.readUTF();
-                    final ConcurrentMap<String, PluginEntry> m = pluginCategories.getCategory(category);
+                    final Map<String, PluginEntry> m = getCategory(category);
                     final int entries = in.readInt();
                     for (int j = 0; j < entries; j++) {
                         final PluginEntry entry = new PluginEntry();
@@ -99,11 +117,13 @@ public class PluginCache {
                         entry.setPrintable(in.readBoolean());
                         entry.setDefer(in.readBoolean());
                         entry.setCategory(category);
-                        m.putIfAbsent(entry.getKey(), entry);
+                        if (!m.containsKey(entry.getKey())) {
+                            m.put(entry.getKey(), entry);
+                        }
                     }
                 }
             } finally {
-                in.close();
+                Closer.closeSilently(in);
             }
         }
     }
@@ -114,6 +134,6 @@ public class PluginCache {
      * @return number of plugin categories in cache.
      */
     public int size() {
-        return pluginCategories.getCategoryCount();
+        return categories.size();
     }
 }

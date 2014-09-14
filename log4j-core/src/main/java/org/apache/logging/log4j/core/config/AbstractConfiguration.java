@@ -20,6 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -102,6 +103,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private final StrSubstitutor subst = new StrSubstitutor(tempLookup);
     private LoggerConfig root = new LoggerConfig();
     private final ConcurrentMap<String, Object> componentMap = new ConcurrentHashMap<String, Object>();
+    protected final List<String> pluginPackages = new ArrayList<String>();
     protected PluginManager pluginManager;
     private final ConfigurationSource configurationSource;
 
@@ -121,6 +123,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     @Override
+    public List<String> getPluginPackages() {
+        return pluginPackages;
+    }
+
+    @Override
     public Map<String, String> getProperties() {
         return properties;
     }
@@ -132,9 +139,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     public void start() {
         LOGGER.debug("Starting configuration {}", this);
         this.setStarting();
-        pluginManager.collectPlugins();
+        pluginManager.collectPlugins(pluginPackages);
         final PluginManager levelPlugins = new PluginManager("Level");
-        levelPlugins.collectPlugins();
+        levelPlugins.collectPlugins(pluginPackages);
         final Map<String, PluginType<?>> plugins = levelPlugins.getPlugins();
         if (plugins != null) {
             for (final PluginType<?> type : plugins.values()) {
@@ -336,7 +343,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         } else {
             final Map<String, String> map = (Map<String, String>) componentMap.get(CONTEXT_PROPERTIES);
             final StrLookup lookup = map == null ? null : new MapLookup(map);
-            subst.setVariableResolver(new Interpolator(lookup));
+            subst.setVariableResolver(new Interpolator(lookup, pluginPackages));
         }
 
         boolean setLoggers = false;
@@ -692,7 +699,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     * {@link org.apache.logging.log4j.core.config.plugins.PluginFactory}, and each parameter should be annotated with
     * an appropriate plugin annotation depending on what that parameter describes. Parameters annotated with
     * {@link org.apache.logging.log4j.core.config.plugins.PluginAttribute} must be a type that can be converted from
-    * a string using one of the {@link org.apache.logging.log4j.core.config.plugins.util.TypeConverter TypeConverters}.
+    * a string using one of the {@link org.apache.logging.log4j.core.config.plugins.convert.TypeConverter TypeConverters}.
     * Parameters with {@link org.apache.logging.log4j.core.config.plugins.PluginElement} may be any plugin class or an
     * array of a plugin class. Collections and Maps are currently not supported, although the factory method that is
     * called can create these from an array.
@@ -720,7 +727,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     * @return the created plugin object or {@code null} if there was an error setting it up.
     * @see org.apache.logging.log4j.core.config.plugins.util.PluginBuilder
     * @see org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitor
-    * @see org.apache.logging.log4j.core.config.plugins.util.TypeConverter
+    * @see org.apache.logging.log4j.core.config.plugins.convert.TypeConverter
     */
     private <T> Object createPluginObject(final PluginType<T> type, final Node node, final LogEvent event)
     {

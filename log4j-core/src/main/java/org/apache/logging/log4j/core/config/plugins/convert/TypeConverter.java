@@ -15,17 +15,21 @@
  * limitations under the License.
  */
 
-package org.apache.logging.log4j.core.util;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.Enumeration;
+package org.apache.logging.log4j.core.config.plugins.convert;
 
 /**
- * Abstract interface for a ClassLoader or similar object.
+ * Interface for doing automatic String conversion to a specific type.
+ *
+ * @param <T> Converts Strings into the given type {@code T}.
  */
-public interface ResourceLoader {
-    Class<?> loadClass(String name) throws ClassNotFoundException;
-    URL getResource(String name);
-    Enumeration<URL> getResources(String name) throws IOException;
+public interface TypeConverter<T> {
+
+    /**
+     * Converts a String to a given type.
+     *
+     * @param s the String to convert. Cannot be {@code null}.
+     * @return the converted object.
+     * @throws Exception thrown when a conversion error occurs
+     */
+    T convert(String s) throws Exception;
 }

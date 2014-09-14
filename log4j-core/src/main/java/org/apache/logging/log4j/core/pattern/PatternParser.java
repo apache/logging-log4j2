@@ -16,20 +16,20 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Most of the work of the {@link org.apache.logging.log4j.core.layout.PatternLayout} class is delegated to the
@@ -126,9 +126,9 @@ public final class PatternParser {
             final Class<?> filterClass) {
         this.config = config;
         final PluginManager manager = new PluginManager(converterKey);
-        manager.collectPlugins();
+        manager.collectPlugins(config == null ? null : config.getPluginPackages());
         final Map<String, PluginType<?>> plugins = manager.getPlugins();
-        final Map<String, Class<PatternConverter>> converters = new HashMap<String, Class<PatternConverter>>();
+        final Map<String, Class<PatternConverter>> converters = new LinkedHashMap<String, Class<PatternConverter>>();
 
         for (final PluginType<?> type : plugins.values()) {
             try {
@@ -140,7 +140,13 @@ public final class PatternParser {
                 final ConverterKeys keys = clazz.getAnnotation(ConverterKeys.class);
                 if (keys != null) {
                     for (final String key : keys.value()) {
-                        converters.put(key, clazz);
+                        if (converters.containsKey(key)) {
+                            LOGGER.warn("Converter key '{}' is already mapped to '{}'. " +
+                                    "Sorry, Dave, I can't let you do that! Ignoring plugin [{}].",
+                                key, converters.get(key), clazz);
+                        } else {
+                            converters.put(key, clazz);
+                        }
                     }
                 }
             } catch (final Exception ex) {

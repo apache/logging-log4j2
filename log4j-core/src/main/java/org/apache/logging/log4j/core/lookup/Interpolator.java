@@ -16,15 +16,16 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Proxies all the other {@link StrLookup}s.
@@ -41,15 +42,26 @@ public class Interpolator implements StrLookup {
     private final StrLookup defaultLookup;
 
     public Interpolator(final StrLookup defaultLookup) {
+        this(defaultLookup, null);
+    }
+
+    /**
+     * Constructs an Interpolator using a given StrLookup and a list of packages to find Lookup plugins in.
+     *
+     * @param defaultLookup  the default StrLookup to use as a fallback
+     * @param pluginPackages a list of packages to scan for Lookup plugins
+     * @since 2.1
+     */
+    public Interpolator(final StrLookup defaultLookup, final List<String> pluginPackages) {
         this.defaultLookup = defaultLookup == null ? new MapLookup(new HashMap<String, String>()) : defaultLookup;
         final PluginManager manager = new PluginManager("Lookup");
-        manager.collectPlugins();
+        manager.collectPlugins(pluginPackages);
         final Map<String, PluginType<?>> plugins = manager.getPlugins();
 
         for (final Map.Entry<String, PluginType<?>> entry : plugins.entrySet()) {
-            @SuppressWarnings("unchecked")
-            final Class<? extends StrLookup> clazz = (Class<? extends StrLookup>) entry.getValue().getPluginClass();
             try {
+                @SuppressWarnings("unchecked")
+                final Class<? extends StrLookup> clazz = (Class<? extends StrLookup>) entry.getValue().getPluginClass();
                 lookups.put(entry.getKey(), clazz.getConstructor().newInstance());
             } catch (final Exception ex) {
                 LOGGER.error("Unable to create Lookup for {}", entry.getKey(), ex);

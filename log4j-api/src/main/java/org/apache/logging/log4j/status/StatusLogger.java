@@ -63,9 +63,11 @@ public final class StatusLogger extends AbstractLogger {
     private final SimpleLogger logger;
 
     private final Collection<StatusListener> listeners = new CopyOnWriteArrayList<StatusListener>();
+    @SuppressWarnings("NonSerializableFieldInSerializableClass") // ReentrantReadWriteLock is Serializable
     private final ReadWriteLock listenersLock = new ReentrantReadWriteLock();
 
     private final Queue<StatusData> messages = new BoundedQueue<StatusData>(MAX_ENTRIES);
+    @SuppressWarnings("NonSerializableFieldInSerializableClass") // ReentrantLock is Serializable
     private final Lock msgLock = new ReentrantLock();
 
     private int listenersLevel;
