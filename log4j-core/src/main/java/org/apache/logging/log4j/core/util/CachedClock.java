@@ -52,14 +52,16 @@ public final class CachedClock implements Clock {
 
     public static CachedClock instance() {
         // LOG4J2-819: use lazy initialization of threads
-        if (instance == null) {
+        CachedClock result = instance;
+        if (result == null) {
             synchronized (INSTANCE_LOCK) {
-                if (instance == null) {
-                    instance = new CachedClock();
+                result = instance;
+                if (result == null) {
+                    instance = result = new CachedClock();
                 }
             }
         }
-        return instance;
+        return result;
     }
 
     /**
