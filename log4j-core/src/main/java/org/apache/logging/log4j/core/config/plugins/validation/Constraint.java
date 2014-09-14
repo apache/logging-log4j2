@@ -14,27 +14,28 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.config.plugins;
+package org.apache.logging.log4j.core.config.plugins.validation;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.apache.logging.log4j.core.config.plugins.visitors.PluginValueVisitor;
-
 /**
- * Identifies a parameter as a value. These correspond with property values generally, but are meant as values to be
- * used as a placeholder value somewhere.
+ * Meta annotation to mark an annotation as a validation constraint. This annotation must specify a
+ * {@link ConstraintValidator} implementation class that has a default constructor.
  *
- * @see org.apache.logging.log4j.core.config.PropertiesPlugin
+ * @since 2.1
  */
 @Documented
+@Target(ElementType.ANNOTATION_TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.FIELD})
-@PluginVisitorStrategy(PluginValueVisitor.class)
-public @interface PluginValue {
+public @interface Constraint {
 
-    String value();
+    /**
+     * {@link ConstraintValidator} class that implements the validation logic for the annotated constraint annotation.
+     */
+    Class<? extends ConstraintValidator<? extends Annotation, ?>> value();
 }

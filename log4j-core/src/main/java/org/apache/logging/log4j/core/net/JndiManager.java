@@ -15,7 +15,7 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.core.appender;
+package org.apache.logging.log4j.core.net;
 
 import java.util.Properties;
 import javax.naming.Context;
@@ -23,11 +23,15 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.appender.AbstractManager;
+import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.util.JndiCloser;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * JNDI {@link javax.naming.Context} manager.
+ *
+ * @since 2.1
  */
 public class JndiManager extends AbstractManager {
 
@@ -40,6 +44,15 @@ public class JndiManager extends AbstractManager {
     private JndiManager(String name, Context context) {
         super(name);
         this.context = context;
+    }
+
+    /**
+     * Gets a named JndiManager using the default {@link javax.naming.InitialContext}.
+     * @param name the name of the JndiManager instance to create or use if available
+     * @return a default JndiManager
+     */
+    public static JndiManager getDefaultManager(final String name) {
+        return getManager(name, FACTORY, null);
     }
 
     /**

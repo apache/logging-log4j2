@@ -20,10 +20,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.AfterClass;
@@ -52,8 +50,10 @@ public class ConsoleAppenderTest {
     @Test
     public void testFollow() {
         final PrintStream ps = System.out;
-        final Layout<String> layout = PatternLayout.createDefaultLayout();
-        final ConsoleAppender app = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "true", "false");
+        final ConsoleAppender app = ConsoleAppender.newBuilder()
+            .setFollow(true)
+            .setIgnoreExceptions(false)
+            .build();
         app.start();
         final LogEvent event = new Log4jLogEvent("TestLogger", null, ConsoleAppenderTest.class.getName(), Level.INFO,
             new SimpleMessage("Test"), null);

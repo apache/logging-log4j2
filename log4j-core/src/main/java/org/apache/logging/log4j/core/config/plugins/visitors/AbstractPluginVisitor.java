@@ -58,8 +58,8 @@ public abstract class AbstractPluginVisitor<A extends Annotation> implements Plu
     @Override
     public PluginVisitor<A> setAnnotation(final Annotation annotation) {
         final Annotation a = Assert.requireNonNull(annotation, "No annotation was provided");
-        if (this.clazz.isInstance(annotation)) {
-            this.annotation = (A) annotation;
+        if (this.clazz.isInstance(a)) {
+            this.annotation = (A) a;
         }
         return this;
     }

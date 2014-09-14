@@ -23,7 +23,8 @@ import java.util.concurrent.locks.LockSupport;
  * the cost of some accuracy.
  */
 public final class CoarseCachedClock implements Clock {
-    private static final CoarseCachedClock instance = new CoarseCachedClock();
+    private static volatile CoarseCachedClock instance;
+    private static final Object INSTANCE_LOCK = new Object();
     // ignore IDE complaints; volatile long is fine
     private volatile long millis = System.currentTimeMillis();
 
@@ -50,6 +51,14 @@ public final class CoarseCachedClock implements Clock {
      * @return the singleton instance
      */
     public static CoarseCachedClock instance() {
+        // LOG4J2-819: use lazy initialization of threads
+        if (instance == null) {
+            synchronized (INSTANCE_LOCK) {
+                if (instance == null) {
+                    instance = new CoarseCachedClock();
+                }
+            }
+        }
         return instance;
     }
 

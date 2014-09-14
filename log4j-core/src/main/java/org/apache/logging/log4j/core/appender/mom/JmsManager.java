@@ -30,8 +30,8 @@ import javax.naming.NamingException;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.AbstractManager;
-import org.apache.logging.log4j.core.appender.JndiManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
+import org.apache.logging.log4j.core.net.JndiManager;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**

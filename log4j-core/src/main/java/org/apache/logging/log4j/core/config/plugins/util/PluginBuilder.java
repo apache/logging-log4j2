@@ -18,25 +18,30 @@
 package org.apache.logging.log4j.core.config.plugins.util;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.validation.ConstraintValidator;
+import org.apache.logging.log4j.core.config.plugins.validation.ConstraintValidators;
 import org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitor;
 import org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitors;
 import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.core.util.Builder;
+import org.apache.logging.log4j.core.util.ReflectionUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -119,9 +124,8 @@ public class PluginBuilder<T> implements Builder<T> {
                 return result;
             }
         } catch (final Exception e) {
-            LOGGER.catching(Level.ERROR, e);
             LOGGER.error("Unable to inject fields into builder class for plugin type {}, element {}.", this.clazz,
-                node.getName());
+                node.getName(), e);
         }
         // or fall back to factory method if no builder class is available
         try {
@@ -134,8 +138,8 @@ public class PluginBuilder<T> implements Builder<T> {
             LOGGER.debug("Built Plugin[name={}] OK from factory method.", pluginType.getElementName());
             return plugin;
         } catch (final Exception e) {
-            LOGGER.catching(Level.ERROR, e);
-            LOGGER.error("Unable to invoke factory method in class {} for element {}.", this.clazz, this.node.getName());
+            LOGGER.error("Unable to invoke factory method in class {} for element {}.", this.clazz, this.node.getName(),
+                e);
             return null;
         }
     }
@@ -150,6 +154,7 @@ public class PluginBuilder<T> implements Builder<T> {
         for (final Method method : clazz.getDeclaredMethods()) {
             if (method.isAnnotationPresent(PluginBuilderFactory.class) &&
                 Modifier.isStatic(method.getModifiers())) {
+                ReflectionUtil.makeAccessible(method);
                 @SuppressWarnings("unchecked")
                 final Builder<T> builder = (Builder<T>) method.invoke(null);
                 LOGGER.debug("Found builder factory method [{}]: {}.", method.getName(), method);
@@ -163,10 +168,10 @@ public class PluginBuilder<T> implements Builder<T> {
 
     private void injectFields(final Builder<T> builder) throws IllegalAccessException {
         final Field[] fields = builder.getClass().getDeclaredFields();
+        AccessibleObject.setAccessible(fields, true);
         final StringBuilder log = new StringBuilder();
         for (final Field field : fields) {
             log.append(log.length() == 0 ? "with params(" : ", ");
-            field.setAccessible(true);
             final Annotation[] annotations = field.getDeclaredAnnotations();
             final String[] aliases = extractPluginAliases(annotations);
             for (final Annotation a : annotations) {
@@ -188,6 +193,14 @@ public class PluginBuilder<T> implements Builder<T> {
                     }
                 }
             }
+            final Collection<ConstraintValidator<Annotation, Object>> validators =
+                ConstraintValidators.findValidators(annotations);
+            final Object value = field.get(builder);
+            for (ConstraintValidator<Annotation, Object> validator : validators) {
+                if (!validator.isValid(value)) {
+                    throw new ConfigurationException("Invalid value [" + value + "] for field " + field.getName());
+                }
+            }
         }
         if (log.length() > 0) {
             log.append(')');
@@ -203,11 +216,11 @@ public class PluginBuilder<T> implements Builder<T> {
             if (method.isAnnotationPresent(PluginFactory.class) &&
                 Modifier.isStatic(method.getModifiers())) {
                 LOGGER.debug("Found factory method [{}]: {}.", method.getName(), method);
+                ReflectionUtil.makeAccessible(method);
                 return method;
             }
         }
-        LOGGER.debug("No factory method found in class {}.", clazz.getName());
-        return null;
+        throw new IllegalStateException("No factory method found for class " + clazz.getName());
     }
 
     private Object[] generateParameters(final Method factory) {
@@ -225,12 +238,24 @@ public class PluginBuilder<T> implements Builder<T> {
                 final PluginVisitor<? extends Annotation> visitor = PluginVisitors.findVisitor(
                     a.annotationType());
                 if (visitor != null) {
-                    args[i] = visitor.setAliases(aliases)
+                    final Object value = visitor.setAliases(aliases)
                         .setAnnotation(a)
                         .setConversionType(types[i])
                         .setStrSubstitutor(configuration.getStrSubstitutor())
                         .setMember(factory)
                         .visit(configuration, node, event, log);
+                    // don't overwrite existing values if the visitor gives us no value to inject
+                    if (value != null) {
+                        args[i] = value;
+                    }
+                }
+            }
+            final Collection<ConstraintValidator<Annotation, Object>> validators =
+                ConstraintValidators.findValidators(annotations[i]);
+            final Object value = args[i];
+            for (final ConstraintValidator<Annotation, Object> validator : validators) {
+                if (!validator.isValid(value)) {
+                    throw new ConfigurationException("Invalid value [" + value + "] for parameter " + i);
                 }
             }
         }

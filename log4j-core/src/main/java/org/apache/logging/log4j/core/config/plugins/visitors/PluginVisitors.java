@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginVisitorStrategy;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * Utility class to locate an appropriate PluginVisitor implementation for an annotation.
+ * Utility class to locate an appropriate {@link PluginVisitor} implementation for an annotation.
  */
 public final class PluginVisitors {
 
@@ -39,21 +39,18 @@ public final class PluginVisitors {
      * data to be useful. Such data is passed through both the setters and the visit method.
      *
      * @param annotation the Plugin annotation class to find a PluginVisitor for.
-     * @param <A>        the Plugin annotation type.
      * @return a PluginVisitor instance if one could be created, or {@code null} otherwise.
      */
-    @SuppressWarnings("unchecked") // we're keeping track of types, thanks
-    public static <A extends Annotation> PluginVisitor<A> findVisitor(final Class<A> annotation) {
+    public static PluginVisitor<? extends Annotation> findVisitor(final Class<? extends Annotation> annotation) {
         final PluginVisitorStrategy strategy = annotation.getAnnotation(PluginVisitorStrategy.class);
         if (strategy == null) {
             LOGGER.debug("No PluginVisitorStrategy found on annotation [{}]. Ignoring.", annotation);
             return null;
         }
-        final Class<? extends PluginVisitor<A>> visitorClass = (Class<? extends PluginVisitor<A>>) strategy.value();
         try {
-            return visitorClass.newInstance();
+            return strategy.value().newInstance();
         } catch (final Exception e) {
-            LOGGER.error("Error loading PluginVisitor [{}] for annotation [{}].", visitorClass, annotation, e);
+            LOGGER.error("Error loading PluginVisitor [{}] for annotation [{}].", strategy.value(), annotation, e);
             return null;
         }
     }

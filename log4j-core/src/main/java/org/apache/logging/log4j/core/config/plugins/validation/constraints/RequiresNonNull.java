@@ -15,8 +15,25 @@
  * limitations under the license.
  */
 
+package org.apache.logging.log4j.core.config.plugins.validation.constraints;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import org.apache.logging.log4j.core.config.plugins.validation.Constraint;
+import org.apache.logging.log4j.core.config.plugins.validation.validators.RequiresNonNullValidator;
+
 /**
- * Simple logging implementation. This is a rather minimal Log4j Provider that is used by default if no other Log4j
- * Providers are able to be loaded at runtime.
+ * Marks a plugin builder field or plugin factory parameter as required.
+ *
+ * @since 2.1
  */
-package org.apache.logging.log4j.simple;
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD, ElementType.PARAMETER})
+@Constraint(RequiresNonNullValidator.class)
+public @interface RequiresNonNull {
+}

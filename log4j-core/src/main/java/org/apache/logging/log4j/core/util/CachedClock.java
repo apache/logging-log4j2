@@ -28,7 +28,8 @@ import java.util.concurrent.locks.LockSupport;
  */
 public final class CachedClock implements Clock {
     private static final int UPDATE_THRESHOLD = 0x3FF;
-    private static final CachedClock instance = new CachedClock();
+    private static volatile CachedClock instance;
+    private static final Object INSTANCE_LOCK = new Object();
     private volatile long millis = System.currentTimeMillis();
     private volatile short count = 0;
 
@@ -50,6 +51,14 @@ public final class CachedClock implements Clock {
     }
 
     public static CachedClock instance() {
+        // LOG4J2-819: use lazy initialization of threads
+        if (instance == null) {
+            synchronized (INSTANCE_LOCK) {
+                if (instance == null) {
+                    instance = new CachedClock();
+                }
+            }
+        }
         return instance;
     }
 

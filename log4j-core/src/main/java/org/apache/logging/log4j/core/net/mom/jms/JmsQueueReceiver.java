@@ -20,51 +20,14 @@ package org.apache.logging.log4j.core.net.mom.jms;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
-import javax.jms.JMSException;
-import javax.jms.Queue;
-import javax.jms.QueueConnection;
-import javax.jms.QueueConnectionFactory;
-import javax.jms.QueueReceiver;
-import javax.jms.QueueSession;
-import javax.jms.Session;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+
+import org.apache.logging.log4j.core.net.server.JmsServer;
 
 /**
  * Receives Log Events over a JMS Queue. This implementation expects that all messages will
  * contain a serialized LogEvent.
  */
-public class JmsQueueReceiver extends AbstractJmsReceiver {
-
-    /**
-     * Constructor.
-     * @param qcfBindingName The QueueConnectionFactory binding name.
-     * @param queueBindingName The Queue binding name.
-     * @param username The userid to connect to the queue.
-     * @param password The password to connect to the queue.
-     */
-    public JmsQueueReceiver(final String qcfBindingName, final String queueBindingName, final String username,
-                            final String password) {
-
-        try {
-            final Context ctx = new InitialContext();
-            QueueConnectionFactory queueConnectionFactory;
-            queueConnectionFactory = (QueueConnectionFactory) lookup(ctx, qcfBindingName);
-            final QueueConnection queueConnection = queueConnectionFactory.createQueueConnection(username, password);
-            queueConnection.start();
-            final QueueSession queueSession = queueConnection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
-            final Queue queue = (Queue) ctx.lookup(queueBindingName);
-            final QueueReceiver queueReceiver = queueSession.createReceiver(queue);
-            queueReceiver.setMessageListener(this);
-        } catch (final JMSException e) {
-            logger.error("Could not read JMS message.", e);
-        } catch (final NamingException e) {
-            logger.error("Could not read JMS message.", e);
-        } catch (final RuntimeException e) {
-            logger.error("Could not read JMS message.", e);
-        }
-    }
+public class JmsQueueReceiver {
 
     /**
      * Main startup for the receiver.
@@ -80,8 +43,8 @@ public class JmsQueueReceiver extends AbstractJmsReceiver {
         final String queueBindingName = args[1];
         final String username = args[2];
         final String password = args[3];
-
-        new JmsQueueReceiver(qcfBindingName, queueBindingName, username, password);
+        final JmsServer server = new JmsServer(qcfBindingName, queueBindingName, username, password);
+        server.start();
 
         final Charset enc = Charset.defaultCharset();
         final BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in, enc));
@@ -92,6 +55,7 @@ public class JmsQueueReceiver extends AbstractJmsReceiver {
             if (line == null || line.equalsIgnoreCase("exit")) {
                 System.out.println("Exiting. Kill the application if it does not exit "
                     + "due to daemon threads.");
+                server.stop();
                 return;
             }
         }

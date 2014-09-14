@@ -14,9 +14,23 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+package org.apache.logging.log4j.core.config.plugins.validation.validators;
+
+import org.apache.logging.log4j.core.config.plugins.validation.ConstraintValidator;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.RequiresNonNull;
 
 /**
- * Simple logging implementation. This is a rather minimal Log4j Provider that is used by default if no other Log4j
- * Providers are able to be loaded at runtime.
+ * Validator implementation for {@link RequiresNonNull}.
+ *
+ * @since 2.1
  */
-package org.apache.logging.log4j.simple;
+public class RequiresNonNullValidator implements ConstraintValidator<RequiresNonNull, Object> {
+    @Override
+    public void initialize(final RequiresNonNull annotation) {
+    }
+
+    @Override
+    public boolean isValid(final Object value) {
+        return value != null;
+    }
+}
