@@ -27,11 +27,11 @@ import java.util.concurrent.locks.LockSupport;
  * {@code currentTimeMillis()}.
  */
 public final class CachedClock implements Clock {
-    private static final int UPDATE_THRESHOLD = 0x3FF;
+    private static final int UPDATE_THRESHOLD = 1000;
     private static volatile CachedClock instance;
     private static final Object INSTANCE_LOCK = new Object();
     private volatile long millis = System.currentTimeMillis();
-    private volatile short count = 0;
+    private short count = 0;
 
     private CachedClock() {
         final Thread updater = new Thread(new Runnable() {
@@ -73,10 +73,13 @@ public final class CachedClock implements Clock {
     @Override
     public long currentTimeMillis() {
 
-        // improve granularity: also update time field every 1024 calls.
-        // (the bit fiddling means we don't need to worry about overflows)
-        if ((++count & UPDATE_THRESHOLD) == UPDATE_THRESHOLD) {
-            millis = System.currentTimeMillis();
+        // The count field is not volatile on purpose to reduce contention on this field.
+        // This means that some threads may not see the increments made to this field
+        // by other threads. This is not a problem: the timestamp does not need to be
+        // updated exactly every 1000 calls.
+        if (++count > UPDATE_THRESHOLD) {
+            millis = System.currentTimeMillis(); // update volatile field: store-store barrier
+            count = 0; // after a memory barrier: this change _is_ visible to other threads
         }
         return millis;
     }

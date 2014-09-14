@@ -18,6 +18,7 @@
 package org.apache.logging.log4j.perf.jmh;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.LockSupport;
 
 import org.apache.logging.log4j.core.util.CachedClock;
 import org.apache.logging.log4j.core.util.Clock;
@@ -51,6 +52,7 @@ public class ClocksBenchmark {
 
     Clock systemClock = new SystemClock();
     Clock cachedClock;
+    Clock oldCachedClock;
     Clock coarseCachedClock;
     Clock fixedClock;
     Clock fixedFinalClock;
@@ -58,6 +60,7 @@ public class ClocksBenchmark {
     @Setup(Level.Trial)
     public void up() {
         cachedClock = CachedClock.instance();
+        oldCachedClock = OldCachedClock.instance();
         coarseCachedClock = CoarseCachedClock.instance();
         fixedClock = new FixedTimeClock(System.nanoTime());
         fixedFinalClock = new FixedFinalTimeClock(System.nanoTime());
@@ -88,6 +91,13 @@ public class ClocksBenchmark {
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public long cachedClock() {
         return cachedClock.currentTimeMillis();
+    }
+
+    @GenerateMicroBenchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public long oldCachedClock() {
+        return oldCachedClock.currentTimeMillis();
     }
 
     @GenerateMicroBenchmark
@@ -134,6 +144,54 @@ public class ClocksBenchmark {
         @Override
         public long currentTimeMillis() {
             return fixedFinalTime;
+        }
+    }
+    
+    private static final class OldCachedClock implements Clock {
+        private static final int UPDATE_THRESHOLD = 0x3FF;
+        private static volatile OldCachedClock instance;
+        private static final Object INSTANCE_LOCK = new Object();
+        private volatile long millis = System.currentTimeMillis();
+        private volatile short count = 0;
+
+        private OldCachedClock() {
+            final Thread updater = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while (true) {
+                        final long time = System.currentTimeMillis();
+                        millis = time;
+
+                        // avoid explicit dependency on sun.misc.Util
+                        LockSupport.parkNanos(1000 * 1000);
+                    }
+                }
+            }, "Clock Updater Thread");
+            updater.setDaemon(true);
+            updater.start();
+        }
+
+        public static OldCachedClock instance() {
+            // LOG4J2-819: use lazy initialization of threads
+            if (instance == null) {
+                synchronized (INSTANCE_LOCK) {
+                    if (instance == null) {
+                        instance = new OldCachedClock();
+                    }
+                }
+            }
+            return instance;
+        }
+
+        @Override
+        public long currentTimeMillis() {
+
+            // improve granularity: also update time field every 1024 calls.
+            // (the bit fiddling means we don't need to worry about overflows)
+            if ((++count & UPDATE_THRESHOLD) == UPDATE_THRESHOLD) {
+                millis = System.currentTimeMillis();
+            }
+            return millis;
         }
     }
 }
