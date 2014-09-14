@@ -52,14 +52,16 @@ public final class CoarseCachedClock implements Clock {
      */
     public static CoarseCachedClock instance() {
         // LOG4J2-819: use lazy initialization of threads
-        if (instance == null) {
+        CoarseCachedClock result = instance;
+        if (result == null) {
             synchronized (INSTANCE_LOCK) {
-                if (instance == null) {
-                    instance = new CoarseCachedClock();
+                result = instance;
+                if (result == null) {
+                    instance = result = new CoarseCachedClock();
                 }
             }
         }
-        return instance;
+        return result;
     }
 
     /**
