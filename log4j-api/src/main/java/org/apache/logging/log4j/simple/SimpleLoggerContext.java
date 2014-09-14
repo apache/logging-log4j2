@@ -19,15 +19,14 @@ package org.apache.logging.log4j.simple;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.ExtendedLogger;
+import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -40,9 +39,6 @@ public class SimpleLoggerContext implements LoggerContext {
 
     /** All system properties used by <code>SimpleLog</code> start with this */
     protected static final String SYSTEM_PREFIX = "org.apache.logging.log4j.simplelog.";
-
-    /** Properties loaded from simplelog.properties */
-    private final Properties simpleLogProps = new Properties();
 
     private final PropertiesUtil props;
 
