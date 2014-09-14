@@ -42,33 +42,16 @@ public final class PluginVisitors {
      * @return a PluginVisitor instance if one could be created, or {@code null} otherwise.
      */
     public static PluginVisitor<? extends Annotation> findVisitor(final Class<? extends Annotation> annotation) {
-        final Class<? extends PluginVisitor<? extends Annotation>> visitorClass = findVisitorStrategy(annotation);
-        if (visitorClass == null) {
+        final PluginVisitorStrategy strategy = annotation.getAnnotation(PluginVisitorStrategy.class);
+        if (strategy == null) {
             LOGGER.debug("No PluginVisitorStrategy found on annotation [{}]. Ignoring.", annotation);
             return null;
         }
         try {
-            return visitorClass.newInstance();
+            return strategy.value().newInstance();
         } catch (final Exception e) {
-            LOGGER.error("Error loading PluginVisitor [{}] for annotation [{}].", visitorClass, annotation, e);
+            LOGGER.error("Error loading PluginVisitor [{}] for annotation [{}].", strategy.value(), annotation, e);
             return null;
         }
-    }
-
-    private static Class<? extends PluginVisitor<? extends Annotation>> findVisitorStrategy(
-        final Class<? extends Annotation> annotation) {
-        final PluginVisitorStrategy strategy = annotation.getAnnotation(PluginVisitorStrategy.class);
-        if (strategy != null) {
-            return strategy.value();
-        }
-        final Annotation[] annotations = annotation.getDeclaredAnnotations();
-        for (final Annotation a : annotations) {
-            final PluginVisitorStrategy fallbackStrategy = a.annotationType().getAnnotation(
-                PluginVisitorStrategy.class);
-            if (fallbackStrategy != null) {
-                return fallbackStrategy.value();
-            }
-        }
-        return null;
     }
 }
