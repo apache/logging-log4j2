@@ -43,6 +43,7 @@ import org.apache.logging.log4j.core.net.JndiManager;
 @PluginAliases({"JMSQueue", "JMSTopic"})
 public class JmsAppender extends AbstractAppender {
 
+    private static final long serialVersionUID = 1L;
     private final JmsManager manager;
     private final MessageProducer producer;
 
