@@ -225,12 +225,16 @@ public class PluginBuilder<T> implements Builder<T> {
                 final PluginVisitor<? extends Annotation> visitor = PluginVisitors.findVisitor(
                     a.annotationType());
                 if (visitor != null) {
-                    args[i] = visitor.setAliases(aliases)
+                    final Object value = visitor.setAliases(aliases)
                         .setAnnotation(a)
                         .setConversionType(types[i])
                         .setStrSubstitutor(configuration.getStrSubstitutor())
                         .setMember(factory)
                         .visit(configuration, node, event, log);
+                    // don't overwrite existing values if the visitor gives us no value to inject
+                    if (value != null) {
+                        args[i] = value;
+                    }
                 }
             }
         }
