@@ -83,15 +83,15 @@ public final class PropertiesUtil {
      * file are used by default. If a property is not defined in this file, then the equivalent system property is
      * used.
      *
-     * @param propsLocn the location of properties file to load
+     * @param propertiesFileName the location of properties file to load
      */
-    public PropertiesUtil(final String propsLocn) {
+    public PropertiesUtil(final String propertiesFileName) {
         final ClassLoader loader = LoaderUtil.getThreadContextClassLoader();
         @SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
         final
         Properties properties = new Properties();
             try {
-                final Enumeration<URL> enumeration = loader.getResources(propsLocn);
+                final Enumeration<URL> enumeration = loader.getResources(propertiesFileName);
                 while (enumeration.hasMoreElements()) {
                     final URL url = enumeration.nextElement();
                     final InputStream in = url.openStream();
@@ -110,7 +110,7 @@ public final class PropertiesUtil {
                 }
 
             } catch (final IOException ioe) {
-                LOGGER.error("Unable to access {}", propsLocn, ioe);
+                LOGGER.error("Unable to access {}", propertiesFileName, ioe);
             }
         this.props = properties;
     }
