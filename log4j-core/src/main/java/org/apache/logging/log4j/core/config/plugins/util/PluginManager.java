@@ -17,16 +17,14 @@
 
 package org.apache.logging.log4j.core.config.plugins.util;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Strings;
-
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Loads and manages all the plugins.
@@ -65,31 +63,6 @@ public class PluginManager {
         System.err.println("If the annotation processor does not work for you, please see the manual page:");
         System.err.println("http://logging.apache.org/log4j/2.x/manual/configuration.html#ConfigurationSyntax");
         System.exit(-1);
-    }
-
-    /**
-     * Adds a package name to be scanned for plugins. Must be invoked prior to plugins being collected.
-     * 
-     * @param p The package name. Ignored if {@code null} or empty.
-     */
-    public static void addPackage(final String p) {
-        if (Strings.isBlank(p)) {
-            return;
-        }
-        PACKAGES.addIfAbsent(p);
-    }
-
-    /**
-     * Adds a list of package names to be scanned for plugins. Convenience method for {@link #addPackage(String)}.
-     *
-     * @param packages collection of package names to add. Empty and null package names are ignored.
-     */
-    public static void addPackages(final Collection<String> packages) {
-        for (String pkg : packages) {
-            if (Strings.isNotBlank(pkg)) {
-                PACKAGES.addIfAbsent(pkg);
-            }
-        }
     }
 
     /**
