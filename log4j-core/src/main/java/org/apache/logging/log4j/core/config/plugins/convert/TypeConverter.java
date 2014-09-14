@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.logging.log4j.core.config.plugins.util;
+package org.apache.logging.log4j.core.config.plugins.convert;
 
 /**
  * Interface for doing automatic String conversion to a specific type.

@@ -16,6 +16,21 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
@@ -44,21 +59,6 @@ import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.util.PropertiesUtil;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * The base Configuration. Many configuration implementations will extend this class.
@@ -699,7 +699,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     * {@link org.apache.logging.log4j.core.config.plugins.PluginFactory}, and each parameter should be annotated with
     * an appropriate plugin annotation depending on what that parameter describes. Parameters annotated with
     * {@link org.apache.logging.log4j.core.config.plugins.PluginAttribute} must be a type that can be converted from
-    * a string using one of the {@link org.apache.logging.log4j.core.config.plugins.util.TypeConverter TypeConverters}.
+    * a string using one of the {@link org.apache.logging.log4j.core.config.plugins.convert.TypeConverter TypeConverters}.
     * Parameters with {@link org.apache.logging.log4j.core.config.plugins.PluginElement} may be any plugin class or an
     * array of a plugin class. Collections and Maps are currently not supported, although the factory method that is
     * called can create these from an array.
@@ -727,7 +727,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     * @return the created plugin object or {@code null} if there was an error setting it up.
     * @see org.apache.logging.log4j.core.config.plugins.util.PluginBuilder
     * @see org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitor
-    * @see org.apache.logging.log4j.core.config.plugins.util.TypeConverter
+    * @see org.apache.logging.log4j.core.config.plugins.convert.TypeConverter
     */
     private <T> Object createPluginObject(final PluginType<T> type, final Node node, final LogEvent event)
     {

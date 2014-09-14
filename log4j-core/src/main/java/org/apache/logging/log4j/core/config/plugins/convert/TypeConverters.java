@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.logging.log4j.core.config.plugins.util;
+package org.apache.logging.log4j.core.config.plugins.convert;
 
 import java.io.File;
 import java.math.BigDecimal;

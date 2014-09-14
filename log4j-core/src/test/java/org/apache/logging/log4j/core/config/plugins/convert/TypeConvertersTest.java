@@ -15,10 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.logging.log4j.core.config.plugins.util;
-
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+package org.apache.logging.log4j.core.config.plugins.convert;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -39,6 +36,8 @@ import org.apache.logging.log4j.core.util.Charsets;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests {@link TypeConverters}.
