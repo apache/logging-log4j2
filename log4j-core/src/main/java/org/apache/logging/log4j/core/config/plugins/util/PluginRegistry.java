@@ -17,18 +17,6 @@
 
 package org.apache.logging.log4j.core.config.plugins.util;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAliases;
-import org.apache.logging.log4j.core.config.plugins.processor.PluginCache;
-import org.apache.logging.log4j.core.config.plugins.processor.PluginEntry;
-import org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor;
-import org.apache.logging.log4j.core.util.ClassLoaderResourceLoader;
-import org.apache.logging.log4j.core.util.Loader;
-import org.apache.logging.log4j.core.util.ResourceLoader;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Strings;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
@@ -43,12 +31,27 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAliases;
+import org.apache.logging.log4j.core.config.plugins.processor.PluginCache;
+import org.apache.logging.log4j.core.config.plugins.processor.PluginEntry;
+import org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor;
+import org.apache.logging.log4j.core.util.ClassLoaderResourceLoader;
+import org.apache.logging.log4j.core.util.Loader;
+import org.apache.logging.log4j.core.util.ResourceLoader;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
+
 /**
  * Registry singleton for PluginType maps partitioned by source type and then by category names.
  */
 public class PluginRegistry {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
+
+    private static volatile PluginRegistry INSTANCE;
+    private static final Object INSTANCE_LOCK = new Object();
 
     /**
      * Contains plugins found in Log4j2Plugins.dat cache files in the main CLASSPATH.
@@ -71,12 +74,6 @@ public class PluginRegistry {
     private PluginRegistry() {
     }
 
-    private static class Holder {
-        // the usual initialization-on-demand holder idiom
-        // https://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom
-        private static final PluginRegistry INSTANCE = new PluginRegistry();
-    }
-
     /**
      * Returns the global PluginRegistry instance.
      *
@@ -84,7 +81,14 @@ public class PluginRegistry {
      * @since 2.1
      */
     public static PluginRegistry getInstance() {
-        return Holder.INSTANCE;
+        if (INSTANCE == null) {
+            synchronized (INSTANCE_LOCK) {
+                if (INSTANCE == null) {
+                    INSTANCE = new PluginRegistry();
+                }
+            }
+        }
+        return INSTANCE;
     }
 
     /**
