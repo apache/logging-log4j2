@@ -18,7 +18,9 @@
 package org.apache.logging.log4j.core.util;
 
 import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
 
@@ -137,5 +139,57 @@ public final class ReflectionUtil {
      */
     public static void setStaticFieldValue(final Field field, final Object value) {
         setFieldValue(field, null, value);
+    }
+
+    /**
+     * Gets the default (no-arg) constructor for a given class.
+     *
+     * @param clazz the class to find a constructor for
+     * @param <T>   the type made by the constructor
+     * @return the default constructor for the given class
+     * @throws IllegalStateException if no default constructor can be found
+     */
+    public static <T> Constructor<T> getDefaultConstructor(final Class<T> clazz) {
+        Assert.requireNonNull(clazz, "No class provided");
+        try {
+            final Constructor<T> constructor = clazz.getDeclaredConstructor();
+            makeAccessible(constructor);
+            return constructor;
+        } catch (final NoSuchMethodException ignored) {
+            try {
+                final Constructor<T> constructor = clazz.getConstructor();
+                makeAccessible(constructor);
+                return constructor;
+            } catch (final NoSuchMethodException e) {
+                throw new IllegalStateException(e);
+            }
+        }
+    }
+
+    /**
+     * Constructs a new {@code T} object using the default constructor of its class. Any exceptions thrown by the
+     * constructor will be rethrown by this method, possibly wrapped in an
+     * {@link java.lang.reflect.UndeclaredThrowableException}.
+     *
+     * @param clazz the class to use for instantiation.
+     * @param <T>   the type of the object to construct.
+     * @return a new instance of T made from its default constructor.
+     * @throws IllegalArgumentException if the given class is abstract, an interface, an array class, a primitive type,
+     *                                  or void
+     * @throws IllegalStateException    if access is denied to the constructor, or there are no default constructors
+     */
+    public static <T> T instantiate(final Class<T> clazz) {
+        Assert.requireNonNull(clazz, "No class provided");
+        final Constructor<T> constructor = getDefaultConstructor(clazz);
+        try {
+            return constructor.newInstance();
+        } catch (final InstantiationException e) {
+            throw new IllegalArgumentException(e);
+        } catch (final IllegalAccessException e) {
+            throw new IllegalStateException(e);
+        } catch (final InvocationTargetException e) {
+            Throwables.rethrow(e.getCause());
+            throw new InternalError("Unreachable");
+        }
     }
 }
