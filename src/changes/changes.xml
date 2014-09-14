@@ -24,6 +24,10 @@
   </properties>
   <body>
     <release version="2.1" date="2014-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-819" dev="mattsicker" type="fix" due-to="Gary Gregory">
+        Fixed memory leak in Tomcat 6 caused by clock background threads unintentionally
+        started by Tomcat after web application stop.
+      </action>
       <action issue="LOG4J2-428" dev="ggregory" type="add" due-to="Mark Paluch">
         Implement a GELF layout.
       </action>
