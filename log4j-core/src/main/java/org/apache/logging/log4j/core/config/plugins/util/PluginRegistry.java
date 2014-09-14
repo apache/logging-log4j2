@@ -17,86 +17,290 @@
 
 package org.apache.logging.log4j.core.config.plugins.util;
 
-import java.io.Serializable;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAliases;
+import org.apache.logging.log4j.core.config.plugins.processor.PluginCache;
+import org.apache.logging.log4j.core.config.plugins.processor.PluginEntry;
+import org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor;
+import org.apache.logging.log4j.core.util.ClassLoaderResourceLoader;
+import org.apache.logging.log4j.core.util.Loader;
+import org.apache.logging.log4j.core.util.ResourceLoader;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * Registry for PluginType maps partitioned by category names.
- *
- * @param <T> plugin information object such as PluginType or PluginEntry.
+ * Registry singleton for PluginType maps partitioned by source type and then by category names.
  */
-public class PluginRegistry<T extends Serializable> {
-    private final ConcurrentMap<String, ConcurrentMap<String, T>> categories =
-        new ConcurrentHashMap<String, ConcurrentMap<String, T>>();
+public class PluginRegistry {
+
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     /**
-     * Gets or creates a plugin category if not already available. Category names are case-insensitive. The
-     * ConcurrentMap that is returned should also be treated as a case-insensitive plugin map where names should be
-     * converted to lowercase before retrieval or storage.
-     *
-     * @param category the plugin category to look up or create.
-     * @return the plugin map for the given category name.
-     * @throws IllegalArgumentException if the argument is {@code null}
+     * Contains plugins found in Log4j2Plugins.dat cache files in the main CLASSPATH.
      */
-    public ConcurrentMap<String, T> getCategory(final String category) {
-        if (category == null) {
-            throw new IllegalArgumentException("Category name cannot be null.");
-        }
-        final String key = category.toLowerCase();
-        categories.putIfAbsent(key, new ConcurrentHashMap<String, T>());
-        return categories.get(key);
+    private final AtomicReference<Map<String, List<PluginType<?>>>> pluginsByCategoryRef =
+        new AtomicReference<Map<String, List<PluginType<?>>>>();
+
+    /**
+     * Contains plugins found in Log4j2Plugins.dat cache files in OSGi Bundles.
+     */
+    private final ConcurrentMap<Long, Map<String, List<PluginType<?>>>> pluginsByCategoryByBundleId =
+        new ConcurrentHashMap<Long, Map<String, List<PluginType<?>>>>();
+
+    /**
+     * Contains plugins found by searching for annotated classes at runtime.
+     */
+    private final ConcurrentMap<String, Map<String, List<PluginType<?>>>> pluginsByCategoryByPackage =
+        new ConcurrentHashMap<String, Map<String, List<PluginType<?>>>>();
+
+    private PluginRegistry() {
+    }
+
+    private static class Holder {
+        // the usual initialization-on-demand holder idiom
+        // https://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom
+        private static final PluginRegistry INSTANCE = new PluginRegistry();
     }
 
     /**
-     * Returns the number of plugin categories currently available. This is primarily useful for serialization.
+     * Returns the global PluginRegistry instance.
      *
-     * @return the number of plugin categories.
+     * @return the global PluginRegistry instance.
+     * @since 2.1
      */
-    public int getCategoryCount() {
-        return categories.size();
-    }
-
-    /**
-     * Indicates whether or not any plugin categories have been registered. Note that this does not necessarily
-     * indicate if any plugins are registered as categories may be empty.
-     *
-     * @return {@code true} if there any categories registered.
-     */
-    public boolean isEmpty() {
-        return categories.isEmpty();
+    public static PluginRegistry getInstance() {
+        return Holder.INSTANCE;
     }
 
     /**
      * Resets the registry to an empty state.
      */
     public void clear() {
-        categories.clear();
+        pluginsByCategoryRef.set(null);
+        pluginsByCategoryByPackage.clear();
+        pluginsByCategoryByBundleId.clear();
     }
 
     /**
-     * Indicates whether or not the given category name is registered and has plugins in that category.
-     *
-     * @param category the plugin category name to check.
-     * @return {@code true} if the category exists and has plugins registered.
-     * @throws IllegalArgumentException if the argument is {@code null}
+     * @since 2.1
      */
-    public boolean hasCategory(final String category) {
-        if (category == null) {
-            throw new IllegalArgumentException("Category name cannot be null.");
+    public Map<Long, Map<String, List<PluginType<?>>>> getPluginsByCategoryByBundleId() {
+        return pluginsByCategoryByBundleId;
+    }
+
+    /**
+     * @since 2.1
+     */
+    @SuppressWarnings("unchecked")
+    public Map<String, List<PluginType<?>>> loadFromMainClassLoader() {
+        final Map<String, List<PluginType<?>>> existing = pluginsByCategoryRef.get();
+        if (existing != null) {
+            // already loaded
+            return existing;
         }
-        final String key = category.toLowerCase();
-        return categories.containsKey(key) && !categories.get(key).isEmpty();
+        final ResourceLoader loader = new ClassLoaderResourceLoader(Loader.getClassLoader());
+        final Map<String, List<PluginType<?>>> newPluginsByCategory = decodeCacheFiles(loader);
+
+        // Note multiple threads could be calling this method concurrently. Both will do the work,
+        // but only one will be allowed to store the result in the AtomicReference.
+        // Return the map produced by whichever thread won the race, so all callers will get the same result.
+        if (pluginsByCategoryRef.compareAndSet(null, newPluginsByCategory)) {
+            return newPluginsByCategory;
+        }
+        return pluginsByCategoryRef.get();
     }
 
     /**
-     * Gets an entry set for iterating over the registered plugin categories.
-     *
-     * @return an entry set of the registered plugin categories.
+     * @since 2.1
      */
-    public Set<Map.Entry<String, ConcurrentMap<String, T>>> getCategories() {
-        return categories.entrySet();
+    public void clearBundlePlugins(final long bundleId) {
+        pluginsByCategoryByBundleId.remove(bundleId);
+    }
+
+    /**
+     * @since 2.1
+     */
+    @SuppressWarnings("unchecked")
+    public Map<String, List<PluginType<?>>> loadFromBundle(final long bundleId, final ResourceLoader loader) {
+        Map<String, List<PluginType<?>>> existing = pluginsByCategoryByBundleId.get(bundleId);
+        if (existing != null) {
+            // already loaded from this classloader
+            return existing;
+        }
+        final Map<String, List<PluginType<?>>> newPluginsByCategory = decodeCacheFiles(loader);
+
+        // Note multiple threads could be calling this method concurrently. Both will do the work,
+        // but only one will be allowed to store the result in the outer map.
+        // Return the inner map produced by whichever thread won the race, so all callers will get the same result.
+        existing = pluginsByCategoryByBundleId.putIfAbsent(bundleId, newPluginsByCategory);
+        if (existing != null) {
+            return existing;
+        }
+        return newPluginsByCategory;
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private Map<String, List<PluginType<?>>> decodeCacheFiles(final ResourceLoader loader) {
+        final long startTime = System.nanoTime();
+        final PluginCache cache = new PluginCache();
+        try {
+            final Enumeration<URL> resources = loader.getResources(PluginProcessor.PLUGIN_CACHE_FILE);
+            if (resources == null) {
+                LOGGER.info("Plugin preloads not available from class loader {}", loader);
+            } else {
+                cache.loadCacheFiles(resources);
+            }
+        } catch (final IOException ioe) {
+            LOGGER.warn("Unable to preload plugins", ioe);
+        }
+        final Map<String, List<PluginType<?>>> newPluginsByCategory = new HashMap<String, List<PluginType<?>>>();
+        int pluginCount = 0;
+        for (final Map.Entry<String, Map<String, PluginEntry>> outer : cache.getAllCategories().entrySet()) {
+            final String categoryLowerCase = outer.getKey();
+            final List<PluginType<?>> types = new ArrayList<PluginType<?>>(outer.getValue().size());
+            newPluginsByCategory.put(categoryLowerCase, types);
+            for (final Map.Entry<String, PluginEntry> inner : outer.getValue().entrySet()) {
+                final PluginEntry entry = inner.getValue();
+                final String className = entry.getClassName();
+                try {
+                    final Class<?> clazz = loader.loadClass(className);
+                    types.add(new PluginType(entry, clazz, entry.getName()));
+                    ++pluginCount;
+                } catch (final ClassNotFoundException e) {
+                    LOGGER.info("Plugin [{}] could not be loaded due to missing classes.", className, e);
+                } catch (final VerifyError e) {
+                    LOGGER.info("Plugin [{}] could not be loaded due to verification error.", className, e);
+                }
+            }
+        }
+
+        final long endTime = System.nanoTime();
+        final DecimalFormat numFormat = new DecimalFormat("#0.000000");
+        final double seconds = (endTime - startTime) * 1e-9;
+        LOGGER.debug("Took {} seconds to load {} plugins from {}",
+            numFormat.format(seconds), pluginCount, loader);
+        return newPluginsByCategory;
+    }
+
+    /**
+     * @since 2.1
+     */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public Map<String, List<PluginType<?>>> loadFromPackage(final String pkg) {
+        if (Strings.isBlank(pkg)) {
+            // happens when splitting an empty string
+            return Collections.emptyMap();
+        }
+        Map<String, List<PluginType<?>>> existing = pluginsByCategoryByPackage.get(pkg);
+        if (existing != null) {
+            // already loaded this package
+            return existing;
+        }
+
+        final long startTime = System.nanoTime();
+        final ResolverUtil resolver = new ResolverUtil();
+        final ClassLoader classLoader = Loader.getClassLoader();
+        if (classLoader != null) {
+            resolver.setClassLoader(classLoader);
+        }
+        resolver.findInPackage(new PluginTest(), pkg);
+
+        final Map<String, List<PluginType<?>>> newPluginsByCategory = new HashMap<String, List<PluginType<?>>>();
+        for (final Class<?> clazz : resolver.getClasses()) {
+            final Plugin plugin = clazz.getAnnotation(Plugin.class);
+            final String categoryLowerCase = plugin.category().toLowerCase();
+            List<PluginType<?>> list = newPluginsByCategory.get(categoryLowerCase);
+            if (list == null) {
+                newPluginsByCategory.put(categoryLowerCase, list = new ArrayList<PluginType<?>>());
+            }
+            final PluginEntry mainEntry = new PluginEntry();
+            final String mainElementName = plugin.elementType().equals(
+                Plugin.EMPTY) ? plugin.name() : plugin.elementType();
+            mainEntry.setKey(plugin.name().toLowerCase());
+            mainEntry.setName(plugin.name());
+            mainEntry.setCategory(plugin.category());
+            mainEntry.setClassName(clazz.getName());
+            mainEntry.setPrintable(plugin.printObject());
+            mainEntry.setDefer(plugin.deferChildren());
+            list.add(new PluginType(mainEntry, clazz, mainElementName));
+            final PluginAliases pluginAliases = clazz.getAnnotation(PluginAliases.class);
+            if (pluginAliases != null) {
+                for (String alias : pluginAliases.value()) {
+                    final PluginEntry aliasEntry = new PluginEntry();
+                    final String aliasElementName = plugin.elementType().equals(
+                        Plugin.EMPTY) ? alias.trim() : plugin.elementType();
+                    aliasEntry.setKey(alias.trim().toLowerCase());
+                    aliasEntry.setName(plugin.name());
+                    aliasEntry.setCategory(plugin.category());
+                    aliasEntry.setClassName(clazz.getName());
+                    aliasEntry.setPrintable(plugin.printObject());
+                    aliasEntry.setDefer(plugin.deferChildren());
+                    list.add(new PluginType(aliasEntry, clazz, aliasElementName));
+                }
+            }
+        }
+
+        final long endTime = System.nanoTime();
+        final DecimalFormat numFormat = new DecimalFormat("#0.000000");
+        final double seconds = (endTime - startTime) * 1e-9;
+        LOGGER.debug("Took {} seconds to load {} plugins from package {}",
+            numFormat.format(seconds), resolver.getClasses().size(), pkg);
+
+        // Note multiple threads could be calling this method concurrently. Both will do the work,
+        // but only one will be allowed to store the result in the outer map.
+        // Return the inner map produced by whichever thread won the race, so all callers will get the same result.
+        existing = pluginsByCategoryByPackage.putIfAbsent(pkg, newPluginsByCategory);
+        if (existing != null) {
+            return existing;
+        }
+        return newPluginsByCategory;
+    }
+
+    /**
+     * A Test that checks to see if each class is annotated with the 'Plugin' annotation. If it
+     * is, then the test returns true, otherwise false.
+     *
+     * @since 2.1
+     */
+    public static class PluginTest implements ResolverUtil.Test {
+        @Override
+        public boolean matches(final Class<?> type) {
+            return type != null && type.isAnnotationPresent(Plugin.class);
+        }
+
+        @Override
+        public String toString() {
+            return "annotated with @" + Plugin.class.getSimpleName();
+        }
+
+        @Override
+        public boolean matches(final URI resource) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean doesMatchClass() {
+            return true;
+        }
+
+        @Override
+        public boolean doesMatchResource() {
+            return false;
+        }
     }
 }

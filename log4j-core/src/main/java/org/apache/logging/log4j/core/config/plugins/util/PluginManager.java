@@ -17,38 +17,22 @@
 
 package org.apache.logging.log4j.core.config.plugins.util;
 
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URL;
-import java.text.DecimalFormat;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAliases;
-import org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor;
-import org.apache.logging.log4j.core.util.ClassLoaderResourceLoader;
-import org.apache.logging.log4j.core.util.Closer;
-import org.apache.logging.log4j.core.util.Loader;
-import org.apache.logging.log4j.core.util.ResourceLoader;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Loads and manages all the plugins.
  */
 public class PluginManager {
 
-    // TODO: re-use PluginCache code from plugin processor
-    private static final PluginRegistry<PluginType<?>> REGISTRY = new PluginRegistry<PluginType<?>>();
     private static final CopyOnWriteArrayList<String> PACKAGES = new CopyOnWriteArrayList<String>();
     private static final String LOG4J_PACKAGES = "org.apache.logging.log4j.core";
 
@@ -92,10 +76,7 @@ public class PluginManager {
         if (Strings.isBlank(p)) {
             return;
         }
-        if (PACKAGES.addIfAbsent(p)) {
-            // set of available plugins could have changed, reset plugin cache for newly-retrieved managers
-            REGISTRY.clear(); // TODO confirm if this is correct
-        }
+        PACKAGES.addIfAbsent(p);
     }
 
     /**
@@ -134,200 +115,62 @@ public class PluginManager {
      * Locates all the plugins.
      */
     public void collectPlugins() {
-        collectPlugins(true);
+        collectPlugins(null);
     }
 
     /**
-     * Collects plugins, optionally obtaining them from a preload map.
-     * 
-     * @param preLoad if true, plugins will be obtained from the preload map.
+     * Locates all the plugins including search of specific packages. Warns about name collisions.
      *
+     * @param packages the list of packages to scan for plugins
+     * @since 2.1
      */
-    public void collectPlugins(boolean preLoad) {
-        if (REGISTRY.hasCategory(category)) {
-            plugins = REGISTRY.getCategory(category);
-            preLoad = false;
-        }
-        long start = System.nanoTime();
-        if (preLoad) {
-            final ResourceLoader loader = new ClassLoaderResourceLoader(Loader.getClassLoader());
-            loadPlugins(loader);
-        }
-        plugins = REGISTRY.getCategory(category);
-        loadFromPackages(start, preLoad);
+    public void collectPlugins(List<String> packages) {
+        final String categoryLowerCase = category.toLowerCase();
+        final Map<String, PluginType<?>> newPlugins = new LinkedHashMap<String, PluginType<?>>();
 
-        long elapsed = System.nanoTime() - start;
-        reportPluginLoadDuration(preLoad, elapsed);
-    }
-    
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    private void loadFromPackages(final long start, final boolean preLoad) {
-        if (plugins == null || plugins.size() == 0) {
-            if (!PACKAGES.contains(LOG4J_PACKAGES)) {
-                PACKAGES.add(LOG4J_PACKAGES);
-            }
+        // First, iterate the Log4j2Plugin.dat files found in the main CLASSPATH
+        Map<String, List<PluginType<?>>> builtInPlugins = PluginRegistry.getInstance().loadFromMainClassLoader();
+        if (builtInPlugins.isEmpty()) {
+            // If we didn't find any plugins above, someone must have messed with the log4j-core.jar.
+            // Search the standard package in the hopes we can find our core plugins.
+            builtInPlugins = PluginRegistry.getInstance().loadFromPackage(LOG4J_PACKAGES);
         }
-        final ResolverUtil resolver = new ResolverUtil();
-        final ClassLoader classLoader = Loader.getClassLoader();
-        if (classLoader != null) {
-            resolver.setClassLoader(classLoader);
+        mergeByName(newPlugins, builtInPlugins.get(categoryLowerCase));
+
+        // Next, iterate any Log4j2Plugin.dat files from OSGi Bundles
+        for (final Map<String, List<PluginType<?>>> pluginsByCategory : PluginRegistry.getInstance().getPluginsByCategoryByBundleId().values()) {
+            mergeByName(newPlugins, pluginsByCategory.get(categoryLowerCase));
         }
-        final Class<?> cls = null;
-        final ResolverUtil.Test test = new PluginTest(cls);
+
+        // Next iterate any packages passed to the static addPackage method.
         for (final String pkg : PACKAGES) {
-            resolver.findInPackage(test, pkg);
+            mergeByName(newPlugins, PluginRegistry.getInstance().loadFromPackage(pkg).get(categoryLowerCase));
         }
-        for (final Class<?> clazz : resolver.getClasses()) {
-            final Plugin plugin = clazz.getAnnotation(Plugin.class);
-            final String pluginCategory = plugin.category();
-            final Map<String, PluginType<?>> map = REGISTRY.getCategory(pluginCategory);
-            String type = plugin.elementType().equals(Plugin.EMPTY) ? plugin.name() : plugin.elementType();
-            PluginType<?> pluginType = new PluginType(clazz, type, plugin.printObject(), plugin.deferChildren());
-            map.put(plugin.name().toLowerCase(), pluginType);
-            final PluginAliases pluginAliases = clazz.getAnnotation(PluginAliases.class);
-            if (pluginAliases != null) {
-                for (String alias : pluginAliases.value()) {
-                    type =  plugin.elementType().equals(Plugin.EMPTY) ? alias : plugin.elementType();
-                    pluginType = new PluginType(clazz, type, plugin.printObject(), plugin.deferChildren());
-                    map.put(alias.trim().toLowerCase(), pluginType);
-                }
+        // Finally iterate any packages provided in the configuration (note these can be changed at runtime).
+        if (packages != null) {
+            for (final String pkg : packages) {
+                mergeByName(newPlugins, PluginRegistry.getInstance().loadFromPackage(pkg).get(categoryLowerCase));
             }
         }
-        plugins = REGISTRY.getCategory(category);
+
+        LOGGER.debug("PluginManager '{}' found {} plugins", category, newPlugins.size());
+
+        plugins = newPlugins;
     }
 
-    private void reportPluginLoadDuration(final boolean preLoad, long elapsed) {
-        final DecimalFormat numFormat = new DecimalFormat("#0.000000");
-        final double seconds = elapsed / (1000.0 * 1000.0 * 1000.0);
-        final StringBuilder sb = new StringBuilder()
-            .append("Plugin category ")
-            .append(category)
-            .append(" loaded in ")
-            .append(numFormat.format(seconds))
-            .append(" seconds, packages: ")
-            .append(PACKAGES)
-            .append(", preload: ")
-            .append(preLoad)
-            .append(".");
-        LOGGER.debug(sb.toString());
-    }
-
-    public static void loadPlugins(final ResourceLoader loader) {
-        final PluginRegistry<PluginType<?>> registry = decode(loader);
-        if (registry != null) {
-            for (final Map.Entry<String, ConcurrentMap<String, PluginType<?>>> entry : registry.getCategories()) {
-                REGISTRY.getCategory(entry.getKey()).putAll(entry.getValue());
+    private static void mergeByName(Map<String, PluginType<?>> newPlugins, List<PluginType<?>> plugins) {
+        if (plugins == null) {
+            return;
+        }
+        for (final PluginType<?> pluginType : plugins) {
+            final String key = pluginType.getKey();
+            final PluginType<?> existing = newPlugins.get(key);
+            if (existing == null) {
+                newPlugins.put(key, pluginType);
+            } else if (!existing.getPluginClass().equals(pluginType.getPluginClass())) {
+                LOGGER.warn("Plugin [{}] is already mapped to {}, ignoring {}",
+                    key, existing.getPluginClass(), pluginType.getPluginClass());
             }
-        } else {
-            LOGGER.info("Plugin preloads not available from class loader {}", loader);
         }
     }
-
-    private static PluginRegistry<PluginType<?>> decode(final ResourceLoader loader) {
-        final Enumeration<URL> resources;
-        try {
-            resources = loader.getResources(PluginProcessor.PLUGIN_CACHE_FILE);
-            if (resources == null) {
-                return null;
-            }
-        } catch (final IOException ioe) {
-            LOGGER.warn("Unable to preload plugins", ioe);
-            return null;
-        }
-        final PluginRegistry<PluginType<?>> map = new PluginRegistry<PluginType<?>>();
-        while (resources.hasMoreElements()) {
-            final URL url = resources.nextElement();
-            LOGGER.debug("Found Plugin Map at {}", url.toExternalForm());
-            final InputStream is;
-            try {
-                is = url.openStream();
-            } catch (final IOException e) {
-                LOGGER.warn("Unable to open {}", url.toExternalForm(), e);
-                continue;
-            }
-            final DataInputStream dis = new DataInputStream(new BufferedInputStream(is));
-            try {
-                final int count = dis.readInt();
-                for (int j = 0; j < count; ++j) {
-                    final String category = dis.readUTF();
-                    final int entries = dis.readInt();
-                    final Map<String, PluginType<?>> types = map.getCategory(category);
-                    for (int i = 0; i < entries; ++i) {
-                        final String key = dis.readUTF();
-                        final String className = dis.readUTF();
-                        final String name = dis.readUTF();
-                        final boolean printable = dis.readBoolean();
-                        final boolean defer = dis.readBoolean();
-                        try {
-                            final Class<?> clazz = loader.loadClass(className);
-                            @SuppressWarnings({ "unchecked", "rawtypes" })
-                            final PluginType<?> pluginType = new PluginType(clazz, name, printable, defer);
-                            types.put(key, pluginType);
-                        } catch (final ClassNotFoundException e) {
-                            LOGGER.info("Plugin [{}] could not be loaded due to missing classes.", className, e);
-                        } catch (final VerifyError e) {
-                            LOGGER.info("Plugin [{}] could not be loaded due to verification error.", className, e);
-                        }
-                    }
-                }
-            } catch (final IOException ex) {
-                LOGGER.warn("Unable to preload plugins", ex);
-            } finally {
-                Closer.closeSilently(dis);
-            }
-        }
-        return map.isEmpty() ? null : map;
-    }
-
-    /**
-     * A Test that checks to see if each class is annotated with a specific annotation. If it
-     * is, then the test returns true, otherwise false.
-     */
-    public static class PluginTest implements ResolverUtil.Test {
-        private final Class<?> isA;
-
-        /**
-         * Constructs an AnnotatedWith test for the specified annotation type.
-         * @param isA The class to compare against.
-         */
-        public PluginTest(final Class<?> isA) {
-            this.isA = isA;
-        }
-
-        /**
-         * Returns true if the type is annotated with the class provided to the constructor.
-         * @param type The type to check for.
-         * @return true if the Class is of the specified type.
-         */
-        @Override
-        public boolean matches(final Class<?> type) {
-            return type != null && type.isAnnotationPresent(Plugin.class) &&
-                (isA == null || isA.isAssignableFrom(type));
-        }
-
-        @Override
-        public String toString() {
-            final StringBuilder msg = new StringBuilder("annotated with @" + Plugin.class.getSimpleName());
-            if (isA != null) {
-                msg.append(" is assignable to ").append(isA.getSimpleName());
-            }
-            return msg.toString();
-        }
-
-        @Override
-        public boolean matches(final URI resource) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public boolean doesMatchClass() {
-            return true;
-        }
-
-        @Override
-        public boolean doesMatchResource() {
-            return false;
-        }
-    }
-
 }

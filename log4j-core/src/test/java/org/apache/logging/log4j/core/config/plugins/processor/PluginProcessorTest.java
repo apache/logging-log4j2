@@ -17,16 +17,16 @@
 
 package org.apache.logging.log4j.core.config.plugins.processor;
 
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.concurrent.ConcurrentMap;
-
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -47,7 +47,7 @@ public class PluginProcessorTest {
     @Test
     public void testTestCategoryFound() throws Exception {
         assertNotNull("No plugin annotation on FakePlugin.", p);
-        final ConcurrentMap<String, PluginEntry> testCategory = pluginCache.getCategory(p.category());
+        final Map<String, PluginEntry> testCategory = pluginCache.getCategory(p.category());
         assertNotEquals("No plugins were found.", 0, pluginCache.size());
         assertNotNull("The category '" + p.category() + "' was not found.", testCategory);
         assertFalse(testCategory.isEmpty());

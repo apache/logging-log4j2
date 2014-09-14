@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -26,6 +23,9 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.MapLookup;
 import org.apache.logging.log4j.core.lookup.StrLookup;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Handles properties defined in the configuration.
@@ -54,6 +54,6 @@ public final class PropertiesPlugin {
             map.put(prop.getName(), prop.getValue());
         }
 
-        return new Interpolator(new MapLookup(map));
+        return new Interpolator(new MapLookup(map), config.getPluginPackages());
     }
 }

@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.util.Map;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
@@ -25,6 +23,9 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.filter.Filterable;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.net.Advertiser;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Interface that must be implemented to create a configuration.
@@ -74,6 +75,14 @@ public interface Configuration extends Filterable {
     void addLogger(final String name, final LoggerConfig loggerConfig);
 
     void removeLogger(final String name);
+
+    /**
+     * Returns the list of packages to scan for plugins for this Configuration.
+     *
+     * @return the list of plugin packages.
+     * @since 2.1
+     */
+    List<String> getPluginPackages();
 
     Map<String, String> getProperties();
 
