@@ -24,6 +24,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -144,6 +145,25 @@ public final class Throwables {
             Closer.closeSilently(reader);
         }
         return lines;
+    }
+
+    /**
+     * Rethrows a {@link Throwable}, wrapping checked exceptions into an {@link UndeclaredThrowableException}.
+     *
+     * @param t the Throwable to throw.
+     * @throws RuntimeException             if {@code t} is a RuntimeException
+     * @throws Error                        if {@code t} is an Error
+     * @throws UndeclaredThrowableException if {@code t} is a checked Exception
+     * @since 2.1
+     */
+    public static void rethrow(final Throwable t) {
+        if (t instanceof RuntimeException) {
+            throw (RuntimeException) t;
+        }
+        if (t instanceof Error) {
+            throw (Error) t;
+        }
+        throw new UndeclaredThrowableException(t);
     }
 
     private Throwables() {
