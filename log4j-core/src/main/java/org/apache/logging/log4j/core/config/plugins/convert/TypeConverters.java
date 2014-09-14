@@ -39,11 +39,15 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Collection of basic TypeConverter implementations. May be used to register additional TypeConverters or find
  * registered TypeConverters.
+ *
+ * @since 2.1 Moved to the {@code convert} package.
  */
 public final class TypeConverters {
 
     /**
-     * The {@link Plugin} category to use for {@link TypeConverter} plugins.
+     * The {@link Plugin#category() Plugin Category} to use for {@link TypeConverter} plugins.
+     *
+     * @since 2.1
      */
     public static final String CATEGORY = "TypeConverter";
 
