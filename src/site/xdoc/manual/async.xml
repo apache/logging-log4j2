@@ -339,7 +339,7 @@
 							Unless you are logging many
 							events, you may see "jumps"
 							of 10-16 milliseconds between log time stamps.
-                            The use of a background thread may cause issues
+                            WEB APPLICATION WARNING: The use of a background thread may cause issues
                             for web applications and OSGi applications
                             so CachedClock is not recommended for this kind
                             of applications.
