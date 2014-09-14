@@ -17,17 +17,17 @@
 
 package org.apache.logging.log4j.core.osgi;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.util.PluginRegistry;
-import org.apache.logging.log4j.core.util.BundleResourceLoader;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.SynchronousBundleListener;
-
-import java.util.concurrent.atomic.AtomicReference;
+import org.osgi.framework.wiring.BundleWiring;
 
 /**
  * OSGi BundleActivator.
@@ -59,7 +59,8 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
 
     private static void scanBundleForPlugins(final Bundle bundle) {
         LOGGER.trace("Scanning bundle [{}] for plugins.", bundle.getSymbolicName());
-        PluginRegistry.getInstance().loadFromBundle(bundle.getBundleId(), new BundleResourceLoader(bundle));
+        PluginRegistry.getInstance().loadFromBundle(bundle.getBundleId(),
+            bundle.adapt(BundleWiring.class).getClassLoader());
     }
 
     private static void stopBundlePlugins(final Bundle bundle) {

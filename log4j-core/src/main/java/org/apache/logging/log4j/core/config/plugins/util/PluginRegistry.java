@@ -37,9 +37,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.core.config.plugins.processor.PluginCache;
 import org.apache.logging.log4j.core.config.plugins.processor.PluginEntry;
 import org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor;
-import org.apache.logging.log4j.core.util.ClassLoaderResourceLoader;
 import org.apache.logging.log4j.core.util.Loader;
-import org.apache.logging.log4j.core.util.ResourceLoader;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
@@ -117,8 +115,7 @@ public class PluginRegistry {
             // already loaded
             return existing;
         }
-        final ResourceLoader loader = new ClassLoaderResourceLoader(Loader.getClassLoader());
-        final Map<String, List<PluginType<?>>> newPluginsByCategory = decodeCacheFiles(loader);
+        final Map<String, List<PluginType<?>>> newPluginsByCategory = decodeCacheFiles(Loader.getClassLoader());
 
         // Note multiple threads could be calling this method concurrently. Both will do the work,
         // but only one will be allowed to store the result in the AtomicReference.
@@ -140,7 +137,7 @@ public class PluginRegistry {
      * @since 2.1
      */
     @SuppressWarnings("unchecked")
-    public Map<String, List<PluginType<?>>> loadFromBundle(final long bundleId, final ResourceLoader loader) {
+    public Map<String, List<PluginType<?>>> loadFromBundle(final long bundleId, final ClassLoader loader) {
         Map<String, List<PluginType<?>>> existing = pluginsByCategoryByBundleId.get(bundleId);
         if (existing != null) {
             // already loaded from this classloader
@@ -159,7 +156,7 @@ public class PluginRegistry {
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private Map<String, List<PluginType<?>>> decodeCacheFiles(final ResourceLoader loader) {
+    private Map<String, List<PluginType<?>>> decodeCacheFiles(final ClassLoader loader) {
         final long startTime = System.nanoTime();
         final PluginCache cache = new PluginCache();
         try {
