@@ -79,14 +79,16 @@ public class PluginRegistry {
      * @since 2.1
      */
     public static PluginRegistry getInstance() {
-        if (INSTANCE == null) {
+        PluginRegistry result = INSTANCE;
+        if (result == null) {
             synchronized (INSTANCE_LOCK) {
-                if (INSTANCE == null) {
-                    INSTANCE = new PluginRegistry();
+                result = INSTANCE;
+                if (result == null) {
+                    INSTANCE = result = new PluginRegistry();
                 }
             }
         }
-        return INSTANCE;
+        return result;
     }
 
     /**
