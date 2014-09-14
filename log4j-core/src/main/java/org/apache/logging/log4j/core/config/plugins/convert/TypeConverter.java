@@ -20,19 +20,16 @@ package org.apache.logging.log4j.core.config.plugins.convert;
 /**
  * Interface for doing automatic String conversion to a specific type.
  *
- * @param <T>
- *            Converts Strings into the given type {@code T}.
+ * @param <T> Converts Strings into the given type {@code T}.
  */
 public interface TypeConverter<T> {
 
-	/**
-	 * Converts a String to a given type.
-	 * 
-	 * @param s
-	 *            the String to convert. Cannot be {@code null}.
-	 * @return the converted object.
-	 * @throws Exception
-	 *             thrown when a conversion error occurs
-	 */
-	T convert(String s) throws Exception;
+    /**
+     * Converts a String to a given type.
+     *
+     * @param s the String to convert. Cannot be {@code null}.
+     * @return the converted object.
+     * @throws Exception thrown when a conversion error occurs
+     */
+    T convert(String s) throws Exception;
 }
