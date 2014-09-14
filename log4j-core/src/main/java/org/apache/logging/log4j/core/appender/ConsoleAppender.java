@@ -28,8 +28,10 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.RequiresNonNull;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.Loader;
@@ -79,7 +81,6 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
      *               they are propagated to the caller.
      * @return The ConsoleAppender.
      */
-    @PluginFactory
     public static ConsoleAppender createAppender(
             @PluginElement("Layout") Layout<? extends Serializable> layout,
             @PluginElement("Filter") final Filter filter,
@@ -98,6 +99,75 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         final Target target = targetStr == null ? Target.SYSTEM_OUT : Target.valueOf(targetStr);
         return new ConsoleAppender(name, layout, filter, getManager(isFollow, target, layout), ignoreExceptions);
+    }
+
+    public static ConsoleAppender createDefaultAppenderForLayout(final Layout<? extends Serializable> layout) {
+        // this method cannot use the builder class without introducing an infinite loop due to DefaultConfiguration
+        return new ConsoleAppender("Console", layout, null, getManager(false, Target.SYSTEM_OUT, layout), true);
+    }
+
+    @PluginBuilderFactory
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    public static class Builder implements org.apache.logging.log4j.core.util.Builder<ConsoleAppender> {
+
+        @PluginElement("Layout")
+        @RequiresNonNull
+        private Layout<? extends Serializable> layout = PatternLayout.createDefaultLayout();
+
+        @PluginElement("Filter")
+        private Filter filter;
+
+        @PluginBuilderAttribute
+        @RequiresNonNull
+        private Target target = Target.SYSTEM_OUT;
+
+        @PluginBuilderAttribute
+        @RequiresNonNull
+        private String name;
+
+        @PluginBuilderAttribute
+        private boolean follow = false;
+
+        @PluginBuilderAttribute
+        private boolean ignoreExceptions = true;
+
+        public Builder setLayout(final Layout<? extends Serializable> layout) {
+            this.layout = layout;
+            return this;
+        }
+
+        public Builder setFilter(final Filter filter) {
+            this.filter = filter;
+            return this;
+        }
+
+        public Builder setTarget(final Target target) {
+            this.target = target;
+            return this;
+        }
+
+        public Builder setName(final String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder setFollow(final boolean follow) {
+            this.follow = follow;
+            return this;
+        }
+
+        public Builder setIgnoreExceptions(final boolean ignoreExceptions) {
+            this.ignoreExceptions = ignoreExceptions;
+            return this;
+        }
+
+        @Override
+        public ConsoleAppender build() {
+            return new ConsoleAppender(name, layout, filter, getManager(follow, target, layout), ignoreExceptions);
+        }
     }
 
     private static OutputStreamManager getManager(final boolean follow, final Target target, final Layout<? extends Serializable> layout) {

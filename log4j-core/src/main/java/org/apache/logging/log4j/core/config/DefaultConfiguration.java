@@ -59,8 +59,7 @@ public class DefaultConfiguration extends AbstractConfiguration {
             .withPattern(DEFAULT_PATTERN)
             .withConfiguration(this)
             .build();
-        final Appender appender =
-                ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false", "true");
+        final Appender appender = ConsoleAppender.createDefaultAppenderForLayout(layout);
         appender.start();
         addAppender(appender);
         final LoggerConfig root = getRootLogger();
