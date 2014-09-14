@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginVisitorStrategy;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * Utility class to locate an appropriate PluginVisitor implementation for an annotation.
+ * Utility class to locate an appropriate {@link PluginVisitor} implementation for an annotation.
  */
 public final class PluginVisitors {
 
