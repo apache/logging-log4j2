@@ -108,7 +108,6 @@ public class PluginRegistry {
     /**
      * @since 2.1
      */
-    @SuppressWarnings("unchecked")
     public Map<String, List<PluginType<?>>> loadFromMainClassLoader() {
         final Map<String, List<PluginType<?>>> existing = pluginsByCategoryRef.get();
         if (existing != null) {
@@ -136,7 +135,6 @@ public class PluginRegistry {
     /**
      * @since 2.1
      */
-    @SuppressWarnings("unchecked")
     public Map<String, List<PluginType<?>>> loadFromBundle(final long bundleId, final ClassLoader loader) {
         Map<String, List<PluginType<?>>> existing = pluginsByCategoryByBundleId.get(bundleId);
         if (existing != null) {
@@ -155,7 +153,6 @@ public class PluginRegistry {
         return newPluginsByCategory;
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
     private Map<String, List<PluginType<?>>> decodeCacheFiles(final ClassLoader loader) {
         final long startTime = System.nanoTime();
         final PluginCache cache = new PluginCache();
@@ -180,7 +177,9 @@ public class PluginRegistry {
                 final String className = entry.getClassName();
                 try {
                     final Class<?> clazz = loader.loadClass(className);
-                    types.add(new PluginType(entry, clazz, entry.getName()));
+                    @SuppressWarnings({"unchecked","rawtypes"})
+                    final PluginType<?> type = new PluginType(entry, clazz, entry.getName());
+                    types.add(type);
                     ++pluginCount;
                 } catch (final ClassNotFoundException e) {
                     LOGGER.info("Plugin [{}] could not be loaded due to missing classes.", className, e);
@@ -201,7 +200,6 @@ public class PluginRegistry {
     /**
      * @since 2.1
      */
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public Map<String, List<PluginType<?>>> loadFromPackage(final String pkg) {
         if (Strings.isBlank(pkg)) {
             // happens when splitting an empty string
@@ -238,7 +236,9 @@ public class PluginRegistry {
             mainEntry.setClassName(clazz.getName());
             mainEntry.setPrintable(plugin.printObject());
             mainEntry.setDefer(plugin.deferChildren());
-            list.add(new PluginType(mainEntry, clazz, mainElementName));
+            @SuppressWarnings({"unchecked","rawtypes"})
+            final PluginType<?> mainType = new PluginType(mainEntry, clazz, mainElementName);
+            list.add(mainType);
             final PluginAliases pluginAliases = clazz.getAnnotation(PluginAliases.class);
             if (pluginAliases != null) {
                 for (String alias : pluginAliases.value()) {
@@ -251,7 +251,9 @@ public class PluginRegistry {
                     aliasEntry.setClassName(clazz.getName());
                     aliasEntry.setPrintable(plugin.printObject());
                     aliasEntry.setDefer(plugin.deferChildren());
-                    list.add(new PluginType(aliasEntry, clazz, aliasElementName));
+                    @SuppressWarnings({"unchecked","rawtypes"})
+                    final PluginType<?> aliasType = new PluginType(aliasEntry, clazz, aliasElementName);
+                    list.add(aliasType);
                 }
             }
         }
