@@ -170,6 +170,7 @@ public class PluginBuilder<T> implements Builder<T> {
         final Field[] fields = builder.getClass().getDeclaredFields();
         AccessibleObject.setAccessible(fields, true);
         final StringBuilder log = new StringBuilder();
+        boolean invalid = false;
         for (final Field field : fields) {
             log.append(log.length() == 0 ? "with params(" : ", ");
             final Annotation[] annotations = field.getDeclaredAnnotations();
@@ -198,7 +199,7 @@ public class PluginBuilder<T> implements Builder<T> {
             final Object value = field.get(builder);
             for (ConstraintValidator<Annotation, Object> validator : validators) {
                 if (!validator.isValid(value)) {
-                    throw new ConfigurationException("Invalid value [" + value + "] for field " + field.getName());
+                    invalid = true;
                 }
             }
         }
@@ -207,6 +208,9 @@ public class PluginBuilder<T> implements Builder<T> {
         }
         LOGGER.debug("Calling build() on class {} for element {} {}", builder.getClass(), node.getName(),
             log.toString());
+        if (invalid) {
+            throw new ConfigurationException("Arguments given for element " + node.getName() + " are invalid");
+        }
         checkForRemainingAttributes();
         verifyNodeChildrenUsed();
     }
@@ -228,6 +232,7 @@ public class PluginBuilder<T> implements Builder<T> {
         final Class<?>[] types = factory.getParameterTypes();
         final Annotation[][] annotations = factory.getParameterAnnotations();
         final Object[] args = new Object[annotations.length];
+        boolean invalid = false;
         for (int i = 0; i < annotations.length; i++) {
             log.append(log.length() == 0 ? "with params(" : ", ");
             final String[] aliases = extractPluginAliases(annotations[i]);
@@ -255,7 +260,7 @@ public class PluginBuilder<T> implements Builder<T> {
             final Object value = args[i];
             for (final ConstraintValidator<Annotation, Object> validator : validators) {
                 if (!validator.isValid(value)) {
-                    throw new ConfigurationException("Invalid value [" + value + "] for parameter " + i);
+                    invalid = true;
                 }
             }
         }
@@ -266,6 +271,9 @@ public class PluginBuilder<T> implements Builder<T> {
         verifyNodeChildrenUsed();
         LOGGER.debug("Calling {} on class {} for element {} {}", factory.getName(), clazz.getName(), node.getName(),
             log.toString());
+        if (invalid) {
+            throw new ConfigurationException("Arguments given for element " + node.getName() + " are invalid");
+        }
         return args;
     }
 
