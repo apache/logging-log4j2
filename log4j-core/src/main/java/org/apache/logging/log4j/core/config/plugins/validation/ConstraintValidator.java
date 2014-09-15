@@ -22,10 +22,9 @@ import java.lang.annotation.Annotation;
  * Interface that {@link Constraint} annotations must implement to perform validation logic.
  *
  * @param <A> the {@link Constraint} annotation this interface validates.
- * @param <T> the type of the object being validated
  * @since 2.1
  */
-public interface ConstraintValidator<A extends Annotation, T> {
+public interface ConstraintValidator<A extends Annotation> {
 
     /**
      * Called before this validator is used with the constraint annotation value.
@@ -40,5 +39,5 @@ public interface ConstraintValidator<A extends Annotation, T> {
      * @param value the value to validate.
      * @return {@code true} if the given value is valid.
      */
-    boolean isValid(T value);
+    boolean isValid(Object value);
 }

@@ -194,10 +194,10 @@ public class PluginBuilder<T> implements Builder<T> {
                     }
                 }
             }
-            final Collection<ConstraintValidator<Annotation, Object>> validators =
+            final Collection<ConstraintValidator<?>> validators =
                 ConstraintValidators.findValidators(annotations);
             final Object value = field.get(builder);
-            for (ConstraintValidator<Annotation, Object> validator : validators) {
+            for (ConstraintValidator<?> validator : validators) {
                 if (!validator.isValid(value)) {
                     invalid = true;
                 }
@@ -255,10 +255,10 @@ public class PluginBuilder<T> implements Builder<T> {
                     }
                 }
             }
-            final Collection<ConstraintValidator<Annotation, Object>> validators =
+            final Collection<ConstraintValidator<?>> validators =
                 ConstraintValidators.findValidators(annotations[i]);
             final Object value = args[i];
-            for (final ConstraintValidator<Annotation, Object> validator : validators) {
+            for (final ConstraintValidator<?> validator : validators) {
                 if (!validator.isValid(value)) {
                     invalid = true;
                 }

@@ -26,7 +26,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  *
  * @since 2.1
  */
-public class RequiresNonNullValidator implements ConstraintValidator<RequiresNonNull, Object> {
+public class RequiresNonNullValidator implements ConstraintValidator<RequiresNonNull> {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
