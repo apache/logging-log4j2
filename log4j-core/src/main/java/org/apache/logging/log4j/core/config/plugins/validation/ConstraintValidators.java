@@ -17,11 +17,12 @@
 package org.apache.logging.log4j.core.config.plugins.validation;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.core.util.ReflectionUtil;
 
 /**
  * Utility class to locate an appropriate {@link ConstraintValidator} implementation for an annotation.
@@ -29,8 +30,6 @@ import org.apache.logging.log4j.status.StatusLogger;
  * @since 2.1
  */
 public final class ConstraintValidators {
-
-    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private ConstraintValidators() {
     }
@@ -42,14 +41,13 @@ public final class ConstraintValidators {
      * @param annotations the annotations to find constraint validators for
      * @return a collection of ConstraintValidators for the given annotations
      */
-    public static Collection<ConstraintValidator<Annotation, Object>> findValidators(
-        final Annotation... annotations) {
-        final Collection<ConstraintValidator<Annotation, Object>> validators =
-            new ArrayList<ConstraintValidator<Annotation, Object>>();
+    public static Collection<ConstraintValidator<?>> findValidators(final Annotation... annotations) {
+        final Collection<ConstraintValidator<?>> validators =
+            new ArrayList<ConstraintValidator<?>>();
         for (final Annotation annotation : annotations) {
-            final Constraint constraint = annotation.annotationType().getAnnotation(Constraint.class);
-            if (constraint != null) {
-                final ConstraintValidator<Annotation, Object> validator = getValidatorFor(annotation, constraint);
+            final Class<? extends Annotation> type = annotation.annotationType();
+            if (type.isAnnotationPresent(Constraint.class)) {
+                final ConstraintValidator<?> validator = getValidator(annotation, type);
                 if (validator != null) {
                     validators.add(validator);
                 }
@@ -58,18 +56,29 @@ public final class ConstraintValidators {
         return validators;
     }
 
-    private static ConstraintValidator<Annotation, Object> getValidatorFor(final Annotation annotation,
-                                                                           final Constraint constraint) {
-        try {
-            // TODO: may want to cache these validator instances
-            @SuppressWarnings("unchecked")
-            final ConstraintValidator<Annotation, Object> validator =
-                (ConstraintValidator<Annotation, Object>) constraint.value().newInstance();
+    private static <A extends Annotation> ConstraintValidator<A> getValidator(final A annotation,
+                                                                              final Class<? extends A> type) {
+        final Constraint constraint = type.getAnnotation(Constraint.class);
+        final Class<? extends ConstraintValidator<?>> validatorClass = constraint.value();
+        if (type.equals(getConstraintValidatorAnnotationType(validatorClass))) {
+            @SuppressWarnings("unchecked") // I don't think we could be any more thorough in validation here
+            final ConstraintValidator<A> validator = (ConstraintValidator<A>)
+                ReflectionUtil.instantiate(validatorClass);
             validator.initialize(annotation);
             return validator;
-        } catch (final Exception e) {
-            LOGGER.error("Error loading ConstraintValidator [{}].", constraint.value(), e);
-            return null;
         }
+        return null;
+    }
+
+    private static Type getConstraintValidatorAnnotationType(final Class<? extends ConstraintValidator<?>> type) {
+        for (final Type parentType : type.getGenericInterfaces()) {
+            if (parentType instanceof ParameterizedType) {
+                final ParameterizedType parameterizedType = (ParameterizedType) parentType;
+                if (ConstraintValidator.class.equals(parameterizedType.getRawType())) {
+                    return parameterizedType.getActualTypeArguments()[0];
+                }
+            }
+        }
+        return Void.TYPE;
     }
 }
