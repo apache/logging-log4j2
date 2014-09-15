@@ -81,11 +81,8 @@ public class TypeConverterRegistry {
             return primary;
         }
         // dynamic enum support
-        if (type instanceof Class<?>) {
-            final Class<?> clazz = (Class<?>) type;
-            if (clazz.isEnum()) {
-                return registerEnumType(clazz.asSubclass(Enum.class));
-            }
+        if (type instanceof Class<?> && ((Class<?>) type).isEnum()) {
+            return registerEnumType(type);
         }
         // look for compatible converters
         for (final Map.Entry<Type, TypeConverter<?>> entry : registry.entrySet()) {
@@ -152,8 +149,9 @@ public class TypeConverterRegistry {
         registry.putIfAbsent(aliasType, registry.get(knownType));
     }
 
-    private <E extends Enum<E>> TypeConverter<E> registerEnumType(final Class<E> type) {
-        final TypeConverter<E> converter = new EnumConverter<E>(type);
+    private <E extends Enum<E>> TypeConverter<? extends E> registerEnumType(final Type type) {
+        @SuppressWarnings("unchecked")
+        final TypeConverter<E> converter = new EnumConverter<E>((Class<E>) type);
         registry.putIfAbsent(type, converter);
         return converter;
     }
