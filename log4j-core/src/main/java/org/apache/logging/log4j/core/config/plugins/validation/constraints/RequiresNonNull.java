@@ -36,4 +36,9 @@ import org.apache.logging.log4j.core.config.plugins.validation.validators.Requir
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Constraint(RequiresNonNullValidator.class)
 public @interface RequiresNonNull {
+
+    /**
+     * The message to be logged if this constraint is violated. This should normally be overridden.
+     */
+    String message() default "The parameter is null";
 }

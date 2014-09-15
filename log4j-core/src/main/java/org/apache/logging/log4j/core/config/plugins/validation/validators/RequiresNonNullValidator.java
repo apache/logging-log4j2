@@ -16,8 +16,10 @@
  */
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.validation.ConstraintValidator;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.RequiresNonNull;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Validator implementation for {@link RequiresNonNull}.
@@ -25,12 +27,22 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Requi
  * @since 2.1
  */
 public class RequiresNonNullValidator implements ConstraintValidator<RequiresNonNull, Object> {
+
+    private static final Logger LOGGER = StatusLogger.getLogger();
+
+    private RequiresNonNull annotation;
+
     @Override
     public void initialize(final RequiresNonNull annotation) {
+        this.annotation = annotation;
     }
 
     @Override
     public boolean isValid(final Object value) {
-        return value != null;
+        if (value != null) {
+            return true;
+        }
+        LOGGER.error(annotation.message());
+        return false;
     }
 }
