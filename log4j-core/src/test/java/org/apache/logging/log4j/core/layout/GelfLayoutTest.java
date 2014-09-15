@@ -26,7 +26,6 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.input.TaggedInputStream;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
@@ -159,7 +158,7 @@ public class GelfLayoutTest {
             inflaterStream = new InflaterInputStream(bais);
             break;
         case OFF:
-            inflaterStream = new TaggedInputStream(bais);
+            inflaterStream = bais;
             break;
         default:
             throw new IllegalStateException("Missing test case clause");
