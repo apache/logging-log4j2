@@ -110,10 +110,10 @@ public class TypeConverterRegistry {
 
     private void loadKnownTypeConverters(final Collection<PluginType<?>> knownTypes) {
         for (final PluginType<?> knownType : knownTypes) {
-            if (TypeConverter.class.isAssignableFrom(knownType.getPluginClass())) {
+            final Class<?> clazz = knownType.getPluginClass();
+            if (TypeConverter.class.isAssignableFrom(clazz)) {
                 @SuppressWarnings("unchecked") // but we just DID check it!
-                final Class<? extends TypeConverter<?>> pluginClass =
-                    (Class<? extends TypeConverter<?>>) knownType.getPluginClass();
+                final Class<? extends TypeConverter<?>> pluginClass = (Class<? extends TypeConverter<?>>) clazz;
                 final Type conversionType = getTypeConverterSupportedType(pluginClass);
                 final TypeConverter<?> converter = ReflectionUtil.instantiate(pluginClass);
                 if (registry.putIfAbsent(conversionType, converter) != null) {
