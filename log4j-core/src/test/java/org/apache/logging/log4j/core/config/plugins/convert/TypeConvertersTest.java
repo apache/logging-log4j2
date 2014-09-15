@@ -139,6 +139,8 @@ public class TypeConvertersTest {
                 { null, null, null, Facility.class },
                 // GELF compression types
                 { "GZIP", GelfLayout.CompressionType.GZIP, "GZIP", GelfLayout.CompressionType.class },
+                { "ZLIB", GelfLayout.CompressionType.ZLIB, "GZIP", GelfLayout.CompressionType.class },
+                { "OFF", GelfLayout.CompressionType.OFF, "GZIP", GelfLayout.CompressionType.class },
                 // arrays
                 { "123", "123".toCharArray(), null, char[].class },
                 { "123", "123".getBytes(Charset.defaultCharset()), null, byte[].class },

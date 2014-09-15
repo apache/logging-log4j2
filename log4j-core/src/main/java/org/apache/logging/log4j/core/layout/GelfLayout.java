@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.layout;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.math.BigDecimal;
@@ -67,12 +68,32 @@ import com.fasterxml.jackson.core.io.JsonStringEncoder;
 public final class GelfLayout extends AbstractStringLayout {
 
     public static enum CompressionType {
-        GZIP, NONE, ZLIB
+
+        GZIP {
+            @Override
+            public DeflaterOutputStream createDeflaterOutputStream(OutputStream os) throws IOException {
+                return new GZIPOutputStream(os);
+            }
+        },
+        ZLIB {
+            @Override
+            public DeflaterOutputStream createDeflaterOutputStream(OutputStream os) throws IOException {
+                return new DeflaterOutputStream(os);
+            }
+        },
+        OFF {
+            @Override
+            public DeflaterOutputStream createDeflaterOutputStream(OutputStream os) throws IOException {
+                return null;
+            }
+        };
+
+        public abstract DeflaterOutputStream createDeflaterOutputStream(OutputStream os) throws IOException;
+
     }
 
     private static final char C = ',';
     private static final int COMPRESSION_THRESHOLD = 1024;
-    private static final byte[] EMPTY_BYTES = new byte[0];
     private static final char Q = '\"';
     private static final String QC = "\",";
     private static final String QU = "\"_";
@@ -132,15 +153,8 @@ public final class GelfLayout extends AbstractStringLayout {
     private byte[] compress(final byte[] bytes) {
         try {
             final ByteArrayOutputStream baos = new ByteArrayOutputStream(compressionThreshold / 8);
-            DeflaterOutputStream stream;
-            switch (compressionType) {
-            case GZIP:
-                stream = new GZIPOutputStream(baos);
-                break;
-            case ZLIB:
-                stream = new DeflaterOutputStream(baos);
-                break;
-            default:
+            DeflaterOutputStream stream = compressionType.createDeflaterOutputStream(baos);
+            if (stream == null) {
                 return bytes;
             }
             stream.write(bytes);
@@ -149,7 +163,7 @@ public final class GelfLayout extends AbstractStringLayout {
             return baos.toByteArray();
         } catch (final IOException e) {
             StatusLogger.getLogger().error(e);
-            return EMPTY_BYTES;
+            return bytes;
         }
     }
 

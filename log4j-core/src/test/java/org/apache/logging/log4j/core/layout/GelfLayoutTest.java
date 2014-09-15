@@ -19,11 +19,14 @@ package org.apache.logging.log4j.core.layout;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
+import java.util.zip.InflaterInputStream;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.input.TaggedInputStream;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
@@ -76,15 +79,14 @@ public class GelfLayoutTest {
 
     Logger root = ctx.getLogger("");
 
-    @Test
-    public void testLayout() throws Exception {
+    private void testCompressedLayout(final CompressionType compressionType) throws IOException {
         for (final Appender appender : root.getAppenders().values()) {
             root.removeAppender(appender);
         }
         // set up appenders
         final GelfLayout layout = GelfLayout.createLayout(HOSTNAME, new KeyValuePair[] {
                 new KeyValuePair(KEY1, VALUE1),
-                new KeyValuePair(KEY2, VALUE2), }, CompressionType.GZIP, 1024);
+                new KeyValuePair(KEY2, VALUE2), }, compressionType, 1024);
         // ConsoleAppender appender = new ConsoleAppender("Console", layout);
         final ListAppender eventAppender = new ListAppender("Events", null, null, true, false);
         final ListAppender rawAppender = new ListAppender("Raw", null, layout, true, true);
@@ -145,12 +147,27 @@ public class GelfLayoutTest {
                         "\"_" + MDCKEY2 + "\": \"" + MDCVALUE2 + "\"" +
                         "}",
                 messages.get(1));
-
+        //@formatter:on
         final byte[] compressed = raw.get(2);
-        final InputStream gzipStream = new GZIPInputStream(new ByteArrayInputStream(compressed));
-        final byte[] uncompressed = IOUtils.toByteArray(gzipStream);
-        gzipStream.close();
+        final ByteArrayInputStream bais = new ByteArrayInputStream(compressed);
+        InputStream inflaterStream = null;
+        switch (compressionType) {
+        case GZIP:
+            inflaterStream = new GZIPInputStream(bais);
+            break;
+        case ZLIB:
+            inflaterStream = new InflaterInputStream(bais);
+            break;
+        case OFF:
+            inflaterStream = new TaggedInputStream(bais);
+            break;
+        default:
+            throw new IllegalStateException("Missing test case clause");
+        }
+        final byte[] uncompressed = IOUtils.toByteArray(inflaterStream);
+        inflaterStream.close();
         final String uncompressedString = new String(uncompressed, layout.getCharset());
+        //@formatter:off
         assertJsonEquals("{" +
                         "\"version\": \"1.1\"," +
                         "\"host\": \"" + HOSTNAME + "\"," +
@@ -168,5 +185,20 @@ public class GelfLayoutTest {
                         "}",
                 uncompressedString);
         //@formatter:on
+    }
+
+    @Test
+    public void testLayoutGzipCompression() throws Exception {
+        testCompressedLayout(CompressionType.GZIP);
+    }
+
+    @Test
+    public void testLayoutNoCompression() throws Exception {
+        testCompressedLayout(CompressionType.OFF);
+    }
+
+    @Test
+    public void testLayoutZlibCompression() throws Exception {
+        testCompressedLayout(CompressionType.ZLIB);
     }
 }
