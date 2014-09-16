@@ -35,7 +35,7 @@
         Plugins have been segmented into three parts: class path, user-specified packages, and OSGi bundles.
       </action>
       <action issue="LOG4J2-753" dev="rpopma" type="fix">
-        Improved CachedClock performance.
+        Reduced CachedClock thread contention.
       </action>
       <action issue="LOG4J2-819" dev="mattsicker" type="fix" due-to="Gary Gregory">
         Fixed memory leak in Tomcat 6 caused by clock background threads unintentionally
