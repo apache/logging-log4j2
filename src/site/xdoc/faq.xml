@@ -38,7 +38,7 @@
       <subsection>
 		<a name="which_jars" />
         <h4>Which JAR files do I need?</h4>
-        <p>You need at least the log4j-api-2.0 and the log4j-core-2.0 jar files.</p>
+        <p>You need at least the log4j-api-2.1 and the log4j-core-2.1 jar files.</p>
         <p>The other jars are necessary if your application calls the API
         of another logging framework and you want to route logging calls to the Log4j 2 implementation.</p>
         <p><img src="images/whichjar-2.1.png" alt="Diagram showing which JARs correspond to which systems" /></p>
