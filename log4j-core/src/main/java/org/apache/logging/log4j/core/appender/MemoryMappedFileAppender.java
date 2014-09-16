@@ -35,10 +35,10 @@ import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.Integers;
 
 /**
- * File Appender.
+ * Memory Mapped File Appender.
  */
 @Plugin(name = "MemoryMappedFile", category = "Core", elementType = "appender", printObject = true)
-public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender<RandomAccessFileManager> {
+public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender<MemoryMappedFileManager> {
 
     private static final long serialVersionUID = 1L;
 
@@ -46,13 +46,12 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
     private Object advertisement;
     private final Advertiser advertiser;
 
-    private MemoryMappedFileAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
-            final RandomAccessFileManager manager, final String filename, final boolean ignoreExceptions,
-            final boolean immediateFlush, final Advertiser advertiser) {
+    private MemoryMappedFileAppender(final String name, final Layout<? extends Serializable> layout,
+            final Filter filter, final MemoryMappedFileManager manager, final String filename,
+            final boolean ignoreExceptions, final boolean immediateFlush, final Advertiser advertiser) {
         super(name, layout, filter, ignoreExceptions, immediateFlush, manager);
         if (advertiser != null) {
-            final Map<String, String> configuration = new HashMap<String, String>(
-                    layout.getContentFormat());
+            final Map<String, String> configuration = new HashMap<String, String>(layout.getContentFormat());
             configuration.putAll(manager.getContentFormat());
             configuration.put("contentType", layout.getContentType());
             configuration.put("name", name);
@@ -96,82 +95,82 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
     public String getFileName() {
         return this.fileName;
     }
-    
+
     /**
-     * Returns the size of the file manager's buffer.
-     * @return the buffer size
+     * Returns the length of the memory mapped region.
+     * 
+     * @return the length of the memory mapped region
      */
-    public int getBufferSize() {
-        return getManager().getBufferSize();
+    public int getRegionLength() {
+        return getManager().getRegionLength();
     }
 
-    // difference from standard File Appender:
-    // locking is not supported and buffering cannot be switched off
     /**
-     * Create a File Appender.
+     * Create a Memory Mapped File Appender.
      *
      * @param fileName The name and path of the file.
-     * @param append "True" if the file should be appended to, "false" if it
-     *            should be overwritten. The default is "true".
+     * @param append "True" if the file should be appended to, "false" if it should be overwritten. The default is
+     *            "true".
      * @param name The name of the Appender.
-     * @param immediateFlush "true" if the contents should be flushed on every
-     *            write, "false" otherwise. The default is "true".
-     * @param bufferSizeStr The buffer size, defaults to {@value RandomAccessFileManager#DEFAULT_BUFFER_SIZE}.
-     * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
-     *               they are propagated to the caller.
-     * @param layout The layout to use to format the event. If no layout is
-     *            provided the default PatternLayout will be used.
+     * @param immediateFlush "true" if the contents should be flushed on every write, "false" otherwise. The default is
+     *            "true".
+     * @param regionLengthStr The buffer size, defaults to {@value RandomAccessFileManager#DEFAULT_REGION=LENGTH}.
+     * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise they
+     *            are propagated to the caller.
+     * @param layout The layout to use to format the event. If no layout is provided the default PatternLayout will be
+     *            used.
      * @param filter The filter, if any, to use.
-     * @param advertise "true" if the appender configuration should be
-     *            advertised, "false" otherwise.
-     * @param advertiseURI The advertised URI which can be used to retrieve the
-     *            file contents.
+     * @param advertise "true" if the appender configuration should be advertised, "false" otherwise.
+     * @param advertiseURI The advertised URI which can be used to retrieve the file contents.
      * @param config The Configuration.
      * @return The FileAppender.
      */
     @PluginFactory
     public static MemoryMappedFileAppender createAppender(
-            @PluginAttribute("fileName") final String fileName,
-            @PluginAttribute("append") final String append,
-            @PluginAttribute("name") final String name,
-            @PluginAttribute("immediateFlush") final String immediateFlush,
-            @PluginAttribute("bufferSize") final String bufferSizeStr,
-            @PluginAttribute("ignoreExceptions") final String ignore,
-            @PluginElement("Layout") Layout<? extends Serializable> layout,
-            @PluginElement("Filter") final Filter filter,
-            @PluginAttribute("advertise") final String advertise,
-            @PluginAttribute("advertiseURI") final String advertiseURI,
+    // @formatter:off
+            @PluginAttribute("fileName") final String fileName, //
+            @PluginAttribute("append") final String append, //
+            @PluginAttribute("name") final String name, //
+            @PluginAttribute("immediateFlush") final String immediateFlush, //
+            @PluginAttribute("regionLength") final String regionLengthStr, //
+            @PluginAttribute("ignoreExceptions") final String ignore, //
+            @PluginElement("Layout") Layout<? extends Serializable> layout, //
+            @PluginElement("Filter") final Filter filter, //
+            @PluginAttribute("advertise") final String advertise, //
+            @PluginAttribute("advertiseURI") final String advertiseURI, //
             @PluginConfiguration final Configuration config) {
+        // @formatter:on
 
         final boolean isAppend = Booleans.parseBoolean(append, true);
-        final boolean isFlush = Booleans.parseBoolean(immediateFlush, true);
+        final boolean isForce = Booleans.parseBoolean(immediateFlush, true);
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         final boolean isAdvertise = Boolean.parseBoolean(advertise);
-        final int bufferSize = Integers.parseInt(bufferSizeStr, RandomAccessFileManager.DEFAULT_BUFFER_SIZE);
+        final int regionLength = Integers.parseInt(regionLengthStr, MemoryMappedFileManager.DEFAULT_REGION_LENGTH);
+        final int actualRegionLength = Integers.ceilingNextPowerOfTwo(regionLength);
+        if (regionLength != actualRegionLength) {
+            LOGGER.info("MemoryMappedAppender[{}] Rounded up region length from {} to next power of two: {}", name,
+                    regionLength, actualRegionLength);
+        }
 
         if (name == null) {
-            LOGGER.error("No name provided for FileAppender");
+            LOGGER.error("No name provided for MemoryMappedFileAppender");
             return null;
         }
 
         if (fileName == null) {
-            LOGGER.error("No filename provided for FileAppender with name "
-                    + name);
+            LOGGER.error("No filename provided for MemoryMappedFileAppender with name " + name);
             return null;
         }
         if (layout == null) {
             layout = PatternLayout.createDefaultLayout();
         }
-        final RandomAccessFileManager manager = RandomAccessFileManager.getFileManager(
-                fileName, isAppend, isFlush, bufferSize, advertiseURI, layout
-        );
+        final MemoryMappedFileManager manager = MemoryMappedFileManager.getFileManager(fileName, isAppend, isForce,
+                actualRegionLength, advertiseURI, layout);
         if (manager == null) {
             return null;
         }
 
-        return new MemoryMappedFileAppender(
-                name, layout, filter, manager, fileName, ignoreExceptions, isFlush,
-                isAdvertise ? config.getAdvertiser() : null
-        );
+        return new MemoryMappedFileAppender(name, layout, filter, manager, fileName, ignoreExceptions, isForce,
+                isAdvertise ? config.getAdvertiser() : null);
     }
 }

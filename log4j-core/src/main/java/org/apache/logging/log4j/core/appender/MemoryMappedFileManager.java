@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.core.util.Closer;
 
 /**
@@ -39,14 +40,15 @@ import org.apache.logging.log4j.core.util.Closer;
  * memory and writes to this memory region.
  * <p>
  * 
+ * @see <a href="http://www.codeproject.com/Tips/683614/Things-to-Know-about-Memory-Mapped-File-in-Java">http://www.codeproject.com/Tips/683614/Things-to-Know-about-Memory-Mapped-File-in-Java</a>
  * @see <a href="http://bugs.java.com/view_bug.do?bug_id=6893654">http://bugs.java.com/view_bug.do?bug_id=6893654</a>
  * @see <a href="http://bugs.java.com/view_bug.do?bug_id=4724038">http://bugs.java.com/view_bug.do?bug_id=4724038</a>
  * @see <a
  *      href="http://stackoverflow.com/questions/9261316/memory-mapped-mappedbytebuffer-or-direct-bytebuffer-for-db-implementation">http://stackoverflow.com/questions/9261316/memory-mapped-mappedbytebuffer-or-direct-bytebuffer-for-db-implementation</a>
- * @see <a href="http://www.codeproject.com/Tips/683614/Things-to-Know-about-Memory-Mapped-File-in-Java">http://www.codeproject.com/Tips/683614/Things-to-Know-about-Memory-Mapped-File-in-Java</a>
  * 
  */
 public class MemoryMappedFileManager extends OutputStreamManager {
+    static final int DEFAULT_REGION_LENGTH = 32 * 1024 * 1024;
     private static final MemoryMappedFileManagerFactory FACTORY = new MemoryMappedFileManagerFactory();
 
     private final boolean isForce;
@@ -55,17 +57,19 @@ public class MemoryMappedFileManager extends OutputStreamManager {
     private final RandomAccessFile randomAccessFile;
     private final ThreadLocal<Boolean> isEndOfBatch = new ThreadLocal<Boolean>();
     private MappedByteBuffer mappedBuffer;
+    private long mappingOffset;
 
     protected MemoryMappedFileManager(final RandomAccessFile file, final String fileName, final OutputStream os,
             final boolean force, final long position, final int regionLength, final String advertiseURI,
             final Layout<? extends Serializable> layout) throws IOException {
         super(os, fileName, layout);
         this.isForce = force;
-        this.randomAccessFile = file;
+        this.randomAccessFile = Assert.requireNonNull(file, "RandomAccessFile");
         this.regionLength = regionLength;
         this.advertiseURI = advertiseURI;
         this.isEndOfBatch.set(Boolean.FALSE);
         this.mappedBuffer = mmap(randomAccessFile.getChannel(), position, regionLength);
+        this.mappingOffset = position;
     }
 
     /**
@@ -73,16 +77,16 @@ public class MemoryMappedFileManager extends OutputStreamManager {
      *
      * @param fileName The name of the file to manage.
      * @param append true if the file should be appended to, false if it should be overwritten.
-     * @param isFlush true if the contents should be flushed to disk on every write
-     * @param bufferSize The buffer size.
+     * @param isForce true if the contents should be flushed to disk on every write
+     * @param regionLength The mapped region length.
      * @param advertiseURI the URI to use when advertising the file
      * @param layout The layout.
      * @return A MemoryMappedFileManager for the File.
      */
     public static MemoryMappedFileManager getFileManager(final String fileName, final boolean append,
-            final boolean isFlush, final int bufferSize, final String advertiseURI,
+            final boolean isForce, final int regionLength, final String advertiseURI,
             final Layout<? extends Serializable> layout) {
-        return (MemoryMappedFileManager) getManager(fileName, new FactoryData(append, isFlush, bufferSize,
+        return (MemoryMappedFileManager) getManager(fileName, new FactoryData(append, isForce, regionLength,
                 advertiseURI, layout), FACTORY);
     }
 
@@ -98,7 +102,11 @@ public class MemoryMappedFileManager extends OutputStreamManager {
     protected synchronized void write(final byte[] bytes, int offset, int length) {
         super.write(bytes, offset, length); // writes to dummy output stream
 
-        if (length > mappedBuffer.remaining()) {
+        while (length > mappedBuffer.remaining()) {
+            final int chunk = mappedBuffer.remaining();
+            mappedBuffer.put(bytes, offset, chunk);
+            offset += chunk;
+            length -= chunk;
             remap();
         }
         mappedBuffer.put(bytes, offset, length);
@@ -108,13 +116,15 @@ public class MemoryMappedFileManager extends OutputStreamManager {
         }
     }
 
-    private void remap() {
-        final long position = mappedBuffer.position();
+    private synchronized void remap() {
+        final long offset = this.mappingOffset + mappedBuffer.position();
+        final int length = mappedBuffer.remaining() + regionLength;
         try {
             unsafeUnmap(mappedBuffer);
-            final long newLength = randomAccessFile.length() + regionLength;
-            randomAccessFile.setLength(newLength);
-            mappedBuffer = mmap(randomAccessFile.getChannel(), position, regionLength);
+            final long fileLength = randomAccessFile.length() + regionLength;
+            randomAccessFile.setLength(fileLength);
+            mappedBuffer = mmap(randomAccessFile.getChannel(), offset, length);
+            mappingOffset = offset;
         } catch (final Exception ex) {
             LOGGER.error("Unable to remap " + getName() + ". " + ex);
         }
@@ -127,7 +137,14 @@ public class MemoryMappedFileManager extends OutputStreamManager {
 
     @Override
     public synchronized void close() {
+        final long length = mappingOffset + mappedBuffer.position();
         try {
+            unsafeUnmap(mappedBuffer);
+        } catch (Exception ex) {
+            LOGGER.error("Unable to unmap MappedBuffer " + getName() + ". " + ex);
+        }
+        try {
+            randomAccessFile.setLength(length);
             randomAccessFile.close();
         } catch (final IOException ex) {
             LOGGER.error("Unable to close MemoryMappedFile " + getName() + ". " + ex);
