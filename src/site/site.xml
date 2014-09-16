@@ -198,6 +198,7 @@
       <item name="Log4j JMX GUI" href="log4j-jmx-gui/index.html"/>
       <item name="Log4j Web Application Support" href="log4j-web/index.html"/>
       <item name="Log4j NoSQL support" href="log4j-nosql/index.html"/>
+      <item name="Log4j IO Streams" href="log4j-iostreams/index.html"/>
     </menu>
 
     <menu name="Project Information" img="icon-info-sign">
