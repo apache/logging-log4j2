@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.layout;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.math.BigDecimal;
@@ -36,6 +37,8 @@ import org.apache.logging.log4j.core.net.Severity;
 import org.apache.logging.log4j.core.util.Charsets;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.status.StatusLogger;
+
+import com.fasterxml.jackson.core.io.JsonStringEncoder;
 
 /**
  * Lays out Graylog Extended Log Format (GELF) 1.1 log events.
@@ -65,10 +68,30 @@ import org.apache.logging.log4j.status.StatusLogger;
 public final class GelfLayout extends AbstractStringLayout {
 
     public static enum CompressionType {
-        GZIP, ZLIB, NONE
+
+        GZIP {
+            @Override
+            public DeflaterOutputStream createDeflaterOutputStream(OutputStream os) throws IOException {
+                return new GZIPOutputStream(os);
+            }
+        },
+        ZLIB {
+            @Override
+            public DeflaterOutputStream createDeflaterOutputStream(OutputStream os) throws IOException {
+                return new DeflaterOutputStream(os);
+            }
+        },
+        OFF {
+            @Override
+            public DeflaterOutputStream createDeflaterOutputStream(OutputStream os) throws IOException {
+                return null;
+            }
+        };
+
+        public abstract DeflaterOutputStream createDeflaterOutputStream(OutputStream os) throws IOException;
+
     }
 
-    private static final byte[] EMPTY_BYTES = new byte[0];
     private static final char C = ',';
     private static final int COMPRESSION_THRESHOLD = 1024;
     private static final char Q = '\"';
@@ -90,19 +113,35 @@ public final class GelfLayout extends AbstractStringLayout {
         return new GelfLayout(host, additionalFields, compressionType, compressionThreshold);
     }
 
+    /**
+     * http://en.wikipedia.org/wiki/Syslog#Severity_levels
+     */
+    static int formatLevel(final Level level) {
+        return Severity.getSeverity(level).getCode();
+    }
+
+    static String formatThrowable(final Throwable throwable) {
+        // stack traces are big enough to provide a reasonably large initial capacity here
+        final StringWriter sw = new StringWriter(2048);
+        final PrintWriter pw = new PrintWriter(sw);
+        throwable.printStackTrace(pw);
+        pw.flush();
+        return sw.toString();
+    }
+
     static String formatTimestamp(final long timeMillis) {
         return new BigDecimal(timeMillis).divide(TIME_DIVISOR).toPlainString();
     }
 
     private final KeyValuePair[] additionalFields;
 
-    private final String host;
-
     private final int compressionThreshold;
 
-    private CompressionType compressionType;
+    private final CompressionType compressionType;
 
-    public GelfLayout(final String host, final KeyValuePair[] additionalFields, CompressionType compressionType,
+    private final String host;
+
+    public GelfLayout(final String host, final KeyValuePair[] additionalFields, final CompressionType compressionType,
             final int compressionThreshold) {
         super(Charsets.UTF_8);
         this.host = host;
@@ -114,15 +153,8 @@ public final class GelfLayout extends AbstractStringLayout {
     private byte[] compress(final byte[] bytes) {
         try {
             final ByteArrayOutputStream baos = new ByteArrayOutputStream(compressionThreshold / 8);
-            DeflaterOutputStream stream;
-            switch (compressionType) {
-            case GZIP:
-                stream = new GZIPOutputStream(baos);
-                break;
-            case ZLIB:
-                stream = new DeflaterOutputStream(baos);
-                break;
-            default:
+            DeflaterOutputStream stream = compressionType.createDeflaterOutputStream(baos);
+            if (stream == null) {
                 return bytes;
             }
             stream.write(bytes);
@@ -131,26 +163,8 @@ public final class GelfLayout extends AbstractStringLayout {
             return baos.toByteArray();
         } catch (final IOException e) {
             StatusLogger.getLogger().error(e);
-            return EMPTY_BYTES;
+            return bytes;
         }
-    }
-
-    private String escapeJson(final String s) {
-        return s.replace("\\", "\\\\").replace("\"", "\\\"");
-    }
-
-    /**
-     * http://en.wikipedia.org/wiki/Syslog#Severity_levels
-     */
-    private int formatLevel(final Level level) {
-        return Severity.getSeverity(level).getCode();
-    }
-
-    private String formatThrowable(final Throwable throwable) {
-        final StringWriter sw = new StringWriter();
-        final PrintWriter pw = new PrintWriter(sw);
-        throwable.printStackTrace(pw);
-        return sw.toString();
     }
 
     @Override
@@ -172,31 +186,34 @@ public final class GelfLayout extends AbstractStringLayout {
     @Override
     public String toSerializable(final LogEvent event) {
         final StringBuilder builder = new StringBuilder(256);
+        JsonStringEncoder jsonEncoder = JsonStringEncoder.getInstance();
         builder.append('{');
         builder.append("\"version\":\"1.1\",");
-        builder.append("\"host\":\"").append(escapeJson(host)).append(QC);
+        builder.append("\"host\":\"").append(jsonEncoder.quoteAsString(host)).append(QC);
         builder.append("\"timestamp\":").append(formatTimestamp(event.getTimeMillis())).append(C);
         builder.append("\"level\":").append(formatLevel(event.getLevel())).append(C);
         if (event.getThreadName() != null) {
-            builder.append("\"_thread\":\"").append(escapeJson(event.getThreadName())).append(QC);
+            builder.append("\"_thread\":\"").append(jsonEncoder.quoteAsString(event.getThreadName())).append(QC);
         }
         if (event.getLoggerName() != null) {
-            builder.append("\"_logger\":\"").append(escapeJson(event.getLoggerName())).append(QC);
+            builder.append("\"_logger\":\"").append(jsonEncoder.quoteAsString(event.getLoggerName())).append(QC);
         }
 
         for (final KeyValuePair additionalField : additionalFields) {
-            builder.append(QU).append(escapeJson(additionalField.getKey())).append("\":\"")
-                    .append(escapeJson(additionalField.getValue())).append(QC);
+            builder.append(QU).append(jsonEncoder.quoteAsString(additionalField.getKey())).append("\":\"")
+                    .append(jsonEncoder.quoteAsString(additionalField.getValue())).append(QC);
         }
         for (final Map.Entry<String, String> entry : event.getContextMap().entrySet()) {
-            builder.append(QU).append(escapeJson(entry.getKey())).append("\":\"").append(escapeJson(entry.getValue()))
-                    .append(QC);
+            builder.append(QU).append(jsonEncoder.quoteAsString(entry.getKey())).append("\":\"")
+                    .append(jsonEncoder.quoteAsString(entry.getValue())).append(QC);
         }
         if (event.getThrown() != null) {
-            builder.append("\"full_message\":\"").append(escapeJson(formatThrowable(event.getThrown()))).append(QC);
+            builder.append("\"full_message\":\"").append(jsonEncoder.quoteAsString(formatThrowable(event.getThrown())))
+                    .append(QC);
         }
 
-        builder.append("\"short_message\":\"").append(escapeJson(event.getMessage().getFormattedMessage())).append(Q);
+        builder.append("\"short_message\":\"")
+                .append(jsonEncoder.quoteAsString(event.getMessage().getFormattedMessage())).append(Q);
         builder.append('}');
         return builder.toString();
     }
