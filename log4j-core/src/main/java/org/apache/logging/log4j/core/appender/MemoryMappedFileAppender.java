@@ -42,6 +42,9 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
 
     private static final long serialVersionUID = 1L;
 
+    private static final int MAX_REGION_LENGTH = 1 << 30; // 1GB
+    private static final int MIN_REGION_LENGTH = 256;
+
     private final String fileName;
     private Object advertisement;
     private final Advertiser advertiser;
@@ -127,7 +130,7 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
      */
     @PluginFactory
     public static MemoryMappedFileAppender createAppender(
-    // @formatter:off
+// @formatter:off
             @PluginAttribute("fileName") final String fileName, //
             @PluginAttribute("append") final String append, //
             @PluginAttribute("name") final String name, //
@@ -142,15 +145,11 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
         // @formatter:on
 
         final boolean isAppend = Booleans.parseBoolean(append, true);
-        final boolean isForce = Booleans.parseBoolean(immediateFlush, true);
+        final boolean isForce = Booleans.parseBoolean(immediateFlush, false);
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         final boolean isAdvertise = Boolean.parseBoolean(advertise);
         final int regionLength = Integers.parseInt(regionLengthStr, MemoryMappedFileManager.DEFAULT_REGION_LENGTH);
-        final int actualRegionLength = Integers.ceilingNextPowerOfTwo(regionLength);
-        if (regionLength != actualRegionLength) {
-            LOGGER.info("MemoryMappedAppender[{}] Rounded up region length from {} to next power of two: {}", name,
-                    regionLength, actualRegionLength);
-        }
+        final int actualRegionLength = determineValidRegionLength(name, regionLength);
 
         if (name == null) {
             LOGGER.error("No name provided for MemoryMappedFileAppender");
@@ -172,5 +171,27 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
 
         return new MemoryMappedFileAppender(name, layout, filter, manager, fileName, ignoreExceptions, isForce,
                 isAdvertise ? config.getAdvertiser() : null);
+    }
+
+    /**
+     * Converts the specified region length to a valid value.
+     */
+    private static int determineValidRegionLength(final String name, final int regionLength) {
+        if (regionLength > MAX_REGION_LENGTH) {
+            LOGGER.info("MemoryMappedAppender[{}] Reduced region length from {} to max length: {}", name, regionLength,
+                    MAX_REGION_LENGTH);
+            return MAX_REGION_LENGTH;
+        }
+        if (regionLength < MIN_REGION_LENGTH) {
+            LOGGER.info("MemoryMappedAppender[{}] Expanded region length from {} to min length: {}", name, regionLength,
+                    MIN_REGION_LENGTH);
+            return MIN_REGION_LENGTH;
+        }
+        final int result = Integers.ceilingNextPowerOfTwo(regionLength);
+        if (regionLength != result) {
+            LOGGER.info("MemoryMappedAppender[{}] Rounded up region length from {} to next power of two: {}", name,
+                    regionLength, result);
+        }
+        return result;
     }
 }
