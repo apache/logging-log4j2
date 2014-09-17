@@ -1392,8 +1392,9 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <p>The default for this parameter is <code>false</code>.
                 This means that the data is written to the storage device even
                 if the Java process crashes, but there may be data loss if the
-                operating system crashes. Note that manually forcing a sync on every
-                log event loses most of the performance benefits of using a memory mapped file.</p>
+                operating system crashes.</p>
+              <p>Note that manually forcing a sync on every log event loses most
+                of the performance benefits of using a memory mapped file.</p>
               <p>Flushing after every write is only useful when using this
               appender with synchronous loggers. Asynchronous loggers and
               appenders will automatically flush at the end of a batch of events,
