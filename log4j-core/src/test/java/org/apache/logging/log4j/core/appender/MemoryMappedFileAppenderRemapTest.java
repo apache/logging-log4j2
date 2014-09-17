@@ -69,7 +69,8 @@ public class MemoryMappedFileAppenderRemapTest {
         } finally {
             ((LoggerContext) LogManager.getContext(false)).stop();
         }
-        assertEquals("Shrunk to actual used size", 664, f.length());
+        final int LINESEP = System.getProperty("line.separator").length();
+        assertEquals("Shrunk to actual used size", 658 + 3 * LINESEP, f.length());
 
         String line1, line2, line3, line4;
         final BufferedReader reader = new BufferedReader(new FileReader(LOGFILE));
