@@ -1322,8 +1322,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         </subsection>
       <a name="MemoryMappedFileAppender" />
       <subsection name="MemoryMappedFileAppender">
-        <p><i>Experimental. This has been tested on several platforms, but this is
-          a new component (since 2.1) and does not yet have much track record.</i></p>
+        <p><i>Beta. This has been tested on several platforms, but this is
+          a new component (since 2.1-beta) and does not yet have much track record.</i></p>
         <p>
           The MemoryMappedFileAppender maps a part of the specified file into memory
           and writes log events to this memory, relying on the operating system's
