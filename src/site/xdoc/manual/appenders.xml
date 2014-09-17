@@ -1328,7 +1328,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           The MemoryMappedFileAppender maps a part of the specified file into memory
           and writes log events to this memory, relying on the operating system's
           virtual memory manager to synchronize the changes to the storage device.
-          The main benefit of doing this is I/O performance. Instead of making system
+          The main benefit of using memory mapped files is I/O performance. Instead of making system
           calls to write to disk, this appender can simply change the program's local memory,
           which is orders of magnitude faster. Also, in most operating systems the memory
           region mapped actually is the kernel's <a href="http://en.wikipedia.org/wiki/Page_cache">page
