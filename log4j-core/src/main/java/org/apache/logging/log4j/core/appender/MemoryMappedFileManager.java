@@ -111,9 +111,8 @@ public class MemoryMappedFileManager extends OutputStreamManager {
         }
         mappedBuffer.put(bytes, offset, length);
 
-        if (isForce) {
-            flush();
-        }
+        // no need to call flush() if force is true,
+        // already done in AbstractOutputStreamAppender.append
     }
 
     private synchronized void remap() {
@@ -204,6 +203,15 @@ public class MemoryMappedFileManager extends OutputStreamManager {
      */
     public int getRegionLength() {
         return regionLength;
+    }
+    
+    /**
+     * Returns {@code true} if the content of the buffer should be forced to the storage device on every write,
+     * {@code false} otherwise.
+     * @return whether each write should be force-sync'ed
+     */
+    public boolean isImmediateFlush() {
+        return isForce;
     }
 
     /** {@code OutputStream} subclass that does not write anything. */
