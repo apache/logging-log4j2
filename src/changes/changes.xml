@@ -24,7 +24,7 @@
   </properties>
   <body>
     <release version="2.1" date="2014-??-??" description="Bug fixes and enhancements">
-      <action issue="LOG4J2-431" dev="rpopma" type="add" dure-to="Claude Mamo">
+      <action issue="LOG4J2-431" dev="rpopma" type="add" due-to="Claude Mamo">
         Added Memory-Mapped File Appender.
       </action>
       <action issue="LOG4J2-827" dev="mattsicker" type="add">
