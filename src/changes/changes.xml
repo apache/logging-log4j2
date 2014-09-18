@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.1" date="2014-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-431" dev="rpopma" type="add" due-to="Claude Mamo">
+        Added Memory-Mapped File Appender.
+      </action>
       <action issue="LOG4J2-832" dev="ggregory" type="fix" due-to="Seth Leger">
         ThrowableProxy fails if a class in logged stack trace throws java.lang.Error from initializer
       </action>

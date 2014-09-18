@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="off">
+  <Appenders>
+    <MemoryMappedFile name="MemoryMappedFile" 
+        fileName="target/MemoryMappedFileAppenderRemapTest.log" 
+        regionLength="256" immediateFlush="true" append="false">
+      <PatternLayout>
+        <Pattern>%d %p %c{1.} [%t] %X{aKey} %m%ex%n</Pattern>
+      </PatternLayout>
+    </MemoryMappedFile>
+  </Appenders>
+  
+  <Loggers>
+    <Root level="info">
+      <AppenderRef ref="MemoryMappedFile"/>
+    </Root>
+  </Loggers>
+</Configuration>

@@ -23,6 +23,7 @@ import java.util.concurrent.ThreadFactory;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
+import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import com.lmax.disruptor.BlockingWaitStrategy;
@@ -38,7 +39,6 @@ import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.YieldingWaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
-import com.lmax.disruptor.util.Util;
 
 /**
  * Helper class decoupling the {@code AsyncLoggerConfig} class from the LMAX
@@ -160,7 +160,7 @@ class AsyncLoggerConfigHelper {
             LOGGER.warn("Invalid RingBufferSize {}, using default size {}.",
                     userPreferredRBSize, ringBufferSize);
         }
-        return Util.ceilingNextPowerOfTwo(ringBufferSize);
+        return Integers.ceilingNextPowerOfTwo(ringBufferSize);
     }
 
     private static ExceptionHandler getExceptionHandler() {

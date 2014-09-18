@@ -1320,6 +1320,138 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     ...
 }]]></pre>
         </subsection>
+      <a name="MemoryMappedFileAppender" />
+      <subsection name="MemoryMappedFileAppender">
+        <p><i>New since 2.1-beta. Be aware that this is a new addition, and although it has been
+          tested on several platforms, it does not have as much track record as the other file appenders.</i></p>
+        <p>
+          The MemoryMappedFileAppender maps a part of the specified file into memory
+          and writes log events to this memory, relying on the operating system's
+          virtual memory manager to synchronize the changes to the storage device.
+          The main benefit of using memory mapped files is I/O performance. Instead of making system
+          calls to write to disk, this appender can simply change the program's local memory,
+          which is orders of magnitude faster. Also, in most operating systems the memory
+          region mapped actually is the kernel's <a href="http://en.wikipedia.org/wiki/Page_cache">page
+          cache</a> (file cache), meaning that no copies need to be created in user space.
+          (TODO: performance tests that compare performance of this appender to
+          RandomAccessFileAppender and FileAppender.)
+        </p>
+        <p>
+          There is some overhead with mapping a file region into memory,
+          especially very large regions (half a gigabyte or more).
+          The default region size is 32 MB, which should strike a reasonable balance
+          between the frequency and the duration of remap operations.
+          (TODO: performance test remapping various sizes.)
+        </p>
+        <p>
+          Similar to the FileAppender and the RandomAccessFileAppender,
+          MemoryMappedFileAppender uses a MemoryMappedFileManager to actually perform the
+          file I/O. While MemoryMappedFileAppender from different Configurations
+          cannot be shared, the MemoryMappedFileManagers can be if the Manager is
+          accessible. For example, two web applications in a servlet container can have
+          their own configuration and safely write to the same file if Log4j
+          is in a ClassLoader that is common to both of them.
+        </p>
+        <table>
+          <caption align="top">MemoryMappedFileAppender Parameters</caption>
+          <tr>
+            <th>Parameter Name</th>
+            <th>Type</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>append</td>
+            <td>boolean</td>
+            <td>When true - the default, records will be appended to the end
+              of the file. When set to false, the file will be cleared before
+              new records are written.
+            </td>
+          </tr>
+          <tr>
+            <td>fileName</td>
+            <td>String</td>
+            <td>The name of the file to write to. If the file, or any of its
+              parent directories, do not exist, they will be created.
+            </td>
+          </tr>
+          <tr>
+            <td>filters</td>
+            <td>Filter</td>
+            <td>A Filter to determine if the event should be handled by this
+              Appender. More than one Filter may be used by using a CompositeFilter.
+            </td>
+          </tr>
+          <tr>
+            <td>immediateFlush</td>
+            <td>boolean</td>
+            <td>
+              <p>When set to true, each write will be followed by a
+                call to <a href="http://docs.oracle.com/javase/7/docs/api/java/nio/MappedByteBuffer.html#force()">MappedByteBuffer.force()</a>.
+            This will guarantee the data is written to the storage device.
+              </p>
+              <p>The default for this parameter is <code>false</code>.
+                This means that the data is written to the storage device even
+                if the Java process crashes, but there may be data loss if the
+                operating system crashes.</p>
+              <p>Note that manually forcing a sync on every log event loses most
+                of the performance benefits of using a memory mapped file.</p>
+              <p>Flushing after every write is only useful when using this
+              appender with synchronous loggers. Asynchronous loggers and
+              appenders will automatically flush at the end of a batch of events,
+              even if immediateFlush is set to false. This also guarantees
+              the data is written to disk but is more efficient.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td>regionLength</td>
+            <td>int</td>
+            <td>The length of the mapped region, defaults to 32 MB 
+              (32 * 1024 * 1024 bytes). This parameter must be a value
+              between 256 and 1,073,741,824 (1 GB or 2^30);
+              values outside this range will be adjusted to the closest valid
+              value.
+              Log4j will round the specified value up to the nearest power of two.</td>
+          </tr>
+          <tr>
+            <td>layout</td>
+            <td>Layout</td>
+            <td>The Layout to use to format the LogEvent</td>
+          </tr>
+          <tr>
+            <td>name</td>
+            <td>String</td>
+            <td>The name of the Appender.</td>
+          </tr>
+          <tr>
+            <td>ignoreExceptions</td>
+            <td>boolean</td>
+            <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
+              internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
+              caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
+              <a href="#FailoverAppender">FailoverAppender</a>.</td>
+          </tr>
+        </table>
+        <p>
+          Here is a sample MemoryMappedFile configuration:
+        </p>
+
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp" packages="">
+  <Appenders>
+    <MemoryMappedFile name="MyFile" fileName="logs/app.log">
+      <PatternLayout>
+        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+      </PatternLayout>
+    </MemoryMappedFile>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="MyFile"/>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
+      </subsection>
         <a name="NoSQLAppender"/>
         <subsection name="NoSQLAppender">
           <p>The NoSQLAppender writes log events to a NoSQL database using an internal lightweight provider interface.

@@ -30,6 +30,7 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
+import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
@@ -44,7 +45,6 @@ import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.YieldingWaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
-import com.lmax.disruptor.util.Util;
 
 /**
  * AsyncLogger is a logger designed for high throughput and low latency logging.
@@ -146,7 +146,7 @@ public class AsyncLogger extends Logger {
         } catch (final Exception ex) {
             LOGGER.warn("Invalid RingBufferSize {}, using default size {}.", userPreferredRBSize, ringBufferSize);
         }
-        return Util.ceilingNextPowerOfTwo(ringBufferSize);
+        return Integers.ceilingNextPowerOfTwo(ringBufferSize);
     }
 
     /**
