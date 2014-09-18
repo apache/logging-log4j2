@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+  <properties>
+    <title>Log4j IOStreams</title>
+    <author email="mattsicker@apache.org">Matt Sicker</author>
+  </properties>
+  <body>
+    <section name="Log4j IOStreams">
+      <p>
+        The IOStreams component is a <a href="../log4j-api/index.html">Log4j API</a> extension that provides numerous
+        classes from
+        <a class="javadoc" href="http://docs.oracle.com/javase/6/docs/api/java/io/package-summary.html">java.io</a>
+        that can either write to a
+        <a class="javadoc" href="../log4j-api/apidocs/org/apache/logging/log4j/Logger.html">Logger</a>
+        while writing to another <code>OutputStream</code> or <code>Writer</code>, or the contents read by an
+        <code>InputStream</code> or <code>Reader</code> can be
+        <a href="http://www.eaipatterns.com/WireTap.html">wiretapped</a> by a <code>Logger</code>.
+      </p>
+    </section>
+    <section name="Requirements">
+      <p>
+        The Log4j IOStreams API extension requires Java 6 and the Log4j API. This component was introduced in Log4j 2.1.
+      </p>
+    </section>
+    <section name="Usage">
+      <p>
+        The main entry point for the IOStreams module is the builder class
+        <a class="javadoc" href="apidocs/org/apache/logging/log4j/io/IoBuilder.html">IoBuilder</a>, and in particular,
+        the <code>IoBuilder.forLogger()</code> methods. One primary usage of this API extension is for setting up
+        loggers in the JDBC API. For example:
+      </p>
+      <pre class="prettyprint linenums"><![CDATA[
+PrintWriter logger = IoBuilder.forLogger(DriverManager.class)
+                              .setLevel(Level.DEBUG)
+                              .buildPrintWriter();
+DriverManager.setLogWriter(logger);
+      ]]></pre>
+      <p>
+        Using the <code>IoBuilder</code> class, there are a few more options that can be set. In general, there are six
+        primary classes one can build from it: <code>Reader</code>, <code>Writer</code>, <code>PrintWriter</code>,
+        <code>InputStream</code>, <code>OutputStream</code>, and <code>PrintStream</code>. The input-oriented classes
+        are for wiretapping, and the output-oriented classes are for creating either an output class that solely outputs
+        its lines as log messages, or an output filter class that logs all lines output through it to its delegate
+        output class.
+      </p>
+    </section>
+  </body>
+</document>
