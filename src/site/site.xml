@@ -191,7 +191,7 @@
       <item name="Commons Logging Bridge" href="log4j-jcl/index.html"/>
       <item name="Log4j 1.2 API" href="log4j-1.2-api/index.html"/>
       <item name="SLF4J Binding" href="log4j-slf4j-impl/index.html"/>
-      <item name="JUL Bridge" href="log4j-jul/index.html"/>
+      <item name="JUL Adapter" href="log4j-jul/index.html"/>
       <item name="Log4j 2 to SLF4J Adapter" href="log4j-to-slf4j/index.html"/>
       <item name="Apache Flume NG Appender" href="log4j-flume-ng/index.html"/>
       <item name="Log4j Tag Library" href="log4j-taglib/index.html"/>
