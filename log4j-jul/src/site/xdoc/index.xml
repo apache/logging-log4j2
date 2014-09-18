@@ -34,7 +34,7 @@
     </section>
     <section name="Requirements">
       <p>
-        The JDK Logging Adaptor requires at least Java 6 and is dependent on the Log4j API and Log4j Core.
+        The JDK Logging Adaptor requires at least Java 6 and is dependent on the Log4j API and optionally Log4j Core.
       </p>
     </section>
     <section name="Usage">
@@ -66,100 +66,55 @@
       </p>
       <p>
         Java logging levels are translated into Log4j logging levels dynamically. The following table lists the
-        conversions between a Java logging level and its equivalent Log4j level.
+        conversions between a Java logging level and its equivalent Log4j level. Custom levels should be implemented
+        as an implementation of
+        <a class="javadoc" href="apidocs/org/apache/logging/log4j/jul/LevelConverter.html">LevelConverter</a>, and the
+        Log4j property <kbd>log4j.jul.levelConverter</kbd> must be set to your custom class name.
       </p>
       <table>
-        <caption>Level conversions</caption>
+        <caption>Default Level conversions</caption>
         <thead>
           <tr>
             <th>Java Level</th>
-            <th>Level Range</th>
             <th>Log4j Level</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td><a class="javadoc" href="http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#OFF">OFF</a></td>
-            <td><a class="javadoc" href="http://docs.oracle.com/javase/6/docs/api/java/lang/Integer.html#MAX_VALUE">Integer.MAX_VALUE</a></td>
             <td>OFF</td>
           </tr>
           <tr>
-            <td class="muted">n/a</td>
-            <td>1000 &lt; <var>level</var> &lt; <a class="javadoc" href="http://docs.oracle.com/javase/6/docs/api/java/lang/Integer.html#MAX_VALUE">Integer.MAX_VALUE</a></td>
-            <td>FATAL</td>
-          </tr>
-          <tr>
             <td><a class="javadoc" href="http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#SEVERE">SEVERE</a></td>
-            <td>900 &lt; <var>level</var> &le; 1000</td>
             <td>ERROR</td>
           </tr>
           <tr>
             <td><a class="javadoc" href="http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#WARNING">WARNING</a></td>
-            <td>800 &lt; <var>level</var> &le; 900</td>
             <td>WARN</td>
           </tr>
           <tr>
             <td><a class="javadoc" href="http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#INFO">INFO</a></td>
-            <td>700 &lt; <var>level</var> &le; 800</td>
             <td>INFO</td>
           </tr>
           <tr>
             <td><a class="javadoc" href="http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#CONFIG">CONFIG</a></td>
-            <td>500 &lt; <var>level</var> &le; 700</td>
-            <td>INFO</td>
+            <td><a class="javadoc" href="apidocs/org/apache/logging/log4j/jul/LevelTranslator.html#CONFIG">CONFIG</a></td>
           </tr>
           <tr>
             <td><a class="javadoc" href="http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#FINE">FINE</a></td>
-            <td>400 &lt; <var>level</var> &le; 500</td>
             <td>DEBUG</td>
           </tr>
           <tr>
             <td><a class="javadoc" href="http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#FINER">FINER</a></td>
-            <td>300 &lt; <var>level</var> &le; 400</td>
-            <td>DEBUG</td>
-          </tr>
-          <tr>
-            <td><a class="javadoc" href="http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#FINEST">FINEST</a></td>
-            <td><a class="javadoc" href="http://docs.oracle.com/javase/6/docs/api/java/lang/Integer.html#MIN_VALUE">Integer.MIN_VALUE</a> &lt; <var>level</var> &le; 300</td>
             <td>TRACE</td>
           </tr>
           <tr>
+            <td><a class="javadoc" href="http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#FINEST">FINEST</a></td>
+            <td><a class="javadoc" href="apidocs/org/apache/logging/log4j/jul/LevelTranslator.html#FINEST">FINEST</a></td>
+          </tr>
+          <tr>
             <td>ALL</td>
-            <td><a class="javadoc" href="http://docs.oracle.com/javase/6/docs/api/java/lang/Integer.html#MIN_VALUE">Integer.MIN_VALUE</a></td>
             <td>ALL</td>
-          </tr>
-        </tbody>
-      </table>
-      <p>
-        There are currently three additional pieces of information obtained from each
-        <a class="javadoc" href="http://docs.oracle.com/javase/6/docs/api/java/util/logging/LogRecord.html">LogRecord</a>
-        that are stored in the <a href="../manual/thread-context.html">ThreadContext</a>.
-      </p>
-      <table>
-        <caption>ThreadContext map keys</caption>
-        <thead>
-          <tr>
-            <th>Key</th>
-            <th><a class="javadoc" href="http://docs.oracle.com/javase/6/docs/api/java/util/logging/LogRecord.html">LogRecord</a> Property</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>log4j.jul.threadID</td>
-            <td><a class="javadoc" href="http://docs.oracle.com/javase/6/docs/api/java/util/logging/LogRecord.html#getThreadID%28%29">threadID</a></td>
-            <td>An identifier for the thread where the message originated.</td>
-          </tr>
-          <tr>
-            <td>log4j.jul.sequenceNumber</td>
-            <td><a class="javadoc" href="http://docs.oracle.com/javase/6/docs/api/java/util/logging/LogRecord.html#getSequenceNumber%28%29">sequenceNumber</a></td>
-            <td>A unique, increasing sequence number generated by the LogRecord constructor.</td>
-          </tr>
-          <tr>
-            <td>log4j.jul.level</td>
-            <td><a class="javadoc" href="http://docs.oracle.com/javase/6/docs/api/java/util/logging/LogRecord.html#getLevel%28%29">level</a></td>
-            <td>The logging message level name. This level is translated into an equivalent Log4j level, so the original
-            logging level name is saved here.</td>
           </tr>
         </tbody>
       </table>
