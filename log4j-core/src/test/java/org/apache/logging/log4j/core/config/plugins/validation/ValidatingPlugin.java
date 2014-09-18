@@ -20,7 +20,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.RequiresNonNull;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.util.Assert;
 
 /**
@@ -41,7 +41,7 @@ public class ValidatingPlugin {
 
     @PluginFactory
     public static ValidatingPlugin newValidatingPlugin(
-        @RequiresNonNull(message = "The name given by the factory is null") final String name) {
+        @Required(message = "The name given by the factory is null") final String name) {
         return new ValidatingPlugin(name);
     }
 
@@ -53,7 +53,7 @@ public class ValidatingPlugin {
     public static class Builder implements org.apache.logging.log4j.core.util.Builder<ValidatingPlugin> {
 
         @PluginBuilderAttribute
-        @RequiresNonNull(message = "The name given by the builder is null")
+        @Required(message = "The name given by the builder is null")
         private String name;
 
         public Builder setName(final String name) {

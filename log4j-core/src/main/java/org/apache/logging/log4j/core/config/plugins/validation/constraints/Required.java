@@ -14,6 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
 package org.apache.logging.log4j.core.config.plugins.validation.constraints;
 
 import java.lang.annotation.Documented;
@@ -23,22 +24,21 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.apache.logging.log4j.core.config.plugins.validation.Constraint;
-import org.apache.logging.log4j.core.config.plugins.validation.validators.RequiresNonEmptyValidator;
+import org.apache.logging.log4j.core.config.plugins.validation.validators.RequiredValidator;
 
 /**
- * Constraint to mark a field or parameter as requiring a non-empty value.
+ * Marks a plugin builder field or plugin factory parameter as required.
  *
- * @see RequiresNonEmptyValidator
  * @since 2.1
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER})
-@Constraint(RequiresNonEmptyValidator.class)
-public @interface RequiresNonEmpty {
+@Constraint(RequiredValidator.class)
+public @interface Required {
 
     /**
      * The message to be logged if this constraint is violated. This should normally be overridden.
      */
-    String message() default "The parameter is empty";
+    String message() default "The parameter is null";
 }

@@ -32,7 +32,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.RequiresNonNull;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
 import org.apache.logging.log4j.core.net.JndiManager;
 
@@ -75,7 +75,7 @@ public class JmsAppender extends AbstractAppender {
     public static class Builder implements org.apache.logging.log4j.core.util.Builder<JmsAppender> {
 
         @PluginBuilderAttribute
-        @RequiresNonNull(message = "A name for the JmsAppender must be specified")
+        @Required(message = "A name for the JmsAppender must be specified")
         private String name;
 
         @PluginBuilderAttribute
@@ -94,12 +94,12 @@ public class JmsAppender extends AbstractAppender {
         private String securityCredentials;
 
         @PluginBuilderAttribute
-        @RequiresNonNull(message = "A javax.jms.ConnectionFactory JNDI name must be specified")
+        @Required(message = "A javax.jms.ConnectionFactory JNDI name must be specified")
         private String factoryBindingName;
 
         @PluginBuilderAttribute
         @PluginAliases({"queueBindingName", "topicBindingName"})
-        @RequiresNonNull(message = "A javax.jms.Destination JNDI name must be specified")
+        @Required(message = "A javax.jms.Destination JNDI name must be specified")
         private String destinationBindingName;
 
         @PluginBuilderAttribute

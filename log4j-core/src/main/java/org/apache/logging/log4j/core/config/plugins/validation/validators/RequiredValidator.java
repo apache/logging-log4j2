@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.validation.ConstraintValidator;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.RequiresNonEmpty;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -36,14 +36,14 @@ import org.apache.logging.log4j.status.StatusLogger;
  *
  * @since 2.1
  */
-public class RequiresNonEmptyValidator implements ConstraintValidator<RequiresNonEmpty> {
+public class RequiredValidator implements ConstraintValidator<Required> {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private RequiresNonEmpty annotation;
+    private Required annotation;
 
     @Override
-    public void initialize(final RequiresNonEmpty annotation) {
+    public void initialize(final Required annotation) {
         this.annotation = annotation;
     }
 

@@ -31,7 +31,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.RequiresNonNull;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.Loader;
@@ -114,18 +114,18 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
     public static class Builder implements org.apache.logging.log4j.core.util.Builder<ConsoleAppender> {
 
         @PluginElement("Layout")
-        @RequiresNonNull
+        @Required
         private Layout<? extends Serializable> layout = PatternLayout.createDefaultLayout();
 
         @PluginElement("Filter")
         private Filter filter;
 
         @PluginBuilderAttribute
-        @RequiresNonNull
+        @Required
         private Target target = Target.SYSTEM_OUT;
 
         @PluginBuilderAttribute
-        @RequiresNonNull
+        @Required
         private String name;
 
         @PluginBuilderAttribute

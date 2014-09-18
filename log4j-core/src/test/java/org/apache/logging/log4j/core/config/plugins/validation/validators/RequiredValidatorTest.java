@@ -27,7 +27,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class RequiresNonNullValidatorTest {
+public class RequiredValidatorTest {
 
     private PluginType<ValidatingPlugin> plugin;
     private Node node;
