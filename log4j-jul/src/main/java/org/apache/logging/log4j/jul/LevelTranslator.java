@@ -30,9 +30,22 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  */
 public final class LevelTranslator {
 
+    /**
+     * The Log4j property to set to a custom implementation of {@link LevelConverter}. The specified class must have
+     * a default constructor.
+     */
     public static final String LEVEL_CONVERTER_PROPERTY = "log4j.jul.levelConverter";
 
+    /**
+     * Custom Log4j level corresponding to the {@link java.util.logging.Level#FINEST} logging level. This maps to a
+     * level more specific than {@link org.apache.logging.log4j.Level#TRACE}.
+     */
     public static final Level FINEST = Level.forName("FINEST", Level.TRACE.intLevel() + 100);
+
+    /**
+     * Custom Log4j level corresponding to the {@link java.util.logging.Level#CONFIG} logging level. This maps to a
+     * level in between {@link org.apache.logging.log4j.Level#INFO} and {@link org.apache.logging.log4j.Level#DEBUG}.
+     */
     public static final Level CONFIG = Level.forName("CONFIG", Level.INFO.intLevel() + 50);
 
     private static final Logger LOGGER = StatusLogger.getLogger();
