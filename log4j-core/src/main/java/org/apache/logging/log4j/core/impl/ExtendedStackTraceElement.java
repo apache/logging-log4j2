@@ -18,14 +18,12 @@ package org.apache.logging.log4j.core.impl;
 
 import java.io.Serializable;
 
-import sun.reflect.Reflection;
-
 /**
  * Wraps and extends the concept of the JRE's final class {@link StackTraceElement} by adding more location information.
  * <p>
  * Complements a StackTraceElement with:
  * <ul>
- * <li>exact: whether the class was obtained via {@link Reflection#getCallerClass()}</li>
+ * <li>exact: whether the class was obtained via {@link sun.reflect.Reflection#getCallerClass(int)}</li>
  * <li>location: a classpath element or a jar</li>
  * <li>version</li>
  * </ul>
