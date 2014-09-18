@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.1" date="2014-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-547" dev="mattsicker" type="add">
+        Add the Log4j IOStreams component.
+      </action>
       <action issue="LOG4J2-431" dev="rpopma" type="add" due-to="Claude Mamo">
         Added Memory-Mapped File Appender.
       </action>
