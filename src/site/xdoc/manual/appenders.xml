@@ -122,7 +122,7 @@
   <Appenders>
     <File name="MyFile" fileName="logs/app.log">
       <PatternLayout>
-        <Pattern>%d %p %c{1.} [%t] %m%n</pattern>
+        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
       </PatternLayout>
     </File>
     <Async name="Async">

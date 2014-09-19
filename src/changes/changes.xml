@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.1" date="2014-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-785" dev="rpopma" type="fix">
+        Fixed capitalization inconsistency in user manual example config.
+      </action>
       <action issue="LOG4J2-829" dev="rpopma" type="fix">
         Fixed issue in RollingFile filePattern: backslashes are path separators, not escape characters.
       </action>
