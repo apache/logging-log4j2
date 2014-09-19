@@ -414,9 +414,8 @@ public class FlumePersistentAppenderTest {
             if (avroEvent != null) {
                 return EventBuilder.withBody(avroEvent.getBody().array(),
                     toStringMap(avroEvent.getHeaders()));
-            } else {
-                System.out.println("No Event returned");
             }
+            System.out.println("No Event returned");
             return null;
         }
 
