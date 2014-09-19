@@ -60,6 +60,11 @@
           To rebuild from scratch, add "clean", for example: <kbd>mvn clean test</kbd>
       </p>
 
-		</section>
+    </section>
+	<section name="Releasing Log4j">
+      <p>
+	    Please see the wiki <a href="http://jira.codehaus.org/browse/MSITE-695">https://wiki.apache.org/logging/Log4j2ReleaseGuide</a>.
+      </p>
+    </section>
 	</body>
 </document>
