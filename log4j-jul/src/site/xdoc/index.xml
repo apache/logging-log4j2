@@ -68,7 +68,9 @@
         conversions between a Java logging level and its equivalent Log4j level. Custom levels should be implemented
         as an implementation of
         <a class="javadoc" href="apidocs/org/apache/logging/log4j/jul/LevelConverter.html">LevelConverter</a>, and the
-        Log4j property <kbd>log4j.jul.levelConverter</kbd> must be set to your custom class name.
+        Log4j property <kbd>log4j.jul.levelConverter</kbd> must be set to your custom class name. Using the default
+        <code>LevelConverter</code> implementation, custom logging levels are mapped to whatever the current level of
+        the <code>Logger</code> being logged to is using.
       </p>
       <table>
         <caption>Default Level conversions</caption>
