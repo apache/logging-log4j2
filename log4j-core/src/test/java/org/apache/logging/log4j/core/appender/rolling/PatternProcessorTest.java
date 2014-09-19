@@ -195,4 +195,13 @@ public class PatternProcessorTest {
         expected.set(Calendar.MILLISECOND, 124);
         assertEquals(format(expected.getTimeInMillis()), format(actual));
     }
+    
+    @Test
+    public void testDontInterpretBackslashAsEscape() {
+        final PatternProcessor pp = new PatternProcessor("c:\\test\\new/app-%d{HH-mm-ss}.log");
+        final StringBuilder buf = new StringBuilder();
+        final Date date = new Date(1411142535260L); // Sat Sep 20 01:02:15 JST 2014
+        pp.formatFileName(buf, date, 23);
+        assertEquals("c:\\test\\new/app-01-02-15.log", buf.toString());
+    }
 }

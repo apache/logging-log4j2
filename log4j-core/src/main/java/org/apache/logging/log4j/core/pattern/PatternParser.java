@@ -166,7 +166,7 @@ public final class PatternParser {
         final List<PatternConverter> converters = new ArrayList<PatternConverter>();
         final List<FormattingInfo> fields = new ArrayList<FormattingInfo>();
 
-        parse(pattern, converters, fields, noConsoleNoAnsi);
+        parse(pattern, converters, fields, noConsoleNoAnsi, true);
 
         final Iterator<FormattingInfo> fieldIter = fields.iterator();
         boolean handlesThrowable = false;
@@ -177,7 +177,7 @@ public final class PatternParser {
                 pc = (LogEventPatternConverter) converter;
                 handlesThrowable |= pc.handlesThrowable();
             } else {
-                pc = new LiteralPatternConverter(config, Strings.EMPTY);
+                pc = new LiteralPatternConverter(config, Strings.EMPTY, true);
             }
 
             FormattingInfo field;
@@ -294,9 +294,12 @@ public final class PatternParser {
      *            list to receive field specifiers corresponding to pattern converters.
      * @param noConsoleNoAnsi
      *            TODO
+     * @param convertBackslashes if {@code true}, backslash characters are treated as escape characters and character
+     *            sequences like "\" followed by "t" (backslash+t) are converted to special characters like '\t' (tab).
      */
     public void parse(final String pattern, final List<PatternConverter> patternConverters,
-            final List<FormattingInfo> formattingInfos, final boolean noConsoleNoAnsi) {
+            final List<FormattingInfo> formattingInfos, final boolean noConsoleNoAnsi,
+            final boolean convertBackslashes) {
         if (pattern == null) {
             throw new NullPointerException("pattern");
         }
@@ -334,7 +337,8 @@ public final class PatternParser {
                     default:
 
                         if (currentLiteral.length() != 0) {
-                            patternConverters.add(new LiteralPatternConverter(config, currentLiteral.toString()));
+                            patternConverters.add(new LiteralPatternConverter(config, currentLiteral.toString(),
+                                    convertBackslashes));
                             formattingInfos.add(FormattingInfo.getDefault());
                         }
 
@@ -370,7 +374,7 @@ public final class PatternParser {
                         state = ParserState.MIN_STATE;
                     } else {
                         i = finalizeConverter(c, pattern, i, currentLiteral, formattingInfo, converterRules,
-                                patternConverters, formattingInfos, noConsoleNoAnsi);
+                                patternConverters, formattingInfos, noConsoleNoAnsi, convertBackslashes);
 
                         // Next pattern is assumed to be a literal.
                         state = ParserState.LITERAL_STATE;
@@ -392,7 +396,7 @@ public final class PatternParser {
                     state = ParserState.DOT_STATE;
                 } else {
                     i = finalizeConverter(c, pattern, i, currentLiteral, formattingInfo, converterRules,
-                            patternConverters, formattingInfos, noConsoleNoAnsi);
+                            patternConverters, formattingInfos, noConsoleNoAnsi, convertBackslashes);
                     state = ParserState.LITERAL_STATE;
                     formattingInfo = FormattingInfo.getDefault();
                     currentLiteral.setLength(0);
@@ -425,7 +429,7 @@ public final class PatternParser {
                             formattingInfo.getMaxLength() * DECIMAL + c - '0');
                 } else {
                     i = finalizeConverter(c, pattern, i, currentLiteral, formattingInfo, converterRules,
-                            patternConverters, formattingInfos, noConsoleNoAnsi);
+                            patternConverters, formattingInfos, noConsoleNoAnsi, convertBackslashes);
                     state = ParserState.LITERAL_STATE;
                     formattingInfo = FormattingInfo.getDefault();
                     currentLiteral.setLength(0);
@@ -437,7 +441,7 @@ public final class PatternParser {
 
         // while
         if (currentLiteral.length() != 0) {
-            patternConverters.add(new LiteralPatternConverter(config, currentLiteral.toString()));
+            patternConverters.add(new LiteralPatternConverter(config, currentLiteral.toString(), convertBackslashes));
             formattingInfos.add(FormattingInfo.getDefault());
         }
     }
@@ -560,12 +564,14 @@ public final class PatternParser {
      *            list to receive corresponding field specifier.
      * @param noConsoleNoAnsi
      *            TODO
+     * @param convertBackslashes if {@code true}, backslash characters are treated as escape characters and character
+     *            sequences like "\" followed by "t" (backslash+t) are converted to special characters like '\t' (tab).
      * @return position after format specifier sequence.
      */
     private int finalizeConverter(final char c, final String pattern, int i, final StringBuilder currentLiteral,
             final FormattingInfo formattingInfo, final Map<String, Class<PatternConverter>> rules,
             final List<PatternConverter> patternConverters, final List<FormattingInfo> formattingInfos,
-            final boolean noConsoleNoAnsi) {
+            final boolean noConsoleNoAnsi, boolean convertBackslashes) {
         final StringBuilder convBuf = new StringBuilder();
         i = extractConverter(c, pattern, i, convBuf, currentLiteral);
 
@@ -592,14 +598,15 @@ public final class PatternParser {
 
             LOGGER.error(msg.toString());
 
-            patternConverters.add(new LiteralPatternConverter(config, currentLiteral.toString()));
+            patternConverters.add(new LiteralPatternConverter(config, currentLiteral.toString(), convertBackslashes));
             formattingInfos.add(FormattingInfo.getDefault());
         } else {
             patternConverters.add(pc);
             formattingInfos.add(formattingInfo);
 
             if (currentLiteral.length() > 0) {
-                patternConverters.add(new LiteralPatternConverter(config, currentLiteral.toString()));
+                patternConverters.add(new LiteralPatternConverter(config, currentLiteral.toString(),
+                        convertBackslashes));
                 formattingInfos.add(FormattingInfo.getDefault());
             }
         }
