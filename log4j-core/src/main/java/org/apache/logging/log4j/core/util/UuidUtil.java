@@ -16,13 +16,8 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import java.lang.reflect.Method;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.security.SecureRandom;
-import java.util.Enumeration;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -65,40 +60,7 @@ public final class UuidUtil {
     private static final int HUNDRED_NANOS_PER_MILLI = 10000;
 
     static {
-        byte[] mac = null;
-        try {
-            final InetAddress address = InetAddress.getLocalHost();
-            try {
-                NetworkInterface ni = NetworkInterface.getByInetAddress(address);
-                if (ni != null && !ni.isLoopback() && ni.isUp()) {
-                    final Method method = ni.getClass().getMethod("getHardwareAddress");
-                    if (method != null) {
-                        mac = (byte[]) method.invoke(ni);
-                    }
-                }
-
-                if (mac == null) {
-                    final Enumeration<NetworkInterface> enumeration = NetworkInterface.getNetworkInterfaces();
-                    while (enumeration.hasMoreElements() && mac == null) {
-                        ni = enumeration.nextElement();
-                        if (ni != null && ni.isUp() && !ni.isLoopback()) {
-                            final Method method = ni.getClass().getMethod("getHardwareAddress");
-                            if (method != null) {
-                                mac = (byte[]) method.invoke(ni);
-                            }
-                        }
-                    }
-                }
-            } catch (final Exception ex) {
-                ex.printStackTrace();
-                // Ignore exception
-            }
-            if (mac == null || mac.length == 0) {
-                mac = address.getAddress();
-            }
-        } catch (final UnknownHostException e) {
-            // Ignore exception
-        }
+        byte[] mac = NetUtils.getLocalMacAddress();
         final Random randomGenerator = new SecureRandom();
         if (mac == null || mac.length == 0) {
             mac = new byte[6];
