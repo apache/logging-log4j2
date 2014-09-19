@@ -228,7 +228,7 @@ public final class MarkerManager {
 
         @Override
         public boolean hasParents() {
-            return this.parents == null;
+            return this.parents != null;
         }
 
         @Override

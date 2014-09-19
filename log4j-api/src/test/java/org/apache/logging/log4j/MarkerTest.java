@@ -94,4 +94,13 @@ public class MarkerTest {
         assertTrue("TEST1 is not an instance of PARENT", test1.isInstanceOf(parent));
         assertTrue("TEST1 is not an instance of EXISTING", test1.isInstanceOf(existing));
     }
+
+    @Test
+    public void testHasParents() {
+        final Marker parent = MarkerManager.getMarker("PARENT");
+        final Marker existing = MarkerManager.getMarker("EXISTING");
+        assertFalse(existing.hasParents());
+        existing.setParents(parent);
+        assertTrue(existing.hasParents());
+    }
 }
