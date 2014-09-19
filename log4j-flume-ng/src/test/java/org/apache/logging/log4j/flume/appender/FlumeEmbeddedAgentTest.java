@@ -126,7 +126,7 @@ public class FlumeEmbeddedAgentTest {
     }
 
     @Test
-    public void testLog4Event() throws InterruptedException, IOException {
+    public void testLog4Event() throws IOException {
 
         final StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Log4j", "Test");
         EventLogger.logEvent(msg);
@@ -139,7 +139,7 @@ public class FlumeEmbeddedAgentTest {
     }
 
     @Test
-    public void testMultiple() throws InterruptedException, IOException {
+    public void testMultiple() throws IOException {
 
         for (int i = 0; i < 10; ++i) {
             final StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Multiple " + i, "Test");

@@ -128,7 +128,7 @@ public class FlumePersistentAppenderTest {
     }
 
     @Test
-    public void testLog4Event() throws InterruptedException, IOException {
+    public void testLog4Event() throws IOException {
 
         final StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Log4j", "Test");
         EventLogger.logEvent(msg);
@@ -141,7 +141,7 @@ public class FlumePersistentAppenderTest {
     }
 
     @Test
-    public void testMultiple() throws InterruptedException, IOException {
+    public void testMultiple() {
 
         for (int i = 0; i < 10; ++i) {
             final StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Multiple " + i, "Test");
@@ -168,7 +168,7 @@ public class FlumePersistentAppenderTest {
 
 
     @Test
-    public void testFailover() throws InterruptedException, IOException {
+    public void testFailover() throws InterruptedException {
         final Logger logger = LogManager.getLogger("testFailover");
         logger.debug("Starting testFailover");
         for (int i = 0; i < 10; ++i) {
@@ -222,7 +222,7 @@ public class FlumePersistentAppenderTest {
     }
 
     @Test
-    public void testSingle() throws InterruptedException, IOException {
+    public void testSingle() throws IOException {
 
         final Logger logger = LogManager.getLogger("EventLogger");
         final Marker marker = MarkerManager.getMarker("EVENT");
@@ -236,7 +236,7 @@ public class FlumePersistentAppenderTest {
     }
 
     @Test
-    public void testMultipleConcurrent() throws InterruptedException, IOException {
+    public void testMultipleConcurrent() throws InterruptedException {
 
         final int eventsCount = 10000;
 
@@ -278,7 +278,7 @@ public class FlumePersistentAppenderTest {
     }
     
     @Test
-    public void testRFC5424Layout() throws InterruptedException, IOException {
+    public void testRFC5424Layout() throws IOException {
 
         final StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Log4j", "Test");
         EventLogger.logEvent(msg);
