@@ -274,8 +274,7 @@ public class FlumeEmbeddedAppenderTest {
                 // Ignore the exception.
             }
             if (avroEvent != null) {
-                return EventBuilder.withBody(avroEvent.getBody().array(),
-                    toStringMap(avroEvent.getHeaders()));
+                return EventBuilder.withBody(avroEvent.getBody().array(), toStringMap(avroEvent.getHeaders()));
             }
             System.out.println("No Event returned");
             return null;
