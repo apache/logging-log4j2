@@ -20,9 +20,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LifeCycle;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Level;
@@ -32,9 +29,13 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.core.spi.LifeCycle;
 
 /**
- * Tests Log4j2 Async Appender performance.
+ * Tests Logback Async Appender performance.
  */
 // ============================== HOW TO RUN THIS TEST: ====================================
 //
@@ -47,7 +48,8 @@ import org.openjdk.jmh.annotations.TearDown;
 // Usage help:
 // java -jar log4j-perf/target/benchmarks.jar -help
 //
-public class Log4j2AsyncAppenderBenchmark {
+public class AsyncAppenderLogbackBenchmark {
+
     final static char[] CHARS = new char[500];
     static {
         Arrays.fill(CHARS, 'a');
@@ -60,13 +62,13 @@ public class Log4j2AsyncAppenderBenchmark {
 
         @Setup(Level.Trial)
         public void up() {
-            System.setProperty("log4j.configurationFile", "perf5AsyncApndNoLoc.xml");
-            logger = LogManager.getLogger(getClass());
+            System.setProperty("logback.configurationFile", "perf-logback-async.xml");
+            logger = (Logger) LoggerFactory.getLogger(getClass());
         }
 
         @TearDown(Level.Trial)
         public void down() {
-            ((LifeCycle) LogManager.getContext(false)).stop();
+            ((LifeCycle) LoggerFactory.getILoggerFactory()).stop();
             new File("perftest.log").delete();
         }
     }
