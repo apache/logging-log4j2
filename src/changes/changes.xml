@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.1" date="2014-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-816" dev="rpopma" type="fix">
+        Added section on XInclude to user manual Configuration page.
+      </action>
       <action issue="LOG4J2-678" dev="rpopma" type="fix" due-to="Matt Sicker">
         Fixed minor issues with Log4j2 web site/documentation.
       </action>

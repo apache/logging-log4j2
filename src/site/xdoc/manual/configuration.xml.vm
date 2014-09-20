@@ -931,6 +931,53 @@ public class Bar {
             See <a href="appenders.html#RoutingAppender">RoutingAppender</a> for more information.</i>
           </p>
         </subsection>
+        <a name="XInclude"/>
+        <subsection name="XInclude">
+          <p>
+            XML configuration files can include other files with <a href="http://www.xml.com/lpt/a/1009">XInclude</a>.
+            Here is an example log4j2.xml file that includes two other files:
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:xi="http://www.w3.org/2001/XInclude"
+               status="warn" name="XIncludeDemo">
+  <properties>
+    <property name="filename">xinclude-demo.log</property>
+  </properties>
+  <ThresholdFilter level="debug"/>
+  <xi:include href="log4j-xinclude-appenders.xml" />
+  <xi:include href="log4j-xinclude-loggers.xml" />
+</configuration>]]></pre>
+          <p>log4j-xinclude-appenders.xml:</p>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<appenders>
+  <Console name="STDOUT">
+    <PatternLayout pattern="%m%n" />
+  </Console>
+  <File name="File" fileName="${filename}" bufferedIO="true" immediateFlush="true">
+    <PatternLayout>
+      <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+    </PatternLayout>
+  </File>
+</appenders>]]></pre>
+          <p>log4j-xinclude-loggers.xml:</p>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<loggers>
+  <logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
+    <ThreadContextMapFilter>
+      <KeyValuePair key="test" value="123" />
+    </ThreadContextMapFilter>
+    <appender-ref ref="STDOUT" />
+  </logger>
+
+  <logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
+    <appender-ref ref="File" />
+  </logger>
+
+  <root level="error">
+    <appender-ref ref="STDOUT" />
+  </root>
+</loggers>]]></pre>
+        </subsection>
         <a name="StatusMessages"/>
         <subsection name="Status Messages">
           <p>
