@@ -29,6 +29,10 @@
   <packaging>jar</packaging>
   <name>Apache Log4J Performance Tests</name>
   <description>Log4j 2.0 Various performance tests</description>
+  
+  <prerequisites>
+    <maven>3.0</maven>
+  </prerequisites>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
