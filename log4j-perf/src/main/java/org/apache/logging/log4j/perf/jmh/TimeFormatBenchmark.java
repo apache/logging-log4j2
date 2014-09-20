@@ -24,8 +24,8 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.util.Charsets;
+import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Scope;
@@ -37,13 +37,13 @@ import org.openjdk.jmh.annotations.State;
 // ============================== HOW TO RUN THIS TEST: ====================================
 //
 // single thread:
-// java -jar log4j-perf/target/microbenchmarks.jar ".*TimeFormat.*" -f 1 -wi 5 -i 5
+// java -jar log4j-perf/target/benchmarks.jar ".*TimeFormat.*" -f 1 -wi 5 -i 5
 //
 // multiple threads (for example, 4 threads):
-// java -jar log4j-perf/target/microbenchmarks.jar ".*TimeFormat.*" -f 1 -wi 5 -i 5 -t 4 -si true
+// java -jar log4j-perf/target/benchmarks.jar ".*TimeFormat.*" -f 1 -wi 5 -i 5 -t 4 -si true
 //
 // Usage help:
-// java -jar log4j-perf/target/microbenchmarks.jar -help
+// java -jar log4j-perf/target/benchmarks.jar -help
 //
 @State(Scope.Thread)
 public class TimeFormatBenchmark {
@@ -66,7 +66,7 @@ public class TimeFormatBenchmark {
     }
 
     private long calcMidnightMillis(int addDays) {
-        //Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UCT"));
+        // Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UCT"));
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
@@ -81,20 +81,20 @@ public class TimeFormatBenchmark {
         System.out.println(new TimeFormatBenchmark().customFormatString(new BufferState()));
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public void baseline() {
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public String simpleDateFormatString() {
         return simpleDateFormat.format(new Date());
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public int simpleDateFormatBytes(BufferState state) {
@@ -105,7 +105,7 @@ public class TimeFormatBenchmark {
         return state.buffer.position();
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public String customFastFormatString(BufferState state) {
@@ -114,7 +114,7 @@ public class TimeFormatBenchmark {
         return new String(state.buffer.array(), 0, state.buffer.position(), Charsets.UTF_8);
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public int customFastFormatBytes(BufferState state) {
@@ -123,7 +123,7 @@ public class TimeFormatBenchmark {
         return state.buffer.position();
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public String customFormatString(BufferState state) {
@@ -132,7 +132,7 @@ public class TimeFormatBenchmark {
         return new String(state.buffer.array(), 0, state.buffer.position(), Charsets.UTF_8);
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public int customFormatBytes(BufferState state) {
@@ -209,7 +209,7 @@ public class TimeFormatBenchmark {
 
         int hours = ms / 3600000;
         ms -= 3600000 * hours;
-        
+
         int minutes = ms / 60000;
         ms -= 60000 * minutes;
 

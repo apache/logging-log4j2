@@ -23,8 +23,8 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LifeCycle;
+import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
 import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
@@ -39,10 +39,10 @@ import org.openjdk.jmh.annotations.TearDown;
 // ============================== HOW TO RUN THIS TEST: ====================================
 //
 // single thread:
-// java -jar log4j-perf/target/microbenchmarks.jar ".*FormatterLogger.*" -f 1 -wi 5 -i 5
+// java -jar log4j-perf/target/benchmarks.jar ".*FormatterLogger.*" -f 1 -wi 5 -i 5
 //
 // Usage help:
-// java -jar log4j-perf/target/microbenchmarks.jar -help
+// java -jar log4j-perf/target/benchmarks.jar -help
 //
 @State(Scope.Thread)
 public class FormatterLoggerBenchmark {
@@ -64,70 +64,70 @@ public class FormatterLoggerBenchmark {
         new File("perftest.log").delete();
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public boolean throughputBaseline() {
         return logger.isInfoEnabled();
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void throughputLoggerString() {
         logger.info("Message with {} parameter", "string");
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void throughputLoggerDouble() {
         logger.info("Message with double param: {}", Math.PI);
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void throughputFormatterLoggerString() {
         formatterLogger.info("Message with %s parameter", "string");
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void throughputFormatterLoggerDouble() {
         formatterLogger.info("Message with double param: %f", Math.PI);
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public boolean latencyBaseline() {
         return logger.isInfoEnabled();
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public void latencyLoggerString() {
         logger.info("Message with {} parameter", "string");
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public void latencyLoggerDouble() {
         logger.info("Message with double param: {}", Math.PI);
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public void latencyFormatterLoggerString() {
         formatterLogger.info("Message with %s parameter", "string");
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public void latencyFormatterLoggerDouble() {

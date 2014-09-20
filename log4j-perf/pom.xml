@@ -15,7 +15,8 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>log4j</artifactId>
@@ -34,18 +35,21 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4J Performance Tests</docLabel>
     <projectDir>/log4j-perf</projectDir>
+    <jmh.version>1.1</jmh.version>
+    <javac.target>1.6</javac.target>
+    <uberjar.name>benchmarks</uberjar.name>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.openjdk.jmh</groupId>
       <artifactId>jmh-core</artifactId>
-      <version>0.7.2</version>
+      <version>${jmh.version}</version>
     </dependency>
     <dependency>
       <groupId>org.openjdk.jmh</groupId>
       <artifactId>jmh-generator-annprocess</artifactId>
-      <version>0.7.2</version>
+      <version>${jmh.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -126,8 +130,18 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.1</version>
+        <configuration>
+          <compilerVersion>${javac.target}</compilerVersion>
+          <source>${javac.target}</source>
+          <target>${javac.target}</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>2.0</version>
+        <version>2.2</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -136,7 +150,7 @@
             </goals>
             <configuration>
               <minimizeJar>false</minimizeJar>
-              <finalName>microbenchmarks</finalName>
+              <finalName>${uberjar.name}</finalName>
               <transformers>
                 <transformer
                   implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
@@ -145,6 +159,10 @@
               </transformers>
               <filters>
                 <filter>
+                  <!--
+                    Shading signed JARs will fail without this.
+                    http://stackoverflow.com/questions/999489/invalid-signature-file-when-attempting-to-run-a-jar
+                  -->
                   <artifact>*:*</artifact>
                   <excludes>
                     <exclude>META-INF/*.SF</exclude>
@@ -179,6 +197,7 @@
         <configuration>
           <instructions>
             <Export-Package>org.apache.logging.log4j.perf.jmh</Export-Package>
+            <Export-Package>org.apache.logging.log4j.perf.jmh.jpa</Export-Package>
           </instructions>
         </configuration>
       </plugin>

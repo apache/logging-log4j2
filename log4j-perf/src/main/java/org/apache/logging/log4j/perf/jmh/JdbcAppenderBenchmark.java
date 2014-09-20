@@ -31,25 +31,25 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
-import org.openjdk.jmh.logic.BlackHole;
+import org.openjdk.jmh.infra.Blackhole;
 
 /**
  * Tests the overhead of a number of JDBC Appenders.
  */
 // ============================== HOW TO RUN THIS TEST: ====================================
 //
-// java -jar log4j-perf/target/microbenchmarks.jar ".*JdbcAppenderBenchmark.*" -f 1 -wi 5 -i 5
+// java -jar log4j-perf/target/benchmarks.jar ".*JdbcAppenderBenchmark.*" -f 1 -wi 5 -i 5
 //
 // Usage help:
-// java -jar log4j-perf/target/microbenchmarks.jar -help
+// java -jar log4j-perf/target/benchmarks.jar -help
 //
 @State(Scope.Thread)
 public class JdbcAppenderBenchmark {
@@ -78,57 +78,57 @@ public class JdbcAppenderBenchmark {
 
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
-    @GenerateMicroBenchmark
-    public void testThroughputH2Message(final BlackHole bh) {
+    @Benchmark
+    public void testThroughputH2Message(final Blackhole bh) {
         loggerH2.info("Test message");
     }
 
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
-    @GenerateMicroBenchmark
-    public void testThroughputH2Exception(final BlackHole bh) {
+    @Benchmark
+    public void testThroughputH2Exception(final Blackhole bh) {
         loggerH2.warn("Test message", exception);
     }
 
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    @GenerateMicroBenchmark
-    public void testResponseTimeH2Message(final BlackHole bh) {
+    @Benchmark
+    public void testResponseTimeH2Message(final Blackhole bh) {
         loggerH2.info("Test message");
     }
 
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    @GenerateMicroBenchmark
-    public void testResponseTimeH2Exception(final BlackHole bh) {
+    @Benchmark
+    public void testResponseTimeH2Exception(final Blackhole bh) {
         loggerH2.warn("Test message", exception);
     }
 
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
-    @GenerateMicroBenchmark
-    public void testThroughputHSQLDBMessage(final BlackHole bh) {
+    @Benchmark
+    public void testThroughputHSQLDBMessage(final Blackhole bh) {
         loggerHSQLDB.info("Test message");
     }
 
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
-    @GenerateMicroBenchmark
-    public void testThroughputHSQLDBException(final BlackHole bh) {
+    @Benchmark
+    public void testThroughputHSQLDBException(final Blackhole bh) {
         loggerHSQLDB.warn("Test message", exception);
     }
 
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    @GenerateMicroBenchmark
-    public void testResponseTimeHSQLDBMessage(final BlackHole bh) {
+    @Benchmark
+    public void testResponseTimeHSQLDBMessage(final Blackhole bh) {
         loggerHSQLDB.info("Test message");
     }
 
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    @GenerateMicroBenchmark
-    public void testResponseTimeHSQLDBException(final BlackHole bh) {
+    @Benchmark
+    public void testResponseTimeHSQLDBException(final Blackhole bh) {
         loggerHSQLDB.warn("Test message", exception);
     }
 

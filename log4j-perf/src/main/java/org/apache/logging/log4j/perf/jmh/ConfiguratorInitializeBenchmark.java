@@ -24,8 +24,8 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Scope;
@@ -33,27 +33,25 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 
 /**
- * This benchmark demonstrates how long it takes for a simple XML configuration file to be parsed and initialize a
- * new {@link org.apache.logging.log4j.core.LoggerContext} using that configuration.
+ * This benchmark demonstrates how long it takes for a simple XML configuration file to be parsed and initialize a new
+ * {@link org.apache.logging.log4j.core.LoggerContext} using that configuration.
  */
 // TO RUN THIS TEST:
-// java -jar target/microbenchmarks.jar '.*ConfiguratorInitializeBenchmark.*'
+// java -jar target/benchmarks.jar '.*ConfiguratorInitializeBenchmark.*'
 @State(Scope.Thread)
 public class ConfiguratorInitializeBenchmark {
 
-    private static final String inlineConfigurationXML =
-        "<Configuration name='ConfiguratorInitializeTest' status='off'>" +
-            "<Appenders>" +
-            "<Console name='STDOUT'>" +
-            "<PatternLayout pattern='%m%n'/>" +
-            "</Console>" +
-            "</Appenders>" +
-            "<Loggers>" +
-            "<Root level='error'>" +
-            "<AppenderRef ref='STDOUT'/>" +
-            "</Root>" +
-            "</Loggers>" +
-            "</Configuration>";
+    private static final String inlineConfigurationXML = "<Configuration name='ConfiguratorInitializeTest' status='off'>"
+            + "<Appenders>"
+            + "<Console name='STDOUT'>"
+            + "<PatternLayout pattern='%m%n'/>"
+            + "</Console>"
+            + "</Appenders>"
+            + "<Loggers>"
+            + "<Root level='error'>"
+            + "<AppenderRef ref='STDOUT'/>"
+            + "</Root>"
+            + "</Loggers>" + "</Configuration>";
 
     private ConfigurationSource configurationSource;
 
@@ -62,7 +60,7 @@ public class ConfiguratorInitializeBenchmark {
         configurationSource = new ConfigurationSource(new ByteArrayInputStream(inlineConfigurationXML.getBytes()));
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     @BenchmarkMode(Mode.SingleShotTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public LoggerContext initializeLoggerContext() {

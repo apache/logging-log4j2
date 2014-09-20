@@ -20,31 +20,31 @@ package org.apache.logging.log4j.perf.jmh;
 import java.util.UUID;
 
 import org.apache.logging.log4j.core.util.UuidUtil;
-import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
+import org.openjdk.jmh.annotations.Benchmark;
 
 /**
  * Compares random UUID generation with time-based UUID generation.
  */
 // ============================== HOW TO RUN THIS TEST: ====================================
 //
-// java -jar log4j-perf/target/microbenchmarks.jar ".*UuidGeneratorBenchmark.*" -f 1 -wi 5 -i 5
+// java -jar log4j-perf/target/benchmarks.jar ".*UuidGeneratorBenchmark.*" -f 1 -wi 5 -i 5
 //
 // Usage help:
-// java -jar log4j-perf/target/microbenchmarks.jar -help
+// java -jar log4j-perf/target/benchmarks.jar -help
 //
 public class UuidGeneratorBenchmark {
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public UUID base() {
         return null;
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public UUID randomUUID() {
         return UUID.randomUUID();
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public UUID timeBasedUUID() {
         return UuidUtil.getTimeBasedUuid();
     }

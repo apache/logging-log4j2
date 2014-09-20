@@ -25,24 +25,24 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.logic.BlackHole;
+import org.openjdk.jmh.infra.Blackhole;
 
 /**
  * Tests the overhead of disabled logging.
  */
 // ============================== HOW TO RUN THIS TEST: ====================================
 //
-// java -jar log4j-perf/target/microbenchmarks.jar ".*SimpleBenchmark.*" -f 1 -wi 5 -i 5
+// java -jar log4j-perf/target/benchmarks.jar ".*SimpleBenchmark.*" -f 1 -wi 5 -i 5
 //
 // Usage help:
-// java -jar log4j-perf/target/microbenchmarks.jar -help
+// java -jar log4j-perf/target/benchmarks.jar -help
 //
 @State(Scope.Thread)
 public class SimpleBenchmark {
@@ -61,56 +61,55 @@ public class SimpleBenchmark {
 
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
-    @GenerateMicroBenchmark
-    public void testBaselineThroughput(final BlackHole bh) {
+    @Benchmark
+    public void testBaselineThroughput(final Blackhole bh) {
     }
 
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
-    @GenerateMicroBenchmark
-    public void testIsDebugEnabledThroughput(final BlackHole bh) {
+    @Benchmark
+    public void testIsDebugEnabledThroughput(final Blackhole bh) {
         bh.consume(logger.isDebugEnabled());
     }
 
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
-    @GenerateMicroBenchmark
-    public void testIsEnabledLevelThroughput(final BlackHole bh) {
+    @Benchmark
+    public void testIsEnabledLevelThroughput(final Blackhole bh) {
         bh.consume(logger.isEnabled(Level.DEBUG));
     }
 
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
-    @GenerateMicroBenchmark
-    public void testDebugDisabledThroughput(final BlackHole bh) {
+    @Benchmark
+    public void testDebugDisabledThroughput(final Blackhole bh) {
         logger.debug(msg);
     }
 
-
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    @GenerateMicroBenchmark
-    public void testBaselineResponseTime(final BlackHole bh) {
+    @Benchmark
+    public void testBaselineResponseTime(final Blackhole bh) {
     }
 
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    @GenerateMicroBenchmark
-    public void testIsDebugEnabledResponseTime(final BlackHole bh) {
+    @Benchmark
+    public void testIsDebugEnabledResponseTime(final Blackhole bh) {
         bh.consume(logger.isDebugEnabled());
     }
 
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    @GenerateMicroBenchmark
-    public void testIsEnabledLevelResponseTime(final BlackHole bh) {
+    @Benchmark
+    public void testIsEnabledLevelResponseTime(final Blackhole bh) {
         bh.consume(logger.isEnabled(Level.DEBUG));
     }
 
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    @GenerateMicroBenchmark
-    public void testDebugDisabledResponseTime(final BlackHole bh) {
+    @Benchmark
+    public void testDebugDisabledResponseTime(final Blackhole bh) {
         logger.debug(msg);
     }
 }

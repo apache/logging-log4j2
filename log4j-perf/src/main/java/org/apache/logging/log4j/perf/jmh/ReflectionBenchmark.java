@@ -23,22 +23,28 @@ import java.util.Random;
 import org.apache.logging.log4j.core.impl.ReflectiveCallerClassUtility;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StringFormattedMessage;
-import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
+import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
+
 import sun.reflect.Reflection;
 
 /**
- * <p>Benchmarks the different ways the caller class can be obtained.
- * To run this in sampling mode (latency test):</p>
+ * <p>
+ * Benchmarks the different ways the caller class can be obtained. To run this in sampling mode (latency test):
+ * </p>
+ * 
  * <pre>
- *     java -jar microbenchmarks.jar ".*ReflectionBenchmark.*" -i 5 -f 1 -wi 5 -bm sample -tu ns
+ *     java -jar benchmarks.jar ".*ReflectionBenchmark.*" -i 5 -f 1 -wi 5 -bm sample -tu ns
  * </pre>
- * <p>To run this in throughput testing mode:</p>
+ * <p>
+ * To run this in throughput testing mode:
+ * </p>
+ * 
  * <pre>
- *     java -jar microbenchmarks.jar ".*ReflectionBenchmark.*" -i 5 -f 1 -wi 5 -bm Throughput -tu ms
+ *     java -jar benchmarks.jar ".*ReflectionBenchmark.*" -i 5 -f 1 -wi 5 -bm Throughput -tu ms
  * </pre>
  */
 public class ReflectionBenchmark {
@@ -56,60 +62,60 @@ public class ReflectionBenchmark {
         }
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public void baseline() {
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public String test01_getCallerClassNameFromStackTrace() {
         return new Throwable().getStackTrace()[3].getClassName();
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public String test02_getCallerClassNameFromThreadStackTrace() {
         return Thread.currentThread().getStackTrace()[3].getClassName();
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public String test03_getCallerClassNameReflectively() {
         return ReflectiveCallerClassUtility.getCaller(3).getName();
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public String test04_getCallerClassNameSunReflection() {
         return Reflection.getCallerClass(3).getName();
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public Class<?> test05_getStackTraceClassForClassName() throws ClassNotFoundException {
         return Class.forName(new Throwable().getStackTrace()[3].getClassName());
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public Class<?> test06_getThreadStackTraceClassForClassName() throws ClassNotFoundException {
         return Class.forName(Thread.currentThread().getStackTrace()[3].getClassName());
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public Class<?> test07_getReflectiveCallerClassUtility() {
         return ReflectiveCallerClassUtility.getCaller(3);
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public Class<?> test08_getDirectSunReflection() {
         return Reflection.getCallerClass(3);
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public Message test09_getMessageUsingNew(final RandomInteger rng) {
         return new StringFormattedMessage("Hello %i", rng.random);
     }
 
-    @GenerateMicroBenchmark
-    public Message test10_getMessageUsingReflection(final RandomInteger rng)
-        throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    @Benchmark
+    public Message test10_getMessageUsingReflection(final RandomInteger rng) throws NoSuchMethodException,
+            IllegalAccessException, InvocationTargetException, InstantiationException {
         final Constructor<? extends Message> constructor = StringFormattedMessage.class.getConstructor(String.class,
-            Object[].class);
-        return constructor.newInstance("Hello %i", new Object[]{rng.random});
+                Object[].class);
+        return constructor.newInstance("Hello %i", new Object[] { rng.random });
     }
 }

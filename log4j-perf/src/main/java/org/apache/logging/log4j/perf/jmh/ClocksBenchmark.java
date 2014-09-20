@@ -24,8 +24,8 @@ import org.apache.logging.log4j.core.util.CachedClock;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.CoarseCachedClock;
 import org.apache.logging.log4j.core.util.SystemClock;
+import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
 import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
@@ -39,13 +39,13 @@ import org.openjdk.jmh.annotations.State;
 // ============================== HOW TO RUN THIS TEST: ====================================
 //
 // single thread:
-// java -jar log4j-perf/target/microbenchmarks.jar ".*Clocks.*" -f 1 -wi 5 -i 5
+// java -jar log4j-perf/target/benchmarks.jar ".*Clocks.*" -f 1 -wi 5 -i 5
 //
 // multiple threads (for example, 4 threads):
-// java -jar log4j-perf/target/microbenchmarks.jar ".*Clocks.*" -f 1 -wi 5 -i 5 -t 4 -si true
+// java -jar log4j-perf/target/benchmarks.jar ".*Clocks.*" -f 1 -wi 5 -i 5 -t 4 -si true
 //
 // Usage help:
-// java -jar log4j-perf/target/microbenchmarks.jar -help
+// java -jar log4j-perf/target/benchmarks.jar -help
 //
 @State(Scope.Thread)
 public class ClocksBenchmark {
@@ -66,55 +66,55 @@ public class ClocksBenchmark {
         fixedFinalClock = new FixedFinalTimeClock(System.nanoTime());
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public void baseline() {
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public long systemCurrentTimeMillis() {
         return System.currentTimeMillis();
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public long systemClock() {
         return systemClock.currentTimeMillis();
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public long cachedClock() {
         return cachedClock.currentTimeMillis();
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public long oldCachedClock() {
         return oldCachedClock.currentTimeMillis();
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public long coarseCachedClock() {
         return coarseCachedClock.currentTimeMillis();
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public long fixedClock() {
         return fixedClock.currentTimeMillis();
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public long fixedFinalClock() {
@@ -146,7 +146,7 @@ public class ClocksBenchmark {
             return fixedFinalTime;
         }
     }
-    
+
     private static final class OldCachedClock implements Clock {
         private static final int UPDATE_THRESHOLD = 0x3FF;
         private static volatile OldCachedClock instance;

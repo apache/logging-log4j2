@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.1" date="2014-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-844" dev="rpopma" type="update">
+        Update JMH to 1.1 from 0.7.2.
+      </action>
       <action issue="LOG4J2-843" dev="rpopma" type="fix">
         Migrate JpaHyperSqlAppenderTest JUnit performance test to log4j-perf.
       </action>
