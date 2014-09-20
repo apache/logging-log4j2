@@ -24,11 +24,17 @@
   </properties>
   <body>
     <release version="2.1" date="2014-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-843" dev="rpopma" type="fix">
+        Migrate JpaHyperSqlAppenderTest JUnit performance test to log4j-perf.
+      </action>
+      <action issue="LOG4J2-842" dev="rpopma" type="fix">
+        Migrate JpaH2AppenderTest JUnit performance test to log4j-perf.
+      </action>
       <action issue="LOG4J2-841" dev="rpopma" type="fix">
-        Migrate JdbcHyperSqlAppenderTest#testPerformanceOfAppenderWith1000Events() to log4j-perf.
+        Migrate JdbcHyperSqlAppenderTest JUnit performance test to log4j-perf.
       </action>
       <action issue="LOG4J2-840" dev="rpopma" type="fix">
-        Migrate JdbcH2AppenderTest#testPerformanceOfAppenderWith1000Events() to log4j-perf.
+        Migrate JdbcH2AppenderTest JUnit performance test to log4j-perf.
       </action>
       <action issue="LOG4J2-830" dev="rpopma" type="fix">
         Respect external interrupt signal to allow application shutdown after joining AsyncAppender thread.

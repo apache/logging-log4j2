@@ -90,6 +90,36 @@
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
     </dependency>
+    <!-- Used for JPA appenders (needs an implementation of course) -->
+    <dependency>
+      <groupId>javax.persistence</groupId>
+      <artifactId>persistence-api</artifactId>
+      <version>1.0.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.persistence</groupId>
+      <artifactId>javax.persistence</artifactId>
+    </dependency>
+    <!-- JPA Tests -->
+    <dependency>
+      <groupId>org.eclipse.persistence</groupId>
+      <artifactId>eclipselink</artifactId>
+      <version>2.5.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.persistence</groupId>
+      <artifactId>org.eclipse.persistence.jpa</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <optional>true</optional>
+    </dependency>
   </dependencies>
 
   <build>
@@ -105,12 +135,24 @@
               <goal>shade</goal>
             </goals>
             <configuration>
+              <minimizeJar>false</minimizeJar>
               <finalName>microbenchmarks</finalName>
               <transformers>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                <transformer
+                  implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                   <mainClass>org.openjdk.jmh.Main</mainClass>
                 </transformer>
               </transformers>
+              <filters>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <exclude>META-INF/*.SF</exclude>
+                    <exclude>META-INF/*.DSA</exclude>
+                    <exclude>META-INF/*.RSA</exclude>
+                  </excludes>
+                </filter>
+              </filters>
             </configuration>
           </execution>
         </executions>
@@ -180,12 +222,14 @@
         <configuration>
           <bottom>Copyright c {inceptionYear}-{currentYear}
             {organizationName}. All Rights Reserved. Apache Logging,
-            Apache Log4j, Log4j, Apache, the Apache feather logo, and the
-            Apache Logging project logo are trademarks of The Apache Software
+            Apache Log4j, Log4j, Apache, the Apache feather logo, and
+            the
+            Apache Logging project logo are trademarks of The Apache
+            Software
             Foundation.
           </bottom>
-          <!-- module link generation is completely broken in the javadoc plugin 
-            for a multi-module non-aggregating project -->
+          <!-- module link generation is completely broken in the javadoc 
+            plugin for a multi-module non-aggregating project -->
           <detectOfflineLinks>false</detectOfflineLinks>
           <linksource>true</linksource>
           <tags>
@@ -260,8 +304,8 @@
         <version>${cobertura.plugin.version}</version>
         <reportSets>
           <reportSet>
-            <!-- Disabled as it makes the site build very slow and causes the performance 
-              unit test to fail -->
+            <!-- Disabled as it makes the site build very slow and causes 
+              the performance unit test to fail -->
             <reports />
           </reportSet>
         </reportSets>

@@ -22,16 +22,15 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.categories.PerformanceTests;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 import static org.junit.Assert.*;
 
@@ -206,47 +205,6 @@ public abstract class AbstractJpaAppenderTest {
             assertNull("The exception column is not correct (3).", resultSet.getString("thrown"));
 
             assertFalse("There should not be four rows.", resultSet.next());
-        } finally {
-            this.tearDown();
-        }
-    }
-
-    @Test
-    @Category(PerformanceTests.class)
-    public void testPerformanceOfAppenderWith10000EventsUsingBasicEntity() throws SQLException {
-        try {
-            this.setUp("log4j2-" + this.databaseType + "-jpa-basic.xml");
-
-            final Error exception = new Error("Goodbye, cruel world!");
-
-            final Logger logger = LogManager.getLogger(this.getClass().getName() +
-                    ".testPerformanceOfAppenderWith10000EventsUsingBasicEntity");
-            logger.info("This is a warm-up message.");
-
-            System.out.println("Starting a performance test for JPA Appender for " + this.databaseType + '.');
-
-            final long start = System.nanoTime();
-
-            for(int i = 0; i < 10000; i++) {
-                if (i % 25 == 0) {
-                    logger.warn("This is an exception message.", exception);
-                } else {
-                    logger.info("This is an info message.");
-                }
-            }
-
-            final long elapsed = System.nanoTime() - start;
-            final long elapsedMilli = elapsed / 1000000;
-
-            final Statement statement = this.connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY);
-            final ResultSet resultSet = statement.executeQuery("SELECT * FROM jpaBasicLogEntry ORDER BY id");
-
-            resultSet.last();
-            assertEquals("The number of records is not correct.", 10001, resultSet.getRow());
-
-            System.out.println("Wrote 10,000 log events in " + elapsed + " nanoseconds (" + elapsedMilli +
-                    " milliseconds) for " + this.databaseType + '.');
         } finally {
             this.tearDown();
         }
