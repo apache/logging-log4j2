@@ -33,24 +33,24 @@ public class PatternParserTest2 {
     public void testParseConvertBackslashes() {
         final boolean convert = true;
         final StringBuilder buf = new StringBuilder();
-        final String pattern = "%d{HHmmss} \\t ...";
+        final String pattern = "%d{HHmmss}{GMT+0} \\t ...";
 
         final Date date = new Date(1411142535260L); // Sat Sep 20 01:02:15 JST 2014
         parse(pattern, convert, buf, date, 123);
 
-        assertEquals("010215 \t ...", buf.toString());
+        assertEquals("160215 \t ...", buf.toString());
     }
 
     @Test
     public void testParseDontConvertBackslashes() {
         final boolean convert = false;
         final StringBuilder buf = new StringBuilder();
-        final String pattern = "%d{HHmmss} \\t---";
+        final String pattern = "%d{HHmmss}{GMT+0} \\t---";
 
         final Date date = new Date(1411142535260L); // Sat Sep 20 01:02:15 JST 2014
         parse(pattern, convert, buf, date, new Integer(3));
 
-        assertEquals("010215 \\t---", buf.toString());
+        assertEquals("160215 \\t---", buf.toString());
     }
 
     private void parse(String pattern, boolean convert, StringBuilder buf, Date date, int i) {
