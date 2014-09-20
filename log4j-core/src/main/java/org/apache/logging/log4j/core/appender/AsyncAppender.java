@@ -233,8 +233,7 @@ public final class AsyncAppender extends AbstractAppender {
                         continue;
                     }
                 } catch (final InterruptedException ex) {
-                    // No good reason for this.
-                    continue;
+                    break; // LOG4J2-830
                 }
                 final Log4jLogEvent event = Log4jLogEvent.deserialize(s);
                 event.setEndOfBatch(queue.isEmpty());
@@ -266,6 +265,7 @@ public final class AsyncAppender extends AbstractAppender {
                     }
                 } catch (final InterruptedException ex) {
                     // May have been interrupted to shut down.
+                    // Here we ignore interrupts and try to process all remaining events.
                 }
             }
             LOGGER.trace("AsyncAppender.AsyncThread stopped. Queue has {} events remaining. " +

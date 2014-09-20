@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.1" date="2014-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-830" dev="rpopma" type="fix">
+        Respect external interrupt signal to allow application shutdown after joining AsyncAppender thread.
+      </action>
       <action issue="LOG4J2-813" dev="ggregory" type="fix" due-to="David Erichsen, Brandon Barry">
         MarkerManager Log4jMarker.hasParents() returns opposite of correct result.
       </action>
