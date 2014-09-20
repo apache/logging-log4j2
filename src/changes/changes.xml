@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.1" date="2014-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-813" dev="ggregory" type="fix" due-to="Brandon Barry">
+        MarkerManager Log4jMarker.hasParents() returns opposite of correct result.
+      </action>
       <action issue="LOG4J2-785" dev="rpopma" type="fix">
         Fixed capitalization inconsistency in user manual example config.
       </action>
