@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LifeCycle;
+import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Level;
@@ -55,7 +56,7 @@ public class FormatterLoggerBenchmark {
         new File("perftest.log").delete();
         System.setProperty("log4j.configurationFile", "perf3PlainNoLoc.xml");
         logger = LogManager.getLogger(getClass());
-        formatterLogger = LogManager.getLogger("formatter");
+        formatterLogger = LogManager.getLogger("formatter", new StringFormatterMessageFactory());
     }
 
     @TearDown(Level.Trial)
@@ -74,28 +75,28 @@ public class FormatterLoggerBenchmark {
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
-    public void throughputLoggerString() {
+    public void throughputParameterizedString() {
         logger.info("Message with {} parameter", "string");
     }
 
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
-    public void throughputLoggerDouble() {
+    public void throughputParameterizedDouble() {
         logger.info("Message with double param: {}", Math.PI);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
-    public void throughputFormatterLoggerString() {
+    public void throughputStringFormatString() {
         formatterLogger.info("Message with %s parameter", "string");
     }
 
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
-    public void throughputFormatterLoggerDouble() {
+    public void throughputStringFormatDouble() {
         formatterLogger.info("Message with double param: %f", Math.PI);
     }
 
@@ -109,28 +110,28 @@ public class FormatterLoggerBenchmark {
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public void latencyLoggerString() {
+    public void latencyParameterizedString() {
         logger.info("Message with {} parameter", "string");
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public void latencyLoggerDouble() {
+    public void latencyParameterizedDouble() {
         logger.info("Message with double param: {}", Math.PI);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public void latencyFormatterLoggerString() {
+    public void latencyStringFormatString() {
         formatterLogger.info("Message with %s parameter", "string");
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public void latencyFormatterLoggerDouble() {
+    public void latencyStringFormatDouble() {
         formatterLogger.info("Message with double param: %f", Math.PI);
     }
 }
