@@ -32,23 +32,13 @@ import org.apache.logging.log4j.status.StatusLogger;
  * Looks up keys from JNDI resources.
  */
 @Plugin(name = "jndi", category = "Lookup")
-public class JndiLookup implements StrLookup {
+public class JndiLookup extends AbstractLookup {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final Marker LOOKUP = MarkerManager.getMarker("LOOKUP");
 
     /** JNDI resource path prefix used in a J2EE container */
     static final String CONTAINER_JNDI_RESOURCE_PATH_PREFIX = "java:comp/env/";
-
-    /**
-     * Looks up the value of the JNDI resource.
-     * @param key  the JNDI resource name to be looked up, may be null
-     * @return The value of the JNDI resource.
-     */
-    @Override
-    public String lookup(final String key) {
-        return lookup(null, key);
-    }
 
     /**
      * Looks up the value of the JNDI resource.

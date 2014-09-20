@@ -30,7 +30,7 @@ import java.util.Map;
 /**
  * Proxies all the other {@link StrLookup}s.
  */
-public class Interpolator implements StrLookup {
+public class Interpolator extends AbstractLookup {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -121,23 +121,6 @@ public class Interpolator implements StrLookup {
         } else {
             LOGGER.debug("Not in a ServletContext environment, thus not loading WebLookup plugin.");
         }
-    }
-
-     /**
-     * Resolves the specified variable. This implementation will try to extract
-     * a variable prefix from the given variable name (the first colon (':') is
-     * used as prefix separator). It then passes the name of the variable with
-     * the prefix stripped to the lookup object registered for this prefix. If
-     * no prefix can be found or if the associated lookup object cannot resolve
-     * this variable, the default lookup object will be used.
-     *
-     * @param var the name of the variable whose value is to be looked up
-     * @return the value of this variable or <b>null</b> if it cannot be
-     * resolved
-     */
-    @Override
-    public String lookup(final String var) {
-        return lookup(null, var);
     }
 
     /**

@@ -27,25 +27,10 @@ import org.apache.logging.log4j.status.StatusLogger;
  * Looks up keys from system properties.
  */
 @Plugin(name = "sys", category = "Lookup")
-public class SystemPropertiesLookup implements StrLookup {
+public class SystemPropertiesLookup extends AbstractLookup {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final Marker LOOKUP = MarkerManager.getMarker("LOOKUP");
-
-    /**
-     * Looks up the value for the key.
-     * @param key  the key to be looked up, may be null
-     * @return The value for the key.
-     */
-    @Override
-    public String lookup(final String key) {
-        try {
-            return System.getProperty(key);
-        } catch (final Exception ex) {
-            LOGGER.warn(LOOKUP, "Error while getting system property [{}].", key, ex);
-            return null;
-        }
-    }
 
     /**
      * Looks up the value for the key using the data in the LogEvent.
@@ -55,6 +40,11 @@ public class SystemPropertiesLookup implements StrLookup {
      */
     @Override
     public String lookup(final LogEvent event, final String key) {
-        return lookup(key);
+        try {
+            return System.getProperty(key);
+        } catch (final Exception ex) {
+            LOGGER.warn(LOOKUP, "Error while getting system property [{}].", key, ex);
+            return null;
+        }
     }
 }

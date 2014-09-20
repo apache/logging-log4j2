@@ -25,11 +25,10 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
-import org.apache.logging.log4j.core.lookup.StrLookup;
-
+import org.apache.logging.log4j.core.lookup.AbstractLookup;
 
 @Plugin(name = "web", category = "Lookup")
-public class WebLookup implements StrLookup {
+public class WebLookup extends AbstractLookup {
     private static final String ATTR_PREFIX = "attr.";
     private static final String INIT_PARAM_PREFIX = "initParam.";
 
@@ -46,7 +45,7 @@ public class WebLookup implements StrLookup {
     }
 
     @Override
-    public String lookup(final String key) {
+    public String lookup(final LogEvent event, final String key) {
         final ServletContext ctx = getServletContext();
         if (ctx == null) {
             return null;
@@ -112,10 +111,5 @@ public class WebLookup implements StrLookup {
 
         ctx.log(getClass().getName() + " unable to resolve key '" + key + '\'');
         return null;
-    }
-
-    @Override
-    public String lookup(final LogEvent event, final String key) {
-        return lookup(key);
     }
 }
