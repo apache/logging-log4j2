@@ -29,7 +29,8 @@
               The Web module provides support for automatically enabling Log4j in Servlet containers.
             </p>
             <p>
-              Need something about Servlet support.
+              See the user manual page on <a href="../manual/webapp.html">Web Applications and JSPs</a>
+              for details on using Log4j 2 in Web Applications.
             </p>
             <pre class="prettyprint linenums"><![CDATA[  <dependencyManagement>
     <dependencies>
