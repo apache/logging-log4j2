@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.pattern;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -33,24 +34,30 @@ public class PatternParserTest2 {
     public void testParseConvertBackslashes() {
         final boolean convert = true;
         final StringBuilder buf = new StringBuilder();
-        final String pattern = "%d{HHmmss}{GMT+0} \\t ...";
+        final String pattern = "%d{HH-mm-ss} \\t ...";
 
-        final Date date = new Date(1411142535260L); // Sat Sep 20 01:02:15 JST 2014
-        parse(pattern, convert, buf, date, 123);
+        final Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 23);
+        cal.set(Calendar.MINUTE, 53);
+        cal.set(Calendar.SECOND, 01);
+        parse(pattern, convert, buf, cal.getTime(), 123);
 
-        assertEquals("160215 \t ...", buf.toString());
+        assertEquals("23-53-01 \t ...", buf.toString());
     }
 
     @Test
     public void testParseDontConvertBackslashes() {
         final boolean convert = false;
         final StringBuilder buf = new StringBuilder();
-        final String pattern = "%d{HHmmss}{GMT+0} \\t---";
+        final String pattern = "%d{HH-mm-ss} \\t---";
 
-        final Date date = new Date(1411142535260L); // Sat Sep 20 01:02:15 JST 2014
-        parse(pattern, convert, buf, date, new Integer(3));
+        final Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 13);
+        cal.set(Calendar.MINUTE, 24);
+        cal.set(Calendar.SECOND, 59);
+        parse(pattern, convert, buf, cal.getTime(), new Integer(3));
 
-        assertEquals("160215 \\t---", buf.toString());
+        assertEquals("13-24-59 \\t---", buf.toString());
     }
 
     private void parse(String pattern, boolean convert, StringBuilder buf, Date date, int i) {
