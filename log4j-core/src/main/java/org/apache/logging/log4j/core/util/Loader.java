@@ -56,6 +56,7 @@ public final class Loader {
      * available.
      *
      * @return the TCCL.
+     * @see org.apache.logging.log4j.util.LoaderUtil#getThreadContextClassLoader()
      */
     public static ClassLoader getThreadContextClassLoader() {
         return LoaderUtil.getThreadContextClassLoader();
@@ -63,13 +64,7 @@ public final class Loader {
 
     // TODO: this method could use some explanation
     public static ClassLoader getClassLoader(final Class<?> class1, final Class<?> class2) {
-
-        ClassLoader threadContextClassLoader = null;
-        try {
-            threadContextClassLoader = getTcl();
-        } catch (final Exception ex) {
-            LOGGER.warn("Caught exception locating thread ClassLoader {}", ex.getMessage());
-        }
+        final ClassLoader threadContextClassLoader = getTcl();
         final ClassLoader loader1 = class1 == null ? null : class1.getClassLoader();
         final ClassLoader loader2 = class2 == null ? null : class2.getClassLoader();
 
