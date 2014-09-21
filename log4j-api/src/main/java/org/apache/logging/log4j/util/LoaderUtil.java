@@ -58,7 +58,8 @@ public final class LoaderUtil {
     }
 
     /**
-     * Gets the current Thread ClassLoader. Returns the system ClassLoader if the TCCL is {@code null}.
+     * Gets the current Thread ClassLoader. Returns the system ClassLoader if the TCCL is {@code null}. If the
+     * system ClassLoader is {@code null} as well, then the ClassLoader for this class is returned.
      * If running with a {@link SecurityManager} that does not allow access to the Thread ClassLoader or system
      * ClassLoader, then the ClassLoader for this class is returned.
      *
