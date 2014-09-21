@@ -47,6 +47,15 @@ public class JndiManager extends AbstractManager {
     }
 
     /**
+     * Gets the default JndiManager using the default {@link javax.naming.InitialContext}.
+     *
+     * @return the default JndiManager
+     */
+    public static JndiManager getDefaultManager() {
+        return getManager(JndiManager.class.getName(), FACTORY, null);
+    }
+
+    /**
      * Gets a named JndiManager using the default {@link javax.naming.InitialContext}.
      * @param name the name of the JndiManager instance to create or use if available
      * @return a default JndiManager
