@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements. See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License. You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<document xmlns="http://maven.apache.org/XDOC/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>Log4j Runtime Dependencies</title>
+  </properties>
+
+  <body>
+    <section name="Log4j Runtime Dependencies">
+      <p>
+        Some Log4J features depend on external libraries. This page lists the required and optional
+        dependencies.
+      </p>
+
+      <a name="log4j-api" />
+      <h4>log4j-api</h4>
+      <p>
+        The Log4J <a href="log4j-api/index.html">API</a> module has no external dependencies.
+      </p>
+
+      <a name="log4j-core" />
+      <h4>log4j-core</h4>
+      <p>
+        The Log4J <a href="log4j-core/index.html">Implementation</a> has several optional
+        <a href="log4j-core/dependencies.html">dependencies</a>. 
+        See the <a href="log4j-core/dependencies.html#Dependency_Tree">Dependency Tree</a> for the
+        exact list of JAR files needed for these features.
+      </p>
+      <table>
+        <caption align="top">Optional Dependencies per Feature in Log4J Implementation</caption>
+        <tr>
+          <th>Feature</th>
+          <th>Requirements</th>
+        </tr>
+        <tr>
+          <td>XML configuration</td>
+          <td>-</td>
+        </tr>
+        <tr>
+          <td>JSON configuration</td>
+          <td><a href="https://github.com/FasterXML/jackson">Jackson Data Processor</a></td>
+        </tr>
+        <tr>
+          <td>Async Loggers</td>
+          <td><a href="http://lmax-exchange.github.io/disruptor/">LMAX Disruptor</a></td>
+        </tr>
+        <tr>
+          <td>SMTPAppender</td>
+          <td>Javax Mail</td>
+        </tr>
+        <tr>
+          <td>JMSQueueAppender and JMSTopicAppender</td>
+          <td>a JMS implementation like <a href="http://activemq.apache.org/">Apache ActiveMQ</a></td>
+        </tr>
+        <tr>
+          <td>Windows color support</td>
+          <td><a href="http://jansi.fusesource.org/">Jansi</a></td>
+        </tr>
+        <tr>
+          <td>JDBC Appender</td>
+          <td>a JDBC driver for the database you choose to write events to</td>
+        </tr>
+        <tr>
+          <td>JPA Appender</td>
+          <td>the Java Persistence API classes, a JPA provider implementation, and a decorated
+            entity that the user implements. It also requires an appropriate JDBC driver
+          </td>
+        </tr>
+      </table>
+
+      <a name="log4j-jcl" />
+      <h4>log4j-jcl</h4>
+      <p>
+        The <a href="log4j-jcl/index.html">Commons Logging Bridge</a> requires
+        <a href="http://commons.apache.org/proper/commons-logging/">Commons Logging</a>. See the 
+        <a href="log4j-jcl/dependencies.html#Dependency_Tree">Dependency Tree</a> for the exact
+        list of JAR files needed.
+      </p>
+
+      <a name="log4j-1.2-api" />
+      <h4>log4j-1.2-api</h4>
+      <p>
+        The <a href="log4j-1.2-api/index.html">Log4j 1.2 Bridge</a> has no external dependencies.
+      </p>
+
+      <a name="log4j-slf4j-impl" />
+      <h4>log4j-slf4j-impl</h4>
+      <p>
+        The Log4j 2 <a href="log4j-slf4j-impl/index.html">SLF4J Binding</a> depends on the
+        <a href="http://www.slf4j.org/">SLF4J</a> API. See the 
+        <a href="log4j-slf4j-impl/dependencies.html#Dependency_Tree">Dependency Tree</a> for the exact
+        list of JAR files needed.
+      </p>
+
+      <a name="log4j-jul" />
+      <h4>log4j-jul</h4>
+      <p>
+        The Log4j 2 <a href="log4j-jul/index.html">Java Util Logging Adapter</a> has no external dependencies.
+      </p>
+
+      <a name="log4j-to-slf4j" />
+      <h4>log4j-to-slf4j</h4>
+      <p>
+        The <a href="log4j-to-slf4j/index.html">Log4j 2 to SLF4J Adapter</a> requires the
+        <a href="http://www.slf4j.org/">SLF4J</a> API and an SLF4J implementation. See the
+        <a href="log4j-to-slf4j/dependencies.html#Dependency_Tree">Dependency Tree</a> for the exact list of JAR files needed.
+      </p>
+
+      <a name="log4j-flume-ng" />
+      <h4>log4j-flume-ng</h4>
+      <p>
+        The <a href="log4j-flume-ng/index.html">Flume Next Gen Appender</a> requires
+        <a href="http://flume.apache.org/">Apache Flume</a> and <a href="http://avro.apache.org/">Avro</a>.
+        The persistent agent uses Berkeley DB. See the
+        <a href="log4j-flume-ng/dependencies.html#Dependency_Tree">Dependency Tree</a> for the exact list of JAR files needed.
+      </p>
+
+      <a name="log4j-taglib" />
+      <h4>log4j-taglib</h4>
+      <p>
+        The Log4j <a href="log4j-taglib/index.html">Log Tag Library</a> requires the 
+        <a href="http://jakarta.apache.org/taglibs/log/">Jakarta Commons Log Taglib</a> and the Servlet API. See the
+        <a href="log4j-taglib/dependencies.html#Dependency_Tree">Dependency Tree</a> for the exact list of JAR files needed.
+      </p>
+
+      <a name="log4j-jmx-gui" />
+      <h4>log4j-jmx-gui</h4>
+      <p>
+        The Log4j <a href="log4j-jmx-gui/index.html">JMX GUI</a> requires the JConsole jar when run as a JConsole plugin.
+        Otherwise it has no external dependencies. See the
+        <a href="log4j-jmx-gui/dependencies.html#Dependency_Tree">Dependency Tree</a> for the exact list of JAR files needed.
+      </p>
+
+      <a name="log4j-web" />
+      <h4>log4j-web</h4>
+      <p>
+        The Log4j <a href="log4j-web/index.html">Web</a> module requires the Servlet API. See the
+        <a href="log4j-web/dependencies.html#Dependency_Tree">Dependency Tree</a> for the exact list of JAR files needed.
+      </p>
+
+      <a name="log4j-nosql" />
+      <h4>log4j-nosql</h4>
+      <p>
+        The Log4J <a href="log4j-nosql/index.html">NoSQL Appenders</a> module has several optional
+        <a href="log4j-nosql/dependencies.html">dependencies</a>. 
+        See the <a href="log4j-nosql/dependencies.html#Dependency_Tree">Dependency Tree</a> for the
+        exact list of JAR files needed for these features.
+      </p>
+      <table>
+        <caption align="top">Optional Dependencies per Feature in Log4J NoSQL Appenders</caption>
+        <tr>
+          <td>NoSQL Appender with <a href="http://www.mongodb.org/">MongoDB</a> provider</td>
+          <td>the <a href="http://docs.mongodb.org/ecosystem/drivers/java/">MongoDB Java Client driver</a></td>
+        </tr>
+        <tr>
+          <td>NoSQL Appender with <a href="https://couchdb.apache.org/">Apache CouchDB</a> provider</td>
+          <td>the <a href="http://www.lightcouch.org/">LightCouch</a> CouchDB client library</td>
+        </tr>
+      </table>
+
+      <a name="log4j-iostreams" />
+      <h4>log4j-iostreams</h4>
+      <p>
+        The Log4j <a href="IO Streams/index.html">IO Streams</a> module has no external dependencies.
+      </p>
+
+    </section>
+  </body>
+</document>

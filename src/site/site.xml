@@ -41,6 +41,7 @@
         <item name="JSP Tag Library" href="/log4j-taglib/apidocs/index.html" />
         <item name="JSP Tag Library (TLD Doc)" href="/log4j-taglib/tlddoc/index.html" />
       </item>
+      <item name="Runtime Dependencies" href="/runtime-dependencies.html"/>
       <item name="FAQ" href="/faq.html"/>
     </menu>
 
