@@ -16,6 +16,8 @@
 */
 package org.apache.logging.log4j.web;
 
+import javax.servlet.ServletContext;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
@@ -25,10 +27,7 @@ import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.junit.Test;
 import org.springframework.mock.web.MockServletContext;
 
-import javax.servlet.ServletContext;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -46,7 +45,7 @@ public class ServletAppenderTest {
         servletContext.setAttribute("Name1", "Ben");
         servletContext.setInitParameter("Name2", "Jerry");
         servletContext.setInitParameter(Log4jWebSupport.LOG4J_CONFIG_LOCATION, CONFIG);
-        final Log4jWebLifeCycle initializer = Log4jWebInitializerImpl.getLog4jWebInitializer(servletContext);
+        final Log4jWebLifeCycle initializer = WebLoggerContextUtils.getWebLifeCycle(servletContext);
         try {
             initializer.start();
             initializer.setLoggerContext();

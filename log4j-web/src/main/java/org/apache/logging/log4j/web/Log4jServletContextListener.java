@@ -40,7 +40,7 @@ public class Log4jServletContextListener implements ServletContextListener {
         this.servletContext = event.getServletContext();
         LOGGER.debug("Log4jServletContextListener ensuring that Log4j starts up properly.");
 
-        this.initializer = Log4jWebInitializerImpl.getLog4jWebInitializer(this.servletContext);
+        this.initializer = WebLoggerContextUtils.getWebLifeCycle(this.servletContext);
         try {
             this.initializer.start();
             this.initializer.setLoggerContext(); // the application is just now starting to start up

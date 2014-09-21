@@ -53,7 +53,7 @@ public class Log4jServletFilter implements Filter {
         this.servletContext = filterConfig.getServletContext();
         LOGGER.debug("Log4jServletFilter initialized.");
 
-        this.initializer = Log4jWebInitializerImpl.getLog4jWebInitializer(this.servletContext);
+        this.initializer = WebLoggerContextUtils.getWebLifeCycle(this.servletContext);
         this.initializer.clearLoggerContext(); // the application is mostly finished starting up now
     }
 

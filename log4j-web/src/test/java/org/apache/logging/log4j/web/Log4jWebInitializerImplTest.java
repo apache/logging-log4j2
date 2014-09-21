@@ -52,7 +52,7 @@ public class Log4jWebInitializerImplTest {
 
         replay(this.servletContext);
 
-        final Log4jWebLifeCycle initializer = Log4jWebInitializerImpl.getLog4jWebInitializer(this.servletContext);
+        final Log4jWebLifeCycle initializer = WebLoggerContextUtils.getWebLifeCycle(this.servletContext);
 
         assertNotNull("The initializer should not be null.", initializer);
         assertSame("The capture is not correct.", initializer, initializerCapture.getValue());

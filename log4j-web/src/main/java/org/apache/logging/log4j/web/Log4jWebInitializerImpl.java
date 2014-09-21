@@ -256,14 +256,4 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
         }
     }
 
-    /**
-     * Get the current initializer from the {@link ServletContext}. If the initializer does not exist, create a new one
-     * and add it to the {@link ServletContext}, then return that.
-     *
-     * @param servletContext The {@link ServletContext} for this web application
-     * @return the initializer, never {@code null}.
-     */
-    static Log4jWebLifeCycle getLog4jWebInitializer(final ServletContext servletContext) {
-        return WebLoggerContextUtils.getWebLifeCycle(servletContext);
-    }
 }

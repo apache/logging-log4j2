@@ -41,7 +41,7 @@ public class WebLookupTest {
         servletContext.setInitParameter("TestParam", "ParamValue");
         servletContext.setAttribute("Name1", "Ben");
         servletContext.setInitParameter("Name2", "Jerry");
-        final Log4jWebLifeCycle initializer = Log4jWebInitializerImpl.getLog4jWebInitializer(servletContext);
+        final Log4jWebLifeCycle initializer = WebLoggerContextUtils.getWebLifeCycle(servletContext);
         try {
             initializer.start();
             initializer.setLoggerContext();
@@ -80,7 +80,7 @@ public class WebLookupTest {
         servletContext.setAttribute("Name1", "Ben");
         servletContext.setInitParameter("Name2", "Jerry");
         servletContext.setInitParameter("log4jConfiguration", "log4j-webvar.xml");
-        final Log4jWebLifeCycle initializer = Log4jWebInitializerImpl.getLog4jWebInitializer(servletContext);
+        final Log4jWebLifeCycle initializer = WebLoggerContextUtils.getWebLifeCycle(servletContext);
         initializer.start();
         initializer.setLoggerContext();
         final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
