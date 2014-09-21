@@ -32,16 +32,15 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
  * Integration with JDBC logging can be as simple as:
  * </p>
  * <pre>
- *     Logger logger = LogManager.getLogger();
- *     PrintWriter pw = IoBuilder.forLogger(logger).setLevel(Level.DEBUG).buildPrintWriter();
+ *     PrintWriter pw = IoBuilder.forLogger().setLevel(Level.DEBUG).buildPrintWriter();
  *     DriverManager.setLogWriter(pw);
  *     DataSource ds = ...
  *     ds.setLogWriter(pw);
  * </pre>
- * 
+ *
  * @since 2.1
  */
-// TODO 
+// TODO
 // All method implementations that call only super are apparently required for the unit tests to pass.
 // Not sure if this a bug in the tests or a feature.
 public class LoggerPrintWriter extends PrintWriter {
