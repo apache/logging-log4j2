@@ -75,7 +75,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * &lt;env-entry&gt;
  *   &lt;description&gt;URL for configuring log4j context&lt;/description&gt;
  *   &lt;env-entry-name&gt;log4j/configuration-resource&lt;/env-entry-name&gt;
- *   &lt;env-entry-value&gt;urlOfConfigrationResource&lt;/env-entry-value&gt;
+ *   &lt;env-entry-value&gt;urlOfConfigurationResource&lt;/env-entry-value&gt;
  *   &lt;env-entry-type&gt;java.lang.String&lt;/env-entry-type&gt;
  * &lt;/env-entry&gt;
  * </pre>
