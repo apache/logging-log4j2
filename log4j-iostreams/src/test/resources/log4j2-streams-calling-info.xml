@@ -15,15 +15,21 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration name="CallerInformationTest" status="error" packages="org.apache.logging.log4j.test">
+<Configuration name="CallerInformationTest" status="error">
   <Appenders>
     <List name="ClassAndMethod">
+      <PatternLayout pattern="%class.%method"/>
+    </List>
+    <List name="IoBuilderTest">
       <PatternLayout pattern="%class.%method"/>
     </List>
   </Appenders>
   <Loggers>
     <Logger name="ClassAndMethodLogger" level="info">
       <AppenderRef ref="ClassAndMethod"/>
+    </Logger>
+    <Logger name="org.apache.logging.log4j.io.IoBuilderTest" level="info" additivity="false">
+      <AppenderRef ref="IoBuilderTest"/>
     </Logger>
     <Root level="off"/>
   </Loggers>

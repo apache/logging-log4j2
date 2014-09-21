@@ -31,6 +31,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.spi.ExtendedLogger;
+import org.apache.logging.log4j.util.ReflectionUtil;
 
 /**
  * Builder class to wrap {@link Logger Loggers} into Java IO compatible classes.
@@ -101,9 +102,25 @@ public class IoBuilder {
         return new IoBuilder(LogManager.getLogger(clazz));
     }
 
-    // TODO: arg-less factory (blocked by LOG4J2-809)
+    /**
+     * Creates a new builder using a Logger named after the calling Class. This is equivalent to the following:
+     * <pre>
+     *     IoBuilder builder = IoBuilder.forLogger(LogManager.getLogger());
+     * </pre>
+     *
+     * @return a new IoBuilder
+     */
+    public static IoBuilder forLogger() {
+        return new IoBuilder(LogManager.getLogger(ReflectionUtil.getCallerClass(2)));
+    }
 
-    private IoBuilder(final Logger logger) {
+    /**
+     * Constructs a new IoBuilder for the given Logger. This method is provided for extensibility of this builder
+     * class. The static factory methods should be used normally.
+     *
+     * @param logger the {@link ExtendedLogger} to wrap
+     */
+    protected IoBuilder(final Logger logger) {
         if (!(logger instanceof ExtendedLogger)) {
             throw new UnsupportedOperationException("The provided Logger [" + String.valueOf(logger) +
                 "] does not implement " + ExtendedLogger.class.getName());
@@ -135,7 +152,13 @@ public class IoBuilder {
         return this;
     }
 
-    // FIXME: without making this entire class more properly extensible, this field is pointless
+    /**
+     * Specifies the fully qualified class name of the IO wrapper class implementation. This method should only be
+     * used when making significant extensions to the provided classes in this component and is normally unnecessary.
+     *
+     * @param fqcn the fully qualified class name of the IO wrapper class being built
+     * @return {@code this}
+     */
     public IoBuilder setWrapperClassName(final String fqcn) {
         this.fqcn = fqcn;
         return this;
@@ -240,6 +263,8 @@ public class IoBuilder {
         this.outputStream = outputStream;
         return this;
     }
+
+    // TODO: could this builder use generics to infer the desired IO class?
 
     /**
      * Builds a new {@link Reader} that is wiretapped by its underlying Logger. If buffering is enabled, then a
