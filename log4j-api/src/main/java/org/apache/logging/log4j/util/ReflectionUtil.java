@@ -60,8 +60,7 @@ public final class ReflectionUtil {
         Method getCallerClass;
         int java7u25CompensationOffset = 0;
         try {
-            final Class<?> sunReflectionClass = LoaderUtil.getThreadContextClassLoader().loadClass(
-                "sun.reflect.Reflection");
+            final Class<?> sunReflectionClass = LoaderUtil.loadClass("sun.reflect.Reflection");
             getCallerClass = sunReflectionClass.getDeclaredMethod("getCallerClass", int.class);
             Object o = getCallerClass.invoke(null, 0);
             final Object test1 = getCallerClass.invoke(null, 0);
@@ -132,9 +131,8 @@ public final class ReflectionUtil {
         // TODO: SecurityManager-based version?
         // slower fallback method using stack trace
         final StackTraceElement element = getEquivalentStackTraceElement(depth + 1);
-        final ClassLoader cl = LoaderUtil.getThreadContextClassLoader();
         try {
-            return cl.loadClass(element.getClassName());
+            return LoaderUtil.loadClass(element.getClassName());
         } catch (final ClassNotFoundException e) {
             LOGGER.error("Could not find class in ReflectionUtil.getCallerClass({}).", depth, e);
         }
@@ -218,7 +216,7 @@ public final class ReflectionUtil {
                     continue;
                 }
                 if (next) {
-                    return LoaderUtil.getThreadContextClassLoader().loadClass(className);
+                    return LoaderUtil.loadClass(className);
                 }
             }
         } catch (final ClassNotFoundException ignored) {
