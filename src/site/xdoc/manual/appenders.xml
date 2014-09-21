@@ -911,125 +911,21 @@ public class ConnectionFactory {
     }
 }]]></pre>
         </subsection>
-        <!-- TODO: JMSAppender and consolidation of Queue/Topic versions -->
+        <a name="JMSAppender"/>
+        <!-- cool URLs don't change, so here are some old anchors -->
         <a name="JMSQueueAppender"/>
-        <subsection name="JMSQueueAppender">
-          <p>The JMSQueueAppender sends the formatted log event to a JMS Queue.</p>
-          <table>
-            <caption align="top">JMSQueueAppender Parameters</caption>
-            <tr>
-              <th>Parameter Name</th>
-              <th>Type</th>
-              <th>Description</th>
-            </tr>
-            <tr>
-              <td>factoryBindingName</td>
-              <td>String</td>
-              <td>The name to locate in the Context that provides the
-                <a href="http://download.oracle.com/javaee/5/api/javax/jms/QueueConnectionFactory.html">QueueConnectionFactory</a>.</td>
-            </tr>
-            <tr>
-              <td>factoryName</td>
-              <td>String</td>
-              <td>The fully qualified class name that should be used to define the Initial Context Factory as
-                defined in <a href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#INITIAL_CONTEXT_FACTORY">INITIAL_CONTEXT_FACTORY</a>.
-                If no value is provided the
-                default InitialContextFactory will be used. If a factoryName is specified without a providerURL
-                a warning message will be logged as this is likely to cause problems.</td>
-            </tr>
-            <tr>
-              <td>filter</td>
-              <td>Filter</td>
-              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
-              may be used by using a CompositeFilter.</td>
-            </tr>
-            <tr>
-              <td>layout</td>
-              <td>Layout</td>
-              <td>
-                The Layout to use to format the LogEvent. If you do not specify a layout,
-                this appender will use a <a href="layouts.html#SerializedLayout">SerializedLayout</a>.
-              </td>
-            </tr>
-            <tr>
-              <td>name</td>
-              <td>String</td>
-              <td>The name of the Appender.</td>
-            </tr>
-            <tr>
-              <td>password</td>
-              <td>String</td>
-              <td>The password to use to create the queue connection.</td>
-            </tr>
-            <tr>
-              <td>providerURL</td>
-              <td>String</td>
-              <td>The URL of the provider to use as defined by
-                <a href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#PROVIDER_URL">PROVIDER_URL</a>.
-                If this value is null the default system provider will be used.</td>
-            </tr>
-            <tr>
-              <td>queueBindingName</td>
-              <td>String</td>
-              <td>The name to use to locate the <a href="http://download.oracle.com/javaee/5/api/javax/jms/Queue.html">Queue</a>.</td>
-            </tr>
-            <tr>
-              <td>securityPrincipalName</td>
-              <td>String</td>
-              <td>The name of the identity of the Principal as specified by
-                <a href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#SECURITY_PRINCIPAL">SECURITY_PRINCIPAL</a>.
-                If a securityPrincipalName is specified without securityCredentials a warning message will be
-                logged as this is likely to cause problems.</td>
-            </tr>
-            <tr>
-              <td>securityCredentials</td>
-              <td>String</td>
-              <td>The security credentials for the principal as specified by
-                <a href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#SECURITY_CREDENTIALS">SECURITY_CREDENTIALS</a>.</td>
-            </tr>
-            <tr>
-              <td>ignoreExceptions</td>
-              <td>boolean</td>
-              <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
-                internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
-                caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
-                <a href="#FailoverAppender">FailoverAppender</a>.</td>
-            </tr>
-            <tr>
-              <td>urlPkgPrefixes</td>
-              <td>String</td>
-              <td>A colon-separated list of package prefixes for the class name of the factory class that will create
-                a URL context factory as defined by
-                <a href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#URL_PKG_PREFIXES">URL_PKG_PREFIXES</a>.</td>
-            </tr>
-            <tr>
-              <td>userName</td>
-              <td>String</td>
-              <td>The user id used to create the queue connection.</td>
-            </tr>
-          </table>
-          <p>
-            Here is a sample JMSQueueAppender configuration:
-          </p>
-
-            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
-  <Appenders>
-    <JMSQueue name="jmsQueue" queueBindingName="MyQueue"
-              factoryBindingName="MyQueueConnectionFactory"/>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="jmsQueue"/>
-    </Root>
-  </Loggers>
-</Configuration>]]></pre>
-        </subsection>
         <a name="JMSTopicAppender"/>
-        <subsection name="JMSTopicAppender">
-          <p>The JMSTopicAppender sends the formatted log event to a JMS Topic.</p>
+        <subsection name="JMSAppender">
+          <p>The JMSAppender sends the formatted log event to a JMS Destination.</p>
+          <p>
+            Note that in Log4j 2.0, this appender was split into a JMSQueueAppender and a JMSTopicAppender. Starting
+            in Log4j 2.1, these appenders were combined into the JMSAppender which makes no distinction between queues
+            and topics. However, configurations written for 2.0 which use the <code>&lt;JMSQueue/&gt;</code> or
+            <code>&lt;JMSTopic/&gt;</code> elements will continue to work with the new <code>&lt;JMS/&gt;</code>
+            configuration element.
+          </p>
           <table>
-            <caption align="top">JMSTopicAppender Parameters</caption>
+            <caption align="top">JMSAppender Parameters</caption>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -1039,13 +935,15 @@ public class ConnectionFactory {
               <td>factoryBindingName</td>
               <td>String</td>
               <td>The name to locate in the Context that provides the
-                <a href="http://download.oracle.com/javaee/5/api/javax/jms/TopicConnectionFactory.html">TopicConnectionFactory</a>.</td>
+                <a class="javadoc" href="http://download.oracle.com/javaee/5/api/javax/jms/ConnectionFactory.html">ConnectionFactory</a>.
+                This can be any subinterface of <code>ConnectionFactory</code> as well. This attribute is required.
+              </td>
             </tr>
             <tr>
               <td>factoryName</td>
               <td>String</td>
-              <td>The fully qualified class name that should be used to define the Initial Context Factory as
-                defined in <a href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#INITIAL_CONTEXT_FACTORY">INITIAL_CONTEXT_FACTORY</a>.
+              <td>The fully qualified class name that should be used to define the Initial Context Factory as defined in
+                <a class="javadoc" href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#INITIAL_CONTEXT_FACTORY">INITIAL_CONTEXT_FACTORY</a>.
                 If no value is provided the
                 default InitialContextFactory will be used. If a factoryName is specified without a providerURL
                 a warning message will be logged as this is likely to cause problems.</td>
@@ -1067,31 +965,36 @@ public class ConnectionFactory {
             <tr>
               <td>name</td>
               <td>String</td>
-              <td>The name of the Appender.</td>
+              <td>The name of the Appender. Required.</td>
             </tr>
             <tr>
               <td>password</td>
               <td>String</td>
-              <td>The password to use to create the queue connection.</td>
+              <td>The password to use to create the JMS connection.</td>
             </tr>
             <tr>
               <td>providerURL</td>
               <td>String</td>
               <td>The URL of the provider to use as defined by
-                <a href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#PROVIDER_URL">PROVIDER_URL</a>.
+                <a class="javadoc" href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#PROVIDER_URL">PROVIDER_URL</a>.
                 If this value is null the default system provider will be used.</td>
             </tr>
             <tr>
-              <td>topicBindingName</td>
+              <td>destinationBindingName</td>
               <td>String</td>
-              <td>The name to use to locate the
-                <a href="http://download.oracle.com/javaee/5/api/javax/jms/Topic.html">Topic</a>.</td>
+              <td>
+                The name to use to locate the
+                <a class="javadoc" href="http://download.oracle.com/javaee/5/api/javax/jms/Destination.html">Destination</a>.
+                This can be a <code>Queue</code> or <code>Topic</code>, and as such, the attribute names
+                <code>queueBindingName</code> and <code>topicBindingName</code> are aliases to maintain compatibility
+                with the Log4j 2.0 JMS appenders.
+              </td>
             </tr>
             <tr>
               <td>securityPrincipalName</td>
               <td>String</td>
               <td>The name of the identity of the Principal as specified by
-                <a href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#SECURITY_PRINCIPAL">SECURITY_PRINCIPAL</a>.
+                <a class="javadoc" href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#SECURITY_PRINCIPAL">SECURITY_PRINCIPAL</a>.
                 If a securityPrincipalName is specified without securityCredentials a warning message will be
                 logged as this is likely to cause problems.</td>
             </tr>
@@ -1099,7 +1002,8 @@ public class ConnectionFactory {
               <td>securityCredentials</td>
               <td>String</td>
               <td>The security credentials for the principal as specified by
-                <a href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#SECURITY_CREDENTIALS">SECURITY_CREDENTIALS</a>.</td>
+                <a class="javadoc" href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#SECURITY_CREDENTIALS">SECURITY_CREDENTIALS</a>.
+              </td>
             </tr>
             <tr>
               <td>ignoreExceptions</td>
@@ -1114,23 +1018,24 @@ public class ConnectionFactory {
               <td>String</td>
               <td>A colon-separated list of package prefixes for the class name of the factory class that will create
                 a URL context factory as defined by
-                <a href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#URL_PKG_PREFIXES">URL_PKG_PREFIXES</a>.</td>
+                <a class="javadoc" href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#URL_PKG_PREFIXES">URL_PKG_PREFIXES</a>.
+              </td>
             </tr>
             <tr>
               <td>userName</td>
               <td>String</td>
-              <td>The user id used to create the queue connection.</td>
+              <td>The user id used to create the JMS connection.</td>
             </tr>
           </table>
           <p>
-            Here is a sample JMSTopicAppender configuration:
+            Here is a sample JMSAppender configuration:
           </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
-    <JMSTopic name="jmsTopic" topicBindingName="MyTopic"
-              factoryBindingName="MyTopicConnectionFactory"/>
+    <JMS name="jmsQueue" destinationBindingName="MyQueue"
+         factoryBindingName="MyQueueConnectionFactory"/>
   </Appenders>
   <Loggers>
     <Root level="error">
@@ -1406,7 +1311,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           <tr>
             <td>regionLength</td>
             <td>int</td>
-            <td>The length of the mapped region, defaults to 32 MB 
+            <td>The length of the mapped region, defaults to 32 MB
               (32 * 1024 * 1024 bytes). This parameter must be a value
               between 256 and 1,073,741,824 (1 GB or 2^30);
               values outside this range will be adjusted to the closest valid
@@ -2903,7 +2808,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             The <code>SocketAppender</code> is an OutputStreamAppender that writes its output to a remote destination
             specified by a host and port. The data can be sent over either TCP or UDP and can be sent in any format.
             The default format is to send a Serialized LogEvent. Log4j 2 contains a SocketServer which is capable
-            of receiving serialized LogEvents and routing them through the logging system on the server. You can optionally 
+            of receiving serialized LogEvents and routing them through the logging system on the server. You can optionally
             secure communication with SSL.
           </p>
           <table>
@@ -3215,7 +3120,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 </Configuration>]]></pre>
 
           <p>
-            For SSL this appender writes its output to a remote destination specified by a host and port over SSL in 
+            For SSL this appender writes its output to a remote destination specified by a host and port over SSL in
             a format that conforms with either the BSD Syslog format or the RFC 5424 format.
           </p>
 
