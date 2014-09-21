@@ -31,6 +31,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
 
 /**
@@ -44,7 +45,7 @@ public class ListAppender extends AbstractAppender {
     private static final long serialVersionUID = 1L;
 
     // Use CopyOnWriteArrayList?
-    
+
     private final List<LogEvent> events = new ArrayList<LogEvent>();
 
     private final List<String> messages = new ArrayList<String>();
@@ -163,21 +164,14 @@ public class ListAppender extends AbstractAppender {
 
     @PluginFactory
     public static ListAppender createAppender(
-            @PluginAttribute("name") final String name,
-            @PluginAttribute("entryPerNewLine") final String newLine,
-            @PluginAttribute("raw") final String raw,
+            @PluginAttribute("name")
+            @Required(message = "No name provided for ListAppender")
+            final String name,
+            @PluginAttribute("entryPerNewLine") final boolean newLine,
+            @PluginAttribute("raw") final boolean raw,
             @PluginElement("Layout") final Layout<? extends Serializable> layout,
             @PluginElement("Filter") final Filter filter) {
-
-        if (name == null) {
-            LOGGER.error("No name provided for ListAppender");
-            return null;
-        }
-
-        final boolean nl = Boolean.parseBoolean(newLine);
-        final boolean r = Boolean.parseBoolean(raw);
-
-        return new ListAppender(name, filter, layout, nl, r);
+        return new ListAppender(name, filter, layout, newLine, raw);
     }
 
     /**
