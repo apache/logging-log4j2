@@ -1,6 +1,6 @@
 package org.apache.logging.log4j.spi;
 
-import java.util.concurrent.ConcurrentMap;
+import java.io.Closeable;
 
 /**
  * A basic registry for {@link LoggerContext} objects and their associated external
@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentMap;
  * @param <L> the external logger class for this registry (e.g., {@code org.slf4j.Logger})
  * @since 2.1
  */
-public interface LoggerAdapter<L> {
+public interface LoggerAdapter<L> extends Closeable {
 
     /**
      * Gets a named logger. Implementations should defer to the abstract methods in {@link AbstractLoggerAdapter}.
@@ -19,17 +19,4 @@ public interface LoggerAdapter<L> {
      * @return the named logger
      */
     L getLogger(String name);
-
-    /**
-     * Gets or creates the ConcurrentMap of named loggers for a given LoggerContext.
-     *
-     * @param context the LoggerContext to get loggers for
-     * @return the map of loggers for the given LoggerContext
-     */
-    ConcurrentMap<String, L> getLoggersInContext(LoggerContext context);
-
-    /**
-     * Shuts down this registry. Implementations should clear out any instance data and perform any relevant clean-up.
-     */
-    void stop();
 }

@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentMap;
 
 /**
  * Provides an abstract base class to use for implementing ExternalLoggerContextRegistry.
+ * @param <L> the Logger class to adapt
  * @since 2.1
  */
 public abstract class AbstractLoggerAdapter<L> implements LoggerAdapter<L> {
@@ -44,7 +45,12 @@ public abstract class AbstractLoggerAdapter<L> implements LoggerAdapter<L> {
         return loggers.get(name);
     }
 
-    @Override
+    /**
+     * Gets or creates the ConcurrentMap of named loggers for a given LoggerContext.
+     *
+     * @param context the LoggerContext to get loggers for
+     * @return the map of loggers for the given LoggerContext
+     */
     public ConcurrentMap<String, L> getLoggersInContext(final LoggerContext context) {
         synchronized (registry) {
             ConcurrentMap<String, L> loggers = registry.get(context);
@@ -75,7 +81,7 @@ public abstract class AbstractLoggerAdapter<L> implements LoggerAdapter<L> {
     protected abstract LoggerContext getContext();
 
     @Override
-    public void stop() {
+    public void close() {
         registry.clear();
     }
 }

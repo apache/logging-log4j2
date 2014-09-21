@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.jcl;
 
+import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -60,7 +61,10 @@ public class LogFactoryImpl extends LogFactory {
      */
     @Override
     public void release() {
-        adapter.stop();
+        try {
+            adapter.close();
+        } catch (final IOException ignored) {
+        }
     }
 
     @Override
