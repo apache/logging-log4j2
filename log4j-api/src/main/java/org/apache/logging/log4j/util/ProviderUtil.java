@@ -41,7 +41,7 @@ public final class ProviderUtil {
     private static final String API_VERSION = "Log4jAPIVersion";
 
     private static final String[] COMPATIBLE_API_VERSIONS = {
-        "2.0.0"
+        "2.0.0", "2.1.0"
     };
 
     private static final Logger LOGGER = StatusLogger.getLogger();
