@@ -32,7 +32,7 @@
   <url>http://logging.apache.org/log4j/2.x/</url>
   <issueManagement>
     <system>JIRA</system>
-    <url>http://issues.apache.org/jira/browse/LOG4J2</url>
+    <url>https://issues.apache.org/jira/browse/LOG4J2</url>
   </issueManagement>
   <ciManagement>
     <system>Buildbot</system>
@@ -649,7 +649,7 @@
         <artifactId>json-unit</artifactId>
         <version>1.1.6</version>
         <scope>test</scope>
-      </dependency>      
+      </dependency>
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
