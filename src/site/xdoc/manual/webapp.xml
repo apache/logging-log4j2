@@ -41,26 +41,31 @@
         <a href="../maven-artifacts.html">Maven, Ivy, and Gradle Artifacts</a> manual page.
       </p>
       <p class="big-red">
+        <i class="icon-exclamation-sign"/>
         To avoid problems the Log4j shutdown hook will automatically be disabled when the log4j-web jar is included.
       </p>
       <a name="Configuration"/>
       <subsection name="Configuration">
-        <p>Log4j allows the configuration file to be specified in web.xml using the log4jConfiguration context parameter.
-          Log4j will search for configuration files by:
-          </p>
-          <ol>
-              <li>If a location is provided it will be searched for as a servlet context resource. For example,
-                  if log4jConfiguration contains "logging.xml" then Log4j will look for a file with that name in the
-                  root directory of the web application.
-              </li>
-              <li>If no location is defined Log4j will search for a file that starts with "log4j2" in the WEB-INF directory.
-                  If more than one file is found then if a file that starts with "log4j2-<i>name</i>", where <i>name</i> is the
-                  name of the web application, is present it will be used. Otherwise the first file will be used.
-              </li>
-              <li>The "normal" search sequence using the classpath and file URLs will be used to locate the configuration
-                  file.
-              </li>
-          </ol>
+        <p>
+          Log4j allows the configuration file to be specified in web.xml using the <code>log4jConfiguration</code>
+          context parameter. Log4j will search for configuration files by:
+        </p>
+        <ol>
+          <li>
+            If a location is provided it will be searched for as a servlet context resource. For example, if
+            <code>log4jConfiguration</code> contains "logging.xml" then Log4j will look for a file with that
+            name in the root directory of the web application.
+          </li>
+          <li>
+            If no location is defined Log4j will search for a file that starts with "log4j2" in the WEB-INF directory.
+            If more than one file is found, and if a file that starts with "log4j2-<var>name</var>" is present, where
+            <var>name</var> is the name of the web application, then it will be used. Otherwise the first file will be
+            used.
+          </li>
+          <li>
+            The "normal" search sequence using the classpath and file URLs will be used to locate the configuration file.
+          </li>
+        </ol>
       </subsection>
       <subsection name="Servlet 3.0 and Newer Web Applications">
         <a name="Servlet-3.0" />
@@ -73,10 +78,14 @@
         <h4>The Short Story</h4>
         <p>
           Log4j 2 "just works" in Servlet 3.0 and newer web applications. It is capable of automatically starting when
-          the application deploys and shutting down when the application undeploys.
+          the application deploys and shutting down when the application undeploys. Thanks to the
+          <a class="javadoc" href="http://docs.oracle.com/javaee/6/api/javax/servlet/ServletContainerInitializer.html">ServletContainerInitializer</a>
+          API added to Servlet 3.0, the relevant <code>Filter</code> and <code>ServletContextListener</code> classes
+          can be registered dynamically on web application startup.
         </p>
         <p>
-          <b><em>Important Note!</em></b> For performance reasons, containers often ignore certain JARs known not to
+          <strong class="text-warning"><i class="icon-exclamation-sign"/> Important Note!</strong>
+          For performance reasons, containers often ignore certain JARs known not to
           contain TLDs or <code>ServletContainerInitializer</code>s and do not scan them for web-fragments and
           initializers. Importantly, Tomcat 7 &lt;7.0.43 ignores all JAR files named log4j*.jar, which prevents this
           feature from working. This has been fixed in Tomcat 7.0.43, Tomcat 8, and later. In Tomcat 7 &lt;7.0.43 you
@@ -85,13 +94,13 @@
         </p>
         <h4>The Long Story</h4>
         <p>
-          The Log4j 2 Core JAR file is a web-fragment configured to order before any other web fragments in your
+          The Log4j 2 Web JAR file is a web-fragment configured to order before any other web fragments in your
           application. It contains a <code>ServletContainerInitializer</code>
-          (<a href="../log4j-core/apidocs/org/apache/logging/log4j/web/Log4jServletContainerInitializer.html"
+          (<a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/web/Log4jServletContainerInitializer.html"
             >Log4jServletContainerInitializer</a>) that the container automatically discovers and initializes. This adds
-          the <a href="../log4j-core/apidocs/org/apache/logging/log4j/web/Log4jServletContextListener.html"
+          the <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/web/Log4jServletContextListener.html"
             >Log4jServletContextListener</a> and
-          <a href="../log4j-core/apidocs/org/apache/logging/log4j/web/Log4jServletFilter.html"
+          <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/web/Log4jServletFilter.html"
             >Log4jServletFilter</a> to the <code>ServletContext</code>. These classes properly initialize
           and deinitialize the Log4j configuration.
         </p>
@@ -134,9 +143,9 @@
         <p>
           If you are using Log4j in a Servlet 2.5 web application, or if you have disabled auto-initialization with
           the <code>isLog4jAutoInitializationDisabled</code> context parameter, you <em>must</em> configure the
-          <a href="../log4j-core/apidocs/org/apache/logging/log4j/web/Log4jServletContextListener.html"
+          <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/web/Log4jServletContextListener.html"
             >Log4jServletContextListener</a> and
-          <a href="../log4j-core/apidocs/org/apache/logging/log4j/web/Log4jServletFilter.html"
+          <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/web/Log4jServletFilter.html"
             >Log4jServletFilter</a> in the deployment descriptor or programmatically. The filter should match all
           requests of any type. The listener should be the very first listener defined in your application, and the
           filter should be the very first filter defined and mapped in your application. This is easily accomplished
@@ -172,7 +181,7 @@
           and uses the standard pattern for locating the Log4j configuration file. There are three context parameters
           that you can use to control this behavior. The first, <code>isLog4jContextSelectorNamed</code>, specifies
           whether the context should be selected using the
-          <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/selector/JndiContextSelector.html"
+          <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/selector/JndiContextSelector.html"
             >JndiContextSelector</a>. If <code>isLog4jContextSelectorNamed</code> is not specified or is anything other
           than <code>true</code>, it is assumed to be <code>false</code>.
         </p>
@@ -219,7 +228,7 @@
     </context-param>]]></pre>
         <p>
           Note that in this case you must also set the "Log4jContextSelector" system property to
-          "org.apache.logging.log4j.core.selector.JndiContextSelector."
+          "<kbd>org.apache.logging.log4j.core.selector.JndiContextSelector</kbd>".
         </p>
       </subsection>
       <subsection name="Using Web Application Information During the Configuration">
@@ -245,7 +254,8 @@
           Library documentation.</a>
         </p>
         <p>
-          <b><em>Important Note!</em></b> As noted above, containers often ignore certain JARs known not to
+          <strong class="text-warning"><i class="icon-exclamation-sign"/> Important Note!</strong>
+          As noted above, containers often ignore certain JARs known not to
           contain TLDs and do not scan them for TLD files. Importantly, Tomcat 7 &lt;7.0.43 ignores all JAR files named
           log4j*.jar, which prevents the JSP tag library from being automatically discovered. This does not affect
           Tomcat 6.x and has been fixed in Tomcat 7.0.43, Tomcat 8, and later. In Tomcat 7 &lt;7.0.43 you
@@ -343,7 +353,7 @@ public class TestAsyncServlet extends HttpServlet {
         ]]></pre>
         <p>
           Alternatively, you can obtain the
-          <a href="../log4j-core/apidocs/org/apache/logging/log4j/web/Log4jWebLifeCycle.html">Log4jWebLifeCycle</a>
+          <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/web/Log4jWebLifeCycle.html">Log4jWebLifeCycle</a>
           instance from the <code>ServletContext</code> attributes, call its <code>setLoggerContext</code> method as
           the very first line of code in your asynchronous thread, and call its <code>clearLoggerContext</code> method
           as the very last line of code in your asynchronous thread. The following code demonstrates this. It uses the
