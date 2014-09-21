@@ -79,7 +79,12 @@ public final class LoaderUtil {
         public ClassLoader run() {
             final ClassLoader cl = Thread.currentThread().getContextClassLoader();
             // if the TCCL is null, that means we're using the system CL
-            return cl == null ? ClassLoader.getSystemClassLoader() : cl;
+            if (cl != null) {
+                return cl;
+            }
+            final ClassLoader scl = ClassLoader.getSystemClassLoader();
+            // if the system CL is null, then we're in a really restrictive environment!
+            return scl == null ? LoaderUtil.class.getClassLoader() : scl;
         }
     }
 
@@ -97,7 +102,7 @@ public final class LoaderUtil {
         }
         try {
             return getThreadContextClassLoader().loadClass(className);
-        } catch (final Throwable e) {
+        } catch (final Throwable ignored) {
             return Class.forName(className);
         }
     }
@@ -119,7 +124,7 @@ public final class LoaderUtil {
         final Class<?> clazz = loadClass(className);
         try {
             return clazz.getConstructor().newInstance();
-        } catch (final NoSuchMethodException e) {
+        } catch (final NoSuchMethodException ignored) {
             // FIXME: looking at the code for Class.newInstance(), this seems to do the same thing as above
             return clazz.newInstance();
         }
