@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public final class MarkerManager {
 
-    private static final ConcurrentMap<String, Marker> markerMap = new ConcurrentHashMap<String, Marker>();
+    private static final ConcurrentMap<String, Marker> MARKERS = new ConcurrentHashMap<String, Marker>();
 
     private MarkerManager() {
         // do nothing
@@ -37,7 +37,7 @@ public final class MarkerManager {
      * Clears all markers.
      */
     public static void clear() {
-        markerMap.clear();        
+        MARKERS.clear();
     }
 
     /**
@@ -47,8 +47,8 @@ public final class MarkerManager {
      * @throws IllegalArgumentException if the argument is {@code null}
      */
     public static Marker getMarker(final String name) {
-        markerMap.putIfAbsent(name, new Log4jMarker(name));
-        return markerMap.get(name);
+        MARKERS.putIfAbsent(name, new Log4jMarker(name));
+        return MARKERS.get(name);
     }
 
     /**
@@ -61,7 +61,7 @@ public final class MarkerManager {
      */
     @Deprecated
     public static Marker getMarker(final String name, final String parent) {
-        final Marker parentMarker = markerMap.get(parent);
+        final Marker parentMarker = MARKERS.get(parent);
         if (parentMarker == null) {
             throw new IllegalArgumentException("Parent Marker " + parent + " has not been defined");
         }
@@ -80,18 +80,18 @@ public final class MarkerManager {
      */
     @Deprecated
     public static Marker getMarker(final String name, final Marker parent) {
-        markerMap.putIfAbsent(name, new Log4jMarker(name));
-        return markerMap.get(name).addParents(parent);
+        MARKERS.putIfAbsent(name, new Log4jMarker(name));
+        return MARKERS.get(name).addParents(parent);
     }
-    
+
     /**
      * <em>Consider this class private, it is only public to satisfy Jackson for XML and JSON IO.</em>
      * <p>
      * The actual Marker implementation.
      * </p>
      * <p>
-     * <em>Internal note: We could make this class package private instead of public if the class 
-     * {@code org.apache.logging.log4j.core.jackson.MarkerMixIn} 
+     * <em>Internal note: We could make this class package private instead of public if the class
+     * {@code org.apache.logging.log4j.core.jackson.MarkerMixIn}
      * is moved to this package and would of course stay in its current module.</em>
      * </p>
      */
@@ -100,7 +100,7 @@ public final class MarkerManager {
         private static final long serialVersionUID = 100L;
 
         private final String name;
-        
+
         private volatile Marker[] parents;
 
         /**
@@ -269,7 +269,7 @@ public final class MarkerManager {
                 return true;
             }
             // Use a real marker for child comparisons. It is faster than comparing the names.
-            final Marker marker = markerMap.get(markerName);
+            final Marker marker = MARKERS.get(markerName);
             if (marker == null) {
                 return false;
             }
