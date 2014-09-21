@@ -30,7 +30,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * Looks up keys from resource bundles.
  */
 @Plugin(name = "bundle", category = "Lookup")
-public class ResourceBundleLookup implements StrLookup {
+public class ResourceBundleLookup extends AbstractLookup {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final Marker LOOKUP = MarkerManager.getMarker("LOOKUP");
@@ -40,12 +40,14 @@ public class ResourceBundleLookup implements StrLookup {
      *
      * For example: "com.domain.messages:MyKey".
      *
+     * @param event
+     *            The current LogEvent.
      * @param key
      *            the key to be looked up, may be null
-     * @return The value for the key.
+     * @return The value associated with the key.
      */
     @Override
-    public String lookup(final String key) {
+    public String lookup(final LogEvent event, final String key) {
         if (key == null) {
             return null;
         }
@@ -64,21 +66,5 @@ public class ResourceBundleLookup implements StrLookup {
             LOGGER.warn(LOOKUP, "Error looking up ResourceBundle [{}].", bundleName, e);
             return null;
         }
-    }
-
-    /**
-     * Looks up the value for the key in the format "BundleName:BundleKey".
-     *
-     * For example: "com.domain.messages:MyKey".
-     *
-     * @param event
-     *            The current LogEvent.
-     * @param key
-     *            the key to be looked up, may be null
-     * @return The value associated with the key.
-     */
-    @Override
-    public String lookup(final LogEvent event, final String key) {
-        return lookup(key);
     }
 }

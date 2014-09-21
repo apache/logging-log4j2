@@ -16,23 +16,21 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-
 /**
- * Looks up keys from environment variables.
+ * A default lookup for others to extend.
+ * 
+ * @since 2.1
  */
-@Plugin(name = "env", category = "Lookup")
-public class EnvironmentLookup extends AbstractLookup {
+public abstract class AbstractLookup implements StrLookup {
 
     /**
-     * Looks up the value of the environment variable.
-     * @param event The current LogEvent (is ignored by this StrLookup).
-     * @param key  the key to be looked up, may be null
-     * @return The value of the environment variable.
+     * Calls {@code lookup(null, key);}
+     * 
+     * @see StrLookup#lookup(LogEvent, String)
      */
     @Override
-    public String lookup(final LogEvent event, final String key) {
-        return System.getenv(key);
+    public String lookup(String key) {
+        return lookup(null, key);
     }
+
 }

@@ -27,7 +27,6 @@ import static org.junit.Assert.*;
  */
 public class SystemPropertiesLookupTest {
 
-
     private static final String TESTKEY = "TestKey";
     private static final String TESTVAL = "TestValue";
 
