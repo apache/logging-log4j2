@@ -16,12 +16,19 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.security.SecureRandom;
+import java.util.Enumeration;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -29,6 +36,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * less than 10,000 IDs are generated per millisecond on the same device (as identified by its MAC address).
  */
 public final class UuidUtil {
+    private static final Logger LOGGER = StatusLogger.getLogger();
     /**
      * System property that may be used to seed the UUID generation with an integer value.
      */
@@ -60,7 +68,7 @@ public final class UuidUtil {
     private static final int HUNDRED_NANOS_PER_MILLI = 10000;
 
     static {
-        byte[] mac = NetUtils.getLocalMacAddress();
+        byte[] mac = getLocalMacAddress();
         final Random randomGenerator = new SecureRandom();
         if (mac == null || mac.length == 0) {
             mac = new byte[6];
@@ -143,6 +151,46 @@ public final class UuidUtil {
         final long timeHi = (time & HIGH_MASK) >> SHIFT_6;
         final long most = timeLow | timeMid | TYPE1 | timeHi;
         return new UUID(most, least);
+    }
+
+    /**
+     * Returns the local network interface's MAC address if possible. The local network interface is defined here as
+     * the {@link java.net.NetworkInterface} that is both up and not a loopback interface.
+     *
+     * @return the MAC address of the local network interface or {@code null} if no MAC address could be determined.
+     * @since 2.1
+     */
+    private static byte[] getLocalMacAddress() {
+        byte[] mac = null;
+        try {
+            final InetAddress localHost = InetAddress.getLocalHost();
+            try {
+                final NetworkInterface localInterface = NetworkInterface.getByInetAddress(localHost);
+                if (isUpAndNotLoopback(localInterface)) {
+                    mac = localInterface.getHardwareAddress();
+                }
+                if (mac == null) {
+                    final Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
+                    while (networkInterfaces.hasMoreElements() && mac == null) {
+                        final NetworkInterface nic = networkInterfaces.nextElement();
+                        if (isUpAndNotLoopback(nic)) {
+                            mac = nic.getHardwareAddress();
+                        }
+                    }
+                }
+            } catch (final SocketException e) {
+                LOGGER.catching(e);
+            }
+            if (mac == null || mac.length == 0) {
+                mac = localHost.getAddress();
+            }
+        } catch (final UnknownHostException ignored) {
+        }
+        return mac;
+    }
+
+    private static boolean isUpAndNotLoopback(final NetworkInterface ni) throws SocketException {
+        return ni != null && !ni.isLoopback() && ni.isUp();
     }
 }
 

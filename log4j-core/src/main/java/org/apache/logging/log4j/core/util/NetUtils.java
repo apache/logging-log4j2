@@ -71,43 +71,4 @@ public final class NetUtils {
         }
     }
 
-    /**
-     * Returns the local network interface's MAC address if possible. The local network interface is defined here as
-     * the {@link NetworkInterface} that is both up and not a loopback interface.
-     *
-     * @return the MAC address of the local network interface or {@code null} if no MAC address could be determined.
-     * @since 2.1
-     */
-    public static byte[] getLocalMacAddress() {
-        byte[] mac = null;
-        try {
-            final InetAddress localHost = InetAddress.getLocalHost();
-            try {
-                final NetworkInterface localInterface = NetworkInterface.getByInetAddress(localHost);
-                if (isUpAndNotLoopback(localInterface)) {
-                    mac = localInterface.getHardwareAddress();
-                }
-                if (mac == null) {
-                    final Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
-                    while (networkInterfaces.hasMoreElements() && mac == null) {
-                        final NetworkInterface nic = networkInterfaces.nextElement();
-                        if (isUpAndNotLoopback(nic)) {
-                            mac = nic.getHardwareAddress();
-                        }
-                    }
-                }
-            } catch (final SocketException e) {
-                LOGGER.catching(e);
-            }
-            if (mac == null || mac.length == 0) {
-                mac = localHost.getAddress();
-            }
-        } catch (final UnknownHostException ignored) {
-        }
-        return mac;
-    }
-
-    private static boolean isUpAndNotLoopback(final NetworkInterface ni) throws SocketException {
-        return ni != null && !ni.isLoopback() && ni.isUp();
-    }
 }
