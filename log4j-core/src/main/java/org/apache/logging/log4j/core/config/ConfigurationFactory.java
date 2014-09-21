@@ -42,7 +42,9 @@ import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.Loader;
+import org.apache.logging.log4j.core.util.ReflectionUtil;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -163,7 +165,7 @@ public abstract class ConfigurationFactory {
     @SuppressWarnings("unchecked")
     private static void addFactory(final Collection<ConfigurationFactory> list, final String factoryClass) {
         try {
-            addFactory(list, (Class<ConfigurationFactory>) Loader.loadClass(factoryClass));
+            addFactory(list, (Class<ConfigurationFactory>) LoaderUtil.loadClass(factoryClass));
         } catch (final Exception ex) {
             LOGGER.error("Unable to load class {}", factoryClass, ex);
         }
@@ -172,7 +174,7 @@ public abstract class ConfigurationFactory {
     private static void addFactory(final Collection<ConfigurationFactory> list,
                                    final Class<ConfigurationFactory> factoryClass) {
         try {
-            list.add(factoryClass.getConstructor().newInstance());
+            list.add(ReflectionUtil.instantiate(factoryClass));
         } catch (final Exception ex) {
             LOGGER.error("Unable to create instance of {}", factoryClass.getName(), ex);
         }
@@ -249,7 +251,7 @@ public abstract class ConfigurationFactory {
         final boolean isClassLoaderScheme = scheme != null && scheme.equals(CLASS_LOADER_SCHEME);
         final boolean isClassPathScheme = scheme != null && !isClassLoaderScheme && scheme.equals(CLASS_PATH_SCHEME);
         if (scheme == null || isClassLoaderScheme || isClassPathScheme) {
-            final ClassLoader loader = Loader.getThreadContextClassLoader();
+            final ClassLoader loader = LoaderUtil.getThreadContextClassLoader();
             String path;
             if (isClassLoaderScheme || isClassPathScheme) {
                 path = configLocation.getSchemeSpecificPart();
@@ -389,7 +391,7 @@ public abstract class ConfigurationFactory {
                         LOGGER.catching(Level.DEBUG, ex);
                     }
                     if (source == null) {
-                        final ClassLoader loader = this.getClass().getClassLoader();
+                        final ClassLoader loader = LoaderUtil.getThreadContextClassLoader();
                         source = getInputFromString(config, loader);
                     }
                     if (source != null) {
@@ -443,7 +445,7 @@ public abstract class ConfigurationFactory {
 
         private Configuration getConfiguration(final boolean isTest, final String name) {
             final boolean named = name != null && name.length() > 0;
-            final ClassLoader loader = this.getClass().getClassLoader();
+            final ClassLoader loader = LoaderUtil.getThreadContextClassLoader();
             for (final ConfigurationFactory factory : factories) {
                 String configName;
                 final String prefix = isTest ? TEST_PREFIX : DEFAULT_PREFIX;
