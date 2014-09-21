@@ -177,17 +177,19 @@
       <subsection name="Context Parameters">
         <a name="ContextParams" />
         <p>
-          By default, Log4j 2 uses the <code>ServletContext</code>'s context name as the <code>LoggerContext</code> name
-          and uses the standard pattern for locating the Log4j configuration file. There are three context parameters
-          that you can use to control this behavior. The first, <code>isLog4jContextSelectorNamed</code>, specifies
-          whether the context should be selected using the
+          By default, Log4j 2 uses the <code>ServletContext</code>'s
+          <a href="http://docs.oracle.com/javaee/6/api/javax/servlet/ServletContext.html#getServletContextName()">context name</a>
+          as the <code>LoggerContext</code> name and uses the standard pattern for locating the Log4j configuration
+          file. There are three context parameters that you can use to control this behavior. The first,
+          <code>isLog4jContextSelectorNamed</code>, specifies whether the context should be selected using the
           <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/selector/JndiContextSelector.html"
             >JndiContextSelector</a>. If <code>isLog4jContextSelectorNamed</code> is not specified or is anything other
           than <code>true</code>, it is assumed to be <code>false</code>.
         </p>
         <p>
           If <code>isLog4jContextSelectorNamed</code> is <code>true</code>, <code>log4jContextName</code> must be
-          specified; otherwise, the application will fail to start with an exception. <code>log4jConfiguration</code>
+          specified or <code>display-name</code> must be specified in <code>web.xml</code>; otherwise, the application
+          will fail to start with an exception. <code>log4jConfiguration</code>
           <em>should</em> also be specified in this case, and must be a valid URI for the configuration file; however,
           this parameter is not required.
         </p>
