@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.logging.log4j.Logger;
@@ -25,7 +23,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.util.JndiCloser;
+import org.apache.logging.log4j.core.net.JndiManager;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -52,15 +50,14 @@ public class JndiLookup extends AbstractLookup {
             return null;
         }
         final String jndiName = convertJndiName(key);
-        Context ctx = null;
+        final JndiManager jndiManager = JndiManager.getDefaultManager();
         try {
-            ctx = new InitialContext();
-            return (String) ctx.lookup(jndiName);
+            return jndiManager.lookup(jndiName);
         } catch (final NamingException e) {
             LOGGER.warn(LOOKUP, "Error looking up JNDI resource [{}].", jndiName, e);
             return null;
         } finally {
-            JndiCloser.closeSilently(ctx);
+            jndiManager.release();
         }
     }
 
