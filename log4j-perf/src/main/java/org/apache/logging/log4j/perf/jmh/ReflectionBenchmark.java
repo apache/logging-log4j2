@@ -20,10 +20,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Random;
 
-import org.apache.logging.log4j.core.impl.ReflectiveCallerClassUtility;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.openjdk.jmh.annotations.Benchmark;
+import org.apache.logging.log4j.util.ReflectionUtil;
 import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
@@ -78,7 +78,7 @@ public class ReflectionBenchmark {
 
     @Benchmark
     public String test03_getCallerClassNameReflectively() {
-        return ReflectiveCallerClassUtility.getCaller(3).getName();
+        return ReflectionUtil.getCallerClass(3).getName();
     }
 
     @Benchmark
@@ -98,7 +98,7 @@ public class ReflectionBenchmark {
 
     @Benchmark
     public Class<?> test07_getReflectiveCallerClassUtility() {
-        return ReflectiveCallerClassUtility.getCaller(3);
+        return ReflectionUtil.getCallerClass(3);
     }
 
     @Benchmark

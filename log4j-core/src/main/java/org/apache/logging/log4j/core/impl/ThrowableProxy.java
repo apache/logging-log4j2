@@ -25,10 +25,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.ReflectionUtil;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -61,44 +61,11 @@ public class ThrowableProxy implements Serializable {
         }
     }
 
-    /**
-     * Security Manager for accessing the call stack.
-     */
-    private static class PrivateSecurityManager extends SecurityManager {
-        public Class<?>[] getClasses() {
-            return this.getClassContext();
-        }
-    }
-
     private static final ThrowableProxy[] EMPTY_THROWABLE_PROXY_ARRAY = new ThrowableProxy[0];
 
     private static final char EOL = '\n';
 
-    private static final Logger LOGGER = StatusLogger.getLogger();
-
-    private static final PrivateSecurityManager SECURITY_MANAGER;
-
     private static final long serialVersionUID = -2752771578252251910L;
-
-    static {
-        if (ReflectiveCallerClassUtility.isSupported()) {
-            SECURITY_MANAGER = null;
-        } else {
-            PrivateSecurityManager securityManager;
-            try {
-                securityManager = new PrivateSecurityManager();
-                if (securityManager.getClasses() == null) {
-                    // This shouldn't happen.
-                    securityManager = null;
-                    LOGGER.error("Unable to obtain call stack from security manager.");
-                }
-            } catch (final Exception e) {
-                securityManager = null;
-                LOGGER.debug("Unable to install security manager.", e);
-            }
-            SECURITY_MANAGER = securityManager;
-        }
-    }
 
     private final ThrowableProxy causeProxy;
 
@@ -142,7 +109,7 @@ public class ThrowableProxy implements Serializable {
         this.message = throwable.getMessage();
         this.localizedMessage = throwable.getLocalizedMessage();
         final Map<String, CacheEntry> map = new HashMap<String, CacheEntry>();
-        final Stack<Class<?>> stack = this.getCurrentStack();
+        final Stack<Class<?>> stack = ReflectionUtil.getCurrentStackTrace();
         this.extendedStackTrace = this.toExtendedStackTrace(stack, map, null, throwable.getStackTrace());
         final Throwable throwableCause = throwable.getCause();
         this.causeProxy = throwableCause == null ? null : new ThrowableProxy(throwable, stack, map, throwableCause);
@@ -336,33 +303,6 @@ public class ThrowableProxy implements Serializable {
      */
     public int getCommonElementCount() {
         return this.commonElementCount;
-    }
-
-    /**
-     * Initialize the cache by resolving everything in the current stack trace via Reflection.getCallerClass or via the
-     * SecurityManager if either are available. These are the only Classes that can be trusted to be accurate.
-     * 
-     * @return A Stack containing the current stack of Class objects.
-     */
-    private Stack<Class<?>> getCurrentStack() {
-        if (ReflectiveCallerClassUtility.isSupported()) {
-            final Stack<Class<?>> classes = new Stack<Class<?>>();
-            int index = 1;
-            Class<?> clazz = ReflectiveCallerClassUtility.getCaller(index);
-            while (clazz != null) {
-                classes.push(clazz);
-                clazz = ReflectiveCallerClassUtility.getCaller(++index);
-            }
-            return classes;
-        } else if (SECURITY_MANAGER != null) {
-            final Class<?>[] array = SECURITY_MANAGER.getClasses();
-            final Stack<Class<?>> classes = new Stack<Class<?>>();
-            for (final Class<?> clazz : array) {
-                classes.push(clazz);
-            }
-            return classes;
-        }
-        return new Stack<Class<?>>();
     }
 
     /**
