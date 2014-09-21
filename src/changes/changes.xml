@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.1" date="2014-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-809" dev="mattsicker" type="add">
+        Move reflection utility class to API's private utility classes.
+      </action>
       <action issue="LOG4J2-845" dev="mattsicker" type="update">
         Add Log4j API 2.1.0 and update Log4j Core likewise.
       </action>
