@@ -23,16 +23,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
+import org.apache.logging.log4j.core.net.JndiManager;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.core.util.JndiCloser;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -112,14 +108,13 @@ public class JndiContextSelector implements NamedContextSelector {
 
         String loggingContextName = null;
 
-        Context ctx = null;
+        final JndiManager jndiManager = JndiManager.getDefaultManager(getClass().getName());
         try {
-            ctx = new InitialContext();
-            loggingContextName = (String) lookup(ctx, Constants.JNDI_CONTEXT_NAME);
+            loggingContextName = jndiManager.lookup(Constants.JNDI_CONTEXT_NAME);
         } catch (final NamingException ne) {
-            LOGGER.error("Unable to lookup " + Constants.JNDI_CONTEXT_NAME, ne);
+            LOGGER.error("Unable to lookup {}", Constants.JNDI_CONTEXT_NAME, ne);
         } finally {
-            JndiCloser.closeSilently(ctx);
+            jndiManager.release();
         }
 
         return loggingContextName == null ? CONTEXT : locateContext(loggingContextName, null, configLocation);
@@ -159,16 +154,4 @@ public class JndiContextSelector implements NamedContextSelector {
         return Collections.unmodifiableList(list);
     }
 
-
-    protected static Object lookup(final Context ctx, final String name) throws NamingException {
-        if (ctx == null) {
-            return null;
-        }
-        try {
-            return ctx.lookup(name);
-        } catch (final NameNotFoundException e) {
-            LOGGER.error("Could not find name [" + name + "].");
-            throw e;
-        }
-    }
 }
