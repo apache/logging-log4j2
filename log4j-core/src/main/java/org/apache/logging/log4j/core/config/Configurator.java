@@ -159,7 +159,7 @@ public final class Configurator {
                     factory.getClass().getName(), Log4jContextFactory.class.getName());
             return null;
         } else {
-            LOGGER.error("LogManager did not return a LoggerContextFactory. This indicates something has gone terribly wrong!");
+            LOGGER.fatal("LogManager did not return a LoggerContextFactory. This indicates something has gone terribly wrong!");
             return null;
         }
     }
