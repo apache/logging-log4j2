@@ -142,14 +142,17 @@ public class StrSubstitutor {
      * Constant for the default escape character.
      */
     public static final char DEFAULT_ESCAPE = '$';
+    
     /**
      * Constant for the default variable prefix.
      */
     public static final StrMatcher DEFAULT_PREFIX = StrMatcher.stringMatcher("${");
+    
     /**
      * Constant for the default variable suffix.
      */
     public static final StrMatcher DEFAULT_SUFFIX = StrMatcher.stringMatcher("}");
+    
     /**
      * Constant for the default value delimiter of a variable.
      */
