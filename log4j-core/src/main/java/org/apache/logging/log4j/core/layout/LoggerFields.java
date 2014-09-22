@@ -66,7 +66,7 @@ public final class LoggerFields {
      *            The IANA assigned enterprise number
      * @param discardIfAllFieldsAreEmpty
      *            this SD-ELEMENT should be discarded if all fields are empty
-     * @return A LoggerFields instance containing a Map<String, String>.
+     * @return A LoggerFields instance containing a Map&lt;String, String&gt;.
      */
     @PluginFactory
     public static LoggerFields createLoggerFields(
