@@ -53,8 +53,9 @@ public interface Appender {
     /**
      * Release any resources allocated within the appender such as file
      * handles, network connections, etc.
-     * <p/>
-     * <p>It is a programming error to append to a closed appender.
+     * <p>
+     * It is a programming error to append to a closed appender.
+     * </p>
      *
      * @since 0.8.4
      */
