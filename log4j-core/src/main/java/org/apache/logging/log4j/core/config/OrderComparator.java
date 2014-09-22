@@ -15,7 +15,7 @@ public class OrderComparator implements Comparator<Class<?>> {
         final Order lhsOrder = Assert.requireNonNull(lhs, "lhs").getAnnotation(Order.class);
         final Order rhsOrder = Assert.requireNonNull(rhs, "rhs").getAnnotation(Order.class);
         if (lhsOrder == null && rhsOrder == null) {
-            // both unannotated means we can't really compare them
+            // both unannotated means equal priority
             return 0;
         }
         // if only one class is @Order-annotated, then prefer that one
@@ -25,7 +25,7 @@ public class OrderComparator implements Comparator<Class<?>> {
         if (lhsOrder == null) {
             return 1;
         }
-        // larger value means higher priority
+        // larger value means lower priority
         return Integer.signum(rhsOrder.value() - lhsOrder.value());
     }
 }

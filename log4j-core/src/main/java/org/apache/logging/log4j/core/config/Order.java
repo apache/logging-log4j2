@@ -27,5 +27,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Order {
+    /**
+     * The priority of this annotated type. Larger numbers indicate lower priority with a lowest priority of
+     * {@link Integer#MAX_VALUE}.
+     */
     int value();
 }
