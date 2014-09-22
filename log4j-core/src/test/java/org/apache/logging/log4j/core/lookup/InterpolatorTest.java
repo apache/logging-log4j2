@@ -101,6 +101,5 @@ public class InterpolatorTest {
         final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         final String today = format.format(new Date());
         assertEquals(value, today);
-
     }
 }
