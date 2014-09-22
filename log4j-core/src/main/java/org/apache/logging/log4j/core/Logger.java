@@ -41,7 +41,7 @@ import org.apache.logging.log4j.util.Strings;
  * underlying objects is provided primarily for use in unit tests or bridging legacy Log4j 1.x code. Future versions
  * of this class may or may not include the various methods that are noted as not being part of the public API.
  *
- * @doubt All the isEnabled methods could be pushed into a filter interface.  Not sure of the utility of having
+ * TODO All the isEnabled methods could be pushed into a filter interface.  Not sure of the utility of having
  * isEnabled be able to examine the message pattern and parameters. (RG) Moving the isEnabled methods out of
  * Logger noticeably impacts performance. The message pattern and parameters are required so that they can be
  * used in global filters.

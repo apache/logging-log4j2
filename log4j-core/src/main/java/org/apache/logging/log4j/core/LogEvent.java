@@ -109,7 +109,7 @@ public interface LogEvent extends Serializable {
      * Gets thread name.
      * 
      * @return thread name, may be null.
-     * @doubt guess this could go into a thread context object too. (RG) Why?
+     * TODO guess this could go into a thread context object too. (RG) Why?
      */
     String getThreadName();
 

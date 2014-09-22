@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core;
 
 /**
  * Appenders may delegate their error handling to <code>ErrorHandlers</code>.
- * @doubt if the appender interface is simplified, then error handling could just be done by wrapping
+ * TODO if the appender interface is simplified, then error handling could just be done by wrapping
  *  a nested appender. (RG) Please look at DefaultErrorHandler. It's purpose is to make sure the console
  * or error log isn't flooded with messages. I'm still considering the Appender refactoring.
  */

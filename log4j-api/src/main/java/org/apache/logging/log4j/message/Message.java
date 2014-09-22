@@ -30,7 +30,7 @@ import java.io.Serializable;
  * Message object by an application should by avoided after the Message has been passed as a parameter on
  * a Logger method.
  * </p>
- * @doubt Interfaces should rarely extend Serializable according to Effective Java 2nd Ed pg 291.
+ * TODO Interfaces should rarely extend Serializable according to Effective Java 2nd Ed pg 291.
  * (RG) That section also says "If a class or interface exists primarily to participate in a framework that
  * requires all participants to implement Serializable, then it makes perfect sense for the class or
  * interface to implement or extend Serializable". Such is the case here as the LogEvent must be Serializable.
@@ -51,7 +51,7 @@ public interface Message extends Serializable {
      *
      * @return The message format. Some implementations, such as ParameterizedMessage, will use this as
      * the message "pattern". Other Messages may simply return an empty String.
-     * @doubt Do all messages have a format?  What syntax?  Using a Formatter object could be cleaner.
+     * TODO Do all messages have a format?  What syntax?  Using a Formatter object could be cleaner.
      * (RG) In SimpleMessage the format is identical to the formatted message. In ParameterizedMessage and
      * StructuredDataMessage it is not. It is up to the Message implementer to determine what this
      * method will return. A Formatter is inappropriate as this is very specific to the Message

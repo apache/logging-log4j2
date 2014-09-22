@@ -200,7 +200,7 @@ public interface Logger {
      * bytecode manipulation tools. It can be rather tedious (and messy) to use this type of method manually.</p>
      *
      * @param params The parameters to the method.
-     * @doubt Use of varargs results in array creation which can be a substantial portion of no-op case. LogMF/LogSF
+     * TODO Use of varargs results in array creation which can be a substantial portion of no-op case. LogMF/LogSF
      *        provides several overrides to avoid vararg except in edge cases. (RG) LogMF and LogSF implement these in
      *        LogXF which calls logger.callAppenders. callAppenders is part of the implementation and cannot be used by
      *        the API. Adding more methods here and in AbstractLogger is sufficient.
@@ -258,7 +258,7 @@ public interface Logger {
      * @param params parameters to the message.
      * @see #getMessageFactory()
      *
-     * @doubt Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
+     * TODO Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
      *        array creation expense on every call. (RG) I assume you meant error, not info. It isn't possible to be
      *        misinterpreted as the previous method is for that signature. Methods should be added to avoid varargs for
      *        1, 2 or 3 parameters.
@@ -320,7 +320,7 @@ public interface Logger {
      * @param params parameters to the message.
      * @see #getMessageFactory()
      *
-     * @doubt Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
+     * TODO Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
      *        array creation expense on every call. (RG) I assume you meant error, not info. It isn't possible to be
      *        misinterpreted as the previous method is for that signature. Methods should be added to avoid varargs for
      *        1, 2 or 3 parameters.
@@ -404,7 +404,7 @@ public interface Logger {
      * @param params parameters to the message.
      * @see #getMessageFactory()
      *
-     * @doubt Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
+     * TODO Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
      *        array creation expense on every call.(RG) I assume you meant fatal, not info. It isn't possible to be
      *        misinterpreted as the previous method is for that signature. Methods should be added to avoid varargs for
      *        1, 2 or 3 parameters.
@@ -466,7 +466,7 @@ public interface Logger {
      * @param params parameters to the message.
      * @see #getMessageFactory()
      *
-     * @doubt Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
+     * TODO Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
      *        array creation expense on every call.(RG) I assume you meant fatal, not info. It isn't possible to be
      *        misinterpreted as the previous method is for that signature. Methods should be added to avoid varargs for
      *        1, 2 or 3 parameters.
@@ -554,7 +554,7 @@ public interface Logger {
      * @param params parameters to the message.
      * @see #getMessageFactory()
      *
-     * @doubt Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
+     * TODO Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
      *        array creation expense on every call. (RG) It isn't possible to be misinterpreted as the previous method
      *        is for that signature. Methods should be added to avoid varargs for 1, 2 or 3 parameters.
      */
@@ -615,7 +615,7 @@ public interface Logger {
      * @param params parameters to the message.
      * @see #getMessageFactory()
      *
-     * @doubt Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
+     * TODO Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
      *        array creation expense on every call. (RG) It isn't possible to be misinterpreted as the previous method
      *        is for that signature. Methods should be added to avoid varargs for 1, 2 or 3 parameters.
      */
@@ -1098,7 +1098,7 @@ public interface Logger {
      * @param params parameters to the message.
      * @see #getMessageFactory()
      *
-     * @doubt Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
+     * TODO Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
      *        array creation expense on every call. (RG) I assume you meant warn, not info. It isn't possible to be
      *        misinterpreted as the previous method is for that signature.Methods should be added to avoid varargs for
      *        1, 2 or 3 parameters.
@@ -1160,7 +1160,7 @@ public interface Logger {
      * @param params parameters to the message.
      * @see #getMessageFactory()
      *
-     * @doubt Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
+     * TODO Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
      *        array creation expense on every call. (RG) I assume you meant warn, not info. It isn't possible to be
      *        misinterpreted as the previous method is for that signature.Methods should be added to avoid varargs for
      *        1, 2 or 3 parameters.
