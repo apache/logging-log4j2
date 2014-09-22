@@ -146,7 +146,7 @@ public class StrSubstitutor {
     /**
      * Constant for the default variable prefix.
      */
-    public static final StrMatcher DEFAULT_PREFIX = StrMatcher.stringMatcher("${");
+    public static final StrMatcher DEFAULT_PREFIX = StrMatcher.stringMatcher(DEFAULT_ESCAPE + "{");
     
     /**
      * Constant for the default variable suffix.
