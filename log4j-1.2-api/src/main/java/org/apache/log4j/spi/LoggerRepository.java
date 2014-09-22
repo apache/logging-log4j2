@@ -24,17 +24,14 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 /**
- * A <code>LoggerRepository</code> is used to create and retrieve
- * <code>Loggers</code>.
- * <p> 
- * The relation between loggers in a repository
- * depends on the repository but typically loggers are arranged in a
- * named hierarchy.
+ * A <code>LoggerRepository</code> is used to create and retrieve <code>Loggers</code>.
+ * <p>
+ * The relation between loggers in a repository depends on the repository but typically loggers are arranged in a named
+ * hierarchy.
  * </p>
  * <p>
- * In addition to the creational methods, a
- * <code>LoggerRepository</code> can be queried for existing loggers,
- * can act as a point of registry for events related to loggers.
+ * In addition to the creational methods, a <code>LoggerRepository</code> can be queried for existing loggers, can act
+ * as a point of registry for events related to loggers.
  * </p>
  *
  * @since 1.2
