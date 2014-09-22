@@ -50,7 +50,7 @@ public class XmlRandomAccessFileAppenderTest {
         final Logger log = LogManager.getLogger("com.foo.Bar");
         final String logMsg = "Message flushed with immediate flush=false";
         log.info(logMsg);
-        ((LifeCycle) LogManager.getContext()).stop(); // stop async thread
+        ((LifeCycle) LogManager.getContext(false)).stop(); // stop async thread
 
         final BufferedReader reader = new BufferedReader(new FileReader(f));
         String line1;
