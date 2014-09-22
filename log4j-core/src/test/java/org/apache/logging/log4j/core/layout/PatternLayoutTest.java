@@ -162,7 +162,7 @@ public class PatternLayoutTest {
     }
 
     @Test
-    public void testHeaderFooter() throws Exception {
+    public void testHeaderFooterThreadContext() throws Exception {
         final PatternLayout layout = PatternLayout.newBuilder().withPattern("%d{UNIX} %m")
                 .withConfiguration(ctx.getConfiguration()).withHeader("${ctx:header}").withFooter("${ctx:footer}")
                 .build();
@@ -175,6 +175,29 @@ public class PatternLayoutTest {
     }
 
     @Test
+    public void testHeaderFooterJavaLookup() throws Exception {
+        // % does not work here.
+        String pattern = "%d{UNIX} MyApp%n${java:version}%n${java:runtime}%n${java:vm}%n${java:os}%n${java:hw}";
+        final PatternLayout layout = PatternLayout.newBuilder().withConfiguration(ctx.getConfiguration())
+                .withHeader(pattern).withFooter(pattern).build();
+        final byte[] header = layout.getHeader();
+        assertNotNull("No header", header);
+        String headerStr = new String(header);
+        assertTrue(headerStr, headerStr.contains("Java version "));
+        assertTrue(headerStr, headerStr.contains("(build "));
+        assertTrue(headerStr, headerStr.contains(" from "));
+        assertTrue(headerStr, headerStr.contains(" architecture: "));
+        //
+        final byte[] footer = layout.getFooter();
+        assertNotNull("No header", footer);
+        String footerStr = new String(header);
+        assertTrue(footerStr, footerStr.contains("Java version "));
+        assertTrue(footerStr, footerStr.contains("(build "));
+        assertTrue(footerStr, footerStr.contains(" from "));
+        assertTrue(footerStr, footerStr.contains(" architecture: "));
+    }
+
+    @Test
     public void testSpecialChars() throws Exception {
         final PatternLayout layout = PatternLayout.newBuilder().withPattern("\\\\%level\\t%msg\\n\\t%logger\\r\\n\\f")
                 .withConfiguration(ctx.getConfiguration()).build();
@@ -184,14 +207,14 @@ public class PatternLayoutTest {
         assertEquals("\\INFO\tHello, world!\n\torg.apache.logging.log4j.core.layout.PatternLayoutTest\r\n\f",
                 new String(result));
     }
-    
+
     @Test
     public void testUsePlatformDefaultIfNoCharset() throws Exception {
         final PatternLayout layout = PatternLayout.newBuilder().withPattern("%m")
                 .withConfiguration(ctx.getConfiguration()).build();
         assertEquals(Charset.defaultCharset(), layout.getCharset());
     }
-    
+
     @Test
     public void testUseSpecifiedCharsetIfExists() throws Exception {
         final PatternLayout layout = PatternLayout.newBuilder().withPattern("%m")

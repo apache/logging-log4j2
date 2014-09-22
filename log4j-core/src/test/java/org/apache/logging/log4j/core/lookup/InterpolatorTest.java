@@ -87,6 +87,13 @@ public class InterpolatorTest {
         assertEquals(TEST_CONTEXT_NAME, value);
     }
 
+    private void assertLookupNotEmpty(StrLookup lookup, String key) {
+        final String value = lookup.lookup(key);
+        assertNotNull(value);
+        assertFalse(value.isEmpty());
+        System.out.println(key + " = " + value);
+    }
+    
     @Test
     public void testLookupWithDefaultInterpolator() {
         final StrLookup lookup = new Interpolator();
@@ -101,5 +108,11 @@ public class InterpolatorTest {
         final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         final String today = format.format(new Date());
         assertEquals(value, today);
+        assertLookupNotEmpty(lookup, "java:version");
+        assertLookupNotEmpty(lookup, "java:runtime");
+        assertLookupNotEmpty(lookup, "java:vm");
+        assertLookupNotEmpty(lookup, "java:os");
+        assertLookupNotEmpty(lookup, "java:locale");
+        assertLookupNotEmpty(lookup, "java:hw");
     }
 }

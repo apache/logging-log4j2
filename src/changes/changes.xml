@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.1" date="2014-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-848" dev="ggregory" type="add">
+        Add a Java lookup to provide nicely formatted runtime version information.
+      </action>
       <action issue="LOG4J2-809" dev="mattsicker" type="add">
         Move reflection utility class to API's private utility classes.
       </action>
