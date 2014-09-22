@@ -171,7 +171,7 @@
     <changes.plugin.version>2.9</changes.plugin.version>
     <javadoc.plugin.version>2.10</javadoc.plugin.version>
     <surefire.plugin.version>2.17</surefire.plugin.version>
-    <checkstyle.plugin.version>2.12.1</checkstyle.plugin.version>
+    <checkstyle.plugin.version>2.13</checkstyle.plugin.version>
     <rat.plugin.version>0.11</rat.plugin.version>
     <pdf.plugin.version>1.2</pdf.plugin.version>
     <cobertura.plugin.version>2.5.2</cobertura.plugin.version>
