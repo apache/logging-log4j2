@@ -209,7 +209,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 alreadyStopped.add(logger);
             }
         }
-        if (root instanceof AsyncLoggerConfig) {
+        if (root instanceof AsyncLoggerConfig & !alreadyStopped.contains(root)) { // LOG4J2-807
             root.stop();
             asyncLoggerConfigCount++;
             alreadyStopped.add(root);

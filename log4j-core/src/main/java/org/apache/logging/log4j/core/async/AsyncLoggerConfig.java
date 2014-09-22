@@ -119,10 +119,14 @@ public class AsyncLoggerConfig extends LoggerConfig {
     void asyncCallAppenders(final LogEvent event) {
         super.callAppenders(event);
     }
+    
+    private String displayName() {
+        return LogManager.ROOT_LOGGER_NAME.equals(getName()) ? "root" : getName();
+    }
 
     @Override
     public void start() {
-        LOGGER.trace("AsyncLoggerConfig[{}] starting...", getName());
+        LOGGER.trace("AsyncLoggerConfig[{}] starting...", displayName());
         this.setStarting();
         if (helper == null) {
             helper = new AsyncLoggerConfigHelper(this);
@@ -134,7 +138,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
 
     @Override
     public void stop() {
-        LOGGER.trace("AsyncLoggerConfig[{}] stopping...", getName());
+        LOGGER.trace("AsyncLoggerConfig[{}] stopping...", displayName());
         this.setStopping();
         AsyncLoggerConfigHelper.release();
         super.stop();

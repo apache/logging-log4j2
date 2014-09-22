@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.1" date="2014-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-807" dev="rpopma" type="fix">
+        Prevent NPE when configuration with AsyncLogger/AsyncRoot is reloaded.
+      </action>
       <action issue="LOG4J2-848" dev="ggregory" type="add">
         Add a Java lookup to provide nicely formatted runtime version information.
       </action>
