@@ -27,7 +27,7 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Defines the minimum set of levels recognized by the system, that is
  * <code>OFF</code>, <code>FATAL</code>, <code>ERROR</code>,
- * <code>WARN</code>, <code>INFO</code, <code>DEBUG</code>
+ * <code>WARN</code>, <code>INFO</code>, <code>DEBUG</code>
  * and <code>ALL</code>.
  * <p>
  * The <code>Level</code> class may be subclassed to define a larger

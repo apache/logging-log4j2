@@ -153,9 +153,10 @@ public class Priority {
      * Returns {@code true} if this level has a higher or equal
      * level than the level passed as argument, {@code false}
      * otherwise.
-     * <p/>
-     * <p>You should think twice before overriding the default
+     * <p>
+     * You should think twice before overriding the default
      * implementation of <code>isGreaterOrEqual</code> method.
+     * </p>
      * @param r The Priority to check.
      * @return true if the current level is greater or equal to the specified Priority.
      */
