@@ -95,6 +95,70 @@
   </PatternLayout>
 </File>]]></pre>
         </subsection>
+        <subsection name="JavaLookup">
+          <a name="JavaLookup"/>
+          <p>
+            The JavaLookup allows Java environment information to be retrieved in convenient preformatted strings
+            using the <code>java:</code> prefix.
+          </p>
+          <table>
+            <tr>
+              <th>Key</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>version</td>
+              <td>
+                <p>The short Java version, like:</p>
+                <p><code>Java version 1.7.0_67</code></p>
+              </td>
+            </tr>
+            <tr>
+              <td>runtime</td>
+              <td>
+                <p>The Java runtime version, like:</p>
+                <p><code>Java(TM) SE Runtime Environment (build 1.7.0_67-b01) from Oracle Corporation</code></p>
+              </td>
+            </tr>
+            <tr>
+              <td>vm</td>
+              <td>
+                <p>The Java VM version, like:</p>
+                <p><code>Java HotSpot(TM) 64-Bit Server VM (build 24.65-b04, mixed mode)</code></p>
+              </td>
+            </tr>
+            <tr>
+              <td>os</td>
+              <td>
+                <p>The OS version, like:</p>
+                <p><code>Windows 7 6.1 Service Pack 1, architecture: amd64-64</code></p>
+              </td>
+            </tr>
+            <tr>
+              <td>locale</td>
+              <td>
+                <p>Hardware information, like:</p>
+                <p><code>default locale: en_US, platform encoding: Cp1252</code></p>
+              </td>
+            </tr>
+            <tr>
+              <td>hw</td>
+              <td>
+                <p>Hardware information, like:</p>
+                <p><code>processors: 4, architecture: amd64-64, instruction sets: amd64</code></p>
+              </td>
+            </tr>
+          </table>
+          <p>
+            For example:
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+<File name="Application" fileName="application.log">
+  <PatternLayout header="${java:runtime} - ${java:vm} - ${java:os}">
+    <Pattern>%d %m%n</Pattern>
+  </PatternLayout>
+</File>]]></pre>
+        </subsection>
         <subsection name="MapLookup">
           <a name="MapLookup"/>
           <p>
