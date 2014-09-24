@@ -28,7 +28,14 @@ import org.apache.logging.log4j.core.config.plugins.util.PluginType;
  */
 public class Node {
 
+    /**
+     * Main plugin category for plugins which are represented as a configuration node. Such plugins tend to be
+     * available as XML elements in a configuration file.
+     *
+     * @since 2.1
+     */
     public static final String CATEGORY = "Core";
+
     private final Node parent;
     private final String name;
     private String value;
