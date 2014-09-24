@@ -22,21 +22,22 @@ import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 
+import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 
 /**
  * Key/Value pair configuration item.
- * 
+ *
  * @since 2.1 implements {@link Serializable}
- * @since 2.1 implements {@link #hashCode()} and {@link #equals(Object)}  
+ * @since 2.1 implements {@link #hashCode()} and {@link #equals(Object)}
  */
-@Plugin(name = "KeyValuePair", category = "Core", printObject = true)
+@Plugin(name = "KeyValuePair", category = Node.CATEGORY, printObject = true)
 public final class KeyValuePair implements Serializable {
 
     private static final long serialVersionUID = 4331228262821046866L;
-    
+
     private final String key;
     private final String value;
 
