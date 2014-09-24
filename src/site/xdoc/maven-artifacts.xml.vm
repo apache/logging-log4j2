@@ -29,7 +29,7 @@
         provides the interface that applications should code to.
         Strictly speaking Log4j core is only needed at runtime and not at compile time.
       </p><p>
-        However, below we list Log4j core as compile time dependency
+        However, below we list Log4j core as a compile time dependency
         to improve the startup time for <a href="manual/plugins.html">custom plugins</a>.
       </p>
 
