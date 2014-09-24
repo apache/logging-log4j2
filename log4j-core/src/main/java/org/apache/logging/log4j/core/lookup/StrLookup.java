@@ -35,6 +35,12 @@ import org.apache.logging.log4j.core.LogEvent;
  * </p>
  */
 public interface StrLookup {
+
+    /**
+     * Main plugin category for StrLookup plugins.
+     *
+     * @since 2.1
+     */
     String CATEGORY = "Lookup";
 
     /**
