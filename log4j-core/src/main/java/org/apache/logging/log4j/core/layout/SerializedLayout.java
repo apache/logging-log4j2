@@ -20,14 +20,17 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
 /**
  * Formats a {@link LogEvent} in its Java serialized form.
  */
-@Plugin(name = "SerializedLayout", category = "Core", elementType = "layout", printObject = true)
+@Plugin(name = "SerializedLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class SerializedLayout extends AbstractLayout<LogEvent> {
 
     private static final long serialVersionUID = 1L;

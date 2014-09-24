@@ -21,9 +21,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
@@ -49,9 +51,9 @@ import org.apache.logging.log4j.core.pattern.RegexReplacement;
  *
  * See the Log4j Manual for details on the supported pattern converters.
  */
-@Plugin(name = "PatternLayout", category = "Core", elementType = "layout", printObject = true)
+@Plugin(name = "PatternLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class PatternLayout extends AbstractStringLayout {
-    
+
     private static final long serialVersionUID = 1L;
 
     /**

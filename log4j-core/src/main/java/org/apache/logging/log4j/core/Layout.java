@@ -43,6 +43,14 @@ import java.util.Map;
  * byte arrays as character streams.
  */
 public interface Layout<T extends Serializable> {
+
+    /**
+     * Main plugin element type for Layout plugins.
+     *
+     * @since 2.1
+     */
+    String ELEMENT_TYPE = "layout";
+
     /**
      * Returns the format for the layout format.
      * @return The footer.

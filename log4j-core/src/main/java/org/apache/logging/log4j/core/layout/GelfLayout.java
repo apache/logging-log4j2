@@ -28,7 +28,9 @@ import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPOutputStream;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -49,7 +51,7 @@ import com.fasterxml.jackson.core.io.JsonStringEncoder;
  * <p>
  * Configure as follows to send to a Graylog2 server:
  * </p>
- * 
+ *
  * <pre>
  * &lt;Appenders&gt;
  *        &lt;Socket name="Graylog" protocol="udp" host="graylog.domain.com" port="12201"&gt;
@@ -64,7 +66,7 @@ import com.fasterxml.jackson.core.io.JsonStringEncoder;
  * @see <a href="http://graylog2.org/gelf">GELF home page</a>
  * @see <a href="http://graylog2.org/resources/gelf/specification">GELF specification</a>
  */
-@Plugin(name = "GelfLayout", category = "Core", elementType = "layout", printObject = true)
+@Plugin(name = "GelfLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class GelfLayout extends AbstractStringLayout {
 
     public static enum CompressionType {
@@ -101,13 +103,13 @@ public final class GelfLayout extends AbstractStringLayout {
     private static final BigDecimal TIME_DIVISOR = new BigDecimal(1000);
 
     @PluginFactory
-    public static GelfLayout createLayout( 
-            //@formatter:off            
+    public static GelfLayout createLayout(
+            //@formatter:off
             @PluginAttribute("host") final String host,
             @PluginElement("AdditionalField") final KeyValuePair[] additionalFields,
-            @PluginAttribute(value = "compressionThreshold", 
+            @PluginAttribute(value = "compressionThreshold",
                 defaultString = "GZIP") final CompressionType compressionType,
-            @PluginAttribute(value = "compressionThreshold", 
+            @PluginAttribute(value = "compressionThreshold",
                 defaultInt= COMPRESSION_THRESHOLD) final int compressionThreshold) {
             // @formatter:on
         return new GelfLayout(host, additionalFields, compressionType, compressionThreshold);

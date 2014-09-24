@@ -20,6 +20,8 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -184,7 +186,7 @@ import org.apache.logging.log4j.core.util.Charsets;
  * Message content may contain, of course, end-of-lines.
  * </p>
  */
-@Plugin(name = "XmlLayout", category = "Core", elementType = "layout", printObject = true)
+@Plugin(name = "XmlLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class XmlLayout extends AbstractJacksonLayout {
 
     private static final long serialVersionUID = 1L;

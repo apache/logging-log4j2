@@ -26,7 +26,9 @@ import java.lang.management.ManagementFactory;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
@@ -42,7 +44,7 @@ import org.apache.logging.log4j.core.util.Transform;
  * Appenders using this layout should have their encoding set to UTF-8 or UTF-16, otherwise events containing
  * non ASCII characters could result in corrupted log files.
  */
-@Plugin(name = "HtmlLayout", category = "Core", elementType = "layout", printObject = true)
+@Plugin(name = "HtmlLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class HtmlLayout extends AbstractStringLayout {
 
     private static final long serialVersionUID = 1L;

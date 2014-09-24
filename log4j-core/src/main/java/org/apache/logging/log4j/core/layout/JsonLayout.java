@@ -20,6 +20,8 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -789,11 +791,11 @@ import org.apache.logging.log4j.core.util.Charsets;
  * may contain, of course, escaped end-of-lines.
  * </p>
  */
-@Plugin(name = "JsonLayout", category = "Core", elementType = "layout", printObject = true)
+@Plugin(name = "JsonLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class JsonLayout extends AbstractJacksonLayout {
 
     static final String CONTENT_TYPE = "application/json";
-    
+
     private static final long serialVersionUID = 1L;
 
     protected JsonLayout(final boolean locationInfo, final boolean properties, final boolean complete, final boolean compact,

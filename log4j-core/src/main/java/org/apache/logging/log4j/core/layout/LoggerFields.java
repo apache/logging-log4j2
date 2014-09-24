@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -30,7 +31,7 @@ import org.apache.logging.log4j.message.StructuredDataId;
 /**
  * A LoggerFields container.
  */
-@Plugin(name = "LoggerFields", category = "Core", printObject = true)
+@Plugin(name = "LoggerFields", category = Node.CATEGORY, printObject = true)
 public final class LoggerFields {
 
     private final Map<String, String> map;
