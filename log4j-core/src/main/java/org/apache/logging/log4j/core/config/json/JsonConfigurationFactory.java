@@ -26,7 +26,7 @@ import org.apache.logging.log4j.core.util.Loader;
 /**
  *
  */
-@Plugin(name = "JsonConfigurationFactory", category = "ConfigurationFactory")
+@Plugin(name = "JsonConfigurationFactory", category = ConfigurationFactory.CATEGORY)
 @Order(6)
 public class JsonConfigurationFactory extends ConfigurationFactory {
 

@@ -23,7 +23,7 @@ import org.apache.logging.log4j.core.config.Order;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.util.Loader;
 
-@Plugin(name = "YamlConfigurationFactory", category = "ConfigurationFactory")
+@Plugin(name = "YamlConfigurationFactory", category = ConfigurationFactory.CATEGORY)
 @Order(7)
 public class YamlConfigurationFactory extends ConfigurationFactory {
 

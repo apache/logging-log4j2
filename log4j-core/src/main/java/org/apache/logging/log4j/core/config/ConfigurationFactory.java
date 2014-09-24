@@ -83,6 +83,8 @@ public abstract class ConfigurationFactory {
     /**
      * Plugin category used to inject a ConfigurationFactory {@link org.apache.logging.log4j.core.config.plugins.Plugin}
      * class.
+     *
+     * @since 2.1
      */
     public static final String CATEGORY = "ConfigurationFactory";
 
