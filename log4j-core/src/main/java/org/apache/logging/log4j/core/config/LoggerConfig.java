@@ -58,7 +58,7 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Logger object that is created via configuration.
  */
-@Plugin(name = "logger", category = "Core", printObject = true)
+@Plugin(name = "logger", category = Node.CATEGORY, printObject = true)
 public class LoggerConfig extends AbstractFilterable {
 
     private static final long serialVersionUID = 1L;

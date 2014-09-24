@@ -26,7 +26,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Represents a key/value pair in the configuration.
  */
-@Plugin(name = "property", category = "Core", printObject = true)
+@Plugin(name = "property", category = Node.CATEGORY, printObject = true)
 public final class Property {
 
     private static final Logger LOGGER = StatusLogger.getLogger();

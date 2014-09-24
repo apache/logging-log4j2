@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -64,7 +65,7 @@ import org.apache.logging.log4j.util.Strings;
  * with immediateFlush=false, there will never be any items left in the buffer;
  * all log events will all be written to disk in a very efficient manner.
  */
-@Plugin(name = "asyncLogger", category = "Core", printObject = true)
+@Plugin(name = "asyncLogger", category = Node.CATEGORY, printObject = true)
 public class AsyncLoggerConfig extends LoggerConfig {
 
     private static final long serialVersionUID = 1L;
@@ -119,7 +120,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
     void asyncCallAppenders(final LogEvent event) {
         super.callAppenders(event);
     }
-    
+
     private String displayName() {
         return LogManager.ROOT_LOGGER_NAME.equals(getName()) ? "root" : getName();
     }
@@ -147,7 +148,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
     /**
      * Creates and returns a new {@code RingBufferAdmin} that instruments the
      * ringbuffer of this {@code AsyncLoggerConfig}.
-     * 
+     *
      * @param contextName name of the {@code LoggerContext}
      */
     public RingBufferAdmin createRingBufferAdmin(final String contextName) {

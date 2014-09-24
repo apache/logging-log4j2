@@ -29,7 +29,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * An Appender reference.
  */
-@Plugin(name = "AppenderRef", category = "Core", printObject = true)
+@Plugin(name = "AppenderRef", category = Node.CATEGORY, printObject = true)
 @PluginAliases("appender-ref")
 public final class AppenderRef {
     private static final Logger LOGGER = StatusLogger.getLogger();
