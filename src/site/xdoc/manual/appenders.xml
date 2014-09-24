@@ -33,7 +33,7 @@
           implement the <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/Appender.html">Appender</a>
           interface. Most Appenders will extend
           <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/appender/AbstractAppender.html">AbstractAppender</a>
-          which adds <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/Lifecycle.html">Lifecycle</a>
+          which adds <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/LifeCycle.html">Lifecycle</a>
           and <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/filter/Filterable.html">Filterable</a>
           support. Lifecycle allows components to finish initialization after configuration has completed and to
           perform cleanup during shutdown. Filterable allows the component to have Filters attached to it which are
@@ -41,7 +41,7 @@
         </p>
         <p>
           Appenders usually are only responsible for writing the event data to the target destination. In most cases
-          they delegate responsibility for formatting the event to a <a href="../layouts.html">layout</a>. Some
+          they delegate responsibility for formatting the event to a <a href="layouts.html">layout</a>. Some
           appenders wrap other appenders so that they can modify the LogEvent, handle a failure in an Appender,
           route the event to a subordinate Appender based on advanced Filter criteria or provide similar functionality
           that does not directly format the event for viewing.
