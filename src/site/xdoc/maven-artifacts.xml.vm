@@ -24,6 +24,14 @@
 
   <body>
     <section name="Maven, Ivy, and Gradle Artifacts">
+      <p>
+        Log4j 2 is broken up in an API and an implementation (core), where the API
+        provides the interface that applications should code to.
+        Strictly speaking Log4j core is only needed at runtime and not at compile time.
+      </p><p>
+        However, below we list Log4j core as compile time dependency
+        to improve the startup time for <a href="manual/plugins.html">custom plugins</a>.
+      </p>
 
       <subsection name="Using Log4j in your Apache Maven build">
         <p>
