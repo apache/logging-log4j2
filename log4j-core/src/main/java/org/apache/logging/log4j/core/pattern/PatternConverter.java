@@ -20,6 +20,14 @@ package org.apache.logging.log4j.core.pattern;
  * Interface that all PatternConverters must implement.
  */
 public interface PatternConverter {
+
+    /**
+     * Main plugin category for PatternConverter plugins.
+     *
+     * @since 2.1
+     */
+    String CATEGORY = "Converter";
+
     /**
      * Formats an object into a string buffer.
      *

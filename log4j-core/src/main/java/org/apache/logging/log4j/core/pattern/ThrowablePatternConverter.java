@@ -31,7 +31,7 @@ import org.apache.logging.log4j.util.Strings;
  * unless this converter's option is 'short', where it just outputs the first line of the trace, or if
  * the number of lines to print is explicitly specified.
  */
-@Plugin(name = "ThrowablePatternConverter", category = "Converter")
+@Plugin(name = "ThrowablePatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "ex", "throwable", "exception" })
 public class ThrowablePatternConverter extends LogEventPatternConverter {
 

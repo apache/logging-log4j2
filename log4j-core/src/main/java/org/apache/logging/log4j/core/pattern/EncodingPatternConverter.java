@@ -26,7 +26,7 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 /**
  * Returns the event's rendered message in a StringBuilder.
  */
-@Plugin(name = "encode", category = "Converter")
+@Plugin(name = "encode", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "enc", "encode" })
 public final class EncodingPatternConverter extends LogEventPatternConverter {
 

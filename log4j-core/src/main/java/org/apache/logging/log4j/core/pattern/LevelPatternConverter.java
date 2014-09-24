@@ -28,7 +28,7 @@ import org.apache.logging.log4j.core.util.Patterns;
 /**
  * Returns the event's level in a StringBuilder.
  */
-@Plugin(name = "LevelPatternConverter", category = "Converter")
+@Plugin(name = "LevelPatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "p", "level" })
 public final class LevelPatternConverter extends LogEventPatternConverter {
     private static final String OPTION_LENGTH = "length";

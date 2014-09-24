@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 /**
  * Replacement pattern converter.
  */
-@Plugin(name = "replace", category = "Converter")
+@Plugin(name = "replace", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "replace" })
 public final class RegexReplacementConverter extends LogEventPatternConverter {
 

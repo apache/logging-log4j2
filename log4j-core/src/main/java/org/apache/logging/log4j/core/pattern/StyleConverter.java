@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.util.Patterns;
 /**
  * Style pattern converter. Adds ANSI color styling to the result of the enclosed pattern.
  */
-@Plugin(name = "style", category = "Converter")
+@Plugin(name = "style", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "style" })
 public final class StyleConverter extends LogEventPatternConverter implements AnsiConverter {
 

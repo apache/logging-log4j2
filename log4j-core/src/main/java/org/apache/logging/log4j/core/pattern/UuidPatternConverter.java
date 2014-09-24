@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.util.UuidUtil;
 /**
  * Formats the event sequence number.
  */
-@Plugin(name = "UuidPatternConverter", category = "Converter")
+@Plugin(name = "UuidPatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "u", "uuid" })
 public final class UuidPatternConverter extends LogEventPatternConverter {
 

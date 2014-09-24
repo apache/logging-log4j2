@@ -30,7 +30,7 @@ import org.apache.logging.log4j.message.MapMessage;
  * java.util.Hashtable.toString(), or to output the value of a specific key
  * within the Map.
  */
-@Plugin(name = "MapPatternConverter", category = "Converter")
+@Plugin(name = "MapPatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "K", "map", "MAP" })
 public final class MapPatternConverter extends LogEventPatternConverter {
     /**

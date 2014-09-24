@@ -30,7 +30,7 @@ import org.apache.logging.log4j.core.util.Constants;
  * The extended stack trace will also include the location of where the class was loaded from and the
  * version of the jar if available.
  */
-@Plugin(name = "RootThrowablePatternConverter", category = "Converter")
+@Plugin(name = "RootThrowablePatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "rEx", "rThrowable", "rException" })
 public final class RootThrowablePatternConverter extends ThrowablePatternConverter {
 
