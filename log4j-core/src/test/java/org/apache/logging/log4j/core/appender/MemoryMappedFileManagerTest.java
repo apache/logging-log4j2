@@ -29,6 +29,8 @@ import static org.junit.Assert.*;
 
 /**
  * Tests the MemoryMappedFileManager class.
+ * 
+ * @since 2.1
  */
 public class MemoryMappedFileManagerTest {
 

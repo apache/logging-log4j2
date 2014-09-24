@@ -46,6 +46,7 @@ import org.apache.logging.log4j.core.util.Closer;
  * @see <a
  *      href="http://stackoverflow.com/questions/9261316/memory-mapped-mappedbytebuffer-or-direct-bytebuffer-for-db-implementation">http://stackoverflow.com/questions/9261316/memory-mapped-mappedbytebuffer-or-direct-bytebuffer-for-db-implementation</a>
  * 
+ * @since 2.1
  */
 public class MemoryMappedFileManager extends OutputStreamManager {
     static final int DEFAULT_REGION_LENGTH = 32 * 1024 * 1024;

@@ -36,6 +36,8 @@ import org.apache.logging.log4j.core.util.Integers;
 
 /**
  * Memory Mapped File Appender.
+ * 
+ * @since 2.1
  */
 @Plugin(name = "MemoryMappedFile", category = "Core", elementType = "appender", printObject = true)
 public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender<MemoryMappedFileManager> {

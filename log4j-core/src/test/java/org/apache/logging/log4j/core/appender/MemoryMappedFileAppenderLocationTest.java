@@ -36,6 +36,8 @@ import static org.junit.Assert.*;
  * Tests that logged strings and their location appear in the file,
  * that the file size is the next power of two of the specified mapped region length
  * and that the file is shrunk to its actual usage when done.
+ * 
+ * @since 2.1
  */
 public class MemoryMappedFileAppenderLocationTest {
 

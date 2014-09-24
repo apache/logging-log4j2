@@ -35,6 +35,8 @@ import static org.junit.Assert.*;
  * Tests that logged strings appear in the file,
  * that the default file size is used if not specified
  * and that the file is shrunk to its actual usage when done.
+ * 
+ * @since 2.1
  */
 public class MemoryMappedFileAppenderSimpleTest {
 
