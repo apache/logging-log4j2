@@ -188,6 +188,32 @@ dependencies {
   compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '${Log4jReleaseVersion}'
 }
 ]]></pre>
+        <h4>JUL Adapter</h4>
+        <p>If existing components use Java Util Logging and you want to have this logging routed to Log4j 2,
+        then add the following.
+        </p>
+        <code>pom.xml</code>
+        <pre class="prettyprint linenums"><![CDATA[
+<dependencies>
+  <dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-jul</artifactId>
+    <version>${Log4jReleaseVersion}</version>
+  </dependency>
+</dependencies>
+]]></pre>
+        <code>ivy.xml</code>
+        <pre class="prettyprint linenums"><![CDATA[
+<dependencies>
+  <dependency org="org.apache.logging.log4j" name="log4j-jul" rev="${Log4jReleaseVersion}" />
+</dependencies>
+]]></pre>
+        <code>build.gradle</code>
+        <pre class="prettyprint linenums"><![CDATA[
+dependencies {
+  compile group: 'org.apache.logging.log4j', name: 'log4j-jul', version: '${Log4jReleaseVersion}'
+}
+]]></pre>
           <h4>Web Servlet Support</h4>
           <p>
             In order to properly support and handle the ClassLoader environment and container lifecycle of a web
@@ -296,8 +322,59 @@ dependencies {
   compile group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '${Log4jReleaseVersion}'
 }
 ]]></pre>
-        <!-- TODO: NoSQL dependencies -->
-        <!-- TODO: JMS dependencies -->
+        <h4>NoSQL Appenders</h4>
+        <p>If your configuration uses one of the NoSQL Appenders, then add the following.
+        </p>
+        <code>pom.xml</code>
+        <pre class="prettyprint linenums"><![CDATA[
+<dependencies>
+  <dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-nosql</artifactId>
+    <version>${Log4jReleaseVersion}</version>
+  </dependency>
+</dependencies>
+]]></pre>
+        <code>ivy.xml</code>
+        <pre class="prettyprint linenums"><![CDATA[
+<dependencies>
+  <dependency org="org.apache.logging.log4j" name="log4j-nosql" rev="${Log4jReleaseVersion}" />
+</dependencies>
+]]></pre>
+        <code>build.gradle</code>
+        <pre class="prettyprint linenums"><![CDATA[
+dependencies {
+  compile group: 'org.apache.logging.log4j', name: 'log4j-nosql', version: '${Log4jReleaseVersion}'
+}
+]]></pre>
+        <h4>IO Streams</h4>
+        <p>Log4j IO Streams allow applications to have data that is written to an OutputStream
+          or a Writer be redirected to a Logger, or have data that is read from an InputStream or
+          a Reader be wiretapped by a Logger.
+          To use IO Streams, add the following.
+        </p>
+        <code>pom.xml</code>
+        <pre class="prettyprint linenums"><![CDATA[
+<dependencies>
+  <dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-iostreams</artifactId>
+    <version>${Log4jReleaseVersion}</version>
+  </dependency>
+</dependencies>
+]]></pre>
+        <code>ivy.xml</code>
+        <pre class="prettyprint linenums"><![CDATA[
+<dependencies>
+  <dependency org="org.apache.logging.log4j" name="log4j-iostreams" rev="${Log4jReleaseVersion}" />
+</dependencies>
+]]></pre>
+        <code>build.gradle</code>
+        <pre class="prettyprint linenums"><![CDATA[
+dependencies {
+  compile group: 'org.apache.logging.log4j', name: 'log4j-iostreams', version: '${Log4jReleaseVersion}'
+}
+]]></pre>
       </subsection>
     </section>
   </body>

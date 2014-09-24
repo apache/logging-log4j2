@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.1" date="2014-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-856" dev="rpopma" type="add">
+        Documentation: add sections on the JUL Adapter, IO Streams and NoSQL Appenders to the Maven and Ivy page.
+      </action>
       <action issue="LOG4J2-797" dev="rpopma" type="fix" due-to="Andreas Rytina">
         Documentation: clarified why log4j-core is a compile time dependency in Maven and Ivy page.
       </action>
