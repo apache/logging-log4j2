@@ -23,8 +23,10 @@ import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -36,7 +38,7 @@ import org.apache.logging.log4j.message.StructuredDataMessage;
 /**
  * Filter based on data in a StructuredDataMessage.
  */
-@Plugin(name = "StructuredDataFilter", category = "Core", elementType = "filter", printObject = true)
+@Plugin(name = "StructuredDataFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
 public final class StructuredDataFilter extends MapFilter {
 
     private static final long serialVersionUID = 1L;

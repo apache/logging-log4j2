@@ -24,8 +24,10 @@ import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -39,7 +41,7 @@ import org.apache.logging.log4j.message.Message;
  * calling Message.getMessageFormat (true) or Message.getFormattedMessage() (false). The default is false.
  *
  */
-@Plugin(name = "RegexFilter", category = "Core", elementType = "filter", printObject = true)
+@Plugin(name = "RegexFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
 public final class RegexFilter extends AbstractFilter {
 
     private static final long serialVersionUID = 1L;
@@ -103,7 +105,7 @@ public final class RegexFilter extends AbstractFilter {
 
     /**
      * Create a Filter that matches a regular expression.
-     * 
+     *
      * @param regex
      *        The regular expression to match.
      * @param patternFlags
@@ -124,8 +126,8 @@ public final class RegexFilter extends AbstractFilter {
             @PluginAttribute("regex") final String regex,
             @PluginElement("PatternFlags") final String[] patternFlags,
             @PluginAttribute("useRawMsg") final Boolean useRawMsg,
-            @PluginAttribute("onMatch") final Result match, 
-            @PluginAttribute("onMismatch") final Result mismatch) 
+            @PluginAttribute("onMatch") final Result match,
+            @PluginAttribute("onMismatch") final Result mismatch)
             //@formatter:on
             throws IllegalArgumentException, IllegalAccessException {
         if (regex == null) {

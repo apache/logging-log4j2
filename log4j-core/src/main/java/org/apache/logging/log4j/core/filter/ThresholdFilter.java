@@ -18,8 +18,10 @@ package org.apache.logging.log4j.core.filter;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -33,7 +35,7 @@ import org.apache.logging.log4j.message.Message;
  *
  * The default Level is ERROR.
  */
-@Plugin(name = "ThresholdFilter", category = "Core", elementType = "filter", printObject = true)
+@Plugin(name = "ThresholdFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
 public final class ThresholdFilter extends AbstractFilter {
 
     private static final long serialVersionUID = 1L;

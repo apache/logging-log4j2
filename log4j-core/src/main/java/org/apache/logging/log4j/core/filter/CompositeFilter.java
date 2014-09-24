@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -36,7 +37,7 @@ import org.apache.logging.log4j.message.Message;
 /**
  * Composes and invokes one or more filters.
  */
-@Plugin(name = "filters", category = "Core", printObject = true)
+@Plugin(name = "filters", category = Node.CATEGORY, printObject = true)
 public final class CompositeFilter extends AbstractLifeCycle implements Iterable<Filter>, Filter {
 
     private static final long serialVersionUID = 1L;
@@ -86,7 +87,7 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
 
     /**
      * Returns whether this composite contains any filters.
-     * 
+     *
      * @return whether this composite contains any filters.
      */
     public boolean isEmpty() {

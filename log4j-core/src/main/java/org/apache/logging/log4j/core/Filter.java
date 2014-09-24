@@ -33,6 +33,14 @@ import org.apache.logging.log4j.util.EnglishEnums;
 public interface Filter extends LifeCycle {
 
     /**
+     * Main {@linkplain org.apache.logging.log4j.core.config.plugins.Plugin#elementType() plugin element type} for
+     * Filter plugins.
+     *
+     * @since 2.1
+     */
+    String ELEMENT_TYPE = "filter";
+
+    /**
      * The result that can returned from a filter method call.
      */
      enum Result {

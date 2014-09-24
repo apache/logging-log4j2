@@ -23,8 +23,10 @@ import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -36,9 +38,9 @@ import org.apache.logging.log4j.message.Message;
 /**
  * A Filter that operates on a Map.
  */
-@Plugin(name = "MapFilter", category = "Core", elementType = "filter", printObject = true)
+@Plugin(name = "MapFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
 public class MapFilter extends AbstractFilter {
-    
+
     private static final long serialVersionUID = 1L;
 
     private final Map<String, List<String>> map;

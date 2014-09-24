@@ -21,7 +21,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -29,7 +31,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 /**
  * Filters events that fall within a specified time period in each day.
  */
-@Plugin(name = "TimeFilter", category = "Core", elementType = "filter", printObject = true)
+@Plugin(name = "TimeFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
 public final class TimeFilter extends AbstractFilter {
 
     private static final long serialVersionUID = 1L;
