@@ -26,7 +26,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Looks up keys from system properties.
  */
-@Plugin(name = "sys", category = "Lookup")
+@Plugin(name = "sys", category = StrLookup.CATEGORY)
 public class SystemPropertiesLookup extends AbstractLookup {
 
     private static final Logger LOGGER = StatusLogger.getLogger();

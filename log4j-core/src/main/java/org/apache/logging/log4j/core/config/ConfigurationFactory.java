@@ -58,8 +58,8 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * with the instance of the ConfigurationFactory to be used. This must be called
  * before any other calls to Log4j.</li>
  * <li>
- * A ConfigurationFactory implementation can be added to the classpath and
- * configured as a plugin. The Order annotation should be used to configure the
+ * A ConfigurationFactory implementation can be added to the classpath and configured as a plugin in the
+ * {@link #CATEGORY ConfigurationFactory} category. The {@link Order} annotation should be used to configure the
  * factory to be the first one inspected. See
  * {@linkplain org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory} for an example.</li>
  * </ol>
@@ -79,6 +79,12 @@ public abstract class ConfigurationFactory {
      * Allow the location of the configuration file to be specified as a system property.
      */
     public static final String CONFIGURATION_FILE_PROPERTY = "log4j.configurationFile";
+
+    /**
+     * Plugin category used to inject a ConfigurationFactory {@link org.apache.logging.log4j.core.config.plugins.Plugin}
+     * class.
+     */
+    public static final String CATEGORY = "ConfigurationFactory";
 
     /**
      * Allow subclasses access to the status logger without creating another instance.
@@ -129,7 +135,7 @@ public abstract class ConfigurationFactory {
                     if (factoryClass != null) {
                         addFactory(list, factoryClass);
                     }
-                    final PluginManager manager = new PluginManager("ConfigurationFactory");
+                    final PluginManager manager = new PluginManager(CATEGORY);
                     manager.collectPlugins();
                     final Map<String, PluginType<?>> plugins = manager.getPlugins();
                     final Collection<WeightedFactory> ordered = new TreeSet<WeightedFactory>();

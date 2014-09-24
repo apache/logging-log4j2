@@ -27,7 +27,7 @@ import org.apache.logging.log4j.message.MapMessage;
 /**
  * A map-based lookup.
  */
-@Plugin(name = "map", category = "Lookup")
+@Plugin(name = "map", category = StrLookup.CATEGORY)
 public class MapLookup implements StrLookup {
 
     /**
@@ -69,7 +69,7 @@ public class MapLookup implements StrLookup {
      * <li>{@code "main:--file"} = {@code "path/file.txt"}</li>
      * <li>{@code "main:-x"} = {@code "2"}</li>
      * </ul>
-     * 
+     *
      * @param args
      *        An application's {@code public static main(String[])} arguments.
      * @since 2.1

@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Proxies all the other {@link StrLookup}s.
@@ -54,7 +54,7 @@ public class Interpolator extends AbstractLookup {
      */
     public Interpolator(final StrLookup defaultLookup, final List<String> pluginPackages) {
         this.defaultLookup = defaultLookup == null ? new MapLookup(new HashMap<String, String>()) : defaultLookup;
-        final PluginManager manager = new PluginManager("Lookup");
+        final PluginManager manager = new PluginManager(CATEGORY);
         manager.collectPlugins(pluginPackages);
         final Map<String, PluginType<?>> plugins = manager.getPlugins();
 
@@ -77,7 +77,7 @@ public class Interpolator extends AbstractLookup {
     }
 
     /**
-     * Create the dInterpolator using only Lookups that work without an event and initial properties.
+     * Creates the Interpolator using only Lookups that work without an event and initial properties.
      */
     public Interpolator(final Map<String, String> properties) {
         this.defaultLookup = new MapLookup(properties == null ? new HashMap<String, String>() : properties);

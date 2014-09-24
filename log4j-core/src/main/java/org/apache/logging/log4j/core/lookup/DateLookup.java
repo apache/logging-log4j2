@@ -30,7 +30,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Formats the current date or the date in the LogEvent. The "key" is used as the format String.
  */
-@Plugin(name = "date", category = "Lookup")
+@Plugin(name = "date", category = StrLookup.CATEGORY)
 public class DateLookup implements StrLookup {
 
     private static final Logger LOGGER = StatusLogger.getLogger();

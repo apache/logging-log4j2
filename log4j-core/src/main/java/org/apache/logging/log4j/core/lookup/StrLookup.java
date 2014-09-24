@@ -35,6 +35,8 @@ import org.apache.logging.log4j.core.LogEvent;
  * </p>
  */
 public interface StrLookup {
+    String CATEGORY = "Lookup";
+
     /**
      * Looks up a String key to a String value.
      * <p>

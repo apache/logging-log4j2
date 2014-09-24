@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.config.plugins.util.PluginType;
  */
 public class Node {
 
+    public static final String CATEGORY = "Core";
     private final Node parent;
     private final String name;
     private String value;

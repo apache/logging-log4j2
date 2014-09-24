@@ -25,27 +25,43 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Looks up keys related to Java: Java version, JRE version, VM version, and so on.
  */
-@Plugin(name = "java", category = "Lookup")
+@Plugin(name = "java", category = StrLookup.CATEGORY)
 public class JavaLookup extends AbstractLookup {
 
     private final SystemPropertiesLookup spLookup = new SystemPropertiesLookup();
 
+    /**
+     * Accessible through the Lookup key {@code hw}.
+     * @return hardware processor information.
+     */
     public String getHardware() {
         return "processors: " + Runtime.getRuntime().availableProcessors() + ", architecture: "
                 + getSystemProperty("os.arch") + this.getSystemProperty("-", "sun.arch.data.model")
                 + this.getSystemProperty(", instruction sets: ", "sun.cpu.isalist");
     }
 
+    /**
+     * Accessible through the Lookup key {@code locale}.
+     * @return system locale and file encoding information.
+     */
     public String getLocale() {
         return "default locale: " + Locale.getDefault() + ", platform encoding: " + getSystemProperty("file.encoding");
     }
 
+    /**
+     * Accessible through the Lookup key {@code os}.
+     * @return operating system information.
+     */
     public String getOperatingSystem() {
         return getSystemProperty("os.name") + " " + getSystemProperty("os.version")
                 + getSystemProperty(" ", "sun.os.patch.level") + ", architecture: " + getSystemProperty("os.arch")
                 + getSystemProperty("-", "sun.arch.data.model");
     }
 
+    /**
+     * Accessible through the Lookup key {@code runtime}.
+     * @return Java Runtime Environment information.
+     */
     public String getRuntime() {
         return getSystemProperty("java.runtime.name") + " (build " + getSystemProperty("java.runtime.version")
                 + ") from " + getSystemProperty("java.vendor");
@@ -63,6 +79,10 @@ public class JavaLookup extends AbstractLookup {
         return prefix + value;
     }
 
+    /**
+     * Accessible through the Lookup key {@code vm}.
+     * @return Java Virtual Machine information.
+     */
     public String getVirtualMachine() {
         return getSystemProperty("java.vm.name") + " (build " + getSystemProperty("java.vm.version") + ", "
                 + getSystemProperty("java.vm.info") + ")";
@@ -70,7 +90,7 @@ public class JavaLookup extends AbstractLookup {
 
     /**
      * Looks up the value of the environment variable.
-     * 
+     *
      * @param event
      *        The current LogEvent (is ignored by this StrLookup).
      * @param key

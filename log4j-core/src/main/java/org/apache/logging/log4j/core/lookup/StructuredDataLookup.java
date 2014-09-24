@@ -23,7 +23,7 @@ import org.apache.logging.log4j.message.StructuredDataMessage;
 /**
  * Looks up keys from {@link org.apache.logging.log4j.message.StructuredDataMessage} log messages.
  */
-@Plugin(name = "sd", category = "Lookup")
+@Plugin(name = "sd", category = StrLookup.CATEGORY)
 public class StructuredDataLookup implements StrLookup {
 
     /**

@@ -22,7 +22,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 /**
  * Looks up keys from environment variables.
  */
-@Plugin(name = "env", category = "Lookup")
+@Plugin(name = "env", category = StrLookup.CATEGORY)
 public class EnvironmentLookup extends AbstractLookup {
 
     /**

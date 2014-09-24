@@ -8,11 +8,11 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 
 /**
  * Maps JVM input arguments (but not main arguments) using JMX to acquire JVM arguments.
- * 
+ *
  * @see java.lang.management.RuntimeMXBean#getInputArguments()
  * @since 2.1
  */
-@Plugin(name = "jvmrunargs", category = "Lookup")
+@Plugin(name = "jvmrunargs", category = StrLookup.CATEGORY)
 public class JmxRuntimeInputArgumentsLookup extends MapLookup {
 
     static {

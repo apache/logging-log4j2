@@ -23,7 +23,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 /**
  * Looks up keys from {@link ThreadContext} objects..
  */
-@Plugin(name = "ctx", category = "Lookup")
+@Plugin(name = "ctx", category = StrLookup.CATEGORY)
 public class ContextMapLookup implements StrLookup {
 
     /**

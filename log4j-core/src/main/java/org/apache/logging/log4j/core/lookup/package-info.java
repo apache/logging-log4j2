@@ -15,6 +15,6 @@
  * limitations under the license.
  */
 /**
- * Log4j 2 Lookups.
+ * Log4j 2 Lookups. These are used in variable interpolation in various configuration attributes.
  */
 package org.apache.logging.log4j.core.lookup;

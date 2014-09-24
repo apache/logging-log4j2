@@ -29,7 +29,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Looks up keys from JNDI resources.
  */
-@Plugin(name = "jndi", category = "Lookup")
+@Plugin(name = "jndi", category = StrLookup.CATEGORY)
 public class JndiLookup extends AbstractLookup {
 
     private static final Logger LOGGER = StatusLogger.getLogger();

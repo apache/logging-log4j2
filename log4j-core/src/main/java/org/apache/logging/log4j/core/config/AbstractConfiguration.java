@@ -113,10 +113,10 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     protected AbstractConfiguration(final ConfigurationSource configurationSource) {
         this.configurationSource = Assert.requireNonNull(configurationSource, "configurationSource is null");
         componentMap.put(Configuration.CONTEXT_PROPERTIES, properties);
-        pluginManager = new PluginManager("Core");
+        pluginManager = new PluginManager(Node.CATEGORY);
         rootNode = new Node();
     }
-    
+
     @Override
     public ConfigurationSource getConfigurationSource() {
         return configurationSource;
@@ -140,7 +140,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         LOGGER.debug("Starting configuration {}", this);
         this.setStarting();
         pluginManager.collectPlugins(pluginPackages);
-        final PluginManager levelPlugins = new PluginManager("Level");
+        final PluginManager levelPlugins = new PluginManager(Level.CATEGORY);
         levelPlugins.collectPlugins(pluginPackages);
         final Map<String, PluginType<?>> plugins = levelPlugins.getPlugins();
         if (plugins != null) {
@@ -242,7 +242,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         for (final LoggerConfig logger : loggers.values()) {
             // clear appenders, even if this logger is already stopped.
             logger.clearAppenders();
-            
+
             // AsyncLoggerConfigHelper decreases its ref count when an AsyncLoggerConfig is stopped.
             // Stopping the same AsyncLoggerConfig twice results in an incorrect ref count and
             // the shared Disruptor may be shut down prematurely, resulting in NPE or other errors.
