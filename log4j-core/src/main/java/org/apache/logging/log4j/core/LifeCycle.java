@@ -18,7 +18,7 @@
 package org.apache.logging.log4j.core;
 
 /**
- * Generic object life cycle support interface. In Log4j, the main interface for handling
+ * All proper Java frameworks implement some sort of object life cycle. In Log4j, the main interface for handling
  * the life cycle context of an object is this one. An object first starts in the {@link State#INITIALIZED} state
  * by default to indicate the class has been loaded. From here, calling the {@link #start()} method will change this
  * state to {@link State#STARTING}. After successfully being started, this state is changed to {@link State#STARTED}.
@@ -26,12 +26,9 @@ package org.apache.logging.log4j.core;
  * stopped, this goes into the {@link State#STOPPED} state. In most circumstances, implementation classes should
  * store their {@link State} in a {@code volatile} field or inside an
  * {@link java.util.concurrent.atomic.AtomicReference} dependant on synchronization and concurrency requirements.
- *
- * @see AbstractLifeCycle
- * @see AbstractAtomicLifeCycle
  */
 public interface LifeCycle {
-
+    
     /**
      * Status of a life cycle like a {@link LoggerContext}.
      */
@@ -47,7 +44,7 @@ public interface LifeCycle {
         /** Has stopped. */
         STOPPED
     }
-
+    
     void start();
 
     void stop();
