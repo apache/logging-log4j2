@@ -140,7 +140,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
         final long length = mappingOffset + mappedBuffer.position();
         try {
             unsafeUnmap(mappedBuffer);
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             LOGGER.error("Unable to unmap MappedBuffer " + getName() + ". " + ex);
         }
         try {
@@ -151,13 +151,13 @@ public class MemoryMappedFileManager extends OutputStreamManager {
         }
     }
 
-    public static MappedByteBuffer mmap(FileChannel fileChannel, long start, int size) throws IOException {
+    public static MappedByteBuffer mmap(final FileChannel fileChannel, final long start, final int size) throws IOException {
         for (int i = 1;; i++) {
             try {
-                MappedByteBuffer map = fileChannel.map(FileChannel.MapMode.READ_WRITE, start, size);
+                final MappedByteBuffer map = fileChannel.map(FileChannel.MapMode.READ_WRITE, start, size);
                 map.order(ByteOrder.nativeOrder());
                 return map;
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 if (e.getMessage() == null || !e.getMessage().endsWith("user-mapped section open")) {
                     throw e;
                 }
@@ -166,7 +166,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
                 } else {
                     try {
                         Thread.sleep(1);
-                    } catch (InterruptedException ignored) {
+                    } catch (final InterruptedException ignored) {
                         Thread.currentThread().interrupt();
                         throw e;
                     }

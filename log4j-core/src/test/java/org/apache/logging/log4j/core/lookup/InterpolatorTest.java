@@ -87,7 +87,7 @@ public class InterpolatorTest {
         assertEquals(TEST_CONTEXT_NAME, value);
     }
 
-    private void assertLookupNotEmpty(StrLookup lookup, String key) {
+    private void assertLookupNotEmpty(final StrLookup lookup, final String key) {
         final String value = lookup.lookup(key);
         assertNotNull(value);
         assertFalse(value.isEmpty());

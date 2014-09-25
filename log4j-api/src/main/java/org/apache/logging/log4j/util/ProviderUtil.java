@@ -63,7 +63,7 @@ public final class ProviderUtil {
         loadProviders(enumResources, cl);
     }
 
-    protected static void loadProviders(final Enumeration<URL> enumResources, ClassLoader cl) {
+    protected static void loadProviders(final Enumeration<URL> enumResources, final ClassLoader cl) {
         if (enumResources != null) {
             while (enumResources.hasMoreElements()) {
                 final URL url = enumResources.nextElement();

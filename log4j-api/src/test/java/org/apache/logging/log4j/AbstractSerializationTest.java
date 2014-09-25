@@ -30,7 +30,7 @@ public abstract class AbstractSerializationTest {
 
     private Serializable serializable;
 
-    public AbstractSerializationTest(Serializable serializable) {
+    public AbstractSerializationTest(final Serializable serializable) {
         super();
         this.serializable = serializable;
     }

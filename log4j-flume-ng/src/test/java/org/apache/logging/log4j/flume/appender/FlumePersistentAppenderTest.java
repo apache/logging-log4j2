@@ -97,8 +97,8 @@ public class FlumePersistentAppenderTest {
         * Clear out all other appenders associated with this logger to ensure we're
         * only hitting the Avro appender.
         */
-        int primaryPort = AvailablePortFinder.getNextAvailable();
-        int altPort = AvailablePortFinder.getNextAvailable();
+        final int primaryPort = AvailablePortFinder.getNextAvailable();
+        final int altPort = AvailablePortFinder.getNextAvailable();
         System.setProperty("primaryPort", Integer.toString(primaryPort));
         System.setProperty("alternatePort", Integer.toString(altPort));
         primary = new EventCollector(primaryPort);

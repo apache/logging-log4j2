@@ -38,7 +38,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
         this(charset, null, null);
     }
 
-    protected AbstractStringLayout(final Charset charset, byte[] header, byte[] footer) {
+    protected AbstractStringLayout(final Charset charset, final byte[] header, final byte[] footer) {
         super(header, footer);
         this.charset = charset == null ? Charsets.UTF_8 : charset;
     }

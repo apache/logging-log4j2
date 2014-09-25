@@ -35,7 +35,7 @@ public class ObjectMessage implements Message {
      * Create the ObjectMessage.
      * @param obj The Object to format.
      */
-    public ObjectMessage(Object obj) {
+    public ObjectMessage(final Object obj) {
         this.obj = obj == null ? "null" : obj;
     }
 
@@ -83,7 +83,7 @@ public class ObjectMessage implements Message {
         return obj == null ? that.obj == null : equalObjectsOrStrings(obj, that.obj);
     }
     
-    private boolean equalObjectsOrStrings(Object left, Object right) {
+    private boolean equalObjectsOrStrings(final Object left, final Object right) {
         return left.equals(right) || String.valueOf(left).equals(String.valueOf(right));
     }
 

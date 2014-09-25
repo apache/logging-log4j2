@@ -29,20 +29,20 @@ import org.junit.Test;
  */
 public class MainInputArgumentsJmxLookupTest {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         new MainInputArgumentsJmxLookupTest().callFromMain();
     }
 
     @Test
     public void testMap() {
-        JmxRuntimeInputArgumentsLookup lookup = JmxRuntimeInputArgumentsLookup.JMX_SINGLETON;
+        final JmxRuntimeInputArgumentsLookup lookup = JmxRuntimeInputArgumentsLookup.JMX_SINGLETON;
         assertEquals(null, lookup.lookup(null));
         assertEquals(null, lookup.lookup("X"));
         assertEquals(null, lookup.lookup("foo.txt"));
     }
 
     public void callFromMain() {
-        JmxRuntimeInputArgumentsLookup lookup = JmxRuntimeInputArgumentsLookup.JMX_SINGLETON;
+        final JmxRuntimeInputArgumentsLookup lookup = JmxRuntimeInputArgumentsLookup.JMX_SINGLETON;
         assertEquals(null, lookup.lookup(null));
         assertEquals(null, lookup.lookup("X"));
         // Eclipse adds -Dfile.encoding=Cp1252

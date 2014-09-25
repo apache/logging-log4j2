@@ -78,7 +78,7 @@ public class ThreadDumpMessageTest {
         final ThreadDumpMessage msg = new ThreadDumpMessage("Test");
 
         final String[] actual = new String[1];
-        Thread other = new Thread("OtherThread") {
+        final Thread other = new Thread("OtherThread") {
             public void run() {
                 actual[0] = msg.getFormattedMessage();
             }

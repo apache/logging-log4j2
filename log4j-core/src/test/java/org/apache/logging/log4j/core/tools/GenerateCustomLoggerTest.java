@@ -57,27 +57,27 @@ public class GenerateCustomLoggerTest {
         final String CLASSNAME = "org.myorg.MyCustomLogger";
 
         // generate custom logger source
-        List<String> values = Arrays.asList("DEFCON1=350 DEFCON2=450 DEFCON3=550".split(" "));
-        List<Generate.LevelInfo> levels = Generate.LevelInfo.parse(values, Generate.CustomLogger.class);
-        String src = Generate.generateSource(CLASSNAME, levels, Generate.Type.CUSTOM);
-        File f = new File("target/test-classes/org/myorg/MyCustomLogger.java");
+        final List<String> values = Arrays.asList("DEFCON1=350 DEFCON2=450 DEFCON3=550".split(" "));
+        final List<Generate.LevelInfo> levels = Generate.LevelInfo.parse(values, Generate.CustomLogger.class);
+        final String src = Generate.generateSource(CLASSNAME, levels, Generate.Type.CUSTOM);
+        final File f = new File("target/test-classes/org/myorg/MyCustomLogger.java");
         f.getParentFile().mkdirs();
-        FileOutputStream out = new FileOutputStream(f);
+        final FileOutputStream out = new FileOutputStream(f);
         out.write(src.getBytes(Charset.defaultCharset()));
         out.close();
 
         // set up compiler
-        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-        DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
-        StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null);
-        Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(f));
+        final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+        final DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
+        final StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null);
+        final Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(f));
 
         // compile generated source
         compiler.getTask(null, fileManager, diagnostics, null, null, compilationUnits).call();
 
         // check we don't have any compilation errors
-        List<String> errors = new ArrayList<String>();
-        for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
+        final List<String> errors = new ArrayList<String>();
+        for (final Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
             if (diagnostic.getKind() == Diagnostic.Kind.ERROR) {
                 errors.add(String.format("Compile error: %s%n", diagnostic.getMessage(Locale.getDefault())));
             }
@@ -86,7 +86,7 @@ public class GenerateCustomLoggerTest {
         assertTrue(errors.toString(), errors.isEmpty());
 
         // load the compiled class
-        Class<?> cls = Class.forName(CLASSNAME);
+        final Class<?> cls = Class.forName(CLASSNAME);
 
         // check that all factory methods exist and are static
         assertTrue(Modifier.isStatic(cls.getDeclaredMethod("create", new Class[0]).getModifiers()));
@@ -100,8 +100,8 @@ public class GenerateCustomLoggerTest {
                 .isStatic(cls.getDeclaredMethod("create", String.class, MessageFactory.class).getModifiers()));
 
         // check that all log methods exist
-        String[] logMethods = { "defcon1", "defcon2", "defcon3" };
-        for (String name : logMethods) {
+        final String[] logMethods = { "defcon1", "defcon2", "defcon3" };
+        for (final String name : logMethods) {
             cls.getDeclaredMethod(name, Marker.class, Message.class, Throwable.class);
             cls.getDeclaredMethod(name, Marker.class, Object.class, Throwable.class);
             cls.getDeclaredMethod(name, Marker.class, String.class, Throwable.class);
@@ -119,16 +119,16 @@ public class GenerateCustomLoggerTest {
         }
 
         // now see if it actually works...
-        Method create = cls.getDeclaredMethod("create", new Class[] { String.class });
-        Object customLogger = create.invoke(null, "X.Y.Z");
+        final Method create = cls.getDeclaredMethod("create", new Class[] { String.class });
+        final Object customLogger = create.invoke(null, "X.Y.Z");
         int n = 0;
-        for (String name : logMethods) {
-            Method method = cls.getDeclaredMethod(name, String.class);
+        for (final String name : logMethods) {
+            final Method method = cls.getDeclaredMethod(name, String.class);
             method.invoke(customLogger, "This is message " + n++);
         }
 
-        TestLogger underlying = (TestLogger) LogManager.getLogger("X.Y.Z");
-        List<String> lines = underlying.getEntries();
+        final TestLogger underlying = (TestLogger) LogManager.getLogger("X.Y.Z");
+        final List<String> lines = underlying.getEntries();
         for (int i = 0; i < lines.size(); i++) {
             assertEquals(" " + levels.get(i).name + " This is message " + i, lines.get(i));
         }

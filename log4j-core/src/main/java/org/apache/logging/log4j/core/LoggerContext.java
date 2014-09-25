@@ -247,7 +247,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     }
 
     private void tearDownShutdownHook() {
-        Thread thread = this.getShutdownThread();
+        final Thread thread = this.getShutdownThread();
         if (shutdownRegistrationStrategy != null && thread != null) {
             shutdownRegistrationStrategy.unregisterShutdownHook(thread);
             LOGGER.debug(SHUTDOWN_HOOK_MARKER, "Enqueue shutdown hook for garbage collection.");

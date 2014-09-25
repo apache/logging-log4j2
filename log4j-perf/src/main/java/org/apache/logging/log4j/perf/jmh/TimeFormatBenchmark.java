@@ -57,7 +57,7 @@ public class TimeFormatBenchmark {
         ByteBuffer buffer = ByteBuffer.allocate(12);
     }
 
-    private long millisSinceMidnight(long now) {
+    private long millisSinceMidnight(final long now) {
         if (now >= midnightTomorrow) {
             midnightToday = calcMidnightMillis(0);
             midnightTomorrow = calcMidnightMillis(1);
@@ -65,9 +65,9 @@ public class TimeFormatBenchmark {
         return now - midnightToday;
     }
 
-    private long calcMidnightMillis(int addDays) {
+    private long calcMidnightMillis(final int addDays) {
         // Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UCT"));
-        Calendar cal = Calendar.getInstance();
+        final Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
@@ -76,7 +76,7 @@ public class TimeFormatBenchmark {
         return cal.getTimeInMillis();
     }
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         System.out.println(new TimeFormatBenchmark().customFastFormatString(new BufferState()));
         System.out.println(new TimeFormatBenchmark().customFormatString(new BufferState()));
     }
@@ -97,9 +97,9 @@ public class TimeFormatBenchmark {
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public int simpleDateFormatBytes(BufferState state) {
-        String str = simpleDateFormat.format(new Date());
-        byte[] bytes = str.getBytes(Charsets.UTF_8);
+    public int simpleDateFormatBytes(final BufferState state) {
+        final String str = simpleDateFormat.format(new Date());
+        final byte[] bytes = str.getBytes(Charsets.UTF_8);
         state.buffer.clear();
         state.buffer.put(bytes);
         return state.buffer.position();
@@ -108,7 +108,7 @@ public class TimeFormatBenchmark {
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public String customFastFormatString(BufferState state) {
+    public String customFastFormatString(final BufferState state) {
         state.buffer.clear();
         fastFormat(System.currentTimeMillis(), state.buffer);
         return new String(state.buffer.array(), 0, state.buffer.position(), Charsets.UTF_8);
@@ -117,7 +117,7 @@ public class TimeFormatBenchmark {
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public int customFastFormatBytes(BufferState state) {
+    public int customFastFormatBytes(final BufferState state) {
         state.buffer.clear();
         fastFormat(System.currentTimeMillis(), state.buffer);
         return state.buffer.position();
@@ -126,7 +126,7 @@ public class TimeFormatBenchmark {
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public String customFormatString(BufferState state) {
+    public String customFormatString(final BufferState state) {
         state.buffer.clear();
         format(System.currentTimeMillis(), state.buffer);
         return new String(state.buffer.array(), 0, state.buffer.position(), Charsets.UTF_8);
@@ -135,13 +135,13 @@ public class TimeFormatBenchmark {
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public int customFormatBytes(BufferState state) {
+    public int customFormatBytes(final BufferState state) {
         state.buffer.clear();
         format(System.currentTimeMillis(), state.buffer);
         return state.buffer.position();
     }
 
-    public ByteBuffer fastFormat(long time, ByteBuffer buffer) {
+    public ByteBuffer fastFormat(final long time, final ByteBuffer buffer) {
         // Calculate values by getting the ms values first and do then
         // shave off the hour minute and second values with multiplications
         // and bit shifts instead of simple but expensive divisions.
@@ -151,13 +151,13 @@ public class TimeFormatBenchmark {
         int ms = (int) (millisSinceMidnight(time));
 
         // well ... it works
-        int hour = (int) (((ms >> 7) * 9773437L) >> 38);
+        final int hour = (int) (((ms >> 7) * 9773437L) >> 38);
         ms -= 3600000 * hour;
 
-        int minute = (int) (((ms >> 5) * 2290650L) >> 32);
+        final int minute = (int) (((ms >> 5) * 2290650L) >> 32);
         ms -= 60000 * minute;
 
-        int second = ((ms >> 3) * 67109) >> 23;
+        final int second = ((ms >> 3) * 67109) >> 23;
         ms -= 1000 * second;
 
         // Hour
@@ -199,7 +199,7 @@ public class TimeFormatBenchmark {
         return buffer;
     }
 
-    public ByteBuffer format(long time, ByteBuffer buffer) {
+    public ByteBuffer format(final long time, final ByteBuffer buffer) {
         // Calculate values by getting the ms values first and do then
         // calculate the hour minute and second values divisions.
 
@@ -207,13 +207,13 @@ public class TimeFormatBenchmark {
         // int ms = (int) (time % 86400000);
         int ms = (int) (millisSinceMidnight(time));
 
-        int hours = ms / 3600000;
+        final int hours = ms / 3600000;
         ms -= 3600000 * hours;
 
-        int minutes = ms / 60000;
+        final int minutes = ms / 60000;
         ms -= 60000 * minutes;
 
-        int seconds = ms / 1000;
+        final int seconds = ms / 1000;
         ms -= 1000 * seconds;
 
         // Hour

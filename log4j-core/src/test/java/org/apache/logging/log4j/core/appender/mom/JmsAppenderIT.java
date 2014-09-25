@@ -55,7 +55,7 @@ public class JmsAppenderIT {
     public static void setUpClass() {
         final Properties additional = new Properties();
         additional.setProperty("queue.TestQueue", "TestQueue");
-        JndiManager jndiManager = JndiManager.getJndiManager(ActiveMQInitialContextFactory.class.getName(),
+        final JndiManager jndiManager = JndiManager.getJndiManager(ActiveMQInitialContextFactory.class.getName(),
             "vm://localhost?broker.persistent=false", null, null, null, additional);
         jmsManager = JmsManager.getJmsManager("JmsManager", jndiManager, "ConnectionFactory", "TestQueue", null, null);
     }
@@ -101,15 +101,15 @@ public class JmsAppenderIT {
         }
 
         @Override
-        public void onMessage(Message message) {
+        public void onMessage(final Message message) {
             try {
                 consume((ObjectMessage) message);
-            } catch (JMSException e) {
+            } catch (final JMSException e) {
                 e.printStackTrace();
             }
         }
 
-        private void consume(ObjectMessage message) throws JMSException {
+        private void consume(final ObjectMessage message) throws JMSException {
             try {
                 final LogEvent event = (LogEvent) message.getObject();
                 events.add(event);

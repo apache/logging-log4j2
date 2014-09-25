@@ -60,7 +60,7 @@ public class PatternParserTest2 {
         assertEquals("13-24-59 \\t---", buf.toString());
     }
 
-    private void parse(String pattern, boolean convert, StringBuilder buf, Date date, int i) {
+    private void parse(final String pattern, final boolean convert, final StringBuilder buf, final Date date, final int i) {
         final PatternParser parser0 = new PatternParser(null, "Converter", null);
         final List<PatternConverter> converters = new ArrayList<PatternConverter>();
         final List<FormattingInfo> fields = new ArrayList<FormattingInfo>();

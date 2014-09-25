@@ -29,7 +29,7 @@ public abstract class AbstractLookup implements StrLookup {
      * @see StrLookup#lookup(LogEvent, String)
      */
     @Override
-    public String lookup(String key) {
+    public String lookup(final String key) {
         return lookup(null, key);
     }
 

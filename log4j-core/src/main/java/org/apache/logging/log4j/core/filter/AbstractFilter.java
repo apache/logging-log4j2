@@ -62,7 +62,7 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
@@ -72,7 +72,7 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
         if (getClass() != obj.getClass()) {
             return false;
         }
-        AbstractFilter other = (AbstractFilter) obj;
+        final AbstractFilter other = (AbstractFilter) obj;
         if (onMatch != other.onMatch) {
             return false;
         }

@@ -28,13 +28,13 @@ public class IntegersTest {
 
     @Test
     public void testCeilingNextPowerOfTwoReturnsNextPowerOfTwo() {
-        int powerOfTwo = Integers.ceilingNextPowerOfTwo(1000);
+        final int powerOfTwo = Integers.ceilingNextPowerOfTwo(1000);
         assertEquals(1024, powerOfTwo);
     }
 
     @Test
     public void testCeilingNextPowerOfTwoReturnsExactPowerOfTwo() {
-        int powerOfTwo = Integers.ceilingNextPowerOfTwo(1024);
+        final int powerOfTwo = Integers.ceilingNextPowerOfTwo(1024);
         assertEquals(1024, powerOfTwo);
     }
 

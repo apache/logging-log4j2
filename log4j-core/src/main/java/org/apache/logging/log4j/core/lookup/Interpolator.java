@@ -91,7 +91,7 @@ public class Interpolator extends AbstractLookup {
             // [LOG4J2-703] We might be on Android
             lookups.put("jndi",
                 Loader.newCheckedInstanceOf("org.apache.logging.log4j.core.lookup.JndiLookup", StrLookup.class));
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             // java.lang.VerifyError: org/apache/logging/log4j/core/lookup/JndiLookup
             LOGGER.warn(
                     "JNDI lookup class is not available because this JRE does not support JNDI. JNDI string lookups will not be available, continuing configuration.",
@@ -102,7 +102,7 @@ public class Interpolator extends AbstractLookup {
             // We might be on Android
             lookups.put("jvmrunargs",
                 Loader.newCheckedInstanceOf("org.apache.logging.log4j.core.lookup.JmxRuntimeInputArgumentsLookup", StrLookup.class));
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             // java.lang.VerifyError: org/apache/logging/log4j/core/lookup/JmxRuntimeInputArgumentsLookup
             LOGGER.warn(
                     "JMX runtime input lookup class is not available because this JRE does not support JMX. JMX lookups will not be available, continuing configuration.",

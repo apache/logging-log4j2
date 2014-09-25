@@ -67,32 +67,32 @@ public class Log4jLogEvent implements LogEvent {
         private Message message;
         private Throwable thrown;
 
-        public Builder setLoggerFqcn(String loggerFqcn) {
+        public Builder setLoggerFqcn(final String loggerFqcn) {
             this.loggerFqcn = loggerFqcn;
             return this;
         }
 
-        public Builder setMarker(Marker marker) {
+        public Builder setMarker(final Marker marker) {
             this.marker = marker;
             return this;
         }
 
-        public Builder setLevel(Level level) {
+        public Builder setLevel(final Level level) {
             this.level = level;
             return this;
         }
 
-        public Builder setLoggerName(String loggerName) {
+        public Builder setLoggerName(final String loggerName) {
             this.loggerName = loggerName;
             return this;
         }
 
-        public Builder setMessage(Message message) {
+        public Builder setMessage(final Message message) {
             this.message = message;
             return this;
         }
 
-        public Builder setThrown(Throwable thrown) {
+        public Builder setThrown(final Throwable thrown) {
             this.thrown = thrown;
             return this;
         }

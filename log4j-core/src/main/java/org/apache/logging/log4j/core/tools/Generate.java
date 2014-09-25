@@ -449,7 +449,7 @@ public final class Generate {
             for (int i = 0; i < values.size(); i++) {
                 try {
                     result.add(new LevelInfo(values.get(i)));
-                } catch (Exception ex) {
+                } catch (final Exception ex) {
                     System.err.println("Cannot parse custom level '" + values.get(i) + "': " + ex.toString());
                     usage(System.err, generator);
                     System.exit(-1);
@@ -500,12 +500,12 @@ public final class Generate {
         final String javadocDescr = javadocDescription(levels);
         sb.append(String.format(type.declaration(), javadocDescr, className));
         sb.append(String.format(FQCN_FIELD, className));
-        for (LevelInfo level : levels) {
+        for (final LevelInfo level : levels) {
             sb.append(String.format(LEVEL_FIELD, level.name, level.name, level.intLevel));
         }
         sb.append(String.format(type.constructor(), className));
         sb.append(String.format(FACTORY_METHODS.replaceAll("CLASSNAME", className), ""));
-        for (LevelInfo level : levels) {
+        for (final LevelInfo level : levels) {
             final String methodName = camelCase(level.name);
             final String phase1 = METHODS.replaceAll("CUSTOM_LEVEL", level.name);
             final String phase2 = phase1.replaceAll("methodName", methodName);
@@ -535,7 +535,7 @@ public final class Generate {
     static String camelCase(final String customLevel) {
         final StringBuilder sb = new StringBuilder(customLevel.length());
         boolean lower = true;
-        for (char ch : customLevel.toCharArray()) {
+        for (final char ch : customLevel.toCharArray()) {
             if (ch == '_') {
                 lower = false;
                 continue;

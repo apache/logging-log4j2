@@ -73,7 +73,7 @@ public class MapMessageTest {
 
     @Test
     public void testMutableByDesign() { // LOG4J2-763
-        MapMessage msg = new MapMessage();
+        final MapMessage msg = new MapMessage();
 
         // modify parameter before calling msg.getFormattedMessage
         msg.put("key1", "value1");

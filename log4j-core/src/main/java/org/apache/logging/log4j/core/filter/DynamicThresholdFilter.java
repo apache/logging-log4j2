@@ -81,7 +81,7 @@ public final class DynamicThresholdFilter extends AbstractFilter {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
@@ -91,7 +91,7 @@ public final class DynamicThresholdFilter extends AbstractFilter {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        DynamicThresholdFilter other = (DynamicThresholdFilter) obj;
+        final DynamicThresholdFilter other = (DynamicThresholdFilter) obj;
         if (defaultThreshold == null) {
             if (other.defaultThreshold != null) {
                 return false;

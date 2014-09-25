@@ -38,7 +38,7 @@ public class JndiManager extends AbstractManager {
 
     private final Context context;
 
-    private JndiManager(String name, Context context) {
+    private JndiManager(final String name, final Context context) {
         super(name);
         this.context = context;
     }
@@ -131,7 +131,7 @@ public class JndiManager extends AbstractManager {
     private static class JndiManagerFactory implements ManagerFactory<JndiManager, Properties> {
 
         @Override
-        public JndiManager createManager(String name, Properties data) {
+        public JndiManager createManager(final String name, final Properties data) {
             try {
                 return new JndiManager(name, new InitialContext(data));
             } catch (final NamingException e) {

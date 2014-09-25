@@ -32,7 +32,7 @@ public class TestAsyncServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         final AsyncContext asyncContext = req.startAsync();
         asyncContext.start(WebLoggerContextUtils.wrapExecutionContext(this.getServletContext(), new Runnable() {
             @Override
@@ -44,7 +44,7 @@ public class TestAsyncServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         final AsyncContext asyncContext = req.startAsync();
         asyncContext.start(new Runnable() {
             @Override

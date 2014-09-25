@@ -12,11 +12,11 @@ public class MainInputArgumentsMapLookup extends MapLookup {
     public static final MainInputArgumentsMapLookup SINGLETON_STACK;
 
     static {
-        Map<Thread, StackTraceElement[]> allStackTraces = Thread.getAllStackTraces();
-        String[] args = null;
-        for (Map.Entry<Thread, StackTraceElement[]> entry : allStackTraces.entrySet()) {
-            StackTraceElement[] stackTraceElements = entry.getValue();
-            Thread thread = entry.getKey();
+        final Map<Thread, StackTraceElement[]> allStackTraces = Thread.getAllStackTraces();
+        final String[] args = null;
+        for (final Map.Entry<Thread, StackTraceElement[]> entry : allStackTraces.entrySet()) {
+            final StackTraceElement[] stackTraceElements = entry.getValue();
+            final Thread thread = entry.getKey();
             // Can't use the thread name to look for "main" since anyone can set it.
             // Can't use thread ID since it can be any positive value, and is likely vender dependent. Oracle seems to
             // use 1.
@@ -35,7 +35,7 @@ public class MainInputArgumentsMapLookup extends MapLookup {
         SINGLETON_STACK = new MainInputArgumentsMapLookup(MapLookup.toMap(args));
     }
 
-    public MainInputArgumentsMapLookup(Map<String, String> map) {
+    public MainInputArgumentsMapLookup(final Map<String, String> map) {
         super(map);
     }
 }

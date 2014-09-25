@@ -58,27 +58,27 @@ public class GenerateExtendedLoggerTest {
         final String CLASSNAME = "org.myorg.MyExtendedLogger";
 
         // generate custom logger source
-        List<String> values = Arrays.asList("DIAG=350 NOTICE=450 VERBOSE=550".split(" "));
-        List<Generate.LevelInfo> levels = Generate.LevelInfo.parse(values, Generate.ExtendedLogger.class);
-        String src = Generate.generateSource(CLASSNAME, levels, Generate.Type.EXTEND);
-        File f = new File("target/test-classes/org/myorg/MyExtendedLogger.java");
+        final List<String> values = Arrays.asList("DIAG=350 NOTICE=450 VERBOSE=550".split(" "));
+        final List<Generate.LevelInfo> levels = Generate.LevelInfo.parse(values, Generate.ExtendedLogger.class);
+        final String src = Generate.generateSource(CLASSNAME, levels, Generate.Type.EXTEND);
+        final File f = new File("target/test-classes/org/myorg/MyExtendedLogger.java");
         f.getParentFile().mkdirs();
-        FileOutputStream out = new FileOutputStream(f);
+        final FileOutputStream out = new FileOutputStream(f);
         out.write(src.getBytes(Charset.defaultCharset()));
         out.close();
 
         // set up compiler
-        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-        DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
-        StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null);
-        Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(f));
+        final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+        final DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
+        final StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null);
+        final Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(f));
 
         // compile generated source
         compiler.getTask(null, fileManager, diagnostics, null, null, compilationUnits).call();
 
         // check we don't have any compilation errors
-        List<String> errors = new ArrayList<String>();
-        for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
+        final List<String> errors = new ArrayList<String>();
+        for (final Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
             if (diagnostic.getKind() == Diagnostic.Kind.ERROR) {
                 errors.add(String.format("Compile error: %s%n", diagnostic.getMessage(Locale.getDefault())));
             }
@@ -87,7 +87,7 @@ public class GenerateExtendedLoggerTest {
         assertTrue(errors.toString(), errors.isEmpty());
 
         // load the compiled class
-        Class<?> cls = Class.forName(CLASSNAME);
+        final Class<?> cls = Class.forName(CLASSNAME);
 
         // check that all factory methods exist and are static
         assertTrue(Modifier.isStatic(cls.getDeclaredMethod("create", new Class[0]).getModifiers()));
@@ -101,8 +101,8 @@ public class GenerateExtendedLoggerTest {
                 .isStatic(cls.getDeclaredMethod("create", String.class, MessageFactory.class).getModifiers()));
 
         // check that the extended log methods exist
-        String[] extendedMethods = { "diag", "notice", "verbose" };
-        for (String name : extendedMethods) {
+        final String[] extendedMethods = { "diag", "notice", "verbose" };
+        for (final String name : extendedMethods) {
             cls.getDeclaredMethod(name, Marker.class, Message.class, Throwable.class);
             cls.getDeclaredMethod(name, Marker.class, Object.class, Throwable.class);
             cls.getDeclaredMethod(name, Marker.class, String.class, Throwable.class);
@@ -120,17 +120,17 @@ public class GenerateExtendedLoggerTest {
         }
 
         // now see if it actually works...
-        Method create = cls.getDeclaredMethod("create", new Class[] { String.class });
-        Object extendedLogger = create.invoke(null, "X.Y.Z");
+        final Method create = cls.getDeclaredMethod("create", new Class[] { String.class });
+        final Object extendedLogger = create.invoke(null, "X.Y.Z");
         int n = 0;
-        for (String name : extendedMethods) {
-            Method method = cls.getDeclaredMethod(name, String.class);
+        for (final String name : extendedMethods) {
+            final Method method = cls.getDeclaredMethod(name, String.class);
             method.invoke(extendedLogger, "This is message " + n++);
         }
         
         // This logger extends o.a.l.log4j.spi.ExtendedLogger,
         // so all the standard logging methods can be used as well
-        ExtendedLogger logger = (ExtendedLogger) extendedLogger;
+        final ExtendedLogger logger = (ExtendedLogger) extendedLogger;
         logger.trace("trace message");
         logger.debug("debug message");
         logger.info("info message");
@@ -138,8 +138,8 @@ public class GenerateExtendedLoggerTest {
         logger.error("error message");
         logger.fatal("fatal message");
 
-        TestLogger underlying = (TestLogger) LogManager.getLogger("X.Y.Z");
-        List<String> lines = underlying.getEntries();
+        final TestLogger underlying = (TestLogger) LogManager.getLogger("X.Y.Z");
+        final List<String> lines = underlying.getEntries();
         for (int i = 0; i < lines.size() - 6; i++) {
             assertEquals(" " + levels.get(i).name + " This is message " + i, lines.get(i));
         }

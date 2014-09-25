@@ -36,23 +36,23 @@ public class DatePatternConverterTest {
 
     @Test
     public void testFormatLogEventStringBuilderDefaultPattern() {
-        LogEvent event = new MyLogEvent();
-        DatePatternConverter converter = DatePatternConverter.newInstance(null);
-        StringBuilder sb = new StringBuilder();
+        final LogEvent event = new MyLogEvent();
+        final DatePatternConverter converter = DatePatternConverter.newInstance(null);
+        final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
 
-        String expected = "2011-12-30 10:56:35,987";
+        final String expected = "2011-12-30 10:56:35,987";
         assertEquals(expected, sb.toString());
     }
 
     @Test
     public void testFormatLogEventStringBuilderIso8601() {
-        LogEvent event = new MyLogEvent();
-        DatePatternConverter converter = DatePatternConverter.newInstance(ISO8601_FORMAT);
-        StringBuilder sb = new StringBuilder();
+        final LogEvent event = new MyLogEvent();
+        final DatePatternConverter converter = DatePatternConverter.newInstance(ISO8601_FORMAT);
+        final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
 
-        String expected = "2011-12-30T10:56:35,987";
+        final String expected = "2011-12-30T10:56:35,987";
         assertEquals(expected, sb.toString());
     }
 
@@ -70,56 +70,56 @@ public class DatePatternConverterTest {
 
     @Test
     public void testFormatObjectStringBuilderDefaultPattern() {
-        DatePatternConverter converter = DatePatternConverter.newInstance(null);
-        StringBuilder sb = new StringBuilder();
+        final DatePatternConverter converter = DatePatternConverter.newInstance(null);
+        final StringBuilder sb = new StringBuilder();
         converter.format("nondate", sb);
 
-        String expected = ""; // only process dates
+        final String expected = ""; // only process dates
         assertEquals(expected, sb.toString());
     }
 
     @Test
     public void testFormatDateStringBuilderDefaultPattern() {
-        DatePatternConverter converter = DatePatternConverter.newInstance(null);
-        StringBuilder sb = new StringBuilder();
+        final DatePatternConverter converter = DatePatternConverter.newInstance(null);
+        final StringBuilder sb = new StringBuilder();
         converter.format(date(2001, 1, 1), sb);
 
-        String expected = "2001-02-01 14:15:16,123";
+        final String expected = "2001-02-01 14:15:16,123";
         assertEquals(expected, sb.toString());
     }
 
     @Test
     public void testFormatDateStringBuilderIso8601() {
-        DatePatternConverter converter = DatePatternConverter.newInstance(ISO8601_FORMAT);
-        StringBuilder sb = new StringBuilder();
+        final DatePatternConverter converter = DatePatternConverter.newInstance(ISO8601_FORMAT);
+        final StringBuilder sb = new StringBuilder();
         converter.format(date(2001, 1, 1), sb);
 
-        String expected = "2001-02-01T14:15:16,123";
+        final String expected = "2001-02-01T14:15:16,123";
         assertEquals(expected, sb.toString());
     }
 
     @Test
     public void testFormatStringBuilderObjectArrayDefaultPattern() {
-        DatePatternConverter converter = DatePatternConverter.newInstance(null);
-        StringBuilder sb = new StringBuilder();
+        final DatePatternConverter converter = DatePatternConverter.newInstance(null);
+        final StringBuilder sb = new StringBuilder();
         converter.format(sb, date(2001, 1, 1), date(2002, 2, 2), date(2003, 3, 3));
 
-        String expected = "2001-02-01 14:15:16,123"; // only process first date
+        final String expected = "2001-02-01 14:15:16,123"; // only process first date
         assertEquals(expected, sb.toString());
     }
 
     @Test
     public void testFormatStringBuilderObjectArrayIso8601() {
-        DatePatternConverter converter = DatePatternConverter.newInstance(ISO8601_FORMAT);
-        StringBuilder sb = new StringBuilder();
+        final DatePatternConverter converter = DatePatternConverter.newInstance(ISO8601_FORMAT);
+        final StringBuilder sb = new StringBuilder();
         converter.format(sb, date(2001, 1, 1), date(2002, 2, 2), date(2003, 3, 3));
 
-        String expected = "2001-02-01T14:15:16,123"; // only process first date
+        final String expected = "2001-02-01T14:15:16,123"; // only process first date
         assertEquals(expected, sb.toString());
     }
 
-    private Date date(int year, int month, int date) {
-        Calendar cal = Calendar.getInstance();
+    private Date date(final int year, final int month, final int date) {
+        final Calendar cal = Calendar.getInstance();
         cal.set(year, month, date, 14, 15, 16);
         cal.set(Calendar.MILLISECOND, 123);
         return cal.getTime();

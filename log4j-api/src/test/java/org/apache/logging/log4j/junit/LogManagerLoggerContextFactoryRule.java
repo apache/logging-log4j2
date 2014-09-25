@@ -30,7 +30,7 @@ public class LogManagerLoggerContextFactoryRule extends ExternalResource {
 
     private LoggerContextFactory restoreLoggerContextFactory;
 
-    public LogManagerLoggerContextFactoryRule(LoggerContextFactory loggerContextFactory) {
+    public LogManagerLoggerContextFactoryRule(final LoggerContextFactory loggerContextFactory) {
         super();
         this.loggerContextFactory = loggerContextFactory;
     }

@@ -16,7 +16,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 public class JmxRuntimeInputArgumentsLookup extends MapLookup {
 
     static {
-        List<String> argsList = ManagementFactory.getRuntimeMXBean().getInputArguments();
+        final List<String> argsList = ManagementFactory.getRuntimeMXBean().getInputArguments();
         JMX_SINGLETON = new JmxRuntimeInputArgumentsLookup(MapLookup.toMap(argsList));
     }
 
@@ -29,7 +29,7 @@ public class JmxRuntimeInputArgumentsLookup extends MapLookup {
         super();
     }
 
-    public JmxRuntimeInputArgumentsLookup(Map<String, String> map) {
+    public JmxRuntimeInputArgumentsLookup(final Map<String, String> map) {
         super(map);
     }
 

@@ -572,7 +572,7 @@ public final class PatternParser {
     private int finalizeConverter(final char c, final String pattern, final int start,
             final StringBuilder currentLiteral, final FormattingInfo formattingInfo,
             final Map<String, Class<PatternConverter>> rules, final List<PatternConverter> patternConverters,
-            final List<FormattingInfo> formattingInfos, final boolean noConsoleNoAnsi, boolean convertBackslashes) {
+            final List<FormattingInfo> formattingInfos, final boolean noConsoleNoAnsi, final boolean convertBackslashes) {
         int i = start;
         final StringBuilder convBuf = new StringBuilder();
         i = extractConverter(c, pattern, i, convBuf, currentLiteral);

@@ -16,7 +16,7 @@ public class KeyValuePairSerializationTest extends AbstractSerializationTest {
                 { new KeyValuePair("JohnDoe", "warn") } });
     }
 
-    public KeyValuePairSerializationTest(Serializable serializable) {
+    public KeyValuePairSerializationTest(final Serializable serializable) {
         super(serializable);
     }
 

@@ -32,7 +32,7 @@ public class StatusLoggerSerializationTest extends AbstractSerializationTest {
         return Arrays.asList(new Object[][] { { StatusLogger.getLogger() } });
     }
 
-    public StatusLoggerSerializationTest(Serializable serializable) {
+    public StatusLoggerSerializationTest(final Serializable serializable) {
         super(serializable);
     }
 

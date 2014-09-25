@@ -28,10 +28,10 @@ public class AsyncRootReloadTest {
 
     @Test
     public void testLog4j2_807() throws InterruptedException, URISyntaxException {
-        URL url = AsyncRootReloadTest.class.getResource("/" + ISSUE_CONFIG);
+        final URL url = AsyncRootReloadTest.class.getResource("/" + ISSUE_CONFIG);
         final File configFile = FileUtils.fileFromUri(url.toURI());
 
-        Logger logger = LogManager.getLogger(AsyncRootReloadTest.class);
+        final Logger logger = LogManager.getLogger(AsyncRootReloadTest.class);
         logger.info("Log4j configured, will be reconfigured in aprox. 5 sec");
 
         configFile.setLastModified(System.currentTimeMillis());

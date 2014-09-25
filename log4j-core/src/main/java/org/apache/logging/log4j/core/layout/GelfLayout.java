@@ -73,19 +73,19 @@ public final class GelfLayout extends AbstractStringLayout {
 
         GZIP {
             @Override
-            public DeflaterOutputStream createDeflaterOutputStream(OutputStream os) throws IOException {
+            public DeflaterOutputStream createDeflaterOutputStream(final OutputStream os) throws IOException {
                 return new GZIPOutputStream(os);
             }
         },
         ZLIB {
             @Override
-            public DeflaterOutputStream createDeflaterOutputStream(OutputStream os) throws IOException {
+            public DeflaterOutputStream createDeflaterOutputStream(final OutputStream os) throws IOException {
                 return new DeflaterOutputStream(os);
             }
         },
         OFF {
             @Override
-            public DeflaterOutputStream createDeflaterOutputStream(OutputStream os) throws IOException {
+            public DeflaterOutputStream createDeflaterOutputStream(final OutputStream os) throws IOException {
                 return null;
             }
         };
@@ -155,7 +155,7 @@ public final class GelfLayout extends AbstractStringLayout {
     private byte[] compress(final byte[] bytes) {
         try {
             final ByteArrayOutputStream baos = new ByteArrayOutputStream(compressionThreshold / 8);
-            DeflaterOutputStream stream = compressionType.createDeflaterOutputStream(baos);
+            final DeflaterOutputStream stream = compressionType.createDeflaterOutputStream(baos);
             if (stream == null) {
                 return bytes;
             }
@@ -188,7 +188,7 @@ public final class GelfLayout extends AbstractStringLayout {
     @Override
     public String toSerializable(final LogEvent event) {
         final StringBuilder builder = new StringBuilder(256);
-        JsonStringEncoder jsonEncoder = JsonStringEncoder.getInstance();
+        final JsonStringEncoder jsonEncoder = JsonStringEncoder.getInstance();
         builder.append('{');
         builder.append("\"version\":\"1.1\",");
         builder.append("\"host\":\"").append(jsonEncoder.quoteAsString(host)).append(QC);

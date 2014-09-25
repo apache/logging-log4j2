@@ -66,8 +66,8 @@ public class PluginManagerPackagesTest {
         // To ensure our custom plugin is NOT included in the log4j plugin metadata file,
         // we make sure the class does not exist until after the build is finished.
         // So we don't create the custom plugin class until this test is run.
-        File orig = new File("target/test-classes/customplugin/FixedStringLayout.java.source");
-        File f = new File(orig.getParentFile(), "FixedStringLayout.java");
+        final File orig = new File("target/test-classes/customplugin/FixedStringLayout.java.source");
+        final File f = new File(orig.getParentFile(), "FixedStringLayout.java");
         assertTrue("renamed source file OK", orig.renameTo(f));
         compile(f);
         assertTrue("reverted source file OK", f.renameTo(orig));
@@ -81,29 +81,29 @@ public class PluginManagerPackagesTest {
         config = ctx.getConfiguration();
         listAppender = (ListAppender) config.getAppender("List");
 
-        Logger logger = LogManager.getLogger(PluginManagerPackagesTest.class);
+        final Logger logger = LogManager.getLogger(PluginManagerPackagesTest.class);
         logger.info("this message is ignored");
 
-        List<String> messages = listAppender.getMessages();
+        final List<String> messages = listAppender.getMessages();
         assertEquals(messages.toString(), 1, messages.size());
         assertEquals("abc123XYZ", messages.get(0));
     }
 
-    private void compile(File f) throws IOException {
+    private void compile(final File f) throws IOException {
         // set up compiler
-        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-        DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
-        StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null);
-        Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(f));
+        final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+        final DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
+        final StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null);
+        final Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(f));
 
         // compile generated source
         // (switch off annotation processing: no need to create Log4j2Plugins.dat)
-        List<String> options = Arrays.asList("-proc:none");
+        final List<String> options = Arrays.asList("-proc:none");
         compiler.getTask(null, fileManager, diagnostics, options, null, compilationUnits).call();
 
         // check we don't have any compilation errors
-        List<String> errors = new ArrayList<String>();
-        for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
+        final List<String> errors = new ArrayList<String>();
+        for (final Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
             if (diagnostic.getKind() == Diagnostic.Kind.ERROR) {
                 errors.add(String.format("Compile error: %s%n", diagnostic.getMessage(Locale.getDefault())));
             }

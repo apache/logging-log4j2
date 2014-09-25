@@ -38,7 +38,7 @@ public class AbstractLifeCycle implements LifeCycle, Serializable {
     private volatile LifeCycle.State state = LifeCycle.State.INITIALIZED;
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
@@ -48,7 +48,7 @@ public class AbstractLifeCycle implements LifeCycle, Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        AbstractLifeCycle other = (AbstractLifeCycle) obj;
+        final AbstractLifeCycle other = (AbstractLifeCycle) obj;
         if (state != other.state) {
             return false;
         }

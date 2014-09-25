@@ -61,12 +61,12 @@ public class RegexFilterTest {
 
     @Test
     public void testDotAllPattern() throws Exception {
-        String singleLine = "test single line matches";
-        String multiLine = "test multi line matches\nsome more lines";
-        RegexFilter filter = RegexFilter.createFilter(".*line.*", new String[] { "DOTALL", "COMMENTS" }, false,
+        final String singleLine = "test single line matches";
+        final String multiLine = "test multi line matches\nsome more lines";
+        final RegexFilter filter = RegexFilter.createFilter(".*line.*", new String[] { "DOTALL", "COMMENTS" }, false,
                 Filter.Result.DENY, Filter.Result.ACCEPT);
-        Result singleLineResult = filter.filter(null, null, null, singleLine, (Throwable) null);
-        Result multiLineResult = filter.filter(null, null, null, multiLine, (Throwable) null);
+        final Result singleLineResult = filter.filter(null, null, null, singleLine, (Throwable) null);
+        final Result multiLineResult = filter.filter(null, null, null, multiLine, (Throwable) null);
         assertThat(singleLineResult, equalTo(Result.DENY));
         assertThat(multiLineResult, equalTo(Result.DENY));
     }

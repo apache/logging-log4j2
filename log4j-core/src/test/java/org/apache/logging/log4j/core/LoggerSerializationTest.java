@@ -37,7 +37,7 @@ public class LoggerSerializationTest extends AbstractSerializationTest {
                 { LogManager.getLogger("test") } });
     }
 
-    public LoggerSerializationTest(Serializable serializable) {
+    public LoggerSerializationTest(final Serializable serializable) {
         super(serializable);
     }
 

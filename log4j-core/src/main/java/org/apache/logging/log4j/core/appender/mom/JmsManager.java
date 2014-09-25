@@ -142,8 +142,8 @@ public class JmsManager extends AbstractManager {
         private final String username;
         private final String password;
 
-        private JmsConfiguration(JndiManager jndiManager, String connectionFactoryName, String destinationName,
-                                 String username, String password) {
+        private JmsConfiguration(final JndiManager jndiManager, final String connectionFactoryName, final String destinationName,
+                                 final String username, final String password) {
             this.jndiManager = jndiManager;
             this.connectionFactoryName = connectionFactoryName;
             this.destinationName = destinationName;
@@ -155,7 +155,7 @@ public class JmsManager extends AbstractManager {
     private static class JmsManagerFactory implements ManagerFactory<JmsManager, JmsConfiguration> {
 
         @Override
-        public JmsManager createManager(String name, JmsConfiguration data) {
+        public JmsManager createManager(final String name, final JmsConfiguration data) {
             try {
                 return new JmsManager(name, data.jndiManager, data.connectionFactoryName, data.destinationName,
                     data.username, data.password);

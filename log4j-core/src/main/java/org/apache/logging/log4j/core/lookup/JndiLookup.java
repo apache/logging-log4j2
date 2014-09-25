@@ -68,7 +68,7 @@ public class JndiLookup extends AbstractLookup {
      * @param jndiName The name of the resource.
      * @return The fully qualified name to look up.
      */
-    private String convertJndiName(String jndiName) {
+    private String convertJndiName(final String jndiName) {
         if (!jndiName.startsWith(CONTAINER_JNDI_RESOURCE_PATH_PREFIX) && jndiName.indexOf(':') == -1) {
             return CONTAINER_JNDI_RESOURCE_PATH_PREFIX + jndiName;
         }

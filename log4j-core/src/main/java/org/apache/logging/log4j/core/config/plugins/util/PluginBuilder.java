@@ -197,7 +197,7 @@ public class PluginBuilder<T> implements Builder<T> {
             final Collection<ConstraintValidator<?>> validators =
                 ConstraintValidators.findValidators(annotations);
             final Object value = field.get(builder);
-            for (ConstraintValidator<?> validator : validators) {
+            for (final ConstraintValidator<?> validator : validators) {
                 if (!validator.isValid(value)) {
                     invalid = true;
                 }

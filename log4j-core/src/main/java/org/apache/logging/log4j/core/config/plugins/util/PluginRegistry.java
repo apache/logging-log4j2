@@ -243,7 +243,7 @@ public class PluginRegistry {
             list.add(mainType);
             final PluginAliases pluginAliases = clazz.getAnnotation(PluginAliases.class);
             if (pluginAliases != null) {
-                for (String alias : pluginAliases.value()) {
+                for (final String alias : pluginAliases.value()) {
                     final PluginEntry aliasEntry = new PluginEntry();
                     final String aliasElementName = plugin.elementType().equals(
                         Plugin.EMPTY) ? alias.trim() : plugin.elementType();

@@ -47,7 +47,7 @@ public class Log4jMarkerFactory implements IMarkerFactory {
         if (name == null) {
             throw new IllegalArgumentException("Marker name must not be null");
         }
-        Marker marker = markerMap.get(name);
+        final Marker marker = markerMap.get(name);
         if (marker != null) {
             return marker;
         }
@@ -71,7 +71,7 @@ public class Log4jMarkerFactory implements IMarkerFactory {
         if (marker == null) {
             throw new IllegalArgumentException("Marker must not be null");
         }
-        Marker m = markerMap.get(marker.getName());
+        final Marker m = markerMap.get(marker.getName());
         if (m != null) {
             return m;
         }

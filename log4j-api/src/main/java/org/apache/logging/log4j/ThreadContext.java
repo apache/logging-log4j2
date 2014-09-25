@@ -210,7 +210,7 @@ public final class ThreadContext  {
         useMap = !(managerProps.getBooleanProperty(DISABLE_MAP) || disableAll);
 
         contextStack = new DefaultThreadContextStack(useStack);
-        String threadContextMapName = managerProps.getStringProperty(THREAD_CONTEXT_KEY);
+        final String threadContextMapName = managerProps.getStringProperty(THREAD_CONTEXT_KEY);
         final ClassLoader cl = ProviderUtil.findClassLoader();
         if (threadContextMapName != null) {
             try {
@@ -353,7 +353,7 @@ public final class ThreadContext  {
      * @return an immutable copy of the ThreadContext stack.
      */
     public static ContextStack getImmutableStack() {
-        ContextStack result = contextStack.getImmutableStackOrNull();
+        final ContextStack result = contextStack.getImmutableStackOrNull();
         return result == null ? EMPTY_STACK : result;
     }
 

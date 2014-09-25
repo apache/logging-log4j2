@@ -145,7 +145,7 @@ public class JpaAppenderBenchmark {
             try {
                 statement = connectionHSQLDB.createStatement();
                 statement.execute("SHUTDOWN");
-            } catch (SQLException ignore) {
+            } catch (final SQLException ignore) {
                 // ignore
             } finally {
                 Closer.closeSilently(statement);
@@ -154,7 +154,7 @@ public class JpaAppenderBenchmark {
             try {
                 statement = connectionH2.createStatement();
                 statement.execute("SHUTDOWN");
-            } catch (SQLException ignore) {
+            } catch (final SQLException ignore) {
                 // ignore
             } finally {
                 Closer.closeSilently(statement);
@@ -168,8 +168,8 @@ public class JpaAppenderBenchmark {
      */
     public static Connection getConnectionH2() throws Exception {
         Class.forName("org.h2.Driver");
-        Connection connection = DriverManager.getConnection("jdbc:h2:mem:Log4j", "sa", "");
-        Statement statement = connection.createStatement();
+        final Connection connection = DriverManager.getConnection("jdbc:h2:mem:Log4j", "sa", "");
+        final Statement statement = connection.createStatement();
         statement
                 .executeUpdate("CREATE TABLE jpaBasicLogEntry ( "
                         + "id INTEGER IDENTITY, timemillis BIGINT, level NVARCHAR(10), loggerName NVARCHAR(255), "
@@ -185,8 +185,8 @@ public class JpaAppenderBenchmark {
      */
     public static Connection getConnectionHSQLDB() throws Exception {
         Class.forName("org.hsqldb.jdbcDriver");
-        Connection connection = DriverManager.getConnection("jdbc:hsqldb:mem:Log4j", "sa", "");
-        Statement statement = connection.createStatement();
+        final Connection connection = DriverManager.getConnection("jdbc:hsqldb:mem:Log4j", "sa", "");
+        final Statement statement = connection.createStatement();
         statement.executeUpdate("CREATE TABLE jpaBasicLogEntry ( "
                 + "id INTEGER IDENTITY, timemillis BIGINT, level VARCHAR(10), loggerName VARCHAR(255), "
                 + "message VARCHAR(1024), thrown VARCHAR(1048576), contextMapJson VARCHAR(1048576),"

@@ -47,7 +47,7 @@ public class StructuredDataMessageTest {
     @Test
     public void testMutableByDesign() { // LOG4J2-763
         final String testMsg = "Test message {}";
-        StructuredDataMessage msg = new StructuredDataMessage("MsgId@1", testMsg, "Alert");
+        final StructuredDataMessage msg = new StructuredDataMessage("MsgId@1", testMsg, "Alert");
 
         // modify parameter before calling msg.getFormattedMessage
         msg.put("message", testMsg);

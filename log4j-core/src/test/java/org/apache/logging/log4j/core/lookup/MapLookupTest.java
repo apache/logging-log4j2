@@ -55,7 +55,7 @@ public class MapLookupTest {
         MapLookup.setMainArguments(new String[] {
                 "--file",
                 "foo.txt" });
-        MapLookup lookup = MapLookup.MAIN_SINGLETON;
+        final MapLookup lookup = MapLookup.MAIN_SINGLETON;
         assertEquals(null, lookup.lookup(null));
         assertEquals(null, lookup.lookup("X"));
         assertEquals("--file", lookup.lookup("0"));

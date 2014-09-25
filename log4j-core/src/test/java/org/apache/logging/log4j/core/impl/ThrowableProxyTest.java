@@ -93,7 +93,7 @@ public class ThrowableProxyTest {
     public void testLogStackTraceWithClassThatCannotInitialize() {
         try {
             // Try to create the object, which will always fail during class initialization
-            AlwaysThrowsError error = new AlwaysThrowsError();
+            final AlwaysThrowsError error = new AlwaysThrowsError();
 
             // If the error was not triggered then fail
             fail("Test did not throw expected error: " + error);

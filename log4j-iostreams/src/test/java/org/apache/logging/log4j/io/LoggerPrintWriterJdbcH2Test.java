@@ -40,7 +40,7 @@ public class LoggerPrintWriterJdbcH2Test {
         return DriverManager.getConnection(H2_URL, USER_ID, PASSWORD);
     }
 
-    private void setListAppender(ListAppender listAppender) {
+    private void setListAppender(final ListAppender listAppender) {
         this.listAppender = listAppender;
     }
 
@@ -53,13 +53,13 @@ public class LoggerPrintWriterJdbcH2Test {
     @Test
     @Ignore("DataSource#setLogWriter() has no effect in H2, it uses its own internal logging and an SLF4J bridge.")
     public void testDataSource_setLogWriter() throws SQLException {
-        JdbcDataSource dataSource = new JdbcDataSource();
+        final JdbcDataSource dataSource = new JdbcDataSource();
         dataSource.setUrl(H2_URL);
         dataSource.setUser(USER_ID);
         dataSource.setPassword(PASSWORD);
         dataSource.setLogWriter(createLoggerPrintWriter());
         // dataSource.setLogWriter(new PrintWriter(new OutputStreamWriter(System.out)));
-        Connection conn = dataSource.getConnection();
+        final Connection conn = dataSource.getConnection();
         try {
             conn.prepareCall("select 1");
         } finally {
@@ -73,7 +73,7 @@ public class LoggerPrintWriterJdbcH2Test {
         DriverManager.setLogWriter(createLoggerPrintWriter());
         // DriverManager.setLogWriter(new PrintWriter(new OutputStreamWriter(System.out)));
         try {
-            Connection conn = this.newConnection();
+            final Connection conn = this.newConnection();
             try {
                 conn.rollback();
             } finally {

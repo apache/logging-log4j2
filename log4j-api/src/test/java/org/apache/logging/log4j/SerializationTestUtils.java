@@ -26,11 +26,11 @@ import org.junit.Assert;
  */
 public class SerializationTestUtils {
 
-    public static void roundtripNoException(Serializable serializable) {
+    public static void roundtripNoException(final Serializable serializable) {
         SerializationUtils.roundtrip(serializable);
     }
 
-    public static void roundtripEquals(Serializable serializable) {
+    public static void roundtripEquals(final Serializable serializable) {
         Assert.assertEquals(serializable, SerializationUtils.roundtrip(serializable));
     }
 }

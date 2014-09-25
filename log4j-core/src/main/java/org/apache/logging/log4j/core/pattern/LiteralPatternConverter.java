@@ -42,7 +42,7 @@ public final class LiteralPatternConverter extends LogEventPatternConverter impl
      * @param convertBackslashes if {@code true}, backslash characters are treated as escape characters and character
      *            sequences like "\" followed by "t" (backslash+t) are converted to special characters like '\t' (tab).
      */
-    public LiteralPatternConverter(final Configuration config, final String literal, boolean convertBackslashes) {
+    public LiteralPatternConverter(final Configuration config, final String literal, final boolean convertBackslashes) {
         super("Literal", "literal");
         this.literal = convertBackslashes ? OptionConverter.convertSpecialChars(literal) : literal; // LOG4J2-829
         this.config = config;

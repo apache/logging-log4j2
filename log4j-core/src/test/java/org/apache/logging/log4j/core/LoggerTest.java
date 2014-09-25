@@ -223,7 +223,7 @@ public class LoggerTest {
     @Test
     public void testLevelInheritence() throws Exception {
         final Configuration config = context.getConfiguration();
-        LoggerConfig loggerConfig = config.getLoggerConfig("org.apache.logging.log4j.core.LoggerTest");
+        final LoggerConfig loggerConfig = config.getLoggerConfig("org.apache.logging.log4j.core.LoggerTest");
         assertNotNull(loggerConfig);
         assertEquals(loggerConfig.getName(), "org.apache.logging.log4j.core.LoggerTest");
         assertEquals(loggerConfig.getLevel(), Level.DEBUG);

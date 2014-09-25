@@ -147,7 +147,7 @@ public class JdbcAppenderBenchmark {
             try {
                 statement = connectionHSQLDB.createStatement();
                 statement.execute("SHUTDOWN");
-            } catch (SQLException ignore) {
+            } catch (final SQLException ignore) {
                 // ignore
             } finally {
                 Closer.closeSilently(statement);
@@ -156,7 +156,7 @@ public class JdbcAppenderBenchmark {
             try {
                 statement = connectionH2.createStatement();
                 statement.execute("SHUTDOWN");
-            } catch (SQLException ignore) {
+            } catch (final SQLException ignore) {
                 // ignore
             } finally {
                 Closer.closeSilently(statement);
@@ -165,7 +165,7 @@ public class JdbcAppenderBenchmark {
         }
     }
 
-    private void createTable(Connection connection, String createSQL) throws SQLException {
+    private void createTable(final Connection connection, final String createSQL) throws SQLException {
         final Statement statement = connection.createStatement();
         try {
             statement.executeUpdate(createSQL);

@@ -77,7 +77,7 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
     }
 
     @Override
-    public void bundleChanged(BundleEvent event) {
+    public void bundleChanged(final BundleEvent event) {
         switch (event.getType()) {
             // FIXME: STARTING instead of STARTED?
             case BundleEvent.STARTED:

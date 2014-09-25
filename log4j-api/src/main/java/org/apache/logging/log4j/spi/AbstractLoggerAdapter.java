@@ -35,7 +35,7 @@ public abstract class AbstractLoggerAdapter<L> implements LoggerAdapter<L> {
         new WeakHashMap<LoggerContext, ConcurrentMap<String, L>>();
 
     @Override
-    public L getLogger(String name) {
+    public L getLogger(final String name) {
         final LoggerContext context = getContext();
         final ConcurrentMap<String, L> loggers = getLoggersInContext(context);
         if (loggers.containsKey(name)) {

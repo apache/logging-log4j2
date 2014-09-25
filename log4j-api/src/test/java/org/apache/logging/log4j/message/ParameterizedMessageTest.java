@@ -41,11 +41,11 @@ public class ParameterizedMessageTest {
     public void testSafeWithMutableParams() { // LOG4J2-763
         final String testMsg = "Test message {}";
         final Mutable param = new Mutable().set("abc");
-        ParameterizedMessage msg = new ParameterizedMessage(testMsg, param);
+        final ParameterizedMessage msg = new ParameterizedMessage(testMsg, param);
 
         // modify parameter before calling msg.getFormattedMessage
         param.set("XYZ");
-        String actual = msg.getFormattedMessage();
+        final String actual = msg.getFormattedMessage();
         assertEquals("Should use initial param value", "Test message abc", actual);
     }
 }

@@ -62,7 +62,7 @@ public class JmsAppender extends AbstractAppender {
             final Message message = this.manager.createMessage(getLayout().toSerializable(event));
             message.setJMSTimestamp(event.getTimeMillis());
             this.producer.send(message);
-        } catch (JMSException e) {
+        } catch (final JMSException e) {
             throw new AppenderLoggingException(e);
         }
     }

@@ -128,7 +128,7 @@ public final class PatternLayout extends AbstractStringLayout {
         this.formatters = parser.parse(pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern, this.alwaysWriteExceptions, this.noConsoleNoAnsi);
     }
 
-    private static byte[] toBytes(String str, Charset charset) {
+    private static byte[] toBytes(final String str, final Charset charset) {
         if (str != null) {
             return str.getBytes(charset != null ? charset : Charset.defaultCharset());
         }

@@ -22,7 +22,7 @@ package org.apache.logging.log4j.message;
 class Mutable {
     private String value;
 
-    public Mutable set(String value) {
+    public Mutable set(final String value) {
         this.value = value;
         return this;
     }

@@ -69,23 +69,23 @@ public class ObjectMessageTest {
     
     @Test
     public void testSerializeWithSerializableParam() {
-        BigDecimal big = BigDecimal.valueOf(123.456);
-        ObjectMessage msg = new ObjectMessage(big);
-        ObjectMessage other = SerialUtil.deserialize(SerialUtil.serialize(msg));
+        final BigDecimal big = BigDecimal.valueOf(123.456);
+        final ObjectMessage msg = new ObjectMessage(big);
+        final ObjectMessage other = SerialUtil.deserialize(SerialUtil.serialize(msg));
         assertEquals(msg, other);
     }
     
     @Test
     public void testDeserializeNonSerializableParamEqualIfToStringSame() {
         class NonSerializable {
-            public boolean equals(Object other) {
+            public boolean equals(final Object other) {
                 return other instanceof NonSerializable; // a very lenient equals()
             }
         }
-        NonSerializable nonSerializable = new NonSerializable();
+        final NonSerializable nonSerializable = new NonSerializable();
         assertFalse(nonSerializable instanceof Serializable);
-        ObjectMessage msg = new ObjectMessage(nonSerializable);
-        ObjectMessage other = SerialUtil.deserialize(SerialUtil.serialize(msg));
+        final ObjectMessage msg = new ObjectMessage(nonSerializable);
+        final ObjectMessage other = SerialUtil.deserialize(SerialUtil.serialize(msg));
 
         assertEquals(msg, other);
         assertEquals(other, msg);

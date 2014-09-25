@@ -85,7 +85,7 @@ public class PluginManager {
      * @param packages collection of package names to add. Empty and null package names are ignored.
      */
     public static void addPackages(final Collection<String> packages) {
-        for (String pkg : packages) {
+        for (final String pkg : packages) {
             if (Strings.isNotBlank(pkg)) {
                 PACKAGES.addIfAbsent(pkg);
             }
@@ -124,7 +124,7 @@ public class PluginManager {
      * @param packages the list of packages to scan for plugins
      * @since 2.1
      */
-    public void collectPlugins(List<String> packages) {
+    public void collectPlugins(final List<String> packages) {
         final String categoryLowerCase = category.toLowerCase();
         final Map<String, PluginType<?>> newPlugins = new LinkedHashMap<String, PluginType<?>>();
 
@@ -158,7 +158,7 @@ public class PluginManager {
         plugins = newPlugins;
     }
 
-    private static void mergeByName(Map<String, PluginType<?>> newPlugins, List<PluginType<?>> plugins) {
+    private static void mergeByName(final Map<String, PluginType<?>> newPlugins, final List<PluginType<?>> plugins) {
         if (plugins == null) {
             return;
         }

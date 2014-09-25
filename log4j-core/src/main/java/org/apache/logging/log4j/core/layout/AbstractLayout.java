@@ -57,7 +57,7 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
      * @param footer
      *        The footer to add when the stream is closed. May be null.
      */
-    public AbstractLayout(byte[] header, byte[] footer) {
+    public AbstractLayout(final byte[] header, final byte[] footer) {
         super();
         this.header = header;
         this.footer = footer;

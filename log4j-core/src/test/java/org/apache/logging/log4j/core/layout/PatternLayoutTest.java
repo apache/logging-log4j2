@@ -91,7 +91,7 @@ public class PatternLayoutTest {
         testMdcPattern("%m : %X{key1}, %X{key2}, %X{key3}", "Hello : value1, value2, ", true);
     }
 
-    private void testMdcPattern(String patternStr, String expectedStr, boolean useThreadContext) throws Exception {
+    private void testMdcPattern(final String patternStr, final String expectedStr, final boolean useThreadContext) throws Exception {
         final PatternLayout layout = PatternLayout.newBuilder().withPattern(patternStr)
                 .withConfiguration(ctx.getConfiguration()).build();
         if (useThreadContext) {
@@ -177,12 +177,12 @@ public class PatternLayoutTest {
     @Test
     public void testHeaderFooterJavaLookup() throws Exception {
         // % does not work here.
-        String pattern = "%d{UNIX} MyApp%n${java:version}%n${java:runtime}%n${java:vm}%n${java:os}%n${java:hw}";
+        final String pattern = "%d{UNIX} MyApp%n${java:version}%n${java:runtime}%n${java:vm}%n${java:os}%n${java:hw}";
         final PatternLayout layout = PatternLayout.newBuilder().withConfiguration(ctx.getConfiguration())
                 .withHeader(pattern).withFooter(pattern).build();
         final byte[] header = layout.getHeader();
         assertNotNull("No header", header);
-        String headerStr = new String(header);
+        final String headerStr = new String(header);
         assertTrue(headerStr, headerStr.contains("Java version "));
         assertTrue(headerStr, headerStr.contains("(build "));
         assertTrue(headerStr, headerStr.contains(" from "));
@@ -190,7 +190,7 @@ public class PatternLayoutTest {
         //
         final byte[] footer = layout.getFooter();
         assertNotNull("No header", footer);
-        String footerStr = new String(header);
+        final String footerStr = new String(header);
         assertTrue(footerStr, footerStr.contains("Java version "));
         assertTrue(footerStr, footerStr.contains("(build "));
         assertTrue(footerStr, footerStr.contains(" from "));

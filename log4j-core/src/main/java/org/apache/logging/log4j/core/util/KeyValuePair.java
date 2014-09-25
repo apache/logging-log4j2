@@ -125,7 +125,7 @@ public final class KeyValuePair implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
@@ -135,7 +135,7 @@ public final class KeyValuePair implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        KeyValuePair other = (KeyValuePair) obj;
+        final KeyValuePair other = (KeyValuePair) obj;
         if (key == null) {
             if (other.key != null) {
                 return false;
