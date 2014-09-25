@@ -54,11 +54,11 @@ public class RandomAccessFileAppenderTests {
         );
     }
 
-    private InitialLoggerContext init;
-    private CleanFiles files;
+    private final InitialLoggerContext init;
+    private final CleanFiles files;
 
     @Rule
-    public RuleChain chain = RuleChain.outerRule(files).around(init);
+    public final RuleChain chain;
 
     private final File logFile;
     private final boolean locationEnabled;
@@ -68,6 +68,7 @@ public class RandomAccessFileAppenderTests {
         this.logFile = new File("target", testName + ".log");
         this.files = new CleanFiles(this.logFile);
         this.locationEnabled = locationEnabled;
+        this.chain = RuleChain.outerRule(files).around(init);
     }
 
     @Test
