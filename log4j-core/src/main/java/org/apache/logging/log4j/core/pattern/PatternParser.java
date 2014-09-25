@@ -251,7 +251,8 @@ public final class PatternParser {
      *            array to receive extracted options
      * @return position in pattern after options.
      */
-    private static int extractOptions(final String pattern, int i, final List<String> options) {
+    private static int extractOptions(final String pattern, final int start, final List<String> options) {
+        int i = start;
         while (i < pattern.length() && pattern.charAt(i) == '{') {
             final int begin = i++;
             int end;
