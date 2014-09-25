@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.pattern;
 
 /**
- * Marks classes that implement ANSI escape code convertions.
+ * Marks classes that implement ANSI escape code conversions.
  */
 interface AnsiConverter {
     // a marker interface, empty.
