@@ -36,7 +36,7 @@ public final class Transform {
     /**
      * This method takes a string which may contain HTML tags (ie,
      * &lt;b&gt;, &lt;table&gt;, etc) and replaces any
-     * '<',  '>' , '&' or '"'
+     * '&lt;',  '&gt;' , '&amp;' or '&quot;'
      * characters with respective predefined entity references.
      *
      * @param input The text to be converted.
@@ -81,11 +81,11 @@ public final class Transform {
     }
 
     /**
-     * Ensures that embedded CDEnd strings (]]>) are handled properly
+     * Ensures that embedded CDEnd strings (]]&gt;) are handled properly
      * within message, NDC and throwable tag text.
      *
      * @param buf StringBuilder holding the XML data to this point.  The
-     *            initial CDStart (<![CDATA[) and final CDEnd (]]>) of the CDATA
+     *            initial CDStart (&lt;![CDATA[) and final CDEnd (]]&gt;) of the CDATA
      *            section are the responsibility of the calling method.
      * @param str The String that is inserted into an existing CDATA Section within buf.
      */
@@ -112,7 +112,7 @@ public final class Transform {
     }
 
     /**
-     * This method takes a string which may contain JSON reserved chars and 
+     * This method takes a string which may contain JSON reserved chars and
      * escapes them.
      *
      * @param input The text to be converted.
@@ -121,9 +121,9 @@ public final class Transform {
     public static String escapeJsonControlCharacters(final String input) {
         // Check if the string is null, zero length or devoid of special characters
         // if so, return what was sent in.
-    
+
         // TODO: escaped Unicode chars.
-        
+
         if (Strings.isEmpty(input)
             || (input.indexOf('"') == -1 &&
             input.indexOf('\\') == -1 &&
@@ -131,13 +131,13 @@ public final class Transform {
             input.indexOf('\b') == -1 &&
             input.indexOf('\f') == -1 &&
             input.indexOf('\n') == -1 &&
-            input.indexOf('\r') == -1 && 
+            input.indexOf('\r') == -1 &&
             input.indexOf('\t') == -1)) {
             return input;
         }
-    
+
         final StringBuilder buf = new StringBuilder(input.length() + 6);
-        
+
         final int len = input.length();
         for (int i = 0; i < len; i++) {
             final char ch = input.charAt(i);
@@ -145,39 +145,39 @@ public final class Transform {
             switch (ch) {
             case '"':
                 buf.append(escBs);
-                buf.append(ch);                
+                buf.append(ch);
                 break;
             case '\\':
                 buf.append(escBs);
-                buf.append(ch);                
+                buf.append(ch);
                 break;
             case '/':
                 buf.append(escBs);
-                buf.append(ch);                
+                buf.append(ch);
                 break;
             case '\b':
                 buf.append(escBs);
-                buf.append('b');                
+                buf.append('b');
                 break;
             case '\f':
                 buf.append(escBs);
-                buf.append('f');                
+                buf.append('f');
                 break;
             case '\n':
                 buf.append(escBs);
-                buf.append('n');                
+                buf.append('n');
                 break;
             case '\r':
                 buf.append(escBs);
-                buf.append('r');                
+                buf.append('r');
                 break;
             case '\t':
                 buf.append(escBs);
-                buf.append('t');                
+                buf.append('t');
                 break;
-            default: 
-                buf.append(ch);                
-            } 
+            default:
+                buf.append(ch);
+            }
         }
         return buf.toString();
     }
