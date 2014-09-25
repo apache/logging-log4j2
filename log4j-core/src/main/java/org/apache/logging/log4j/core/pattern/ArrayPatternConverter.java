@@ -22,7 +22,7 @@ package org.apache.logging.log4j.core.pattern;
 public interface ArrayPatternConverter extends PatternConverter {
 
     /**
-     * Format an array of Objects.
+     * Formats an array of Objects.
      * @param toAppendTo The StringBuilder to add the content to.
      * @param objects The Object array.
      */
