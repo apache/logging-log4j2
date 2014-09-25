@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.pattern;
 
 /**
- * PatternConverters implement this interface to accept an array of objects when formatting.
+ * {@link PatternConverter}s implement this interface to accept an array of objects when formatting.
  */
 public interface ArrayPatternConverter extends PatternConverter {
 
