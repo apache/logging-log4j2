@@ -20,11 +20,12 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Custom Level object that is created via configuration.
  */
-@Plugin(name = "CustomLevel", category = "Core") // TBD: category="Level" does not work... Why?
+@Plugin(name = "CustomLevel", category = "Core", printObject = true)
 public final class CustomLevelPlugin {
 
     private CustomLevelPlugin() {
@@ -38,11 +39,12 @@ public final class CustomLevelPlugin {
      * @return A Level object.
      */
     @PluginFactory
-    public static Level createLevel(
-// @formatter:off
+    public static Level createLevel(// @formatter:off
             @PluginAttribute("name") final String levelName,
             @PluginAttribute("intLevel") final int intLevel) {
         // @formatter:on
+
+        StatusLogger.getLogger().debug("Creating CustomLevel(name='{}', intValue={})", levelName, intLevel);
         Level result = Level.forName(levelName, intLevel);
         return result;
     }
