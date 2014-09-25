@@ -18,15 +18,14 @@
 package org.apache.logging.log4j.core.net;
 
 import java.util.Properties;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.util.JndiCloser;
-import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * JNDI {@link javax.naming.Context} manager.
@@ -34,8 +33,6 @@ import org.apache.logging.log4j.status.StatusLogger;
  * @since 2.1
  */
 public class JndiManager extends AbstractManager {
-
-    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private static final JndiManagerFactory FACTORY = new JndiManagerFactory();
 
