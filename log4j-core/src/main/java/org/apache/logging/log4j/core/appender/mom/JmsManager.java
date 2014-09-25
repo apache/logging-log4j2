@@ -118,9 +118,8 @@ public class JmsManager extends AbstractManager {
     public Message createMessage(final Serializable object) throws JMSException {
         if (object instanceof String) {
             return this.session.createTextMessage((String) object);
-        } else {
-            return this.session.createObjectMessage(object);
         }
+        return this.session.createObjectMessage(object);
     }
 
     @Override
