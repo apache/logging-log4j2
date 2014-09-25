@@ -569,10 +569,11 @@ public final class PatternParser {
      *            sequences like "\" followed by "t" (backslash+t) are converted to special characters like '\t' (tab).
      * @return position after format specifier sequence.
      */
-    private int finalizeConverter(final char c, final String pattern, int i, final StringBuilder currentLiteral,
-            final FormattingInfo formattingInfo, final Map<String, Class<PatternConverter>> rules,
-            final List<PatternConverter> patternConverters, final List<FormattingInfo> formattingInfos,
-            final boolean noConsoleNoAnsi, boolean convertBackslashes) {
+    private int finalizeConverter(final char c, final String pattern, final int start,
+            final StringBuilder currentLiteral, final FormattingInfo formattingInfo,
+            final Map<String, Class<PatternConverter>> rules, final List<PatternConverter> patternConverters,
+            final List<FormattingInfo> formattingInfos, final boolean noConsoleNoAnsi, boolean convertBackslashes) {
+        int i = start;
         final StringBuilder convBuf = new StringBuilder();
         i = extractConverter(c, pattern, i, convBuf, currentLiteral);
 
@@ -606,8 +607,8 @@ public final class PatternParser {
             formattingInfos.add(formattingInfo);
 
             if (currentLiteral.length() > 0) {
-                patternConverters.add(new LiteralPatternConverter(config, currentLiteral.toString(),
-                        convertBackslashes));
+                patternConverters
+                        .add(new LiteralPatternConverter(config, currentLiteral.toString(), convertBackslashes));
                 formattingInfos.add(FormattingInfo.getDefault());
             }
         }
