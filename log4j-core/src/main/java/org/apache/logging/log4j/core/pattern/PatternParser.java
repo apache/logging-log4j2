@@ -260,14 +260,13 @@ public final class PatternParser {
                 end = pattern.indexOf('}', i);
                 if (end == -1) {
                     break;
-                } else {
-                    final int next = pattern.indexOf("{", i);
-                    if (next != -1 && next < end) {
-                        i = end + 1;
-                        ++depth;
-                    } else if (depth > 0) {
-                        --depth;
-                    }
+                }
+                final int next = pattern.indexOf("{", i);
+                if (next != -1 && next < end) {
+                    i = end + 1;
+                    ++depth;
+                } else if (depth > 0) {
+                    --depth;
                 }
             } while (depth > 0);
 
