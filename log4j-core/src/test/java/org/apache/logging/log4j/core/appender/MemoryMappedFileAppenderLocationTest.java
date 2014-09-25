@@ -85,12 +85,12 @@ public class MemoryMappedFileAppenderLocationTest {
         }
         assertNotNull(line1);
         assertThat(line1, containsString("Test log1"));
-        String location1 = "org.apache.logging.log4j.core.appender.MemoryMappedFileAppenderLocationTest.testMemMapLocation(MemoryMappedFileAppenderLocationTest.java:63)";
+        String location1 = "org.apache.logging.log4j.core.appender.MemoryMappedFileAppenderLocationTest.testMemMapLocation(MemoryMappedFileAppenderLocationTest.java:65)";
         assertThat(line1, containsString(location1));
 
         assertNotNull(line2);
         assertThat(line2, containsString("Test log2"));
-        String location2 = "org.apache.logging.log4j.core.appender.MemoryMappedFileAppenderLocationTest.testMemMapLocation(MemoryMappedFileAppenderLocationTest.java:67)";
+        String location2 = "org.apache.logging.log4j.core.appender.MemoryMappedFileAppenderLocationTest.testMemMapLocation(MemoryMappedFileAppenderLocationTest.java:69)";
         assertThat(line2, containsString(location2));
 
         assertNull("only two lines were logged", line3);
