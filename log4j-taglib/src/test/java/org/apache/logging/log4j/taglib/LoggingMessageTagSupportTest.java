@@ -18,7 +18,6 @@ package org.apache.logging.log4j.taglib;
 
 import java.io.Writer;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.jsp.tagext.BodyTag;

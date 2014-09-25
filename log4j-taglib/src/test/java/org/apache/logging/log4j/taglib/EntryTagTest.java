@@ -17,8 +17,6 @@
 package org.apache.logging.log4j.taglib;
 
 import java.util.List;
-import java.util.Map;
-
 import javax.servlet.jsp.tagext.Tag;
 
 import org.apache.logging.log4j.LogManager;
