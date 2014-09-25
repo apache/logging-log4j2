@@ -115,14 +115,14 @@ public class FormattedMessage implements Message {
             if (formats != null && formats.length > 0) {
                 return new MessageFormatMessage(msgPattern, args);
             }
-        } catch (final Exception ex) {
+        } catch (final Exception ignored) {
             // Obviously, the message is not a proper pattern for MessageFormat.
         }
         try {
             if (MSG_PATTERN.matcher(msgPattern).find()) {
                 return new StringFormattedMessage(msgPattern, args);
             }
-        } catch (final Exception ex) {
+        } catch (final Exception ignored) {
             // Also not properly formatted.
         }
         return new ParameterizedMessage(msgPattern, args, throwable);

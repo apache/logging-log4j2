@@ -98,7 +98,7 @@ public final class PropertiesUtil {
                     try {
                         properties.load(in);
                     } catch (final IOException ioe) {
-                        LOGGER.error("Unable to read {}", url.toString());
+                        LOGGER.error("Unable to read {}", url.toString(), ioe);
                     } finally {
                         try {
                             in.close();
@@ -161,7 +161,7 @@ public final class PropertiesUtil {
         if (prop != null) {
             try {
                 return Integer.parseInt(prop);
-            } catch (final Exception ex) {
+            } catch (final Exception ignored) {
                 return defaultValue;
             }
         }
@@ -189,7 +189,7 @@ public final class PropertiesUtil {
         if (prop != null) {
             try {
                 return Long.parseLong(prop);
-            } catch (final Exception ex) {
+            } catch (final Exception ignored) {
                 return defaultValue;
             }
         }
