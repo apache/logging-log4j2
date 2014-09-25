@@ -101,6 +101,9 @@
         Avoid ConverterKey plugin clashes by using a more predictable plugin loading infrastructure.
         Plugins have been segmented into three parts: class path, user-specified packages, and OSGi bundles.
       </action>
+      <action issue="LOG4J2-798" dev="mattsicker" type="fix" due-to="Scott Harrington">
+        Fixed plugin scanning redundancy causing massive slowdowns in certain environments.
+      </action>
       <action issue="LOG4J2-753" dev="rpopma" type="fix">
         Reduced CachedClock thread contention.
       </action>
