@@ -45,7 +45,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  *  which is looked up by this class is
  * <code>java:comp/env/log4j/context-name</code>.
  *
- * <p>Here is an example of an <code>env-entry<code>:
+ * <p>Here is an example of an <code>env-entry</code>:
  * <blockquote>
  * <pre>
  * &lt;env-entry&gt;
