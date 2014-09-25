@@ -38,7 +38,7 @@ public class Log4jContextFactory implements LoggerContextFactory {
 
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
-    private ContextSelector selector;
+    private final ContextSelector selector;
 
     /**
      * Initializes the ContextSelector from system property {@link Constants#LOG4J_CONTEXT_SELECTOR}.

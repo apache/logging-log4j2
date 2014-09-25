@@ -39,7 +39,7 @@ public class ContextMapLookupTest {
     private static final String TESTKEY = "TestKey";
     private static final String TESTVAL = "TestValue";
 
-    private InitialLoggerContext context = new InitialLoggerContext("ContextMapLookupTest.xml");
+    private final InitialLoggerContext context = new InitialLoggerContext("ContextMapLookupTest.xml");
 
     @Rule
     public RuleChain chain = RuleChain.outerRule(new TestRule() {

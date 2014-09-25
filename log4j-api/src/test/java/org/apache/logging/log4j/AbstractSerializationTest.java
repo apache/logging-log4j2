@@ -28,7 +28,7 @@ import org.junit.runners.Parameterized;
 @RunWith(Parameterized.class)
 public abstract class AbstractSerializationTest {
 
-    private Serializable serializable;
+    private final Serializable serializable;
 
     public AbstractSerializationTest(final Serializable serializable) {
         super();

@@ -28,7 +28,7 @@ public class SimpleLoggerTest {
     public static final LogManagerLoggerContextFactoryRule rule = new LogManagerLoggerContextFactoryRule(
             new SimpleLoggerContextFactory());
 
-    private Logger logger = LogManager.getLogger("TestError");
+    private final Logger logger = LogManager.getLogger("TestError");
 
     @Test
     public void testString() {

@@ -122,7 +122,7 @@ public class ClocksBenchmark {
     }
 
     private static final class FixedTimeClock implements Clock {
-        private long fixedTime;
+        private final long fixedTime;
 
         public FixedTimeClock(final long fixedTime) {
             this.fixedTime = fixedTime;
