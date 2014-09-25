@@ -20,10 +20,7 @@
     <xs:element name="Configuration" type="ConfigurationType"/>
     <xs:complexType name="ConfigurationType">
         <xs:sequence>
-            <xs:choice minOccurs="0" maxOccurs="1">
-                <xs:element name="CustomLevels" type="CustomLevelsType"/>
-                <xs:element name="CustomLevel" type="CustomLevelType"/>
-            </xs:choice>
+            <xs:element name="CustomLevel" type="CustomLevelType"/>
             <xs:element name="Properties" type="PropertiesType"/>
             <xs:choice minOccurs="0" maxOccurs="1">
                 <xs:element name="Filters" type="FiltersType"/>
