@@ -216,8 +216,9 @@ public final class PatternParser {
      *            literal to be output in case format specifier in unrecognized.
      * @return position in pattern after converter.
      */
-    private static int extractConverter(final char lastChar, final String pattern, int i, final StringBuilder convBuf,
-            final StringBuilder currentLiteral) {
+    private static int extractConverter(final char lastChar, final String pattern, final int start,
+            final StringBuilder convBuf, final StringBuilder currentLiteral) {
+        int i = start;
         convBuf.setLength(0);
 
         // When this method is called, lastChar points to the first character of the
