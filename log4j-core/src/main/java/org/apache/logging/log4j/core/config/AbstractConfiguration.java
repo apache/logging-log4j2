@@ -372,7 +372,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                     setRoot = true;
                 }
             } else if (child.getObject() instanceof Level) {
-                // nothing to do: plugin already created custom level
+                // This else clause prevents the warning message below from being logged.
+                // Nothing to do: plugin already created the custom Level instance.
             } else {
                 LOGGER.error("Unknown object \"{}\" of type {} is ignored.", child.getName(),
                         child.getObject().getClass().getName());
