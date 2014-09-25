@@ -323,8 +323,7 @@ public final class MarkerManager {
          */
         private static boolean contains(final Marker parent, final Marker... localParents) {
             //noinspection ForLoopReplaceableByForEach
-            for (int i = 0, localParentsLength = localParents.length; i < localParentsLength; i++) {
-                final Marker marker = localParents[i];
+            for (final Marker marker : localParents) {
                 if (marker == parent) {
                     return true;
                 }
