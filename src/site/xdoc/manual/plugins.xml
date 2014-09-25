@@ -114,19 +114,25 @@
           <h4>Attribute Types</h4>
             <dl>
               <dt>PluginAttribute</dt>
-              <dd>The parameter must resolve to a String, although it can be the String representation of a
-              boolean, numeric value, or any other Object that can be created from a String value.</dd>
+              <dd>The parameter must be convertible from a String using a <a href="#TypeConverters">TypeConverter</a>.
+              Most built-in types are already supported, but custom <code>TypeConverter</code> plugins may also be
+              provided for more type support.</dd>
               <dt>PluginElement</dt>
               <dd>The parameter may represent a complex object that itself has parameters that can be configured.</dd>
               <dt>PluginConfiguration</dt>
-              <dd>The current Configuration object will be passed to the plugin as a parameter.</dd>
+              <dd>The current <code>Configuration</code> object will be passed to the plugin as a parameter.</dd>
+              <dt>PluginNode</dt>
+              <dd>The current <code>Node</code> being parsed will be passed to the plugin as a parameter.</dd>
+              <dt>Required</dt>
+              <dd>While not strictly an attribute, this annotation can be added to any plugin factory parameter to
+              make it automatically validated as non-<code>null</code> and non-empty.</dd>
             </dl>
         </subsection>
         <subsection name="Converters">
           <a name="Converters"/>
           <p>
             Converters are used by
-            <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/layout/PatternLayout.html">PatternLayout</a>
+            <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/layout/PatternLayout.html">PatternLayout</a>
             to render the elements identified by the conversion pattern. Every converter must specify its type as
             "Converter" on the Plugin attribute, have a static newInstance method that accepts an array of Strings as
             its only parameter and returns an instance of the Converter, and must have a ConverterKeys annotation
@@ -156,7 +162,8 @@
           <p>
           Some components within Log4j may provide the ability to perform data encryption. These components require
           a secret key to perform the encryption. Applications may provide the key by creating a class that
-          implements the <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/helpers/SecretKeyProvider.html">SecretKeyProvider</a>
+          implements the
+          <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/helpers/SecretKeyProvider.html">SecretKeyProvider</a>
           interface.
           </p>
         </subsection>
@@ -169,6 +176,24 @@
             accepts both a LogEvent and a String key and returns a String. Lookups may be referenced by
             specifying ${<i>name</i>:key} where <i>name</i> is the name specified in the Plugin annotation and
             key is the name of the item to locate.
+          </p>
+        </subsection>
+        <subsection name="TypeConverters">
+          <a name="TypeConverters"/>
+          <p>
+            <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/config/plugins/convert/TypeConverter.html">TypeConverters</a>
+            are a sort of meta-plugin used for converting strings into other types in a plugin factory method
+            parameter. Other plugins can already be injected via the <code>@PluginElement</code> annotation; now, any
+            type supported by the type conversion system can be used in a <code>@PluginAttribute</code> parameter.
+            Conversion of enum types are supported on demand and do not require custom <code>TypeConverter</code>
+            classes. A large number of built-in Java classes are already supported; see
+            <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/config/plugins/convert/TypeConverters.html">TypeConverters</a>
+            for a more exhaustive listing.
+          </p>
+          <p>
+            Unlike other plugins, the plugin name of a <code>TypeConverter</code> is purely cosmetic. Appropriate
+            type converters are looked up via the <code>Type</code> interface rather than via <code>Class&lt;?&gt;</code>
+            objects only. Do note that <code>TypeConverter</code> plugins must have a default constructor.
           </p>
         </subsection>
       </section>
