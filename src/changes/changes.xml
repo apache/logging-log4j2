@@ -56,7 +56,7 @@
         Documentation: added section on XInclude to user manual Configuration page.
       </action>
       <action issue="LOG4J2-678" dev="rpopma" type="fix" due-to="Matt Sicker">
-        Fixed minor issues with Log4j2 web site/documentation.
+        Documentation: fixed minor issues with Log4j2 web site/documentation.
       </action>
       <action issue="LOG4J2-844" dev="rpopma" type="update">
         Update JMH to 1.1 from 0.7.2.
@@ -80,7 +80,7 @@
         MarkerManager Log4jMarker.hasParents() returns opposite of correct result.
       </action>
       <action issue="LOG4J2-785" dev="rpopma" type="fix">
-        Fixed capitalization inconsistency in user manual example config.
+        Documentation: fixed capitalization inconsistency in user manual example config.
       </action>
       <action issue="LOG4J2-829" dev="rpopma" type="fix">
         Fixed issue in RollingFile filePattern: backslashes are path separators, not escape characters.
@@ -95,7 +95,7 @@
         ThrowableProxy fails if a class in logged stack trace throws java.lang.Error from initializer
       </action>
       <action issue="LOG4J2-831" dev="rpopma" type="update">
-        Update FAQ "which jars" diagrams for JUL bridge and 2.1 version.
+        Documentation: updated FAQ "which jars" diagrams for JUL bridge and 2.1 version.
       </action>
       <action issue="LOG4J2-827" dev="mattsicker" type="add">
         Support use of TypeConverter classes through the standard Plugin system.
