@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
@@ -37,13 +38,15 @@ public interface Configuration extends Filterable {
 
     /**
      * Returns the configuration name.
+     * 
      * @return the name of the configuration.
      */
     String getName();
 
     /**
-     * Locates the appropriate LoggerConfig for a Logger name. This will remove tokens from the
-     * package name as necessary or return the root LoggerConfig if no other matches were found.
+     * Locates the appropriate LoggerConfig for a Logger name. This will remove tokens from the package name as
+     * necessary or return the root LoggerConfig if no other matches were found.
+     * 
      * @param name The Logger name.
      * @return The located LoggerConfig.
      */
@@ -51,6 +54,7 @@ public interface Configuration extends Filterable {
 
     /**
      * Returns the Appender with the specified name.
+     * 
      * @param name The name of the Appender.
      * @return the Appender with the specified name or null if the Appender cannot be located.
      */
@@ -58,6 +62,7 @@ public interface Configuration extends Filterable {
 
     /**
      * Returns a Map containing all the Appenders and their name.
+     * 
      * @return A Map containing each Appender's name and the Appender object.
      */
     Map<String, Appender> getAppenders();
@@ -107,10 +112,29 @@ public interface Configuration extends Filterable {
     Advertiser getAdvertiser();
 
     boolean isShutdownHookEnabled();
-    
+
     /**
      * Returns the source of this configuration.
+     * 
      * @return the source of this configuration
      */
     ConfigurationSource getConfigurationSource();
+
+    /**
+     * <p>
+     * Returns a list of descriptors of the custom levels defined in the current configuration. The returned list does
+     * <em>not</em> include custom levels that are defined in code with direct calls to {@link Level.forName}.
+     * </p>
+     * <p>
+     * Note that the list does not include levels of previous configurations. For example, suppose a configuration
+     * contains custom levels A, B and C. The configuration is then modified to contain custom levels B, C and D. For
+     * the new configuration, this method will return only {B, C, D}, that is, only the custom levels defined in
+     * <em>this</em> configuration. The previously defined level A still exists (and can be obtained with
+     * {@link Level#getLevel(String)}), it is just not in the current configuration. {@link Level#values()} will return
+     * {A, B, C, D and the built-in levels}.
+     * </p>
+     * 
+     * @return the custom levels defined in the current configuration
+     */
+    List<CustomLevelConfig> getCustomLevels();
 }

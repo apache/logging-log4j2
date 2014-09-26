@@ -98,6 +98,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private String name;
     private ConcurrentMap<String, Appender> appenders = new ConcurrentHashMap<String, Appender>();
     private ConcurrentMap<String, LoggerConfig> loggers = new ConcurrentHashMap<String, LoggerConfig>();
+    private List<CustomLevelConfig> customLevels = Collections.emptyList();
     private final ConcurrentMap<String, String> properties = new ConcurrentHashMap<String, String>();
     private final StrLookup tempLookup = new Interpolator(properties);
     private final StrSubstitutor subst = new StrSubstitutor(tempLookup);
@@ -371,9 +372,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                     root = l.getRoot();
                     setRoot = true;
                 }
-            } else if (child.getObject() instanceof Level) {
-                // This else clause prevents the warning message below from being logged.
-                // Nothing to do: plugin already created the custom Level instance.
+            } else if (child.getName().equalsIgnoreCase("CustomLevels")) {
+                customLevels = ((CustomLevels) child.getObject()).getCustomLevels();
+            } else if (child.getObject() instanceof CustomLevelConfig) {
+                List<CustomLevelConfig> copy = new ArrayList<CustomLevelConfig>(customLevels);
+                copy.add((CustomLevelConfig) child.getObject());
+                customLevels = copy;
             } else {
                 LOGGER.error("Unknown object \"{}\" of type {} is ignored.", child.getName(),
                         child.getObject().getClass().getName());
@@ -605,6 +609,15 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             app.stop();
         }
     }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.apache.logging.log4j.core.config.Configuration#getCustomLevels()
+     */
+    @Override
+    public List<CustomLevelConfig> getCustomLevels() {
+        return Collections.unmodifiableList(customLevels);
+    }
 
     /**
      * Locates the appropriate LoggerConfig for a Logger name. This will remove tokens from the
@@ -732,8 +745,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     * @see org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitor
     * @see org.apache.logging.log4j.core.config.plugins.convert.TypeConverter
     */
-    private <T> Object createPluginObject(final PluginType<T> type, final Node node, final LogEvent event)
-    {
+    private <T> Object createPluginObject(final PluginType<T> type, final Node node, final LogEvent event) {
         final Class<T> clazz = type.getPluginClass();
 
         if (Map.class.isAssignableFrom(clazz)) {

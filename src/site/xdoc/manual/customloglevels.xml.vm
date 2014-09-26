@@ -140,9 +140,11 @@ logger.log(Level.getLevel("FORGOT_TO_DEFINE"), "some message"); // throws except
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
   <!-- Define custom levels before using them for filtering below. -->
-  <CustomLevel name="DIAG" intLevel="350" />
-  <CustomLevel name="NOTICE" intLevel="450" />
-  <CustomLevel name="VERBOSE" intLevel="550" />
+  <CustomLevels>
+    <CustomLevel name="DIAG" intLevel="350" />
+    <CustomLevel name="NOTICE" intLevel="450" />
+    <CustomLevel name="VERBOSE" intLevel="550" />
+  </CustomLevels>
   
   <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
