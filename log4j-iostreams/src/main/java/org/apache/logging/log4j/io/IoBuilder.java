@@ -47,7 +47,7 @@ import org.apache.logging.log4j.util.ReflectionUtil;
  * {@link Logger}. The main inspiration for this feature is the JDBC API which uses a PrintWriter to perform debug
  * logging. In order to properly integrate APIs like JDBC into Log4j, create a PrintWriter using this class.</p>
  *
- * <p>All LoggerStreams support configuration of the logging {@link Level} it should use (defaults to the level of
+ * <p>The IoBuilder support configuration of the logging {@link Level} it should use (defaults to the level of
  * the underlying Logger), and an optional {@link Marker}. The other configurable objects are explained in more
  * detail below.</p>
  *
