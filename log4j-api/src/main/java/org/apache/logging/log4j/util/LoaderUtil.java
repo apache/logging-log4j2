@@ -83,9 +83,8 @@ public final class LoaderUtil {
             if (cl != null) {
                 return cl;
             }
-            final ClassLoader scl = ClassLoader.getSystemClassLoader();
-            // if the system CL is null, then we're in a really restrictive environment!
-            return scl == null ? LoaderUtil.class.getClassLoader() : scl;
+            final ClassLoader ccl = LoaderUtil.class.getClassLoader();
+            return ccl == null ? ClassLoader.getSystemClassLoader() : ccl;
         }
     }
 
