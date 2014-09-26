@@ -176,8 +176,8 @@
       </item>
 
       <item name="Extending Log4j Configuration" href="/manual/customconfig.html" collapse="true">
-        <item name="ConfigurationFactory" href="/manual/custom.config#ConfigurationFactory"/>
-        <item name="Manual" href="/manual/custom.config#AddingToCurrent"/>
+        <item name="ConfigurationFactory" href="/manual/customconfig.html#ConfigurationFactory"/>
+        <item name="Manual" href="/manual/customconfig.html#AddingToCurrent"/>
       </item>
 
       <item name="Custom Log Levels" href="/manual/customloglevels.html" collapse="true">

@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.1" date="2014-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-861" dev="rpopma" type="fix">
+        Documentation: fix broken links on left navigation Extending Log4j Configuration sub-menu.
+      </action>
       <action issue="LOG4J2-856" dev="rpopma" type="add">
         Documentation: add sections on the JUL Adapter, IO Streams and NoSQL Appenders to the Maven and Ivy page.
       </action>
