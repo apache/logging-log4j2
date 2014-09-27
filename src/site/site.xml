@@ -94,7 +94,7 @@
       </item>
 
       <item name="Lookups" href="/manual/lookups.html" collapse="true">
-        <item name="App Main Args" href="/manual/lookups.html#AppMainArgsLookup"/>
+        <item name="Application Main Arguments" href="/manual/lookups.html#AppMainArgsLookup"/>
         <item name="Context Map" href="/manual/lookups.html#ContextMapLookup"/>
         <item name="Date" href="/manual/lookups.html#DateLookup"/>
         <item name="Environment" href="/manual/lookups.html#EnvironmentLookup"/>
