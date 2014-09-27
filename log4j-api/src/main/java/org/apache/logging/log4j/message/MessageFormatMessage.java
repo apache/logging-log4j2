@@ -144,7 +144,7 @@ public class MessageFormatMessage implements Message {
         }
     }
 
-    private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+    private void readObject(final ObjectInputStream in) throws IOException {
         parameters = null;
         throwable = null;
         formattedMessage = in.readUTF();

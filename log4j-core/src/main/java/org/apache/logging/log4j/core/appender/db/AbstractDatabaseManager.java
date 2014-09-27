@@ -134,6 +134,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
      * This method is called automatically when the buffer size reaches its maximum or at the beginning of a call to
      * {@link #shutdown()}. It can also be called manually to flush events to the database.
      */
+    @Override
     public final synchronized void flush() {
         if (this.isRunning() && this.buffer.size() > 0) {
             this.connectAndStart();
