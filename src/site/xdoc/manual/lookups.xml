@@ -37,16 +37,15 @@
         <a name="AppMainArgsLookup"/>
         <subsection name="Application main arguments lookup">
           <p>
-             This lookup requires a manual step.
-             You can access the main arguments of an application if they have been set with:
+             This lookup requires that you manually provide
+             the main arguments of the application to Log4j:
           </p>
 <pre class="prettyprint linenums"><![CDATA[
 import org.apache.logging.log4j.core.lookup.MapLookup;
 
 public static void main(String args[]) {
-  //...
   MapLookup.setMainArguments(args);
-  //...
+  ...
 }]]></pre>
         <p>        
           Then, if your static void main String[] arguments are:
