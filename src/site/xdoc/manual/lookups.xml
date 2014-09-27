@@ -34,6 +34,84 @@
           <a href="./configuration.html#PropertySubstitution">Property Substitution</a> section of the
           <a href="./configuration.html">Configuration</a> page.
         </p>
+        <subsection name="Application main arguments lookup">
+          <a name="AppMainArgsLookup"/>
+          <p>
+             You can access the main arguments of an application if they have been set with:
+          </p>
+<pre class="prettyprint linenums"><![CDATA[
+import org.apache.logging.log4j.core.lookup.MapLookup;
+
+public static void main(String args[]) {
+  //...
+  MapLookup.setMainArguments(args);
+  //...
+}]]></pre>
+        <p>        
+          Then, if your static void main String[] arguments are:
+        </p>
+        <pre>--file foo.txt --verbose -x bar</pre>
+        <p>
+          I can use the following substitutions with the <code>main</code> prefix with a 0-based index or a string:
+        </p>
+        <table>
+          <tr>
+            <th>Expression</th>
+            <th>Result</th>
+          </tr>
+          <tr>
+            <td>${main:0}</td>
+            <td>
+              <p><code>--file</code></p>
+            </td>
+          </tr>
+          <tr>
+            <td>${main:1}</td>
+            <td>
+              <p><code>foo.txt</code></p>
+            </td>
+          </tr>
+          <tr>
+            <td>${main:2}</td>
+            <td>
+              <p><code>--verbose</code></p>
+            </td>
+          </tr>
+          <tr>
+            <td>${main:3}</td>
+            <td>
+              <p><code>-x</code></p>
+            </td>
+          </tr>
+          <tr>
+            <td>${main:4}</td>
+            <td>
+              <p><code>bar</code></p>
+            </td>
+          </tr>
+          <tr>
+            <td>${main:--file}</td>
+            <td>
+              <p><code>foo.txt</code></p>
+            </td>
+          </tr>
+          <tr>
+            <td>${main:-x}</td>
+            <td>
+              <p><code>bar</code></p>
+            </td>
+          </tr>
+          <tr>
+            <td>${main:bar}</td>
+            <td>
+              <p><code>null</code></p>
+            </td>
+          </tr>
+        </table>        
+        <p>
+          Using <code>${main:string}</code> gives you the next value in the argument list after the given string.
+        </p>
+        </subsection>  
         <subsection name="ContextMapLookup">
           <a name="ContextMapLookup"/>
           <p>
