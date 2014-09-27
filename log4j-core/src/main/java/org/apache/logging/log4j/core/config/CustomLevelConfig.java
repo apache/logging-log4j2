@@ -81,14 +81,14 @@ public final class CustomLevelConfig {
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if (this == object) {
             return true;
         }
         if (!(object instanceof CustomLevelConfig)) {
             return false;
         }
-        CustomLevelConfig other = (CustomLevelConfig) object;
+        final CustomLevelConfig other = (CustomLevelConfig) object;
         return this.intLevel == other.intLevel && this.levelName.equals(other.levelName);
     }
 
