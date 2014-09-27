@@ -57,6 +57,7 @@ public final class UsesLoggingAppender extends AbstractAppender {
         return new UsesLoggingAppender(name, filter, layout, ignoreExceptions);
     }
 
+    @Override
     public void append(final LogEvent event) {
         try {
             for (int i = 0; i < 50; i++) {

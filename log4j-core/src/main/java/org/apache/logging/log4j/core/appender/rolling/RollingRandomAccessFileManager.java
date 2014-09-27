@@ -149,6 +149,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
      * Returns the buffer capacity.
      * @return the buffer size
      */
+    @Override
     public int getBufferSize() {
         return buffer.capacity();
     }

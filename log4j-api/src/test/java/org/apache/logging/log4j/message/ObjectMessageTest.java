@@ -78,6 +78,7 @@ public class ObjectMessageTest {
     @Test
     public void testDeserializeNonSerializableParamEqualIfToStringSame() {
         class NonSerializable {
+            @Override
             public boolean equals(final Object other) {
                 return other instanceof NonSerializable; // a very lenient equals()
             }

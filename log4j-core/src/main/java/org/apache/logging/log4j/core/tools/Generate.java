@@ -47,6 +47,7 @@ public final class Generate {
 
     static enum Type {
         CUSTOM {
+            @Override
             String imports() {
                 return "" //
                         + "import java.io.Serializable;%n" //
@@ -60,6 +61,7 @@ public final class Generate {
                         + "%n";
             }
 
+            @Override
             String declaration() {
                 return "" //
                         + "/**%n" //
@@ -73,6 +75,7 @@ public final class Generate {
                 ;
             }
 
+            @Override
             String constructor() {
                 return "" //
                         + "%n" //
@@ -82,11 +85,13 @@ public final class Generate {
                 ;
             }
 
+            @Override
             Class<?> generator() {
                 return CustomLogger.class;
             }
         },
         EXTEND {
+            @Override
             String imports() {
                 return "" //
                         + "import org.apache.logging.log4j.Level;%n" //
@@ -99,6 +104,7 @@ public final class Generate {
                         + "%n";
             }
 
+            @Override
             String declaration() {
                 return "" //
                         + "/**%n" //
@@ -112,6 +118,7 @@ public final class Generate {
                 ;
             }
 
+            @Override
             String constructor() {
                 return "" //
                         + "%n" //
@@ -122,6 +129,7 @@ public final class Generate {
                 ;
             }
 
+            @Override
             Class<?> generator() {
                 return ExtendedLogger.class;
             }
