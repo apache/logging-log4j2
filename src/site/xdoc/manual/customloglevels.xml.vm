@@ -27,18 +27,34 @@
     <body>
       <a name="top" />
       <section name="Custom Log Levels">
+        <a name="DefiningLevelsInCode" />
+        <subsection name="Defining Custom Log Levels in Code">
         <p>
-          Log4J 2 supports custom log levels. The <tt>Level.forName()</tt> method creates a new
-          level for the specified name. By calling the Logger.log() method and passing this
-          custom log level you can log messages at this level:
+          Log4J 2 supports custom log levels. Custom log levels can be defined in code
+          or in configuration. To define a custom log level in code, use the
+          <tt>Level.forName()</tt> method. This method creates a new
+          level for the specified name. After a log level is defined you can log
+          messages at this level by calling the Logger.log() method and passing
+          the custom log level:
         </p>
             <pre class="prettyprint">
-final Logger logger = LogManager.getLogger();
+// This creates the "VERBOSE" level if it does not exist yet.
 final Level VERBOSE = Level.forName("VERBOSE", 550);
 
-logger.log(VERBOSE, "a verbose message");
-logger.log(VERBOSE, "another message");</pre>
-        <p>When defining a custom log level, the <tt>intLevel</tt> parameter (550 in the example above) determines
+final Logger logger = LogManager.getLogger();
+logger.log(VERBOSE, "a verbose message"); // use the custom VERBOSE level
+
+// Create and use a new custom level "DIAG".
+logger.log(Level.forName("DIAG", 350), "a diagnostic message");
+
+// Use (don't create) the "DIAG" custom level.
+// Only do this *after* the custom level is created!
+logger.log(Level.getLevel("DIAG"), "another diagnostic message");
+
+// Using an undefined level results in an error: Level.getLevel() returns null,
+// and logger.log(null, "message") throws an exception.
+logger.log(Level.getLevel("FORGOT_TO_DEFINE"), "some message"); // throws exception!</pre>
+        <p>When defining a custom log level, the <tt>intLevel</tt> parameter (550 and 350 in the example above) determines
            where the custom level exists in relation to the standard levels built-in to Log4J 2.
            For reference, the table below shows the <tt>intLevel</tt> of the built-in log levels.
          </p>
@@ -80,8 +96,73 @@ logger.log(VERBOSE, "another message");</pre>
             <td>ALL</td>
             <td align="right"><tt>Integer.MAX_VALUE</tt></td>
           </tr>
-        </table>          
-         
+        </table>
+        </subsection>
+        <a name="DefiningLevelsInConfiguration" />
+        <subsection name="Defining Custom Log Levels in Configuration">
+          <p>
+          Custom log levels can also be defined in configuration.
+          This is convenient for using a custom level in a logger filter
+          or an appender filter. Similar to defining log levels in code,
+          a custom level must be defined first, before it can be used.
+          If a logger or appender is configured with an undefined level,
+          that logger or appender will be invalid and will not process any log events.
+          </p>
+          <p>
+            The <b>CustomLevel</b> configuration element creates a custom level.
+            Internally it calls the same <tt>Level.forName()</tt> method discussed above.
+          </p>
+          <table>
+            <caption align="top">CustomLevel Parameters</caption>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td>The name of the custom level. Note that level names are case sensitive.
+                The convention is to use all upper-case names.</td>
+            </tr>
+            <tr>
+              <td>intLevel</td>
+              <td>integer</td>
+              <td>Determines where the custom level exists in relation to the
+                standard levels built-in to Log4J 2 (see the table above).</td>
+            </tr>
+          </table>
+          <p>
+          The following example shows a configuration that defines some custom
+          log levels and uses a custom log level to filter log events sent to the console.
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+  <!-- Define custom levels before using them for filtering below. -->
+  <CustomLevels>
+    <CustomLevel name="DIAG" intLevel="350" />
+    <CustomLevel name="NOTICE" intLevel="450" />
+    <CustomLevel name="VERBOSE" intLevel="550" />
+  </CustomLevels>
+  
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d %-7level %logger{36} - %msg%n"/>
+    </Console>
+    <File name="MyFile" fileName="logs/app.log">
+      <PatternLayout pattern="%d %-7level %logger{36} - %msg%n"/>
+    </File>
+  </Appenders>
+  <Loggers>
+    <Root level="trace">
+      <!-- Only events at DIAG level or more specific are sent to the console. -->
+      <AppenderRef ref="Console" level="diag" />
+      <AppenderRef ref="MyFile" level="trace" />
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
+        </subsection>
           <a name="StandardLoggerInterface" />
           <subsection name="Convenience Methods for the Built-in Log Levels">
             <p>
@@ -107,18 +188,29 @@ debug(String, Object...)
 debug(String, Throwable)</pre>
             <p>
               Similar methods exist for the other built-in levels.
+              Custom levels, in contrast, need to pass in the log level as an extra parameter.
             </p>
+            <pre class="prettyprint">
+// need to pass the custom level as a parameter
+logger.log(VERBOSE, "a verbose message");
+logger.log(Level.forName("DIAG", 350), "another message");</pre>
             <p>It would be nice to have the same ease of use with custom levels,
-               so that after declaring a custom VERBOSE level, we could
+               so that after declaring the custom VERBOSE/DIAG levels, we could
                use code like this:
             </p>
             <pre class="prettyprint">
-logger.verbose("a verbose message"); // no need to pass the VERBOSE level as a parameter
-logger.verbose("another message");</pre>
+// nice to have: descriptive methods and no need to pass the level as a parameter
+logger.verbose("a verbose message");
+logger.diag("another message");</pre>
+            <p>The standard Logger interface cannot provide convenience methods for
+              custom levels, but the next few sections introduce a code generation tool
+              to create loggers that aim to make custom levels as easy to use
+              as built-in levels.</p>
           </subsection>
           <a name="AddingOrReplacingLevels" />
           <subsection name="Adding or Replacing Log Levels">
-            <p>In the above example, a convenience method was <em>added</em> to the Logger interface,
+            <p>
+              We assume that most users want to <em>add</em> custom level methods to the Logger interface,
                in addition to the existing trace(), debug(), info(), ... methods for the built-in log levels.
             </p>
             <p>There is another use case, Domain Specific Language loggers, where we want to <em>replace</em>

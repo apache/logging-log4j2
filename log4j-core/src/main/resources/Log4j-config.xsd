@@ -20,6 +20,10 @@
     <xs:element name="Configuration" type="ConfigurationType"/>
     <xs:complexType name="ConfigurationType">
         <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="1">
+                <xs:element name="CustomLevels" type="CustomLevelsType"/>
+                <xs:element name="CustomLevel" type="CustomLevelType"/>
+            </xs:choice>
             <xs:element name="Properties" type="PropertiesType"/>
             <xs:choice minOccurs="0" maxOccurs="1">
                 <xs:element name="Filters" type="FiltersType"/>
@@ -110,6 +114,15 @@
     <xs:complexType name="FiltersType">
         <xs:sequence>
             <xs:element name="Filter" type="FilterType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="CustomLevelType">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="intLevel" type="xs:string" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="CustomLevelsType">
+        <xs:sequence>
+            <xs:element name="CustomLevel" type="CustomLevelType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="LoggersType" mixed="true">

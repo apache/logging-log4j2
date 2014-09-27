@@ -182,6 +182,8 @@
       </item>
 
       <item name="Custom Log Levels" href="/manual/customloglevels.html" collapse="true">
+        <item name="In Code" href="/manual/customloglevels.html#DefiningLevelsInCode"/>
+        <item name="In Configuration" href="/manual/customloglevels.html#DefiningLevelsInConfiguration"/>
         <item name="Adding or Replacing Levels" href="/manual/customloglevels.html#AddingOrReplacingLevels"/>
         <item name="Custom Loggers" href="/manual/customloglevels.html#CustomLoggers"/>
         <item name="Custom Logger Example" href="/manual/customloglevels.html#ExampleUsage"/>
