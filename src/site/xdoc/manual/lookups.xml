@@ -113,7 +113,7 @@ public static void main(String args[]) {
         </p>
         </subsection>  
         <a name="ContextMapLookup"/>
-        <subsection name="ContextMapLookup">
+        <subsection name="Context Map Lookup">
           <p>
             The ContextMapLookup allows applications to store data in the Log4j ThreadContext Map and
             then retrieve the values in the Log4j configuration. In the example below, the application
@@ -130,7 +130,7 @@ public static void main(String args[]) {
 </File>]]></pre>
         </subsection>
         <a name="DateLookup"/>
-        <subsection name="DateLookup">
+        <subsection name="Date Lookup">
           <p>
             The DateLookup is somewhat unusual from the other lookups as it doesn't use the key to locate an item.
             Instead, the key can be used to specify a date format string that is valid for
@@ -146,7 +146,7 @@ public static void main(String args[]) {
 </RollingFile>]]></pre>
         </subsection>
         <a name="EnvironmentLookup"/>
-        <subsection name="EnvironmentLookup">
+        <subsection name="Environment Lookup">
           <p>
             The EnvironmentLookup allows systems to configure environment variables, either in global files
             such as /etc/profile or in the startup scripts for applications, and then retrieve those variables
@@ -161,7 +161,7 @@ public static void main(String args[]) {
 </File>]]></pre>
         </subsection>
         <a name="JavaLookup"/>
-        <subsection name="JavaLookup">
+        <subsection name="Java Lookup">
           <p>
             The JavaLookup allows Java environment information to be retrieved in convenient preformatted strings
             using the <code>java:</code> prefix.
@@ -225,7 +225,7 @@ public static void main(String args[]) {
 </File>]]></pre>
         </subsection>
         <a name="JndiLookup"/>
-        <subsection name="JndiLookup">
+        <subsection name="Jndi Lookup">
           <p>
             The JndiLookup allows variables to be retrieved via JNDI. By default the key will be prefixed with
             java:comp/env/, however if the key contains a ":" no prefix will be added.
@@ -255,7 +255,7 @@ public static void main(String args[]) {
           <p><strong>Java's JMX module is not available on Android.</strong></p>
         </subsection>
         <a name="MapLookup"/>
-        <subsection name="MapLookup">
+        <subsection name="Map Lookup">
           <p>
             The MapLookup serves several purposes.
           </p>
@@ -292,7 +292,7 @@ public static void main(String args[]) {
 </Routing>]]></pre>
         </subsection>
         <a name="StructuredDataLookup"/>
-        <subsection name="StructuredDataLookup">
+        <subsection name="Structured Data Lookup">
           <p>
             The StructuredDataLookup is very similar to the MapLookup in that it will retrieve values from
             StructuredDataMessages. In addition to the Map values it will also return the name portion of the
@@ -317,7 +317,7 @@ public static void main(String args[]) {
 </Routing>]]></pre>
         </subsection>
         <a name="SystemPropertiesLookup"/>
-        <subsection name="SystemPropertiesLookup">
+        <subsection name="System Properties Lookup">
           <p>
             As it is quite common to define values inside and outside the application by using System Properties,
             it is only natural that they should be accessible via a Lookup. As system properties are often
@@ -329,7 +329,7 @@ public static void main(String args[]) {
 </Appenders>]]></pre>
         </subsection>
         <a name="WebLookup"/>
-        <subsection name="WebLookup">
+        <subsection name="Web Lookup">
           <p>
             The WebLookup allows applications to retrieve variables that are associated with the ServletContext.
             In addition to being able to retrieve various fields in the ServletContext, WebLookup supports looking
