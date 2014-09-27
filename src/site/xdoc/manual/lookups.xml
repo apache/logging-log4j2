@@ -236,6 +236,23 @@ public static void main(String args[]) {
     <pattern>%d %p %c{1.} [%t] $${jndi:logging/context-name} %m%n</pattern>
   </PatternLayout>
 </File>]]></pre>
+        <p><strong>Java's JNDI module is not available on Android.</strong></p>
+        </subsection>
+        <subsection name="JVM input arguments lookup (JMX)">
+          <a name="JmxRuntimeInputArgumentsLookup"/>
+          <p>
+            Maps JVM input arguments -- but not <em>main</em> arguments -- using JMX to acquire the JVM arguments.
+          </p>
+          <p>
+            Use the prefix <code>jvmrunargs</code> to access JVM arguments.
+          </p>
+          <p>
+            See the Javadocs for 
+            <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/management/RuntimeMXBean.html#getInputArguments--">
+            java.lang.management.RuntimeMXBean.getInputArguments()
+            </a>.
+          </p>
+          <p><strong>Java's JMX module is not available on Android.</strong></p>
         </subsection>
         <subsection name="MapLookup">
           <a name="MapLookup"/>
