@@ -37,6 +37,7 @@
         <a name="AppMainArgsLookup"/>
         <subsection name="Application main arguments lookup">
           <p>
+             This lookup requires a manual step.
              You can access the main arguments of an application if they have been set with:
           </p>
 <pre class="prettyprint linenums"><![CDATA[
@@ -52,9 +53,10 @@ public static void main(String args[]) {
         </p>
         <pre>--file foo.txt --verbose -x bar</pre>
         <p>
-          I can use the following substitutions with the <code>main</code> prefix with a 0-based index or a string:
+          You can use the following substitutions with the <code>main</code> prefix with a 0-based index or a string.
+          Using <code>${main:string}</code> gives you the next value in the argument list after the given <code>string</code>.
         </p>
-        <table>
+        <table style="width: 40%">
           <tr>
             <th>Expression</th>
             <th>Result</th>
@@ -107,10 +109,16 @@ public static void main(String args[]) {
               <p><code>null</code></p>
             </td>
           </tr>
-        </table>        
-        <p>
-          Using <code>${main:string}</code> gives you the next value in the argument list after the given string.
-        </p>
+        </table>
+          <p>
+            Example usage:
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+<File name="Application" fileName="application.log">
+  <PatternLayout header="File: ${main:--file}">
+    <Pattern>%d %m%n</Pattern>
+  </PatternLayout>
+</File>]]></pre>
         </subsection>  
         <a name="ContextMapLookup"/>
         <subsection name="Context Map Lookup">
