@@ -34,91 +34,6 @@
           <a href="./configuration.html#PropertySubstitution">Property Substitution</a> section of the
           <a href="./configuration.html">Configuration</a> page.
         </p>
-        <a name="AppMainArgsLookup"/>
-        <subsection name="Application main arguments lookup">
-          <p>
-             This lookup requires that you manually provide
-             the main arguments of the application to Log4j:
-          </p>
-<pre class="prettyprint linenums"><![CDATA[
-import org.apache.logging.log4j.core.lookup.MapLookup;
-
-public static void main(String args[]) {
-  MapLookup.setMainArguments(args);
-  ...
-}]]></pre>
-        <p>        
-          Then, if your static void main String[] arguments are:
-        </p>
-        <pre>--file foo.txt --verbose -x bar</pre>
-        <p>
-          You can use the following substitutions with the <code>main</code> prefix with a 0-based index or a string.
-          Using <code>${main:string}</code> gives you the next value in the argument list after the given <code>string</code>.
-        </p>
-        <table style="width: 40%">
-          <tr>
-            <th>Expression</th>
-            <th>Result</th>
-          </tr>
-          <tr>
-            <td>${main:0}</td>
-            <td>
-              <p><code>--file</code></p>
-            </td>
-          </tr>
-          <tr>
-            <td>${main:1}</td>
-            <td>
-              <p><code>foo.txt</code></p>
-            </td>
-          </tr>
-          <tr>
-            <td>${main:2}</td>
-            <td>
-              <p><code>--verbose</code></p>
-            </td>
-          </tr>
-          <tr>
-            <td>${main:3}</td>
-            <td>
-              <p><code>-x</code></p>
-            </td>
-          </tr>
-          <tr>
-            <td>${main:4}</td>
-            <td>
-              <p><code>bar</code></p>
-            </td>
-          </tr>
-          <tr>
-            <td>${main:--file}</td>
-            <td>
-              <p><code>foo.txt</code></p>
-            </td>
-          </tr>
-          <tr>
-            <td>${main:-x}</td>
-            <td>
-              <p><code>bar</code></p>
-            </td>
-          </tr>
-          <tr>
-            <td>${main:bar}</td>
-            <td>
-              <p><code>null</code></p>
-            </td>
-          </tr>
-        </table>
-          <p>
-            Example usage:
-          </p>
-          <pre class="prettyprint linenums"><![CDATA[
-<File name="Application" fileName="application.log">
-  <PatternLayout header="File: ${main:--file}">
-    <Pattern>%d %m%n</Pattern>
-  </PatternLayout>
-</File>]]></pre>
-        </subsection>  
         <a name="ContextMapLookup"/>
         <subsection name="Context Map Lookup">
           <p>
@@ -246,7 +161,7 @@ public static void main(String args[]) {
         <p><strong>Java's JNDI module is not available on Android.</strong></p>
         </subsection>
         <a name="JmxRuntimeInputArgumentsLookup"/>
-        <subsection name="JVM input arguments lookup (JMX)">
+        <subsection name="JVM Input Arguments Lookup (JMX)">
           <p>
             Maps JVM input arguments -- but not <em>main</em> arguments -- using JMX to acquire the JVM arguments.
           </p>
@@ -261,6 +176,97 @@ public static void main(String args[]) {
           </p>
           <p><strong>Java's JMX module is not available on Android.</strong></p>
         </subsection>
+        <a name="AppMainArgsLookup"/>
+        <subsection name="Main Arguments Lookup (Application)">
+          <p>
+             This lookup requires that you manually provide
+             the main arguments of the application to Log4j:
+          </p>
+<pre class="prettyprint linenums"><![CDATA[
+import org.apache.logging.log4j.core.lookup.MapLookup;
+
+public static void main(String args[]) {
+  MapLookup.setMainArguments(args);
+  ...
+}]]></pre>
+        <p>
+          If the main arguments have been set, this lookup allows applications to retrieve
+          these main argument values from within the logging configuration.
+          The key that follows the <code>main:</code> prefix can either be a 0-based index into the argument list,
+          or a string, where <code>${main:myString}</code> is substituted with the value that follows
+          <code>myString</code> in the main argument list.
+        </p>
+        <p>
+          For example, suppose the static void main String[] arguments are:
+        </p>
+        <pre>--file foo.txt --verbose -x bar</pre>
+        <p>
+          Then the following substitutions are possible:
+        </p>
+        <table style="width: 40%">
+          <tr>
+            <th>Expression</th>
+            <th>Result</th>
+          </tr>
+          <tr>
+            <td>${main:0}</td>
+            <td>
+              <p><code>--file</code></p>
+            </td>
+          </tr>
+          <tr>
+            <td>${main:1}</td>
+            <td>
+              <p><code>foo.txt</code></p>
+            </td>
+          </tr>
+          <tr>
+            <td>${main:2}</td>
+            <td>
+              <p><code>--verbose</code></p>
+            </td>
+          </tr>
+          <tr>
+            <td>${main:3}</td>
+            <td>
+              <p><code>-x</code></p>
+            </td>
+          </tr>
+          <tr>
+            <td>${main:4}</td>
+            <td>
+              <p><code>bar</code></p>
+            </td>
+          </tr>
+          <tr>
+            <td>${main:--file}</td>
+            <td>
+              <p><code>foo.txt</code></p>
+            </td>
+          </tr>
+          <tr>
+            <td>${main:-x}</td>
+            <td>
+              <p><code>bar</code></p>
+            </td>
+          </tr>
+          <tr>
+            <td>${main:bar}</td>
+            <td>
+              <p><code>null</code></p>
+            </td>
+          </tr>
+        </table>
+          <p>
+            Example usage:
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+<File name="Application" fileName="application.log">
+  <PatternLayout header="File: ${main:--file}">
+    <Pattern>%d %m%n</Pattern>
+  </PatternLayout>
+</File>]]></pre>
+        </subsection>  
         <a name="MapLookup"/>
         <subsection name="Map Lookup">
           <p>
