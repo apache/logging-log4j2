@@ -375,7 +375,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             } else if (child.getName().equalsIgnoreCase("CustomLevels")) {
                 customLevels = ((CustomLevels) child.getObject()).getCustomLevels();
             } else if (child.getObject() instanceof CustomLevelConfig) {
-                List<CustomLevelConfig> copy = new ArrayList<CustomLevelConfig>(customLevels);
+                final List<CustomLevelConfig> copy = new ArrayList<CustomLevelConfig>(customLevels);
                 copy.add((CustomLevelConfig) child.getObject());
                 customLevels = copy;
             } else {
