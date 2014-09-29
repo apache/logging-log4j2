@@ -164,10 +164,13 @@ public final class PatternLayout extends AbstractStringLayout {
     }
 
     /**
-     * PatternLayout's content format is specified by:<p/>
-     * Key: "structured" Value: "false"<p/>
-     * Key: "formatType" Value: "conversion" (format uses the keywords supported by OptionConverter)<p/>
-     * Key: "format" Value: provided "conversionPattern" param
+     * Gets this PatternLayout's content format. Specified by:
+     * <ul>
+     * <li>Key: "structured" Value: "false"</li>
+     * <li>Key: "formatType" Value: "conversion" (format uses the keywords supported by OptionConverter)</li>
+     * <li>Key: "format" Value: provided "conversionPattern" param</li>
+     * </ul>
+     * 
      * @return Map of content format keys supporting PatternLayout
      */
     @Override
