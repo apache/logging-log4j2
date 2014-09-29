@@ -21,12 +21,11 @@ import org.apache.logging.log4j.status.StatusLogger;
 
 
 /**
- * <p>AbstractPatternConverter is an abstract class that provides the
- * formatting functionality that derived classes need.
- * <p/>
- * <p>Conversion specifiers in a conversion patterns are parsed to
- * individual PatternConverters. Each of which is responsible for
- * converting an object in a converter specific manner.
+ * AbstractPatternConverter is an abstract class that provides the formatting functionality that derived classes need.
+ * <p>
+ * Conversion specifiers in a conversion patterns are parsed to individual PatternConverters. Each of which is
+ * responsible for converting an object in a converter specific manner.
+ * </p>
  */
 public abstract class AbstractPatternConverter implements PatternConverter {
     /**
