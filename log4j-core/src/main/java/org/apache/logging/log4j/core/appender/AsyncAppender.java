@@ -125,8 +125,9 @@ public final class AsyncAppender extends AbstractAppender {
 
     /**
      * Actual writing occurs here.
-     * <p/>
-     * @param logEvent The LogEvent.
+     * 
+     * @param logEvent
+     *        The LogEvent.
      */
     @Override
     public void append(LogEvent logEvent) {
