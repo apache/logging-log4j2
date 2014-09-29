@@ -24,8 +24,6 @@ package org.apache.logging.log4j.message;
  * <p>
  * This class is immutable.
  * </p>
- *
- * @version $Id$
  */
 public final class ParameterizedMessageFactory extends AbstractMessageFactory {
 

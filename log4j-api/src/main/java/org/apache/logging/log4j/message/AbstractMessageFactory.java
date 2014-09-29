@@ -23,8 +23,6 @@ import java.io.Serializable;
  * <p>
  * This class is immutable.
  * </p>
- *
- * @version $Id$
  */
 public abstract class AbstractMessageFactory implements MessageFactory, Serializable {
 

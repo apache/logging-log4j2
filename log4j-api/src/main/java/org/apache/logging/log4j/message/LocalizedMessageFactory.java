@@ -21,8 +21,6 @@ import java.util.ResourceBundle;
 /**
  * Creates {@link org.apache.logging.log4j.message.LocalizedMessage} instances for
  * {@link #newMessage(String, Object...)}.
- *
- * @version $Id:  $
  */
 public class LocalizedMessageFactory extends AbstractMessageFactory {
 

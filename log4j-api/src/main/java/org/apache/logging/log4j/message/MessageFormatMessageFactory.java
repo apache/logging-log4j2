@@ -19,8 +19,6 @@ package org.apache.logging.log4j.message;
 /**
  * Creates {@link org.apache.logging.log4j.message.MessageFormatMessage} instances for
  * {@link #newMessage(String, Object...)}.
- *
- * @version $Id$
  */
 public class MessageFormatMessageFactory extends AbstractMessageFactory {
 

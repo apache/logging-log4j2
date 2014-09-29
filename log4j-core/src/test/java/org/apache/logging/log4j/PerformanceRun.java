@@ -36,8 +36,6 @@ import org.junit.experimental.categories.Category;
  * <p>
  * See {@linkplain PerformanceComparison} to compare performance with other logging frameworks.
  * </p>
- *
- * @version $Id$
  */
 @Category(PerformanceTests.class)
 public class PerformanceRun {

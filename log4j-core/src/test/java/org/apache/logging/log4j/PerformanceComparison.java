@@ -34,8 +34,6 @@ import org.junit.experimental.categories.Category;
 
 /**
  * Use this class to analyze performance between Log4j and other logging frameworks.
- *
- * @version $Id$
  */
 @Category(PerformanceTests.class)
 public class PerformanceComparison {
