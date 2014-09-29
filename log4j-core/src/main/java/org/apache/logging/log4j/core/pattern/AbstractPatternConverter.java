@@ -56,8 +56,9 @@ public abstract class AbstractPatternConverter implements PatternConverter {
 
     /**
      * This method returns the name of the conversion pattern.
-     * <p/>
+     * <p>
      * The name can be useful to certain Layouts such as HtmlLayout.
+     * </p>
      *
      * @return the name of the conversion pattern
      */
