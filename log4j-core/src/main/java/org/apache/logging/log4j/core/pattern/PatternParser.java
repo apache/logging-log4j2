@@ -196,7 +196,7 @@ public final class PatternParser {
     }
 
     /**
-     * Extract the converter identifier found at position i.
+     * Extracts the converter identifier found at the given start position.
      * <p>
      * After this function returns, the variable i will point to the first char after the end of the converter
      * identifier.
