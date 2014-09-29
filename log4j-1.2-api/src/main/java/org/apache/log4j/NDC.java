@@ -91,7 +91,8 @@ public final class NDC {
 
 
     /**
-     * <font color="#FF4040"><b>Never use this method directly.</b>
+     * <font color="#FF4040"><b>Never use this method directly.</b></font>
+     * 
      * @return The string value of the specified key.
      */
     public static String get() {
