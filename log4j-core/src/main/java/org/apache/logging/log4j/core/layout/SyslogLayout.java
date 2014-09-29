@@ -115,7 +115,7 @@ public final class SyslogLayout extends AbstractStringLayout {
      * <ul>
      * <li>Key: "structured" Value: "false"</li>
      * <li>Key: "dateFormat" Value: "MMM dd HH:mm:ss "</li>
-     * <li>Key: "format" Value: "<LEVEL>TIMESTAMP PROP(HOSTNAME) MESSAGE"</li>
+     * <li>Key: "format" Value: "&lt;LEVEL&gt;TIMESTAMP PROP(HOSTNAME) MESSAGE"</li>
      * <li>Key: "formatType" Value: "logfilepatternreceiver" (format uses the keywords supported by
      * LogFilePatternReceiver)</li>
      * </ul>
