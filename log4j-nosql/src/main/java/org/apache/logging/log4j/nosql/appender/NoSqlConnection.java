@@ -56,10 +56,11 @@ public interface NoSqlConnection<W, T extends NoSqlObject<W>> extends Closeable 
      * Closes the underlying connection. This method call should be idempotent. Only the first call should have any
      * effect; all further calls should be ignored. It's possible the underlying connection is stateless (such as an
      * HTTP web service), in which case this method would be a no-op. This method should also commit any open
-     * transactions, if applicable and if not already committed.<br />
-     * <br />
+     * transactions, if applicable and if not already committed.
+     * <p>
      * If this connection is part of a connection pool, executing this method should commit the transaction and return
      * the connection to the pool, but it should not actually close the underlying connection.
+     * </p>
      */
     @Override
     void close();
