@@ -33,8 +33,9 @@ import org.junit.experimental.categories.Category;
 
 /**
  * Use this class to analyze Log4j-only performance.
- * <p/>
+ * <p>
  * See {@linkplain PerformanceComparison} to compare performance with other logging frameworks.
+ * </p>
  *
  * @version $Id$
  */
