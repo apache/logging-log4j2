@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Level;
 /**
  *  Severity values used by the Syslog system.
  *
- * <table>
+ * <table summary="Syslog Severity Values">
  *     <tr>
  *         <th>Numerical Code</th>
  *         <th>Severity</th>
