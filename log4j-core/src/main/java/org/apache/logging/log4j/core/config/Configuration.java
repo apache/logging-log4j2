@@ -123,7 +123,7 @@ public interface Configuration extends Filterable {
     /**
      * <p>
      * Returns a list of descriptors of the custom levels defined in the current configuration. The returned list does
-     * <em>not</em> include custom levels that are defined in code with direct calls to {@link Level.forName}.
+     * <em>not</em> include custom levels that are defined in code with direct calls to {@link Level#forName(String, int)}.
      * </p>
      * <p>
      * Note that the list does not include levels of previous configurations. For example, suppose a configuration
