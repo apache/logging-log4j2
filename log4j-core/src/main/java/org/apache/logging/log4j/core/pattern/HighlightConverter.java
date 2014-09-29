@@ -33,39 +33,37 @@ import org.apache.logging.log4j.util.Strings;
  * Highlight pattern converter. Formats the result of a pattern using a color appropriate for the Level in the LogEvent.
  * <p>
  * For example:
- *
+ * </p>
+ * 
  * <pre>
  * %highlight{%d{ ISO8601 } [%t] %-5level: %msg%n%throwable}
  * </pre>
- * </p>
- *
  * <p>
  * You can define custom colors for each Level:
- *
+ * </p>
+ * 
  * <pre>
  * %highlight{%d{ ISO8601 } [%t] %-5level: %msg%n%throwable}{FATAL=red, ERROR=red, WARN=yellow, INFO=green, DEBUG=cyan,
  * TRACE=black}
  * </pre>
- * </p>
- *
  * <p>
  * You can use a predefined style:
- *
+ * </p>
+ * 
  * <pre>
  * %highlight{%d{ ISO8601 } [%t] %-5level: %msg%n%throwable}{STYLE=Log4j}
  * </pre>
+ * <p>
  * The available predefined styles are:
+ * </p>
  * <ul>
  * <li>{@code Default}</li>
  * <li>{@code Log4j} - The same as {@code Default}</li>
  * <li>{@code Logback}</li>
  * </ul>
- * </p>
- *
  * <p>
  * You can use whitespace around the comma and equal sign. The names in values MUST come from the
- * {@linkplain AnsiEscape} enum, case is
- * normalized to upper-case internally.
+ * {@linkplain AnsiEscape} enum, case is normalized to upper-case internally.
  * </p>
  */
 @Plugin(name = "highlight", category = PatternConverter.CATEGORY)
