@@ -95,6 +95,7 @@ public final class LoaderUtil {
      * @param className The class name.
      * @return the Class for the given name.
      * @throws ClassNotFoundException if the specified class name could not be found
+     * @since 2.1
      */
     public static Class<?> loadClass(final String className) throws ClassNotFoundException {
         if (isIgnoreTccl()) {
@@ -117,6 +118,7 @@ public final class LoaderUtil {
      * @throws InstantiationException    if there was an exception whilst instantiating the class
      * @throws NoSuchMethodException     if there isn't a no-args constructor on the class
      * @throws InvocationTargetException if there was an exception whilst constructing the class
+     * @since 2.1
      */
     public static Object newInstanceOf(final String className)
         throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException,
@@ -143,6 +145,7 @@ public final class LoaderUtil {
      * @throws NoSuchMethodException if there isn't a no-args constructor on the class
      * @throws InvocationTargetException if there was an exception whilst constructing the class
      * @throws ClassCastException if the constructed object isn't type compatible with {@code T}
+     * @since 2.1
      */
     public static <T> T newCheckedInstanceOf(final String className, final Class<T> clazz)
         throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException,
