@@ -119,7 +119,7 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
      * @param name The name of the Appender.
      * @param immediateFlush "true" if the contents should be flushed on every write, "false" otherwise. The default is
      *            "true".
-     * @param regionLengthStr The buffer size, defaults to {@value RandomAccessFileManager#DEFAULT_REGION_LENGTH}.
+     * @param regionLengthStr The buffer size, defaults to {@value MemoryMappedFileManager#DEFAULT_REGION_LENGTH}.
      * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise they
      *            are propagated to the caller.
      * @param layout The layout to use to format the event. If no layout is provided the default PatternLayout will be
