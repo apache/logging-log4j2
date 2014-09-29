@@ -31,13 +31,15 @@ public abstract class NameAbbreviator {
 
     /**
      * Gets an abbreviator.
-     * <p/>
-     * For example, "%logger{2}" will output only 2 elements of the logger name,
-     * "%logger{1.}" will output only the first character of the non-final elements in the name,
-     * "%logger(1~.2~} will output the first character of the first element, two characters of
-     * the second and subsequent elements and will use a tilde to indicate abbreviated characters.
+     * <p>
+     * For example, "%logger{2}" will output only 2 elements of the logger name, "%logger{1.}" will output only the
+     * first character of the non-final elements in the name, "%logger(1~.2~} will output the first character of the
+     * first element, two characters of the second and subsequent elements and will use a tilde to indicate abbreviated
+     * characters.
+     * </p>
      *
-     * @param pattern abbreviation pattern.
+     * @param pattern
+     *        abbreviation pattern.
      * @return abbreviator, will not be null.
      */
     public static NameAbbreviator getAbbreviator(final String pattern) {
