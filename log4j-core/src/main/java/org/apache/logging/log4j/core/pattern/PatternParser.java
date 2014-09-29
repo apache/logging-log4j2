@@ -197,23 +197,25 @@ public final class PatternParser {
 
     /**
      * Extract the converter identifier found at position i.
-     * <p/>
+     * <p>
      * After this function returns, the variable i will point to the first char after the end of the converter
      * identifier.
-     * <p/>
+     * </p>
+     * <p>
      * If i points to a char which is not a character acceptable at the start of a unicode identifier, the value null is
      * returned.
+     * </p>
      *
      * @param lastChar
-     *            last processed character.
+     *        last processed character.
      * @param pattern
-     *            format string.
+     *        format string.
      * @param i
-     *            current index into pattern format.
+     *        current index into pattern format.
      * @param convBuf
-     *            buffer to receive conversion specifier.
+     *        buffer to receive conversion specifier.
      * @param currentLiteral
-     *            literal to be output in case format specifier in unrecognized.
+     *        literal to be output in case format specifier in unrecognized.
      * @return position in pattern after converter.
      */
     private static int extractConverter(final char lastChar, final String pattern, final int start,
