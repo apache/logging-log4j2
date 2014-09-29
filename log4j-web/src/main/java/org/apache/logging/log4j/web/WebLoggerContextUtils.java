@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 /**
  * Convenience methods for retrieving the {@link org.apache.logging.log4j.core.LoggerContext} associated with a
  * particular ServletContext. These methods are most particularly useful for asynchronous servlets where the
- * <abbr title="Thread Context ClassLoader">TCCL</abbr> is potentially different from the TCCL used by the
+ * Thread Context ClassLoader (TCCL) is potentially different from the TCCL used by the
  * Servlet container that bootstrapped Log4j.
  *
  * @since 2.0.1
