@@ -105,27 +105,31 @@ public final class HighlightConverter extends LogEventPatternConverter implement
     }
 
     /**
-     * Creates a level style map where values are ANSI escape sequences given configuration options in
-     * {@code option[1]}.
-     * <p/>
+     * Creates a level style map where values are ANSI escape sequences given configuration options in {@code option[1]}
+     * .
+     * <p>
      * The format of the option string in {@code option[1]} is:
-     *
+     * </p>
+     * 
      * <pre>
      * Level1=Value, Level2=Value, ...
      * </pre>
      *
+     * <p>
      * For example:
+     * </p>
      *
      * <pre>
      * ERROR=red bold, WARN=yellow bold, INFO=green, ...
      * </pre>
      *
+     * <p>
      * You can use whitespace around the comma and equal sign. The names in values MUST come from the
-     * {@linkplain AnsiEscape} enum, case is
-     * normalized to upper-case internally.
+     * {@linkplain AnsiEscape} enum, case is normalized to upper-case internally.
+     * </p>
      *
      * @param options
-     *            The second slot can optionally contain the style map.
+     *        The second slot can optionally contain the style map.
      * @return a new map
      */
     private static Map<Level, String> createLevelStyleMap(final String[] options) {
