@@ -36,15 +36,14 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.message.Message;
 
 /**
- * The <code>BurstFilter</code> is a logging filter that regulates logging
- * traffic. Use this filter when you want to control the maximum burst of log
- * statements that can be sent to an appender. The filter is configured in the
- * log4j configuration file. For example, the following configuration limits the
- * number of INFO level (as well as DEBUG and TRACE) log statements that can be sent to the
- * console to a burst of 100 with an average rate of 16 per second. WARN, ERROR and FATAL messages would continue to
- * be delivered.<br>
- * <br>
- * <p/>
+ * The <code>BurstFilter</code> is a logging filter that regulates logging traffic.
+ * 
+ * <p>
+ * Use this filter when you want to control the maximum burst of log statements that can be sent to an appender. The
+ * filter is configured in the log4j configuration file. For example, the following configuration limits the number of
+ * INFO level (as well as DEBUG and TRACE) log statements that can be sent to the console to a burst of 100 with an
+ * average rate of 16 per second. WARN, ERROR and FATAL messages would continue to be delivered.
+ * </p>
  * <code>
  * &lt;Console name="console"&gt;<br>
  * &nbsp;&lt;PatternLayout pattern="%-5p %d{dd-MMM-yyyy HH:mm:ss} %x %t %m%n"/&gt;<br>
