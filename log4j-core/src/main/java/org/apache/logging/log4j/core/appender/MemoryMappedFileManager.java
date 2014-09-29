@@ -228,10 +228,11 @@ public class MemoryMappedFileManager extends OutputStreamManager {
     }
 
     /**
-     * FileManager's content format is specified by:
-     * <p/>
+     * Gets this FileManager's content format is specified by:
+     * <p>
      * Key: "fileURI" Value: provided "advertiseURI" param.
-     *
+     * </p>
+     * 
      * @return Map of content format keys supporting FileManager
      */
     @Override
