@@ -27,7 +27,7 @@
   <version>2.1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>Apache Log4j Streaming Interface</name>
-  <description>Provides the ability to convert streams into log statements</description>
+  <description>The Apache Log4j streams to log event converters</description>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Streaming Documentation</docLabel>

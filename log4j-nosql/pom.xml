@@ -26,7 +26,7 @@
 
   <artifactId>log4j-nosql</artifactId>
   <name>Apache Log4j NoSQL</name>
-  <description>Use NoSQL databases such as MongoDB and CouchDB to append log messages.</description>
+  <description>The Apache Log4j NoSQL appenders to databases such as MongoDB and CouchDB</description>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>NoSQL Documentation</docLabel>

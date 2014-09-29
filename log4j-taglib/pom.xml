@@ -26,7 +26,7 @@
   <artifactId>log4j-taglib</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4j Tag Library</name>
-  <description>Apache Log4j Tag Library for Web Applications</description>
+  <description>The Apache Log4j Tag Library for Web Applications</description>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j Tag Library Documentation</docLabel>

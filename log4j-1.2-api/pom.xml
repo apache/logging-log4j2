@@ -26,7 +26,7 @@
   <artifactId>log4j-1.2-api</artifactId>
   <packaging>bundle</packaging>
   <name>Apache Log4j 1.x Compatibility API</name>
-  <description>The Log4j 1.x Compatibility API</description>
+  <description>The Apache Log4j 1.x Compatibility API</description>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j 1.2 Documentation</docLabel>

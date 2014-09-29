@@ -26,7 +26,7 @@
   <artifactId>log4j-slf4j-impl</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4j SLF4J Binding</name>
-  <description>SLF4J API binding to Log4j 2 Core</description>
+  <description>The Apache Log4j SLF4J API binding to Log4j 2 Core</description>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>SLF4J Documentation</docLabel>

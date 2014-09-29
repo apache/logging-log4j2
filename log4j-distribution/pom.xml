@@ -26,7 +26,7 @@
   <artifactId>log4j-distribution</artifactId>
   <packaging>pom</packaging>
   <name>Log4j Distribution</name>
-  <description>Log4j - Distribution archives.</description>
+  <description>The Apache Log4j distribution archives.</description>
   <dependencies>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>

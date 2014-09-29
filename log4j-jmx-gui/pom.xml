@@ -27,7 +27,7 @@
   <packaging>jar</packaging>
   <name>Apache Log4j JMX GUI</name>
   <description>
-    Swing-based client for remotely editing the log4j configuration and remotely monitoring StatusLogger output.
+    The Apache Log4j Swing-based client for remotely editing the log4j configuration and remotely monitoring StatusLogger output.
     Includes a JConsole plug-in.
   </description>
   <properties>

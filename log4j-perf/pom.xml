@@ -28,7 +28,7 @@
   <artifactId>log4j-perf</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4J Performance Tests</name>
-  <description>Log4j 2.0 Various performance tests</description>
+  <description>The Apache Log4j development-time performance tests</description>
   
   <prerequisites>
     <maven>3.0</maven>
