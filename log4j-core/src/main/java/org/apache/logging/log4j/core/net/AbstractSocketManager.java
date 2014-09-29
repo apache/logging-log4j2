@@ -62,9 +62,12 @@ public abstract class AbstractSocketManager extends OutputStreamManager {
     }
 
     /**
-     * AbstractSocketManager's content format is specified by:<p/>
-     * Key: "port" Value: provided "port" param<p/>
-     * Key: "address" Value: provided "address" param
+     * Gets this AbstractSocketManager's content format. Specified by:
+     * <ul>
+     * <li>Key: "port" Value: provided "port" param</li>
+     * <li>Key: "address" Value: provided "address" param</li>
+     * </ul>
+     * 
      * @return Map of content format keys supporting AbstractSocketManager
      */
     @Override
