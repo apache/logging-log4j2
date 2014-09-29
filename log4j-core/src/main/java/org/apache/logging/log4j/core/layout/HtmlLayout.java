@@ -40,9 +40,10 @@ import org.apache.logging.log4j.core.util.Transform;
 
 /**
  * Outputs events as rows in an HTML table on an HTML page.
- * <p/>
- * Appenders using this layout should have their encoding set to UTF-8 or UTF-16, otherwise events containing
- * non ASCII characters could result in corrupted log files.
+ * <p>
+ * Appenders using this layout should have their encoding set to UTF-8 or UTF-16, otherwise events containing non ASCII
+ * characters could result in corrupted log files.
+ * </p>
  */
 @Plugin(name = "HtmlLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class HtmlLayout extends AbstractStringLayout {
