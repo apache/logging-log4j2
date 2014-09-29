@@ -30,7 +30,7 @@ import org.apache.logging.log4j.core.util.Charsets;
 /**
  * Appends a series of JSON events as strings serialized as bytes.
  *
- * <h4>Complete well-formed JSON vs. fragment JSON</h4>
+ * <h3>Complete well-formed JSON vs. fragment JSON</h3>
  * <p>
  * If you configure {@code complete="true"}, the appender outputs a well-formed JSON document. By default, with {@code complete="false"},
  * you should include the output as an <em>external file</em> in a separate file to form a well-formed JSON document.
@@ -779,12 +779,12 @@ import org.apache.logging.log4j.core.util.Charsets;
  * <p>
  * This approach enforces the independence of the JsonLayout and the appender where you embed it.
  * </p>
- * <h4>Encoding</h4>
+ * <h3>Encoding</h3>
  * <p>
  * Appenders using this layout should have their {@code charset} set to {@code UTF-8} or {@code UTF-16}, otherwise events containing non
  * ASCII characters could result in corrupted log files.
  * </p>
- * <h4>Pretty vs. compact XML</h4>
+ * <h3>Pretty vs. compact XML</h3>
  * <p>
  * By default, the JSON layout is not compact (a.k.a. not "pretty") with {@code compact="false"}, which means the appender uses end-of-line
  * characters and indents lines to format the text. If {@code compact="true"}, then no end-of-line or indentation is used. Message content
