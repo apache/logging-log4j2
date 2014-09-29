@@ -47,6 +47,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
         &lt;Marker name=&quot;ParentMarker2&quot;/&gt;
     &lt;/Parents&gt;
 &lt;/Marker&gt;
+ * </pre>
  * 
  * @see Marker
  */
