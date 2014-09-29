@@ -239,10 +239,12 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     }
 
     /**
-     * Rfc5424Layout's content format is specified by:<p/>
-     * Key: "structured" Value: "true"<p/>
-     * Key: "format" Value: "RFC5424"<p/>
-     *
+     * Gets this Rfc5424Layout's content format. Specified by:
+     * <ul>
+     * <li>Key: "structured" Value: "true"</li>
+     * <li>Key: "format" Value: "RFC5424"</li>
+     * </ul>
+     * 
      * @return Map of content format keys supporting Rfc5424Layout
      */
     @Override
