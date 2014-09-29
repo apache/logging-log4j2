@@ -38,8 +38,9 @@ import static org.junit.Assert.*;
 
 /**
  * Confirms that if you log a {@link TimestampMessage} then there are no unnecessary calls to {@link Clock}.
- * <p/>
+ * <p>
  * See LOG4J2-744.
+ * </p>
  */
 public class AsyncLoggerTimestampMessageTest {
 
