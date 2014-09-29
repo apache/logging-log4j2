@@ -32,21 +32,19 @@ import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * This class can be used to define a
- * custom logger repository.  It makes use of the fact that in J2EE
- * environments, each web-application is guaranteed to have its own JNDI
- * context relative to the <code>java:comp/env</code> context. In EJBs, each
- * enterprise bean (albeit not each application) has its own context relative
- * to the <code>java:comp/env</code> context.  An <code>env-entry</code> in a
- * deployment descriptor provides the information to the JNDI context.  Once the
- * <code>env-entry</code> is set, a repository selector can query the JNDI
- * application context to look up the value of the entry. The logging context of
- * the web-application will depend on the value the env-entry.  The JNDI context
- *  which is looked up by this class is
- * <code>java:comp/env/log4j/context-name</code>.
+ * This class can be used to define a custom logger repository. It makes use of the fact that in J2EE environments, each
+ * web-application is guaranteed to have its own JNDI context relative to the <code>java:comp/env</code> context. In
+ * EJBs, each enterprise bean (albeit not each application) has its own context relative to the
+ * <code>java:comp/env</code> context. An <code>env-entry</code> in a deployment descriptor provides the information to
+ * the JNDI context. Once the <code>env-entry</code> is set, a repository selector can query the JNDI application
+ * context to look up the value of the entry. The logging context of the web-application will depend on the value the
+ * env-entry. The JNDI context which is looked up by this class is <code>java:comp/env/log4j/context-name</code>.
  *
- * <p>Here is an example of an <code>env-entry</code>:
+ * <p>
+ * Here is an example of an <code>env-entry</code>:
+ * </p>
  * <blockquote>
+ * 
  * <pre>
  * &lt;env-entry&gt;
  *   &lt;description&gt;JNDI logging context name for this app&lt;/description&gt;
@@ -55,18 +53,20 @@ import org.apache.logging.log4j.status.StatusLogger;
  *   &lt;env-entry-type&gt;java.lang.String&lt;/env-entry-type&gt;
  * &lt;/env-entry&gt;
  * </pre>
+ * 
  * </blockquote>
- * </p>
  *
- * <p><em>If multiple applications use the same logging context name, then they
+ * <p>
+ * <em>If multiple applications use the same logging context name, then they
  * will share the same logging context.</em>
  * </p>
  *
- *<p>You can also specify the URL for this context's configuration resource.
- * This repository selector (ContextJNDISelector) will use this resource
- * to automatically configure the log4j repository.
- *</p>
+ * <p>
+ * You can also specify the URL for this context's configuration resource. This repository selector
+ * (ContextJNDISelector) will use this resource to automatically configure the log4j repository.
+ * </p>
  ** <blockquote>
+ * 
  * <pre>
  * &lt;env-entry&gt;
  *   &lt;description&gt;URL for configuring log4j context&lt;/description&gt;
@@ -75,13 +75,13 @@ import org.apache.logging.log4j.status.StatusLogger;
  *   &lt;env-entry-type&gt;java.lang.String&lt;/env-entry-type&gt;
  * &lt;/env-entry&gt;
  * </pre>
+ * 
  * </blockquote>
  *
- * <p>It usually good practice for configuration resources of distinct
- * applications to have distinct names. However, if this is not possible
- * Naming
+ * <p>
+ * It usually good practice for configuration resources of distinct applications to have distinct names. However, if
+ * this is not possible Naming
  * </p>
- *
  */
 public class JndiContextSelector implements NamedContextSelector {
 
