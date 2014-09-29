@@ -147,9 +147,12 @@ public class TcpSocketManager extends AbstractSocketManager {
     }
 
     /**
-     * TcpSocketManager's content format is specified by:<p/>
-     * Key: "protocol" Value: "tcp"<p/>
-     * Key: "direction" Value: "out"
+     * Gets this TcpSocketManager's content format. Specified by:
+     * <ul>
+     * <li>Key: "protocol" Value: "tcp"</li>
+     * <li>Key: "direction" Value: "out"</li>
+     * </ul>
+     * 
      * @return Map of content format keys supporting TcpSocketManager
      */
     @Override
