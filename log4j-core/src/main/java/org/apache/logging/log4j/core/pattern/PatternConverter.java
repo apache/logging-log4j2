@@ -45,7 +45,6 @@ public interface PatternConverter {
     /**
      * This method returns the CSS style class that should be applied to
      * the LoggingEvent passed as parameter, which can be null.
-     * <p/>
      *
      * @param e null values are accepted
      * @return the name of the conversion pattern
