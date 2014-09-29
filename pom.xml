@@ -1008,7 +1008,6 @@
           </reportSet>
         </reportSets>
       </plugin>
-
       <!-- RAT report -->
       <plugin>
         <groupId>org.apache.rat</groupId>
