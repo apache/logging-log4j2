@@ -23,8 +23,13 @@
     <artifactId>log4j</artifactId>
     <groupId>org.apache.logging.log4j</groupId>
     <version>2.1-SNAPSHOT</version>
+    <relativePath>../</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
+
+  <properties>
+    <log4jParentDir>${basedir}/..</log4jParentDir>
+  </properties>
 
   <artifactId>log4j-jul</artifactId>
   <name>Apache Log4j JUL Adaptor</name>
