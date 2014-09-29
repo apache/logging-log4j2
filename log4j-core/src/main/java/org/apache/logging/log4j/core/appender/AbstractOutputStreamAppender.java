@@ -94,10 +94,12 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
 
     /**
      * Actual writing occurs here.
-     * <p/>
-     * <p>Most subclasses of <code>AbstractOutputStreamAppender</code> will need to
-     * override this method.
-     * @param event The LogEvent.
+     * <p>
+     * Most subclasses of <code>AbstractOutputStreamAppender</code> will need to override this method.
+     * </p>
+     * 
+     * @param event
+     *        The LogEvent.
      */
     @Override
     public void append(final LogEvent event) {
