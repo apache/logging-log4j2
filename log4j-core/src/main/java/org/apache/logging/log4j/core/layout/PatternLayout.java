@@ -39,17 +39,18 @@ import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.core.pattern.RegexReplacement;
 
 /**
- * <p>A flexible layout configurable with pattern string. The goal of this class
- * is to {@link org.apache.logging.log4j.core.Layout#toByteArray format} a {@link LogEvent} and return the results.
- * The format of the result depends on the <em>conversion pattern</em>.
+ * A flexible layout configurable with pattern string.
  * <p>
- * <p/>
- * <p>The conversion pattern is closely related to the conversion
- * pattern of the printf function in C. A conversion pattern is
- * composed of literal text and format control expressions called
- * <em>conversion specifiers</em>.
- *
+ * The goal of this class is to {@link org.apache.logging.log4j.core.Layout#toByteArray format} a {@link LogEvent} and
+ * return the results. The format of the result depends on the <em>conversion pattern</em>.
+ * </p>
+ * <p>
+ * The conversion pattern is closely related to the conversion pattern of the printf function in C. A conversion pattern
+ * is composed of literal text and format control expressions called <em>conversion specifiers</em>.
+ * </p>
+ * <p>
  * See the Log4j Manual for details on the supported pattern converters.
+ * </p>
  */
 @Plugin(name = "PatternLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class PatternLayout extends AbstractStringLayout {
