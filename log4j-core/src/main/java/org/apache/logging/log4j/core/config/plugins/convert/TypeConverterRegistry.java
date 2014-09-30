@@ -109,8 +109,7 @@ public class TypeConverterRegistry {
         for (final PluginType<?> knownType : knownTypes) {
             final Class<?> clazz = knownType.getPluginClass();
             if (TypeConverter.class.isAssignableFrom(clazz)) {
-                @SuppressWarnings("unchecked") // but we just DID check it!
-                final Class<? extends TypeConverter<?>> pluginClass = (Class<? extends TypeConverter<?>>) clazz;
+                final Class<? extends TypeConverter> pluginClass =  clazz.asSubclass(TypeConverter.class);
                 final Type conversionType = getTypeConverterSupportedType(pluginClass);
                 final TypeConverter<?> converter = ReflectionUtil.instantiate(pluginClass);
                 if (registry.putIfAbsent(conversionType, converter) != null) {
@@ -121,7 +120,7 @@ public class TypeConverterRegistry {
         }
     }
 
-    private static Type getTypeConverterSupportedType(final Class<? extends TypeConverter<?>> typeConverterClass) {
+    private static Type getTypeConverterSupportedType(final Class<? extends TypeConverter> typeConverterClass) {
         for (final Type type : typeConverterClass.getGenericInterfaces()) {
             if (type instanceof ParameterizedType) {
                 final ParameterizedType pType = (ParameterizedType) type;

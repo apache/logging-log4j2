@@ -143,8 +143,8 @@ public abstract class ConfigurationFactory {
                     final Collection<WeightedFactory> ordered = new TreeSet<WeightedFactory>();
                     for (final PluginType<?> type : plugins.values()) {
                         try {
-                            @SuppressWarnings("unchecked")
-                            final Class<ConfigurationFactory> clazz = (Class<ConfigurationFactory>)type.getPluginClass();
+                            final Class<? extends ConfigurationFactory> clazz = type.getPluginClass().asSubclass(
+                                ConfigurationFactory.class);
                             final Order order = clazz.getAnnotation(Order.class);
                             if (order != null) {
                                 final int weight = order.value();
@@ -170,17 +170,16 @@ public abstract class ConfigurationFactory {
         return configFactory;
     }
 
-    @SuppressWarnings("unchecked")
     private static void addFactory(final Collection<ConfigurationFactory> list, final String factoryClass) {
         try {
-            addFactory(list, (Class<ConfigurationFactory>) LoaderUtil.loadClass(factoryClass));
+            addFactory(list, LoaderUtil.loadClass(factoryClass).asSubclass(ConfigurationFactory.class));
         } catch (final Exception ex) {
             LOGGER.error("Unable to load class {}", factoryClass, ex);
         }
     }
 
     private static void addFactory(final Collection<ConfigurationFactory> list,
-                                   final Class<ConfigurationFactory> factoryClass) {
+                                   final Class<? extends ConfigurationFactory> factoryClass) {
         try {
             list.add(ReflectionUtil.instantiate(factoryClass));
         } catch (final Exception ex) {
@@ -348,14 +347,14 @@ public abstract class ConfigurationFactory {
      */
     private static class WeightedFactory implements Comparable<WeightedFactory> {
         private final int weight;
-        private final Class<ConfigurationFactory> factoryClass;
+        private final Class<? extends ConfigurationFactory> factoryClass;
 
         /**
          * Constructor.
          * @param weight The weight.
          * @param clazz The class.
          */
-        public WeightedFactory(final int weight, final Class<ConfigurationFactory> clazz) {
+        public WeightedFactory(final int weight, final Class<? extends ConfigurationFactory> clazz) {
             this.weight = weight;
             this.factoryClass = clazz;
         }
