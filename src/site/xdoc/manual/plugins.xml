@@ -197,5 +197,15 @@
           </p>
         </subsection>
       </section>
+      <section name="Developer Notes">
+        <a name="DeveloperNotes"/>
+        <p>
+          If a plugin class implements
+          <a class="javadoc" href="http://docs.oracle.com/javase/6/docs/api/java/util/Collection.html">Collection</a> or
+          <a class="javadoc" href="http://docs.oracle.com/javase/6/docs/api/java/util/Map.html">Map</a>, then no
+          factory method is used. Instead, the class is instantiated using the default constructor, and all child
+          configuration nodes are added to the <code>Collection</code> or <code>Map</code>.
+        </p>
+      </section>
     </body>
 </document>
