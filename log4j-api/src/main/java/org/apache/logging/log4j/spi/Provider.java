@@ -114,7 +114,6 @@ public class Provider {
      *
      * @return the ThreadContextMap implementation class or {@code null} if there was an error loading it
      */
-    @SuppressWarnings("unchecked")
     public Class<? extends ThreadContextMap> loadThreadContextMap() {
         if (threadContextMap == null) {
             return null;
@@ -122,7 +121,7 @@ public class Provider {
         try {
             final Class<?> clazz = classLoader.loadClass(threadContextMap);
             if (ThreadContextMap.class.isAssignableFrom(clazz)) {
-                return (Class<? extends ThreadContextMap>) clazz;
+                return clazz.asSubclass(ThreadContextMap.class);
             }
         } catch (final Exception e) {
             LOGGER.error("Unable to create class {} specified in {}", threadContextMap, url.toString(), e);
