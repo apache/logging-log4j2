@@ -30,6 +30,9 @@ import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * <em>Consider this class private.</em>
+ * Utility class for Log4j {@link Provider}s. When integrating with an application container framework, any Log4j
+ * Providers not accessible through standard classpath scanning should {@link #loadProvider(java.net.URL, ClassLoader)}
+ * a classpath accordingly.
  */
 public final class ProviderUtil {
 
