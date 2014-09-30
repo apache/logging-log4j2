@@ -19,7 +19,6 @@ package org.apache.logging.log4j.util;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.concurrent.locks.Lock;
@@ -53,22 +52,8 @@ public final class ProviderUtil {
     private static volatile ProviderUtil INSTANCE;
 
     private ProviderUtil() {
-        final ClassLoader cl = findClassLoader();
-        Enumeration<URL> enumResources = null;
-        try {
-            enumResources = cl.getResources(PROVIDER_RESOURCE);
-        } catch (final IOException e) {
-            LOGGER.fatal("Unable to locate {}", PROVIDER_RESOURCE, e);
-        }
-        loadProviders(enumResources, cl);
-    }
-
-    protected static void loadProviders(final Enumeration<URL> enumResources, final ClassLoader cl) {
-        if (enumResources != null) {
-            while (enumResources.hasMoreElements()) {
-                final URL url = enumResources.nextElement();
-                loadProvider(url, cl);
-            }
+        for (LoaderUtil.UrlResource resource : LoaderUtil.findUrlResources(PROVIDER_RESOURCE)) {
+            loadProvider(resource.getUrl(), resource.getClassLoader());
         }
     }
 
