@@ -19,9 +19,14 @@ package org.apache.logging.log4j.core.util;
 import javax.crypto.SecretKey;
 
 /**
- *
+ * Factory class to provide a {@link SecretKey} instance.
  */
 public interface SecretKeyProvider {
 
+    /**
+     * Returns this SecretKey.
+     *
+     * @return the SecretKey.
+     */
     SecretKey getSecretKey();
 }
