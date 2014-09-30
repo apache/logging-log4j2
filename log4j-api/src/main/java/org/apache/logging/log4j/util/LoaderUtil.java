@@ -16,9 +16,14 @@
  */
 package org.apache.logging.log4j.util;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.LinkedHashSet;
 
 /**
  * <em>Consider this class private.</em> Utility class for ClassLoaders.
@@ -68,6 +73,7 @@ public final class LoaderUtil {
     public static ClassLoader getThreadContextClassLoader() {
         if (GET_CLASS_LOADER_DISABLED) {
             // we can at least get this class's ClassLoader regardless of security context
+            // however, if this is null, there's really no option left at this point
             return LoaderUtil.class.getClassLoader();
         }
         return SECURITY_MANAGER == null
@@ -79,7 +85,6 @@ public final class LoaderUtil {
         @Override
         public ClassLoader run() {
             final ClassLoader cl = Thread.currentThread().getContextClassLoader();
-            // if the TCCL is null, that means we're using the system CL
             if (cl != null) {
                 return cl;
             }
@@ -160,5 +165,64 @@ public final class LoaderUtil {
             ignoreTCCL = ignoreTccl != null && !"false".equalsIgnoreCase(ignoreTccl.trim());
         }
         return ignoreTCCL;
+    }
+
+    /**
+     * Finds classpath {@linkplain URL resources}.
+     *
+     * @param resource the name of the resource to find.
+     * @return a Collection of URLs matching the resource name. If no resources could be found, then this will be empty.
+     * @since 2.1
+     */
+    public static Collection<URL> findResources(final String resource) {
+        final Collection<UrlResource> urlResources = findUrlResources(resource);
+        final Collection<URL> resources = new LinkedHashSet<URL>(urlResources.size());
+        for (final UrlResource urlResource : urlResources) {
+            resources.add(urlResource.getUrl());
+        }
+        return resources;
+    }
+
+    static Collection<UrlResource> findUrlResources(final String resource) {
+        final ClassLoader[] candidates = {
+            getThreadContextClassLoader(),
+            LoaderUtil.class.getClassLoader(),
+            ClassLoader.getSystemClassLoader()
+        };
+        final Collection<UrlResource> resources = new LinkedHashSet<UrlResource>();
+        for (final ClassLoader cl : candidates) {
+            if (cl != null) {
+                try {
+                    final Enumeration<URL> resourceEnum = cl.getResources(resource);
+                    while (resourceEnum.hasMoreElements()) {
+                        resources.add(new UrlResource(cl, resourceEnum.nextElement()));
+                    }
+                } catch (final IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return resources;
+    }
+
+    /**
+     * {@link URL} and {@link ClassLoader} pair.
+     */
+    static class UrlResource {
+        private final ClassLoader classLoader;
+        private final URL url;
+
+        public UrlResource(final ClassLoader classLoader, final URL url) {
+            this.classLoader = classLoader;
+            this.url = url;
+        }
+
+        public ClassLoader getClassLoader() {
+            return classLoader;
+        }
+
+        public URL getUrl() {
+            return url;
+        }
     }
 }
