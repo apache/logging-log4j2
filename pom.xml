@@ -1281,9 +1281,9 @@
       </build>
     </profile>
     <profile>
-      <id>jdk8</id>
+      <id>jdk7</id>
       <activation>
-        <jdk>[1.8,)</jdk>
+        <jdk>[1.7,)</jdk>
       </activation>
       <properties>
         <findbugs.plugin.version>3.0.0</findbugs.plugin.version>
