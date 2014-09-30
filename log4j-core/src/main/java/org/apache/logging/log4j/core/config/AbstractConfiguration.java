@@ -609,7 +609,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             app.stop();
         }
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.apache.logging.log4j.core.config.Configuration#getCustomLevels()
@@ -740,17 +740,19 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     * @param type the type of plugin to create.
     * @param node the corresponding configuration node for this plugin to create.
     * @param event the LogEvent that spurred the creation of this plugin
+    * @param <T> the plugin object type.
     * @return the created plugin object or {@code null} if there was an error setting it up.
     * @see org.apache.logging.log4j.core.config.plugins.util.PluginBuilder
     * @see org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitor
     * @see org.apache.logging.log4j.core.config.plugins.convert.TypeConverter
     */
-    private <T> Object createPluginObject(final PluginType<T> type, final Node node, final LogEvent event) {
+   @SuppressWarnings("unchecked")
+   private <T> Object createPluginObject(final PluginType<T> type, final Node node, final LogEvent event) {
         final Class<T> clazz = type.getPluginClass();
 
         if (Map.class.isAssignableFrom(clazz)) {
             try {
-                return createPluginMap(node, clazz);
+                return createPluginMap(node, clazz.asSubclass(Map.class));
             } catch (final Exception e) {
                 LOGGER.warn("Unable to create Map for {} of class {}", type.getElementName(), clazz, e);
             }
@@ -758,7 +760,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
         if (Collection.class.isAssignableFrom(clazz)) {
             try {
-                return createPluginCollection(node, clazz);
+                return createPluginCollection(node, clazz.asSubclass(Collection.class));
             } catch (final Exception e) {
                 LOGGER.warn("Unable to create List for {} of class {}", type.getElementName(), clazz, e);
             }
@@ -771,20 +773,24 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 .build();
     }
 
-    private static <T> Object createPluginMap(final Node node, final Class<T> clazz) throws InstantiationException, IllegalAccessException {
-        @SuppressWarnings("unchecked")
-        final Map<String, Object> map = (Map<String, Object>) clazz.newInstance();
+    private static <T extends Map<String, E>, E> Object createPluginMap(final Node node, final Class<T> clazz)
+        throws InstantiationException, IllegalAccessException {
+        final Map<String, E> map = clazz.newInstance();
         for (final Node child : node.getChildren()) {
-            map.put(child.getName(), child.getObject());
+            @SuppressWarnings("unchecked")
+            final E object = (E) child.getObject();
+            map.put(child.getName(), object);
         }
         return map;
     }
 
-    private static <T> Object createPluginCollection(final Node node, final Class<T> clazz) throws InstantiationException, IllegalAccessException {
-        @SuppressWarnings("unchecked")
-        final Collection<Object> list = (Collection<Object>) clazz.newInstance();
+    private static <T extends Collection<E>, E> Object createPluginCollection(final Node node, final Class<T> clazz)
+        throws InstantiationException, IllegalAccessException {
+        final Collection<E> list = clazz.newInstance();
         for (final Node child : node.getChildren()) {
-            list.add(child.getObject());
+            @SuppressWarnings("unchecked")
+            final E object = (E) child.getObject();
+            list.add(object);
         }
         return list;
     }

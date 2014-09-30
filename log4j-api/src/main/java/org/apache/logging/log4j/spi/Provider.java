@@ -83,7 +83,6 @@ public class Provider {
      *
      * @return the LoggerContextFactory implementation class or {@code null} if there was an error loading it
      */
-    @SuppressWarnings("unchecked")
     public Class<? extends LoggerContextFactory> loadLoggerContextFactory() {
         if (className == null) {
             return null;
@@ -91,7 +90,7 @@ public class Provider {
         try {
             final Class<?> clazz = classLoader.loadClass(className);
             if (LoggerContextFactory.class.isAssignableFrom(clazz)) {
-                return (Class<? extends LoggerContextFactory>) clazz;
+                return clazz.asSubclass(LoggerContextFactory.class);
             }
         } catch (final Exception e) {
             LOGGER.error("Unable to create class {} specified in {}", className, url.toString(), e);

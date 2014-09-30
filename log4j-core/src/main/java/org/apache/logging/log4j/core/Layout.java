@@ -94,8 +94,8 @@ public interface Layout<T extends Serializable> {
     /**
      * Returns a description of the content format.
      *
-     * @return a Map of key/value pairs describing the Layout-specific content format, or an empty Map if no content format descriptors are specified.
-     *
+     * @return a Map of key/value pairs describing the Layout-specific content format, or an empty Map if no content
+     * format descriptors are specified.
      */
     Map<String, String> getContentFormat();
 }

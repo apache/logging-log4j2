@@ -60,8 +60,7 @@ public class Interpolator extends AbstractLookup {
 
         for (final Map.Entry<String, PluginType<?>> entry : plugins.entrySet()) {
             try {
-                @SuppressWarnings("unchecked")
-                final Class<? extends StrLookup> clazz = (Class<? extends StrLookup>) entry.getValue().getPluginClass();
+                final Class<? extends StrLookup> clazz = entry.getValue().getPluginClass().asSubclass(StrLookup.class);
                 lookups.put(entry.getKey(), clazz.getConstructor().newInstance());
             } catch (final Exception ex) {
                 LOGGER.error("Unable to create Lookup for {}", entry.getKey(), ex);
