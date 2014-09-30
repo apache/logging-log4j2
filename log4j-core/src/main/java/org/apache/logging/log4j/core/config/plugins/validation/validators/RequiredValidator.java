@@ -69,7 +69,7 @@ public class RequiredValidator implements ConstraintValidator<Required> {
             final Map<?, ?> map = (Map<?, ?>) value;
             return map.size() != 0 || err();
         }
-        LOGGER.warn("RequiresNonEmpty annotation applied to type [{}] that is unsupported.", clazz.getName());
+        LOGGER.debug("Encountered type [{}] which can only be checked for null.", clazz.getName());
         return true;
     }
 
