@@ -364,23 +364,28 @@
             <link>http://docs.oracle.com/javaee/6/api/</link>
             <link>http://www.osgi.org/javadoc/r4v43/core/</link>
           </links>
-          <tags>
-            <tag>
-              <name>issue</name>
-              <placement>a</placement>
-              <head>JIRA issue:</head>
-            </tag>
-            <tag>
-              <name>doubt</name>
-              <placement>a</placement>
-              <head>Troublesome:</head>
-            </tag>
-            <tag>
-              <name>compare</name>
-              <placement>a</placement>
-              <head>Compare with:</head>
-            </tag>
-          </tags>
+          <groups>
+            <group>
+              <title>Core API</title>
+              <packages>org.apache.logging.log4j.core</packages>
+            </group>
+            <group>
+              <title>Configuration</title>
+              <packages>org.apache.logging.log4j.core.config*:org.apache.logging.log4j.core.selector</packages>
+            </group>
+            <group>
+              <title>Core Plugins</title>
+              <packages>org.apache.logging.log4j.core.appender*:org.apache.logging.log4j.core.filter:org.apache.logging.log4j.core.layout:org.apache.logging.log4j.core.lookup:org.apache.logging.log4j.core.pattern</packages>
+            </group>
+            <group>
+              <title>Tools</title>
+              <packages>org.apache.logging.log4j.core.net*:org.apache.logging.log4j.core.tools</packages>
+            </group>
+            <group>
+              <title>Internals</title>
+              <packages>org.apache.logging.log4j.core.async:org.apache.logging.log4j.core.impl:org.apache.logging.log4j.core.util:org.apache.logging.log4j.core.osgi:org.apache.logging.log4j.core.jackson:org.apache.logging.log4j.core.jmx</packages>
+            </group>
+          </groups>
         </configuration>
         <reportSets>
           <reportSet>
