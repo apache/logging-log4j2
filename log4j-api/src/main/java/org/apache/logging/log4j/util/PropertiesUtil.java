@@ -19,7 +19,6 @@ package org.apache.logging.log4j.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Enumeration;
 import java.util.Properties;
 
 import org.apache.logging.log4j.Logger;
@@ -86,32 +85,25 @@ public final class PropertiesUtil {
      * @param propertiesFileName the location of properties file to load
      */
     public PropertiesUtil(final String propertiesFileName) {
-        final ClassLoader loader = LoaderUtil.getThreadContextClassLoader();
         @SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
-        final
-        Properties properties = new Properties();
+        final Properties properties = new Properties();
+        for (final URL url : LoaderUtil.findResources(propertiesFileName)) {
+            InputStream in = null;
             try {
-                final Enumeration<URL> enumeration = loader.getResources(propertiesFileName);
-                while (enumeration.hasMoreElements()) {
-                    final URL url = enumeration.nextElement();
-                    final InputStream in = url.openStream();
-                    try {
-                        properties.load(in);
-                    } catch (final IOException ioe) {
-                        LOGGER.error("Unable to read {}", url.toString(), ioe);
-                    } finally {
-                        try {
-                            in.close();
-                        } catch (final IOException ioe) {
-                            LOGGER.error("Unable to close {}", url.toString(), ioe);
-                        }
-                    }
-
-                }
-
+                in = url.openStream();
+                properties.load(in);
             } catch (final IOException ioe) {
-                LOGGER.error("Unable to access {}", propertiesFileName, ioe);
+                LOGGER.error("Unable to read {}", url.toString(), ioe);
+            } finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (final IOException ioe) {
+                        LOGGER.error("Unable to close {}", url.toString(), ioe);
+                    }
+                }
             }
+        }
         this.props = properties;
     }
 
