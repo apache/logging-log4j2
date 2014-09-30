@@ -98,10 +98,6 @@
           <td><a href="log4j-nosql/apidocs/index.html">Log4j NoSQL Support</a></td>
           <td>Additional Appenders for NoSQL databases such as MongoDB and CouchDB.</td>
         </tr>
-        <tr>
-          <td><a href="log4j-jms/apidocs/index.html">Log4j JMS Support</a></td>
-          <td>Additional Appenders and Receivers for the Java Message Service.</td>
-        </tr>
       </table>
     </section>
   </body>
