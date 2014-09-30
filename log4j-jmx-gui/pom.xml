@@ -126,23 +126,6 @@
                project -->
           <detectOfflineLinks>false</detectOfflineLinks>
           <linksource>true</linksource>
-          <tags>
-            <tag>
-              <name>issue</name>
-              <placement>a</placement>
-              <head>JIRA issue:</head>
-            </tag>
-            <tag>
-              <name>doubt</name>
-              <placement>a</placement>
-              <head>Troublesome:</head>
-            </tag>
-            <tag>
-              <name>compare</name>
-              <placement>a</placement>
-              <head>Compare with:</head>
-            </tag>
-          </tags>
         </configuration>
         <reportSets>
           <reportSet>

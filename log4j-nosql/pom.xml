@@ -108,23 +108,6 @@
             <link>http://docs.oracle.com/javaee/6/api/</link>
             <link>http://www.osgi.org/javadoc/r4v43/core/</link>
           </links>
-          <tags>
-            <tag>
-              <name>issue</name>
-              <placement>a</placement>
-              <head>JIRA issue:</head>
-            </tag>
-            <tag>
-              <name>doubt</name>
-              <placement>a</placement>
-              <head>Troublesome:</head>
-            </tag>
-            <tag>
-              <name>compare</name>
-              <placement>a</placement>
-              <head>Compare with:</head>
-            </tag>
-          </tags>
         </configuration>
         <reportSets>
           <reportSet>

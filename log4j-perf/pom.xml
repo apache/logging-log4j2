@@ -29,7 +29,7 @@
   <packaging>jar</packaging>
   <name>Apache Log4J Performance Tests</name>
   <description>The Apache Log4j development-time performance tests</description>
-  
+
   <prerequisites>
     <maven>3.0</maven>
   </prerequisites>
@@ -200,8 +200,7 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Export-Package>org.apache.logging.log4j.perf.jmh</Export-Package>
-            <Export-Package>org.apache.logging.log4j.perf.jmh.jpa</Export-Package>
+            <Export-Package>org.apache.logging.log4j.perf.jmh*</Export-Package>
           </instructions>
         </configuration>
       </plugin>
@@ -251,27 +250,10 @@
             Software
             Foundation.
           </bottom>
-          <!-- module link generation is completely broken in the javadoc 
+          <!-- module link generation is completely broken in the javadoc
             plugin for a multi-module non-aggregating project -->
           <detectOfflineLinks>false</detectOfflineLinks>
           <linksource>true</linksource>
-          <tags>
-            <tag>
-              <name>issue</name>
-              <placement>a</placement>
-              <head>JIRA issue:</head>
-            </tag>
-            <tag>
-              <name>doubt</name>
-              <placement>a</placement>
-              <head>Troublesome:</head>
-            </tag>
-            <tag>
-              <name>compare</name>
-              <placement>a</placement>
-              <head>Compare with:</head>
-            </tag>
-          </tags>
         </configuration>
         <reportSets>
           <reportSet>
@@ -327,7 +309,7 @@
         <version>${cobertura.plugin.version}</version>
         <reportSets>
           <reportSet>
-            <!-- Disabled as it makes the site build very slow and causes 
+            <!-- Disabled as it makes the site build very slow and causes
               the performance unit test to fail -->
             <reports />
           </reportSet>
