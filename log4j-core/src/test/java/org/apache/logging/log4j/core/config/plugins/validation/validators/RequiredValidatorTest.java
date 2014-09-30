@@ -43,7 +43,7 @@ public class RequiredValidatorTest {
 
     @Test
     public void testNullDefaultValue() throws Exception {
-        final ValidatingPlugin validatingPlugin = new PluginBuilder<ValidatingPlugin>(plugin)
+        final ValidatingPlugin validatingPlugin = (ValidatingPlugin) new PluginBuilder(plugin)
             .withConfiguration(new NullConfiguration())
             .withConfigurationNode(node)
             .build();
@@ -53,7 +53,7 @@ public class RequiredValidatorTest {
     @Test
     public void testNonNullValue() throws Exception {
         node.getAttributes().put("name", "foo");
-        final ValidatingPlugin validatingPlugin = new PluginBuilder<ValidatingPlugin>(plugin)
+        final ValidatingPlugin validatingPlugin = (ValidatingPlugin) new PluginBuilder(plugin)
             .withConfiguration(new NullConfiguration())
             .withConfigurationNode(node)
             .build();

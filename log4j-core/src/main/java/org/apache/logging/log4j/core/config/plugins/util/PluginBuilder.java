@@ -42,20 +42,19 @@ import org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitors;
 import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.core.util.Builder;
 import org.apache.logging.log4j.core.util.ReflectionUtil;
+import org.apache.logging.log4j.core.util.TypeUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Builder class to instantiate and configure a Plugin object using a PluginFactory method or PluginBuilderFactory
  * builder class.
- *
- * @param <T> type of Plugin class.
  */
-public class PluginBuilder<T> implements Builder<T> {
+public class PluginBuilder implements Builder<Object> {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private final PluginType<T> pluginType;
-    private final Class<T> clazz;
+    private final PluginType<?> pluginType;
+    private final Class<?> clazz;
 
     private Configuration configuration;
     private Node node;
@@ -66,7 +65,7 @@ public class PluginBuilder<T> implements Builder<T> {
      *
      * @param pluginType type of plugin to configure
      */
-    public PluginBuilder(final PluginType<T> pluginType) {
+    public PluginBuilder(final PluginType<?> pluginType) {
         this.pluginType = pluginType;
         this.clazz = pluginType.getPluginClass();
     }
@@ -77,7 +76,7 @@ public class PluginBuilder<T> implements Builder<T> {
      * @param configuration the configuration to use.
      * @return {@code this}
      */
-    public PluginBuilder<T> withConfiguration(final Configuration configuration) {
+    public PluginBuilder withConfiguration(final Configuration configuration) {
         this.configuration = configuration;
         return this;
     }
@@ -88,7 +87,7 @@ public class PluginBuilder<T> implements Builder<T> {
      * @param node the plugin configuration node to use.
      * @return {@code this}
      */
-    public PluginBuilder<T> withConfigurationNode(final Node node) {
+    public PluginBuilder withConfigurationNode(final Node node) {
         this.node = node;
         return this;
     }
@@ -99,7 +98,7 @@ public class PluginBuilder<T> implements Builder<T> {
      * @param event the event to use for extra information.
      * @return {@code this}
      */
-    public PluginBuilder<T> forLogEvent(final LogEvent event) {
+    public PluginBuilder forLogEvent(final LogEvent event) {
         this.event = event;
         return this;
     }
@@ -110,16 +109,16 @@ public class PluginBuilder<T> implements Builder<T> {
      * @return the plugin object or {@code null} if there was a problem creating it.
      */
     @Override
-    public T build() {
+    public Object build() {
         verify();
         // first try to use a builder class if one is available
         try {
             LOGGER.debug("Building Plugin[name={}, class={}]. Searching for builder factory method...", pluginType.getElementName(),
                     pluginType.getPluginClass().getName());
-            final Builder<T> builder = createBuilder(this.clazz);
+            final Builder<?> builder = createBuilder(this.clazz);
             if (builder != null) {
                 injectFields(builder);
-                final T result = builder.build();
+                final Object result = builder.build();
                 LOGGER.debug("Built Plugin[name={}] OK from builder factory method.", pluginType.getElementName());
                 return result;
             }
@@ -133,8 +132,7 @@ public class PluginBuilder<T> implements Builder<T> {
                     pluginType.getElementName(), pluginType.getPluginClass().getName());
             final Method factory = findFactoryMethod(this.clazz);
             final Object[] params = generateParameters(factory);
-            @SuppressWarnings("unchecked")
-            final T plugin = (T) factory.invoke(null, params);
+            final Object plugin = factory.invoke(null, params);
             LOGGER.debug("Built Plugin[name={}] OK from factory method.", pluginType.getElementName());
             return plugin;
         } catch (final Exception e) {
@@ -149,14 +147,15 @@ public class PluginBuilder<T> implements Builder<T> {
         Assert.requireNonNull(this.node, "No Node object was set.");
     }
 
-    private static <T> Builder<T> createBuilder(final Class<T> clazz)
+    private static Builder<?> createBuilder(final Class<?> clazz)
         throws InvocationTargetException, IllegalAccessException {
         for (final Method method : clazz.getDeclaredMethods()) {
             if (method.isAnnotationPresent(PluginBuilderFactory.class) &&
-                Modifier.isStatic(method.getModifiers())) {
+                Modifier.isStatic(method.getModifiers()) &&
+                TypeUtil.isAssignable(Builder.class, method.getGenericReturnType())) {
                 ReflectionUtil.makeAccessible(method);
                 @SuppressWarnings("unchecked")
-                final Builder<T> builder = (Builder<T>) method.invoke(null);
+                final Builder<?> builder = (Builder<?>) method.invoke(null);
                 LOGGER.debug("Found builder factory method [{}]: {}.", method.getName(), method);
                 return builder;
             }
@@ -166,7 +165,7 @@ public class PluginBuilder<T> implements Builder<T> {
         return null;
     }
 
-    private void injectFields(final Builder<T> builder) throws IllegalAccessException {
+    private void injectFields(final Builder<?> builder) throws IllegalAccessException {
         final Field[] fields = builder.getClass().getDeclaredFields();
         AccessibleObject.setAccessible(fields, true);
         final StringBuilder log = new StringBuilder();
@@ -215,7 +214,7 @@ public class PluginBuilder<T> implements Builder<T> {
         verifyNodeChildrenUsed();
     }
 
-    private static <T> Method findFactoryMethod(final Class<T> clazz) {
+    private static Method findFactoryMethod(final Class<?> clazz) {
         for (final Method method : clazz.getDeclaredMethods()) {
             if (method.isAnnotationPresent(PluginFactory.class) &&
                 Modifier.isStatic(method.getModifiers())) {

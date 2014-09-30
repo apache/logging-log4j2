@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -305,11 +306,10 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         if (advertiserNode != null)
         {
             final String name = advertiserNode.getName();
-            @SuppressWarnings("unchecked")
-            final PluginType<Advertiser> type = (PluginType<Advertiser>) pluginManager.getPluginType(name);
+            final PluginType<?> type = pluginManager.getPluginType(name);
             if (type != null)
             {
-                final Class<Advertiser> clazz = type.getPluginClass();
+                final Class<? extends Advertiser> clazz = type.getPluginClass().asSubclass(Advertiser.class);
                 try {
                     advertiser = clazz.newInstance();
                     advertisement = advertiser.advertise(advertiserNode.getAttributes());
@@ -740,19 +740,17 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     * @param type the type of plugin to create.
     * @param node the corresponding configuration node for this plugin to create.
     * @param event the LogEvent that spurred the creation of this plugin
-    * @param <T> the plugin object type.
     * @return the created plugin object or {@code null} if there was an error setting it up.
     * @see org.apache.logging.log4j.core.config.plugins.util.PluginBuilder
     * @see org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitor
     * @see org.apache.logging.log4j.core.config.plugins.convert.TypeConverter
     */
-   @SuppressWarnings("unchecked")
-   private <T> Object createPluginObject(final PluginType<T> type, final Node node, final LogEvent event) {
-        final Class<T> clazz = type.getPluginClass();
+    private Object createPluginObject(final PluginType<?> type, final Node node, final LogEvent event) {
+        final Class<?> clazz = type.getPluginClass();
 
         if (Map.class.isAssignableFrom(clazz)) {
             try {
-                return createPluginMap(node, clazz.asSubclass(Map.class));
+                return createPluginMap(node);
             } catch (final Exception e) {
                 LOGGER.warn("Unable to create Map for {} of class {}", type.getElementName(), clazz, e);
             }
@@ -760,36 +758,33 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
         if (Collection.class.isAssignableFrom(clazz)) {
             try {
-                return createPluginCollection(node, clazz.asSubclass(Collection.class));
+                return createPluginCollection(node);
             } catch (final Exception e) {
                 LOGGER.warn("Unable to create List for {} of class {}", type.getElementName(), clazz, e);
             }
         }
 
-        return new PluginBuilder<T>(type)
+        return new PluginBuilder(type)
                 .withConfiguration(this)
                 .withConfigurationNode(node)
                 .forLogEvent(event)
                 .build();
     }
 
-    private static <T extends Map<String, E>, E> Object createPluginMap(final Node node, final Class<T> clazz)
-        throws InstantiationException, IllegalAccessException {
-        final Map<String, E> map = clazz.newInstance();
+    private static Map<String, ?> createPluginMap(final Node node) {
+        final Map<String, Object> map = new LinkedHashMap<String, Object>();
         for (final Node child : node.getChildren()) {
-            @SuppressWarnings("unchecked")
-            final E object = (E) child.getObject();
+            final Object object = child.getObject();
             map.put(child.getName(), object);
         }
         return map;
     }
 
-    private static <T extends Collection<E>, E> Object createPluginCollection(final Node node, final Class<T> clazz)
-        throws InstantiationException, IllegalAccessException {
-        final Collection<E> list = clazz.newInstance();
-        for (final Node child : node.getChildren()) {
-            @SuppressWarnings("unchecked")
-            final E object = (E) child.getObject();
+    private static Collection<?> createPluginCollection(final Node node) {
+        final List<Node> children = node.getChildren();
+        final Collection<Object> list = new ArrayList<Object>(children.size());
+        for (final Node child : children) {
+            final Object object = child.getObject();
             list.add(object);
         }
         return list;
