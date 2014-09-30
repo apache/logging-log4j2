@@ -81,8 +81,14 @@ public class TypeConverterRegistry {
             return primary;
         }
         // dynamic enum support
-        if (type instanceof Class<?> && ((Class<?>) type).isEnum()) {
-            return registerEnumType(((Class<?>) type).asSubclass(Enum.class));
+        if (type instanceof Class<?>) {
+            final Class<?> clazz = (Class<?>) type;
+            if (clazz.isEnum()) {
+                @SuppressWarnings({"unchecked","rawtypes"})
+                final EnumConverter<? extends Enum> converter = new EnumConverter(clazz.asSubclass(Enum.class));
+                registry.putIfAbsent(type, converter);
+                return converter;
+            }
         }
         // look for compatible converters
         for (final Map.Entry<Type, TypeConverter<?>> entry : registry.entrySet()) {
@@ -109,6 +115,7 @@ public class TypeConverterRegistry {
         for (final PluginType<?> knownType : knownTypes) {
             final Class<?> clazz = knownType.getPluginClass();
             if (TypeConverter.class.isAssignableFrom(clazz)) {
+                @SuppressWarnings("rawtypes")
                 final Class<? extends TypeConverter> pluginClass =  clazz.asSubclass(TypeConverter.class);
                 final Type conversionType = getTypeConverterSupportedType(pluginClass);
                 final TypeConverter<?> converter = ReflectionUtil.instantiate(pluginClass);
@@ -120,7 +127,7 @@ public class TypeConverterRegistry {
         }
     }
 
-    private static Type getTypeConverterSupportedType(final Class<? extends TypeConverter> typeConverterClass) {
+    private static Type getTypeConverterSupportedType(@SuppressWarnings("rawtypes") final Class<? extends TypeConverter> typeConverterClass) {
         for (final Type type : typeConverterClass.getGenericInterfaces()) {
             if (type instanceof ParameterizedType) {
                 final ParameterizedType pType = (ParameterizedType) type;
@@ -146,12 +153,6 @@ public class TypeConverterRegistry {
 
     private void registerTypeAlias(final Type knownType, final Type aliasType) {
         registry.putIfAbsent(aliasType, registry.get(knownType));
-    }
-
-    private <E extends Enum<E>> TypeConverter<? extends E> registerEnumType(final Class<E> type) {
-        final TypeConverter<E> converter = new EnumConverter<E>(type);
-        registry.putIfAbsent(type, converter);
-        return converter;
     }
 
 }
