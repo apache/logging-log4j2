@@ -68,6 +68,10 @@ public interface Appender extends LifeCycle {
      */
     boolean ignoreExceptions();
 
+    /**
+     * Gets the {@link ErrorHandler} used for handling exceptions.
+     * @return
+     */
     ErrorHandler getHandler();
 
     void setHandler(ErrorHandler handler);

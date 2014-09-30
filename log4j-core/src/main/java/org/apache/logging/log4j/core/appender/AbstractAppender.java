@@ -79,7 +79,7 @@ public abstract class AbstractAppender extends AbstractFilterable
     }
 
     /**
-     * Handle an error with a message.
+     * Handle an error with a message using the {@link ErrorHandler} configured for this Appender.
      * @param msg The message.
      */
     public void error(final String msg) {
@@ -87,7 +87,8 @@ public abstract class AbstractAppender extends AbstractFilterable
     }
 
     /**
-     * Handle an error with a message, and exception and a logging event.
+     * Handle an error with a message, exception, and a logging event, using the {@link ErrorHandler} configured for
+     * this Appender.
      * @param msg The message.
      * @param event The LogEvent.
      * @param t The Throwable.
@@ -97,7 +98,7 @@ public abstract class AbstractAppender extends AbstractFilterable
     }
 
     /**
-     * Handle an error with a message and an exception.
+     * Handle an error with a message and an exception using the {@link ErrorHandler} configured for this Appender.
      * @param msg The message.
      * @param t The Throwable.
      */
