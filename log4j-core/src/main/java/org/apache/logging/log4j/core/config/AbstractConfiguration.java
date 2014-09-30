@@ -333,7 +333,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         componentMap.putIfAbsent(name, obj);
     }
 
-    @SuppressWarnings("unchecked")
     protected void doConfigure() {
         if (rootNode.hasChildren() && rootNode.getChildren().get(0).getName().equalsIgnoreCase("Properties")) {
             final Node first = rootNode.getChildren().get(0);
@@ -342,7 +341,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 subst.setVariableResolver((StrLookup) first.getObject());
             }
         } else {
-            final Map<String, String> map = (Map<String, String>) componentMap.get(CONTEXT_PROPERTIES);
+            final Map<String, String> map = this.getComponent(CONTEXT_PROPERTIES);
             final StrLookup lookup = map == null ? null : new MapLookup(map);
             subst.setVariableResolver(new Interpolator(lookup, pluginPackages));
         }
@@ -361,11 +360,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 continue;
             }
             if (child.getName().equalsIgnoreCase("Appenders")) {
-                appenders = (ConcurrentMap<String, Appender>) child.getObject();
-            } else if (child.getObject() instanceof Filter) {
-                addFilter((Filter) child.getObject());
+                appenders = child.getObject();
+            } else if (child.isInstanceOf(Filter.class)) {
+                addFilter(child.getObject(Filter.class));
             } else if (child.getName().equalsIgnoreCase("Loggers")) {
-                final Loggers l = (Loggers) child.getObject();
+                final Loggers l = child.getObject();
                 loggers = l.getMap();
                 setLoggers = true;
                 if (l.getRoot() != null) {
@@ -373,10 +372,10 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                     setRoot = true;
                 }
             } else if (child.getName().equalsIgnoreCase("CustomLevels")) {
-                customLevels = ((CustomLevels) child.getObject()).getCustomLevels();
-            } else if (child.getObject() instanceof CustomLevelConfig) {
+                customLevels = child.getObject(CustomLevels.class).getCustomLevels();
+            } else if (child.isInstanceOf(CustomLevelConfig.class)) {
                 final List<CustomLevelConfig> copy = new ArrayList<CustomLevelConfig>(customLevels);
-                copy.add((CustomLevelConfig) child.getObject());
+                copy.add(child.getObject(CustomLevelConfig.class));
                 customLevels = copy;
             } else {
                 LOGGER.error("Unknown object \"{}\" of type {} is ignored.", child.getName(),

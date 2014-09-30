@@ -113,8 +113,32 @@ public class Node {
         object = obj;
     }
 
-    public Object getObject() {
-        return object;
+    @SuppressWarnings("unchecked")
+    public <T> T getObject() {
+        return (T) object;
+    }
+
+    /**
+     * Returns this node's object cast to the given class.
+     *
+     * @param clazz the class to cast this node's object to.
+     * @param <T>   the type to cast to.
+     * @return this node's object.
+     * @since 2.1
+     */
+    public <T> T getObject(final Class<T> clazz) {
+        return clazz.cast(object);
+    }
+
+    /**
+     * Determines if this node's object is an instance of the given class.
+     *
+     * @param clazz the class to check.
+     * @return {@code true} if this node's object is an instance of the given class.
+     * @since 2.1
+     */
+    public boolean isInstanceOf(final Class<?> clazz) {
+        return clazz.isInstance(object);
     }
 
     public PluginType<?> getType() {
