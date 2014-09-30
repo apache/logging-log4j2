@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration packages="org.apache.logging.log4j.test" status="debug" name="LoggerTest">
+<Configuration status="debug" name="LoggerTest">
   <properties>
     <property name="filename">target/test.log</property>
   </properties>
