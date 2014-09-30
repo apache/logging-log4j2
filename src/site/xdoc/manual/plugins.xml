@@ -186,17 +186,19 @@
           <a name="Lookups"/>
           <p>
             Lookups are perhaps the simplest plugins of all. They must declare their type as "Lookup" on the
-            plugin annotation and must implement the StrLookup interface. They will have two methods; a
+            plugin annotation and must implement the
+            <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/StrLookup.html">StrLookup</a>
+            interface. They will have two methods; a
             lookup method that accepts a String key and returns a String value and a second lookup method that
             accepts both a LogEvent and a String key and returns a String. Lookups may be referenced by
-            specifying ${<i>name</i>:key} where <i>name</i> is the name specified in the Plugin annotation and
+            specifying ${<var>name</var>:key} where <var>name</var> is the name specified in the Plugin annotation and
             key is the name of the item to locate.
           </p>
         </subsection>
         <subsection name="TypeConverters">
           <a name="TypeConverters"/>
           <p>
-            <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/config/plugins/convert/TypeConverter.html">TypeConverters</a>
+            <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/config/plugins/convert/TypeConverter.html">TypeConverter</a>s
             are a sort of meta-plugin used for converting strings into other types in a plugin factory method
             parameter. Other plugins can already be injected via the <code>@PluginElement</code> annotation; now, any
             type supported by the type conversion system can be used in a <code>@PluginAttribute</code> parameter.
