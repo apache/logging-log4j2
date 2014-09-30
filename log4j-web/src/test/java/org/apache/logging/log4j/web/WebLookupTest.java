@@ -79,7 +79,7 @@ public class WebLookupTest {
         servletContext.setInitParameter("myapp.logdir", "target");
         servletContext.setAttribute("Name1", "Ben");
         servletContext.setInitParameter("Name2", "Jerry");
-        servletContext.setInitParameter("log4jConfiguration", "log4j-webvar.xml");
+        servletContext.setInitParameter("log4jConfiguration", "WEB-INF/classes/log4j-webvar.xml");
         final Log4jWebLifeCycle initializer = WebLoggerContextUtils.getWebLifeCycle(servletContext);
         initializer.start();
         initializer.setLoggerContext();

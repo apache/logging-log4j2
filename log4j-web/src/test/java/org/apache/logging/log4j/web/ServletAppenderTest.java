@@ -34,7 +34,7 @@ import static org.junit.Assert.*;
  */
 public class ServletAppenderTest {
 
-    private static final String CONFIG = "log4j-servlet.xml";
+    private static final String CONFIG = "WEB-INF/classes/log4j-servlet.xml";
 
     @Test
     public void testAppender() throws Exception {
