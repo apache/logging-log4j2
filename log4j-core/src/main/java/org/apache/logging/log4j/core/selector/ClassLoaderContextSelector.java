@@ -47,9 +47,9 @@ public class ClassLoaderContextSelector implements ContextSelector {
 
     private static final AtomicReference<LoggerContext> CONTEXT = new AtomicReference<LoggerContext>();
 
-    private static final StatusLogger LOGGER = StatusLogger.getLogger();
+    protected static final StatusLogger LOGGER = StatusLogger.getLogger();
 
-    private static final ConcurrentMap<String, AtomicReference<WeakReference<LoggerContext>>> CONTEXT_MAP =
+    protected static final ConcurrentMap<String, AtomicReference<WeakReference<LoggerContext>>> CONTEXT_MAP =
         new ConcurrentHashMap<String, AtomicReference<WeakReference<LoggerContext>>>();
 
     @Override
@@ -168,7 +168,7 @@ public class ClassLoaderContextSelector implements ContextSelector {
         return ctx;
     }
 
-    private LoggerContext getDefault() {
+    protected LoggerContext getDefault() {
         final LoggerContext ctx = CONTEXT.get();
         if (ctx != null) {
             return ctx;
