@@ -368,13 +368,11 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      * @return The previous Configuration.
      */
     private synchronized Configuration setConfiguration(final Configuration config) {
-        if (config == null) {
-            throw new NullPointerException("No Configuration was provided");
-        }
+        Assert.requireNonNull(config, "No Configuration was provided");
         final Configuration prev = this.config;
         config.addListener(this);
         final ConcurrentMap<String, String> map = config.getComponent(Configuration.CONTEXT_PROPERTIES);
-        
+
         try { // LOG4J2-719 network access may throw android.os.NetworkOnMainThreadException
             map.putIfAbsent("hostName", NetUtils.getLocalHostname());
         } catch (final Exception ex) {
@@ -394,7 +392,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
 
         try {
             Server.reregisterMBeansAfterReconfigure();
-        } catch (final Throwable t) { 
+        } catch (final Throwable t) {
             // LOG4J2-716: Android has no java.lang.management
             LOGGER.error("Could not reconfigure JMX", t);
         }
@@ -417,8 +415,8 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
 
     /**
      * Returns the initial configuration location or {@code null}. The returned value may not be the location of the
-     * current configuration. Use 
-     * {@link #getConfiguration()}.{@link Configuration#getConfigurationSource() getConfigurationSource()}.{@link 
+     * current configuration. Use
+     * {@link #getConfiguration()}.{@link Configuration#getConfigurationSource() getConfigurationSource()}.{@link
      * ConfigurationSource#getLocation() getLocation()} to get the actual source of the current configuration.
      * @return the initial configuration location or {@code null}
      */
