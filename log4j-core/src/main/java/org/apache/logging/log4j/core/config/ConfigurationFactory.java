@@ -254,17 +254,9 @@ public abstract class ConfigurationFactory {
                 LOGGER.error("Cannot locate file {}", configLocation.getPath(), ex);
             }
         }
-        final String scheme = configLocation.getScheme();
-        final boolean isClassLoaderScheme = scheme != null && scheme.equals(CLASS_LOADER_SCHEME);
-        final boolean isClassPathScheme = scheme != null && !isClassLoaderScheme && scheme.equals(CLASS_PATH_SCHEME);
-        if (scheme == null || isClassLoaderScheme || isClassPathScheme) {
+        if (isClassLoaderUri(configLocation)) {
             final ClassLoader loader = LoaderUtil.getThreadContextClassLoader();
-            String path;
-            if (isClassLoaderScheme || isClassPathScheme) {
-                path = configLocation.getSchemeSpecificPart();
-            } else {
-                path = configLocation.getPath();
-            }
+            final String path = extractClassLoaderUriPath(configLocation);
             final ConfigurationSource source = getInputFromResource(path, loader);
             if (source != null) {
                 return source;
@@ -282,6 +274,15 @@ public abstract class ConfigurationFactory {
             LOGGER.error("Unable to access {}", configLocation.toString(), ex);
         }
         return null;
+    }
+
+    private static boolean isClassLoaderUri(final URI uri) {
+        final String scheme = uri.getScheme();
+        return scheme == null || scheme.equals(CLASS_LOADER_SCHEME) || scheme.equals(CLASS_PATH_SCHEME);
+    }
+
+    private static String extractClassLoaderUriPath(final URI uri) {
+        return uri.getScheme() == null ? uri.getPath() : uri.getSchemeSpecificPart();
     }
 
     /**
