@@ -21,7 +21,9 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.util.PluginRegistry;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -40,6 +42,10 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
 
     @Override
     public void start(final BundleContext context) throws Exception {
+        // allow the user to override the default ContextSelector (e.g., by using BasicContextSelector for a global cfg)
+        if (PropertiesUtil.getProperties().getStringProperty(Constants.LOG4J_CONTEXT_SELECTOR) == null) {
+            System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, BundleContextSelector.class.getName());
+        }
         if (this.context.compareAndSet(null, context)) {
             context.addBundleListener(this);
             // done after the BundleListener as to not miss any new bundle installs in the interim
