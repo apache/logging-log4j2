@@ -241,6 +241,36 @@ public abstract class ConfigurationFactory {
     }
 
     /**
+     * Returns the Configuration obtained using a given ClassLoader.
+     *
+     * @param name The configuration name.
+     * @param configLocation A URI representing the location of the configuration.
+     * @param loader The default ClassLoader to use. If this is {@code null}, then the
+     *               {@linkplain LoaderUtil#getThreadContextClassLoader() default ClassLoader} will be used.
+     * @return The Configuration.
+     * @since 2.1
+     */
+    public Configuration getConfiguration(final String name, final URI configLocation, final ClassLoader loader) {
+        if (!isActive()) {
+            return null;
+        }
+        if (loader == null) {
+            return getConfiguration(name, configLocation);
+        }
+        if (isClassLoaderUri(configLocation)) {
+            final String path = extractClassLoaderUriPath(configLocation);
+            final ConfigurationSource source = getInputFromResource(path, loader);
+            if (source != null) {
+                final Configuration configuration = getConfiguration(source);
+                if (configuration != null) {
+                    return configuration;
+                }
+            }
+        }
+        return getConfiguration(name, configLocation);
+    }
+
+    /**
      * Load the configuration from a URI.
      * @param configLocation A URI representing the location of the configuration.
      * @return The ConfigurationSource for the configuration.
