@@ -146,7 +146,7 @@ public class MyApp {
     public String doQuery(String table) {
         logger.entry(param);
 
-        logger.debug(QUERY_MARKER, new SQLMessage(SQLMessage.SQLType.QUERY, table);
+        logger.debug(QUERY_MARKER, new SQLMessage(SQLMessage.SQLType.QUERY, table));
 
         return logger.exit();
     }

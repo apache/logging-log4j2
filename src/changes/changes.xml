@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.1" date="2014-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-866" dev="rpopma" type="fix" due-to="Gerard Weatherby">
+        Documentation: fixed missing closing parenthesis in code example.
+      </action>
       <action issue="LOG4J2-862" dev="mattsicker" type="fix" due-to="Michael Sutherland">
         Fixed classloader issue that prevented Log4j from finding the implementation when used in a custom Ant task.
       </action>
