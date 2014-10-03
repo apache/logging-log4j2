@@ -30,9 +30,12 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
 import org.apache.logging.log4j.spi.ThreadContextStack;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import static org.apache.logging.log4j.junit.MapMatchers.hasSize;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.junit.Assert.*;
 
 
 public class MapRewritePolicyTest {
@@ -66,7 +69,7 @@ public class MapRewritePolicyTest {
         final MapRewritePolicy addPolicy = MapRewritePolicy.createPolicy("Add", rewrite);
         LogEvent rewritten = addPolicy.rewrite(logEvent0);
         compareLogEvents(logEvent0, rewritten);
-        Assert.assertEquals("Simple log message changed", logEvent0.getMessage(), rewritten.getMessage());
+        assertEquals("Simple log message changed", logEvent0.getMessage(), rewritten.getMessage());
 
         rewritten = addPolicy.rewrite(logEvent1);
         compareLogEvents(logEvent1, rewritten);
@@ -86,7 +89,7 @@ public class MapRewritePolicyTest {
         final MapRewritePolicy updatePolicy = MapRewritePolicy.createPolicy("Update", rewrite);
         LogEvent rewritten = updatePolicy.rewrite(logEvent0);
         compareLogEvents(logEvent0, rewritten);
-        Assert.assertEquals("Simple log message changed", logEvent0.getMessage(), rewritten.getMessage());
+        assertEquals("Simple log message changed", logEvent0.getMessage(), rewritten.getMessage());
 
         rewritten = updatePolicy.rewrite(logEvent1);
         compareLogEvents(logEvent1, rewritten);
@@ -106,7 +109,7 @@ public class MapRewritePolicyTest {
         final MapRewritePolicy addPolicy = MapRewritePolicy.createPolicy(null, rewrite);
         LogEvent rewritten = addPolicy.rewrite(logEvent0);
         compareLogEvents(logEvent0, rewritten);
-        Assert.assertEquals("Simple log message changed", logEvent0.getMessage(), rewritten.getMessage());
+        assertEquals("Simple log message changed", logEvent0.getMessage(), rewritten.getMessage());
 
         rewritten = addPolicy.rewrite(logEvent1);
         compareLogEvents(logEvent1, rewritten);
@@ -122,34 +125,32 @@ public class MapRewritePolicyTest {
     }
 
     private void checkAdded(final Map<String, String> addedMap) {
-        Assert.assertEquals("unwanted entry change", "one", addedMap.get("test1"));
-        Assert.assertEquals("existing entry not updated", "2", addedMap.get("test2"));
-        Assert.assertEquals("new entry not added", "three", addedMap.get("test3"));
-        Assert.assertEquals("wrong size", 3, addedMap.size());
+        assertThat("unwanted entry change", addedMap, hasEntry("test1", "one"));
+        assertThat("existing entry not updated", addedMap, hasEntry("test2", "2"));
+        assertThat("new entry not added", addedMap, hasEntry("test3", "three"));
+        assertThat("wrong size", addedMap, hasSize(3));
     }
 
     private void checkUpdated(final Map<String, String> updatedMap) {
-        Assert.assertEquals("unwanted entry change", "one", updatedMap.get("test1"));
-        Assert.assertEquals("existing entry not updated", "2", updatedMap.get("test2"));
-        Assert.assertEquals("wrong size", 2, updatedMap.size());
+        assertThat("unwanted entry change", updatedMap, hasEntry("test1", "one"));
+        assertThat("existing entry not updated", updatedMap, hasEntry("test2", "2"));
+        assertThat("wrong size", updatedMap, hasSize(2));
     }
 
     private void compareLogEvents(final LogEvent orig, final LogEvent changed) {
         // Ensure that everything but the Mapped Data is still the same
-        Assert.assertEquals("LoggerName changed", orig.getLoggerName(), changed.getLoggerName());
-        Assert.assertEquals("Marker changed", orig.getMarker(), changed.getMarker());
-        Assert.assertEquals("FQCN changed", orig.getLoggerFqcn(), changed.getLoggerFqcn());
-        Assert.assertEquals("Level changed", orig.getLevel(), changed.getLevel());
-        Assert.assertArrayEquals("Throwable changed", orig.getThrown() == null //
-                ? null //
-                : ((Log4jLogEvent) orig).getThrownProxy().getExtendedStackTrace(), //
-                changed.getThrown() == null //
-                        ? null //
-                        : ((Log4jLogEvent) changed).getThrownProxy().getExtendedStackTrace());
-        Assert.assertEquals("ContextMap changed", orig.getContextMap(), changed.getContextMap());
-        Assert.assertEquals("ContextStack changed", orig.getContextStack(), changed.getContextStack());
-        Assert.assertEquals("ThreadName changed", orig.getThreadName(), changed.getThreadName());
-        Assert.assertEquals("Source changed", orig.getSource(), changed.getSource());
-        Assert.assertEquals("Millis changed", orig.getTimeMillis(), changed.getTimeMillis());
+        assertEquals("LoggerName changed", orig.getLoggerName(), changed.getLoggerName());
+        assertEquals("Marker changed", orig.getMarker(), changed.getMarker());
+        assertEquals("FQCN changed", orig.getLoggerFqcn(), changed.getLoggerFqcn());
+        assertEquals("Level changed", orig.getLevel(), changed.getLevel());
+        assertArrayEquals("Throwable changed",
+            orig.getThrown() == null ? null : orig.getThrownProxy().getExtendedStackTrace(),
+            changed.getThrown() == null ? null : changed.getThrownProxy().getExtendedStackTrace()
+        );
+        assertEquals("ContextMap changed", orig.getContextMap(), changed.getContextMap());
+        assertEquals("ContextStack changed", orig.getContextStack(), changed.getContextStack());
+        assertEquals("ThreadName changed", orig.getThreadName(), changed.getThreadName());
+        assertEquals("Source changed", orig.getSource(), changed.getSource());
+        assertEquals("Millis changed", orig.getTimeMillis(), changed.getTimeMillis());
     }
 }
