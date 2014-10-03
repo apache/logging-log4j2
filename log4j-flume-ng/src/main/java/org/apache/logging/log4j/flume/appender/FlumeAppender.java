@@ -142,7 +142,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
      *                          1000.
      * @param requestTimeout The amount of time in milliseconds to wait before a request times out. Minimum is 1000.
      * @param agentRetries The number of times to retry an agent before failing to the next agent.
-     * @param maxDelay The maximum number of seconds to wait for a complete batch.
+     * @param maxDelayMillis The maximum number of seconds to wait for a complete batch.
      * @param name The name of the Appender.
      * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
      *               they are propagated to the caller.
@@ -169,7 +169,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
                                                @PluginAttribute("connectTimeout") final String connectionTimeout,
                                                @PluginAttribute("requestTimeout") final String requestTimeout,
                                                @PluginAttribute("agentRetries") final String agentRetries,
-                                               @PluginAttribute("maxDelay") final String maxDelay,
+                                               @PluginAttribute("maxDelay") final String maxDelayMillis,
                                                @PluginAttribute("name") final String name,
                                                @PluginAttribute("ignoreExceptions") final String ignore,
                                                @PluginAttribute("mdcExcludes") final String excludes,
@@ -218,7 +218,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
         final int reqTimeout = Integers.parseInt(requestTimeout, 0);
         final int retries = Integers.parseInt(agentRetries, 0);
         final int lockTimeoutRetryCount = Integers.parseInt(lockTimeoutRetries, DEFAULT_LOCK_TIMEOUT_RETRY_COUNT);
-        final int delay = Integers.parseInt(maxDelay, DEFAULT_MAX_DELAY);
+        final int delayMillis = Integers.parseInt(maxDelayMillis, DEFAULT_MAX_DELAY);
 
         if (layout == null) {
             final int enterpriseNumber = Rfc5424Layout.DEFAULT_ENTERPRISE_NUMBER;
@@ -251,7 +251,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
                     agents = new Agent[] {Agent.createAgent(null, null)};
                 }
                 manager = FlumePersistentManager.getManager(name, agents, properties, batchCount, retries,
-                    connectTimeout, reqTimeout, delay, lockTimeoutRetryCount, dataDir);
+                    connectTimeout, reqTimeout, delayMillis, lockTimeoutRetryCount, dataDir);
                 break;
             default:
                 LOGGER.debug("No manager type specified. Defaulting to AVRO");
