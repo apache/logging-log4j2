@@ -26,6 +26,18 @@ import org.apache.logging.log4j.core.util.Assert;
  * @since 2.1
  */
 public class OrderComparator implements Comparator<Class<?>> {
+
+    private static final Comparator<Class<?>> INSTANCE = new OrderComparator();
+
+    /**
+     * Returns a singleton instance of this class.
+     *
+     * @return the singleton for this class.
+     */
+    public static Comparator<Class<?>> getInstance() {
+        return INSTANCE;
+    }
+
     @Override
     public int compare(final Class<?> lhs, final Class<?> rhs) {
         final Order lhsOrder = Assert.requireNonNull(lhs, "lhs").getAnnotation(Order.class);
