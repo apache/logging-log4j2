@@ -30,7 +30,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -140,22 +139,18 @@ public abstract class ConfigurationFactory {
                     final PluginManager manager = new PluginManager(CATEGORY);
                     manager.collectPlugins();
                     final Map<String, PluginType<?>> plugins = manager.getPlugins();
-                    final Collection<WeightedFactory> ordered = new TreeSet<WeightedFactory>();
+                    final List<Class<? extends ConfigurationFactory>> ordered =
+                        new ArrayList<Class<? extends ConfigurationFactory>>(plugins.size());
                     for (final PluginType<?> type : plugins.values()) {
                         try {
-                            final Class<? extends ConfigurationFactory> clazz = type.getPluginClass().asSubclass(
-                                ConfigurationFactory.class);
-                            final Order order = clazz.getAnnotation(Order.class);
-                            if (order != null) {
-                                final int weight = order.value();
-                                ordered.add(new WeightedFactory(weight, clazz));
-                            }
+                            ordered.add(type.getPluginClass().asSubclass(ConfigurationFactory.class));
                         } catch (final Exception ex) {
                             LOGGER.warn("Unable to add class {}", type.getPluginClass(), ex);
                         }
                     }
-                    for (final WeightedFactory wf : ordered) {
-                        addFactory(list, wf.factoryClass);
+                    Collections.sort(ordered, OrderComparator.getInstance());
+                    for (Class<? extends ConfigurationFactory> clazz : ordered) {
+                        addFactory(list, clazz);
                     }
                     // see above comments about double-checked locking
                     //noinspection NonThreadSafeLazyInitialization
@@ -371,36 +366,6 @@ public abstract class ConfigurationFactory {
             }
         }
         return new ConfigurationSource(is, url);
-    }
-
-    /**
-     * Factory that chooses a ConfigurationFactory based on weighting.
-     */
-    private static class WeightedFactory implements Comparable<WeightedFactory> {
-        private final int weight;
-        private final Class<? extends ConfigurationFactory> factoryClass;
-
-        /**
-         * Constructor.
-         * @param weight The weight.
-         * @param clazz The class.
-         */
-        public WeightedFactory(final int weight, final Class<? extends ConfigurationFactory> clazz) {
-            this.weight = weight;
-            this.factoryClass = clazz;
-        }
-
-        @Override
-        public int compareTo(final WeightedFactory wf) {
-            final int w = wf.weight;
-            if (weight == w) {
-                return 0;
-            } else if (weight > w) {
-                return -1;
-            } else {
-                return 1;
-            }
-        }
     }
 
     /**
