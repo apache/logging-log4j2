@@ -451,7 +451,7 @@
               <td>When set to true the message body will be compressed using gzip</td>
             </tr>
             <tr>
-              <td>connectTimeout</td>
+              <td>connectTimeoutMillis</td>
               <td>integer</td>
               <td>The number of milliseconds Flume will wait before timing out the connection.</td>
             </tr>
@@ -540,7 +540,7 @@
               </td>
             </tr>
             <tr>
-              <td>requestTimeout</td>
+              <td>requestTimeoutMillis</td>
               <td>integer</td>
               <td>The number of milliseconds Flume will wait before timing out the request.</td>
             </tr>

@@ -139,9 +139,9 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
      * <b>Note: </b><i>The embedded attribute is deprecated in favor of specifying the type attribute.</i>
      * @param type Avro (default), Embedded, or Persistent.
      * @param dataDir The directory where the Flume FileChannel should write its data.
-     * @param connectionTimeout The amount of time in milliseconds to wait before a connection times out. Minimum is
+     * @param connectionTimeoutMillis The amount of time in milliseconds to wait before a connection times out. Minimum is
      *                          1000.
-     * @param requestTimeout The amount of time in milliseconds to wait before a request times out. Minimum is 1000.
+     * @param requestTimeoutMillis The amount of time in milliseconds to wait before a request times out. Minimum is 1000.
      * @param agentRetries The number of times to retry an agent before failing to the next agent.
      * @param maxDelayMillis The maximum number of milliseconds to wait for a complete batch.
      * @param name The name of the Appender.
@@ -167,8 +167,10 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
                                                @PluginAttribute("embedded") final String embedded,
                                                @PluginAttribute("type") final String type,
                                                @PluginAttribute("dataDir") final String dataDir,
-                                               @PluginAttribute("connectTimeout") final String connectionTimeout,
-                                               @PluginAttribute("requestTimeout") final String requestTimeout,
+                                               @PluginAliases("connectTimeout")
+                                               @PluginAttribute("connectTimeoutMillis") final String connectionTimeoutMillis,
+                                               @PluginAliases("requestTimeout")
+                                               @PluginAttribute("requestTimeoutMillis") final String requestTimeoutMillis,
                                                @PluginAttribute("agentRetries") final String agentRetries,
                                                @PluginAliases("maxDelay") // deprecated
                                                @PluginAttribute("maxDelayMillis") final String maxDelayMillis,
@@ -216,8 +218,8 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
         }
 
         final int batchCount = Integers.parseInt(batchSize, 1);
-        final int connectTimeout = Integers.parseInt(connectionTimeout, 0);
-        final int reqTimeout = Integers.parseInt(requestTimeout, 0);
+        final int connectTimeoutMillis = Integers.parseInt(connectionTimeoutMillis, 0);
+        final int reqTimeoutMillis = Integers.parseInt(requestTimeoutMillis, 0);
         final int retries = Integers.parseInt(agentRetries, 0);
         final int lockTimeoutRetryCount = Integers.parseInt(lockTimeoutRetries, DEFAULT_LOCK_TIMEOUT_RETRY_COUNT);
         final int delayMillis = Integers.parseInt(maxDelayMillis, DEFAULT_MAX_DELAY);
@@ -245,7 +247,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
                     LOGGER.debug("No agents provided, using defaults");
                     agents = new Agent[] {Agent.createAgent(null, null)};
                 }
-                manager = FlumeAvroManager.getManager(name, agents, batchCount, retries, connectTimeout, reqTimeout);
+                manager = FlumeAvroManager.getManager(name, agents, batchCount, retries, connectTimeoutMillis, reqTimeoutMillis);
                 break;
             case PERSISTENT:
                 if (agents == null || agents.length == 0) {
@@ -253,7 +255,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
                     agents = new Agent[] {Agent.createAgent(null, null)};
                 }
                 manager = FlumePersistentManager.getManager(name, agents, properties, batchCount, retries,
-                    connectTimeout, reqTimeout, delayMillis, lockTimeoutRetryCount, dataDir);
+                    connectTimeoutMillis, reqTimeoutMillis, delayMillis, lockTimeoutRetryCount, dataDir);
                 break;
             default:
                 LOGGER.debug("No manager type specified. Defaulting to AVRO");
@@ -261,7 +263,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
                     LOGGER.debug("No agents provided, using defaults");
                     agents = new Agent[] {Agent.createAgent(null, null)};
                 }
-                manager = FlumeAvroManager.getManager(name, agents, batchCount, retries, connectTimeout, reqTimeout);
+                manager = FlumeAvroManager.getManager(name, agents, batchCount, retries, connectTimeoutMillis, reqTimeoutMillis);
         }
 
         if (manager == null) {
