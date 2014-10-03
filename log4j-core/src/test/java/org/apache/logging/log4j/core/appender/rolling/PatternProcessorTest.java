@@ -40,12 +40,12 @@ public class PatternProcessorTest {
     public void testGetNextTimeMonthlyReturnsFirstDayOfNextMonth() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM}.log.gz");
         final Calendar initial = Calendar.getInstance();
-        initial.set(2014, 9, 15, 10, 31, 59); // Oct 15th
+        initial.set(2014, Calendar.OCTOBER, 15, 10, 31, 59); // Oct 15th
         final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
 
         // We expect 1st day of next month
         final Calendar expected = Calendar.getInstance();
-        expected.set(2014, 10, 1, 0, 0, 00);
+        expected.set(2014, Calendar.NOVEMBER, 1, 00, 00, 00);
         expected.set(Calendar.MILLISECOND, 0);
         assertEquals(format(expected.getTimeInMillis()), format(actual));
     }
@@ -54,12 +54,12 @@ public class PatternProcessorTest {
     public void testGetNextTimeMonthlyReturnsFirstDayOfNextMonth2() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM}.log.gz");
         final Calendar initial = Calendar.getInstance();
-        initial.set(2014, 0, 31, 10, 31, 59); // 2014 Jan 31st
+        initial.set(2014, Calendar.JANUARY, 31, 10, 31, 59); // 2014 Jan 31st
         final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
 
         // Expect 1st of next month: 2014 Feb 1st
         final Calendar expected = Calendar.getInstance();
-        expected.set(2014, 1, 1, 0, 0, 00);
+        expected.set(2014, Calendar.FEBRUARY, 1, 00, 00, 00);
         expected.set(Calendar.MILLISECOND, 0);
         assertEquals(format(expected.getTimeInMillis()), format(actual));
     }
@@ -68,12 +68,12 @@ public class PatternProcessorTest {
     public void testGetNextTimeMonthlyReturnsFirstDayOfNextMonth3() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM}.log.gz");
         final Calendar initial = Calendar.getInstance();
-        initial.set(2014, 11, 31, 10, 31, 59); // 2014 Dec 31st
+        initial.set(2014, Calendar.DECEMBER, 31, 10, 31, 59); // 2014 Dec 31st
         final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
 
         // Expect 1st of next month: 2015 Jan 1st
         final Calendar expected = Calendar.getInstance();
-        expected.set(2015, 0, 1, 0, 0, 00);
+        expected.set(2015, Calendar.JANUARY, 1, 00, 00, 00);
         expected.set(Calendar.MILLISECOND, 0);
         assertEquals(format(expected.getTimeInMillis()), format(actual));
     }
@@ -86,12 +86,12 @@ public class PatternProcessorTest {
         try {
             final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-W}.log.gz");
             final Calendar initial = Calendar.getInstance();
-            initial.set(2014, 2, 4, 10, 31, 59); // Tue, March 4, 2014
+            initial.set(2014, Calendar.MARCH, 4, 10, 31, 59); // Tue, March 4, 2014
             final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
 
             // expect Sunday, March 9, 2014
             final Calendar expected = Calendar.getInstance();
-            expected.set(2014, 2, 9, 0, 0, 00);
+            expected.set(2014, Calendar.MARCH, 9, 00, 00, 00);
             expected.set(Calendar.MILLISECOND, 0);
             assertEquals(format(expected.getTimeInMillis()), format(actual));
         } finally {
@@ -107,12 +107,12 @@ public class PatternProcessorTest {
         try {
             final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-W}.log.gz");
             final Calendar initial = Calendar.getInstance();
-            initial.set(2014, 2, 4, 10, 31, 59); // Tue, March 4, 2014
+            initial.set(2014, Calendar.MARCH, 4, 10, 31, 59); // Tue, March 4, 2014
             final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
 
             // expect Monday, March 10, 2014
             final Calendar expected = Calendar.getInstance();
-            expected.set(2014, 2, 10, 0, 0, 00);
+            expected.set(2014, Calendar.MARCH, 10, 00, 00, 00);
             expected.set(Calendar.MILLISECOND, 0);
             assertEquals(format(expected.getTimeInMillis()), format(actual));
         } finally {
@@ -124,12 +124,12 @@ public class PatternProcessorTest {
     public void testGetNextTimeHourlyReturnsFirstMinuteOfNextHour() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH}.log.gz");
         final Calendar initial = Calendar.getInstance();
-        initial.set(2014, 2, 4, 10, 31, 59); // Tue, March 4, 2014, 10:31
+        initial.set(2014, Calendar.MARCH, 4, 10, 31, 59); // Tue, March 4, 2014, 10:31
         final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
 
         // expect Wed, March 4, 2014, 11:00
         final Calendar expected = Calendar.getInstance();
-        expected.set(2014, 2, 4, 11, 00, 00);
+        expected.set(2014, Calendar.MARCH, 4, 11, 00, 00);
         expected.set(Calendar.MILLISECOND, 0);
         assertEquals(format(expected.getTimeInMillis()), format(actual));
     }
@@ -138,12 +138,12 @@ public class PatternProcessorTest {
     public void testGetNextTimeHourlyReturnsFirstMinuteOfNextHour2() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH}.log.gz");
         final Calendar initial = Calendar.getInstance();
-        initial.set(2014, 2, 4, 23, 31, 59); // Tue, March 4, 2014, 23:31
+        initial.set(2014, Calendar.MARCH, 4, 23, 31, 59); // Tue, March 4, 2014, 23:31
         final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
 
         // expect Wed, March 5, 2014, 00:00
         final Calendar expected = Calendar.getInstance();
-        expected.set(2014, 2, 5, 00, 00, 00);
+        expected.set(2014, Calendar.MARCH, 5, 00, 00, 00);
         expected.set(Calendar.MILLISECOND, 0);
         assertEquals(format(expected.getTimeInMillis()), format(actual));
     }
@@ -152,14 +152,14 @@ public class PatternProcessorTest {
     public void testGetNextTimeMinutelyReturnsFirstSecondOfNextMinute() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH-mm}.log.gz");
         final Calendar initial = Calendar.getInstance();
-        initial.set(2014, 2, 4, 10, 31, 59); // Tue, March 4, 2014, 10:31
+        initial.set(2014, Calendar.MARCH, 4, 10, 31, 59); // Tue, March 4, 2014, 10:31
         initial.set(Calendar.MILLISECOND, 0);
         assertEquals("2014/03/04 10:31:59.000", format(initial.getTimeInMillis()));
         final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
 
         // expect Tue, March 4, 2014, 10:32
         final Calendar expected = Calendar.getInstance();
-        expected.set(2014, 2, 4, 10, 32, 00);
+        expected.set(2014, Calendar.MARCH, 4, 10, 32, 00);
         expected.set(Calendar.MILLISECOND, 0);
         assertEquals(format(expected.getTimeInMillis()), format(actual));
     }
@@ -168,14 +168,14 @@ public class PatternProcessorTest {
     public void testGetNextTimeSecondlyReturnsFirstMillisecOfNextSecond() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH-mm-ss}.log.gz");
         final Calendar initial = Calendar.getInstance();
-        initial.set(2014, 2, 4, 10, 31, 53); // Tue, March 4, 2014, 10:31:53
+        initial.set(2014, Calendar.MARCH, 4, 10, 31, 53); // Tue, March 4, 2014, 10:31:53
         initial.set(Calendar.MILLISECOND, 123);
         assertEquals("2014/03/04 10:31:53.123", format(initial.getTimeInMillis()));
         final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
 
         // expect Tue, March 4, 2014, 10:31:54
         final Calendar expected = Calendar.getInstance();
-        expected.set(2014, 2, 4, 10, 31, 54);
+        expected.set(2014, Calendar.MARCH, 4, 10, 31, 54);
         expected.set(Calendar.MILLISECOND, 0);
         assertEquals(format(expected.getTimeInMillis()), format(actual));
     }
@@ -184,18 +184,18 @@ public class PatternProcessorTest {
     public void testGetNextTimeMillisecondlyReturnsNextMillisec() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH-mm-ss.SSS}.log.gz");
         final Calendar initial = Calendar.getInstance();
-        initial.set(2014, 2, 4, 10, 31, 53); // Tue, March 4, 2014, 10:31:53.123
+        initial.set(2014, Calendar.MARCH, 4, 10, 31, 53); // Tue, March 4, 2014, 10:31:53.123
         initial.set(Calendar.MILLISECOND, 123);
         assertEquals("2014/03/04 10:31:53.123", format(initial.getTimeInMillis()));
         final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
 
         // expect Tue, March 4, 2014, 10:31:53.124
         final Calendar expected = Calendar.getInstance();
-        expected.set(2014, 2, 4, 10, 31, 53);
+        expected.set(2014, Calendar.MARCH, 4, 10, 31, 53);
         expected.set(Calendar.MILLISECOND, 124);
         assertEquals(format(expected.getTimeInMillis()), format(actual));
     }
-    
+
     @Test
     public void testDontInterpretBackslashAsEscape() {
         final PatternProcessor pp = new PatternProcessor("c:\\test\\new/app-%d{HH-mm-ss}.log");
