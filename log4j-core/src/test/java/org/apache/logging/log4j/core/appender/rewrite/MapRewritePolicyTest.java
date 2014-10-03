@@ -48,20 +48,20 @@ public class MapRewritePolicyTest {
         map.put("test1", "one");
         map.put("test2", "two");
         logEvent0 = new Log4jLogEvent("test", null, "MapRewritePolicyTest.setupClass()", Level.ERROR,
-        new SimpleMessage("Test"), new RuntimeException("test"), map, null, "none",
-        new StackTraceElement("MapRewritePolicyTest", "setupClass", "MapRewritePolicyTest", 28), 2);
+            new SimpleMessage("Test"), new RuntimeException("test"), map, null, "none",
+            new StackTraceElement("MapRewritePolicyTest", "setupClass", "MapRewritePolicyTest", 28), 2);
         logEvent1 = new Log4jLogEvent("test", null, "MapRewritePolicyTest.setupClass()", Level.ERROR,
-        new MapMessage(map), null, map, null, "none",
-        new StackTraceElement("MapRewritePolicyTest", "setupClass", "MapRewritePolicyTest", 29), 2);
-    final ThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>(map.values()));
+            new MapMessage(map), null, map, null, "none",
+            new StackTraceElement("MapRewritePolicyTest", "setupClass", "MapRewritePolicyTest", 29), 2);
+        final ThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>(map.values()));
         logEvent2 = new Log4jLogEvent("test", MarkerManager.getMarker("test"), "MapRewritePolicyTest.setupClass()",
-        Level.TRACE, new StructuredDataMessage("test", "Nothing", "test", map), new RuntimeException("test"), null,
-        stack, "none", new StackTraceElement("MapRewritePolicyTest",
-        "setupClass", "MapRewritePolicyTest", 30), 20000000);
+            Level.TRACE, new StructuredDataMessage("test", "Nothing", "test", map), new RuntimeException("test"), null,
+            stack, "none", new StackTraceElement("MapRewritePolicyTest",
+            "setupClass", "MapRewritePolicyTest", 30), 20000000);
         logEvent3 = new Log4jLogEvent("test", null, "MapRewritePolicyTest.setupClass()", Level.ALL, new MapMessage(map),
-        null, map, stack, null, new StackTraceElement("MapRewritePolicyTest",
-        "setupClass", "MapRewritePolicyTest", 31), Long.MAX_VALUE);
-        rewrite = new KeyValuePair[] {new KeyValuePair("test2", "2"), new KeyValuePair("test3", "three")};
+            null, map, stack, null, new StackTraceElement("MapRewritePolicyTest",
+            "setupClass", "MapRewritePolicyTest", 31), Long.MAX_VALUE);
+        rewrite = new KeyValuePair[]{new KeyValuePair("test2", "2"), new KeyValuePair("test3", "three")};
     }
 
     @Test
