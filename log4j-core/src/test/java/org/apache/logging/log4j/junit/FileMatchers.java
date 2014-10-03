@@ -20,20 +20,21 @@ import java.io.File;
 
 import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;
-import org.hamcrest.core.Is;
+
+import static org.hamcrest.core.Is.is;
 
 /**
  * Hamcrest Matchers that operate on File objects.
  *
  * @since 2.1
  */
-public class FileMatchers {
+public final class FileMatchers {
 
     /**
      * Returns a File Matcher that matches if the File exists.
      */
     public static Matcher<File> exists() {
-        return new FeatureMatcher<File, Boolean>(Is.is(true), "file exists", "file exists") {
+        return new FeatureMatcher<File, Boolean>(is(true), "file exists", "file exists") {
             @Override
             protected Boolean featureValueOf(final File actual) {
                 return actual.exists();
@@ -53,6 +54,9 @@ public class FileMatchers {
                 return actual.length();
             }
         };
+    }
+
+    private FileMatchers() {
     }
 
 }
