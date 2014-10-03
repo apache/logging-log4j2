@@ -41,7 +41,7 @@ public class TcpSocketManager extends AbstractSocketManager {
     /**
       The default reconnection delay (30000 milliseconds or 30 seconds).
      */
-    public static final int DEFAULT_RECONNECTION_DELAY   = 30000;
+    public static final int DEFAULT_RECONNECTION_DELAY_MILLIS   = 30000;
     /**
       The default port number of remote logging server (4560).
      */
@@ -91,10 +91,10 @@ public class TcpSocketManager extends AbstractSocketManager {
      * Obtain a TcpSocketManager.
      * @param host The host to connect to.
      * @param port The port on the host.
-     * @param delay The interval to pause between retries.
+     * @param delayMillis The interval to pause between retries.
      * @return A TcpSocketManager.
      */
-    public static TcpSocketManager getSocketManager(final String host, int port, int delay,
+    public static TcpSocketManager getSocketManager(final String host, int port, int delayMillis,
                                                     final boolean immediateFail, final Layout<? extends Serializable> layout ) {
         if (Strings.isEmpty(host)) {
             throw new IllegalArgumentException("A host name is required");
@@ -102,11 +102,11 @@ public class TcpSocketManager extends AbstractSocketManager {
         if (port <= 0) {
             port = DEFAULT_PORT;
         }
-        if (delay == 0) {
-            delay = DEFAULT_RECONNECTION_DELAY;
+        if (delayMillis == 0) {
+            delayMillis = DEFAULT_RECONNECTION_DELAY_MILLIS;
         }
         return (TcpSocketManager) getManager("TCP:" + host + ':' + port,
-            new FactoryData(host, port, delay, immediateFail, layout), FACTORY);
+            new FactoryData(host, port, delayMillis, immediateFail, layout), FACTORY);
     }
 
     @Override
@@ -237,15 +237,15 @@ public class TcpSocketManager extends AbstractSocketManager {
     private static class FactoryData {
         private final String host;
         private final int port;
-        private final int delay;
+        private final int delayMillis;
         private final boolean immediateFail;
         private final Layout<? extends Serializable> layout;
 
-        public FactoryData(final String host, final int port, final int delay, final boolean immediateFail,
+        public FactoryData(final String host, final int port, final int delayMillis, final boolean immediateFail,
                            final Layout<? extends Serializable> layout) {
             this.host = host;
             this.port = port;
-            this.delay = delay;
+            this.delayMillis = delayMillis;
             this.immediateFail = immediateFail;
             this.layout = layout;
         }
@@ -269,16 +269,16 @@ public class TcpSocketManager extends AbstractSocketManager {
             try {
                 final Socket socket = new Socket(data.host, data.port);
                 os = socket.getOutputStream();
-                return new TcpSocketManager(name, os, socket, inetAddress, data.host, data.port, data.delay,
+                return new TcpSocketManager(name, os, socket, inetAddress, data.host, data.port, data.delayMillis,
                     data.immediateFail, data.layout);
             } catch (final IOException ex) {
                 LOGGER.error("TcpSocketManager (" + name + ") " + ex);
                 os = new ByteArrayOutputStream();
             }
-            if (data.delay == 0) {
+            if (data.delayMillis == 0) {
                 return null;
             }
-            return new TcpSocketManager(name, os, null, inetAddress, data.host, data.port, data.delay, data.immediateFail,
+            return new TcpSocketManager(name, os, null, inetAddress, data.host, data.port, data.delayMillis, data.immediateFail,
                 data.layout);
         }
     }

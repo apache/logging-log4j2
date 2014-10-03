@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -82,7 +83,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
      *        The Protocol to use.
      * @param sslConfig
      *        The SSL configuration file for TCP/SSL, ignored for UPD.
-     * @param delay
+     * @param delayMillis
      *        The interval in which failed writes should be retried.
      * @param immediateFail
      *        True if the write should fail if no socket is immediately available.
@@ -110,7 +111,8 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
             @PluginAttribute("port") final String portNum,
             @PluginAttribute("protocol") final String protocolStr,
             @PluginElement("SSL") final SslConfiguration sslConfig,
-            @PluginAttribute("reconnectionDelay") final String delay,
+            @PluginAliases("reconnectionDelay") // deprecated
+            @PluginAttribute("reconnectionDelayMillis") final String delayMillis,
             @PluginAttribute("immediateFail") final String immediateFail,
             @PluginAttribute("name") final String name,
             @PluginAttribute("immediateFlush") final String immediateFlush,
@@ -124,7 +126,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
         final boolean isAdvertise = Boolean.parseBoolean(advertise);
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         final boolean fail = Booleans.parseBoolean(immediateFail, true);
-        final int reconnectDelay = AbstractAppender.parseInt(delay, 0);
+        final int reconnectDelayMillis = AbstractAppender.parseInt(delayMillis, 0);
         final int port = AbstractAppender.parseInt(portNum, 0);
         if (layout == null) {
             layout = SerializedLayout.createLayout();
@@ -142,7 +144,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
         }
 
         final AbstractSocketManager manager = createSocketManager(name, protocol, host, port, sslConfig,
-                reconnectDelay, fail, layout);
+                reconnectDelayMillis, fail, layout);
 
         return new SocketAppender(name, layout, filter, manager, ignoreExceptions, isFlush,
                 isAdvertise ? config.getAdvertiser() : null);
@@ -155,7 +157,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
      *         if the protocol cannot be handled.
      */
     protected static AbstractSocketManager createSocketManager(final String name, Protocol protocol, final String host,
-            final int port, final SslConfiguration sslConfig, final int delay, final boolean immediateFail,
+            final int port, final SslConfiguration sslConfig, final int delayMillis, final boolean immediateFail,
             final Layout<? extends Serializable> layout) {
         if (protocol == Protocol.TCP && sslConfig != null) {
             // Upgrade TCP to SSL if an SSL config is specified.
@@ -166,11 +168,11 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
         }
         switch (protocol) {
         case TCP:
-            return TcpSocketManager.getSocketManager(host, port, delay, immediateFail, layout);
+            return TcpSocketManager.getSocketManager(host, port, delayMillis, immediateFail, layout);
         case UDP:
             return DatagramSocketManager.getSocketManager(host, port, layout);
         case SSL:
-            return SslSocketManager.getSocketManager(sslConfig, host, port, delay, immediateFail, layout);
+            return SslSocketManager.getSocketManager(sslConfig, host, port, delayMillis, immediateFail, layout);
         default:
             throw new IllegalArgumentException(protocol.toString());
         }
