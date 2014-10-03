@@ -3087,7 +3087,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>Contains the configuration for the KeyStore and TrustStore.</td>
             </tr>
             <tr>
-              <td>reconnectionDelay</td>
+              <td>reconnectionDelayMillis</td>
               <td>integer</td>
               <td>If set to a value greater than 0, after an error the SocketManager will attempt to reconnect to
                 the server after waiting the specified number of milliseconds. If the reconnect fails then

@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -59,7 +60,7 @@ public class SyslogAppender extends SocketAppender {
      * @param port The port to connect to on the target host.
      * @param protocolStr The Protocol to use.
      * @param sslConfig TODO
-     * @param reconnectionDelay The interval in which failed writes should be retried.
+     * @param reconnectionDelayMillis The interval in which failed writes should be retried.
      * @param immediateFail True if the write should fail if no socket is immediately available.
      * @param name The name of the Appender.
      * @param immediateFlush "true" if data should be flushed on each write.
@@ -97,7 +98,8 @@ public class SyslogAppender extends SocketAppender {
             @PluginAttribute(value = "port", defaultInt = 0) final int port,
             @PluginAttribute("protocol") final String protocolStr,
             @PluginElement("SSL") final SslConfiguration sslConfig,
-            @PluginAttribute(value = "reconnectionDelay", defaultInt = 0) final int reconnectionDelay,
+            @PluginAliases("reconnectionDelay") // deprecated
+            @PluginAttribute(value = "reconnectionDelayMillis", defaultInt = 0) final int reconnectionDelayMillis,
             @PluginAttribute(value = "immediateFail", defaultBoolean = true) final boolean immediateFail,
             @PluginAttribute("name") final String name,
             @PluginAttribute(value = "immediateFlush", defaultBoolean = true) final boolean immediateFlush,
@@ -139,7 +141,7 @@ public class SyslogAppender extends SocketAppender {
             return null;
         }
         final AbstractSocketManager manager = createSocketManager(name, protocol, host, port, sslConfig,
-            reconnectionDelay, immediateFail, layout);
+            reconnectionDelayMillis, immediateFail, layout);
 
         return new SyslogAppender(name, layout, filter, ignoreExceptions, immediateFlush, manager,
                 advertise ? config.getAdvertiser() : null);
