@@ -142,7 +142,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
      *                          1000.
      * @param requestTimeout The amount of time in milliseconds to wait before a request times out. Minimum is 1000.
      * @param agentRetries The number of times to retry an agent before failing to the next agent.
-     * @param maxDelayMillis The maximum number of seconds to wait for a complete batch.
+     * @param maxDelayMillis The maximum number of milliseconds to wait for a complete batch.
      * @param name The name of the Appender.
      * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
      *               they are propagated to the caller.
