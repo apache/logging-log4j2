@@ -24,6 +24,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 
+import static org.apache.logging.log4j.junit.FileMatchers.exists;
+import static org.apache.logging.log4j.junit.FileMatchers.hasLength;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.*;
 
 /**
@@ -40,8 +43,8 @@ public class FileOutputTest {
     @Test
     public void testConfig() {
         final File file = new File(STATUS_LOG);
-        assertTrue("Status output file does not exist", file.exists());
-        assertTrue("File is empty", file.length() > 0);
+        assertThat("Status output file does not exist", file, exists());
+        assertThat("File is empty", file, hasLength(greaterThan(0L)));
     }
 
 }

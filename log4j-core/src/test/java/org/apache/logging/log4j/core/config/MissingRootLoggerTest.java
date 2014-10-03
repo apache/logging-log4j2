@@ -28,6 +28,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import static org.apache.logging.log4j.junit.MapMatchers.hasSize;
+import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
 @RunWith(JUnit4.class)
@@ -49,28 +53,28 @@ public class MissingRootLoggerTest {
 //                MISSINGROOT.equals(config.getName()));
         final Map<String, Appender> map = config.getAppenders();
         assertNotNull("Appenders not null", map);
-        assertEquals("There should only be two appenders", 2, map.size());
-        assertTrue("Contains List", map.containsKey("List"));
-        assertTrue("Contains Console", map.containsKey("Console"));
+        assertThat("There should only be two appenders", map, hasSize(2));
+        assertThat(map, hasKey("List"));
+        assertThat(map, hasKey("Console"));
 
         final Map<String, LoggerConfig> loggerMap = config.getLoggers();
         assertNotNull("loggerMap not null", loggerMap);
-        assertEquals("There should only be one configured logger", 1, loggerMap.size());
+        assertThat("There should only be one configured logger", loggerMap, hasSize(1));
         // only the sample logger, no root logger in loggerMap!
-        assertTrue("contains key=sample", loggerMap.containsKey("sample"));
+        assertThat("contains key=sample", loggerMap, hasKey("sample"));
 
         final LoggerConfig sample = loggerMap.get("sample");
         final Map<String, Appender> sampleAppenders = sample.getAppenders();
-        assertEquals("The sample logger should only have one appender", 1, sampleAppenders.size());
+        assertThat("The sample logger should only have one appender", sampleAppenders, hasSize(1));
         // sample only has List appender, not Console!
-        assertTrue("The sample appender should be a ListAppender", sampleAppenders.containsKey("List"));
-
+        assertThat("The sample appender should be a ListAppender", sampleAppenders, hasKey("List"));
+        assertThat(config, is(instanceOf(AbstractConfiguration.class)));
         final AbstractConfiguration baseConfig = (AbstractConfiguration) config;
         final LoggerConfig root = baseConfig.getRootLogger();
         final Map<String, Appender> rootAppenders = root.getAppenders();
-        assertEquals("The root logger should only have one appender", 1, rootAppenders.size());
+        assertThat("The root logger should only have one appender", rootAppenders, hasSize(1));
         // root only has Console appender!
-        assertTrue("The root appender should be a ConsoleAppender", rootAppenders.containsKey("Console"));
+        assertThat("The root appender should be a ConsoleAppender", rootAppenders, hasKey("Console"));
         assertEquals(Level.ERROR, root.getLevel());
     }
 

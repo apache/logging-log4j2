@@ -43,8 +43,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import static org.hamcrest.CoreMatchers.*;
-
+import static org.apache.logging.log4j.junit.MapMatchers.hasSize;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.*;
 
 /**
@@ -109,7 +113,7 @@ public class XIncludeTest {
         assertThat(filter, is(instanceOf(ThreadContextMapFilter.class)));
         final Map<String, Appender> appenders = l.getAppenders();
         assertThat(appenders, is(notNullValue()));
-        assertThat(appenders.size(), is(equalTo(1)));
+        assertThat(appenders, hasSize(1));
         final Appender appender = appenders.get(APPENDER_NAME);
         assertThat(appender, is(notNullValue()));
         assertThat(appender.getName(), is(equalTo("STDOUT")));

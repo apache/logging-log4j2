@@ -36,6 +36,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import static org.apache.logging.log4j.junit.MapMatchers.hasSize;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.theInstance;
 import static org.junit.Assert.*;
 
 /**
@@ -86,8 +94,8 @@ public class TestConfigurator {
         assertEquals("Incorrect Configuration.", CONFIG_NAME, config.getName());
         final Map<String, Appender> map = config.getAppenders();
         assertNotNull("Appenders map should not be null.", map);
-        assertTrue("Appenders map should not be empty.", map.size() > 0);
-        assertTrue("Wrong configuration", map.containsKey("List"));
+        assertThat(map, hasSize(greaterThan(0)));
+        assertThat("Wrong configuration", map, hasKey("List"));
         Configurator.shutdown(ctx);
         config = ctx.getConfiguration();
         assertEquals("Unexpected Configuration.", NullConfiguration.NULL_NAME, config.getName());
@@ -105,8 +113,8 @@ public class TestConfigurator {
         assertEquals("Incorrect Configuration.", CONFIG_NAME, config.getName());
         final Map<String, Appender> map = config.getAppenders();
         assertNotNull("Appenders map should not be null.", map);
-        assertTrue("Appenders map should not be empty.", map.size() > 0);
-        assertTrue("Wrong configuration", map.containsKey("List"));
+        assertThat(map, hasSize(greaterThan(0)));
+        assertThat("Wrong configuration", map, hasKey("List"));
         Configurator.shutdown(ctx);
         config = ctx.getConfiguration();
         assertEquals("Unexpected Configuration.", NullConfiguration.NULL_NAME, config.getName());
@@ -124,8 +132,8 @@ public class TestConfigurator {
         assertEquals("Incorrect Configuration.", CONFIG_NAME, config.getName());
         final Map<String, Appender> map = config.getAppenders();
         assertNotNull("Appenders map should not be null.", map);
-        assertTrue("Appenders map should not be empty.", map.size() > 0);
-        assertTrue("Wrong configuration", map.containsKey("List"));
+        assertThat(map, hasSize(greaterThan(0)));
+        assertThat("Wrong configuration", map, hasKey("List"));
         Configurator.shutdown(ctx);
         config = ctx.getConfiguration();
         assertEquals("Unexpected Configuration.", NullConfiguration.NULL_NAME, config.getName());
@@ -140,8 +148,8 @@ public class TestConfigurator {
         assertEquals("Incorrect Configuration.", CONFIG_NAME, config.getName());
         final Map<String, Appender> map = config.getAppenders();
         assertNotNull("Appenders map should not be null.", map);
-        assertTrue("Appenders map should not be empty.", map.size() > 0);
-        assertTrue("Wrong configuration", map.containsKey("List"));
+        assertThat(map, hasSize(greaterThan(0)));
+        assertThat("Wrong configuration", map, hasKey("List"));
         Configurator.shutdown(ctx);
         config = ctx.getConfiguration();
         assertEquals("Unexpected Configuration.", NullConfiguration.NULL_NAME, config.getName());
@@ -157,8 +165,8 @@ public class TestConfigurator {
         assertEquals("Incorrect Configuration.", CONFIG_NAME, config.getName());
         final Map<String, Appender> map = config.getAppenders();
         assertNotNull("Appenders map should not be null.", map);
-        assertTrue("Appenders map should not be empty.", map.size() > 0);
-        assertTrue("Wrong configuration", map.containsKey("List"));
+        assertThat(map, hasSize(greaterThan(0)));
+        assertThat("Wrong configuration", map, hasKey("List"));
         Configurator.shutdown(ctx);
         config = ctx.getConfiguration();
         assertEquals("Unexpected Configuration.", NullConfiguration.NULL_NAME, config.getName());
@@ -173,8 +181,8 @@ public class TestConfigurator {
         assertEquals("Incorrect Configuration.", CONFIG_NAME, config.getName());
         final Map<String, Appender> map = config.getAppenders();
         assertNotNull("Appenders map should not be null.", map);
-        assertTrue("Appenders map should not be empty.", map.size() > 0);
-        assertTrue("Wrong configuration", map.containsKey("List"));
+        assertThat(map, hasSize(greaterThan(0)));
+        assertThat("Wrong configuration", map, hasKey("List"));
         Configurator.shutdown(ctx);
         config = ctx.getConfiguration();
         assertEquals("Incorrect Configuration.", NullConfiguration.NULL_NAME, config.getName());
@@ -189,8 +197,8 @@ public class TestConfigurator {
         assertEquals("Incorrect Configuration.", CONFIG_NAME, config.getName());
         final Map<String, Appender> map = config.getAppenders();
         assertNotNull("Appenders map should not be null.", map);
-        assertTrue("Appenders map should not be empty.", map.size() > 0);
-        assertTrue("Wrong configuration", map.containsKey("List"));
+        assertThat(map, hasSize(greaterThan(0)));
+        assertThat("Wrong configuration", map, hasKey("List"));
         Configurator.shutdown(ctx);
         config = ctx.getConfiguration();
         assertEquals("Incorrect Configuration.", NullConfiguration.NULL_NAME, config.getName());
@@ -205,8 +213,8 @@ public class TestConfigurator {
         assertEquals("Incorrect Configuration.", CONFIG_NAME, config.getName());
         final Map<String, Appender> map = config.getAppenders();
         assertNotNull("Appenders map should not be null.", map);
-        assertTrue("Appenders map should not be empty.", map.size() > 0);
-        assertTrue("Wrong configuration", map.containsKey("List"));
+        assertThat(map, hasSize(greaterThan(0)));
+        assertThat("Wrong configuration", map, hasKey("List"));
         Configurator.shutdown(ctx);
         config = ctx.getConfiguration();
         assertEquals("Unexpected Configuration.", NullConfiguration.NULL_NAME, config.getName());
@@ -223,8 +231,8 @@ public class TestConfigurator {
         assertEquals("Incorrect Configuration.", CONFIG_NAME, config.getName());
         final Map<String, Appender> map = config.getAppenders();
         assertNotNull("Appenders map should not be null.", map);
-        assertTrue("Appenders map should not be empty.", map.size() > 0);
-        assertTrue("Wrong configuration", map.containsKey("List"));
+        assertThat(map, hasSize(greaterThan(0)));
+        assertThat("Wrong configuration", map, hasKey("List"));
 
         Thread.sleep(500);
         assertTrue("setLastModified should have succeeded.", file.setLastModified(System.currentTimeMillis()));
@@ -233,7 +241,7 @@ public class TestConfigurator {
         }
         Thread.sleep(100);
         final Configuration newConfig = ctx.getConfiguration();
-        assertTrue("Configuration not reset", newConfig != config);
+        assertThat("Configuration not reset", newConfig, is(not(theInstance(config))));
         Configurator.shutdown(ctx);
         config = ctx.getConfiguration();
         assertEquals("Unexpected Configuration.", NullConfiguration.NULL_NAME, config.getName());
@@ -249,18 +257,12 @@ public class TestConfigurator {
         assertEquals("Incorrect Configuration.", CONFIG_NAME, config.getName());
         final Map<String, Appender> map = config.getAppenders();
         assertNotNull("Appenders map should not be null.", map);
-        assertTrue("Appenders map should not be empty.", map.size() > 0);
-        Appender app = null;
-        for (final Map.Entry<String, Appender> entry: map.entrySet()) {
-            if (entry.getKey().equals("List2")) {
-                app = entry.getValue();
-                break;
-            }
-        }
-        assertNotNull("No ListAppender named List2", app);
+        assertThat(map, hasSize(greaterThan(0)));
+        assertThat("No ListAppender named List2", map, hasKey("List2"));
+        Appender app = map.get("List2");
         final Layout<? extends Serializable> layout = app.getLayout();
         assertNotNull("Appender List2 does not have a Layout", layout);
-        assertTrue("Appender List2 is not configured with a PatternLayout", layout instanceof PatternLayout);
+        assertThat("Appender List2 is not configured with a PatternLayout", layout, instanceOf(PatternLayout.class));
         final String pattern = ((PatternLayout) layout).getConversionPattern();
         assertNotNull("No conversion pattern for List2 PatternLayout", pattern);
         assertFalse("Environment variable was not substituted", pattern.startsWith("${env:PATH}"));
@@ -311,7 +313,7 @@ public class TestConfigurator {
         assertNotNull("No Logger", lcfg);
         final Filter filter = lcfg.getFilter();
         assertNotNull("No Filter", filter);
-        assertTrue("Incorrect filter", filter instanceof CompositeFilter);
+        assertThat(filter, instanceOf(CompositeFilter.class));
         assertTrue("Unexpected filters", ((CompositeFilter) filter).isEmpty());
     }
 
@@ -339,7 +341,7 @@ public class TestConfigurator {
         final Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration", config);
         assertEquals("Unexpected Configuration", "XMLConfigTest", config.getName());
-        assertTrue("Create bad appender", config.getAppenders().size() == 2);
+        assertThat(config.getAppenders(), hasSize(equalTo(2)));
     }
 
 }
