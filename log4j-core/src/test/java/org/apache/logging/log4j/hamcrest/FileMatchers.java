@@ -18,7 +18,6 @@ package org.apache.logging.log4j.hamcrest;
 
 import java.io.File;
 
-import org.hamcrest.CustomMatcher;
 import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;
 
@@ -33,22 +32,6 @@ import static org.hamcrest.number.OrderingComparison.lessThanOrEqualTo;
  * @since 2.1
  */
 public final class FileMatchers {
-
-    /**
-     * Decorating Matcher similar to {@code is()}, but for better grammar.
-     *
-     * @param matcher the Matcher to decorate.
-     * @param <T> the type expected by the Matcher.
-     * @return the decorated Matcher.
-     */
-    public static <T> Matcher<T> that(final Matcher<T> matcher) {
-        return new CustomMatcher<T>("that") {
-            @Override
-            public boolean matches(final Object item) {
-                return matcher.matches(item);
-            }
-        };
-    }
 
     /**
      * Matches if the File exists.

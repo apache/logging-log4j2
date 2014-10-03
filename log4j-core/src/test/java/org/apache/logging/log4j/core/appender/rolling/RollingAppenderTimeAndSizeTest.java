@@ -28,7 +28,7 @@ import org.junit.Test;
 import static org.apache.logging.log4j.hamcrest.FileMatchers.exists;
 import static org.apache.logging.log4j.hamcrest.FileMatchers.hasFiles;
 import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
-import static org.apache.logging.log4j.hamcrest.FileMatchers.that;
+import static org.apache.logging.log4j.hamcrest.Descriptors.that;
 import static org.hamcrest.Matchers.both;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
