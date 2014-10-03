@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -170,7 +171,7 @@ public final class FailoverAppender extends AbstractAppender {
      * @param name The name of the Appender (required).
      * @param primary The name of the primary Appender (required).
      * @param failovers The name of one or more Appenders to fail over to (at least one is required).
-     * @param retryIntervalString The retry intervalMillis.
+     * @param retryIntervalSeconds The retry intervalMillis.
      * @param config The current Configuration (passed by the Configuration when the appender is created).
      * @param filter A Filter (optional).
      * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
@@ -182,7 +183,8 @@ public final class FailoverAppender extends AbstractAppender {
             @PluginAttribute("name") final String name,
             @PluginAttribute("primary") final String primary,
             @PluginElement("Failovers") final String[] failovers,
-            @PluginAttribute("retryInterval") final String retryIntervalString,
+            @PluginAliases("retryInterval") // deprecated
+            @PluginAttribute("retryIntervalSeconds") final String retryIntervalSeconds,
             @PluginConfiguration final Configuration config,
             @PluginElement("Filter") final Filter filter,
             @PluginAttribute("ignoreExceptions") final String ignore) {
@@ -199,12 +201,12 @@ public final class FailoverAppender extends AbstractAppender {
             return null;
         }
 
-        final int seconds = parseInt(retryIntervalString, DEFAULT_INTERVAL_SECONDS);
+        final int seconds = parseInt(retryIntervalSeconds, DEFAULT_INTERVAL_SECONDS);
         int retryIntervalMillis;
         if (seconds >= 0) {
             retryIntervalMillis = seconds * Constants.MILLIS_IN_SECONDS;
         } else {
-            LOGGER.warn("Interval " + retryIntervalString + " is less than zero. Using default");
+            LOGGER.warn("Interval " + retryIntervalSeconds + " is less than zero. Using default");
             retryIntervalMillis = DEFAULT_INTERVAL_SECONDS * Constants.MILLIS_IN_SECONDS;
         }
 

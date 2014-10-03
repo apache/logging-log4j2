@@ -239,7 +239,7 @@
               <td>The name of the Appender.</td>
             </tr>
             <tr>
-              <td>retryInterval</td>
+              <td>retryIntervalSeconds</td>
               <td>integer</td>
               <td>The number of seconds that should pass before retrying the primary Appender. The default is 60.</td>
             </tr>
