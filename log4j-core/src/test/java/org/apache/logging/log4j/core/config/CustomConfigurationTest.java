@@ -36,6 +36,10 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
+import static org.apache.logging.log4j.junit.FileMatchers.exists;
+import static org.apache.logging.log4j.junit.FileMatchers.hasLength;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.*;
 
 /**
@@ -65,7 +69,7 @@ public class CustomConfigurationTest {
         final LoggerContext ctx = this.init.getContext();
         ctx.reconfigure();
         final Configuration config = ctx.getConfiguration();
-        assertTrue("Configuration is not an XmlConfiguration", config instanceof XmlConfiguration);
+        assertThat(config, instanceOf(XmlConfiguration.class));
         for (final StatusListener listener : StatusLogger.getLogger().getListeners()) {
             if (listener instanceof StatusConsoleListener) {
                 assertSame(listener.getStatusLevel(), Level.INFO);
@@ -91,8 +95,7 @@ public class CustomConfigurationTest {
         final Logger logger = ctx.getLogger(CustomConfigurationTest.class.getName());
         logger.info("This is a test");
         final File file = new File(LOG_FILE);
-        assertTrue("log file not created", file.exists());
-        assertTrue("No data logged", file.length() > 0);
-
+        assertThat(file, exists());
+        assertThat(file, hasLength(greaterThan(0L)));
     }
 }

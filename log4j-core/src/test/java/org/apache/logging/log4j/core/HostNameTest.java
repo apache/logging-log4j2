@@ -27,6 +27,8 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.*;
 
 /**
@@ -52,10 +54,9 @@ public class HostNameTest {
         final org.apache.logging.log4j.Logger testLogger = context.getLogger("org.apache.logging.log4j.hosttest");
         testLogger.debug("Hello, {}", "World");
         final List<String> msgs = host.getMessages();
-        assertEquals("Incorrect number of events. Expected 1, actual " + msgs.size(), 1, msgs.size());
+        assertThat(msgs, hasSize(1));
         String expected = NetUtils.getLocalHostname() + Constants.LINE_SEPARATOR;
-        assertTrue("Incorrect hostname - expected " + expected + " actual - " + msgs.get(0),
-            msgs.get(0).endsWith(expected));
+        assertThat(msgs.get(0), endsWith(expected));
         assertNotNull("No Host FileAppender file name", hostFile.getFileName());
         expected = "target/" + NetUtils.getLocalHostname() + ".log";
         String name = hostFile.getFileName();

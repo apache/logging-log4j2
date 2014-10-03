@@ -26,6 +26,7 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.*;
 
 /**
@@ -53,7 +54,7 @@ public class ExtendedLevelTest {
         logger.log(Level.DEBUG, "Debug message");
         List<LogEvent> events = list1.getEvents();
         assertNotNull("No events", events);
-        assertEquals("Incorrect number of events. Expected 1 got " + events.size(), 1, events.size());
+        assertThat(events, hasSize(1));
         LogEvent event = events.get(0);
         assertEquals("Expected level DETAIL, got" + event.getLevel(), "DETAIL", event.getLevel().name());
         logger = context.getLogger("org.apache.logging.log4j.test2");
@@ -61,7 +62,7 @@ public class ExtendedLevelTest {
         logger.log(Level.INFO, "Info message");
         events = list2.getEvents();
         assertNotNull("No events", events);
-        assertEquals("Incorrect number of events. Expected 1 got " + events.size(), 1, events.size());
+        assertThat(events, hasSize(1));
         event = events.get(0);
         assertEquals("Expected level NOTE, got" + event.getLevel(), "NOTE", event.getLevel().name());
     }

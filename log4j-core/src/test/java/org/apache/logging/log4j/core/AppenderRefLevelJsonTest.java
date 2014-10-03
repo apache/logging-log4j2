@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.util.List;
-
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
@@ -26,6 +24,7 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.*;
 
 /**
@@ -59,10 +58,8 @@ public class AppenderRefLevelJsonTest {
         logger1.info("Info Message");
         logger1.warn("warn Message");
         logger1.exit();
-        List<LogEvent> events = app1.getEvents();
-        assertEquals("Incorrect number of events. Expected 6, actual " + events.size(), 6, events.size());
-        events = app2.getEvents();
-        assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 1, events.size());
+        assertThat(app1.getEvents(), hasSize(6));
+        assertThat(app2.getEvents(), hasSize(1));
     }
 
     @Test
@@ -73,10 +70,8 @@ public class AppenderRefLevelJsonTest {
         logger2.info("Info Message");
         logger2.warn("warn Message");
         logger2.exit();
-        List<LogEvent> events = app1.getEvents();
-        assertEquals("Incorrect number of events. Expected 2, actual " + events.size(), 2, events.size());
-        events = app2.getEvents();
-        assertEquals("Incorrect number of events. Expected 4, actual " + events.size(), 4, events.size());
+        assertThat(app1.getEvents(), hasSize(2));
+        assertThat(app2.getEvents(), hasSize(4));
     }
 
     @Test
@@ -87,8 +82,7 @@ public class AppenderRefLevelJsonTest {
         logger3.info(testMarker, "Info Message");
         logger3.warn("warn Message");
         logger3.exit();
-        final List<LogEvent> events = app1.getEvents();
-        assertEquals("Incorrect number of events. Expected 4, actual " + events.size(), 4, events.size());
+        assertThat(app1.getEvents(), hasSize(4));
     }
 }
 
