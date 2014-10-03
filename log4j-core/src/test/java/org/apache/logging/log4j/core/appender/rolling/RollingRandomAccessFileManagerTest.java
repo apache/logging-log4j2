@@ -28,10 +28,10 @@ import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
 
-import static org.apache.logging.log4j.junit.FileMatchers.beforeNow;
-import static org.apache.logging.log4j.junit.FileMatchers.hasLength;
-import static org.apache.logging.log4j.junit.FileMatchers.isEmpty;
-import static org.apache.logging.log4j.junit.FileMatchers.lastModified;
+import static org.apache.logging.log4j.hamcrest.FileMatchers.beforeNow;
+import static org.apache.logging.log4j.hamcrest.FileMatchers.hasLength;
+import static org.apache.logging.log4j.hamcrest.FileMatchers.isEmpty;
+import static org.apache.logging.log4j.hamcrest.FileMatchers.lastModified;
 import static org.hamcrest.Matchers.both;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;

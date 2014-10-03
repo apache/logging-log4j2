@@ -29,8 +29,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import static org.apache.logging.log4j.junit.FileMatchers.exists;
-import static org.apache.logging.log4j.junit.FileMatchers.hasFiles;
+import static org.apache.logging.log4j.hamcrest.FileMatchers.exists;
+import static org.apache.logging.log4j.hamcrest.FileMatchers.hasFiles;
 import static org.hamcrest.Matchers.both;
 import static org.junit.Assert.*;
 

@@ -33,7 +33,7 @@ import org.apache.logging.log4j.spi.ThreadContextStack;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.apache.logging.log4j.junit.MapMatchers.hasSize;
+import static org.apache.logging.log4j.hamcrest.MapMatchers.hasSize;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.Assert.*;
 

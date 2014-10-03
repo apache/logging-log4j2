@@ -24,8 +24,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 
-import static org.apache.logging.log4j.junit.FileMatchers.exists;
-import static org.apache.logging.log4j.junit.FileMatchers.hasLength;
+import static org.apache.logging.log4j.hamcrest.FileMatchers.exists;
+import static org.apache.logging.log4j.hamcrest.FileMatchers.hasLength;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.*;
 
