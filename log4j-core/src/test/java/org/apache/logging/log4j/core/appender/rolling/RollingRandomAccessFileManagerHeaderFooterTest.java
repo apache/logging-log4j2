@@ -22,12 +22,16 @@ import java.nio.charset.Charset;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
+import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import static org.apache.logging.log4j.junit.FileMatchers.exists;
+import static org.apache.logging.log4j.junit.FileMatchers.hasFiles;
+import static org.hamcrest.Matchers.both;
 import static org.junit.Assert.*;
 
 /**
@@ -61,15 +65,15 @@ public class RollingRandomAccessFileManagerHeaderFooterTest {
         }
         Thread.sleep(50);
         final File dir = new File(DIR);
-        assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
+        assertThat(dir, both(exists()).and(hasFiles()));
         final File[] files = dir.listFiles();
-        assertTrue("No files created", files.length > 0);
+        assertNotNull(files);
         for (final File file : files) {
             assertHeader(file);
             assertFooter(file);
         }
         final File logFile = new File(LOGFILE);
-        assertTrue("Expected logfile to exist: " + LOGFILE, logFile.exists());
+        assertThat(logFile, exists());
         assertHeader(logFile);
     }
 
@@ -102,10 +106,7 @@ public class RollingRandomAccessFileManagerHeaderFooterTest {
             }
             return result;
         } finally {
-            try {
-                in.close();
-            } catch (final Exception ignored) {
-            }
+            Closer.closeSilently(in);
         }
     }
 

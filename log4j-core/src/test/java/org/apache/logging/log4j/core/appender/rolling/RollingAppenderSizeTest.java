@@ -29,6 +29,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import static org.apache.logging.log4j.junit.FileMatchers.exists;
+import static org.apache.logging.log4j.junit.FileMatchers.hasFiles;
+import static org.apache.logging.log4j.junit.FileMatchers.hasName;
+import static org.apache.logging.log4j.junit.FileMatchers.that;
+import static org.hamcrest.Matchers.both;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.hasItemInArray;
 import static org.junit.Assert.*;
 
 /**
@@ -77,17 +84,10 @@ public class RollingAppenderSizeTest {
             logger.debug("This is test message number " + i);
         }
         final File dir = new File(DIR);
-        assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
+        assertThat(dir, both(exists()).and(hasFiles()));
         final File[] files = dir.listFiles();
-        assertTrue("No files created", files.length > 0);
-        boolean found = false;
-        for (final File file : files) {
-            if (file.getName().endsWith(fileExtension)) {
-                found = true;
-                break;
-            }
-        }
-        assertTrue("No compressed files found", found);
+        assertNotNull(files);
+        assertThat(files, hasItemInArray(that(hasName(that(endsWith(fileExtension))))));
     }
 
     private static void deleteDir() {

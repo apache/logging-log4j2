@@ -20,11 +20,19 @@ import java.io.File;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.hamcrest.Matcher;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExternalResource;
 import org.junit.rules.RuleChain;
 
+import static org.apache.logging.log4j.junit.FileMatchers.exists;
+import static org.apache.logging.log4j.junit.FileMatchers.hasFiles;
+import static org.apache.logging.log4j.junit.FileMatchers.hasName;
+import static org.apache.logging.log4j.junit.FileMatchers.that;
+import static org.hamcrest.Matchers.both;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.hasItemInArray;
 import static org.junit.Assert.*;
 
 /**
@@ -55,16 +63,14 @@ public class RollingAppenderTimeTest {
             logger.debug("This is test message number " + i + 1);
         }
         final File dir = new File(DIR);
-        assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
+        assertThat(dir, both(exists()).and(hasFiles()));
 
         final int MAX_TRIES = 20;
+        final Matcher<File[]> hasGzippedFile = hasItemInArray(that(hasName(that(endsWith(".gz")))));
         for (int i = 0; i < MAX_TRIES; i++) {
             final File[] files = dir.listFiles();
-            assertTrue("No files created", files.length > 0);
-            for (final File file : files) {
-                if (file.getName().endsWith(".gz")) {
-                    return; // test succeeded
-                }
+            if (hasGzippedFile.matches(files)) {
+                return; // test succeeded
             }
             logger.debug("Adding additional event " + i);
             Thread.sleep(100); // Allow time for rollover to complete
