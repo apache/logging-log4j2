@@ -491,9 +491,9 @@
                 default is 5.</td>
             </tr>
             <tr>
-              <td>maxDelay</td>
+              <td>maxDelayMillis</td>
               <td>integer</td>
-              <td>The maximum number of seconds to wait for batchSize events before publishing the batch.</td>
+              <td>The maximum number of milliseconds to wait for batchSize events before publishing the batch.</td>
             </tr>
             <tr>
               <td>mdcExcludes</td>

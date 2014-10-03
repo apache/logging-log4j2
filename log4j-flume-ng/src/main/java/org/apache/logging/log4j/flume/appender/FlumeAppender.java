@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -169,7 +170,8 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
                                                @PluginAttribute("connectTimeout") final String connectionTimeout,
                                                @PluginAttribute("requestTimeout") final String requestTimeout,
                                                @PluginAttribute("agentRetries") final String agentRetries,
-                                               @PluginAttribute("maxDelay") final String maxDelayMillis,
+                                               @PluginAliases("maxDelay") // deprecated
+                                               @PluginAttribute("maxDelayMillis") final String maxDelayMillis,
                                                @PluginAttribute("name") final String name,
                                                @PluginAttribute("ignoreExceptions") final String ignore,
                                                @PluginAttribute("mdcExcludes") final String excludes,
