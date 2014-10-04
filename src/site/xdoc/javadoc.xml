@@ -75,6 +75,11 @@
           <td>A bridge that permits applications written against the SLF4J API to log using Log4j 2.</td>
         </tr>
         <tr>
+          <td><a href="log4j-jul/apidocs/index.html">Java Util Logging Adapter</a></td>
+          <td>A bridge that permits applications written against the <code>java.util.logging</code> API to log using
+          Log4j 2.</td>
+        </tr>
+        <tr>
           <td><a href="log4j-1.2-api/apidocs/index.html">Log4j 1.2 API Bridge</a></td>
           <td>A bridge that permits applications written against the Log4j 1.2.x API to log using Log4j 2.</td>
         </tr>
