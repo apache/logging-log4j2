@@ -16,14 +16,8 @@
  */
 package org.apache.log4j;
 
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -34,25 +28,9 @@ import static org.junit.Assert.*;
 public class LoggingTest {
 
     private static final String CONFIG = "log4j2-config.xml";
-    private static Configuration config;
-    private static ListAppender app;
-    private static LoggerContext ctx;
 
-    @BeforeClass
-    public static void setupClass() {
-        ctx = Configurator.initialize("Test1", CONFIG);
-    }
-
-    @AfterClass
-    public static void cleanupClass() {
-        ctx.stop();
-        StatusLogger.getLogger().reset();
-    }
-
-    @Before
-    public void before() {
-        config = ctx.getConfiguration();
-    }
+    @ClassRule
+    public static final InitialLoggerContext CTX = new InitialLoggerContext(CONFIG);
 
     @Test
     public void testParent() {
