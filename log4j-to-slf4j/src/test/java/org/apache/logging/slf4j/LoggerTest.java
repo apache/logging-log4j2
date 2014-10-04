@@ -20,6 +20,8 @@ package org.apache.logging.slf4j;
 import java.util.Date;
 import java.util.List;
 
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.testUtil.StringListAppender;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
@@ -27,16 +29,12 @@ import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
-import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.joran.JoranConfigurator;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.testUtil.StringListAppender;
-
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.theInstance;
 import static org.junit.Assert.*;
 
 /**
@@ -45,36 +43,23 @@ import static org.junit.Assert.*;
 public class LoggerTest {
 
     private static final String CONFIG = "target/test-classes/logback-slf4j.xml";
-    private static Logger logger;
-    private static org.slf4j.Logger slf4jLogger;
-    private static LoggerContext context;
-    private static Logger root;
-    private static ch.qos.logback.classic.Logger rootLogger;
-    private static StringListAppender<ILoggingEvent> list;
 
-    @BeforeClass
-    public static void setupClass() throws Exception {
-        slf4jLogger = LoggerFactory.getLogger(LoggerTest.class);
-        context = ((ch.qos.logback.classic.Logger) slf4jLogger).getLoggerContext();
-        configure(CONFIG);
-        logger = LogManager.getLogger(LoggerTest.class);
-        assertTrue("Incorrect SLF4J Logger", ((SLF4JLogger) logger).getLogger() == slf4jLogger);
-        root = LogManager.getRootLogger();
-        rootLogger = context.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
-        list = (StringListAppender<ILoggingEvent>) rootLogger.getAppender("LIST");
-        rootLogger.detachAppender("console");
-    }
+    @ClassRule
+    public static final InitialLoggerContext CTX = new InitialLoggerContext(CONFIG);
 
-    private static void configure(final String file) throws JoranException {
-        final JoranConfigurator jc = new JoranConfigurator();
-        jc.setContext(context);
-        jc.doConfigure(file);
-    }
+    private Logger logger;
+    private StringListAppender<ILoggingEvent> list;
 
     @Before
-    public void before() {
-    	assertNotNull(list);
-    	assertNotNull(list.strList);
+    public void setUp() throws Exception {
+        final org.slf4j.Logger slf4jLogger = CTX.getLogger();
+        logger = LogManager.getLogger();
+        assertThat(slf4jLogger, is(theInstance(((SLF4JLogger) logger).getLogger())));
+        final ch.qos.logback.classic.Logger rootLogger = CTX.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+        rootLogger.detachAppender("console");
+        list = TestUtil.getListAppender(rootLogger, "LIST");
+        assertThat(list, is(notNullValue()));
+        assertThat(list.strList, is(notNullValue()));
         list.strList.clear();
     }
 
