@@ -35,6 +35,11 @@ import java.util.LinkedHashSet;
 public final class LoaderUtil {
     private LoaderUtil() {}
 
+    /**
+     * System property to set to ignore the thread context ClassLoader.
+     *
+     * @since 2.1
+     */
     public static final String IGNORE_TCCL_PROPERTY = "log4j.ignoreTCL";
 
     private static final SecurityManager SECURITY_MANAGER = System.getSecurityManager();

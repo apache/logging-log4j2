@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * Provides an abstract base class to use for implementing ExternalLoggerContextRegistry.
+ * Provides an abstract base class to use for implementing LoggerAdapter.
  * @param <L> the Logger class to adapt
  * @since 2.1
  */
