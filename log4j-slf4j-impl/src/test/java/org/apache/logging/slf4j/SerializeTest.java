@@ -21,12 +21,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,22 +38,9 @@ public class SerializeTest {
 
 
     private static final String CONFIG = "log4j-test1.xml";
-    private static LoggerContext ctx;
 
-    @BeforeClass
-    public static void setupClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        ctx = (LoggerContext) LogManager.getContext(false);
-        ctx.reconfigure();
-        ctx.getConfiguration();
-    }
-
-    @AfterClass
-    public static void cleanupClass() {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        ctx.reconfigure();
-        StatusLogger.getLogger().reset();
-    }
+    @ClassRule
+    public static final InitialLoggerContext CTX = new InitialLoggerContext(CONFIG);
 
     Logger logger = LoggerFactory.getLogger("LoggerTest");
     XLogger xlogger = XLoggerFactory.getXLogger("LoggerTest");
