@@ -23,7 +23,7 @@ import org.slf4j.Marker;
 
 /**
  * Test Marker that may contain no reference/parent Markers.
- * @issue LOG4J2-793
+ * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-793">LOG4J2-793</a>
  */
 public class CustomFlatMarker implements Marker {
     private static final long serialVersionUID = -4115520883240247266L;

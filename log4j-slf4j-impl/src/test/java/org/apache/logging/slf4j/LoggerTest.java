@@ -118,7 +118,7 @@ public class LoggerTest {
     }
 
     /**
-     * @issue LOG4J2-793
+     * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-793">LOG4J2-793</a>
      */
     @Test
     public void supportsCustomSLF4JMarkers() {
