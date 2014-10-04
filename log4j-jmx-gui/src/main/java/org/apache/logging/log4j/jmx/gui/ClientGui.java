@@ -40,17 +40,7 @@ import javax.management.ObjectName;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
-import javax.swing.AbstractAction;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import javax.swing.JToggleButton;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
 
 import org.apache.logging.log4j.core.jmx.LoggerContextAdminMBean;
@@ -142,7 +132,7 @@ public class ClientGui extends JPanel implements NotificationListener {
         result.setEditable(false);
         result.setBackground(this.getBackground());
         result.setForeground(Color.black);
-        result.setFont(new Font("Monospaced", Font.PLAIN, result.getFont().getSize()));
+        result.setFont(new Font(Font.MONOSPACED, Font.PLAIN, result.getFont().getSize()));
         result.setWrapStyleWord(true);
         return result;
     }
@@ -284,7 +274,7 @@ public class ClientGui extends JPanel implements NotificationListener {
                 try {
                     final ClientGui gui = new ClientGui(client);
                     final JFrame frame = new JFrame(title);
-                    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
                     frame.getContentPane().add(gui, BorderLayout.CENTER);
                     frame.pack();
                     frame.setVisible(true);
