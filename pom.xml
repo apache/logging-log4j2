@@ -174,7 +174,7 @@
     <checkstyle.plugin.version>2.13</checkstyle.plugin.version>
     <rat.plugin.version>0.11</rat.plugin.version>
     <pdf.plugin.version>1.2</pdf.plugin.version>
-    <cobertura.plugin.version>2.5.2</cobertura.plugin.version>
+    <cobertura.plugin.version>2.6</cobertura.plugin.version>
     <release.plugin.version>2.5</release.plugin.version>
     <scm.plugin.version>1.9.1</scm.plugin.version>
     <jxr.plugin.version>2.4</jxr.plugin.version>
