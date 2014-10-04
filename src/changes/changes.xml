@@ -23,7 +23,7 @@
     <title>Changes</title>
   </properties>
   <body>
-    <release version="2.1" date="2014-??-??" description="Bug fixes and enhancements">
+    <release version="2.1" date="2014-10-04" description="GA Release 2.1">
       <action issue="LOG4J2-866" dev="rpopma" type="fix" due-to="Gerard Weatherby">
         Documentation: fixed missing closing parenthesis in code example.
       </action>
@@ -186,7 +186,7 @@
         Update org.eclipse.persistence.jpa to 2.5.2 from 2.5.1.
       </action>
       <action issue="LOG4J2-867" dev="ggregory" type="update">
-        FlumeAppender: maxDelay not in seconds, but milliseconds. 
+        FlumeAppender: maxDelay not in seconds, but milliseconds.
         Add time scale to some settings, for example maxDelayMillis instead of maxDelay.
         The old names are aliased for compatibility.
       </action>

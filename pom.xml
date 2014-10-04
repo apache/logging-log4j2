@@ -154,8 +154,8 @@
   <properties>
     <!-- make sure to update these for each release! -->
     <log4jParentDir>${basedir}</log4jParentDir>
-    <Log4jReleaseVersion>2.0.2</Log4jReleaseVersion>
-    <Log4jReleaseCount>sixteenth</Log4jReleaseCount>
+    <Log4jReleaseVersion>2.1</Log4jReleaseVersion>
+    <Log4jReleaseCount>seventeenth</Log4jReleaseCount>
     <Log4jReleaseManager>Matt Sicker</Log4jReleaseManager>
     <Log4jReleaseKey>FA1C814D</Log4jReleaseKey>
     <!-- note that any properties you want available in velocity templates must not use periods! -->
