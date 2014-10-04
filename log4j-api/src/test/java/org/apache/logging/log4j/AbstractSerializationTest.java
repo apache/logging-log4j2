@@ -22,6 +22,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import static org.apache.logging.log4j.SerializableMatchers.serializesRoundTrip;
+import static org.junit.Assert.assertThat;
+
 /**
  * Subclasses tests {@link Serializable} objects.
  */
@@ -37,11 +40,11 @@ public abstract class AbstractSerializationTest {
 
     @Test
     public void testSerializationRoundtripEquals() {
-        SerializationTestUtils.roundtripEquals(serializable);
+        assertThat(serializable, serializesRoundTrip(serializable));
     }
 
     @Test
     public void testSerializationRoundtripNoException() {
-        SerializationTestUtils.roundtripNoException(serializable);
+        assertThat(serializable, serializesRoundTrip());
     }
 }
