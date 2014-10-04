@@ -24,7 +24,7 @@ import org.apache.logging.log4j.message.MessageFactory;
 public interface LoggerContext {
 
     /**
-     * An anchor for some other context, such as a ServletContext.
+     * An anchor for some other context, such as a ClassLoader or ServletContext.
      * @return The external context.
      */
     Object getExternalContext();
