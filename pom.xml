@@ -1137,7 +1137,7 @@
               <template>announcement.vm</template>
               <templateDirectory>src/changes</templateDirectory>
               <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
-              <outputDirectory>.</outputDirectory>
+              <announcementDirectory>.</announcementDirectory>
               <announcementFile>RELEASE-NOTES.txt</announcementFile>
               <issueManagementSystems>
                 <issueManagementSystem>changes.xml</issueManagementSystem>
