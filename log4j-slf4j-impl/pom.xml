@@ -166,6 +166,7 @@
         </reportSets>
         <configuration>
           <issueLinkTemplate>%URL%/show_bug.cgi?id=%ISSUE%</issueLinkTemplate>
+          <useJql>true</useJql>
         </configuration>
       </plugin>
       <plugin>
@@ -186,7 +187,7 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>${javadoc.plugin.version}</version>
         <configuration>
-          <bottom> <![CDATA[<p align="center">Copyright &#169; {inceptionYear}-{currentYear} {organizationName}. All Rights Reserved.<br />
+          <bottom><![CDATA[<p align="center">Copyright &#169; {inceptionYear}-{currentYear} {organizationName}. All Rights Reserved.<br />
             Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, the Apache Logging project logo,
             and the Apache Log4j logo are trademarks of The Apache Software Foundation.</p>]]></bottom>
           <!-- module link generation is completely broken in the javadoc plugin for a multi-module non-aggregating
@@ -241,17 +242,6 @@
         <configuration>
           <targetJdk>${maven.compile.target}</targetJdk>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>cobertura-maven-plugin</artifactId>
-        <version>${cobertura.plugin.version}</version>
-        <reportSets>
-          <reportSet>
-            <!-- Disabled as it makes the site build very slow and causes the performance unit test to fail -->
-            <reports />
-          </reportSet>
-        </reportSets>
       </plugin>
     </plugins>
   </reporting>
