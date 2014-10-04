@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.jmx.LoggerContextAdminMBean;
 import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.core.jmx.StatusLoggerAdminMBean;
 import org.apache.logging.log4j.core.util.Assert;
+import org.apache.logging.log4j.core.util.Closer;
 
 /**
  * This class allows client-side code to perform operations on remote
@@ -44,7 +45,7 @@ public class Client {
     /**
      * Constructs a new {@code Client} object and creates proxies for all known
      * remote MBeans.
-     * 
+     *
      * @param connector used to create the MBean server connection through which
      *            to communicate with the remote mbeans
      * @throws MalformedObjectNameException if a problem occurred identifying
@@ -61,7 +62,7 @@ public class Client {
     /**
      * Constructs a new {@code Client} object and creates proxies for all known
      * remote MBeans.
-     * 
+     *
      * @param mBeanServerConnection the MBean server connection through which to
      *            communicate with the remote mbeans
      * @throws MalformedObjectNameException if a problem occurred identifying
@@ -85,7 +86,7 @@ public class Client {
     /**
      * Returns a list of proxies that allow operations to be performed on the
      * remote {@code LoggerContextAdminMBean}s.
-     * 
+     *
      * @return a list of proxies to the remote {@code LoggerContextAdminMBean}s
      * @throws IOException If an I/O error occurred
      * @throws JMException If a management error occurred
@@ -111,17 +112,13 @@ public class Client {
      * to the MBeanServerConnection will fail.
      */
     public void close() {
-        try {
-            connector.close();
-        } catch (final IOException e) {
-            e.printStackTrace();
-        }
+        Closer.closeSilently(connector);
     }
 
     /**
      * Returns the MBean server connection through which to communicate with the
      * remote mbeans.
-     * 
+     *
      * @return the MBean server connection
      */
     public MBeanServerConnection getConnection() {
@@ -131,7 +128,7 @@ public class Client {
     /**
      * Returns the {@code StatusLoggerAdminMBean} associated with the specified
      * context name, or {@code null}.
-     * 
+     *
      * @param contextName search key
      * @return StatusLoggerAdminMBean or null
      * @throws MalformedObjectNameException If an object name is malformed
@@ -158,7 +155,7 @@ public class Client {
     /**
      * Returns {@code true} if the specified {@code ObjectName} is for a
      * {@code LoggerContextAdminMBean}, {@code false} otherwise.
-     * 
+     *
      * @param mbeanName the {@code ObjectName} to check.
      * @return {@code true} if the specified {@code ObjectName} is for a
      *         {@code LoggerContextAdminMBean}, {@code false} otherwise
@@ -172,7 +169,7 @@ public class Client {
     /**
      * Returns the {@code ObjectName} of the {@code StatusLoggerAdminMBean}
      * associated with the specified {@code LoggerContextAdminMBean}.
-     * 
+     *
      * @param loggerContextObjName the {@code ObjectName} of a
      *            {@code LoggerContextAdminMBean}
      * @return {@code ObjectName} of the {@code StatusLoggerAdminMBean}
