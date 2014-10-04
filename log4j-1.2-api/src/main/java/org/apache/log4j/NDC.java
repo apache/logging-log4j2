@@ -91,8 +91,8 @@ public final class NDC {
 
 
     /**
-     * <font color="#FF4040"><b>Never use this method directly.</b></font>
-     * 
+     * <strong style="color:#FF4040">Never use this method directly.</strong>
+     *
      * @return The string value of the specified key.
      */
     public static String get() {
@@ -187,9 +187,9 @@ public final class NDC {
      * <pre>
      * void foo() {
      * &nbsp;  int depth = NDC.getDepth();
-     * 
+     *
      * &nbsp;  ... complex sequence of calls
-     * 
+     *
      * &nbsp;  NDC.setMaxDepth(depth);
      * }
      * </pre>
