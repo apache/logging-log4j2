@@ -20,25 +20,27 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
   <properties>
-    <title>Log4j JDK Logging Adaptor</title>
+    <title>Log4j JDK Logging Adapter</title>
     <author email="mattsicker@apache.org">Matt Sicker</author>
   </properties>
   <body>
-    <section name="JDK Logging Adaptor">
+    <section name="JDK Logging Adapter">
       <p>
-        The JDK Logging Adaptor is a custom implementation of
+        The JDK Logging Adapter is a custom implementation of
         <a class="javadoc" href="http://docs.oracle.com/javase/6/docs/api/java/util/logging/LogManager.html">java.util.logging.LogManager</a>
-        that uses <a href="../log4j-core/index.html">Log4j</a>.
+        that uses <a href="../log4j-core/index.html">Log4j</a>. This adapter can be used with either the Log4j API or
+        Log4j Core. When used with the API, there are a couple features of JUL that aren't supported. However, this
+        does allow any other Log4j Provider besides the Core provider to be used with JUL.
       </p>
     </section>
     <section name="Requirements">
       <p>
-        The JDK Logging Adaptor requires at least Java 6 and is dependent on the Log4j API and optionally Log4j Core.
+        The JDK Logging Adapter requires at least Java 6 and is dependent on the Log4j API and optionally Log4j Core.
       </p>
     </section>
     <section name="Usage">
       <p>
-        To use the JDK Logging Adaptor, you must set the system property <code>java.util.logging.manager</code> to
+        To use the JDK Logging Adapter, you must set the system property <code>java.util.logging.manager</code> to
         <a class="javadoc" href="apidocs/org/apache/logging/log4j/jul/LogManager.html">org.apache.logging.log4j.jul.LogManager</a>
       </p>
       <p>
@@ -114,7 +116,7 @@
             <td><a class="javadoc" href="apidocs/org/apache/logging/log4j/jul/LevelTranslator.html#FINEST">FINEST</a></td>
           </tr>
           <tr>
-            <td>ALL</td>
+            <td><a class="javadoc" href="http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#ALL">ALL</a></td>
             <td>ALL</td>
           </tr>
         </tbody>

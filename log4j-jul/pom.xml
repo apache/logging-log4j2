@@ -30,7 +30,7 @@
   </properties>
 
   <artifactId>log4j-jul</artifactId>
-  <name>Apache Log4j JUL Adaptor</name>
+  <name>Apache Log4j JUL Adapter</name>
   <description>The Apache Log4j implementation of java.util.logging</description>
 
   <dependencies>
