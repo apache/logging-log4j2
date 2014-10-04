@@ -16,19 +16,15 @@
  */
 package org.apache.logging.slf4j;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.ext.XLogger;
-import org.slf4j.ext.XLoggerFactory;
 
+import static org.apache.logging.log4j.SerializableMatchers.serializesRoundTrip;
 import static org.junit.Assert.*;
 
 /**
@@ -43,19 +39,9 @@ public class SerializeTest {
     public static final InitialLoggerContext CTX = new InitialLoggerContext(CONFIG);
 
     Logger logger = LoggerFactory.getLogger("LoggerTest");
-    XLogger xlogger = XLoggerFactory.getXLogger("LoggerTest");
 
     @Test
     public void testLogger() throws Exception {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(logger);
-        final byte[] data = baos.toByteArray();
-        assertNotNull("No data", data);
-        assertTrue("No data", data.length > 0);
-        final ByteArrayInputStream bais = new ByteArrayInputStream(data);
-        final ObjectInputStream ois = new ObjectInputStream(bais);
-        final Logger copy = (org.slf4j.Logger) ois.readObject();
-        assertNotNull("Unable to restore logger", copy);
+        assertThat((Serializable) logger, serializesRoundTrip());
     }
 }
