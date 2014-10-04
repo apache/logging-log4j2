@@ -178,6 +178,7 @@
     <release.plugin.version>2.5.1</release.plugin.version>
     <scm.plugin.version>1.9.1</scm.plugin.version>
     <jxr.plugin.version>2.4</jxr.plugin.version>
+    <clirr.plugin.version>2.6.1</clirr.plugin.version>
     <manifestfile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestfile>
     <maven.compile.source>1.6</maven.compile.source>
     <maven.compile.target>1.6</maven.compile.target>
@@ -186,6 +187,8 @@
     <commons.logging.version>1.2</commons.logging.version>
     <osgi.api.version>4.3.1</osgi.api.version>
     <activemq.version>5.10.0</activemq.version>
+    <!-- Allow Clirr severity to be overriden by the command-line option -DminSeverity=level -->
+    <minSeverity>info</minSeverity>
   </properties>
   <pluginRepositories>
     <pluginRepository>
@@ -762,6 +765,14 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jxr-plugin</artifactId>
           <version>${jxr.plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>clirr-maven-plugin</artifactId>
+          <version>${clirr.plugin.version}</version>
+          <configuration>
+            <minSeverity>${minSeverity}</minSeverity>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
