@@ -73,14 +73,16 @@ public class ReflectionUtilTest {
     @Test
     public void testGetCurrentStackTrace() throws Exception {
         final Stack<Class<?>> classes = ReflectionUtil.getCurrentStackTrace();
-        Class<?> prev = null;
-        Class<?> next = null;
+        final Stack<Class<?>> reversed = new Stack<Class<?>>();
+        reversed.ensureCapacity(classes.size());
         while (!classes.empty()) {
-            prev = next;
-            next = classes.pop();
-//            System.out.println(next);
+            reversed.push(classes.pop());
         }
-        assertSame(ReflectionUtilTest.class, prev);
+        while (reversed.peek() != ReflectionUtil.class) {
+            reversed.pop();
+        }
+        reversed.pop(); // ReflectionUtil
+        assertSame(ReflectionUtilTest.class, reversed.pop());
     }
 
     @Test

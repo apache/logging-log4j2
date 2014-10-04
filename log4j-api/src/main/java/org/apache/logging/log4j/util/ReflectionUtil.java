@@ -90,19 +90,15 @@ public final class ReflectionUtil {
         JDK_7u25_OFFSET = java7u25CompensationOffset;
 
         PrivateSecurityManager psm;
-        if (!SUN_REFLECTION_SUPPORTED) {
-            try {
-                final SecurityManager sm = System.getSecurityManager();
-                if (sm != null) {
-                    sm.checkPermission(new RuntimePermission("createSecurityManager"));
-                }
-                psm = new PrivateSecurityManager();
-            } catch (final SecurityException ignored) {
-                LOGGER.debug(
-                    "Not allowed to create SecurityManager. Falling back to slowest ReflectionUtil implementation.");
-                psm = null;
+        try {
+            final SecurityManager sm = System.getSecurityManager();
+            if (sm != null) {
+                sm.checkPermission(new RuntimePermission("createSecurityManager"));
             }
-        } else {
+            psm = new PrivateSecurityManager();
+        } catch (final SecurityException ignored) {
+            LOGGER.debug(
+                "Not allowed to create SecurityManager. Falling back to slowest ReflectionUtil implementation.");
             psm = null;
         }
         SECURITY_MANAGER = psm;
@@ -227,17 +223,21 @@ public final class ReflectionUtil {
 
     // migrated from ThrowableProxy
     public static Stack<Class<?>> getCurrentStackTrace() {
+        // benchmarks show that using the SecurityManager is much faster than looping through getCallerClass(int)
+        if (SECURITY_MANAGER != null) {
+            final Class<?>[] array = SECURITY_MANAGER.getClassContext();
+            final Stack<Class<?>> classes = new Stack<Class<?>>();
+            classes.ensureCapacity(array.length);
+            for (final Class<?> clazz : array) {
+                classes.push(clazz);
+            }
+            return classes;
+        }
+        // slower version using getCallerClass where we cannot use a SecurityManager
         if (supportsFastReflection()) {
             final Stack<Class<?>> classes = new Stack<Class<?>>();
             Class<?> clazz;
             for (int i = 1; null != (clazz = getCallerClass(i)); i++) {
-                classes.push(clazz);
-            }
-            return classes;
-        } else if (SECURITY_MANAGER != null) {
-            final Class<?>[] array = SECURITY_MANAGER.getClassContext();
-            final Stack<Class<?>> classes = new Stack<Class<?>>();
-            for (final Class<?> clazz : array) {
                 classes.push(clazz);
             }
             return classes;
