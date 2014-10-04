@@ -20,6 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.spi.AbstractLoggerAdapter;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
+import org.apache.logging.log4j.util.ReflectionUtil;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,26 +41,7 @@ public class Log4jLoggerFactory extends AbstractLoggerAdapter<Logger> implements
 
     @Override
     protected LoggerContext getContext() {
-        final Throwable t = new Throwable();
-        boolean next = false;
-        boolean pkg = false;
-        String fqcn = LoggerFactory.class.getName();
-        // TODO: update with LOG4J2-809
-        for (final StackTraceElement element : t.getStackTrace()) {
-            if (FQCN.equals(element.getClassName())) {
-                next = true;
-                continue;
-            }
-            if (next && element.getClassName().startsWith(PACKAGE)) {
-                fqcn = element.getClassName();
-                pkg = true;
-                continue;
-            }
-            if (pkg) {
-                break;
-            }
-        }
-        return PrivateManager.getContext(fqcn);
+        return PrivateManager.getContext(ReflectionUtil.getCallerClass(FQCN, PACKAGE).getName());
     }
 
     /**
