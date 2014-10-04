@@ -183,6 +183,11 @@
       <action issue="LOG4J2-822" dev="ggregory" type="update">
         Update org.eclipse.persistence.jpa to 2.5.2 from 2.5.1.
       </action>
+      <action issue="LOG4J2-867" dev="ggregory" type="update">
+        FlumeAppender: maxDelay not in seconds, but milliseconds. 
+        Add time scale to some settings, for example maxDelayMillis instead of maxDelay.
+        The old names are aliased for compatibility.
+      </action>
     </release>
     <release version="2.0.2" date="2014-08-16" description="Bug fixes and enhancements">
       <action issue="LOG4J2-775" dev="ggregory" type="update">
