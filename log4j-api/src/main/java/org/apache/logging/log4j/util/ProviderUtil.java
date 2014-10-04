@@ -85,6 +85,9 @@ public final class ProviderUtil {
         }
     }
 
+    /**
+     * @deprecated Use {@link #loadProvider(java.net.URL, ClassLoader)} instead. Will be removed in 3.0.
+     */
     @Deprecated
     protected static void loadProviders(final Enumeration<URL> urls, final ClassLoader cl) {
         if (urls != null) {
