@@ -22,27 +22,26 @@ import java.util.Random;
 
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StringFormattedMessage;
-import org.openjdk.jmh.annotations.Benchmark;
 import org.apache.logging.log4j.util.ReflectionUtil;
+import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
-
 import sun.reflect.Reflection;
 
 /**
  * <p>
  * Benchmarks the different ways the caller class can be obtained. To run this in sampling mode (latency test):
  * </p>
- * 
+ *
  * <pre>
  *     java -jar benchmarks.jar ".*ReflectionBenchmark.*" -i 5 -f 1 -wi 5 -bm sample -tu ns
  * </pre>
  * <p>
  * To run this in throughput testing mode:
  * </p>
- * 
+ *
  * <pre>
  *     java -jar benchmarks.jar ".*ReflectionBenchmark.*" -i 5 -f 1 -wi 5 -bm Throughput -tu ms
  * </pre>
@@ -59,6 +58,14 @@ public class ReflectionBenchmark {
         @Setup(Level.Iteration)
         public void setup() {
             random = r.nextInt();
+        }
+    }
+
+    @State(Scope.Benchmark)
+    public static class ClassContextManager extends SecurityManager {
+        @Override
+        protected Class[] getClassContext() {
+            return super.getClassContext();
         }
     }
 
@@ -118,4 +125,21 @@ public class ReflectionBenchmark {
                 Object[].class);
         return constructor.newInstance("Hello %i", new Object[] { rng.random });
     }
+
+    @Benchmark
+    public Class<?>[] test11_getClassContextViaCallerClass() {
+        // let's not benchmark LinkedList or anything here
+        final Class<?>[] classes = new Class<?>[100];
+        Class<?> clazz;
+        for (int i = 0; null != (clazz = ReflectionUtil.getCallerClass(i)); i++) {
+            classes[i] = clazz;
+        }
+        return classes;
+    }
+
+    @Benchmark
+    public Class<?>[] test12_getClassContextViaSecurityManager(final ClassContextManager classContextManager) {
+        return classContextManager.getClassContext();
+    }
+
 }
