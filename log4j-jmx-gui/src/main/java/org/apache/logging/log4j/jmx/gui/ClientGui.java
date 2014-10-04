@@ -16,17 +16,14 @@
  */
 package org.apache.logging.log4j.jmx.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.Properties;
 import javax.management.InstanceNotFoundException;
 import javax.management.JMException;
 import javax.management.ListenerNotFoundException;
@@ -177,7 +174,12 @@ public class ClientGui extends JPanel implements NotificationListener {
 
     private void handleNotificationInAwtEventThread(final Notification notif, final Object paramObject) {
         if (StatusLoggerAdminMBean.NOTIF_TYPE_MESSAGE.equals(notif.getType())) {
-            final JTextArea text = statusLogTextAreaMap.get(paramObject);
+            if (!(paramObject instanceof ObjectName)) {
+                handle("Invalid notification object type", new ClassCastException(paramObject.getClass().getName()));
+                return;
+            }
+            final ObjectName param = (ObjectName) paramObject;
+            final JTextArea text = statusLogTextAreaMap.get(param);
             if (text != null) {
                 text.append(notif.getMessage() + '\n');
             }
@@ -258,10 +260,10 @@ public class ClientGui extends JPanel implements NotificationListener {
             serviceUrl = "service:jmx:rmi:///jndi/rmi://" + args[0] + "/jmxrmi";
         }
         final JMXServiceURL url = new JMXServiceURL(serviceUrl);
-        final Map<String, String> paramMap = new HashMap<String, String>();
-        for (final Object objKey : System.getProperties().keySet()) {
-            final String key = (String) objKey;
-            paramMap.put(key, System.getProperties().getProperty(key));
+        final Properties props = System.getProperties();
+        final Map<String, String> paramMap = new HashMap<String, String>(props.size());
+        for (final String key : props.stringPropertyNames()) {
+            paramMap.put(key, props.getProperty(key));
         }
         final JMXConnector connector = JMXConnectorFactory.connect(url, paramMap);
         final Client client = new Client(connector);
