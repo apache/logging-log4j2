@@ -185,6 +185,11 @@ public final class ReflectionUtil {
 
     // migrated from ClassLoaderContextSelector
     public static Class<?> getCallerClass(final String fqcn) {
+        return getCallerClass(fqcn, "");
+    }
+
+    // migrated from Log4jLoggerFactory
+    public static Class<?> getCallerClass(final String fqcn, final String pkg) {
         if (supportsFastReflection()) {
             boolean next = false;
             Class<?> clazz;
@@ -193,14 +198,14 @@ public final class ReflectionUtil {
                     next = true;
                     continue;
                 }
-                if (next) {
+                if (next && clazz.getName().startsWith(pkg)) {
                     return clazz;
                 }
             }
             return null;
         }
         if (SECURITY_MANAGER != null) {
-            return SECURITY_MANAGER.getCallerClass(fqcn);
+            return SECURITY_MANAGER.getCallerClass(fqcn, pkg);
         }
         boolean next = false;
         final StackTraceElement[] elements = new Throwable().getStackTrace();
@@ -211,7 +216,7 @@ public final class ReflectionUtil {
                     next = true;
                     continue;
                 }
-                if (next) {
+                if (next && className.startsWith(pkg)) {
                     return LoaderUtil.loadClass(className);
                 }
             }
@@ -252,7 +257,7 @@ public final class ReflectionUtil {
             return super.getClassContext();
         }
 
-        protected Class<?> getCallerClass(final String fqcn) {
+        protected Class<?> getCallerClass(final String fqcn, final String pkg) {
             final Class<?>[] classes = getClassContext();
             boolean next = false;
             for (final Class<?> clazz : classes) {
@@ -260,7 +265,7 @@ public final class ReflectionUtil {
                     next = true;
                     continue;
                 }
-                if (next) {
+                if (next && clazz.getName().startsWith(pkg)) {
                     return clazz;
                 }
             }
