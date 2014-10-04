@@ -19,6 +19,7 @@ package org.apache.logging.log4j.util;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.concurrent.locks.Lock;
@@ -75,6 +76,15 @@ public final class ProviderUtil {
             }
         } catch (final IOException e) {
             LOGGER.error("Unable to open {}", url, e);
+        }
+    }
+
+    @Deprecated
+    protected static void loadProviders(final Enumeration<URL> urls, final ClassLoader cl) {
+        if (urls != null) {
+            while (urls.hasMoreElements()) {
+                loadProvider(urls.nextElement(), cl);
+            }
         }
     }
 
