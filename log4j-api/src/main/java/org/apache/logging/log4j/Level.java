@@ -97,6 +97,9 @@ public final class Level implements Comparable<Level>, Serializable {
         ALL = new Level("ALL", StandardLevel.ALL.intLevel());
     }
 
+    /**
+     * @since 2.1
+     */
     public static final String CATEGORY = "Level";
 
     private final String name;

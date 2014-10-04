@@ -50,6 +50,12 @@ public final class ProviderUtil {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     protected static final Collection<Provider> PROVIDERS = new HashSet<Provider>();
+
+    /**
+     * Guards the ProviderUtil singleton instance from lazy initialization. This is primarily used for OSGi support.
+     *
+     * @since 2.1
+     */
     protected static final Lock STARTUP_LOCK = new ReentrantLock();
     // STARTUP_LOCK guards INSTANCE for lazy initialization; this allows the OSGi Activator to pause the startup and
     // wait for a Provider to be installed. See LOG4J2-373
@@ -98,6 +104,11 @@ public final class ProviderUtil {
         return !PROVIDERS.isEmpty();
     }
 
+    /**
+     * Lazily initializes the ProviderUtil singleton.
+     *
+     * @since 2.1
+     */
     protected static void lazyInit() {
         //noinspection DoubleCheckedLocking
         if (INSTANCE == null) {
