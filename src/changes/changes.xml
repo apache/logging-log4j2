@@ -173,9 +173,11 @@
       </action>
       <action issue="LOG4J2-800" dev="ggregory" type="update">
         All life cycle implementations should be serializable.
+        This is still work in progress.
       </action>
       <action issue="LOG4J2-801" dev="ggregory" type="update">
         org.apache.logging.log4j.core.Logger should be serializable.
+        This is still work in progress.
       </action>
       <action issue="LOG4J2-810" dev="ggregory" type="update">
         Update javax.mail to 1.5.2 from 1.5.0.
