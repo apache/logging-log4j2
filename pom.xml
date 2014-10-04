@@ -160,7 +160,7 @@
     <Log4jReleaseKey>FA1C814D</Log4jReleaseKey>
     <!-- note that any properties you want available in velocity templates must not use periods! -->
     <slf4j.version>1.7.7</slf4j.version>
-    <logback.version>1.0.13</logback.version>
+    <logback.version>1.1.2</logback.version>
     <jackson1.version>1.9.13</jackson1.version>
     <jackson2.version>2.4.2</jackson2.version>
     <spring.version>3.2.11.RELEASE</spring.version>
