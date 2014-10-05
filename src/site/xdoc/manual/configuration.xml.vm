@@ -900,12 +900,12 @@ public class Bar {
                 <td>jvmrunargs</td>
                 <td>
                   A JVM input argument accessed through JMX, but not a main argument;
-                  see <a class="javadoc" href="http://docs.oracle.com/javase/8/docs/api/java/lang/management/RuntimeMXBean.html#getInputArguments--">RuntimeMXBean.getInputArguments()</a>.
+                  see <a class="javadoc" href="http://docs.oracle.com/javase/6/docs/api/java/lang/management/RuntimeMXBean.html#getInputArguments--">RuntimeMXBean.getInputArguments()</a>.
                   Not available on Android.</td>
               </tr>
               <tr>
                 <td>main</td>
-                <td>A value set with <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/MapLookup.html#setMainArguments%28java.lang.String[]%29">MapLookup.setMainArguments(String[])</a></td>
+                <td>A value set with <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/MapLookup.html#setMainArguments-java.lang.String:A-">MapLookup.setMainArguments(String[])</a></td>
               </tr>
               <tr>
                 <td>map</td>
@@ -1022,7 +1022,7 @@ public class Bar {
             logging has not been configured, "normal" logging cannot be used during initialization. In addition,
             normal logging within appenders could create infinite recursion which Log4j will detect and cause
             the recursive events to be ignored. To accomodate this need, the Log4j 2 API includes a
-            <a href="../log4j-api/apidocs/org/apache/logging/log4j/status/StatusLogger.html">StatusLogger</a>.
+            <a class="javadoc" href="../log4j-api/apidocs/org/apache/logging/log4j/status/StatusLogger.html">StatusLogger</a>.
             Components declare an instance of the StatusLogger similar to:
           </p>
           <pre class="prettyprint">protected final static Logger logger = StatusLogger.getLogger();</pre>
