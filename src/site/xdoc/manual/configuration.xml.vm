@@ -63,18 +63,22 @@
           <p>
             Log4j has the ability to automatically configure itself during initialization.
             When Log4j starts it will locate all the ConfigurationFactory plugins and arrange then in weighted
-            order from highest to lowest. As delivered, Log4j contains two ConfigurationFactory implementations,
-            one for JSON and one for XML.
+            order from highest to lowest. As delivered, Log4j contains three ConfigurationFactory implementations:
+            one for JSON, one for YAML, and one for XML.
           </p>
             <ol>
               <li>Log4j will inspect the "log4j.configurationFile" system property and, if set,  will attempt to
                 load the configuration using the <code>ConfigurationFactory</code> that matches the file
                 extension.</li>
-              <li>If no system property is set the JSON ConfigurationFactory will look for log4j2-test.json or
+              <li>If no system property is set the YAML ConfigurationFactory will look for log4j2-test.yaml or
+                log4j2-test.yml in the classpath.</li>
+              <li>If no such file is found the JSON ConfigurationFactory will look for log4j2-test.json or
                 log4j2-test.jsn in the classpath.</li>
               <li>If no such file is found the XML ConfigurationFactory will look for log4j2-test.xml in the
                 classpath.</li>
-              <li>If a test file cannot be located the JSON ConfigurationFactory will look for log4j2.json or log4j2.jsn
+              <li>If a test file cannot be located the YAML ConfigurationFactory will look for log4j2.yaml or log4j2.yml
+                on the classpath.</li>
+              <li>If a YAML file cannot be located the JSON ConfigurationFactory will look for log4j2.json or log4j2.jsn
                 on the classpath.</li>
               <li>If a JSON file cannot be located the XML ConfigurationFactory will try to locate
                 log4j2.xml on the classpath.</li>
@@ -84,7 +88,7 @@
           <p>An example application named <code>MyApp</code> that uses log4j can be used to illustrate how
             this is done.
           </p>
-<pre class="prettyprint linenums">
+<pre class="prettyprint linenums"><![CDATA[
 import com.foo.Bar;
 
 // Import log4j classes.
@@ -93,21 +97,23 @@ import org.apache.logging.log4j.LogManager;
 
 public class MyApp {
 
-// Define a static logger variable so that it references the
-// Logger instance named "MyApp".
-static final Logger logger = LogManager.getLogger(MyApp.class.getName());
+    // Define a static logger variable so that it references the
+    // Logger instance named "MyApp".
+    private static final Logger logger = LogManager.getLogger(MyApp.class);
 
-public static void main(String[] args) {
+    public static void main(final String... args) {
 
-// Set up a simple configuration that logs on the console.
+        // Set up a simple configuration that logs on the console.
 
-logger.trace("Entering application.");
-Bar bar = new Bar();
-if (!bar.doIt()) {
-  logger.error("Didn't do it.");
+        logger.trace("Entering application.");
+        Bar bar = new Bar();
+        if (!bar.doIt()) {
+            logger.error("Didn't do it.");
+        }
+        logger.trace("Exiting application.");
+    }
 }
-logger.trace("Exiting application.");                 }
-}</pre>
+]]></pre>
           <p>
             <code>MyApp</code> begins by importing log4j related classes. It
             then defines a static logger variable with the name <code>MyApp</code>
@@ -116,7 +122,7 @@ logger.trace("Exiting application.");                 }
           <p>
             <code>MyApp</code> uses the <code>Bar</code> class defined in the package<code>com.foo</code>.
           </p>
-<pre class="prettyprint linenums">
+<pre class="prettyprint linenums"><![CDATA[
 package com.foo;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -129,15 +135,16 @@ public class Bar {
     logger.error("Did it again!");
     return logger.exit(false);
   }
-}</pre>
+}
+]]></pre>
           <p>
             Log4j will provide a default configuration if it cannot locate a configuration file. The default
             configuration, provided in the DefaultConfiguration class, will set up:
           </p>
             <ul>
-              <li>A <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/appender/ConsoleAppender.html">ConsoleAppender</a>
+              <li>A <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/appender/ConsoleAppender.html">ConsoleAppender</a>
                 attached to the root logger.</li>
-              <li>A <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/layout/PatternLayout.html">PatternLayout</a>
+              <li>A <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/layout/PatternLayout.html">PatternLayout</a>
                 set to the pattern "%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" attached to the ConsoleAppender</li>
             </ul>
           <p>
@@ -145,9 +152,10 @@ public class Bar {
           </p>
           <p>The output of MyApp would be similar to:
           </p>
-<pre class="prettyprint linenums">
+<pre><![CDATA[
 17:13:01.540 [main] ERROR com.foo.Bar - Did it again!
-17:13:01.540 [main] ERROR MyApp - Didn't do it.</pre>
+17:13:01.540 [main] ERROR MyApp - Didn't do it.
+]]></pre>
           <p>
             As was described previously, Log4j will first attempt to configure itself from configuration files. A
             configuration equivalent to the default would look like:
@@ -165,34 +173,37 @@ public class Bar {
       <AppenderRef ref="Console"/>
     </Root>
   </Loggers>
-</Configuration>]]></pre>
-            <p>
+</Configuration>
+]]></pre>
+          <p>
             Once the file above is placed into the classpath as log4j2.xml you will get results identical to
             those listed above. Changing the root level to trace will result in results similar to:
-            </p>
-             <pre>
+          </p>
+          <pre><![CDATA[
 17:13:01.540 [main] TRACE MyApp - Entering application.
 17:13:01.540 [main] TRACE com.foo.Bar - entry
 17:13:01.540 [main] ERROR com.foo.Bar - Did it again!
 17:13:01.540 [main] TRACE com.foo.Bar - exit with (false)
 17:13:01.540 [main] ERROR MyApp - Didn't do it.
-17:13:01.540 [main] TRACE MyApp - Exiting application.</pre>
+17:13:01.540 [main] TRACE MyApp - Exiting application.
+]]></pre>
           <p>
             Note that status logging is disabled when the default configuration is used.
           </p>
           <p>
-            Perhaps it is desired to eliminate all the TRACE output from everything except <code>com.foo.Bar</code>. Simply
-            changing the log level would not accomplish the task. Instead, the solution is to
+            Perhaps it is desired to eliminate all the TRACE output from everything except <code>com.foo.Bar</code>.
+            Simply changing the log level would not accomplish the task. Instead, the solution is to
             add a new logger definition to the configuration:
           </p>
             <pre class="prettyprint linenums"><![CDATA[
-<logger name="com.foo.Bar" level="TRACE"/>
+<Logger name="com.foo.Bar" level="TRACE"/>
 <Root level="ERROR">
   <AppenderRef ref="STDOUT">
-</Root>]]></pre>
+</Root>
+]]></pre>
           <p>
-            With this configuration all log events from <code>com.foo.Bar</code> will be recorded while only error events will
-            be recorded from all other components.
+            With this configuration all log events from <code>com.foo.Bar</code> will be recorded while only error
+            events will be recorded from all other components.
           </p>
         </subsection>
         <a name="Additivity"/>
@@ -218,15 +229,17 @@ public class Bar {
       <AppenderRef ref="Console"/>
     </Root>
   </Loggers>
-</Configuration>]]></pre>
+</Configuration>
+]]></pre>
           <p>would result in</p>
-             <pre class="prettyprint linenums">
+          <pre><![CDATA[
 17:13:01.540 [main] TRACE com.foo.Bar - entry
 17:13:01.540 [main] TRACE com.foo.Bar - entry
 17:13:01.540 [main] ERROR com.foo.Bar - Did it again!
 17:13:01.540 [main] TRACE com.foo.Bar - exit (false)
 17:13:01.540 [main] TRACE com.foo.Bar - exit (false)
-17:13:01.540 [main] ERROR MyApp - Didn't do it.</pre>
+17:13:01.540 [main] ERROR MyApp - Didn't do it.
+]]></pre>
           <p>Notice that the trace messages from <code>com.foo.Bar</code> appear twice. This is because the appender associated
             with logger <code>com.foo.Bar</code> is first used, which writes the first instance to the Console. Next, the parent
             of <code>com.foo.Bar</code>, which in this case is the root logger, is referenced. The event is then passed to its
@@ -235,7 +248,8 @@ public class Bar {
             no appender reference needed to be configured), in many cases this behavior is considered undesirable
             and so it is possible to disable it by setting the additivity attribute on the logger to false:
           </p>
-           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+          <pre class="prettyprint linenums"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
   <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
@@ -250,7 +264,8 @@ public class Bar {
       <AppenderRef ref="Console"/>
     </Root>
   </Loggers>
-</Configuration>]]></pre>
+</Configuration>
+]]></pre>
           <p>
             Once an event reaches a logger with its additivity set to false the event will not be passed to
             any of its parent loggers, regardless of their additivity setting.
@@ -270,7 +285,8 @@ public class Bar {
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration monitorInterval="30">
 ...
-</Configuration>]]></pre>
+</Configuration>
+]]></pre>
         </subsection>
         <a name="ChainsawSupport"/>
         <subsection name="Chainsaw can automatically process your log files (Advertising appender configurations)">
@@ -331,7 +347,8 @@ public class Bar {
   <File name="File1" fileName="output.log" bufferedIO="false" advertiseURI="file://path/to/output.log" advertise="true">
   ...
   </File>
-</Appenders>]]></pre>
+</Appenders>
+]]></pre>
 </subsection>
         <a name="ConfigurationSyntax"/>
         <subsection name="Configuration Syntax">
@@ -412,11 +429,11 @@ public class Bar {
             and attribute names are are not case sensitive. In addition, attributes can either be specified
             as an XML attribute or as an XML element that has no attributes and has a text value. So
           </p>
-          <pre class="prettyprint"><![CDATA[<patternLayout pattern="%m%n"/>]]></pre>
+          <pre class="prettyprint"><![CDATA[<PatternLayout pattern="%m%n"/>]]></pre>
           <p>and</p>
           <pre class="prettyprint"><![CDATA[
 <PatternLayout>
-  <pattern>%m%n</pattern>
+  <Pattern>%m%n</Pattern>
 </PatternLayout>]]></pre>
           <p>
             are equivalent.
@@ -449,7 +466,8 @@ public class Bar {
       <AppenderRef ref="name"/>
     </Root>
   </Loggers>
-</Configuration>]]></pre>
+</Configuration>
+]]></pre>
           <p>
             See the many examples on this page for sample appender, filter and logger declarations.
           </p>
@@ -484,7 +502,8 @@ public class Bar {
       <AppenderRef ref="name"/>
     </Root>
   </Loggers>
-</Configuration>]]></pre>
+</Configuration>
+]]></pre>
           <p>
             Below is a sample configuration using the strict format.
           </p>
@@ -512,7 +531,7 @@ public class Bar {
         <Filter type="MarkerFilter" marker="EXCEPTION" onMatch="ACCEPT" onMismatch="DENY"/>
       </Filters>
     </Appender>
-    <Appender type="File" name="File" fileName="${filename}">
+    <Appender type="File" name="File" fileName="${dollar}{filename}">
       <Layout type="PatternLayout">
         <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
       </Layout>
@@ -538,7 +557,8 @@ public class Bar {
     </Root>
   </Loggers>
 
-</Configuration>]]></pre>
+</Configuration>
+]]></pre>
         <a name="JSON"/>
           <h4>Configuration with JSON</h4>
           <p>
@@ -549,7 +569,7 @@ public class Bar {
             plugins while the Console plugin will be assigned a value of STDOUT for its name attribute and the
             ThresholdFilter will be assigned a level of debug.
           </p>
-          <pre class="prettyprint linenums">
+          <pre class="prettyprint linenums"><![CDATA[
 { "configuration": { "status": "error", "name": "RoutingTest",
                      "packages": "org.apache.logging.log4j.test",
       "properties": {
@@ -587,7 +607,8 @@ public class Bar {
       "root": { "level": "error", "AppenderRef": { "ref": "STDOUT" }}
     }
   }
-}</pre>
+}
+]]></pre>
            <p>
             Note that in the RoutingAppender the Route element has been declared as an array. This is
             valid because each array element will be a Route component. This won't work for elements such as
@@ -596,7 +617,8 @@ public class Bar {
             that contains the type of the appender. The following example illustrates this as well as how to
             declare multiple loggers as an array.
           </p>
-           <pre class="prettyprint linenums">{ "configuration": { "status": "debug", "name": "RoutingTest",
+           <pre class="prettyprint linenums"><![CDATA[
+{ "configuration": { "status": "debug", "name": "RoutingTest",
                       "packages": "org.apache.logging.log4j.test",
       "properties": {
         "property": { "name": "filename",
@@ -635,7 +657,8 @@ public class Bar {
       "root": { "level": "error", "AppenderRef": { "ref": "STDOUT" }}
     }
   }
-}</pre>
+}
+]]></pre>
           <p>
             The JSON support uses the Jackson Data Processor to parse the JSON files. These dependencies must be added
             to a project that wants to use JSON for configuration:
@@ -644,20 +667,21 @@ public class Bar {
 <dependency>
   <groupId>com.fasterxml.jackson.core</groupId>
   <artifactId>jackson-core</artifactId>
-  <version>2.2.2</version>
+  <version>2.4.2</version>
 </dependency>
 
 <dependency>
   <groupId>com.fasterxml.jackson.core</groupId>
   <artifactId>jackson-databind</artifactId>
-  <version>2.2.2</version>
+  <version>2.4.2</version>
 </dependency>
 
 <dependency>
   <groupId>com.fasterxml.jackson.core</groupId>
   <artifactId>jackson-annotations</artifactId>
-  <version>2.2.2</version>
-</dependency>]]></pre>
+  <version>2.4.2</version>
+</dependency>
+]]></pre>
         <a name="Loggers"/>
           <h4>Configuring loggers</h4>
           <p>
@@ -729,7 +753,8 @@ public class Bar {
             allows any number of <code>filter</code> elements to be configured within it. The following example
             shows how multiple filters can be configured on the ConsoleAppender.
           </p>
-          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+          <pre class="prettyprint linenums"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="debug" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
   <Properties>
     <Property name="filename">target/test.log</Property>
@@ -780,7 +805,8 @@ public class Bar {
     </Root>
   </Loggers>
 
-</Configuration>]]></pre>
+</Configuration>
+]]></pre>
         </subsection>
         <a name="PropertySubstitution"/>
         <subsection name="Property Substitution">
@@ -789,13 +815,14 @@ public class Bar {
             elsewhere. Some of these properties will be resolved when the configuration file is interpreted while
             others may be passed to components where they will be evaluated at runtime. To accomplish this, Log4j
             uses variations of <a href="https://commons.apache.org/proper/commons-lang/">Apache Commons Lang</a>'s
-            <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/StrSubstitutor">StrSubstitutor</a>
-            and <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/StrLookup">StrLookup</a>
-            classes. In a manner similar to Ant or Maven, this allows variables declared as <code>${name}</code>
+            <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/StrSubstitutor.html">StrSubstitutor</a>
+            and <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/StrLookup.html">StrLookup</a>
+            classes. In a manner similar to Ant or Maven, this allows variables declared as <code>${dollar}{name}</code>
             to be resolved using properties declared in the configuration itself. For example, the following example
             shows the filename for the rolling file appender being declared as a property.
           </p>
-<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+          <pre class="prettyprint linenums"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="debug" name="RoutingTest" packages="org.apache.logging.log4j.test">
   <Properties>
     <Property name="filename">target/rolling1/rollingtest-${dollar}${dollar}{sd:type}.log</Property>
@@ -836,7 +863,8 @@ public class Bar {
     </Root>
   </Loggers>
 
-</Configuration>]]></pre>
+</Configuration>
+]]></pre>
           <p>
             While this is useful, there are many more places properties can originate from. To accommodate this,
             Log4j also supports the syntax <code>${dollar}{prefix:name}</code> where the prefix identifies tells Log4j
@@ -871,13 +899,13 @@ public class Bar {
               <tr>
                 <td>jvmrunargs</td>
                 <td>
-                  A JVM input argument accessed through JMX, but not a main argument; 
-                  see <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/management/RuntimeMXBean.html#getInputArguments--">RuntimeMXBean.html#getInputArguments()</a>.
+                  A JVM input argument accessed through JMX, but not a main argument;
+                  see <a class="javadoc" href="http://docs.oracle.com/javase/8/docs/api/java/lang/management/RuntimeMXBean.html#getInputArguments--">RuntimeMXBean.getInputArguments()</a>.
                   Not available on Android.</td>
               </tr>
               <tr>
                 <td>main</td>
-                <td>A value set with <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/MapLookup.html#setMainArguments%28java.lang.String[]%29">MapLookup.setMainArguments(String[])</a></td>
+                <td>A value set with <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/MapLookup.html#setMainArguments%28java.lang.String[]%29">MapLookup.setMainArguments(String[])</a></td>
               </tr>
               <tr>
                 <td>map</td>
@@ -917,13 +945,15 @@ public class Bar {
             the variable declaration will be returned as the value. Default values may be declared in the configuration
             by doing:
           </p>
-          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+          <pre class="prettyprint linenums"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
 <Configuration>
   <Properties>
     <Property name="type">Audit</property>
   </Properties>
   ...
-</Configuration>]]></pre>
+</Configuration>
+]]></pre>
           <p>
             <i>As a footnote, it is worth pointing out that the variables in the RollingFile appender declaration
             will also not be evaluated when the configuration is processed. This is simply because the resolution
@@ -937,7 +967,8 @@ public class Bar {
             XML configuration files can include other files with <a href="http://www.xml.com/lpt/a/1009">XInclude</a>.
             Here is an example log4j2.xml file that includes two other files:
           </p>
-          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+          <pre class="prettyprint linenums"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
 <configuration xmlns:xi="http://www.w3.org/2001/XInclude"
                status="warn" name="XIncludeDemo">
   <properties>
@@ -946,37 +977,42 @@ public class Bar {
   <ThresholdFilter level="debug"/>
   <xi:include href="log4j-xinclude-appenders.xml" />
   <xi:include href="log4j-xinclude-loggers.xml" />
-</configuration>]]></pre>
+</configuration>
+]]></pre>
           <p>log4j-xinclude-appenders.xml:</p>
-          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+          <pre class="prettyprint linenums"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
 <appenders>
   <Console name="STDOUT">
     <PatternLayout pattern="%m%n" />
   </Console>
-  <File name="File" fileName="${filename}" bufferedIO="true" immediateFlush="true">
+  <File name="File" fileName="${dollar}{filename}" bufferedIO="true" immediateFlush="true">
     <PatternLayout>
       <pattern>%d %p %C{1.} [%t] %m%n</pattern>
     </PatternLayout>
   </File>
-</appenders>]]></pre>
+</appenders>
+]]></pre>
           <p>log4j-xinclude-loggers.xml:</p>
-          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+          <pre class="prettyprint linenums"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
 <loggers>
   <logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
     <ThreadContextMapFilter>
       <KeyValuePair key="test" value="123" />
     </ThreadContextMapFilter>
-    <appender-ref ref="STDOUT" />
+    <AppenderRef ref="STDOUT" />
   </logger>
 
   <logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
-    <appender-ref ref="File" />
+    <AppenderRef ref="File" />
   </logger>
 
   <root level="error">
-    <appender-ref ref="STDOUT" />
+    <AppenderRef ref="STDOUT" />
   </root>
-</loggers>]]></pre>
+</loggers>
+]]></pre>
         </subsection>
         <a name="StatusMessages"/>
         <subsection name="Status Messages">
@@ -1002,9 +1038,9 @@ public class Bar {
             configuration has the status attribute set to debug.
           </p>
 
-<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>;
-<Configuration status="debug" name="RoutingTest"
-               packages="org.apache.logging.log4j.test">
+          <pre class="prettyprint linenums"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>;
+<Configuration status="debug" name="RoutingTest">
   <Properties>
     <Property name="filename">target/rolling1/rollingtest-${dollar}${dollar}{sd:type}.log</Property>
   </Properties>
@@ -1044,7 +1080,8 @@ public class Bar {
     </Root>
   </Loggers>
 
-</Configuration>]]></pre>
+</Configuration>
+]]></pre>
             <p>
             During startup this configuration produces:
             </p>
@@ -1098,9 +1135,9 @@ public class Bar {
        AppenderRef={Routing}, null)
 2011-11-23 17:08:00,830 DEBUG Calling createAppenderRef on class org.apache.logging.log4j.core.
        config.plugins.AppenderRefPlugin for element AppenderRef with params(ref="STDOUT")</pre>
-            <pre class="prettyprint linenums">
+            <pre>
 2011-11-23 17:08:00,831 DEBUG Calling createLogger on class org.apache.logging.log4j.core.config.
-       LoggerConfig$RootLogger for element root with params(additivity="null", level="error",
+       LoggerConfig${dollar}RootLogger for element root with params(additivity="null", level="error",
        AppenderRef={STDOUT}, null)
 2011-11-23 17:08:00,833 DEBUG Calling createLoggers on class org.apache.logging.log4j.core.
        config.plugins.LoggersPlugin for element loggers with params(loggers={EventLogger, root})
@@ -1120,7 +1157,7 @@ public class Bar {
        PatternLayout(%d %p %c{1.} [%t] %m%n), null, ignoreExceptions="null")
 2011-11-23 17:08:00,858 DEBUG Generated plugins in 0.002014000 seconds
 2011-11-23 17:08:00,889 DEBUG Reconfiguration started for context sun.misc.
-       Launcher$AppClassLoader@37b90b39
+       Launcher${dollar}AppClassLoader@37b90b39
 2011-11-23 17:08:00,890 DEBUG Generated plugins in 0.001355000 seconds
 2011-11-23 17:08:00,959 DEBUG Generated plugins in 0.001239000 seconds
 2011-11-23 17:08:00,961 DEBUG Generated plugins in 0.001197000 seconds
@@ -1147,14 +1184,14 @@ public class Bar {
 2011-11-23 17:08:00,828 DEBUG Calling createAppenderRef on class org.apache.logging.log4j.core.config.plugins.AppenderRefPlugin for element AppenderRef with params(ref="Routing")
 2011-11-23 17:08:00,829 DEBUG Calling createLogger on class org.apache.logging.log4j.core.config.LoggerConfig for element logger with params(additivity="false", level="info", name="EventLogger", AppenderRef={Routing}, null)
 2011-11-23 17:08:00,830 DEBUG Calling createAppenderRef on class org.apache.logging.log4j.core.config.plugins.AppenderRefPlugin for element AppenderRef with params(ref="STDOUT")
-2011-11-23 17:08:00,831 DEBUG Calling createLogger on class org.apache.logging.log4j.core.config.LoggerConfig$RootLogger for element root with params(additivity="null", level="error", AppenderRef={STDOUT}, null)
+2011-11-23 17:08:00,831 DEBUG Calling createLogger on class org.apache.logging.log4j.core.config.LoggerConfig${dollar}RootLogger for element root with params(additivity="null", level="error", AppenderRef={STDOUT}, null)
 2011-11-23 17:08:00,833 DEBUG Calling createLoggers on class org.apache.logging.log4j.core.config.LoggersPlugin for element loggers with params(loggers={EventLogger, root})
 2011-11-23 17:08:00,834 DEBUG Reconfiguration completed
 2011-11-23 17:08:00,846 DEBUG Calling createLayout on class org.apache.logging.log4j.core.layout.PatternLayout for element PatternLayout with params(pattern="%d %p %c{1.} [%t] %m%n", Configuration(RoutingTest), null, charset="null")
 2011-11-23 17:08:00,849 DEBUG Calling createPolicy on class org.apache.logging.log4j.core.appender.rolling.SizeBasedTriggeringPolicy for element SizeBasedTriggeringPolicy with params(size="500")
 2011-11-23 17:08:00,851 DEBUG Calling createAppender on class org.apache.logging.log4j.core.appender.RollingFileAppender for element RollingFile with params(fileName="target/rolling1/rollingtest-Unknown.log", filePattern="target/rolling1/test1-Unknown.%i.log.gz", append="null", name="Rolling-Unknown", bufferedIO="null", immediateFlush="null", SizeBasedTriggeringPolicy(SizeBasedTriggeringPolicy(size=500)), null, PatternLayout(%d %p %c{1.} [%t] %m%n), null, ignoreExceptions="null")
 2011-11-23 17:08:00,858 DEBUG Generated plugins in 0.002014000 seconds
-2011-11-23 17:08:00,889 DEBUG Reconfiguration started for context sun.misc.Launcher$AppClassLoader@37b90b39
+2011-11-23 17:08:00,889 DEBUG Reconfiguration started for context sun.misc.Launcher${dollar}AppClassLoader@37b90b39
 2011-11-23 17:08:00,890 DEBUG Generated plugins in 0.001355000 seconds
 2011-11-23 17:08:00,959 DEBUG Generated plugins in 0.001239000 seconds
 2011-11-23 17:08:00,961 DEBUG Generated plugins in 0.001197000 seconds
@@ -1165,24 +1202,25 @@ public class Bar {
             If the status attribute is set to error than only error messages will be written to the console. This
             makes troubleshooting configuration errors possible. As an example, if the configuration above is changed
             to have the status set to error and the logger declaration is:</p>
-<pre class="prettyprint linenums"><![CDATA[<logger name="EventLogger" level="info" additivity="false">
+          <pre class="prettyprint linenums"><![CDATA[
+<logger name="EventLogger" level="info" additivity="false">
   <AppenderRef ref="Routng"/>
-</logger>]]></pre>
+</logger>
+]]></pre>
           <p>
             the following error message will be produced.
           </p>
-            <pre class="prettyprint linenums">
-2011-11-24 23:21:25,517 ERROR Unable to locate appender Routng for logger EventLogger</pre>
+          <pre>2011-11-24 23:21:25,517 ERROR Unable to locate appender Routng for logger EventLogger</pre>
           <p>
             Applications may wish to direct the status output to some other destination. This can be accomplished
             by setting the dest attribute to either "err" to send the output to stderr or to a file location or URL.
             This can also be done by insuring the configured status is set to OFF and then configuring the application
             programmatically such as:
           </p>
-<pre class="prettyprint linenums">
+<pre class="prettyprint linenums"><![CDATA[
 StatusConsoleListener listener = new StatusConsoleListener(Level.ERROR);
-((StatusLogger) logger).registerListener(listener);
-</pre>
+StatusLogger.getLogger().registerListener(listener);
+]]></pre>
         </subsection>
         <a name="UnitTestingInMaven"/>
         <subsection name="Testing in Maven">
@@ -1198,6 +1236,28 @@ StatusConsoleListener listener = new StatusConsoleListener(Level.ERROR);
           in the method annotated with @BeforeClass in the junit test class. This will allow an arbitrarily
           named file to be used during the test.
         </p>
+          <p>
+            A third approach, also used extensively by Log4j 2, is to use the <code>InitialLoggerContext</code>
+            JUnit test rule which provides additional convenience methods for testing. This requires adding the
+            <code>log4j-core</code> <code>test-jar</code> dependency to your test scope dependencies. For example:
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+public class AwesomeTest {
+    @Rule
+    public InitialLoggerContext init = new InitialLoggerContext("MyTestConfig.xml");
+
+    @Test
+    public void testSomeAwesomeFeature() {
+        final LoggerContext ctx = init.getContext();
+        final Logger logger = init.getLogger("org.apache.logging.log4j.my.awesome.test.logger");
+        final Configuration cfg = init.getConfiguration();
+        final ListAppender app = init.getListAppender("List");
+        logger.warn("Test message");
+        final List<LogEvent> events = app.getEvents();
+        // etc.
+    }
+}
+]]></pre>
         </subsection>
         <a name="SystemProperties"/>
         <subsection name="System Properties">
@@ -1229,7 +1289,8 @@ StatusConsoleListener listener = new StatusConsoleListener(Level.ERROR);
       <tt>org.apache.logging.log4j.core.async.AsyncLoggerContextSelector</tt> - makes <a href="async.html">all loggers asynchronous</a>.<br />
       <tt>org.apache.logging.log4j.core.selector.BasicContextSelector</tt> - creates a single shared LoggerContext.<br />
       <tt>org.apache.logging.log4j.core.selector.ClassLoaderContextSelector</tt> - separate LoggerContexts for each web application.<br />
-      <tt>org.apache.logging.log4j.core.selector.JndiContextSelector</tt> - use JNDI to locate each web application's LoggerContext.
+      <tt>org.apache.logging.log4j.core.selector.JndiContextSelector</tt> - use JNDI to locate each web application's LoggerContext.<br/>
+      <tt>org.apache.logging.log4j.core.osgi.BundleContextSelector</tt> - separate LoggerContexts for each OSGi bundle.
     </td>
   </tr>
   <tr>
