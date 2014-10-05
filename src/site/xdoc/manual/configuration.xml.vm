@@ -1263,6 +1263,7 @@ public class AwesomeTest {
         <subsection name="System Properties">
         <p>
           Below follows a number of system properties that can be used to control Log4j 2 behaviour.
+          Any spaces present in the property name are for visual flow and should be removed.
         </p>
 <table>
   <caption align="top">Log4j 2 System Properties</caption>
@@ -1320,10 +1321,30 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
+    <td>log4j.shutdownHookEnabled</td>
+    <td>true</td>
+    <td>
+      Overrides the global flag for whether or not a shutdown hook should be used to stop a <tt>LoggerContext</tt>.
+      By default, this is enabled and can be disabled on a per-configuration basis. When running with the
+      <tt>log4j-web</tt> module, this is automatically disabled.
+    </td>
+  </tr>
+  <tr>
+    <td>log4j.shutdownRegistrationStrategy</td>
+    <!-- deliberately inserted spaces to allow line break -->
+    <td>org.apache.logging .log4j.core.util .DefaultShutdownRegistrationStrategy</td>
+    <td>
+      Fully specified class name of a class implementing
+      <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/util/ShutdownRegistrationStrategy.html">ShutdownRegistrationStrategy</a>.
+      If specified, an instance of this class is used instead of <tt>DefaultShutdownRegistrationStrategy</tt>.
+      The specified class must have a default constructor.
+    </td>
+  </tr>
+  <tr>
     <td>log4j.Clock</td>
     <td>SystemClock</td>
     <td>
-      Implementation of the <tt>org.apache.logging.log4j.core.helpers.Clock</tt>
+      Implementation of the <tt>org.apache.logging.log4j.core.util.Clock</tt>
       interface that is used for timestamping the log events.
       <br />
       By default, <tt>System.currentTimeMillis</tt> is called on every log event.
