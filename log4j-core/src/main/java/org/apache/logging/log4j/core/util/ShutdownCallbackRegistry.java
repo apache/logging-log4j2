@@ -21,17 +21,18 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 
 /**
- * Strategy used for registering shutdown hook threads. Due to differing requirements of how late in the JVM lifecycle
- * Log4j should be shut down, this interface is provided for customizing how to register shutdown hook threads.
+ * Registry used for Runnable shutdown callback instances. Due to differing requirements of how late in the JVM
+ * lifecycle Log4j should be shut down, this interface is provided for customizing how to register shutdown hook
+ * callbacks. Implementations may optionally implement {@link org.apache.logging.log4j.core.LifeCycle}.
  *
  * @since 2.1
  */
-public interface ShutdownRegistrationStrategy {
+public interface ShutdownCallbackRegistry {
 
     /**
-     * System property to set to choose the ShutdownRegistryStrategy.
+     * System property to set to choose the ShutdownCallbackRegistry.
      */
-    String SHUTDOWN_REGISTRATION_STRATEGY = "log4j.shutdownRegistrationStrategy";
+    String SHUTDOWN_CALLBACK_REGISTRY = "log4j.shutdownCallbackRegistry";
 
     /**
      * System property to set to override the global ability to register shutdown hooks.
@@ -44,18 +45,12 @@ public interface ShutdownRegistrationStrategy {
     Marker SHUTDOWN_HOOK_MARKER = MarkerManager.getMarker("SHUTDOWN HOOK");
 
     /**
-     * Adds a shutdown hook to be executed upon JVM exit.
+     * Adds a Runnable shutdown callback to this class.
      *
-     * @param hook a Thread in the {@code State.NEW} state
-     * @throws IllegalStateException If the virtual machine is already in the process of shutting down
+     * @param callback the shutdown callback to be executed upon shutdown.
+     * @return a Cancellable wrapper of the provided callback or {@code null} if the shutdown hook is disabled and
+     * cannot be added.
+     * @since 2.1
      */
-    void registerShutdownHook(Thread hook);
-
-    /**
-     * Removes a shutdown hook.
-     *
-     * @param hook a previously registered shutdown hook Thread.
-     * @throws IllegalStateException If the virtual machine is already in the process of shutting down
-     */
-    void unregisterShutdownHook(Thread hook);
+    Cancellable addShutdownCallback(Runnable callback);
 }

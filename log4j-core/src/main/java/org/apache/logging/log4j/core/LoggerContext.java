@@ -19,8 +19,6 @@ package org.apache.logging.log4j.core;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.lang.ref.Reference;
-import java.lang.ref.SoftReference;
 import java.net.URI;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,15 +37,14 @@ import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.core.util.Assert;
-import org.apache.logging.log4j.core.util.DefaultShutdownRegistrationStrategy;
-import org.apache.logging.log4j.core.util.Loader;
+import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.NetUtils;
-import org.apache.logging.log4j.core.util.ShutdownRegistrationStrategy;
+import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.spi.LoggerContextFactory;
 
-import static org.apache.logging.log4j.core.util.ShutdownRegistrationStrategy.SHUTDOWN_HOOK_MARKER;
+import static org.apache.logging.log4j.core.util.ShutdownCallbackRegistry.SHUTDOWN_HOOK_MARKER;
 
 /**
  * The LoggerContext is the anchor for the logging system. It maintains a list
@@ -59,9 +56,6 @@ import static org.apache.logging.log4j.core.util.ShutdownRegistrationStrategy.SH
 public class LoggerContext extends AbstractLifeCycle implements org.apache.logging.log4j.spi.LoggerContext, ConfigurationListener {
 
     private static final long serialVersionUID = 1L;
-
-    private static final boolean SHUTDOWN_HOOK_ENABLED =
-        PropertiesUtil.getProperties().getBooleanProperty(ShutdownRegistrationStrategy.SHUTDOWN_HOOK_ENABLED, true);
 
     public static final String PROPERTY_CONFIG = "config";
     private static final Configuration NULL_CONFIGURATION = new NullConfiguration();
@@ -77,14 +71,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     private Object externalContext;
     private final String name;
     private URI configLocation;
-
-    /**
-     * Once a shutdown hook thread executes, we can't remove it from the runtime (throws an exception). Therefore,
-     * it's really pointless to keep a strongly accessible reference to said thread. Thus, please use a
-     * SoftReference here to prevent possible cyclic memory references.
-     */
-    private Reference<Thread> shutdownThread;
-    private ShutdownRegistrationStrategy shutdownRegistrationStrategy;
+    private Cancellable shutdownCallback;
 
     private final Lock configLock = new ReentrantLock();
 
@@ -149,7 +136,9 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
                 if (this.isInitialized() || this.isStopped()) {
                     this.setStarting();
                     reconfigure();
-                    setUpShutdownHook();
+                    if (this.config.isShutdownHookEnabled()) {
+                        setUpShutdownHook();
+                    }
                     this.setStarted();
                 }
             } finally {
@@ -168,7 +157,9 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
         if (configLock.tryLock()) {
             try {
                 if (this.isInitialized() || this.isStopped()) {
-                    setUpShutdownHook();
+                    if (this.config.isShutdownHookEnabled()) {
+                        setUpShutdownHook();
+                    }
                     this.setStarted();
                 }
             } finally {
@@ -180,33 +171,25 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     }
 
     private void setUpShutdownHook() {
-        if (config.isShutdownHookEnabled() && SHUTDOWN_HOOK_ENABLED) {
-            LOGGER.debug(SHUTDOWN_HOOK_MARKER, "Shutdown hook enabled. Registering a new one.");
-            shutdownThread = new SoftReference<Thread>(
-                    new Thread(new ShutdownThread(this), "log4j-shutdown")
-            );
-            addShutdownHook();
-        }
-    }
+        if (shutdownCallback == null) {
+            final LoggerContextFactory factory = LogManager.getFactory();
+            if (factory instanceof ShutdownCallbackRegistry) {
+                LOGGER.debug(SHUTDOWN_HOOK_MARKER, "Shutdown hook enabled. Registering a new one.");
+                try {
+                    this.shutdownCallback = ((ShutdownCallbackRegistry) factory).addShutdownCallback(new Runnable() {
+                        @Override
+                        public void run() {
+                            final LoggerContext context = LoggerContext.this;
+                            LOGGER.debug(SHUTDOWN_HOOK_MARKER, "Stopping LoggerContext[name={}, {}]", context.getName(),
+                                context);
+                            context.stop();
+                        }
 
-    private void addShutdownHook() {
-        final Thread hook = getShutdownThread();
-        if (hook != null) {
-            final String shutdownStrategyClassName = PropertiesUtil.getProperties().getStringProperty(
-                ShutdownRegistrationStrategy.SHUTDOWN_REGISTRATION_STRATEGY);
-            if (shutdownStrategyClassName != null) {
-                try {
-                    shutdownRegistrationStrategy = Loader.newCheckedInstanceOf(shutdownStrategyClassName,
-                            ShutdownRegistrationStrategy.class);
-                } catch (final Exception e) {
-                    LOGGER.error(SHUTDOWN_HOOK_MARKER,
-                            "There was an error loading the ShutdownRegistrationStrategy [{}]. "
-                                    + "Falling back to DefaultShutdownRegistrationStrategy.",
-                            shutdownStrategyClassName, e);
-                    shutdownRegistrationStrategy = new DefaultShutdownRegistrationStrategy();
-                }
-                try {
-                    shutdownRegistrationStrategy.registerShutdownHook(hook);
+                        @Override
+                        public String toString() {
+                            return "Shutdown callback for LoggerContext[name=" + LoggerContext.this.getName() + ']';
+                        }
+                    });
                 } catch (final IllegalStateException ise) {
                     LOGGER.fatal(SHUTDOWN_HOOK_MARKER, "Unable to register shutdown hook because JVM is shutting down.");
                 } catch (final SecurityException se) {
@@ -214,10 +197,6 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
                 }
             }
         }
-    }
-
-    private Thread getShutdownThread() {
-        return shutdownThread == null ? null : shutdownThread.get();
     }
 
     @Override
@@ -229,7 +208,10 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
                 return;
             }
             this.setStopping();
-            tearDownShutdownHook();
+            if (shutdownCallback != null) {
+                shutdownCallback.cancel();
+                shutdownCallback = null;
+            }
             final Configuration prev = config;
             config = NULL_CONFIGURATION;
             updateLoggers();
@@ -244,15 +226,6 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
             Server.unregisterLoggerContext(getName()); // LOG4J2-406, LOG4J2-500
         }
         LOGGER.debug("Stopped LoggerContext[name={}, {}]...", getName(), this);
-    }
-
-    private void tearDownShutdownHook() {
-        final Thread thread = this.getShutdownThread();
-        if (shutdownRegistrationStrategy != null && thread != null) {
-            shutdownRegistrationStrategy.unregisterShutdownHook(thread);
-            LOGGER.debug(SHUTDOWN_HOOK_MARKER, "Enqueue shutdown hook for garbage collection.");
-            shutdownThread.enqueue();
-        }
     }
 
     /**
@@ -489,22 +462,6 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     // LOG4J2-151: changed visibility from private to protected
     protected Logger newInstance(final LoggerContext ctx, final String name, final MessageFactory messageFactory) {
         return new Logger(ctx, name, messageFactory);
-    }
-
-    private static class ShutdownThread implements Runnable {
-
-        private final LoggerContext context;
-
-        public ShutdownThread(final LoggerContext context) {
-            this.context = context;
-        }
-
-        @Override
-        public void run() {
-            LOGGER.debug("ShutdownThread stopping LoggerContext[name={}, {}]...", context.getName(), context);
-            context.stop();
-            LOGGER.debug("ShutdownThread stopped LoggerContext[name={}, {}].", context.getName(), context);
-        }
     }
 
 }
