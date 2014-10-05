@@ -17,6 +17,8 @@ GA Release 2.1
 Changes in this version include:
 
 New features:
+o LOG4J2-868:  Add ShutdownCallbackRegistry interface for customizable shutdown callback handling. This is particularly
+        useful for application servers that wish to integrate with Log4j 2. 
 o LOG4J2-589:  Supported filtering on custom log levels in configuration. 
 o LOG4J2-856:  Documentation: add sections on the JUL Adapter, IO Streams and NoSQL Appenders to the Maven and Ivy page. 
 o LOG4J2-848:  Add a Java lookup to provide nicely formatted runtime version information. 
