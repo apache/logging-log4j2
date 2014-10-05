@@ -667,19 +667,19 @@ public class Bar {
 <dependency>
   <groupId>com.fasterxml.jackson.core</groupId>
   <artifactId>jackson-core</artifactId>
-  <version>2.4.2</version>
+  <version>${jackson2Version}</version>
 </dependency>
 
 <dependency>
   <groupId>com.fasterxml.jackson.core</groupId>
   <artifactId>jackson-databind</artifactId>
-  <version>2.4.2</version>
+  <version>${jackson2Version}</version>
 </dependency>
 
 <dependency>
   <groupId>com.fasterxml.jackson.core</groupId>
   <artifactId>jackson-annotations</artifactId>
-  <version>2.4.2</version>
+  <version>${jackson2Version}</version>
 </dependency>
 ]]></pre>
         <a name="Loggers"/>
