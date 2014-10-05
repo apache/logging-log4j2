@@ -1330,13 +1330,13 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td>log4j.shutdownRegistrationStrategy</td>
+    <td>log4j.shutdownCallbackRegistry</td>
     <!-- deliberately inserted spaces to allow line break -->
-    <td>org.apache.logging .log4j.core.util .DefaultShutdownRegistrationStrategy</td>
+    <td>org.apache.logging .log4j.core.util .DefaultShutdownCallbackRegistry</td>
     <td>
       Fully specified class name of a class implementing
-      <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/util/ShutdownRegistrationStrategy.html">ShutdownRegistrationStrategy</a>.
-      If specified, an instance of this class is used instead of <tt>DefaultShutdownRegistrationStrategy</tt>.
+      <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/util/ShutdownCallbackRegistry.html">ShutdownCallbackRegistry</a>.
+      If specified, an instance of this class is used instead of <tt>DefaultShutdownCallbackRegistry</tt>.
       The specified class must have a default constructor.
     </td>
   </tr>
