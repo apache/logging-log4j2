@@ -47,7 +47,7 @@ in your test class:
         final LoggerContext ctx = init.getContext();
         final Logger logger = init.getLogger("org.apache.logging.log4j.my.awesome.test.logger");
         final Configuration cfg = init.getConfiguration();
-        final ListAppender app = (ListAppender) init.getAppender("List");
+        final ListAppender app = init.getListAppender("List");
         logger.warn("Test message");
         final List<LogEvent> events = app.getEvents();
         // etc.
@@ -84,3 +84,5 @@ can be done at the class or method level:
     }
 
 Various pre-defined categories are defined in `org.apache.logging.log4j.categories` in `log4j-core` test.
+If you only want to run your test as part of the `maven-failsafe-plugin` integration tests phase, then simply name
+your test `FooIT` instead of `FooTest` for automatic configuration.
