@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.junit;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -31,6 +32,9 @@ import static org.junit.Assert.*;
 
 /**
  * JUnit {@link TestRule} for constructing a new LoggerContext using a specified configuration file.
+ * If the system property {@code EBUG} is set (e.g., through the command line option {@code -DEBUG}), then the
+ * StatusLogger will be set to the debug level. This allows for more debug messages as the StatusLogger will be in the
+ * error level until a configuration file has been read and parsed into a tree of Nodes.
  */
 public class InitialLoggerContext implements TestRule {
 
@@ -46,6 +50,9 @@ public class InitialLoggerContext implements TestRule {
 
     @Override
     public Statement apply(final Statement base, final Description description) {
+        if (System.getProperties().containsKey("EBUG")) {
+            StatusLogger.getLogger().setLevel(Level.DEBUG);
+        }
         testClassName = description.getClassName();
         return new Statement() {
             @Override
