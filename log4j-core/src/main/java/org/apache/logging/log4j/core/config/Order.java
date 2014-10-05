@@ -22,8 +22,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Identifies the relative ordering of the Configuration.
+ * Identifies the relative ordering of a {@link ConfigurationFactory} plugin.
+ *
+ * @see OrderComparator
  */
+// TODO: 2.2+ use this annotation for all @Plugin classes
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Order {
