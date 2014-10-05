@@ -23,6 +23,12 @@
         <author email="ggregory@apache.org">Gary Gregory</author>
     </properties>
   #set($dollar = '$')
+  #set($sharp = '#')
+  #set($javadocRoot = 'http://docs.oracle.com/javase/6/docs/api')
+  #macro(javadoc $path $class)
+      <a class="javadoc" href="${javadocRoot}/${path}/${class}.html">${class}</a>
+  #end
+  #set($Charset = "<a class='javadoc' href='${javadocRoot}/java/nio/charset/Charset.html'>Charset</a>")
   #if (!$alignedFileName)
     #set ($isPDF = true)
     #set ($break = '<br />')
@@ -35,15 +41,14 @@
         <p>An Appender uses a Layout to format a LogEvent into a form that meets the needs of whatever will be
           consuming the log event. In Log4j 1.x and Logback Layouts were expected to transform an event into a
           String. In Log4j 2 Layouts return a byte array. This allows the result of the Layout to be useful in
-          many more types of Appenders. However, this means you need to configure most Layouts with a
-          <a href="http://download.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html">Charset</a> to
-          insure the byte array contains correct values.
+          many more types of Appenders. However, this means you need to configure most Layouts with a ${Charset} to
+          ensure the byte array contains correct values.
         </p>
         <a name="JSONLayout"/>
         <subsection name="JSONLayout">
           <!-- From Javadoc of org.apache.logging.log4j.core.layout.JSONLayout -->
           <p>
-          Appends a series of JSON events as strings serialized as bytes. This layout requires Jackson jar files 
+          Appends a series of JSON events as strings serialized as bytes. This layout requires Jackson jar files
           (see pom.xml for details).
           </p>
           <h4>Complete well-formed JSON vs. fragment JSON</h4>
@@ -103,8 +108,7 @@
               <td>charset</td>
               <td>String</td>
               <td>The character set to use when converting the HTML String to a byte array. The value must be
-                a valid <a href="http://download.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html">Charset</a>.
-                If not specified, UTF-8 will be used.</td>
+                a valid ${Charset}. If not specified, UTF-8 will be used.</td>
             </tr>
             <tr>
               <td>compact</td>
@@ -147,8 +151,7 @@
               <td>charset</td>
               <td>String</td>
               <td>The character set to use when converting the HTML String to a byte array. The value must be
-                a valid <a href="http://download.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html">Charset</a>.
-                If not specified, the default system Charset will be used.</td>
+                a valid ${Charset}. If not specified, the default system Charset will be used.</td>
             </tr>
             <tr>
               <td>contentType</td>
@@ -221,8 +224,7 @@ WARN  [main]: Message 2</pre>
               <td>charset</td>
               <td>String</td>
               <td>The character set to use when converting the syslog String to a byte array. The String must be
-                a valid <a href="http://download.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html">Charset</a>.
-                If not specified, the default system Charset will be used.
+                a valid ${Charset}. If not specified, the default system Charset will be used.
               </td>
             </tr>
             <tr>
@@ -275,8 +277,7 @@ WARN  [main]: Message 2</pre>
               <td>regex</td>
               <td>String</td>
               <td>A Java-compliant regular expression to match in the resulting string. See
-                <a href="http://docs.oracle.com/javase/6/docs/api/java/util/regex/Pattern.html"
-                   target="_blank">java.util.regex.Pattern</a>.</td>
+                  #javadoc('java/util/regex', 'Pattern').</td>
             </tr>
             <tr>
               <td>replacement</td>
@@ -366,8 +367,7 @@ WARN  [main]: Message 2</pre>
               <td>
                 <p>Outputs the date of the logging event. The date conversion specifier may be
                   followed by a set of braces containing a date and time pattern string per
-                  <a href="http://docs.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html">
-                    SimpleDateFormat</a>.
+                  #javadoc('java/text', 'SimpleDateFormat').
                 </p>
                 <p>The predefined formats are
                   <code>DEFAULT</code>,
@@ -379,7 +379,7 @@ WARN  [main]: Message 2</pre>
                   <code>ISO8601_BASIC</code>.
                 </p>
                 <p>You can also use a set of braces containing a time zone id per
-                  <a href="http://docs.oracle.com/javase/6/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)">
+                  <a class="javadoc" href="${javadocRoot}/java/util/TimeZone.html${sharp}getTimeZone(java.lang.String)">
                     java.util.TimeZone.getTimeZone</a>. If no date format specifier is given then ISO8601 format is assumed.
                   <table>
                     <tr>
@@ -461,9 +461,9 @@ WARN  [main]: Message 2</pre>
               </td>
               <td>
                 <p>
-                  Encodes special characters such as '\n' and HTML characters to help prevent log forging 
-                  and some XSS attacks that could occur when displaying logs in a web browser. Anytime 
-                  user provided data is logged, this can provide a safeguard.   
+                  Encodes special characters such as '\n' and HTML characters to help prevent log forging
+                  and some XSS attacks that could occur when displaying logs in a web browser. Anytime
+                  user provided data is logged, this can provide a safeguard.
                 </p>
                 <p>
                   A typical usage would encode the message
@@ -590,7 +590,8 @@ WARN  [main]: Message 2</pre>
                    </tr>
                  </table>
                 </p>
-                <p>The color names are ANSI names defined in the <a href="../log4j-core/apidocs/index.html">AnsiEscape</a> class.
+                <p>The color names are ANSI names defined in the
+                  <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/pattern/AnsiEscape.html">AnsiEscape</a> class.
                 </p>
                 <p>The color and attribute names and are standard, but the exact shade, hue, or value.
                 </p>
@@ -723,7 +724,7 @@ WARN  [main]: Message 2</pre>
               </td>
               <td>
                 <p>Outputs the entries in a
-                  <a href="../log4j-api/apidocs/org/apache/logging/log4j/message/MapMessage.html">MapMessage</a>,
+                  <a class="javadoc" href="../log4j-api/apidocs/org/apache/logging/log4j/message/MapMessage.html">MapMessage</a>,
                   if one is present in the event. The <b>K</b> conversion character can be followed by the key
                   for the map placed between braces, as in
                   <b>%K{clientNumber}</b> where <code>clientNumber</code> is the key. The value in the Map
@@ -1049,7 +1050,7 @@ WARN  [main]: Message 2</pre>
                   is output using a format {{key1,val1},{key2,val2}}
                 </p>
                 <p>See the
-                  <a href="../log4j-api/apidocs/org/apache/logging/log4j/ThreadContext.html">ThreadContext</a>
+                  <a class="javadoc" href="../log4j-api/apidocs/org/apache/logging/log4j/ThreadContext.html">ThreadContext</a>
                   class for more details.
                 </p>
               </td>
@@ -1161,9 +1162,7 @@ WARN  [main]: Message 2</pre>
             <tr>
               <td align="center">%-20c</td>
               <td align="center">true</td>
-              <td
-                  align="center">20
-              </td>
+              <td align="center">20</td>
               <td align="center">none</td>
               <td>Right pad with
                 spaces if the category name is less than 20 characters long.
@@ -1228,7 +1227,7 @@ WARN  [main]: Message 2</pre>
               testException(ExtendedThrowableTest.java:71) ~[test-classes/:?]
          ... 30 more</pre>
  #else
-          <pre class="prettyprint linenums">Exception java.lang.IllegalArgumentException: IllegalArgument
+          <pre>Exception java.lang.IllegalArgumentException: IllegalArgument
 at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(ExtendedThrowableTest.java:72) [test-classes/:?]
 ... suppressed 26 lines
 at ${dollar}Proxy0.invoke(Unknown Source)} [?:?]
@@ -1266,8 +1265,7 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
               <td>charset</td>
               <td>String</td>
               <td>The character set to use when converting the syslog String to a byte array. The String must be
-                a valid <a href="http://download.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html">Charset</a>.
-                If not specified, the default system Charset will be used.</td>
+                a valid ${Charset}. If not specified, the default system Charset will be used.</td>
             </tr>
             <tr>
               <td>enterpriseNumber</td>
@@ -1390,8 +1388,7 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
               <td>charset</td>
               <td>String</td>
               <td>The character set to use when converting the syslog String to a byte array. The String must be
-                a valid <a href="http://download.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html">Charset</a>.
-                If not specified, the default system Charset will be used.</td>
+                a valid ${Charset}. If not specified, the default system Charset will be used.</td>
             </tr>
             <tr>
               <td>facility</td>
@@ -1418,6 +1415,7 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
         <subsection name="XMLLayout">
           <!-- From Javadoc of org.apache.logging.log4j.core.layout.XMLLayout -->
           <p>
+            <!-- FIXME: log4j.dtd link is broken -->
           Appends a series of <code>Event</code> elements as defined in the <a href="log4j.dtd">log4j.dtd</a>.
           </p>
           <h4>Complete well-formed XML vs. fragment XML</h4>
