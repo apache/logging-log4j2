@@ -19,15 +19,15 @@ package org.apache.logging.log4j.core;
 import java.io.Serializable;
 
 /**
- * Appends log events. An Appender can contain a {@link org.apache.logging.log4j.core.Layout} if applicable as well
- * as an {@link org.apache.logging.log4j.core.ErrorHandler}. Typical Appender implementations coordinate with an
+ * Appends {@link LogEvent}s. An Appender can contain a {@link Layout} if applicable as well
+ * as an {@link ErrorHandler}. Typical Appender implementations coordinate with an
  * implementation of {@link org.apache.logging.log4j.core.appender.AbstractManager} to handle external resources
  * such as streams, connections, and other shared state. As Appenders are plugins, concrete implementations need to
  * be annotated with {@link org.apache.logging.log4j.core.config.plugins.Plugin} and need to provide a static
  * factory method annotated with {@link org.apache.logging.log4j.core.config.plugins.PluginFactory}.
  *
  * <p>Most core plugins are written using a related Manager class that handle the actual task of serializing a
- * {@link org.apache.logging.log4j.core.LogEvent} to some output location. For instance, many Appenders can take
+ * {@link LogEvent} to some output location. For instance, many Appenders can take
  * advantage of the {@link org.apache.logging.log4j.core.appender.OutputStreamManager} class.</p>
  *
  * <p>It is recommended that Appenders don't do any heavy lifting since there can be many instances of the class
@@ -70,9 +70,15 @@ public interface Appender extends LifeCycle {
 
     /**
      * Gets the {@link ErrorHandler} used for handling exceptions.
-     * @return
+     *
+     * @return the ErrorHandler for handling exceptions.
      */
     ErrorHandler getHandler();
 
+    /**
+     * Sets the {@link ErrorHandler} used for handling exceptions.
+     *
+     * @param handler the ErrorHandler to use for handling exceptions.
+     */
     void setHandler(ErrorHandler handler);
 }
