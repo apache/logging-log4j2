@@ -18,15 +18,15 @@
 #set($dollar = '$')
 <document>
     <properties>
-        <title>Flume Next Gen Appender</title>
+        <title>Flume Appender</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
     </properties>
 
     <body>
-        <section name="Flume Next Gen Appender">
+        <section name="Flume Appender">
 
             <p>
-              The Flume NG Appender allows applications to send events to Flume NG Agents.
+              The Flume Appender allows applications to send events to Flume Agents.
             </p>
           <subsection name="Remote Agent">
             <p>
@@ -81,8 +81,8 @@
 
   <properties>
     <log4j.version>${Log4jReleaseVersion}</log4j.version>
-    <slf4j.version>1.7.7</slf4j.version>
-    <jackson.version>1.9.13</jackson.version>
+    <slf4j.version>${slf4jVersion}</slf4j.version>
+    <jackson.version>${jackson1Version}</jackson.version>
   </properties>
 
   <dependencyManagement>
@@ -236,7 +236,7 @@
 
         <section name="Requirements">
            <p>
-             The Flume NG Appender requires at least Java 6.
+             The Flume Appender requires at least Java 6.
           </p>
         </section>
 
