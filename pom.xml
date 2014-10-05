@@ -159,13 +159,13 @@
     <Log4jReleaseManager>Matt Sicker</Log4jReleaseManager>
     <Log4jReleaseKey>FA1C814D</Log4jReleaseKey>
     <!-- note that any properties you want available in velocity templates must not use periods! -->
-    <slf4j.version>1.7.7</slf4j.version>
-    <logback.version>1.1.2</logback.version>
-    <jackson1.version>1.9.13</jackson1.version>
-    <jackson2.version>2.4.2</jackson2.version>
-    <spring.version>3.2.11.RELEASE</spring.version>
+    <slf4jVersion>1.7.7</slf4jVersion>
+    <logbackVersion>1.1.2</logbackVersion>
+    <jackson1Version>1.9.13</jackson1Version>
+    <jackson2Version>2.4.2</jackson2Version>
+    <springVersion>3.2.11.RELEASE</springVersion>
     <flumeVersion>1.5.0.1</flumeVersion>
-    <disruptor.version>3.3.0</disruptor.version>
+    <disruptorVersion>3.3.0</disruptorVersion>
     <pmd.plugin.version>3.2</pmd.plugin.version>
     <findbugs.plugin.version>2.5.5</findbugs.plugin.version>
     <changes.plugin.version>2.11</changes.plugin.version>
@@ -184,7 +184,7 @@
     <maven.compile.target>1.6</maven.compile.target>
     <docLabel>Site Documentation</docLabel>
     <projectDir />
-    <commons.logging.version>1.2</commons.logging.version>
+    <commonsLoggingVersion>1.2</commonsLoggingVersion>
     <osgi.api.version>4.3.1</osgi.api.version>
     <activemq.version>5.10.0</activemq.version>
     <!-- Allow Clirr severity to be overriden by the command-line option -DminSeverity=level -->
@@ -201,24 +201,24 @@
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
-        <version>${slf4j.version}</version>
+        <version>${slf4jVersion}</version>
       </dependency>
        <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-ext</artifactId>
-        <version>${slf4j.version}</version>
+        <version>${slf4jVersion}</version>
       </dependency>
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-core</artifactId>
-        <version>${logback.version}</version>
+        <version>${logbackVersion}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-core</artifactId>
         <type>test-jar</type>
-        <version>${logback.version}</version>
+        <version>${logbackVersion}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -249,13 +249,13 @@
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
-        <version>${logback.version}</version>
+        <version>${logbackVersion}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
-        <version>${logback.version}</version>
+        <version>${logbackVersion}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
@@ -296,7 +296,7 @@
       <dependency>
         <groupId>commons-logging</groupId>
         <artifactId>commons-logging</artifactId>
-        <version>${commons.logging.version}</version>
+        <version>${commonsLoggingVersion}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -475,13 +475,13 @@
       <dependency>
         <groupId>org.codehaus.jackson</groupId>
         <artifactId>jackson-core-asl</artifactId>
-        <version>${jackson1.version}</version>
+        <version>${jackson1Version}</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>org.codehaus.jackson</groupId>
         <artifactId>jackson-mapper-asl</artifactId>
-        <version>${jackson1.version}</version>
+        <version>${jackson1Version}</version>
         <scope>runtime</scope>
       </dependency>
       <!-- Jackson 1 end -->
@@ -489,31 +489,31 @@
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-core</artifactId>
-        <version>${jackson2.version}</version>
+        <version>${jackson2Version}</version>
         <optional>true</optional>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
-        <version>${jackson2.version}</version>
+        <version>${jackson2Version}</version>
         <optional>true</optional>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.dataformat</groupId>
         <artifactId>jackson-dataformat-yaml</artifactId>
-        <version>${jackson2.version}</version>
+        <version>${jackson2Version}</version>
         <optional>true</optional>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.dataformat</groupId>
         <artifactId>jackson-dataformat-xml</artifactId>
-        <version>${jackson2.version}</version>
+        <version>${jackson2Version}</version>
         <optional>true</optional>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.module</groupId>
         <artifactId>jackson-module-jaxb-annotations</artifactId>
-        <version>${jackson2.version}</version>
+        <version>${jackson2Version}</version>
         <optional>true</optional>
       </dependency>
       <!-- Jackson 2 end -->
@@ -554,7 +554,7 @@
       <dependency>
         <groupId>com.lmax</groupId>
         <artifactId>disruptor</artifactId>
-        <version>${disruptor.version}</version>
+        <version>${disruptorVersion}</version>
       </dependency>
       <dependency>
         <groupId>junit</groupId>
@@ -577,47 +577,47 @@
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-aop</artifactId>
-        <version>${spring.version}</version>
+        <version>${springVersion}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-beans</artifactId>
-        <version>${spring.version}</version>
+        <version>${springVersion}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-context</artifactId>
-        <version>${spring.version}</version>
+        <version>${springVersion}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-core</artifactId>
-        <version>${spring.version}</version>
+        <version>${springVersion}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-expression</artifactId>
-        <version>${spring.version}</version>
+        <version>${springVersion}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-oxm</artifactId>
-        <version>${spring.version}</version>
+        <version>${springVersion}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-test</artifactId>
-        <version>${spring.version}</version>
+        <version>${springVersion}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-web</artifactId>
-        <version>${spring.version}</version>
+        <version>${springVersion}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-webmvc</artifactId>
-        <version>${spring.version}</version>
+        <version>${springVersion}</version>
       </dependency>
       <dependency>
         <groupId>org.hsqldb</groupId>
