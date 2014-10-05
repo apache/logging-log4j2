@@ -32,7 +32,7 @@
           discuss some of these cases and ways to accomplish this.
         </p>
         <subsection name="Use Cases">
-          <a name="Use Cases"/>
+          <a name="UseCases"/>
           <p>
             This section describes some of the use cases where Log4j could be used and what its desired behavior
             might be.
@@ -64,6 +64,17 @@
               web applications. When writing to files and streams each of the applications should share them to avoid
               the issues that can occur when multiple components try to write to the same file(s) through different
               File objects, channels, etc.
+            </p>
+          <h4>OSGi Applications</h4>
+            <p>
+              An OSGi container physically separates each JAR into its own ClassLoader, thus enforcing modularity of
+              JARs as well as providing standardized ways for JARs to share code based on version numbers. Suffice to
+              say, the OSGi framework is beyond the scope of this manual. There are some differences when using Log4j
+              in an OSGi container. By default, each JAR bundle is scanned for its own Log4j configuration file.
+              Similar to the web application paradigm, every bundle has its own LoggerContext. As this may be
+              undesirable when a global Log4j configuration is wanted, then the
+              <a href="extending.html#ContextSelector">ContextSelector</a> should be overridden with
+              <code>BasicContextSelector</code> or <code>JndiContextSelector</code>.
             </p>
         </subsection>
         <subsection name="Approaches">
