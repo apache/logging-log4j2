@@ -47,6 +47,7 @@ import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
+ * Factory class for parsed {@link Configuration} objects from a configuration file.
  * ConfigurationFactory allows the configuration implementation to be
  * dynamically chosen in 1 of 3 ways:
  * <ol>
