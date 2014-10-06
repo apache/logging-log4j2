@@ -21,7 +21,8 @@ div.clear hr { display: none; }
 /* Tweaks to the bootstrap theme
 --------------------------------- */
 li { line-height: 20px; }
-tt { font: 12px Menlo, Monaco, "Courier New", monospace; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; padding: 3px 4px; color: #d14; background-color: #f7f7f9; border: 1px solid #e1e1e8; }
+tt { font: 12px Menlo, Monaco, "Courier New", monospace; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; padding: 3px 4px; background-color: #f7f7f9; border: 1px solid #e1e1e8; }
+tt, code { color: #4e648e }
 dt { margin: 15px 0 5px 0; font-size: 1.2em }
 
 .big-red { font-weight: bold; color: #D14 }
