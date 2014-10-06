@@ -194,7 +194,7 @@
       <a name="log4j-iostreams" />
       <h4>log4j-iostreams</h4>
       <p>
-        The Log4j <a href="IO Streams/index.html">IO Streams</a> module has no external dependencies.
+        The Log4j <a href="log4j-iostreams/index.html">IO Streams</a> module has no external dependencies.
         This only requires the Log4j API.
       </p>
 
