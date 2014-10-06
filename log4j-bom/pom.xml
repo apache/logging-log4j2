@@ -34,67 +34,73 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-api</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- Core Log4j -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-core</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- Legacy Log4j 1.2 API -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-1.2-api</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- Commons Logging Compatibility API -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-jcl</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- Apache Flume Bridge -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-flume-ng</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- JSP Tag Library -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-taglib</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- JMX GUI -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-jmx-gui</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- SLF4J Compatibility API -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-slf4j-impl</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- Web Application Support -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-web</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- NoSQL Appender Plugins -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-nosql</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- Streaming API -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-streams</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <artifactId>log4j-iostreams</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- java.util.logging adapter -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-jul</artifactId>
+        <version>${project.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
