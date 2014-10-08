@@ -20,33 +20,26 @@ package org.apache.logging.log4j.web;
 
 import javax.servlet.ServletContext;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.core.lookup.AbstractLookup;
-import org.apache.logging.log4j.spi.LoggerContext;
 
 @Plugin(name = "web", category = "Lookup")
 public class WebLookup extends AbstractLookup {
     private static final String ATTR_PREFIX = "attr.";
     private static final String INIT_PARAM_PREFIX = "initParam.";
 
+    /**
+     * @deprecated Use {@link WebLoggerContextUtils#getServletContext()}.
+     */
+    @Deprecated
     protected ServletContext getServletContext() {
-        LoggerContext lc = ContextAnchor.THREAD_CONTEXT.get();
-        if (lc == null) {
-            lc = LogManager.getContext(false);
-        }
-        if (lc != null) {
-            final Object obj = lc.getExternalContext();
-            return obj != null && obj instanceof ServletContext ? (ServletContext) obj : null;
-        }
-        return null;
+        return WebLoggerContextUtils.getServletContext();
     }
 
     @Override
     public String lookup(final LogEvent event, final String key) {
-        final ServletContext ctx = getServletContext();
+        final ServletContext ctx = WebLoggerContextUtils.getServletContext();
         if (ctx == null) {
             return null;
         }
