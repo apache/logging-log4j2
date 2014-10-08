@@ -23,6 +23,8 @@ import org.apache.logging.log4j.spi.ExtendedLoggerWrapper;
 
 /**
  * Wrapper class to ensure proper FQCN support in Logger calls.
+ *
+ * @since 2.1
  */
 class WrappedLogger extends ExtendedLoggerWrapper {
 

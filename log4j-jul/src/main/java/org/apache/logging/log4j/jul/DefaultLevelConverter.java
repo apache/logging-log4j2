@@ -24,6 +24,8 @@ import org.apache.logging.log4j.Level;
 
 /**
  * Default implementation of LevelConverter strategy.
+ *
+ * @since 2.1
  */
 public class DefaultLevelConverter implements LevelConverter {
 
