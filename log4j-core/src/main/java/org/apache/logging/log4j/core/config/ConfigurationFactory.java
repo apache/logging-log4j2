@@ -303,6 +303,9 @@ public abstract class ConfigurationFactory {
     }
 
     private static boolean isClassLoaderUri(final URI uri) {
+        if (uri == null) {
+            return false;
+        }
         final String scheme = uri.getScheme();
         return scheme == null || scheme.equals(CLASS_LOADER_SCHEME) || scheme.equals(CLASS_PATH_SCHEME);
     }
