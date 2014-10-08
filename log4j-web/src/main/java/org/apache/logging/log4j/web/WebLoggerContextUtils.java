@@ -43,7 +43,6 @@ public final class WebLoggerContextUtils {
      *
      * @param servletContext the ServletContext to locate a LoggerContext for
      * @return the LoggerContext for the given ServletContext
-     * @throws java.lang.IllegalStateException if no LoggerContext could be found on the given ServletContext
      * @since 2.0.1
      */
     public static LoggerContext getWebLoggerContext(final ServletContext servletContext) {
@@ -55,6 +54,7 @@ public final class WebLoggerContextUtils {
      *
      * @param servletContext the ServletContext to locate a LoggerContext for
      * @return the LoggerContext for the given ServletContext or {@code null} if none was set
+     * @throws java.lang.IllegalStateException if no LoggerContext could be found on the given ServletContext
      * @since 2.0.1
      */
     public static LoggerContext getRequiredWebLoggerContext(final ServletContext servletContext) {
