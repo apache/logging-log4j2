@@ -22,10 +22,10 @@ import javax.servlet.ServletContext;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.core.lookup.AbstractLookup;
+import org.apache.logging.log4j.spi.LoggerContext;
 
 @Plugin(name = "web", category = "Lookup")
 public class WebLookup extends AbstractLookup {
@@ -35,7 +35,7 @@ public class WebLookup extends AbstractLookup {
     protected ServletContext getServletContext() {
         LoggerContext lc = ContextAnchor.THREAD_CONTEXT.get();
         if (lc == null) {
-            lc = (LoggerContext) LogManager.getContext(false);
+            lc = LogManager.getContext(false);
         }
         if (lc != null) {
             final Object obj = lc.getExternalContext();
