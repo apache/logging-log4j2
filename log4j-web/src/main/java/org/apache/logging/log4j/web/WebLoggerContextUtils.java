@@ -20,7 +20,9 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import javax.servlet.ServletContext;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.impl.ContextAnchor;
 
 /**
  * Convenience methods for retrieving the {@link org.apache.logging.log4j.core.LoggerContext} associated with a
@@ -108,5 +110,20 @@ public final class WebLoggerContextUtils {
                 }
             }
         };
+    }
+
+    /**
+     * Gets the current {@link ServletContext} if it has already been assigned to a LoggerContext's external context.
+     *
+     * @return the current ServletContext attached to a LoggerContext or {@code null} if none could be found
+     * @since 2.1
+     */
+    public static ServletContext getServletContext() {
+        org.apache.logging.log4j.spi.LoggerContext lc = ContextAnchor.THREAD_CONTEXT.get();
+        if (lc == null) {
+            lc = LogManager.getContext(false);
+        }
+        return lc == null ? null :
+            lc.getExternalContext() instanceof ServletContext ? (ServletContext) lc.getExternalContext() : null;
     }
 }
