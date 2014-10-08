@@ -108,6 +108,9 @@ public final class ReflectionUtil {
         return SUN_REFLECTION_SUPPORTED;
     }
 
+    // TODO: return Object.class instead of null (though it will have a null ClassLoader)
+    // (MS) I believe this would work without any modifications elsewhere, but I could be wrong
+
     // migrated from ReflectiveCallerClassUtility
     public static Class<?> getCallerClass(final int depth) {
         if (depth < 0) {
@@ -121,6 +124,7 @@ public final class ReflectionUtil {
             } catch (final Exception e) {
                 // theoretically this could happen if the caller class were native code
                 LOGGER.error("Error in ReflectionUtil.getCallerClass({}).", depth, e);
+                // TODO: return Object.class
                 return null;
             }
         }
@@ -132,6 +136,7 @@ public final class ReflectionUtil {
         } catch (final ClassNotFoundException e) {
             LOGGER.error("Could not find class in ReflectionUtil.getCallerClass({}).", depth, e);
         }
+        // TODO: return Object.class
         return null;
     }
 
@@ -185,7 +190,7 @@ public final class ReflectionUtil {
 
     // migrated from ClassLoaderContextSelector
     public static Class<?> getCallerClass(final String fqcn) {
-        return getCallerClass(fqcn, "");
+        return getCallerClass(fqcn, Strings.EMPTY);
     }
 
     // migrated from Log4jLoggerFactory
@@ -202,28 +207,62 @@ public final class ReflectionUtil {
                     return clazz;
                 }
             }
+            // TODO: return Object.class
             return null;
         }
         if (SECURITY_MANAGER != null) {
             return SECURITY_MANAGER.getCallerClass(fqcn, pkg);
         }
-        boolean next = false;
-        final StackTraceElement[] elements = new Throwable().getStackTrace();
         try {
-            for (final StackTraceElement element : elements) {
-                final String className = element.getClassName();
-                if (className.equals(fqcn)) {
-                    next = true;
-                    continue;
-                }
-                if (next && className.startsWith(pkg)) {
-                    return LoaderUtil.loadClass(className);
-                }
-            }
+            return LoaderUtil.loadClass(getCallerClassName(fqcn, pkg, new Throwable().getStackTrace()));
         } catch (final ClassNotFoundException ignored) {
             // no problem really
         }
+        // TODO: return Object.class
         return null;
+    }
+
+    // added for use in LoggerAdapter implementations mainly
+    public static Class<?> getCallerClass(final Class<?> anchor) {
+        if (supportsFastReflection()) {
+            boolean next = false;
+            Class<?> clazz;
+            for (int i = 2; null != (clazz = getCallerClass(i)); i++) {
+                if (anchor.equals(clazz)) {
+                    next = true;
+                    continue;
+                }
+                if (next) {
+                    return clazz;
+                }
+            }
+            return Object.class;
+        }
+        if (SECURITY_MANAGER != null) {
+            return SECURITY_MANAGER.getCallerClass(anchor);
+        }
+        try {
+            return LoaderUtil.loadClass(getCallerClassName(anchor.getName(), Strings.EMPTY,
+                new Throwable().getStackTrace()));
+        } catch (final ClassNotFoundException ignored) {
+            // no problem really
+        }
+        return Object.class;
+    }
+
+    private static String getCallerClassName(final String fqcn, final String pkg, final StackTraceElement... elements) {
+        boolean next = false;
+        for (final StackTraceElement element : elements) {
+            final String className = element.getClassName();
+            if (className.equals(fqcn)) {
+                next = true;
+                continue;
+            }
+            if (next && className.startsWith(pkg)) {
+                return className;
+            }
+        }
+        return Object.class.getName();
     }
 
     // migrated from ThrowableProxy
@@ -258,9 +297,8 @@ public final class ReflectionUtil {
         }
 
         protected Class<?> getCallerClass(final String fqcn, final String pkg) {
-            final Class<?>[] classes = getClassContext();
             boolean next = false;
-            for (final Class<?> clazz : classes) {
+            for (final Class<?> clazz : getClassContext()) {
                 if (fqcn.equals(clazz.getName())) {
                     next = true;
                     continue;
@@ -269,7 +307,22 @@ public final class ReflectionUtil {
                     return clazz;
                 }
             }
+            // TODO: return Object.class
             return null;
+        }
+
+        protected Class<?> getCallerClass(final Class<?> anchor) {
+            boolean next = false;
+            for (final Class<?> clazz : getClassContext()) {
+                if (anchor.equals(clazz)) {
+                    next = true;
+                    continue;
+                }
+                if (next) {
+                    return clazz;
+                }
+            }
+            return Object.class;
         }
 
     }

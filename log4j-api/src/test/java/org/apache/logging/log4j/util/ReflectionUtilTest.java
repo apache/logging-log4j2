@@ -21,6 +21,7 @@ import java.util.Stack;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runners.BlockJUnit4ClassRunner;
+import org.junit.runners.ParentRunner;
 import sun.reflect.Reflection;
 
 import static org.junit.Assert.*;
@@ -89,6 +90,15 @@ public class ReflectionUtilTest {
     public void testGetCallerClassViaName() throws Exception {
         final Class<?> expected = BlockJUnit4ClassRunner.class;
         final Class<?> actual = ReflectionUtil.getCallerClass("org.junit.runners.ParentRunner");
+        // if this test fails in the future, it's probably because of a JUnit upgrade; check the new stack trace and
+        // update this test accordingly
+        assertSame(expected, actual);
+    }
+
+    @Test
+    public void testGetCallerClassViaAnchorClass() throws Exception {
+        final Class<?> expected = BlockJUnit4ClassRunner.class;
+        final Class<?> actual = ReflectionUtil.getCallerClass(ParentRunner.class);
         // if this test fails in the future, it's probably because of a JUnit upgrade; check the new stack trace and
         // update this test accordingly
         assertSame(expected, actual);
