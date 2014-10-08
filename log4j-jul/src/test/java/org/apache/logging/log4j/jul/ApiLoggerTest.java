@@ -33,7 +33,7 @@ public class ApiLoggerTest extends AbstractLoggerTest {
     @BeforeClass
     public static void setUpClass() {
         System.setProperty("java.util.logging.manager", LogManager.class.getName());
-        System.setProperty(LogManager.LOGGER_ADAPTOR_PROPERTY, ApiLoggerAdapter.class.getName());
+        System.setProperty(Constants.LOGGER_ADAPTOR_PROPERTY, ApiLoggerAdapter.class.getName());
     }
 
     @Before

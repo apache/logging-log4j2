@@ -39,13 +39,6 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  */
 public class LogManager extends java.util.logging.LogManager {
 
-    /**
-     * Name of the Log4j property to set to override the {@link AbstractLoggerAdapter} to be used. By
-     * default, when this property is not set, an appropriate LoggerAdaptor is chosen based on the presence of
-     * {@code log4j-core}.
-     */
-    public static final String LOGGER_ADAPTOR_PROPERTY = "log4j.jul.LoggerAdapter";
-
     private static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
     private final AbstractLoggerAdapter loggerAdapter;
 
@@ -53,7 +46,7 @@ public class LogManager extends java.util.logging.LogManager {
         super();
         AbstractLoggerAdapter adapter = null;
         final String overrideAdaptorClassName =
-            PropertiesUtil.getProperties().getStringProperty(LOGGER_ADAPTOR_PROPERTY);
+            PropertiesUtil.getProperties().getStringProperty(Constants.LOGGER_ADAPTOR_PROPERTY);
         if (overrideAdaptorClassName != null) {
             try {
                 LOGGER.info("Trying to use LoggerAdaptor [{}] specified by Log4j property.", overrideAdaptorClassName);
@@ -67,10 +60,10 @@ public class LogManager extends java.util.logging.LogManager {
             String adapterClassName;
             try {
                 // find out if log4j-core is available
-                LoaderUtil.loadClass("org.apache.logging.log4j.core.Logger");
-                adapterClassName = "org.apache.logging.log4j.jul.CoreLoggerAdapter";
+                LoaderUtil.loadClass(Constants.CORE_LOGGER_CLASS_NAME);
+                adapterClassName = Constants.CORE_LOGGER_ADAPTER_CLASS_NAME;
             } catch (final ClassNotFoundException ignored) {
-                adapterClassName = "org.apache.logging.log4j.jul.ApiLoggerAdapter";
+                adapterClassName = Constants.API_LOGGER_ADAPTER_CLASS_NAME;
             }
             LOGGER.debug("Attempting to use {}", adapterClassName);
             try {

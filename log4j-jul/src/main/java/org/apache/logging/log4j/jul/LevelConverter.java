@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Level;
  * Strategy interface to convert between custom Log4j {@link Level Levels} and JUL
  * {@link java.util.logging.Level Levels}.
  *
- * @see LevelTranslator#LEVEL_CONVERTER_PROPERTY
+ * @see Constants#LEVEL_CONVERTER_PROPERTY
  * @since 2.1
  */
 public interface LevelConverter {
