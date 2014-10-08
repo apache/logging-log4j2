@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.util.Loader;
+import org.apache.logging.log4j.core.util.ReflectionUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -61,7 +62,7 @@ public class Interpolator extends AbstractLookup {
         for (final Map.Entry<String, PluginType<?>> entry : plugins.entrySet()) {
             try {
                 final Class<? extends StrLookup> clazz = entry.getValue().getPluginClass().asSubclass(StrLookup.class);
-                lookups.put(entry.getKey(), clazz.getConstructor().newInstance());
+                lookups.put(entry.getKey(), ReflectionUtil.instantiate(clazz));
             } catch (final Exception ex) {
                 LOGGER.error("Unable to create Lookup for {}", entry.getKey(), ex);
             }
