@@ -18,39 +18,25 @@ package org.apache.logging.log4j.jcl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.spi.AbstractLoggerAdapter;
-import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
+import org.apache.logging.log4j.util.ReflectionUtil;
 
 /**
- * Commons Logging registry.
+ * Commons Logging adapter registry.
+ *
+ * @since 2.1
  */
 public class LogAdapter extends AbstractLoggerAdapter<Log> {
 
     @Override
     protected Log newLogger(final String name, final LoggerContext context) {
-        return new Log4jLog(PrivateManager.getLogger(name));
+        return new Log4jLog(context.getLogger(name));
     }
 
     @Override
     protected LoggerContext getContext() {
-        return PrivateManager.getContext();
-    }
-
-    /**
-     * The real bridge between commons logging and Log4j.
-     */
-    private static class PrivateManager extends LogManager {
-        private static final String FQCN = LogFactory.class.getName();
-
-        public static LoggerContext getContext() {
-            return getContext(FQCN, false);
-        }
-
-        public static ExtendedLogger getLogger(final String name) {
-            return getContext().getLogger(name);
-        }
+        return getContext(ReflectionUtil.getCallerClass(LogFactory.class));
     }
 
 }
