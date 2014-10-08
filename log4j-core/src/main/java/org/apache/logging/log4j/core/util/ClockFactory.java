@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.util;
 
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Factory for {@code Clock} objects.
@@ -62,7 +63,7 @@ public final class ClockFactory {
     }
 
     private static Clock createClock() {
-        final String userRequest = System.getProperty(PROPERTY_NAME);
+        final String userRequest = PropertiesUtil.getProperties().getStringProperty(PROPERTY_NAME);
         if (userRequest == null || "SystemClock".equals(userRequest)) {
             LOGGER.debug("Using default SystemClock for timestamps");
             return new SystemClock();
