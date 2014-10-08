@@ -19,6 +19,7 @@ package org.apache.logging.log4j.jul;
 import java.util.logging.Logger;
 
 import org.apache.logging.log4j.spi.LoggerContext;
+import org.apache.logging.log4j.util.ReflectionUtil;
 
 /**
  * Abstract Logger registry. Due to the optionality of using log4j-core, there are two registries available at runtime
@@ -30,15 +31,7 @@ public abstract class AbstractLoggerAdapter extends org.apache.logging.log4j.spi
 
     @Override
     protected LoggerContext getContext() {
-        return PrivateManager.getContext();
-    }
-
-    private static class PrivateManager extends org.apache.logging.log4j.LogManager {
-        private static final String FQCN = java.util.logging.LogManager.class.getName();
-
-        public static LoggerContext getContext() {
-            return getContext(FQCN, false);
-        }
+        return getContext(ReflectionUtil.getCallerClass(java.util.logging.LogManager.class));
     }
 
 }
