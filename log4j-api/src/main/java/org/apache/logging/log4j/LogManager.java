@@ -71,12 +71,11 @@ public class LogManager {
         // Shortcut binding to force a specific logging implementation.
         final PropertiesUtil managerProps = PropertiesUtil.getProperties();
         final String factoryClassName = managerProps.getStringProperty(FACTORY_PROPERTY_NAME);
-        final ClassLoader cl = LoaderUtil.getThreadContextClassLoader();
         if (factoryClassName != null) {
             try {
-                final Class<?> clazz = cl.loadClass(factoryClassName);
+                final Class<?> clazz = LoaderUtil.loadClass(factoryClassName);
                 if (LoggerContextFactory.class.isAssignableFrom(clazz)) {
-                    factory = (LoggerContextFactory) clazz.newInstance();
+                    factory = clazz.asSubclass(LoggerContextFactory.class).newInstance();
                 }
             } catch (final ClassNotFoundException cnfe) {
                 LOGGER.error("Unable to locate configured LoggerContextFactory {}", factoryClassName);
