@@ -18,15 +18,13 @@ package org.apache.logging.slf4j;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.spi.AbstractLoggerAdapter;
-import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.util.ReflectionUtil;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Log4j implementation of SLF4J ILoggerFactory interface.
  */
 public class Log4jLoggerFactory extends AbstractLoggerAdapter<Logger> implements ILoggerFactory {
 
@@ -41,25 +39,8 @@ public class Log4jLoggerFactory extends AbstractLoggerAdapter<Logger> implements
 
     @Override
     protected LoggerContext getContext() {
-        return PrivateManager.getContext(ReflectionUtil.getCallerClass(FQCN, PACKAGE).getName());
+        final Class<?> anchor = ReflectionUtil.getCallerClass(FQCN, PACKAGE);
+        return anchor == null ? LogManager.getContext() : getContext(ReflectionUtil.getCallerClass(anchor));
     }
 
-    /**
-     * The real bridge between SLF4J and Log4j.
-     */
-    private static class PrivateManager extends LogManager {
-        private static final String FQCN = LoggerFactory.class.getName();
-
-        public static LoggerContext getContext() {
-            return getContext(FQCN, false);
-        }
-
-        public static LoggerContext getContext(final String fqcn) {
-            return getContext(fqcn, false);
-        }
-
-        public static ExtendedLogger getLogger(final String name) {
-            return getContext(FQCN).getLogger(name);
-        }
-    }
 }
