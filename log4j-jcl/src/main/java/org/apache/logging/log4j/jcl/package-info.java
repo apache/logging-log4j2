@@ -15,6 +15,6 @@
  * limitations under the license.
  */
 /**
- * Log4j 2.0 adapter for Commons Logging.
+ * Log4j 2 adapter for Commons Logging.
  */
 package org.apache.logging.log4j.jcl;
