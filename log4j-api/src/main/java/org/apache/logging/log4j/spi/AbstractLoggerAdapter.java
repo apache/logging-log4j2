@@ -21,6 +21,9 @@ import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.util.LoaderUtil;
+
 /**
  * Provides an abstract base class to use for implementing LoggerAdapter.
  * @param <L> the Logger class to adapt
@@ -81,6 +84,23 @@ public abstract class AbstractLoggerAdapter<L> implements LoggerAdapter<L> {
      * @see org.apache.logging.log4j.LogManager#getContext(String, boolean)
      */
     protected abstract LoggerContext getContext();
+
+    /**
+     * Gets the {@link LoggerContext} associated with the given caller class.
+     *
+     * @param callerClass the caller class
+     * @return the LoggerContext for the calling class
+     */
+    protected LoggerContext getContext(final Class<?> callerClass) {
+        ClassLoader cl = null;
+        if (callerClass != null) {
+            cl = callerClass.getClassLoader();
+        }
+        if (cl == null) {
+            cl = LoaderUtil.getThreadContextClassLoader();
+        }
+        return LogManager.getContext(cl, false);
+    }
 
     @Override
     public void close() {
