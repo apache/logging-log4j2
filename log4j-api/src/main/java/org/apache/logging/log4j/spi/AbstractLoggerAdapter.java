@@ -77,6 +77,8 @@ public abstract class AbstractLoggerAdapter<L> implements LoggerAdapter<L> {
      * framework's separation of contexts instead (or simply use a singleton).
      *
      * @return the LoggerContext to be used for lookup and creation purposes
+     * @see org.apache.logging.log4j.LogManager#getContext(ClassLoader, boolean)
+     * @see org.apache.logging.log4j.LogManager#getContext(String, boolean)
      */
     protected abstract LoggerContext getContext();
 
