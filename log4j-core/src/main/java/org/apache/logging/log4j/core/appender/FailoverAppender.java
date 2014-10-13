@@ -144,9 +144,8 @@ public final class FailoverAppender extends AbstractAppender {
         if (!written && !ignoreExceptions()) {
             if (re != null) {
                 throw re;
-            } else {
-                throw new LoggingException("Unable to write to failover appenders", failoverException);
             }
+            throw new LoggingException("Unable to write to failover appenders", failoverException);
         }
     }
 
