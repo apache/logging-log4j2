@@ -171,7 +171,7 @@ public final class FailoverAppender extends AbstractAppender {
      * @param name The name of the Appender (required).
      * @param primary The name of the primary Appender (required).
      * @param failovers The name of one or more Appenders to fail over to (at least one is required).
-     * @param retryIntervalSeconds The retry intervalMillis.
+     * @param retryIntervalSeconds The retry interval in seconds.
      * @param config The current Configuration (passed by the Configuration when the appender is created).
      * @param filter A Filter (optional).
      * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
