@@ -51,7 +51,7 @@ public class DefaultShutdownCallbackRegistry implements ShutdownCallbackRegistry
      * Constructs a DefaultShutdownRegistrationStrategy.
      */
     public DefaultShutdownCallbackRegistry() {
-        this(Executors.privilegedThreadFactory());
+        this(Executors.defaultThreadFactory());
     }
 
     /**
