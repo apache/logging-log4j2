@@ -28,7 +28,7 @@
       <section name="Filters">
         <p>
           Filters allow Log Events to be evaluated to determine if or how they should be published. A Filter
-          will be called on one if its filter methods and will return a Result, which is an Enum that has
+          will be called on one of its filter methods and will return a Result, which is an Enum that has
           one of 3 values - ACCEPT, DENY or NEUTRAL.
         </p>
         <p>

@@ -31,13 +31,13 @@ Download Apache Log4j 2
 *-------------------------+---------+----------+-----------+
 |                         | Mirrors | Checksum | Signature |
 *-------------------------+---------+----------+-----------+
-| Apache Log4j 2 binary (tar.gz)     | {{{http://www.apache.org/dyn/closer.cgi/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.tar.gz} apache-log4j-${Log4jReleaseVersion}-bin.tar.gz}} | {{{http://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.md5} apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.md5}} | {{{http://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.asc} apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.asc}} |
+| Apache Log4j 2 binary (tar.gz)     | {{{http://www.apache.org/dyn/closer.cgi/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.tar.gz} apache-log4j-${Log4jReleaseVersion}-bin.tar.gz}} | {{{https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.md5} apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.md5}} | {{{https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.asc} apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.asc}} |
 *-------------------------+---------+----------+-----------+
-| Apache Log4j 2 binary (zip)     | {{{http://www.apache.org/dyn/closer.cgi/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.zip} apache-log4j-${Log4jReleaseVersion}-bin.zip}} | {{{http://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.zip.md5} apache-log4j-${Log4jReleaseVersion}-bin.zip.md5}} | {{{http://www.apache.org/dist/logging/log42/apache-log4j-${Log4jReleaseVersion}-bin.zip.asc} apache-log4j-${Log4jReleaseVersion}-bin.zip.asc}} |
+| Apache Log4j 2 binary (zip)     | {{{http://www.apache.org/dyn/closer.cgi/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.zip} apache-log4j-${Log4jReleaseVersion}-bin.zip}} | {{{https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.zip.md5} apache-log4j-${Log4jReleaseVersion}-bin.zip.md5}} | {{{https://www.apache.org/dist/logging/log42/apache-log4j-${Log4jReleaseVersion}-bin.zip.asc} apache-log4j-${Log4jReleaseVersion}-bin.zip.asc}} |
 *-------------------------+---------+----------+-----------+
-| Apache Log4j 2 source (tar.gz)     | {{{http://www.apache.org/dyn/closer.cgi/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.tar.gz} apache-log4j-${Log4jReleaseVersion}-src.tar.gz}} | {{{http://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.tar.gz.md5} apache-log4j-${Log4jReleaseVersion}-src.tar.gz.md5}} | {{{http://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.tar.gz.asc} apache-log4j-${Log4jReleaseVersion}-src.tar.gz.asc}} |
+| Apache Log4j 2 source (tar.gz)     | {{{http://www.apache.org/dyn/closer.cgi/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.tar.gz} apache-log4j-${Log4jReleaseVersion}-src.tar.gz}} | {{{https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.tar.gz.md5} apache-log4j-${Log4jReleaseVersion}-src.tar.gz.md5}} | {{{https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.tar.gz.asc} apache-log4j-${Log4jReleaseVersion}-src.tar.gz.asc}} |
 *-------------------------+---------+----------+-----------+
-| Apache Log4j 2 source (zip)     | {{{http://www.apache.org/dyn/closer.cgi/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.zip} apache-log4j-${Log4jReleaseVersion}-src.zip}} | {{{http://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.zip.md5} apache-log4j-${Log4jReleaseVersion}-src.zip.md5}} | {{{http://www.apache.org/dist/logging/log42/apache-log4j-${Log4jReleaseVersion}-src.zip.asc} apache-log4j-${Log4jReleaseVersion}-src.zip.asc}} |
+| Apache Log4j 2 source (zip)     | {{{http://www.apache.org/dyn/closer.cgi/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.zip} apache-log4j-${Log4jReleaseVersion}-src.zip}} | {{{https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.zip.md5} apache-log4j-${Log4jReleaseVersion}-src.zip.md5}} | {{{https://www.apache.org/dist/logging/log42/apache-log4j-${Log4jReleaseVersion}-src.zip.asc} apache-log4j-${Log4jReleaseVersion}-src.zip.asc}} |
 *-------------------------+---------+----------+-----------+
 
     It is essential that you verify the integrity of the downloaded files using the PGP or MD5 signatures.
@@ -45,8 +45,8 @@ Download Apache Log4j 2
     information on why you should verify our releases.
 
     The PGP signatures can be verified using PGP or GPG. First download the
-    {{{http://www.apache.org/dist/logging/KEYS}KEYS}} as well as the asc signature file for the relevant distribution.
-    Make sure you get these files from the {{{http://www.apache.org/dist/logging/}main distribution directory}}, rather
+    {{{https://www.apache.org/dist/logging/KEYS}KEYS}} as well as the asc signature file for the relevant distribution.
+    Make sure you get these files from the {{{https://www.apache.org/dist/logging/}main distribution directory}}, rather
     than from a mirror. Then verify the signatures using
 
 ---

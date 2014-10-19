@@ -91,7 +91,7 @@
           <code>UTF-16</code>, otherwise events containing non-ASCII characters could result in corrupted log files.
           The default charset is <code>UTF-8</code>.
           </p>
-          <h4>Pretty vs. compact XML</h4>
+          <h4>Pretty vs. compact JSON</h4>
           <p>
           By default, the JSON layout is not compact (a.k.a. not "pretty") with <code>compact="false"</code>, which
           means the appender uses end-of-line characters and indents lines to format the text. If

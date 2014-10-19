@@ -89,8 +89,8 @@
           only open (actually: mandatory) to Apache Logging's Project Management
           Committee.</dd>
         <dt><strong>Git</strong></dt>
-        <dd>All of the Apache products are maintained in shared information
-          repositories using <a href="source-repository.html">Git</a>. Only some of the
+        <dd>All of the Apache products are maintained in information
+          repositories using either Subversion or Git; Log4j uses <a href="source-repository.html">Git</a>. Only some of the
           Apache developers have write access to the Apache Logging repositories; everyone
           has <a href="https://git-wip-us.apache.org/repos/asf?p=logging-log4j2.git;a=summary">read access</a>.</dd>
       </dl>
