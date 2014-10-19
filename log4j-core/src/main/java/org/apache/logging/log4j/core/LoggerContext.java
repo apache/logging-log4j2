@@ -207,7 +207,13 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
             if (this.isStopped()) {
                 return;
             }
+
             this.setStopping();
+            try {
+                Server.unregisterLoggerContext(getName()); // LOG4J2-406, LOG4J2-500
+            } catch (Exception ex) {
+                LOGGER.error("Unable to unregister MBeans", ex);
+            }
             if (shutdownCallback != null) {
                 shutdownCallback.cancel();
                 shutdownCallback = null;
@@ -221,9 +227,6 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
             this.setStopped();
         } finally {
             configLock.unlock();
-
-            // in finally: unregister MBeans even if an exception occurred while stopping
-            Server.unregisterLoggerContext(getName()); // LOG4J2-406, LOG4J2-500
         }
         LOGGER.debug("Stopped LoggerContext[name={}, {}]...", getName(), this);
     }
