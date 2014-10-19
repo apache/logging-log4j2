@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.util;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -59,7 +60,7 @@ public class ShutdownCallbackRegistryTest {
 
     public static class Registry implements ShutdownCallbackRegistry {
         private static final Logger LOGGER = StatusLogger.getLogger();
-        private static final Collection<Cancellable> CALLBACKS = new LinkedList<Cancellable>();
+        private static final Collection<Cancellable> CALLBACKS = new ConcurrentLinkedQueue<Cancellable>();
 
         @Override
         public Cancellable addShutdownCallback(final Runnable callback) {
@@ -76,20 +77,16 @@ public class ShutdownCallbackRegistryTest {
                     callback.run();
                 }
             };
-            synchronized (CALLBACKS) {
-                CALLBACKS.add(cancellable);
-            }
+            CALLBACKS.add(cancellable);
             return cancellable;
         }
 
         private static void shutdown() {
-            synchronized (CALLBACKS) {
-                for (final Runnable callback : CALLBACKS) {
-                    LOGGER.debug("Calling shutdown callback: {}", callback);
-                    callback.run();
-                }
-                CALLBACKS.clear();
+            for (final Runnable callback : CALLBACKS) {
+                LOGGER.debug("Calling shutdown callback: {}", callback);
+                callback.run();
             }
+            CALLBACKS.clear();
         }
     }
 
