@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.1" date="2014-10-10" description="GA Release 2.1">
+      <action issue="LOG4J2-676" dev="rgoers" type="fix" due-to="Stefan Bodewig">
+        Some typo fixes and enhancements for the site.
+      </action>
       <action issue="LOG4J2-868" dev="mattsicker" type="add">
         Add ShutdownCallbackRegistry interface for customizable shutdown callback handling. This is particularly
         useful for application servers that wish to integrate with Log4j 2.
