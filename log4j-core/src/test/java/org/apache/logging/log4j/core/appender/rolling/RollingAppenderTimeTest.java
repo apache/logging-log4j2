@@ -63,7 +63,7 @@ public class RollingAppenderTimeTest {
             logger.debug("This is test message number " + i + 1);
         }
         final File dir = new File(DIR);
-        assertThat(dir, both(exists()).and(hasFiles()));
+        assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
 
         final int MAX_TRIES = 20;
         final Matcher<File[]> hasGzippedFile = hasItemInArray(that(hasName(that(endsWith(".gz")))));

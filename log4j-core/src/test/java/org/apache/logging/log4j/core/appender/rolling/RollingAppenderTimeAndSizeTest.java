@@ -64,7 +64,7 @@ public class RollingAppenderTimeAndSizeTest {
         }
         Thread.sleep(50);
         final File dir = new File(DIR);
-        assertThat(dir, both(exists()).and(hasFiles()));
+        assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
         final File[] files = dir.listFiles();
         assertNotNull(files);
         assertThat(files, hasItemInArray(that(hasName(that(endsWith(".gz"))))));

@@ -151,7 +151,7 @@ public class PerfTestDriver {
         long pct99_99;
         double latencyRowCount;
         int throughputRowCount;
-        private final long averageOpsPerSec;
+        private long averageOpsPerSec; // Do not make final. Compile fails on Java 6.
 
         // example line: avg=828 99%=1118 99.99%=5028 Count=3125
         public Stats(final String raw) {

@@ -178,7 +178,8 @@ public class RollingRandomAccessFileManagerTest {
                         file.getAbsolutePath(), Strings.EMPTY, isAppend, true, RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE,
                         new SizeBasedTriggeringPolicy(Long.MAX_VALUE), //
                         null, null, null);
-        assertThat(manager.getFileTime(), both(lessThan(expectedMax)).and(greaterThanOrEqualTo(expectedMin)));
+        assertTrue(manager.getFileTime() < expectedMax);
+        assertTrue(manager.getFileTime() >= expectedMin);
     }
 
     @Test

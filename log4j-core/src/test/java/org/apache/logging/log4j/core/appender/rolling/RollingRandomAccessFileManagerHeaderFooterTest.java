@@ -65,7 +65,7 @@ public class RollingRandomAccessFileManagerHeaderFooterTest {
         }
         Thread.sleep(50);
         final File dir = new File(DIR);
-        assertThat(dir, both(exists()).and(hasFiles()));
+        assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
         final File[] files = dir.listFiles();
         assertNotNull(files);
         for (final File file : files) {
@@ -73,7 +73,7 @@ public class RollingRandomAccessFileManagerHeaderFooterTest {
             assertFooter(file);
         }
         final File logFile = new File(LOGFILE);
-        assertThat(logFile, exists());
+        assertTrue("Expected logfile to exist: " + LOGFILE, logFile.exists());
         assertHeader(logFile);
     }
 

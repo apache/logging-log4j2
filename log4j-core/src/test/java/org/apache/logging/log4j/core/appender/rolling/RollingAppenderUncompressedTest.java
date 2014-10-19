@@ -71,12 +71,18 @@ public class RollingAppenderUncompressedTest {
             logger.debug("This is test message number " + i);
         }
         final File dir = new File(DIR);
-        assertThat(dir, both(exists()).and(hasFiles()));
+        assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
         final File[] files = dir.listFiles();
         assertNotNull(files);
-        final Matcher<File> withCorrectFileName =
-            both(hasName(that(endsWith(".log")))).and(hasName(that(startsWith("test1"))));
-        assertThat(files, hasItemInArray(withCorrectFileName));
+        boolean found = false;
+        for (final File file : files) {
+            final String name = file.getName();
+            if (name.startsWith("test1") && name.endsWith(".log")) {
+                found = true;
+                break;
+            }
+        }
+        assertTrue("No archived files found", found);
     }
 
     private static void deleteDir() {

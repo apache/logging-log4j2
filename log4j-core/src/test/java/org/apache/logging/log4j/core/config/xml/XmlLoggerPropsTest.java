@@ -63,7 +63,8 @@ public class XmlLoggerPropsTest {
             logger = LogManager.getLogger("tiny.bubbles");
             logger.debug("Test on root");
             final List<String> events = listAppender.getMessages();
-            assertThat("Incorrect number of events", events, both(hasSize(greaterThan(0))).and(hasSize(equalTo(2))));
+            assertTrue("No events", events.size() > 0);
+            assertTrue("Incorrect number of events", events.size() == 2);
             assertThat(events.get(0), allOf(
                 containsString("user="),
                 containsString("phrasex=****"),
