@@ -36,6 +36,7 @@ o LOG4J2-771:  Add lookup for application main arguments.
 o LOG4J2-787:  Add lookup for JVM arguments. 
 
 Fixed Bugs:
+o LOG4J2-676:  Some typo fixes and enhancements for the site. Thanks to Stefan Bodewig. 
 o LOG4J2-866:  Documentation: fixed missing closing parenthesis in code example. Thanks to Gerard Weatherby. 
 o LOG4J2-862:  Fixed classloader issue that prevented Log4j from finding the implementation when used in a custom Ant task. Thanks to Michael Sutherland. 
 o LOG4J2-861:  Documentation: fix broken links on left navigation Extending Log4j Configuration sub-menu. 
