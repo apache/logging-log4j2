@@ -142,7 +142,7 @@ public class LoggerTest {
         final List<String> msgs = list.strList;
         assertThat(msgs, hasSize(1));
         final String expected = "java.lang.Throwable: Testing";
-        assertThat(msgs, hasItem(containsString(expected)));
+        assertTrue("Incorrect message data", msgs.get(0).contains(expected));
     }
 
     @SuppressWarnings("unchecked")
@@ -153,7 +153,7 @@ public class LoggerTest {
         ThreadContext.clearMap();
         logger.debug("Debug message");
         assertThat(list.strList, hasSize(2));
-        assertThat(list.strList, hasItems(startsWith("2010"), not(startsWith("2010"))));
+        assertTrue("Incorrect year", list.strList.get(0).startsWith("2010"));
     }
 }
 
