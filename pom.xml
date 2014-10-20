@@ -964,6 +964,33 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
       </plugin>
+      <!-- RAT report -->
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <version>${rat.plugin.version}</version>
+        <configuration>
+          <excludes>
+            <exclude>src/main/resources/META-INF/services/**/*</exclude>
+            <!-- IntelliJ files -->
+            <exclude>.idea/**/*</exclude>
+            <exclude>src/test/resources/**/*</exclude>
+            <!-- VM metadata -->
+            <exclude>.vagrant/**/*</exclude>
+            <!-- IDE settings imports -->
+            <exclude>src/ide/**</exclude>
+            <!-- does it even make sense to apply a license to a GPG signature? -->
+            <exclude>**/*.asc</exclude>
+            <!-- jQuery is MIT-licensed, but RAT can't figure it out -->
+            <exclude>src/site/resources/js/jquery.js</exclude>
+            <exclude>src/site/resources/js/jquery.min.js</exclude>
+            <!-- Generated files -->
+            <exclude>log4j-distribution/target/**/*</exclude>
+            <!-- Other -->
+            <exclude>felix-cache/**</exclude>            
+          </excludes>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
   <reporting>
@@ -1043,7 +1070,7 @@
             <!-- VM metadata -->
             <exclude>.vagrant/**/*</exclude>
             <!-- IDE settings imports -->
-            <exclude>src/ide/**/*</exclude>
+            <exclude>src/ide/**</exclude>
             <!-- does it even make sense to apply a license to a GPG signature? -->
             <exclude>**/*.asc</exclude>
             <!-- jQuery is MIT-licensed, but RAT can't figure it out -->
