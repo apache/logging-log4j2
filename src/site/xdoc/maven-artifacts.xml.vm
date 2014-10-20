@@ -272,8 +272,8 @@ dependencies {
   compile group: 'org.apache.logging.log4j', name: 'log4j-taglib', version: '${Log4jReleaseVersion}'
 }
 ]]></pre>
-        <h4>Apache Flume NG Appender</h4>
-        <p>The Flume NG Appender allows applications to send events to Flume NG Agents.</p>
+        <h4>Apache Flume Appender</h4>
+        <p>The Flume Appender allows applications to send events to Flume Agents.</p>
         <code>pom.xml</code>
         <pre class="prettyprint linenums"><![CDATA[
 <dependencies>

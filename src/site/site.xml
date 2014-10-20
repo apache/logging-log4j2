@@ -201,7 +201,7 @@
       <item name="SLF4J Binding" href="log4j-slf4j-impl/index.html"/>
       <item name="JUL Adapter" href="log4j-jul/index.html"/>
       <item name="Log4j 2 to SLF4J Adapter" href="log4j-to-slf4j/index.html"/>
-      <item name="Apache Flume NG Appender" href="log4j-flume-ng/index.html"/>
+      <item name="Apache Flume Appender" href="log4j-flume-ng/index.html"/>
       <item name="Log4j Tag Library" href="log4j-taglib/index.html"/>
       <item name="Log4j JMX GUI" href="log4j-jmx-gui/index.html"/>
       <item name="Log4j Web Application Support" href="log4j-web/index.html"/>

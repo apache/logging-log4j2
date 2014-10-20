@@ -88,8 +88,8 @@
           <td>An adapter that permits applications written against the Log4j 2 API to log using SLF4J.</td>
         </tr>
         <tr>
-          <td><a href="log4j-flume-ng/apidocs/index.html">Apache Flume NG Appender</a></td>
-          <td>An Appender that allows applications to send logging events to Apache Flume NG Agents.</td>
+          <td><a href="log4j-flume-ng/apidocs/index.html">Apache Flume Appender</a></td>
+          <td>An Appender that allows applications to send logging events to Apache Flume Agents.</td>
         </tr>
         <tr>
           <td><a href="log4j-jmx-gui/apidocs/index.html">Log4j JMX GUI</a></td>
