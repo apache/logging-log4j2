@@ -65,7 +65,7 @@ public class TestClassLoader extends ClassLoader {
                 Closer.closeSilently(in);
             }
             return defineClass(name, bytecode, 0, bytecode.length);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             Throwables.rethrow(e);
             return null; // unreachable
         }

@@ -42,7 +42,7 @@ public class LoggerTest {
 
     @Test
     public void testLog() {
-        Log logger = LogFactory.getLog("LoggerTest");
+        final Log logger = LogFactory.getLog("LoggerTest");
         logger.debug("Test message");
         verify("List", "o.a.l.l.j.LoggerTest Test message MDC{}" + Constants.LINE_SEPARATOR);
         logger.debug("Exception: " , new NullPointerException("Test"));
