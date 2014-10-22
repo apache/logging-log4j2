@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.util;
 
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.logging.log4j.LogManager;

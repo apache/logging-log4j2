@@ -32,10 +32,7 @@ import static org.apache.logging.log4j.hamcrest.FileMatchers.beforeNow;
 import static org.apache.logging.log4j.hamcrest.FileMatchers.hasLength;
 import static org.apache.logging.log4j.hamcrest.FileMatchers.isEmpty;
 import static org.apache.logging.log4j.hamcrest.FileMatchers.lastModified;
-import static org.hamcrest.Matchers.both;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.Assert.*;
 
