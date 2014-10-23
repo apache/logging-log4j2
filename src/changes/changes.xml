@@ -27,6 +27,9 @@
       <action issue="LOG4J2-881" dev="ggregory" type="update">
         Update Jackson from 2.4.2 to 2.4.3.
       </action>
+      <action issue="LOG4J2-882" dev="ggregory" type="update">
+        Update maven-core from 3.1.0 to 3.2.3.
+      </action>
     </release>      
     <release version="2.1" date="2014-10-19" description="GA Release 2.1">
       <action issue="LOG4J2-676" dev="rgoers" type="fix" due-to="Stefan Bodewig">
