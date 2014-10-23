@@ -168,6 +168,7 @@
     <springVersion>3.2.11.RELEASE</springVersion>
     <flumeVersion>1.5.0.1</flumeVersion>
     <disruptorVersion>3.3.0</disruptorVersion>
+    <compiler.plugin.version>3.1</compiler.plugin.version>
     <pmd.plugin.version>3.2</pmd.plugin.version>
     <findbugs.plugin.version>2.5.5</findbugs.plugin.version>
     <changes.plugin.version>2.11</changes.plugin.version>
@@ -723,7 +724,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.1</version>
+          <version>${compiler.plugin.version}</version>
           <configuration>
             <source>${maven.compile.source}</source>
             <target>${maven.compile.target}</target>
@@ -786,7 +787,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.1</version>
+        <version>${compiler.plugin.version}</version>
         <configuration>
           <source>${maven.compile.source}</source>
           <target>${maven.compile.target}</target>
