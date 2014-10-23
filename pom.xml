@@ -164,7 +164,7 @@
     <slf4jVersion>1.7.7</slf4jVersion>
     <logbackVersion>1.1.2</logbackVersion>
     <jackson1Version>1.9.13</jackson1Version>
-    <jackson2Version>2.4.2</jackson2Version>
+    <jackson2Version>2.4.3</jackson2Version>
     <springVersion>3.2.11.RELEASE</springVersion>
     <flumeVersion>1.5.0.1</flumeVersion>
     <disruptorVersion>3.3.0</disruptorVersion>
