@@ -226,7 +226,7 @@
       <dependency>
         <groupId>org.eclipse.osgi</groupId>
         <artifactId>org.eclipse.osgi</artifactId>
-        <version>3.6.0.v20100517</version>
+        <version>3.7.1</version>
       </dependency>
       <dependency>
         <groupId>org.apache.felix</groupId>

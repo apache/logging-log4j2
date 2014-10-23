@@ -32,7 +32,10 @@
       </action>
       <action issue="LOG4J2-883" dev="ggregory" type="update">
         Update tests from org.apache.felix.framework 4.2.1 to 4.4.1.
-      </action>      
+      </action>
+      <action issue="LOG4J2-884" dev="ggregory" type="update">
+        Update org.eclipse.osgi from 3.6.0 to 3.7.1.
+      </action>
     </release>      
     <release version="2.1" date="2014-10-19" description="GA Release 2.1">
       <action issue="LOG4J2-676" dev="rgoers" type="fix" due-to="Stefan Bodewig">
