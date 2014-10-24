@@ -160,7 +160,7 @@ public interface Logger {
     /**
      * Logs a message object with the {@link Level#DEBUG DEBUG} level.
      *
-     * @param message the message object to log.
+     * @param message the message string to log.
      */
     void debug(String message);
 
@@ -309,7 +309,7 @@ public interface Logger {
     /**
      * Logs a message object with the {@link Level#ERROR ERROR} level.
      *
-     * @param message the message object to log.
+     * @param message the message string to log.
      */
     void error(String message);
 
@@ -455,7 +455,7 @@ public interface Logger {
     /**
      * Logs a message object with the {@link Level#FATAL FATAL} level.
      *
-     * @param message the message object to log.
+     * @param message the message string to log.
      */
     void fatal(String message);
 
@@ -604,7 +604,7 @@ public interface Logger {
     /**
      * Logs a message object with the {@link Level#INFO INFO} level.
      *
-     * @param message the message object to log.
+     * @param message the message string to log.
      */
     void info(String message);
 
@@ -856,7 +856,7 @@ public interface Logger {
      * Logs a message object with the given level.
      *
      * @param level the logging level
-     * @param message the message object to log.
+     * @param message the message string to log.
      */
     void log(Level level, String message);
 
@@ -964,7 +964,7 @@ public interface Logger {
      * Logs a message object with the {@link Level#TRACE TRACE} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message object to log.
+     * @param message the message string to log.
      */
     void trace(Marker marker, String message);
 
@@ -1024,7 +1024,7 @@ public interface Logger {
     /**
      * Logs a message object with the {@link Level#TRACE TRACE} level.
      *
-     * @param message the message object to log.
+     * @param message the message string to log.
      */
     void trace(String message);
 
@@ -1149,7 +1149,7 @@ public interface Logger {
     /**
      * Logs a message object with the {@link Level#WARN WARN} level.
      *
-     * @param message the message object to log.
+     * @param message the message string to log.
      */
     void warn(String message);
 
