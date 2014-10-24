@@ -43,10 +43,10 @@ import org.apache.logging.log4j.status.StatusLogger;
 import com.fasterxml.jackson.core.io.JsonStringEncoder;
 
 /**
- * Lays out Graylog Extended Log Format (GELF) 1.1 log events.
+ * Lays out events in the Graylog Extended Log Format (GELF) 1.1.
  * <p>
- * Compresses (compressionType = "GZIP" or "ZLIB") the JSON if log event data is larger than 1024 bytes (the
- * compressionThreshold). Does not implement chunking.
+ * This layout compresses JSON to GZIP or ZLIB (the {@code compressionType}) if log event data is larger than 1024 bytes
+ * (the {@code compressionThreshold}). This layout does not implement chunking.
  * </p>
  * <p>
  * Configure as follows to send to a Graylog2 server:
