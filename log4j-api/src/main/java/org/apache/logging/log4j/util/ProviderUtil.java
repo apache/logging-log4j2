@@ -62,7 +62,7 @@ public final class ProviderUtil {
     private static volatile ProviderUtil INSTANCE;
 
     private ProviderUtil() {
-        for (LoaderUtil.UrlResource resource : LoaderUtil.findUrlResources(PROVIDER_RESOURCE)) {
+        for (final LoaderUtil.UrlResource resource : LoaderUtil.findUrlResources(PROVIDER_RESOURCE)) {
             loadProvider(resource.getUrl(), resource.getClassLoader());
         }
     }

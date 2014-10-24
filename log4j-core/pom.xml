@@ -241,6 +241,7 @@
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>${compiler.plugin.version}</version>
         <executions>
           <execution>
             <!-- disable annotation processing for first pass -->

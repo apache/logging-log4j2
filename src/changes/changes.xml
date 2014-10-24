@@ -23,6 +23,20 @@
     <title>Changes</title>
   </properties>
   <body>
+    <release version="2.1.1" date="201?-??-??" description="GA Release 2.1.1">
+      <action issue="LOG4J2-881" dev="ggregory" type="update">
+        Update Jackson from 2.4.2 to 2.4.3.
+      </action>
+      <action issue="LOG4J2-882" dev="ggregory" type="update">
+        Update maven-core from 3.1.0 to 3.2.3.
+      </action>
+      <action issue="LOG4J2-883" dev="ggregory" type="update">
+        Update tests from org.apache.felix.framework 4.2.1 to 4.4.1.
+      </action>
+      <action issue="LOG4J2-884" dev="ggregory" type="update">
+        Update org.eclipse.osgi from 3.6.0 to 3.7.1.
+      </action>
+    </release>      
     <release version="2.1" date="2014-10-19" description="GA Release 2.1">
       <action issue="LOG4J2-676" dev="rgoers" type="fix" due-to="Stefan Bodewig">
         Some typo fixes and enhancements for the site.

@@ -97,7 +97,7 @@ public class ParameterizedMessage implements Message {
     public ParameterizedMessage(final String messagePattern, final Object[] objectArgs, final Throwable throwable) {
         this.messagePattern = messagePattern;
         this.throwable = throwable;
-        this.stringArgs = parseArguments(objectArgs);
+        this.stringArgs = argumentsToStrings(objectArgs);
     }
 
     /**
@@ -113,7 +113,7 @@ public class ParameterizedMessage implements Message {
      */
     public ParameterizedMessage(final String messagePattern, final Object[] arguments) {
         this.messagePattern = messagePattern;
-        this.stringArgs = parseArguments(arguments);
+        this.stringArgs = argumentsToStrings(arguments);
     }
 
     /**
@@ -135,7 +135,7 @@ public class ParameterizedMessage implements Message {
         this(messagePattern, new Object[]{arg1, arg2});
     }
 
-    private String[] parseArguments(final Object[] arguments) {
+    private String[] argumentsToStrings(final Object[] arguments) {
         if (arguments == null) {
             return null;
         }

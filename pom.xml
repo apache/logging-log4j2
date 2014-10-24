@@ -165,10 +165,11 @@
     <slf4jVersion>1.7.7</slf4jVersion>
     <logbackVersion>1.1.2</logbackVersion>
     <jackson1Version>1.9.13</jackson1Version>
-    <jackson2Version>2.4.2</jackson2Version>
+    <jackson2Version>2.4.3</jackson2Version>
     <springVersion>3.2.11.RELEASE</springVersion>
     <flumeVersion>1.5.0.1</flumeVersion>
     <disruptorVersion>3.3.0</disruptorVersion>
+    <compiler.plugin.version>3.1</compiler.plugin.version>
     <pmd.plugin.version>3.2</pmd.plugin.version>
     <findbugs.plugin.version>2.5.5</findbugs.plugin.version>
     <changes.plugin.version>2.11</changes.plugin.version>
@@ -227,17 +228,17 @@
       <dependency>
         <groupId>org.eclipse.osgi</groupId>
         <artifactId>org.eclipse.osgi</artifactId>
-        <version>3.6.0.v20100517</version>
+        <version>3.7.1</version>
       </dependency>
       <dependency>
         <groupId>org.apache.felix</groupId>
         <artifactId>org.apache.felix.framework</artifactId>
-        <version>4.2.1</version>
+        <version>4.4.1</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-core</artifactId>
-        <version>3.1.0</version>
+        <version>3.2.3</version>
       </dependency>
       <dependency>
         <groupId>commons-codec</groupId>
@@ -724,7 +725,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.1</version>
+          <version>${compiler.plugin.version}</version>
           <configuration>
             <source>${maven.compile.source}</source>
             <target>${maven.compile.target}</target>
@@ -787,7 +788,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.1</version>
+        <version>${compiler.plugin.version}</version>
         <configuration>
           <source>${maven.compile.source}</source>
           <target>${maven.compile.target}</target>
@@ -965,6 +966,33 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
       </plugin>
+      <!-- RAT report -->
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <version>${rat.plugin.version}</version>
+        <configuration>
+          <excludes>
+            <exclude>src/main/resources/META-INF/services/**/*</exclude>
+            <!-- IntelliJ files -->
+            <exclude>.idea/**/*</exclude>
+            <exclude>src/test/resources/**/*</exclude>
+            <!-- VM metadata -->
+            <exclude>.vagrant/**/*</exclude>
+            <!-- IDE settings imports -->
+            <exclude>src/ide/**</exclude>
+            <!-- does it even make sense to apply a license to a GPG signature? -->
+            <exclude>**/*.asc</exclude>
+            <!-- jQuery is MIT-licensed, but RAT can't figure it out -->
+            <exclude>src/site/resources/js/jquery.js</exclude>
+            <exclude>src/site/resources/js/jquery.min.js</exclude>
+            <!-- Generated files -->
+            <exclude>log4j-distribution/target/**/*</exclude>
+            <!-- Other -->
+            <exclude>felix-cache/**</exclude>            
+          </excludes>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
   <reporting>
@@ -1044,7 +1072,7 @@
             <!-- VM metadata -->
             <exclude>.vagrant/**/*</exclude>
             <!-- IDE settings imports -->
-            <exclude>src/ide/**/*</exclude>
+            <exclude>src/ide/**</exclude>
             <!-- does it even make sense to apply a license to a GPG signature? -->
             <exclude>**/*.asc</exclude>
             <!-- jQuery is MIT-licensed, but RAT can't figure it out -->

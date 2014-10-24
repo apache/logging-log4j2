@@ -259,7 +259,7 @@ public class TestConfigurator {
         assertNotNull("Appenders map should not be null.", map);
         assertThat(map, hasSize(greaterThan(0)));
         assertThat("No ListAppender named List2", map, hasKey("List2"));
-        Appender app = map.get("List2");
+        final Appender app = map.get("List2");
         final Layout<? extends Serializable> layout = app.getLayout();
         assertNotNull("Appender List2 does not have a Layout", layout);
         assertThat("Appender List2 is not configured with a PatternLayout", layout, instanceOf(PatternLayout.class));

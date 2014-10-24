@@ -150,7 +150,7 @@ public abstract class ConfigurationFactory {
                         }
                     }
                     Collections.sort(ordered, OrderComparator.getInstance());
-                    for (Class<? extends ConfigurationFactory> clazz : ordered) {
+                    for (final Class<? extends ConfigurationFactory> clazz : ordered) {
                         addFactory(list, clazz);
                     }
                     // see above comments about double-checked locking

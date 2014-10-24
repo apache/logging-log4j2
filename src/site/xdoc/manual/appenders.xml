@@ -443,7 +443,7 @@
               <td>batchSize</td>
               <td>integer</td>
               <td>Specifies the number of events that should be sent as a batch. The default is 1. <i>This
-                parameter only applies to the Flume NG Appender.</i></td>
+                parameter only applies to the Flume Appender.</i></td>
             </tr>
             <tr>
               <td>compress</td>
