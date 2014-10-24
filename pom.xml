@@ -40,7 +40,6 @@
   </ciManagement>
   <inceptionYear>1999</inceptionYear>
   <developers>
-  <developers>
     <developer>
       <id>rgoers</id>
       <name>Ralph Goers</name>
@@ -989,7 +988,7 @@
             <!-- Generated files -->
             <exclude>log4j-distribution/target/**/*</exclude>
             <!-- Other -->
-            <exclude>felix-cache/**</exclude>            
+            <exclude>felix-cache/**</exclude>
           </excludes>
         </configuration>
       </plugin>
