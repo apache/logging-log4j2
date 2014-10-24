@@ -40,15 +40,16 @@
   </ciManagement>
   <inceptionYear>1999</inceptionYear>
   <developers>
+  <developers>
     <developer>
       <id>rgoers</id>
       <name>Ralph Goers</name>
       <email>rgoers@apache.org</email>
-      <organization>Maas Global Solutions Corp</organization>
+      <organization>Nextiva</organization>
       <roles>
         <role>PMC Member</role>
       </roles>
-      <timezone>America/Los_Angeles</timezone>
+      <timezone>America/Phoenix</timezone>
     </developer>
     <developer>
       <id>ggregory</id>
