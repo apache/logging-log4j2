@@ -1466,6 +1466,38 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           of course, end-of-lines.
           </p>
         </subsection>
+        <a name="GELFLayout"/>
+        <subsection name="GELF Layout">
+          <!-- From Javadoc of org.apache.logging.log4j.core.layout.GELFLayout -->
+          <p>
+            Lays out events in the Graylog Extended Log Format (GELF) 1.1.
+          </p>
+          <p>
+            This layout compresses JSON to GZIP or ZLIB (the <code>compressionType</code>) if log event data is larger than 1024 bytes
+            (the <code>compressionThreshold</code>). This layout does not implement chunking.
+          </p>
+          <p>
+            Configure as follows to send to a Graylog2 server:
+          </p>
+          <pre class="prettyprint linenums">[
+  &lt;Appenders&gt;
+    &lt;Socket name="Graylog" protocol="udp" host="graylog.domain.com" port="12201"&gt;
+        &lt;GelfLayout host="someserver" compressionType="GZIP" compressionThreshold="1024"&gt;
+            &lt;KeyValuePair key="additionalField1" value="additional value 1"/&gt;
+            &lt;KeyValuePair key="additionalField2" value="additional value 2"/&gt;
+        &lt;/GelfLayout&gt;
+    &lt;/Socket&gt;
+  &lt;/Appenders&gt;
+]
+</pre>
+           <p>
+             See also:
+           </p>
+           <ul>
+             <li>The <a href="http://graylog2.org/gelf">GELF home page</a></li>
+             <li>The <a href="http://graylog2.org/resources/gelf/specification">GELF specification</a></li>
+           </ul>
+        </subsection>
         <a name="LocationInformation"/>
         <subsection name="Location Information">
         <p>

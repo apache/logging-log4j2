@@ -137,6 +137,7 @@
         <item name="Serialized" href="/manual/layouts.html#SerializedLayout"/>
         <item name="Syslog" href="/manual/layouts.html#SyslogLayout"/>
         <item name="XML" href="/manual/layouts.html#XMLLayout"/>
+        <item name="GELF" href="/manual/layouts.html#GELFLayout"/>
         <item name="Location Information" href="/manual/layouts.html#LocationInformation"/>
       </item>
 
