@@ -116,9 +116,10 @@ public class SocketAppenderTest {
         String expectedUuidStr = UUID.randomUUID().toString();
         ThreadContext.put(tcKey, expectedUuidStr);
         ThreadContext.push(expectedUuidStr);
+        final String expectedExMsg = "This is a test";
         try {
             root.debug("This is a test message");
-            final Throwable child = new LoggingException("This is a test");
+            final Throwable child = new LoggingException(expectedExMsg);
             root.error("Throwing an exception", child);
             root.debug("This is another test message");
         } finally {
@@ -137,6 +138,7 @@ public class SocketAppenderTest {
         assertTrue("Message not delivered via TCP", tcpCount > 1);
         assertEquals(expectedUuidStr, event.getContextStack().pop());
         assertNotNull(event.getThrownProxy());
+        assertEquals(expectedExMsg, event.getThrownProxy().getMessage());
     }
 
     @Test
