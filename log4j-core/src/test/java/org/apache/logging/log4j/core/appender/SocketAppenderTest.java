@@ -113,8 +113,9 @@ public class SocketAppenderTest {
         root.setAdditive(false);
         root.setLevel(Level.DEBUG);
         String tcKey = "UUID";
-        String expectedUuid = UUID.randomUUID().toString();
-        ThreadContext.put(tcKey, expectedUuid);
+        String expectedUuidStr = UUID.randomUUID().toString();
+        ThreadContext.put(tcKey, expectedUuidStr);
+        ThreadContext.push(expectedUuidStr);
         try {
             root.debug("This is a test message");
             final Throwable child = new LoggingException("This is a test");
@@ -122,17 +123,19 @@ public class SocketAppenderTest {
             root.debug("This is another test message");
         } finally {
             ThreadContext.remove(tcKey);
+            ThreadContext.pop();
         }
         Thread.sleep(250);
         LogEvent event = list.poll(3, TimeUnit.SECONDS);
         assertNotNull("No event retrieved", event);
         assertTrue("Incorrect event", event.getMessage().getFormattedMessage().equals("This is a test message"));
         assertTrue("Message not delivered via TCP", tcpCount > 0);
-        assertEquals(expectedUuid, event.getContextMap().get(tcKey));
+        assertEquals(expectedUuidStr, event.getContextMap().get(tcKey));
         event = list.poll(3, TimeUnit.SECONDS);
         assertNotNull("No event retrieved", event);
         assertTrue("Incorrect event", event.getMessage().getFormattedMessage().equals("Throwing an exception"));
         assertTrue("Message not delivered via TCP", tcpCount > 1);
+        assertEquals(expectedUuidStr, event.getContextStack().pop());
     }
 
     @Test
@@ -268,5 +271,5 @@ public class SocketAppenderTest {
             }
         }
     }
-
+   
 }
