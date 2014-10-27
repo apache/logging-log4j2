@@ -40,8 +40,12 @@ import org.apache.logging.log4j.util.Strings;
  * fields of the proxy like the message and stack trace.
  * </p>
  * 
- * TODO: Move this class to org.apache.logging.log4j.core because it is used from LogEvent. TODO: Deserialize: Try to
- * rebuild Throwable if the target exception is in this class loader?
+ * <p>
+ * TODO: Move this class to org.apache.logging.log4j.core because it is used from LogEvent.
+ * </p>
+ * <p>
+ * TODO: Deserialize: Try to rebuild Throwable if the target exception is in this class loader?
+ * </p>
  */
 public class ThrowableProxy implements Serializable {
 
