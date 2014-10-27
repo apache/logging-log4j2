@@ -136,6 +136,7 @@ public class SocketAppenderTest {
         assertTrue("Incorrect event", event.getMessage().getFormattedMessage().equals("Throwing an exception"));
         assertTrue("Message not delivered via TCP", tcpCount > 1);
         assertEquals(expectedUuidStr, event.getContextStack().pop());
+        assertNotNull(event.getThrownProxy());
     }
 
     @Test
@@ -271,5 +272,5 @@ public class SocketAppenderTest {
             }
         }
     }
-   
+
 }
