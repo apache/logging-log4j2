@@ -147,7 +147,7 @@
       <action issue="LOG4J2-825" dev="mattsicker" type="add">
         Add simple validation constraint annotations for the Plugin system.
       </action>
-      <action issue="LOG4J2-428" dev="ggregory" type="add" due-to="Mark Paluch">
+      <action issue="LOG4J2-428" dev="ggregory" type="add" due-to="Mark Paluch, Mikael Ståldal">
         Implement a GELF layout.
       </action>
       <action issue="LOG4J2-391" dev="rgoers" type="fix" due-to="Kamal Bahadur">
