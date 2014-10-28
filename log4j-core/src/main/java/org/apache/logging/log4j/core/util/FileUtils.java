@@ -65,16 +65,17 @@ public final class FileUtils {
                 return null;
             }
         }
+        String charsetName = Charsets.UTF_8.name();
         try {
             final String fileName = uri.toURL().getFile();
             if (new File(fileName).exists()) { // LOG4J2-466
                 return new File(fileName); // allow files with '+' char in name
             }
-            return new File(URLDecoder.decode(fileName, "UTF8"));
+            return new File(URLDecoder.decode(fileName, charsetName));
         } catch (final MalformedURLException ex) {
             LOGGER.warn("Invalid URL {}", uri, ex);
         } catch (final UnsupportedEncodingException uee) {
-            LOGGER.warn("Invalid encoding: UTF8", uee);
+            LOGGER.warn("Invalid encoding: {}", charsetName, uee);
         }
         return null;
     }
