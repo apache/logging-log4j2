@@ -29,7 +29,7 @@ o LOG4J2-547:  Add the Log4j IOStreams component.
 o LOG4J2-431:  Added Memory-Mapped File Appender. Thanks to Claude Mamo. 
 o LOG4J2-827:  Support use of TypeConverter classes through the standard Plugin system. 
 o LOG4J2-825:  Add simple validation constraint annotations for the Plugin system. 
-o LOG4J2-428:  Implement a GELF layout. Thanks to Mark Paluch. 
+o LOG4J2-428:  Implement a GELF layout. Thanks to Mark Paluch, Mikael Ståldal. 
 o LOG4J2-608:  Add java.util.logging implementation based on log4j-api. See log4j-jul documentation for more details. 
 o LOG4J2-793:  Add support for custom SLF4J Markers in log4j-slf4j-impl module. 
 o LOG4J2-771:  Add lookup for application main arguments. 
