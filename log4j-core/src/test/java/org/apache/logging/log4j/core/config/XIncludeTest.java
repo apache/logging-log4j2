@@ -78,7 +78,7 @@ public class XIncludeTest {
         this.rules = RuleChain.outerRule(new CleanFiles(logFileName)).around(this.init);
     }
 
-    @Parameters
+    @Parameters(name = "config={0}, log={1}")
     public static Collection<Object[]> data() {
         return Arrays.asList(
                 new Object[][]{
