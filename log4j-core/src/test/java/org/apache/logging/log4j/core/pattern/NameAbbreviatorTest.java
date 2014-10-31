@@ -39,7 +39,7 @@ public class NameAbbreviatorTest {
         this.expected = expected;
     }
 
-    @Parameterized.Parameters
+    @Parameterized.Parameters(name = "pattern=\"{0}\", expected={1}")
     public static Collection<Object[]> data() {
         return Arrays.asList(
             new Object[][]{
