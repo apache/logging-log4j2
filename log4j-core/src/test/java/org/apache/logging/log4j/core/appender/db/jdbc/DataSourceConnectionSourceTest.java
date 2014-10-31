@@ -45,7 +45,7 @@ import static org.junit.Assert.*;
 @RunWith(Parameterized.class)
 public class DataSourceConnectionSourceTest {
 
-    @Parameterized.Parameters
+    @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> data() {
         return Arrays.asList(
                 new Object[][]{
