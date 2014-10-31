@@ -42,7 +42,7 @@ import static org.junit.Assert.*;
 @RunWith(Parameterized.class)
 public class RandomAccessFileAppenderTests {
 
-    @Parameterized.Parameters
+    @Parameterized.Parameters(name = "{0}, locationEnabled={1}")
     public static Collection<Object[]> data() {
         return Arrays.asList(
                 new Object[][]{
