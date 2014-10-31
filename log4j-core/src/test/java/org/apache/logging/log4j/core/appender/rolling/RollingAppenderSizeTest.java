@@ -47,7 +47,7 @@ public class RollingAppenderSizeTest {
 
     private Logger logger;
 
-    @Parameterized.Parameters
+    @Parameterized.Parameters(name = "{0} \u2192 {1}")
     public static Collection<Object[]> data() {
         return Arrays.asList(
                 new Object[][]{
