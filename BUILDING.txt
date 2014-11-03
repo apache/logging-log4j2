@@ -4,6 +4,18 @@ To build Log4j 2, you need a JDK implementation version 1.6 or greater, and Apac
 Note that building the site requires Maven 3.0.5, while everything else works
 fine with any version of Maven 3.
 
+To perform a RAT check, run:
+
+mvn apache-rat:check
+
+To perform a Clirr check on the API modules, run:
+
+cd log4j-api
+mvn clirr:check
+
+cd log4j-1.2-api
+mvn clirr:check
+
 To build the site, from a command line, run:
 
 mvn clean install
