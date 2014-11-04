@@ -453,9 +453,9 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     @Override
     public synchronized void onChange(final Reconfigurable reconfigurable) {
         LOGGER.debug("Reconfiguration started for context {} ({})", name, this);
-        final Configuration config = reconfigurable.reconfigure();
-        if (config != null) {
-            setConfiguration(config);
+        final Configuration newConfig = reconfigurable.reconfigure();
+        if (newConfig != null) {
+            setConfiguration(newConfig);
             LOGGER.debug("Reconfiguration completed for {} ({})", name, this);
         } else {
             LOGGER.debug("Reconfiguration failed for {} ({})", name, this);
