@@ -29,6 +29,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LifeCycle;
+import org.apache.logging.log4j.core.LifeCycle.State;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -155,6 +156,11 @@ public class DefaultShutdownCallbackRegistry implements ShutdownCallbackRegistry
             Runtime.getRuntime().removeShutdownHook(shutdownThread);
             shutdownHookRef.enqueue();
         }
+    }
+
+    @Override
+    public State getState() {
+        return state.get();
     }
 
     /**

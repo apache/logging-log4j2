@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.1.1" date="201?-??-??" description="GA Release 2.1.1">
+      <action issue="LOG4J2-881" dev="ggregory" type="fix" due-to="Mariano Gonzalez">
+        AbstractLifecycle should not implement equals() and hashCode().
+      </action>
       <action issue="LOG4J2-881" dev="ggregory" type="update">
         Update Jackson from 2.4.2 to 2.4.3.
       </action>

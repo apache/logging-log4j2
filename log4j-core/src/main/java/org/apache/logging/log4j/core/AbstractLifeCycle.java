@@ -37,8 +37,7 @@ public class AbstractLifeCycle implements LifeCycle, Serializable {
 
     private volatile LifeCycle.State state = LifeCycle.State.INITIALIZED;
 
-    @Override
-    public boolean equals(final Object obj) {
+    protected boolean equalsImpl(final Object obj) {
         if (this == obj) {
             return true;
         }
@@ -48,19 +47,19 @@ public class AbstractLifeCycle implements LifeCycle, Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final AbstractLifeCycle other = (AbstractLifeCycle) obj;
-        if (state != other.state) {
+        final LifeCycle other = (LifeCycle) obj;
+        if (state != other.getState()) {
             return false;
         }
         return true;
     }
 
+    @Override
     public LifeCycle.State getState() {
         return this.state;
     }
 
-    @Override
-    public int hashCode() {
+    protected int hashCodeImpl() {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((state == null) ? 0 : state.hashCode());

@@ -45,6 +45,13 @@ public interface LifeCycle {
         STOPPED
     }
     
+    /**
+     * Gets the life-cycle state
+     * 
+     * @return the life-cycle state
+     */
+    State getState();
+    
     void start();
 
     void stop();

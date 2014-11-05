@@ -56,6 +56,11 @@ public class JmsServer extends LogEventListener implements MessageListener, Life
     }
 
     @Override
+    public State getState() {
+        return state.get();
+    }
+
+    @Override
     public void onMessage(final Message message) {
         try {
             if (message instanceof ObjectMessage) {
@@ -104,4 +109,5 @@ public class JmsServer extends LogEventListener implements MessageListener, Life
     public boolean isStopped() {
         return state.get() == State.STOPPED;
     }
+
 }

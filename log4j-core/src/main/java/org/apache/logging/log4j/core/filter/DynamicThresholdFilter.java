@@ -85,7 +85,7 @@ public final class DynamicThresholdFilter extends AbstractFilter {
         if (this == obj) {
             return true;
         }
-        if (!super.equals(obj)) {
+        if (!super.equalsImpl(obj)) {
             return false;
         }
         if (getClass() != obj.getClass()) {
@@ -163,7 +163,7 @@ public final class DynamicThresholdFilter extends AbstractFilter {
     @Override
     public int hashCode() {
         final int prime = 31;
-        int result = super.hashCode();
+        int result = super.hashCodeImpl();
         result = prime * result + ((defaultThreshold == null) ? 0 : defaultThreshold.hashCode());
         result = prime * result + ((key == null) ? 0 : key.hashCode());
         result = prime * result + ((levelMap == null) ? 0 : levelMap.hashCode());
