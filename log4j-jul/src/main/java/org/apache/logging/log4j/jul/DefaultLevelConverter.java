@@ -32,7 +32,7 @@ public class DefaultLevelConverter implements LevelConverter {
     private final Map<java.util.logging.Level, Level> JDK_TO_LOG4J =
         new IdentityHashMap<java.util.logging.Level, Level>(9);
     private final Map<Level, java.util.logging.Level> LOG4J_TO_JDK =
-        new IdentityHashMap<Level, java.util.logging.Level>(9);
+        new IdentityHashMap<Level, java.util.logging.Level>(10);
 
     public DefaultLevelConverter() {
         JDK_TO_LOG4J.put(java.util.logging.Level.OFF, Level.OFF);
@@ -52,6 +52,7 @@ public class DefaultLevelConverter implements LevelConverter {
         LOG4J_TO_JDK.put(Level.INFO, java.util.logging.Level.INFO);
         LOG4J_TO_JDK.put(Level.WARN, java.util.logging.Level.WARNING);
         LOG4J_TO_JDK.put(Level.ERROR, java.util.logging.Level.SEVERE);
+        LOG4J_TO_JDK.put(Level.FATAL, java.util.logging.Level.SEVERE);
         LOG4J_TO_JDK.put(Level.ALL, java.util.logging.Level.ALL);
     }
 
