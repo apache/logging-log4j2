@@ -297,8 +297,7 @@ public class Logger extends AbstractLogger {
                     return r == Filter.Result.ACCEPT;
                 }
             }
-
-            return intLevel >= level.intLevel();
+            return level != null && intLevel >= level.intLevel();
         }
 
         boolean filter(final Level level, final Marker marker, final String msg, final Throwable t) {
@@ -310,8 +309,7 @@ public class Logger extends AbstractLogger {
                     return r == Filter.Result.ACCEPT;
                 }
             }
-
-            return intLevel >= level.intLevel();
+            return level != null && intLevel >= level.intLevel();
         }
 
         boolean filter(final Level level, final Marker marker, final String msg, final Object... p1) {
@@ -323,8 +321,7 @@ public class Logger extends AbstractLogger {
                     return r == Filter.Result.ACCEPT;
                 }
             }
-
-            return intLevel >= level.intLevel();
+            return level != null && intLevel >= level.intLevel();
         }
 
         boolean filter(final Level level, final Marker marker, final Object msg, final Throwable t) {
@@ -336,8 +333,7 @@ public class Logger extends AbstractLogger {
                     return r == Filter.Result.ACCEPT;
                 }
             }
-
-            return intLevel >= level.intLevel();
+            return level != null && intLevel >= level.intLevel();
         }
 
         boolean filter(final Level level, final Marker marker, final Message msg, final Throwable t) {
@@ -349,8 +345,7 @@ public class Logger extends AbstractLogger {
                     return r == Filter.Result.ACCEPT;
                 }
             }
-
-            return intLevel >= level.intLevel();
+            return level != null && intLevel >= level.intLevel();
         }
     }
 

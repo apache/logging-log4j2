@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.1.1" date="201?-??-??" description="GA Release 2.1.1">
+      <action issue="LOG4J2-893" dev="ggregory" type="fix">
+        NullPointerException on filter when mapping JUL to Log4j2.
+      </action>
       <action issue="LOG4J2-892" dev="ggregory" type="fix">
         JUL adapter does not map Log4j'2 FATAL level to JUL level.
       </action>
