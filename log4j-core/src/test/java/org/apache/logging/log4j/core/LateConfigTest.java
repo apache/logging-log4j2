@@ -16,17 +16,17 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
-import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -34,11 +34,7 @@ import static org.junit.Assert.*;
 public class LateConfigTest {
 
     private static final String CONFIG = "target/test-classes/log4j-test1.xml";
-    private static Configuration config;
-    private static ListAppender app;
     private static LoggerContext ctx;
-
-    private final org.apache.logging.log4j.Logger logger = LogManager.getLogger("LoggerTest");
 
     @BeforeClass
     public static void setupClass() {
