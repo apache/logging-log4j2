@@ -51,7 +51,7 @@ public class TcpSocketManager extends AbstractSocketManager {
 
     private final int reconnectionDelay;
 
-    private Reconnector connector = null;
+    private Reconnector connector;
 
     private Socket socket;
 
