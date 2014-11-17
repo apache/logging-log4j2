@@ -31,7 +31,7 @@ import org.apache.logging.log4j.core.appender.OutputStreamManager;
 public abstract class AbstractSocketManager extends OutputStreamManager {
 
     /**
-     * The internet address of the host.
+     * The Internet address of the host.
      */
     protected final InetAddress inetAddress;
     
@@ -49,7 +49,7 @@ public abstract class AbstractSocketManager extends OutputStreamManager {
      * The Constructor.
      * @param name The unique name of this connection.
      * @param os The OutputStream to manage.
-     * @param inetAddress The internet address.
+     * @param inetAddress The Internet address.
      * @param host The target host name.
      * @param port The target port number.
      */

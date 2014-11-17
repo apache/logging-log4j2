@@ -47,7 +47,7 @@ public class SslSocketManager extends TcpSocketManager {
      * @param name          The unique name of this connection.
      * @param os            The OutputStream.
      * @param sock          The Socket.
-     * @param inetAddress          The internet address of the host.
+     * @param inetAddress          The Internet address of the host.
      * @param host          The name of the host.
      * @param port          The port number on the host.
      * @param delay         Reconnection interval.
