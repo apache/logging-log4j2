@@ -68,12 +68,12 @@ public final class ClockFactory {
             LOGGER.debug("Using default SystemClock for timestamps");
             return new SystemClock();
         }
-        if (CachedClock.class.getName().equals(userRequest) //
+        if (CachedClock.class.getName().equals(userRequest)
                 || "CachedClock".equals(userRequest)) {
             LOGGER.debug("Using specified CachedClock for timestamps");
             return CachedClock.instance();
         }
-        if (CoarseCachedClock.class.getName().equals(userRequest) //
+        if (CoarseCachedClock.class.getName().equals(userRequest)
                 || "CoarseCachedClock".equals(userRequest)) {
             LOGGER.debug("Using specified CoarseCachedClock for timestamps");
             return CoarseCachedClock.instance();
