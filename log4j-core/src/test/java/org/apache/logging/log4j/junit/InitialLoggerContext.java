@@ -50,6 +50,7 @@ public class InitialLoggerContext implements TestRule {
 
     @Override
     public Statement apply(final Statement base, final Description description) {
+        // Hack: Using -DEBUG as a JVM param sets a property called "EBUG"... 
         if (System.getProperties().containsKey("EBUG")) {
             StatusLogger.getLogger().setLevel(Level.DEBUG);
         }
