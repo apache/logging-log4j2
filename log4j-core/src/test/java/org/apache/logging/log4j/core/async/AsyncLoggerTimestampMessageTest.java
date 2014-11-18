@@ -16,12 +16,20 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
+import org.apache.logging.log4j.core.util.ClockFactoryTest;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
@@ -29,12 +37,6 @@ import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-
-import static org.junit.Assert.*;
 
 /**
  * Confirms that if you log a {@link TimestampMessage} then there are no unnecessary calls to {@link Clock}.
@@ -55,9 +57,9 @@ public class AsyncLoggerTimestampMessageTest {
     }
 
     @AfterClass
-    public static void afterClass() {
+    public static void afterClass() throws IllegalAccessException {
         System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, Strings.EMPTY);
-        System.setProperty(ClockFactory.PROPERTY_NAME, Strings.EMPTY);
+        ClockFactoryTest.resetClocks();
     }
 
     @Test

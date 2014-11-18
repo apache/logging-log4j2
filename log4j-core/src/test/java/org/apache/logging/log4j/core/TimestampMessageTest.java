@@ -16,20 +16,26 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.util.List;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
+import org.apache.logging.log4j.core.util.ClockFactoryTest;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.*;
-
-import java.util.List;
-
-import static org.junit.Assert.*;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.Test;
 
 /**
  * Confirms that if you log a {@link TimestampMessage} then there are no unnecessary calls to {@link Clock}.
@@ -54,9 +60,9 @@ public class TimestampMessageTest {
     }
 
     @AfterClass
-    public static void afterClass() {
+    public static void afterClass() throws IllegalAccessException {
         System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, Strings.EMPTY);
-        System.setProperty(ClockFactory.PROPERTY_NAME, Strings.EMPTY);
+        ClockFactoryTest.resetClocks();
     }
 
     @Test
@@ -71,6 +77,11 @@ public class TimestampMessageTest {
     }
 
     public static class PoisonClock implements Clock {
+        public PoisonClock() {
+            super();
+            // Breakpoint here for debuging.
+        }
+
         @Override
         public long currentTimeMillis() {
             throw new RuntimeException("This should not have been called");

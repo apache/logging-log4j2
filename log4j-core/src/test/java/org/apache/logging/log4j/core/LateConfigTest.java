@@ -23,8 +23,11 @@ import java.io.File;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -34,16 +37,22 @@ import org.junit.Test;
 public class LateConfigTest {
 
     private static final String CONFIG = "target/test-classes/log4j-test1.xml";
-    private static LoggerContext ctx;
+    private static LoggerContext context;
 
     @BeforeClass
     public static void setupClass() {
-        ctx = (LoggerContext) LogManager.getContext(false);
+        context = (LoggerContext) LogManager.getContext(false);
     }
+
+    @AfterClass
+    public static void tearDownClass() {
+        Configurator.shutdown(context);
+        StatusLogger.getLogger().reset();
+    }    
 
     @Test
     public void testReconfiguration() throws Exception {
-        final Configuration cfg = ctx.getConfiguration();
+        final Configuration cfg = context.getConfiguration();
         assertNotNull("No configuration", cfg);
         assertTrue("Not set to default configuration", cfg instanceof DefaultConfiguration);
         final File file = new File(CONFIG);
@@ -52,8 +61,8 @@ public class LateConfigTest {
         final Configuration newConfig = loggerContext.getConfiguration();
         assertTrue("Configuration not reset", cfg != newConfig);
         assertTrue("Reconfiguration failed", newConfig instanceof XmlConfiguration);
-        ctx = (LoggerContext) LogManager.getContext(false);
-        final Configuration sameConfig = ctx.getConfiguration();
+        context = (LoggerContext) LogManager.getContext(false);
+        final Configuration sameConfig = context.getConfiguration();
         assertTrue("Configuration should not have been reset", newConfig == sameConfig);
     }
 }

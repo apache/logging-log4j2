@@ -16,12 +16,35 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import org.junit.Test;
+import static org.junit.Assert.assertSame;
 
-import static org.junit.Assert.*;
+import java.lang.reflect.Field;
+
+import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.logging.log4j.core.async.AsyncLogger;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.junit.AfterClass;
+import org.junit.Test;
 
 public class ClockFactoryTest {
 
+    public static void resetClocks() throws IllegalAccessException {
+        resetClock(Log4jLogEvent.class);
+        resetClock(AsyncLogger.class);
+    }
+
+    public static void resetClock(Class<?> clazz) throws IllegalAccessException {
+        System.clearProperty(ClockFactory.PROPERTY_NAME);
+        Field field = FieldUtils.getField(clazz, "clock", true);
+        FieldUtils.removeFinalModifier(field, true);
+        FieldUtils.writeStaticField(field, ClockFactory.getClock(), false);
+    }
+
+    @AfterClass
+    public static void afterClass() throws IllegalAccessException {
+        resetClocks();
+    }
+    
     @Test
     public void testDefaultIsSystemClock() {
         System.clearProperty(ClockFactory.PROPERTY_NAME);

@@ -28,6 +28,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
+import org.apache.logging.log4j.core.util.ClockFactoryTest;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
@@ -60,8 +61,8 @@ public class Log4jLogEventTest {
     }
 
     @AfterClass
-    public static void afterClass() {
-        System.clearProperty(ClockFactory.PROPERTY_NAME);
+    public static void afterClass() throws IllegalAccessException {
+        ClockFactoryTest.resetClocks();
     }
 
     @Test
