@@ -83,7 +83,8 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
      *        The Protocol to use.
      * @param sslConfig
      *        The SSL configuration file for TCP/SSL, ignored for UPD.
-     * @param connectTimeoutMillis TODO
+     * @param connectTimeoutMillis
+     *        the connect timeout in milliseconds.
      * @param delayMillis
      *        The interval in which failed writes should be retried.
      * @param immediateFail

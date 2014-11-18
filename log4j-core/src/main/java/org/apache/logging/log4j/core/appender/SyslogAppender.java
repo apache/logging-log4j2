@@ -60,7 +60,7 @@ public class SyslogAppender extends SocketAppender {
      * @param port The port to connect to on the target host.
      * @param protocolStr The Protocol to use.
      * @param sslConfig TODO
-     * @param connectTimeoutMillis TODO
+     * @param connectTimeoutMillis the connect timeout in milliseconds.
      * @param reconnectionDelayMillis The interval in which failed writes should be retried.
      * @param immediateFail True if the write should fail if no socket is immediately available.
      * @param name The name of the Appender.
