@@ -16,12 +16,17 @@
  */
 package org.apache.logging.slf4j;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 import java.util.Locale;
 
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.apache.logging.log4j.test.appender.ListAppender;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -34,8 +39,6 @@ import org.slf4j.ext.EventLogger;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.slf4j.spi.LocationAwareLogger;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -170,6 +173,7 @@ public class LoggerTest {
     }
 
     @Before
+    @After
     public void cleanup() {
         ctx.getListAppender("List").clear();
         ctx.getListAppender("EventLogger").clear();
