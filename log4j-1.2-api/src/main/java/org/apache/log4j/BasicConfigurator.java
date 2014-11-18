@@ -24,9 +24,6 @@ public class BasicConfigurator {
     protected BasicConfigurator() {
     }
 
-    /**
-     * No-op implementation.
-     */
     public static void configure() {
         LogManager.reconfigure();
     }
