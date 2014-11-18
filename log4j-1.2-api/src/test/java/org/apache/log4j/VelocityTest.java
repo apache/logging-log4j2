@@ -30,7 +30,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- *
+ * Note that this test must clean up after itself or it may cause other tests to fail.
  */
 public class VelocityTest {
 
@@ -50,13 +50,13 @@ private static LoggerContext context;
     @Test
     public void testVelocity() {
         Velocity.init();
-        final VelocityContext context = new VelocityContext();
-        context.put("name", new String("Velocity"));
+        final VelocityContext vContext = new VelocityContext();
+        vContext.put("name", new String("Velocity"));
 
         final Template template = Velocity.getTemplate("target/test-classes/hello.vm");
 
         final StringWriter sw = new StringWriter();
 
-        template.merge(context, sw);
+        template.merge(vContext, sw);
     }
 }
