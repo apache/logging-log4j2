@@ -30,6 +30,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -59,6 +60,11 @@ public class CategoryTest {
         appender.stop();
     }
 
+    @Before
+    public void before() {
+        appender.clear();
+    }
+    
     /**
      * Tests Category.forcedLog.
      */
