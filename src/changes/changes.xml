@@ -56,6 +56,9 @@
       <action issue="LOG4J2-884" dev="ggregory" type="update">
         Update org.eclipse.osgi from 3.6.0 to 3.7.1.
       </action>
+      <action issue="LOG4J2-900" dev="ggregory" type="update">
+        Update Apache Flume from 1.5.0.1 to 1.5.2.
+      </action>
     </release>      
     <release version="2.1" date="2014-10-19" description="GA Release 2.1">
       <action issue="LOG4J2-676" dev="rgoers" type="fix" due-to="Stefan Bodewig">
