@@ -68,6 +68,7 @@ public class LoggerTest {
 
     @AfterClass
     public static void tearDownClass() {
+        ConfigurationFactory.removeConfigurationFactory(cf);
     }
 
     @After
