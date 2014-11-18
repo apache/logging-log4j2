@@ -118,23 +118,23 @@ public class LoggerTest {
     public void testAdditivity1() {
         final Logger loggerA = Logger.getLogger("a");
         final Logger loggerAB = Logger.getLogger("a.b");
-        final CountingAppender ca = new CountingAppender();
-        ca.start();
+        final CountingAppender coutingAppender = new CountingAppender();
+        coutingAppender.start();
         try {
-            loggerA.getLogger().addAppender(ca);
+            loggerA.getLogger().addAppender(coutingAppender);
 
-            assertEquals(0, ca.counter);
+            assertEquals(0, coutingAppender.counter);
             loggerAB.debug(MSG);
-            assertEquals(1, ca.counter);
+            assertEquals(1, coutingAppender.counter);
             loggerAB.info(MSG);
-            assertEquals(2, ca.counter);
+            assertEquals(2, coutingAppender.counter);
             loggerAB.warn(MSG);
-            assertEquals(3, ca.counter);
+            assertEquals(3, coutingAppender.counter);
             loggerAB.error(MSG);
-            assertEquals(4, ca.counter);
-            ca.stop();
+            assertEquals(4, coutingAppender.counter);
+            coutingAppender.stop();
         } finally {
-            loggerA.getLogger().removeAppender(ca);
+            loggerA.getLogger().removeAppender(coutingAppender);
         }
     }
 
