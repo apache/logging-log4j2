@@ -212,8 +212,8 @@ public abstract class AbstractSocketServerTest {
 
     protected SocketAppender createSocketAppender(final Filter socketFilter,
             final Layout<? extends Serializable> socketLayout) {
-        return SocketAppender.createAppender("localhost", this.port, this.protocol, null, "-1", null, "Test",
-                "true", "false", socketLayout, socketFilter, null, null);
+        return SocketAppender.createAppender("localhost", this.port, this.protocol, null, 0, "-1", null,
+                "Test", "true", "false", socketLayout, socketFilter, null, null);
     }
 
 }

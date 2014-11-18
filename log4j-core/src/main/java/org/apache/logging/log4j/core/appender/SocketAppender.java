@@ -83,6 +83,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
      *        The Protocol to use.
      * @param sslConfig
      *        The SSL configuration file for TCP/SSL, ignored for UPD.
+     * @param connectTimeoutMillis TODO
      * @param delayMillis
      *        The interval in which failed writes should be retried.
      * @param immediateFail
@@ -111,6 +112,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
             @PluginAttribute("port") final String portNum,
             @PluginAttribute("protocol") final String protocolStr,
             @PluginElement("SSL") final SslConfiguration sslConfig,
+            @PluginAttribute(value = "connectTimeoutMillis", defaultInt = 0) final int connectTimeoutMillis,
             @PluginAliases("reconnectionDelay") // deprecated
             @PluginAttribute("reconnectionDelayMillis") final String delayMillis,
             @PluginAttribute("immediateFail") final String immediateFail,
@@ -118,9 +120,8 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
             @PluginAttribute("immediateFlush") final String immediateFlush,
             @PluginAttribute("ignoreExceptions") final String ignore,
             @PluginElement("Layout") Layout<? extends Serializable> layout,
-            @PluginElement("Filter") final Filter filter,
-            @PluginAttribute("advertise") final String advertise, 
-            @PluginConfiguration final Configuration config) {
+            @PluginElement("Filter") final Filter filter, 
+            @PluginAttribute("advertise") final String advertise, @PluginConfiguration final Configuration config) {
             // @formatter:on
         boolean isFlush = Booleans.parseBoolean(immediateFlush, true);
         final boolean isAdvertise = Boolean.parseBoolean(advertise);
@@ -143,8 +144,8 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
             isFlush = true;
         }
 
-        final AbstractSocketManager manager = createSocketManager(name, protocol, host, port, sslConfig,
-                reconnectDelayMillis, fail, layout);
+        final AbstractSocketManager manager = createSocketManager(name, protocol, host, port, connectTimeoutMillis,
+                sslConfig, reconnectDelayMillis, fail, layout);
 
         return new SocketAppender(name, layout, filter, manager, ignoreExceptions, isFlush,
                 isAdvertise ? config.getAdvertiser() : null);
@@ -157,8 +158,8 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
      *         if the protocol cannot be handled.
      */
     protected static AbstractSocketManager createSocketManager(final String name, Protocol protocol, final String host,
-            final int port, final SslConfiguration sslConfig, final int delayMillis, final boolean immediateFail,
-            final Layout<? extends Serializable> layout) {
+            final int port, int connectTimeoutMillis, final SslConfiguration sslConfig, final int delayMillis,
+            final boolean immediateFail, final Layout<? extends Serializable> layout) {
         if (protocol == Protocol.TCP && sslConfig != null) {
             // Upgrade TCP to SSL if an SSL config is specified.
             protocol = Protocol.SSL;
@@ -168,11 +169,13 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
         }
         switch (protocol) {
         case TCP:
-            return TcpSocketManager.getSocketManager(host, port, delayMillis, immediateFail, layout);
+            return TcpSocketManager.getSocketManager(host, port, connectTimeoutMillis, delayMillis, immediateFail,
+                    layout);
         case UDP:
             return DatagramSocketManager.getSocketManager(host, port, layout);
         case SSL:
-            return SslSocketManager.getSocketManager(sslConfig, host, port, delayMillis, immediateFail, layout);
+            return SslSocketManager.getSocketManager(sslConfig, host, port, connectTimeoutMillis, delayMillis,
+                    immediateFail, layout);
         default:
             throw new IllegalArgumentException(protocol.toString());
         }

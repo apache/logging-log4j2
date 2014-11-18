@@ -2876,6 +2876,12 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 set to <code>false</code>).</td>
             </tr>
             <tr>
+              <td>connectTimeoutMillis</td>
+              <td>integer</td>
+              <td>The connect timeout in milliseconds. The default is 0 (infinite timeout, like Socket.connect()
+                methods).</td>
+            </tr>
+            <tr>
               <td>ignoreExceptions</td>
               <td>boolean</td>
               <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
@@ -2954,6 +2960,12 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>The character set to use when converting the syslog String to a byte array. The String must be
                 a valid <a href="http://download.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html">Charset</a>.
                 If not specified, the default system Charset will be used.</td>
+            </tr>
+            <tr>
+              <td>connectTimeoutMillis</td>
+              <td>integer</td>
+              <td>The connect timeout in milliseconds. The default is 0 (infinite timeout, like Socket.connect()
+                methods).</td>
             </tr>
             <tr>
               <td>enterpriseNumber</td>

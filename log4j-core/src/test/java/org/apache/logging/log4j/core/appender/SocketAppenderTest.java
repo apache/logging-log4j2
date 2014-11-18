@@ -104,8 +104,8 @@ public class SocketAppenderTest {
     @Test
     public void testTcpAppender() throws Exception {
 
-        final SocketAppender appender = SocketAppender.createAppender("localhost", PORT, "tcp", null, "-1", "false",
-                "Test", null, null, null, null, null, null);
+        final SocketAppender appender = SocketAppender.createAppender("localhost", PORT, "tcp", null, 0, "-1",
+                "false", "Test", null, null, null, null, null, null);
         appender.start();
 
         // set appender on root and set level to debug
@@ -144,16 +144,16 @@ public class SocketAppenderTest {
     @Test
     public void testDefaultProtocol() throws Exception {
 
-        final SocketAppender appender = SocketAppender.createAppender("localhost", PORT, null, null, "-1", "false",
-                "Test", null, null, null, null, null, null);
+        final SocketAppender appender = SocketAppender.createAppender("localhost", PORT, null, null, 0, "-1",
+                "false", "Test", null, null, null, null, null, null);
         assertNotNull(appender);
     }
 
     @Test
     public void testUdpAppender() throws Exception {
 
-        final SocketAppender appender = SocketAppender.createAppender("localhost", PORT, "udp", null, "-1", "false",
-                "Test", null, null, null, null, null, null);
+        final SocketAppender appender = SocketAppender.createAppender("localhost", PORT, "udp", null, 0, "-1",
+                "false", "Test", null, null, null, null, null, null);
         appender.start();
 
         // set appender on root and set level to debug
@@ -170,8 +170,8 @@ public class SocketAppenderTest {
     @Test
     public void testTcpAppenderDeadlock() throws Exception {
 
-        final SocketAppender appender = SocketAppender.createAppender("localhost", DYN_PORT, "tcp", null, "100",
-                "false", "Test", null, null, null, null, null, null);
+        final SocketAppender appender = SocketAppender.createAppender("localhost", DYN_PORT, "tcp", null, 0,
+                "100", "false", "Test", null, null, null, null, null, null);
         appender.start();
         // set appender on root and set level to debug
         root.addAppender(appender);
@@ -189,8 +189,8 @@ public class SocketAppenderTest {
     @Test
     public void testTcpAppenderNoWait() throws Exception {
 
-        final SocketAppender appender = SocketAppender.createAppender("localhost", ERROR_PORT, "tcp", null, "100",
-                "true", "Test", null, "false", null, null, null, null);
+        final SocketAppender appender = SocketAppender.createAppender("localhost", ERROR_PORT, "tcp", null, 0,
+                "100", "true", "Test", null, "false", null, null, null, null);
         appender.start();
         // set appender on root and set level to debug
         root.addAppender(appender);

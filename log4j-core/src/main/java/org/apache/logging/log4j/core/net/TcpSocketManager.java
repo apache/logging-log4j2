@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.ConnectException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.HashMap;
@@ -58,6 +59,8 @@ public class TcpSocketManager extends AbstractSocketManager {
     private final boolean retry;
 
     private final boolean immediateFail;
+    
+    private final int connectTimeoutMillis;
 
     /**
      * The Constructor.
@@ -67,14 +70,16 @@ public class TcpSocketManager extends AbstractSocketManager {
      * @param inetAddress The Internet address of the host.
      * @param host The name of the host.
      * @param port The port number on the host.
+     * @param connectTimeoutMillis the connect timeout in milliseconds.
      * @param delay Reconnection interval.
      * @param immediateFail
      * @param layout The Layout.
      */
     public TcpSocketManager(final String name, final OutputStream os, final Socket sock, final InetAddress inetAddress,
-                            final String host, final int port, final int delay, final boolean immediateFail,
-                            final Layout<? extends Serializable> layout) {
+                            final String host, final int port, int connectTimeoutMillis, final int delay,
+                            final boolean immediateFail, final Layout<? extends Serializable> layout) {
         super(name, os, inetAddress, host, port, layout);
+        this.connectTimeoutMillis = connectTimeoutMillis;
         this.reconnectionDelay = delay;
         this.socket = sock;
         this.immediateFail = immediateFail;
@@ -91,11 +96,12 @@ public class TcpSocketManager extends AbstractSocketManager {
      * Obtain a TcpSocketManager.
      * @param host The host to connect to.
      * @param port The port on the host.
+     * @param connectTimeoutMillis the connect timeout in milliseconds
      * @param delayMillis The interval to pause between retries.
      * @return A TcpSocketManager.
      */
-    public static TcpSocketManager getSocketManager(final String host, int port, int delayMillis,
-                                                    final boolean immediateFail, final Layout<? extends Serializable> layout ) {
+    public static TcpSocketManager getSocketManager(final String host, int port, int connectTimeoutMillis,
+            int delayMillis, final boolean immediateFail, final Layout<? extends Serializable> layout) {
         if (Strings.isEmpty(host)) {
             throw new IllegalArgumentException("A host name is required");
         }
@@ -105,8 +111,8 @@ public class TcpSocketManager extends AbstractSocketManager {
         if (delayMillis == 0) {
             delayMillis = DEFAULT_RECONNECTION_DELAY_MILLIS;
         }
-        return (TcpSocketManager) getManager("TCP:" + host + ':' + port,
-            new FactoryData(host, port, delayMillis, immediateFail, layout), FACTORY);
+        return (TcpSocketManager) getManager("TCP:" + host + ':' + port, new FactoryData(host, port,
+                connectTimeoutMillis, delayMillis, immediateFail, layout), FACTORY);
     }
 
     @Override
@@ -144,6 +150,10 @@ public class TcpSocketManager extends AbstractSocketManager {
             connector.interrupt();
             connector = null;
         }
+    }
+
+    public int getConnectTimeoutMillis() {
+        return connectTimeoutMillis;
     }
 
     /**
@@ -228,7 +238,10 @@ public class TcpSocketManager extends AbstractSocketManager {
     }
 
     protected Socket createSocket(final String host, final int port) throws IOException {
-        return new Socket(host, port);
+        final InetSocketAddress address = new InetSocketAddress(host, port);
+        final Socket newSocket = new Socket();
+        newSocket.connect(address, connectTimeoutMillis);
+        return newSocket;
     }
 
     /**
@@ -237,14 +250,16 @@ public class TcpSocketManager extends AbstractSocketManager {
     private static class FactoryData {
         private final String host;
         private final int port;
+        private final int connectTimeoutMillis;
         private final int delayMillis;
         private final boolean immediateFail;
         private final Layout<? extends Serializable> layout;
 
-        public FactoryData(final String host, final int port, final int delayMillis, final boolean immediateFail,
-                           final Layout<? extends Serializable> layout) {
+        public FactoryData(final String host, final int port, int connectTimeoutMillis, final int delayMillis,
+                           final boolean immediateFail, final Layout<? extends Serializable> layout) {
             this.host = host;
             this.port = port;
+            this.connectTimeoutMillis = connectTimeoutMillis;
             this.delayMillis = delayMillis;
             this.immediateFail = immediateFail;
             this.layout = layout;
@@ -269,8 +284,8 @@ public class TcpSocketManager extends AbstractSocketManager {
             try {
                 final Socket socket = new Socket(data.host, data.port);
                 os = socket.getOutputStream();
-                return new TcpSocketManager(name, os, socket, inetAddress, data.host, data.port, data.delayMillis,
-                    data.immediateFail, data.layout);
+                return new TcpSocketManager(name, os, socket, inetAddress, data.host, data.port,
+                        data.connectTimeoutMillis, data.delayMillis, data.immediateFail, data.layout);
             } catch (final IOException ex) {
                 LOGGER.error("TcpSocketManager (" + name + ") " + ex);
                 os = new ByteArrayOutputStream();
@@ -278,8 +293,9 @@ public class TcpSocketManager extends AbstractSocketManager {
             if (data.delayMillis == 0) {
                 return null;
             }
-            return new TcpSocketManager(name, os, null, inetAddress, data.host, data.port, data.delayMillis, data.immediateFail,
-                data.layout);
+            return new TcpSocketManager(name, os, null, inetAddress, data.host, data.port, data.connectTimeoutMillis,
+                    data.delayMillis, data.immediateFail, data.layout);
         }
     }
+
 }

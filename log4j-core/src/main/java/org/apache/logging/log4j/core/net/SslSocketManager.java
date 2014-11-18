@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -50,13 +51,16 @@ public class SslSocketManager extends TcpSocketManager {
      * @param inetAddress          The Internet address of the host.
      * @param host          The name of the host.
      * @param port          The port number on the host.
+     * @param connectTimeoutMillis the connect timeout in milliseconds.
      * @param delay         Reconnection interval.
      * @param immediateFail
      * @param layout        The Layout.
      */
-    public SslSocketManager(final String name, final OutputStream os, final Socket sock, final SslConfiguration sslConfig, final InetAddress inetAddress,
-                            final String host, final int port, final int delay, final boolean immediateFail, final Layout<? extends Serializable> layout) {
-        super(name, os, sock, inetAddress, host, port, delay, immediateFail, layout);
+    public SslSocketManager(final String name, final OutputStream os, final Socket sock,
+            final SslConfiguration sslConfig, final InetAddress inetAddress, final String host, final int port,
+            int connectTimeoutMillis, final int delay, final boolean immediateFail,
+            final Layout<? extends Serializable> layout) {
+        super(name, os, sock, inetAddress, host, port, connectTimeoutMillis, delay, immediateFail, layout);
         this.sslConfig = sslConfig;
     }
 
@@ -64,14 +68,17 @@ public class SslSocketManager extends TcpSocketManager {
         protected SslConfiguration sslConfig;
         private final String host;
         private final int port;
+        private final int connectTimeoutMillis;
         private final int delayMillis;
         private final boolean immediateFail;
         private final Layout<? extends Serializable> layout;
 
-        public SslFactoryData(final SslConfiguration sslConfig, final String host, final int port, final int delayMillis, final boolean immediateFail,
-                              final Layout<? extends Serializable> layout) {
+        public SslFactoryData(final SslConfiguration sslConfig, final String host, final int port,
+                int connectTimeoutMillis, final int delayMillis, final boolean immediateFail,
+                final Layout<? extends Serializable> layout) {
             this.host = host;
             this.port = port;
+            this.connectTimeoutMillis = connectTimeoutMillis;
             this.delayMillis = delayMillis;
             this.immediateFail = immediateFail;
             this.layout = layout;
@@ -80,7 +87,8 @@ public class SslSocketManager extends TcpSocketManager {
     }
 
     public static SslSocketManager getSocketManager(final SslConfiguration sslConfig, final String host, int port,
-                                                    int delayMillis, final boolean immediateFail, final Layout<? extends Serializable> layout ) {
+            int connectTimeoutMillis, int delayMillis, final boolean immediateFail,
+            final Layout<? extends Serializable> layout) {
         if (Strings.isEmpty(host)) {
             throw new IllegalArgumentException("A host name is required");
         }
@@ -90,14 +98,17 @@ public class SslSocketManager extends TcpSocketManager {
         if (delayMillis == 0) {
             delayMillis = DEFAULT_RECONNECTION_DELAY_MILLIS;
         }
-        return (SslSocketManager) getManager("TLS:" + host + ':' + port,
-                new SslFactoryData(sslConfig, host, port, delayMillis, immediateFail, layout), FACTORY);
+        return (SslSocketManager) getManager("TLS:" + host + ':' + port, new SslFactoryData(sslConfig, host, port,
+                connectTimeoutMillis, delayMillis, immediateFail, layout), FACTORY);
     }
 
     @Override
     protected Socket createSocket(final String host, final int port) throws IOException {
         final SSLSocketFactory socketFactory = createSslSocketFactory(sslConfig);
-        return socketFactory.createSocket(host, port);
+        final InetSocketAddress address = new InetSocketAddress(host, port);
+        final Socket newSocket = socketFactory.createSocket();
+        newSocket.connect(address, getConnectTimeoutMillis());
+        return newSocket;
     }
 
     private static SSLSocketFactory createSslSocketFactory(final SslConfiguration sslConf) {
@@ -140,7 +151,8 @@ public class SslSocketManager extends TcpSocketManager {
                 LOGGER.catching(Level.DEBUG, e);
                 return null;
             }
-            return createManager(name, os, socket, data.sslConfig, inetAddress, data.host, data.port, data.delayMillis, data.immediateFail, data.layout);
+            return new SslSocketManager(name, os, socket, data.sslConfig, inetAddress, data.host, data.port, 0,
+                    data.delayMillis, data.immediateFail, data.layout);
         }
 
         private InetAddress resolveAddress(final String hostName) throws TlsSocketManagerFactoryException {
@@ -169,13 +181,6 @@ public class SslSocketManager extends TcpSocketManager {
             socketFactory = createSslSocketFactory(data.sslConfig);
             socket = (SSLSocket) socketFactory.createSocket(data.host, data.port);
             return socket;
-        }
-
-        private SslSocketManager createManager(final String name, final OutputStream os, final Socket socket,
-                final SslConfiguration sslConfig, final InetAddress inetAddress, final String host, final int port,
-                final int delay, final boolean immediateFail, final Layout<? extends Serializable> layout) {
-            return new SslSocketManager(name, os, socket, sslConfig, inetAddress, host, port, delay, immediateFail,
-                    layout);
         }
     }
 }

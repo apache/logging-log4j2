@@ -60,6 +60,7 @@ public class SyslogAppender extends SocketAppender {
      * @param port The port to connect to on the target host.
      * @param protocolStr The Protocol to use.
      * @param sslConfig TODO
+     * @param connectTimeoutMillis TODO
      * @param reconnectionDelayMillis The interval in which failed writes should be retried.
      * @param immediateFail True if the write should fail if no socket is immediately available.
      * @param name The name of the Appender.
@@ -89,6 +90,7 @@ public class SyslogAppender extends SocketAppender {
      * @param exceptionPattern The converter pattern to use for formatting exceptions.
      * @param loggerFields The logger fields
      * @param advertise Whether to advertise
+     * @param connectTimeoutMillis the connect timeout in milliseconds.
      * @return A SyslogAppender.
      */
     @PluginFactory
@@ -98,6 +100,7 @@ public class SyslogAppender extends SocketAppender {
             @PluginAttribute(value = "port", defaultInt = 0) final int port,
             @PluginAttribute("protocol") final String protocolStr,
             @PluginElement("SSL") final SslConfiguration sslConfig,
+            @PluginAttribute(value = "connectTimeoutMillis", defaultInt = 0) final int connectTimeoutMillis,
             @PluginAliases("reconnectionDelay") // deprecated
             @PluginAttribute(value = "reconnectionDelayMillis", defaultInt = 0) final int reconnectionDelayMillis,
             @PluginAttribute(value = "immediateFail", defaultBoolean = true) final boolean immediateFail,
@@ -123,8 +126,7 @@ public class SyslogAppender extends SocketAppender {
             @PluginConfiguration final Configuration config,
             @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charsetName,
             @PluginAttribute("exceptionPattern") final String exceptionPattern,
-            @PluginElement("LoggerFields") final LoggerFields[] loggerFields,
-            @PluginAttribute(value = "advertise", defaultBoolean = false) final boolean advertise) {
+            @PluginElement("LoggerFields") final LoggerFields[] loggerFields, @PluginAttribute(value = "advertise", defaultBoolean = false) final boolean advertise) {
         // @formatter:on
 
         // TODO: add Protocol to TypeConverters
@@ -140,8 +142,8 @@ public class SyslogAppender extends SocketAppender {
             LOGGER.error("No name provided for SyslogAppender");
             return null;
         }
-        final AbstractSocketManager manager = createSocketManager(name, protocol, host, port, sslConfig,
-            reconnectionDelayMillis, immediateFail, layout);
+        final AbstractSocketManager manager = createSocketManager(name, protocol, host, port, connectTimeoutMillis,
+                sslConfig, reconnectionDelayMillis, immediateFail, layout);
 
         return new SyslogAppender(name, layout, filter, ignoreExceptions, immediateFlush, manager,
                 advertise ? config.getAdvertiser() : null);
