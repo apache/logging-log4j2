@@ -276,8 +276,8 @@ public class LevelTest {
         Locale.setDefault(turkey);
         final Level level = Level.toLevel("info");
         Locale.setDefault(defaultLocale);
-      assertEquals("INFO", level.toString());
-  }
+        assertEquals("INFO", level.toString());
+    }
 
 
 }
