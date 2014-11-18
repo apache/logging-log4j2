@@ -79,7 +79,7 @@ public class LogEventFactoryTest {
         assertNotNull("No events", events);
         assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 1, events.size());
         final LogEvent event = events.get(0);
-        assertEquals("Test LogEventFactory wasn't used", "Test", event.getLoggerName());
+        assertEquals("TestLogEventFactory wasn't used", "Test", event.getLoggerName());
     }
 
     public static class TestLogEventFactory implements LogEventFactory {
