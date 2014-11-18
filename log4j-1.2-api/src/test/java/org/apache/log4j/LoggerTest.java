@@ -50,7 +50,7 @@ public class LoggerTest {
     // A short message.
     static String MSG = "M";
 
-    static ConfigurationFactory cf = new BasicConfigurationFactory();
+    static ConfigurationFactory configurationFactory = new BasicConfigurationFactory();
 
     @BeforeClass
     public static void setUpClass() {
@@ -63,12 +63,12 @@ public class LoggerTest {
         rbCH = ResourceBundle.getBundle("L7D", new Locale("fr", "CH"));
         assertNotNull("Got a null resource bundle.", rbCH);
 
-        ConfigurationFactory.setConfigurationFactory(cf);
+        ConfigurationFactory.setConfigurationFactory(configurationFactory);
     }
 
     @AfterClass
     public static void tearDownClass() {
-        ConfigurationFactory.removeConfigurationFactory(cf);
+        ConfigurationFactory.removeConfigurationFactory(configurationFactory);
     }
 
     @After
