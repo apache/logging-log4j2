@@ -16,11 +16,18 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.lang.reflect.Field;
 import java.util.List;
 
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.util.Constants;
@@ -34,8 +41,6 @@ import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -56,11 +61,19 @@ public class LogEventFactoryTest {
                 @Override
                 public void evaluate() throws Throwable {
                     System.setProperty(Constants.LOG4J_LOG_EVENT_FACTORY, TestLogEventFactory.class.getName());
+                    resetLogEventFactory(new TestLogEventFactory());
                     try {
                         base.evaluate();
                     } finally {
                         System.clearProperty(Constants.LOG4J_LOG_EVENT_FACTORY);
+                        resetLogEventFactory(new DefaultLogEventFactory());
                     }
+                }
+
+                private void resetLogEventFactory(LogEventFactory logEventFactory) throws IllegalAccessException {
+                    Field field = FieldUtils.getField(LoggerConfig.class, "LOG_EVENT_FACTORY", true);
+                    FieldUtils.removeFinalModifier(field, true);
+                    FieldUtils.writeStaticField(field, logEventFactory, false);
                 }
             };
         }
