@@ -150,8 +150,8 @@ public class ClassLoaderContextSelector implements ContextSelector {
             ctx = CONTEXT_MAP.get(name).get().get();
             return ctx;
         }
-        final WeakReference<LoggerContext> r = ref.get();
-        LoggerContext ctx = r.get();
+        final WeakReference<LoggerContext> weakRef = ref.get();
+        LoggerContext ctx = weakRef.get();
         if (ctx != null) {
             if (ctx.getConfigLocation() == null && configLocation != null) {
                 LOGGER.debug("Setting configuration to {}", configLocation);
@@ -164,7 +164,7 @@ public class ClassLoaderContextSelector implements ContextSelector {
             return ctx;
         }
         ctx = new LoggerContext(name, null, configLocation);
-        ref.compareAndSet(r, new WeakReference<LoggerContext>(ctx));
+        ref.compareAndSet(weakRef, new WeakReference<LoggerContext>(ctx));
         return ctx;
     }
 
