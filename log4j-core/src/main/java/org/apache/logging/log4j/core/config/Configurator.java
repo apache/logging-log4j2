@@ -40,7 +40,6 @@ public final class Configurator {
     private Configurator() {
     }
 
-
     /**
      * Initializes the Logging Context.
      * @param name The Context name.
