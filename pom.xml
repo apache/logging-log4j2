@@ -169,7 +169,7 @@
     <flumeVersion>1.5.2</flumeVersion>
     <disruptorVersion>3.3.0</disruptorVersion>
     <compiler.plugin.version>3.2</compiler.plugin.version>
-    <pmd.plugin.version>3.2</pmd.plugin.version>
+    <pmd.plugin.version>3.3</pmd.plugin.version>
     <findbugs.plugin.version>2.5.5</findbugs.plugin.version>
     <changes.plugin.version>2.11</changes.plugin.version>
     <javadoc.plugin.version>2.10.1</javadoc.plugin.version>
