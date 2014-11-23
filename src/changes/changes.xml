@@ -32,6 +32,9 @@
         Specify the SocketAppender connect timeout value as part of the configuration.
         The new appender takes a new parameter connectTimeoutMillis.
       </action>
+      <action issue="LOG4J2-903" dev="ggregory" type="fix" due-to="Mauro Molinari">
+        ClassLoaderContextSelector uses ClassLoader.toString() as a key
+      </action>
       <action issue="LOG4J2-893" dev="ggregory" type="fix">
         NullPointerException on filter when mapping JUL to Log4j2.
       </action>

@@ -169,7 +169,7 @@ public class ClassLoaderContextSelector implements ContextSelector {
     }
 
     private String toContextMapKey(final ClassLoader loader) {
-        return loader.toString();
+        return String.valueOf(System.identityHashCode(loader));
     }
 
     protected LoggerContext getDefault() {
