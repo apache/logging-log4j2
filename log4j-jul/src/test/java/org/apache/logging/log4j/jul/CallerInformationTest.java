@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 
 import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.apache.logging.log4j.test.appender.ListAppender;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -38,6 +39,11 @@ public class CallerInformationTest {
     @BeforeClass
     public static void setUpClass() {
         System.setProperty("java.util.logging.manager", LogManager.class.getName());
+    }
+
+    @AfterClass
+    public static void tearDownClass() {
+        System.clearProperty("java.util.logging.manager");
     }
 
     @Test

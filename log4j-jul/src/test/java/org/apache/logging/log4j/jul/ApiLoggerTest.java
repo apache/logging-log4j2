@@ -17,16 +17,18 @@
 
 package org.apache.logging.log4j.jul;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+
 import java.util.logging.Logger;
 
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.*;
 
 public class ApiLoggerTest extends AbstractLoggerTest {
 
@@ -34,6 +36,12 @@ public class ApiLoggerTest extends AbstractLoggerTest {
     public static void setUpClass() {
         System.setProperty("java.util.logging.manager", LogManager.class.getName());
         System.setProperty(Constants.LOGGER_ADAPTOR_PROPERTY, ApiLoggerAdapter.class.getName());
+    }
+
+    @AfterClass
+    public static void tearDownClass() {
+        System.clearProperty("java.util.logging.manager");
+        System.clearProperty(Constants.LOGGER_ADAPTOR_PROPERTY);
     }
 
     @Before
