@@ -1350,6 +1350,11 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
                 The default string is "mdc:". This attribute only applies to RFC 5424 syslog records.</td>
             </tr>
             <tr>
+              <td>mdcId</td>
+              <td>String</td>
+              <td>A required MDC ID. This attribute only applies to RFC 5424 syslog records.</td>
+            </tr>
+            <tr>
               <td>messageId</td>
               <td>String</td>
               <td>The default value to be used in the MSGID field of RFC 5424 syslog records. </td>
