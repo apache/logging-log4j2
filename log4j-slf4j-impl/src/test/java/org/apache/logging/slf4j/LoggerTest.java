@@ -175,6 +175,7 @@ public class LoggerTest {
     @Before
     @After
     public void cleanup() {
+        MDC.clear();
         ctx.getListAppender("List").clear();
         ctx.getListAppender("EventLogger").clear();
     }
