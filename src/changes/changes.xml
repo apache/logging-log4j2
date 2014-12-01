@@ -35,8 +35,8 @@
       <action issue="LOG4J2-903" dev="ggregory" type="fix" due-to="Mauro Molinari">
         ClassLoaderContextSelector uses ClassLoader.toString() as a key
       </action>
-      <action issue="LOG4J2-834" dev="ggregory" type="fix">
-        NoClassDefFoundError in ThrowableProxy.
+      <action issue="LOG4J2-834" dev="ggregory" type="fix" due-to="Nikita Koval, Leonard Broman, Thiago Kronig">
+        ThrowableProxy throws NoClassDefFoundError.
       </action>
       <action issue="LOG4J2-893" dev="ggregory" type="fix">
         NullPointerException on filter when mapping JUL to Log4j2.
