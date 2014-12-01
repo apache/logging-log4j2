@@ -29,6 +29,9 @@ import static org.junit.Assert.*;
  */
 public class MarkerTest {
 
+    private static final String PARENT_MARKER_NAME = MarkerTest.class.getSimpleName() + "-PARENT";
+    private static final String CHILD_MAKER_NAME = MarkerTest.class.getSimpleName() + "-TEST";
+
     @Before
     @After
     public void clearMarkers() {
@@ -37,17 +40,17 @@ public class MarkerTest {
 
     @Test
     public void testMarker() {
-        final org.slf4j.Marker slf4jMarker = org.slf4j.MarkerFactory.getMarker("TEST");
-        final org.slf4j.Marker slf4jParent = org.slf4j.MarkerFactory.getMarker("PARENT");
+        final org.slf4j.Marker slf4jMarker = org.slf4j.MarkerFactory.getMarker(CHILD_MAKER_NAME);
+        final org.slf4j.Marker slf4jParent = org.slf4j.MarkerFactory.getMarker(PARENT_MARKER_NAME);
         slf4jMarker.add(slf4jParent);
-        final Marker log4jParent = MarkerManager.getMarker("PARENT");
-        final Marker log4jMarker = MarkerManager.getMarker("TEST");
+        final Marker log4jParent = MarkerManager.getMarker(PARENT_MARKER_NAME);
+        final Marker log4jMarker = MarkerManager.getMarker(CHILD_MAKER_NAME);
 
         assertTrue("Incorrect Marker class", slf4jMarker instanceof Log4jMarker);
-        assertTrue(String.format("TEST (log4jMarker=%s) is not an instance of PARENT (log4jParent=%s) in Log4j",
-                log4jMarker, log4jParent), log4jMarker.isInstanceOf(log4jParent));
-        assertTrue(String.format("TEST (slf4jMarker=%s) is not an instance of PARENT (log4jParent=%s) in SLF4J",
-                slf4jMarker, slf4jParent), slf4jMarker.contains(slf4jParent));
+        assertTrue(String.format("%s (log4jMarker=%s) is not an instance of %s (log4jParent=%s) in Log4j",
+                CHILD_MAKER_NAME, PARENT_MARKER_NAME, log4jMarker, log4jParent), log4jMarker.isInstanceOf(log4jParent));
+        assertTrue(String.format("%s (slf4jMarker=%s) is not an instance of %s (log4jParent=%s) in SLF4J",
+                CHILD_MAKER_NAME, PARENT_MARKER_NAME, slf4jMarker, slf4jParent), slf4jMarker.contains(slf4jParent));
     }
 
 }
