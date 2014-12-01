@@ -181,7 +181,7 @@ public final class GelfLayout extends AbstractStringLayout {
 
     @Override
     public byte[] toByteArray(final LogEvent event) {
-        final byte[] bytes = toSerializable(event).getBytes(getCharset());
+        final byte[] bytes = getBytes(toSerializable(event));
         return bytes.length > compressionThreshold ? compress(bytes) : bytes;
     }
 

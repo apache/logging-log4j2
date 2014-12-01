@@ -816,7 +816,7 @@ public final class JsonLayout extends AbstractJacksonLayout {
         final StringBuilder buf = new StringBuilder();
         buf.append('[');
         buf.append(this.eol);
-        return buf.toString().getBytes(this.getCharset());
+        return getBytes(buf.toString());
     }
 
     /**
@@ -829,7 +829,7 @@ public final class JsonLayout extends AbstractJacksonLayout {
         if (!this.complete) {
             return null;
         }
-        return (this.eol + ']' + this.eol).getBytes(this.getCharset());
+        return getBytes(this.eol + ']' + this.eol);
     }
 
     @Override

@@ -301,7 +301,7 @@ public final class HtmlLayout extends AbstractStringLayout {
         sbuf.append("</table>").append(Constants.LINE_SEPARATOR);
         sbuf.append("<br>").append(Constants.LINE_SEPARATOR);
         sbuf.append("</body></html>");
-        return sbuf.toString().getBytes(getCharset());
+        return getBytes(sbuf.toString());
     }
 
     /**

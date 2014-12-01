@@ -35,7 +35,7 @@ public class BasicLayout extends AbstractStringLayout {
 
     @Override
     public byte[] getHeader() {
-        return HEADER.getBytes(getCharset());
+        return getBytes(HEADER);
     }
 
     public BasicLayout(final Charset charset) {

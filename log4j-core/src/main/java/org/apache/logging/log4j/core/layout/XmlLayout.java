@@ -234,7 +234,7 @@ public final class XmlLayout extends AbstractJacksonLayout {
         if (!complete) {
             return null;
         }
-        return ("</" + ROOT_TAG + '>' + this.eol).getBytes(getCharset());
+        return getBytes("</" + ROOT_TAG + '>' + this.eol);
     }
 
     /**
