@@ -216,22 +216,22 @@ public class ThrowableProxy implements Serializable {
             }
         }
         if (commonCount != 0) {
-            sb.append("\t... ").append(commonCount).append(" more").append('\n');
+            sb.append("\t... ").append(commonCount).append(" more").append(EOL);
         }
     }
 
     private void appendSuppressedCount(final StringBuilder sb, int count) {
         if (count == 1) {
-            sb.append("\t....\n");
+            sb.append("\t....").append(EOL);
         } else {
-            sb.append("\t... suppressed ").append(count).append(" lines\n");
+            sb.append("\t... suppressed ").append(count).append(" lines").append(EOL);
         }
     }
 
     private void formatEntry(final ExtendedStackTraceElement extStackTraceElement, final StringBuilder sb) {
         sb.append("\tat ");
         sb.append(extStackTraceElement);
-        sb.append('\n');
+        sb.append(EOL);
     }
 
     /**
@@ -263,7 +263,7 @@ public class ThrowableProxy implements Serializable {
             this.formatWrapper(sb, cause.causeProxy);
             sb.append("Wrapped by: ");
         }
-        sb.append(cause).append('\n');
+        sb.append(cause).append(EOL);
         this.formatElements(sb, cause.commonElementCount, cause.getThrowable().getStackTrace(),
                 cause.extendedStackTrace, packages);
     }
@@ -295,7 +295,7 @@ public class ThrowableProxy implements Serializable {
             sb.append("Wrapped by: ");
         }
         sb.append(this.toString());
-        sb.append('\n');
+        sb.append(EOL);
         this.formatElements(sb, 0, this.throwable.getStackTrace(), this.extendedStackTrace, packages);
         return sb.toString();
     }
@@ -341,7 +341,7 @@ public class ThrowableProxy implements Serializable {
         if (msg != null) {
             sb.append(": ").append(msg);
         }
-        sb.append('\n');
+        sb.append(EOL);
         this.formatElements(sb, 0, this.throwable.getStackTrace(), this.extendedStackTrace, ignorePackages);
         this.formatCause(sb, this.causeProxy, ignorePackages);
         return sb.toString();
@@ -387,7 +387,7 @@ public class ThrowableProxy implements Serializable {
         if (suppressed == null || suppressed.length == 0) {
             return Strings.EMPTY;
         }
-        final StringBuilder sb = new StringBuilder("Suppressed Stack Trace Elements:\n");
+        final StringBuilder sb = new StringBuilder("Suppressed Stack Trace Elements:").append(EOL);
         for (final ThrowableProxy proxy : suppressed) {
             sb.append(proxy.getExtendedStackTraceAsString());
         }
