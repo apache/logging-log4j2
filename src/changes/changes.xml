@@ -32,6 +32,9 @@
         Specify the SocketAppender connect timeout value as part of the configuration.
         The new appender takes a new parameter connectTimeoutMillis.
       </action>
+      <action issue="LOG4J2-912" dev="ggregory" type="fix">
+        XML configuration does not report full error message for XInclude parser configuration problems.
+      </action>
       <action issue="LOG4J2-903" dev="ggregory" type="fix" due-to="Mauro Molinari">
         ClassLoaderContextSelector uses ClassLoader.toString() as a key
       </action>
