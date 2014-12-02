@@ -117,6 +117,7 @@ public class GelfLayoutTest {
         final List<LogEvent> events = eventAppender.getEvents();
         final List<byte[]> raw = rawAppender.getData();
         final List<String> messages = formattedAppender.getMessages();
+        final String threadName = Thread.currentThread().getName();
 
         //@formatter:off
         assertJsonEquals("{" +
@@ -124,7 +125,7 @@ public class GelfLayoutTest {
                         "\"host\": \"" + HOSTNAME + "\"," +
                         "\"timestamp\": " + GelfLayout.formatTimestamp(events.get(0).getTimeMillis()) + "," +
                         "\"level\": 7," +
-                        "\"_thread\": \"main\"," +
+                        "\"_thread\": \"" + threadName + "\"," +
                         "\"_logger\": \"\"," +
                         "\"short_message\": \"" + LINE1 + "\"," +
                         "\"_" + KEY1 + "\": \"" + VALUE1 + "\"," +
@@ -137,7 +138,7 @@ public class GelfLayoutTest {
                         "\"host\": \"" + HOSTNAME + "\"," +
                         "\"timestamp\": " + GelfLayout.formatTimestamp(events.get(1).getTimeMillis()) + "," +
                         "\"level\": 6," +
-                        "\"_thread\": \"main\"," +
+                        "\"_thread\": \"" + threadName + "\"," +
                         "\"_logger\": \"\"," +
                         "\"short_message\": \"" + LINE2 + "\"," +
                         "\"_" + KEY1 + "\": \"" + VALUE1 + "\"," +
@@ -172,7 +173,7 @@ public class GelfLayoutTest {
                         "\"host\": \"" + HOSTNAME + "\"," +
                         "\"timestamp\": " + GelfLayout.formatTimestamp(events.get(2).getTimeMillis()) + "," +
                         "\"level\": 3," +
-                        "\"_thread\": \"main\"," +
+                        "\"_thread\": \"" + threadName + "\"," +
                         "\"_logger\": \"\"," +
                         "\"short_message\": \"" + LINE3 + "\"," +
                         "\"full_message\": \"" + String.valueOf(JsonStringEncoder.getInstance().quoteAsString(
