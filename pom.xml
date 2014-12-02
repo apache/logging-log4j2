@@ -175,6 +175,7 @@
     <javadoc.plugin.version>2.10.1</javadoc.plugin.version>
     <!-- surefire.plugin.version 2.18 yields http://jira.codehaus.org/browse/SUREFIRE-1121 -->
     <surefire.plugin.version>2.17</surefire.plugin.version>
+    <failsafe.plugin.version>2.17</failsafe.plugin.version>
     <checkstyle.plugin.version>2.13</checkstyle.plugin.version>
     <rat.plugin.version>0.11</rat.plugin.version>
     <pdf.plugin.version>1.2</pdf.plugin.version>
@@ -199,6 +200,14 @@
       <id>apache</id>
       <url>https://repository.apache.org/content/repositories/releases/</url>
     </pluginRepository>
+<!--     <pluginRepository> -->
+<!--       <id>apache.snapshots</id> -->
+<!--       <name>Apache snapshots repository</name> -->
+<!--       <url>http://repository.apache.org/content/groups/snapshots</url> -->
+<!--       <snapshots> -->
+<!--         <enabled>true</enabled> -->
+<!--       </snapshots> -->
+<!--     </pluginRepository>     -->
   </pluginRepositories>
   <dependencyManagement>
     <dependencies>
@@ -749,7 +758,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>${surefire.plugin.version}</version>
+          <version>${failsafe.plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -866,7 +875,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>${surefire.plugin.version}</version>
+        <version>${failsafe.plugin.version}</version>
         <executions>
           <execution>
             <id>integration-tests</id>
