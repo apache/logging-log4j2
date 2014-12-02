@@ -203,11 +203,7 @@ public class ThrowableProxy implements Serializable {
             for (int i = 0; i < extStackTrace.length; ++i) {
                 if (!this.ignoreElement(causedTrace[i], ignorePackages)) {
                     if (count > 0) {
-                        if (count == 1) {
-                            sb.append("\t....\n");
-                        } else {
-                            sb.append("\t... suppressed ").append(count).append(" lines\n");
-                        }
+                        appendSuppressedCount(sb, count);
                         count = 0;
                     }
                     this.formatEntry(extStackTrace[i], sb);
@@ -216,15 +212,19 @@ public class ThrowableProxy implements Serializable {
                 }
             }
             if (count > 0) {
-                if (count == 1) {
-                    sb.append("\t...\n");
-                } else {
-                    sb.append("\t... suppressed ").append(count).append(" lines\n");
-                }
+                appendSuppressedCount(sb, count);
             }
         }
         if (commonCount != 0) {
             sb.append("\t... ").append(commonCount).append(" more").append('\n');
+        }
+    }
+
+    private void appendSuppressedCount(final StringBuilder sb, int count) {
+        if (count == 1) {
+            sb.append("\t....\n");
+        } else {
+            sb.append("\t... suppressed ").append(count).append(" lines\n");
         }
     }
 
