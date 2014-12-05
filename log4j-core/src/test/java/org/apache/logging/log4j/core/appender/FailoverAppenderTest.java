@@ -52,7 +52,9 @@ public class FailoverAppenderTest {
 
     @After
     public void tearDown() throws Exception {
-        app.clear();
+        if (app != null) {
+            app.clear();
+        }
     }
 
     @Test

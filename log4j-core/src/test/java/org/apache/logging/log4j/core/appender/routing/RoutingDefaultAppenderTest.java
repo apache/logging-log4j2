@@ -53,7 +53,9 @@ public class RoutingDefaultAppenderTest {
 
     @After
     public void tearDown() throws Exception {
-        app.clear();
+        if (app != null) {
+            app.clear();
+        }
     }
 
     @Test
