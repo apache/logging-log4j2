@@ -45,7 +45,9 @@ public class AsyncAppenderNoLocationTest {
 
     @After
     public void after() {
-        app.clear();
+        if (app != null) {
+            app.clear();
+        }
     }
 
     @Test
