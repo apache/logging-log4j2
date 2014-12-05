@@ -137,6 +137,16 @@ public class ThrowableProxyTest {
     }
 
     @Test
+    public void testSerialization_getExtendedStackTraceAsString() throws Exception {
+        final Throwable throwable = new IllegalArgumentException("This is a test");
+        final ThrowableProxy proxy = new ThrowableProxy(throwable);
+        final byte[] binary = serialize(proxy);
+        final ThrowableProxy proxy2 = deserialize(binary);
+
+        assertEquals(proxy.getExtendedStackTraceAsString(), proxy2.getExtendedStackTraceAsString());
+    }
+
+    @Test
     public void testSerializationWithUnknownThrowable() throws Exception {
 
         final String msg = "OMG I've been deleted!";
