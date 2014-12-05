@@ -54,7 +54,7 @@
         AbstractLifecycle should not implement equals() and hashCode().
       </action>
       <action issue="LOG4J2-897" dev="ggregory" type="fix">
-        Javaodc for org.apache.log4j.BasicConfigurator.configure() is incorrect.
+        Javadoc for org.apache.log4j.BasicConfigurator.configure() is incorrect.
       </action>
       <action issue="LOG4J2-891" dev="ggregory" type="fix">
         AbstractLifecycle should not implement equals() and hashCode().
