@@ -32,6 +32,9 @@
         Specify the SocketAppender connect timeout value as part of the configuration.
         The SyslogAppender takes a new parameter connectTimeoutMillis.
       </action>
+      <action issue="LOG4J2-919" dev="ggregory" type="fix" due-to="David Johle">
+        Logging system fails to initialize if XInclude API is not available.
+      </action>
       <action issue="LOG4J2-914" dev="ggregory" type="fix" due-to="Kaj Bjurman">
         ThrowableProxy.getExtendedStackTraceAsString causes NullpointerException.
       </action>
