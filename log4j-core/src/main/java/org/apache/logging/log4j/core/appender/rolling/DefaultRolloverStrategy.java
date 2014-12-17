@@ -195,10 +195,6 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
      * @return true if purge was successful and rollover should be attempted.
      */
     private void purgeMaxAgeFiles(final int maxAgeIndex, final RollingFileManager manager) {
-
-        final StringBuilder buf = new StringBuilder();
-
-        // LOG4J2-531: directory scan & rollover must use same format
         String filename = manager.getFileName();
         File file = new File(filename);
         Calendar cal = Calendar.getInstance();
