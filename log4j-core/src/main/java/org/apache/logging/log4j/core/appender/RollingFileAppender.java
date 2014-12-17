@@ -173,7 +173,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
         }
 
         if (strategy == null) {
-            strategy = DefaultRolloverStrategy.createStrategy(null, null, null,
+            strategy = DefaultRolloverStrategy.createStrategy(null, null, null, null,
                     String.valueOf(Deflater.DEFAULT_COMPRESSION), config);
         }
 
