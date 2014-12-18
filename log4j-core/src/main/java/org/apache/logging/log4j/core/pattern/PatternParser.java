@@ -538,7 +538,7 @@ public final class PatternParser {
 
                 return (PatternConverter) newObj;
             }
-            LOGGER.warn("Class " + converterClass.getName() + " does not extend PatternConverter.");
+            LOGGER.warn("Class {} does not extend PatternConverter.", converterClass.getName());
         } catch (final Exception ex) {
             LOGGER.error("Error creating converter for " + converterId, ex);
         }
