@@ -32,6 +32,9 @@
         Specify the SocketAppender connect timeout value as part of the configuration.
         The SyslogAppender takes a new parameter connectTimeoutMillis.
       </action>
+      <action issue="LOG4J2-924" dev="ggregory" type="fix" due-to="Ryan Rupp">
+        Log4j 1.2 Bridge doesn't map level ALL correctly in Category.getEffectiveLevel().
+      </action>
       <action issue="LOG4J2-919" dev="ggregory" type="fix" due-to="David Johle">
         Logging system fails to initialize if XInclude API is not available.
       </action>
