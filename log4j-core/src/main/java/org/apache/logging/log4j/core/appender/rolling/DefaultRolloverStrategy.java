@@ -16,11 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.zip.Deflater;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
 import org.apache.logging.log4j.core.appender.rolling.action.FileRenameAction;
@@ -35,11 +30,15 @@ import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.status.StatusLogger;
 
+import java.io.File;
 import java.io.FileFilter;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.zip.Deflater;
 
 /**
  * When rolling over, <code>DefaultRolloverStrategy</code> renames files
@@ -157,6 +156,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
      * Constructs a new instance.
      * @param minIndex The minimum index.
      * @param maxIndex The maximum index.
+     * @param maxAgeIndex The maximum age of log files.
      */
     protected DefaultRolloverStrategy(final int minIndex, final int maxIndex, final int maxAgeIndex, final boolean useMax, final int compressionLevel, final StrSubstitutor subst) {
         this.minIndex = minIndex;
@@ -192,7 +192,6 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
      * Purge files older than defined maxAge. If file older than current date - maxAge delete them or else keep it.
      * @param maxAgeIndex maxAge Index
      * @param manager The RollingFileManager
-     * @return true if purge was successful and rollover should be attempted.
      */
     private void purgeMaxAgeFiles(final int maxAgeIndex, final RollingFileManager manager) {
         String filename = manager.getFileName();
@@ -214,7 +213,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
                         files[i].delete();
                     }
                 } catch(Exception e) {
-                    LOGGER.info("unable to get basic file attributes : ", e);
+                    LOGGER.warn("unable to get basic file attributes : ", e);
                 }
             }
         }
@@ -484,9 +483,14 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         return new RolloverDescriptionImpl(currentFileName, false, renameAction, compressAction);
     }
 
+    @Override
+    public String toString() {
+        return "DefaultRolloverStrategy(min=" + minIndex + ", max=" + maxIndex + ", maxAgeIndex=" + maxAgeIndex + ')';
+    }
+
     class StartsWithFileFilter implements FileFilter {
-        private String startsWith;
-        private boolean inclDirs = false;
+        private final String startsWith;
+        private final boolean inclDirs;
 
         /**
          *
@@ -510,10 +514,4 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
                 return pathname.getName().toUpperCase().startsWith(startsWith);
         }
     }
-
-    @Override
-    public String toString() {
-        return "DefaultRolloverStrategy(min=" + minIndex + ", max=" + maxIndex + ')';
-    }
-
 }
