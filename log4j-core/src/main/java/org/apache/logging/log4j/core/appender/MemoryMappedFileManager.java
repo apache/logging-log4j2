@@ -40,7 +40,8 @@ import org.apache.logging.log4j.core.util.Closer;
  * memory and writes to this memory region.
  * <p>
  * 
- * @see <a href="http://www.codeproject.com/Tips/683614/Things-to-Know-about-Memory-Mapped-File-in-Java">http://www.codeproject.com/Tips/683614/Things-to-Know-about-Memory-Mapped-File-in-Java</a>
+ * @see <a
+ *      href="http://www.codeproject.com/Tips/683614/Things-to-Know-about-Memory-Mapped-File-in-Java">http://www.codeproject.com/Tips/683614/Things-to-Know-about-Memory-Mapped-File-in-Java</a>
  * @see <a href="http://bugs.java.com/view_bug.do?bug_id=6893654">http://bugs.java.com/view_bug.do?bug_id=6893654</a>
  * @see <a href="http://bugs.java.com/view_bug.do?bug_id=4724038">http://bugs.java.com/view_bug.do?bug_id=4724038</a>
  * @see <a
@@ -69,7 +70,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
         this.regionLength = regionLength;
         this.advertiseURI = advertiseURI;
         this.isEndOfBatch.set(Boolean.FALSE);
-        this.mappedBuffer = mmap(randomAccessFile.getChannel(), position, regionLength);
+        this.mappedBuffer = mmap(randomAccessFile.getChannel(), getFileName(), position, regionLength);
         this.mappingOffset = position;
     }
 
@@ -122,8 +123,14 @@ public class MemoryMappedFileManager extends OutputStreamManager {
         try {
             unsafeUnmap(mappedBuffer);
             final long fileLength = randomAccessFile.length() + regionLength;
+            LOGGER.debug("MMapAppender extending {} by {} bytes to {}", getFileName(), regionLength, fileLength);
+
+            long startNanos = System.nanoTime();
             randomAccessFile.setLength(fileLength);
-            mappedBuffer = mmap(randomAccessFile.getChannel(), offset, length);
+            final float millis = (float) ((System.nanoTime() - startNanos) / (1000.0 * 1000.0));
+            LOGGER.debug("MMapAppender extended {} OK in {} millis", getFileName(), millis);
+
+            mappedBuffer = mmap(randomAccessFile.getChannel(), getFileName(), offset, length);
             mappingOffset = offset;
         } catch (final Exception ex) {
             LOGGER.error("Unable to remap " + getName() + ". " + ex);
@@ -137,13 +144,16 @@ public class MemoryMappedFileManager extends OutputStreamManager {
 
     @Override
     public synchronized void close() {
-        final long length = mappingOffset + mappedBuffer.position();
+        final long position = mappedBuffer.position();
+        final long length = mappingOffset + position;
         try {
             unsafeUnmap(mappedBuffer);
         } catch (final Exception ex) {
             LOGGER.error("Unable to unmap MappedBuffer " + getName() + ". " + ex);
         }
         try {
+            LOGGER.debug("MMapAppender closing. Setting {} length to {} (offset {} + position {})", getFileName(),
+                    length, mappingOffset, position);
             randomAccessFile.setLength(length);
             randomAccessFile.close();
         } catch (final IOException ex) {
@@ -151,16 +161,25 @@ public class MemoryMappedFileManager extends OutputStreamManager {
         }
     }
 
-    public static MappedByteBuffer mmap(final FileChannel fileChannel, final long start, final int size) throws IOException {
+    public static MappedByteBuffer mmap(final FileChannel fileChannel, final String fileName, final long start,
+            final int size) throws IOException {
         for (int i = 1;; i++) {
             try {
+                LOGGER.debug("MMapAppender remapping {} start={}, size={}", fileName, start, size);
+
+                final long startNanos = System.nanoTime();
                 final MappedByteBuffer map = fileChannel.map(FileChannel.MapMode.READ_WRITE, start, size);
                 map.order(ByteOrder.nativeOrder());
+
+                final float millis = (float) ((System.nanoTime() - startNanos) / (1000.0 * 1000.0));
+                LOGGER.debug("MMapAppender remapped {} OK in {} millis", fileName, millis);
+
                 return map;
             } catch (final IOException e) {
                 if (e.getMessage() == null || !e.getMessage().endsWith("user-mapped section open")) {
                     throw e;
                 }
+                LOGGER.debug("Remap attempt {}/10 failed. Retrying...", i, e);
                 if (i < 10) {
                     Thread.yield();
                 } else {
@@ -176,6 +195,8 @@ public class MemoryMappedFileManager extends OutputStreamManager {
     }
 
     private static void unsafeUnmap(final MappedByteBuffer mbb) throws PrivilegedActionException {
+        LOGGER.debug("MMapAppender unmapping old buffer...");
+        final long startNanos = System.nanoTime();
         AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
             @Override
             public Object run() throws Exception {
@@ -187,6 +208,8 @@ public class MemoryMappedFileManager extends OutputStreamManager {
                 return null;
             }
         });
+        final float millis = (float) ((System.nanoTime() - startNanos) / (1000.0 * 1000.0));
+        LOGGER.debug("MMapAppender unmapped buffer OK in {} millis", millis);
     }
 
     /**
@@ -206,10 +229,11 @@ public class MemoryMappedFileManager extends OutputStreamManager {
     public int getRegionLength() {
         return regionLength;
     }
-    
+
     /**
      * Returns {@code true} if the content of the buffer should be forced to the storage device on every write,
      * {@code false} otherwise.
+     * 
      * @return whether each write should be force-sync'ed
      */
     public boolean isImmediateFlush() {
