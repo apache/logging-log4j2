@@ -35,6 +35,9 @@
       <action issue="LOG4J2-924" dev="ggregory" type="fix" due-to="Ryan Rupp">
         Log4j 1.2 Bridge doesn't map level ALL correctly in Category.getEffectiveLevel().
       </action>
+      <action issue="LOG4J2-931" dev="ggregory" type="fix" due-to="Robert Gacki">
+        ConsoleAppender is missing @PluginFactory annotation at createAppender method.
+      </action>
       <action issue="LOG4J2-919" dev="ggregory" type="fix" due-to="David Johle">
         Logging system fails to initialize if XInclude API is not available.
       </action>
