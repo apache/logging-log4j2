@@ -127,8 +127,7 @@ public class OutputStreamManager extends AbstractManager {
     }
 
     /**
-     * Some output streams synchronize writes while others do not. Synchronizing here insures that
-     * log events won't be intertwined.
+     * Some output streams synchronize writes while others do not.
      * @param bytes The serialized Log event.
      * @throws AppenderLoggingException if an error occurs.
      */
