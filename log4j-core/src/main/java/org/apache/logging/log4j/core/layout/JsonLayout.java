@@ -804,7 +804,7 @@ public final class JsonLayout extends AbstractJacksonLayout {
     }
 
     /**
-     * Returns appropriate JSON headers.
+     * Returns appropriate JSON header.
      *
      * @return a byte array containing the header, opening the JSON array.
      */
