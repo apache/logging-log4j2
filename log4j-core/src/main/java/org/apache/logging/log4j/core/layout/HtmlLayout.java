@@ -272,7 +272,7 @@ public final class HtmlLayout extends AbstractStringLayout {
         sbuf.append("</style>").append(Constants.LINE_SEPARATOR);
         sbuf.append("</head>").append(Constants.LINE_SEPARATOR);
         sbuf.append("<body bgcolor=\"#FFFFFF\" topmargin=\"6\" leftmargin=\"6\">").append(Constants.LINE_SEPARATOR);
-        sbuf.append("<hr size=\"1\" noshade>").append(Constants.LINE_SEPARATOR);
+        sbuf.append("<hr size=\"1\" noshade=\"noshade\">").append(Constants.LINE_SEPARATOR);
         sbuf.append("Log session start time " + new java.util.Date() + "<br>").append(Constants.LINE_SEPARATOR);
         sbuf.append("<br>").append(Constants.LINE_SEPARATOR);
         sbuf.append(
