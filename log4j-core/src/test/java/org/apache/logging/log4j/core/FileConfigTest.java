@@ -16,16 +16,15 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.junit.Assert.assertNotSame;
+
 import java.io.File;
 
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
-import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -33,7 +32,6 @@ import static org.junit.Assert.*;
 public class FileConfigTest {
 
     private static final String CONFIG = "target/test-classes/log4j-test2.xml";
-    private ListAppender app;
 
     @ClassRule
     public static InitialLoggerContext context = new InitialLoggerContext(CONFIG);
@@ -42,7 +40,7 @@ public class FileConfigTest {
 
     @Before
     public void before() {
-        app = context.getListAppender("List").clear();
+        context.getListAppender("List").clear();
     }
 
     @Test
