@@ -51,11 +51,12 @@ public class FileConfigTest {
         final long orig = file.lastModified();
         final long newTime = orig + 10000;
         file.setLastModified(newTime);
-        Thread.sleep((MONITOR_INTERVAL_SECONDS + 1) * 1000);
+        int sleepMillis = (MONITOR_INTERVAL_SECONDS + 1) * 1000;
+        Thread.sleep(sleepMillis);
         for (int i = 0; i < 17; ++i) {
             logger.debug("Reconfigure");
         }
-        Thread.sleep(100);
+        Thread.sleep(sleepMillis);
         final Configuration newConfig = context.getConfiguration();
         assertNotSame("Reconfiguration failed", newConfig, oldConfig);
     }
