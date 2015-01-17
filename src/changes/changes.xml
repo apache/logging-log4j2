@@ -23,7 +23,7 @@
     <title>Changes</title>
   </properties>
   <body>
-    <release version="2.2" date="201?-??-??" description="GA Release 2.2">
+    <release version="2.2" date="2015-??-??" description="GA Release 2.2">
       <action issue="LOG4J2-941" dev="ggregory" type="add" due-to="Konstantinos Liakos">
         Allow JSON layout to create one compact log record per line.
       </action>
