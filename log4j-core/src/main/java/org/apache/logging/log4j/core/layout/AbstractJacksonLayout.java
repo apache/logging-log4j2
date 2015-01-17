@@ -34,12 +34,12 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
     protected final boolean compact;
     protected final boolean complete;
 
-    protected AbstractJacksonLayout(final ObjectWriter objectWriter, final Charset charset, final boolean compact, final boolean complete) {
+    protected AbstractJacksonLayout(final ObjectWriter objectWriter, final Charset charset, final boolean compact, final boolean complete, boolean eventEol) {
         super(charset);
         this.objectWriter = objectWriter;
         this.compact = compact;
         this.complete = complete;
-        this.eol = compact ? COMPACT_EOL : DEFAULT_EOL;
+        this.eol = compact && !eventEol ? COMPACT_EOL : DEFAULT_EOL;
     }
 
     /**
@@ -51,7 +51,7 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
     @Override
     public String toSerializable(final LogEvent event) {
         try {
-            return this.objectWriter.writeValueAsString(event);
+            return this.objectWriter.writeValueAsString(event) + eol;
         } catch (final JsonProcessingException e) {
             // Should this be an ISE or IAE?
             LOGGER.error(e);

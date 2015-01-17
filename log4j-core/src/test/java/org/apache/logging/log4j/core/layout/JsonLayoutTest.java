@@ -101,16 +101,16 @@ public class JsonLayoutTest {
         assertTrue(str, str.contains(DQUOTE + name + DQUOTE + propSep));
     }
 
-    private void testAllFeatures(final boolean includeSource, final boolean compact, final boolean includeContext)
+    private void testAllFeatures(final boolean includeSource, final boolean compact, boolean eventEol, final boolean includeContext)
             throws Exception {
         final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
         final AbstractJacksonLayout layout = JsonLayout.createLayout(includeSource,
-                includeContext, false, compact, Charsets.UTF_8);
+                includeContext, false, compact, eventEol, Charsets.UTF_8);
         final String str = layout.toSerializable(expected);
         // System.out.println(str);
         final String propSep = this.toPropertySeparator(compact);
         // Just check for \n since \r might or might not be there.
-        assertEquals(str, !compact, str.contains("\n"));
+        assertEquals(str, !compact || eventEol, str.contains("\n"));
         assertEquals(str, includeSource, str.contains("source"));
         assertEquals(str, includeContext, str.contains("contextMap"));
         final Log4jLogEvent actual = new Log4jJsonObjectMapper().readValue(str, Log4jLogEvent.class);
@@ -178,7 +178,7 @@ public class JsonLayoutTest {
             this.rootLogger.removeAppender(appender);
         }
         // set up appender
-        final AbstractJacksonLayout layout = JsonLayout.createLayout(true, true, true, false, null);
+        final AbstractJacksonLayout layout = JsonLayout.createLayout(true, true, true, false, false, null);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
@@ -213,7 +213,7 @@ public class JsonLayoutTest {
             this.rootLogger.removeAppender(appender);
         }
         // set up appender
-        final AbstractJacksonLayout layout = JsonLayout.createLayout(true, true, true, false, null);
+        final AbstractJacksonLayout layout = JsonLayout.createLayout(true, true, true, false, false, null);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
@@ -252,7 +252,7 @@ public class JsonLayoutTest {
 
     @Test
     public void testLayoutLoggerName() throws Exception {
-        final AbstractJacksonLayout layout = JsonLayout.createLayout(false, false, false, true, Charsets.UTF_8);
+        final AbstractJacksonLayout layout = JsonLayout.createLayout(false, false, false, true, false, Charsets.UTF_8);
         final Log4jLogEvent expected = Log4jLogEvent.createEvent("a.B", null, "f.q.c.n", Level.DEBUG, 
                 new SimpleMessage("M"), null, null, null, null, "threadName", null, 1);
         final String str = layout.toSerializable(expected);
@@ -264,12 +264,17 @@ public class JsonLayoutTest {
 
     @Test
     public void testLocationOffCompactOffMdcOff() throws Exception {
-        this.testAllFeatures(false, false, false);
+        this.testAllFeatures(false, false, false, false);
     }
 
     @Test
     public void testLocationOnCompactOnMdcOn() throws Exception {
-        this.testAllFeatures(true, true, true);
+        this.testAllFeatures(true, true, false, true);
+    }
+
+    @Test
+    public void testLocationOnCompactOnEventEolOnMdcOn() throws Exception {
+        this.testAllFeatures(true, true, true, true);
     }
 
     private String toPropertySeparator(final boolean compact) {

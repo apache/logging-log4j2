@@ -116,6 +116,14 @@
               <td>If true, the appender does not use end-of-lines and indentation. Defaults to false.</td>
             </tr>
             <tr>
+              <td>eventEol</td>
+              <td>boolean</td>
+              <td>
+                If true, the appender appends an end-of-line after each record. Defaults to false.
+                Use with eventEol=true and compact=true to get one record per line.
+              </td>
+            </tr>
+            <tr>
               <td>complete</td>
               <td>boolean</td>
               <td>If true, the appender includes the JSON header and footer. Defaults to false.</td>

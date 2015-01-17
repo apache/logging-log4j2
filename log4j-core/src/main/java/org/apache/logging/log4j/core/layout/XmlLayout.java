@@ -194,7 +194,7 @@ public final class XmlLayout extends AbstractJacksonLayout {
     private static final String ROOT_TAG = "Events";
 
     protected XmlLayout(final boolean locationInfo, final boolean properties, final boolean complete, final boolean compact, final Charset charset) {
-        super(new JacksonFactory.XML().newWriter(locationInfo, properties, compact), charset, compact, complete);
+        super(new JacksonFactory.XML().newWriter(locationInfo, properties, compact), charset, compact, complete, false);
     }
 
     /**

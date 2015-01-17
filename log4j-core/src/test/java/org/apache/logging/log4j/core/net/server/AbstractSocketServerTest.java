@@ -91,7 +91,7 @@ public abstract class AbstractSocketServerTest {
     }
 
     protected Layout<String> createJsonLayout() {
-        return JsonLayout.createLayout(true, true, false, false, null);
+        return JsonLayout.createLayout(true, true, false, false, false, null);
     }
 
     protected abstract Layout<? extends Serializable> createLayout();

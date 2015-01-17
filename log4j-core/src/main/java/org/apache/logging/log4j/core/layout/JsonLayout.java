@@ -799,8 +799,8 @@ public final class JsonLayout extends AbstractJacksonLayout {
     private static final long serialVersionUID = 1L;
 
     protected JsonLayout(final boolean locationInfo, final boolean properties, final boolean complete, final boolean compact,
-            final Charset charset) {
-        super(new JacksonFactory.JSON().newWriter(locationInfo, properties, compact), charset, compact, complete);
+            boolean eventEol, final Charset charset) {
+        super(new JacksonFactory.JSON().newWriter(locationInfo, properties, compact), charset, compact, complete, eventEol);
     }
 
     /**
@@ -850,11 +850,19 @@ public final class JsonLayout extends AbstractJacksonLayout {
     /**
      * Creates a JSON Layout.
      *
-     * @param locationInfo If "true", includes the location information in the generated JSON.
-     * @param properties If "true", includes the thread context in the generated JSON.
-     * @param complete If "true", includes the JSON header and footer, defaults to "false".
-     * @param compact If "true", does not use end-of-lines and indentation, defaults to "false".
-     * @param charset The character set to use, if {@code null}, uses "UTF-8".
+     * @param locationInfo
+     *        If "true", includes the location information in the generated JSON.
+     * @param properties
+     *        If "true", includes the thread context in the generated JSON.
+     * @param complete
+     *        If "true", includes the JSON header and footer, defaults to "false".
+     * @param compact
+     *        If "true", does not use end-of-lines and indentation, defaults to "false".
+     * @param eventEol
+     *        If "true", forces an EOL after each log event (even if compact is "true"), defaults to "false". This
+     *        allows one even per line, even in compact mode.
+     * @param charset
+     *        The character set to use, if {@code null}, uses "UTF-8".
      * @return A JSON Layout.
      */
     @PluginFactory
@@ -864,10 +872,11 @@ public final class JsonLayout extends AbstractJacksonLayout {
             @PluginAttribute(value = "properties", defaultBoolean = false) final boolean properties,
             @PluginAttribute(value = "complete", defaultBoolean = false) final boolean complete,
             @PluginAttribute(value = "compact", defaultBoolean = false) final boolean compact,
+            @PluginAttribute(value = "eventEol", defaultBoolean = false) final boolean eventEol,
             @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charset
             // @formatter:on
     ) {
-        return new JsonLayout(locationInfo, properties, complete, compact, charset);
+        return new JsonLayout(locationInfo, properties, complete, compact, eventEol, charset);
     }
 
     /**
@@ -876,6 +885,6 @@ public final class JsonLayout extends AbstractJacksonLayout {
      * @return A JSON Layout.
      */
     public static AbstractJacksonLayout createDefaultLayout() {
-        return new JsonLayout(false, false, false, false, Charsets.UTF_8);
+        return new JsonLayout(false, false, false, false, false, Charsets.UTF_8);
     }
 }
