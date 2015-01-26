@@ -451,12 +451,8 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         pad(cal.get(Calendar.MINUTE), TWO_DIGITS, buffer);
         buffer.append(':');
         pad(cal.get(Calendar.SECOND), TWO_DIGITS, buffer);
-
-        final int millis = cal.get(Calendar.MILLISECOND);
-        if (millis != 0) {
-            buffer.append('.');
-            pad(millis, THREE_DIGITS, buffer);
-        }
+        buffer.append('.');
+        pad(cal.get(Calendar.MILLISECOND), THREE_DIGITS, buffer);
 
         int tzmin = (cal.get(Calendar.ZONE_OFFSET) + cal.get(Calendar.DST_OFFSET)) / MILLIS_PER_MINUTE;
         if (tzmin == 0) {

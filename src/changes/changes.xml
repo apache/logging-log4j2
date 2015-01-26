@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.2" date="2015-??-??" description="GA Release 2.2">
+      <action issue="LOG4J2-944" dev="ggregory" type="fix" due-to="Vinayaka Ramachandra">
+        Log4j Flume appender is not adding millisecond to the event headers when the event is logged at 000 milliseconds.
+      </action>
       <action issue="LOG4J2-941" dev="ggregory" type="add" due-to="Konstantinos Liakos">
         Allow JSON layout to create one compact log record per line.
       </action>
