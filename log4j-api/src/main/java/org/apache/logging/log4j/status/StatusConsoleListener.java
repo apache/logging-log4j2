@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Level;
 public class StatusConsoleListener implements StatusListener {
 
     private Level level = Level.FATAL;
-    private String[] filters = null;
+    private String[] filters;
     private final PrintStream stream;
 
     /**
