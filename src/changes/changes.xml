@@ -77,6 +77,9 @@
       <action issue="LOG4J2-891" dev="ggregory" type="fix">
         AbstractLifecycle should not implement equals() and hashCode().
       </action>
+      <action issue="LOG4J2-946" dev="ggregory" type="fix" due-to="artemonster">
+        [docs] Using Log4j 2 in Web Applications: Update example (Log4jWebLifeCycle is not visible).
+      </action>
       <action issue="LOG4J2-901" dev="ggregory" type="update" due-to="Tihomir Meščić, Siegfried Greisinger">
         Update docs for SyslogAppender: "No structured id name was supplied"
       </action>
