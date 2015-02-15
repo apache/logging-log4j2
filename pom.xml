@@ -157,7 +157,7 @@
     <Log4jReleaseVersion>2.2</Log4jReleaseVersion>
     <Log4jReleaseCount>eighteenth</Log4jReleaseCount>
     <Log4jReleaseManager>Ralph Goers</Log4jReleaseManager>
-    <Log4jReleaseKey>83D8E1BA</Log4jReleaseKey>
+    <Log4jReleaseKey>B3D8E1BA</Log4jReleaseKey>
     <!-- <Log4jReleaseManager>Matt Sicker</Log4jReleaseManager>
     <Log4jReleaseKey>FA1C814D</Log4jReleaseKey> -->
     <!-- note that any properties you want available in velocity templates must not use periods! -->
