@@ -284,6 +284,9 @@
           <includes>
             <include>**/*.java</include>
           </includes>
+          <excludes>
+            <exclude>**/ForceNoDefClassFoundError.*</exclude>
+          </excludes>
           <groups>
             org.apache.logging.log4j.categories.PerformanceTests
           </groups>
