@@ -67,21 +67,21 @@
             one for JSON, one for YAML, and one for XML.
           </p>
             <ol>
-              <li>Log4j will inspect the "log4j.configurationFile" system property and, if set,  will attempt to
+              <li>Log4j will inspect the <code>"log4j.configurationFile"</code> system property and, if set,  will attempt to
                 load the configuration using the <code>ConfigurationFactory</code> that matches the file
                 extension.</li>
-              <li>If no system property is set the YAML ConfigurationFactory will look for log4j2-test.yaml or
-                log4j2-test.yml in the classpath.</li>
-              <li>If no such file is found the JSON ConfigurationFactory will look for log4j2-test.json or
-                log4j2-test.jsn in the classpath.</li>
-              <li>If no such file is found the XML ConfigurationFactory will look for log4j2-test.xml in the
-                classpath.</li>
-              <li>If a test file cannot be located the YAML ConfigurationFactory will look for log4j2.yaml or log4j2.yml
-                on the classpath.</li>
-              <li>If a YAML file cannot be located the JSON ConfigurationFactory will look for log4j2.json or log4j2.jsn
-                on the classpath.</li>
+              <li>If no system property is set the YAML ConfigurationFactory will look for 
+                <code>log4j2-test.yaml</code> or <code>log4j2-test.yml</code> in the classpath.</li>
+              <li>If no such file is found the JSON ConfigurationFactory will look for
+                <code>log4j2-test.json</code> or <code>log4j2-test.jsn</code> in the classpath.</li>
+              <li>If no such file is found the XML ConfigurationFactory will look for
+                <code>log4j2-test.xml</code> in the classpath.</li>
+              <li>If a test file cannot be located the YAML ConfigurationFactory will look for
+                <code>log4j2.yaml</code> or <code>log4j2.yml</code> on the classpath.</li>
+              <li>If a YAML file cannot be located the JSON ConfigurationFactory will look for
+                <code>log4j2.json</code> or <code>log4j2.jsn</code> on the classpath.</li>
               <li>If a JSON file cannot be located the XML ConfigurationFactory will try to locate
-                log4j2.xml on the classpath.</li>
+                <code>log4j2.xml</code> on the classpath.</li>
               <li>If no configuration file could be located the <code>DefaultConfiguration</code> will
                 be used. This will cause logging output to go to the console.</li>
             </ol>
@@ -1016,6 +1016,19 @@ public class Bar {
         </subsection>
         <a name="StatusMessages"/>
         <subsection name="Status Messages">
+          <table>
+            <tr>
+            <td>
+            <b>Troubleshooting tip for the impatient:</b>
+            <ul>
+              <li>Before a configuration is found, status logger level can be controlled with system
+              property <code>org.apache.logging.log4j.simplelog.StatusLogger.level</code>.</li>
+              <li>After a configuration is found, status logger level can be controlled in the configuration
+              file with the "status" attribute, for example: <code>&lt;Configuration status="trace"&gt;</code>.</li>
+            </ul>
+            </td>
+            </tr>
+          </table>
           <p>
             Just as it is desirable to be able to diagnose problems in applications, it is frequently necessary
             to be able to diagnose problems in the logging configuration or in the configured components. Since
@@ -1287,17 +1300,18 @@ public class AwesomeTest {
       on the circumstances.
       See <a href="logsep.html">Log Separation</a> for more details.
       Available context selector implementation classes:<br />
-      <tt>org.apache.logging.log4j.core.async.AsyncLoggerContextSelector</tt> - makes <a href="async.html">all loggers asynchronous</a>.<br />
-      <tt>org.apache.logging.log4j.core.selector.BasicContextSelector</tt> - creates a single shared LoggerContext.<br />
-      <tt>org.apache.logging.log4j.core.selector.ClassLoaderContextSelector</tt> - separate LoggerContexts for each web application.<br />
-      <tt>org.apache.logging.log4j.core.selector.JndiContextSelector</tt> - use JNDI to locate each web application's LoggerContext.<br/>
-      <tt>org.apache.logging.log4j.core.osgi.BundleContextSelector</tt> - separate LoggerContexts for each OSGi bundle.
+    <!-- deliberately inserted spaces to allow line break -->
+      <tt>org.apache.logging.log4j.core.async .AsyncLoggerContextSelector</tt> - makes <a href="async.html">all loggers asynchronous</a>.<br />
+      <tt>org.apache.logging.log4j.core.selector .BasicContextSelector</tt> - creates a single shared LoggerContext.<br />
+      <tt>org.apache.logging.log4j.core.selector .ClassLoaderContextSelector</tt> - separate LoggerContexts for each web application.<br />
+      <tt>org.apache.logging.log4j.core.selector .JndiContextSelector</tt> - use JNDI to locate each web application's LoggerContext.<br/>
+      <tt>org.apache.logging.log4j.core.osgi .BundleContextSelector</tt> - separate LoggerContexts for each OSGi bundle.
     </td>
   </tr>
   <tr>
     <td>Log4jLogEventFactory</td>
     <!-- deliberately inserted spaces to allow line break -->
-    <td>org.apache.logging .log4j.core.impl .DefaultLogEventFactory</td>
+    <td>org.apache.logging.log4j.core.impl .DefaultLogEventFactory</td>
     <td>
       Factory class used by LoggerConfig to create <tt>LogEvent</tt> instances.
       (Ignored when the <tt>AsyncLoggerContextSelector</tt> is used.)
@@ -1306,7 +1320,7 @@ public class AwesomeTest {
   <tr>
     <td>log4j2.loggerContextFactory</td>
     <!-- deliberately inserted spaces to allow line break -->
-    <td>org.apache.logging .log4j.simple .SimpleLoggerContextFactory</td>
+    <td>org.apache.logging.log4j.simple .SimpleLoggerContextFactory</td>
     <td>
       Factory class used by LogManager to bootstrap the logging implementation.
       The core jar provides <tt>org.apache.logging.log4j.core.impl.Log4jContextFactory</tt>.
@@ -1332,7 +1346,7 @@ public class AwesomeTest {
   <tr>
     <td>log4j.shutdownCallbackRegistry</td>
     <!-- deliberately inserted spaces to allow line break -->
-    <td>org.apache.logging .log4j.core.util .DefaultShutdownCallbackRegistry</td>
+    <td>org.apache.logging.log4j.core.util .DefaultShutdownCallbackRegistry</td>
     <td>
       Fully specified class name of a class implementing
       <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/util/ShutdownCallbackRegistry.html">ShutdownCallbackRegistry</a>.
@@ -1499,23 +1513,45 @@ public class AwesomeTest {
     <td>Log level for a the SimpleLogger instance with the specified name.</td>
   </tr>
   <tr>
+    <!-- deliberately inserted spaces to allow line break -->
+    <td>org.apache.logging.log4j.simplelog .StatusLogger.level</td>
+    <td>ERROR</td>
+    <td>This property is used to control the initial StatusLogger level, and can be overridden in code by calling
+    <code>StatusLogger.getLogger().setLevel(someLevel)</code>.
+    Note that the StatusLogger level is only used to determine the status log output level
+    until a listener is registered. In practice, a listener is registered when a configuration is found,
+    and from that point onwards, status messages are only sent to the listeners (depending on their statusLevel).</td>
+  </tr>
+  <tr>
     <td>Log4jDefaultStatusLevel</td>
     <td>ERROR</td>
     <td>
-      The StatusLogger logs events that occur in the logging system to the console.
+      <p>The StatusLogger logs events that occur in the logging system to the console.
       During configuration, AbstractConfiguration registers a StatusConsoleListener with the StatusLogger that may
       redirect status log events from the default console output to a file.
       The listener also supports fine-grained filtering.
       This system property specifies the default status log level for the listener to use if the configuration does not
       specify a status level.
+      </p><p>
+      Note: this property is used by the log4j-core implementation only after a configuration file has been found.</p>
     </td>
   </tr>
   <tr>
     <td>log4j2.StatusLogger.level</td>
     <td>WARN</td>
     <td>
-      Default log level of the StatusLogger.
-      This is only used when there are no StatusLogger listeners and controls what is saved in the buffer.
+      <p>The initial "listenersLevel" of the StatusLogger. If StatusLogger listeners are added, the "listenerLevel"
+      is changed to that of the most verbose listener. If any listeners are registered, the listenerLevel is
+      used to quickly determine if an interested listener exists.
+      </p><p>
+      By default, StatusLogger listeners are added when a configuration is found and by the JMX
+      StatusLoggerAdmin MBean. For example, if a configuration contains
+      <code>&lt;Configuration status="trace"&gt;</code>, a listener with statusLevel TRACE is registered
+      and the StatusLogger listenerLevel is set to TRACE, resulting in verbose status messages displayed on the console.
+      </p><p>
+      If no listeners are registered, the listenersLevel is not used, and the StatusLogger output level
+      is determined by <code>StatusLogger.getLogger().getLevel()</code>
+      (see property <code>org.apache.logging.log4j.simplelog .StatusLogger.level</code>).</p>
     </td>
   </tr>
   <tr>
@@ -1584,10 +1620,11 @@ public class AwesomeTest {
   </tr>
   <tr>
     <td>log4j.jul.LoggerAdapter</td>
-    <td>org.apache.logging.log4j.jul.ApiLoggerAdapter</td>
+    <!-- deliberately inserted spaces to allow line break -->
+    <td>org.apache.logging.log4j.jul .ApiLoggerAdapter</td>
     <td>
       Default LoggerAdapter to use in the JUL adapter. By default, if log4j-core is available, then the class
-      <code>org.apache.logging.log4j.jul.CoreLoggerAdapter</code> will be used. Otherwise, the
+      <code>org.apache.logging.log4j.jul .CoreLoggerAdapter</code> will be used. Otherwise, the
       <code>ApiLogggerAdapter</code> will be used. Custom implementations must provide a public default constructor.
     </td>
   </tr>
