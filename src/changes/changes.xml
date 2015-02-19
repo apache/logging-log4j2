@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.2" date="2015-??-??" description="GA Release 2.2">
+      <action issue="LOG4J2-955" dev="rpopma" type="update">
+        Documentation: clarify system properties to control status logger, improve troubleshooting FAQ entry.
+      </action>
       <action issue="LOG4J2-944" dev="ggregory" type="fix" due-to="Vinayaka Ramachandra">
         Log4j Flume appender is not adding millisecond to the event headers when the event is logged at 000 milliseconds.
       </action>
