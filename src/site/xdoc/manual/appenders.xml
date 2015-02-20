@@ -2632,7 +2632,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               can be configured as the default.
             </p>
             <p>
-              Each Route must reference an Appender. If the Route contains an AppenderRef attribute then the
+              Each Route must reference an Appender. If the Route contains a ref attribute then the
               Route will reference an Appender that was defined in the configuration. If the Route contains an
               Appender definition then an Appender will be created within the context of the RoutingAppender and
               will be reused each time a matching Appender name is referenced through a Route.
