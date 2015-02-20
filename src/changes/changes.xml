@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.2" date="2015-??-??" description="GA Release 2.2">
+      <action issue="LOG4J2-957" dev="ggregory" type="fix" due-to="fatih guleryuz">
+        Missing toUpperCase("Locale.ENGLISH").
+      </action>
       <action issue="LOG4J2-955" dev="rpopma" type="update">
         Documentation: clarify system properties to control status logger, improve troubleshooting FAQ entry.
       </action>
