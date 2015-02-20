@@ -27,6 +27,9 @@
       <action issue="LOG4J2-957" dev="ggregory" type="fix" due-to="fatih guleryuz">
         Missing toUpperCase("Locale.ENGLISH").
       </action>
+      <action issue="LOG4J2-956" dev="ggregory" type="fix" due-to="David Kellerman">
+        Manual refers to Route "AppenderRef" attribute, should be "ref".
+      </action>
       <action issue="LOG4J2-955" dev="rpopma" type="update">
         Documentation: clarify system properties to control status logger, improve troubleshooting FAQ entry.
       </action>
