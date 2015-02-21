@@ -95,6 +95,9 @@
       <action issue="LOG4J2-901" dev="ggregory" type="update" due-to="Tihomir Meščić, Siegfried Greisinger">
         Update docs for SyslogAppender: "No structured id name was supplied"
       </action>
+      <action issue="LOG4J2-958" dev="ggregory" type="update">
+        Update from Jackson 2.5.0 to 2.5.1.
+      </action>
       <action issue="LOG4J2-925" dev="ggregory" type="update">
         Update from Jackson 2.4.4 to 2.5.0.
       </action>
