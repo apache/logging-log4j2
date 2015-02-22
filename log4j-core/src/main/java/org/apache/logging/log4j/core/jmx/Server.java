@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javax.management.InstanceAlreadyExistsException;
@@ -40,6 +41,7 @@ import org.apache.logging.log4j.core.async.DaemonThreadFactory;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.selector.ContextSelector;
+import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -57,10 +59,33 @@ public final class Server {
      */
     public static final String DOMAIN = "org.apache.logging.log4j2";
     private static final String PROPERTY_DISABLE_JMX = "log4j2.disable.jmx";
+    private static final String PROPERTY_ASYNC_NOTIF = "log4j2.jmx.notify.async";
+    private static final String THREAD_NAME_PREFIX = "log4j2.jmx.notif";
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
-    static final Executor executor = Executors.newFixedThreadPool(1, new DaemonThreadFactory("log4j2.jmx.notif"));
+    static final Executor executor = createExecutor();
 
     private Server() {
+    }
+
+    /**
+     * Returns either a {@code null} Executor (causing JMX notifications to be sent from the caller thread) or a daemon
+     * background thread Executor, depending on the value of system property "log4j2.jmx.notify.async". If this
+     * property is not set, use a {@code null} Executor for web apps to avoid memory leaks and other issues when the
+     * web app is restarted.
+     * @see LOG4J2-938
+     */
+    private static ExecutorService createExecutor() {
+        boolean defaultAsync = !isWebApp();
+        boolean async = PropertiesUtil.getProperties().getBooleanProperty(PROPERTY_ASYNC_NOTIF, defaultAsync);
+        return async ? Executors.newFixedThreadPool(1, new DaemonThreadFactory(THREAD_NAME_PREFIX)) : null;
+    }
+
+    /**
+     * Returns {@code true} if we think we are running in a web container, based on the presence of the
+     * {@code javax.servlet.Servlet} class in the classpath.
+     */
+    private static boolean isWebApp() {
+        return Loader.isClassAvailable("javax.servlet.Servlet");
     }
 
     /**

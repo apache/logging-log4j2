@@ -24,6 +24,11 @@
   </properties>
   <body>
     <release version="2.2" date="2015-??-??" description="GA Release 2.2">
+      <action issue="LOG4J2-938" dev="rpopma" type="fix" due-to="Mauro Molinari">
+        (JMX) To avoid memory leaks when web applications are restarted, JMX notifications are sent from
+        the caller thread in web applications. For non-web applications notifications are sent from a background thread
+        as before.
+      </action>
       <action issue="LOG4J2-957" dev="ggregory" type="fix" due-to="fatih guleryuz">
         Missing toUpperCase("Locale.ENGLISH").
       </action>
