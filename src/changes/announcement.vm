@@ -23,12 +23,10 @@ The ${developmentTeam} is pleased to announce the Log4j ${relVersion} release!
 
 Apache log4j is a well known framework for logging application behavior. Log4j 2 is an upgrade to
 Log4j that provides significant improvements over its predecessor, Log4j 1.x, and provides
-many of the improvements available in Logback while fixing some inherent problems in Logback's
-architecture.
+many other modern features such as support for Markers, property substitution using Lookups, and asynchronous
+Loggers. In addition, Log4j 2 will not lose events while reconfiguring.
 
-This is the fourth GA release which contains several bugfixes and new features. There are two
-new Maven artifacts in this release: log4j-jul and log4j-iostreams. Both components are API-based
-with optional Core features.
+This is the fifth GA release. It contains several bugfixes and new features.
 
 ## Hack to improve layout: replace all pairs of spaces with a single new-line
 $release.description.replaceAll("  ", "
@@ -133,8 +131,10 @@ o#if($!issue != "") $issue. #end ${action} #if($!dueto != "")Thanks to $dueto. #
 ## End of main loop
 #end
 
-Apache Log4j ${relVersion} requires a minimum of Java 6 to build and run. Basic compatibility with
-Log4j 1.x is provided through the log4j-1.2-api component, however it does not implement some of the
+Apache Log4j ${relVersion} requires a minimum of Java 6 to build and run. Future releases may require a minimum
+of Java 7.
+
+Basic compatibility with Log4j 1.x is provided through the log4j-1.2-api component, however it does not implement some of the
 very implementation specific classes and methods. The package names and Maven groupId have been changed to
 org.apache.logging.log4j to avoid any conflicts with log4j 1.x.
 
@@ -142,172 +142,3 @@ For complete information on ${project.name}, including instructions on how to su
 patches, or suggestions for improvement, see the Apache ${project.name} website:
 
 ${project.url}
-
--------------------------------------------------------------------------------
-
-              Apache Log4j 2.0.2 RELEASE NOTES
-
-The Apache Log4j 2 team is pleased to announce the Log4j 2.0.2 release!
-
-Apache log4j is a well known framework for logging application behavior. Log4j 2 is an upgrade to
-Log4j that provides significant improvements over its predecessor, Log4j 1.x, and provides
-many of the improvements available in Logback while fixing some inherent problems in Logback's
-architecture.
-
-This is the third GA release which contains several bugfixes from the previous release.
-
-Bug fixes and enhancements
-
-Changes in this version include:
-
-
-Fixed Bugs:
-o LOG4J2-773:  Site: log4j-core component pages were still using the old logo.
-o LOG4J2-760:  Documentation improvement: link to dependency tree from log4j-core component page,
-        link to log4j-core component page from FAQ page.
-o LOG4J2-679:  Resolved race condition that caused log file rotation to fail with error: "Unable to create directory ..."
-o LOG4J2-726:  Prevent application from hanging when PatternLayout configuration has opening '{' but no closing '}'.
-o LOG4J2-769:  Startup takes a long time if you have empty packages attribute. Thanks to Scott Harrington.
-o LOG4J2-763:  Improved asynchronous loggers and appenders to ensure the formatted message does not change even if
-        parameters are modified by the application. (ParameterizedMessage was already safe.)
-        Improved documentation. Thanks to Stephen Connolly.
-o LOG4J2-729:  Emit warning message to console if no configuration file found.
-o LOG4J2-765:  Improve warning message when missing log4j-core in the classpath.
-o LOG4J2-722:  Clarified in documentation that Commons Logging jar is required when using log4j-jcl.
-o LOG4J2-723:  Clarified in documentation that SLF4J API jar is required when using log4j-slf4j-impl.
-o LOG4J2-759:  Fixed various minor site/documentation issues, mostly versioning related.
-o LOG4J2-756:  Prevent JUnit test from creating unnecessary Log4j2Plugins.dat during build. Thanks to Scott Harrington.
-
-Changes:
-o LOG4J2-775:  Update Apache Flume to 1.5.0.1 from 1.5.0.
-o LOG4J2-730:  Allow Log4jContextFactory subclasses to specify a custom ContextSelector.
-
-
-Apache Log4j 2.0.2 requires a minimum of Java 6 to build and run. Basic compatibility with
-Log4j 1.x is provided through the log4j-1.2-api component, however it does not implement some of the
-very implementation specific classes and methods. The package names and Maven groupId have been changed to
-org.apache.logging.log4j to avoid any conflicts with log4j 1.x.
-
-For complete information on Apache Log4j 2, including instructions on how to submit bug reports,
-patches, or suggestions for improvement, see the Apache Apache Log4j 2 website:
-
-http://logging.apache.org/log4j/2.x/
-
--------------------------------------------------------------------------------
-
-              Apache Log4j 2.0.1 RELEASE NOTES
-
-The Apache Log4j 2 team is pleased to announce the Log4j 2.0.1 release!
-
-Apache log4j is a well known framework for logging application behavior. Log4j 2 is an upgrade to
-Log4j that provides significant improvements over its predecessor, Log4j 1.x, and provides
-many of the improvements available in Logback while fixing some inherent problems in Logback's
-architecture.
-
-This is the first GA release, after thirteen prior releases over the last 4 years.
-
-?
-
-Changes in this version include:
-
-New features:
-o LOG4J2-725:  Added WebLoggerContextUtils class to log4j-web for helper methods useful for asynchronous servlets.
-o LOG4J2-710:  Added documentation for Custom Levels and Custom Loggers.
-
-Fixed Bugs:
-o LOG4J2-744:  Avoid unnecessary Clock calls when TimestampMessage is logged. Thanks to Scott Harrington.
-o LOG4J2-704:  Improved error message if configuration file not found.
-o LOG4J2-750:  Webapp configuration page has incorrect class name. Thanks to Mike Calmus.
-o LOG4J2-749:  Retain the default date pattern after fixing the ISO8601 pattern. Thanks to Scott Harrington.
-o LOG4J2-670:  DatePatternConverter ISO8601_PATTERN now conforms to ISO8601.
-o LOG4J2-741:  Reinstate the package configuration attribute for discovering custom plugins.
-o LOG4J2-742:  XInclude not working with relative path. Thanks to Pascal Chollet.
-o LOG4J2-740:  Fixed typo in webapp manual regarding sample web.xml file. Thanks to Kosta Krauth.
-o LOG4J2-738:  RollingFileManager deadlock if async action thread fails to start. Thanks to Timothy Stack.
-o LOG4J2-736:  Fixed log4j-bom so that it won't specify a default scope on any third party dependencies.
-o LOG4J2-735:  Fixed log4j-bom so that it won't interfere with spring-bom and others.
-o LOG4J2-731:  Updated documentation regarding extensions to LoggerContextFactory and Log4j 2 providers.
-o LOG4J2-373:  Fixed ClassLoader issues in loading Log4j providers in an OSGi environment.
-o LOG4J2-719:  Correctly handle NetworkOnMainThreadException thrown on Android during Log4j2 initialization.
-o LOG4J2-716:  Automatically disable log4j JMX when detecting we are running on Android.
-o LOG4J2-657:  Fixed AbstractDatabaseManager to close connection on writeInternal error. Thanks to Stefan Wehner.
-o LOG4J2-713:  Android: java.lang.VerifyError: org/apache/logging/log4j/core/util/Closer Thanks to Nelson Melina.
-o LOG4J2-703:  Android: Could not find class 'javax.naming.InitialContext', referenced from method org.apache.logging.log4j.core.lookup.JndiLookup.lookup. Thanks to Nelson Melina.
-
-
-
-Apache Log4j 2.0.1 requires a minimum of Java 6 to build and run. Basic compatibility with
-Log4j 1.x is provided through the log4j-1.2-api component, however it does not implement some of the
-very implementation specific classes and methods. The package names and Maven groupId have been changed to
-org.apache.logging.log4j to avoid any conflicts with log4j 1.x.
-
-For complete information on Apache Log4j 2, including instructions on how to submit bug reports,
-patches, or suggestions for improvement, see the Apache Apache Log4j 2 website:
-
-http://logging.apache.org/log4j/2.x/
-
--------------------------------------------------------------------------------
-
-              Apache Log4j 2.0 RELEASE NOTES
-
-The Apache Log4j 2 team is pleased to announce the Log4j 2.0 release!
-
-Apache log4j is a well known framework for logging application behavior. Log4j 2 is an upgrade to
-Log4j that provides significant improvements over its predecessor, Log4j 1.x, and provides
-many of the improvements available in Logback while fixing some inherent problems in Logback's
-architecture.
-
-This is the first GA release, after thirteen prior releases over the last 4 years.
-
-GA Release
-
-Changes in this version include:
-
-New features:
-o LOG4J2-519:  Added support for generating custom logger wrappers that replace the existing log levels
-        and extended logger wrappers that add custom log levels to the existing ones.
-o LOG4J2-696:  RegexFilter does not match multiline log messages.
-
-Fixed Bugs:
-o LOG4J2-705:  Fixed issue where Async Logger does not log thread context stack data.
-        API change: added method getImmutableStackOrNull() to ThreadContext.ContextStack interface.
-o LOG4J2-631:  Update docs to clarify how to use formatter logger and standard logger together.
-o LOG4J2-441:  LoggerConfigs with no Level now inherit the Level from their parent.
-o LOG4J2-703:  Android: Could not find class 'javax.naming.InitialContext', referenced from method org.apache.logging.log4j.core.lookup.JndiLookup.lookup. Thanks to Nelson Melina.
-o LOG4J2-699:  PatternLayout manual page missing documentation on header/footer.
-o LOG4J2-625:  Fixed Serialization error with SocketAppender and Async Loggers.
-        (Fixed in RC2, but wasn't included in release notes.)
-o LOG4J2-538:  JMX GUI: fixed occasional ArrayIndexOutOfBoundsException after pressing "reconfigure with XML below".
-        (Fixed in RC2, but wasn't included in release notes.)
-o LOG4J2-666:  AsyncLoggerContextSelector should ensure that different AsyncLoggerContext objects created by web app classloaders have unique names.
-o LOG4J2-683:  Fix annotation processor warnings on JDK 1.7+. Thanks to Jurriaan Mous.
-o LOG4J2-694:  Fix strange compilation error that popped up in a test class.
-o LOG4J2-692:  Update documentation to specify only Maven 3 is supported.
-o LOG4J2-690:  Log4j Web test dependencies should be in scope "test" in the pom. Thanks to Philip Helger.
-o LOG4J2-682:  Special characters (tab and so on) in PatternLayout do not work. Thanks to Scott Harrington.
-o LOG4J2-686:  Core's OptionConverter support for \b is broken (affects PatternLayout).
-o LOG4J2-687:  Rename org.apache.logging.log4j.core.util.Closer.closeSilent() to closeSilently().
-o LOG4J2-688:  Make org.apache.logging.log4j.core.layout.PatternLayout immutable.
-o LOG4J2-707:  Some exceptions are not logged when configuration problems are detected.
-
-Changes:
-o LOG4J2-685:  Make org.apache.logging.log4j.core.layout.AbstractLayout immutable.
-o LOG4J2-689:  Update Jackson to 2.4.1.
-o LOG4J2-709:  Update Apache Commons Logging to 1.2 from 1.1.3.
-
-
-Apache Log4j 2.0 requires a minimum of Java 6 to build and run. Basic compatibility with
-Log4j 1.x is provided through the log4j-1.2-api component, however it does not implement some of the
-very implementation specific classes and methods. The package names and Maven groupId have been changed to
-org.apache.logging.log4j to avoid any conflicts with log4j 1.x.
-
-For complete information on Apache Log4j 2, including instructions on how to submit bug reports,
-patches, or suggestions for improvement, see the Apache Apache Log4j 2 website:
-
-http://logging.apache.org/log4j/2.x/
-
-
-
-
-
-

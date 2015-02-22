@@ -23,7 +23,7 @@
     <title>Changes</title>
   </properties>
   <body>
-    <release version="2.2" date="2015-??-??" description="GA Release 2.2">
+    <release version="2.2" date="2015-02-22" description="GA Release 2.2">
       <action issue="LOG4J2-938" dev="rpopma" type="fix" due-to="Mauro Molinari">
         (JMX) To avoid memory leaks when web applications are restarted, JMX notifications are sent from
         the caller thread in web applications. For non-web applications notifications are sent from a background thread
@@ -124,7 +124,7 @@
       <action issue="LOG4J2-900" dev="ggregory" type="update">
         Update Apache Flume from 1.5.0.1 to 1.5.2.
       </action>
-    </release>      
+    </release>
     <release version="2.1" date="2014-10-19" description="GA Release 2.1">
       <action issue="LOG4J2-676" dev="rgoers" type="fix" due-to="Stefan Bodewig">
         Some typo fixes and enhancements for the site.
