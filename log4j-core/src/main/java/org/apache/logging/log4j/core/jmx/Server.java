@@ -36,6 +36,7 @@ import org.apache.logging.log4j.core.appender.AsyncAppender;
 import org.apache.logging.log4j.core.async.AsyncLogger;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfig;
 import org.apache.logging.log4j.core.async.AsyncLoggerContext;
+import org.apache.logging.log4j.core.async.DaemonThreadFactory;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.selector.ContextSelector;
@@ -46,31 +47,27 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 /**
  * Creates MBeans to instrument various classes in the log4j class hierarchy.
  * <p>
- * All instrumentation for Log4j 2 classes can be disabled by setting system
- * property {@code -Dlog4j2.disable.jmx=true}.
+ * All instrumentation for Log4j 2 classes can be disabled by setting system property {@code -Dlog4j2.disable.jmx=true}.
  * </p>
  */
 public final class Server {
 
     /**
-     * The domain part, or prefix ({@value} ) of the {@code ObjectName} of all
-     * MBeans that instrument Log4J2 components.
+     * The domain part, or prefix ({@value} ) of the {@code ObjectName} of all MBeans that instrument Log4J2 components.
      */
     public static final String DOMAIN = "org.apache.logging.log4j2";
     private static final String PROPERTY_DISABLE_JMX = "log4j2.disable.jmx";
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
-    static final Executor executor = Executors.newFixedThreadPool(1);
+    static final Executor executor = Executors.newFixedThreadPool(1, new DaemonThreadFactory("log4j2.jmx.notif"));
 
     private Server() {
     }
 
     /**
-     * Either returns the specified name as is, or returns a quoted value
-     * containing the specified name with the special characters (comma, equals,
-     * colon, quote, asterisk, or question mark) preceded with a backslash.
+     * Either returns the specified name as is, or returns a quoted value containing the specified name with the special
+     * characters (comma, equals, colon, quote, asterisk, or question mark) preceded with a backslash.
      *
-     * @param name the name to escape so it can be used as a value in an
-     *            {@link ObjectName}.
+     * @param name the name to escape so it can be used as a value in an {@link ObjectName}.
      * @return the escaped name
      */
     public static String escape(final String name) {
@@ -190,11 +187,9 @@ public final class Server {
     }
 
     /**
-     * Returns the {@code ContextSelector} of the current
-     * {@code Log4jContextFactory}.
+     * Returns the {@code ContextSelector} of the current {@code Log4jContextFactory}.
      *
-     * @return the {@code ContextSelector} of the current
-     *         {@code Log4jContextFactory}
+     * @return the {@code ContextSelector} of the current {@code Log4jContextFactory}
      */
     private static ContextSelector getContextSelector() {
         final LoggerContextFactory factory = LogManager.getFactory();
@@ -206,9 +201,8 @@ public final class Server {
     }
 
     /**
-     * Unregisters all MBeans associated with the specified logger context
-     * (including MBeans for {@code LoggerConfig}s and {@code Appender}s from
-     * the platform MBean server.
+     * Unregisters all MBeans associated with the specified logger context (including MBeans for {@code LoggerConfig}s
+     * and {@code Appender}s from the platform MBean server.
      *
      * @param loggerContextName name of the logger context to unregister
      */
@@ -218,9 +212,8 @@ public final class Server {
     }
 
     /**
-     * Unregisters all MBeans associated with the specified logger context
-     * (including MBeans for {@code LoggerConfig}s and {@code Appender}s from
-     * the platform MBean server.
+     * Unregisters all MBeans associated with the specified logger context (including MBeans for {@code LoggerConfig}s
+     * and {@code Appender}s from the platform MBean server.
      *
      * @param contextName name of the logger context to unregister
      * @param mbs the MBean Server to unregister the instrumented objects from
