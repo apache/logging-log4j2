@@ -98,8 +98,6 @@
         for a configuration file named <code>log4j2.xml</code> on the classpath. Note the "2" in the file name!
         (See the <a href="manual/configuration.html#AutomaticConfiguration">configuration manual page</a>
         for more details.)</p>
-        <p>Enable log4j2 internal status logging by setting system property 
-          <code>-Dorg.apache.logging.log4j.simplelog.StatusLogger.level=TRACE</code>.</p>
         <p>If the configuration file is found correctly, log4j2 internal status logging can be controlled by
         setting <code>&lt;Configuration status="trace"&gt;</code> in the configuration file.
         This will display detailed log4j2-internal
@@ -107,6 +105,9 @@
         This may be useful to trouble-shoot configuration issues.
         By default the status logger level is WARN, so you only see notifications when there is a problem.
         </p>
+        <p>If the configuration file is not found correctly, you can still enable 
+        log4j2 internal status logging by setting system property 
+          <code>-Dorg.apache.logging.log4j.simplelog.StatusLogger.level=TRACE</code>.</p>
 
 		<a name="separate_log_files" />
         <h4>How do I dynamically write to separate log files?</h4>
