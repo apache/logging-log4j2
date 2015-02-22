@@ -56,19 +56,20 @@ public final class Property {
     }
 
     /**
-     * Create a Property.
-     * @param key The key.
+     * Creates a Property.
+     * 
+     * @param name The key.
      * @param value The value.
      * @return A Property.
      */
     @PluginFactory
     public static Property createProperty(
-            @PluginAttribute("name") final String key,
+            @PluginAttribute("name") final String name,
             @PluginValue("value") final String value) {
-        if (key == null) {
-            LOGGER.error("Property key cannot be null");
+        if (name == null) {
+            LOGGER.error("Property name cannot be null");
         }
-        return new Property(key, value);
+        return new Property(name, value);
     }
 
     @Override

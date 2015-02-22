@@ -279,7 +279,7 @@ public final class Level implements Comparable<Level>, Serializable {
         if (name == null) {
             throw new NullPointerException("No level name given.");
         }
-        final String levelName = name.toUpperCase();
+        final String levelName = name.toUpperCase(Locale.ENGLISH);
         if (levels.containsKey(levelName)) {
             return levels.get(levelName);
         }

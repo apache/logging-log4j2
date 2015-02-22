@@ -24,8 +24,17 @@
   </properties>
   <body>
     <release version="2.2" date="2015-??-??" description="GA Release 2.2">
+      <action issue="LOG4J2-957" dev="ggregory" type="fix" due-to="fatih guleryuz">
+        Missing toUpperCase("Locale.ENGLISH").
+      </action>
+      <action issue="LOG4J2-956" dev="ggregory" type="fix" due-to="David Kellerman">
+        Manual refers to Route "AppenderRef" attribute, should be "ref".
+      </action>
       <action issue="LOG4J2-955" dev="rpopma" type="update">
         Documentation: clarify system properties to control status logger, improve troubleshooting FAQ entry.
+      </action>
+      <action issue="LOG4J2-950" dev="ggregory" type="update" due-to="Joel Edwards">
+        Incorrect attribute name in PropertiesRewritePolicy example.
       </action>
       <action issue="LOG4J2-944" dev="ggregory" type="fix" due-to="Vinayaka Ramachandra">
         Log4j Flume appender is not adding millisecond to the event headers when the event is logged at 000 milliseconds.
@@ -85,6 +94,9 @@
       </action>
       <action issue="LOG4J2-901" dev="ggregory" type="update" due-to="Tihomir Meščić, Siegfried Greisinger">
         Update docs for SyslogAppender: "No structured id name was supplied"
+      </action>
+      <action issue="LOG4J2-958" dev="ggregory" type="update">
+        Update from Jackson 2.5.0 to 2.5.1.
       </action>
       <action issue="LOG4J2-925" dev="ggregory" type="update">
         Update from Jackson 2.4.4 to 2.5.0.

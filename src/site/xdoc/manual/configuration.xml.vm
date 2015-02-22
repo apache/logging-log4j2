@@ -847,8 +847,8 @@ public class Bar {
             <SizeBasedTriggeringPolicy size="500" />
           </RollingFile>
         </Route>
-        <Route AppenderRef="STDOUT" key="Audit"/>
-        <Route AppenderRef="List" key="Service"/>
+        <Route ref="STDOUT" key="Audit"/>
+        <Route ref="List" key="Service"/>
       </Routes>
     </Routing>
   </Appenders>
@@ -1077,8 +1077,8 @@ public class Bar {
             <SizeBasedTriggeringPolicy size="500" />
           </RollingFile>
         </Route>
-        <Route AppenderRef="STDOUT" key="Audit"/>
-        <Route AppenderRef="List" key="Service"/>
+        <Route ref="STDOUT" key="Audit"/>
+        <Route ref="List" key="Service"/>
       </Routes>
     </Routing>
   </Appenders>
