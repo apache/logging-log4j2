@@ -1424,6 +1424,16 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
+    <td>log4j2.jmx.notify.async</td>
+    <td>false for web apps, true otherwise</td>
+    <td>
+      If <tt>true</tt>, log4j's JMX notifications are sent from a separate background thread,
+      otherwise they are sent from the caller thread.
+      If the <tt>javax.servlet.Servlet</tt> class is on the classpath, the default behaviour
+      is to use the caller thread to send JMX notifications.
+    </td>
+  </tr>
+  <tr>
     <td>log4j.skipJansi</td>
     <td>false</td>
     <td>
