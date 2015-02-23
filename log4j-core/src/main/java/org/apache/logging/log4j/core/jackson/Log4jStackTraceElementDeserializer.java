@@ -62,7 +62,7 @@ public final class Log4jStackTraceElementDeserializer extends StdScalarDeseriali
                     } else {
                         // An XML number always comes in a string since there is no syntax help as with JSON.
                         try {
-                            lineNumber = Integer.valueOf(jp.getText().trim()).intValue();
+                            lineNumber = Integer.parseInt(jp.getText().trim());
                         } catch (final NumberFormatException e) {
                             throw JsonMappingException.from(jp, "Non-numeric token (" + t + ") for property 'line'", e);
                         }
