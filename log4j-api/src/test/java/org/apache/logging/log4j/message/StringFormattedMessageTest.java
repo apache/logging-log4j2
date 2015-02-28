@@ -16,9 +16,17 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-import static org.junit.Assert.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  *
@@ -84,5 +92,18 @@ public class StringFormattedMessageTest {
         param.set("XYZ");
         final String actual = msg.getFormattedMessage();
         assertEquals("Should use initial param value", "Test message abc", actual);
+    }
+
+    @Test
+    public void testSerialization() throws IOException, ClassNotFoundException {
+        final StringFormattedMessage expected = new StringFormattedMessage("Msg", "a", "b", "c");
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(baos);
+        out.writeObject(expected);
+        out.close();
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        ObjectInputStream in = new ObjectInputStream(bais);
+        final StringFormattedMessage actual = (StringFormattedMessage) in.readObject();
+        Assert.assertEquals(expected, actual);
     }
 }
