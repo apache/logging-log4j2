@@ -27,6 +27,9 @@
       <action issue="LOG4J2-964" dev="ggregory" type="fix" due-to="Jonne Jyrylä">
         StringFormattedMessage serialization is incorrect.
       </action>
+      <action issue="LOG4J2-947" dev="ggregory" type="fix" due-to=" Stefan Wehner">
+        A new StatusLoggerAdmin listener is added to StatusLogger every time the log is reconfigured.
+      </action>
     </release>
     <release version="2.2" date="2015-02-22" description="GA Release 2.2">
       <action issue="LOG4J2-938" dev="rpopma" type="fix" due-to="Mauro Molinari">
