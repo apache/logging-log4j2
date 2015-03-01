@@ -38,7 +38,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
 /**
- * Mechanism to record events that occur in the logging system.
+ * Records events that occur in the logging system.
  */
 public final class StatusLogger extends AbstractLogger {
 
@@ -93,7 +93,7 @@ public final class StatusLogger extends AbstractLogger {
     }
 
     /**
-     * Register a new listener.
+     * Registers a new listener.
      * @param listener The StatusListener to register.
      */
     public void registerListener(final StatusListener listener) {
@@ -110,7 +110,7 @@ public final class StatusLogger extends AbstractLogger {
     }
 
     /**
-     * Remove a StatusListener.
+     * Removes a StatusListener.
      * @param listener The StatusListener to remove.
      */
     public void removeListener(final StatusListener listener) {
@@ -194,7 +194,7 @@ public final class StatusLogger extends AbstractLogger {
     }
 
     /**
-     * Add an event.
+     * Adds an event.
      * @param marker The Marker
      * @param fqcn   The fully qualified class name of the <b>caller</b>
      * @param level  The logging level
@@ -278,7 +278,7 @@ public final class StatusLogger extends AbstractLogger {
     }
 
     /**
-     * Queue for status events.
+     * Queues for status events.
      * @param <E> Object type to be stored in the queue.
      */
     private class BoundedQueue<E> extends ConcurrentLinkedQueue<E> {
