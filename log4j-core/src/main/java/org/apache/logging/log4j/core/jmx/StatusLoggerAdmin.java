@@ -87,8 +87,9 @@ public class StatusLoggerAdmin extends NotificationBroadcasterSupport implements
     }
 
     private static MBeanNotificationInfo createNotificationInfo() {
-        final String[] notifTypes = new String[] {//
-        NOTIF_TYPE_DATA, NOTIF_TYPE_MESSAGE };
+        final String[] notifTypes = new String[] {
+                NOTIF_TYPE_DATA,
+                NOTIF_TYPE_MESSAGE };
         final String name = Notification.class.getName();
         final String description = "StatusLogger has logged an event";
         return new MBeanNotificationInfo(notifTypes, name, description);
