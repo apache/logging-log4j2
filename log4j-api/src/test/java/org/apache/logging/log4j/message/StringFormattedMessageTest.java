@@ -105,5 +105,8 @@ public class StringFormattedMessageTest {
         ObjectInputStream in = new ObjectInputStream(bais);
         final StringFormattedMessage actual = (StringFormattedMessage) in.readObject();
         Assert.assertEquals(expected, actual);
+        Assert.assertEquals(expected.getFormat(), actual.getFormat());
+        Assert.assertEquals(expected.getFormattedMessage(), actual.getFormattedMessage());
+        Assert.assertArrayEquals(expected.getParameters(), actual.getParameters());
     }
 }
