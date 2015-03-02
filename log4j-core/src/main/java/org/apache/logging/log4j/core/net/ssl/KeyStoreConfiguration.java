@@ -51,7 +51,7 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
      * @param keyStoreType
      *        The KeyStore type, null defaults to {@code "JKS"}.
      * @param keyManagerFactoryAlgorithm
-     *        TODO
+     *         The standard name of the requested algorithm. See the Java Secure Socket Extension Reference Guide for information about these names.
      * @return a new KeyStoreConfiguration
      * @throws StoreConfigurationException
      */
@@ -63,7 +63,7 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
             @PluginAttribute("type") final String keyStoreType, 
             @PluginAttribute("keyManagerFactoryAlgorithm") final String keyManagerFactoryAlgorithm) throws StoreConfigurationException {
             // @formatter:on
-        return new KeyStoreConfiguration(location, password, keyStoreType, null);
+        return new KeyStoreConfiguration(location, password, keyStoreType, keyManagerFactoryAlgorithm);
     }
 
     public KeyManagerFactory initKeyManagerFactory() throws NoSuchAlgorithmException, UnrecoverableKeyException,

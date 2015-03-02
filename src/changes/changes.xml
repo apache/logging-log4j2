@@ -24,8 +24,11 @@
   </properties>
   <body>
     <release version="2.2.1" date="2015-0?-??" description="GA Release 2.2.1">
+      <action issue="LOG4J2-966" dev="ggregory" type="fix" due-to="Gary Gregory">
+        KeyStoreConfiguration.createKeyStoreConfiguration() ignores keyManagerFactoryAlgorithm.
+      </action>
       <action issue="LOG4J2-964" dev="ggregory" type="fix" due-to="Jonne Jyrylä">
-        StringFormattedMessage serialization is incorrect.
+        
       </action>
       <action issue="LOG4J2-947" dev="ggregory" type="fix" due-to=" Stefan Wehner">
         A new StatusLoggerAdmin listener is added to StatusLogger every time the log is reconfigured.
