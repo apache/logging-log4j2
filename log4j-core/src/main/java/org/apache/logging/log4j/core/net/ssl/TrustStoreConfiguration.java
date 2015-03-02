@@ -50,7 +50,7 @@ public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
      * @param keyStoreType
      *        The KeyStore type, null defaults to {@code "JKS"}.
      * @param trustManagerFactoryAlgorithm
-     *        TODO
+     *        The standard name of the requested trust management algorithm. See the Java Secure Socket Extension Reference Guide for information these names.
      * @return a new TrustStoreConfiguration
      * @throws StoreConfigurationException
      */
