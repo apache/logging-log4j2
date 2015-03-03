@@ -36,6 +36,9 @@
       <action issue="LOG4J2-968" dev="ggregory" type="fix" due-to="Paul D Johe">
         SyslogLayout contains extra space.
       </action>
+      <action issue="LOG4J2-967" dev="ggregory" type="fix" due-to="Stefan Wehner">
+        log4j2.component.properties not read for all properties.
+      </action>
     </release>
     <release version="2.2" date="2015-02-22" description="GA Release 2.2">
       <action issue="LOG4J2-938" dev="rpopma" type="fix" due-to="Mauro Molinari">

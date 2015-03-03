@@ -36,6 +36,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.TimestampMessage;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 import com.lmax.disruptor.BlockingWaitStrategy;
 import com.lmax.disruptor.ExceptionHandler;
@@ -100,7 +101,7 @@ public class AsyncLogger extends Logger {
         abstract String getThreadName(Info info);
 
         static ThreadNameStrategy create() {
-            final String name = System.getProperty("AsyncLogger.ThreadNameStrategy", CACHED.name());
+            final String name = PropertiesUtil.getProperties().getStringProperty("AsyncLogger.ThreadNameStrategy", CACHED.name());
             try {
                 return ThreadNameStrategy.valueOf(name);
             } catch (final Exception ex) {
@@ -133,7 +134,7 @@ public class AsyncLogger extends Logger {
 
     private static int calculateRingBufferSize() {
         int ringBufferSize = RINGBUFFER_DEFAULT_SIZE;
-        final String userPreferredRBSize = System.getProperty("AsyncLogger.RingBufferSize",
+        final String userPreferredRBSize = PropertiesUtil.getProperties().getStringProperty("AsyncLogger.RingBufferSize",
                 String.valueOf(ringBufferSize));
         try {
             int size = Integer.parseInt(userPreferredRBSize);
@@ -169,7 +170,7 @@ public class AsyncLogger extends Logger {
     }
 
     private static WaitStrategy createWaitStrategy() {
-        final String strategy = System.getProperty("AsyncLogger.WaitStrategy");
+        final String strategy = PropertiesUtil.getProperties().getStringProperty("AsyncLogger.WaitStrategy");
         LOGGER.debug("property AsyncLogger.WaitStrategy={}", strategy);
         if ("Sleep".equals(strategy)) {
             return new SleepingWaitStrategy();
@@ -183,7 +184,7 @@ public class AsyncLogger extends Logger {
     }
 
     private static ExceptionHandler getExceptionHandler() {
-        final String cls = System.getProperty("AsyncLogger.ExceptionHandler");
+        final String cls = PropertiesUtil.getProperties().getStringProperty("AsyncLogger.ExceptionHandler");
         if (cls == null) {
             LOGGER.debug("No AsyncLogger.ExceptionHandler specified");
             return null;

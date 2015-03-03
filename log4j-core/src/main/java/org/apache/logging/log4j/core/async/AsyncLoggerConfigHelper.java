@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 import com.lmax.disruptor.BlockingWaitStrategy;
 import com.lmax.disruptor.EventFactory;
@@ -144,7 +145,7 @@ class AsyncLoggerConfigHelper {
 
     private static int calculateRingBufferSize() {
         int ringBufferSize = RINGBUFFER_DEFAULT_SIZE;
-        final String userPreferredRBSize = System.getProperty(
+        final String userPreferredRBSize = PropertiesUtil.getProperties().getStringProperty(
                 "AsyncLoggerConfig.RingBufferSize",
                 String.valueOf(ringBufferSize));
         try {
