@@ -42,6 +42,9 @@
       <action issue="LOG4J2-971" dev="ggregory" type="fix" due-to="Paul D Johe">
         Another bad priority in Syslog messages.
       </action>
+      <action issue="LOG4J2-972" dev="ggregory" type="fix" due-to="Gary Gregory">
+        org.apache.logging.log4j.core.net.ssl.TlsSyslogInputStreamReader does not need to create temp Integer objects.
+      </action>
     </release>
     <release version="2.2" date="2015-02-22" description="GA Release 2.2">
       <action issue="LOG4J2-938" dev="rpopma" type="fix" due-to="Mauro Molinari">

@@ -86,6 +86,6 @@ public class TlsSyslogInputStreamReader extends TlsSyslogInputStreamReaderBase {
 
     private void calculateNextMessageLength() {
         final byte[] length = Arrays.copyOfRange(lengthBuffer, 0, position);
-        nextMessageLength = new Integer(new String(length));
+        nextMessageLength = Integer.parseInt(new String(length));
     }
 }
