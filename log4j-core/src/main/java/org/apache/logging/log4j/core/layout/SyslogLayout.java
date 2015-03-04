@@ -56,7 +56,7 @@ public final class SyslogLayout extends AbstractStringLayout {
     /**
      * Date format used if header = true.
      */
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd HH:mm:ss ", Locale.ENGLISH);
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd HH:mm:ss", Locale.ENGLISH);
     /**
      * Host name used to identify messages from this appender.
      */
