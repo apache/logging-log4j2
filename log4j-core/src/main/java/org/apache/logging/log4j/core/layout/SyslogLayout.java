@@ -62,8 +62,6 @@ public final class SyslogLayout extends AbstractStringLayout {
      */
     private final String localHostname = NetUtils.getLocalHostname();
 
-
-
     protected SyslogLayout(final Facility facility, final boolean includeNL, final String escapeNL, final Charset charset) {
         super(charset);
         this.facility = facility;
