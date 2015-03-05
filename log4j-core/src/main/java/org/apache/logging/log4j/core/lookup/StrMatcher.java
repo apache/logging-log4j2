@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.lookup;
 
 import java.util.Arrays;
 
+import org.apache.logging.log4j.util.Chars;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -36,11 +37,11 @@ public abstract class StrMatcher {
     /**
      * Matches the tab character.
      */
-    private static final StrMatcher TAB_MATCHER = new CharMatcher('\t');
+    private static final StrMatcher TAB_MATCHER = new CharMatcher(Chars.TAB);
     /**
      * Matches the space character.
      */
-    private static final StrMatcher SPACE_MATCHER = new CharMatcher(' ');
+    private static final StrMatcher SPACE_MATCHER = new CharMatcher(Chars.SPACE);
     /**
      * Matches the same characters as StringTokenizer,
      * namely space, tab, newline, formfeed.
@@ -53,11 +54,11 @@ public abstract class StrMatcher {
     /**
      * Matches the double quote character.
      */
-    private static final StrMatcher SINGLE_QUOTE_MATCHER = new CharMatcher('\'');
+    private static final StrMatcher SINGLE_QUOTE_MATCHER = new CharMatcher(Chars.QUOTE);
     /**
      * Matches the double quote character.
      */
-    private static final StrMatcher DOUBLE_QUOTE_MATCHER = new CharMatcher('"');
+    private static final StrMatcher DOUBLE_QUOTE_MATCHER = new CharMatcher(Chars.DQUOTE);
     /**
      * Matches the single or double quote character.
      */

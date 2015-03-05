@@ -23,6 +23,7 @@ import javax.servlet.ServletContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.lookup.AbstractLookup;
+import org.apache.logging.log4j.util.Strings;
 
 @Plugin(name = "web", category = "Lookup")
 public class WebLookup extends AbstractLookup {
@@ -102,7 +103,7 @@ public class WebLookup extends AbstractLookup {
             return ctx.getInitParameter(key);
         }
 
-        ctx.log(getClass().getName() + " unable to resolve key '" + key + '\'');
+        ctx.log(getClass().getName() + " unable to resolve key " + Strings.quote(key));
         return null;
     }
 }

@@ -18,6 +18,8 @@ package org.apache.logging.log4j.message;
 
 import java.io.Serializable;
 
+import org.apache.logging.log4j.util.Strings;
+
 /**
  * The StructuredData identifier.
  */
@@ -92,7 +94,7 @@ public class StructuredDataId implements Serializable {
             throw new IllegalArgumentException("No structured id name was supplied");
         }
         if (name.contains(AT)) {
-            throw new IllegalArgumentException("Structured id name cannot contain an '" + AT + '\'');
+            throw new IllegalArgumentException("Structured id name cannot contain an " + Strings.quote(AT));
         }
         if (enterpriseNumber <= 0) {
             throw new IllegalArgumentException("No enterprise number was supplied");
