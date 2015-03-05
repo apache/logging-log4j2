@@ -34,6 +34,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Priority;
 import org.apache.logging.log4j.core.util.NetUtils;
+import org.apache.logging.log4j.util.Chars;
 
 
 /**
@@ -83,9 +84,9 @@ public final class SyslogLayout extends AbstractStringLayout {
         buf.append(Priority.getPriority(facility, event.getLevel()));
         buf.append('>');
         addDate(event.getTimeMillis(), buf);
-        buf.append(' ');
+        buf.append(Chars.SPACE);
         buf.append(localHostname);
-        buf.append(' ');
+        buf.append(Chars.SPACE);
 
         String message = event.getMessage().getFormattedMessage();
         if (null != escapeNewLine) {
@@ -104,7 +105,7 @@ public final class SyslogLayout extends AbstractStringLayout {
         buf.append(dateFormat.format(new Date(timestamp)));
         //  RFC 3164 says leading space, not leading zero on days 1-9
         if (buf.charAt(index) == '0') {
-            buf.setCharAt(index, ' ');
+            buf.setCharAt(index, Chars.SPACE);
         }
     }
 
