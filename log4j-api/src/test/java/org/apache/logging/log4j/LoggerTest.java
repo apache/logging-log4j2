@@ -321,7 +321,7 @@ public class LoggerTest {
     @Test
     public void mdc() {
 
-        ThreadContext.put("TestYear", new Integer(2010).toString());
+        ThreadContext.put("TestYear", Integer.valueOf(2010).toString());
         logger.debug("Debug message");
         ThreadContext.clearMap();
         logger.debug("Debug message");

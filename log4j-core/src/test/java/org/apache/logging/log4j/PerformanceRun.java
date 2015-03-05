@@ -95,7 +95,7 @@ public class PerformanceRun {
     }
 
     private long writeToWriter(final int loop, final Writer w) throws Exception {
-        final Integer j = new Integer(2);
+        final Integer j = Integer.valueOf(2);
         final long start = System.nanoTime();
         for (int i = 0; i < loop; i++) {
             w.write("SEE IF THIS IS LOGGED " + j + '.');
@@ -104,7 +104,7 @@ public class PerformanceRun {
     }
 
     private long writeToStream(final int loop, final OutputStream os) throws Exception {
-        final Integer j = new Integer(2);
+        final Integer j = Integer.valueOf(2);
         final long start = System.nanoTime();
         for (int i = 0; i < loop; i++) {
             os.write(getBytes("SEE IF THIS IS LOGGED " + j + '.'));
@@ -113,7 +113,7 @@ public class PerformanceRun {
     }
 
     private long writeToChannel(final int loop, final FileChannel channel) throws Exception {
-        final Integer j = new Integer(2);
+        final Integer j = Integer.valueOf(2);
         final ByteBuffer buf = ByteBuffer.allocateDirect(8 * 1024);
         final long start = System.nanoTime();
         for (int i = 0; i < loop; i++) {

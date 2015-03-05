@@ -55,7 +55,7 @@ public class PatternParserTest2 {
         cal.set(Calendar.HOUR_OF_DAY, 13);
         cal.set(Calendar.MINUTE, 24);
         cal.set(Calendar.SECOND, 59);
-        parse(pattern, convert, buf, cal.getTime(), new Integer(3));
+        parse(pattern, convert, buf, cal.getTime(), 3);
 
         assertEquals("13-24-59 \\t---", buf.toString());
     }

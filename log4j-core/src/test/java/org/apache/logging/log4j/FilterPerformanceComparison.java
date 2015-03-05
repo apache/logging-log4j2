@@ -113,7 +113,7 @@ public class FilterPerformanceComparison {
     }
 
     private long logback(final int loop) {
-        final Integer j = new Integer(2);
+        final Integer j = Integer.valueOf(2);
         final long start = System.nanoTime();
         for (int i = 0; i < loop; i++) {
             logbacklogger.debug("SEE IF THIS IS LOGGED {}.", j);
@@ -123,7 +123,7 @@ public class FilterPerformanceComparison {
 
 
     private long log4j2(final int loop) {
-        final Integer j = new Integer(2);
+        final Integer j = Integer.valueOf(2);
         final long start = System.nanoTime();
         for (int i = 0; i < loop; i++) {
             logger.debug("SEE IF THIS IS LOGGED {}.", j);

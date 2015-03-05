@@ -50,7 +50,7 @@ public class DebugDisabledBenchmark {
         log4jLogger = LogManager.getLogger(DebugDisabledBenchmark.class);
         slf4jLogger = LoggerFactory.getLogger(DebugDisabledBenchmark.class);
         log4jClassicLogger = org.apache.log4j.Logger.getLogger(DebugDisabledBenchmark.class);
-        j = new Integer(2);
+        j = Integer.valueOf(2);
     }
 
     @TearDown
