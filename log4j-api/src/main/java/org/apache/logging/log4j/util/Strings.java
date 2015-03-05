@@ -143,9 +143,21 @@ public final class Strings {
      * Returns a quoted string.
      * 
      * @param str
+     *        a String
      * @return {@code 'str'}
      */
     public static String quote(final String str) {
         return Chars.QUOTE + str + Chars.QUOTE;
+    }
+
+    /**
+     * Returns a double quoted string.
+     * 
+     * @param str
+     *        a String
+     * @return {@code "str"}
+     */
+    public static String dquote(final String str) {
+        return Chars.DQUOTE + str + Chars.DQUOTE;
     }
 }

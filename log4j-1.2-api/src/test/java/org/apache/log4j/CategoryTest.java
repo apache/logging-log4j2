@@ -17,6 +17,10 @@
 
 package org.apache.log4j;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -29,12 +33,11 @@ import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 
 /**
@@ -179,7 +182,7 @@ public class CategoryTest {
         appender.clear();
         final String threadName = Thread.currentThread().getName();
         final String expected = "ERROR o.a.l.CategoryTest [" + threadName + "] Test Message" + Constants.LINE_SEPARATOR;
-        assertTrue("Incorrect message \"" + msg + '"' + " expected \"" + expected + '"', msg.endsWith(expected));
+        assertTrue("Incorrect message " + Strings.dquote(msg) + " expected " + Strings.dquote(expected), msg.endsWith(expected));
     }
 
     /**

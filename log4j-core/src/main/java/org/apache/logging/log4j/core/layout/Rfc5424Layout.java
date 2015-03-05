@@ -53,6 +53,8 @@ import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataId;
 import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.util.Chars;
+import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
 
 
@@ -532,7 +534,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     }
 
     private void appendMap(final String prefix, final Map<String, String> map, final StringBuilder sb,
-                           final ListChecker checker) {
+            final ListChecker checker) {
         final SortedMap<String, String> sorted = new TreeMap<String, String>(map);
         for (final Map.Entry<String, String> entry : sorted.entrySet()) {
             if (checker.check(entry.getKey()) && entry.getValue() != null) {
@@ -540,8 +542,9 @@ public final class Rfc5424Layout extends AbstractStringLayout {
                 if (prefix != null) {
                     sb.append(prefix);
                 }
-                sb.append(escapeNewlines(escapeSDParams(entry.getKey()), escapeNewLine)).append("=\"")
-                    .append(escapeNewlines(escapeSDParams(entry.getValue()), escapeNewLine)).append('"');
+                final String safeKey = escapeNewlines(escapeSDParams(entry.getKey()), escapeNewLine);
+                final String safeValue = escapeNewlines(escapeSDParams(entry.getValue()), escapeNewLine);
+                StringBuilders.appendKeyDqValue(sb, safeKey, safeValue);
             }
         }
     }

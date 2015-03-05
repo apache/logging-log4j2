@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.nio.charset.Charset;
 
 import org.apache.logging.log4j.Level;
@@ -29,11 +33,10 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.Charsets;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -170,7 +173,7 @@ public class PatternLayoutTest {
         ThreadContext.put("footer", "Hello world Footer");
         final byte[] header = layout.getHeader();
         assertNotNull("No header", header);
-        assertTrue("expected \"Hello world Header\", actual \"" + new String(header) + '"',
+        assertTrue("expected \"Hello world Header\", actual " + Strings.dquote(new String(header)),
                 new String(header).equals(new String("Hello world Header")));
     }
 

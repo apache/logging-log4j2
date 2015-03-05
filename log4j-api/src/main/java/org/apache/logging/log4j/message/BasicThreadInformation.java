@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.message;
 
+import org.apache.logging.log4j.util.Chars;
+import org.apache.logging.log4j.util.StringBuilders;
+
 /**
  * Generates information about the current Thread. Used internally by ThreadDumpMessage.
  */
@@ -81,13 +84,13 @@ class BasicThreadInformation implements ThreadInformation {
      */
     @Override
     public void printThreadInfo(final StringBuilder sb) {
-        sb.append('"').append(name).append("\" ");
+        StringBuilders.appendDqValue(sb, name).append(Chars.SPACE);
         if (isDaemon) {
             sb.append("daemon ");
         }
         sb.append("prio=").append(priority).append(" tid=").append(id).append(' ');
         if (threadGroupName != null) {
-            sb.append("group=\"").append(threadGroupName).append('"');
+            StringBuilders.appendKeyDqValue(sb, "group", threadGroupName);
         }
         sb.append('\n');
         sb.append("\tThread state: ").append(state.name()).append('\n');

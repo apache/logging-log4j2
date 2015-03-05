@@ -20,6 +20,8 @@ import java.lang.management.LockInfo;
 import java.lang.management.MonitorInfo;
 import java.lang.management.ThreadInfo;
 
+import org.apache.logging.log4j.util.StringBuilders;
+
 /**
  * Provides information on locks and monitors in the thread dump. This class requires Java 1.6 to compile and
  * run.
@@ -35,7 +37,7 @@ class ExtendedThreadInformation implements ThreadInformation {
 
     @Override
     public void printThreadInfo(final StringBuilder sb) {
-        sb.append('"').append(threadInfo.getThreadName()).append('"');
+        StringBuilders.appendDqValue(sb, threadInfo.getThreadName());
         sb.append(" Id=").append(threadInfo.getThreadId()).append(' ');
         formatState(sb, threadInfo);
         if (threadInfo.isSuspended()) {

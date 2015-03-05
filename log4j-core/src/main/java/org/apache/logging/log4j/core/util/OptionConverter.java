@@ -22,6 +22,7 @@ import java.util.Properties;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * A convenience class to convert property values to specific types.
@@ -300,8 +301,8 @@ public final class OptionConverter {
             sbuf.append(val.substring(i, j));
             k = val.indexOf(DELIM_STOP, j);
             if (k == -1) {
-                throw new IllegalArgumentException('"' + val +
-                    "\" has no closing brace. Opening brace at position " + j
+                throw new IllegalArgumentException(Strings.dquote(val)
+                    + " has no closing brace. Opening brace at position " + j
                     + '.');
             }
             j += DELIM_START_LEN;

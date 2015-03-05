@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 import java.util.Map;
 
@@ -34,12 +38,11 @@ import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests the JsonLayout class.
@@ -69,7 +72,7 @@ public class JsonLayoutTest {
 
     private void checkAt(final String expected, final int lineIndex, final List<String> list) {
         final String trimedLine = list.get(lineIndex).trim();
-        assertTrue("Incorrect line index " + lineIndex + ": \"" + trimedLine + '"', trimedLine.equals(expected));
+        assertTrue("Incorrect line index " + lineIndex + ": " + Strings.dquote(trimedLine), trimedLine.equals(expected));
     }
 
     private void checkContains(final String expected, final List<String> list) {

@@ -44,6 +44,8 @@ import org.apache.logging.log4j.core.util.Builder;
 import org.apache.logging.log4j.core.util.ReflectionUtil;
 import org.apache.logging.log4j.core.util.TypeUtil;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Chars;
+import org.apache.logging.log4j.util.StringBuilders;
 
 /**
  * Builder class to instantiate and configure a Plugin object using a PluginFactory method or PluginBuilderFactory
@@ -302,9 +304,7 @@ public class PluginBuilder implements Builder<Object> {
                 } else {
                     sb.append(", ");
                 }
-                sb.append('"');
-                sb.append(key);
-                sb.append('"');
+                StringBuilders.appendDqValue(sb, key);
 
             }
             LOGGER.error(sb.toString());
