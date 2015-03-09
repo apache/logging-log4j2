@@ -54,6 +54,8 @@ public class PatternParserTest {
 
     private static String badPattern = "[%d{yyyyMMdd HH:mm:ss,SSS] %-5p [%c{10}] - %m%n";
     private static String customPattern = "[%d{yyyyMMdd HH:mm:ss,SSS}] %-5p [%-25.25c{1}:%-4L] - %m%n";
+    private static String patternTruncateFromEnd = "%d; %-5p %5.-5c %m%n";
+    private static String patternTruncateFromBeginning = "%d; %-5p %5.5c %m%n";
     private static String nestedPatternHighlight =
             "%highlight{%d{dd MMM yyyy HH:mm:ss,SSS}{GMT+0} [%t] %-5level: %msg%n%throwable}";
 
@@ -102,9 +104,42 @@ public class PatternParserTest {
             formatter.format(event, buf);
         }
         final String str = buf.toString();
-        final String expected = "INFO  [PatternParserTest        :95  ] - Hello, world" + Constants.LINE_SEPARATOR;
+        final String expected = "INFO  [PatternParserTest        :97  ] - Hello, world" + Constants.LINE_SEPARATOR;
         assertTrue("Expected to end with: " + expected + ". Actual: " + str, str.endsWith(expected));
     }
+
+    @Test
+    public void testPatternTruncateFromBeginning() {
+        final List<PatternFormatter> formatters = parser.parse(patternTruncateFromBeginning);
+        assertNotNull(formatters);
+        final LogEvent event = new Log4jLogEvent("org.apache.logging.log4j.PatternParserTest", null,
+            Logger.class.getName(), Level.INFO, new SimpleMessage("Hello, world"), null,
+            null, null, "Thread1", null, System.currentTimeMillis());
+        final StringBuilder buf = new StringBuilder();
+        for (final PatternFormatter formatter : formatters) {
+            formatter.format(event, buf);
+        }
+        final String str = buf.toString();
+        final String expected = "INFO  rTest Hello, world" + Constants.LINE_SEPARATOR;
+        assertTrue("Expected to end with: " + expected + ". Actual: " + str, str.endsWith(expected));
+    }
+
+    @Test
+    public void testPatternTruncateFromEnd() {
+        final List<PatternFormatter> formatters = parser.parse(patternTruncateFromEnd);
+        assertNotNull(formatters);
+        final LogEvent event = new Log4jLogEvent("org.apache.logging.log4j.PatternParserTest", null,
+            Logger.class.getName(), Level.INFO, new SimpleMessage("Hello, world"), null,
+            null, null, "Thread1", null, System.currentTimeMillis());
+        final StringBuilder buf = new StringBuilder();
+        for (final PatternFormatter formatter : formatters) {
+            formatter.format(event, buf);
+        }
+        final String str = buf.toString();
+        final String expected = "INFO  org.a Hello, world" + Constants.LINE_SEPARATOR;
+        assertTrue("Expected to end with: " + expected + ". Actual: " + str, str.endsWith(expected));
+    }
+
     
     @Test
     public void testBadPattern() {

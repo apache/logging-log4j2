@@ -29,7 +29,7 @@ public final class FormattingInfo {
     /**
      * Default instance.
      */
-    private static final FormattingInfo DEFAULT = new FormattingInfo(false, 0, Integer.MAX_VALUE);
+    private static final FormattingInfo DEFAULT = new FormattingInfo(false, 0, Integer.MAX_VALUE, true);
 
     /**
      * Minimum length.
@@ -47,6 +47,11 @@ public final class FormattingInfo {
     private final boolean leftAlign;
 
     /**
+     * Left vs. right-hand side truncation.
+     */
+    private final boolean leftTruncate;
+
+    /**
      * Creates new instance.
      *
      * @param leftAlign
@@ -56,10 +61,11 @@ public final class FormattingInfo {
      * @param maxLength
      *            maximum length.
      */
-    public FormattingInfo(final boolean leftAlign, final int minLength, final int maxLength) {
+    public FormattingInfo(final boolean leftAlign, final int minLength, final int maxLength, final boolean leftTruncate) {
         this.leftAlign = leftAlign;
         this.minLength = minLength;
         this.maxLength = maxLength;
+        this.leftTruncate = leftTruncate;
     }
 
     /**
@@ -79,6 +85,15 @@ public final class FormattingInfo {
     public boolean isLeftAligned() {
         return leftAlign;
     }
+
+    /**
+     * Determine if left truncated.
+     *
+     * @return true if left truncated.
+     */
+    public boolean isLeftTruncate() {
+		return leftTruncate;
+	}
 
     /**
      * Get minimum length.
@@ -110,7 +125,11 @@ public final class FormattingInfo {
         final int rawLength = buffer.length() - fieldStart;
 
         if (rawLength > maxLength) {
-            buffer.delete(fieldStart, buffer.length() - maxLength);
+			if (leftTruncate) {
+				buffer.delete(fieldStart, buffer.length() - maxLength);
+			} else {
+				buffer.delete(fieldStart + maxLength, fieldStart + buffer.length());
+			}
         } else if (rawLength < minLength) {
             if (leftAlign) {
                 final int fieldEnd = buffer.length();
@@ -146,6 +165,8 @@ public final class FormattingInfo {
         sb.append(maxLength);
         sb.append(", minLength=");
         sb.append(minLength);
+        sb.append(", leftTruncate=");
+        sb.append(leftTruncate);
         sb.append(']');
         return sb.toString();
     }
