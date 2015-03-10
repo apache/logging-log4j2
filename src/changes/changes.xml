@@ -23,7 +23,7 @@
     <title>Changes</title>
   </properties>
   <body>
-    <release version="2.2" date="2015-0?-??" description="GA Release 2.2">
+    <release version="2.3" date="2015-0?-??" description="GA Release 2.2">
       <action issue="LOG4J2-926" dev="ggregory" type="add" due-to="David Ohana">
         Truncate from the end of text format modifier.
       </action>
