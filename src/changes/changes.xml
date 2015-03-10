@@ -48,6 +48,9 @@
       <action issue="LOG4J2-972" dev="ggregory" type="fix" due-to="Gary Gregory">
         org.apache.logging.log4j.core.net.ssl.TlsSyslogInputStreamReader does not need to create temp Integer objects.
       </action>
+      <action issue="LOG4J2-974" dev="ggregory" type="fix" due-to="Daniel Galán y Martins">
+        Typo in EventLogger documentation.
+      </action>
     </release>
     <release version="2.2" date="2015-02-22" description="GA Release 2.2">
       <action issue="LOG4J2-938" dev="rpopma" type="fix" due-to="Mauro Molinari">

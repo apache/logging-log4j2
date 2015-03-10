@@ -126,7 +126,7 @@ public class MyApp {
         toAccount.deposit(amount);
         fromAccount.withdraw(amount);
         String confirm = UUID.randomUUID().toString();
-        StructuredDataMessage msg = new StructureDataMessage(confirm, null, "transfer");
+        StructuredDataMessage msg = new StructuredDataMessage(confirm, null, "transfer");
         msg.put("toAccount", toAccount);
         msg.put("fromAccount", fromAccount);
         msg.put("amount", amount);
