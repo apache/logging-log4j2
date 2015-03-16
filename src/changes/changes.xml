@@ -27,8 +27,11 @@
       <action issue="LOG4J2-926" dev="ggregory" type="add" due-to="David Ohana">
         Truncate from the end of text format modifier.
       </action>
-      <action issue="LOG4J2-966" dev="ggregory" type="fix" due-to="Gary Gregory">
+      <action issue="LOG4J2-976" dev="ggregory" type="fix" due-to="Matt Quinn">
         KeyStoreConfiguration.createKeyStoreConfiguration() ignores keyManagerFactoryAlgorithm.
+      </action>
+      <action issue="LOG4J2-966" dev="ggregory" type="fix" due-to="Gary Gregory">
+        Using monitorInterval with YAML config file format causes JSONParseException.
       </action>
       <action issue="LOG4J2-964" dev="ggregory" type="fix" due-to="Jonne Jyrylä">        
         StringFormattedMessage serialization is incorrect.

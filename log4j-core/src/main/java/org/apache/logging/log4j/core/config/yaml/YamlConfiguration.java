@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.config.yaml;
 
+import java.io.IOException;
+
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.json.JsonConfiguration;
 
@@ -36,4 +39,17 @@ public class YamlConfiguration extends JsonConfiguration {
         return new ObjectMapper(new YAMLFactory()).configure(JsonParser.Feature.ALLOW_COMMENTS, true);
     }
 
+    @Override
+    public Configuration reconfigure() {
+        try {
+            final ConfigurationSource source = getConfigurationSource().resetInputStream();
+            if (source == null) {
+                return null;
+            }
+            return new YamlConfiguration(source);
+        } catch (final IOException ex) {
+            LOGGER.error("Cannot locate file {}", getConfigurationSource(), ex);
+        }
+        return null;
+    }
 }
