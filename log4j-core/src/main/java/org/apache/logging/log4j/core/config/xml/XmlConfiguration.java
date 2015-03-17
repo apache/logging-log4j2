@@ -236,7 +236,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                 return null;
             }
             final XmlConfiguration config = new XmlConfiguration(source);
-            return (config.rootElement == null) ? null : config;
+            return config.rootElement == null ? null : config;
         } catch (final IOException ex) {
             LOGGER.error("Cannot locate file {}", getConfigurationSource(), ex);
         }
