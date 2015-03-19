@@ -150,7 +150,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
         final boolean isAdvertise = Boolean.parseBoolean(advertise);
         final int bufferSize = Integers.parseInt(bufferSizeStr, DEFAULT_BUFFER_SIZE);
         if (!isBuffered && bufferSize > 0) {
-            LOGGER.warn("The bufferSize is set to {} but bufferedIO is not true: {}", bufferSize, bufferedIO);
+            LOGGER.warn("The bufferSize is set to {} but bufferedIO is not true: {}", bufferSizeStr, bufferedIO);
         }
         if (name == null) {
             LOGGER.error("No name provided for FileAppender");
