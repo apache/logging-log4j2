@@ -55,11 +55,6 @@ public class TlsSyslogFrame {
         return length + Chars.SPACE + message;
     }
 
-    @Override
-    public boolean equals(final Object frame) {
-        return super.equals(frame);
-    }
-
     public boolean equals(final TlsSyslogFrame frame) {
         return isLengthEquals(frame) && isMessageEquals(frame);
     }
