@@ -18,12 +18,12 @@ package org.apache.logging.log4j.core.appender;
 
 import java.nio.charset.Charset;
 
+import org.apache.logging.log4j.util.Chars;
+
 /**
  * Wrapper for messages that are formatted according to RFC 5425.
  */
 public class TlsSyslogFrame {
-    public static final char SPACE = ' ';
-
     private String message;
     private int messageLengthInBytes;
 
@@ -52,7 +52,7 @@ public class TlsSyslogFrame {
     @Override
     public String toString() {
         final String length = Integer.toString(messageLengthInBytes);
-        return length + SPACE + message;
+        return length + Chars.SPACE + message;
     }
 
     @Override

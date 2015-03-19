@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.appender;
 
 import java.util.Arrays;
 
+import org.apache.logging.log4j.util.Chars;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -50,7 +51,7 @@ public class TlsSyslogFrameTest {
     }
 
     private byte[] getByteRepresentation(final String message) {
-        final String frame = message.length() + Character.toString(TlsSyslogFrame.SPACE) + message;
+        final String frame = message.length() + Character.toString(Chars.SPACE) + message;
         final byte[] representation = frame.getBytes();
         return representation;
     }
