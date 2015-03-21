@@ -27,6 +27,9 @@
       <action issue="LOG4J2-926" dev="ggregory" type="add" due-to="David Ohana">
         Truncate from the end of text format modifier.
       </action>
+      <action issue="LOG4J2-980" dev="ggregory" type="fix" due-to="Mikhail Mazurskiy">
+        Numerical overflow in BurstFilter not handled correctly.
+      </action>
       <action issue="LOG4J2-966" dev="ggregory" type="fix" due-to="Gary Gregory">
         KeyStoreConfiguration.createKeyStoreConfiguration() ignores keyManagerFactoryAlgorithm.
       </action>

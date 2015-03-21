@@ -81,13 +81,17 @@ public final class BurstFilter extends AbstractFilter {
 
     private final Queue<LogDelay> available = new ConcurrentLinkedQueue<LogDelay>();
 
+    static LogDelay createLogDelay(long expireTime) {
+        return new LogDelay(expireTime);
+    }
+    
     private BurstFilter(final Level level, final float rate, final long maxBurst, final Result onMatch,
                         final Result onMismatch) {
         super(onMatch, onMismatch);
         this.level = level;
         this.burstInterval = (long) (NANOS_IN_SECONDS * (maxBurst / rate));
         for (int i = 0; i < maxBurst; ++i) {
-            available.add(new LogDelay());
+            available.add(createLogDelay(0));
         }
     }
 
@@ -167,13 +171,16 @@ public final class BurstFilter extends AbstractFilter {
 
     /**
      * Delay object to represent each log event that has occurred within the timespan.
+     * 
+     * Consider this class private, package visibility for testing.
      */
-    private class LogDelay implements Delayed {
+    private static class LogDelay implements Delayed {
+
+        LogDelay(long expireTime) {
+            this.expireTime = expireTime;
+        }
 
         private long expireTime;
-
-        public LogDelay() {
-        }
 
         public void setDelay(final long delay) {
             this.expireTime = delay + System.nanoTime();
@@ -186,12 +193,8 @@ public final class BurstFilter extends AbstractFilter {
 
         @Override
         public int compareTo(final Delayed delayed) {
-            if (this.expireTime < ((LogDelay) delayed).expireTime) {
-                return -1;
-            } else if (this.expireTime > ((LogDelay) delayed).expireTime) {
-                return 1;
-            }
-            return 0;
+            final long diff = this.expireTime - ((LogDelay) delayed).expireTime;
+            return Long.compare(diff, 0);
         }
 
         @Override
