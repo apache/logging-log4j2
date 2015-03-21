@@ -117,14 +117,16 @@ public final class ProviderUtil {
         if (INSTANCE == null) {
             try {
                 STARTUP_LOCK.lockInterruptibly();
-                if (INSTANCE == null) {
-                    INSTANCE = new ProviderUtil();
+                try {
+                    if (INSTANCE == null) {
+                        INSTANCE = new ProviderUtil();
+                    }
+                } finally {
+                    STARTUP_LOCK.unlock();
                 }
             } catch (final InterruptedException e) {
                 LOGGER.fatal("Interrupted before Log4j Providers could be loaded.", e);
                 Thread.currentThread().interrupt();
-            } finally {
-                STARTUP_LOCK.unlock();
             }
         }
     }

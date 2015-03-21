@@ -30,6 +30,9 @@
       <action issue="LOG4J2-980" dev="ggregory" type="fix" due-to="Mikhail Mazurskiy">
         Numerical overflow in BurstFilter not handled correctly.
       </action>
+      <action issue="LOG4J2-981" dev="ggregory" type="fix" due-to="Mikhail Mazurskiy">
+        Incorrect unlock in ProviderUtil.
+      </action>
       <action issue="LOG4J2-966" dev="ggregory" type="fix" due-to="Gary Gregory">
         KeyStoreConfiguration.createKeyStoreConfiguration() ignores keyManagerFactoryAlgorithm.
       </action>
