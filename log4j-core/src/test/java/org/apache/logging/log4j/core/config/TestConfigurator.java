@@ -233,13 +233,22 @@ public class TestConfigurator {
         assertNotNull("Appenders map should not be null.", map);
         assertThat(map, hasSize(greaterThan(0)));
         assertThat("Wrong configuration", map, hasKey("List"));
-
-        Thread.sleep(500);
+        
+        // Sleep and check
+        Thread.sleep(50);
+        if (!file.setLastModified(System.currentTimeMillis())) {
+            Thread.sleep(500);
+        }
         assertTrue("setLastModified should have succeeded.", file.setLastModified(System.currentTimeMillis()));
         for (int i = 0; i < 17; ++i) {
             logger.debug("Test message " + i);
         }
-        Thread.sleep(100);
+        
+        // Sleep and check        
+        Thread.sleep(50);            
+        if (is(theInstance(config)).matches(ctx.getConfiguration())) {
+            Thread.sleep(500);            
+        }
         final Configuration newConfig = ctx.getConfiguration();
         assertThat("Configuration not reset", newConfig, is(not(theInstance(config))));
         Configurator.shutdown(ctx);

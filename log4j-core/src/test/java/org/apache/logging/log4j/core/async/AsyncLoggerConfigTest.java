@@ -33,32 +33,33 @@ public class AsyncLoggerConfigTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "AsyncLoggerConfigTest.xml");
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "AsyncLoggerConfigTest.xml");
     }
 
     @Test
     public void testAdditivity() throws Exception {
-        final File f = new File("target", "AsyncLoggerConfigTest.log");
-        assertTrue("Deleted old file before test", !f.exists() || f.delete());
-        
+        final File file = new File("target", "AsyncLoggerConfigTest.log");
+        assertTrue("Deleted old file before test", !file.exists() || file.delete());
+
         final Logger log = LogManager.getLogger("com.foo.Bar");
         final String msg = "Additive logging: 2 for the price of 1!";
         log.info(msg);
         ((LifeCycle) LogManager.getContext()).stop(); // stop async thread
+        if (file.length() == 0) {
+            Thread.sleep(500);
+        }
 
-        final BufferedReader reader = new BufferedReader(new FileReader(f));
+        final BufferedReader reader = new BufferedReader(new FileReader(file));
         final String line1 = reader.readLine();
         final String line2 = reader.readLine();
         reader.close();
-        f.delete();
+        file.delete();
         assertNotNull("line1", line1);
         assertNotNull("line2", line2);
         assertTrue("line1 correct", line1.contains(msg));
         assertTrue("line2 correct", line2.contains(msg));
 
         final String location = "testAdditivity";
-        assertTrue("location",
-                line1.contains(location) || line2.contains(location));
+        assertTrue("location", line1.contains(location) || line2.contains(location));
     }
 }
