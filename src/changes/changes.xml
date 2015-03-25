@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.3" date="2015-0?-??" description="GA Release 2.3">
+      <action issue="LOG4J2-984" dev="ggregory" type="add" due-to="Jonas Höpfner">
+        PatternLayout %highlight to support noConsoleNoAnsi like %style.
+      </action>
       <action issue="LOG4J2-926" dev="ggregory" type="add" due-to="David Ohana">
         Truncate from the end of text format modifier.
       </action>

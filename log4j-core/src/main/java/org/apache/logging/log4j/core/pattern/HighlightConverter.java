@@ -182,23 +182,31 @@ public final class HighlightConverter extends LogEventPatternConverter implement
         }
         final PatternParser parser = PatternLayout.createPatternParser(config);
         final List<PatternFormatter> formatters = parser.parse(options[0]);
-        return new HighlightConverter(formatters, createLevelStyleMap(options));
+        final boolean noConsoleNoAnsi = options.length > 1
+                && (PatternParser.NO_CONSOLE_NO_ANSI + "=true").equals(options[1]);
+        final boolean hideAnsi = noConsoleNoAnsi && System.console() == null;
+        return new HighlightConverter(formatters, createLevelStyleMap(options), hideAnsi);
     }
 
     private final Map<Level, String> levelStyles;
 
     private final List<PatternFormatter> patternFormatters;
 
+    private boolean noAnsi;
+
     /**
      * Construct the converter.
      *
      * @param patternFormatters
      *            The PatternFormatters to generate the text to manipulate.
+     * @param noAnsi
+     *            If true, do not output ANSI escape codes.
      */
-    private HighlightConverter(final List<PatternFormatter> patternFormatters, final Map<Level, String> levelStyles) {
+    private HighlightConverter(final List<PatternFormatter> patternFormatters, final Map<Level, String> levelStyles, final boolean noAnsi) {
         super("style", "style");
         this.patternFormatters = patternFormatters;
         this.levelStyles = levelStyles;
+        this.noAnsi = noAnsi;
     }
 
     /**
@@ -212,8 +220,12 @@ public final class HighlightConverter extends LogEventPatternConverter implement
         }
 
         if (buf.length() > 0) {
-            toAppendTo.append(levelStyles.get(event.getLevel())).append(buf.toString()).
-                append(AnsiEscape.getDefaultStyle());
+            if (noAnsi) {
+                toAppendTo.append(buf.toString());
+            } else {
+                toAppendTo.append(levelStyles.get(event.getLevel())).append(buf.toString()).
+                    append(AnsiEscape.getDefaultStyle());
+            }
         }
     }
 
