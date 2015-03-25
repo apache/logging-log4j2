@@ -24,6 +24,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.CoreLoggerContexts;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -40,8 +41,8 @@ public class AsyncLoggerConfigTest2 {
     public void testConsecutiveReconfigure() throws Exception {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
                 "AsyncLoggerConfigTest2.xml");
-        final File f = new File("target", "AsyncLoggerConfigTest2.log");
-        assertTrue("Deleted old file before test", !f.exists() || f.delete());
+        final File file = new File("target", "AsyncLoggerConfigTest2.log");
+        assertTrue("Deleted old file before test", !file.exists() || file.delete());
         
         final Logger log = LogManager.getLogger("com.foo.Bar");
         final String msg = "Message before reconfig";
@@ -53,13 +54,13 @@ public class AsyncLoggerConfigTest2 {
         
         final String msg2 = "Message after reconfig";
         log.info(msg2);
-        ((LifeCycle) LogManager.getContext()).stop(); // stop async thread
+        CoreLoggerContexts.stopLoggerContext(file); // stop async thread
 
-        final BufferedReader reader = new BufferedReader(new FileReader(f));
+        final BufferedReader reader = new BufferedReader(new FileReader(file));
         final String line1 = reader.readLine();
         final String line2 = reader.readLine();
         reader.close();
-        f.delete();
+        file.delete();
         assertNotNull("line1", line1);
         assertNotNull("line2", line2);
         assertTrue("line1 " + line1, line1.contains(msg));

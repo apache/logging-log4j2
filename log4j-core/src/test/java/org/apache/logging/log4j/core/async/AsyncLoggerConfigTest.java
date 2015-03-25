@@ -23,6 +23,7 @@ import java.io.FileReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LifeCycle;
+import org.apache.logging.log4j.core.CoreLoggerContexts;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -44,11 +45,8 @@ public class AsyncLoggerConfigTest {
         final Logger log = LogManager.getLogger("com.foo.Bar");
         final String msg = "Additive logging: 2 for the price of 1!";
         log.info(msg);
-        ((LifeCycle) LogManager.getContext()).stop(); // stop async thread
-        if (file.length() == 0) {
-            Thread.sleep(500);
-        }
-
+        CoreLoggerContexts.stopLoggerContext(file); // stop async thread
+        
         final BufferedReader reader = new BufferedReader(new FileReader(file));
         final String line1 = reader.readLine();
         final String line2 = reader.readLine();

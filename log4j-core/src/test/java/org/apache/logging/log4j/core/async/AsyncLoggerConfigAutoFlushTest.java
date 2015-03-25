@@ -22,7 +22,7 @@ import java.io.FileReader;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LifeCycle;
+import org.apache.logging.log4j.core.CoreLoggerContexts;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -39,18 +39,17 @@ public class AsyncLoggerConfigAutoFlushTest {
 
     @Test
     public void testFlushAtEndOfBatch() throws Exception {
-        final File f = new File("target", "AsyncLoggerConfigAutoFlushTest.log");
-        assertTrue("Deleted old file before test", !f.exists() || f.delete());
+        final File file = new File("target", "AsyncLoggerConfigAutoFlushTest.log");
+        assertTrue("Deleted old file before test", !file.exists() || file.delete());
         
         final Logger log = LogManager.getLogger("com.foo.Bar");
         final String msg = "Message flushed with immediate flush=false";
         log.info(msg);
-        ((LifeCycle) LogManager.getContext()).stop(); // stop async thread
-
-        final BufferedReader reader = new BufferedReader(new FileReader(f));
+        CoreLoggerContexts.stopLoggerContext(file); // stop async thread
+        final BufferedReader reader = new BufferedReader(new FileReader(file));
         final String line1 = reader.readLine();
         reader.close();
-        f.delete();
+        file.delete();
         assertNotNull("line1", line1);
         assertTrue("line1 correct", line1.contains(msg));
     }

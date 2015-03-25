@@ -23,6 +23,7 @@ import java.io.FileReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LifeCycle;
+import org.apache.logging.log4j.core.CoreLoggerContexts;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.util.Strings;
@@ -49,18 +50,18 @@ public class AsyncLoggerTest {
 
     @Test
     public void testAsyncLogWritesToLog() throws Exception {
-        final File f = new File("target", "AsyncLoggerTest.log");
+        final File file = new File("target", "AsyncLoggerTest.log");
         // System.out.println(f.getAbsolutePath());
-        f.delete();
+        file.delete();
         final Logger log = LogManager.getLogger("com.foo.Bar");
         final String msg = "Async logger msg";
         log.info(msg, new InternalError("this is not a real error"));
-        ((LifeCycle) LogManager.getContext()).stop(); // stop async thread
+        CoreLoggerContexts.stopLoggerContext(file); // stop async thread
 
-        final BufferedReader reader = new BufferedReader(new FileReader(f));
+        final BufferedReader reader = new BufferedReader(new FileReader(file));
         final String line1 = reader.readLine();
         reader.close();
-        f.delete();
+        file.delete();
         assertNotNull("line1", line1);
         assertTrue("line1 correct", line1.contains(msg));
 

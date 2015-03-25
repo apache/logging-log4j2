@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.CoreLoggerContexts;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.junit.Test;
@@ -32,6 +33,6 @@ public class AsyncLoggerContextTest {
                 new LoggerContext("a"), "a", null);
         assertTrue(logger instanceof AsyncLogger);
 
-        ((LifeCycle) LogManager.getContext()).stop(); // stop async thread
+        CoreLoggerContexts.stopLoggerContext(); // stop async thread
     }
 }

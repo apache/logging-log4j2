@@ -30,6 +30,7 @@ import javax.xml.validation.Validator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LifeCycle;
+import org.apache.logging.log4j.core.CoreLoggerContexts;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -56,7 +57,7 @@ public class XmlCompactFileAsyncAppenderValidationTest {
         log.warn("Message 1");
         log.info("Message 2");
         log.debug("Message 3");
-        ((LifeCycle) LogManager.getContext()).stop(); // stop async thread
+        CoreLoggerContexts.stopLoggerContext(file); // stop async thread
         this.validateXmlSchema(file);
     }
 
@@ -64,7 +65,7 @@ public class XmlCompactFileAsyncAppenderValidationTest {
     public void validateXmlSchemaNoEvents() throws Exception {
         final File file = new File("target", "XmlCompactFileAsyncAppenderValidationTest.log.xml");
         file.delete();
-        ((LifeCycle) LogManager.getContext()).stop(); // stop async thread
+        CoreLoggerContexts.stopLoggerContext(file); // stop async thread
         this.validateXmlSchema(file);
     }
 

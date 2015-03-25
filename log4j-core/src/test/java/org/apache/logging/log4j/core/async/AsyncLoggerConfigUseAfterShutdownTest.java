@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.async;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.CoreLoggerContexts;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
@@ -37,7 +38,7 @@ public class AsyncLoggerConfigUseAfterShutdownTest {
     public void testNoErrorIfLogAfterShutdown() throws Exception {
         final Logger log = LogManager.getLogger("com.foo.Bar");
         log.info("some message");
-        ((LifeCycle) LogManager.getContext()).stop(); // stop async thread
+        CoreLoggerContexts.stopLoggerContext(); // stop async thread
 
         // call the #logMessage() method to bypass the isEnabled check: 
         // before the LOG4J2-639 fix this would throw a NPE

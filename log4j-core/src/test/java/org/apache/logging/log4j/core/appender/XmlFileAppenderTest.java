@@ -22,6 +22,7 @@ import java.io.FileReader;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.CoreLoggerContexts;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.junit.BeforeClass;
@@ -42,15 +43,15 @@ public class XmlFileAppenderTest {
 
     @Test
     public void testFlushAtEndOfBatch() throws Exception {
-        final File f = new File("target", "XmlFileAppenderTest.log");
+        final File file = new File("target", "XmlFileAppenderTest.log");
         // System.out.println(f.getAbsolutePath());
-        f.delete();
+        file.delete();
         final Logger log = LogManager.getLogger("com.foo.Bar");
         final String logMsg = "Message flushed with immediate flush=false";
         log.info(logMsg);
-        ((LifeCycle) LogManager.getContext(false)).stop(); // stop async thread
+        CoreLoggerContexts.stopLoggerContext(false, file); // stop async thread
 
-        final BufferedReader reader = new BufferedReader(new FileReader(f));
+        final BufferedReader reader = new BufferedReader(new FileReader(file));
         String line1;
         String line2;
         String line3;
@@ -60,7 +61,7 @@ public class XmlFileAppenderTest {
             line3 = reader.readLine();
         } finally {
             reader.close();
-            f.delete();
+            file.delete();
         }
         assertNotNull("line1", line1);
 

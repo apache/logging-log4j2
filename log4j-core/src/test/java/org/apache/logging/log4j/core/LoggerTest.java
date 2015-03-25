@@ -207,8 +207,11 @@ public class LoggerTest {
             logger.debug("Reconfigure");
         }
         Thread.sleep(100);
-        if (context.getConfiguration() != oldConfig) {
-            Thread.sleep(500);
+        for (int i = 0; i < 20; i++) {
+            if (context.getConfiguration() == oldConfig) {
+                break;
+            }
+            Thread.sleep(50);
         }
         final Configuration newConfig = context.getConfiguration();
         assertNotNull("No configuration", newConfig);

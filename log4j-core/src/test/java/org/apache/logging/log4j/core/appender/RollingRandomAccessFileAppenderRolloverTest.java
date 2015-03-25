@@ -23,6 +23,7 @@ import java.util.Arrays;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.CoreLoggerContexts;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.junit.BeforeClass;
@@ -40,10 +41,10 @@ public class RollingRandomAccessFileAppenderRolloverTest {
 
     @Test
     public void testRollover() throws Exception {
-        final File f = new File("target", "RollingRandomAccessFileAppenderTest.log");
+        final File file = new File("target", "RollingRandomAccessFileAppenderTest.log");
         // System.out.println(f.getAbsolutePath());
         final File after1 = new File("target", "afterRollover-1.log");
-        f.delete();
+        file.delete();
         after1.delete();
 
         final Logger log = LogManager.getLogger("com.foo.Bar");
@@ -51,7 +52,7 @@ public class RollingRandomAccessFileAppenderRolloverTest {
         log.info(msg);
         Thread.sleep(50);
 
-        BufferedReader reader = new BufferedReader(new FileReader(f));
+        BufferedReader reader = new BufferedReader(new FileReader(file));
         final String line1 = reader.readLine();
         assertTrue(line1.contains(msg));
         reader.close();
@@ -68,7 +69,7 @@ public class RollingRandomAccessFileAppenderRolloverTest {
         final String trigger = "This message triggers rollover.";
         log.warn(trigger);
 
-        ((LifeCycle) LogManager.getContext()).stop(); // stop async thread
+        CoreLoggerContexts.stopLoggerContext(); // stop async thread
         
         final int MAX_ATTEMPTS = 50;
         int count = 0;
@@ -78,12 +79,12 @@ public class RollingRandomAccessFileAppenderRolloverTest {
 
         assertTrue("afterRollover-1.log created", after1.exists());
 
-        reader = new BufferedReader(new FileReader(f));
+        reader = new BufferedReader(new FileReader(file));
         final String new1 = reader.readLine();
         assertTrue("after rollover only new msg", new1.contains(trigger));
         assertNull("No more lines", reader.readLine());
         reader.close();
-        f.delete();
+        file.delete();
 
         reader = new BufferedReader(new FileReader(after1));
         final String old1 = reader.readLine();
