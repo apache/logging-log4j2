@@ -63,7 +63,10 @@
       <action issue="LOG4J2-974" dev="ggregory" type="fix" due-to="Daniel Galán y Martins">
         Typo in EventLogger documentation.
       </action>
-      <action issue="LOG4J2-987" dev="ggregory" type="fix" due-to="Gary Gregory">
+      <action issue="LOG4J2-988" dev="ggregory" type="update" due-to="Gary Gregory">
+        Update LMAX Disruptor from 3.3.0 to 3.3.2.
+      </action>
+      <action issue="LOG4J2-987" dev="ggregory" type="update" due-to="Gary Gregory">
         Migrate tests from Logback 1.1.2 to 1.1.3.
       </action>
     </release>

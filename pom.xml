@@ -167,7 +167,7 @@
     <jackson2Version>2.5.1</jackson2Version>
     <springVersion>3.2.11.RELEASE</springVersion>
     <flumeVersion>1.5.2</flumeVersion>
-    <disruptorVersion>3.3.0</disruptorVersion>
+    <disruptorVersion>3.3.2</disruptorVersion>
     <compiler.plugin.version>3.3</compiler.plugin.version>
     <pmd.plugin.version>3.4</pmd.plugin.version>
     <findbugs.plugin.version>2.5.5</findbugs.plugin.version>
