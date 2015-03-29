@@ -63,6 +63,9 @@
       <action issue="LOG4J2-974" dev="ggregory" type="fix" due-to="Daniel Galán y Martins">
         Typo in EventLogger documentation.
       </action>
+      <action issue="LOG4J2-987" dev="ggregory" type="fix" due-to="Gary Gregory">
+        Migrate tests from Logback 1.1.2 to 1.1.3.
+      </action>
     </release>
     <release version="2.2" date="2015-02-22" description="GA Release 2.2">
       <action issue="LOG4J2-938" dev="rpopma" type="fix" due-to="Mauro Molinari">
