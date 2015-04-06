@@ -236,7 +236,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
 
             return new AsyncLoggerConfig(LogManager.ROOT_LOGGER_NAME,
                     appenderRefs, filter, level, additive, properties, config,
-                    includeLocation(includeLocation));
+                    AsyncLoggerConfig.includeLocation(includeLocation));
         }
     }
 }
