@@ -194,7 +194,7 @@ public final class BurstFilter extends AbstractFilter {
         @Override
         public int compareTo(final Delayed delayed) {
             final long diff = this.expireTime - ((LogDelay) delayed).expireTime;
-            return Long.compare(diff, 0);
+            return Long.signum(diff);
         }
 
         @Override

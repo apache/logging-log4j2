@@ -61,12 +61,11 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
         this.onMismatch = onMismatch == null ? Result.DENY : onMismatch;
     }
 
-    @Override
-    public boolean equals(final Object obj) {
+    protected boolean equalsImpl(final Object obj) {
         if (this == obj) {
             return true;
         }
-        if (!super.equals(obj)) {
+        if (!super.equalsImpl(obj)) {
             return false;
         }
         if (getClass() != obj.getClass()) {
@@ -155,10 +154,9 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
         return onMismatch;
     }
 
-    @Override
-    public int hashCode() {
+    protected int hashCodeImpl() {
         final int prime = 31;
-        int result = super.hashCode();
+        int result = super.hashCodeImpl();
         result = prime * result + ((onMatch == null) ? 0 : onMatch.hashCode());
         result = prime * result + ((onMismatch == null) ? 0 : onMismatch.hashCode());
         return result;
