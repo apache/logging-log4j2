@@ -905,7 +905,7 @@
         <artifactId>maven-site-plugin</artifactId>
         <!-- Do not upgrade to versions 3.1, 3.2 or 3.3. 3.2 & 3.3 cause a NullPointerException in site:stage-deploy
         and the site is broken in all of them. See http://jira.codehaus.org/browse/MSITE-695 -->
-        <version>3.0</version>
+        <version>3.4</version>
         <dependencies>
           <dependency>
             <groupId>org.apache.maven.wagon</groupId>
@@ -1048,6 +1048,7 @@
         </reportSets>
         <configuration>
           <!-- you'd think these would be the defaults, right? -->
+            <customBundle>${project.basedir}/src/site/custom/project-info-report.properties</customBundle>
           <webAccessUrl>${project.scm.url}</webAccessUrl>
           <anonymousConnection>${project.scm.connection}</anonymousConnection>
           <developerConnection>${project.scm.developerConnection}</developerConnection>
