@@ -24,7 +24,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.CoreLoggerContexts;
+import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -59,5 +61,20 @@ public class AsyncLoggerConfigTest {
 
         final String location = "testAdditivity";
         assertTrue("location", line1.contains(location) || line2.contains(location));
+    }
+    
+    @Test
+    public void testIncludeLocationDefaultsToFalse() {
+    	LoggerConfig rootLoggerConfig = 
+    			AsyncLoggerConfig.RootLogger.createLogger(
+    					null, "INFO", null, new AppenderRef[0], null, null, null);
+    	assertFalse("Include location should default to false for async logggers",
+    			    rootLoggerConfig.isIncludeLocation());
+    	
+    	LoggerConfig loggerConfig =
+    	        AsyncLoggerConfig.createLogger(
+    	        		null, "INFO", "com.foo.Bar", null, new AppenderRef[0], null, null, null);
+    	assertFalse("Include location should default to false for async logggers",
+    			    loggerConfig.isIncludeLocation());
     }
 }
