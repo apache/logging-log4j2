@@ -47,6 +47,14 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
      */
     @Override
     public Filter getFilter() {
+        if (filter instanceof CompositeFilter) {
+            CompositeFilter composite = (CompositeFilter) filter;
+            if (composite.size() == 1) {
+                final Iterator<Filter> iter = composite.iterator();
+                final Filter nextFilter = iter.next();
+                return nextFilter;
+            }
+        }
         return filter;
     }
 
@@ -57,8 +65,8 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
     @Override
     public synchronized void addFilter(final Filter filter) {
         if (this.filter == null) {
-            this.filter = filter;
-        } else if (filter instanceof CompositeFilter) {
+            this.filter = (filter instanceof CompositeFilter) ? CompositeFilter.createFilters(new Filter[] {filter}) : filter;
+        } else if (this.filter instanceof CompositeFilter) {
             this.filter = ((CompositeFilter) this.filter).addFilter(filter);
         } else {
             final Filter[] filters = new Filter[] {this.filter, filter};
@@ -72,16 +80,19 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
      */
     @Override
     public synchronized void removeFilter(final Filter filter) {
-        if (this.filter == filter) {
+        if (this.filter == null) {
+            return;
+        } else if (this.filter.equals(filter)) {
             this.filter = null;
-        } else if (filter instanceof CompositeFilter) {
-            CompositeFilter composite = (CompositeFilter) filter;
+        } else if (this.filter instanceof CompositeFilter) {
+            CompositeFilter composite = (CompositeFilter) this.filter;
             composite = composite.removeFilter(filter);
             if (composite.size() > 1) {
                 this.filter = composite;
             } else if (composite.size() == 1) {
                 final Iterator<Filter> iter = composite.iterator();
-                this.filter = iter.next();
+                final Filter nextFilter = iter.next();
+                this.filter = (nextFilter instanceof CompositeFilter) ? composite : nextFilter;
             } else {
                 this.filter = null;
             }
