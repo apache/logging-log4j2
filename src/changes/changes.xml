@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.3" date="2015-0?-??" description="GA Release 2.3">
+      <action issue="LOG4J2-993" dev="rgoers" type="fix">
+        Deadlock would occur if appender thread creates a new Logger during reconfiguration.
+      </action>
       <action issue="LOG4J2-991" dev="rpopma" type="fix" due-to="Ryan Rupp">
         Async root logger config should default includeLocation to false.
       </action>

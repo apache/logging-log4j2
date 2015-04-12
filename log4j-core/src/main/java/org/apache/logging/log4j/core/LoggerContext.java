@@ -70,7 +70,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     private volatile Configuration config = new DefaultConfiguration();
     private Object externalContext;
     private final String name;
-    private URI configLocation;
+    private volatile URI configLocation;
     private Cancellable shutdownCallback;
 
     private final Lock configLock = new ReentrantLock();
@@ -343,36 +343,41 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      * @param config The new Configuration.
      * @return The previous Configuration.
      */
-    private synchronized Configuration setConfiguration(final Configuration config) {
+    private Configuration setConfiguration(final Configuration config) {
         Assert.requireNonNull(config, "No Configuration was provided");
-        final Configuration prev = this.config;
-        config.addListener(this);
-        final ConcurrentMap<String, String> map = config.getComponent(Configuration.CONTEXT_PROPERTIES);
-
-        try { // LOG4J2-719 network access may throw android.os.NetworkOnMainThreadException
-            map.putIfAbsent("hostName", NetUtils.getLocalHostname());
-        } catch (final Exception ex) {
-            LOGGER.debug("Ignoring {}, setting hostName to 'unknown'", ex.toString());
-            map.putIfAbsent("hostName", "unknown");
-        }
-        map.putIfAbsent("contextName", name);
-        config.start();
-        this.config = config;
-        updateLoggers();
-        if (prev != null) {
-            prev.removeListener(this);
-            prev.stop();
-        }
-
-        firePropertyChangeEvent(new PropertyChangeEvent(this, PROPERTY_CONFIG, prev, config));
-
+        configLock.lock();
         try {
-            Server.reregisterMBeansAfterReconfigure();
-        } catch (final Throwable t) {
-            // LOG4J2-716: Android has no java.lang.management
-            LOGGER.error("Could not reconfigure JMX", t);
+            final Configuration prev = this.config;
+            config.addListener(this);
+            final ConcurrentMap<String, String> map = config.getComponent(Configuration.CONTEXT_PROPERTIES);
+
+            try { // LOG4J2-719 network access may throw android.os.NetworkOnMainThreadException
+                map.putIfAbsent("hostName", NetUtils.getLocalHostname());
+            } catch (final Exception ex) {
+                LOGGER.debug("Ignoring {}, setting hostName to 'unknown'", ex.toString());
+                map.putIfAbsent("hostName", "unknown");
+            }
+            map.putIfAbsent("contextName", name);
+            config.start();
+            this.config = config;
+            updateLoggers();
+            if (prev != null) {
+                prev.removeListener(this);
+                prev.stop();
+            }
+
+            firePropertyChangeEvent(new PropertyChangeEvent(this, PROPERTY_CONFIG, prev, config));
+
+            try {
+                Server.reregisterMBeansAfterReconfigure();
+            } catch (final Throwable t) {
+                // LOG4J2-716: Android has no java.lang.management
+                LOGGER.error("Could not reconfigure JMX", t);
+            }
+            return prev;
+        } finally {
+            configLock.unlock();
         }
-        return prev;
     }
 
     private void firePropertyChangeEvent(final PropertyChangeEvent event) {
@@ -396,7 +401,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      * ConfigurationSource#getLocation() getLocation()} to get the actual source of the current configuration.
      * @return the initial configuration location or {@code null}
      */
-    public synchronized URI getConfigLocation() {
+    public URI getConfigLocation() {
         return configLocation;
     }
 
@@ -404,19 +409,20 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      * Sets the configLocation to the specified value and reconfigures this context.
      * @param configLocation the location of the new configuration
      */
-    public synchronized void setConfigLocation(final URI configLocation) {
+    public void setConfigLocation(final URI configLocation) {
         this.configLocation = configLocation;
-        reconfigure();
+
+        reconfigure(configLocation);
     }
 
     /**
      * Reconfigure the context.
      */
-    public synchronized void reconfigure() {
+    private void reconfigure(final URI configURI) {
         final ClassLoader cl = ClassLoader.class.isInstance(externalContext) ? (ClassLoader) externalContext : null;
         LOGGER.debug("Reconfiguration started for context[name={}] at {} ({}) with optional ClassLoader: {}", name,
-            configLocation, this, cl);
-        final Configuration instance = ConfigurationFactory.getInstance().getConfiguration(name, configLocation, cl);
+                configURI, this, cl);
+        final Configuration instance = ConfigurationFactory.getInstance().getConfiguration(name, configURI, cl);
         setConfiguration(instance);
         /*
          * instance.start(); Configuration old = setConfiguration(instance);
@@ -424,7 +430,14 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
          */
 
         LOGGER.debug("Reconfiguration complete for context[name={}] at {} ({}) with optional ClassLoader: {}", name,
-            configLocation, this, cl);
+                configURI, this, cl);
+    }
+
+    /**
+     * Reconfigure the context.
+     */
+    public void reconfigure() {
+        reconfigure(configLocation);
     }
 
     /**
