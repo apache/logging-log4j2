@@ -44,8 +44,8 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.util.Assert;
-import org.apache.logging.log4j.core.util.Charsets;
 import org.apache.logging.log4j.core.util.Closer;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
@@ -148,7 +148,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
 
     @Override
     public String getConfigText() throws IOException {
-        return getConfigText(Charsets.UTF_8.name());
+        return getConfigText(Constants.UTF_8.name());
     }
 
     @Override

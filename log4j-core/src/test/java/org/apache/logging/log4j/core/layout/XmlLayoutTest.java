@@ -32,7 +32,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.jackson.Log4jXmlObjectMapper;
-import org.apache.logging.log4j.core.util.Charsets;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
@@ -120,7 +120,7 @@ public class XmlLayoutTest {
     private void testAllFeatures(final boolean includeSource, final boolean compact, final boolean includeContext) throws IOException,
             JsonParseException, JsonMappingException {
         final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
-        final XmlLayout layout = XmlLayout.createLayout(includeSource, includeContext, false, compact, Charsets.UTF_8);
+        final XmlLayout layout = XmlLayout.createLayout(includeSource, includeContext, false, compact, Constants.UTF_8);
         final String str = layout.toSerializable(expected);
         // System.out.println(str);
         assertEquals(str, !compact, str.contains("\n"));
@@ -193,7 +193,7 @@ public class XmlLayoutTest {
     @Test
     public void testDefaultCharset() {
         final XmlLayout layout = XmlLayout.createDefaultLayout();
-        assertEquals(Charsets.UTF_8, layout.getCharset());
+        assertEquals(Constants.UTF_8, layout.getCharset());
     }
 
     /**

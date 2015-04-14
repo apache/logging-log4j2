@@ -32,7 +32,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.layout.GelfLayout;
 import org.apache.logging.log4j.core.net.Facility;
-import org.apache.logging.log4j.core.util.Charsets;
+import org.apache.logging.log4j.core.util.Constants;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -149,10 +149,10 @@ public class TypeConvertersTest {
                 { "Base64:cGxlYXN1cmUu", "pleasure.".getBytes("US-ASCII"), null, byte[].class },
                 // JRE
                 // JRE Charset
-                { "UTF-8", Charsets.UTF_8, null, Charset.class },
+                { "UTF-8", Constants.UTF_8, null, Charset.class },
                 { "ASCII", Charset.forName("ASCII"), "UTF-8", Charset.class },
-                { "Not a real charset", Charsets.UTF_8, "UTF-8", Charset.class },
-                { null, Charsets.UTF_8, "UTF-8", Charset.class },
+                { "Not a real charset", Constants.UTF_8, "UTF-8", Charset.class },
+                { null, Constants.UTF_8, "UTF-8", Charset.class },
                 { null, null, null, Charset.class },
                 // JRE File
                 { "c:/temp", new File("c:/temp"), null, File.class },

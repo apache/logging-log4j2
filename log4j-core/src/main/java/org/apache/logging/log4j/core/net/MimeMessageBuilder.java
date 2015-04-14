@@ -23,7 +23,7 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import org.apache.logging.log4j.core.util.Charsets;
+import org.apache.logging.log4j.core.util.Constants;
 
 /**
  *  Helper class for SmtpManager.
@@ -71,7 +71,7 @@ public class MimeMessageBuilder {
 
     public MimeMessageBuilder setSubject(final String subject) throws MessagingException {
         if (subject != null) {
-            message.setSubject(subject, Charsets.UTF_8.name());
+            message.setSubject(subject, Constants.UTF_8.name());
         }
         return this;
     }

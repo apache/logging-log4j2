@@ -34,7 +34,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.util.Charsets;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.osgi.framework.FrameworkUtil;
@@ -230,7 +230,7 @@ public class ResolverUtil {
             // if URL-encoded file exists, don't decode it
             return urlPath;
         }
-        urlPath = URLDecoder.decode(urlPath, Charsets.UTF_8.name());
+        urlPath = URLDecoder.decode(urlPath, Constants.UTF_8.name());
         return urlPath;
     }
 

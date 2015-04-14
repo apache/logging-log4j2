@@ -18,6 +18,8 @@ package org.apache.logging.log4j.core.util;
 
 import org.apache.logging.log4j.util.PropertiesUtil;
 
+import java.nio.charset.Charset;
+
 /**
  * Log4j Constants.
  */
@@ -49,6 +51,12 @@ public final class Constants {
      * Number of milliseconds in a second.
      */
     public static final int MILLIS_IN_SECONDS = 1000;
+    
+    /**
+     * Equivalent to StandardCharsets.UTF_8.
+     * @ToDo - Initialize with StandardCharsets.UTF_8 when Java 7 is the minimum version.
+     */
+    public static final Charset UTF_8 = Charset.forName("UTF-8");
 
     /**
      * Prevent class instantiation.

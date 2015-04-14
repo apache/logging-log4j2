@@ -65,7 +65,7 @@ public final class FileUtils {
                 return null;
             }
         }
-        final String charsetName = Charsets.UTF_8.name();
+        final String charsetName = Constants.UTF_8.name();
         try {
             final String fileName = uri.toURL().getFile();
             if (new File(fileName).exists()) { // LOG4J2-466

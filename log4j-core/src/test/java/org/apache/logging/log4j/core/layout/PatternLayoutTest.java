@@ -31,7 +31,7 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.util.Charsets;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.After;
@@ -221,7 +221,7 @@ public class PatternLayoutTest {
     @Test
     public void testUseSpecifiedCharsetIfExists() throws Exception {
         final PatternLayout layout = PatternLayout.newBuilder().withPattern("%m")
-                .withConfiguration(ctx.getConfiguration()).withCharset(Charsets.UTF_8).build();
-        assertEquals(Charsets.UTF_8, layout.getCharset());
+                .withConfiguration(ctx.getConfiguration()).withCharset(Constants.UTF_8).build();
+        assertEquals(Constants.UTF_8, layout.getCharset());
     }
 }

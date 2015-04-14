@@ -34,7 +34,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.util.Charsets;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Transform;
 
@@ -357,7 +356,7 @@ public final class HtmlLayout extends AbstractStringLayout {
         private String contentType = null; // defer default value in order to use specified charset
 
         @PluginBuilderAttribute
-        private Charset charset = Charsets.UTF_8;
+        private Charset charset = Constants.UTF_8;
 
         @PluginBuilderAttribute
         private FontSize fontSize = FontSize.SMALL;
