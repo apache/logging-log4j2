@@ -40,7 +40,7 @@ public class FileConfigurationMonitor implements ConfigurationMonitor {
 
     private final List<ConfigurationListener> listeners;
 
-    private final int interval;
+    private final int intervalSeconds;
 
     private long nextCheck;
 
@@ -55,17 +55,17 @@ public class FileConfigurationMonitor implements ConfigurationMonitor {
      * @param reconfigurable The Configuration that can be reconfigured.
      * @param file The File to monitor.
      * @param listeners The List of ConfigurationListeners to notify upon a change.
-     * @param interval The monitor interval in seconds. The minimum interval is 5 seconds.
+     * @param intervalSeconds The monitor interval in seconds. The minimum interval is 5 seconds.
      */
     public FileConfigurationMonitor(final Reconfigurable reconfigurable, final File file,
                                     final List<ConfigurationListener> listeners,
-                                    final int interval) {
+                                    final int intervalSeconds) {
         this.reconfigurable = reconfigurable;
         this.file = file;
         this.lastModified = file.lastModified();
         this.listeners = listeners;
-        this.interval = (interval < MIN_INTERVAL ? MIN_INTERVAL : interval) * MILLIS_PER_SECOND;
-        this.nextCheck = System.currentTimeMillis() + interval;
+        this.intervalSeconds = (intervalSeconds < MIN_INTERVAL ? MIN_INTERVAL : intervalSeconds) * MILLIS_PER_SECOND;
+        this.nextCheck = System.currentTimeMillis() + intervalSeconds;
     }
 
     /**
@@ -77,7 +77,7 @@ public class FileConfigurationMonitor implements ConfigurationMonitor {
         if (((counter.incrementAndGet() & MASK) == 0) && (current >= nextCheck)) {
             LOCK.lock();
             try {
-                nextCheck = current + interval;
+                nextCheck = current + intervalSeconds;
                 if (file.lastModified() > lastModified) {
                     lastModified = file.lastModified();
                     for (final ConfigurationListener listener : listeners) {
