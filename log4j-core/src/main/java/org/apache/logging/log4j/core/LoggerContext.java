@@ -434,7 +434,9 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     }
 
     /**
-     * Reconfigure the context.
+     * Reconfigure the context. Log4j does not remove Loggers during a reconfiguration. Log4j will create new
+     * LoggerConfig objects and Log4j will point the Loggers at the new LoggerConfigs. Log4j will free the old
+     * LoggerConfig, along with old Appenders and Filters.
      */
     public void reconfigure() {
         reconfigure(configLocation);
