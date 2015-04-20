@@ -101,7 +101,7 @@ public class ConsoleAppenderTest {
         System.setOut(ps);
         final String msg = baos.toString();
         assertNotNull("No message", msg);
-        assertTrue("Incorrect message: " + msg , msg.endsWith("Test" + Constants.LINE_SEPARATOR));
+        assertTrue("Incorrect message: \"" + msg + "\"" , msg.endsWith("Test" + Constants.LINE_SEPARATOR));
         app.stop();
         assertFalse("Appender did not stop", app.isStarted());
     }
