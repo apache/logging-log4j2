@@ -24,9 +24,6 @@
   </properties>
   <body>
     <release version="2.3" date="2015-0?-??" description="GA Release 2.3">
-      <action issue="LOG4J2-965" dev="ggregory" type="fix" due-to="Khotyn Huang">
-        System.out no longer works after the Console appender and JANSI is initialized.
-      </action>
       <action issue="LOG4J2-995" dev="rgoers" type="update">
         Move UTF-8 constant from Charsets to Constants class. Remove Charsets class.
       </action>
