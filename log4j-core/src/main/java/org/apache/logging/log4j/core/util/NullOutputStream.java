@@ -15,7 +15,7 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.core.appender;
+package org.apache.logging.log4j.core.util;
 
 import java.io.IOException;
 import java.io.OutputStream;

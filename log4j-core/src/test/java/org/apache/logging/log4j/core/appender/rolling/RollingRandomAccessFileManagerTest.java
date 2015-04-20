@@ -24,8 +24,8 @@ import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.util.concurrent.locks.LockSupport;
 
-import org.apache.logging.log4j.core.appender.NullOutputStream;
 import org.apache.logging.log4j.core.util.Closer;
+import org.apache.logging.log4j.core.util.NullOutputStream;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
 

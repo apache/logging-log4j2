@@ -26,7 +26,7 @@ import java.nio.ByteBuffer;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
-import org.apache.logging.log4j.core.appender.NullOutputStream;
+import org.apache.logging.log4j.core.util.NullOutputStream;
 
 /**
  * Extends RollingFileManager but instead of using a buffered output stream,

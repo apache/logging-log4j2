@@ -34,6 +34,7 @@ import java.util.Map;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.core.util.Closer;
+import org.apache.logging.log4j.core.util.NullOutputStream;
 
 /**
  * Extends OutputStreamManager but instead of using a buffered output stream, this class maps a region of a file into

@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
 
+import org.apache.logging.log4j.core.util.NullOutputStream;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
