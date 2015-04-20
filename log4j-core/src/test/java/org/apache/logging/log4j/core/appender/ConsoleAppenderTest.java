@@ -29,13 +29,16 @@ import java.io.PrintStream;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.ConsoleAppender.Target;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.easymock.EasyMockSupport;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -43,67 +46,97 @@ import org.junit.Test;
  */
 public class ConsoleAppenderTest {
 
-    private final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    EasyMockSupport mocks = new EasyMockSupport();
-    PrintStream psMock = mocks.createMock("psMock", PrintStream.class);
-
-    @BeforeClass
-    public static void before() {
-        System.setProperty("log4j.skipJansi", "true");
-    }
+    private static final String LOG4J_SKIP_JANSI = "log4j.skipJansi";
 
     @AfterClass
-    public static void after() {
-        System.clearProperty("log4j.skipJansi");
+    public static void afterClass() {
+        System.clearProperty(LOG4J_SKIP_JANSI);
     }
 
-    @Test
-    public void testConsoleStreamManagerDoesNotClose() {
-        final PrintStream ps = System.out;
+    @BeforeClass
+    public static void beforeClass() {
+        System.setProperty(LOG4J_SKIP_JANSI, "true");
+    }
+    private final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-        psMock.write((byte[]) anyObject(), anyInt(), anyInt());
-        expectLastCall().anyTimes();
-        psMock.flush();
+    EasyMockSupport mocks;
 
-        mocks.replayAll();
-        System.setOut(psMock);
-        final Layout<String> layout = PatternLayout.createLayout(null, null, null, null, false, false, null, null);
-        final ConsoleAppender app = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false",
-                "false");
-        app.start();
-        assertTrue("Appender did not start", app.isStarted());
+    PrintStream psMock;
 
-        final LogEvent event = new Log4jLogEvent("TestLogger", null, ConsoleAppenderTest.class.getName(), Level.INFO,
-                new SimpleMessage("Test"), null);
-        app.append(event);
+    @Before
+    public void before() {
+        System.setProperty(LOG4J_SKIP_JANSI, "true");
+        mocks = new EasyMockSupport();
+        psMock = mocks.createMock("psMock", PrintStream.class);
+    }
 
-        app.stop();
-        assertFalse("Appender did not stop", app.isStarted());
+    private void testConsoleStreamManagerDoesNotClose(PrintStream ps, String targetName) {
+        try {
+            psMock.write((byte[]) anyObject(), anyInt(), anyInt());
+            expectLastCall().anyTimes();
+            psMock.flush();
 
-        System.setOut(ps);
+            mocks.replayAll();
+            System.setOut(psMock);
+            final Layout<String> layout = PatternLayout.createLayout(null, null, null, null, false, false, null, null);
+            final ConsoleAppender app = ConsoleAppender.createAppender(layout, null, targetName, "Console", "false",
+                    "false");
+            app.start();
+            assertTrue("Appender did not start", app.isStarted());
+
+            final LogEvent event = new Log4jLogEvent("TestLogger", null, ConsoleAppenderTest.class.getName(),
+                    Level.INFO, new SimpleMessage("Test"), null);
+            app.append(event);
+
+            app.stop();
+            assertFalse("Appender did not stop", app.isStarted());
+        } finally {
+            System.setOut(ps);
+        }
         mocks.verifyAll();
     }
-    
-    @Test
-    public void testFollow() {
-        final PrintStream ps = System.out;
-        final ConsoleAppender app = ConsoleAppender.newBuilder()
-            .setFollow(true)
-            .setIgnoreExceptions(false)
-            .build();
-        app.start();
-        final LogEvent event = new Log4jLogEvent("TestLogger", null, ConsoleAppenderTest.class.getName(), Level.INFO,
-            new SimpleMessage("Test"), null);
 
-        assertTrue("Appender did not start", app.isStarted());
-        System.setOut(new PrintStream(baos));
-        app.append(event);
-        System.setOut(ps);
-        final String msg = baos.toString();
-        assertNotNull("No message", msg);
-        assertTrue("Incorrect message: \"" + msg + "\"" , msg.endsWith("Test" + Constants.LINE_SEPARATOR));
-        app.stop();
+    @Test
+    @Ignore
+    public void testFollowSystemErr() {
+        testFollowSystemPrintStream(System.err, Target.SYSTEM_ERR);
+    }
+
+    @Test
+    public void testFollowSystemOut() {
+        testFollowSystemPrintStream(System.out, Target.SYSTEM_OUT);
+    }
+
+    private void testFollowSystemPrintStream(PrintStream ps, Target target) {
+        final ConsoleAppender app = ConsoleAppender.newBuilder().setTarget(target).setFollow(true)
+                .setIgnoreExceptions(false).build();
+        app.start();
+        try {
+            final LogEvent event = new Log4jLogEvent("TestLogger", null, ConsoleAppenderTest.class.getName(),
+                    Level.INFO, new SimpleMessage("Test"), null);
+
+            assertTrue("Appender did not start", app.isStarted());
+            System.setOut(new PrintStream(baos));
+            app.append(event);
+            System.setOut(ps);
+            final String msg = baos.toString();
+            assertNotNull("No message", msg);
+            assertTrue("Incorrect message: \"" + msg + "\"", msg.endsWith("Test" + Constants.LINE_SEPARATOR));
+        } finally {
+            app.stop();
+        }
         assertFalse("Appender did not stop", app.isStarted());
+    }
+
+    @Test
+    @Ignore
+    public void testSystemErrStreamManagerDoesNotClose() {
+        testConsoleStreamManagerDoesNotClose(System.err, "SYSTEM_ERR");
+    }
+
+    @Test
+    public void testSystemOutStreamManagerDoesNotClose() {
+        testConsoleStreamManagerDoesNotClose(System.out, "SYSTEM_OUT");
     }
 
 }
