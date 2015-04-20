@@ -1342,7 +1342,7 @@
         <jdk>[1.7,)</jdk>
       </activation>
       <properties>
-        <findbugs.plugin.version>3.0.0</findbugs.plugin.version>
+        <findbugs.plugin.version>3.0.1</findbugs.plugin.version>
       </properties>
     </profile>
   </profiles>
