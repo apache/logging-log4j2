@@ -197,7 +197,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
             // We type the parameter as a wildcard to avoid a hard reference to Jansi.
             final Class<?> clazz = Loader.loadClass(JANSI_CLASS);
             final Constructor<?> constructor = clazz.getConstructor(OutputStream.class);
-            return (OutputStream) constructor.newInstance(printStream);
+            return new CloseShieldOutputStream((OutputStream) constructor.newInstance(printStream));
         } catch (final ClassNotFoundException cnfe) {
             LOGGER.debug("Jansi is not installed, cannot find {}", JANSI_CLASS);
         } catch (final NoSuchMethodException nsme) {
@@ -206,6 +206,44 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
             LOGGER.warn("Unable to instantiate {}", JANSI_CLASS);
         }
         return printStream;
+    }
+
+    /**
+     * A delegating OutputStream that does not close its delegate.
+     */
+    private static class CloseShieldOutputStream extends OutputStream {
+
+        private final OutputStream delegate;
+
+        public CloseShieldOutputStream(final OutputStream delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public void close() {
+            // do not close delegate
+        }
+
+        @Override
+        public void flush() throws IOException {
+            delegate.flush();
+        }
+
+        @Override
+        public void write(final byte[] b) throws IOException {
+            delegate.write(b);
+        }
+
+        @Override
+        public void write(final byte[] b, final int off, final int len)
+                throws IOException {
+            delegate.write(b, off, len);
+        }
+
+        @Override
+        public void write(final int b) throws IOException {
+            delegate.write(b);
+        }
     }
 
     /**
