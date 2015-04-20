@@ -57,6 +57,7 @@ public class ConsoleAppenderTest {
     public static void beforeClass() {
         System.setProperty(LOG4J_SKIP_JANSI, "true");
     }
+    
     private final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
     EasyMockSupport mocks;
