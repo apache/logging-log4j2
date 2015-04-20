@@ -240,17 +240,6 @@ public class MemoryMappedFileManager extends OutputStreamManager {
         return isForce;
     }
 
-    /** {@code OutputStream} subclass that does not write anything. */
-    static class DummyOutputStream extends OutputStream {
-        @Override
-        public void write(final int b) throws IOException {
-        }
-
-        @Override
-        public void write(final byte[] b, final int off, final int len) throws IOException {
-        }
-    }
-
     /**
      * Gets this FileManager's content format specified by:
      * <p>
@@ -317,7 +306,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
                 file.delete();
             }
 
-            final OutputStream os = new DummyOutputStream();
+            final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
             RandomAccessFile raf = null;
             try {
                 raf = new RandomAccessFile(name, "rw");
