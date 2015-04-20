@@ -186,8 +186,8 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
             // see org.apache.logging.log4j.core.appender.ConsoleAppenderTest
             // @formatter:off
             printStream = target == Target.SYSTEM_OUT ?
-            follow ? new PrintStream(new SystemOutStream(), true, enc) : System.out :
-            follow ? new PrintStream(new SystemErrStream(), true, enc) : System.err;
+                follow ? new PrintStream(new SystemOutStream(), true, enc) : System.out :
+                follow ? new PrintStream(new SystemErrStream(), true, enc) : System.err;
             // @formatter:on
         } catch (final UnsupportedEncodingException ex) { // should never happen
             throw new IllegalStateException("Unsupported default encoding " + enc, ex);
