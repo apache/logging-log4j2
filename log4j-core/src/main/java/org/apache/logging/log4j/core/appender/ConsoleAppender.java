@@ -54,6 +54,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
     private static final long serialVersionUID = 1L;
     private static final String JANSI_CLASS = "org.fusesource.jansi.WindowsAnsiOutputStream";
     private static ConsoleManagerFactory factory = new ConsoleManagerFactory();
+    private static final Target DEFAULT_TARGET = Target.SYSTEM_OUT;
 
     /**
      * Enumeration of console destinations.
@@ -99,13 +100,13 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         }
         final boolean isFollow = Boolean.parseBoolean(follow);
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
-        final Target target = targetStr == null ? Target.SYSTEM_OUT : Target.valueOf(targetStr);
+        final Target target = targetStr == null ? DEFAULT_TARGET : Target.valueOf(targetStr);
         return new ConsoleAppender(name, layout, filter, getManager(isFollow, target, layout), ignoreExceptions);
     }
 
     public static ConsoleAppender createDefaultAppenderForLayout(final Layout<? extends Serializable> layout) {
         // this method cannot use the builder class without introducing an infinite loop due to DefaultConfiguration
-        return new ConsoleAppender("Console", layout, null, getManager(false, Target.SYSTEM_OUT, layout), true);
+        return new ConsoleAppender("Console", layout, null, getManager(false, DEFAULT_TARGET, layout), true);
     }
 
     @PluginBuilderFactory
@@ -124,7 +125,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
 
         @PluginBuilderAttribute
         @Required
-        private Target target = Target.SYSTEM_OUT;
+        private Target target = DEFAULT_TARGET;
 
         @PluginBuilderAttribute
         @Required
