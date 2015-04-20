@@ -183,8 +183,8 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         PrintStream printStream = null;
         try {
             printStream = target == Target.SYSTEM_OUT ?
-            follow ? new PrintStream(new SystemOutStream(), true, enc) : System.out :
-            follow ? new PrintStream(new SystemErrStream(), true, enc) : System.err;
+            follow ? new PrintStream(new CloseShieldOutputStream(System.out), true, enc) : System.out :
+            follow ? new PrintStream(new CloseShieldOutputStream(System.err), true, enc) : System.err;
         } catch (final UnsupportedEncodingException ex) { // should never happen
             throw new IllegalStateException("Unsupported default encoding " + enc, ex);
         }
@@ -243,74 +243,6 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         @Override
         public void write(final int b) throws IOException {
             delegate.write(b);
-        }
-    }
-
-    /**
-     * An implementation of OutputStream that redirects to the current System.err.
-     */
-    private static class SystemErrStream extends OutputStream {
-        public SystemErrStream() {
-        }
-
-        @Override
-        public void close() {
-            // do not close sys err!
-        }
-
-        @Override
-        public void flush() {
-            System.err.flush();
-        }
-
-        @Override
-        public void write(final byte[] b) throws IOException {
-            System.err.write(b);
-        }
-
-        @Override
-        public void write(final byte[] b, final int off, final int len)
-            throws IOException {
-            System.err.write(b, off, len);
-        }
-
-        @Override
-        public void write(final int b) {
-            System.err.write(b);
-        }
-    }
-
-    /**
-     * An implementation of OutputStream that redirects to the current System.out.
-     */
-    private static class SystemOutStream extends OutputStream {
-        public SystemOutStream() {
-        }
-
-        @Override
-        public void close() {
-            // do not close sys out!
-        }
-
-        @Override
-        public void flush() {
-            System.out.flush();
-        }
-
-        @Override
-        public void write(final byte[] b) throws IOException {
-            System.out.write(b);
-        }
-
-        @Override
-        public void write(final byte[] b, final int off, final int len)
-            throws IOException {
-            System.out.write(b, off, len);
-        }
-
-        @Override
-        public void write(final int b) throws IOException {
-            System.out.write(b);
         }
     }
 
