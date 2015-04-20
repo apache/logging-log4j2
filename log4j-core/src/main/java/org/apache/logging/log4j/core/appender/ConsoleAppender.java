@@ -182,23 +182,28 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         final String enc = Charset.defaultCharset().name();
         PrintStream printStream = null;
         try {
+            // Cannot use a CloseShieldOutputStream here;
+            // see org.apache.logging.log4j.core.appender.ConsoleAppenderTest
+            // @formatter:off
             printStream = target == Target.SYSTEM_OUT ?
-            follow ? new PrintStream(new CloseShieldOutputStream(System.out), true, enc) : System.out :
-            follow ? new PrintStream(new CloseShieldOutputStream(System.err), true, enc) : System.err;
+            follow ? new PrintStream(new SystemOutStream(), true, enc) : System.out :
+            follow ? new PrintStream(new SystemErrStream(), true, enc) : System.err;
+            // @formatter:on
         } catch (final UnsupportedEncodingException ex) { // should never happen
             throw new IllegalStateException("Unsupported default encoding " + enc, ex);
         }
         final PropertiesUtil propsUtil = PropertiesUtil.getProperties();
-        if (!propsUtil.getStringProperty("os.name").startsWith("Windows") ||
-            propsUtil.getBooleanProperty("log4j.skipJansi")) {
+        if (!propsUtil.getStringProperty("os.name").startsWith("Windows")
+                || propsUtil.getBooleanProperty("log4j.skipJansi")) {
             return printStream;
         }
         try {
             // We type the parameter as a wildcard to avoid a hard reference to Jansi.
             final Class<?> clazz = Loader.loadClass(JANSI_CLASS);
             final Constructor<?> constructor = clazz.getConstructor(OutputStream.class);
+            OutputStream newInstance = (OutputStream) constructor.newInstance(printStream);
             // LOG4J-965
-            return new CloseShieldOutputStream((OutputStream) constructor.newInstance(printStream));
+            return follow ? new CloseShieldOutputStream(newInstance) : newInstance;
         } catch (final ClassNotFoundException cnfe) {
             LOGGER.debug("Jansi is not installed, cannot find {}", JANSI_CLASS);
         } catch (final NoSuchMethodException nsme) {
@@ -209,6 +214,74 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         return printStream;
     }
 
+    /**
+     * An implementation of OutputStream that redirects to the current System.err.
+     */
+    private static class SystemErrStream extends OutputStream {
+        public SystemErrStream() {
+        }
+
+        @Override
+        public void close() {
+            // do not close sys err!
+        }
+
+        @Override
+        public void flush() {
+            System.err.flush();
+        }
+
+        @Override
+        public void write(final byte[] b) throws IOException {
+            System.err.write(b);
+        }
+
+        @Override
+        public void write(final byte[] b, final int off, final int len)
+            throws IOException {
+            System.err.write(b, off, len);
+        }
+
+        @Override
+        public void write(final int b) {
+            System.err.write(b);
+        }
+    }
+
+    /**
+     * An implementation of OutputStream that redirects to the current System.out.
+     */
+    private static class SystemOutStream extends OutputStream {
+        public SystemOutStream() {
+        }
+
+        @Override
+        public void close() {
+            // do not close sys out!
+        }
+
+        @Override
+        public void flush() {
+            System.out.flush();
+        }
+
+        @Override
+        public void write(final byte[] b) throws IOException {
+            System.out.write(b);
+        }
+
+        @Override
+        public void write(final byte[] b, final int off, final int len)
+            throws IOException {
+            System.out.write(b, off, len);
+        }
+
+        @Override
+        public void write(final int b) throws IOException {
+            System.out.write(b);
+        }
+    }
+    
     /**
      * A delegating OutputStream that does not close its delegate.
      */
