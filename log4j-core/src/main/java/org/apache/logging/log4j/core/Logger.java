@@ -241,7 +241,7 @@ public class Logger extends AbstractLogger {
      *
      * @param newConfig The new Configuration.
      */
-    void updateConfiguration(final Configuration newConfig) {
+    protected void updateConfiguration(final Configuration newConfig) {
         this.config = new PrivateConfig(newConfig, this);
     }
 
