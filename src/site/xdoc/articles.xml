@@ -27,12 +27,70 @@
       <p>
         A collection of articles about Log4j 2.
       </p>
+      <a name="English"/>
+      <subsection name="English">
       <ul>
         <li>
+          <a
+            href="http://www.journaldev.com/7128/apache-log4j-2-tutorial-configuration-levels-appenders-lookup-layouts-and-filters-example">Apache Log4j 2 Tutorial – Configuration, Levels, Appenders, Lookup, Layouts and
+            Filters Example</a>
+          (March 16, 2015)
+        </li>
+        <li>
           <a href="http://blogs.mulesoft.org/mule-3-6-asynchronous-logging/">Asynchronous Logging in Mule 3.6</a>
-          <a href="http://www.grobmeier.de/the-new-log4j-2-0-05122012.html#.VTsPLiFVjld">The new log4j 2.0</a>          
+          (January 20, 2015)
+        </li>
+        <li>
+          <a href="http://www.infoq.com/news/2014/07/apache-log4j2">Apache Log4j 2.0 - Worth the Upgrade?</a>
+          (Jul 31, 2014)
+        </li>
+        <li>
+          <a href="http://tech.finn.no/2014/07/01/log4j2-in-production-making-it-fly/">Log4j 2 in Production – Making it Fly</a>
+          (July 2, 2014)
+        </li>
+        <li>
+          <a href="http://www.grobmeier.de/log4j-2-performance-close-to-insane-20072013.html">Log4j 2: Performance Close to Insane</a>
+          (July 20, 2013)
+        </li>
+        <li>
+          <a href="http://www.grobmeier.de/the-new-log4j-2-0-05122012.html">The New Log4j 2.0</a>
+          (December 5, 2012)
         </li>
       </ul>
+      </subsection>
+
+      <a name="German"/>
+      <subsection name="German">
+      <ul>
+        <li>
+          <a
+            href="https://www.innoq.com/en/articles/2015/01/logging-konsolidieren-log4j2/">Logging konsolidieren und Performance gewinnen</a>
+          (January 23, 2015)
+        </li>
+      </ul>
+      </subsection>
+
+      <a name="Japanese"/>
+      <subsection name="Japanese">
+      <ul>
+        <li>
+          <a
+            href="http://d.hatena.ne.jp/Kazuhira/20140628/1403959552">Log4j2を試してみる</a>
+          (June 28, 2014)
+        </li>
+      </ul>
+      </subsection>
+
+      <a name="Korean"/>
+      <subsection name="Korean">
+      <ul>
+        <li>
+          <a
+            href="http://www.egovframe.go.kr/wiki/doku.php?id=egovframework:rte3:fdl:%EC%84%A4%EC%A0%95_%ED%8C%8C%EC%9D%BC%EC%9D%84_%EC%82%AC%EC%9A%A9%ED%95%98%EB%8A%94_%EB%B0%A9%EB%B2%95">Log4j 2 환경설정 [설정 파일 사용 시]</a>
+          (May 14, 2014)
+        </li>
+      </ul>
+      </subsection>
     </section>
 
   </body>
