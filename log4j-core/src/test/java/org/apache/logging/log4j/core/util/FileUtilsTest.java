@@ -20,6 +20,7 @@ package org.apache.logging.log4j.core.util;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 
 import org.junit.Test;
 
@@ -33,7 +34,7 @@ public class FileUtilsTest {
     @Test
     public void testFileFromUriWithPlusCharactersInName() throws Exception {
         final String config = "target/test-classes/log4j+config+with+plus+characters.xml";
-        final URI uri = new URI(config);
+        final URI uri = new URI(URLEncoder.encode(config, Constants.UTF_8.name()));
         final File file = FileUtils.fileFromUri(uri);
         assertEquals("log4j+config+with+plus+characters.xml", file.getName());
         assertTrue("file exists", file.exists());
