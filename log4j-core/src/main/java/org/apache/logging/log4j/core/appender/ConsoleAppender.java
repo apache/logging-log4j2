@@ -181,28 +181,27 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
 
     private static OutputStream getOutputStream(final boolean follow, final Target target) {
         final String enc = Charset.defaultCharset().name();
-        PrintStream printStream = null;
+        OutputStream outputStream = null;
         try {
-            // Cannot use a CloseShieldOutputStream here;
-            // see org.apache.logging.log4j.core.appender.ConsoleAppenderTest
             // @formatter:off
-            printStream = target == Target.SYSTEM_OUT ?
+            outputStream = target == Target.SYSTEM_OUT ?
                 follow ? new PrintStream(new SystemOutStream(), true, enc) : System.out :
                 follow ? new PrintStream(new SystemErrStream(), true, enc) : System.err;
             // @formatter:on
+            outputStream = new CloseShieldOutputStream(outputStream);
         } catch (final UnsupportedEncodingException ex) { // should never happen
             throw new IllegalStateException("Unsupported default encoding " + enc, ex);
         }
         final PropertiesUtil propsUtil = PropertiesUtil.getProperties();
         if (!propsUtil.getStringProperty("os.name").startsWith("Windows")
                 || propsUtil.getBooleanProperty("log4j.skipJansi")) {
-            return printStream;
+            return outputStream;
         }
         try {
             // We type the parameter as a wildcard to avoid a hard reference to Jansi.
             final Class<?> clazz = Loader.loadClass(JANSI_CLASS);
             final Constructor<?> constructor = clazz.getConstructor(OutputStream.class);
-            return (OutputStream) constructor.newInstance(printStream);
+            return new CloseShieldOutputStream((OutputStream) constructor.newInstance(outputStream));
         } catch (final ClassNotFoundException cnfe) {
             LOGGER.debug("Jansi is not installed, cannot find {}", JANSI_CLASS);
         } catch (final NoSuchMethodException nsme) {
@@ -210,7 +209,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         } catch (final Exception ex) {
             LOGGER.warn("Unable to instantiate {}", JANSI_CLASS);
         }
-        return printStream;
+        return outputStream;
     }
 
     /**

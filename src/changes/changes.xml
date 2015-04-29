@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.3" date="2015-0?-??" description="GA Release 2.3">
+      <action issue="LOG4J2-965" dev="ggregory" type="fix" due-to="Khotyn Huang">
+        System.out no longer works after the Console appender and JANSI are initialized.
+      </action>
       <action issue="LOG4J2-998" dev="ggregory" type="update" due-to="Mariano Gonzalez">
         Make org.apache.logging.log4j.core.Logger#updateConfiguration protected.
       </action>

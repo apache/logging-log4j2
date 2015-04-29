@@ -38,7 +38,6 @@ import org.easymock.EasyMockSupport;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -57,8 +56,8 @@ public class ConsoleAppenderTest {
     public static void beforeClass() {
         System.setProperty(LOG4J_SKIP_JANSI, "true");
     }
-    
-    private final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+    ByteArrayOutputStream baos;
 
     EasyMockSupport mocks;
 
@@ -69,16 +68,35 @@ public class ConsoleAppenderTest {
         System.setProperty(LOG4J_SKIP_JANSI, "true");
         mocks = new EasyMockSupport();
         psMock = mocks.createMock("psMock", PrintStream.class);
+        baos = new ByteArrayOutputStream();
     }
 
-    private void testConsoleStreamManagerDoesNotClose(PrintStream ps, String targetName) {
+    private enum SystemSetter {
+        SYSTEM_OUT {
+            @Override
+            void systemSet(final PrintStream printStream) {
+                System.setOut(printStream);
+            }
+        },
+        SYSTEM_ERR {
+            @Override
+            void systemSet(final PrintStream printStream) {
+                System.setErr(printStream);
+            }
+        },
+        ;
+        abstract void systemSet(PrintStream printStream);
+    }
+
+    private void testConsoleStreamManagerDoesNotClose(PrintStream ps, String targetName, SystemSetter systemSetter) {
         try {
             psMock.write((byte[]) anyObject(), anyInt(), anyInt());
             expectLastCall().anyTimes();
             psMock.flush();
+            expectLastCall().anyTimes();
 
             mocks.replayAll();
-            System.setOut(psMock);
+            systemSetter.systemSet(psMock);
             final Layout<String> layout = PatternLayout.createLayout(null, null, null, null, false, false, null, null);
             final ConsoleAppender app = ConsoleAppender.createAppender(layout, null, targetName, "Console", "false",
                     "false");
@@ -92,23 +110,22 @@ public class ConsoleAppenderTest {
             app.stop();
             assertFalse("Appender did not stop", app.isStarted());
         } finally {
-            System.setOut(ps);
+            systemSetter.systemSet(ps);
         }
         mocks.verifyAll();
     }
 
     @Test
-    @Ignore
     public void testFollowSystemErr() {
-        testFollowSystemPrintStream(System.err, Target.SYSTEM_ERR);
+        testFollowSystemPrintStream(System.err, Target.SYSTEM_ERR, SystemSetter.SYSTEM_ERR);
     }
 
     @Test
     public void testFollowSystemOut() {
-        testFollowSystemPrintStream(System.out, Target.SYSTEM_OUT);
+        testFollowSystemPrintStream(System.out, Target.SYSTEM_OUT, SystemSetter.SYSTEM_OUT);
     }
 
-    private void testFollowSystemPrintStream(PrintStream ps, Target target) {
+    private void testFollowSystemPrintStream(PrintStream ps, Target target, SystemSetter systemSetter) {
         final ConsoleAppender app = ConsoleAppender.newBuilder().setTarget(target).setFollow(true)
                 .setIgnoreExceptions(false).build();
         app.start();
@@ -117,9 +134,12 @@ public class ConsoleAppenderTest {
                     Level.INFO, new SimpleMessage("Test"), null);
 
             assertTrue("Appender did not start", app.isStarted());
-            System.setOut(new PrintStream(baos));
-            app.append(event);
-            System.setOut(ps);
+            systemSetter.systemSet(new PrintStream(baos));
+            try {
+                app.append(event);
+            } finally {
+                systemSetter.systemSet(ps);
+            }
             final String msg = baos.toString();
             assertNotNull("No message", msg);
             assertTrue("Incorrect message: \"" + msg + "\"", msg.endsWith("Test" + Constants.LINE_SEPARATOR));
@@ -130,14 +150,13 @@ public class ConsoleAppenderTest {
     }
 
     @Test
-    @Ignore
     public void testSystemErrStreamManagerDoesNotClose() {
-        testConsoleStreamManagerDoesNotClose(System.err, "SYSTEM_ERR");
+        testConsoleStreamManagerDoesNotClose(System.err, "SYSTEM_ERR", SystemSetter.SYSTEM_ERR);
     }
 
     @Test
     public void testSystemOutStreamManagerDoesNotClose() {
-        testConsoleStreamManagerDoesNotClose(System.out, "SYSTEM_OUT");
+        testConsoleStreamManagerDoesNotClose(System.out, "SYSTEM_OUT", SystemSetter.SYSTEM_OUT);
     }
 
 }
