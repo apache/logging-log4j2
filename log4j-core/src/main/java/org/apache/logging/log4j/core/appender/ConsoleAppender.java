@@ -181,15 +181,14 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
 
     private static OutputStream getOutputStream(final boolean follow, final Target target) {
         final String enc = Charset.defaultCharset().name();
-        PrintStream printStream = null;
+        OutputStream printStream = null;
         try {
-            // Cannot use a CloseShieldOutputStream here;
-            // see org.apache.logging.log4j.core.appender.ConsoleAppenderTest
             // @formatter:off
             printStream = target == Target.SYSTEM_OUT ?
                 follow ? new PrintStream(new SystemOutStream(), true, enc) : System.out :
                 follow ? new PrintStream(new SystemErrStream(), true, enc) : System.err;
             // @formatter:on
+            printStream = new CloseShieldOutputStream(printStream);
         } catch (final UnsupportedEncodingException ex) { // should never happen
             throw new IllegalStateException("Unsupported default encoding " + enc, ex);
         }
@@ -202,7 +201,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
             // We type the parameter as a wildcard to avoid a hard reference to Jansi.
             final Class<?> clazz = Loader.loadClass(JANSI_CLASS);
             final Constructor<?> constructor = clazz.getConstructor(OutputStream.class);
-            return new NoCloseOutputStream((OutputStream) constructor.newInstance(printStream));
+            return new CloseShieldOutputStream((OutputStream) constructor.newInstance(printStream));
         } catch (final ClassNotFoundException cnfe) {
             LOGGER.debug("Jansi is not installed, cannot find {}", JANSI_CLASS);
         } catch (final NoSuchMethodException nsme) {
@@ -211,44 +210,6 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
             LOGGER.warn("Unable to instantiate {}", JANSI_CLASS);
         }
         return printStream;
-    }
-
-    /**
-     * An delegator for OutputStream that does not close its delegate.
-     */
-    private static class NoCloseOutputStream extends OutputStream {
-
-        private final OutputStream delegate;
-
-        public NoCloseOutputStream(final OutputStream delegate) {
-            this.delegate = delegate;
-        }
-
-        @Override
-        public void close() {
-            // do not close delegate
-        }
-
-        @Override
-        public void flush() throws IOException {
-            delegate.flush();
-        }
-
-        @Override
-        public void write(final byte[] b) throws IOException {
-            delegate.write(b);
-        }
-
-        @Override
-        public void write(final byte[] b, final int off, final int len)
-                throws IOException {
-            delegate.write(b, off, len);
-        }
-
-        @Override
-        public void write(final int b) throws IOException {
-            delegate.write(b);
-        }
     }
 
     /**
