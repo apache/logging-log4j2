@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
 
+import org.apache.logging.log4j.core.util.NullOutputStream;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -41,7 +42,7 @@ public class RandomAccessFileManagerTest {
         final File file = File.createTempFile("log4j2", "test");
         file.deleteOnExit();
         final RandomAccessFile raf = new RandomAccessFile(file, "rw");
-        final OutputStream os = new RandomAccessFileManager.DummyOutputStream();
+        final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
         final RandomAccessFileManager manager = new RandomAccessFileManager(raf, file.getName(), os,
                 false, RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null);
 
@@ -63,7 +64,7 @@ public class RandomAccessFileManagerTest {
         final File file = File.createTempFile("log4j2", "test");
         file.deleteOnExit();
         final RandomAccessFile raf = new RandomAccessFile(file, "rw");
-        final OutputStream os = new RandomAccessFileManager.DummyOutputStream();
+        final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
         final RandomAccessFileManager manager = new RandomAccessFileManager(raf, file.getName(), os,
                 false, RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null);
 
@@ -81,7 +82,7 @@ public class RandomAccessFileManagerTest {
         final File file = File.createTempFile("log4j2", "test");
         file.deleteOnExit();
         final RandomAccessFile raf = new RandomAccessFile(file, "rw");
-        final OutputStream os = new RandomAccessFileManager.DummyOutputStream();
+        final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
         final int bufferSize = 4 * 1024;
         assertNotEquals(bufferSize, RandomAccessFileManager.DEFAULT_BUFFER_SIZE);
         
@@ -97,7 +98,7 @@ public class RandomAccessFileManagerTest {
         final File file = File.createTempFile("log4j2", "test");
         file.deleteOnExit();
         final RandomAccessFile raf = new RandomAccessFile(file, "rw");
-        final OutputStream os = new RandomAccessFileManager.DummyOutputStream();
+        final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
         final int bufferSize = 1;
         final RandomAccessFileManager manager = new RandomAccessFileManager(raf, file.getName(), os,
                 false, bufferSize, null, null);

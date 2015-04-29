@@ -20,6 +20,7 @@ package org.apache.logging.log4j.core.util;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 
 import org.junit.Test;
 

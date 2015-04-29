@@ -26,6 +26,7 @@ import java.nio.ByteBuffer;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
+import org.apache.logging.log4j.core.util.NullOutputStream;
 
 /**
  * Extends RollingFileManager but instead of using a buffered output stream,
@@ -191,9 +192,9 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
                     LOGGER.trace("RandomAccessFile {} set length to 0", name);
                     raf.setLength(0);
                 }
-                return new RollingRandomAccessFileManager(raf, name, data.pattern, new DummyOutputStream(), data.append,
-                        data.immediateFlush, data.bufferSize, size, time, data.policy, data.strategy, data.advertiseURI,
-                        data.layout);
+                return new RollingRandomAccessFileManager(raf, name, data.pattern, NullOutputStream.NULL_OUTPUT_STREAM,
+                        data.append, data.immediateFlush, data.bufferSize, size, time, data.policy, data.strategy,
+                        data.advertiseURI, data.layout);
             } catch (final IOException ex) {
                 LOGGER.error("Cannot access RandomAccessFile {}) " + ex);
                 if (raf != null) {
@@ -205,17 +206,6 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
                 }
             }
             return null;
-        }
-    }
-
-    /** {@code OutputStream} subclass that does not write anything. */
-    static class DummyOutputStream extends OutputStream {
-        @Override
-        public void write(final int b) throws IOException {
-        }
-
-        @Override
-        public void write(final byte[] b, final int off, final int len) throws IOException {
         }
     }
 

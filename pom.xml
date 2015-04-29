@@ -172,7 +172,7 @@
     <pmd.plugin.version>3.4</pmd.plugin.version>
     <findbugs.plugin.version>2.5.5</findbugs.plugin.version>
     <changes.plugin.version>2.11</changes.plugin.version>
-    <javadoc.plugin.version>2.10.2</javadoc.plugin.version>
+    <javadoc.plugin.version>2.10.3</javadoc.plugin.version>
     <!-- surefire.plugin.version 2.18 yields http://jira.codehaus.org/browse/SUREFIRE-1121, which is fixed in 2.18.1 -->
     <surefire.plugin.version>2.18.1</surefire.plugin.version>
     <failsafe.plugin.version>2.18.1</failsafe.plugin.version>
@@ -257,7 +257,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.3.2</version>
+        <version>3.4</version>
       </dependency>
       <dependency>
         <groupId>ch.qos.logback</groupId>
@@ -903,8 +903,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-        <!-- Do not upgrade to versions 3.1, 3.2 or 3.3. 3.2 & 3.3 cause a NullPointerException in site:stage-deploy
-        and the site is broken in all of them. See http://jira.codehaus.org/browse/MSITE-695 -->
         <version>3.4</version>
         <dependencies>
           <dependency>
@@ -1342,7 +1340,7 @@
         <jdk>[1.7,)</jdk>
       </activation>
       <properties>
-        <findbugs.plugin.version>3.0.0</findbugs.plugin.version>
+        <findbugs.plugin.version>3.0.1</findbugs.plugin.version>
       </properties>
     </profile>
   </profiles>

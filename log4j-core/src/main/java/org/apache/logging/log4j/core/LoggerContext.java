@@ -149,7 +149,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     }
 
     /**
-     * Start with a specific configuration.
+     * Starts with a specific configuration.
      * @param config The new Configuration.
      */
     public void start(final Configuration config) {
@@ -241,7 +241,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     }
 
     /**
-     * Set the external context.
+     * Sets the external context.
      * @param context The external context.
      */
     public void setExternalContext(final Object context) {
@@ -258,7 +258,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     }
 
     /**
-     * Obtain a Logger from the Context.
+     * Obtains a Logger from the Context.
      * @param name The name of the Logger to return.
      * @return The Logger.
      */
@@ -281,7 +281,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     }
 
     /**
-     * Obtain a Logger from the Context.
+     * Obtains a Logger from the Context.
      * @param name The name of the Logger to return.
      * @param messageFactory The message factory is used only when creating a
      *            logger, subsequent use does not change the logger but will log
@@ -302,7 +302,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     }
 
     /**
-     * Determine if the specified Logger exists.
+     * Determines if the specified Logger exists.
      * @param name The Logger name to search for.
      * @return True if the Logger exists, false otherwise.
      */
@@ -322,7 +322,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     }
 
     /**
-     * Add a Filter to the Configuration. Filters that are added through the API will be lost
+     * Adds a Filter to the Configuration. Filters that are added through the API will be lost
      * when a reconfigure occurs.
      * @param filter The Filter to add.
      */
@@ -339,7 +339,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     }
 
     /**
-     * Set the Configuration to be used.
+     * Sets the Configuration to be used.
      * @param config The new Configuration.
      * @return The previous Configuration.
      */
@@ -434,21 +434,23 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     }
 
     /**
-     * Reconfigure the context.
+     * Reconfigure the context. Log4j does not remove Loggers during a reconfiguration. Log4j will create new
+     * LoggerConfig objects and Log4j will point the Loggers at the new LoggerConfigs. Log4j will free the old
+     * LoggerConfig, along with old Appenders and Filters.
      */
     public void reconfigure() {
         reconfigure(configLocation);
     }
 
     /**
-     * Cause all Loggers to be updated against the current Configuration.
+     * Causes all Loggers to be updated against the current Configuration.
      */
     public void updateLoggers() {
         updateLoggers(this.config);
     }
 
     /**
-     * Cause all Logger to be updated against the specified Configuration.
+     * Causes all Logger to be updated against the specified Configuration.
      * @param config The Configuration.
      */
     public void updateLoggers(final Configuration config) {
@@ -458,7 +460,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     }
 
     /**
-     * Cause a reconfiguration to take place when the underlying configuration
+     * Causes a reconfiguration to take place when the underlying configuration
      * file changes.
      *
      * @param reconfigurable The Configuration that can be reconfigured.
