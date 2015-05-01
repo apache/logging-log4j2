@@ -49,12 +49,16 @@ public class ConsoleAppenderNoAnsiStyleLayoutMain {
             LOG.info("Information message.");
             LOG.debug("Debug message.");
             LOG.trace("Trace message.");
-            LOG.error("Error message.", new IOException("test"));
+            logThrowableFromMethod();
             // This will log the stack trace as well:
             LOG.error("Error message {}", "Hi", new IOException("test"));
         } finally {
             Configurator.shutdown(ctx);
         }
+    }
+
+    private static void logThrowableFromMethod() {
+        LOG.error("Error message.", new IOException("test"));
     }
 
 }
