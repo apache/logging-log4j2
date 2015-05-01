@@ -93,6 +93,9 @@
       <action issue="LOG4J2-1004" dev="ggregory" type="update">
         Update Jackson from 2.5.1 to 2.5.3.
       </action>
+      <action issue="LOG4J2-1005" dev="ggregory" type="update">
+        Update from Slf4j 1.7.7 to 1.7.12.
+      </action>
     </release>
     <release version="2.2" date="2015-02-22" description="GA Release 2.2">
       <action issue="LOG4J2-938" dev="rpopma" type="fix" due-to="Mauro Molinari">
