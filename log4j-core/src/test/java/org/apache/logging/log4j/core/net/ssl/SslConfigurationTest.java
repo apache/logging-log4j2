@@ -61,6 +61,6 @@ public class SslConfigurationTest {
         final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, null, null, null);
         final SslConfiguration sslConf = SslConfiguration.createSSLConfiguration(null, ksc, null);
         final SSLSocketFactory factory = sslConf.getSslSocketFactory();
-        Assert.assertTrue(true);
+        Assert.assertNotNull(factory);
     }
 }
