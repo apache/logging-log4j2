@@ -53,7 +53,7 @@ public class SslConfigurationTest {
         final SSLSocket clientSocket = (SSLSocket) factory.createSocket(TLS_TEST_HOST, TLS_TEST_PORT);
         final OutputStream os = clientSocket.getOutputStream();
         os.write("GET config/login_verify2?".getBytes());
-        Assert.assertTrue(false);
+        Assert.fail("Expected IOException");
     }
 
     @Test
