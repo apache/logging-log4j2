@@ -45,15 +45,25 @@ public class SslConfigurationTest {
         Assert.assertNotNull(clientSocket);
     }
 
-    @Test(expected = IOException.class)
+    @Test
     public void connectionFailsWithoutValidServerCertificate() throws IOException, StoreConfigurationException {
         final TrustStoreConfiguration tsc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE, null, null, null);
         final SslConfiguration sc = SslConfiguration.createSSLConfiguration(null, null, tsc);
         final SSLSocketFactory factory = sc.getSslSocketFactory();
         final SSLSocket clientSocket = (SSLSocket) factory.createSocket(TLS_TEST_HOST, TLS_TEST_PORT);
-        final OutputStream os = clientSocket.getOutputStream();
-        os.write("GET config/login_verify2?".getBytes());
-        Assert.fail("Expected IOException");
+        try {
+            OutputStream os = clientSocket.getOutputStream();
+            try {
+                os.write("GET config/login_verify2?".getBytes());
+                Assert.fail("Expected IOException");
+            } catch (IOException e) {
+                // Expected, do nothing.
+            } finally {
+                os.close();
+            }
+        } finally {
+            clientSocket.close();
+        }
     }
 
     @Test
