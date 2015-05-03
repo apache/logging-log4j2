@@ -41,6 +41,7 @@ public class SslConfigurationTest {
         final SslConfiguration sc = SslConfiguration.createSSLConfiguration(null, null, null);
         final SSLSocketFactory factory = sc.getSslSocketFactory();
         final SSLSocket clientSocket = (SSLSocket) factory.createSocket(TLS_TEST_HOST, TLS_TEST_PORT);
+        clientSocket.close();
         Assert.assertNotNull(clientSocket);
     }
 
