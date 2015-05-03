@@ -99,9 +99,6 @@
       <action issue="LOG4J2-1005" dev="ggregory" type="update">
         Update Slf4j from 1.7.7 to 1.7.12.
       </action>
-      <action issue="LOG4J2-1006" dev="ggregory" type="update">
-        Update JPA tests from EclipseLink 2.5.2 to 2.6.0.
-      </action>
     </release>
     <release version="2.2" date="2015-02-22" description="GA Release 2.2">
       <action issue="LOG4J2-938" dev="rpopma" type="fix" due-to="Mauro Molinari">
