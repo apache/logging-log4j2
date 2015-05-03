@@ -38,13 +38,17 @@ public class ConsoleAppenderNoAnsiStyleLayoutMain {
 
     private static final Logger LOG = LogManager.getLogger(ConsoleAppenderNoAnsiStyleLayoutMain.class);
 
-    public static void main(final String[] args) {
-        test(args);
+    private static void logThrowableFromMethod() {
+        LOG.error("Error message.", new IOException("test"));
     }
 
-    static void test(final String[] args) {
-        // System.out.println(System.getProperty("java.class.path"));
+    public static void main(final String[] args) {
         final String config = args.length == 0 ? "target/test-classes/log4j2-console-style-no-ansi.xml" : args[0];
+        test(args, config);
+    }
+
+    static void test(final String[] args, String config) {
+        // System.out.println(System.getProperty("java.class.path"));
         final LoggerContext ctx = Configurator.initialize(ConsoleAppenderNoAnsiStyleLayoutMain.class.getName(), config);
         try {
             LOG.fatal("Fatal message.");
@@ -59,10 +63,6 @@ public class ConsoleAppenderNoAnsiStyleLayoutMain {
         } finally {
             Configurator.shutdown(ctx);
         }
-    }
-
-    private static void logThrowableFromMethod() {
-        LOG.error("Error message.", new IOException("test"));
     }
 
 }
