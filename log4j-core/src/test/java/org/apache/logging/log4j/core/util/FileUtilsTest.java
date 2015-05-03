@@ -17,14 +17,16 @@
 
 package org.apache.logging.log4j.core.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLEncoder;
 
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests the FileUtils class.
@@ -41,8 +43,15 @@ public class FileUtilsTest {
     }
 
     @Test
-    public void testFileFromUriWithPlusCharactersConvertedToSpacesIfFileDoesNotExist()
-            throws Exception {
+    public void testFileExistsWithPlusCharactersInName() throws Exception {
+        final String config = "target/test-classes/log4j+config+with+plus+characters.xml";
+        final File file = new File(config);
+        assertEquals("log4j+config+with+plus+characters.xml", file.getName());
+        assertTrue("file exists", file.exists());
+    }
+
+    @Test
+    public void testFileFromUriWithPlusCharactersConvertedToSpacesIfFileDoesNotExist() throws Exception {
         final String config = "NON-EXISTING-PATH/this+file+does+not+exist.xml";
         final URI uri = new URI(config);
         final File file = FileUtils.fileFromUri(uri);
