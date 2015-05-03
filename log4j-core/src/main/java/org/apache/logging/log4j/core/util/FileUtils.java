@@ -69,8 +69,8 @@ public final class FileUtils {
         final String charsetName = Constants.UTF_8.name();
         try {
             String fileName = uri.toURL().getFile();
+            System.out.println("Testing FileName:  " + fileName);
             if (new File(fileName).exists()) { // LOG4J2-466
-                System.out.println("FileName:  " + fileName);
                 return new File(fileName); // allow files with '+' char in name
             }
             fileName = URLDecoder.decode(fileName, charsetName);
