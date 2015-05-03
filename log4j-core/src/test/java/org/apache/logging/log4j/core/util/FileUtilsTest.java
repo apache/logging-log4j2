@@ -61,11 +61,11 @@ public class FileUtilsTest {
         //
         final URI uri2 = new File(uri1.getPath()).toURI();
         assertNotNull(uri2);
-        assertTrue("URI " + uri2 + " does not end with " + LOG4J_CONFIG_WITH_PLUS,
-                uri2.toString().endsWith(LOG4J_CONFIG_WITH_PLUS));
+        assertTrue("URI \"" + uri2 + "\" does not end with \"" + LOG4J_CONFIG_WITH_PLUS + "\"", uri2.toString()
+                .endsWith(LOG4J_CONFIG_WITH_PLUS));
         //
         final String fileName = uri2.toURL().getFile();
-        assertTrue("File name " + fileName + " does not end with " + LOG4J_CONFIG_WITH_PLUS,
+        assertTrue("File name \"" + fileName + "\" does not end with \"" + LOG4J_CONFIG_WITH_PLUS + "\"",
                 fileName.endsWith(LOG4J_CONFIG_WITH_PLUS));
     }
 
