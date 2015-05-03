@@ -53,18 +53,24 @@ public final class FileUtils {
      * @return the resulting file object
      */
     public static File fileFromUri(URI uri) {
+        // There MUST be a better way to do this. TODO Search other ASL projects...
         if (uri == null
                 || (uri.getScheme() != null && (!PROTOCOL_FILE.equals(uri.getScheme()) && !JBOSS_FILE.equals(uri
                         .getScheme())))) {
             return null;
         }
         if (uri.getScheme() == null) {
-            final File file = new File(uri.toString());
+            File file = new File(uri.toString());
             if (file.exists()) {
                 return file;
             }
             try {
-                uri = new File(uri.getPath()).toURI();
+                final String path = uri.getPath();
+                file = new File(path);
+                if (file.exists()) {
+                    return file;
+                }
+                uri = new File(path).toURI();
                 System.out.println("new uri: " + uri.toString());
             } catch (final Exception ex) {
                 LOGGER.warn("Invalid URI {}", uri);

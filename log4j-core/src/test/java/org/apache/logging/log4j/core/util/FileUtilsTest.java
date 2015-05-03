@@ -45,6 +45,15 @@ public class FileUtilsTest {
         assertTrue("file exists", file.exists());
     }
 
+    @Test
+    public void testFileFromUriWithSpacesAndPlusCharactersInName() throws Exception {
+        final String config = "target/test-classes/s%20p%20a%20c%20e%20s/log4j%2Bconfig%2Bwith%2Bplus%2Bcharacters.xml";
+        final URI uri = new URI(config);
+        final File file = FileUtils.fileFromUri(uri);
+        assertEquals(LOG4J_CONFIG_WITH_PLUS, file.getName());
+        assertTrue("file exists", file.exists());
+    }
+
     /**
      * Help figure out why {@link #testFileFromUriWithPlusCharactersInName()} fails in Jenkins but asserting different
      * parts of the implementation of {@link FileUtils#fileFromUri(URI)}.
