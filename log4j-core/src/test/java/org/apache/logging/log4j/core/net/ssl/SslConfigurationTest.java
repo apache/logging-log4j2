@@ -33,7 +33,7 @@ public class SslConfigurationTest {
     public void emptyConfigurationDoesntCauseNullSSLSocketFactory() {
         final SslConfiguration sc = SslConfiguration.createSSLConfiguration(null, null, null);
         final SSLSocketFactory factory = sc.getSslSocketFactory();
-        Assert.assertTrue(factory != null);
+        Assert.assertNotNull(factory);
     }
 
     @Test
