@@ -20,6 +20,7 @@ package org.apache.logging.log4j.core.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -42,12 +43,19 @@ public class FileUtilsTest {
         assertTrue("file exists", file.exists());
     }
 
+    /**
+     * Help figure out why {@link #testFileFromUriWithPlusCharactersInName()} fails in Jenkins but asserting different
+     * parts of the implementation of {@link FileUtils#fileFromUri(URI)}.
+     */
     @Test
     public void testFileExistsWithPlusCharactersInName() throws Exception {
         final String config = "target/test-classes/log4j+config+with+plus+characters.xml";
         final File file = new File(config);
         assertEquals("log4j+config+with+plus+characters.xml", file.getName());
         assertTrue("file exists", file.exists());
+        //
+        final URI uri = new URI(config);
+        assertNull(uri.getScheme());
     }
 
     @Test
