@@ -60,6 +60,7 @@ public final class FileUtils {
         if (uri.getScheme() == null) {
             try {
                 uri = new File(uri.getPath()).toURI();
+                System.out.println("new uri: " + uri.toString());
             } catch (final Exception ex) {
                 LOGGER.warn("Invalid URI {}", uri);
                 return null;
@@ -67,11 +68,14 @@ public final class FileUtils {
         }
         final String charsetName = Constants.UTF_8.name();
         try {
-            final String fileName = uri.toURL().getFile();
+            String fileName = uri.toURL().getFile();
             if (new File(fileName).exists()) { // LOG4J2-466
+                System.out.println("FileName:  " + fileName);
                 return new File(fileName); // allow files with '+' char in name
             }
-            return new File(URLDecoder.decode(fileName, charsetName));
+            fileName = URLDecoder.decode(fileName, charsetName);
+            System.out.println("Decoded fileName: " + fileName);
+            return new File(fileName);
         } catch (final MalformedURLException ex) {
             LOGGER.warn("Invalid URL {}", uri, ex);
         } catch (final UnsupportedEncodingException uee) {
