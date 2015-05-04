@@ -17,18 +17,16 @@
 
 package org.apache.logging.log4j.core.config.plugins.util;
 
-import java.io.File;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import org.apache.logging.log4j.core.util.FileUtils;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests the ResolverUtil class.
