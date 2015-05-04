@@ -165,20 +165,17 @@ class AsyncLoggerConfigHelper {
     }
 
     private static ExceptionHandler<Log4jEventWrapper> getExceptionHandler() {
-        final String cls = System
-                .getProperty("AsyncLoggerConfig.ExceptionHandler");
+        final String cls = System.getProperty("AsyncLoggerConfig.ExceptionHandler");
         if (cls == null) {
             return null;
         }
         try {
             @SuppressWarnings("unchecked")
-            final Class<? extends ExceptionHandler> klass = (Class<? extends ExceptionHandler>) Class
+            final Class<? extends ExceptionHandler<Log4jEventWrapper>> klass = (Class<? extends ExceptionHandler<Log4jEventWrapper>>) Class
                     .forName(cls);
             return klass.newInstance();
         } catch (final Exception ignored) {
-            LOGGER.debug(
-                    "AsyncLoggerConfig.ExceptionHandler not set: error creating "
-                            + cls + ": ", ignored);
+            LOGGER.debug("AsyncLoggerConfig.ExceptionHandler not set: error creating " + cls + ": ", ignored);
             return null;
         }
     }
