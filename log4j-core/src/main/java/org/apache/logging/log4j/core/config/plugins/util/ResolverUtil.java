@@ -22,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Arrays;
@@ -41,36 +42,40 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.wiring.BundleWiring;
 
 /**
- * <p>ResolverUtil is used to locate classes that are available in the/a class path and meet
- * arbitrary conditions. The two most common conditions are that a class implements/extends
- * another class, or that is it annotated with a specific annotation. However, through the use
- * of the {@link Test} class it is possible to search using arbitrary conditions.</p>
+ * <p>
+ * ResolverUtil is used to locate classes that are available in the/a class path and meet arbitrary conditions. The two
+ * most common conditions are that a class implements/extends another class, or that is it annotated with a specific
+ * annotation. However, through the use of the {@link Test} class it is possible to search using arbitrary conditions.
+ * </p>
  *
- * <p>A ClassLoader is used to locate all locations (directories and jar files) in the class
- * path that contain classes within certain packages, and then to load those classes and
- * check them. By default the ClassLoader returned by
- *  {@code Thread.currentThread().getContextClassLoader()} is used, but this can be overridden
- * by calling {@link #setClassLoader(ClassLoader)} prior to invoking any of the {@code find()}
- * methods.</p>
+ * <p>
+ * A ClassLoader is used to locate all locations (directories and jar files) in the class path that contain classes
+ * within certain packages, and then to load those classes and check them. By default the ClassLoader returned by
+ * {@code Thread.currentThread().getContextClassLoader()} is used, but this can be overridden by calling
+ * {@link #setClassLoader(ClassLoader)} prior to invoking any of the {@code find()} methods.
+ * </p>
  *
- * <p>General searches are initiated by calling the
- * {@link #find(ResolverUtil.Test, String...)} method and supplying
- * a package name and a Test instance. This will cause the named package <b>and all sub-packages</b>
- * to be scanned for classes that meet the test. There are also utility methods for the common
- * use cases of scanning multiple packages for extensions of particular classes, or classes
- * annotated with a specific annotation.</p>
+ * <p>
+ * General searches are initiated by calling the {@link #find(ResolverUtil.Test, String...)} method and supplying a
+ * package name and a Test instance. This will cause the named package <b>and all sub-packages</b> to be scanned for
+ * classes that meet the test. There are also utility methods for the common use cases of scanning multiple packages for
+ * extensions of particular classes, or classes annotated with a specific annotation.
+ * </p>
  *
- * <p>The standard usage pattern for the ResolverUtil class is as follows:</p>
+ * <p>
+ * The standard usage pattern for the ResolverUtil class is as follows:
+ * </p>
  *
- *<pre>
- *ResolverUtil&lt;ActionBean&gt; resolver = new ResolverUtil&lt;ActionBean&gt;();
- *resolver.findImplementation(ActionBean.class, pkg1, pkg2);
- *resolver.find(new CustomTest(), pkg1);
- *resolver.find(new CustomTest(), pkg2);
- *Collection&lt;ActionBean&gt; beans = resolver.getClasses();
- *</pre>
+ * <pre>
+ * ResolverUtil&lt;ActionBean&gt; resolver = new ResolverUtil&lt;ActionBean&gt;();
+ * resolver.findImplementation(ActionBean.class, pkg1, pkg2);
+ * resolver.find(new CustomTest(), pkg1);
+ * resolver.find(new CustomTest(), pkg2);
+ * Collection&lt;ActionBean&gt; beans = resolver.getClasses();
+ * </pre>
  *
- * <p>This class was copied and modified from Stripes - http://stripes.mc4j.org/confluence/display/stripes/Home
+ * <p>
+ * This class was copied and modified from Stripes - http://stripes.mc4j.org/confluence/display/stripes/Home
  * </p>
  */
 public class ResolverUtil {
@@ -88,14 +93,14 @@ public class ResolverUtil {
     private final Set<URI> resourceMatches = new HashSet<URI>();
 
     /**
-     * The ClassLoader to use when looking for classes. If null then the ClassLoader returned
-     * by Thread.currentThread().getContextClassLoader() will be used.
+     * The ClassLoader to use when looking for classes. If null then the ClassLoader returned by
+     * Thread.currentThread().getContextClassLoader() will be used.
      */
     private ClassLoader classloader;
 
     /**
-     * Provides access to the classes discovered so far. If no calls have been made to
-     * any of the {@code find()} methods, this set will be empty.
+     * Provides access to the classes discovered so far. If no calls have been made to any of the {@code find()}
+     * methods, this set will be empty.
      *
      * @return the set of classes that have been discovered.
      */
@@ -105,16 +110,16 @@ public class ResolverUtil {
 
     /**
      * Returns the matching resources.
+     * 
      * @return A Set of URIs that match the criteria.
      */
     public Set<URI> getResources() {
         return resourceMatches;
     }
 
-
     /**
-     * Returns the classloader that will be used for scanning for classes. If no explicit
-     * ClassLoader has been set by the calling, the context class loader will be used.
+     * Returns the classloader that will be used for scanning for classes. If no explicit ClassLoader has been set by
+     * the calling, the context class loader will be used.
      *
      * @return the ClassLoader that will be used to scan for classes
      */
@@ -123,19 +128,24 @@ public class ResolverUtil {
     }
 
     /**
-     * Sets an explicit ClassLoader that should be used when scanning for classes. If none
-     * is set then the context classloader will be used.
+     * Sets an explicit ClassLoader that should be used when scanning for classes. If none is set then the context
+     * classloader will be used.
      *
-     * @param classloader a ClassLoader to use when scanning for classes
+     * @param classloader
+     *        a ClassLoader to use when scanning for classes
      */
-    public void setClassLoader(final ClassLoader classloader) { this.classloader = classloader; }
+    public void setClassLoader(final ClassLoader classloader) {
+        this.classloader = classloader;
+    }
 
     /**
-     * Attempts to discover classes that pass the test. Accumulated
-     * classes can be accessed by calling {@link #getClasses()}.
+     * Attempts to discover classes that pass the test. Accumulated classes can be accessed by calling
+     * {@link #getClasses()}.
      *
-     * @param test the test to determine matching classes
-     * @param packageNames one or more package names to scan (including subpackages) for classes
+     * @param test
+     *        the test to determine matching classes
+     * @param packageNames
+     *        one or more package names to scan (including subpackages) for classes
      */
     public void find(final Test test, final String... packageNames) {
         if (packageNames == null) {
@@ -148,14 +158,14 @@ public class ResolverUtil {
     }
 
     /**
-     * Scans for classes starting at the package provided and descending into subpackages.
-     * Each class is offered up to the Test as it is discovered, and if the Test returns
-     * true the class is retained.  Accumulated classes can be fetched by calling
-     * {@link #getClasses()}.
+     * Scans for classes starting at the package provided and descending into subpackages. Each class is offered up to
+     * the Test as it is discovered, and if the Test returns true the class is retained. Accumulated classes can be
+     * fetched by calling {@link #getClasses()}.
      *
-     * @param test an instance of {@link Test} that will be used to filter classes
-     * @param packageName the name of the package from which to start scanning for
-     *        classes, e.g. {@code net.sourceforge.stripes}
+     * @param test
+     *        an instance of {@link Test} that will be used to filter classes
+     * @param packageName
+     *        the name of the package from which to start scanning for classes, e.g. {@code net.sourceforge.stripes}
      */
     public void findInPackage(final Test test, String packageName) {
         packageName = packageName.replace('.', '/');
@@ -198,13 +208,15 @@ public class ResolverUtil {
                 }
             } catch (final IOException ioe) {
                 LOGGER.warn("could not read entries", ioe);
+            } catch (URISyntaxException e) {
+                LOGGER.warn("could not read entries", e);
             }
         }
     }
 
-    String extractPath(final URL url) throws UnsupportedEncodingException {
+    String extractPath(final URL url) throws UnsupportedEncodingException, URISyntaxException {
         String urlPath = url.getPath(); // same as getFile but without the Query portion
-        //System.out.println(url.getProtocol() + "->" + urlPath);
+        // System.out.println(url.getProtocol() + "->" + urlPath);
 
         // I would be surprised if URL.getPath() ever starts with "jar:" but no harm in checking
         if (urlPath.startsWith("jar:")) {
@@ -226,39 +238,42 @@ public class ResolverUtil {
         if (neverDecode.contains(protocol)) {
             return urlPath;
         }
-        if (new File(urlPath).exists()) {
+        final String cleanPath = new URI(urlPath).getPath();
+        if (new File(cleanPath).exists()) {
             // if URL-encoded file exists, don't decode it
-            return urlPath;
+            return cleanPath;
         }
         urlPath = URLDecoder.decode(urlPath, Constants.UTF_8.name());
         return urlPath;
     }
 
     private void loadImplementationsInBundle(final Test test, final String packageName) {
-        //Do not remove the cast on the next line as removing it will cause a compile error on Java 7.
+        // Do not remove the cast on the next line as removing it will cause a compile error on Java 7.
         @SuppressWarnings("RedundantCast")
-        final BundleWiring wiring = (BundleWiring) FrameworkUtil.getBundle(
-                ResolverUtil.class).adapt(BundleWiring.class);
+        final BundleWiring wiring = (BundleWiring) FrameworkUtil.getBundle(ResolverUtil.class)
+                .adapt(BundleWiring.class);
         @SuppressWarnings("unchecked")
         final Collection<String> list = (Collection<String>) wiring.listResources(packageName, "*.class",
-            BundleWiring.LISTRESOURCES_RECURSE);
+                BundleWiring.LISTRESOURCES_RECURSE);
         for (final String name : list) {
             addIfMatching(test, name);
         }
     }
 
-
     /**
-     * Finds matches in a physical directory on a filesystem.  Examines all
-     * files within a directory - if the File object is not a directory, and ends with <i>.class</i>
-     * the file is loaded and tested to see if it is acceptable according to the Test.  Operates
-     * recursively to find classes within a folder structure matching the package structure.
+     * Finds matches in a physical directory on a filesystem. Examines all files within a directory - if the File object
+     * is not a directory, and ends with <i>.class</i> the file is loaded and tested to see if it is acceptable
+     * according to the Test. Operates recursively to find classes within a folder structure matching the package
+     * structure.
      *
-     * @param test a Test used to filter the classes that are discovered
-     * @param parent the package name up to this directory in the package hierarchy.  E.g. if
-     *        /classes is in the classpath and we wish to examine files in /classes/org/apache then
-     *        the values of <i>parent</i> would be <i>org/apache</i>
-     * @param location a File object representing a directory
+     * @param test
+     *        a Test used to filter the classes that are discovered
+     * @param parent
+     *        the package name up to this directory in the package hierarchy. E.g. if /classes is in the classpath and
+     *        we wish to examine files in /classes/org/apache then the values of <i>parent</i> would be
+     *        <i>org/apache</i>
+     * @param location
+     *        a File object representing a directory
      */
     private void loadImplementationsInDirectory(final Test test, final String parent, final File location) {
         final File[] files = location.listFiles();
@@ -285,13 +300,15 @@ public class ResolverUtil {
     }
 
     /**
-     * Finds matching classes within a jar files that contains a folder structure
-     * matching the package structure.  If the File is not a JarFile or does not exist a warning
-     * will be logged, but no error will be raised.
+     * Finds matching classes within a jar files that contains a folder structure matching the package structure. If the
+     * File is not a JarFile or does not exist a warning will be logged, but no error will be raised.
      *
-     * @param test a Test used to filter the classes that are discovered
-     * @param parent the parent package under which classes must be in order to be considered
-     * @param jarFile the jar file to be examined for classes
+     * @param test
+     *        a Test used to filter the classes that are discovered
+     * @param parent
+     *        the parent package under which classes must be in order to be considered
+     * @param jarFile
+     *        the jar file to be examined for classes
      */
     private void loadImplementationsInJar(final Test test, final String parent, final File jarFile) {
         @SuppressWarnings("resource")
@@ -325,16 +342,18 @@ public class ResolverUtil {
     }
 
     /**
-     * Finds matching classes within a jar files that contains a folder structure
-     * matching the package structure.  If the File is not a JarFile or does not exist a warning
-     * will be logged, but no error will be raised.
+     * Finds matching classes within a jar files that contains a folder structure matching the package structure. If the
+     * File is not a JarFile or does not exist a warning will be logged, but no error will be raised.
      *
-     * @param test a Test used to filter the classes that are discovered
-     * @param parent the parent package under which classes must be in order to be considered
-     * @param stream The jar InputStream
+     * @param test
+     *        a Test used to filter the classes that are discovered
+     * @param parent
+     *        the parent package under which classes must be in order to be considered
+     * @param stream
+     *        The jar InputStream
      */
     private void loadImplementationsInJar(final Test test, final String parent, final String path,
-                                          final JarInputStream stream) {
+            final JarInputStream stream) {
 
         try {
             JarEntry entry;
@@ -346,17 +365,19 @@ public class ResolverUtil {
                 }
             }
         } catch (final IOException ioe) {
-            LOGGER.error("Could not search jar file '" + path + "' for classes matching criteria: " +
-                test + " due to an IOException", ioe);
+            LOGGER.error("Could not search jar file '" + path + "' for classes matching criteria: " + test
+                    + " due to an IOException", ioe);
         }
     }
 
     /**
-     * Add the class designated by the fully qualified class name provided to the set of
-     * resolved classes if and only if it is approved by the Test supplied.
+     * Add the class designated by the fully qualified class name provided to the set of resolved classes if and only if
+     * it is approved by the Test supplied.
      *
-     * @param test the test used to determine if the class matches
-     * @param fqn the fully qualified name of a class
+     * @param test
+     *        the test used to determine if the class matches
+     * @param fqn
+     *        the fully qualified name of a class
      */
     protected void addIfMatching(final Test test, final String fqn) {
         try {
@@ -387,21 +408,25 @@ public class ResolverUtil {
     }
 
     /**
-     * A simple interface that specifies how to test classes to determine if they
-     * are to be included in the results produced by the ResolverUtil.
+     * A simple interface that specifies how to test classes to determine if they are to be included in the results
+     * produced by the ResolverUtil.
      */
     public interface Test {
         /**
-         * Will be called repeatedly with candidate classes. Must return True if a class
-         * is to be included in the results, false otherwise.
-         * @param type The Class to match against.
+         * Will be called repeatedly with candidate classes. Must return True if a class is to be included in the
+         * results, false otherwise.
+         * 
+         * @param type
+         *        The Class to match against.
          * @return true if the Class matches.
          */
         boolean matches(Class<?> type);
 
         /**
          * Test for a resource.
-         * @param resource The URI to the resource.
+         * 
+         * @param resource
+         *        The URI to the resource.
          * @return true if the resource matches.
          */
         boolean matches(URI resource);

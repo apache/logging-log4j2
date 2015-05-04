@@ -17,8 +17,14 @@
 
 package org.apache.logging.log4j.core.config.plugins.util;
 
+import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
+import org.apache.logging.log4j.core.util.FileUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -38,7 +44,11 @@ public class ResolverUtilTest {
 
     @Test
     public void testExtractPathFromJarUrlNotDecodedIfFileExists() throws Exception {
-        final String existingFile = "/log4j+config+with+plus+characters.xml";
+        testExtractPathFromJarUrlNotDecodedIfFileExists("/log4j+config+with+plus+characters.xml");
+    }
+
+    private void testExtractPathFromJarUrlNotDecodedIfFileExists(final String existingFile)
+            throws MalformedURLException, UnsupportedEncodingException, URISyntaxException {
         URL url = ResolverUtilTest.class.getResource(existingFile);
         if (!url.getProtocol().equals("jar")) {
             // create fake jar: URL that resolves to existing file
@@ -46,6 +56,12 @@ public class ResolverUtilTest {
         }
         final String actual = new ResolverUtil().extractPath(url);
         assertTrue("should not be decoded: " + actual, actual.endsWith(existingFile));
+    }
+
+    @Test
+    public void testFileFromUriWithSpacesAndPlusCharactersInName() throws Exception {
+        final String existingFile = "/s p a c e s/log4j+config+with+plus+characters.xml";
+        testExtractPathFromJarUrlNotDecodedIfFileExists(existingFile);
     }
 
     @Test
