@@ -118,7 +118,7 @@ class AsyncLoggerConfigHelper {
                 executor, ProducerType.MULTI, waitStrategy);
         final EventHandler<Log4jEventWrapper>[] handlers = new Log4jEventWrapperHandler[] {//
         new Log4jEventWrapperHandler() };
-        final ExceptionHandler errorHandler = getExceptionHandler();
+        final ExceptionHandler<Log4jEventWrapper> errorHandler = getExceptionHandler();
         disruptor.handleExceptionsWith(errorHandler);
         disruptor.handleEventsWith(handlers);
 
@@ -164,7 +164,7 @@ class AsyncLoggerConfigHelper {
         return Integers.ceilingNextPowerOfTwo(ringBufferSize);
     }
 
-    private static ExceptionHandler getExceptionHandler() {
+    private static ExceptionHandler<Log4jEventWrapper> getExceptionHandler() {
         final String cls = System
                 .getProperty("AsyncLoggerConfig.ExceptionHandler");
         if (cls == null) {
@@ -174,8 +174,7 @@ class AsyncLoggerConfigHelper {
             @SuppressWarnings("unchecked")
             final Class<? extends ExceptionHandler> klass = (Class<? extends ExceptionHandler>) Class
                     .forName(cls);
-            final ExceptionHandler result = klass.newInstance();
-            return result;
+            return klass.newInstance();
         } catch (final Exception ignored) {
             LOGGER.debug(
                     "AsyncLoggerConfig.ExceptionHandler not set: error creating "
