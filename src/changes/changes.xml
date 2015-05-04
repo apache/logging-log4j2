@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.3" date="2015-0?-??" description="GA Release 2.3">
+      <action issue="LOG4J2-1007" dev="ggregory" type="fix" due-to="Ralph Goers, Gary Gregory">
+        org.apache.logging.log4j.core.util#fileFromUri(URI uri) incorrectly converts '+' characters to spaces.
+      </action>
       <action issue="LOG4J2-1003" dev="ggregory" type="fix" due-to="Dan Armbrust">
         JUL Logger.throwing is mis-mapped to ERROR when it should be TRACE.
       </action>
