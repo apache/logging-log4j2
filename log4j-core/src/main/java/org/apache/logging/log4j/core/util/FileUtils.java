@@ -71,7 +71,6 @@ public final class FileUtils {
                     return file;
                 }
                 uri = new File(path).toURI();
-                System.out.println("new uri: " + uri.toString());
             } catch (final Exception ex) {
                 LOGGER.warn("Invalid URI {}", uri);
                 return null;
@@ -80,12 +79,10 @@ public final class FileUtils {
         final String charsetName = Constants.UTF_8.name();
         try {
             String fileName = uri.toURL().getFile();
-            System.out.println("Testing FileName:  " + fileName);
             if (new File(fileName).exists()) { // LOG4J2-466
                 return new File(fileName); // allow files with '+' char in name
             }
             fileName = URLDecoder.decode(fileName, charsetName);
-            System.out.println("Decoded fileName: " + fileName);
             return new File(fileName);
         } catch (final MalformedURLException ex) {
             LOGGER.warn("Invalid URL {}", uri, ex);
