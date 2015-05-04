@@ -46,7 +46,7 @@ public final class FileUtils {
     }
 
       /**
-     * Tries to convert the specified URL to a file object. If this fails,
+     * Tries to convert the specified URI to a file object. If this fails,
      * <b>null</b> is returned.
      *
      * @param uri the URI
