@@ -243,8 +243,7 @@ public class ResolverUtil {
             // if URL-encoded file exists, don't decode it
             return cleanPath;
         }
-        urlPath = URLDecoder.decode(urlPath, Constants.UTF_8.name());
-        return urlPath;
+        return URLDecoder.decode(urlPath, Constants.UTF_8.name());
     }
 
     private void loadImplementationsInBundle(final Test test, final String packageName) {
