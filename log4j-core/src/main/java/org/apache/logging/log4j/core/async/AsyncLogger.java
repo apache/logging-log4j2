@@ -183,14 +183,14 @@ public class AsyncLogger extends Logger {
         return new BlockingWaitStrategy();
     }
 
-    private static ExceptionHandler getExceptionHandler() {
+    private static ExceptionHandler<RingBufferLogEvent> getExceptionHandler() {
         final String cls = PropertiesUtil.getProperties().getStringProperty("AsyncLogger.ExceptionHandler");
         if (cls == null) {
             LOGGER.debug("No AsyncLogger.ExceptionHandler specified");
             return null;
         }
         try {
-            final ExceptionHandler result = Loader.newCheckedInstanceOf(cls, ExceptionHandler.class);
+            final ExceptionHandler<RingBufferLogEvent> result = Loader.newCheckedInstanceOf(cls, ExceptionHandler.class);
             LOGGER.debug("AsyncLogger.ExceptionHandler={}", result);
             return result;
         } catch (final Exception ignored) {
