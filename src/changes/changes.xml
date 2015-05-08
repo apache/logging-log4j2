@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.3" date="2015-0?-??" description="GA Release 2.3">
+      <action issue="LOG4J2-1009" dev="ggregory" type="fix" due-to="Mikael Ståldal">
+        Incorrectly defined compressionType parameter to GelfLayout.
+      </action>
       <action issue="LOG4J2-1008" dev="ggregory" type="fix" due-to="Ralph Goers, Gary Gregory">
         org.apache.logging.log4j.core.config.plugins.util.ResolverUtil.extractPath(URL) incorrectly converts '+' characters to spaces.
       </action>

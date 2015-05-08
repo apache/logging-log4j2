@@ -107,7 +107,7 @@ public final class GelfLayout extends AbstractStringLayout {
             //@formatter:off
             @PluginAttribute("host") final String host,
             @PluginElement("AdditionalField") final KeyValuePair[] additionalFields,
-            @PluginAttribute(value = "compressionThreshold",
+            @PluginAttribute(value = "compressionType",
                 defaultString = "GZIP") final CompressionType compressionType,
             @PluginAttribute(value = "compressionThreshold",
                 defaultInt= COMPRESSION_THRESHOLD) final int compressionThreshold) {
