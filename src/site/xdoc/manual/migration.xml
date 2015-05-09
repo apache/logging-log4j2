@@ -82,6 +82,11 @@
                   Where appropriate, applications should convert to use parameterized messages instead of String
                   concatenation.
                 </li>
+                <li>
+                  <a href="http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/MDC.html"><code>org.apache.log4j.MDC</code></a> and
+                  <a href="http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/NDC.html"><code>org.apache.log4j.NDC</code></a>
+                  have been replaced by the <a href="thread-context.html">Thread Context</a>.
+                </li>
               </ol>
           </subsection>
           <subsection name="Configuring Log4j 2">

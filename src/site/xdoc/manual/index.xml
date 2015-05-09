@@ -102,6 +102,8 @@
               and Pattern Converters without requiring any changes to Log4j.</li>
             <li>Due to the Plugin system configuration is simpler. Entries in the configuration
               do not require a class name to be specified.</li>
+            <li>Support for <a href="customloglevels.html">custom log levels</a>.
+              Custom log levels can be defined in code or in configuration.</li>
             <li>Support for <a href="messages.html">Message objects</a>. Messages allow support for interesting and
               complex constructs to be passed through the logging system and be efficiently
               manipulated. Users are free to create their own
