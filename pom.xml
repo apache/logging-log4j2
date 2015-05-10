@@ -154,7 +154,7 @@
   <properties>
     <!-- make sure to update these for each release! -->
     <log4jParentDir>${basedir}</log4jParentDir>
-    <Log4jReleaseVersion>2.2</Log4jReleaseVersion>
+    <Log4jReleaseVersion>2.3</Log4jReleaseVersion>
     <Log4jReleaseCount>eighteenth</Log4jReleaseCount>
     <Log4jReleaseManager>Ralph Goers</Log4jReleaseManager>
     <Log4jReleaseKey>B3D8E1BA</Log4jReleaseKey>

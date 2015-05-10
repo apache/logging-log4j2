@@ -23,7 +23,7 @@
     <title>Changes</title>
   </properties>
   <body>
-    <release version="2.3" date="2015-0?-??" description="GA Release 2.3">
+    <release version="2.3" date="2015-05-09" description="GA Release 2.3">
       <action issue="LOG4J2-1009" dev="ggregory" type="fix" due-to="Mikael Ståldal">
         Incorrectly defined compressionType parameter to GelfLayout.
       </action>
@@ -72,7 +72,7 @@
       <action issue="LOG4J2-976" dev="ggregory" type="fix" due-to="Matt Quinn">
         Using monitorInterval with YAML config file format causes JSONParseException.
       </action>
-      <action issue="LOG4J2-964" dev="ggregory" type="fix" due-to="Jonne Jyrylä">        
+      <action issue="LOG4J2-964" dev="ggregory" type="fix" due-to="Jonne Jyrylä">
         StringFormattedMessage serialization is incorrect.
       </action>
       <action issue="LOG4J2-947" dev="ggregory" type="fix" due-to="Stefan Wehner">
