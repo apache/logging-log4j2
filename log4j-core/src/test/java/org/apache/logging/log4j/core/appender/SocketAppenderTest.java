@@ -61,7 +61,7 @@ public class SocketAppenderTest {
     private static final String DYN_PORT = String.valueOf(PORTNUM2);
     private static final String ERROR_PORT = String.valueOf(AvailablePortFinder.getNextAvailable());
 
-    private static BlockingQueue<LogEvent> list = new ArrayBlockingQueue<LogEvent>(10);
+    private static BlockingQueue<LogEvent> list = new ArrayBlockingQueue<>(10);
 
     private static TCPSocketServer tcpServer;
     private static UDPSocketServer udpServer;

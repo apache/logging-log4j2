@@ -46,11 +46,11 @@ public class ListAppender extends AbstractAppender {
 
     // Use CopyOnWriteArrayList?
 
-    private final List<LogEvent> events = new ArrayList<LogEvent>();
+    private final List<LogEvent> events = new ArrayList<>();
 
-    private final List<String> messages = new ArrayList<String>();
+    private final List<String> messages = new ArrayList<>();
 
-    private final List<byte[]> data = new ArrayList<byte[]>();
+    private final List<byte[]> data = new ArrayList<>();
 
     private final boolean newLine;
 

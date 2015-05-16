@@ -68,7 +68,7 @@ public class GenerateCustomLoggerTest {
 
         // set up compiler
         final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-        final DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
+        final DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
         final StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null);
         final Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(f));
 
@@ -76,7 +76,7 @@ public class GenerateCustomLoggerTest {
         compiler.getTask(null, fileManager, diagnostics, null, null, compilationUnits).call();
 
         // check we don't have any compilation errors
-        final List<String> errors = new ArrayList<String>();
+        final List<String> errors = new ArrayList<>();
         for (final Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
             if (diagnostic.getKind() == Diagnostic.Kind.ERROR) {
                 errors.add(String.format("Compile error: %s%n", diagnostic.getMessage(Locale.getDefault())));

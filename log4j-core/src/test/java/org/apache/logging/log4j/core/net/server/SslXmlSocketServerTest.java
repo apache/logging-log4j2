@@ -60,7 +60,7 @@ public class SslXmlSocketServerTest extends AbstractSocketServerTest {
         ((LoggerContext) LogManager.getContext(false)).reconfigure();
         initServerSocketFactory();
         // Use a large buffer just to test the code, the UDP test uses a tiny buffer
-        server = new SecureTcpSocketServer<InputStream>(PORT_NUM, new XmlInputStreamLogEventBridge(1024 * 100,
+        server = new SecureTcpSocketServer<>(PORT_NUM, new XmlInputStreamLogEventBridge(1024 * 100,
                 Charset.defaultCharset()), sslConfig);
         thread = server.startNewThread();
     }

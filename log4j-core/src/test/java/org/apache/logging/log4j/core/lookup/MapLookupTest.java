@@ -36,7 +36,7 @@ public class MapLookupTest {
 
     @Test
     public void testMap() {
-        final HashMap<String, String> map = new HashMap<String, String>();
+        final HashMap<String, String> map = new HashMap<>();
         map.put("A", "B");
         final MapLookup lookup = new MapLookup(map);
         assertEquals(null, lookup.lookup(null));

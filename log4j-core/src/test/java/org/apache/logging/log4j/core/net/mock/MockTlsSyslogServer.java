@@ -33,7 +33,7 @@ import org.apache.logging.log4j.util.Strings;
 public class MockTlsSyslogServer extends MockSyslogServer {
     private final SSLServerSocket serverSocket;
     private SSLSocket clientSocket;
-    private final List<String> messageList = new ArrayList<String>();
+    private final List<String> messageList = new ArrayList<>();
     private TlsSyslogInputStreamReaderBase syslogReader;
 
     private TlsSyslogMessageFormat messageFormat = TlsSyslogMessageFormat.SYSLOG;

@@ -65,7 +65,7 @@ public class PerfTestDriver {
         }
 
         List<String> processArguments(final String java) {
-            final List<String> args = new ArrayList<String>();
+            final List<String> args = new ArrayList<>();
             args.add(java);
             args.add("-server");
             args.add("-Xms1g");
@@ -218,7 +218,7 @@ public class PerfTestDriver {
                 + System.getProperty("AsyncLogger.ThreadNameStrategy", "CACHED");
 
         final long start = System.nanoTime();
-        final List<Setup> tests = new ArrayList<PerfTestDriver.Setup>();
+        final List<Setup> tests = new ArrayList<>();
         // includeLocation=false
         tests.add(s("perf3PlainNoLoc.xml", LOG20, "Loggers all async",
                 ALL_ASYNC, SYSCLOCK, THREADNAME));

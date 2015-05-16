@@ -34,7 +34,7 @@ public class TcpXmlSocketServerTest extends AbstractSocketServerTest {
     public static void setupClass() throws Exception {
         ((LoggerContext) LogManager.getContext(false)).reconfigure();
         // Use a large buffer just to test the code, the UDP test uses a tiny buffer
-        server = new TcpSocketServer<InputStream>(PORT_NUM, new XmlInputStreamLogEventBridge(1024 * 100,
+        server = new TcpSocketServer<>(PORT_NUM, new XmlInputStreamLogEventBridge(1024 * 100,
                 Charset.defaultCharset()));
         thread = server.startNewThread();
     }

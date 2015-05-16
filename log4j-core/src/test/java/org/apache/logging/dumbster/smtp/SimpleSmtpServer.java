@@ -70,7 +70,7 @@ public class SimpleSmtpServer implements Runnable {
      * @param port port number
      */
     public SimpleSmtpServer(final int port) {
-        receivedMail = new ArrayList<SmtpMessage>();
+        receivedMail = new ArrayList<>();
         this.port = port;
     }
 
@@ -178,7 +178,7 @@ public class SimpleSmtpServer implements Runnable {
         sendResponse(out, smtpResponse);
         smtpState = smtpResponse.getNextState();
 
-        final List<SmtpMessage> msgList = new ArrayList<SmtpMessage>();
+        final List<SmtpMessage> msgList = new ArrayList<>();
         SmtpMessage msg = new SmtpMessage();
 
         while (smtpState != SmtpState.CONNECT) {

@@ -40,7 +40,7 @@ public class SmtpMessage {
      * Constructor. Initializes headers Map and body buffer.
      */
     public SmtpMessage() {
-        headers = new HashMap<String, List<String>>(10);
+        headers = new HashMap<>(10);
         body = new StringBuffer();
     }
 
@@ -124,7 +124,7 @@ public class SmtpMessage {
     private void addHeader(final String name, final String value) {
         List<String> valueList = headers.get(name);
         if (valueList == null) {
-            valueList = new ArrayList<String>(1);
+            valueList = new ArrayList<>(1);
             headers.put(name, valueList);
         }
         valueList.add(value);
