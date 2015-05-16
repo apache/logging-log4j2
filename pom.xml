@@ -185,8 +185,8 @@
     <jxr.plugin.version>2.5</jxr.plugin.version>
     <clirr.plugin.version>2.6.1</clirr.plugin.version>
     <manifestfile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestfile>
-    <maven.compile.source>1.6</maven.compile.source>
-    <maven.compile.target>1.6</maven.compile.target>
+    <maven.compile.source>1.7</maven.compile.source>
+    <maven.compile.target>1.7</maven.compile.target>
     <docLabel>Site Documentation</docLabel>
     <projectDir />
     <commonsLoggingVersion>1.2</commonsLoggingVersion>
