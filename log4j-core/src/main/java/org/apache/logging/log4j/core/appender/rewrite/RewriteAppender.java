@@ -42,7 +42,7 @@ public final class RewriteAppender extends AbstractAppender {
     private static final long serialVersionUID = 1L;
 
     private final Configuration config;
-    private final ConcurrentMap<String, AppenderControl> appenders = new ConcurrentHashMap<String, AppenderControl>();
+    private final ConcurrentMap<String, AppenderControl> appenders = new ConcurrentHashMap<>();
     private final RewritePolicy rewritePolicy;
     private final AppenderRef[] appenderRefs;
 
