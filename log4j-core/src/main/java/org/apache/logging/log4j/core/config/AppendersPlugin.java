@@ -43,7 +43,7 @@ public final class AppendersPlugin {
                 @PluginElement("Appenders") final Appender[] appenders) {
 
         final ConcurrentMap<String, Appender> map =
-            new ConcurrentHashMap<String, Appender>();
+            new ConcurrentHashMap<>();
 
         for (final Appender appender : appenders) {
                 map.put(appender.getName(), appender);

@@ -34,7 +34,7 @@ public final class CustomLevels {
     private final List<CustomLevelConfig> customLevels;
 
     private CustomLevels(final CustomLevelConfig[] customLevels) {
-        this.customLevels = new ArrayList<CustomLevelConfig>(Arrays.asList(customLevels));
+        this.customLevels = new ArrayList<>(Arrays.asList(customLevels));
     }
 
     /**

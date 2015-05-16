@@ -35,7 +35,7 @@ import java.util.Map;
  */
 public class PluginCache {
     private final Map<String, Map<String, PluginEntry>> categories =
-        new LinkedHashMap<String, Map<String, PluginEntry>>();
+        new LinkedHashMap<>();
 
     /**
      * Returns all categories of plugins in this cache.

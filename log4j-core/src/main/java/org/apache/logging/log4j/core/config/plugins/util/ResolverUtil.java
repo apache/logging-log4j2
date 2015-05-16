@@ -87,10 +87,10 @@ public class ResolverUtil {
     private static final String BUNDLE_RESOURCE = "bundleresource";
 
     /** The set of matches being accumulated. */
-    private final Set<Class<?>> classMatches = new HashSet<Class<?>>();
+    private final Set<Class<?>> classMatches = new HashSet<>();
 
     /** The set of matches being accumulated. */
-    private final Set<URI> resourceMatches = new HashSet<URI>();
+    private final Set<URI> resourceMatches = new HashSet<>();
 
     /**
      * The ClassLoader to use when looking for classes. If null then the ClassLoader returned by

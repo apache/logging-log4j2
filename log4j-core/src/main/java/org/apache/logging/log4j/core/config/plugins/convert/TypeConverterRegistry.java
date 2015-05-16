@@ -43,7 +43,7 @@ public class TypeConverterRegistry {
     private static volatile TypeConverterRegistry INSTANCE;
     private static final Object INSTANCE_LOCK = new Object();
 
-    private final ConcurrentMap<Type, TypeConverter<?>> registry = new ConcurrentHashMap<Type, TypeConverter<?>>();
+    private final ConcurrentMap<Type, TypeConverter<?>> registry = new ConcurrentHashMap<>();
 
     /**
      * Gets the singleton instance of the TypeConverterRegistry.

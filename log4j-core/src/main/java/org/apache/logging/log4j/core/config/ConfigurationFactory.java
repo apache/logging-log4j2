@@ -132,7 +132,7 @@ public abstract class ConfigurationFactory {
             LOCK.lock();
             try {
                 if (factories == null) {
-                    final List<ConfigurationFactory> list = new ArrayList<ConfigurationFactory>();
+                    final List<ConfigurationFactory> list = new ArrayList<>();
                     final String factoryClass = PropertiesUtil.getProperties().getStringProperty(CONFIGURATION_FACTORY_PROPERTY);
                     if (factoryClass != null) {
                         addFactory(list, factoryClass);
@@ -141,7 +141,7 @@ public abstract class ConfigurationFactory {
                     manager.collectPlugins();
                     final Map<String, PluginType<?>> plugins = manager.getPlugins();
                     final List<Class<? extends ConfigurationFactory>> ordered =
-                        new ArrayList<Class<? extends ConfigurationFactory>>(plugins.size());
+                        new ArrayList<>(plugins.size());
                     for (final PluginType<?> type : plugins.values()) {
                         try {
                             ordered.add(type.getPluginClass().asSubclass(ConfigurationFactory.class));

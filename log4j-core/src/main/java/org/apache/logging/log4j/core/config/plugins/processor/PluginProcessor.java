@@ -156,7 +156,7 @@ public class PluginProcessor extends AbstractProcessor {
             if (aliases == null) {
                 return DEFAULT_VALUE;
             }
-            final Collection<PluginEntry> entries = new ArrayList<PluginEntry>(aliases.value().length);
+            final Collection<PluginEntry> entries = new ArrayList<>(aliases.value().length);
             for (final String alias : aliases.value()) {
                 final PluginEntry entry = new PluginEntry();
                 entry.setKey(alias.toLowerCase());

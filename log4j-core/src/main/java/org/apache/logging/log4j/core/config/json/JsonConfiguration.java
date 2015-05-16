@@ -47,7 +47,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
 
     private static final long serialVersionUID = 1L;
     private static final String[] VERBOSE_CLASSES = new String[] { ResolverUtil.class.getName() };
-    private final List<Status> status = new ArrayList<Status>();
+    private final List<Status> status = new ArrayList<>();
     private JsonNode root;
 
     public JsonConfiguration(final ConfigurationSource configSource) {

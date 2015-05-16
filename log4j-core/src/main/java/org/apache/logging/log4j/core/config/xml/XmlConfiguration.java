@@ -67,7 +67,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
     private static final String[] VERBOSE_CLASSES = new String[] { ResolverUtil.class.getName() };
     private static final String LOG4J_XSD = "Log4j-config.xsd";
 
-    private final List<Status> status = new ArrayList<Status>();
+    private final List<Status> status = new ArrayList<>();
     private Element rootElement;
     private boolean strict;
     private String schemaResource;

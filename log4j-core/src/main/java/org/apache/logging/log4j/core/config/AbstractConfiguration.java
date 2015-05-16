@@ -78,7 +78,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     /**
      * Listeners for configuration changes.
      */
-    protected final List<ConfigurationListener> listeners = new CopyOnWriteArrayList<ConfigurationListener>();
+    protected final List<ConfigurationListener> listeners = new CopyOnWriteArrayList<>();
 
     /**
      * The ConfigurationMonitor that checks for configuration changes.
@@ -97,15 +97,15 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     protected boolean isShutdownHookEnabled = true;
     private String name;
-    private ConcurrentMap<String, Appender> appenders = new ConcurrentHashMap<String, Appender>();
-    private ConcurrentMap<String, LoggerConfig> loggers = new ConcurrentHashMap<String, LoggerConfig>();
+    private ConcurrentMap<String, Appender> appenders = new ConcurrentHashMap<>();
+    private ConcurrentMap<String, LoggerConfig> loggers = new ConcurrentHashMap<>();
     private List<CustomLevelConfig> customLevels = Collections.emptyList();
-    private final ConcurrentMap<String, String> properties = new ConcurrentHashMap<String, String>();
+    private final ConcurrentMap<String, String> properties = new ConcurrentHashMap<>();
     private final StrLookup tempLookup = new Interpolator(properties);
     private final StrSubstitutor subst = new StrSubstitutor(tempLookup);
     private LoggerConfig root = new LoggerConfig();
-    private final ConcurrentMap<String, Object> componentMap = new ConcurrentHashMap<String, Object>();
-    protected final List<String> pluginPackages = new ArrayList<String>();
+    private final ConcurrentMap<String, Object> componentMap = new ConcurrentHashMap<>();
+    protected final List<String> pluginPackages = new ArrayList<>();
     protected PluginManager pluginManager;
     private final ConfigurationSource configurationSource;
 
@@ -159,7 +159,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         setup();
         setupAdvertisement();
         doConfigure();
-        final Set<LoggerConfig> alreadyStarted = new HashSet<LoggerConfig>();
+        final Set<LoggerConfig> alreadyStarted = new HashSet<>();
         for (final LoggerConfig logger : loggers.values()) {
             logger.start();
             alreadyStarted.add(logger);
@@ -197,7 +197,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             }
         }
         // similarly, first stop AsyncLoggerConfig Disruptor thread(s)
-        final Set<LoggerConfig> alreadyStopped = new HashSet<LoggerConfig>();
+        final Set<LoggerConfig> alreadyStopped = new HashSet<>();
         int asyncLoggerConfigCount = 0;
         for (final LoggerConfig logger : loggers.values()) {
             if (logger instanceof AsyncLoggerConfig) {
@@ -374,7 +374,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             } else if (child.getName().equalsIgnoreCase("CustomLevels")) {
                 customLevels = child.getObject(CustomLevels.class).getCustomLevels();
             } else if (child.isInstanceOf(CustomLevelConfig.class)) {
-                final List<CustomLevelConfig> copy = new ArrayList<CustomLevelConfig>(customLevels);
+                final List<CustomLevelConfig> copy = new ArrayList<>(customLevels);
                 copy.add(child.getObject(CustomLevelConfig.class));
                 customLevels = copy;
             } else {
@@ -771,7 +771,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     private static Map<String, ?> createPluginMap(final Node node) {
-        final Map<String, Object> map = new LinkedHashMap<String, Object>();
+        final Map<String, Object> map = new LinkedHashMap<>();
         for (final Node child : node.getChildren()) {
             final Object object = child.getObject();
             map.put(child.getName(), object);
@@ -781,7 +781,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     private static Collection<?> createPluginCollection(final Node node) {
         final List<Node> children = node.getChildren();
-        final Collection<Object> list = new ArrayList<Object>(children.size());
+        final Collection<Object> list = new ArrayList<>(children.size());
         for (final Node child : children) {
             final Object object = child.getObject();
             list.add(object);
