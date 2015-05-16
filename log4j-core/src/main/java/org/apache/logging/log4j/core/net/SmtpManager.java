@@ -67,7 +67,7 @@ public class SmtpManager extends AbstractManager {
         this.session = session;
         this.message = message;
         this.data = data;
-        this.buffer = new CyclicBuffer<LogEvent>(LogEvent.class, data.numElements);
+        this.buffer = new CyclicBuffer<>(LogEvent.class, data.numElements);
     }
 
     public void add(final LogEvent event) {

@@ -61,7 +61,7 @@ public final class LevelPatternConverter extends LogEventPatternConverter {
         if (options == null || options.length == 0) {
             return INSTANCE;
         }
-        final Map<Level, String> levelMap = new HashMap<Level, String>();
+        final Map<Level, String> levelMap = new HashMap<>();
         int length = Integer.MAX_VALUE; // More than the longest level name.
         boolean lowerCase = false;
         final String[] definitions = options[0].split(Patterns.COMMA_SEPARATOR);

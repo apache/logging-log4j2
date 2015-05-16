@@ -246,7 +246,7 @@ public class Log4jLogEvent implements LogEvent {
         if (properties == null || properties.isEmpty()) {
             return contextMap; // contextMap is not null
         }
-        final Map<String, String> map = new HashMap<String, String>(contextMap);
+        final Map<String, String> map = new HashMap<>(contextMap);
 
         for (final Property prop : properties) {
             if (!map.containsKey(prop.getName())) {

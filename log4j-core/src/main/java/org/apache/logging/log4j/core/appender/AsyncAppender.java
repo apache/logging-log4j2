@@ -63,7 +63,7 @@ public final class AsyncAppender extends AbstractAppender {
     private AppenderControl errorAppender;
     private AsyncThread thread;
     private static final AtomicLong threadSequence = new AtomicLong(1);
-    private static ThreadLocal<Boolean> isAppenderThread = new ThreadLocal<Boolean>();
+    private static ThreadLocal<Boolean> isAppenderThread = new ThreadLocal<>();
 
 
     private AsyncAppender(final String name, final Filter filter, final AppenderRef[] appenderRefs,
@@ -71,7 +71,7 @@ public final class AsyncAppender extends AbstractAppender {
                            final boolean ignoreExceptions, final Configuration config,
                            final boolean includeLocation) {
         super(name, filter, null, ignoreExceptions);
-        this.queue = new ArrayBlockingQueue<Serializable>(queueSize);
+        this.queue = new ArrayBlockingQueue<>(queueSize);
         this.queueSize = queueSize;
         this.blocking = blocking;
         this.config = config;
@@ -83,7 +83,7 @@ public final class AsyncAppender extends AbstractAppender {
     @Override
     public void start() {
         final Map<String, Appender> map = config.getAppenders();
-        final List<AppenderControl> appenders = new ArrayList<AppenderControl>();
+        final List<AppenderControl> appenders = new ArrayList<>();
         for (final AppenderRef appenderRef : appenderRefs) {
             if (map.containsKey(appenderRef.getRef())) {
                 appenders.add(new AppenderControl(map.get(appenderRef.getRef()), appenderRef.getLevel(),

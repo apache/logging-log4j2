@@ -834,7 +834,7 @@ public final class JsonLayout extends AbstractJacksonLayout {
 
     @Override
     public Map<String, String> getContentFormat() {
-        final Map<String, String> result = new HashMap<String, String>();
+        final Map<String, String> result = new HashMap<>();
         result.put("version", "2.0");
         return result;
     }

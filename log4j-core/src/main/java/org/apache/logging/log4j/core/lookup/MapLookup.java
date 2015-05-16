@@ -46,7 +46,7 @@ public class MapLookup implements StrLookup {
     }
 
     private static HashMap<String, String> newMap(final int initialCapacity) {
-        return new HashMap<String, String>(initialCapacity);
+        return new HashMap<>(initialCapacity);
     }
 
     /**

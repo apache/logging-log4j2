@@ -128,7 +128,7 @@ public final class PatternParser {
         final PluginManager manager = new PluginManager(converterKey);
         manager.collectPlugins(config == null ? null : config.getPluginPackages());
         final Map<String, PluginType<?>> plugins = manager.getPlugins();
-        final Map<String, Class<PatternConverter>> converters = new LinkedHashMap<String, Class<PatternConverter>>();
+        final Map<String, Class<PatternConverter>> converters = new LinkedHashMap<>();
 
         for (final PluginType<?> type : plugins.values()) {
             try {
@@ -162,9 +162,9 @@ public final class PatternParser {
 
     public List<PatternFormatter> parse(final String pattern, final boolean alwaysWriteExceptions,
             final boolean noConsoleNoAnsi) {
-        final List<PatternFormatter> list = new ArrayList<PatternFormatter>();
-        final List<PatternConverter> converters = new ArrayList<PatternConverter>();
-        final List<FormattingInfo> fields = new ArrayList<FormattingInfo>();
+        final List<PatternFormatter> list = new ArrayList<>();
+        final List<PatternConverter> converters = new ArrayList<>();
+        final List<FormattingInfo> fields = new ArrayList<>();
 
         parse(pattern, converters, fields, noConsoleNoAnsi, true);
 
@@ -589,7 +589,7 @@ public final class PatternParser {
 
         final String converterId = convBuf.toString();
 
-        final List<String> options = new ArrayList<String>();
+        final List<String> options = new ArrayList<>();
         i = extractOptions(pattern, i, options);
 
         final PatternConverter pc = createConverter(converterId, currentLiteral, rules, options, noConsoleNoAnsi);

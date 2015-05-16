@@ -96,7 +96,7 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
      *         if an I/O error occurs when opening the socket.
      */
     public static TcpSocketServer<InputStream> createJsonSocketServer(final int port) throws IOException {
-        return new TcpSocketServer<InputStream>(port, new JsonInputStreamLogEventBridge());
+        return new TcpSocketServer<>(port, new JsonInputStreamLogEventBridge());
     }
 
     /**
@@ -109,7 +109,7 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
      *         if an I/O error occurs when opening the socket.
      */
     public static TcpSocketServer<ObjectInputStream> createSerializedSocketServer(final int port) throws IOException {
-        return new TcpSocketServer<ObjectInputStream>(port, new ObjectInputStreamLogEventBridge());
+        return new TcpSocketServer<>(port, new ObjectInputStreamLogEventBridge());
     }
 
     /**
@@ -122,7 +122,7 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
      *         if an I/O error occurs when opening the socket.
      */
     public static TcpSocketServer<InputStream> createXmlSocketServer(final int port) throws IOException {
-        return new TcpSocketServer<InputStream>(port, new XmlInputStreamLogEventBridge());
+        return new TcpSocketServer<>(port, new XmlInputStreamLogEventBridge());
     }
 
     /**
@@ -168,7 +168,7 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
         System.out.println("Usage: ServerSocket port configFilePath");
     }
 
-    private final ConcurrentMap<Long, SocketHandler> handlers = new ConcurrentHashMap<Long, SocketHandler>();
+    private final ConcurrentMap<Long, SocketHandler> handlers = new ConcurrentHashMap<>();
 
     private final ServerSocket serverSocket;
 

@@ -58,7 +58,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
     private final int regionLength;
     private final String advertiseURI;
     private final RandomAccessFile randomAccessFile;
-    private final ThreadLocal<Boolean> isEndOfBatch = new ThreadLocal<Boolean>();
+    private final ThreadLocal<Boolean> isEndOfBatch = new ThreadLocal<>();
     private MappedByteBuffer mappedBuffer;
     private long mappingOffset;
 
@@ -251,7 +251,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
      */
     @Override
     public Map<String, String> getContentFormat() {
-        final Map<String, String> result = new HashMap<String, String>(super.getContentFormat());
+        final Map<String, String> result = new HashMap<>(super.getContentFormat());
         result.put("fileURI", advertiseURI);
         return result;
     }

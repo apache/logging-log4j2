@@ -36,7 +36,7 @@ public abstract class AbstractManager {
 
     // Need to lock that map instead of using a ConcurrentMap due to stop removing the
     // manager from the map and closing the stream, requiring the whole stop method to be locked.
-    private static final Map<String, AbstractManager> MAP = new HashMap<String, AbstractManager>();
+    private static final Map<String, AbstractManager> MAP = new HashMap<>();
 
     private static final Lock LOCK = new ReentrantLock();
 
@@ -139,6 +139,6 @@ public abstract class AbstractManager {
      * format descriptors are specified.
      */
     public Map<String, String> getContentFormat() {
-        return new HashMap<String, String>();
+        return new HashMap<>();
     }
 }

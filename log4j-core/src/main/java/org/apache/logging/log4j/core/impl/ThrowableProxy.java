@@ -112,7 +112,7 @@ public class ThrowableProxy implements Serializable {
         this.name = throwable.getClass().getName();
         this.message = throwable.getMessage();
         this.localizedMessage = throwable.getLocalizedMessage();
-        final Map<String, CacheEntry> map = new HashMap<String, CacheEntry>();
+        final Map<String, CacheEntry> map = new HashMap<>();
         final Stack<Class<?>> stack = ReflectionUtil.getCurrentStackTrace();
         this.extendedStackTrace = this.toExtendedStackTrace(stack, map, null, throwable.getStackTrace());
         final Throwable throwableCause = throwable.getCause();

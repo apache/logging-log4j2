@@ -42,7 +42,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
     private final String advertiseURI;
     private final RandomAccessFile randomAccessFile;
     private final ByteBuffer buffer;
-    private final ThreadLocal<Boolean> isEndOfBatch = new ThreadLocal<Boolean>();
+    private final ThreadLocal<Boolean> isEndOfBatch = new ThreadLocal<>();
 
     protected RandomAccessFileManager(final RandomAccessFile file,
             final String fileName, final OutputStream os,
@@ -154,7 +154,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
      */
     @Override
     public Map<String, String> getContentFormat() {
-        final Map<String, String> result = new HashMap<String, String>(
+        final Map<String, String> result = new HashMap<>(
                 super.getContentFormat());
         result.put("fileURI", advertiseURI);
         return result;

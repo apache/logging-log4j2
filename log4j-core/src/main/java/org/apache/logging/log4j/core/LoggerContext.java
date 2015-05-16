@@ -60,8 +60,8 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     public static final String PROPERTY_CONFIG = "config";
     private static final Configuration NULL_CONFIGURATION = new NullConfiguration();
 
-    private final ConcurrentMap<String, Logger> loggers = new ConcurrentHashMap<String, Logger>();
-    private final CopyOnWriteArrayList<PropertyChangeListener> propertyChangeListeners = new CopyOnWriteArrayList<PropertyChangeListener>();
+    private final ConcurrentMap<String, Logger> loggers = new ConcurrentHashMap<>();
+    private final CopyOnWriteArrayList<PropertyChangeListener> propertyChangeListeners = new CopyOnWriteArrayList<>();
 
     /**
      * The Configuration is volatile to guarantee that initialization of the

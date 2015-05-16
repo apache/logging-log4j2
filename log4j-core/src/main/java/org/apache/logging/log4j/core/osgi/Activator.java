@@ -38,7 +38,7 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private final AtomicReference<BundleContext> context = new AtomicReference<BundleContext>();
+    private final AtomicReference<BundleContext> context = new AtomicReference<>();
 
     @Override
     public void start(final BundleContext context) throws Exception {

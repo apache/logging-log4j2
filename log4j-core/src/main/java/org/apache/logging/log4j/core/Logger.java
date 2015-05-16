@@ -173,7 +173,7 @@ public class Logger extends AbstractLogger {
         } else if (filter instanceof CompositeFilter) {
             return ((CompositeFilter) filter).iterator();
         } else {
-            final List<Filter> filters = new ArrayList<Filter>();
+            final List<Filter> filters = new ArrayList<>();
             filters.add(filter);
             return filters.iterator();
         }

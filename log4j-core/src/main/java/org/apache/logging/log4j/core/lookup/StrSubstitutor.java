@@ -364,7 +364,7 @@ public class StrSubstitutor {
         if (valueProperties == null) {
             return source.toString();
         }
-        final Map<String, String> valueMap = new HashMap<String, String>();
+        final Map<String, String> valueMap = new HashMap<>();
         final Enumeration<?> propNames = valueProperties.propertyNames();
         while (propNames.hasMoreElements()) {
             final String propName = (String) propNames.nextElement();
@@ -944,7 +944,7 @@ public class StrSubstitutor {
 
                                 // on the first call initialize priorVariables
                                 if (priorVariables == null) {
-                                    priorVariables = new ArrayList<String>();
+                                    priorVariables = new ArrayList<>();
                                     priorVariables.add(new String(chars,
                                             offset, length + lengthChange));
                                 }

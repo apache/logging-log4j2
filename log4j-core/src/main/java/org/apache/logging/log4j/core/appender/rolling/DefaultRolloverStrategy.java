@@ -181,7 +181,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
     private int purgeAscending(final int lowIndex, final int highIndex, final RollingFileManager manager) {
         int suffixLength = 0;
 
-        final List<FileRenameAction> renames = new ArrayList<FileRenameAction>();
+        final List<FileRenameAction> renames = new ArrayList<>();
         final StringBuilder buf = new StringBuilder();
 
         // LOG4J2-531: directory scan & rollover must use same format
@@ -298,7 +298,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
     private int purgeDescending(final int lowIndex, final int highIndex, final RollingFileManager manager) {
         int suffixLength = 0;
 
-        final List<FileRenameAction> renames = new ArrayList<FileRenameAction>();
+        final List<FileRenameAction> renames = new ArrayList<>();
         final StringBuilder buf = new StringBuilder();
 
         // LOG4J2-531: directory scan & rollover must use same format

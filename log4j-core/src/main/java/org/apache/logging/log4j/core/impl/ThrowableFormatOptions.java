@@ -214,7 +214,7 @@ public final class ThrowableFormatOptions {
                     if (filterStr.length() > 0) {
                         final String[] array = filterStr.split(Patterns.COMMA_SEPARATOR);
                         if (array.length > 0) {
-                            packages = new ArrayList<String>(array.length);
+                            packages = new ArrayList<>(array.length);
                             for (String token : array) {
                                 token = token.trim();
                                 if (token.length() > 0) {

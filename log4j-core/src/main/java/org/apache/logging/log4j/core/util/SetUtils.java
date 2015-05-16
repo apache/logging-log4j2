@@ -35,7 +35,7 @@ public final class SetUtils {
      * @return an array of the matching strings from the given set
      */
     public static String[] prefixSet(final Set<String> set, final String prefix) {
-        final Set<String> prefixSet = new HashSet<String>();
+        final Set<String> prefixSet = new HashSet<>();
         for (final String str : set) {
             if (str.startsWith(prefix)) {
                 prefixSet.add(str);

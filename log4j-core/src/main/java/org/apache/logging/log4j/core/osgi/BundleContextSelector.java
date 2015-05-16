@@ -67,14 +67,14 @@ public class BundleContextSelector extends ClassLoaderContextSelector implements
         if (ref == null) {
             final LoggerContext context = new LoggerContext(name, bundle, configLocation);
             CONTEXT_MAP.putIfAbsent(name,
-                new AtomicReference<WeakReference<LoggerContext>>(new WeakReference<LoggerContext>(context)));
+                new AtomicReference<>(new WeakReference<>(context)));
             return CONTEXT_MAP.get(name).get().get();
         }
         final WeakReference<LoggerContext> r = ref.get();
         final LoggerContext ctx = r.get();
         if (ctx == null) {
             final LoggerContext context = new LoggerContext(name, bundle, configLocation);
-            ref.compareAndSet(r, new WeakReference<LoggerContext>(context));
+            ref.compareAndSet(r, new WeakReference<>(context));
             return ref.get().get();
         }
         final URI oldConfigLocation = ctx.getConfigLocation();

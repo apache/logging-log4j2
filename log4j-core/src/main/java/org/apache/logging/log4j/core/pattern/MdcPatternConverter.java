@@ -74,7 +74,7 @@ public final class MdcPatternConverter extends LogEventPatternConverter {
                 return;
             }
             final StringBuilder sb = new StringBuilder("{");
-            final Set<String> keys = new TreeSet<String>(contextMap.keySet());
+            final Set<String> keys = new TreeSet<>(contextMap.keySet());
             for (final String key : keys) {
                 if (sb.length() > 1) {
                     sb.append(", ");

@@ -72,7 +72,7 @@ public abstract class AbstractSocketManager extends OutputStreamManager {
      */
     @Override
     public Map<String, String> getContentFormat() {
-        final Map<String, String> result = new HashMap<String, String>(super.getContentFormat());
+        final Map<String, String> result = new HashMap<>(super.getContentFormat());
         result.put("port", Integer.toString(port));
         result.put("address", inetAddress.getHostAddress());
         return result;

@@ -78,7 +78,7 @@ public final class MapPatternConverter extends LogEventPatternConverter {
                 return;
             }
             final StringBuilder sb = new StringBuilder("{");
-            final Set<String> keys = new TreeSet<String>(map.keySet());
+            final Set<String> keys = new TreeSet<>(map.keySet());
             for (final String key : keys) {
                 if (sb.length() > 1) {
                     sb.append(", ");
