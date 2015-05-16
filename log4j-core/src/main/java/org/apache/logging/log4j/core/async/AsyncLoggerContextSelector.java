@@ -40,7 +40,7 @@ public class AsyncLoggerContextSelector implements ContextSelector {
 
     @Override
     public List<LoggerContext> getLoggerContexts() {
-        final List<LoggerContext> list = new ArrayList<LoggerContext>();
+        final List<LoggerContext> list = new ArrayList<>();
         list.add(CONTEXT);
         return Collections.unmodifiableList(list);
     }

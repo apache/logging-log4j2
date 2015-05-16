@@ -70,7 +70,7 @@ class AsyncLoggerConfigHelper {
     private static ExecutorService executor;
 
     private static volatile int count = 0;
-    private static ThreadLocal<Boolean> isAppenderThread = new ThreadLocal<Boolean>();
+    private static ThreadLocal<Boolean> isAppenderThread = new ThreadLocal<>();
 
     /**
      * Factory used to populate the RingBuffer with events. These event objects
@@ -114,8 +114,7 @@ class AsyncLoggerConfigHelper {
         final WaitStrategy waitStrategy = createWaitStrategy();
         executor = Executors.newSingleThreadExecutor(threadFactory);
         initThreadLocalForExecutorThread();
-        disruptor = new Disruptor<Log4jEventWrapper>(FACTORY, ringBufferSize,
-                executor, ProducerType.MULTI, waitStrategy);
+        disruptor = new Disruptor<>(FACTORY, ringBufferSize, executor, ProducerType.MULTI, waitStrategy);
         final EventHandler<Log4jEventWrapper>[] handlers = new Log4jEventWrapperHandler[] {//
         new Log4jEventWrapperHandler() };
         final ExceptionHandler<Log4jEventWrapper> errorHandler = getExceptionHandler();
