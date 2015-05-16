@@ -149,9 +149,8 @@ public final class ReflectionUtil {
             if (isValid(element)) {
                 if (i == depth) {
                     return element;
-                } else {
-                    ++i;
                 }
+                ++i;
             }
         }
         LOGGER.error("Could not find an appropriate StackTraceElement at index {}", depth);
