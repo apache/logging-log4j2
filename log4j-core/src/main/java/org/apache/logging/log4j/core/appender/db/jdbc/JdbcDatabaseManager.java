@@ -208,7 +208,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         public JdbcDatabaseManager createManager(final String name, final FactoryData data) {
             final StringBuilder columnPart = new StringBuilder();
             final StringBuilder valuePart = new StringBuilder();
-            final List<Column> columns = new ArrayList<Column>();
+            final List<Column> columns = new ArrayList<>();
             int i = 0;
             for (final ColumnConfig config : data.columnConfigs) {
                 if (i++ > 0) {
