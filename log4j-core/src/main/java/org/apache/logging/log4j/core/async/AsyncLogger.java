@@ -83,7 +83,7 @@ public class AsyncLogger extends Logger {
     private static final int RINGBUFFER_DEFAULT_SIZE = 256 * 1024;
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
     private static final ThreadNameStrategy THREAD_NAME_STRATEGY = ThreadNameStrategy.create();
-    private static final ThreadLocal<Info> threadlocalInfo = new ThreadLocal<Info>();
+    private static final ThreadLocal<Info> threadlocalInfo = new ThreadLocal<>();
 
     static enum ThreadNameStrategy { // LOG4J2-467
         CACHED {
@@ -122,8 +122,8 @@ public class AsyncLogger extends Logger {
         final int ringBufferSize = calculateRingBufferSize();
 
         final WaitStrategy waitStrategy = createWaitStrategy();
-        disruptor = new Disruptor<RingBufferLogEvent>(RingBufferLogEvent.FACTORY, ringBufferSize, executor,
-                ProducerType.MULTI, waitStrategy);
+        disruptor = new Disruptor<>(RingBufferLogEvent.FACTORY, ringBufferSize, executor, ProducerType.MULTI,
+                waitStrategy);
         disruptor.handleExceptionsWith(getExceptionHandler());
         disruptor.handleEventsWith(new RingBufferLogEventHandler());
 
