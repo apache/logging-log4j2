@@ -55,11 +55,8 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
         final File configFile = configSource.getFile();
         byte[] buffer;
         try {
-            final InputStream configStream = configSource.getInputStream();
-            try {
+            try (final InputStream configStream = configSource.getInputStream()) {
                 buffer = toByteArray(configStream);
-            } finally {
-                configStream.close();
             }
             final InputStream is = new ByteArrayInputStream(buffer);
             root = getObjectMapper().readTree(is);
