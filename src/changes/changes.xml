@@ -23,6 +23,11 @@
     <title>Changes</title>
   </properties>
   <body>
+    <release version="2.4" date="2015-MM-DD" description="GA Release 2.4">
+      <action issue="LOG4J2-1017" dev="ggregory" type="update">
+        Update java platform from Java 6 to 7.
+      </action>
+    </release>
     <release version="2.3" date="2015-05-09" description="GA Release 2.3">
       <action issue="LOG4J2-1009" dev="ggregory" type="fix" due-to="Mikael Ståldal">
         Incorrectly defined compressionType parameter to GelfLayout.
