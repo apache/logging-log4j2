@@ -45,7 +45,7 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
     private final List<Filter> filters;
 
     private CompositeFilter() {
-        this.filters = new ArrayList<Filter>();
+        this.filters = new ArrayList<>();
     }
 
     private CompositeFilter(final List<Filter> filters) {
@@ -61,7 +61,7 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
             // null does nothing
             return this;
         }
-        final List<Filter> filterList = new ArrayList<Filter>(this.filters);
+        final List<Filter> filterList = new ArrayList<>(this.filters);
         filterList.add(filter);
         return new CompositeFilter(Collections.unmodifiableList(filterList));
     }
@@ -71,7 +71,7 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
             // null does nothing
             return this;
         }
-        final List<Filter> filterList = new ArrayList<Filter>(this.filters);
+        final List<Filter> filterList = new ArrayList<>(this.filters);
         filterList.remove(filter);
         return new CompositeFilter(Collections.unmodifiableList(filterList));
     }
