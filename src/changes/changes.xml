@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.4" date="2015-MM-DD" description="GA Release 2.4">
+      <action issue="LOG4J2-1019" dev="ggregory" type="fix">
+        ZipCompressAction leaves files open when an IO error takes place.
+      </action>
       <action issue="LOG4J2-1017" dev="ggregory" type="update">
         Update java platform from Java 6 to 7.
       </action>
