@@ -42,7 +42,7 @@ public final class ZipCompressAction extends AbstractAction {
     private final File destination;
 
     /**
-     * If true, attempt to delete file on completion.
+     * If true, attempts to delete file on completion.
      */
     private final boolean deleteSource;
 
@@ -52,7 +52,7 @@ public final class ZipCompressAction extends AbstractAction {
     private final int level;
 
     /**
-     * Create new instance of GzCompressAction.
+     * Creates new instance of GzCompressAction.
      *
      * @param source       file to compress, may not be null.
      * @param destination  compressed file, may not be null.
@@ -76,7 +76,7 @@ public final class ZipCompressAction extends AbstractAction {
     }
 
     /**
-     * Compress.
+     * Compresses.
      *
      * @return true if successfully compressed.
      * @throws IOException on IO exception.
@@ -87,7 +87,7 @@ public final class ZipCompressAction extends AbstractAction {
     }
 
     /**
-     * Compress a file.
+     * Compresses a file.
      *
      * @param source       file to compress, may not be null.
      * @param destination  compressed file, may not be null.
@@ -126,7 +126,7 @@ public final class ZipCompressAction extends AbstractAction {
     }
 
     /**
-     * Capture exception.
+     * Captures exception.
      *
      * @param ex exception.
      */
