@@ -89,21 +89,18 @@ public final class GzCompressAction extends AbstractAction {
      * @throws IOException on IO exception.
      */
     public static boolean execute(final File source, final File destination, final boolean deleteSource)
-        throws IOException {
+            throws IOException {
         if (source.exists()) {
-            final FileInputStream fis = new FileInputStream(source);
-            final FileOutputStream fos = new FileOutputStream(destination);
-            final GZIPOutputStream gzos = new GZIPOutputStream(fos);
-            final BufferedOutputStream os = new BufferedOutputStream(gzos);
-            final byte[] inbuf = new byte[BUF_SIZE];
-            int n;
+            try (final FileInputStream fis = new FileInputStream(source);
+                    final BufferedOutputStream os = new BufferedOutputStream(new GZIPOutputStream(new FileOutputStream(
+                            destination)))) {
+                final byte[] inbuf = new byte[BUF_SIZE];
+                int n;
 
-            while ((n = fis.read(inbuf)) != -1) {
-                os.write(inbuf, 0, n);
+                while ((n = fis.read(inbuf)) != -1) {
+                    os.write(inbuf, 0, n);
+                }
             }
-
-            os.close();
-            fis.close();
 
             if (deleteSource && !source.delete()) {
                 LOGGER.warn("Unable to delete " + source.toString() + '.');
