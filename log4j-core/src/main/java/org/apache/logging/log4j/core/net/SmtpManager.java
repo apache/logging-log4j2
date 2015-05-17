@@ -213,10 +213,10 @@ public class SmtpManager extends AbstractManager {
     }
 
     protected void encodeContent(final byte[] bytes, final String encoding, final ByteArrayOutputStream out)
-        throws MessagingException, IOException {
-        final OutputStream encoder = MimeUtility.encode(out, encoding);
-        encoder.write(bytes);
-        encoder.close();
+            throws MessagingException, IOException {
+        try (final OutputStream encoder = MimeUtility.encode(out, encoding)) {
+            encoder.write(bytes);
+        }
     }
 
     protected InternetHeaders getHeaders(final String contentType, final String encoding) {
