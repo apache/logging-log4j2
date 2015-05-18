@@ -30,7 +30,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
  * within the property bundle
  * when this pattern converter has the option set.
  */
- @Plugin(name = "MdcPatternConverter", category = PatternConverter.CATEGORY)
+@Plugin(name = "MdcPatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "X", "mdc", "MDC" })
 public final class MdcPatternConverter extends LogEventPatternConverter {
     /**
@@ -74,7 +74,7 @@ public final class MdcPatternConverter extends LogEventPatternConverter {
                 return;
             }
             final StringBuilder sb = new StringBuilder("{");
-            final Set<String> keys = new TreeSet<>(contextMap.keySet());
+            final Set<String> keys = new TreeSet<String>(contextMap.keySet());
             for (final String key : keys) {
                 if (sb.length() > 1) {
                     sb.append(", ");
@@ -85,11 +85,27 @@ public final class MdcPatternConverter extends LogEventPatternConverter {
             sb.append('}');
             toAppendTo.append(sb);
         } else if (contextMap != null) {
-            // otherwise they just want a single key output
-            final Object val = contextMap.get(key);
+            if (key.indexOf(',') > 0) {
+                String[] keys = key.split(",");
+                final StringBuilder sb = new StringBuilder("{");
+                for (String key : keys) {
+                    key = key.trim();
+                    if (contextMap.containsKey(key)) {
+                        if (sb.length() > 1) {
+                            sb.append(", ");
+                        }
+                        sb.append(key).append('=').append(contextMap.get(key));
+                    }
+                }
+                sb.append('}');
+                toAppendTo.append(sb);
+            } else {
+                // otherwise they just want a single key output
+                final Object val = contextMap.get(key);
 
-            if (val != null) {
-                toAppendTo.append(val);
+                if (val != null) {
+                    toAppendTo.append(val);
+                }
             }
         }
     }
