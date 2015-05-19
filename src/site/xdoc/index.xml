@@ -99,7 +99,7 @@
 
           <subsection name="Requirements">
              <p>
-               Log4j 2 requires Java 6.
+               Log4j 2.3 and greater requires Java 7, version 2.2 required Java 6.
                Some features require optional dependencies; the documentation for these features specifies the
                dependencies.
             </p>
