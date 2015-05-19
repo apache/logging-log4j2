@@ -361,6 +361,11 @@ logger.info(PERFORMANCE, "Message in Performance.log");]]></pre>
             each with a log event for a specific marker. Log4j will route the log event with the <code>SQL</code> marker to
             <code>sql.log</code>, the log event with the <code>PAYLOAD</code> marker to <code>payload.log</code>, and so on.
           </p>
+          <p>
+            You can use the notation <code>"${marker:name}"</code> and <code>"$${marker:name}"</code> to check for the 
+            existence of a marker where <code>name</code> is the marker name. If the marker exists, the expression returns 
+            the name, otherwise <code>null</code>. 
+          </p>
         </subsection>        
         <a name="StructuredDataLookup"/>
         <subsection name="Structured Data Lookup">
