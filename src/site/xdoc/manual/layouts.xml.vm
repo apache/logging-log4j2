@@ -1039,23 +1039,26 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
-                <b>X</b>{key}<br />
-                <b>mdc</b>{key}<br />
-                <b>MDC</b>{key}
+                <b>X</b>{key[,key2...]}<br />
+                <b>mdc</b>{key[,key2...]}<br />
+                <b>MDC</b>{key[,key2...]}
               </td>
               <td>
-                <p>Outputs the Thread Context Map (also known as the Mapped Diagnostic Context or MDC)
+                <>Outputs the Thread Context Map (also known as the Mapped Diagnostic Context or MDC)
                   associated with the thread that generated the logging event. The
                   <b>X</b>
-                  conversion character can be followed by the key for the
+                  conversion character can be followed by one or more keys for the
                   map placed between braces, as in
                   <b>%X{clientNumber}</b>
                   where
                   <code>clientNumber</code>
                   is the key. The value in the MDC
-                  corresponding to the key will be output. If no additional sub-option
-                  is specified, then the entire contents of the MDC key value pair set
-                  is output using a format {{key1,val1},{key2,val2}}
+                  corresponding to the key will be output.</p>
+                <p>If a list of keys are provided, such as <b>%X{name, number}</b>, then each key that is present in the
+                    ThreadContext will be output using the format {name=val1, number=val2}. The key/value pairs will be
+                  printed in the order they appear in the list.</p>
+                <p>If no sub-options are specified then the entire contents of the MDC key value pair set
+                  is output using a format {key1=val1, key2=val2}. The key/value pairs will be printed in sorted order.
                 </p>
                 <p>See the
                   <a class="javadoc" href="../log4j-api/apidocs/org/apache/logging/log4j/ThreadContext.html">ThreadContext</a>
