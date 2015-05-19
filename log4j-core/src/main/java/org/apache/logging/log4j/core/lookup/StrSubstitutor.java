@@ -868,7 +868,7 @@ public class StrSubstitutor {
         final StrMatcher valueDelimiterMatcher = getValueDelimiterMatcher();
         final boolean substitutionInVariablesEnabled = isEnableSubstitutionInVariables();
 
-        final boolean top = (priorVariables == null);
+        final boolean top = priorVariables == null;
         boolean altered = false;
         int lengthChange = 0;
         char[] chars = getChars(buf);
