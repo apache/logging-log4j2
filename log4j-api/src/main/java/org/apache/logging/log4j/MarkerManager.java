@@ -41,6 +41,17 @@ public final class MarkerManager {
     }
 
     /**
+     * Tests existence of the given marker.
+     * @param key the marker name
+     * @return true if the marker exists.
+     * @since 2.4
+     */
+    public static boolean exists(String key) {
+        return MARKERS.containsKey(key);
+    }
+
+
+    /**
      * Retrieves a Marker or create a Marker that has no parent.
      * @param name The name of the Marker.
      * @return The Marker with the specified name.

@@ -85,6 +85,7 @@ public class Interpolator extends AbstractLookup {
         lookups.put("sys", new SystemPropertiesLookup());
         lookups.put("env", new EnvironmentLookup());
         lookups.put("main", MainMapLookup.MAIN_SINGLETON);
+        lookups.put("marker", new MarkerLookup());
         lookups.put("java", new JavaLookup());
         // JNDI
         try {

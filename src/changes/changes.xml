@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.4" date="2015-MM-DD" description="GA Release 2.4">
+      <action issue="LOG4J2-1015" dev="ggregory" type="add">
+        Add a way to route messages based on the %marker in Layout for RoutingAppender.
+      </action>
       <action issue="LOG4J2-1022" dev="rgoers" type="update">
         Allow a list of keys to be specified in the MDC pattern converter.
       </action>

@@ -304,6 +304,64 @@ public static void main(String args[]) {
   </Routes>
 </Routing>]]></pre>
         </subsection>
+        <subsection name="Marker Lookup">
+          <p>
+            The marker lookup allows you to use markers in interesting configurations like a routing appender.
+            Consider the following YAML configuration and code that logs to different files based on markers:
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+Configuration:
+  status: debug
+
+  Appenders:
+    Console:
+    RandomAccessFile:
+      - name: SQL_APPENDER
+        fileName: logs/sql.log
+        PatternLayout:
+          Pattern: "%d{ISO8601_BASIC} %-5level %logger{1} %X %msg%n"
+      - name: PAYLOAD_APPENDER
+        fileName: logs/payload.log
+        PatternLayout:
+          Pattern: "%d{ISO8601_BASIC} %-5level %logger{1} %X %msg%n"
+      - name: PERFORMANCE_APPENDER
+        fileName: logs/performance.log
+        PatternLayout:
+          Pattern: "%d{ISO8601_BASIC} %-5level %logger{1} %X %msg%n"
+
+    Routing:
+      name: ROUTING_APPENDER
+      Routes:
+        pattern: "$${marker:}"
+        Route:
+        - key: PERFORMANCE
+          ref: PERFORMANCE_APPENDER
+        - key: PAYLOAD
+          ref: PAYLOAD_APPENDER
+        - key: SQL
+          ref: SQL_APPENDER
+
+  Loggers:
+    Root:
+      level: trace
+      AppenderRef:
+        - ref: ROUTING_APPENDER]]></pre>          
+          <pre class="prettyprint linenums"><![CDATA[
+public static final Marker SQL = MarkerFactory.getMarker("SQL");
+public static final Marker PAYLOAD = MarkerFactory.getMarker("PAYLOAD");
+public static final Marker PERFORMANCE = MarkerFactory.getMarker("PERFORMANCE");
+
+final Logger logger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+
+logger.info(SQL, "Message in Sql.log");
+logger.info(PAYLOAD, "Message in Payload.log");
+logger.info(PERFORMANCE, "Message in Performance.log");]]></pre>
+          <p>
+            Note the key part of the configuration is <code>pattern: "$${marker:}"</code>. This will produce three log files,
+            each with a log event for a specific marker. Log4j will route the log event with the <code>SQL</code> marker to
+            <code>sql.log</code>, the log event with the <code>PAYLOAD</code> marker to <code>payload.log</code>, and so on.
+          </p>
+        </subsection>        
         <a name="StructuredDataLookup"/>
         <subsection name="Structured Data Lookup">
           <p>
