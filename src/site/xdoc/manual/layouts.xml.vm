@@ -1044,7 +1044,7 @@ WARN  [main]: Message 2</pre>
                 <b>MDC</b>{key[,key2...]}
               </td>
               <td>
-                <>Outputs the Thread Context Map (also known as the Mapped Diagnostic Context or MDC)
+                <p>Outputs the Thread Context Map (also known as the Mapped Diagnostic Context or MDC)
                   associated with the thread that generated the logging event. The
                   <b>X</b>
                   conversion character can be followed by one or more keys for the
