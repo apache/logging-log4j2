@@ -30,11 +30,6 @@ import org.apache.logging.log4j.message.MapMessage;
 @Plugin(name = "map", category = StrLookup.CATEGORY)
 public class MapLookup implements StrLookup {
 
-    /**
-     * A singleton used by a main method to save its arguments.
-     */
-    static final MapLookup MAIN_SINGLETON = new MapLookup(newMap(0));
-
     static Map<String, String> initMap(final String[] srcArgs, final Map<String, String> destMap) {
         for (int i = 0; i < srcArgs.length; i++) {
             final int next = i + 1;
@@ -45,7 +40,7 @@ public class MapLookup implements StrLookup {
         return destMap;
     }
 
-    private static HashMap<String, String> newMap(final int initialCapacity) {
+    static HashMap<String, String> newMap(final int initialCapacity) {
         return new HashMap<>(initialCapacity);
     }
 
@@ -73,12 +68,11 @@ public class MapLookup implements StrLookup {
      * @param args
      *        An application's {@code public static main(String[])} arguments.
      * @since 2.1
+     * @deprecated As of 2.4, use {@link MainMapLookup#setMainArguments(String[])}
      */
+    @Deprecated
     public static void setMainArguments(final String[] args) {
-        if (args == null) {
-            return;
-        }
-        initMap(args, MAIN_SINGLETON.map);
+        MainMapLookup.setMainArguments(args);
     }
 
     static Map<String, String> toMap(final List<String> args) {
@@ -116,6 +110,10 @@ public class MapLookup implements StrLookup {
      */
     public MapLookup(final Map<String, String> map) {
         this.map = map;
+    }
+
+    protected Map<String, String> getMap() {
+        return map;
     }
 
     @Override

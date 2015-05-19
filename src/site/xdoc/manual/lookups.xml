@@ -183,10 +183,10 @@
              the main arguments of the application to Log4j:
           </p>
 <pre class="prettyprint linenums"><![CDATA[
-import org.apache.logging.log4j.core.lookup.MapLookup;
+import org.apache.logging.log4j.core.lookup.MainMapLookup;
 
 public static void main(String args[]) {
-  MapLookup.setMainArguments(args);
+  MainMapLookup.setMainArguments(args);
   ...
 }]]></pre>
         <p>

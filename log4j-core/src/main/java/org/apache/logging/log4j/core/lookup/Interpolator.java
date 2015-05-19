@@ -84,7 +84,7 @@ public class Interpolator extends AbstractLookup {
         // TODO: this ought to use the PluginManager
         lookups.put("sys", new SystemPropertiesLookup());
         lookups.put("env", new EnvironmentLookup());
-        lookups.put("main", MapLookup.MAIN_SINGLETON);
+        lookups.put("main", MainMapLookup.MAIN_SINGLETON);
         lookups.put("java", new JavaLookup());
         // JNDI
         try {
