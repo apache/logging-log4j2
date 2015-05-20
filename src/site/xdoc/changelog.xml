@@ -32,7 +32,7 @@
 				when upgrading to Log4j 2 in your project:</p>
 
 				<ul>
-					<li>Log4j 2.3 and greater requires Java 7, version 2.2 required Java 6.</li>
+					<li>Log4j 2.4 and greater requires Java 7, version 2.3 required Java 6.</li>
           <li>The XML configuration has been simplified and is not compatible with Log4j 1.x</li>
           <li>Configuration via property files is not supported.</li>
           <li>Configuration via JSON or YAML is supported.</li>

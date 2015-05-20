@@ -131,8 +131,8 @@ o#if($!issue != "") $issue. #end ${action} #if($!dueto != "")Thanks to $dueto. #
 ## End of main loop
 #end
 
-Apache Log4j ${relVersion} requires a minimum of Java 7 to build and run. Log4j 2.3 and greater requires Java 7, 
-version 2.2 required Java 6.
+Apache Log4j ${relVersion} requires a minimum of Java 7 to build and run. Log4j 2.4 and greater requires Java 7, 
+version 2.3 required Java 6.
 
 Basic compatibility with Log4j 1.x is provided through the log4j-1.2-api component, however it does not implement some of the
 very implementation specific classes and methods. The package names and Maven groupId have been changed to
