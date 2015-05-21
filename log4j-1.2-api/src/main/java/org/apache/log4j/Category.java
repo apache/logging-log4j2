@@ -42,7 +42,7 @@ public class Category {
     private static LoggerFactory loggerFactory = new PrivateFactory();
 
     private static final Map<LoggerContext, ConcurrentMap<String, Logger>> CONTEXT_MAP =
-        new WeakHashMap<LoggerContext, ConcurrentMap<String, Logger>>();
+        new WeakHashMap<>();
 
     private static final String FQCN = Category.class.getName();
 
@@ -132,7 +132,7 @@ public class Category {
         synchronized (CONTEXT_MAP) {
             ConcurrentMap<String, Logger> map = CONTEXT_MAP.get(context);
             if (map == null) {
-                map = new ConcurrentHashMap<String, Logger>();
+                map = new ConcurrentHashMap<>();
                 CONTEXT_MAP.put(context, map);
             }
             return map;

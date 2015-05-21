@@ -56,7 +56,7 @@ public final class NDC {
      */
     @SuppressWarnings("rawtypes")
     public static Stack cloneStack() {
-        final Stack<String> stack = new Stack<String>();
+        final Stack<String> stack = new Stack<>();
         for (final String element : org.apache.logging.log4j.ThreadContext.cloneStack().asList()) {
             stack.push(element);
         }
