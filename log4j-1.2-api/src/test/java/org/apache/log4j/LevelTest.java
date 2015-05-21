@@ -215,7 +215,7 @@ public class LevelTest {
      */
     @Test
     public void testIntToAll() {
-        final Level level = Level.toLevel(Level.ALL_INT);
+        final Level level = Level.toLevel(Priority.ALL_INT);
         assertEquals("ALL", level.toString());
     }
 
@@ -224,7 +224,7 @@ public class LevelTest {
      */
     @Test
     public void testIntToFatal() {
-        final Level level = Level.toLevel(Level.FATAL_INT);
+        final Level level = Level.toLevel(Priority.FATAL_INT);
         assertEquals("FATAL", level.toString());
     }
 
@@ -234,7 +234,7 @@ public class LevelTest {
      */
     @Test
     public void testIntToOff() {
-        final Level level = Level.toLevel(Level.OFF_INT);
+        final Level level = Level.toLevel(Priority.OFF_INT);
         assertEquals("OFF", level.toString());
     }
 
