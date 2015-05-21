@@ -167,7 +167,7 @@ public class NoSqlDatabaseManagerTest {
             verify(this.provider, this.connection);
             reset(this.provider, this.connection);
 
-            final Capture<NoSqlObject<Map<String, Object>>> capture = new Capture<NoSqlObject<Map<String, Object>>>();
+            final Capture<NoSqlObject<Map<String, Object>>> capture = new Capture<>();
 
             final LogEvent event = createStrictMock(LogEvent.class);
             final Message message = createStrictMock(Message.class);
@@ -254,10 +254,10 @@ public class NoSqlDatabaseManagerTest {
             verify(this.provider, this.connection);
             reset(this.provider, this.connection);
 
-            final Capture<NoSqlObject<Map<String, Object>>> capture = new Capture<NoSqlObject<Map<String, Object>>>();
+            final Capture<NoSqlObject<Map<String, Object>>> capture = new Capture<>();
 
             final RuntimeException exception = new RuntimeException("This is something cool!");
-            final Map<String, String> context = new HashMap<String, String>();
+            final Map<String, String> context = new HashMap<>();
             context.put("hello", "world");
             context.put("user", "pass");
 
@@ -389,11 +389,11 @@ public class NoSqlDatabaseManagerTest {
             verify(this.provider, this.connection);
             reset(this.provider, this.connection);
 
-            final Capture<NoSqlObject<Map<String, Object>>> capture = new Capture<NoSqlObject<Map<String, Object>>>();
+            final Capture<NoSqlObject<Map<String, Object>>> capture = new Capture<>();
 
             final IOException exception1 = new IOException("This is the cause.");
             final SQLException exception2 = new SQLException("This is the result.", exception1);
-            final Map<String, String> context = new HashMap<String, String>();
+            final Map<String, String> context = new HashMap<>();
             context.put("hello", "world");
             context.put("user", "pass");
 
