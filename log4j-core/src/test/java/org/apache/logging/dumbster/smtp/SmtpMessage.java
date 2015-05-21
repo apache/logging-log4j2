@@ -85,9 +85,8 @@ public class SmtpMessage {
         final List<String> values = headers.get(name);
         if (values == null) {
             return new String[0];
-        } else {
-            return values.toArray(new String[values.size()]);
         }
+        return values.toArray(new String[values.size()]);
     }
 
     /**
@@ -100,10 +99,9 @@ public class SmtpMessage {
         final List<String> values = headers.get(name);
         if (values == null) {
             return null;
-        } else {
-            final Iterator<String> iterator = values.iterator();
-            return iterator.hasNext() ? iterator.next() : null;
         }
+        final Iterator<String> iterator = values.iterator();
+        return iterator.hasNext() ? iterator.next() : null;
     }
 
     /**
