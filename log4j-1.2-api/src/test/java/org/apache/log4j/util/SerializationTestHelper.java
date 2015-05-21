@@ -69,12 +69,8 @@ public class SerializationTestHelper {
      * @throws Exception thrown on IO or deserialization exception.
      */
     public static Object deserializeStream(final String witness) throws Exception {
-        final FileInputStream fileIs = new FileInputStream(witness);
-        final ObjectInputStream objIs = new ObjectInputStream(fileIs);
-        try {
+        try (final ObjectInputStream objIs = new ObjectInputStream(new FileInputStream(witness))) {
             return objIs.readObject();
-        } finally {
-            objIs.close();
         }
     }
 
