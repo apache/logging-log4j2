@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class SLF4JLoggerContext implements LoggerContext {
-    private final ConcurrentMap<String, SLF4JLogger> loggers = new ConcurrentHashMap<String, SLF4JLogger>();
+    private final ConcurrentMap<String, SLF4JLogger> loggers = new ConcurrentHashMap<>();
 
     @Override
     public Object getExternalContext() {
