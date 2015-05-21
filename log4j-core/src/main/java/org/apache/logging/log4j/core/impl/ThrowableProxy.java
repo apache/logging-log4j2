@@ -220,7 +220,7 @@ public class ThrowableProxy implements Serializable {
         }
     }
 
-    private void appendSuppressedCount(final StringBuilder sb, int count) {
+    private void appendSuppressedCount(final StringBuilder sb, final int count) {
         if (count == 1) {
             sb.append("\t....").append(EOL);
         } else {

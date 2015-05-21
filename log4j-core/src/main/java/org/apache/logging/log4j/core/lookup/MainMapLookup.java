@@ -63,12 +63,12 @@ public class MainMapLookup extends MapLookup {
     }
 
     @Override
-    public String lookup(LogEvent event, String key) {
+    public String lookup(final LogEvent event, final String key) {
         return MAIN_SINGLETON.getMap().get(key);
     }
 
     @Override
-    public String lookup(String key) {
+    public String lookup(final String key) {
         return MAIN_SINGLETON.getMap().get(key);
     }
 

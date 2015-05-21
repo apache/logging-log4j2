@@ -47,7 +47,7 @@ public class ConsoleAppenderNoAnsiStyleLayoutMain {
         test(args, config);
     }
 
-    static void test(final String[] args, String config) {
+    static void test(final String[] args, final String config) {
         // System.out.println(System.getProperty("java.class.path"));
         final LoggerContext ctx = Configurator.initialize(ConsoleAppenderNoAnsiStyleLayoutMain.class.getName(), config);
         try {

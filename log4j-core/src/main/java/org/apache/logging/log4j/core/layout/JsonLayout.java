@@ -799,7 +799,7 @@ public final class JsonLayout extends AbstractJacksonLayout {
     private static final long serialVersionUID = 1L;
 
     protected JsonLayout(final boolean locationInfo, final boolean properties, final boolean complete, final boolean compact,
-            boolean eventEol, final Charset charset) {
+            final boolean eventEol, final Charset charset) {
         super(new JacksonFactory.JSON().newWriter(locationInfo, properties, compact), charset, compact, complete, eventEol);
     }
 

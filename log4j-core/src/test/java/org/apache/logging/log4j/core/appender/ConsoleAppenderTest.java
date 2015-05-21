@@ -88,7 +88,7 @@ public class ConsoleAppenderTest {
         abstract void systemSet(PrintStream printStream);
     }
 
-    private void testConsoleStreamManagerDoesNotClose(PrintStream ps, String targetName, SystemSetter systemSetter) {
+    private void testConsoleStreamManagerDoesNotClose(final PrintStream ps, final String targetName, final SystemSetter systemSetter) {
         try {
             psMock.write((byte[]) anyObject(), anyInt(), anyInt());
             expectLastCall().anyTimes();
@@ -125,7 +125,7 @@ public class ConsoleAppenderTest {
         testFollowSystemPrintStream(System.out, Target.SYSTEM_OUT, SystemSetter.SYSTEM_OUT);
     }
 
-    private void testFollowSystemPrintStream(PrintStream ps, Target target, SystemSetter systemSetter) {
+    private void testFollowSystemPrintStream(final PrintStream ps, final Target target, final SystemSetter systemSetter) {
         final ConsoleAppender app = ConsoleAppender.newBuilder().setTarget(target).setFollow(true)
                 .setIgnoreExceptions(false).build();
         app.start();

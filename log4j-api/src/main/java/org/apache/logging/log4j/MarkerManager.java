@@ -46,7 +46,7 @@ public final class MarkerManager {
      * @return true if the marker exists.
      * @since 2.4
      */
-    public static boolean exists(String key) {
+    public static boolean exists(final String key) {
         return MARKERS.containsKey(key);
     }
 

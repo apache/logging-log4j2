@@ -60,7 +60,7 @@ public class LoggerNameLevelRewritePolicy implements RewritePolicy {
         return new LoggerNameLevelRewritePolicy(loggerNamePrefix, newMap);
     }
 
-    private static Level getLevel(String name) {
+    private static Level getLevel(final String name) {
         return Level.getLevel(name.toUpperCase(Locale.ROOT));
     }
 
@@ -68,14 +68,14 @@ public class LoggerNameLevelRewritePolicy implements RewritePolicy {
 
     private final Map<Level, Level> map;
 
-    private LoggerNameLevelRewritePolicy(String loggerName, Map<Level, Level> map) {
+    private LoggerNameLevelRewritePolicy(final String loggerName, final Map<Level, Level> map) {
         super();
         this.loggerName = loggerName;
         this.map = map;
     }
 
     @Override
-    public LogEvent rewrite(LogEvent event) {
+    public LogEvent rewrite(final LogEvent event) {
         if (!event.getLoggerName().startsWith(loggerName)) {
             return event;
         }

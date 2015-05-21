@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 
 public class JansiConsoleAppenderJira965 {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         System.out.println("Able to print on Windows");
         LoggerFactory.getLogger(JansiConsoleAppenderJira965.class);
         System.out.println("Unable to print on Windows");

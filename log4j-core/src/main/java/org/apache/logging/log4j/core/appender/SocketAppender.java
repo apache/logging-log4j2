@@ -159,7 +159,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
      *         if the protocol cannot be handled.
      */
     protected static AbstractSocketManager createSocketManager(final String name, Protocol protocol, final String host,
-            final int port, int connectTimeoutMillis, final SslConfiguration sslConfig, final int delayMillis,
+            final int port, final int connectTimeoutMillis, final SslConfiguration sslConfig, final int delayMillis,
             final boolean immediateFail, final Layout<? extends Serializable> layout) {
         if (protocol == Protocol.TCP && sslConfig != null) {
             // Upgrade TCP to SSL if an SSL config is specified.

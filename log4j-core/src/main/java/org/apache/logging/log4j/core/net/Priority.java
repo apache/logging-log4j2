@@ -46,7 +46,7 @@ public class Priority {
         return toPriority(facility, Severity.getSeverity(level));
     }
 
-    private static int toPriority(Facility aFacility, Severity aSeverity) {
+    private static int toPriority(final Facility aFacility, final Severity aSeverity) {
         return (aFacility.getCode() << 3) + aSeverity.getCode();        
     }
     

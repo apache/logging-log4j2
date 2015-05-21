@@ -104,7 +104,7 @@ public class JsonLayoutTest {
         assertTrue(str, str.contains(DQUOTE + name + DQUOTE + propSep));
     }
 
-    private void testAllFeatures(final boolean includeSource, final boolean compact, boolean eventEol, final boolean includeContext)
+    private void testAllFeatures(final boolean includeSource, final boolean compact, final boolean eventEol, final boolean includeContext)
             throws Exception {
         final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
         final AbstractJacksonLayout layout = JsonLayout.createLayout(includeSource,

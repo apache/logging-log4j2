@@ -43,7 +43,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
         this.charset = charset == null ? Constants.UTF_8 : charset;
     }
 
-    protected byte[] getBytes(String s) {
+    protected byte[] getBytes(final String s) {
         return s.getBytes(charset);
     }
 
