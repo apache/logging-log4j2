@@ -47,9 +47,8 @@ public class FailOnceAppender extends AbstractAppender {
         if (fail) {
             fail = false;
             throw new LoggingException("Always fail");
-        } else {
-            events.add(event);
         }
+        events.add(event);
     }
 
     public List<LogEvent> getEvents() {
