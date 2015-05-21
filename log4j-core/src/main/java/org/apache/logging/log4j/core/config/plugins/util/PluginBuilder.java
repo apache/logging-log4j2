@@ -44,7 +44,6 @@ import org.apache.logging.log4j.core.util.Builder;
 import org.apache.logging.log4j.core.util.ReflectionUtil;
 import org.apache.logging.log4j.core.util.TypeUtil;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Chars;
 import org.apache.logging.log4j.util.StringBuilders;
 
 /**
