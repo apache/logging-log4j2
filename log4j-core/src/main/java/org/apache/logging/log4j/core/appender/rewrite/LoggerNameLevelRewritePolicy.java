@@ -34,7 +34,7 @@ import org.apache.logging.log4j.core.util.KeyValuePair;
  * 
  * @since 2.4
  */
-@Plugin(name = "LevelRewritePolicy", category = "Core", elementType = "rewritePolicy", printObject = true)
+@Plugin(name = "LoggerNameLevelRewritePolicy", category = "Core", elementType = "rewritePolicy", printObject = true)
 public class LoggerNameLevelRewritePolicy implements RewritePolicy {
 
     /**
