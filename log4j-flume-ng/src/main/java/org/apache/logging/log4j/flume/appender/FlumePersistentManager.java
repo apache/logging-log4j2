@@ -395,7 +395,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
             Database database = null;
             Environment environment = null;
 
-            final Map<String, String> properties = new HashMap<String, String>();
+            final Map<String, String> properties = new HashMap<>();
             if (data.properties != null) {
                 for (final Property property : data.properties) {
                     properties.put(property.getName(), property.getValue());
@@ -810,7 +810,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                 dais.read(bytes, 0, length);
                 event.setBody(bytes);
                 length = dais.readInt();
-                final Map<String, String> map = new HashMap<String, String>(length);
+                final Map<String, String> map = new HashMap<>(length);
                 for (int i = 0; i < length; ++i) {
                     final String headerKey = dais.readUTF();
                     final String value = dais.readUTF();

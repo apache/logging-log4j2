@@ -180,7 +180,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
 
         private Map<String, String> createProperties(final String name, final Agent[] agents,
                                                      final Property[] properties, final int batchSize, String dataDir) {
-            final Map<String, String> props = new HashMap<String, String>();
+            final Map<String, String> props = new HashMap<>();
 
             if ((agents == null || agents.length == 0) && (properties == null || properties.length == 0)) {
                 LOGGER.error("No Flume configuration provided");

@@ -249,7 +249,7 @@ public class FlumeEmbeddedAppenderTest {
     }
 
     private static class EventCollector implements AvroSourceProtocol {
-        private final LinkedBlockingQueue<AvroFlumeEvent> eventQueue = new LinkedBlockingQueue<AvroFlumeEvent>();
+        private final LinkedBlockingQueue<AvroFlumeEvent> eventQueue = new LinkedBlockingQueue<>();
 
         private final NettyServer nettyServer;
 
@@ -295,7 +295,7 @@ public class FlumeEmbeddedAppenderTest {
     }
 
     private static Map<String, String> toStringMap(final Map<CharSequence, CharSequence> charSeqMap) {
-        final Map<String, String> stringMap = new HashMap<String, String>();
+        final Map<String, String> stringMap = new HashMap<>();
         for (final Map.Entry<CharSequence, CharSequence> entry : charSeqMap.entrySet()) {
             stringMap.put(entry.getKey().toString(), entry.getValue().toString());
         }

@@ -62,7 +62,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
 
     private final LogEvent event;
 
-    private final Map<String, String> contextMap = new HashMap<String, String>();
+    private final Map<String, String> contextMap = new HashMap<>();
 
     private final boolean compress;
 
@@ -102,7 +102,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
         } else if (excludes != null) {
             final String[] array = excludes.split(Patterns.COMMA_SEPARATOR);
             if (array.length > 0) {
-                final List<String> list = new ArrayList<String>(array.length);
+                final List<String> list = new ArrayList<>(array.length);
                 for (final String value : array) {
                     list.add(value.trim());
                 }
@@ -159,7 +159,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
 
     protected void addContextData(final String prefix, final Map<String, String> fields,
                                   final Map<String, String> context) {
-        final Map<String, String> map = new HashMap<String, String>();
+        final Map<String, String> map = new HashMap<>();
         for (final Map.Entry<String, String> entry : context.entrySet()) {
             if (entry.getKey() != null && entry.getValue() != null) {
                 fields.put(prefix + entry.getKey(), entry.getValue());

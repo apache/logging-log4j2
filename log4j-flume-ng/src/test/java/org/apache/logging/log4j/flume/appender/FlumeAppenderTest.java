@@ -88,7 +88,7 @@ public class FlumeAppenderTest {
         context.put("bind", "0.0.0.0");
         Configurables.configure(eventSource, context);
 
-        final List<Channel> channels = new ArrayList<Channel>();
+        final List<Channel> channels = new ArrayList<>();
         channels.add(channel);
 
         final ChannelSelector cs = new ReplicatingChannelSelector();
