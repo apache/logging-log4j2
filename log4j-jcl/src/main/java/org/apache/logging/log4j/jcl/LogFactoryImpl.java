@@ -33,7 +33,8 @@ public class LogFactoryImpl extends LogFactory {
 
     private final LoggerAdapter<Log> adapter = new LogAdapter();
 
-    private final ConcurrentMap<String, Object> attributes = new ConcurrentHashMap<String, Object>();
+    @SuppressWarnings("unused")
+    private final ConcurrentMap<String, Object> attributes = new ConcurrentHashMap<>();
 
     @Override
     public Log getInstance(final String name) throws LogConfigurationException {
