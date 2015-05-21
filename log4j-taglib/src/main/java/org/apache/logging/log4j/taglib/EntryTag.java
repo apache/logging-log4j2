@@ -41,7 +41,7 @@ public class EntryTag extends LoggerAwareTagSupport implements DynamicAttributes
     protected void init() {
         super.init();
         if (this.attributes == null) {
-            this.attributes = new ArrayList<Object>();
+            this.attributes = new ArrayList<>();
         } else {
             this.attributes.clear();
         }
