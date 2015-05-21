@@ -182,10 +182,8 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
         }
         if (compress) {
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            try {
-                final GZIPOutputStream os = new GZIPOutputStream(baos);
+            try (GZIPOutputStream os = new GZIPOutputStream(baos)) {
                 os.write(body);
-                os.close();
             } catch (final IOException ioe) {
                 throw new LoggingException("Unable to compress message", ioe);
             }
