@@ -57,7 +57,7 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
         }
     }
 
-    private final Map<String, String> map = new ConcurrentHashMap<String, String>();
+    private final Map<String, String> map = new ConcurrentHashMap<>();
     private final StrSubstitutor substitutor = new StrSubstitutor(new Interpolator(map));
     private final ServletContext servletContext;
 

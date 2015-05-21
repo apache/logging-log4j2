@@ -104,8 +104,8 @@ public class Log4jServletContainerInitializerTest {
     public void testOnStartupWithServletVersion3_xEffectiveVersion3_x() throws Exception {
         final FilterRegistration.Dynamic registration = createStrictMock(FilterRegistration.Dynamic.class);
 
-        final Capture<EventListener> listenerCapture = new Capture<EventListener>();
-        final Capture<Class<? extends Filter>> filterCapture = new Capture<Class<? extends Filter>>();
+        final Capture<EventListener> listenerCapture = new Capture<>();
+        final Capture<Class<? extends Filter>> filterCapture = new Capture<>();
 
         expect(this.servletContext.getMajorVersion()).andReturn(3);
         expect(this.servletContext.getEffectiveMajorVersion()).andReturn(3);
@@ -140,7 +140,7 @@ public class Log4jServletContainerInitializerTest {
 
     @Test
     public void testOnStartupCanceledDueToPreExistingFilter() throws Exception {
-        final Capture<Class<? extends Filter>> filterCapture = new Capture<Class<? extends Filter>>();
+        final Capture<Class<? extends Filter>> filterCapture = new Capture<>();
 
         expect(this.servletContext.getMajorVersion()).andReturn(3);
         expect(this.servletContext.getEffectiveMajorVersion()).andReturn(3);
@@ -160,7 +160,7 @@ public class Log4jServletContainerInitializerTest {
     public void testOnStartupFailedDueToInitializerFailure() throws Exception {
         final FilterRegistration.Dynamic registration = createStrictMock(FilterRegistration.Dynamic.class);
 
-        final Capture<Class<? extends Filter>> filterCapture = new Capture<Class<? extends Filter>>();
+        final Capture<Class<? extends Filter>> filterCapture = new Capture<>();
         final IllegalStateException exception = new IllegalStateException(Strings.EMPTY);
 
         expect(this.servletContext.getMajorVersion()).andReturn(3);

@@ -43,7 +43,7 @@ public class Log4jWebInitializerImplTest {
 
     @Before
     public void setUp() {
-        final Capture<Log4jWebLifeCycle> initializerCapture = new Capture<Log4jWebLifeCycle>();
+        final Capture<Log4jWebLifeCycle> initializerCapture = new Capture<>();
 
         this.servletContext = createStrictMock(ServletContext.class);
         expect(this.servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).andReturn(null);
@@ -104,7 +104,7 @@ public class Log4jWebInitializerImplTest {
 
     @Test
     public void testInitializeWithNoParametersThenSetLoggerContextThenDeinitialize() throws Exception {
-        final Capture<Object> loggerContextCapture = new Capture<Object>();
+        final Capture<Object> loggerContextCapture = new Capture<>();
 
         expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONTEXT_NAME)).andReturn(null);
         expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONFIG_LOCATION)).andReturn(null);
@@ -166,7 +166,7 @@ public class Log4jWebInitializerImplTest {
 
     @Test
     public void testInitializeWithClassLoaderNoParametersThenSetLoggerContextThenDeinitialize() throws Exception {
-        final Capture<Object> loggerContextCapture = new Capture<Object>();
+        final Capture<Object> loggerContextCapture = new Capture<>();
 
         expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONTEXT_NAME)).andReturn(null);
         expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONFIG_LOCATION)).andReturn(null);
@@ -229,7 +229,7 @@ public class Log4jWebInitializerImplTest {
 
     @Test
     public void testInitializeIsIdempotent() throws Exception {
-        final Capture<Object> loggerContextCapture = new Capture<Object>();
+        final Capture<Object> loggerContextCapture = new Capture<>();
 
         expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONTEXT_NAME)).andReturn(null);
         expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONFIG_LOCATION)).andReturn(null);
@@ -272,7 +272,7 @@ public class Log4jWebInitializerImplTest {
 
     @Test
     public void testInitializeFailsAfterDeinitialize() throws Exception {
-        final Capture<Object> loggerContextCapture = new Capture<Object>();
+        final Capture<Object> loggerContextCapture = new Capture<>();
 
         expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONTEXT_NAME)).andReturn(null);
         expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONFIG_LOCATION)).andReturn(null);
@@ -314,7 +314,7 @@ public class Log4jWebInitializerImplTest {
 
     @Test
     public void testDeinitializeIsIdempotent() throws Exception {
-        final Capture<Object> loggerContextCapture = new Capture<Object>();
+        final Capture<Object> loggerContextCapture = new Capture<>();
 
         expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONTEXT_NAME)).andReturn(null);
         expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONFIG_LOCATION)).andReturn(null);
@@ -370,7 +370,7 @@ public class Log4jWebInitializerImplTest {
 
     @Test
     public void testInitializeUsingJndiSelector() throws Exception {
-        final Capture<Object> loggerContextCapture = new Capture<Object>();
+        final Capture<Object> loggerContextCapture = new Capture<>();
 
         expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONTEXT_NAME)).andReturn("helloWorld6");
         expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONFIG_LOCATION)).andReturn(null);
@@ -421,7 +421,7 @@ public class Log4jWebInitializerImplTest {
 
     @Test
     public void testWrapExecutionWithNoParameters() throws Exception {
-        final Capture<Object> loggerContextCapture = new Capture<Object>();
+        final Capture<Object> loggerContextCapture = new Capture<>();
 
         expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONTEXT_NAME)).andReturn(null);
         expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONFIG_LOCATION)).andReturn(null);
