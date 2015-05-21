@@ -50,7 +50,7 @@ public class DeadlockAppender extends AbstractAppender {
         thread.start();
         try {
             thread.join();
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             System.out.println("Thread interrupted");
         }
     }
@@ -74,7 +74,7 @@ public class DeadlockAppender extends AbstractAppender {
 
         @Override
         public void run() {
-            Logger logger = LogManager.getLogger("org.apache.logging.log4j.test.WorkerThread");
+            final Logger logger = LogManager.getLogger("org.apache.logging.log4j.test.WorkerThread");
             logger.debug("Worker is running");
         }
     }

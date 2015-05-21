@@ -126,7 +126,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
             final long fileLength = randomAccessFile.length() + regionLength;
             LOGGER.debug("MMapAppender extending {} by {} bytes to {}", getFileName(), regionLength, fileLength);
 
-            long startNanos = System.nanoTime();
+            final long startNanos = System.nanoTime();
             randomAccessFile.setLength(fileLength);
             final float millis = (float) ((System.nanoTime() - startNanos) / (1000.0 * 1000.0));
             LOGGER.debug("MMapAppender extended {} OK in {} millis", getFileName(), millis);

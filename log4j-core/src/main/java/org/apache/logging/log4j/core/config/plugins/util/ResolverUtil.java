@@ -208,7 +208,7 @@ public class ResolverUtil {
                 }
             } catch (final IOException ioe) {
                 LOGGER.warn("could not read entries", ioe);
-            } catch (URISyntaxException e) {
+            } catch (final URISyntaxException e) {
                 LOGGER.warn("could not read entries", e);
             }
         }

@@ -45,7 +45,7 @@ public class MdcPatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String str = sb.toString();
-        String expected = "{object=Log4j, subject=I, verb=love}";
+        final String expected = "{object=Log4j, subject=I, verb=love}";
         assertTrue("Incorrect result. Expected " + expected + ", actual " + str, str.equals(expected));
     }
 
@@ -53,7 +53,7 @@ public class MdcPatternConverterTest {
     public void testConverterWithKey() {
 
         final Message msg = new SimpleMessage("Hello");
-        String [] options = new String[] {"object"};
+        final String [] options = new String[] {"object"};
         ThreadContext.put("subject", "I");
         ThreadContext.put("verb", "love");
         ThreadContext.put("object", "Log4j");
@@ -70,7 +70,7 @@ public class MdcPatternConverterTest {
     public void testConverterWithKeys() {
 
         final Message msg = new SimpleMessage("Hello");
-        String [] options = new String[] {"object, subject"};
+        final String [] options = new String[] {"object, subject"};
         ThreadContext.put("subject", "I");
         ThreadContext.put("verb", "love");
         ThreadContext.put("object", "Log4j");

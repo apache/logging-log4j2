@@ -65,13 +65,13 @@ public class AsyncLoggerConfigTest {
     
     @Test
     public void testIncludeLocationDefaultsToFalse() {
-    	LoggerConfig rootLoggerConfig = 
+    	final LoggerConfig rootLoggerConfig = 
     			AsyncLoggerConfig.RootLogger.createLogger(
     					null, "INFO", null, new AppenderRef[0], null, null, null);
     	assertFalse("Include location should default to false for async logggers",
     			    rootLoggerConfig.isIncludeLocation());
     	
-    	LoggerConfig loggerConfig =
+    	final LoggerConfig loggerConfig =
     	        AsyncLoggerConfig.createLogger(
     	        		null, "INFO", "com.foo.Bar", null, new AppenderRef[0], null, null, null);
     	assertFalse("Include location should default to false for async logggers",

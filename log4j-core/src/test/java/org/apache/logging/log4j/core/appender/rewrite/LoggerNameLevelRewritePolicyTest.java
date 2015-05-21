@@ -33,7 +33,7 @@ public class LoggerNameLevelRewritePolicyTest {
 
     @Test
     public void testUpdate() {
-        KeyValuePair[] rewrite = new KeyValuePair[] {
+        final KeyValuePair[] rewrite = new KeyValuePair[] {
                 new KeyValuePair("INFO", "DEBUG"),
                 new KeyValuePair("WARN", "INFO") };
         final String loggerNameRewrite = "com.foo.bar";

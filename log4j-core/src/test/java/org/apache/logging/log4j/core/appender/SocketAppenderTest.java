@@ -112,8 +112,8 @@ public class SocketAppenderTest {
         root.addAppender(appender);
         root.setAdditive(false);
         root.setLevel(Level.DEBUG);
-        String tcKey = "UUID";
-        String expectedUuidStr = UUID.randomUUID().toString();
+        final String tcKey = "UUID";
+        final String expectedUuidStr = UUID.randomUUID().toString();
         ThreadContext.put(tcKey, expectedUuidStr);
         ThreadContext.push(expectedUuidStr);
         final String expectedExMsg = "This is a test";

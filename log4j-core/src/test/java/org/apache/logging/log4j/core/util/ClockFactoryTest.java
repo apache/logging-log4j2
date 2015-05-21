@@ -35,7 +35,7 @@ public class ClockFactoryTest {
 
     public static void resetClock(final Class<?> clazz) throws IllegalAccessException {
         System.clearProperty(ClockFactory.PROPERTY_NAME);
-        Field field = FieldUtils.getField(clazz, "clock", true);
+        final Field field = FieldUtils.getField(clazz, "clock", true);
         FieldUtils.removeFinalModifier(field, true);
         FieldUtils.writeStaticField(field, ClockFactory.getClock(), false);
     }

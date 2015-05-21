@@ -52,11 +52,11 @@ public class SslConfigurationTest {
         final SSLSocketFactory factory = sc.getSslSocketFactory();
         final SSLSocket clientSocket = (SSLSocket) factory.createSocket(TLS_TEST_HOST, TLS_TEST_PORT);
         try {
-            OutputStream os = clientSocket.getOutputStream();
+            final OutputStream os = clientSocket.getOutputStream();
             try {
                 os.write("GET config/login_verify2?".getBytes());
                 Assert.fail("Expected IOException");
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 // Expected, do nothing.
             } finally {
                 os.close();

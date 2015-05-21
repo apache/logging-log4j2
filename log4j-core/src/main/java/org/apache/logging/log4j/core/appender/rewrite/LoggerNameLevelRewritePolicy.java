@@ -53,8 +53,8 @@ public class LoggerNameLevelRewritePolicy implements RewritePolicy {
             @PluginAttribute("logger") final String loggerNamePrefix,
             @PluginElement("LevelPair") final KeyValuePair[] levelPairs) {
             // @formatter:on
-        Map<Level, Level> newMap = new HashMap<>(levelPairs.length);
-        for (KeyValuePair keyValuePair : levelPairs) {
+        final Map<Level, Level> newMap = new HashMap<>(levelPairs.length);
+        for (final KeyValuePair keyValuePair : levelPairs) {
             newMap.put(getLevel(keyValuePair.getKey()), getLevel(keyValuePair.getValue()));
         }
         return new LoggerNameLevelRewritePolicy(loggerNamePrefix, newMap);
@@ -81,7 +81,7 @@ public class LoggerNameLevelRewritePolicy implements RewritePolicy {
         }
         final Level sourceLevel = event.getLevel();
         final Level newLevel = map.get(sourceLevel);
-        LogEvent result = new Log4jLogEvent(event.getLoggerName(), event.getMarker(), event.getLoggerFqcn(),
+        final LogEvent result = new Log4jLogEvent(event.getLoggerName(), event.getMarker(), event.getLoggerFqcn(),
                 newLevel == null ? sourceLevel : newLevel, event.getMessage(), event.getThrown(),
                 event.getContextMap(), event.getContextStack(), event.getThreadName(), event.getSource(),
                 event.getTimeMillis());
