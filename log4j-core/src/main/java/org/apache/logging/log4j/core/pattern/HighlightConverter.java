@@ -192,7 +192,7 @@ public final class HighlightConverter extends LogEventPatternConverter implement
 
     private final List<PatternFormatter> patternFormatters;
 
-    private boolean noAnsi;
+    private final boolean noAnsi;
 
     /**
      * Construct the converter.
