@@ -79,13 +79,9 @@ public class MemoryMappedFileManagerTest {
         final int initialLength = 4 * 1024;
 
         // create existing file
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(file);
+        try (FileOutputStream fos = new FileOutputStream(file)) {
             fos.write(new byte[initialLength], 0, initialLength);
             fos.flush();
-        } finally {
-            fos.close();
         }
         assertEquals("all flushed to disk", initialLength, file.length());
 
