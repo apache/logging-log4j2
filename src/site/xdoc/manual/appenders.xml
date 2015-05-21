@@ -1929,7 +1929,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>A logger name used as a prefix to test each event's logger name.</td>
             </tr>
             <tr>
-              <td>levelPair</td>
+              <td>LevelPair</td>
               <td>KeyValuePair[]</td>
               <td>An array of keys and their values, each key is a source level, each value a target level.</td>
             </tr>
