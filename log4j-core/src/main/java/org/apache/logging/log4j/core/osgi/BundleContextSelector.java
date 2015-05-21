@@ -37,7 +37,7 @@ import org.osgi.framework.FrameworkUtil;
  *
  * @since 2.1
  */
-public class BundleContextSelector extends ClassLoaderContextSelector implements ContextSelector {
+public class BundleContextSelector extends ClassLoaderContextSelector {
 
     @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext,
