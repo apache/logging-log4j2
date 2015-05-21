@@ -44,7 +44,7 @@ public class OsgiRule extends ExternalResource {
 
     @Override
     protected void before() throws Throwable {
-        final Map<String, String> configMap = new HashMap<String, String>(2);
+        final Map<String, String> configMap = new HashMap<>(2);
         // Cleans framework before first init. Subsequent init invocations do not clean framework.
         configMap.put("org.osgi.framework.storage.clean", "onFirstInit");
         // Delegates loading of endorsed libraries to JVM classloader

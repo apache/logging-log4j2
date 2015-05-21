@@ -181,7 +181,7 @@ public final class LoaderUtil {
      */
     public static Collection<URL> findResources(final String resource) {
         final Collection<UrlResource> urlResources = findUrlResources(resource);
-        final Collection<URL> resources = new LinkedHashSet<URL>(urlResources.size());
+        final Collection<URL> resources = new LinkedHashSet<>(urlResources.size());
         for (final UrlResource urlResource : urlResources) {
             resources.add(urlResource.getUrl());
         }
@@ -194,7 +194,7 @@ public final class LoaderUtil {
             LoaderUtil.class.getClassLoader(),
             ClassLoader.getSystemClassLoader()
         };
-        final Collection<UrlResource> resources = new LinkedHashSet<UrlResource>();
+        final Collection<UrlResource> resources = new LinkedHashSet<>();
         for (final ClassLoader cl : candidates) {
             if (cl != null) {
                 try {

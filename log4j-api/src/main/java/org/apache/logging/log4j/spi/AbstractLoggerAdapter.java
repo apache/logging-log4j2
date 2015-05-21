@@ -35,7 +35,7 @@ public abstract class AbstractLoggerAdapter<L> implements LoggerAdapter<L> {
      * A map to store loggers for their given LoggerContexts.
      */
     protected final Map<LoggerContext, ConcurrentMap<String, L>> registry =
-        new WeakHashMap<LoggerContext, ConcurrentMap<String, L>>();
+        new WeakHashMap<>();
 
     @Override
     public L getLogger(final String name) {
@@ -58,7 +58,7 @@ public abstract class AbstractLoggerAdapter<L> implements LoggerAdapter<L> {
         synchronized (registry) {
             ConcurrentMap<String, L> loggers = registry.get(context);
             if (loggers == null) {
-                loggers = new ConcurrentHashMap<String, L>();
+                loggers = new ConcurrentHashMap<>();
                 registry.put(context, loggers);
             }
             return loggers;

@@ -44,7 +44,7 @@ import org.apache.logging.log4j.spi.StandardLevel;
 public final class Level implements Comparable<Level>, Serializable {
 
     private static final long serialVersionUID = 1581082L;
-    private static final ConcurrentMap<String, Level> levels = new ConcurrentHashMap<String, Level>();
+    private static final ConcurrentMap<String, Level> levels = new ConcurrentHashMap<>();
 
     /**
      * No events will be logged.

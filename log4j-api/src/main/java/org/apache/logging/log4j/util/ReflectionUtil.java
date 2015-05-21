@@ -269,7 +269,7 @@ public final class ReflectionUtil {
         // benchmarks show that using the SecurityManager is much faster than looping through getCallerClass(int)
         if (SECURITY_MANAGER != null) {
             final Class<?>[] array = SECURITY_MANAGER.getClassContext();
-            final Stack<Class<?>> classes = new Stack<Class<?>>();
+            final Stack<Class<?>> classes = new Stack<>();
             classes.ensureCapacity(array.length);
             for (final Class<?> clazz : array) {
                 classes.push(clazz);
@@ -278,14 +278,14 @@ public final class ReflectionUtil {
         }
         // slower version using getCallerClass where we cannot use a SecurityManager
         if (supportsFastReflection()) {
-            final Stack<Class<?>> classes = new Stack<Class<?>>();
+            final Stack<Class<?>> classes = new Stack<>();
             Class<?> clazz;
             for (int i = 1; null != (clazz = getCallerClass(i)); i++) {
                 classes.push(clazz);
             }
             return classes;
         }
-        return new Stack<Class<?>>();
+        return new Stack<>();
     }
 
     static final class PrivateSecurityManager extends SecurityManager {

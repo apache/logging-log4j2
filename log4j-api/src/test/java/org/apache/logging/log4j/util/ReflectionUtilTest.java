@@ -74,7 +74,7 @@ public class ReflectionUtilTest {
     @Test
     public void testGetCurrentStackTrace() throws Exception {
         final Stack<Class<?>> classes = ReflectionUtil.getCurrentStackTrace();
-        final Stack<Class<?>> reversed = new Stack<Class<?>>();
+        final Stack<Class<?>> reversed = new Stack<>();
         reversed.ensureCapacity(classes.size());
         while (!classes.empty()) {
             reversed.push(classes.pop());

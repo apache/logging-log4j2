@@ -53,13 +53,13 @@ public class DefaultThreadContextMap implements ThreadContextMap {
                 @Override
                 protected Map<String, String> childValue(final Map<String, String> parentValue) {
                     return parentValue != null && isMapEnabled //
-                            ? Collections.unmodifiableMap(new HashMap<String, String>(parentValue)) //
+                            ? Collections.unmodifiableMap(new HashMap<>(parentValue)) //
                             : null;
                 }
             };
         }
         // if not inheritable, return plain ThreadLocal with null as initial value
-        return new ThreadLocal<Map<String, String>>();
+        return new ThreadLocal<>();
     }
 
     @Override
@@ -68,7 +68,7 @@ public class DefaultThreadContextMap implements ThreadContextMap {
             return;
         }
         Map<String, String> map = localMap.get();
-        map = map == null ? new HashMap<String, String>() : new HashMap<String, String>(map);
+        map = map == null ? new HashMap<String, String>() : new HashMap<>(map);
         map.put(key, value);
         localMap.set(Collections.unmodifiableMap(map));
     }
@@ -83,7 +83,7 @@ public class DefaultThreadContextMap implements ThreadContextMap {
     public void remove(final String key) {
         final Map<String, String> map = localMap.get();
         if (map != null) {
-            final Map<String, String> copy = new HashMap<String, String>(map);
+            final Map<String, String> copy = new HashMap<>(map);
             copy.remove(key);
             localMap.set(Collections.unmodifiableMap(copy));
         }
@@ -103,7 +103,7 @@ public class DefaultThreadContextMap implements ThreadContextMap {
     @Override
     public Map<String, String> getCopy() {
         final Map<String, String> map = localMap.get();
-        return map == null ? new HashMap<String, String>() : new HashMap<String, String>(map);
+        return map == null ? new HashMap<String, String>() : new HashMap<>(map);
     }
 
     @Override

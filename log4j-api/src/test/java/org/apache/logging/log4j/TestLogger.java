@@ -45,7 +45,7 @@ public class TestLogger extends AbstractLogger {
         super(name);
     }
 
-    private final List<String> list = new ArrayList<String>();
+    private final List<String> list = new ArrayList<>();
 
     public List<String> getEntries() {
         return list;

@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public final class MarkerManager {
 
-    private static final ConcurrentMap<String, Marker> MARKERS = new ConcurrentHashMap<String, Marker>();
+    private static final ConcurrentMap<String, Marker> MARKERS = new ConcurrentHashMap<>();
 
     private MarkerManager() {
         // do nothing
