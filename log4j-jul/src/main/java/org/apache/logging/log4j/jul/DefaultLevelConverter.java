@@ -29,10 +29,8 @@ import org.apache.logging.log4j.Level;
  */
 public class DefaultLevelConverter implements LevelConverter {
 
-    private final Map<java.util.logging.Level, Level> julToLog4j =
-        new IdentityHashMap<java.util.logging.Level, Level>(9);
-    private final Map<Level, java.util.logging.Level> log4jToJul =
-        new IdentityHashMap<Level, java.util.logging.Level>(10);
+    private final Map<java.util.logging.Level, Level> julToLog4j = new IdentityHashMap<>(9);
+    private final Map<Level, java.util.logging.Level> log4jToJul = new IdentityHashMap<>(10);
 
     public DefaultLevelConverter() {
         // Map JUL to Log4j
