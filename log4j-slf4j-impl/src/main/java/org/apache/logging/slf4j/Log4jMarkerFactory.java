@@ -89,9 +89,9 @@ public class Log4jMarkerFactory implements IMarkerFactory {
                                                                  final Collection<Marker> visited) {
         final org.apache.logging.log4j.Marker marker = MarkerManager.getMarker(original.getName());
         if (original.hasReferences()) {
-            final Iterator it = original.iterator();
+            final Iterator<Marker> it = original.iterator();
             while (it.hasNext()) {
-                final Marker next = (Marker) it.next();
+                final Marker next = it.next();
                 if (visited.contains(next)) {
                     LOGGER.warn("Found a cycle in Marker [{}]. Cycle will be broken.", next.getName());
                 } else {
