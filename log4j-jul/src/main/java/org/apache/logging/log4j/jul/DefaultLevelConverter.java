@@ -36,35 +36,49 @@ public class DefaultLevelConverter implements LevelConverter {
 
     public DefaultLevelConverter() {
         // Map JUL to Log4j
-        julToLog4j.put(java.util.logging.Level.OFF, Level.OFF);
-        julToLog4j.put(java.util.logging.Level.FINEST, LevelTranslator.FINEST);
-        julToLog4j.put(java.util.logging.Level.FINER, Level.TRACE);
-        julToLog4j.put(java.util.logging.Level.FINE, Level.DEBUG);
-        julToLog4j.put(java.util.logging.Level.CONFIG, LevelTranslator.CONFIG);
-        julToLog4j.put(java.util.logging.Level.INFO, Level.INFO);
-        julToLog4j.put(java.util.logging.Level.WARNING, Level.WARN);
-        julToLog4j.put(java.util.logging.Level.SEVERE, Level.ERROR);
-        julToLog4j.put(java.util.logging.Level.ALL, Level.ALL);
+        mapJulToLog4j(java.util.logging.Level.OFF, Level.OFF);
+        mapJulToLog4j(java.util.logging.Level.FINEST, LevelTranslator.FINEST);
+        mapJulToLog4j(java.util.logging.Level.FINER, Level.TRACE);
+        mapJulToLog4j(java.util.logging.Level.FINE, Level.DEBUG);
+        mapJulToLog4j(java.util.logging.Level.CONFIG, LevelTranslator.CONFIG);
+        mapJulToLog4j(java.util.logging.Level.INFO, Level.INFO);
+        mapJulToLog4j(java.util.logging.Level.WARNING, Level.WARN);
+        mapJulToLog4j(java.util.logging.Level.SEVERE, Level.ERROR);
+        mapJulToLog4j(java.util.logging.Level.ALL, Level.ALL);
         // Map Log4j to JUL
-        log4jToJul.put(Level.OFF, java.util.logging.Level.OFF);
-        log4jToJul.put(LevelTranslator.FINEST, java.util.logging.Level.FINEST);
-        log4jToJul.put(Level.TRACE, java.util.logging.Level.FINER);
-        log4jToJul.put(Level.DEBUG, java.util.logging.Level.FINE);
-        log4jToJul.put(LevelTranslator.CONFIG, java.util.logging.Level.CONFIG);
-        log4jToJul.put(Level.INFO, java.util.logging.Level.INFO);
-        log4jToJul.put(Level.WARN, java.util.logging.Level.WARNING);
-        log4jToJul.put(Level.ERROR, java.util.logging.Level.SEVERE);
-        log4jToJul.put(Level.FATAL, java.util.logging.Level.SEVERE);
-        log4jToJul.put(Level.ALL, java.util.logging.Level.ALL);
+        mapLog4jToJul(Level.OFF, java.util.logging.Level.OFF);
+        mapLog4jToJul(LevelTranslator.FINEST, java.util.logging.Level.FINEST);
+        mapLog4jToJul(Level.TRACE, java.util.logging.Level.FINER);
+        mapLog4jToJul(Level.DEBUG, java.util.logging.Level.FINE);
+        mapLog4jToJul(LevelTranslator.CONFIG, java.util.logging.Level.CONFIG);
+        mapLog4jToJul(Level.INFO, java.util.logging.Level.INFO);
+        mapLog4jToJul(Level.WARN, java.util.logging.Level.WARNING);
+        mapLog4jToJul(Level.ERROR, java.util.logging.Level.SEVERE);
+        mapLog4jToJul(Level.FATAL, java.util.logging.Level.SEVERE);
+        mapLog4jToJul(Level.ALL, java.util.logging.Level.ALL);
     }
-
-    @Override
-    public Level toLevel(final java.util.logging.Level javaLevel) {
-        return julToLog4j.get(javaLevel);
+    
+    /*
+     * TODO consider making public.
+     */
+    private void mapJulToLog4j(java.util.logging.Level julLevel, Level level) {
+        julToLog4j.put(julLevel, level);
+    }
+    
+    /*
+     * TODO consider making public.
+     */
+    private void mapLog4jToJul(Level level, java.util.logging.Level julLevel) {
+        log4jToJul.put(level, julLevel);
     }
 
     @Override
     public java.util.logging.Level toJavaLevel(final Level level) {
         return log4jToJul.get(level);
+    }
+
+    @Override
+    public Level toLevel(final java.util.logging.Level javaLevel) {
+        return julToLog4j.get(javaLevel);
     }
 }
