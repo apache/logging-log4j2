@@ -81,10 +81,12 @@ public class LoggerNameLevelRewritePolicy implements RewritePolicy {
         }
         final Level sourceLevel = event.getLevel();
         final Level newLevel = map.get(sourceLevel);
+        if (newLevel == null || newLevel == sourceLevel) {
+            return event;
+        }
         final LogEvent result = new Log4jLogEvent(event.getLoggerName(), event.getMarker(), event.getLoggerFqcn(),
-                newLevel == null ? sourceLevel : newLevel, event.getMessage(), event.getThrown(),
-                event.getContextMap(), event.getContextStack(), event.getThreadName(), event.getSource(),
-                event.getTimeMillis());
+                newLevel, event.getMessage(), event.getThrown(), event.getContextMap(), event.getContextStack(),
+                event.getThreadName(), event.getSource(), event.getTimeMillis());
 
         return result;
     }
