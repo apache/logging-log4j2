@@ -72,8 +72,8 @@ public class ClientGui extends JPanel implements NotificationListener {
     private static final long serialVersionUID = -253621277232291174L;
     private static final int INITIAL_STRING_WRITER_SIZE = 1024;
     private final Client client;
-    private final Map<ObjectName, Component> contextObjNameToTabbedPaneMap = new HashMap<ObjectName, Component>();
-    private final Map<ObjectName, JTextArea> statusLogTextAreaMap = new HashMap<ObjectName, JTextArea>();
+    private final Map<ObjectName, Component> contextObjNameToTabbedPaneMap = new HashMap<>();
+    private final Map<ObjectName, JTextArea> statusLogTextAreaMap = new HashMap<>();
     private JTabbedPane tabbedPaneContexts;
 
     public ClientGui(final Client client) throws IOException, JMException {
@@ -275,7 +275,7 @@ public class ClientGui extends JPanel implements NotificationListener {
         }
         final JMXServiceURL url = new JMXServiceURL(serviceUrl);
         final Properties props = System.getProperties();
-        final Map<String, String> paramMap = new HashMap<String, String>(props.size());
+        final Map<String, String> paramMap = new HashMap<>(props.size());
         for (final String key : props.stringPropertyNames()) {
             paramMap.put(key, props.getProperty(key));
         }

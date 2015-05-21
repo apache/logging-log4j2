@@ -92,7 +92,7 @@ public class Client {
      * @throws JMException If a management error occurred
      */
     public List<LoggerContextAdminMBean> getLoggerContextAdmins() throws JMException, IOException {
-        final List<LoggerContextAdminMBean> result = new ArrayList<LoggerContextAdminMBean>();
+        final List<LoggerContextAdminMBean> result = new ArrayList<>();
         final Set<ObjectName> contextNames = find(LoggerContextAdminMBean.PATTERN);
         for (final ObjectName contextName : contextNames) {
             result.add(getLoggerContextAdmin(contextName));
