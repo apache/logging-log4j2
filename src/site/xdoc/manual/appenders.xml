@@ -1888,9 +1888,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           </table>
           <p>
             The following configuration shows a RewriteAppender configured to add a product key and its value
-            to the MapMessage.:
+            to the MapMessage:
           </p>
-
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
   <Appenders>
@@ -1903,6 +1902,54 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         <Property name="user">${sys:user.name}</Property>
         <Property name="env">${sys:environment}</Property>
       </PropertiesRewritePolicy>
+    </Rewrite>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="Rewrite"/>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
+        <h5>LoggerNameLevelRewritePolicy</h5>
+        <p>
+          You can use this policy to make loggers in third party code less chatty by changing event levels.
+          The LoggerNameLevelRewritePolicy will rewrite log event levels for a given logger name prefix.
+          You configure a LoggerNameLevelRewritePolicy with a logger name prefix and a pairs of levels, 
+          where a pair defines a source level and a target level.
+        </p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>loggerName</td>
+              <td>String</td>
+              <td>A logger name used as a prefix to test each event's logger name.</td>
+            </tr>
+            <tr>
+              <td>levelPair</td>
+              <td>KeyValuePair[]</td>
+              <td>An array of keys and their values, each key is a source level, each value a target level.</td>
+            </tr>
+          </table>
+          <p>
+            The following configuration shows a RewriteAppender configured to map level INFO to DEBUG and level 
+            WARN to INFO for all loggers that start with <code>com.foo.bar</code>. 
+          </p>
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp">
+  <Appenders>
+    <Console name="STDOUT" target="SYSTEM_OUT">
+      <PatternLayout pattern="%m%n"/>
+    </Console>
+    <Rewrite name="rewrite">
+      <AppenderRef ref="STDOUT"/>
+      <LoggerNameLevelRewritePolicy loggerName="com.foo.bar">
+        <LevelPair key="INFO" value="DEBUG"/>
+        <LevelPair key="WARN" value="INFO"/>
+      </LoggerNameLevelRewritePolicy>
     </Rewrite>
   </Appenders>
   <Loggers>
