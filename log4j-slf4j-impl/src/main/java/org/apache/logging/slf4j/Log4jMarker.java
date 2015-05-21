@@ -75,8 +75,7 @@ public class Log4jMarker implements Marker {
     }
 
     @Override
-    @SuppressWarnings("rawtypes")
-    public Iterator iterator() {
+    public Iterator<Marker> iterator() {
         final List<Marker> parents = new ArrayList<>();
         for (final org.apache.logging.log4j.Marker m : this.marker.getParents()) {
             parents.add(factory.getMarker(m.getName()));
