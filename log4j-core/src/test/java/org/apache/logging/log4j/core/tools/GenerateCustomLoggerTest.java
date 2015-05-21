@@ -62,9 +62,9 @@ public class GenerateCustomLoggerTest {
         final String src = Generate.generateSource(CLASSNAME, levels, Generate.Type.CUSTOM);
         final File f = new File("target/test-classes/org/myorg/MyCustomLogger.java");
         f.getParentFile().mkdirs();
-        final FileOutputStream out = new FileOutputStream(f);
-        out.write(src.getBytes(Charset.defaultCharset()));
-        out.close();
+        try (final FileOutputStream out = new FileOutputStream(f)) {
+            out.write(src.getBytes(Charset.defaultCharset()));
+        }
 
         // set up compiler
         final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
