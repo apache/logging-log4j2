@@ -18,8 +18,10 @@ package org.apache.logging.log4j.web;
 
 import java.net.URI;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 import javax.servlet.ServletContext;
 
 import org.apache.logging.log4j.LogManager;
@@ -45,15 +47,17 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWebLifeCycle {
 
+    private static final String WEB_INF = "/WEB-INF/";
+
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private static final long serialVersionUID = 1L;
 
     static {
         if (Loader.isClassAvailable("org.apache.logging.log4j.core.web.JNDIContextFilter")) {
-            throw new IllegalStateException("You are using Log4j 2 in a web application with the old, extinct " +
-                    "log4j-web artifact. This is not supported and could cause serious runtime problems. Please" +
-                    "remove the log4j-web JAR file from your application.");
+            throw new IllegalStateException("You are using Log4j 2 in a web application with the old, extinct "
+                    + "log4j-web artifact. This is not supported and could cause serious runtime problems. Please"
+                    + "remove the log4j-web JAR file from your application.");
         }
     }
 
@@ -71,11 +75,12 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
     }
 
     /**
-     * Initializes the Log4jWebLifeCycle attribute of a ServletContext. Those who wish to obtain this object should
-     * use the {@link org.apache.logging.log4j.web.WebLoggerContextUtils#getWebLifeCycle(javax.servlet.ServletContext)}
+     * Initializes the Log4jWebLifeCycle attribute of a ServletContext. Those who wish to obtain this object should use
+     * the {@link org.apache.logging.log4j.web.WebLoggerContextUtils#getWebLifeCycle(javax.servlet.ServletContext)}
      * method instead.
      *
-     * @param servletContext the ServletContext to initialize
+     * @param servletContext
+     *        the ServletContext to initialize
      * @return a new Log4jWebLifeCycle
      * @since 2.0.1
      */
@@ -96,10 +101,10 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
             super.setStarting();
 
             this.name = this.substitutor.replace(this.servletContext.getInitParameter(LOG4J_CONTEXT_NAME));
-            final String location =
-                    this.substitutor.replace(this.servletContext.getInitParameter(LOG4J_CONFIG_LOCATION));
-            final boolean isJndi =
-                    "true".equalsIgnoreCase(this.servletContext.getInitParameter(IS_LOG4J_CONTEXT_SELECTOR_NAMED));
+            final String location = this.substitutor.replace(this.servletContext
+                    .getInitParameter(LOG4J_CONFIG_LOCATION));
+            final boolean isJndi = "true".equalsIgnoreCase(this.servletContext
+                    .getInitParameter(IS_LOG4J_CONTEXT_SELECTOR_NAMED));
 
             if (isJndi) {
                 this.initializeJndi(location);
@@ -161,11 +166,12 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
         try {
             String configLocation = location;
             if (configLocation == null) {
-                final String[] paths = SetUtils.prefixSet(servletContext.getResourcePaths("/WEB-INF/"), "/WEB-INF/log4j2");
+                final String[] paths = SetUtils.prefixSet(servletContext.getResourcePaths(WEB_INF), WEB_INF + "log4j2");
+                LOGGER.debug("getConfigURI found resource paths {} in servletConext at [{}]", Arrays.toString(paths), WEB_INF);
                 if (paths.length == 1) {
                     configLocation = paths[0];
                 } else if (paths.length > 1) {
-                    final String prefix = "/WEB-INF/log4j2-" + this.name + ".";
+                    final String prefix = WEB_INF + "log4j2-" + this.name + ".";
                     boolean found = false;
                     for (final String str : paths) {
                         if (str.startsWith(prefix)) {
@@ -182,7 +188,9 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
             if (configLocation != null) {
                 final URL url = servletContext.getResource(configLocation);
                 if (url != null) {
-                    return url.toURI();
+                    final URI uri = url.toURI();
+                    LOGGER.debug("getConfigURI found resource [{}] in servletConext at [{}]", uri, configLocation);
+                    return uri;
                 }
             }
         } catch (final Exception ex) {
@@ -190,7 +198,9 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
         }
         if (location != null) {
             try {
-                return FileUtils.getCorrectedFilePathUri(location);
+                final URI correctedFilePathUri = FileUtils.getCorrectedFilePathUri(location);
+                LOGGER.debug("getConfigURI found [{}] in servletConext at [{}]", correctedFilePathUri, location);
+                return correctedFilePathUri;
             } catch (final Exception e) {
                 LOGGER.error("Unable to convert configuration location [{}] to a URI", location, e);
             }
