@@ -182,8 +182,7 @@ public final class HighlightConverter extends LogEventPatternConverter implement
         }
         final PatternParser parser = PatternLayout.createPatternParser(config);
         final List<PatternFormatter> formatters = parser.parse(options[0]);
-        final boolean noConsoleNoAnsi = options.length > 1
-                && (PatternParser.NO_CONSOLE_NO_ANSI + "=true").equals(options[1]);
+        final boolean noConsoleNoAnsi = Arrays.toString(options).contains(PatternParser.NO_CONSOLE_NO_ANSI + "=true");
         final boolean hideAnsi = noConsoleNoAnsi && System.console() == null;
         return new HighlightConverter(formatters, createLevelStyleMap(options), hideAnsi);
     }
