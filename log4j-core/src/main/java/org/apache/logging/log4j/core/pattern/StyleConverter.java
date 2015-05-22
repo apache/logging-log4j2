@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.logging.log4j.core.LogEvent;
@@ -57,8 +58,7 @@ public final class StyleConverter extends LogEventPatternConverter implements An
         final PatternParser parser = PatternLayout.createPatternParser(config);
         final List<PatternFormatter> formatters = parser.parse(options[0]);
         final String style = AnsiEscape.createSequence(options[1].split(Patterns.COMMA_SEPARATOR));
-        final boolean noConsoleNoAnsi = options.length > 2
-                && (PatternParser.NO_CONSOLE_NO_ANSI + "=true").equals(options[2]);
+        final boolean noConsoleNoAnsi = Arrays.toString(options).contains(PatternParser.NO_CONSOLE_NO_ANSI + "=true");
         final boolean hideAnsi = noConsoleNoAnsi && System.console() == null;
         return new StyleConverter(formatters, style, hideAnsi);
     }
