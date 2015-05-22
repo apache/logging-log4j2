@@ -25,7 +25,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.ServletContext;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -40,7 +39,6 @@ import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.SetUtils;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
-import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * This class initializes and deinitializes Log4j no matter how the initialization occurs.
@@ -48,8 +46,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWebLifeCycle {
 
     private static final String WEB_INF = "/WEB-INF/";
-
-    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private static final long serialVersionUID = 1L;
 
