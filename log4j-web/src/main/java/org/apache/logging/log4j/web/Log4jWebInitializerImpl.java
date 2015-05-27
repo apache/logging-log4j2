@@ -147,6 +147,7 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
     private void initializeNonJndi(final String location) {
         if (this.name == null) {
             this.name = this.servletContext.getServletContextName();
+            LOGGER.debug("Using the servlet context name \"{}\".", this.name);
         }
 
         if (this.name == null && location == null) {
