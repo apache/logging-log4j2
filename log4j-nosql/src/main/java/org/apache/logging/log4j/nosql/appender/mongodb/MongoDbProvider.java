@@ -181,9 +181,12 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
                         + NameUtil.md5(password + MongoDbProvider.class.getName());
                 MongoDbConnection.authenticate(database, username, password);
             } else {
-                LOGGER.error("The database is not already authenticated so you must supply a username and password "
-                        + "for the MongoDB provider.");
-                return null;
+                try {
+                    database.getCollectionNames(); // Check if the database actually requires authentication
+                } catch (Exception e) {
+                    LOGGER.error("The database is not already authenticated so you must supply a username and password for the MongoDB provider.", e);
+                    return null;
+                }
             }
         }
 

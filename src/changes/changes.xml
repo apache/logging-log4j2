@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.4" date="2015-MM-DD" description="GA Release 2.4">
+      <action issue="LOG4J2-403" dev="ggregory" type="update" due-to="Poorna Subhash P, Jeremy Lautman">
+        MongoDB appender, username and password should be optional.
+      </action>
       <action issue="LOG4J2-1026" dev="ggregory" type="fix">
         HighlightConverter does not obey noConsoleNoAnsi.
       </action>
