@@ -33,20 +33,20 @@
       <action issue="LOG4J2-1033" dev="ggregory" type="fix" due-to="Mikael Ståldal">
         SimpleLogger creates unnecessary Map objects by calling ThreadContext.getContext() instead of getImmutableContext().
       </action>
-      <action issue="LOG4J2-403" dev="ggregory" type="update" due-to="Poorna Subhash P, Jeremy Lautman">
-        MongoDB appender, username and password should be optional.
-      </action>
       <action issue="LOG4J2-1026" dev="ggregory" type="fix">
         HighlightConverter does not obey noConsoleNoAnsi.
-      </action>
-      <action issue="LOG4J2-1022" dev="rgoers" type="update">
-        Allow a list of keys to be specified in the MDC pattern converter.
       </action>
       <action issue="LOG4J2-1019" dev="ggregory" type="fix">
         ZipCompressAction leaves files open until GC when an IO error takes place.
       </action>
       <action issue="LOG4J2-1020" dev="ggregory" type="fix">
         GzCompressAction leaves files open until GC when an IO error takes place.
+      </action>
+      <action issue="LOG4J2-403" dev="ggregory" type="update" due-to="Poorna Subhash P, Jeremy Lautman">
+        MongoDB appender, username and password should be optional.
+      </action>
+      <action issue="LOG4J2-1022" dev="rgoers" type="update">
+        Allow a list of keys to be specified in the MDC pattern converter.
       </action>
       <action issue="LOG4J2-1017" dev="ggregory" type="update">
         Update Java platform from Java 6 to 7.
