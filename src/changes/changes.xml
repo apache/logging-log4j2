@@ -24,6 +24,12 @@
   </properties>
   <body>
     <release version="2.4" date="2015-MM-DD" description="GA Release 2.4">
+      <action issue="LOG4J2-1023" dev="ggregory" type="add" due-to="Mikael Ståldal">
+        New RewritePolicy for changing level of a log event.
+      </action>
+      <action issue="LOG4J2-1015" dev="ggregory" type="add">
+        Add a way to route messages based on the %marker in Layout for RoutingAppender.
+      </action>
       <action issue="LOG4J2-1033" dev="ggregory" type="fix" due-to="Mikael Ståldal">
         SimpleLogger creates unnecessary Map objects by calling ThreadContext.getContext() instead of getImmutableContext().
       </action>
@@ -32,12 +38,6 @@
       </action>
       <action issue="LOG4J2-1026" dev="ggregory" type="fix">
         HighlightConverter does not obey noConsoleNoAnsi.
-      </action>
-      <action issue="LOG4J2-1023" dev="ggregory" type="add" due-to="Mikael Ståldal">
-        New RewritePolicy for changing level of a log event.
-      </action>
-      <action issue="LOG4J2-1015" dev="ggregory" type="add">
-        Add a way to route messages based on the %marker in Layout for RoutingAppender.
       </action>
       <action issue="LOG4J2-1022" dev="rgoers" type="update">
         Allow a list of keys to be specified in the MDC pattern converter.
