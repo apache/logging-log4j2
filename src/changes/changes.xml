@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.4" date="2015-MM-DD" description="GA Release 2.4">
+      <action issue="LOG4J2-1033" dev="ggregory" type="fix" due-to="Mikael Ståldal">
+        SimpleLogger creates unnecessary Map objects by calling ThreadContext.getContext() instead of getImmutableContext().
+      </action>
       <action issue="LOG4J2-403" dev="ggregory" type="update" due-to="Poorna Subhash P, Jeremy Lautman">
         MongoDB appender, username and password should be optional.
       </action>

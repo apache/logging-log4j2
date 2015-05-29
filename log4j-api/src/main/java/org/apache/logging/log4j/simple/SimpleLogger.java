@@ -145,7 +145,7 @@ public class SimpleLogger extends AbstractLogger {
         }
         sb.append(msg.getFormattedMessage());
         if (showContextMap) {
-            final Map<String, String> mdc = ThreadContext.getContext();
+            final Map<String, String> mdc = ThreadContext.getImmutableContext();
             if (mdc.size() > 0) {
                 sb.append(SPACE);
                 sb.append(mdc.toString());

@@ -61,7 +61,7 @@ public class TestLogger extends AbstractLogger {
         sb.append(level.toString());
         sb.append(' ');
         sb.append(msg.getFormattedMessage());
-        final Map<String, String> mdc = ThreadContext.getContext();
+        final Map<String, String> mdc = ThreadContext.getImmutableContext();
         if (mdc.size() > 0) {
             sb.append(' ');
             sb.append(mdc.toString());
