@@ -30,6 +30,9 @@
       <action issue="LOG4J2-1015" dev="ggregory" type="add">
         Add a way to route messages based on the %marker in Layout for RoutingAppender.
       </action>
+      <action issue="LOG4J2-1037" dev="ggregory" type="fix" due-to="Marc Dergacz">
+        Backward compatibility issue in log4j-1.2-api NDC pop() and peek().
+      </action>
       <action issue="LOG4J2-1033" dev="ggregory" type="fix" due-to="Mikael Ståldal">
         SimpleLogger creates unnecessary Map objects by calling ThreadContext.getContext() instead of getImmutableContext().
       </action>
