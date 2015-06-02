@@ -646,14 +646,13 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             @PluginAttribute(value = "useTlsMessageFormat", defaultBoolean = false) final boolean useTlsMessageFormat, // RFC 5425
             @PluginElement("LoggerFields") final LoggerFields[] loggerFields,
             @PluginConfiguration final Configuration config) {
-        final Charset charset = Constants.UTF_8;
         if (includes != null && excludes != null) {
             LOGGER.error("mdcIncludes and mdcExcludes are mutually exclusive. Includes wil be ignored");
             includes = null;
         }
 
         return new Rfc5424Layout(config, facility, id, enterpriseNumber, includeMDC, newLine, escapeNL, mdcId, mdcPrefix,
-                eventPrefix, appName, msgId, excludes, includes, required, charset, exceptionPattern,
+                eventPrefix, appName, msgId, excludes, includes, required, Constants.UTF_8, exceptionPattern,
                 useTlsMessageFormat, loggerFields);
     }
 
