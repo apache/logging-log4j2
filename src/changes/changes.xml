@@ -33,6 +33,9 @@
       <action issue="LOG4J2-1037" dev="ggregory" type="fix" due-to="Marc Dergacz">
         Backward compatibility issue in log4j-1.2-api NDC pop() and peek().
       </action>
+      <action issue="LOG4J2-1025" dev="ggregory" type="fix" due-to="Mikael Ståldal">
+        Custom java.util.logging.Level gives null Log4j Level and causes NPE.
+      </action>
       <action issue="LOG4J2-1033" dev="ggregory" type="fix" due-to="Mikael Ståldal">
         SimpleLogger creates unnecessary Map objects by calling ThreadContext.getContext() instead of getImmutableContext().
       </action>
