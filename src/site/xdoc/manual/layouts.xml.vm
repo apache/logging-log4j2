@@ -44,6 +44,11 @@
           many more types of Appenders. However, this means you need to configure most Layouts with a ${Charset} to
           ensure the byte array contains correct values.
         </p>
+        <p>
+          The root class for layouts that use a Charset is <code>org.apache.logging.log4j.core.layout.AbstractStringLayout</code> 
+          where the default there is UTF-8. Each layout that extends <code>org.apache.logging.log4j.core.layout.AbstractStringLayout</code> 
+          can provide its own default. See each layout below.
+        </p>
         <a name="JSONLayout"/>
         <subsection name="JSONLayout">
           <!-- From Javadoc of org.apache.logging.log4j.core.layout.JSONLayout -->
