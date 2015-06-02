@@ -94,7 +94,7 @@
           <p>
           Appenders using this layout should have their <code>charset</code> set to <code>UTF-8</code> or
           <code>UTF-16</code>, otherwise events containing non-ASCII characters could result in corrupted log files.
-          The default charset is <code>UTF-8</code>.
+          If not specified, this layout uses UTF-8.
           </p>
           <h4>Pretty vs. compact JSON</h4>
           <p>
@@ -1493,6 +1493,7 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           <p>
           Appenders using this layout should have their <code>charset</code> set to <code>UTF-8</code> or
           <code>UTF-16</code>, otherwise events containing non ASCII characters could result in corrupted log files.
+          If not specified, this layout uses UTF-8.
           </p>
           <h4>Pretty vs. compact XML</h4>
           <p>
