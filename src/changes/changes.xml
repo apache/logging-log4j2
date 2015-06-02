@@ -48,6 +48,9 @@
       <action issue="LOG4J2-1020" dev="ggregory" type="fix">
         GzCompressAction leaves files open until GC when an IO error takes place.
       </action>
+      <action issue="LOG4J2-1038" dev="ggregory" type="fix" due-to="Gili">
+        Incorrect documentation for layout default charset.
+      </action>
       <action issue="LOG4J2-403" dev="ggregory" type="update" due-to="Poorna Subhash P, Jeremy Lautman">
         MongoDB appender, username and password should be optional.
       </action>
