@@ -166,7 +166,7 @@
     <jackson1Version>1.9.13</jackson1Version>
     <jackson2Version>2.5.3</jackson2Version>
     <springVersion>3.2.11.RELEASE</springVersion>
-    <flumeVersion>1.5.2</flumeVersion>
+    <flumeVersion>1.6.0</flumeVersion>
     <disruptorVersion>3.3.2</disruptorVersion>
     <compiler.plugin.version>3.3</compiler.plugin.version>
     <pmd.plugin.version>3.4</pmd.plugin.version>
