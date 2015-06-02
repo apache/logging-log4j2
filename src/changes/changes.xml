@@ -27,7 +27,7 @@
       <action issue="LOG4J2-1023" dev="ggregory" type="add" due-to="Mikael Ståldal">
         New RewritePolicy for changing level of a log event.
       </action>
-      <action issue="LOG4J2-1015" dev="ggregory" type="add">
+      <action issue="LOG4J2-1015" dev="ggregory" type="add" due-to="Daniel Marcotte">
         Add a way to route messages based on the %marker in Layout for RoutingAppender.
       </action>
       <action issue="LOG4J2-1037" dev="ggregory" type="fix" due-to="Marc Dergacz">
