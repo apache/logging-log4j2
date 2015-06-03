@@ -189,7 +189,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         }
         this.checker = c != null ? c : noopChecker;
         final String name = config == null ? null : config.getName();
-        configName = name != null && name.length() > 0 ? name : null;
+        configName = Strings.isNotEmpty(name) ? name : null;
         this.fieldFormatters = createFieldFormatters(loggerFields, config);
     }
 

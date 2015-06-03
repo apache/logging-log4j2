@@ -33,6 +33,7 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
 import org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory;
 import org.apache.logging.log4j.core.util.Assert;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Abstract socket server for TCP and UDP implementations.
@@ -56,7 +57,7 @@ public abstract class AbstractSocketServer<T extends InputStream> extends LogEve
 
         @Override
         public Configuration getConfiguration(final String name, final URI configLocation) {
-            if (path != null && path.length() > 0) {
+            if (Strings.isNotEmpty(path)) {
                 File file = null;
                 ConfigurationSource source = null;
                 try {

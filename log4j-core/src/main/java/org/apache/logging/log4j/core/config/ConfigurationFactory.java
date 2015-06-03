@@ -45,6 +45,7 @@ import org.apache.logging.log4j.core.util.ReflectionUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Factory class for parsed {@link Configuration} objects from a configuration file.
@@ -451,7 +452,7 @@ public abstract class ConfigurationFactory {
         }
 
         private Configuration getConfiguration(final boolean isTest, final String name) {
-            final boolean named = name != null && name.length() > 0;
+            final boolean named = Strings.isNotEmpty(name);
             final ClassLoader loader = LoaderUtil.getThreadContextClassLoader();
             for (final ConfigurationFactory factory : factories) {
                 String configName;
