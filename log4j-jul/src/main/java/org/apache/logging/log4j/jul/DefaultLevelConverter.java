@@ -74,7 +74,11 @@ public class DefaultLevelConverter implements LevelConverter {
 
     }
 
-    private Level addCustomJulLevel(java.util.logging.Level customJavaLevel) {
+    private synchronized Level addCustomJulLevel(java.util.logging.Level customJavaLevel) {
+        final Level level = julToLog4j.get(customJavaLevel);
+        if (level != null) {
+            return level;
+        }
         long prevDist = Long.MAX_VALUE;
         java.util.logging.Level prevLevel = null;
         for (java.util.logging.Level mappedJavaLevel : sortedJulLevels) {
