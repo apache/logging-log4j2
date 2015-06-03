@@ -30,6 +30,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  *  This is the default logger that is used when no suitable logging implementation is available.
@@ -139,7 +140,7 @@ public class SimpleLogger extends AbstractLogger {
 
         sb.append(level.toString());
         sb.append(SPACE);
-        if (logName != null && logName.length() > 0) {
+        if (Strings.isNotEmpty(logName)) {
             sb.append(logName);
             sb.append(SPACE);
         }
