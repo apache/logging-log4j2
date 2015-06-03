@@ -91,8 +91,7 @@ public final class CouchDbProvider implements NoSqlProvider<CouchDbConnection> {
             @PluginAttribute("factoryMethodName") final String factoryMethodName) {
         CouchDbClient client;
         String description;
-        if (factoryClassName != null && factoryClassName.length() > 0 &&
-                factoryMethodName != null && factoryMethodName.length() > 0) {
+        if (Strings.isNotEmpty(factoryClassName) && Strings.isNotEmpty(factoryMethodName)) {
             try {
                 final Class<?> factoryClass = Loader.loadClass(factoryClassName);
                 final Method method = factoryClass.getMethod(factoryMethodName);
@@ -128,7 +127,7 @@ public final class CouchDbProvider implements NoSqlProvider<CouchDbConnection> {
                         e);
                 return null;
             }
-        } else if (databaseName != null && databaseName.length() > 0) {
+        } else if (Strings.isNotEmpty(databaseName)) {
             if (protocol != null && protocol.length() > 0) {
                 protocol = protocol.toLowerCase();
                 if (!protocol.equals("http") && !protocol.equals("https")) {
