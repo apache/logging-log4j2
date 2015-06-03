@@ -184,6 +184,7 @@
     <scm.plugin.version>1.9.4</scm.plugin.version>
     <jxr.plugin.version>2.5</jxr.plugin.version>
     <clirr.plugin.version>2.6.1</clirr.plugin.version>
+    <site.plugin.version>3.4</site.plugin.version>
     <manifestfile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestfile>
     <maven.compile.source>1.7</maven.compile.source>
     <maven.compile.target>1.7</maven.compile.target>
@@ -903,7 +904,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-        <version>3.4</version>
+        <version>${site.plugin.version}</version>
         <dependencies>
           <dependency>
             <groupId>org.apache.maven.wagon</groupId>
