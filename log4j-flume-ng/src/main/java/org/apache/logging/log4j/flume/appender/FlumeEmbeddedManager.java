@@ -194,7 +194,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
 
             if (agents != null && agents.length > 0) {
 
-                if (dataDir != null && dataDir.length() > 0) {
+                if (Strings.isNotEmpty(dataDir)) {
                     if (dataDir.equals(IN_MEMORY)) {
                         props.put("channel.type", "memory");
                     } else {
