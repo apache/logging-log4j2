@@ -23,14 +23,17 @@ import java.util.Comparator;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.apache.logging.log4j.Level;
 
 /**
  * Default implementation of LevelConverter strategy.
  * <p>
- * Supports custom JUL levels by mapping them to their closest mapped neighbour. 
+ * Since 2.4, supports custom JUL levels by mapping them to their closest mapped neighbour.
  * </p>
+ * 
  * @since 2.1
  */
 public class DefaultLevelConverter implements LevelConverter {
@@ -42,7 +45,7 @@ public class DefaultLevelConverter implements LevelConverter {
         }
     }
 
-    private final Map<java.util.logging.Level, Level> julToLog4j = new IdentityHashMap<>(9);
+    private final ConcurrentMap<java.util.logging.Level, Level> julToLog4j = new ConcurrentHashMap<>(9);
     private final Map<Level, java.util.logging.Level> log4jToJul = new IdentityHashMap<>(10);
     private final List<java.util.logging.Level> sortedJulLevels = new ArrayList<>(9);
 
@@ -74,32 +77,8 @@ public class DefaultLevelConverter implements LevelConverter {
 
     }
 
-    private synchronized Level addCustomJulLevel(java.util.logging.Level customJavaLevel) {
-        final Level level = julToLog4j.get(customJavaLevel);
-        if (level != null) {
-            return level;
-        }
-        long prevDist = Long.MAX_VALUE;
-        java.util.logging.Level prevLevel = null;
-        for (java.util.logging.Level mappedJavaLevel : sortedJulLevels) {
-            long distance = distance(customJavaLevel, mappedJavaLevel);
-            if (distance > prevDist) {
-                return mapCustomJulLevel(customJavaLevel, prevLevel);
-            }
-            prevDist = distance;
-            prevLevel = mappedJavaLevel;
-        }
-        return mapCustomJulLevel(customJavaLevel, prevLevel);
-    }
-
     private long distance(java.util.logging.Level javaLevel, java.util.logging.Level customJavaLevel) {
         return Math.abs((long) customJavaLevel.intValue() - (long) javaLevel.intValue());
-    }
-
-    private Level mapCustomJulLevel(java.util.logging.Level customJavaLevel, java.util.logging.Level stdJavaLevel) {
-        final Level level = julToLog4j.get(stdJavaLevel);
-        julToLog4j.put(customJavaLevel, level);
-        return level;
     }
 
     /*
@@ -116,6 +95,25 @@ public class DefaultLevelConverter implements LevelConverter {
         log4jToJul.put(level, julLevel);
     }
 
+    private Level nearestLevel(java.util.logging.Level customJavaLevel) {
+        final Level level = julToLog4j.get(customJavaLevel);
+        if (level != null) {
+            // don't search
+            return level;
+        }
+        long prevDist = Long.MAX_VALUE;
+        java.util.logging.Level prevLevel = null;
+        for (java.util.logging.Level mappedJavaLevel : sortedJulLevels) {
+            long distance = distance(customJavaLevel, mappedJavaLevel);
+            if (distance > prevDist) {
+                return julToLog4j.get(prevLevel);
+            }
+            prevDist = distance;
+            prevLevel = mappedJavaLevel;
+        }
+        return julToLog4j.get(prevLevel);
+    }
+
     @Override
     public java.util.logging.Level toJavaLevel(final Level level) {
         return log4jToJul.get(level);
@@ -124,6 +122,11 @@ public class DefaultLevelConverter implements LevelConverter {
     @Override
     public Level toLevel(final java.util.logging.Level javaLevel) {
         final Level level = julToLog4j.get(javaLevel);
-        return level != null ? level : addCustomJulLevel(javaLevel);
+        if (level != null) {
+            return level;
+        }
+        final Level nearestLevel = nearestLevel(javaLevel);
+        julToLog4j.put(javaLevel, nearestLevel);
+        return nearestLevel;
     }
 }
