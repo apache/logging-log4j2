@@ -96,11 +96,6 @@ public class DefaultLevelConverter implements LevelConverter {
     }
 
     private Level nearestLevel(java.util.logging.Level customJavaLevel) {
-        final Level level = julToLog4j.get(customJavaLevel);
-        if (level != null) {
-            // don't search
-            return level;
-        }
         long prevDist = Long.MAX_VALUE;
         java.util.logging.Level prevLevel = null;
         for (java.util.logging.Level mappedJavaLevel : sortedJulLevels) {
