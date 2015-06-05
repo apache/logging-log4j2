@@ -51,6 +51,9 @@
       <action issue="LOG4J2-1038" dev="ggregory" type="fix" due-to="Gili">
         Incorrect documentation for layout default charset.
       </action>
+      <action issue="LOG4J2-1042" dev="ggregory" type="fix" due-to="Guillaume Turri">
+        Socket and Syslog appenders don't take timeout into account at startup.
+      </action>
       <action issue="LOG4J2-403" dev="ggregory" type="update" due-to="Poorna Subhash P, Jeremy Lautman">
         MongoDB appender, username and password should be optional.
       </action>

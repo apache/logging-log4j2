@@ -282,7 +282,9 @@ public class TcpSocketManager extends AbstractSocketManager {
                 return null;
             }
             try {
-                final Socket socket = new Socket(data.host, data.port);
+                // LOG4J2-1042
+                final Socket socket = new Socket();
+                socket.connect(new InetSocketAddress(data.host, data.port), data.connectTimeoutMillis);
                 os = socket.getOutputStream();
                 return new TcpSocketManager(name, os, socket, inetAddress, data.host, data.port,
                         data.connectTimeoutMillis, data.delayMillis, data.immediateFail, data.layout);
