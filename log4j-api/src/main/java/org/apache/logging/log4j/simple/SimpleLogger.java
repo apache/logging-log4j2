@@ -160,13 +160,11 @@ public class SimpleLogger extends AbstractLogger {
         } else {
             t = throwable;
         }
-        if (t != null) {
-            sb.append(SPACE);
-            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            t.printStackTrace(new PrintStream(baos));
-            sb.append(baos.toString());
-        }
         stream.println(sb.toString());
+        if (t != null) {
+            stream.print(SPACE);
+            t.printStackTrace(stream);
+        }
     }
 
     public void setLevel(final Level level) {
