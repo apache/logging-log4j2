@@ -121,7 +121,8 @@ public class ThrowableProxy implements Serializable {
         final Stack<Class<?>> stack = ReflectionUtil.getCurrentStackTrace();
         this.extendedStackTrace = this.toExtendedStackTrace(stack, map, null, throwable.getStackTrace());
         final Throwable throwableCause = throwable.getCause();
-        this.causeProxy = throwableCause == null ? null : new ThrowableProxy(throwable, stack, map, throwableCause, visited);
+        final Set<Throwable> causeVisited = new HashSet<>(1);
+        this.causeProxy = throwableCause == null ? null : new ThrowableProxy(throwable, stack, map, throwableCause, visited, causeVisited);
         this.suppressedProxies = this.toSuppressedProxies(throwable, visited);
     }
 
@@ -137,15 +138,19 @@ public class ThrowableProxy implements Serializable {
      * @param cause
      *        The Throwable to wrap.
      * @param suppressedVisited TODO
+     * @param causeVisited TODO
      */
     private ThrowableProxy(final Throwable parent, final Stack<Class<?>> stack, final Map<String, CacheEntry> map,
-            final Throwable cause, Set<Throwable> suppressedVisited) {
+            final Throwable cause, Set<Throwable> suppressedVisited, Set<Throwable> causeVisited) {
+        causeVisited.add(cause);
         this.throwable = cause;
         this.name = cause.getClass().getName();
         this.message = this.throwable.getMessage();
         this.localizedMessage = this.throwable.getLocalizedMessage();
         this.extendedStackTrace = this.toExtendedStackTrace(stack, map, parent.getStackTrace(), cause.getStackTrace());
-        this.causeProxy = cause.getCause() == null ? null : new ThrowableProxy(parent, stack, map, cause.getCause(), suppressedVisited);
+        final Throwable causeCause = cause.getCause();
+        this.causeProxy = causeCause == null || causeVisited.contains(causeCause) ? null : new ThrowableProxy(parent,
+                stack, map, causeCause, suppressedVisited, causeVisited);
         this.suppressedProxies = this.toSuppressedProxies(cause, suppressedVisited);
     }
 

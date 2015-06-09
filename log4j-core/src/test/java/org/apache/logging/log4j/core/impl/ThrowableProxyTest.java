@@ -229,7 +229,6 @@ public class ThrowableProxyTest {
      * .
      */
     @Test
-    @Ignore
     public void testCircularCauseExceptions() {
         Exception e1 = new Exception();
         Exception e2 = new Exception(e1);

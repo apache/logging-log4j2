@@ -57,6 +57,9 @@
       <action issue="LOG4J2-934" dev="ggregory" type="fix" due-to="Kenneth Gendron">
         Circular suppressed Exception throws StackOverflowError.
       </action>
+      <action issue="LOG4J2-1046" dev="ggregory" type="fix" due-to="Kenneth Gendron">
+        Circular Exception cause throws StackOverflowError.
+      </action>
       <action issue="LOG4J2-403" dev="ggregory" type="update" due-to="Poorna Subhash P, Jeremy Lautman">
         MongoDB appender, username and password should be optional.
       </action>
