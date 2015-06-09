@@ -136,17 +136,17 @@ public class ThrowableProxy implements Serializable {
      *        The cache containing the packaging data.
      * @param cause
      *        The Throwable to wrap.
-     * @param visited TODO
+     * @param suppressedVisited TODO
      */
     private ThrowableProxy(final Throwable parent, final Stack<Class<?>> stack, final Map<String, CacheEntry> map,
-            final Throwable cause, Set<Throwable> visited) {
+            final Throwable cause, Set<Throwable> suppressedVisited) {
         this.throwable = cause;
         this.name = cause.getClass().getName();
         this.message = this.throwable.getMessage();
         this.localizedMessage = this.throwable.getLocalizedMessage();
         this.extendedStackTrace = this.toExtendedStackTrace(stack, map, parent.getStackTrace(), cause.getStackTrace());
-        this.causeProxy = cause.getCause() == null ? null : new ThrowableProxy(parent, stack, map, cause.getCause(), visited);
-        this.suppressedProxies = this.toSuppressedProxies(cause, visited);
+        this.causeProxy = cause.getCause() == null ? null : new ThrowableProxy(parent, stack, map, cause.getCause(), suppressedVisited);
+        this.suppressedProxies = this.toSuppressedProxies(cause, suppressedVisited);
     }
 
     @Override
@@ -595,21 +595,21 @@ public class ThrowableProxy implements Serializable {
         return msg != null ? this.name + ": " + msg : this.name;
     }
 
-    private ThrowableProxy[] toSuppressedProxies(final Throwable thrown, Set<Throwable> visited) {
+    private ThrowableProxy[] toSuppressedProxies(final Throwable thrown, Set<Throwable> suppressedVisited) {
         try {
             final Throwable[] suppressed = Throwables.getSuppressed(thrown);
             if (suppressed == null) {
                 return EMPTY_THROWABLE_PROXY_ARRAY;
             }
             final List<ThrowableProxy> proxies = new ArrayList<>(suppressed.length);
-            if (visited == null) {
-                visited = new HashSet<>(proxies.size());
+            if (suppressedVisited == null) {
+                suppressedVisited = new HashSet<>(proxies.size());
             }
             for (int i = 0; i < suppressed.length; i++) {
                 final Throwable candidate = suppressed[i];
-                if (!visited.contains(candidate)) {
-                    visited.add(candidate);
-                    proxies.add(new ThrowableProxy(candidate, visited));
+                if (!suppressedVisited.contains(candidate)) {
+                    suppressedVisited.add(candidate);
+                    proxies.add(new ThrowableProxy(candidate, suppressedVisited));
                 }
             }
             return proxies.toArray(new ThrowableProxy[proxies.size()]);
