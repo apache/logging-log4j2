@@ -19,10 +19,13 @@ package org.apache.logging.log4j.core.impl;
 import java.io.Serializable;
 import java.net.URL;
 import java.security.CodeSource;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 import org.apache.logging.log4j.core.util.Loader;
@@ -106,8 +109,10 @@ public class ThrowableProxy implements Serializable {
      * 
      * @param throwable
      *        The Throwable to wrap, must not be null.
+     * @param visited
+     *        TODO
      */
-    public ThrowableProxy(final Throwable throwable) {
+    public ThrowableProxy(final Throwable throwable, Set<Throwable> visited) {
         this.throwable = throwable;
         this.name = throwable.getClass().getName();
         this.message = throwable.getMessage();
@@ -116,8 +121,8 @@ public class ThrowableProxy implements Serializable {
         final Stack<Class<?>> stack = ReflectionUtil.getCurrentStackTrace();
         this.extendedStackTrace = this.toExtendedStackTrace(stack, map, null, throwable.getStackTrace());
         final Throwable throwableCause = throwable.getCause();
-        this.causeProxy = throwableCause == null ? null : new ThrowableProxy(throwable, stack, map, throwableCause);
-        this.suppressedProxies = this.toSuppressedProxies(throwable);
+        this.causeProxy = throwableCause == null ? null : new ThrowableProxy(throwable, stack, map, throwableCause, visited);
+        this.suppressedProxies = this.toSuppressedProxies(throwable, visited);
     }
 
     /**
@@ -131,16 +136,17 @@ public class ThrowableProxy implements Serializable {
      *        The cache containing the packaging data.
      * @param cause
      *        The Throwable to wrap.
+     * @param visited TODO
      */
     private ThrowableProxy(final Throwable parent, final Stack<Class<?>> stack, final Map<String, CacheEntry> map,
-            final Throwable cause) {
+            final Throwable cause, Set<Throwable> visited) {
         this.throwable = cause;
         this.name = cause.getClass().getName();
         this.message = this.throwable.getMessage();
         this.localizedMessage = this.throwable.getLocalizedMessage();
         this.extendedStackTrace = this.toExtendedStackTrace(stack, map, parent.getStackTrace(), cause.getStackTrace());
-        this.causeProxy = cause.getCause() == null ? null : new ThrowableProxy(parent, stack, map, cause.getCause());
-        this.suppressedProxies = this.toSuppressedProxies(cause);
+        this.causeProxy = cause.getCause() == null ? null : new ThrowableProxy(parent, stack, map, cause.getCause(), visited);
+        this.suppressedProxies = this.toSuppressedProxies(cause, visited);
     }
 
     @Override
@@ -589,17 +595,24 @@ public class ThrowableProxy implements Serializable {
         return msg != null ? this.name + ": " + msg : this.name;
     }
 
-    private ThrowableProxy[] toSuppressedProxies(final Throwable thrown) {
+    private ThrowableProxy[] toSuppressedProxies(final Throwable thrown, Set<Throwable> visited) {
         try {
             final Throwable[] suppressed = Throwables.getSuppressed(thrown);
             if (suppressed == null) {
                 return EMPTY_THROWABLE_PROXY_ARRAY;
             }
-            final ThrowableProxy[] proxies = new ThrowableProxy[suppressed.length];
-            for (int i = 0; i < suppressed.length; i++) {
-                proxies[i] = new ThrowableProxy(suppressed[i]);
+            final List<ThrowableProxy> proxies = new ArrayList<>(suppressed.length);
+            if (visited == null) {
+                visited = new HashSet<>(proxies.size());
             }
-            return proxies;
+            for (int i = 0; i < suppressed.length; i++) {
+                final Throwable candidate = suppressed[i];
+                if (!visited.contains(candidate)) {
+                    visited.add(candidate);
+                    proxies.add(new ThrowableProxy(candidate, visited));
+                }
+            }
+            return proxies.toArray(new ThrowableProxy[proxies.size()]);
         } catch (final Exception e) {
             StatusLogger.getLogger().error(e);
         }

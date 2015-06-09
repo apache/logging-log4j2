@@ -35,6 +35,7 @@ import javax.xml.bind.DatatypeConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.jackson.Log4jJsonObjectMapper;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -55,7 +56,7 @@ public class ThrowableProxyTest {
 
     static class Fixture {
         @JsonProperty
-        ThrowableProxy proxy = new ThrowableProxy(new IOException("test"));
+        ThrowableProxy proxy = new ThrowableProxy(new IOException("test"), null);
     }
 
     private ThrowableProxy deserialize(final byte[] binary) throws IOException, ClassNotFoundException {
@@ -126,7 +127,7 @@ public class ThrowableProxyTest {
     @Test
     public void testSerialization() throws Exception {
         final Throwable throwable = new IllegalArgumentException("This is a test");
-        final ThrowableProxy proxy = new ThrowableProxy(throwable);
+        final ThrowableProxy proxy = new ThrowableProxy(throwable, null);
         final byte[] binary = serialize(proxy);
         final ThrowableProxy proxy2 = deserialize(binary);
 
@@ -139,7 +140,7 @@ public class ThrowableProxyTest {
     @Test
     public void testSerialization_getExtendedStackTraceAsString() throws Exception {
         final Throwable throwable = new IllegalArgumentException("This is a test");
-        final ThrowableProxy proxy = new ThrowableProxy(throwable);
+        final ThrowableProxy proxy = new ThrowableProxy(throwable, null);
         final byte[] binary = serialize(proxy);
         final ThrowableProxy proxy2 = deserialize(binary);
 
@@ -173,7 +174,7 @@ public class ThrowableProxyTest {
         final Map<String, ThrowableProxy.CacheEntry> map = new HashMap<>();
         final Stack<Class<?>> stack = new Stack<>();
         final Throwable throwable = new IllegalStateException("This is a test");
-        final ThrowableProxy proxy = new ThrowableProxy(throwable);
+        final ThrowableProxy proxy = new ThrowableProxy(throwable, null);
         final ExtendedStackTraceElement[] callerPackageData = proxy.toExtendedStackTrace(stack, map, null,
                 throwable.getStackTrace());
         assertNotNull("No package data returned", callerPackageData);
@@ -195,8 +196,44 @@ public class ThrowableProxyTest {
         final ByteArrayInputStream inArr = new ByteArrayInputStream(binaryDecoded);
         final ObjectInputStream in = new ObjectInputStream(inArr);
         final Throwable throwable = (Throwable) in.readObject();
-        final ThrowableProxy subject = new ThrowableProxy(throwable);
+        final ThrowableProxy subject = new ThrowableProxy(throwable, null);
 
         subject.toExtendedStackTrace(stack, map, null, throwable.getStackTrace());
+    }
+    
+    /**
+     * Tests LOG4J2-934.
+     */
+    @Test
+    public void testCircularSuppressedExceptions() {
+        Exception e1 = new Exception();
+        Exception e2 = new Exception();
+        e2.addSuppressed(e1);
+        e1.addSuppressed(e2);
+        LogManager.getLogger().error("Error", e1);
+    }
+
+    /**
+     * Tests LOG4J2-934.
+     */
+    @Test
+    public void testCircularSuppressedNestedException() {
+        Exception e1 = new Exception();
+        Exception e2 = new Exception(e1);
+        e2.addSuppressed(e1);
+        e1.addSuppressed(e2);
+        LogManager.getLogger().error("Error", e1);
+    }
+
+    /**
+     * .
+     */
+    @Test
+    @Ignore
+    public void testCircularCauseExceptions() {
+        Exception e1 = new Exception();
+        Exception e2 = new Exception(e1);
+        e1.initCause(e2);
+        LogManager.getLogger().error("Error", e1);
     }
 }
