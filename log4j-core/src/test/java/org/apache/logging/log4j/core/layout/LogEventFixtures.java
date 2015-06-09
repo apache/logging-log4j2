@@ -56,7 +56,7 @@ class LogEventFixtures {
         final IOException ioException = new IOException("testIOEx", cause);
         Throwables.addSuppressed(ioException, new IndexOutOfBoundsException("I am suppressed exception 1"));
         Throwables.addSuppressed(ioException, new IndexOutOfBoundsException("I am suppressed exception 2"));
-        final ThrowableProxy throwableProxy = new ThrowableProxy(ioException, null);
+        final ThrowableProxy throwableProxy = new ThrowableProxy(ioException);
         final Map<String, String> contextMap = new HashMap<>();
         contextMap.put("MDC.A", "A_Value");
         contextMap.put("MDC.B", "B_Value");

@@ -109,10 +109,20 @@ public class ThrowableProxy implements Serializable {
      * 
      * @param throwable
      *        The Throwable to wrap, must not be null.
-     * @param visited
-     *        TODO
      */
-    public ThrowableProxy(final Throwable throwable, Set<Throwable> visited) {
+    public ThrowableProxy(final Throwable throwable) {
+        this(throwable, null);
+    }
+
+    /**
+     * Constructs the wrapper for the Throwable that includes packaging data.
+     * 
+     * @param throwable
+     *        The Throwable to wrap, must not be null.
+     * @param visited
+     *        The set of visited suppressed exceptions.
+     */
+    private ThrowableProxy(final Throwable throwable, Set<Throwable> visited) {
         this.throwable = throwable;
         this.name = throwable.getClass().getName();
         this.message = throwable.getMessage();

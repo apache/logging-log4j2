@@ -130,7 +130,7 @@ public class RingBufferLogEventTest {
         assertEquals(level, other.getLevel());
         assertEquals(data, other.getMessage());
         assertNull("null after serialization", other.getThrown());
-        assertEquals(new ThrowableProxy(t, null), other.getThrownProxy());
+        assertEquals(new ThrowableProxy(t), other.getThrownProxy());
         assertEquals(map, other.getContextMap());
         assertEquals(contextStack, other.getContextStack());
         assertEquals(threadName, other.getThreadName());

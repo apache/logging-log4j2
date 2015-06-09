@@ -56,7 +56,7 @@ public class ThrowableProxyTest {
 
     static class Fixture {
         @JsonProperty
-        ThrowableProxy proxy = new ThrowableProxy(new IOException("test"), null);
+        ThrowableProxy proxy = new ThrowableProxy(new IOException("test"));
     }
 
     private ThrowableProxy deserialize(final byte[] binary) throws IOException, ClassNotFoundException {
@@ -127,7 +127,7 @@ public class ThrowableProxyTest {
     @Test
     public void testSerialization() throws Exception {
         final Throwable throwable = new IllegalArgumentException("This is a test");
-        final ThrowableProxy proxy = new ThrowableProxy(throwable, null);
+        final ThrowableProxy proxy = new ThrowableProxy(throwable);
         final byte[] binary = serialize(proxy);
         final ThrowableProxy proxy2 = deserialize(binary);
 
@@ -140,7 +140,7 @@ public class ThrowableProxyTest {
     @Test
     public void testSerialization_getExtendedStackTraceAsString() throws Exception {
         final Throwable throwable = new IllegalArgumentException("This is a test");
-        final ThrowableProxy proxy = new ThrowableProxy(throwable, null);
+        final ThrowableProxy proxy = new ThrowableProxy(throwable);
         final byte[] binary = serialize(proxy);
         final ThrowableProxy proxy2 = deserialize(binary);
 
@@ -174,7 +174,7 @@ public class ThrowableProxyTest {
         final Map<String, ThrowableProxy.CacheEntry> map = new HashMap<>();
         final Stack<Class<?>> stack = new Stack<>();
         final Throwable throwable = new IllegalStateException("This is a test");
-        final ThrowableProxy proxy = new ThrowableProxy(throwable, null);
+        final ThrowableProxy proxy = new ThrowableProxy(throwable);
         final ExtendedStackTraceElement[] callerPackageData = proxy.toExtendedStackTrace(stack, map, null,
                 throwable.getStackTrace());
         assertNotNull("No package data returned", callerPackageData);
@@ -196,7 +196,7 @@ public class ThrowableProxyTest {
         final ByteArrayInputStream inArr = new ByteArrayInputStream(binaryDecoded);
         final ObjectInputStream in = new ObjectInputStream(inArr);
         final Throwable throwable = (Throwable) in.readObject();
-        final ThrowableProxy subject = new ThrowableProxy(throwable, null);
+        final ThrowableProxy subject = new ThrowableProxy(throwable);
 
         subject.toExtendedStackTrace(stack, map, null, throwable.getStackTrace());
     }

@@ -320,7 +320,7 @@ public class Log4jLogEvent implements LogEvent {
     @Override
     public ThrowableProxy getThrownProxy() {
         if (thrownProxy == null && thrown != null) {
-            thrownProxy = new ThrowableProxy(thrown, null);
+            thrownProxy = new ThrowableProxy(thrown);
         }
         return thrownProxy;
     }
