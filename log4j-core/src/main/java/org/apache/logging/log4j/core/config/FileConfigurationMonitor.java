@@ -73,8 +73,8 @@ public class FileConfigurationMonitor implements ConfigurationMonitor {
      */
     @Override
     public void checkConfiguration() {
-        final long current = System.currentTimeMillis();
-        if (((counter.incrementAndGet() & MASK) == 0) && (current >= nextCheck)) {
+        final long current;
+        if (((counter.incrementAndGet() & MASK) == 0) && ((current = System.currentTimeMillis()) >= nextCheck)) {
             LOCK.lock();
             try {
                 nextCheck = current + intervalSeconds;
