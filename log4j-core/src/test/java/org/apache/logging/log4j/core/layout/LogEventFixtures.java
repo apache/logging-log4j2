@@ -54,8 +54,8 @@ class LogEventFixtures {
         sourceHelper.fillInStackTrace();
         final StackTraceElement source = sourceHelper.getStackTrace()[0];
         final IOException ioException = new IOException("testIOEx", cause);
-        Throwables.addSuppressed(ioException, new IndexOutOfBoundsException("I am suppressed exception 1"));
-        Throwables.addSuppressed(ioException, new IndexOutOfBoundsException("I am suppressed exception 2"));
+        ioException.addSuppressed(new IndexOutOfBoundsException("I am suppressed exception 1"));
+        ioException.addSuppressed(new IndexOutOfBoundsException("I am suppressed exception 2"));
         final ThrowableProxy throwableProxy = new ThrowableProxy(ioException);
         final Map<String, String> contextMap = new HashMap<>();
         contextMap.put("MDC.A", "A_Value");

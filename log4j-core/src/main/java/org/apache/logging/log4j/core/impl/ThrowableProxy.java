@@ -612,7 +612,7 @@ public class ThrowableProxy implements Serializable {
 
     private ThrowableProxy[] toSuppressedProxies(final Throwable thrown, Set<Throwable> suppressedVisited) {
         try {
-            final Throwable[] suppressed = Throwables.getSuppressed(thrown);
+            final Throwable[] suppressed = thrown.getSuppressed();
             if (suppressed == null) {
                 return EMPTY_THROWABLE_PROXY_ARRAY;
             }

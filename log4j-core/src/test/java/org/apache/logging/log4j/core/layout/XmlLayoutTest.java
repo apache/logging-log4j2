@@ -167,9 +167,7 @@ public class XmlLayoutTest {
         this.checkAttributeName("message", compact, str);
         this.checkAttributeName("localizedMessage", compact, str);
         this.checkElementName("ExtendedStackTrace", compact, str, false, true);
-        if (Throwables.isGetSuppressedAvailable()) {
-            this.checkElementName("Suppressed", compact, str, false, true);
-        }
+        this.checkElementName("Suppressed", compact, str, false, true);
         this.checkAttributeName("loggerFqcn", compact, str);
         this.checkAttributeName("endOfBatch", compact, str);
         if (includeContext) {
