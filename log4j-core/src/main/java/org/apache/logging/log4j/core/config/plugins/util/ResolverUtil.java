@@ -25,6 +25,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -35,7 +36,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.osgi.framework.FrameworkUtil;
@@ -243,7 +243,7 @@ public class ResolverUtil {
             // if URL-encoded file exists, don't decode it
             return cleanPath;
         }
-        return URLDecoder.decode(urlPath, Constants.UTF_8.name());
+        return URLDecoder.decode(urlPath, StandardCharsets.UTF_8.name());
     }
 
     private void loadImplementationsInBundle(final Test test, final String packageName) {

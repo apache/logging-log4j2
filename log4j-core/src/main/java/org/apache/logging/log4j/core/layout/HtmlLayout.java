@@ -24,7 +24,9 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.management.ManagementFactory;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -356,7 +358,7 @@ public final class HtmlLayout extends AbstractStringLayout {
         private String contentType = null; // defer default value in order to use specified charset
 
         @PluginBuilderAttribute
-        private Charset charset = Constants.UTF_8;
+        private Charset charset = StandardCharsets.UTF_8;
 
         @PluginBuilderAttribute
         private FontSize fontSize = FontSize.SMALL;

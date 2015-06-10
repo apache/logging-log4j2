@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import org.apache.logging.log4j.util.PropertiesUtil;
-
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Log4j Constants.
@@ -54,9 +55,11 @@ public final class Constants {
     
     /**
      * Equivalent to StandardCharsets.UTF_8.
-     * @ToDo - Initialize with StandardCharsets.UTF_8 when Java 7 is the minimum version.
+     * 
+     * @deprecated Use {@link StandardCharsets#UTF_8}. Will be removed in 2.5.
      */
-    public static final Charset UTF_8 = Charset.forName("UTF-8");
+    @Deprecated
+    public static final Charset UTF_8 = StandardCharsets.UTF_8;
 
     /**
      * Prevent class instantiation.

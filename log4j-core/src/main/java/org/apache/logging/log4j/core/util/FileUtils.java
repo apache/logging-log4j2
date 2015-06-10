@@ -24,6 +24,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.Logger;
@@ -76,7 +77,7 @@ public final class FileUtils {
                 return null;
             }
         }
-        final String charsetName = Constants.UTF_8.name();
+        final String charsetName = StandardCharsets.UTF_8.name();
         try {
             String fileName = uri.toURL().getFile();
             if (new File(fileName).exists()) { // LOG4J2-466

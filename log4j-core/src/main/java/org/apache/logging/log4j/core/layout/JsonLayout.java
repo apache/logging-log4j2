@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.layout;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +26,6 @@ import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.util.Constants;
 
 /**
  * Appends a series of JSON events as strings serialized as bytes.
@@ -885,6 +885,6 @@ public final class JsonLayout extends AbstractJacksonLayout {
      * @return A JSON Layout.
      */
     public static AbstractJacksonLayout createDefaultLayout() {
-        return new JsonLayout(false, false, false, false, false, Constants.UTF_8);
+        return new JsonLayout(false, false, false, false, false, StandardCharsets.UTF_8);
     }
 }

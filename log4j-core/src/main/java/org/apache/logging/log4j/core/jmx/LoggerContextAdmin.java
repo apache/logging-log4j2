@@ -30,6 +30,7 @@ import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Executor;
@@ -46,7 +47,6 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.core.util.Closer;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
@@ -149,7 +149,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
 
     @Override
     public String getConfigText() throws IOException {
-        return getConfigText(Constants.UTF_8.name());
+        return getConfigText(StandardCharsets.UTF_8.name());
     }
 
     @Override

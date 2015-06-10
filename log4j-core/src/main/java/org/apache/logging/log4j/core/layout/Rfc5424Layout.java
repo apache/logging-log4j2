@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.layout;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -47,7 +48,6 @@ import org.apache.logging.log4j.core.pattern.PatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.core.pattern.ThrowablePatternConverter;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.message.Message;
@@ -652,7 +652,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         }
 
         return new Rfc5424Layout(config, facility, id, enterpriseNumber, includeMDC, newLine, escapeNL, mdcId, mdcPrefix,
-                eventPrefix, appName, msgId, excludes, includes, required, Constants.UTF_8, exceptionPattern,
+                eventPrefix, appName, msgId, excludes, includes, required, StandardCharsets.UTF_8, exceptionPattern,
                 useTlsMessageFormat, loggerFields);
     }
 
