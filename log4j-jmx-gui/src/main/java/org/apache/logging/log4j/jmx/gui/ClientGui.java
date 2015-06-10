@@ -26,7 +26,9 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
+
 import javax.management.InstanceNotFoundException;
 import javax.management.JMException;
 import javax.management.ListenerNotFoundException;
@@ -77,7 +79,7 @@ public class ClientGui extends JPanel implements NotificationListener {
     private JTabbedPane tabbedPaneContexts;
 
     public ClientGui(final Client client) throws IOException, JMException {
-        this.client = Assert.requireNonNull(client, "client");
+        this.client = Objects.requireNonNull(client, "client");
         createWidgets();
         populateWidgets();
 

@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.Objects;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -107,7 +108,7 @@ public abstract class AbstractSocketServer<T extends InputStream> extends LogEve
      */
     public AbstractSocketServer(final int port, final LogEventBridge<T> logEventInput) {
         this.logger = LogManager.getLogger(this.getClass().getName() + '.' + port);
-        this.logEventInput = Assert.requireNonNull(logEventInput, "LogEventInput");
+        this.logEventInput = Objects.requireNonNull(logEventInput, "LogEventInput");
     }
 
     protected boolean isActive() {

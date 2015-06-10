@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.impl;
 
 import java.net.URI;
+import java.util.Objects;
 
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -82,9 +83,8 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
      */
     public Log4jContextFactory(final ContextSelector selector,
                                final ShutdownCallbackRegistry shutdownCallbackRegistry) {
-        this.selector = Assert.requireNonNull(selector, "No ContextSelector provided");
-        this.shutdownCallbackRegistry = Assert.requireNonNull(shutdownCallbackRegistry,
-            "No ShutdownCallbackRegistry provided");
+        this.selector = Objects.requireNonNull(selector, "No ContextSelector provided");
+        this.shutdownCallbackRegistry = Objects.requireNonNull(shutdownCallbackRegistry, "No ShutdownCallbackRegistry provided");
         LOGGER.debug("Using ShutdownCallbackRegistry {}", shutdownCallbackRegistry.getClass());
         initializeShutdownCallbackRegistry();
     }

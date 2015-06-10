@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.jmx;
 
+import java.util.Objects;
+
 import javax.management.ObjectName;
 
 import org.apache.logging.log4j.core.Appender;
@@ -40,8 +42,8 @@ public class AppenderAdmin implements AppenderAdminMBean {
      */
     public AppenderAdmin(final String contextName, final Appender appender) {
         // super(executor); // no notifications for now
-        this.contextName = Assert.requireNonNull(contextName, "contextName");
-        this.appender = Assert.requireNonNull(appender, "appender");
+        this.contextName = Objects.requireNonNull(contextName, "contextName");
+        this.appender = Objects.requireNonNull(appender, "appender");
         try {
             final String ctxName = Server.escape(this.contextName);
             final String configName = Server.escape(appender.getName());

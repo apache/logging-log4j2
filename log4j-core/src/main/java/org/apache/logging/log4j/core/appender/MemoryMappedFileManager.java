@@ -30,6 +30,7 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.util.Assert;
@@ -67,7 +68,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
             final Layout<? extends Serializable> layout) throws IOException {
         super(os, fileName, layout);
         this.isForce = force;
-        this.randomAccessFile = Assert.requireNonNull(file, "RandomAccessFile");
+        this.randomAccessFile = Objects.requireNonNull(file, "RandomAccessFile");
         this.regionLength = regionLength;
         this.advertiseURI = advertiseURI;
         this.isEndOfBatch.set(Boolean.FALSE);

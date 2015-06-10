@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -113,7 +114,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * Constructor.
      */
     protected AbstractConfiguration(final ConfigurationSource configurationSource) {
-        this.configurationSource = Assert.requireNonNull(configurationSource, "configurationSource is null");
+        this.configurationSource = Objects.requireNonNull(configurationSource, "configurationSource is null");
         componentMap.put(Configuration.CONTEXT_PROPERTIES, properties);
         pluginManager = new PluginManager(Node.CATEGORY);
         rootNode = new Node();

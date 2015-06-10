@@ -19,6 +19,7 @@ package org.apache.logging.log4j.jmx.gui;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.management.JMException;
@@ -53,7 +54,7 @@ public class Client {
      * @throws IOException if the connection failed
      */
     public Client(final JMXConnector connector) throws MalformedObjectNameException, IOException {
-        this.connector = Assert.requireNonNull(connector, "JMXConnector");
+        this.connector = Objects.requireNonNull(connector, "JMXConnector");
         this.connector.connect();
         this.connection = connector.getMBeanServerConnection();
         init();

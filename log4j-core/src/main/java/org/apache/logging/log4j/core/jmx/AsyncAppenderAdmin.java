@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.jmx;
 
+import java.util.Objects;
+
 import javax.management.ObjectName;
 
 import org.apache.logging.log4j.core.appender.AsyncAppender;
@@ -39,8 +41,8 @@ public class AsyncAppenderAdmin implements AsyncAppenderAdminMBean {
      */
     public AsyncAppenderAdmin(final String contextName, final AsyncAppender appender) {
         // super(executor); // no notifications for now
-        this.contextName = Assert.requireNonNull(contextName, "contextName");
-        this.asyncAppender = Assert.requireNonNull(appender, "async appender");
+        this.contextName = Objects.requireNonNull(contextName, "contextName");
+        this.asyncAppender = Objects.requireNonNull(appender, "async appender");
         try {
             final String ctxName = Server.escape(this.contextName);
             final String configName = Server.escape(appender.getName());

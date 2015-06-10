@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.osgi;
 
 import java.lang.ref.WeakReference;
 import java.net.URI;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.logging.log4j.core.LoggerContext;
@@ -61,7 +62,7 @@ public class BundleContextSelector extends ClassLoaderContextSelector {
     }
 
     private static LoggerContext locateContext(final Bundle bundle, final URI configLocation) {
-        final String name = Assert.requireNonNull(bundle, "No Bundle provided").getSymbolicName();
+        final String name = Objects.requireNonNull(bundle, "No Bundle provided").getSymbolicName();
         final AtomicReference<WeakReference<LoggerContext>> ref = CONTEXT_MAP.get(name);
         if (ref == null) {
             final LoggerContext context = new LoggerContext(name, bundle, configLocation);

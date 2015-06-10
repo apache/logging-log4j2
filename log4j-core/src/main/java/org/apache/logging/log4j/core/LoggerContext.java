@@ -21,6 +21,7 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.net.URI;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -344,7 +345,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      * @return The previous Configuration.
      */
     private Configuration setConfiguration(final Configuration config) {
-        Assert.requireNonNull(config, "No Configuration was provided");
+        Objects.requireNonNull(config, "No Configuration was provided");
         configLock.lock();
         try {
             final Configuration prev = this.config;
@@ -387,7 +388,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     }
 
     public void addPropertyChangeListener(final PropertyChangeListener listener) {
-        propertyChangeListeners.add(Assert.requireNonNull(listener, "listener"));
+        propertyChangeListeners.add(Objects.requireNonNull(listener, "listener"));
     }
 
     public void removePropertyChangeListener(final PropertyChangeListener listener) {

@@ -20,6 +20,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UnknownFormatConversionException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -74,7 +75,7 @@ public class TypeConverterRegistry {
      * @throws UnknownFormatConversionException if no TypeConverter can be found for the given type.
      */
     public TypeConverter<?> findCompatibleConverter(final Type type) {
-        Assert.requireNonNull(type, "No type was provided");
+        Objects.requireNonNull(type, "No type was provided");
         final TypeConverter<?> primary = registry.get(type);
         // cached type converters
         if (primary != null) {

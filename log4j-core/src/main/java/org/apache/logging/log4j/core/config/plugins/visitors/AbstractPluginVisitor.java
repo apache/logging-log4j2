@@ -20,6 +20,7 @@ package org.apache.logging.log4j.core.config.plugins.visitors;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.convert.TypeConverters;
@@ -57,7 +58,7 @@ public abstract class AbstractPluginVisitor<A extends Annotation> implements Plu
     @SuppressWarnings("unchecked")
     @Override
     public PluginVisitor<A> setAnnotation(final Annotation annotation) {
-        final Annotation a = Assert.requireNonNull(annotation, "No annotation was provided");
+        final Annotation a = Objects.requireNonNull(annotation, "No annotation was provided");
         if (this.clazz.isInstance(a)) {
             this.annotation = (A) a;
         }
@@ -72,13 +73,13 @@ public abstract class AbstractPluginVisitor<A extends Annotation> implements Plu
 
     @Override
     public PluginVisitor<A> setConversionType(final Class<?> conversionType) {
-        this.conversionType = Assert.requireNonNull(conversionType, "No conversion type class was provided");
+        this.conversionType = Objects.requireNonNull(conversionType, "No conversion type class was provided");
         return this;
     }
 
     @Override
     public PluginVisitor<A> setStrSubstitutor(final StrSubstitutor substitutor) {
-        this.substitutor = Assert.requireNonNull(substitutor, "No StrSubstitutor was provided");
+        this.substitutor = Objects.requireNonNull(substitutor, "No StrSubstitutor was provided");
         return this;
     }
 

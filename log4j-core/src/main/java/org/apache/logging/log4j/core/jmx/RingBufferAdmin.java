@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.jmx;
 
+import java.util.Objects;
+
 import javax.management.ObjectName;
 
 import org.apache.logging.log4j.core.util.Assert;
@@ -45,7 +47,7 @@ public class RingBufferAdmin implements RingBufferAdminMBean {
     }
     
     protected RingBufferAdmin(final RingBuffer<?> ringBuffer, final String mbeanName) {
-        this.ringBuffer = Assert.requireNonNull(ringBuffer, "ringbuffer");        
+        this.ringBuffer = Objects.requireNonNull(ringBuffer, "ringbuffer");        
         try {
             objectName = new ObjectName(mbeanName);
         } catch (final Exception e) {

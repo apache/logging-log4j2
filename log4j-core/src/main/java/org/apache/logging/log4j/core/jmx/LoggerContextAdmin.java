@@ -31,6 +31,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -72,7 +73,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
      */
     public LoggerContextAdmin(final LoggerContext loggerContext, final Executor executor) {
         super(executor, createNotificationInfo());
-        this.loggerContext = Assert.requireNonNull(loggerContext, "loggerContext");
+        this.loggerContext = Objects.requireNonNull(loggerContext, "loggerContext");
         try {
             final String ctxName = Server.escape(loggerContext.getName());
             final String name = String.format(PATTERN, ctxName);

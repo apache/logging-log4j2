@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Objects;
 
 import org.apache.logging.log4j.core.util.Assert;
 
@@ -71,7 +72,7 @@ public class ConfigurationSource {
     }
 
     private ConfigurationSource(final byte[] data) {
-        this.data = Assert.requireNonNull(data, "data is null");
+        this.data = Objects.requireNonNull(data, "data is null");
         this.stream = new ByteArrayInputStream(data);
         this.file = null;
         this.url = null;
@@ -86,8 +87,8 @@ public class ConfigurationSource {
      * @param file the file where the input stream originated
      */
     public ConfigurationSource(final InputStream stream, final File file) {
-        this.stream = Assert.requireNonNull(stream, "stream is null");
-        this.file = Assert.requireNonNull(file, "file is null");
+        this.stream = Objects.requireNonNull(stream, "stream is null");
+        this.file = Objects.requireNonNull(file, "file is null");
         this.location = file.getAbsolutePath();
         this.url = null;
         this.data = null;
@@ -101,8 +102,8 @@ public class ConfigurationSource {
      * @param url the URL where the input stream originated
      */
     public ConfigurationSource(final InputStream stream, final URL url) {
-        this.stream = Assert.requireNonNull(stream, "stream is null");
-        this.url = Assert.requireNonNull(url, "URL is null");
+        this.stream = Objects.requireNonNull(stream, "stream is null");
+        this.url = Objects.requireNonNull(url, "URL is null");
         this.location = url.toString();
         this.file = null;
         this.data = null;

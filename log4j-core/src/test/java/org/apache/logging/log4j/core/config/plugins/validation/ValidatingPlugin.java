@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.config.plugins.validation;
 
+import java.util.Objects;
+
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
@@ -32,7 +34,7 @@ public class ValidatingPlugin {
     private final String name;
 
     public ValidatingPlugin(final String name) {
-        this.name = Assert.requireNonNull(name, "name");
+        this.name = Objects.requireNonNull(name, "name");
     }
 
     public String getName() {
