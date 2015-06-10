@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.4" date="2015-MM-DD" description="GA Release 2.4">
+      <action issue="LOG4J2-1049" dev="rpopma" type="fix" due-to="Robert Schaft">
+        AsyncAppender now resets the thread interrupted flag after catching InterruptedException.
+      </action>
       <action issue="LOG4J2-1048" dev="rpopma" type="fix" due-to="Nikhil">
         FileConfigurationMonitor unnecessarily calls System.currentTimeMillis causing high CPU usage.
       </action>

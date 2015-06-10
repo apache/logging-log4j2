@@ -150,13 +150,30 @@ public final class AsyncAppender extends AbstractAppender {
                 coreEvent.setEndOfBatch(false); // queue is definitely not empty!
                 appendSuccessful = thread.callAppenders(coreEvent);
             } else {
+                final Serializable serialized = Log4jLogEvent.serialize(coreEvent, includeLocation);
                 try {
                     // wait for free slots in the queue
-                    queue.put(Log4jLogEvent.serialize(coreEvent, includeLocation));
+                    queue.put(serialized);
                     appendSuccessful = true;
                 } catch (final InterruptedException e) {
-                    LOGGER.warn("Interrupted while waiting for a free slot in the AsyncAppender LogEvent-queue {}",
-                            getName());
+                    // LOG4J2-1049: Some applications use Thread.interrupt() to send
+                    // messages between application threads. This does not necessarily
+                    // mean that the queue is full. To prevent dropping a log message,
+                    // quickly try to offer the event to the queue again.
+                    // (Yes, this means there is a possibility the same event is logged twice.)
+                    //
+                    // Finally, catching the InterruptedException means the
+                    // interrupted flag has been cleared on the current thread.
+                    // This may interfere with the application's expectation of
+                    // being interrupted, so when we are done, we set the interrupted
+                    // flag again.
+                    appendSuccessful = queue.offer(serialized);
+                    if (!appendSuccessful) {
+                        LOGGER.warn("Interrupted while waiting for a free slot in the AsyncAppender LogEvent-queue {}",
+                        getName());
+                    }
+                    // set the interrupted flag again.
+                    Thread.currentThread().interrupt();
                 }
             }
         } else {
