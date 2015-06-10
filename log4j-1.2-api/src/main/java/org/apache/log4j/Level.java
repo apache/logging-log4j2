@@ -174,40 +174,32 @@ public class Level extends Priority implements Serializable {
         if (sArg == null) {
             return defaultLevel;
         }
-
         final String s = sArg.toUpperCase();
-
-        if (s.equals("ALL")) {
+        switch (s) {
+        case "ALL":
             return Level.ALL;
-        }
-        if (s.equals("DEBUG")) {
+        case "DEBUG":
             return Level.DEBUG;
-        }
-        if (s.equals("INFO")) {
+        case "INFO":
             return Level.INFO;
-        }
-        if (s.equals("WARN")) {
+        case "WARN":
             return Level.WARN;
-        }
-        if (s.equals("ERROR")) {
+        case "ERROR":
             return Level.ERROR;
-        }
-        if (s.equals("FATAL")) {
+        case "FATAL":
             return Level.FATAL;
-        }
-        if (s.equals("OFF")) {
+        case "OFF":
             return Level.OFF;
-        }
-        if (s.equals("TRACE")) {
+        case "TRACE":
             return Level.TRACE;
-        }
-        //
-        //   For Turkish i problem, see bug 40937
-        //
-        if (s.equals("\u0130NFO")) {
+        case "\u0130NFO":
+            //
+            // For Turkish i problem, see bug 40937
+            //
             return Level.INFO;
+        default:
+            return defaultLevel;
         }
-        return defaultLevel;
     }
 
     /**
