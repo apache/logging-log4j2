@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import java.util.Objects;
+
 /**
  * Utility class providing common validation logic.
  */
@@ -54,9 +56,6 @@ public final class Assert {
      * @throws NullPointerException if {@code object} is {@code null}
      */
     public static <T> T requireNonNull(final T object, final String message) {
-        if (object == null) {
-            throw new NullPointerException(message);
-        }
-        return object;
+        return Objects.requireNonNull(object, message);
     }
 }
