@@ -54,7 +54,9 @@ public final class Assert {
      * @param message message to populate the NPE with if necessary
      * @return the specified parameter
      * @throws NullPointerException if {@code object} is {@code null}
+     * @deprecated Will be removed in 2.5.
      */
+    @Deprecated
     public static <T> T requireNonNull(final T object, final String message) {
         return Objects.requireNonNull(object, message);
     }
