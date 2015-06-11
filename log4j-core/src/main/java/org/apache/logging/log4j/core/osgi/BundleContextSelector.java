@@ -24,7 +24,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
-import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.util.ReflectionUtil;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleReference;

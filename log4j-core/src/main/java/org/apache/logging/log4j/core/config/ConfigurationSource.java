@@ -26,8 +26,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Objects;
 
-import org.apache.logging.log4j.core.util.Assert;
-
 /**
  * Represents the source for the logging configuration.
  */

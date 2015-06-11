@@ -21,7 +21,6 @@ import java.util.Objects;
 import javax.management.ObjectName;
 
 import org.apache.logging.log4j.core.selector.ContextSelector;
-import org.apache.logging.log4j.core.util.Assert;
 
 /**
  * Implementation of the {@code ContextSelectorAdminMBean} interface.

@@ -33,7 +33,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.NullOutputStream;
 

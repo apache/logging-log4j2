@@ -20,8 +20,6 @@ import java.util.Objects;
 
 import javax.management.ObjectName;
 
-import org.apache.logging.log4j.core.util.Assert;
-
 import com.lmax.disruptor.RingBuffer;
 
 /**

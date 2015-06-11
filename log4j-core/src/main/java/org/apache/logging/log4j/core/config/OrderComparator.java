@@ -19,8 +19,6 @@ package org.apache.logging.log4j.core.config;
 import java.util.Comparator;
 import java.util.Objects;
 
-import org.apache.logging.log4j.core.util.Assert;
-
 /**
  * Comparator for classes annotated with {@link Order}.
  *

@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.simple;
 
-import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
