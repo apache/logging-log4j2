@@ -51,7 +51,7 @@ public class LoggerNameLevelRewritePolicy implements RewritePolicy {
     public static LoggerNameLevelRewritePolicy createPolicy(
             // @formatter:off
             @PluginAttribute("logger") final String loggerNamePrefix,
-            @PluginElement("LevelPair") final KeyValuePair[] levelPairs) {
+            @PluginElement("KeyValuePair") final KeyValuePair[] levelPairs) {
             // @formatter:on
         final Map<Level, Level> newMap = new HashMap<>(levelPairs.length);
         for (final KeyValuePair keyValuePair : levelPairs) {
