@@ -94,7 +94,7 @@ public final class LoaderUtil {
                 return cl;
             }
             final ClassLoader ccl = LoaderUtil.class.getClassLoader();
-            return ccl == null ? ClassLoader.getSystemClassLoader() : ccl;
+            return ccl == null && !GET_CLASS_LOADER_DISABLED ? ClassLoader.getSystemClassLoader() : ccl;
         }
     }
 
@@ -192,7 +192,7 @@ public final class LoaderUtil {
         final ClassLoader[] candidates = {
             getThreadContextClassLoader(),
             LoaderUtil.class.getClassLoader(),
-            ClassLoader.getSystemClassLoader()
+            GET_CLASS_LOADER_DISABLED ? null : ClassLoader.getSystemClassLoader()
         };
         final Collection<UrlResource> resources = new LinkedHashSet<>();
         for (final ClassLoader cl : candidates) {
