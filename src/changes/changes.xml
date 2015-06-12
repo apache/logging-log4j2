@@ -30,6 +30,9 @@
       <action issue="LOG4J2-1015" dev="ggregory" type="add" due-to="Daniel Marcotte">
         Add a way to route messages based on the %marker in Layout for RoutingAppender.
       </action>
+      <action issue="LOG4J2-1051" dev="ggregory" type="fix" due-to="Lukasz Lenart">
+        NoClassDefFoundError when starting app on Google App Engine.
+      </action>
       <action issue="LOG4J2-1049" dev="rpopma" type="fix" due-to="Robert Schaft">
         AsyncAppender now resets the thread interrupted flag after catching InterruptedException.
       </action>
