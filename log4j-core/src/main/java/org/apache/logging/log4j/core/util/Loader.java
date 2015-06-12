@@ -35,14 +35,6 @@ public final class Loader {
 
     private static final String TSTR = "Caught Exception while in Loader.getResource. This may be innocuous.";
 
-    static {
-        final SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            sm.checkPermission(new RuntimePermission("getStackTrace"));
-            sm.checkPermission(new ReflectPermission("suppressAccessChecks"));
-        }
-    }
-
     /**
      * Returns the ClassLoader to use.
      * @return the ClassLoader.
