@@ -66,6 +66,9 @@
       <action issue="LOG4J2-1046" dev="ggregory" type="fix" due-to="Kenneth Gendron">
         Circular Exception cause throws StackOverflowError.
       </action>
+      <action issue="LOG4J2-890" dev="ggregory" type="update" due-to="Hassan Kalaldeh, Robert Andersson, Remko Popma">
+        log4j-web-2.1 should workaround a bug in JBOSS EAP 6.2.
+      </action>
       <action issue="LOG4J2-403" dev="ggregory" type="update" due-to="Poorna Subhash P, Jeremy Lautman">
         MongoDB appender, username and password should be optional.
       </action>
