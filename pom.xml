@@ -996,6 +996,7 @@
             <exclude>src/site/resources/js/jquery.min.js</exclude>
             <!-- Generated files -->
             <exclude>log4j-distribution/target/**/*</exclude>
+            <exclude>velocity.log</exclude>            
             <!-- Other -->
             <exclude>felix-cache/**</exclude>
           </excludes>
