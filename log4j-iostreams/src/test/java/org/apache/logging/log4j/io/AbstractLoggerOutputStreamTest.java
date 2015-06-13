@@ -69,13 +69,13 @@ public abstract class AbstractLoggerOutputStreamTest extends AbstractStreamTest 
         out.close();
         replay(out);
 
-        final OutputStream filteredOut =
+        try (final OutputStream filteredOut =
             IoBuilder.forLogger(getExtendedLogger())
                 .filter(out)
                 .setLevel(LEVEL)
-                .buildOutputStream();
-        filteredOut.flush();
-        filteredOut.close();
+                .buildOutputStream()) {
+          filteredOut.flush();
+        }
         verify(out);
     }
 
