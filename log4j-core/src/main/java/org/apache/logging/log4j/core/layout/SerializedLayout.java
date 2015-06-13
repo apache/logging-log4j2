@@ -40,8 +40,7 @@ public final class SerializedLayout extends AbstractLayout<LogEvent> {
     static {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            final ObjectOutputStream oos = new ObjectOutputStream(baos);
-            oos.close();
+            new ObjectOutputStream(baos).close();
             serializedHeader = baos.toByteArray();
         } catch (final Exception ex) {
             LOGGER.error("Unable to generate Object stream header", ex);
