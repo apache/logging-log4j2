@@ -98,9 +98,9 @@ public class StringFormattedMessageTest {
     public void testSerialization() throws IOException, ClassNotFoundException {
         final StringFormattedMessage expected = new StringFormattedMessage("Msg", "a", "b", "c");
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final ObjectOutputStream out = new ObjectOutputStream(baos);
-        out.writeObject(expected);
-        out.close();
+        try (final ObjectOutputStream out = new ObjectOutputStream(baos)) {
+            out.writeObject(expected);
+        }
         final ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         final ObjectInputStream in = new ObjectInputStream(bais);
         final StringFormattedMessage actual = (StringFormattedMessage) in.readObject();
