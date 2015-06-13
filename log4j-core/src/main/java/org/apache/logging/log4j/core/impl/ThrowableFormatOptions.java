@@ -193,11 +193,15 @@ public final class ThrowableFormatOptions {
         if (options.length == 1 && Strings.isNotEmpty(options[0])) {
             final String[] opts = options[0].split(Patterns.COMMA_SEPARATOR, 2);
             final String first = opts[0].trim();
-            final Scanner scanner = new Scanner(first);
-            if (opts.length > 1 && (first.equalsIgnoreCase(FULL) || first.equalsIgnoreCase(SHORT) || first.equalsIgnoreCase(NONE) || scanner.hasNextInt())) {
-                options = new String[]{first, opts[1].trim()};
+            try (final Scanner scanner = new Scanner(first)) {
+                if (opts.length > 1
+                        && (first.equalsIgnoreCase(FULL) || first.equalsIgnoreCase(SHORT)
+                                || first.equalsIgnoreCase(NONE) || scanner.hasNextInt())) {
+                    options = new String[] {
+                            first,
+                            opts[1].trim() };
+                }
             }
-            scanner.close();
         }
 
         int lines = DEFAULT.lines;
