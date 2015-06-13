@@ -75,11 +75,8 @@ public class LoggerPrintWriterJdbcH2Test {
         dataSource.setPassword(PASSWORD);
         dataSource.setLogWriter(createLoggerPrintWriter());
         // dataSource.setLogWriter(new PrintWriter(new OutputStreamWriter(System.out)));
-        final Connection conn = dataSource.getConnection();
-        try {
+        try (final Connection conn = dataSource.getConnection()) {
             conn.prepareCall("select 1");
-        } finally {
-            conn.close();
         }
         Assert.assertTrue(this.getListAppender().getMessages().size() > 0);
     }
@@ -88,13 +85,8 @@ public class LoggerPrintWriterJdbcH2Test {
     public void testDriverManager_setLogWriter() throws SQLException {
         DriverManager.setLogWriter(createLoggerPrintWriter());
         // DriverManager.setLogWriter(new PrintWriter(new OutputStreamWriter(System.out)));
-        try {
-            final Connection conn = this.newConnection();
-            try {
-                conn.rollback();
-            } finally {
-                conn.close();
-            }
+        try (final Connection conn = this.newConnection()) {
+            conn.rollback();
         } finally {
             DriverManager.setLogWriter(null);
         }
