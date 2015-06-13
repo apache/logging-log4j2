@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.config;
 
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -30,19 +31,17 @@ public class FileConfigurationMonitor implements ConfigurationMonitor {
 
     private static final int MASK = 0x0f;
 
-    private static final int MIN_INTERVAL = 5;
-
-    private static final int MILLIS_PER_SECOND = 1000;
+    static final int MIN_INTERVAL = 5;
 
     private final File file;
 
-    private long lastModified;
+    private volatile long lastModified;
 
     private final List<ConfigurationListener> listeners;
 
-    private final int intervalSeconds;
+    private final long intervalNano;
 
-    private long nextCheck;
+    private volatile long nextCheck;
 
     private final AtomicInteger counter = new AtomicInteger(0);
 
@@ -64,8 +63,8 @@ public class FileConfigurationMonitor implements ConfigurationMonitor {
         this.file = file;
         this.lastModified = file.lastModified();
         this.listeners = listeners;
-        this.intervalSeconds = (intervalSeconds < MIN_INTERVAL ? MIN_INTERVAL : intervalSeconds) * MILLIS_PER_SECOND;
-        this.nextCheck = System.currentTimeMillis() + intervalSeconds;
+        this.intervalNano = TimeUnit.SECONDS.toNanos(Math.max(intervalSeconds, MIN_INTERVAL));
+        this.nextCheck = System.nanoTime() + this.intervalNano;
     }
 
     /**
@@ -74,12 +73,13 @@ public class FileConfigurationMonitor implements ConfigurationMonitor {
     @Override
     public void checkConfiguration() {
         final long current;
-        if (((counter.incrementAndGet() & MASK) == 0) && ((current = System.currentTimeMillis()) >= nextCheck)) {
+        if (((counter.incrementAndGet() & MASK) == 0) && ((current = System.nanoTime()) - nextCheck >= 0)) {
             LOCK.lock();
             try {
-                nextCheck = current + intervalSeconds;
-                if (file.lastModified() > lastModified) {
-                    lastModified = file.lastModified();
+                nextCheck = current + intervalNano;
+                final long currentLastModified = file.lastModified();
+                if (currentLastModified > lastModified) {
+                    lastModified = currentLastModified;
                     for (final ConfigurationListener listener : listeners) {
                         final Thread thread = new Thread(new ReconfigurationWorker(listener, reconfigurable));
                         thread.setDaemon(true);
@@ -92,7 +92,7 @@ public class FileConfigurationMonitor implements ConfigurationMonitor {
         }
     }
 
-    private class ReconfigurationWorker implements Runnable {
+    private static class ReconfigurationWorker implements Runnable {
 
         private final ConfigurationListener listener;
         private final Reconfigurable reconfigurable;

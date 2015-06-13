@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.async.perftest;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 import com.lmax.disruptor.collections.Histogram;
 
@@ -37,14 +38,14 @@ public class MtPerfTest extends PerfTest {
 
         // warmup at least 2 rounds and at most 1 minute
         final Histogram warmupHist = PerfTest.createHistogram();
-        final long stop = System.currentTimeMillis() + (60 * 1000);
+        final long stop = System.nanoTime() + TimeUnit.MINUTES.toNanos(1);
         final Runnable run1 = new Runnable() {
             @Override
             public void run() {
                 for (int i = 0; i < 10; i++) {
                     final int LINES = PerfTest.throughput ? 50000 : 200000;
                     runTest(runner, LINES, null, warmupHist, 2);
-                    if (i > 0 && System.currentTimeMillis() >= stop) {
+                    if (i > 0 && System.nanoTime() - stop >= 0) {
                         return;
                     }
                 }

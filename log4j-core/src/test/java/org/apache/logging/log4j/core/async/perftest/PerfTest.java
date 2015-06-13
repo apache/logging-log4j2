@@ -20,6 +20,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.util.Loader;
 
@@ -108,11 +109,11 @@ public class PerfTest {
         // warmup at least 10 seconds
         final int LINES = 50000;
         int iterations = 0;
-        final long stop = System.currentTimeMillis() + (10 * 1000); // 10 seconds
+        final long stop = System.nanoTime() + TimeUnit.SECONDS.toNanos(10);
         do {
             runTest(runner, LINES, null, warmupHist, 1);
             iterations++;
-        } while (System.currentTimeMillis() < stop);
+        } while (System.nanoTime() - stop < 0);
 
         printf("Warmup complete in %.1f seconds (%d iterations)%n", (System.nanoTime() - t1)
                 / (1000.0 * 1000.0 * 1000.0), iterations);
