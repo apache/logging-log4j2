@@ -53,9 +53,9 @@ public class SerializationTestHelper {
     public static Object serializeClone(final Object obj)
         throws IOException, ClassNotFoundException {
         final ByteArrayOutputStream memOut = new ByteArrayOutputStream();
-        final ObjectOutputStream objOut = new ObjectOutputStream(memOut);
-        objOut.writeObject(obj);
-        objOut.close();
+        try (final ObjectOutputStream objOut = new ObjectOutputStream(memOut)) {
+            objOut.writeObject(obj);
+        }
 
         final ByteArrayInputStream src = new ByteArrayInputStream(memOut.toByteArray());
         final ObjectInputStream objIs = new ObjectInputStream(src);
@@ -90,9 +90,9 @@ public class SerializationTestHelper {
         final String witness, final Object obj, final int[] skip,
         final int endCompare) throws Exception {
         final ByteArrayOutputStream memOut = new ByteArrayOutputStream();
-        final ObjectOutputStream objOut = new ObjectOutputStream(memOut);
-        objOut.writeObject(obj);
-        objOut.close();
+        try (final ObjectOutputStream objOut = new ObjectOutputStream(memOut)) {
+            objOut.writeObject(obj);
+        }
 
         assertStreamEquals(witness, memOut.toByteArray(), skip, endCompare);
     }
