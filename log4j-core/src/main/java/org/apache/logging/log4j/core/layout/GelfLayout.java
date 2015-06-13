@@ -155,13 +155,13 @@ public final class GelfLayout extends AbstractStringLayout {
     private byte[] compress(final byte[] bytes) {
         try {
             final ByteArrayOutputStream baos = new ByteArrayOutputStream(compressionThreshold / 8);
-            final DeflaterOutputStream stream = compressionType.createDeflaterOutputStream(baos);
-            if (stream == null) {
-                return bytes;
+            try (final DeflaterOutputStream stream = compressionType.createDeflaterOutputStream(baos)) {
+                if (stream == null) {
+                    return bytes;
+                }
+                stream.write(bytes);
+                stream.finish();
             }
-            stream.write(bytes);
-            stream.finish();
-            stream.close();
             return baos.toByteArray();
         } catch (final IOException e) {
             StatusLogger.getLogger().error(e);
