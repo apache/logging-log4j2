@@ -904,6 +904,10 @@ public class Bar {
                   Not available on Android.</td>
               </tr>
               <tr>
+                <td>log4j</td>
+                <td>Log4j configuration properties. The expressions <code>${log4j:configLocation}</code> and <code>${log4j:configParentLocation}</code> respectively provide the absolute path to the log4j configuration file and its parent folder.</td>
+              </tr>
+              <tr>
                 <td>main</td>
                 <td>A value set with <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/MapLookup.html#setMainArguments-java.lang.String:A-">MapLookup.setMainArguments(String[])</a></td>
               </tr>

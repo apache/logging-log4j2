@@ -82,6 +82,7 @@ public class Interpolator extends AbstractLookup {
     public Interpolator(final Map<String, String> properties) {
         this.defaultLookup = new MapLookup(properties == null ? new HashMap<String, String>() : properties);
         // TODO: this ought to use the PluginManager
+        lookups.put("log4j", new Log4jLookup());
         lookups.put("sys", new SystemPropertiesLookup());
         lookups.put("env", new EnvironmentLookup());
         lookups.put("main", MainMapLookup.MAIN_SINGLETON);

@@ -33,6 +33,9 @@
       <action issue="LOG4J2-1015" dev="ggregory" type="add" due-to="Daniel Marcotte">
         Add a way to route messages based on the %marker in Layout for RoutingAppender.
       </action>
+      <action issue="LOG4J2-1050" dev="ggregory" type="add" due-to="Adam Retter">
+        Add a Log4jLookup class to help write log files relative to log4j2.xml.
+      </action>
       <action issue="LOG4J2-1051" dev="ggregory" type="fix" due-to="Lukasz Lenart">
         NoClassDefFoundError when starting app on Google App Engine.
       </action>
