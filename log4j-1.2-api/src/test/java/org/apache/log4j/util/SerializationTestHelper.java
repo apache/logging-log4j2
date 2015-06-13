@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import org.apache.commons.io.FileUtils;
+
 import static org.junit.Assert.*;
 
 
@@ -111,10 +113,8 @@ public class SerializationTestHelper {
 
         if (witnessFile.exists()) {
             int skipIndex = 0;
-            final byte[] expected = new byte[actual.length];
-            final FileInputStream is = new FileInputStream(witnessFile);
-            final int bytesRead = is.read(expected);
-            is.close();
+            final byte[] expected = FileUtils.readFileToByteArray(witnessFile);
+            final int bytesRead = expected.length;
 
             if (bytesRead < endCompare) {
                 assertEquals(bytesRead, actual.length);
