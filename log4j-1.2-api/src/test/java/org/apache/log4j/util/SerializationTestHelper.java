@@ -140,9 +140,7 @@ public class SerializationTestHelper {
             //
             //  if the file doesn't exist then
             //      assume that we are setting up and need to write it
-            final FileOutputStream os = new FileOutputStream(witnessFile);
-            os.write(actual);
-            os.close();
+            FileUtils.writeByteArrayToFile(witnessFile, actual);
             fail("Writing witness file " + witness);
         }
     }
