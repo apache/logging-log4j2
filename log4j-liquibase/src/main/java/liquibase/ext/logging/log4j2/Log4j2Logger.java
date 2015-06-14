@@ -23,7 +23,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**
- * Logs Liquidbase messages to Log4j 2.x.
+ * Logs Liquibase messages to Log4j 2.x.
  * <p>
  * This class must be in the {@code liquibase} package in order for the Liquibase plugin discovery mechanism to work.
  * </p>
