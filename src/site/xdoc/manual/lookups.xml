@@ -176,6 +176,24 @@
           </p>
           <p><strong>Java's JMX module is not available on Android.</strong></p>
         </subsection>
+        <a name="Log4jConfigLookup"/>
+        <subsection name="Log4j Configuration Location Lookup">
+          <p>
+            Log4j configuration properties. The expressions 
+            <code>${log4j:configLocation}</code> and <code>${log4j:configParentLocation}</code>
+            respectively provide the absolute path to the log4j configuration file
+            and its parent folder.
+          </p><p>
+            The example below uses this lookup to place log files in a directory relative
+            to the log4j configuration file.
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+<File name="Application" fileName="${log4j:configParentLocation}/logs/application.log">
+  <PatternLayout>
+    <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+  </PatternLayout>
+</File>]]></pre>
+        </subsection>
         <a name="AppMainArgsLookup"/>
         <subsection name="Main Arguments Lookup (Application)">
           <p>
