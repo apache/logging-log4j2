@@ -905,7 +905,9 @@ public class Bar {
               </tr>
               <tr>
                 <td>log4j</td>
-                <td>Log4j configuration properties. The expressions <code>${log4j:configLocation}</code> and <code>${log4j:configParentLocation}</code> respectively provide the absolute path to the log4j configuration file and its parent folder.</td>
+                <td>Log4j configuration properties. The expressions <code>${dollar}{log4j:configLocation}</code> and
+                  <code>${dollar}{log4j:configParentLocation}</code> respectively provide the absolute path
+                  to the log4j configuration file and its parent folder.</td>
               </tr>
               <tr>
                 <td>main</td>
