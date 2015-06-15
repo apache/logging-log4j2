@@ -90,8 +90,6 @@ public class FlumePersistentManager extends FlumeAvroManager {
 
     private final SecretKey secretKey;
 
-    private final int delayMillis;
-
     private final int lockTimeoutRetryCount;
 
     private final ExecutorService threadPool;
@@ -118,8 +116,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                                      final int requestTimeout, final int delay, final Database database,
                                      final Environment environment, final SecretKey secretKey,
                                      final int lockTimeoutRetryCount) {
-        super(name, shortName, agents, batchSize, retries, connectionTimeout, requestTimeout);
-        this.delayMillis = delay;
+        super(name, shortName, agents, batchSize, delay, retries, connectionTimeout, requestTimeout);
         this.database = database;
         this.environment = environment;
         dbCount.set(database.count());
@@ -515,14 +512,14 @@ public class FlumePersistentManager extends FlumeAvroManager {
 
         @Override
         public void run() {
-            LOGGER.trace("WriterThread started - batch size = " + batchSize + ", delayMillis = " + manager.delayMillis);
-            long nextBatchMillis = System.currentTimeMillis() + manager.delayMillis;
+            LOGGER.trace("WriterThread started - batch size = " + batchSize + ", delayMillis = " + manager.getDelayMillis());
+            long nextBatchMillis = System.currentTimeMillis() + manager.getDelayMillis();
             while (!shutdown) {
                 final long nowMillis = System.currentTimeMillis();
                 final long dbCount = database.count();
                 dbCounter.set(dbCount);
                 if (dbCount >= batchSize || dbCount > 0 && nextBatchMillis <= nowMillis) {
-                    nextBatchMillis = nowMillis + manager.delayMillis;
+                    nextBatchMillis = nowMillis + manager.getDelayMillis();
                     try {
                         boolean errors = false;
                         final DatabaseEntry key = new DatabaseEntry();
@@ -621,7 +618,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                             }
                         }
                         if (errors) {
-                            Thread.sleep(manager.delayMillis);
+                            Thread.sleep(manager.getDelayMillis());
                             continue;
                         }
                     } catch (final Exception ex) {
@@ -629,7 +626,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                     }
                 } else {
                     if (nextBatchMillis <= nowMillis) {
-                        nextBatchMillis = nowMillis + manager.delayMillis;
+                        nextBatchMillis = nowMillis + manager.getDelayMillis();
                     }
                     try {
                         final long interval = nextBatchMillis - nowMillis;
