@@ -81,6 +81,9 @@
       <action issue="LOG4J2-982" dev="ggregory" type="fix" due-to="Mikhail Mazurskiy">
         Use System.nanoTime() to measure time intervals.
       </action>      
+      <action issue="LOG4J2-1045" dev="ggregory" type="fix" due-to="Günter Albrecht">
+        Externalize log4j2.xml via URL resource.
+      </action>      
       <action issue="LOG4J2-890" dev="ggregory" type="update" due-to="Hassan Kalaldeh, Robert Andersson, Remko Popma">
         log4j-web-2.1 should workaround a bug in JBOSS EAP 6.2.
       </action>
