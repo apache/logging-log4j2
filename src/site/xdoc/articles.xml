@@ -31,6 +31,10 @@
       <subsection name="English">
       <ul>
         <li>
+          <a href="https://www.innoq.com/en/blog/per-request-debugging-with-log4j2/">Per request debugging with Log4j 2 filters</a>
+          (May 8, 2015)
+        </li>
+        <li>
           <a
             href="http://www.journaldev.com/7128/apache-log4j-2-tutorial-configuration-levels-appenders-lookup-layouts-and-filters-example">Apache Log4j 2 Tutorial – Configuration, Levels, Appenders, Lookup, Layouts and
             Filters Example</a>

@@ -54,8 +54,8 @@ public class BasicConfigurationFactory extends ConfigurationFactory {
             super(ConfigurationSource.NULL_SOURCE);
 
             final LoggerConfig root = getRootLogger();
-            final String l = System.getProperty(DEFAULT_LEVEL);
-            final Level level = (l != null && Level.getLevel(l) != null) ? Level.getLevel(l) : Level.ERROR;
+            final String name = System.getProperty(DEFAULT_LEVEL);
+            final Level level = (name != null && Level.getLevel(name) != null) ? Level.getLevel(name) : Level.ERROR;
             root.setLevel(level);
         }
     }
