@@ -305,6 +305,20 @@ public class LogManager {
     }
 
     /**
+     * Returns a formatter Logger using the fully qualified name of the calling Class as the Logger name.
+     * <p>
+     * This logger lets you use a {@link java.util.Formatter} string in the message to format parameters.
+     * </p>
+     * @return The Logger for the calling class.
+     * @throws UnsupportedOperationException if the calling class cannot be determined.
+     * @since 2.4
+     */
+    public static Logger getFormatterLogger() {
+        return getFormatterLogger(ReflectionUtil.getCallerClass(2));
+    }
+
+
+    /**
      * Returns a formatter Logger using the fully qualified name of the Class as the Logger name.
      * <p>
      * This logger let you use a {@link java.util.Formatter} string in the message to format parameters.

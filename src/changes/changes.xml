@@ -39,6 +39,9 @@
       <action issue="LOG4J2-1050" dev="ggregory" type="add" due-to="Adam Retter">
         Add a Log4jLookup class to help write log files relative to log4j2.xml.
       </action>
+      <action issue="LOG4J2-1057" dev="ggregory" type="add">
+        Add API org.apache.logging.log4j.LogManager.getFormatterLogger().
+      </action>     
       <action issue="LOG4J2-1051" dev="ggregory" type="fix" due-to="Lukasz Lenart">
         NoClassDefFoundError when starting app on Google App Engine.
       </action>
