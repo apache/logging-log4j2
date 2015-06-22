@@ -420,7 +420,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      */
     private void reconfigure(final URI configURI) {
         final ClassLoader cl = ClassLoader.class.isInstance(externalContext) ? (ClassLoader) externalContext : null;
-        LOGGER.debug("Reconfiguration started for context[name={}] at {} ({}) with optional ClassLoader: {}", name,
+        LOGGER.debug("Reconfiguration started for context[name={}] at URI {} ({}) with optional ClassLoader: {}", name,
                 configURI, this, cl);
         final Configuration instance = ConfigurationFactory.getInstance().getConfiguration(name, configURI, cl);
         setConfiguration(instance);
