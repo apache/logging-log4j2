@@ -90,6 +90,9 @@
       <action issue="LOG4J2-1058" dev="ggregory" type="fix" due-to="Daniel Branzea">
         Log4jMarker#contains(String) does not respect org.slf4j.Marker contract.
       </action>      
+      <action issue="LOG4J2-1060" dev="ggregory" type="fix">
+        Log4jMarker#contains(Marker) does not respect org.slf4j.Marker contract.
+      </action>      
       <action issue="LOG4J2-890" dev="ggregory" type="update" due-to="Hassan Kalaldeh, Robert Andersson, Remko Popma">
         log4j-web-2.1 should workaround a bug in JBOSS EAP 6.2.
       </action>
