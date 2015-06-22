@@ -64,7 +64,7 @@ public class MarkerTest {
 	}
 
     @Test
-	public void testContainsMarker() {
+	public void testContainsNullMarker() {
 		final org.slf4j.Marker slf4jMarker = org.slf4j.MarkerFactory.getMarker(CHILD_MAKER_NAME + "-CM");
 		final org.slf4j.Marker slf4jParent = org.slf4j.MarkerFactory.getMarker(PARENT_MARKER_NAME + "-CM");
 		slf4jMarker.add(slf4jParent);
@@ -88,7 +88,7 @@ public class MarkerTest {
 	}
 
     @Test
-	public void testContainsString() {
+	public void testContainsNullString() {
 		final org.slf4j.Marker slf4jMarker = org.slf4j.MarkerFactory.getMarker(CHILD_MAKER_NAME + "-CS");
 		final org.slf4j.Marker slf4jParent = org.slf4j.MarkerFactory.getMarker(PARENT_MARKER_NAME + "-CS");
 		slf4jMarker.add(slf4jParent);
