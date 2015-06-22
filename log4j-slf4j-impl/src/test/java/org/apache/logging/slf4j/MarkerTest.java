@@ -30,8 +30,8 @@ import static org.junit.Assert.*;
  */
 public class MarkerTest {
 
-    private static final String PARENT_MARKER_NAME = MarkerTest.class.getSimpleName() + "-PARENT";
     private static final String CHILD_MAKER_NAME = MarkerTest.class.getSimpleName() + "-TEST";
+    private static final String PARENT_MARKER_NAME = MarkerTest.class.getSimpleName() + "-PARENT";
 
     @Before
     @After
