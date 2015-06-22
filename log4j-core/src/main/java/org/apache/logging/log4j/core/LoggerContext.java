@@ -429,7 +429,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
          * updateLoggers(); if (old != null) { old.stop(); }
          */
 
-        LOGGER.debug("Reconfiguration complete for context[name={}] at {} ({}) with optional ClassLoader: {}", name,
+        LOGGER.debug("Reconfiguration complete for context[name={}] at URI {} ({}) with optional ClassLoader: {}", name,
                 configURI, this, cl);
     }
 
