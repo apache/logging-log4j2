@@ -42,6 +42,9 @@
       <action issue="LOG4J2-1057" dev="ggregory" type="add">
         Add API org.apache.logging.log4j.LogManager.getFormatterLogger().
       </action>     
+      <action issue="LOG4J2-1066" dev="ggregory" type="add" due-to="Charles Allen">
+        Expose Log4jContextFactory's ShutdownCallbackRegistry.
+      </action>     
       <action issue="LOG4J2-1051" dev="ggregory" type="fix" due-to="Lukasz Lenart">
         NoClassDefFoundError when starting app on Google App Engine.
       </action>
