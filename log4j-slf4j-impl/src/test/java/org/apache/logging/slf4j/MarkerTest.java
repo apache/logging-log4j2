@@ -46,19 +46,19 @@ public class MarkerTest {
 		slf4jMarker.add(slf4jParent);
 		final Marker log4jParent = MarkerManager.getMarker(PARENT_MARKER_NAME + "-ANM");
 		final Marker log4jMarker = MarkerManager.getMarker(CHILD_MAKER_NAME + "ANM");
-		Log4jMarker log4jSlf4jParent = new Log4jMarker(log4jParent);
-		Log4jMarker log4jSlf4jMarker = new Log4jMarker(log4jMarker);
+		final Log4jMarker log4jSlf4jParent = new Log4jMarker(log4jParent);
+		final Log4jMarker log4jSlf4jMarker = new Log4jMarker(log4jMarker);
 		final org.slf4j.Marker nullMarker = null;
 		try {
 			log4jSlf4jParent.add(nullMarker);
 			fail("Expected " + IllegalArgumentException.class.getName());
-		} catch (IllegalArgumentException e) {
+		} catch (final IllegalArgumentException e) {
 			// expected
 		}
 		try {
 			log4jSlf4jMarker.add(nullMarker);
 			fail("Expected " + IllegalArgumentException.class.getName());
-		} catch (IllegalArgumentException e) {
+		} catch (final IllegalArgumentException e) {
 			// expected
 		}
 	}
@@ -70,19 +70,19 @@ public class MarkerTest {
 		slf4jMarker.add(slf4jParent);
 		final Marker log4jParent = MarkerManager.getMarker(PARENT_MARKER_NAME + "-CM");
 		final Marker log4jMarker = MarkerManager.getMarker(CHILD_MAKER_NAME + "-CM");
-		Log4jMarker log4jSlf4jParent = new Log4jMarker(log4jParent);
-		Log4jMarker log4jSlf4jMarker = new Log4jMarker(log4jMarker);
+		final Log4jMarker log4jSlf4jParent = new Log4jMarker(log4jParent);
+		final Log4jMarker log4jSlf4jMarker = new Log4jMarker(log4jMarker);
 		final org.slf4j.Marker nullMarker = null;
 		try {
 			Assert.assertFalse(log4jSlf4jParent.contains(nullMarker));
 			fail("Expected " + IllegalArgumentException.class.getName());
-		} catch (IllegalArgumentException e) {
+		} catch (final IllegalArgumentException e) {
 			// expected
 		}
 		try {
 			Assert.assertFalse(log4jSlf4jMarker.contains(nullMarker));
 			fail("Expected " + IllegalArgumentException.class.getName());
-		} catch (IllegalArgumentException e) {
+		} catch (final IllegalArgumentException e) {
 			// expected
 		}
 	}
@@ -94,9 +94,9 @@ public class MarkerTest {
 		slf4jMarker.add(slf4jParent);
 		final Marker log4jParent = MarkerManager.getMarker(PARENT_MARKER_NAME + "-CS");
 		final Marker log4jMarker = MarkerManager.getMarker(CHILD_MAKER_NAME + "-CS");
-		Log4jMarker log4jSlf4jParent = new Log4jMarker(log4jParent);
-		Log4jMarker log4jSlf4jMarker = new Log4jMarker(log4jMarker);
-		String nullStr = null;
+		final Log4jMarker log4jSlf4jParent = new Log4jMarker(log4jParent);
+		final Log4jMarker log4jSlf4jMarker = new Log4jMarker(log4jMarker);
+		final String nullStr = null;
 		Assert.assertFalse(log4jSlf4jParent.contains(nullStr));
 		Assert.assertFalse(log4jSlf4jMarker.contains(nullStr));
 	}
@@ -123,8 +123,8 @@ public class MarkerTest {
 		slf4jMarker.add(slf4jParent);
 		final Marker log4jParent = MarkerManager.getMarker(PARENT_MARKER_NAME + "-CM");
 		final Marker log4jMarker = MarkerManager.getMarker(CHILD_MAKER_NAME + "-CM");
-		Log4jMarker log4jSlf4jParent = new Log4jMarker(log4jParent);
-		Log4jMarker log4jSlf4jMarker = new Log4jMarker(log4jMarker);
+		final Log4jMarker log4jSlf4jParent = new Log4jMarker(log4jParent);
+		final Log4jMarker log4jSlf4jMarker = new Log4jMarker(log4jMarker);
 		final org.slf4j.Marker nullMarker = null;
 		Assert.assertFalse(log4jSlf4jParent.remove(nullMarker));
 		Assert.assertFalse(log4jSlf4jMarker.remove(nullMarker));
