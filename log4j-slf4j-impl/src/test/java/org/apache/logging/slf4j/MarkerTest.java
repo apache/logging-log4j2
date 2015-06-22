@@ -40,6 +40,30 @@ public class MarkerTest {
     }
 
     @Test
+	public void testAddNullMarker() {
+		final org.slf4j.Marker slf4jMarker = org.slf4j.MarkerFactory.getMarker(CHILD_MAKER_NAME + "-ANM");
+		final org.slf4j.Marker slf4jParent = org.slf4j.MarkerFactory.getMarker(PARENT_MARKER_NAME + "-ANM");
+		slf4jMarker.add(slf4jParent);
+		final Marker log4jParent = MarkerManager.getMarker(PARENT_MARKER_NAME + "-ANM");
+		final Marker log4jMarker = MarkerManager.getMarker(CHILD_MAKER_NAME + "ANM");
+		Log4jMarker log4jSlf4jParent = new Log4jMarker(log4jParent);
+		Log4jMarker log4jSlf4jMarker = new Log4jMarker(log4jMarker);
+		final org.slf4j.Marker nullMarker = null;
+		try {
+			log4jSlf4jParent.add(nullMarker);
+			fail("Expected " + IllegalArgumentException.class.getName());
+		} catch (IllegalArgumentException e) {
+			// expected
+		}
+		try {
+			log4jSlf4jMarker.add(nullMarker);
+			fail("Expected " + IllegalArgumentException.class.getName());
+		} catch (IllegalArgumentException e) {
+			// expected
+		}
+	}
+
+    @Test
 	public void testContainsMarker() {
 		final org.slf4j.Marker slf4jMarker = org.slf4j.MarkerFactory.getMarker(CHILD_MAKER_NAME + "-CM");
 		final org.slf4j.Marker slf4jParent = org.slf4j.MarkerFactory.getMarker(PARENT_MARKER_NAME + "-CM");

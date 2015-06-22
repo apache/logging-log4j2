@@ -96,6 +96,9 @@
       <action issue="LOG4J2-1061" dev="ggregory" type="fix">
         Log4jMarker#remove(Marker) does not respect org.slf4j.Marker contract.
       </action>            
+      <action issue="LOG4J2-1062" dev="ggregory" type="fix">
+        Log4jMarker#add(Marker) does not respect org.slf4j.Marker contract.
+      </action>            
       <action issue="LOG4J2-890" dev="ggregory" type="update" due-to="Hassan Kalaldeh, Robert Andersson, Remko Popma">
         log4j-web-2.1 should workaround a bug in JBOSS EAP 6.2.
       </action>
