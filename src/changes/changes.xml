@@ -99,6 +99,9 @@
       <action issue="LOG4J2-1062" dev="ggregory" type="fix">
         Log4jMarker#add(Marker) does not respect org.slf4j.Marker contract.
       </action>            
+      <action issue="LOG4J2-1065" dev="ggregory" type="update">
+        Define org.apache.logging.log4j.Marker.equals(Object) and org.apache.logging.log4j.Marker.hashCode().
+      </action>
       <action issue="LOG4J2-1063" dev="ggregory" type="update">
         Avoid creating temporary array object in org.apache.logging.slf4j.Log4jMarker.iterator().
       </action>
