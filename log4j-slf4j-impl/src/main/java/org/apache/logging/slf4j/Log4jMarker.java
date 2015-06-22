@@ -44,10 +44,6 @@ public class Log4jMarker implements Marker {
         this.marker = marker;
     }
 
-    public org.apache.logging.log4j.Marker getLog4jMarker() {
-        return marker;
-    }
-
     @Override
     public void add(final Marker marker) {
 		if (marker == null) {
@@ -58,9 +54,21 @@ public class Log4jMarker implements Marker {
     }
 
     @Override
-	public boolean remove(final Marker marker) {
-		return marker != null ? this.marker.remove(MarkerManager.getMarker(marker.getName())) : false;
+	public boolean contains(final org.slf4j.Marker marker) {
+		if (marker == null) {
+			throw new IllegalArgumentException();
+		}
+		return this.marker.isInstanceOf(marker.getName());
 	}
+
+    @Override
+	public boolean contains(final String s) {
+		return s != null ? this.marker.isInstanceOf(s) : false;
+	}
+
+    public org.apache.logging.log4j.Marker getLog4jMarker() {
+        return marker;
+    }
 
     @Override
     public String getName() {
@@ -68,12 +76,12 @@ public class Log4jMarker implements Marker {
     }
 
     @Override
-    public boolean hasReferences() {
+    public boolean hasChildren() {
         return marker.hasParents();
     }
 
     @Override
-    public boolean hasChildren() {
+    public boolean hasReferences() {
         return marker.hasParents();
     }
 
@@ -88,15 +96,7 @@ public class Log4jMarker implements Marker {
     }
 
     @Override
-	public boolean contains(final org.slf4j.Marker marker) {
-		if (marker == null) {
-			throw new IllegalArgumentException();
-		}
-		return this.marker.isInstanceOf(marker.getName());
-	}
-
-    @Override
-	public boolean contains(final String s) {
-		return s != null ? this.marker.isInstanceOf(s) : false;
+	public boolean remove(final Marker marker) {
+		return marker != null ? this.marker.remove(MarkerManager.getMarker(marker.getName())) : false;
 	}
 }
