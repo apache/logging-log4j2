@@ -40,19 +40,20 @@ public class MarkerTest {
 	}
 
 	@Test
-	public void testAddSameMarker() {
-		String childMarkerName = CHILD_MAKER_NAME + "-ASM";
-		String parentMakerName = PARENT_MARKER_NAME + "-ASM";
-		final org.slf4j.Marker slf4jMarker = org.slf4j.MarkerFactory.getMarker(childMarkerName);
-		final org.slf4j.Marker slf4jParent = org.slf4j.MarkerFactory.getMarker(parentMakerName);
+	public void testAddMarker() {
+		String childMakerName = CHILD_MAKER_NAME + "-AM";
+		String parentMarkerName = PARENT_MARKER_NAME + "-AM";
+		final org.slf4j.Marker slf4jMarker = org.slf4j.MarkerFactory.getMarker(childMakerName);
+		final org.slf4j.Marker slf4jParent = org.slf4j.MarkerFactory.getMarker(parentMarkerName);
 		slf4jMarker.add(slf4jParent);
-		slf4jMarker.add(slf4jParent);
-		final Marker log4jParent = MarkerManager.getMarker(parentMakerName);
-		final Marker log4jMarker = MarkerManager.getMarker(childMarkerName);
+		final Marker log4jParent = MarkerManager.getMarker(parentMarkerName);
+		final Marker log4jMarker = MarkerManager.getMarker(childMakerName);
+
+		assertTrue("Incorrect Marker class", slf4jMarker instanceof Log4jMarker);
 		assertTrue(String.format("%s (log4jMarker=%s) is not an instance of %s (log4jParent=%s) in Log4j",
-				childMarkerName, parentMakerName, log4jMarker, log4jParent), log4jMarker.isInstanceOf(log4jParent));
+				childMakerName, parentMarkerName, log4jMarker, log4jParent), log4jMarker.isInstanceOf(log4jParent));
 		assertTrue(String.format("%s (slf4jMarker=%s) is not an instance of %s (log4jParent=%s) in SLF4J",
-				childMarkerName, parentMakerName, slf4jMarker, slf4jParent), slf4jMarker.contains(slf4jParent));
+				childMakerName, parentMarkerName, slf4jMarker, slf4jParent), slf4jMarker.contains(slf4jParent));
 	}
 
 	@Test
@@ -79,6 +80,22 @@ public class MarkerTest {
 		} catch (final IllegalArgumentException e) {
 			// expected
 		}
+	}
+
+	@Test
+	public void testAddSameMarker() {
+		String childMarkerName = CHILD_MAKER_NAME + "-ASM";
+		String parentMakerName = PARENT_MARKER_NAME + "-ASM";
+		final org.slf4j.Marker slf4jMarker = org.slf4j.MarkerFactory.getMarker(childMarkerName);
+		final org.slf4j.Marker slf4jParent = org.slf4j.MarkerFactory.getMarker(parentMakerName);
+		slf4jMarker.add(slf4jParent);
+		slf4jMarker.add(slf4jParent);
+		final Marker log4jParent = MarkerManager.getMarker(parentMakerName);
+		final Marker log4jMarker = MarkerManager.getMarker(childMarkerName);
+		assertTrue(String.format("%s (log4jMarker=%s) is not an instance of %s (log4jParent=%s) in Log4j",
+				childMarkerName, parentMakerName, log4jMarker, log4jParent), log4jMarker.isInstanceOf(log4jParent));
+		assertTrue(String.format("%s (slf4jMarker=%s) is not an instance of %s (log4jParent=%s) in SLF4J",
+				childMarkerName, parentMakerName, slf4jMarker, slf4jParent), slf4jMarker.contains(slf4jParent));
 	}
 
 	@Test
@@ -121,23 +138,6 @@ public class MarkerTest {
 		final String nullStr = null;
 		Assert.assertFalse(log4jSlf4jParent.contains(nullStr));
 		Assert.assertFalse(log4jSlf4jMarker.contains(nullStr));
-	}
-
-	@Test
-	public void testAddMarker() {
-		String childMakerName = CHILD_MAKER_NAME + "-AM";
-		final org.slf4j.Marker slf4jMarker = org.slf4j.MarkerFactory.getMarker(childMakerName);
-		String parentMarkerName = PARENT_MARKER_NAME + "-AM";
-		final org.slf4j.Marker slf4jParent = org.slf4j.MarkerFactory.getMarker(parentMarkerName);
-		slf4jMarker.add(slf4jParent);
-		final Marker log4jParent = MarkerManager.getMarker(parentMarkerName);
-		final Marker log4jMarker = MarkerManager.getMarker(childMakerName);
-
-		assertTrue("Incorrect Marker class", slf4jMarker instanceof Log4jMarker);
-		assertTrue(String.format("%s (log4jMarker=%s) is not an instance of %s (log4jParent=%s) in Log4j",
-				childMakerName, parentMarkerName, log4jMarker, log4jParent), log4jMarker.isInstanceOf(log4jParent));
-		assertTrue(String.format("%s (slf4jMarker=%s) is not an instance of %s (log4jParent=%s) in SLF4J",
-				childMakerName, parentMarkerName, slf4jMarker, slf4jParent), slf4jMarker.contains(slf4jParent));
 	}
 
 	@Test
