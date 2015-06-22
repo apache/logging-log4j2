@@ -55,9 +55,9 @@ public class Log4jMarker implements Marker {
     }
 
     @Override
-    public boolean remove(final Marker marker) {
-        return this.marker.remove(MarkerManager.getMarker(marker.getName()));
-    }
+	public boolean remove(final Marker marker) {
+		return marker != null ? this.marker.remove(MarkerManager.getMarker(marker.getName())) : false;
+	}
 
     @Override
     public String getName() {
