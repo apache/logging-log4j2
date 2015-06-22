@@ -66,6 +66,28 @@ public class Log4jMarker implements Marker {
 		return s != null ? this.marker.isInstanceOf(s) : false;
 	}
 
+    @Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof Log4jMarker)) {
+			return false;
+		}
+		Log4jMarker other = (Log4jMarker) obj;
+		if (marker == null) {
+			if (other.marker != null) {
+				return false;
+			}
+		} else if (!marker.equals(other.marker)) {
+			return false;
+		}
+		return true;
+	}
+
     public org.apache.logging.log4j.Marker getLog4jMarker() {
         return marker;
     }
@@ -81,11 +103,19 @@ public class Log4jMarker implements Marker {
     }
 
     @Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((marker == null) ? 0 : marker.hashCode());
+		return result;
+	}
+
+    @Override
     public boolean hasReferences() {
         return marker.hasParents();
     }
 
-    @Override
+	@Override
     public Iterator<Marker> iterator() {
         org.apache.logging.log4j.Marker[] log4jParents = this.marker.getParents();
         final List<Marker> parents = new ArrayList<>(log4jParents.length);
@@ -95,7 +125,7 @@ public class Log4jMarker implements Marker {
         return parents.iterator();
     }
 
-    @Override
+	@Override
 	public boolean remove(final Marker marker) {
 		return marker != null ? this.marker.remove(MarkerManager.getMarker(marker.getName())) : false;
 	}
