@@ -28,6 +28,14 @@ import java.io.Serializable;
 public interface Marker extends Serializable {
 
     /**
+     * Adds a Marker as a parent to this Marker.
+     * @param markers The parent markers to add.
+     * @return The current Marker object, thus allowing multiple adds to be concatenated.
+     * @throws IllegalArgumentException if the argument is {@code null}
+     */
+    Marker addParents(Marker... markers);
+
+    /**
      * Returns the name of this Marker.
      * @return The name of the Marker.
      */
@@ -62,12 +70,12 @@ public interface Marker extends Serializable {
     boolean isInstanceOf(String name);
 
     /**
-     * Adds a Marker as a parent to this Marker.
-     * @param markers The parent markers to add.
-     * @return The current Marker object, thus allowing multiple adds to be concatenated.
+     * Removes the specified Marker as a parent of this Marker.
+     * @param marker The marker to remove.
+     * @return {@code true} if the marker was removed.
      * @throws IllegalArgumentException if the argument is {@code null}
      */
-    Marker addParents(Marker... markers);
+    boolean remove(Marker marker);
 
     /**
      * Replaces the set of parent Markers with the provided Markers.
@@ -75,12 +83,4 @@ public interface Marker extends Serializable {
      * @return The current Marker object.
      */
     Marker setParents(Marker... markers);
-
-    /**
-     * Removes the specified Marker as a parent of this Marker.
-     * @param marker The marker to remove.
-     * @return {@code true} if the marker was removed.
-     * @throws IllegalArgumentException if the argument is {@code null}
-     */
-    boolean remove(Marker marker);
 }
