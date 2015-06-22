@@ -89,7 +89,7 @@ public class Log4jMarker implements Marker {
     }
 
     @Override
-    public boolean contains(final String s) {
-        return this.marker.isInstanceOf(s);
-    }
+	public boolean contains(final String s) {
+		return s != null ? this.marker.isInstanceOf(s) : false;
+	}
 }
