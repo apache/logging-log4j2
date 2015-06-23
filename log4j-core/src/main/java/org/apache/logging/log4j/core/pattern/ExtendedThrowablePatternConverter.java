@@ -69,14 +69,14 @@ public final class ExtendedThrowablePatternConverter extends ThrowablePatternCon
                 super.format(event, toAppendTo);
                 return;
             }
-            final String trace = proxy.getExtendedStackTraceAsString(options.getPackages());
+            final String extStackTrace = proxy.getExtendedStackTraceAsString(options.getPackages());
             final int len = toAppendTo.length();
             if (len > 0 && !Character.isWhitespace(toAppendTo.charAt(len - 1))) {
                 toAppendTo.append(' ');
             }
             if (!options.allLines() || !Constants.LINE_SEPARATOR.equals(options.getSeparator())) {
                 final StringBuilder sb = new StringBuilder();
-                final String[] array = trace.split(Constants.LINE_SEPARATOR);
+                final String[] array = extStackTrace.split(Constants.LINE_SEPARATOR);
                 final int limit = options.minLines(array.length) - 1;
                 for (int i = 0; i <= limit; ++i) {
                     sb.append(array[i]);
@@ -87,7 +87,7 @@ public final class ExtendedThrowablePatternConverter extends ThrowablePatternCon
                 toAppendTo.append(sb.toString());
 
             } else {
-                toAppendTo.append(trace);
+                toAppendTo.append(extStackTrace);
             }
         }
     }
