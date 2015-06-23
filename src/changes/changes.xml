@@ -270,7 +270,7 @@
         Logging system fails to initialize if XInclude API is not available.
       </action>
       <action issue="LOG4J2-914" dev="ggregory" type="fix" due-to="Kaj Bjurman">
-        ThrowableProxy.getExtendedStackTraceAsString causes NullpointerException.
+        ThrowableProxy.getExtendedStackTraceAsString causes NullPointerException.
       </action>
       <action issue="LOG4J2-912" dev="ggregory" type="fix">
         XML configuration does not report full error message for XInclude parser configuration problems.
