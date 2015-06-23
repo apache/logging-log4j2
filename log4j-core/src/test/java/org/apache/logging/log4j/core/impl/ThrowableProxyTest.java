@@ -35,7 +35,6 @@ import javax.xml.bind.DatatypeConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.jackson.Log4jJsonObjectMapper;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -140,6 +139,34 @@ public class ThrowableProxyTest {
     @Test
     public void testSerialization_getExtendedStackTraceAsString() throws Exception {
         final Throwable throwable = new IllegalArgumentException("This is a test");
+        final ThrowableProxy proxy = new ThrowableProxy(throwable);
+        final byte[] binary = serialize(proxy);
+        final ThrowableProxy proxy2 = deserialize(binary);
+
+        assertEquals(proxy.getExtendedStackTraceAsString(), proxy2.getExtendedStackTraceAsString());
+    }
+    
+    @Test
+	public void testSerialization_getExtendedStackTraceAsStringWithNestedThrowableDepth1() throws Exception {
+		final Throwable throwable = new RuntimeException(new IllegalArgumentException("This is a test"));
+		testSerialization_getExtendedStackTraceAsStringWithNestedThrowable(throwable);
+	}
+
+    @Test
+	public void testSerialization_getExtendedStackTraceAsStringWithNestedThrowableDepth2() throws Exception {
+		final Throwable throwable = new RuntimeException(
+				new IllegalArgumentException("This is a test", new IOException("level 2")));
+		testSerialization_getExtendedStackTraceAsStringWithNestedThrowable(throwable);
+	}
+
+    @Test
+	public void testSerialization_getExtendedStackTraceAsStringWithNestedThrowableDepth3() throws Exception {
+		final Throwable throwable = new RuntimeException(new IllegalArgumentException("level 1",
+				new IOException("level 2", new IllegalStateException("level 3"))));
+		testSerialization_getExtendedStackTraceAsStringWithNestedThrowable(throwable);
+	}
+
+    private void testSerialization_getExtendedStackTraceAsStringWithNestedThrowable(Throwable throwable) throws Exception {
         final ThrowableProxy proxy = new ThrowableProxy(throwable);
         final byte[] binary = serialize(proxy);
         final ThrowableProxy proxy2 = deserialize(binary);

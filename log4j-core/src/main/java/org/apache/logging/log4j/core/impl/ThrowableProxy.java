@@ -202,15 +202,15 @@ public class ThrowableProxy implements Serializable {
     }
 
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
-    private void formatCause(final StringBuilder sb, final ThrowableProxy cause, final List<String> ignorePackages) {
-        if (cause == null) {
-            return;
-        }
-        sb.append("Caused by: ").append(cause).append(EOL);
-        this.formatElements(sb, cause.commonElementCount, cause.getThrowable().getStackTrace(),
-                cause.extendedStackTrace, ignorePackages);
-        this.formatCause(sb, cause.causeProxy, ignorePackages);
-    }
+	private void formatCause(final StringBuilder sb, final ThrowableProxy cause, final List<String> ignorePackages) {
+		if (cause == null) {
+			return;
+		}
+		sb.append("Caused by: ").append(cause).append(EOL);
+		this.formatElements(sb, cause.commonElementCount, cause.getStackTrace(), cause.extendedStackTrace,
+				ignorePackages);
+		this.formatCause(sb, cause.causeProxy, ignorePackages);
+	}
 
     private void formatElements(final StringBuilder sb, final int commonCount, final StackTraceElement[] causedTrace,
             final ExtendedStackTraceElement[] extStackTrace, final List<String> ignorePackages) {
