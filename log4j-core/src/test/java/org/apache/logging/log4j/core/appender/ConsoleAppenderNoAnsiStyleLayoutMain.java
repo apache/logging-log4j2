@@ -24,8 +24,9 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 
 /**
- * Shows how to use ANSI escape codes to color messages. Each message is printed to the console in color, but the rest
- * of the log entry (time stamp for example) is in the default color for that console.
+ * Shows how to use ANSI escape codes to color messages. Each message is printed
+ * to the console in color, but the rest of the log entry (time stamp for
+ * example) is in the default color for that console.
  * <p>
  * Running from a Windows command line from the root of the project:
  * </p>
@@ -36,33 +37,38 @@ import org.apache.logging.log4j.core.config.Configurator;
  */
 public class ConsoleAppenderNoAnsiStyleLayoutMain {
 
-    private static final Logger LOG = LogManager.getLogger(ConsoleAppenderNoAnsiStyleLayoutMain.class);
+	private static final Logger LOG = LogManager.getLogger(ConsoleAppenderNoAnsiStyleLayoutMain.class);
 
-    private static void logThrowableFromMethod() {
-        LOG.error("Error message.", new IOException("test"));
-    }
+	private static void logThrowableFromMethod() {
+		LOG.error("Error message.", new IOException("test"));
+	}
 
-    public static void main(final String[] args) {
-        final String config = args.length == 0 ? "target/test-classes/log4j2-console-style-no-ansi.xml" : args[0];
-        test(args, config);
-    }
+	public static void main(final String[] args) {
+		final String config = args.length == 0 ? "target/test-classes/log4j2-console-style-no-ansi.xml" : args[0];
+		test(args, config);
+	}
 
-    static void test(final String[] args, final String config) {
-        // System.out.println(System.getProperty("java.class.path"));
-        final LoggerContext ctx = Configurator.initialize(ConsoleAppenderNoAnsiStyleLayoutMain.class.getName(), config);
-        try {
-            LOG.fatal("Fatal message.");
-            LOG.error("Error message.");
-            LOG.warn("Warning message.");
-            LOG.info("Information message.");
-            LOG.debug("Debug message.");
-            LOG.trace("Trace message.");
-            logThrowableFromMethod();
-            // This will log the stack trace as well:
-            LOG.error("Error message {}", "Hi", new IOException("test"));
-        } finally {
-            Configurator.shutdown(ctx);
-        }
-    }
+	static void test(final String[] args, final String config) {
+		// System.out.println(System.getProperty("java.class.path"));
+		final LoggerContext ctx = Configurator.initialize(ConsoleAppenderNoAnsiStyleLayoutMain.class.getName(), config);
+		try {
+			LOG.fatal("Fatal message.");
+			LOG.error("Error message.");
+			LOG.warn("Warning message.");
+			LOG.info("Information message.");
+			LOG.debug("Debug message.");
+			LOG.trace("Trace message.");
+			logThrowableFromMethod();
+			// This will log the stack trace as well:
+			IOException ioException = new IOException("test");
+			LOG.error("Error message {}", "Hi", ioException);
+			Throwable t = new IOException("test suppressed");
+			t.addSuppressed(new IOException("test suppressed 2", ioException));
+			LOG.error("Error message {}, suppressed?", "Hi", t);
+			LOG.error("Error message {}, suppressed?", "Hi", new IOException("test", t));
+		} finally {
+			Configurator.shutdown(ctx);
+		}
+	}
 
 }
