@@ -64,7 +64,7 @@ public final class ExtendedThrowablePatternConverter extends ThrowablePatternCon
             proxy = ((Log4jLogEvent) event).getThrownProxy();
         }
         final Throwable throwable = event.getThrown();
-        if (throwable != null && options.anyLines()) {
+        if ((throwable != null || proxy != null) && options.anyLines()) {
             if (proxy == null) {
                 super.format(event, toAppendTo);
                 return;

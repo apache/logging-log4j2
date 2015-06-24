@@ -48,6 +48,9 @@
       <action issue="LOG4J2-1051" dev="ggregory" type="fix" due-to="Lukasz Lenart">
         NoClassDefFoundError when starting app on Google App Engine.
       </action>
+      <action issue="LOG4J2-1068" dev="ggregory" type="fix" due-to="Andy McMullan">
+        Exceptions not logged when using TcpSocketServer + SerializedLayout.
+      </action>
       <action issue="LOG4J2-1067" dev="ggregory" type="fix" due-to="Sam Braam">
         ThrowableProxy getExtendedStackTraceAsString throws NPE on deserialized nested exceptions.
       </action>
