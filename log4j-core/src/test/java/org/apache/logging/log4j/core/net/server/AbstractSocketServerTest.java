@@ -69,7 +69,9 @@ public abstract class AbstractSocketServerTest {
     private static final String MESSAGE = "This is test message";
 
     private static final String MESSAGE_2 = "This is test message 2";
-
+    
+    private static final String MESSAGE_WITH_SPECIAL_CHARS = "{This}\n[is]\"n\"a\"\r\ntrue:\n\ttest,\nmessage";
+    
     static final int PORT_NUM = AvailablePortFinder.getNextAvailable();
 
     static final String PORT = String.valueOf(PORT_NUM);
@@ -158,6 +160,13 @@ public abstract class AbstractSocketServerTest {
             testServer(m1, m2);
         }
     }
+    
+    
+    @Test
+    public void testMessagesWithSpecialChars() throws Exception {
+        testServer(MESSAGE_WITH_SPECIAL_CHARS);
+    }
+    
 
     private void testServer(final int size) throws Exception {
         final String[] messages = new String[size];
