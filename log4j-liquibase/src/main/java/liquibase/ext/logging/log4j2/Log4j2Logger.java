@@ -46,7 +46,7 @@ public class Log4j2Logger extends AbstractLogger {
 
     @Override
     public int getPriority() {
-        return 5;
+        return PRIORITY_DATABASE;
     }
 
     @Override
