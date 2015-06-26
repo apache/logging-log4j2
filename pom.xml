@@ -534,7 +534,7 @@
       <dependency>
         <groupId>com.sun.mail</groupId>
         <artifactId>javax.mail</artifactId>
-        <version>1.5.2</version>
+        <version>1.5.4</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.spec.javax.jms</groupId>

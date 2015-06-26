@@ -147,6 +147,9 @@
       <action issue="LOG4J2-1018" dev="ggregory" type="update">
         Update database tests from H2 1.3.175 to 1.3.176.
       </action>
+      <action issue="LOG4J2-1070" dev="ggregory" type="update">
+        Update Java Mail from 1.5.2 to 1.5.4.
+      </action>
     </release>
     <release version="2.3" date="2015-05-09" description="GA Release 2.3">
       <action issue="LOG4J2-1009" dev="ggregory" type="fix" due-to="Mikael Ståldal">
