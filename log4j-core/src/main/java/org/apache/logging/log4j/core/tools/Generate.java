@@ -520,7 +520,7 @@ public final class Generate {
             sb.append(String.format(phase2, ""));
         }
 
-        sb.append(String.format("}%n", ""));
+        sb.append("}%n");
         return sb.toString();
     }
 
