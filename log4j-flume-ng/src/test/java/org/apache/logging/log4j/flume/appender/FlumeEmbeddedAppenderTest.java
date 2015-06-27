@@ -232,21 +232,23 @@ public class FlumeEmbeddedAppenderTest {
 
     }
 
-    private static boolean deleteFiles(final File file) {
-        boolean result = true;
-        if (file.isDirectory()) {
+	private static boolean deleteFiles(final File file) {
+		boolean result = true;
+		if (file.isDirectory()) {
 
-            final File[] files = file.listFiles();
-            for (final File child : files) {
-                result &= deleteFiles(child);
-            }
+			final File[] files = file.listFiles();
+			if (files != null) {
+				for (final File child : files) {
+					result &= deleteFiles(child);
+				}
+			}
 
-        } else if (!file.exists()) {
-            return true;
-        }
+		} else if (!file.exists()) {
+			return true;
+		}
 
-        return result & file.delete();
-    }
+		return result & file.delete();
+	}
 
     private static class EventCollector implements AvroSourceProtocol {
         private final LinkedBlockingQueue<AvroFlumeEvent> eventQueue = new LinkedBlockingQueue<>();
