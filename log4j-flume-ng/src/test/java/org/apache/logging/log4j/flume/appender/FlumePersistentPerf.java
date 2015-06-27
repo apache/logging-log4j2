@@ -161,7 +161,7 @@ public class FlumePersistentPerf {
             return true;
         }
 
-        return result &= file.delete();
+        return result & file.delete();
     }
 
     private static class EventCollector implements AvroSourceProtocol {

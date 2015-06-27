@@ -245,7 +245,7 @@ public class FlumeEmbeddedAppenderTest {
             return true;
         }
 
-        return result &= file.delete();
+        return result & file.delete();
     }
 
     private static class EventCollector implements AvroSourceProtocol {
