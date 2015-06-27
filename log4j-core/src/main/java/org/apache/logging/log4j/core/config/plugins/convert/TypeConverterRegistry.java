@@ -96,8 +96,7 @@ public class TypeConverterRegistry {
             if (TypeUtil.isAssignable(type, key)) {
                 LOGGER.debug("Found compatible TypeConverter<{}> for type [{}].", key, type);
                 final TypeConverter<?> value = entry.getValue();
-                registry.putIfAbsent(type, value);
-                return value;
+                return registry.putIfAbsent(type, value);
             }
         }
         throw new UnknownFormatConversionException(type.toString());
