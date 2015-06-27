@@ -101,7 +101,7 @@ public class StructuredDataId implements Serializable {
         }
         this.name = name;
         this.enterpriseNumber = enterpriseNumber;
-        final String id = enterpriseNumber < 0 ? name : name + AT_SIGN + enterpriseNumber;
+        final String id = name + AT_SIGN + enterpriseNumber;
         if (id.length() > MAX_LENGTH) {
             throw new IllegalArgumentException("Length of id exceeds maximum of 32 characters: " + id);
         }
