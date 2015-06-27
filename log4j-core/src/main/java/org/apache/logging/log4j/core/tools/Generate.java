@@ -520,7 +520,7 @@ public final class Generate {
             sb.append(String.format(phase2, ""));
         }
 
-        sb.append("}%n");
+        sb.append(String.format("}%n", "")); // yes, does not use args to apply %n
         return sb.toString();
     }
 
