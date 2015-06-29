@@ -242,28 +242,28 @@ public class ThrowableProxyTest {
     }
 
     @Test
-    public void testSuppressedExceptions() {
-        Exception e = new Exception();
-        e.addSuppressed(new IOException("Suppressed #1"));
-        e.addSuppressed(new IOException("Suppressed #2"));
-        LogManager.getLogger().error("Error", e);
-        final ThrowableProxy proxy = new ThrowableProxy(e);
-        String extendedStackTraceAsString = proxy.getExtendedStackTraceAsString();
-        assertTrue(extendedStackTraceAsString.contains("Suppressed #1"));
-        assertTrue(extendedStackTraceAsString.contains("Suppressed #2"));
-    }
+	public void testSuppressedExceptions() {
+		Exception e = new Exception("Root exception");
+		e.addSuppressed(new IOException("Suppressed #1"));
+		e.addSuppressed(new IOException("Suppressed #2"));
+		LogManager.getLogger().error("Error", e);
+		final ThrowableProxy proxy = new ThrowableProxy(e);
+		String extendedStackTraceAsString = proxy.getExtendedStackTraceAsString();
+		assertTrue(extendedStackTraceAsString.contains("\tSuppressed: java.io.IOException: Suppressed #1"));
+		assertTrue(extendedStackTraceAsString.contains("\tSuppressed: java.io.IOException: Suppressed #1"));
+	}
 
     @Test
-    public void testCauseSuppressedExceptions() {
-        Exception cause = new Exception();
-        cause.addSuppressed(new IOException("Suppressed #1"));
-        cause.addSuppressed(new IOException("Suppressed #2"));
-        LogManager.getLogger().error("Error", cause);
-        final ThrowableProxy proxy = new ThrowableProxy(new Exception(cause));
-        String extendedStackTraceAsString = proxy.getExtendedStackTraceAsString();
-        assertTrue(extendedStackTraceAsString.contains("Suppressed #1"));
-        assertTrue(extendedStackTraceAsString.contains("Suppressed #2"));
-    }
+	public void testCauseSuppressedExceptions() {
+		Exception cause = new Exception("Nested exception");
+		cause.addSuppressed(new IOException("Suppressed #1"));
+		cause.addSuppressed(new IOException("Suppressed #2"));
+		LogManager.getLogger().error("Error", new Exception(cause));
+		final ThrowableProxy proxy = new ThrowableProxy(new Exception("Root exception", cause));
+		String extendedStackTraceAsString = proxy.getExtendedStackTraceAsString();
+		assertTrue(extendedStackTraceAsString.contains("\tSuppressed: java.io.IOException: Suppressed #1"));
+		assertTrue(extendedStackTraceAsString.contains("\tSuppressed: java.io.IOException: Suppressed #1"));
+	}
 
     /**
      * Tests LOG4J2-934.
