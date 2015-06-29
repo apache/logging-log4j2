@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.impl;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
@@ -238,6 +239,30 @@ public class ThrowableProxyTest {
         e2.addSuppressed(e1);
         e1.addSuppressed(e2);
         LogManager.getLogger().error("Error", e1);
+    }
+
+    @Test
+    public void testSuppressedExceptions() {
+        Exception e = new Exception();
+        e.addSuppressed(new IOException("Suppressed #1"));
+        e.addSuppressed(new IOException("Suppressed #2"));
+        LogManager.getLogger().error("Error", e);
+        final ThrowableProxy proxy = new ThrowableProxy(e);
+        String extendedStackTraceAsString = proxy.getExtendedStackTraceAsString();
+        assertTrue(extendedStackTraceAsString.contains("Suppressed #1"));
+        assertTrue(extendedStackTraceAsString.contains("Suppressed #2"));
+    }
+
+    @Test
+    public void testCauseSuppressedExceptions() {
+        Exception cause = new Exception();
+        cause.addSuppressed(new IOException("Suppressed #1"));
+        cause.addSuppressed(new IOException("Suppressed #2"));
+        LogManager.getLogger().error("Error", cause);
+        final ThrowableProxy proxy = new ThrowableProxy(new Exception(cause));
+        String extendedStackTraceAsString = proxy.getExtendedStackTraceAsString();
+        assertTrue(extendedStackTraceAsString.contains("Suppressed #1"));
+        assertTrue(extendedStackTraceAsString.contains("Suppressed #2"));
     }
 
     /**

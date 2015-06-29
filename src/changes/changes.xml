@@ -48,6 +48,9 @@
       <action issue="LOG4J2-1051" dev="ggregory" type="fix" due-to="Lukasz Lenart">
         NoClassDefFoundError when starting app on Google App Engine.
       </action>
+      <action issue="LOG4J2-684" dev="ggregory" type="fix" due-to="Joern Huxhorn, Mauro Molinari">
+        ExtendedThrowablePatternConverter does not print suppressed exceptions.
+      </action>
       <action issue="LOG4J2-1069" dev="ggregory" type="fix" due-to="Sam Braam">
         Improper handling of JSON escape chars when deserializing JSON log events.
       </action>
