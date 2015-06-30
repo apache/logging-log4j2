@@ -585,7 +585,7 @@
       <dependency>
         <groupId>org.easymock</groupId>
         <artifactId>easymock</artifactId>
-        <version>3.2</version>
+        <version>3.3.1</version>
         <scope>test</scope>
       </dependency>
       <dependency>
