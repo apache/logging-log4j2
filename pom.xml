@@ -165,7 +165,7 @@
     <logbackVersion>1.1.3</logbackVersion>
     <jackson1Version>1.9.13</jackson1Version>
     <jackson2Version>2.5.3</jackson2Version>
-    <springVersion>3.2.11.RELEASE</springVersion>
+    <springVersion>3.2.13.RELEASE</springVersion>
     <flumeVersion>1.6.0</flumeVersion>
     <disruptorVersion>3.3.2</disruptorVersion>
     <compiler.plugin.version>3.3</compiler.plugin.version>
