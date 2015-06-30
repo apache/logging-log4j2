@@ -46,7 +46,7 @@ public class ListOfMapEntryDeserializer extends StdDeserializer<Map<String, Stri
         final List<MapEntry> list = jp.readValueAs(new TypeReference<List<MapEntry>>() {
             // empty
         });
-        final HashMap<String, String> map = new HashMap<String, String>(list.size());
+        final HashMap<String, String> map = new HashMap<>(list.size());
         for (final MapEntry mapEntry : list) {
             map.put(mapEntry.getKey(), mapEntry.getValue());
         }

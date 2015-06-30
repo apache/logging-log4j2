@@ -50,8 +50,7 @@ public final class RoutingAppender extends AbstractAppender {
     private final Routes routes;
     private final Route defaultRoute;
     private final Configuration config;
-    private final ConcurrentMap<String, AppenderControl> appenders =
-            new ConcurrentHashMap<String, AppenderControl>();
+    private final ConcurrentMap<String, AppenderControl> appenders = new ConcurrentHashMap<>();
     private final RewritePolicy rewritePolicy;
 
     private RoutingAppender(final String name, final Filter filter, final boolean ignoreExceptions, final Routes routes,

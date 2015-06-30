@@ -364,7 +364,7 @@ public class StrSubstitutor {
         if (valueProperties == null) {
             return source.toString();
         }
-        final Map<String, String> valueMap = new HashMap<String, String>();
+        final Map<String, String> valueMap = new HashMap<>();
         final Enumeration<?> propNames = valueProperties.propertyNames();
         while (propNames.hasMoreElements()) {
             final String propName = (String) propNames.nextElement();
@@ -868,7 +868,7 @@ public class StrSubstitutor {
         final StrMatcher valueDelimiterMatcher = getValueDelimiterMatcher();
         final boolean substitutionInVariablesEnabled = isEnableSubstitutionInVariables();
 
-        final boolean top = (priorVariables == null);
+        final boolean top = priorVariables == null;
         boolean altered = false;
         int lengthChange = 0;
         char[] chars = getChars(buf);
@@ -944,7 +944,7 @@ public class StrSubstitutor {
 
                                 // on the first call initialize priorVariables
                                 if (priorVariables == null) {
-                                    priorVariables = new ArrayList<String>();
+                                    priorVariables = new ArrayList<>();
                                     priorVariables.add(new String(chars,
                                             offset, length + lengthChange));
                                 }
@@ -979,10 +979,9 @@ public class StrSubstitutor {
                                 priorVariables
                                         .remove(priorVariables.size() - 1);
                                 break;
-                            } else {
-                                nestedVarCount--;
-                                pos += endMatchLen;
                             }
+                            nestedVarCount--;
+                            pos += endMatchLen;
                         }
                     }
                 }

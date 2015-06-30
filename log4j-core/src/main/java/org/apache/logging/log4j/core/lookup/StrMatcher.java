@@ -369,6 +369,12 @@ public abstract class StrMatcher {
             }
             return len;
         }
+        
+        @Override
+        public String toString() {
+            return super.toString() + Chars.SPACE + Arrays.toString(chars);
+        }
+
     }
 
     //-----------------------------------------------------------------------

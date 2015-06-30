@@ -50,7 +50,7 @@ abstract class LoggingMessageTagSupport extends ExceptionAwareTagSupport impleme
         this.message = null;
         this.marker = null;
         if (this.attributes == null) {
-            this.attributes = new ArrayList<Object>();
+            this.attributes = new ArrayList<>();
         } else {
             this.attributes.clear();
         }

@@ -23,6 +23,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
+import java.util.Objects;
 
 /**
  * Utility class for performing common reflective operations.
@@ -41,7 +42,7 @@ public final class ReflectionUtil {
      * @throws NullPointerException if {@code member} is {@code null}.
      */
     public static <T extends AccessibleObject & Member> boolean isAccessible(final T member) {
-        Assert.requireNonNull(member, "No member provided");
+        Objects.requireNonNull(member, "No member provided");
         return Modifier.isPublic(member.getModifiers()) && Modifier.isPublic(member.getDeclaringClass().getModifiers());
     }
 
@@ -67,7 +68,7 @@ public final class ReflectionUtil {
      * @throws NullPointerException if {@code field} is {@code null}.
      */
     public static void makeAccessible(final Field field) {
-        Assert.requireNonNull(field, "No field provided");
+        Objects.requireNonNull(field, "No field provided");
         if ((!isAccessible(field) || Modifier.isFinal(field.getModifiers())) && !field.isAccessible()) {
             field.setAccessible(true);
         }
@@ -86,7 +87,7 @@ public final class ReflectionUtil {
     public static Object getFieldValue(final Field field, final Object instance) {
         makeAccessible(field);
         if (!Modifier.isStatic(field.getModifiers())) {
-            Assert.requireNonNull(instance, "No instance given for non-static field");
+            Objects.requireNonNull(instance, "No instance given for non-static field");
         }
         try {
             return field.get(instance);
@@ -120,7 +121,7 @@ public final class ReflectionUtil {
     public static void setFieldValue(final Field field, final Object instance, final Object value) {
         makeAccessible(field);
         if (!Modifier.isStatic(field.getModifiers())) {
-            Assert.requireNonNull(instance, "No instance given for non-static field");
+            Objects.requireNonNull(instance, "No instance given for non-static field");
         }
         try {
             field.set(instance, value);
@@ -150,7 +151,7 @@ public final class ReflectionUtil {
      * @throws IllegalStateException if no default constructor can be found
      */
     public static <T> Constructor<T> getDefaultConstructor(final Class<T> clazz) {
-        Assert.requireNonNull(clazz, "No class provided");
+        Objects.requireNonNull(clazz, "No class provided");
         try {
             final Constructor<T> constructor = clazz.getDeclaredConstructor();
             makeAccessible(constructor);
@@ -179,10 +180,14 @@ public final class ReflectionUtil {
      * @throws IllegalStateException    if access is denied to the constructor, or there are no default constructors
      */
     public static <T> T instantiate(final Class<T> clazz) {
-        Assert.requireNonNull(clazz, "No class provided");
+        Objects.requireNonNull(clazz, "No class provided");
         final Constructor<T> constructor = getDefaultConstructor(clazz);
         try {
             return constructor.newInstance();
+        } catch (final NoClassDefFoundError e) {
+            // LOG4J2-1051
+            // On platforms like Google App Engine and Android, some JRE classes are not supported: JMX, JNDI, etc.
+            throw new IllegalArgumentException(e);
         } catch (final InstantiationException e) {
             throw new IllegalArgumentException(e);
         } catch (final IllegalAccessException e) {

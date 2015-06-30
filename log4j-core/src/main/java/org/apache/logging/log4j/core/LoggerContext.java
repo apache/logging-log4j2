@@ -21,6 +21,7 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.net.URI;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -36,7 +37,6 @@ import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.jmx.Server;
-import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
@@ -60,8 +60,8 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     public static final String PROPERTY_CONFIG = "config";
     private static final Configuration NULL_CONFIGURATION = new NullConfiguration();
 
-    private final ConcurrentMap<String, Logger> loggers = new ConcurrentHashMap<String, Logger>();
-    private final CopyOnWriteArrayList<PropertyChangeListener> propertyChangeListeners = new CopyOnWriteArrayList<PropertyChangeListener>();
+    private final ConcurrentMap<String, Logger> loggers = new ConcurrentHashMap<>();
+    private final CopyOnWriteArrayList<PropertyChangeListener> propertyChangeListeners = new CopyOnWriteArrayList<>();
 
     /**
      * The Configuration is volatile to guarantee that initialization of the
@@ -70,7 +70,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     private volatile Configuration config = new DefaultConfiguration();
     private Object externalContext;
     private final String name;
-    private URI configLocation;
+    private volatile URI configLocation;
     private Cancellable shutdownCallback;
 
     private final Lock configLock = new ReentrantLock();
@@ -149,7 +149,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     }
 
     /**
-     * Start with a specific configuration.
+     * Starts with a specific configuration.
      * @param config The new Configuration.
      */
     public void start(final Configuration config) {
@@ -241,7 +241,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     }
 
     /**
-     * Set the external context.
+     * Sets the external context.
      * @param context The external context.
      */
     public void setExternalContext(final Object context) {
@@ -258,7 +258,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     }
 
     /**
-     * Obtain a Logger from the Context.
+     * Obtains a Logger from the Context.
      * @param name The name of the Logger to return.
      * @return The Logger.
      */
@@ -281,7 +281,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     }
 
     /**
-     * Obtain a Logger from the Context.
+     * Obtains a Logger from the Context.
      * @param name The name of the Logger to return.
      * @param messageFactory The message factory is used only when creating a
      *            logger, subsequent use does not change the logger but will log
@@ -302,7 +302,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     }
 
     /**
-     * Determine if the specified Logger exists.
+     * Determines if the specified Logger exists.
      * @param name The Logger name to search for.
      * @return True if the Logger exists, false otherwise.
      */
@@ -322,7 +322,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     }
 
     /**
-     * Add a Filter to the Configuration. Filters that are added through the API will be lost
+     * Adds a Filter to the Configuration. Filters that are added through the API will be lost
      * when a reconfigure occurs.
      * @param filter The Filter to add.
      */
@@ -339,40 +339,45 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     }
 
     /**
-     * Set the Configuration to be used.
+     * Sets the Configuration to be used.
      * @param config The new Configuration.
      * @return The previous Configuration.
      */
-    private synchronized Configuration setConfiguration(final Configuration config) {
-        Assert.requireNonNull(config, "No Configuration was provided");
-        final Configuration prev = this.config;
-        config.addListener(this);
-        final ConcurrentMap<String, String> map = config.getComponent(Configuration.CONTEXT_PROPERTIES);
-
-        try { // LOG4J2-719 network access may throw android.os.NetworkOnMainThreadException
-            map.putIfAbsent("hostName", NetUtils.getLocalHostname());
-        } catch (final Exception ex) {
-            LOGGER.debug("Ignoring {}, setting hostName to 'unknown'", ex.toString());
-            map.putIfAbsent("hostName", "unknown");
-        }
-        map.putIfAbsent("contextName", name);
-        config.start();
-        this.config = config;
-        updateLoggers();
-        if (prev != null) {
-            prev.removeListener(this);
-            prev.stop();
-        }
-
-        firePropertyChangeEvent(new PropertyChangeEvent(this, PROPERTY_CONFIG, prev, config));
-
+    private Configuration setConfiguration(final Configuration config) {
+        Objects.requireNonNull(config, "No Configuration was provided");
+        configLock.lock();
         try {
-            Server.reregisterMBeansAfterReconfigure();
-        } catch (final Throwable t) {
-            // LOG4J2-716: Android has no java.lang.management
-            LOGGER.error("Could not reconfigure JMX", t);
+            final Configuration prev = this.config;
+            config.addListener(this);
+            final ConcurrentMap<String, String> map = config.getComponent(Configuration.CONTEXT_PROPERTIES);
+
+            try { // LOG4J2-719 network access may throw android.os.NetworkOnMainThreadException
+                map.putIfAbsent("hostName", NetUtils.getLocalHostname());
+            } catch (final Exception ex) {
+                LOGGER.debug("Ignoring {}, setting hostName to 'unknown'", ex.toString());
+                map.putIfAbsent("hostName", "unknown");
+            }
+            map.putIfAbsent("contextName", name);
+            config.start();
+            this.config = config;
+            updateLoggers();
+            if (prev != null) {
+                prev.removeListener(this);
+                prev.stop();
+            }
+
+            firePropertyChangeEvent(new PropertyChangeEvent(this, PROPERTY_CONFIG, prev, config));
+
+            try {
+                Server.reregisterMBeansAfterReconfigure();
+            } catch (final Throwable t) {
+                // LOG4J2-716: Android has no java.lang.management
+                LOGGER.error("Could not reconfigure JMX", t);
+            }
+            return prev;
+        } finally {
+            configLock.unlock();
         }
-        return prev;
     }
 
     private void firePropertyChangeEvent(final PropertyChangeEvent event) {
@@ -382,7 +387,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     }
 
     public void addPropertyChangeListener(final PropertyChangeListener listener) {
-        propertyChangeListeners.add(Assert.requireNonNull(listener, "listener"));
+        propertyChangeListeners.add(Objects.requireNonNull(listener, "listener"));
     }
 
     public void removePropertyChangeListener(final PropertyChangeListener listener) {
@@ -396,7 +401,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      * ConfigurationSource#getLocation() getLocation()} to get the actual source of the current configuration.
      * @return the initial configuration location or {@code null}
      */
-    public synchronized URI getConfigLocation() {
+    public URI getConfigLocation() {
         return configLocation;
     }
 
@@ -404,38 +409,48 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      * Sets the configLocation to the specified value and reconfigures this context.
      * @param configLocation the location of the new configuration
      */
-    public synchronized void setConfigLocation(final URI configLocation) {
+    public void setConfigLocation(final URI configLocation) {
         this.configLocation = configLocation;
-        reconfigure();
+
+        reconfigure(configLocation);
     }
 
     /**
      * Reconfigure the context.
      */
-    public synchronized void reconfigure() {
+    private void reconfigure(final URI configURI) {
         final ClassLoader cl = ClassLoader.class.isInstance(externalContext) ? (ClassLoader) externalContext : null;
-        LOGGER.debug("Reconfiguration started for context[name={}] at {} ({}) with optional ClassLoader: {}", name,
-            configLocation, this, cl);
-        final Configuration instance = ConfigurationFactory.getInstance().getConfiguration(name, configLocation, cl);
+        LOGGER.debug("Reconfiguration started for context[name={}] at URI {} ({}) with optional ClassLoader: {}", name,
+                configURI, this, cl);
+        final Configuration instance = ConfigurationFactory.getInstance().getConfiguration(name, configURI, cl);
         setConfiguration(instance);
         /*
          * instance.start(); Configuration old = setConfiguration(instance);
          * updateLoggers(); if (old != null) { old.stop(); }
          */
 
-        LOGGER.debug("Reconfiguration complete for context[name={}] at {} ({}) with optional ClassLoader: {}", name,
-            configLocation, this, cl);
+        LOGGER.debug("Reconfiguration complete for context[name={}] at URI {} ({}) with optional ClassLoader: {}", name,
+                configURI, this, cl);
     }
 
     /**
-     * Cause all Loggers to be updated against the current Configuration.
+     * Reconfigure the context. Log4j does not remove Loggers during a reconfiguration. Log4j will create new
+     * LoggerConfig objects and Log4j will point the Loggers at the new LoggerConfigs. Log4j will free the old
+     * LoggerConfig, along with old Appenders and Filters.
+     */
+    public void reconfigure() {
+        reconfigure(configLocation);
+    }
+
+    /**
+     * Causes all Loggers to be updated against the current Configuration.
      */
     public void updateLoggers() {
         updateLoggers(this.config);
     }
 
     /**
-     * Cause all Logger to be updated against the specified Configuration.
+     * Causes all Logger to be updated against the specified Configuration.
      * @param config The Configuration.
      */
     public void updateLoggers(final Configuration config) {
@@ -445,7 +460,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     }
 
     /**
-     * Cause a reconfiguration to take place when the underlying configuration
+     * Causes a reconfiguration to take place when the underlying configuration
      * file changes.
      *
      * @param reconfigurable The Configuration that can be reconfigured.

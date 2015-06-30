@@ -26,7 +26,7 @@ Log4j that provides significant improvements over its predecessor, Log4j 1.x, an
 many other modern features such as support for Markers, property substitution using Lookups, and asynchronous
 Loggers. In addition, Log4j 2 will not lose events while reconfiguring.
 
-This is the fifth GA release. It contains several bugfixes and new features.
+This is the sixth GA release. It contains several bugfixes and new features.
 
 ## Hack to improve layout: replace all pairs of spaces with a single new-line
 $release.description.replaceAll("  ", "
@@ -131,8 +131,8 @@ o#if($!issue != "") $issue. #end ${action} #if($!dueto != "")Thanks to $dueto. #
 ## End of main loop
 #end
 
-Apache Log4j ${relVersion} requires a minimum of Java 6 to build and run. Future releases may require a minimum
-of Java 7.
+Apache Log4j ${relVersion} requires a minimum of Java 7 to build and run. Log4j 2.4 and greater requires Java 7, 
+version 2.3 required Java 6.
 
 Basic compatibility with Log4j 1.x is provided through the log4j-1.2-api component, however it does not implement some of the
 very implementation specific classes and methods. The package names and Maven groupId have been changed to

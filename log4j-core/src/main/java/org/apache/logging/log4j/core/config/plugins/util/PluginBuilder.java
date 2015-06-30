@@ -26,6 +26,7 @@ import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
@@ -39,12 +40,10 @@ import org.apache.logging.log4j.core.config.plugins.validation.ConstraintValidat
 import org.apache.logging.log4j.core.config.plugins.validation.ConstraintValidators;
 import org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitor;
 import org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitors;
-import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.core.util.Builder;
 import org.apache.logging.log4j.core.util.ReflectionUtil;
 import org.apache.logging.log4j.core.util.TypeUtil;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Chars;
 import org.apache.logging.log4j.util.StringBuilders;
 
 /**
@@ -145,8 +144,8 @@ public class PluginBuilder implements Builder<Object> {
     }
 
     private void verify() {
-        Assert.requireNonNull(this.configuration, "No Configuration object was set.");
-        Assert.requireNonNull(this.node, "No Node object was set.");
+        Objects.requireNonNull(this.configuration, "No Configuration object was set.");
+        Objects.requireNonNull(this.node, "No Node object was set.");
     }
 
     private static Builder<?> createBuilder(final Class<?> clazz)

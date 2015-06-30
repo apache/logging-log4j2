@@ -42,7 +42,7 @@ public final class RewriteAppender extends AbstractAppender {
     private static final long serialVersionUID = 1L;
 
     private final Configuration config;
-    private final ConcurrentMap<String, AppenderControl> appenders = new ConcurrentHashMap<String, AppenderControl>();
+    private final ConcurrentMap<String, AppenderControl> appenders = new ConcurrentHashMap<>();
     private final RewritePolicy rewritePolicy;
     private final AppenderRef[] appenderRefs;
 
@@ -77,7 +77,7 @@ public final class RewriteAppender extends AbstractAppender {
     }
 
     /**
-     * Modify the event and pass to the subordinate Appenders.
+     * Modifies the event and pass to the subordinate Appenders.
      * @param event The LogEvent.
      */
     @Override
@@ -91,7 +91,7 @@ public final class RewriteAppender extends AbstractAppender {
     }
 
     /**
-     * Create a RewriteAppender.
+     * Creates a RewriteAppender.
      * @param name The name of the Appender.
      * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
      *               they are propagated to the caller.

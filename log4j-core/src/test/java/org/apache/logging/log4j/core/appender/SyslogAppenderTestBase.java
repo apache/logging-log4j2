@@ -45,7 +45,7 @@ public class SyslogAppenderTestBase {
     protected MockSyslogServer syslogServer;
     protected SyslogAppender appender;
     protected Logger root = ctx.getLogger("SyslogAppenderTest");
-    protected List<String> sentMessages = new ArrayList<String>();
+    protected List<String> sentMessages = new ArrayList<>();
     protected boolean includeNewLine = true;
 
     @BeforeClass

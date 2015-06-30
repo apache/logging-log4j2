@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.Objects;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,7 +33,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
 import org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory;
-import org.apache.logging.log4j.core.util.Assert;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Abstract socket server for TCP and UDP implementations.
@@ -56,7 +57,7 @@ public abstract class AbstractSocketServer<T extends InputStream> extends LogEve
 
         @Override
         public Configuration getConfiguration(final String name, final URI configLocation) {
-            if (path != null && path.length() > 0) {
+            if (Strings.isNotEmpty(path)) {
                 File file = null;
                 ConfigurationSource source = null;
                 try {
@@ -106,7 +107,7 @@ public abstract class AbstractSocketServer<T extends InputStream> extends LogEve
      */
     public AbstractSocketServer(final int port, final LogEventBridge<T> logEventInput) {
         this.logger = LogManager.getLogger(this.getClass().getName() + '.' + port);
-        this.logEventInput = Assert.requireNonNull(logEventInput, "LogEventInput");
+        this.logEventInput = Objects.requireNonNull(logEventInput, "LogEventInput");
     }
 
     protected boolean isActive() {

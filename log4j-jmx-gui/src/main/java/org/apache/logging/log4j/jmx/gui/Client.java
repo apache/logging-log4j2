@@ -19,6 +19,7 @@ package org.apache.logging.log4j.jmx.gui;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.management.JMException;
@@ -31,7 +32,6 @@ import javax.management.remote.JMXConnector;
 import org.apache.logging.log4j.core.jmx.LoggerContextAdminMBean;
 import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.core.jmx.StatusLoggerAdminMBean;
-import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.core.util.Closer;
 
 /**
@@ -53,7 +53,7 @@ public class Client {
      * @throws IOException if the connection failed
      */
     public Client(final JMXConnector connector) throws MalformedObjectNameException, IOException {
-        this.connector = Assert.requireNonNull(connector, "JMXConnector");
+        this.connector = Objects.requireNonNull(connector, "JMXConnector");
         this.connector.connect();
         this.connection = connector.getMBeanServerConnection();
         init();
@@ -92,7 +92,7 @@ public class Client {
      * @throws JMException If a management error occurred
      */
     public List<LoggerContextAdminMBean> getLoggerContextAdmins() throws JMException, IOException {
-        final List<LoggerContextAdminMBean> result = new ArrayList<LoggerContextAdminMBean>();
+        final List<LoggerContextAdminMBean> result = new ArrayList<>();
         final Set<ObjectName> contextNames = find(LoggerContextAdminMBean.PATTERN);
         for (final ObjectName contextName : contextNames) {
             result.add(getLoggerContextAdmin(contextName));

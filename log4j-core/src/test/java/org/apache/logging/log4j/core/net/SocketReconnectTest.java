@@ -52,7 +52,7 @@ public class SocketReconnectTest {
     @Test
     public void testReconnect() throws Exception {
 
-        final List<String> list = new ArrayList<String>();
+        final List<String> list = new ArrayList<>();
         TestSocketServer server = new TestSocketServer(list);
         server.start();
         Thread.sleep(300);

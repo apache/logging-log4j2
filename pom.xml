@@ -22,7 +22,7 @@
   <artifactId>log4j</artifactId>
   <packaging>pom</packaging>
   <name>Apache Log4j 2</name>
-  <version>2.3-SNAPSHOT</version>
+  <version>2.4-SNAPSHOT</version>
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
@@ -145,7 +145,7 @@
     <connection>scm:git:http://git-wip-us.apache.org/repos/asf/logging-log4j2.git</connection>
     <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/logging-log4j2.git</developerConnection>
     <url>https://git-wip-us.apache.org/repos/asf?p=logging-log4j2.git;a=summary</url>
-    <tag>log4j-2.2</tag>
+    <tag>log4j-2.3</tag>
   </scm>
   <organization>
     <name>Apache Software Foundation</name>
@@ -154,25 +154,25 @@
   <properties>
     <!-- make sure to update these for each release! -->
     <log4jParentDir>${basedir}</log4jParentDir>
-    <Log4jReleaseVersion>2.2</Log4jReleaseVersion>
+    <Log4jReleaseVersion>2.3</Log4jReleaseVersion>
     <Log4jReleaseCount>eighteenth</Log4jReleaseCount>
     <Log4jReleaseManager>Ralph Goers</Log4jReleaseManager>
     <Log4jReleaseKey>B3D8E1BA</Log4jReleaseKey>
     <!-- <Log4jReleaseManager>Matt Sicker</Log4jReleaseManager>
     <Log4jReleaseKey>FA1C814D</Log4jReleaseKey> -->
     <!-- note that any properties you want available in velocity templates must not use periods! -->
-    <slf4jVersion>1.7.7</slf4jVersion>
+    <slf4jVersion>1.7.12</slf4jVersion>
     <logbackVersion>1.1.3</logbackVersion>
     <jackson1Version>1.9.13</jackson1Version>
-    <jackson2Version>2.5.1</jackson2Version>
-    <springVersion>3.2.11.RELEASE</springVersion>
-    <flumeVersion>1.5.2</flumeVersion>
+    <jackson2Version>2.5.3</jackson2Version>
+    <springVersion>3.2.13.RELEASE</springVersion>
+    <flumeVersion>1.6.0</flumeVersion>
     <disruptorVersion>3.3.2</disruptorVersion>
     <compiler.plugin.version>3.3</compiler.plugin.version>
     <pmd.plugin.version>3.4</pmd.plugin.version>
-    <findbugs.plugin.version>2.5.5</findbugs.plugin.version>
+    <findbugs.plugin.version>3.0.1</findbugs.plugin.version>
     <changes.plugin.version>2.11</changes.plugin.version>
-    <javadoc.plugin.version>2.10.2</javadoc.plugin.version>
+    <javadoc.plugin.version>2.10.3</javadoc.plugin.version>
     <!-- surefire.plugin.version 2.18 yields http://jira.codehaus.org/browse/SUREFIRE-1121, which is fixed in 2.18.1 -->
     <surefire.plugin.version>2.18.1</surefire.plugin.version>
     <failsafe.plugin.version>2.18.1</failsafe.plugin.version>
@@ -184,9 +184,10 @@
     <scm.plugin.version>1.9.4</scm.plugin.version>
     <jxr.plugin.version>2.5</jxr.plugin.version>
     <clirr.plugin.version>2.6.1</clirr.plugin.version>
+    <site.plugin.version>3.4</site.plugin.version>
     <manifestfile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestfile>
-    <maven.compile.source>1.6</maven.compile.source>
-    <maven.compile.target>1.6</maven.compile.target>
+    <maven.compile.source>1.7</maven.compile.source>
+    <maven.compile.target>1.7</maven.compile.target>
     <docLabel>Site Documentation</docLabel>
     <projectDir />
     <commonsLoggingVersion>1.2</commonsLoggingVersion>
@@ -242,7 +243,7 @@
       <dependency>
         <groupId>org.apache.felix</groupId>
         <artifactId>org.apache.felix.framework</artifactId>
-        <version>4.6.0</version>
+        <version>4.6.1</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven</groupId>
@@ -257,7 +258,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.3.2</version>
+        <version>3.4</version>
       </dependency>
       <dependency>
         <groupId>ch.qos.logback</groupId>
@@ -533,7 +534,7 @@
       <dependency>
         <groupId>com.sun.mail</groupId>
         <artifactId>javax.mail</artifactId>
-        <version>1.5.2</version>
+        <version>1.5.4</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.spec.javax.jms</groupId>
@@ -584,7 +585,7 @@
       <dependency>
         <groupId>org.easymock</groupId>
         <artifactId>easymock</artifactId>
-        <version>3.2</version>
+        <version>3.3.1</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -640,12 +641,12 @@
       <dependency>
         <groupId>com.h2database</groupId>
         <artifactId>h2</artifactId>
-        <version>1.3.175</version>
+        <version>1.3.176</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.persistence</groupId>
         <artifactId>org.eclipse.persistence.jpa</artifactId>
-        <version>2.5.2</version>
+        <version>2.6.0</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.persistence</groupId>
@@ -656,7 +657,7 @@
       <dependency>
         <groupId>org.mongodb</groupId>
         <artifactId>mongo-java-driver</artifactId>
-        <version>2.11.2</version>
+        <version>2.13.2</version>
       </dependency>
       <dependency>
         <groupId>org.lightcouch</groupId>
@@ -664,9 +665,14 @@
         <version>0.0.6</version>
       </dependency>
       <dependency>
+        <groupId>org.liquibase</groupId>
+        <artifactId>liquibase-core</artifactId>
+        <version>3.3.5</version>
+      </dependency>
+      <dependency>
         <groupId>net.javacrumbs.json-unit</groupId>
         <artifactId>json-unit</artifactId>
-        <version>1.1.6</version>
+        <version>1.5.5</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -763,7 +769,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-          <version>2.3</version>
+          <version>2.4</version>
           <executions>
             <execution>
               <id>attach-sources</id>
@@ -832,7 +838,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>2.6</version>
+        <version>2.7</version>
         <executions>
           <execution>
             <id>copy-sitecss</id>
@@ -903,14 +909,12 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-        <!-- Do not upgrade to versions 3.1, 3.2 or 3.3. 3.2 & 3.3 cause a NullPointerException in site:stage-deploy
-        and the site is broken in all of them. See http://jira.codehaus.org/browse/MSITE-695 -->
-        <version>3.0</version>
+        <version>${site.plugin.version}</version>
         <dependencies>
           <dependency>
             <groupId>org.apache.maven.wagon</groupId>
             <artifactId>wagon-ssh</artifactId>
-            <version>2.8</version>
+            <version>2.9</version>
           </dependency>
         </dependencies>
         <configuration>
@@ -997,6 +1001,7 @@
             <exclude>src/site/resources/js/jquery.min.js</exclude>
             <!-- Generated files -->
             <exclude>log4j-distribution/target/**/*</exclude>
+            <exclude>velocity.log</exclude>            
             <!-- Other -->
             <exclude>felix-cache/**</exclude>
           </excludes>
@@ -1048,6 +1053,7 @@
         </reportSets>
         <configuration>
           <!-- you'd think these would be the defaults, right? -->
+            <customBundle>${project.basedir}/src/site/custom/project-info-report.properties</customBundle>
           <webAccessUrl>${project.scm.url}</webAccessUrl>
           <anonymousConnection>${project.scm.connection}</anonymousConnection>
           <developerConnection>${project.scm.developerConnection}</developerConnection>
@@ -1127,6 +1133,7 @@
     <module>log4j-perf</module>
     <module>log4j-iostreams</module>
     <module>log4j-jul</module>
+    <module>log4j-liquibase</module>
   </modules>
   <profiles>
     <profile>
@@ -1334,15 +1341,6 @@
           </plugin>
         </plugins>
       </build>
-    </profile>
-    <profile>
-      <id>jdk7</id>
-      <activation>
-        <jdk>[1.7,)</jdk>
-      </activation>
-      <properties>
-        <findbugs.plugin.version>3.0.0</findbugs.plugin.version>
-      </properties>
     </profile>
   </profiles>
 </project>

@@ -58,7 +58,7 @@ public class SslSocketManager extends TcpSocketManager {
      */
     public SslSocketManager(final String name, final OutputStream os, final Socket sock,
             final SslConfiguration sslConfig, final InetAddress inetAddress, final String host, final int port,
-            int connectTimeoutMillis, final int delay, final boolean immediateFail,
+            final int connectTimeoutMillis, final int delay, final boolean immediateFail,
             final Layout<? extends Serializable> layout) {
         super(name, os, sock, inetAddress, host, port, connectTimeoutMillis, delay, immediateFail, layout);
         this.sslConfig = sslConfig;
@@ -74,7 +74,7 @@ public class SslSocketManager extends TcpSocketManager {
         private final Layout<? extends Serializable> layout;
 
         public SslFactoryData(final SslConfiguration sslConfig, final String host, final int port,
-                int connectTimeoutMillis, final int delayMillis, final boolean immediateFail,
+                final int connectTimeoutMillis, final int delayMillis, final boolean immediateFail,
                 final Layout<? extends Serializable> layout) {
             this.host = host;
             this.port = port;
@@ -87,7 +87,7 @@ public class SslSocketManager extends TcpSocketManager {
     }
 
     public static SslSocketManager getSocketManager(final SslConfiguration sslConfig, final String host, int port,
-            int connectTimeoutMillis, int delayMillis, final boolean immediateFail,
+            final int connectTimeoutMillis, int delayMillis, final boolean immediateFail,
             final Layout<? extends Serializable> layout) {
         if (Strings.isEmpty(host)) {
             throw new IllegalArgumentException("A host name is required");

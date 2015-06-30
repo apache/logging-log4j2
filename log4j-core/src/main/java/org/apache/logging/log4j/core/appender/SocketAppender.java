@@ -56,7 +56,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
             final Advertiser advertiser) {
         super(name, layout, filter, ignoreExceptions, immediateFlush, manager);
         if (advertiser != null) {
-            final Map<String, String> configuration = new HashMap<String, String>(layout.getContentFormat());
+            final Map<String, String> configuration = new HashMap<>(layout.getContentFormat());
             configuration.putAll(manager.getContentFormat());
             configuration.put("contentType", layout.getContentType());
             configuration.put("name", name);
@@ -159,7 +159,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
      *         if the protocol cannot be handled.
      */
     protected static AbstractSocketManager createSocketManager(final String name, Protocol protocol, final String host,
-            final int port, int connectTimeoutMillis, final SslConfiguration sslConfig, final int delayMillis,
+            final int port, final int connectTimeoutMillis, final SslConfiguration sslConfig, final int delayMillis,
             final boolean immediateFail, final Layout<? extends Serializable> layout) {
         if (protocol == Protocol.TCP && sslConfig != null) {
             // Upgrade TCP to SSL if an SSL config is specified.

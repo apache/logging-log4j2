@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.layout;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +33,6 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.jackson.Log4jXmlObjectMapper;
-import org.apache.logging.log4j.core.util.Charsets;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
@@ -120,7 +120,7 @@ public class XmlLayoutTest {
     private void testAllFeatures(final boolean includeSource, final boolean compact, final boolean includeContext) throws IOException,
             JsonParseException, JsonMappingException {
         final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
-        final XmlLayout layout = XmlLayout.createLayout(includeSource, includeContext, false, compact, Charsets.UTF_8);
+        final XmlLayout layout = XmlLayout.createLayout(includeSource, includeContext, false, compact, StandardCharsets.UTF_8);
         final String str = layout.toSerializable(expected);
         // System.out.println(str);
         assertEquals(str, !compact, str.contains("\n"));
@@ -167,9 +167,7 @@ public class XmlLayoutTest {
         this.checkAttributeName("message", compact, str);
         this.checkAttributeName("localizedMessage", compact, str);
         this.checkElementName("ExtendedStackTrace", compact, str, false, true);
-        if (Throwables.isGetSuppressedAvailable()) {
-            this.checkElementName("Suppressed", compact, str, false, true);
-        }
+        this.checkElementName("Suppressed", compact, str, false, true);
         this.checkAttributeName("loggerFqcn", compact, str);
         this.checkAttributeName("endOfBatch", compact, str);
         if (includeContext) {
@@ -193,7 +191,7 @@ public class XmlLayoutTest {
     @Test
     public void testDefaultCharset() {
         final XmlLayout layout = XmlLayout.createDefaultLayout();
-        assertEquals(Charsets.UTF_8, layout.getCharset());
+        assertEquals(StandardCharsets.UTF_8, layout.getCharset());
     }
 
     /**

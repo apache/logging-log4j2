@@ -105,7 +105,7 @@ abstract class JacksonFactory {
 
     ObjectWriter newWriter(final boolean locationInfo, final boolean properties, final boolean compact) {
         final SimpleFilterProvider filters = new SimpleFilterProvider();
-        final Set<String> except = new HashSet<String>(2);
+        final Set<String> except = new HashSet<>(2);
         if (!locationInfo) {
             except.add(this.getPropertNameForSource());
         }

@@ -40,8 +40,8 @@ public class Node {
     private final String name;
     private String value;
     private final PluginType<?> type;
-    private final Map<String, String> attributes = new HashMap<String, String>();
-    private final List<Node> children = new ArrayList<Node>();
+    private final Map<String, String> attributes = new HashMap<>();
+    private final List<Node> children = new ArrayList<>();
     private Object object;
 
 

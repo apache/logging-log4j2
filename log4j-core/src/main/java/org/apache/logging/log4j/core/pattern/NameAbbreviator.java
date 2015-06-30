@@ -66,7 +66,7 @@ public abstract class NameAbbreviator {
                 return new MaxElementAbbreviator(Integer.parseInt(trimmed));
             }
 
-            final ArrayList<PatternAbbreviatorFragment> fragments = new ArrayList<PatternAbbreviatorFragment>(5);
+            final ArrayList<PatternAbbreviatorFragment> fragments = new ArrayList<>(5);
             char ellipsis;
             int charCount;
             int pos = 0;

@@ -38,7 +38,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 final class TagUtils {
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
-    private static final Set<Object> WARNED_FOR = new HashSet<Object>();
+    private static final Set<Object> WARNED_FOR = new HashSet<>();
 
     private static final String LOGGER_SCOPE_ATTRIBUTE = "org.apache.logging.log4j.taglib.LOGGER_SCOPE_ATTRIBUTE";
 

@@ -70,7 +70,7 @@ public class SimpleSmtpServer implements Runnable {
      * @param port port number
      */
     public SimpleSmtpServer(final int port) {
-        receivedMail = new ArrayList<SmtpMessage>();
+        receivedMail = new ArrayList<>();
         this.port = port;
     }
 
@@ -109,12 +109,12 @@ public class SimpleSmtpServer implements Runnable {
                 final PrintWriter out = new PrintWriter(socket.getOutputStream());
 
                 synchronized (this) {
-          /*
-           * We synchronize over the handle method and the list update because the client call completes inside
-           * the handle method and we have to prevent the client from reading the list until we've updated it.
-           * For higher concurrency, we could just change handle to return void and update the list inside the method
-           * to limit the duration that we hold the lock.
-           */
+                    /*
+                     * We synchronize over the handle method and the list update because the client call completes
+                     * inside the handle method and we have to prevent the client from reading the list until we've
+                     * updated it. For higher concurrency, we could just change handle to return void and update the
+                     * list inside the method to limit the duration that we hold the lock.
+                     */
                     final List<SmtpMessage> msgs = handleTransaction(out, input);
                     receivedMail.addAll(msgs);
                 }
@@ -178,7 +178,7 @@ public class SimpleSmtpServer implements Runnable {
         sendResponse(out, smtpResponse);
         smtpState = smtpResponse.getNextState();
 
-        final List<SmtpMessage> msgList = new ArrayList<SmtpMessage>();
+        final List<SmtpMessage> msgList = new ArrayList<>();
         SmtpMessage msg = new SmtpMessage();
 
         while (smtpState != SmtpState.CONNECT) {

@@ -44,11 +44,11 @@ public class MutableThreadContextStack implements ThreadContextStack {
     }
 
     public MutableThreadContextStack(final List<String> list) {
-        this.list = new ArrayList<String>(list);
+        this.list = new ArrayList<>(list);
     }
 
     private MutableThreadContextStack(final MutableThreadContextStack stack) {
-        this.list = new ArrayList<String>(stack.list);
+        this.list = new ArrayList<>(stack.list);
     }
 
     private void checkInvariants() {
@@ -102,7 +102,7 @@ public class MutableThreadContextStack implements ThreadContextStack {
         if (list == null) {
             return;
         }
-        final List<String> copy = new ArrayList<String>(list.size());
+        final List<String> copy = new ArrayList<>(list.size());
         final int count = Math.min(depth, list.size());
         for (int i = 0; i < count; i++) {
             copy.add(list.get(i));

@@ -24,7 +24,9 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.management.ManagementFactory;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -34,7 +36,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.util.Charsets;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Transform;
 
@@ -224,7 +225,7 @@ public final class HtmlLayout extends AbstractStringLayout {
         }
         pw.flush();
         final LineNumberReader reader = new LineNumberReader(new StringReader(sw.toString()));
-        final ArrayList<String> lines = new ArrayList<String>();
+        final ArrayList<String> lines = new ArrayList<>();
         try {
           String line = reader.readLine();
           while (line != null) {
@@ -357,7 +358,7 @@ public final class HtmlLayout extends AbstractStringLayout {
         private String contentType = null; // defer default value in order to use specified charset
 
         @PluginBuilderAttribute
-        private Charset charset = Charsets.UTF_8;
+        private Charset charset = StandardCharsets.UTF_8;
 
         @PluginBuilderAttribute
         private FontSize fontSize = FontSize.SMALL;

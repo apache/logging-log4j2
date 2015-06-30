@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import java.util.Objects;
+
 /**
  * Utility class providing common validation logic.
  */
@@ -52,11 +54,10 @@ public final class Assert {
      * @param message message to populate the NPE with if necessary
      * @return the specified parameter
      * @throws NullPointerException if {@code object} is {@code null}
+     * @deprecated Will be removed in 2.5.
      */
+    @Deprecated
     public static <T> T requireNonNull(final T object, final String message) {
-        if (object == null) {
-            throw new NullPointerException(message);
-        }
-        return object;
+        return Objects.requireNonNull(object, message);
     }
 }

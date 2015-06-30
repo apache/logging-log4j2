@@ -37,7 +37,7 @@ import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
 
 public class FactoryMethodConnectionSourceTest {
-    private static ThreadLocal<Object> holder = new ThreadLocal<Object>();
+    private static ThreadLocal<Object> holder = new ThreadLocal<>();
     private static final String CONFIG = "log4j-fatalOnly.xml";
 
     @BeforeClass

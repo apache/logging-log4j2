@@ -364,7 +364,7 @@ public class ParameterizedMessage implements Message {
             return (String) o;
         }
         final StringBuilder str = new StringBuilder();
-        final Set<String> dejaVu = new HashSet<String>(); // that's actually a neat name ;)
+        final Set<String> dejaVu = new HashSet<>(); // that's actually a neat name ;)
         recursiveDeepToString(o, str, dejaVu);
         return str.toString();
     }
@@ -437,7 +437,7 @@ public class ParameterizedMessage implements Message {
                         } else {
                             str.append(", ");
                         }
-                        recursiveDeepToString(current, str, new HashSet<String>(dejaVu));
+                        recursiveDeepToString(current, str, new HashSet<>(dejaVu));
                     }
                     str.append(']');
                 }
@@ -462,9 +462,9 @@ public class ParameterizedMessage implements Message {
                     }
                     final Object key = current.getKey();
                     final Object value = current.getValue();
-                    recursiveDeepToString(key, str, new HashSet<String>(dejaVu));
+                    recursiveDeepToString(key, str, new HashSet<>(dejaVu));
                     str.append('=');
-                    recursiveDeepToString(value, str, new HashSet<String>(dejaVu));
+                    recursiveDeepToString(value, str, new HashSet<>(dejaVu));
                 }
                 str.append('}');
             }
@@ -484,7 +484,7 @@ public class ParameterizedMessage implements Message {
                     } else {
                         str.append(", ");
                     }
-                    recursiveDeepToString(anOCol, str, new HashSet<String>(dejaVu));
+                    recursiveDeepToString(anOCol, str, new HashSet<>(dejaVu));
                 }
                 str.append(']');
             }

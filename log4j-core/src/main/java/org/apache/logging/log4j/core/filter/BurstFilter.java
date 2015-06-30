@@ -77,11 +77,11 @@ public final class BurstFilter extends AbstractFilter {
 
     private final long burstInterval;
 
-    private final DelayQueue<LogDelay> history = new DelayQueue<LogDelay>();
+    private final DelayQueue<LogDelay> history = new DelayQueue<>();
 
-    private final Queue<LogDelay> available = new ConcurrentLinkedQueue<LogDelay>();
+    private final Queue<LogDelay> available = new ConcurrentLinkedQueue<>();
 
-    static LogDelay createLogDelay(long expireTime) {
+    static LogDelay createLogDelay(final long expireTime) {
         return new LogDelay(expireTime);
     }
     
@@ -176,7 +176,7 @@ public final class BurstFilter extends AbstractFilter {
      */
     private static class LogDelay implements Delayed {
 
-        LogDelay(long expireTime) {
+        LogDelay(final long expireTime) {
             this.expireTime = expireTime;
         }
 
@@ -194,7 +194,7 @@ public final class BurstFilter extends AbstractFilter {
         @Override
         public int compareTo(final Delayed delayed) {
             final long diff = this.expireTime - ((LogDelay) delayed).expireTime;
-            return Long.compare(diff, 0);
+            return Long.signum(diff);
         }
 
         @Override

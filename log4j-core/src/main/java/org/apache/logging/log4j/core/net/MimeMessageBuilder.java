@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import java.nio.charset.StandardCharsets;
+
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-
-import org.apache.logging.log4j.core.util.Charsets;
 
 /**
  *  Helper class for SmtpManager.
@@ -71,7 +71,7 @@ public class MimeMessageBuilder {
 
     public MimeMessageBuilder setSubject(final String subject) throws MessagingException {
         if (subject != null) {
-            message.setSubject(subject, Charsets.UTF_8.name());
+            message.setSubject(subject, StandardCharsets.UTF_8.name());
         }
         return this;
     }

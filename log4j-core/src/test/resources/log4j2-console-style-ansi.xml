@@ -19,7 +19,7 @@
 <Configuration status="OFF">
   <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
-      <PatternLayout pattern="%style{%d}{black} %style{[%t]}{blue} %style{%-5level:}{yellow} %style{%msg%n%throwable}{green}" />
+      <PatternLayout pattern="%style{%d}{white} %style{[%t]}{blue} %style{%-5level:}{yellow} %style{%msg%n%throwable}{green}" />
     </Console>
   </Appenders>
   <Loggers>

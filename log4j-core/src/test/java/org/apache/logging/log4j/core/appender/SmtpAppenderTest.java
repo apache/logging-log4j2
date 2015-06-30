@@ -110,7 +110,7 @@ public class SmtpAppenderTest {
 
     @Test
     public void testCyclicBuffer() {
-        final CyclicBuffer<Integer> buffer = new CyclicBuffer<Integer>(
+        final CyclicBuffer<Integer> buffer = new CyclicBuffer<>(
                 Integer.class, 3);
 
         assertTrue(buffer.isEmpty());

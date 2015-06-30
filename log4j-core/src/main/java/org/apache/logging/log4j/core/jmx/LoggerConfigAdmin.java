@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.jmx;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.management.ObjectName;
 
@@ -24,7 +25,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.core.util.Assert;
 
 /**
  * Implementation of the {@code LoggerConfigAdminMBean} interface.
@@ -44,8 +44,8 @@ public class LoggerConfigAdmin implements LoggerConfigAdminMBean {
      */
     public LoggerConfigAdmin(final LoggerContext loggerContext, final LoggerConfig loggerConfig) {
         // super(executor); // no notifications for now
-        this.loggerContext = Assert.requireNonNull(loggerContext, "loggerContext");
-        this.loggerConfig = Assert.requireNonNull(loggerConfig, "loggerConfig");
+        this.loggerContext = Objects.requireNonNull(loggerContext, "loggerContext");
+        this.loggerConfig = Objects.requireNonNull(loggerConfig, "loggerConfig");
         try {
             final String ctxName = Server.escape(loggerContext.getName());
             final String configName = Server.escape(loggerConfig.getName());

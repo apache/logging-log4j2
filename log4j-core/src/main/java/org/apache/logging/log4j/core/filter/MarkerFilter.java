@@ -30,7 +30,6 @@ import org.apache.logging.log4j.message.Message;
 /**
  * This filter returns the onMatch result if the marker in the LogEvent is the same as or has the
  * configured marker as a parent.
- *
  */
 @Plugin(name = "MarkerFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
 public final class MarkerFilter extends AbstractFilter {

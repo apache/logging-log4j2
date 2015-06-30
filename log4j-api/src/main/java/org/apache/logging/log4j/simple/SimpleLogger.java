@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.simple;
 
-import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -30,6 +29,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  *  This is the default logger that is used when no suitable logging implementation is available.
@@ -139,13 +139,13 @@ public class SimpleLogger extends AbstractLogger {
 
         sb.append(level.toString());
         sb.append(SPACE);
-        if (logName != null && logName.length() > 0) {
+        if (Strings.isNotEmpty(logName)) {
             sb.append(logName);
             sb.append(SPACE);
         }
         sb.append(msg.getFormattedMessage());
         if (showContextMap) {
-            final Map<String, String> mdc = ThreadContext.getContext();
+            final Map<String, String> mdc = ThreadContext.getImmutableContext();
             if (mdc.size() > 0) {
                 sb.append(SPACE);
                 sb.append(mdc.toString());
@@ -159,13 +159,11 @@ public class SimpleLogger extends AbstractLogger {
         } else {
             t = throwable;
         }
-        if (t != null) {
-            sb.append(SPACE);
-            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            t.printStackTrace(new PrintStream(baos));
-            sb.append(baos.toString());
-        }
         stream.println(sb.toString());
+        if (t != null) {
+            stream.print(SPACE);
+            t.printStackTrace(stream);
+        }
     }
 
     public void setLevel(final Level level) {

@@ -43,7 +43,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
     protected AbstractDatabaseManager(final String name, final int bufferSize) {
         super(name);
         this.bufferSize = bufferSize;
-        this.buffer = new ArrayList<LogEvent>(bufferSize + 1);
+        this.buffer = new ArrayList<>(bufferSize + 1);
     }
 
     /**

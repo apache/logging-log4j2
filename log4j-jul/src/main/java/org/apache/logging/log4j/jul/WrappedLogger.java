@@ -72,6 +72,6 @@ class WrappedLogger extends ExtendedLoggerWrapper {
 
     @Override
     public <T extends Throwable> T throwing(final T t) {
-        return throwing(FQCN, Level.ERROR, t);
+        return throwing(FQCN, LevelTranslator.toLevel(java.util.logging.Level.FINER), t);
     }
 }

@@ -43,6 +43,7 @@
       </item>
       <item name="Runtime Dependencies" href="/runtime-dependencies.html"/>
       <item name="FAQ" href="/faq.html"/>
+      <item name="Articles" href="/articles.html"/>
     </menu>
 
     <menu name="Manual" inherit="top" img="icon-book">
@@ -100,6 +101,7 @@
         <item name="Java" href="/manual/lookups.html#JavaLookup"/>
         <item name="JNDI" href="/manual/lookups.html#JndiLookup"/>
         <item name="JVM Arguments" href="/manual/lookups.html#JmxRuntimeInputArgumentsLookup"/>
+        <item name="Log4j Config" href="/manual/lookups.html#Log4jConfigLookup"/>
         <item name="Main Arguments" href="/manual/lookups.html#AppMainArgsLookup"/>
         <item name="Map" href="/manual/lookups.html#MapLookup"/>
         <item name="Structured Data" href="/manual/lookups.html#StructuredDataLookup"/>

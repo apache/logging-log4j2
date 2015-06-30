@@ -32,7 +32,7 @@ public class DefaultNoSqlObject implements NoSqlObject<Map<String, Object>> {
     private final Map<String, Object> map;
 
     public DefaultNoSqlObject() {
-        this.map = new HashMap<String, Object>();
+        this.map = new HashMap<>();
     }
 
     @Override
@@ -52,7 +52,7 @@ public class DefaultNoSqlObject implements NoSqlObject<Map<String, Object>> {
 
     @Override
     public void set(final String field, final NoSqlObject<Map<String, Object>>[] values) {
-        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>(values.length);
+        final List<Map<String, Object>> list = new ArrayList<>(values.length);
         for (final NoSqlObject<Map<String, Object>> value : values) {
             list.add(value.unwrap());
         }

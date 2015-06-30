@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -240,6 +241,7 @@ public class TestConfigurator {
             Thread.sleep(500);
         }
         assertTrue("setLastModified should have succeeded.", file.setLastModified(System.currentTimeMillis()));
+        TimeUnit.SECONDS.sleep(FileConfigurationMonitor.MIN_INTERVAL + 1);
         for (int i = 0; i < 17; ++i) {
             logger.debug("Test message " + i);
         }

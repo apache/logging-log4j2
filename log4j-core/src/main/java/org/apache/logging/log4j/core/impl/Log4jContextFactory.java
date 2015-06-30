@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.impl;
 
 import java.net.URI;
+import java.util.Objects;
 
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -25,7 +26,6 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.selector.ContextSelector;
-import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.DefaultShutdownCallbackRegistry;
@@ -82,9 +82,8 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
      */
     public Log4jContextFactory(final ContextSelector selector,
                                final ShutdownCallbackRegistry shutdownCallbackRegistry) {
-        this.selector = Assert.requireNonNull(selector, "No ContextSelector provided");
-        this.shutdownCallbackRegistry = Assert.requireNonNull(shutdownCallbackRegistry,
-            "No ShutdownCallbackRegistry provided");
+        this.selector = Objects.requireNonNull(selector, "No ContextSelector provided");
+        this.shutdownCallbackRegistry = Objects.requireNonNull(shutdownCallbackRegistry, "No ShutdownCallbackRegistry provided");
         LOGGER.debug("Using ShutdownCallbackRegistry {}", shutdownCallbackRegistry.getClass());
         initializeShutdownCallbackRegistry();
     }
@@ -218,6 +217,16 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
         return selector;
     }
 
+	/**
+	 * Returns the ShutdownCallbackRegistry
+	 * 
+	 * @return the ShutdownCallbackRegistry
+	 * @since 2.4
+	 */
+	public ShutdownCallbackRegistry getShutdownCallbackRegistry() {
+		return shutdownCallbackRegistry;
+	}
+
     /**
      * Removes knowledge of a LoggerContext.
      *
@@ -234,4 +243,5 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
     public Cancellable addShutdownCallback(final Runnable callback) {
         return SHUTDOWN_HOOK_ENABLED ? shutdownCallbackRegistry.addShutdownCallback(callback) : null;
     }
+
 }

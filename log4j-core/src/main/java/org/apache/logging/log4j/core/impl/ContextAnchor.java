@@ -26,7 +26,7 @@ public final class ContextAnchor {
     /**
      * Anchor for the LoggerContext for the current Thread.
      */
-    public static final ThreadLocal<LoggerContext> THREAD_CONTEXT = new ThreadLocal<LoggerContext>();
+    public static final ThreadLocal<LoggerContext> THREAD_CONTEXT = new ThreadLocal<>();
 
     private ContextAnchor() {
     }

@@ -27,9 +27,9 @@ public class FormattingInfoTest {
 
 	@Test
 	public void testFormatTruncateFromBeginning() {
-		StringBuilder message = new StringBuilder("Hello, world");
+		final StringBuilder message = new StringBuilder("Hello, world");
 
-		FormattingInfo formattingInfo = new FormattingInfo(false, 0, 5, true);
+		final FormattingInfo formattingInfo = new FormattingInfo(false, 0, 5, true);
 		formattingInfo.format(0, message);
 
 		assertEquals("world", message.toString());
@@ -37,9 +37,9 @@ public class FormattingInfoTest {
 
 	@Test
 	public void testFormatTruncateFromEnd() {
-		StringBuilder message = new StringBuilder("Hello, world");
+		final StringBuilder message = new StringBuilder("Hello, world");
 
-		FormattingInfo formattingInfo = new FormattingInfo(false, 0, 5, false);
+		final FormattingInfo formattingInfo = new FormattingInfo(false, 0, 5, false);
 		formattingInfo.format(0, message);
 
 		assertEquals("Hello", message.toString());
@@ -47,9 +47,9 @@ public class FormattingInfoTest {
 
 	@Test
 	public void testFormatTruncateFromEndGivenFieldStart() {
-		StringBuilder message = new StringBuilder("2015-03-09 11:49:28,295; INFO  org.apache.logging.log4j.PatternParserTest");
+		final StringBuilder message = new StringBuilder("2015-03-09 11:49:28,295; INFO  org.apache.logging.log4j.PatternParserTest");
 
-		FormattingInfo formattingInfo = new FormattingInfo(false, 0, 5, false);
+		final FormattingInfo formattingInfo = new FormattingInfo(false, 0, 5, false);
 		formattingInfo.format(31, message);
 
 		assertEquals("2015-03-09 11:49:28,295; INFO  org.a", message.toString());

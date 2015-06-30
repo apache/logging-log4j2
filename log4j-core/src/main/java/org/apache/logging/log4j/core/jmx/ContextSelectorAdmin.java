@@ -16,10 +16,11 @@
  */
 package org.apache.logging.log4j.core.jmx;
 
+import java.util.Objects;
+
 import javax.management.ObjectName;
 
 import org.apache.logging.log4j.core.selector.ContextSelector;
-import org.apache.logging.log4j.core.util.Assert;
 
 /**
  * Implementation of the {@code ContextSelectorAdminMBean} interface.
@@ -43,7 +44,7 @@ public class ContextSelectorAdmin implements ContextSelectorAdminMBean {
      */
     public ContextSelectorAdmin(final String contextName, final ContextSelector selector) {
         super();
-        this.selector = Assert.requireNonNull(selector, "ContextSelector");
+        this.selector = Objects.requireNonNull(selector, "ContextSelector");
         try {
             final String mbeanName = String.format(PATTERN, Server.escape(contextName));
             objectName = new ObjectName(mbeanName);

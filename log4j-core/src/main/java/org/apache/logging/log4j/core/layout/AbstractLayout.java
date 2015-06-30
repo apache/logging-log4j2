@@ -65,7 +65,7 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
 
     @Override
     public Map<String, String> getContentFormat() {
-        return new HashMap<String, String>();
+        return new HashMap<>();
     }
 
     /**

@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.util.NullOutputStream;
 
 /**
  * Extends OutputStreamManager but instead of using a buffered output stream,
@@ -41,7 +42,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
     private final String advertiseURI;
     private final RandomAccessFile randomAccessFile;
     private final ByteBuffer buffer;
-    private final ThreadLocal<Boolean> isEndOfBatch = new ThreadLocal<Boolean>();
+    private final ThreadLocal<Boolean> isEndOfBatch = new ThreadLocal<>();
 
     protected RandomAccessFileManager(final RandomAccessFile file,
             final String fileName, final OutputStream os,
@@ -143,17 +144,6 @@ public class RandomAccessFileManager extends OutputStreamManager {
         return buffer.capacity();
     }
 
-    /** {@code OutputStream} subclass that does not write anything. */
-    static class DummyOutputStream extends OutputStream {
-        @Override
-        public void write(final int b) throws IOException {
-        }
-
-        @Override
-        public void write(final byte[] b, final int off, final int len) throws IOException {
-        }
-    }
-
     /**
      * Gets this FileManager's content format specified by:
      * <p>
@@ -164,7 +154,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
      */
     @Override
     public Map<String, String> getContentFormat() {
-        final Map<String, String> result = new HashMap<String, String>(
+        final Map<String, String> result = new HashMap<>(
                 super.getContentFormat());
         result.put("fileURI", advertiseURI);
         return result;
@@ -220,7 +210,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
                 file.delete();
             }
 
-            final OutputStream os = new DummyOutputStream();
+            final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
             RandomAccessFile raf;
             try {
                 raf = new RandomAccessFile(name, "rw");

@@ -17,12 +17,12 @@
 package org.apache.logging.log4j.test.layout;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
-import org.apache.logging.log4j.core.util.Charsets;
 import org.apache.logging.log4j.core.util.Constants;
 
 /**
@@ -51,6 +51,6 @@ public class BasicLayout extends AbstractStringLayout {
      */
     @PluginFactory
     public static BasicLayout createLayout() {
-        return new BasicLayout(Charsets.UTF_8);
+        return new BasicLayout(StandardCharsets.UTF_8);
     }
 }

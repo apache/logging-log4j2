@@ -97,12 +97,12 @@ public class StringFormattedMessageTest {
     @Test
     public void testSerialization() throws IOException, ClassNotFoundException {
         final StringFormattedMessage expected = new StringFormattedMessage("Msg", "a", "b", "c");
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(baos);
-        out.writeObject(expected);
-        out.close();
-        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-        ObjectInputStream in = new ObjectInputStream(bais);
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (final ObjectOutputStream out = new ObjectOutputStream(baos)) {
+            out.writeObject(expected);
+        }
+        final ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        final ObjectInputStream in = new ObjectInputStream(bais);
         final StringFormattedMessage actual = (StringFormattedMessage) in.readObject();
         Assert.assertEquals(expected, actual);
         Assert.assertEquals(expected.getFormat(), actual.getFormat());

@@ -32,7 +32,7 @@ public class StringBuilders {
      *        a value
      * @return {@code "value"}
      */
-    public static StringBuilder appendDqValue(StringBuilder sb, Object value) {
+    public static StringBuilder appendDqValue(final StringBuilder sb, final Object value) {
         return sb.append(Chars.DQUOTE).append(value).append(Chars.DQUOTE);
     }
 
@@ -45,7 +45,7 @@ public class StringBuilders {
      *        a map entry
      * @return {@code key="value"}
      */
-    public static StringBuilder appendKeyDqValue(StringBuilder sb, Entry<String, String> entry) {
+    public static StringBuilder appendKeyDqValue(final StringBuilder sb, final Entry<String, String> entry) {
         return appendKeyDqValue(sb, entry.getKey(), entry.getValue());
     }
 
@@ -60,7 +60,7 @@ public class StringBuilders {
      *        a value
      * @return {@code key="value"}
      */
-    public static StringBuilder appendKeyDqValue(StringBuilder sb, String key, Object value) {
+    public static StringBuilder appendKeyDqValue(final StringBuilder sb, final String key, final Object value) {
         return sb.append(key).append(Chars.EQ).append(Chars.DQUOTE).append(value).append(Chars.DQUOTE);
     }
 

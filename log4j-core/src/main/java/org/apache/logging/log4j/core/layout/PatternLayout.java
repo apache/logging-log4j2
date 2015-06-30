@@ -175,7 +175,7 @@ public final class PatternLayout extends AbstractStringLayout {
     @Override
     public Map<String, String> getContentFormat()
     {
-        final Map<String, String> result = new HashMap<String, String>();
+        final Map<String, String> result = new HashMap<>();
         result.put("structured", "false");
         result.put("formatType", "conversion");
         result.put("format", conversionPattern);

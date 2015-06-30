@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="error">
+  <Appenders>
+    <List name="List">
+      <PatternLayout pattern="%c %C %p %m%n%ex{1}"/>
+    </List>
+  </Appenders>
+
+  <Loggers>
+    <Root level="DEBUG">
+      <AppenderRef ref="List"/>
+    </Root>
+  </Loggers>
+</configuration>

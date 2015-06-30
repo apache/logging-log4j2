@@ -34,7 +34,7 @@ public class ClientGuiJConsolePlugin extends JConsolePlugin {
         try {
             final Client client = new Client(getContext().getMBeanServerConnection());
             final ClientGui gui = new ClientGui(client);
-            final Map<String, JPanel> result = new HashMap<String, JPanel>();
+            final Map<String, JPanel> result = new HashMap<>();
             result.put("Log4j2", gui);
             return result;
         } catch (final Throwable ex) {

@@ -16,16 +16,17 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 
-import org.apache.logging.log4j.core.util.Closer;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests the MemoryMappedFileManager class.
@@ -55,18 +56,13 @@ public class MemoryMappedFileManagerTest {
 
         manager.release();
 
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new FileReader(file));
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line = reader.readLine();
-
             for (int i = 0; i < 1000; i++) {
                 assertNotNull("line", line);
                 assertTrue("line incorrect", line.contains("Message " + i));
                 line = reader.readLine();
             }
-        } finally {
-            Closer.close(reader);
         }
     }
 
@@ -79,13 +75,9 @@ public class MemoryMappedFileManagerTest {
         final int initialLength = 4 * 1024;
 
         // create existing file
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(file);
+        try (FileOutputStream fos = new FileOutputStream(file)) {
             fos.write(new byte[initialLength], 0, initialLength);
             fos.flush();
-        } finally {
-            fos.close();
         }
         assertEquals("all flushed to disk", initialLength, file.length());
 

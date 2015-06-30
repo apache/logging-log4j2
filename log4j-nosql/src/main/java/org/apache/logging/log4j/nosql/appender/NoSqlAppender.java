@@ -28,11 +28,22 @@ import org.apache.logging.log4j.core.util.Booleans;
 /**
  * This Appender writes logging events to a NoSQL database using a configured NoSQL provider. It requires
  * implementations of {@link NoSqlObject}, {@link NoSqlConnection}, and {@link NoSqlProvider} to "know" how to write
- * events to the chosen NoSQL database. Two provider implementations are provided: MongoDB
- * (org.mongodb:mongo-java-driver:2.11.1 or newer must be on the classpath) and Apache CouchDB
- * (org.lightcouch:lightcouch:0.0.5 or newer must be on the classpath). For examples on how to write your own NoSQL
- * provider, see the simple source code for the MongoDB and CouchDB providers.
- *
+ * events to the chosen NoSQL database.
+ * 
+ * <p>
+ * Two provider implementations are provided:
+ * </p>
+ * <ul>
+ * <li>
+ * MongoDB (org.mongodb:mongo-java-driver:2.11.1 or newer must be on the classpath)</li>
+ * <li>
+ * Apache CouchDB (org.lightcouch:lightcouch:0.0.5 or newer must be on the classpath).</li>
+ * </ul>
+ * <p>
+ * For examples on how to write your own NoSQL provider, see the simple source code for the MongoDB and CouchDB
+ * providers.
+ * </p>
+ * 
  * @see NoSqlObject
  * @see NoSqlConnection
  * @see NoSqlProvider

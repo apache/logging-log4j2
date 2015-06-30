@@ -17,8 +17,10 @@
 package org.apache.logging.log4j.core;
 
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
@@ -46,17 +48,16 @@ public class FileConfigTest {
     @Test
     public void testReconfiguration() throws Exception {
         final Configuration oldConfig = context.getConfiguration();
-        final int MONITOR_INTERVAL_SECONDS = 1;
+        final int MONITOR_INTERVAL_SECONDS = 5;
         final File file = new File(CONFIG);
         final long orig = file.lastModified();
         final long newTime = orig + 10000;
-        file.setLastModified(newTime);
-        int sleepMillis = (MONITOR_INTERVAL_SECONDS + 1) * 1000;
-        Thread.sleep(sleepMillis);
+        assertTrue("setLastModified should have succeeded.", file.setLastModified(newTime));
+        TimeUnit.SECONDS.sleep(MONITOR_INTERVAL_SECONDS + 1);
         for (int i = 0; i < 17; ++i) {
             logger.debug("Reconfigure");
         }
-        Thread.sleep(sleepMillis);
+        Thread.sleep(100);
         final Configuration newConfig = context.getConfiguration();
         assertNotSame("Reconfiguration failed", newConfig, oldConfig);
     }

@@ -101,13 +101,10 @@ public class PluginProcessor extends AbstractProcessor {
     }
 
     private void writeCacheFile(final Element... elements) throws IOException {
-        final FileObject fo = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT,
-            Strings.EMPTY, PLUGIN_CACHE_FILE, elements);
-        final OutputStream out = fo.openOutputStream();
-        try {
+        final FileObject fo = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT, Strings.EMPTY,
+                PLUGIN_CACHE_FILE, elements);
+        try (final OutputStream out = fo.openOutputStream()) {
             pluginCache.writeCache(out);
-        } finally {
-            out.close();
         }
     }
 
@@ -156,7 +153,7 @@ public class PluginProcessor extends AbstractProcessor {
             if (aliases == null) {
                 return DEFAULT_VALUE;
             }
-            final Collection<PluginEntry> entries = new ArrayList<PluginEntry>(aliases.value().length);
+            final Collection<PluginEntry> entries = new ArrayList<>(aliases.value().length);
             for (final String alias : aliases.value()) {
                 final PluginEntry entry = new PluginEntry();
                 entry.setKey(alias.toLowerCase());

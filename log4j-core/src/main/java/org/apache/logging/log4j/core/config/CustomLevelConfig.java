@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.util.Objects;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -33,7 +34,7 @@ public final class CustomLevelConfig {
     private final int intLevel;
 
     private CustomLevelConfig(final String levelName, final int intLevel) {
-        this.levelName = Assert.requireNonNull(levelName, "levelName is null");
+        this.levelName = Objects.requireNonNull(levelName, "levelName is null");
         this.intLevel = intLevel;
     }
 

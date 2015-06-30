@@ -26,7 +26,9 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
+
 import javax.management.InstanceNotFoundException;
 import javax.management.JMException;
 import javax.management.ListenerNotFoundException;
@@ -57,7 +59,6 @@ import javax.swing.WindowConstants;
 import org.apache.logging.log4j.core.jmx.LoggerContextAdminMBean;
 import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.core.jmx.StatusLoggerAdminMBean;
-import org.apache.logging.log4j.core.util.Assert;
 
 /**
  * Swing GUI that connects to a Java process via JMX and allows the user to view
@@ -72,12 +73,12 @@ public class ClientGui extends JPanel implements NotificationListener {
     private static final long serialVersionUID = -253621277232291174L;
     private static final int INITIAL_STRING_WRITER_SIZE = 1024;
     private final Client client;
-    private final Map<ObjectName, Component> contextObjNameToTabbedPaneMap = new HashMap<ObjectName, Component>();
-    private final Map<ObjectName, JTextArea> statusLogTextAreaMap = new HashMap<ObjectName, JTextArea>();
+    private final Map<ObjectName, Component> contextObjNameToTabbedPaneMap = new HashMap<>();
+    private final Map<ObjectName, JTextArea> statusLogTextAreaMap = new HashMap<>();
     private JTabbedPane tabbedPaneContexts;
 
     public ClientGui(final Client client) throws IOException, JMException {
-        this.client = Assert.requireNonNull(client, "client");
+        this.client = Objects.requireNonNull(client, "client");
         createWidgets();
         populateWidgets();
 
@@ -275,7 +276,7 @@ public class ClientGui extends JPanel implements NotificationListener {
         }
         final JMXServiceURL url = new JMXServiceURL(serviceUrl);
         final Properties props = System.getProperties();
-        final Map<String, String> paramMap = new HashMap<String, String>(props.size());
+        final Map<String, String> paramMap = new HashMap<>(props.size());
         for (final String key : props.stringPropertyNames()) {
             paramMap.put(key, props.getProperty(key));
         }

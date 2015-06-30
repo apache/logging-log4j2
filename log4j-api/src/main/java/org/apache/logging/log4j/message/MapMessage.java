@@ -55,7 +55,7 @@ public class MapMessage implements MultiformatMessage {
      * Constructor.
      */
     public MapMessage() {
-        data = new TreeMap<String, String>();
+        data = new TreeMap<>();
     }
 
     /**
@@ -63,7 +63,7 @@ public class MapMessage implements MultiformatMessage {
      * @param map The Map.
      */
     public MapMessage(final Map<String, String> map) {
-        this.data = map instanceof SortedMap ? (SortedMap<String, String>) map : new TreeMap<String, String>(map);
+        this.data = map instanceof SortedMap ? (SortedMap<String, String>) map : new TreeMap<>(map);
     }
 
     @Override

@@ -18,13 +18,12 @@ package org.apache.logging.log4j.core.osgi;
 
 import java.lang.ref.WeakReference;
 import java.net.URI;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
-import org.apache.logging.log4j.core.selector.ContextSelector;
-import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.util.ReflectionUtil;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleReference;
@@ -37,7 +36,7 @@ import org.osgi.framework.FrameworkUtil;
  *
  * @since 2.1
  */
-public class BundleContextSelector extends ClassLoaderContextSelector implements ContextSelector {
+public class BundleContextSelector extends ClassLoaderContextSelector {
 
     @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext,
@@ -62,19 +61,19 @@ public class BundleContextSelector extends ClassLoaderContextSelector implements
     }
 
     private static LoggerContext locateContext(final Bundle bundle, final URI configLocation) {
-        final String name = Assert.requireNonNull(bundle, "No Bundle provided").getSymbolicName();
+        final String name = Objects.requireNonNull(bundle, "No Bundle provided").getSymbolicName();
         final AtomicReference<WeakReference<LoggerContext>> ref = CONTEXT_MAP.get(name);
         if (ref == null) {
             final LoggerContext context = new LoggerContext(name, bundle, configLocation);
             CONTEXT_MAP.putIfAbsent(name,
-                new AtomicReference<WeakReference<LoggerContext>>(new WeakReference<LoggerContext>(context)));
+                new AtomicReference<>(new WeakReference<>(context)));
             return CONTEXT_MAP.get(name).get().get();
         }
         final WeakReference<LoggerContext> r = ref.get();
         final LoggerContext ctx = r.get();
         if (ctx == null) {
             final LoggerContext context = new LoggerContext(name, bundle, configLocation);
-            ref.compareAndSet(r, new WeakReference<LoggerContext>(context));
+            ref.compareAndSet(r, new WeakReference<>(context));
             return ref.get().get();
         }
         final URI oldConfigLocation = ctx.getConfigLocation();

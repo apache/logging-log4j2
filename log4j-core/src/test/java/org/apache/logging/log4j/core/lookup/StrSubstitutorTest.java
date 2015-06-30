@@ -48,7 +48,7 @@ public class StrSubstitutorTest {
 
     @Test
     public void testLookup() {
-        final Map<String, String> map = new HashMap<String, String>();
+        final Map<String, String> map = new HashMap<>();
         map.put(TESTKEY, TESTVAL);
         final StrLookup lookup = new Interpolator(new MapLookup(map));
         final StrSubstitutor subst = new StrSubstitutor(lookup);

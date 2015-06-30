@@ -33,7 +33,7 @@ public class SslConfigurationTest {
     public void emptyConfigurationDoesntCauseNullSSLSocketFactory() {
         final SslConfiguration sc = SslConfiguration.createSSLConfiguration(null, null, null);
         final SSLSocketFactory factory = sc.getSslSocketFactory();
-        Assert.assertTrue(factory != null);
+        Assert.assertNotNull(factory);
     }
 
     @Test
@@ -41,18 +41,29 @@ public class SslConfigurationTest {
         final SslConfiguration sc = SslConfiguration.createSSLConfiguration(null, null, null);
         final SSLSocketFactory factory = sc.getSslSocketFactory();
         final SSLSocket clientSocket = (SSLSocket) factory.createSocket(TLS_TEST_HOST, TLS_TEST_PORT);
-        Assert.assertTrue(true);
+        clientSocket.close();
+        Assert.assertNotNull(clientSocket);
     }
 
-    @Test(expected = IOException.class)
+    @Test
     public void connectionFailsWithoutValidServerCertificate() throws IOException, StoreConfigurationException {
         final TrustStoreConfiguration tsc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE, null, null, null);
         final SslConfiguration sc = SslConfiguration.createSSLConfiguration(null, null, tsc);
         final SSLSocketFactory factory = sc.getSslSocketFactory();
         final SSLSocket clientSocket = (SSLSocket) factory.createSocket(TLS_TEST_HOST, TLS_TEST_PORT);
-        final OutputStream os = clientSocket.getOutputStream();
-        os.write("GET config/login_verify2?".getBytes());
-        Assert.assertTrue(false);
+        try {
+            final OutputStream os = clientSocket.getOutputStream();
+            try {
+                os.write("GET config/login_verify2?".getBytes());
+                Assert.fail("Expected IOException");
+            } catch (final IOException e) {
+                // Expected, do nothing.
+            } finally {
+                os.close();
+            }
+        } finally {
+            clientSocket.close();
+        }
     }
 
     @Test
@@ -60,6 +71,6 @@ public class SslConfigurationTest {
         final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, null, null, null);
         final SslConfiguration sslConf = SslConfiguration.createSSLConfiguration(null, ksc, null);
         final SSLSocketFactory factory = sslConf.getSslSocketFactory();
-        Assert.assertTrue(true);
+        Assert.assertNotNull(factory);
     }
 }

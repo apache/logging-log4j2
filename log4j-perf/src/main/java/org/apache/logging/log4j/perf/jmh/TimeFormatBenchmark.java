@@ -18,12 +18,12 @@
 package org.apache.logging.log4j.perf.jmh;
 
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.logging.log4j.core.util.Charsets;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Mode;
@@ -99,7 +99,7 @@ public class TimeFormatBenchmark {
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public int simpleDateFormatBytes(final BufferState state) {
         final String str = simpleDateFormat.format(new Date());
-        final byte[] bytes = str.getBytes(Charsets.UTF_8);
+        final byte[] bytes = str.getBytes(StandardCharsets.UTF_8);
         state.buffer.clear();
         state.buffer.put(bytes);
         return state.buffer.position();
@@ -111,7 +111,7 @@ public class TimeFormatBenchmark {
     public String customFastFormatString(final BufferState state) {
         state.buffer.clear();
         fastFormat(System.currentTimeMillis(), state.buffer);
-        return new String(state.buffer.array(), 0, state.buffer.position(), Charsets.UTF_8);
+        return new String(state.buffer.array(), 0, state.buffer.position(), StandardCharsets.UTF_8);
     }
 
     @Benchmark
@@ -129,7 +129,7 @@ public class TimeFormatBenchmark {
     public String customFormatString(final BufferState state) {
         state.buffer.clear();
         format(System.currentTimeMillis(), state.buffer);
-        return new String(state.buffer.array(), 0, state.buffer.position(), Charsets.UTF_8);
+        return new String(state.buffer.array(), 0, state.buffer.position(), StandardCharsets.UTF_8);
     }
 
     @Benchmark

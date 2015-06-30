@@ -17,8 +17,7 @@
 package org.apache.logging.log4j.core.config;
 
 import java.util.Comparator;
-
-import org.apache.logging.log4j.core.util.Assert;
+import java.util.Objects;
 
 /**
  * Comparator for classes annotated with {@link Order}.
@@ -40,8 +39,8 @@ public class OrderComparator implements Comparator<Class<?>> {
 
     @Override
     public int compare(final Class<?> lhs, final Class<?> rhs) {
-        final Order lhsOrder = Assert.requireNonNull(lhs, "lhs").getAnnotation(Order.class);
-        final Order rhsOrder = Assert.requireNonNull(rhs, "rhs").getAnnotation(Order.class);
+        final Order lhsOrder = Objects.requireNonNull(lhs, "lhs").getAnnotation(Order.class);
+        final Order rhsOrder = Objects.requireNonNull(rhs, "rhs").getAnnotation(Order.class);
         if (lhsOrder == null && rhsOrder == null) {
             // both unannotated means equal priority
             return 0;

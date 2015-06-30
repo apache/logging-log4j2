@@ -43,7 +43,7 @@ public class TlsSyslogTestUtil {
     }
 
     private static ArrayList<String> generateMessages(final int numberOfMessages, final String charSet) {
-        final ArrayList<String> messageList = new ArrayList<String>(numberOfMessages);
+        final ArrayList<String> messageList = new ArrayList<>(numberOfMessages);
         for (int i = 0; i < numberOfMessages; i++) {
             final String message = createRandomMessage(charSet);
             messageList.add(message);

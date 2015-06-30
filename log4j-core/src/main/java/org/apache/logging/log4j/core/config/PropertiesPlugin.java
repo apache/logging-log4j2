@@ -48,7 +48,7 @@ public final class PropertiesPlugin {
         if (properties == null) {
             return new Interpolator(config.getProperties());
         }
-        final Map<String, String> map = new HashMap<String, String>(config.getProperties());
+        final Map<String, String> map = new HashMap<>(config.getProperties());
 
         for (final Property prop : properties) {
             map.put(prop.getName(), prop.getValue());

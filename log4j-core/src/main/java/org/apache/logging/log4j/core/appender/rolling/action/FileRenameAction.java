@@ -17,10 +17,8 @@
 package org.apache.logging.log4j.core.appender.rolling.action;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.channels.FileChannel;
+import java.nio.file.Files;
 
 /**
  * File rename action.
@@ -121,31 +119,7 @@ public class FileRenameAction extends AbstractAction {
         if (!destination.exists()) {
             destination.createNewFile();
         }
-
-        FileChannel srcChannel = null;
-        FileChannel destChannel = null;
-        FileInputStream srcStream = null;
-        FileOutputStream destStream = null;
-        try {
-            srcStream = new FileInputStream(source);
-            destStream = new FileOutputStream(destination);
-            srcChannel = srcStream.getChannel();
-            destChannel = destStream.getChannel();
-            destChannel.transferFrom(srcChannel, 0, srcChannel.size());
-        } finally {
-            if (srcChannel != null) {
-                srcChannel.close();
-            }
-            if (srcStream != null) {
-                srcStream.close();
-            }
-            if (destChannel != null) {
-                destChannel.close();
-            }
-            if (destStream != null) {
-                destStream.close();
-            }
-        }
+        Files.copy(source.toPath(), destination.toPath());
     }
 
     @Override

@@ -26,8 +26,9 @@ import org.apache.logging.log4j.status.StatusLogger;
  * Abstract base class for implementations of Action.
  */
 public abstract class AbstractAction implements Action {
+    
     /**
-     * Allow subclasses access to the status logger without creating another instance.
+     * Allows subclasses access to the status logger without creating another instance.
      */
     protected static final Logger LOGGER = StatusLogger.getLogger();
     /**
@@ -47,7 +48,7 @@ public abstract class AbstractAction implements Action {
     }
 
     /**
-     * Perform action.
+     * Performs action.
      *
      * @return true if successful.
      * @throws IOException if IO error.
@@ -91,7 +92,7 @@ public abstract class AbstractAction implements Action {
     }
 
     /**
-     * Capture exception.
+     * Captures exception.
      *
      * @param ex exception.
      */

@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.layout;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +26,6 @@ import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.util.Charsets;
 
 /**
  * Appends a series of JSON events as strings serialized as bytes.
@@ -799,7 +799,7 @@ public final class JsonLayout extends AbstractJacksonLayout {
     private static final long serialVersionUID = 1L;
 
     protected JsonLayout(final boolean locationInfo, final boolean properties, final boolean complete, final boolean compact,
-            boolean eventEol, final Charset charset) {
+            final boolean eventEol, final Charset charset) {
         super(new JacksonFactory.JSON().newWriter(locationInfo, properties, compact), charset, compact, complete, eventEol);
     }
 
@@ -834,7 +834,7 @@ public final class JsonLayout extends AbstractJacksonLayout {
 
     @Override
     public Map<String, String> getContentFormat() {
-        final Map<String, String> result = new HashMap<String, String>();
+        final Map<String, String> result = new HashMap<>();
         result.put("version", "2.0");
         return result;
     }
@@ -885,6 +885,6 @@ public final class JsonLayout extends AbstractJacksonLayout {
      * @return A JSON Layout.
      */
     public static AbstractJacksonLayout createDefaultLayout() {
-        return new JsonLayout(false, false, false, false, false, Charsets.UTF_8);
+        return new JsonLayout(false, false, false, false, false, StandardCharsets.UTF_8);
     }
 }

@@ -49,7 +49,7 @@ public final class ProviderUtil {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    protected static final Collection<Provider> PROVIDERS = new HashSet<Provider>();
+    protected static final Collection<Provider> PROVIDERS = new HashSet<>();
 
     /**
      * Guards the ProviderUtil singleton instance from lazy initialization. This is primarily used for OSGi support.

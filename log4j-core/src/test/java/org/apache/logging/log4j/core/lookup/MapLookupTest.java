@@ -36,7 +36,7 @@ public class MapLookupTest {
 
     @Test
     public void testMap() {
-        final HashMap<String, String> map = new HashMap<String, String>();
+        final HashMap<String, String> map = new HashMap<>();
         map.put("A", "B");
         final MapLookup lookup = new MapLookup(map);
         assertEquals(null, lookup.lookup(null));
@@ -55,7 +55,7 @@ public class MapLookupTest {
         MapLookup.setMainArguments(new String[] {
                 "--file",
                 "foo.txt" });
-        final MapLookup lookup = MapLookup.MAIN_SINGLETON;
+        final MapLookup lookup = MainMapLookup.MAIN_SINGLETON;
         assertEquals(null, lookup.lookup(null));
         assertEquals(null, lookup.lookup("X"));
         assertEquals("--file", lookup.lookup("0"));

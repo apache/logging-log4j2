@@ -20,6 +20,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UnknownFormatConversionException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -27,7 +28,6 @@ import java.util.concurrent.ConcurrentMap;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
-import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.core.util.ReflectionUtil;
 import org.apache.logging.log4j.core.util.TypeUtil;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -43,7 +43,7 @@ public class TypeConverterRegistry {
     private static volatile TypeConverterRegistry INSTANCE;
     private static final Object INSTANCE_LOCK = new Object();
 
-    private final ConcurrentMap<Type, TypeConverter<?>> registry = new ConcurrentHashMap<Type, TypeConverter<?>>();
+    private final ConcurrentMap<Type, TypeConverter<?>> registry = new ConcurrentHashMap<>();
 
     /**
      * Gets the singleton instance of the TypeConverterRegistry.
@@ -74,7 +74,7 @@ public class TypeConverterRegistry {
      * @throws UnknownFormatConversionException if no TypeConverter can be found for the given type.
      */
     public TypeConverter<?> findCompatibleConverter(final Type type) {
-        Assert.requireNonNull(type, "No type was provided");
+        Objects.requireNonNull(type, "No type was provided");
         final TypeConverter<?> primary = registry.get(type);
         // cached type converters
         if (primary != null) {

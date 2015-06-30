@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.nosql.appender.DefaultNoSqlObject;
 import org.apache.logging.log4j.nosql.appender.NoSqlConnection;
 import org.apache.logging.log4j.nosql.appender.NoSqlObject;
+import org.apache.logging.log4j.util.Strings;
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.Response;
 
@@ -51,7 +52,7 @@ public final class CouchDbConnection implements NoSqlConnection<Map<String, Obje
     public void insertObject(final NoSqlObject<Map<String, Object>> object) {
         try {
             final Response response = this.client.save(object.unwrap());
-            if (response.getError() != null && response.getError().length() > 0) {
+            if (Strings.isNotEmpty(response.getError())) {
                 throw new AppenderLoggingException("Failed to write log event to CouchDB due to error: " +
                         response.getError() + '.');
             }

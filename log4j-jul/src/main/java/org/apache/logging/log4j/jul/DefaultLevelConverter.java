@@ -17,52 +17,111 @@
 
 package org.apache.logging.log4j.jul;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.apache.logging.log4j.Level;
 
 /**
  * Default implementation of LevelConverter strategy.
- *
+ * <p>
+ * Since 2.4, supports custom JUL levels by mapping them to their closest mapped neighbour.
+ * </p>
+ * 
  * @since 2.1
  */
 public class DefaultLevelConverter implements LevelConverter {
 
-    private final Map<java.util.logging.Level, Level> JDK_TO_LOG4J =
-        new IdentityHashMap<java.util.logging.Level, Level>(9);
-    private final Map<Level, java.util.logging.Level> LOG4J_TO_JDK =
-        new IdentityHashMap<Level, java.util.logging.Level>(10);
-
-    public DefaultLevelConverter() {
-        JDK_TO_LOG4J.put(java.util.logging.Level.OFF, Level.OFF);
-        JDK_TO_LOG4J.put(java.util.logging.Level.FINEST, LevelTranslator.FINEST);
-        JDK_TO_LOG4J.put(java.util.logging.Level.FINER, Level.TRACE);
-        JDK_TO_LOG4J.put(java.util.logging.Level.FINE, Level.DEBUG);
-        JDK_TO_LOG4J.put(java.util.logging.Level.CONFIG, LevelTranslator.CONFIG);
-        JDK_TO_LOG4J.put(java.util.logging.Level.INFO, Level.INFO);
-        JDK_TO_LOG4J.put(java.util.logging.Level.WARNING, Level.WARN);
-        JDK_TO_LOG4J.put(java.util.logging.Level.SEVERE, Level.ERROR);
-        JDK_TO_LOG4J.put(java.util.logging.Level.ALL, Level.ALL);
-        LOG4J_TO_JDK.put(Level.OFF, java.util.logging.Level.OFF);
-        LOG4J_TO_JDK.put(LevelTranslator.FINEST, java.util.logging.Level.FINEST);
-        LOG4J_TO_JDK.put(Level.TRACE, java.util.logging.Level.FINER);
-        LOG4J_TO_JDK.put(Level.DEBUG, java.util.logging.Level.FINE);
-        LOG4J_TO_JDK.put(LevelTranslator.CONFIG, java.util.logging.Level.CONFIG);
-        LOG4J_TO_JDK.put(Level.INFO, java.util.logging.Level.INFO);
-        LOG4J_TO_JDK.put(Level.WARN, java.util.logging.Level.WARNING);
-        LOG4J_TO_JDK.put(Level.ERROR, java.util.logging.Level.SEVERE);
-        LOG4J_TO_JDK.put(Level.FATAL, java.util.logging.Level.SEVERE);
-        LOG4J_TO_JDK.put(Level.ALL, java.util.logging.Level.ALL);
+    static final class JulLevelComparator implements Comparator<java.util.logging.Level> {
+        @Override
+        public int compare(java.util.logging.Level level1, java.util.logging.Level level2) {
+            return Integer.compare(level1.intValue(), level2.intValue());
+        }
     }
 
-    @Override
-    public Level toLevel(final java.util.logging.Level javaLevel) {
-        return JDK_TO_LOG4J.get(javaLevel);
+    private final ConcurrentMap<java.util.logging.Level, Level> julToLog4j = new ConcurrentHashMap<>(9);
+    private final Map<Level, java.util.logging.Level> log4jToJul = new IdentityHashMap<>(10);
+    private final List<java.util.logging.Level> sortedJulLevels = new ArrayList<>(9);
+
+    public DefaultLevelConverter() {
+        // Map JUL to Log4j
+        mapJulToLog4j(java.util.logging.Level.ALL, Level.ALL);
+        mapJulToLog4j(java.util.logging.Level.FINEST, LevelTranslator.FINEST);
+        mapJulToLog4j(java.util.logging.Level.FINER, Level.TRACE);
+        mapJulToLog4j(java.util.logging.Level.FINE, Level.DEBUG);
+        mapJulToLog4j(java.util.logging.Level.CONFIG, LevelTranslator.CONFIG);
+        mapJulToLog4j(java.util.logging.Level.INFO, Level.INFO);
+        mapJulToLog4j(java.util.logging.Level.WARNING, Level.WARN);
+        mapJulToLog4j(java.util.logging.Level.SEVERE, Level.ERROR);
+        mapJulToLog4j(java.util.logging.Level.OFF, Level.OFF);
+        // Map Log4j to JUL
+        mapLog4jToJul(Level.ALL, java.util.logging.Level.ALL);
+        mapLog4jToJul(LevelTranslator.FINEST, java.util.logging.Level.FINEST);
+        mapLog4jToJul(Level.TRACE, java.util.logging.Level.FINER);
+        mapLog4jToJul(Level.DEBUG, java.util.logging.Level.FINE);
+        mapLog4jToJul(LevelTranslator.CONFIG, java.util.logging.Level.CONFIG);
+        mapLog4jToJul(Level.INFO, java.util.logging.Level.INFO);
+        mapLog4jToJul(Level.WARN, java.util.logging.Level.WARNING);
+        mapLog4jToJul(Level.ERROR, java.util.logging.Level.SEVERE);
+        mapLog4jToJul(Level.FATAL, java.util.logging.Level.SEVERE);
+        mapLog4jToJul(Level.OFF, java.util.logging.Level.OFF);
+        // Sorted Java levels
+        sortedJulLevels.addAll(julToLog4j.keySet());
+        Collections.sort(sortedJulLevels, new JulLevelComparator());
+
+    }
+
+    private long distance(java.util.logging.Level javaLevel, java.util.logging.Level customJavaLevel) {
+        return Math.abs((long) customJavaLevel.intValue() - (long) javaLevel.intValue());
+    }
+
+    /*
+     * TODO consider making public for advanced configuration.
+     */
+    private void mapJulToLog4j(java.util.logging.Level julLevel, Level level) {
+        julToLog4j.put(julLevel, level);
+    }
+
+    /*
+     * TODO consider making public for advanced configuration.
+     */
+    private void mapLog4jToJul(Level level, java.util.logging.Level julLevel) {
+        log4jToJul.put(level, julLevel);
+    }
+
+    private Level nearestLevel(java.util.logging.Level customJavaLevel) {
+        long prevDist = Long.MAX_VALUE;
+        java.util.logging.Level prevLevel = null;
+        for (java.util.logging.Level mappedJavaLevel : sortedJulLevels) {
+            long distance = distance(customJavaLevel, mappedJavaLevel);
+            if (distance > prevDist) {
+                return julToLog4j.get(prevLevel);
+            }
+            prevDist = distance;
+            prevLevel = mappedJavaLevel;
+        }
+        return julToLog4j.get(prevLevel);
     }
 
     @Override
     public java.util.logging.Level toJavaLevel(final Level level) {
-        return LOG4J_TO_JDK.get(level);
+        return log4jToJul.get(level);
+    }
+
+    @Override
+    public Level toLevel(final java.util.logging.Level javaLevel) {
+        final Level level = julToLog4j.get(javaLevel);
+        if (level != null) {
+            return level;
+        }
+        final Level nearestLevel = nearestLevel(javaLevel);
+        julToLog4j.put(javaLevel, nearestLevel);
+        return nearestLevel;
     }
 }

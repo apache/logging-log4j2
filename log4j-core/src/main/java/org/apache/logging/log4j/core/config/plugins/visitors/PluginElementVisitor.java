@@ -43,8 +43,8 @@ public class PluginElementVisitor extends AbstractPluginVisitor<PluginElement> {
         final String name = this.annotation.value();
         if (this.conversionType.isArray()) {
             setConversionType(this.conversionType.getComponentType());
-            final List<Object> values = new ArrayList<Object>();
-            final Collection<Node> used = new ArrayList<Node>();
+            final List<Object> values = new ArrayList<>();
+            final Collection<Node> used = new ArrayList<>();
             log.append("={");
             boolean first = true;
             for (final Node child : node.getChildren()) {

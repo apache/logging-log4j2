@@ -20,6 +20,7 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -197,12 +198,12 @@ public class LoggerTest {
     @Test
     public void testReconfiguration() throws Exception {
         final Configuration oldConfig = context.getConfiguration();
-        final int MONITOR_INTERVAL_SECONDS = 1;
+        final int MONITOR_INTERVAL_SECONDS = 5;
         final File file = new File("target/test-classes/" + CONFIG);
         final long orig = file.lastModified();
         final long newTime = orig + 10000;
-        file.setLastModified(newTime);
-        Thread.sleep((MONITOR_INTERVAL_SECONDS + 1) * 1000);
+        assertTrue("setLastModified should have succeeded.", file.setLastModified(newTime));
+        TimeUnit.SECONDS.sleep(MONITOR_INTERVAL_SECONDS + 1);
         for (int i = 0; i < 17; ++i) {
             logger.debug("Reconfigure");
         }

@@ -101,7 +101,7 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
             throwableClassName = firstLine;
         }
 
-        final List<StackTraceElement> stackTrace = new ArrayList<StackTraceElement>();
+        final List<StackTraceElement> stackTrace = new ArrayList<>();
         Throwable cause = null;
         while (lines.hasNext()) {
             final String line = lines.next();

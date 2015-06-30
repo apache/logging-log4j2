@@ -22,36 +22,14 @@ import java.io.LineNumberReader;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Helps with Throwable objects.
  */
 public final class Throwables {
-
-    private static final Method ADD_SUPPRESSED;
-
-    private static final Method GET_SUPPRESSED;
-
-    static {
-        Method getSuppressed = null, addSuppressed = null;
-        final Method[] methods = Throwable.class.getMethods();
-        for (final Method method : methods) {
-            if (method.getName().equals("getSuppressed")) {
-                getSuppressed = method;
-            } else if (method.getName().equals("addSuppressed")) {
-                addSuppressed = method;
-            }
-        }
-        GET_SUPPRESSED = getSuppressed;
-        ADD_SUPPRESSED = addSuppressed;
-    }
 
     /**
      * Has no effect on Java 6 and below.
@@ -60,25 +38,11 @@ public final class Throwables {
      * @param suppressedThrowable a suppressed Throwable
      * @see Throwable#addSuppressed(Throwable)
      * @deprecated If compiling on Java 7 and above use {@link Throwable#addSuppressed(Throwable)}. Marked as deprecated because Java 6 is
-     *             deprecated.
+     *             deprecated. Will be removed in 2.5.
      */
     @Deprecated
     public static void addSuppressed(final Throwable throwable, final Throwable suppressedThrowable) {
-        if (ADD_SUPPRESSED != null) {
-            try {
-                ADD_SUPPRESSED.invoke(throwable, suppressedThrowable);
-            } catch (final IllegalAccessException e) {
-                // Only happens on Java >= 7 if this class has a bug.
-                StatusLogger.getLogger().error(e);
-            } catch (final IllegalArgumentException e) {
-                // Only happens on Java >= 7 if this class has a bug.
-                StatusLogger.getLogger().error(e);
-            } catch (final InvocationTargetException e) {
-                // Only happens on Java >= 7 if this class has a bug.
-                StatusLogger.getLogger().error(e);
-            }
-        }
-
+        throwable.addSuppressed(suppressedThrowable);
     }
 
     /**
@@ -88,29 +52,22 @@ public final class Throwables {
      * @return see Java 7's {@link Throwable#getSuppressed()}
      * @see Throwable#getSuppressed()
      * @deprecated If compiling on Java 7 and above use {@link Throwable#getSuppressed()}. Marked as deprecated because Java 6 is
-     *             deprecated.
+     *             deprecated. Will be removed 2.5.
      */
     @Deprecated
     public static Throwable[] getSuppressed(final Throwable throwable) {
-        if (GET_SUPPRESSED != null) {
-            try {
-                return (Throwable[]) GET_SUPPRESSED.invoke(throwable);
-            } catch (final Exception e) {
-                // Only happens on Java >= 7 if this class has a bug.
-                StatusLogger.getLogger().error(e);
-                return null;
-            }
-        }
-        return null;
+        return throwable.getSuppressed();
     }
 
     /**
      * Returns true if the getSuppressed method is available.
      * 
-     * @return True if getSuppressed is available.
+     * @return True if getSuppressed is available. As of 2.4, always returns true.
+     * @deprecated Will be removed in 2.5. As of 2.4, always returns true.
      */
+    @Deprecated
     public static boolean isGetSuppressedAvailable() {
-        return GET_SUPPRESSED != null;
+        return true;
     }
 
     /**
@@ -128,7 +85,7 @@ public final class Throwables {
             // Ignore any exceptions.
         }
         pw.flush();
-        final List<String> lines = new ArrayList<String>();
+        final List<String> lines = new ArrayList<>();
         final LineNumberReader reader = new LineNumberReader(new StringReader(sw.toString()));
         try {
             String line = reader.readLine();

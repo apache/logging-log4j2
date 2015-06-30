@@ -37,14 +37,15 @@ public class IoBuilderTest {
 
     @Test
     public void testNoArgBuilderCallerClassInfo() throws Exception {
-        final PrintStream ps = IoBuilder.forLogger().buildPrintStream();
-        ps.println("discarded");
-        final ListAppender app = context.getListAppender("IoBuilderTest");
-        final List<String> messages = app.getMessages();
-        assertThat(messages, not(empty()));
-        assertThat(messages, hasSize(1));
-        final String message = messages.get(0);
-        assertThat(message, startsWith(getClass().getName() + ".testNoArgBuilderCallerClassInfo"));
-        app.clear();
+        try (final PrintStream ps = IoBuilder.forLogger().buildPrintStream()) {
+            ps.println("discarded");
+            final ListAppender app = context.getListAppender("IoBuilderTest");
+            final List<String> messages = app.getMessages();
+            assertThat(messages, not(empty()));
+            assertThat(messages, hasSize(1));
+            final String message = messages.get(0);
+            assertThat(message, startsWith(getClass().getName() + ".testNoArgBuilderCallerClassInfo"));
+            app.clear();
+        }
     }
 }

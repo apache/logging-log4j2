@@ -27,6 +27,23 @@ import java.io.Serializable;
  */
 public interface Marker extends Serializable {
 
+	/**
+     * Adds a Marker as a parent to this Marker.
+     * @param markers The parent markers to add.
+     * @return The current Marker object, thus allowing multiple adds to be concatenated.
+     * @throws IllegalArgumentException if the argument is {@code null}
+     */
+    Marker addParents(Marker... markers);
+
+    /**
+	 * Returns true if the given marker has the same name as this marker.
+	 *
+	 * @param obj the reference object with which to compare. 
+	 * @return true if the given marker has the same name as this marker.
+	 * @since 2.4
+	 */
+    public boolean equals(Object obj);
+
     /**
      * Returns the name of this Marker.
      * @return The name of the Marker.
@@ -38,6 +55,14 @@ public interface Marker extends Serializable {
      * @return The parent Markers or {@code null} if this Marker has no parents.
      */
     Marker[] getParents();
+
+    /**
+     * Returns a hash code value based on the name of this marker.
+     * Markers are equal if they have the same name.
+     * @return the computed hash code
+	 * @since 2.4
+     */
+    public int hashCode();
 
     /**
      * Indicates whether this Marker has references to any other Markers.
@@ -62,12 +87,12 @@ public interface Marker extends Serializable {
     boolean isInstanceOf(String name);
 
     /**
-     * Adds a Marker as a parent to this Marker.
-     * @param markers The parent markers to add.
-     * @return The current Marker object, thus allowing multiple adds to be concatenated.
+     * Removes the specified Marker as a parent of this Marker.
+     * @param marker The marker to remove.
+     * @return {@code true} if the marker was removed.
      * @throws IllegalArgumentException if the argument is {@code null}
      */
-    Marker addParents(Marker... markers);
+    boolean remove(Marker marker);
 
     /**
      * Replaces the set of parent Markers with the provided Markers.
@@ -75,12 +100,4 @@ public interface Marker extends Serializable {
      * @return The current Marker object.
      */
     Marker setParents(Marker... markers);
-
-    /**
-     * Removes the specified Marker as a parent of this Marker.
-     * @param marker The marker to remove.
-     * @return {@code true} if the marker was removed.
-     * @throws IllegalArgumentException if the argument is {@code null}
-     */
-    boolean remove(Marker marker);
 }

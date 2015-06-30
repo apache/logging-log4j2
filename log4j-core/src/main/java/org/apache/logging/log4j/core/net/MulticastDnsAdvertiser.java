@@ -63,7 +63,7 @@ public class MulticastDnsAdvertiser implements Advertiser {
     @Override
     public Object advertise(final Map<String, String> properties) {
         //default to tcp if "protocol" was not set
-        final Map<String, String> truncatedProperties = new HashMap<String, String>();
+        final Map<String, String> truncatedProperties = new HashMap<>();
         for (final Map.Entry<String, String> entry:properties.entrySet())
         {
             if (entry.getKey().length() <= 255 && entry.getValue().length() <= 255)
@@ -170,7 +170,7 @@ public class MulticastDnsAdvertiser implements Advertiser {
                                                    final Map<String, String> properties) {
         //version 1 uses a hashtable
         @SuppressWarnings("UseOfObsoleteCollectionType")
-        final Hashtable<String, String> hashtableProperties = new Hashtable<String, String>(properties);
+        final Hashtable<String, String> hashtableProperties = new Hashtable<>(properties);
         try {
             return serviceInfoClass
                     .getConstructor(String.class, String.class, int.class, int.class, int.class, Hashtable.class)

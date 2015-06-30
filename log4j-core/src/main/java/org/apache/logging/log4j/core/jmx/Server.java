@@ -75,8 +75,8 @@ public final class Server {
      * @see LOG4J2-938
      */
     private static ExecutorService createExecutor() {
-        boolean defaultAsync = !isWebApp();
-        boolean async = PropertiesUtil.getProperties().getBooleanProperty(PROPERTY_ASYNC_NOTIF, defaultAsync);
+        final boolean defaultAsync = !isWebApp();
+        final boolean async = PropertiesUtil.getProperties().getBooleanProperty(PROPERTY_ASYNC_NOTIF, defaultAsync);
         return async ? Executors.newFixedThreadPool(1, new DaemonThreadFactory(THREAD_NAME_PREFIX)) : null;
     }
 

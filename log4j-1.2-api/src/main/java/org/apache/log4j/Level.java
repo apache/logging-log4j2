@@ -21,6 +21,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
+import java.util.Locale;
 
 import org.apache.logging.log4j.util.Strings;
 
@@ -174,40 +175,27 @@ public class Level extends Priority implements Serializable {
         if (sArg == null) {
             return defaultLevel;
         }
-
-        final String s = sArg.toUpperCase();
-
-        if (s.equals("ALL")) {
+        final String s = sArg.toUpperCase(Locale.ROOT);
+        switch (s) {
+        case "ALL":
             return Level.ALL;
-        }
-        if (s.equals("DEBUG")) {
+        case "DEBUG":
             return Level.DEBUG;
-        }
-        if (s.equals("INFO")) {
+        case "INFO":
             return Level.INFO;
-        }
-        if (s.equals("WARN")) {
+        case "WARN":
             return Level.WARN;
-        }
-        if (s.equals("ERROR")) {
+        case "ERROR":
             return Level.ERROR;
-        }
-        if (s.equals("FATAL")) {
+        case "FATAL":
             return Level.FATAL;
-        }
-        if (s.equals("OFF")) {
+        case "OFF":
             return Level.OFF;
-        }
-        if (s.equals("TRACE")) {
+        case "TRACE":
             return Level.TRACE;
+        default:
+            return defaultLevel;
         }
-        //
-        //   For Turkish i problem, see bug 40937
-        //
-        if (s.equals("\u0130NFO")) {
-            return Level.INFO;
-        }
-        return defaultLevel;
     }
 
     /**

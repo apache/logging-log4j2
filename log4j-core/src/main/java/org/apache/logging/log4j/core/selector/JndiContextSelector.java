@@ -88,7 +88,7 @@ public class JndiContextSelector implements NamedContextSelector {
     private static final LoggerContext CONTEXT = new LoggerContext("Default");
 
     private static final ConcurrentMap<String, LoggerContext> CONTEXT_MAP =
-        new ConcurrentHashMap<String, LoggerContext>();
+        new ConcurrentHashMap<>();
 
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
@@ -150,7 +150,7 @@ public class JndiContextSelector implements NamedContextSelector {
 
     @Override
     public List<LoggerContext> getLoggerContexts() {
-        final List<LoggerContext> list = new ArrayList<LoggerContext>(CONTEXT_MAP.values());
+        final List<LoggerContext> list = new ArrayList<>(CONTEXT_MAP.values());
         return Collections.unmodifiableList(list);
     }
 

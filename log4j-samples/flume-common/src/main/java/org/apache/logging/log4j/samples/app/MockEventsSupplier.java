@@ -34,7 +34,7 @@ public class MockEventsSupplier {
 
     public static List<AuditEvent> getAllEvents(final String member) {
 
-        final List<AuditEvent> events = new ArrayList<AuditEvent>();
+        final List<AuditEvent> events = new ArrayList<>();
 
 
         final Login login = LogEventFactory.getEvent(Login.class);

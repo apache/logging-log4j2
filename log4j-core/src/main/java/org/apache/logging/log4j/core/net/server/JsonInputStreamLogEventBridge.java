@@ -55,8 +55,10 @@ public class JsonInputStreamLogEventBridge extends InputStreamLogEventBridge {
         boolean inEsc = false;
         for (int i = start; i < charArray.length; i++) {
             final char c = charArray[i];
-            if (!inEsc) {
-                inEsc = false;
+            if (inEsc) {
+            	// Skip this char and continue
+            	inEsc = false;
+            } else { 
                 switch (c) {
                 case EVENT_START_MARKER:
                     if (!inStr) {

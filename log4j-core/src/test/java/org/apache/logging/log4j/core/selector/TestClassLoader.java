@@ -22,10 +22,10 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.util.LoaderUtil;
-import sun.misc.IOUtils;
 
 /**
  * ClassLoader that loads class in this package (or sub-package) by hand, otherwise delegating to the TCCL.
@@ -57,10 +57,9 @@ public class TestClassLoader extends ClassLoader {
             final URLConnection uc = resource.openConnection();
             final int len = uc.getContentLength();
             final InputStream in = new BufferedInputStream(uc.getInputStream());
-            byte[] bytecode;
+            byte[] bytecode = new byte[len];
             try {
-                // laziness means using sun.misc
-                bytecode = IOUtils.readFully(in, len, true);
+                IOUtils.readFully(in, bytecode);
             } finally {
                 Closer.closeSilently(in);
             }

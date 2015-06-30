@@ -36,10 +36,10 @@ final class Log4jTaglibLoggerContext implements LoggerContext {
     // These were change to WeakHashMaps to avoid ClassLoader (memory) leak, something that's particularly
     // important in Servlet containers.
     private static final WeakHashMap<ServletContext, Log4jTaglibLoggerContext> CONTEXTS =
-            new WeakHashMap<ServletContext, Log4jTaglibLoggerContext>();
+            new WeakHashMap<>();
 
     private final WeakHashMap<String, Log4jTaglibLogger> loggers =
-            new WeakHashMap<String, Log4jTaglibLogger>();
+            new WeakHashMap<>();
 
     private final ServletContext servletContext;
 

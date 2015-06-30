@@ -44,6 +44,11 @@
           many more types of Appenders. However, this means you need to configure most Layouts with a ${Charset} to
           ensure the byte array contains correct values.
         </p>
+        <p>
+          The root class for layouts that use a Charset is <code>org.apache.logging.log4j.core.layout.AbstractStringLayout</code> 
+          where the default there is UTF-8. Each layout that extends <code>org.apache.logging.log4j.core.layout.AbstractStringLayout</code> 
+          can provide its own default. See each layout below.
+        </p>
         <a name="JSONLayout"/>
         <subsection name="JSONLayout">
           <!-- From Javadoc of org.apache.logging.log4j.core.layout.JSONLayout -->
@@ -89,7 +94,7 @@
           <p>
           Appenders using this layout should have their <code>charset</code> set to <code>UTF-8</code> or
           <code>UTF-16</code>, otherwise events containing non-ASCII characters could result in corrupted log files.
-          The default charset is <code>UTF-8</code>.
+          If not specified, this layout uses UTF-8.
           </p>
           <h4>Pretty vs. compact JSON</h4>
           <p>
@@ -159,7 +164,7 @@
               <td>charset</td>
               <td>String</td>
               <td>The character set to use when converting the HTML String to a byte array. The value must be
-                a valid ${Charset}. If not specified, the default system Charset will be used.</td>
+                a valid ${Charset}. If not specified, this layout uses UTF-8.</td>
             </tr>
             <tr>
               <td>contentType</td>
@@ -232,7 +237,7 @@ WARN  [main]: Message 2</pre>
               <td>charset</td>
               <td>String</td>
               <td>The character set to use when converting the syslog String to a byte array. The String must be
-                a valid ${Charset}. If not specified, the default system Charset will be used.
+                a valid ${Charset}. If not specified, this layout uses UTF-8.
               </td>
             </tr>
             <tr>
@@ -1039,23 +1044,26 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
-                <b>X</b>{key}<br />
-                <b>mdc</b>{key}<br />
-                <b>MDC</b>{key}
+                <b>X</b>{key[,key2...]}<br />
+                <b>mdc</b>{key[,key2...]}<br />
+                <b>MDC</b>{key[,key2...]}
               </td>
               <td>
                 <p>Outputs the Thread Context Map (also known as the Mapped Diagnostic Context or MDC)
                   associated with the thread that generated the logging event. The
                   <b>X</b>
-                  conversion character can be followed by the key for the
+                  conversion character can be followed by one or more keys for the
                   map placed between braces, as in
                   <b>%X{clientNumber}</b>
                   where
                   <code>clientNumber</code>
                   is the key. The value in the MDC
-                  corresponding to the key will be output. If no additional sub-option
-                  is specified, then the entire contents of the MDC key value pair set
-                  is output using a format {{key1,val1},{key2,val2}}
+                  corresponding to the key will be output.</p>
+                <p>If a list of keys are provided, such as <b>%X{name, number}</b>, then each key that is present in the
+                    ThreadContext will be output using the format {name=val1, number=val2}. The key/value pairs will be
+                  printed in the order they appear in the list.</p>
+                <p>If no sub-options are specified then the entire contents of the MDC key value pair set
+                  is output using a format {key1=val1, key2=val2}. The key/value pairs will be printed in sorted order.
                 </p>
                 <p>See the
                   <a class="javadoc" href="../log4j-api/apidocs/org/apache/logging/log4j/ThreadContext.html">ThreadContext</a>
@@ -1416,7 +1424,7 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
               <td>charset</td>
               <td>String</td>
               <td>The character set to use when converting the syslog String to a byte array. The String must be
-                a valid ${Charset}. If not specified, the default system Charset will be used.</td>
+                a valid ${Charset}. If not specified, this layout uses UTF-8.</td>
             </tr>
             <tr>
               <td>facility</td>
@@ -1485,6 +1493,7 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           <p>
           Appenders using this layout should have their <code>charset</code> set to <code>UTF-8</code> or
           <code>UTF-16</code>, otherwise events containing non ASCII characters could result in corrupted log files.
+          If not specified, this layout uses UTF-8.
           </p>
           <h4>Pretty vs. compact XML</h4>
           <p>

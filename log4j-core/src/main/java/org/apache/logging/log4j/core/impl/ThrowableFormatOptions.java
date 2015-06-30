@@ -22,6 +22,7 @@ import java.util.Scanner;
 
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Patterns;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Contains options which control how a {@link Throwable} pattern is formatted.
@@ -189,14 +190,18 @@ public final class ThrowableFormatOptions {
         //     %xEx{["none"|"short"|"full"|depth],[filters(packages)}
         // However, the convention for multiple options should be:
         //     %xEx{["none"|"short"|"full"|depth]}[{filters(packages)}]
-        if (options.length == 1 && options[0] != null && options[0].length() > 0) {
+        if (options.length == 1 && Strings.isNotEmpty(options[0])) {
             final String[] opts = options[0].split(Patterns.COMMA_SEPARATOR, 2);
             final String first = opts[0].trim();
-            final Scanner scanner = new Scanner(first);
-            if (opts.length > 1 && (first.equalsIgnoreCase(FULL) || first.equalsIgnoreCase(SHORT) || first.equalsIgnoreCase(NONE) || scanner.hasNextInt())) {
-                options = new String[]{first, opts[1].trim()};
+            try (final Scanner scanner = new Scanner(first)) {
+                if (opts.length > 1
+                        && (first.equalsIgnoreCase(FULL) || first.equalsIgnoreCase(SHORT)
+                                || first.equalsIgnoreCase(NONE) || scanner.hasNextInt())) {
+                    options = new String[] {
+                            first,
+                            opts[1].trim() };
+                }
             }
-            scanner.close();
         }
 
         int lines = DEFAULT.lines;
@@ -214,7 +219,7 @@ public final class ThrowableFormatOptions {
                     if (filterStr.length() > 0) {
                         final String[] array = filterStr.split(Patterns.COMMA_SEPARATOR);
                         if (array.length > 0) {
-                            packages = new ArrayList<String>(array.length);
+                            packages = new ArrayList<>(array.length);
                             for (String token : array) {
                                 token = token.trim();
                                 if (token.length() > 0) {

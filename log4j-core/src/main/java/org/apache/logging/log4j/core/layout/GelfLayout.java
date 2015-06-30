@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
 import java.util.zip.DeflaterOutputStream;
@@ -36,7 +37,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.net.Severity;
-import org.apache.logging.log4j.core.util.Charsets;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -107,7 +107,7 @@ public final class GelfLayout extends AbstractStringLayout {
             //@formatter:off
             @PluginAttribute("host") final String host,
             @PluginElement("AdditionalField") final KeyValuePair[] additionalFields,
-            @PluginAttribute(value = "compressionThreshold",
+            @PluginAttribute(value = "compressionType",
                 defaultString = "GZIP") final CompressionType compressionType,
             @PluginAttribute(value = "compressionThreshold",
                 defaultInt= COMPRESSION_THRESHOLD) final int compressionThreshold) {
@@ -145,7 +145,7 @@ public final class GelfLayout extends AbstractStringLayout {
 
     public GelfLayout(final String host, final KeyValuePair[] additionalFields, final CompressionType compressionType,
             final int compressionThreshold) {
-        super(Charsets.UTF_8);
+        super(StandardCharsets.UTF_8);
         this.host = host;
         this.additionalFields = additionalFields;
         this.compressionType = compressionType;
@@ -155,13 +155,13 @@ public final class GelfLayout extends AbstractStringLayout {
     private byte[] compress(final byte[] bytes) {
         try {
             final ByteArrayOutputStream baos = new ByteArrayOutputStream(compressionThreshold / 8);
-            final DeflaterOutputStream stream = compressionType.createDeflaterOutputStream(baos);
-            if (stream == null) {
-                return bytes;
+            try (final DeflaterOutputStream stream = compressionType.createDeflaterOutputStream(baos)) {
+                if (stream == null) {
+                    return bytes;
+                }
+                stream.write(bytes);
+                stream.finish();
             }
-            stream.write(bytes);
-            stream.finish();
-            stream.close();
             return baos.toByteArray();
         } catch (final IOException e) {
             StatusLogger.getLogger().error(e);

@@ -29,7 +29,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LifeCycle;
-import org.apache.logging.log4j.core.LifeCycle.State;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -43,9 +42,9 @@ public class DefaultShutdownCallbackRegistry implements ShutdownCallbackRegistry
     private static final long serialVersionUID = 1L;
     protected static final Logger LOGGER = StatusLogger.getLogger();
 
-    private final AtomicReference<State> state = new AtomicReference<State>(State.INITIALIZED);
+    private final AtomicReference<State> state = new AtomicReference<>(State.INITIALIZED);
     private final ThreadFactory threadFactory;
-    private final Collection<Cancellable> hooks = new CopyOnWriteArrayList<Cancellable>();
+    private final Collection<Cancellable> hooks = new CopyOnWriteArrayList<>();
     private Reference<Thread> shutdownHookRef;
 
     /**
@@ -86,7 +85,7 @@ public class DefaultShutdownCallbackRegistry implements ShutdownCallbackRegistry
         if (isStarted()) {
             final Cancellable receipt = new Cancellable() {
                 // use a reference to prevent memory leaks
-                private final Reference<Runnable> hook = new SoftReference<Runnable>(callback);
+                private final Reference<Runnable> hook = new SoftReference<>(callback);
 
                 @Override
                 public void cancel() {
@@ -132,7 +131,7 @@ public class DefaultShutdownCallbackRegistry implements ShutdownCallbackRegistry
     }
 
     private void addShutdownHook(final Thread thread) {
-        shutdownHookRef = new WeakReference<Thread>(thread);
+        shutdownHookRef = new WeakReference<>(thread);
         Runtime.getRuntime().addShutdownHook(thread);
     }
 

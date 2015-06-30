@@ -27,7 +27,7 @@ import org.apache.logging.log4j.util.Strings;
 
 
 /**
- * Outputs the Throwable portion of the LoggingEvent as a full stacktrace
+ * Outputs the Throwable portion of the LoggingEvent as a full stack trace
  * unless this converter's option is 'short', where it just outputs the first line of the trace, or if
  * the number of lines to print is explicitly specified.
  */

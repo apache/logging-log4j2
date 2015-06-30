@@ -85,7 +85,7 @@ public class LogManager {
         }
 
         if (factory == null) {
-            final SortedMap<Integer, LoggerContextFactory> factories = new TreeMap<Integer, LoggerContextFactory>();
+            final SortedMap<Integer, LoggerContextFactory> factories = new TreeMap<>();
             // note that the following initial call to ProviderUtil may block until a Provider has been installed when
             // running in an OSGi environment
             if (ProviderUtil.hasProviders()) {
@@ -303,6 +303,20 @@ public class LogManager {
     public static void setFactory(final LoggerContextFactory factory) {
         LogManager.factory = factory;
     }
+
+    /**
+     * Returns a formatter Logger using the fully qualified name of the calling Class as the Logger name.
+     * <p>
+     * This logger lets you use a {@link java.util.Formatter} string in the message to format parameters.
+     * </p>
+     * @return The Logger for the calling class.
+     * @throws UnsupportedOperationException if the calling class cannot be determined.
+     * @since 2.4
+     */
+    public static Logger getFormatterLogger() {
+        return getFormatterLogger(ReflectionUtil.getCallerClass(2));
+    }
+
 
     /**
      * Returns a formatter Logger using the fully qualified name of the Class as the Logger name.

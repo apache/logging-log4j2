@@ -34,10 +34,10 @@ public class BurstFilterLogDelayTest {
     @Test
     public void testCompareToOverflow() {
         // no overflow, but close
-        Delayed d1 = BurstFilter.createLogDelay(Long.MAX_VALUE - TimeUnit.SECONDS.toNanos(10) - System.nanoTime());
+        final Delayed d1 = BurstFilter.createLogDelay(Long.MAX_VALUE - TimeUnit.SECONDS.toNanos(10) - System.nanoTime());
 
         // Overflow
-        Delayed d2 = BurstFilter.createLogDelay(Long.MAX_VALUE + TimeUnit.SECONDS.toNanos(10) - System.nanoTime());
+        final Delayed d2 = BurstFilter.createLogDelay(Long.MAX_VALUE + TimeUnit.SECONDS.toNanos(10) - System.nanoTime());
 
         assertThat(d2, is(greaterThan(d1)));
     }

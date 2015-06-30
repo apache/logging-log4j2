@@ -147,7 +147,7 @@ public class RingBufferLogEventTest {
         final Level level = Level.TRACE;
         final Message data = new SimpleMessage("message");
         final Throwable t = new InternalError("not a real error");
-        final Map<String, String> map = new HashMap<String, String>();
+        final Map<String, String> map = new HashMap<>();
         map.put("key", "value");
         final ContextStack contextStack = new MutableThreadContextStack(Arrays.asList("a", "b"));
         final String threadName = "main";

@@ -70,7 +70,7 @@ class AsyncLoggerConfigHelper {
     private static ExecutorService executor;
 
     private static volatile int count = 0;
-    private static ThreadLocal<Boolean> isAppenderThread = new ThreadLocal<Boolean>();
+    private static ThreadLocal<Boolean> isAppenderThread = new ThreadLocal<>();
 
     /**
      * Factory used to populate the RingBuffer with events. These event objects
@@ -114,11 +114,10 @@ class AsyncLoggerConfigHelper {
         final WaitStrategy waitStrategy = createWaitStrategy();
         executor = Executors.newSingleThreadExecutor(threadFactory);
         initThreadLocalForExecutorThread();
-        disruptor = new Disruptor<Log4jEventWrapper>(FACTORY, ringBufferSize,
-                executor, ProducerType.MULTI, waitStrategy);
+        disruptor = new Disruptor<>(FACTORY, ringBufferSize, executor, ProducerType.MULTI, waitStrategy);
         final EventHandler<Log4jEventWrapper>[] handlers = new Log4jEventWrapperHandler[] {//
         new Log4jEventWrapperHandler() };
-        final ExceptionHandler errorHandler = getExceptionHandler();
+        final ExceptionHandler<Log4jEventWrapper> errorHandler = getExceptionHandler();
         disruptor.handleExceptionsWith(errorHandler);
         disruptor.handleEventsWith(handlers);
 
@@ -164,22 +163,18 @@ class AsyncLoggerConfigHelper {
         return Integers.ceilingNextPowerOfTwo(ringBufferSize);
     }
 
-    private static ExceptionHandler getExceptionHandler() {
-        final String cls = System
-                .getProperty("AsyncLoggerConfig.ExceptionHandler");
+    private static ExceptionHandler<Log4jEventWrapper> getExceptionHandler() {
+        final String cls = System.getProperty("AsyncLoggerConfig.ExceptionHandler");
         if (cls == null) {
             return null;
         }
         try {
             @SuppressWarnings("unchecked")
-            final Class<? extends ExceptionHandler> klass = (Class<? extends ExceptionHandler>) Class
+            final Class<? extends ExceptionHandler<Log4jEventWrapper>> klass = (Class<? extends ExceptionHandler<Log4jEventWrapper>>) Class
                     .forName(cls);
-            final ExceptionHandler result = klass.newInstance();
-            return result;
+            return klass.newInstance();
         } catch (final Exception ignored) {
-            LOGGER.debug(
-                    "AsyncLoggerConfig.ExceptionHandler not set: error creating "
-                            + cls + ": ", ignored);
+            LOGGER.debug("AsyncLoggerConfig.ExceptionHandler not set: error creating " + cls + ": ", ignored);
             return null;
         }
     }

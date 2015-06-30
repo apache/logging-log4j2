@@ -34,7 +34,7 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
     protected final boolean compact;
     protected final boolean complete;
 
-    protected AbstractJacksonLayout(final ObjectWriter objectWriter, final Charset charset, final boolean compact, final boolean complete, boolean eventEol) {
+    protected AbstractJacksonLayout(final ObjectWriter objectWriter, final Charset charset, final boolean compact, final boolean complete, final boolean eventEol) {
         super(charset);
         this.objectWriter = objectWriter;
         this.compact = compact;

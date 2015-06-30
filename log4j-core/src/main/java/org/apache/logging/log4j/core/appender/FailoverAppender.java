@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Appender;
@@ -55,11 +56,11 @@ public final class FailoverAppender extends AbstractAppender {
 
     private AppenderControl primary;
 
-    private final List<AppenderControl> failoverAppenders = new ArrayList<AppenderControl>();
+    private final List<AppenderControl> failoverAppenders = new ArrayList<>();
 
-    private final long intervalMillis;
+    private final long intervalNanos;
 
-    private volatile long nextCheckMillis = 0;
+    private volatile long nextCheckNanos = 0;
 
     private FailoverAppender(final String name, final Filter filter, final String primary, final String[] failovers,
                              final int intervalMillis, final Configuration config, final boolean ignoreExceptions) {
@@ -67,7 +68,7 @@ public final class FailoverAppender extends AbstractAppender {
         this.primaryRef = primary;
         this.failovers = failovers;
         this.config = config;
-        this.intervalMillis = intervalMillis;
+        this.intervalNanos = TimeUnit.MILLISECONDS.toNanos(intervalMillis);
     }
 
 
@@ -107,8 +108,8 @@ public final class FailoverAppender extends AbstractAppender {
             error("FailoverAppender " + getName() + " did not start successfully");
             return;
         }
-        final long localCheckMillis = nextCheckMillis;
-        if (localCheckMillis == 0 || System.currentTimeMillis() > localCheckMillis) {
+        final long localCheckNanos = nextCheckNanos;
+        if (localCheckNanos == 0 || System.nanoTime() - localCheckNanos > 0) {
             callAppender(event);
         } else {
             failover(event, null);
@@ -118,9 +119,9 @@ public final class FailoverAppender extends AbstractAppender {
     private void callAppender(final LogEvent event) {
         try {
             primary.callAppender(event);
-            nextCheckMillis = 0;
+            nextCheckNanos = 0;
         } catch (final Exception ex) {
-            nextCheckMillis = System.currentTimeMillis() + intervalMillis;
+            nextCheckNanos = System.nanoTime() + intervalNanos;
             failover(event, ex);
         }
     }

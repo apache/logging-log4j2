@@ -148,24 +148,25 @@ public class FlumePersistentPerf {
 
     }
 
-    private static boolean deleteFiles(final File file) {
-        boolean result = true;
-        if (file.isDirectory()) {
+	private static boolean deleteFiles(final File file) {
+		boolean result = true;
+		if (file.isDirectory()) {
 
-            final File[] files = file.listFiles();
-            for (final File child : files) {
-                result &= deleteFiles(child);
-            }
+			final File[] files = file.listFiles();
+			if (files != null) {
+				for (final File child : files) {
+					result &= deleteFiles(child);
+				}
+			}
+		} else if (!file.exists()) {
+			return true;
+		}
 
-        } else if (!file.exists()) {
-            return true;
-        }
-
-        return result &= file.delete();
-    }
+		return result && file.delete();
+	}
 
     private static class EventCollector implements AvroSourceProtocol {
-        private final LinkedBlockingQueue<AvroFlumeEvent> eventQueue = new LinkedBlockingQueue<AvroFlumeEvent>();
+        private final LinkedBlockingQueue<AvroFlumeEvent> eventQueue = new LinkedBlockingQueue<>();
 
         private final NettyServer nettyServer;
 
@@ -210,7 +211,7 @@ public class FlumePersistentPerf {
     }
 
     private static Map<String, String> toStringMap(final Map<CharSequence, CharSequence> charSeqMap) {
-        final Map<String, String> stringMap = new HashMap<String, String>();
+        final Map<String, String> stringMap = new HashMap<>();
         for (final Map.Entry<CharSequence, CharSequence> entry : charSeqMap.entrySet()) {
             stringMap.put(entry.getKey().toString(), entry.getValue().toString());
         }

@@ -30,10 +30,11 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.core.util.Closer;
+import org.apache.logging.log4j.core.util.NullOutputStream;
 
 /**
  * Extends OutputStreamManager but instead of using a buffered output stream, this class maps a region of a file into
@@ -57,7 +58,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
     private final int regionLength;
     private final String advertiseURI;
     private final RandomAccessFile randomAccessFile;
-    private final ThreadLocal<Boolean> isEndOfBatch = new ThreadLocal<Boolean>();
+    private final ThreadLocal<Boolean> isEndOfBatch = new ThreadLocal<>();
     private MappedByteBuffer mappedBuffer;
     private long mappingOffset;
 
@@ -66,7 +67,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
             final Layout<? extends Serializable> layout) throws IOException {
         super(os, fileName, layout);
         this.isForce = force;
-        this.randomAccessFile = Assert.requireNonNull(file, "RandomAccessFile");
+        this.randomAccessFile = Objects.requireNonNull(file, "RandomAccessFile");
         this.regionLength = regionLength;
         this.advertiseURI = advertiseURI;
         this.isEndOfBatch.set(Boolean.FALSE);
@@ -125,7 +126,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
             final long fileLength = randomAccessFile.length() + regionLength;
             LOGGER.debug("MMapAppender extending {} by {} bytes to {}", getFileName(), regionLength, fileLength);
 
-            long startNanos = System.nanoTime();
+            final long startNanos = System.nanoTime();
             randomAccessFile.setLength(fileLength);
             final float millis = (float) ((System.nanoTime() - startNanos) / (1000.0 * 1000.0));
             LOGGER.debug("MMapAppender extended {} OK in {} millis", getFileName(), millis);
@@ -240,17 +241,6 @@ public class MemoryMappedFileManager extends OutputStreamManager {
         return isForce;
     }
 
-    /** {@code OutputStream} subclass that does not write anything. */
-    static class DummyOutputStream extends OutputStream {
-        @Override
-        public void write(final int b) throws IOException {
-        }
-
-        @Override
-        public void write(final byte[] b, final int off, final int len) throws IOException {
-        }
-    }
-
     /**
      * Gets this FileManager's content format specified by:
      * <p>
@@ -261,7 +251,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
      */
     @Override
     public Map<String, String> getContentFormat() {
-        final Map<String, String> result = new HashMap<String, String>(super.getContentFormat());
+        final Map<String, String> result = new HashMap<>(super.getContentFormat());
         result.put("fileURI", advertiseURI);
         return result;
     }
@@ -317,7 +307,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
                 file.delete();
             }
 
-            final OutputStream os = new DummyOutputStream();
+            final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
             RandomAccessFile raf = null;
             try {
                 raf = new RandomAccessFile(name, "rw");

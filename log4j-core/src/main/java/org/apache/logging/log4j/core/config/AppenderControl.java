@@ -31,7 +31,7 @@ public class AppenderControl extends AbstractFilterable {
 
     private static final long serialVersionUID = 1L;
 
-    private final ThreadLocal<AppenderControl> recursive = new ThreadLocal<AppenderControl>();
+    private final ThreadLocal<AppenderControl> recursive = new ThreadLocal<>();
 
     private final Appender appender;
 

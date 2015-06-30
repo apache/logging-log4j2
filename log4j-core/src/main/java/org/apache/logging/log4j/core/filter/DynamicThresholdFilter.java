@@ -57,7 +57,7 @@ public final class DynamicThresholdFilter extends AbstractFilter {
             @PluginAttribute("defaultThreshold") final Level defaultThreshold,
             @PluginAttribute("onMatch") final Result onMatch,
             @PluginAttribute("onMismatch") final Result onMismatch) {
-        final Map<String, Level> map = new HashMap<String, Level>();
+        final Map<String, Level> map = new HashMap<>();
         for (final KeyValuePair pair : pairs) {
             map.put(pair.getKey(), Level.toLevel(pair.getValue()));
         }
@@ -67,7 +67,7 @@ public final class DynamicThresholdFilter extends AbstractFilter {
     private Level defaultThreshold = Level.ERROR;
     private final String key;
 
-    private Map<String, Level> levelMap = new HashMap<String, Level>();
+    private Map<String, Level> levelMap = new HashMap<>();
 
     private DynamicThresholdFilter(final String key, final Map<String, Level> pairs, final Level defaultLevel,
                                    final Result onMatch, final Result onMismatch) {

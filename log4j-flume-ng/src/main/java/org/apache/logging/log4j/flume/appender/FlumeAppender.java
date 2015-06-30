@@ -247,7 +247,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
                     LOGGER.debug("No agents provided, using defaults");
                     agents = new Agent[] {Agent.createAgent(null, null)};
                 }
-                manager = FlumeAvroManager.getManager(name, agents, batchCount, retries, connectTimeoutMillis, reqTimeoutMillis);
+                manager = FlumeAvroManager.getManager(name, agents, batchCount, delayMillis, retries, connectTimeoutMillis, reqTimeoutMillis);
                 break;
             case PERSISTENT:
                 if (agents == null || agents.length == 0) {
@@ -263,7 +263,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
                     LOGGER.debug("No agents provided, using defaults");
                     agents = new Agent[] {Agent.createAgent(null, null)};
                 }
-                manager = FlumeAvroManager.getManager(name, agents, batchCount, retries, connectTimeoutMillis, reqTimeoutMillis);
+                manager = FlumeAvroManager.getManager(name, agents, batchCount, delayMillis, retries, connectTimeoutMillis, reqTimeoutMillis);
         }
 
         if (manager == null) {

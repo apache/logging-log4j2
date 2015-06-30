@@ -33,12 +33,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class PluginManager {
 
-    private static final CopyOnWriteArrayList<String> PACKAGES = new CopyOnWriteArrayList<String>();
+    private static final CopyOnWriteArrayList<String> PACKAGES = new CopyOnWriteArrayList<>();
     private static final String LOG4J_PACKAGES = "org.apache.logging.log4j.core";
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private Map<String, PluginType<?>> plugins = new HashMap<String, PluginType<?>>();
+    private Map<String, PluginType<?>> plugins = new HashMap<>();
     private final String category;
 
     /**
@@ -126,7 +126,7 @@ public class PluginManager {
      */
     public void collectPlugins(final List<String> packages) {
         final String categoryLowerCase = category.toLowerCase();
-        final Map<String, PluginType<?>> newPlugins = new LinkedHashMap<String, PluginType<?>>();
+        final Map<String, PluginType<?>> newPlugins = new LinkedHashMap<>();
 
         // First, iterate the Log4j2Plugin.dat files found in the main CLASSPATH
         Map<String, List<PluginType<?>>> builtInPlugins = PluginRegistry.getInstance().loadFromMainClassLoader();

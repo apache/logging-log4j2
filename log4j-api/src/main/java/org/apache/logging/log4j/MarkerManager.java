@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public final class MarkerManager {
 
-    private static final ConcurrentMap<String, Marker> MARKERS = new ConcurrentHashMap<String, Marker>();
+    private static final ConcurrentMap<String, Marker> MARKERS = new ConcurrentHashMap<>();
 
     private MarkerManager() {
         // do nothing
@@ -41,7 +41,18 @@ public final class MarkerManager {
     }
 
     /**
-     * Retrieve a Marker or create a Marker that has no parent.
+     * Tests existence of the given marker.
+     * @param key the marker name
+     * @return true if the marker exists.
+     * @since 2.4
+     */
+    public static boolean exists(final String key) {
+        return MARKERS.containsKey(key);
+    }
+
+
+    /**
+     * Retrieves a Marker or create a Marker that has no parent.
      * @param name The name of the Marker.
      * @return The Marker with the specified name.
      * @throws IllegalArgumentException if the argument is {@code null}
@@ -380,4 +391,5 @@ public final class MarkerManager {
             sb.append(" ]");
         }
     }
+
 }

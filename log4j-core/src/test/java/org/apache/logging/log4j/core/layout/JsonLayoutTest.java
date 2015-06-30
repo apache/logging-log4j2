@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -33,8 +34,6 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.jackson.Log4jJsonObjectMapper;
-import org.apache.logging.log4j.core.util.Charsets;
-import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
@@ -104,11 +103,11 @@ public class JsonLayoutTest {
         assertTrue(str, str.contains(DQUOTE + name + DQUOTE + propSep));
     }
 
-    private void testAllFeatures(final boolean includeSource, final boolean compact, boolean eventEol, final boolean includeContext)
+    private void testAllFeatures(final boolean includeSource, final boolean compact, final boolean eventEol, final boolean includeContext)
             throws Exception {
         final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
         final AbstractJacksonLayout layout = JsonLayout.createLayout(includeSource,
-                includeContext, false, compact, eventEol, Charsets.UTF_8);
+                includeContext, false, compact, eventEol, StandardCharsets.UTF_8);
         final String str = layout.toSerializable(expected);
         // System.out.println(str);
         final String propSep = this.toPropertySeparator(compact);
@@ -145,9 +144,7 @@ public class JsonLayoutTest {
         this.checkPropertyName("commonElementCount", compact, str);
         this.checkPropertyName("localizedMessage", compact, str);
         this.checkPropertyName("extendedStackTrace", compact, str);
-        if (Throwables.isGetSuppressedAvailable()) {
-            this.checkPropertyName("suppressed", compact, str);
-        }
+        this.checkPropertyName("suppressed", compact, str);
         this.checkPropertyName("loggerFqcn", compact, str);
         this.checkPropertyName("endOfBatch", compact, str);
         if (includeContext) {
@@ -171,7 +168,7 @@ public class JsonLayoutTest {
     @Test
     public void testDefaultCharset() {
         final AbstractJacksonLayout layout = JsonLayout.createDefaultLayout();
-        assertEquals(Charsets.UTF_8, layout.getCharset());
+        assertEquals(StandardCharsets.UTF_8, layout.getCharset());
     }
 
     @Test
@@ -255,7 +252,7 @@ public class JsonLayoutTest {
 
     @Test
     public void testLayoutLoggerName() throws Exception {
-        final AbstractJacksonLayout layout = JsonLayout.createLayout(false, false, false, true, false, Charsets.UTF_8);
+        final AbstractJacksonLayout layout = JsonLayout.createLayout(false, false, false, true, false, StandardCharsets.UTF_8);
         final Log4jLogEvent expected = Log4jLogEvent.createEvent("a.B", null, "f.q.c.n", Level.DEBUG, 
                 new SimpleMessage("M"), null, null, null, null, "threadName", null, 1);
         final String str = layout.toSerializable(expected);

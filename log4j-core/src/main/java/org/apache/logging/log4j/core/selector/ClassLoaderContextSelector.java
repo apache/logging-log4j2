@@ -45,12 +45,12 @@ import org.apache.logging.log4j.util.ReflectionUtil;
  */
 public class ClassLoaderContextSelector implements ContextSelector {
 
-    private static final AtomicReference<LoggerContext> CONTEXT = new AtomicReference<LoggerContext>();
+    private static final AtomicReference<LoggerContext> CONTEXT = new AtomicReference<>();
 
     protected static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     protected static final ConcurrentMap<String, AtomicReference<WeakReference<LoggerContext>>> CONTEXT_MAP =
-        new ConcurrentHashMap<String, AtomicReference<WeakReference<LoggerContext>>>();
+        new ConcurrentHashMap<>();
 
     @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
@@ -93,7 +93,7 @@ public class ClassLoaderContextSelector implements ContextSelector {
 
     @Override
     public List<LoggerContext> getLoggerContexts() {
-        final List<LoggerContext> list = new ArrayList<LoggerContext>();
+        final List<LoggerContext> list = new ArrayList<>();
         final Collection<AtomicReference<WeakReference<LoggerContext>>> coll = CONTEXT_MAP.values();
         for (final AtomicReference<WeakReference<LoggerContext>> ref : coll) {
             final LoggerContext ctx = ref.get().get();
@@ -144,8 +144,8 @@ public class ClassLoaderContextSelector implements ContextSelector {
             }
             LoggerContext ctx = new LoggerContext(name, null, configLocation);
             final AtomicReference<WeakReference<LoggerContext>> r =
-                new AtomicReference<WeakReference<LoggerContext>>();
-            r.set(new WeakReference<LoggerContext>(ctx));
+                new AtomicReference<>();
+            r.set(new WeakReference<>(ctx));
             CONTEXT_MAP.putIfAbsent(name, r);
             ctx = CONTEXT_MAP.get(name).get().get();
             return ctx;
@@ -164,7 +164,7 @@ public class ClassLoaderContextSelector implements ContextSelector {
             return ctx;
         }
         ctx = new LoggerContext(name, null, configLocation);
-        ref.compareAndSet(weakRef, new WeakReference<LoggerContext>(ctx));
+        ref.compareAndSet(weakRef, new WeakReference<>(ctx));
         return ctx;
     }
 

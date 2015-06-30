@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.util.Strings;
@@ -33,7 +32,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
 
     private static final long serialVersionUID = 5050501L;
 
-    private static final ThreadLocal<MutableThreadContextStack> stack = new ThreadLocal<MutableThreadContextStack>();
+    private static final ThreadLocal<MutableThreadContextStack> stack = new ThreadLocal<>();
 
     private final boolean useStack;
 
@@ -170,7 +169,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
     public String peek() {
         final MutableThreadContextStack values = stack.get();
         if (values == null || values.size() == 0) {
-            return null;
+            return Strings.EMPTY;
         }
         return values.peek();
     }
@@ -182,7 +181,8 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         }
         final MutableThreadContextStack values = stack.get();
         if (values == null || values.size() == 0) {
-            throw new NoSuchElementException("The ThreadContext stack is empty");
+            // Like version 1.2
+            return Strings.EMPTY;
         }
         final MutableThreadContextStack copy = (MutableThreadContextStack) values.copy();
         final String result = copy.pop();

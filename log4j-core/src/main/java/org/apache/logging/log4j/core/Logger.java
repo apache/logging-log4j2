@@ -173,7 +173,7 @@ public class Logger extends AbstractLogger {
         } else if (filter instanceof CompositeFilter) {
             return ((CompositeFilter) filter).iterator();
         } else {
-            final List<Filter> filters = new ArrayList<Filter>();
+            final List<Filter> filters = new ArrayList<>();
             filters.add(filter);
             return filters.iterator();
         }
@@ -239,10 +239,10 @@ public class Logger extends AbstractLogger {
      * volatile. Option 2 is used here as the performance cost is very low and it does a better
      * job at documenting how it is used.
      *
-     * @param config The new Configuration.
+     * @param newConfig The new Configuration.
      */
-    void updateConfiguration(final Configuration config) {
-        this.config = new PrivateConfig(config, this);
+    protected void updateConfiguration(final Configuration newConfig) {
+        this.config = new PrivateConfig(newConfig, this);
     }
 
     /**

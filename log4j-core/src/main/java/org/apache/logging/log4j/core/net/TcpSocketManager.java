@@ -76,7 +76,7 @@ public class TcpSocketManager extends AbstractSocketManager {
      * @param layout The Layout.
      */
     public TcpSocketManager(final String name, final OutputStream os, final Socket sock, final InetAddress inetAddress,
-                            final String host, final int port, int connectTimeoutMillis, final int delay,
+                            final String host, final int port, final int connectTimeoutMillis, final int delay,
                             final boolean immediateFail, final Layout<? extends Serializable> layout) {
         super(name, os, inetAddress, host, port, layout);
         this.connectTimeoutMillis = connectTimeoutMillis;
@@ -100,7 +100,7 @@ public class TcpSocketManager extends AbstractSocketManager {
      * @param delayMillis The interval to pause between retries.
      * @return A TcpSocketManager.
      */
-    public static TcpSocketManager getSocketManager(final String host, int port, int connectTimeoutMillis,
+    public static TcpSocketManager getSocketManager(final String host, int port, final int connectTimeoutMillis,
             int delayMillis, final boolean immediateFail, final Layout<? extends Serializable> layout) {
         if (Strings.isEmpty(host)) {
             throw new IllegalArgumentException("A host name is required");
@@ -167,7 +167,7 @@ public class TcpSocketManager extends AbstractSocketManager {
      */
     @Override
     public Map<String, String> getContentFormat() {
-        final Map<String, String> result = new HashMap<String, String>(super.getContentFormat());
+        final Map<String, String> result = new HashMap<>(super.getContentFormat());
         result.put("protocol", "tcp");
         result.put("direction", "out");
         return result;
@@ -255,7 +255,7 @@ public class TcpSocketManager extends AbstractSocketManager {
         private final boolean immediateFail;
         private final Layout<? extends Serializable> layout;
 
-        public FactoryData(final String host, final int port, int connectTimeoutMillis, final int delayMillis,
+        public FactoryData(final String host, final int port, final int connectTimeoutMillis, final int delayMillis,
                            final boolean immediateFail, final Layout<? extends Serializable> layout) {
             this.host = host;
             this.port = port;
@@ -282,7 +282,9 @@ public class TcpSocketManager extends AbstractSocketManager {
                 return null;
             }
             try {
-                final Socket socket = new Socket(data.host, data.port);
+                // LOG4J2-1042
+                final Socket socket = new Socket();
+                socket.connect(new InetSocketAddress(data.host, data.port), data.connectTimeoutMillis);
                 os = socket.getOutputStream();
                 return new TcpSocketManager(name, os, socket, inetAddress, data.host, data.port,
                         data.connectTimeoutMillis, data.delayMillis, data.immediateFail, data.layout);

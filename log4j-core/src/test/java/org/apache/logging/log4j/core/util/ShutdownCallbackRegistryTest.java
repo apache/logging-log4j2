@@ -59,7 +59,7 @@ public class ShutdownCallbackRegistryTest {
 
     public static class Registry implements ShutdownCallbackRegistry {
         private static final Logger LOGGER = StatusLogger.getLogger();
-        private static final Collection<Cancellable> CALLBACKS = new ConcurrentLinkedQueue<Cancellable>();
+        private static final Collection<Cancellable> CALLBACKS = new ConcurrentLinkedQueue<>();
 
         @Override
         public Cancellable addShutdownCallback(final Runnable callback) {

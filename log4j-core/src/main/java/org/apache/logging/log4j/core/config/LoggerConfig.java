@@ -66,8 +66,8 @@ public class LoggerConfig extends AbstractFilterable {
     private static final int MAX_RETRIES = 3;
     private static LogEventFactory LOG_EVENT_FACTORY = null;
 
-    private List<AppenderRef> appenderRefs = new ArrayList<AppenderRef>();
-    private final Map<String, AppenderControl> appenders = new ConcurrentHashMap<String, AppenderControl>();
+    private List<AppenderRef> appenderRefs = new ArrayList<>();
+    private final Map<String, AppenderControl> appenders = new ConcurrentHashMap<>();
     private final String name;
     private LogEventFactory logEventFactory;
     private Level level;
@@ -140,7 +140,7 @@ public class LoggerConfig extends AbstractFilterable {
         this.includeLocation = includeLocation;
         this.config = config;
         if (properties != null && properties.length > 0) {
-            this.properties = new HashMap<Property, Boolean>(properties.length);
+            this.properties = new HashMap<>(properties.length);
             for (final Property prop : properties) {
                 final boolean interpolate = prop.getValue().contains("${");
                 this.properties.put(prop, interpolate);
@@ -214,7 +214,7 @@ public class LoggerConfig extends AbstractFilterable {
      *         value.
      */
     public Map<String, Appender> getAppenders() {
-        final Map<String, Appender> map = new HashMap<String, Appender>();
+        final Map<String, Appender> map = new HashMap<>();
         for (final Map.Entry<String, AppenderControl> entry : appenders
                 .entrySet()) {
             map.put(entry.getKey(), entry.getValue().getAppender());
@@ -354,7 +354,7 @@ public class LoggerConfig extends AbstractFilterable {
             final Throwable t) {
         List<Property> props = null;
         if (properties != null) {
-            props = new ArrayList<Property>(properties.size());
+            props = new ArrayList<>(properties.size());
 
             for (final Map.Entry<Property, Boolean> entry : properties.entrySet()) {
                 final Property prop = entry.getKey();

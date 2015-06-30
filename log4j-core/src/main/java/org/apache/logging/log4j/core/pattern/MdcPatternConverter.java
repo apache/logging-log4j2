@@ -30,13 +30,15 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
  * within the property bundle
  * when this pattern converter has the option set.
  */
- @Plugin(name = "MdcPatternConverter", category = PatternConverter.CATEGORY)
+@Plugin(name = "MdcPatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "X", "mdc", "MDC" })
 public final class MdcPatternConverter extends LogEventPatternConverter {
     /**
      * Name of property to output.
      */
     private final String key;
+    private final String[] keys;
+    private final boolean full;
 
     /**
      * Private constructor.
@@ -45,7 +47,20 @@ public final class MdcPatternConverter extends LogEventPatternConverter {
      */
     private MdcPatternConverter(final String[] options) {
         super(options != null && options.length > 0 ? "MDC{" + options[0] + '}' : "MDC", "mdc");
-        key = options != null && options.length > 0 ? options[0] : null;
+        if (options != null && options.length > 0) {
+            full = false;
+            if (options[0].indexOf(',') > 0) {
+                keys = options[0].split(",");
+                key = null;
+            } else {
+                keys = null;
+                key = options[0];
+            }
+        } else {
+            full = true;
+            key = null;
+            keys = null;
+        }
     }
 
     /**
@@ -66,15 +81,13 @@ public final class MdcPatternConverter extends LogEventPatternConverter {
         final Map<String, String> contextMap = event.getContextMap();
         // if there is no additional options, we output every single
         // Key/Value pair for the MDC in a similar format to Hashtable.toString()
-        if (key == null) {
-
-
+        if (full) {
             if (contextMap == null || contextMap.isEmpty()) {
                 toAppendTo.append("{}");
                 return;
             }
             final StringBuilder sb = new StringBuilder("{");
-            final Set<String> keys = new TreeSet<String>(contextMap.keySet());
+            final Set<String> keys = new TreeSet<>(contextMap.keySet());
             for (final String key : keys) {
                 if (sb.length() > 1) {
                     sb.append(", ");
@@ -84,12 +97,32 @@ public final class MdcPatternConverter extends LogEventPatternConverter {
             }
             sb.append('}');
             toAppendTo.append(sb);
-        } else if (contextMap != null) {
-            // otherwise they just want a single key output
-            final Object val = contextMap.get(key);
+        } else {
+            if (keys != null) {
+                if (contextMap == null || contextMap.isEmpty()) {
+                    toAppendTo.append("{}");
+                    return;
+                }
+                // Print all the keys in the array that have a value.
+                final StringBuilder sb = new StringBuilder("{");
+                for (String key : keys) {
+                    key = key.trim();
+                    if (contextMap.containsKey(key)) {
+                        if (sb.length() > 1) {
+                            sb.append(", ");
+                        }
+                        sb.append(key).append('=').append(contextMap.get(key));
+                    }
+                }
+                sb.append('}');
+                toAppendTo.append(sb);
+            } else if (contextMap != null){
+                // otherwise they just want a single key output
+                final Object val = contextMap.get(key);
 
-            if (val != null) {
-                toAppendTo.append(val);
+                if (val != null) {
+                    toAppendTo.append(val);
+                }
             }
         }
     }

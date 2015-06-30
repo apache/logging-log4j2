@@ -217,7 +217,7 @@ public class RingBufferLogEvent implements LogEvent {
         }
 
         final Map<String, String> map = contextMap == null ? new HashMap<String, String>()
-                : new HashMap<String, String>(contextMap);
+                : new HashMap<>(contextMap);
 
         for (final Map.Entry<Property, Boolean> entry : properties.entrySet()) {
             final Property prop = entry.getKey();

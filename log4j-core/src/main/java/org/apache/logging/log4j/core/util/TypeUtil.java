@@ -20,6 +20,7 @@ import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
+import java.util.Objects;
 
 /**
  * Utility class for working with Java {@link Type}s and derivatives. This class is adapted heavily from the
@@ -47,8 +48,8 @@ public final class TypeUtil {
      * @see Class#isAssignableFrom(Class)
      */
     public static boolean isAssignable(final Type lhs, final Type rhs) {
-        Assert.requireNonNull(lhs, "No left hand side type provided");
-        Assert.requireNonNull(rhs, "No right hand side type provided");
+        Objects.requireNonNull(lhs, "No left hand side type provided");
+        Objects.requireNonNull(rhs, "No right hand side type provided");
         if (lhs.equals(rhs)) {
             return true;
         }
