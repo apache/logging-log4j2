@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 
 /**
- * Convert and format the event's date in a StringBuilder.
+ * Converts and formats the event's date in a StringBuilder.
  */
 @Plugin(name = "DatePatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "d", "date" })
@@ -225,7 +225,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     }
 
     /**
-     * Append formatted date to string buffer.
+     * Appends formatted date to string buffer.
      *
      * @param date
      *            date
