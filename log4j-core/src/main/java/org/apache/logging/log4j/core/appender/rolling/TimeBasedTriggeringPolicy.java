@@ -40,7 +40,7 @@ public final class TimeBasedTriggeringPolicy implements TriggeringPolicy {
     }
 
     /**
-     * Initialize the policy.
+     * Initializes the policy.
      * @param manager The RollingFileManager.
      */
     @Override
