@@ -34,7 +34,7 @@ import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * Parse the rollover pattern.
+ * Parses the rollover pattern.
  */
 public class PatternProcessor {
 
@@ -195,7 +195,7 @@ public class PatternProcessor {
     }
 
     /**
-     * Format file name.
+     * Formats file name.
      * @param subst The StrSubstitutor.
      * @param buf string buffer to which formatted file name is appended, may not be null.
      * @param obj object to be evaluated in formatting, may not be null.
@@ -212,7 +212,7 @@ public class PatternProcessor {
     }
 
     /**
-     * Format file name.
+     * Formats file name.
      * @param buf string buffer to which formatted file name is appended, may not be null.
      * @param objects objects to be evaluated in formatting, may not be null.
      */
