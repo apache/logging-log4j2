@@ -34,7 +34,7 @@
 
         <section name="Requirements">
            <p>
-             The Log4j 2 API requires at least Java 6.
+             As of version 2.4, the Log4j 2 API requires Java 7. Versions 2.3 and earlier require Java 6.
           </p>
         </section>
 

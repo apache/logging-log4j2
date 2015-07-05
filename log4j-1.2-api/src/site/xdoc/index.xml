@@ -34,7 +34,7 @@
 
         <section name="Requirements">
            <p>
-             The Log4j 1.2 bridge requires at least Java 6 and is dependent on the Log4j 2 API and implementation.
+             The Log4j 1.2 bridge is dependent on the Log4j 2 API and implementation.
           </p>
         </section>
 

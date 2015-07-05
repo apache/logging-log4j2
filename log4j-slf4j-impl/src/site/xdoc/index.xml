@@ -34,7 +34,7 @@
 
         <section name="Requirements">
            <p>
-             The Log4j 2 SLF4J Binding requires at least Java 6 and has a dependency 
+             The Log4j 2 SLF4J Binding has a dependency 
              on the Log4j 2 API as well as the SLF4J API.
           </p>
         </section>

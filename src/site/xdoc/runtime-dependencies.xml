@@ -28,6 +28,9 @@
         Some Log4J features depend on external libraries. This page lists the required and optional
         dependencies.
       </p>
+      <p>
+        As of version 2.4, Log4J requires Java 7. Versions 2.3 and earlier require Java 6.
+      </p>
 
       <a name="log4j-api" />
       <h4>log4j-api</h4>

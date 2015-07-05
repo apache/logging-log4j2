@@ -35,7 +35,7 @@
     </section>
     <section name="Requirements">
       <p>
-        The JDK Logging Adapter requires at least Java 6 and is dependent on the Log4j API and optionally Log4j Core.
+        The JDK Logging Adapter is dependent on the Log4j API and optionally Log4j Core.
       </p>
     </section>
     <section name="Usage">

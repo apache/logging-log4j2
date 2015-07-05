@@ -236,7 +236,7 @@
 
         <section name="Requirements">
            <p>
-             The Flume Appender requires at least Java 6.
+             The Flume Appender requires the Log4J 2 API.
           </p>
         </section>
 

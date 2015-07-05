@@ -35,7 +35,7 @@
 
         <section name="Requirements">
            <p>
-             The JMX GUI requires at least Java 6 and is dependent on Log4j 2 Core.
+             The JMX GUI is dependent on Log4j 2 Core.
           </p>
         </section>
 

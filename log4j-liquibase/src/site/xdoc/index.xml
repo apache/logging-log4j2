@@ -19,7 +19,7 @@
 <document>
     <properties>
         <title>Log4j 2 Liquibase Binding</title>
-        <author email="mikael@staldal.nu">Mikael Ståldal</author>
+        <author email="mikael@staldal.nu">Mikael Stï¿½ldal</author>
     </properties>
 
     <body>
@@ -33,7 +33,7 @@
 
         <section name="Requirements">
            <p>
-             The Log4j 2 Liquibase Binding requires at least Java 6 and has a dependency
+             The Log4j 2 Liquibase Binding has a dependency
              on the Log4j 2 API as well as the Liquibase core.
           </p>
         </section>

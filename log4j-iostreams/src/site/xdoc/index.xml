@@ -37,7 +37,7 @@
     </section>
     <section name="Requirements">
       <p>
-        The Log4j IOStreams API extension requires Java 6 and the Log4j API. This component was introduced in Log4j 2.1.
+        The Log4j IOStreams API extension requires the Log4j 2 API. This component was introduced in Log4j 2.1.
       </p>
     </section>
     <section name="Usage">

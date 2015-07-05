@@ -77,7 +77,7 @@
 
         <section name="Requirements">
            <p>
-             The NoSQL Appenders requires at least Java 6.
+             The NoSQL Appenders is dependent on the Log4j 2 API and implementation.
           </p>
         </section>
 

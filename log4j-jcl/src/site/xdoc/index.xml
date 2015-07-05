@@ -34,7 +34,7 @@
 
         <section name="Requirements">
            <p>
-             The Commons Logging Bridge requires at least Java 6 and is dependent on the Log4j 2 API
+             The Commons Logging Bridge is dependent on the Log4j 2 API
              and Commons Logging.
           </p>
         </section>

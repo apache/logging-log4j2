@@ -38,8 +38,8 @@
 
      <section name="Requirements">
        <p>
-         The Log4j Tag Library requires at least Java 6, at least Servlet 2.5 (or Java EE 5), and at least
-         JSP 2.1 (or Java EE 5).
+         The Log4j Tag Library requires at least Servlet 2.5 (or Java EE 5), at least
+         JSP 2.1 (or Java EE 5), and is dependent on the Log4j 2 API.
        </p>
        <p>
          <b><em>Important Note!</em></b> For performance reasons, containers often ignore certain JARs known not to
