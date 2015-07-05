@@ -281,7 +281,11 @@
           This gives you more flexibility at the cost of a slight loss in performance (compared to making
           all loggers asynchronous). Use the <tt>&lt;asyncRoot&gt;</tt> or <tt>&lt;asyncLogger&gt;</tt>
           configuration elements to specify the loggers that need to be asynchronous.
-          The same configuration file can also contain <tt>&lt;root&gt;</tt> and
+          A configuration can contain only one root logger (either a <tt>&lt;root&gt;</tt>
+          or an <tt>&lt;asyncRoot&gt;</tt> element), but otherwise async and non-async loggers may be
+          combined.
+          For example, a configuration file containing <tt>&lt;asyncLogger&gt;</tt> elements
+          can also contain <tt>&lt;root&gt;</tt> and
           <tt>&lt;logger&gt;</tt> elements for the synchronous loggers.
         </p>
         <p>
