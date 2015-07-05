@@ -23,7 +23,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.Integers;
 
 /**
- * Triggering Policy that causes a rollover based on time.
+ * Rolls a file over based on time.
  */
 @Plugin(name = "TimeBasedTriggeringPolicy", category = "Core", printObject = true)
 public final class TimeBasedTriggeringPolicy implements TriggeringPolicy {
@@ -40,7 +40,7 @@ public final class TimeBasedTriggeringPolicy implements TriggeringPolicy {
     }
 
     /**
-     * Initialize the policy.
+     * Initializes the policy.
      * @param manager The RollingFileManager.
      */
     @Override
@@ -54,7 +54,7 @@ public final class TimeBasedTriggeringPolicy implements TriggeringPolicy {
     }
 
     /**
-     * Determine whether a rollover should occur.
+     * Determines whether a rollover should occur.
      * @param event   A reference to the currently event.
      * @return true if a rollover should occur.
      */
@@ -77,7 +77,7 @@ public final class TimeBasedTriggeringPolicy implements TriggeringPolicy {
     }
 
     /**
-     * Create a TimeBasedTriggeringPolicy.
+     * Creates a TimeBasedTriggeringPolicy.
      * @param interval The interval between rollovers.
      * @param modulate If true the time will be rounded to occur on a boundary aligned with the increment.
      * @return a TimeBasedTriggeringPolicy.

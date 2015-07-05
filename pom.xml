@@ -165,7 +165,7 @@
     <logbackVersion>1.1.3</logbackVersion>
     <jackson1Version>1.9.13</jackson1Version>
     <jackson2Version>2.5.3</jackson2Version>
-    <springVersion>3.2.11.RELEASE</springVersion>
+    <springVersion>3.2.13.RELEASE</springVersion>
     <flumeVersion>1.6.0</flumeVersion>
     <disruptorVersion>3.3.2</disruptorVersion>
     <compiler.plugin.version>3.3</compiler.plugin.version>
@@ -243,7 +243,7 @@
       <dependency>
         <groupId>org.apache.felix</groupId>
         <artifactId>org.apache.felix.framework</artifactId>
-        <version>4.6.0</version>
+        <version>4.6.1</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven</groupId>
@@ -585,7 +585,7 @@
       <dependency>
         <groupId>org.easymock</groupId>
         <artifactId>easymock</artifactId>
-        <version>3.2</version>
+        <version>3.3.1</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -672,7 +672,7 @@
       <dependency>
         <groupId>net.javacrumbs.json-unit</groupId>
         <artifactId>json-unit</artifactId>
-        <version>1.1.6</version>
+        <version>1.5.5</version>
         <scope>test</scope>
       </dependency>
       <dependency>

@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.impl;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
@@ -239,6 +240,30 @@ public class ThrowableProxyTest {
         e1.addSuppressed(e2);
         LogManager.getLogger().error("Error", e1);
     }
+
+    @Test
+	public void testSuppressedExceptions() {
+		Exception e = new Exception("Root exception");
+		e.addSuppressed(new IOException("Suppressed #1"));
+		e.addSuppressed(new IOException("Suppressed #2"));
+		LogManager.getLogger().error("Error", e);
+		final ThrowableProxy proxy = new ThrowableProxy(e);
+		String extendedStackTraceAsString = proxy.getExtendedStackTraceAsString();
+		assertTrue(extendedStackTraceAsString.contains("\tSuppressed: java.io.IOException: Suppressed #1"));
+		assertTrue(extendedStackTraceAsString.contains("\tSuppressed: java.io.IOException: Suppressed #1"));
+	}
+
+    @Test
+	public void testCauseSuppressedExceptions() {
+		Exception cause = new Exception("Nested exception");
+		cause.addSuppressed(new IOException("Suppressed #1"));
+		cause.addSuppressed(new IOException("Suppressed #2"));
+		LogManager.getLogger().error("Error", new Exception(cause));
+		final ThrowableProxy proxy = new ThrowableProxy(new Exception("Root exception", cause));
+		String extendedStackTraceAsString = proxy.getExtendedStackTraceAsString();
+		assertTrue(extendedStackTraceAsString.contains("\tSuppressed: java.io.IOException: Suppressed #1"));
+		assertTrue(extendedStackTraceAsString.contains("\tSuppressed: java.io.IOException: Suppressed #1"));
+	}
 
     /**
      * Tests LOG4J2-934.

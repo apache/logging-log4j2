@@ -51,7 +51,11 @@ import org.apache.logging.log4j.util.Strings;
  */
 public class ThrowableProxy implements Serializable {
 
-    /**
+	private static final String CAUSED_BY_LABEL = "Caused by: ";
+	private static final String SUPPRESSED_LABEL = "Suppressed: ";
+    private static final String WRAPPED_BY_LABEL = "Wrapped by: ";
+
+	/**
      * Cached StackTracePackageElement and ClassLoader.
      * <p>
      * Consider this class private.
@@ -201,46 +205,64 @@ public class ThrowableProxy implements Serializable {
         return true;
     }
 
-    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
-	private void formatCause(final StringBuilder sb, final ThrowableProxy cause, final List<String> ignorePackages) {
-		if (cause == null) {
-			return;
-		}
-		sb.append("Caused by: ").append(cause).append(EOL);
-		this.formatElements(sb, cause.commonElementCount, cause.getStackTrace(), cause.extendedStackTrace,
-				ignorePackages);
-		this.formatCause(sb, cause.causeProxy, ignorePackages);
+	private void formatCause(final StringBuilder sb, String prefix, final ThrowableProxy cause, final List<String> ignorePackages) {
+		formatThrowableProxy(sb, prefix, CAUSED_BY_LABEL, cause, ignorePackages);
 	}
 
-    private void formatElements(final StringBuilder sb, final int commonCount, final StackTraceElement[] causedTrace,
-            final ExtendedStackTraceElement[] extStackTrace, final List<String> ignorePackages) {
-        if (ignorePackages == null || ignorePackages.isEmpty()) {
-            for (final ExtendedStackTraceElement element : extStackTrace) {
-                this.formatEntry(element, sb);
-            }
-        } else {
-            int count = 0;
-            for (int i = 0; i < extStackTrace.length; ++i) {
-                if (!this.ignoreElement(causedTrace[i], ignorePackages)) {
-                    if (count > 0) {
-                        appendSuppressedCount(sb, count);
-                        count = 0;
-                    }
-                    this.formatEntry(extStackTrace[i], sb);
-                } else {
-                    ++count;
-                }
-            }
-            if (count > 0) {
-                appendSuppressedCount(sb, count);
-            }
-        }
-        if (commonCount != 0) {
-            sb.append("\t... ").append(commonCount).append(" more").append(EOL);
-        }
-    }
+	private void formatThrowableProxy(final StringBuilder sb, String prefix, final String causeLabel,
+			final ThrowableProxy throwableProxy, final List<String> ignorePackages) {
+		if (throwableProxy == null) {
+			return;
+		}
+		sb.append(prefix).append(causeLabel).append(throwableProxy).append(EOL);
+		this.formatElements(sb, prefix, throwableProxy.commonElementCount,
+				throwableProxy.getStackTrace(), throwableProxy.extendedStackTrace, ignorePackages);
+		this.formatSuppressed(sb, prefix + "\t", throwableProxy.suppressedProxies, ignorePackages);
+		this.formatCause(sb, prefix, throwableProxy.causeProxy, ignorePackages);
+	}
 
-    private void appendSuppressedCount(final StringBuilder sb, final int count) {
+	private void formatSuppressed(final StringBuilder sb, String prefix, final ThrowableProxy[] suppressedProxies,
+			final List<String> ignorePackages) {
+		if (suppressedProxies == null) {
+			return;
+		}
+		for (ThrowableProxy suppressedProxy : suppressedProxies) {
+			final ThrowableProxy cause = suppressedProxy;
+			formatThrowableProxy(sb, prefix, SUPPRESSED_LABEL, cause, ignorePackages);
+		}
+	}
+
+	private void formatElements(final StringBuilder sb, String prefix, final int commonCount,
+			final StackTraceElement[] causedTrace, final ExtendedStackTraceElement[] extStackTrace,
+			final List<String> ignorePackages) {
+		if (ignorePackages == null || ignorePackages.isEmpty()) {
+			for (final ExtendedStackTraceElement element : extStackTrace) {
+				this.formatEntry(element, sb, prefix);
+			}
+		} else {
+			int count = 0;
+			for (int i = 0; i < extStackTrace.length; ++i) {
+				if (!this.ignoreElement(causedTrace[i], ignorePackages)) {
+					if (count > 0) {
+						appendSuppressedCount(sb, prefix, count);
+						count = 0;
+					}
+					this.formatEntry(extStackTrace[i], sb, prefix);
+				} else {
+					++count;
+				}
+			}
+			if (count > 0) {
+				appendSuppressedCount(sb, prefix, count);
+			}
+		}
+		if (commonCount != 0) {
+			sb.append(prefix).append("\t... ").append(commonCount).append(" more").append(EOL);
+		}
+	}
+
+    private void appendSuppressedCount(final StringBuilder sb, String prefix, final int count) {
+    	sb.append(prefix);
         if (count == 1) {
             sb.append("\t....").append(EOL);
         } else {
@@ -248,7 +270,8 @@ public class ThrowableProxy implements Serializable {
         }
     }
 
-    private void formatEntry(final ExtendedStackTraceElement extStackTraceElement, final StringBuilder sb) {
+    private void formatEntry(final ExtendedStackTraceElement extStackTraceElement, final StringBuilder sb, String prefix) {
+        sb.append(prefix);
         sb.append("\tat ");
         sb.append(extStackTraceElement);
         sb.append(EOL);
@@ -281,11 +304,11 @@ public class ThrowableProxy implements Serializable {
         final Throwable caused = cause.getCauseProxy() != null ? cause.getCauseProxy().getThrowable() : null;
         if (caused != null) {
             this.formatWrapper(sb, cause.causeProxy);
-            sb.append("Wrapped by: ");
+            sb.append(WRAPPED_BY_LABEL);
         }
         sb.append(cause).append(EOL);
-        this.formatElements(sb, cause.commonElementCount, cause.getThrowable().getStackTrace(),
-                cause.extendedStackTrace, packages);
+        this.formatElements(sb, "", cause.commonElementCount,
+                cause.getThrowable().getStackTrace(), cause.extendedStackTrace, packages);
     }
 
     public ThrowableProxy getCauseProxy() {
@@ -312,11 +335,11 @@ public class ThrowableProxy implements Serializable {
         final StringBuilder sb = new StringBuilder();
         if (this.causeProxy != null) {
             this.formatWrapper(sb, this.causeProxy);
-            sb.append("Wrapped by: ");
+            sb.append(WRAPPED_BY_LABEL);
         }
         sb.append(this.toString());
         sb.append(EOL);
-        this.formatElements(sb, 0, this.throwable.getStackTrace(), this.extendedStackTrace, packages);
+        this.formatElements(sb, "", 0, this.throwable.getStackTrace(), this.extendedStackTrace, packages);
         return sb.toString();
     }
 
@@ -363,8 +386,9 @@ public class ThrowableProxy implements Serializable {
         }
         sb.append(EOL);
         final StackTraceElement[] causedTrace = this.throwable != null ? this.throwable.getStackTrace() : null;
-        this.formatElements(sb, 0, causedTrace, this.extendedStackTrace, ignorePackages);
-        this.formatCause(sb, this.causeProxy, ignorePackages);
+        this.formatElements(sb, "", 0, causedTrace, this.extendedStackTrace, ignorePackages);
+        this.formatSuppressed(sb, "\t", this.suppressedProxies, ignorePackages);
+        this.formatCause(sb, "", this.causeProxy, ignorePackages);
         return sb.toString();
     }
 
