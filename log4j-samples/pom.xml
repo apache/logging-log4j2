@@ -81,6 +81,7 @@
     <module>flume-common</module>
     <module>flume-remote</module>
     <module>flume-embedded</module>
+    <module>configuration</module>
   </modules>
   <build>
     <plugins>
