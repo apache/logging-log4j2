@@ -62,7 +62,7 @@ public class RollingRandomAccessFileManagerTest {
         final RolloverStrategy rolloverStrategy = null;
         final RollingRandomAccessFileManager manager = new RollingRandomAccessFileManager(raf,
                 file.getName(), Strings.EMPTY, os, append, flushNow, RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE, triggerSize, time,
-                triggerPolicy, rolloverStrategy, null, null);
+                triggerPolicy, rolloverStrategy, null, null, true);
 
         final int size = RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3;
         final byte[] data = new byte[size];
@@ -93,7 +93,7 @@ public class RollingRandomAccessFileManagerTest {
         final RolloverStrategy rolloverStrategy = null;
         final RollingRandomAccessFileManager manager = new RollingRandomAccessFileManager(raf,
                 file.getName(), Strings.EMPTY, os, append, flushNow, RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE, triggerSize, time,
-                triggerPolicy, rolloverStrategy, null, null);
+                triggerPolicy, rolloverStrategy, null, null, true);
 
         final int size = RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3 + 1;
         final byte[] data = new byte[size];
@@ -120,7 +120,7 @@ public class RollingRandomAccessFileManagerTest {
         final RolloverStrategy rolloverStrategy = null;
         final RollingRandomAccessFileManager manager = new RollingRandomAccessFileManager(raf,
                 file.getName(), Strings.EMPTY, os, append, flushNow, bufferSize, triggerSize, time,
-                triggerPolicy, rolloverStrategy, null, null);
+                triggerPolicy, rolloverStrategy, null, null, true);
 
         // check the resulting buffer size is what was requested
         assertEquals(bufferSize, manager.getBufferSize());

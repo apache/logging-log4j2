@@ -32,8 +32,8 @@ public class InMemoryAppender extends AbstractOutputStreamAppender<InMemoryAppen
     private static final long serialVersionUID = 1L;
 
     public InMemoryAppender(final String name, final Layout<? extends Serializable> layout, final CompositeFilter filters,
-                            final boolean ignoreExceptions) {
-        super(name, layout, filters, ignoreExceptions, true, new InMemoryManager(name, layout));
+                            final boolean ignoreExceptions, final boolean writeHeader) {
+        super(name, layout, filters, ignoreExceptions, true, new InMemoryManager(name, layout, writeHeader));
     }
 
     @Override
@@ -43,8 +43,9 @@ public class InMemoryAppender extends AbstractOutputStreamAppender<InMemoryAppen
 
     static class InMemoryManager extends OutputStreamManager {
 
-        public InMemoryManager(final String name, final Layout<? extends Serializable> layout) {
-            super(new ByteArrayOutputStream(), name, layout);
+        public InMemoryManager(final String name, final Layout<? extends Serializable> layout,
+                final boolean writeHeader) {
+            super(new ByteArrayOutputStream(), name, layout, writeHeader);
         }
 
         @Override

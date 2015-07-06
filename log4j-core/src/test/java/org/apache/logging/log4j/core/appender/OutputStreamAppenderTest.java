@@ -36,15 +36,42 @@ public class OutputStreamAppenderTest {
     @Test
     public void testAppender() {
         final Layout<String> layout = PatternLayout.createDefaultLayout();
-        final InMemoryAppender app = new InMemoryAppender("test", layout, null, false);
-        final LogEvent event = new Log4jLogEvent("TestLogger", null, OutputStreamAppenderTest.class.getName(), Level.INFO,
-            new SimpleMessage("Test"), null);
+        final boolean writeHeader = true;
+        final InMemoryAppender app = new InMemoryAppender("test", layout, null, false, writeHeader);
+        final String expectedHeader = null;
+        assertMessage("Test", app, expectedHeader);
+    }
+
+    @Test
+    public void testHeaderRequested() {
+        final PatternLayout layout = PatternLayout.newBuilder().withHeader("HEADERHEADER").build();
+        final boolean writeHeader = true;
+        final InMemoryAppender app = new InMemoryAppender("test", layout, null, false, writeHeader);
+        final String expectedHeader = "HEADERHEADER";
+        assertMessage("Test", app, expectedHeader);
+    }
+
+    @Test
+    public void testHeaderSuppressed() {
+        final PatternLayout layout = PatternLayout.newBuilder().withHeader("HEADERHEADER").build();
+        final boolean writeHeader = false;
+        final InMemoryAppender app = new InMemoryAppender("test", layout, null, false, writeHeader);
+        final String expectedHeader = null;
+        assertMessage("Test", app, expectedHeader);
+    }
+
+    private void assertMessage(String string, InMemoryAppender app, String header) {
+        final LogEvent event = new Log4jLogEvent("TestLogger", null, OutputStreamAppenderTest.class.getName(),
+                Level.INFO, new SimpleMessage("Test"), null);
         app.start();
         assertTrue("Appender did not start", app.isStarted());
         app.append(event);
+        app.append(event);
         final String msg = app.toString();
         assertNotNull("No message", msg);
-        assertTrue("Incorrect message: " + msg , msg.endsWith("Test" + Constants.LINE_SEPARATOR));
+        final String expectedHeader = header == null ? "" : header;
+        final String expected = expectedHeader + "Test" + Constants.LINE_SEPARATOR + "Test" + Constants.LINE_SEPARATOR;
+        assertTrue("Incorrect message: " + msg, msg.equals(expected));
         app.stop();
         assertFalse("Appender did not stop", app.isStarted());
     }

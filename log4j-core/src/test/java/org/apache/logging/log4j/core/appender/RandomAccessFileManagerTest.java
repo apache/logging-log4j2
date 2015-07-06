@@ -44,7 +44,7 @@ public class RandomAccessFileManagerTest {
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
             final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
             final RandomAccessFileManager manager = new RandomAccessFileManager(raf, file.getName(), os, false,
-                    RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null);
+                    RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null, true);
 
             final int size = RandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3;
             final byte[] data = new byte[size];
@@ -66,7 +66,7 @@ public class RandomAccessFileManagerTest {
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
             final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
             final RandomAccessFileManager manager = new RandomAccessFileManager(raf, file.getName(), os, false,
-                    RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null);
+                    RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null, true);
 
             final int size = RandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3 + 1;
             final byte[] data = new byte[size];
@@ -87,7 +87,7 @@ public class RandomAccessFileManagerTest {
             assertNotEquals(bufferSize, RandomAccessFileManager.DEFAULT_BUFFER_SIZE);
 
             final RandomAccessFileManager manager = new RandomAccessFileManager(raf, file.getName(), os, false,
-                    bufferSize, null, null);
+                    bufferSize, null, null, true);
 
             // check the resulting buffer size is what was requested
             assertEquals(bufferSize, manager.getBufferSize());
@@ -101,7 +101,7 @@ public class RandomAccessFileManagerTest {
             final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
             final int bufferSize = 1;
             final RandomAccessFileManager manager = new RandomAccessFileManager(raf, file.getName(), os, false,
-                    bufferSize, null, null);
+                    bufferSize, null, null, true);
 
             final int size = bufferSize * 3 + 1;
             final byte[] data = new byte[size];

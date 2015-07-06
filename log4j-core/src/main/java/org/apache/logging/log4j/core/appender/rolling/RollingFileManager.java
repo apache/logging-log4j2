@@ -49,8 +49,8 @@ public class RollingFileManager extends FileManager {
     protected RollingFileManager(final String fileName, final String pattern, final OutputStream os,
             final boolean append, final long size, final long time, final TriggeringPolicy triggeringPolicy,
             final RolloverStrategy rolloverStrategy, final String advertiseURI,
-            final Layout<? extends Serializable> layout, final int bufferSize) {
-        super(fileName, os, append, false, advertiseURI, layout, bufferSize);
+            final Layout<? extends Serializable> layout, final int bufferSize, final boolean writeHeader) {
+        super(fileName, os, append, false, advertiseURI, layout, bufferSize, writeHeader);
         this.size = size;
         this.initialTime = time;
         this.triggeringPolicy = triggeringPolicy;
@@ -310,6 +310,7 @@ public class RollingFileManager extends FileManager {
             }
             final long size = data.append ? file.length() : 0;
 
+            final boolean writeHeader = !data.append || !file.exists();
             OutputStream os;
             try {
                 os = new FileOutputStream(name, data.append);
@@ -321,7 +322,7 @@ public class RollingFileManager extends FileManager {
                 }
                 final long time = file.lastModified(); // LOG4J2-531 create file first so time has valid value
                 return new RollingFileManager(name, data.pattern, os, data.append, size, time, data.policy,
-                    data.strategy, data.advertiseURI, data.layout, bufferSize);
+                    data.strategy, data.advertiseURI, data.layout, bufferSize, writeHeader);
             } catch (final FileNotFoundException ex) {
                 LOGGER.error("FileManager (" + name + ") " + ex);
             }

@@ -44,8 +44,9 @@ public class FileManager extends OutputStreamManager {
     private final int bufferSize;
 
     protected FileManager(final String fileName, final OutputStream os, final boolean append, final boolean locking,
-            final String advertiseURI, final Layout<? extends Serializable> layout, final int bufferSize) {
-        super(os, fileName, layout);
+            final String advertiseURI, final Layout<? extends Serializable> layout, final int bufferSize,
+            final boolean writeHeader) {
+        super(os, fileName, layout, writeHeader);
         this.isAppend = append;
         this.isLocking = locking;
         this.advertiseURI = advertiseURI;
@@ -196,6 +197,7 @@ public class FileManager extends OutputStreamManager {
                 parent.mkdirs();
             }
 
+            final boolean writeHeader = !data.append || !file.exists();
             OutputStream os;
             try {
                 os = new FileOutputStream(name, data.append);
@@ -205,7 +207,8 @@ public class FileManager extends OutputStreamManager {
                 } else {
                     bufferSize = -1; // signals to RollingFileManager not to use BufferedOutputStream
                 }
-                return new FileManager(name, os, data.append, data.locking, data.advertiseURI, data.layout, bufferSize);
+                return new FileManager(name, os, data.append, data.locking, data.advertiseURI, data.layout, bufferSize,
+                        writeHeader);
             } catch (final FileNotFoundException ex) {
                 LOGGER.error("FileManager (" + name + ") " + ex);
             }

@@ -47,8 +47,8 @@ public class RandomAccessFileManager extends OutputStreamManager {
     protected RandomAccessFileManager(final RandomAccessFile file,
             final String fileName, final OutputStream os,
             final boolean immediateFlush, final int bufferSize,
-            final String advertiseURI, final Layout<? extends Serializable> layout) {
-        super(os, fileName, layout);
+            final String advertiseURI, final Layout<? extends Serializable> layout, final boolean writeHeader) {
+        super(os, fileName, layout, writeHeader);
         this.isImmediateFlush = immediateFlush;
         this.randomAccessFile = file;
         this.advertiseURI = advertiseURI;
@@ -210,6 +210,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
                 file.delete();
             }
 
+            final boolean writeHeader = !data.append || !file.exists();
             final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
             RandomAccessFile raf;
             try {
@@ -220,7 +221,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
                     raf.setLength(0);
                 }
                 return new RandomAccessFileManager(raf, name, os, data.immediateFlush,
-                        data.bufferSize, data.advertiseURI, data.layout);
+                        data.bufferSize, data.advertiseURI, data.layout, writeHeader);
             } catch (final Exception ex) {
                 LOGGER.error("RandomAccessFileManager (" + name + ") " + ex);
             }

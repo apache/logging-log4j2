@@ -352,7 +352,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
          */
         @Override
         public OutputStreamManager createManager(final String name, final FactoryData data) {
-            return new OutputStreamManager(data.os, data.type, data.layout);
+            return new OutputStreamManager(data.os, data.type, data.layout, true);
         }
     }
 

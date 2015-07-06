@@ -50,8 +50,9 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
             final String pattern, final OutputStream os, final boolean append,
             final boolean immediateFlush, final int bufferSize, final long size, final long time,
             final TriggeringPolicy policy, final RolloverStrategy strategy,
-            final String advertiseURI, final Layout<? extends Serializable> layout) {
-        super(fileName, pattern, os, append, size, time, policy, strategy, advertiseURI, layout, bufferSize);
+            final String advertiseURI, final Layout<? extends Serializable> layout, final boolean writeHeader) {
+        super(fileName, pattern, os, append, size, time, policy, strategy, advertiseURI, layout, bufferSize,
+                writeHeader);
         this.isImmediateFlush = immediateFlush;
         this.randomAccessFile = raf;
         isEndOfBatch.set(Boolean.FALSE);
@@ -181,6 +182,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
             final long size = data.append ? file.length() : 0;
             final long time = file.exists() ? file.lastModified() : System.currentTimeMillis();
 
+            final boolean writeHeader = !data.append || !file.exists();
             RandomAccessFile raf = null;
             try {
                 raf = new RandomAccessFile(name, "rw");
@@ -194,7 +196,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
                 }
                 return new RollingRandomAccessFileManager(raf, name, data.pattern, NullOutputStream.NULL_OUTPUT_STREAM,
                         data.append, data.immediateFlush, data.bufferSize, size, time, data.policy, data.strategy,
-                        data.advertiseURI, data.layout);
+                        data.advertiseURI, data.layout, writeHeader);
             } catch (final IOException ex) {
                 LOGGER.error("Cannot access RandomAccessFile {}) " + ex);
                 if (raf != null) {

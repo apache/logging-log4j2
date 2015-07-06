@@ -30,11 +30,12 @@ public class OutputStreamManager extends AbstractManager {
     private volatile OutputStream os;
     protected final Layout<?> layout;
 
-    protected OutputStreamManager(final OutputStream os, final String streamName, final Layout<?> layout) {
+    protected OutputStreamManager(final OutputStream os, final String streamName, final Layout<?> layout,
+            boolean writeHeader) {
         super(streamName);
         this.os = os;
         this.layout = layout;
-        if (layout != null) {
+        if (writeHeader && layout != null) {
             final byte[] header = layout.getHeader();
             if (header != null) {
                 try {

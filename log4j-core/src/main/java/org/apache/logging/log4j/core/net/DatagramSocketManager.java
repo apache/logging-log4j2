@@ -45,7 +45,7 @@ public class DatagramSocketManager extends AbstractSocketManager {
      */
     protected DatagramSocketManager(final String name, final OutputStream os, final InetAddress inetAddress, final String host,
                 final int port, final Layout<? extends Serializable> layout) {
-        super(name, os, inetAddress, host, port, layout);
+        super(name, os, inetAddress, host, port, layout, true);
     }
 
     /**

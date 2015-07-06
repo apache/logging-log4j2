@@ -64,8 +64,8 @@ public class MemoryMappedFileManager extends OutputStreamManager {
 
     protected MemoryMappedFileManager(final RandomAccessFile file, final String fileName, final OutputStream os,
             final boolean force, final long position, final int regionLength, final String advertiseURI,
-            final Layout<? extends Serializable> layout) throws IOException {
-        super(os, fileName, layout);
+            final Layout<? extends Serializable> layout, final boolean writeHeader) throws IOException {
+        super(os, fileName, layout, writeHeader);
         this.isForce = force;
         this.randomAccessFile = Objects.requireNonNull(file, "RandomAccessFile");
         this.regionLength = regionLength;
@@ -307,6 +307,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
                 file.delete();
             }
 
+            final boolean writeHeader = !data.append || !file.exists();
             final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
             RandomAccessFile raf = null;
             try {
@@ -314,7 +315,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
                 final long position = (data.append) ? raf.length() : 0;
                 raf.setLength(position + data.regionLength);
                 return new MemoryMappedFileManager(raf, name, os, data.force, position, data.regionLength,
-                        data.advertiseURI, data.layout);
+                        data.advertiseURI, data.layout, writeHeader);
             } catch (final Exception ex) {
                 LOGGER.error("MemoryMappedFileManager (" + name + ") " + ex);
                 Closer.closeSilently(raf);
