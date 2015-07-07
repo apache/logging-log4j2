@@ -2146,8 +2146,10 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 is present it will be replaced with the current date and time values. If the pattern contains an integer
                 it will be incremented on each rollover. If the pattern contains both a date/time and integer
                 in the pattern the integer will be incremented until the result of the date/time pattern changes. If
-                the file pattern ends with ".gz" or ".zip" the resulting archive will be compressed using the
-                compression scheme that matches the suffix. The pattern may also contain lookup references that
+                the file pattern ends with ".gz", ".zip" or ".bz2" the resulting archive will be compressed using the
+                compression scheme that matches the suffix. (bzip2 requires 
+                <a href="http://commons.apache.org/proper/commons-compress/">Apache Commons Compress</a>.)
+                The pattern may also contain lookup references that
                 can be resolved at runtime such as is shown in the example below.
               </p>
               <p>The default rollover strategy supports two variations for incrementing the counter. The first is

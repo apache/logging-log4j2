@@ -24,8 +24,11 @@
   </properties>
   <body>
     <release version="2.4" date="2015-MM-DD" description="GA Release 2.4">
-      <action issue="LOG4J2-889" dev="rpopma" type="fix">
-        Header in layout should not be written on application startup if appending to an existing file.
+      <action issue="LOG4J2-1075" dev="rpopma" type="add">
+        Added support for compressing to bzip2 format on file rollover.
+      </action>
+      <action issue="LOG4J2-889" dev="rpopma" type="fix" due-to="Maciej Karaś, Kenneth Leider">
+        Header in layout should not be written on application startup if appending to an existing file. Fixes LOG4J2-1030.
       </action>
       <action issue="LOG4J2-918" dev="rpopma" type="fix">
         Clarify documentation for combining async with sync loggers.

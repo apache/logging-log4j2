@@ -681,6 +681,12 @@
         <version>2.4</version>
         <scope>test</scope>
       </dependency>
+      <!-- Used for compressing to formats other than zip and gz -->
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-compress</artifactId>
+        <version>1.9</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <build>

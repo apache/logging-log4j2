@@ -90,6 +90,11 @@
             entity that the user implements. It also requires an appropriate JDBC driver
           </td>
         </tr>
+        <tr>
+          <td>bzip2 compression at rollover</td>
+          <td><a href="http://commons.apache.org/proper/commons-compress/">Apache Commons Compress</a>
+          </td>
+        </tr>
       </table>
 
       <a name="log4j-jcl" />

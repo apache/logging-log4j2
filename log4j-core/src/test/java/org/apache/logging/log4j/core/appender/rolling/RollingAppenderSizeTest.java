@@ -52,7 +52,8 @@ public class RollingAppenderSizeTest {
         return Arrays.asList(
                 new Object[][]{
                         { "log4j-rolling-gz.xml", ".gz" },
-                        { "log4j-rolling-zip.xml", ".zip" }
+                        { "log4j-rolling-zip.xml", ".zip" },
+                        { "log4j-rolling-bzip2.xml", ".bz2" },
                 }
         );
     }
