@@ -24,7 +24,7 @@ import java.util.zip.Deflater;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
-import org.apache.logging.log4j.core.appender.rolling.action.Bzip2CompressAction;
+import org.apache.logging.log4j.core.appender.rolling.action.CommonsCompressAction;
 import org.apache.logging.log4j.core.appender.rolling.action.FileRenameAction;
 import org.apache.logging.log4j.core.appender.rolling.action.GzCompressAction;
 import org.apache.logging.log4j.core.appender.rolling.action.ZipCompressAction;
@@ -96,7 +96,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         BZIP2(".bz2") {
             Action createCompressAction(String renameTo, String compressedName, boolean deleteSource,
                     int compressionLevel) {
-                return new Bzip2CompressAction(new File(baseName(renameTo)), new File(compressedName), deleteSource);
+                return new CommonsCompressAction("bzip2", new File(baseName(renameTo)), new File(compressedName), deleteSource);
             }
         };
 
