@@ -548,7 +548,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      *
      * Note: This method is not used when configuring via configuration. It is primarily used by
      * unit tests.
-     * @param logger The Logger the Fo;ter will be associated with.
+     * @param logger The Logger the Footer will be associated with.
      * @param filter The Filter.
      */
     @Override
