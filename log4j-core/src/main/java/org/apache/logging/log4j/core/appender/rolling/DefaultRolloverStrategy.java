@@ -96,8 +96,30 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         BZIP2(".bz2") {
             Action createCompressAction(String renameTo, String compressedName, boolean deleteSource,
                     int compressionLevel) {
+                // One of "gz", "bzip2", "xz", "pack200", or "deflate".
                 return new CommonsCompressAction("bzip2", new File(baseName(renameTo)), new File(compressedName), deleteSource);
-            }
+            }            
+        },
+        DEFALTE(".deflate") {
+            Action createCompressAction(String renameTo, String compressedName, boolean deleteSource,
+                    int compressionLevel) {
+                // One of "gz", "bzip2", "xz", "pack200", or "deflate".
+                return new CommonsCompressAction("deflate", new File(baseName(renameTo)), new File(compressedName), deleteSource);
+            }            
+        },
+        PACK200(".pack200") {
+            Action createCompressAction(String renameTo, String compressedName, boolean deleteSource,
+                    int compressionLevel) {
+                // One of "gz", "bzip2", "xz", "pack200", or "deflate".
+                return new CommonsCompressAction("pack200", new File(baseName(renameTo)), new File(compressedName), deleteSource);
+            }            
+        },
+        XY(".xy") {
+            Action createCompressAction(String renameTo, String compressedName, boolean deleteSource,
+                    int compressionLevel) {
+                // One of "gz", "bzip2", "xz", "pack200", or "deflate".
+                return new CommonsCompressAction("xy", new File(baseName(renameTo)), new File(compressedName), deleteSource);
+            }            
         };
 
         private final String extension;
@@ -226,24 +248,13 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
      * @return true if purge was successful and rollover should be attempted.
      */
     private int purgeAscending(final int lowIndex, final int highIndex, final RollingFileManager manager) {
-        int suffixLength = 0;
-
         final List<FileRenameAction> renames = new ArrayList<>();
         final StringBuilder buf = new StringBuilder();
 
         // LOG4J2-531: directory scan & rollover must use same format
         manager.getPatternProcessor().formatFileName(subst, buf, highIndex);
-
         String highFilename = subst.replace(buf);
-
-        if (FileExtensions.GZIP.isExtensionFor(highFilename)) {
-            suffixLength = FileExtensions.GZIP.length();
-        } else if (FileExtensions.ZIP.isExtensionFor(highFilename)) {
-            suffixLength = FileExtensions.ZIP.length();
-        } else if (FileExtensions.BZIP2.isExtensionFor(highFilename)) {
-            suffixLength = FileExtensions.BZIP2.length();
-        }
-
+        final int suffixLength = suffixLength(highFilename);
         int maxIndex = 0;
 
         for (int i = highIndex; i >= lowIndex; i--) {
@@ -345,8 +356,6 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
      * @return true if purge was successful and rollover should be attempted.
      */
     private int purgeDescending(final int lowIndex, final int highIndex, final RollingFileManager manager) {
-        int suffixLength = 0;
-
         final List<FileRenameAction> renames = new ArrayList<>();
         final StringBuilder buf = new StringBuilder();
 
@@ -354,14 +363,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         manager.getPatternProcessor().formatFileName(subst, buf, lowIndex);
 
         String lowFilename = subst.replace(buf);
-
-        if (FileExtensions.GZIP.isExtensionFor(lowFilename)) {
-            suffixLength = FileExtensions.GZIP.length();
-        } else if (FileExtensions.ZIP.isExtensionFor(lowFilename)) {
-            suffixLength = FileExtensions.ZIP.length();
-        } else if (FileExtensions.BZIP2.isExtensionFor(lowFilename)) {
-            suffixLength = FileExtensions.BZIP2.length();
-        }
+        final int suffixLength = suffixLength(lowFilename);
 
         for (int i = lowIndex; i <= highIndex; i++) {
             File toRename = new File(lowFilename);
@@ -437,6 +439,23 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         }
 
         return lowIndex;
+    }
+
+    private int suffixLength(String lowFilename) {
+        if (FileExtensions.GZIP.isExtensionFor(lowFilename)) {
+            return FileExtensions.GZIP.length();
+        } else if (FileExtensions.ZIP.isExtensionFor(lowFilename)) {
+            return FileExtensions.ZIP.length();
+        } else if (FileExtensions.BZIP2.isExtensionFor(lowFilename)) {
+            return FileExtensions.BZIP2.length();
+        } else if (FileExtensions.DEFALTE.isExtensionFor(lowFilename)) {
+            return FileExtensions.DEFALTE.length();
+        } else if (FileExtensions.PACK200.isExtensionFor(lowFilename)) {
+            return FileExtensions.PACK200.length();
+        } else if (FileExtensions.XY.isExtensionFor(lowFilename)) {
+            return FileExtensions.XY.length();
+        }
+        return 0;
     }
 
     /**

@@ -27,6 +27,9 @@
       <action issue="LOG4J2-1075" dev="rpopma" type="add">
         Added support for compressing to bzip2 format on file rollover.
       </action>
+      <action issue="LOG4J2-1077" dev="ggregory" type="add">
+        Support additional Apache Commons Compress compression formats on rollover: Deflate, Pack200, XY.
+      </action>
       <action issue="LOG4J2-767" dev="ggregory" type="add" due-to="Mikael Ståldal">
         New module for Liquibase integration.
       </action>
