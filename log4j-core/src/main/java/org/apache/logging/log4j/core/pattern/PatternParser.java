@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Most of the work of the {@link org.apache.logging.log4j.core.layout.PatternLayout} class is delegated to the
@@ -303,9 +304,7 @@ public final class PatternParser {
     public void parse(final String pattern, final List<PatternConverter> patternConverters,
             final List<FormattingInfo> formattingInfos, final boolean noConsoleNoAnsi,
             final boolean convertBackslashes) {
-        if (pattern == null) {
-            throw new NullPointerException("pattern");
-        }
+        Objects.requireNonNull(pattern, "pattern");
 
         final StringBuilder currentLiteral = new StringBuilder(BUF_SIZE);
 

@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.filter;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
@@ -72,9 +73,7 @@ public final class DynamicThresholdFilter extends AbstractFilter {
     private DynamicThresholdFilter(final String key, final Map<String, Level> pairs, final Level defaultLevel,
                                    final Result onMatch, final Result onMismatch) {
         super(onMatch, onMismatch);
-        if (key == null) {
-            throw new NullPointerException("key cannot be null");
-        }
+        Objects.requireNonNull(key, "key cannot be null");
         this.key = key;
         this.levelMap = pairs;
         this.defaultThreshold = defaultLevel;
