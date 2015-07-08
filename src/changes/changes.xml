@@ -123,6 +123,9 @@
       <action issue="LOG4J2-918" dev="rpopma" type="fix">
         Clarify documentation for combining async with sync loggers.
       </action>
+      <action issue="LOG4J2-1078" dev="ggregory" type="fix" due-to="Mikael Ståldal">
+        GelfLayout throws exception if some log event fields are null.
+      </action>
       <action issue="LOG4J2-1044" dev="rgoers" type="update">
         Support batchSize in FlumeAvroManager.
       </action>

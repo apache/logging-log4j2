@@ -39,14 +39,16 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.net.Severity;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
 
 import com.fasterxml.jackson.core.io.JsonStringEncoder;
 
 /**
  * Lays out events in the Graylog Extended Log Format (GELF) 1.1.
  * <p>
- * This layout compresses JSON to GZIP or ZLIB (the {@code compressionType}) if log event data is larger than 1024 bytes
- * (the {@code compressionThreshold}). This layout does not implement chunking.
+ * This layout compresses JSON to GZIP or ZLIB (the {@code compressionType}) if
+ * log event data is larger than 1024 bytes (the {@code compressionThreshold}).
+ * This layout does not implement chunking.
  * </p>
  * <p>
  * Configure as follows to send to a Graylog2 server:
@@ -64,7 +66,8 @@ import com.fasterxml.jackson.core.io.JsonStringEncoder;
  * </pre>
  *
  * @see <a href="http://graylog2.org/gelf">GELF home page</a>
- * @see <a href="http://graylog2.org/resources/gelf/specification">GELF specification</a>
+ * @see <a href="http://graylog2.org/resources/gelf/specification">GELF
+ *      specification</a>
  */
 @Plugin(name = "GelfLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class GelfLayout extends AbstractStringLayout {
@@ -191,7 +194,7 @@ public final class GelfLayout extends AbstractStringLayout {
         final JsonStringEncoder jsonEncoder = JsonStringEncoder.getInstance();
         builder.append('{');
         builder.append("\"version\":\"1.1\",");
-        builder.append("\"host\":\"").append(jsonEncoder.quoteAsString(host)).append(QC);
+        builder.append("\"host\":\"").append(jsonEncoder.quoteAsString(toNullSafeString(host))).append(QC);
         builder.append("\"timestamp\":").append(formatTimestamp(event.getTimeMillis())).append(C);
         builder.append("\"level\":").append(formatLevel(event.getLevel())).append(C);
         if (event.getThreadName() != null) {
@@ -203,20 +206,24 @@ public final class GelfLayout extends AbstractStringLayout {
 
         for (final KeyValuePair additionalField : additionalFields) {
             builder.append(QU).append(jsonEncoder.quoteAsString(additionalField.getKey())).append("\":\"")
-                    .append(jsonEncoder.quoteAsString(additionalField.getValue())).append(QC);
+                    .append(jsonEncoder.quoteAsString(toNullSafeString(additionalField.getValue()))).append(QC);
         }
         for (final Map.Entry<String, String> entry : event.getContextMap().entrySet()) {
             builder.append(QU).append(jsonEncoder.quoteAsString(entry.getKey())).append("\":\"")
-                    .append(jsonEncoder.quoteAsString(entry.getValue())).append(QC);
+                    .append(jsonEncoder.quoteAsString(toNullSafeString(entry.getValue()))).append(QC);
         }
         if (event.getThrown() != null) {
             builder.append("\"full_message\":\"").append(jsonEncoder.quoteAsString(formatThrowable(event.getThrown())))
                     .append(QC);
         }
 
-        builder.append("\"short_message\":\"")
-                .append(jsonEncoder.quoteAsString(event.getMessage().getFormattedMessage())).append(Q);
+        builder.append("\"short_message\":\"").append(jsonEncoder.quoteAsString(toNullSafeString(event.getMessage().getFormattedMessage())))
+                .append(Q);
         builder.append('}');
         return builder.toString();
+    }
+
+    private String toNullSafeString(String s) {
+        return s == null ? Strings.EMPTY : s;
     }
 }
