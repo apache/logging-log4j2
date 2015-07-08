@@ -556,7 +556,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         final String name = logger.getName();
         final LoggerConfig lc = getLoggerConfig(name);
         if (lc.getName().equals(name)) {
-
             lc.addFilter(filter);
         } else {
             final LoggerConfig nlc = new LoggerConfig(name, lc.getLevel(), lc.isAdditive());
