@@ -240,6 +240,8 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             suffixLength = FileExtensions.GZIP.length();
         } else if (FileExtensions.ZIP.isExtensionFor(highFilename)) {
             suffixLength = FileExtensions.ZIP.length();
+        } else if (FileExtensions.BZIP2.isExtensionFor(highFilename)) {
+            suffixLength = FileExtensions.BZIP2.length();
         }
 
         int maxIndex = 0;
@@ -357,6 +359,8 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             suffixLength = FileExtensions.GZIP.length();
         } else if (FileExtensions.ZIP.isExtensionFor(lowFilename)) {
             suffixLength = FileExtensions.ZIP.length();
+        } else if (FileExtensions.BZIP2.isExtensionFor(lowFilename)) {
+            suffixLength = FileExtensions.BZIP2.length();
         }
 
         for (int i = lowIndex; i <= highIndex; i++) {
