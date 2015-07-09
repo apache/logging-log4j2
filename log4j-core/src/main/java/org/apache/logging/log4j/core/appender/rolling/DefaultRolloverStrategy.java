@@ -20,6 +20,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.Deflater;
 
 import org.apache.logging.log4j.Logger;
@@ -469,14 +470,14 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         if (maxIndex < 0) {
             return null;
         }
-        final long start = System.nanoTime();
+        final long startNanos = System.nanoTime();
         final int fileIndex = purge(minIndex, maxIndex, manager);
         if (fileIndex < 0) {
             return null;
         }
         if (LOGGER.isTraceEnabled()) {
-            final double duration = (System.nanoTime() - start) / (1000.0 * 1000.0 * 1000.0);
-            LOGGER.trace("DefaultRolloverStrategy.purge() took {} seconds", duration);
+            final double durationSeconds = TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - startNanos);
+            LOGGER.trace("DefaultRolloverStrategy.purge() took {} seconds", durationSeconds);
         }
         final StringBuilder buf = new StringBuilder(255);
         manager.getPatternProcessor().formatFileName(subst, buf, fileIndex);
