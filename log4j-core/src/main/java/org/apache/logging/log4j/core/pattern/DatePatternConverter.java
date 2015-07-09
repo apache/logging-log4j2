@@ -32,19 +32,19 @@ import org.apache.logging.log4j.core.util.datetime.FastDateFormat;
 public final class DatePatternConverter extends LogEventPatternConverter implements ArrayPatternConverter {
 
     private class CurrentTime {
-        public long timestamp;
+        public long timestampMillis;
         public String formatted;
 
-        public CurrentTime(long timestamp) {
-            this.timestamp = timestamp;
-            this.formatted = formatter.format(this.timestamp);
+        public CurrentTime(long timestampMillis) {
+            this.timestampMillis = timestampMillis;
+            this.formatted = formatter.format(this.timestampMillis);
         }
     }
 
     private AtomicReference<CurrentTime> currentTime;
 
     private abstract static class Formatter {
-        abstract String format(long time);
+        abstract String format(long timeMillis);
 
         public String toPattern() {
             return null;
@@ -59,8 +59,8 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         }
 
         @Override
-        String format(final long time) {
-            return fastDateFormat.format(time);
+        String format(final long timeMillis) {
+            return fastDateFormat.format(timeMillis);
         }
 
         @Override
@@ -72,8 +72,8 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     private static class UnixFormatter extends Formatter {
 
         @Override
-        String format(final long time) {
-            return Long.toString(time / 1000);
+        String format(final long timeMillis) {
+            return Long.toString(timeMillis / 1000);
         }
 
     }
@@ -81,8 +81,8 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     private static class UnixMillisFormatter extends Formatter {
 
         @Override
-        String format(final long time) {
-            return Long.toString(time);
+        String format(final long timeMillis) {
+            return Long.toString(timeMillis);
         }
 
     }
@@ -251,10 +251,10 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
      */
     @Override
     public void format(final LogEvent event, final StringBuilder output) {
-        final long timestamp = event.getTimeMillis();
+        final long timestampMillis = event.getTimeMillis();
         CurrentTime current = currentTime.get();
-        if (timestamp != current.timestamp) {
-            final CurrentTime newTime = new CurrentTime(timestamp);
+        if (timestampMillis != current.timestampMillis) {
+            final CurrentTime newTime = new CurrentTime(timestampMillis);
             if (currentTime.compareAndSet(current, newTime)) {
                 current = newTime;
             } else {
