@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicReference;
