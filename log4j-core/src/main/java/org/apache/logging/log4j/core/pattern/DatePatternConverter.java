@@ -172,14 +172,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         return new DatePatternConverter(options);
     }
 
-    /**
-     * Date format.
-     */
-    private String cachedDateString;
-
     private final Formatter formatter;
-
-    private long lastTimestamp;
 
     /**
      * Private constructor.
