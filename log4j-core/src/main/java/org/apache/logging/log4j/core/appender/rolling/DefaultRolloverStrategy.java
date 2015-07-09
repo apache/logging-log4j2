@@ -82,6 +82,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
 
     private enum FileExtensions {
         ZIP(".zip") {
+            @Override
             Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
                     final int compressionLevel) {
                 return new ZipCompressAction(new File(baseName(renameTo)), new File(compressedName), deleteSource,
@@ -89,12 +90,14 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             }
         },
         GZIP(".gz") {
+            @Override
             Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
                     final int compressionLevel) {
                 return new GzCompressAction(new File(baseName(renameTo)), new File(compressedName), deleteSource);
             }
         },
         BZIP2(".bz2") {
+            @Override
             Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
                     final int compressionLevel) {
                 // One of "gz", "bzip2", "xz", "pack200", or "deflate".
@@ -102,6 +105,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             }            
         },
         DEFALTE(".deflate") {
+            @Override
             Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
                     final int compressionLevel) {
                 // One of "gz", "bzip2", "xz", "pack200", or "deflate".
@@ -109,6 +113,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             }            
         },
         PACK200(".pack200") {
+            @Override
             Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
                     final int compressionLevel) {
                 // One of "gz", "bzip2", "xz", "pack200", or "deflate".
@@ -116,6 +121,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             }            
         },
         XY(".xy") {
+            @Override
             Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
                     final int compressionLevel) {
                 // One of "gz", "bzip2", "xz", "pack200", or "deflate".
