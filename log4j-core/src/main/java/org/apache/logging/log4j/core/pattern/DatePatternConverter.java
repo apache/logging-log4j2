@@ -31,7 +31,7 @@ import org.apache.logging.log4j.core.util.datetime.FastDateFormat;
 @ConverterKeys({ "d", "date" })
 public final class DatePatternConverter extends LogEventPatternConverter implements ArrayPatternConverter {
 
-    private class CurrentTime {
+    private final class CurrentTime {
         public long timestampMillis;
         public String formatted;
 
@@ -51,7 +51,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         }
     }
 
-    private static class PatternFormatter extends Formatter {
+    private static final class PatternFormatter extends Formatter {
         private final FastDateFormat fastDateFormat;
 
         PatternFormatter(final FastDateFormat fastDateFormat) {
@@ -69,7 +69,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         }
     }
 
-    private static class UnixFormatter extends Formatter {
+    private static final class UnixFormatter extends Formatter {
 
         @Override
         String format(final long timeMillis) {
@@ -78,7 +78,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
 
     }
 
-    private static class UnixMillisFormatter extends Formatter {
+    private static final class UnixMillisFormatter extends Formatter {
 
         @Override
         String format(final long timeMillis) {
