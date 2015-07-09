@@ -35,13 +35,13 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         public long timestampMillis;
         public String formatted;
 
-        public CurrentTime(long timestampMillis) {
+        public CurrentTime(final long timestampMillis) {
             this.timestampMillis = timestampMillis;
             this.formatted = formatter.format(this.timestampMillis);
         }
     }
 
-    private AtomicReference<CurrentTime> currentTime;
+    private final AtomicReference<CurrentTime> currentTime;
 
     private abstract static class Formatter {
         abstract String format(long timeMillis);
