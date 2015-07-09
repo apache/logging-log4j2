@@ -18,7 +18,6 @@ package org.apache.logging.log4j.jul;
 
 import org.apache.logging.log4j.Level;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
