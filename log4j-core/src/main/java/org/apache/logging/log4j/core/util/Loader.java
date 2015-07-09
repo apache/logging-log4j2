@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.util;
 
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.ReflectPermission;
 import java.net.URL;
 
 import org.apache.logging.log4j.Logger;

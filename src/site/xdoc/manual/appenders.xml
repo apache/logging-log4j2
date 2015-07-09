@@ -2146,11 +2146,12 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 is present it will be replaced with the current date and time values. If the pattern contains an integer
                 it will be incremented on each rollover. If the pattern contains both a date/time and integer
                 in the pattern the integer will be incremented until the result of the date/time pattern changes. If
-                the file pattern ends with ".gz", ".zip" or ".bz2" the resulting archive will be compressed using the
-                compression scheme that matches the suffix. (bzip2 requires 
-                <a href="http://commons.apache.org/proper/commons-compress/">Apache Commons Compress</a>.)
-                The pattern may also contain lookup references that
-                can be resolved at runtime such as is shown in the example below.
+                the file pattern ends with ".gz", ".zip", ".bz2", ".deflate", ".pack200", or ".xz" the resulting archive 
+                will be compressed using the compression scheme that matches the suffix. The formats bzip2, Deflate, 
+                Pack200 and XZ require <a href="http://commons.apache.org/proper/commons-compress/">Apache Commons Compress</a>.
+                In addition, XZ requires <a href="http://tukaani.org/xz/java.html">XZ for Java</a>. 
+                The pattern may also contain lookup references that can be resolved at runtime such as is shown in the example 
+                below.
               </p>
               <p>The default rollover strategy supports two variations for incrementing the counter. The first is
                 the "fixed window" strategy. To illustrate how it works, suppose that the min attribute is set to 1,

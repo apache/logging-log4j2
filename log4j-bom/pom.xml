@@ -125,6 +125,6 @@
   </build>
 
   <scm>
-    <tag>log4j-2.1</tag>
+    <tag>log4j-2.3</tag>
   </scm>
 </project>

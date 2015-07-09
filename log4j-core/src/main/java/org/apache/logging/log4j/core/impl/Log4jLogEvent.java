@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
@@ -435,9 +436,7 @@ public class Log4jLogEvent implements LogEvent {
     }
 
     public static Log4jLogEvent deserialize(final Serializable event) {
-        if (event == null) {
-            throw new NullPointerException("Event cannot be null");
-        }
+        Objects.requireNonNull(event, "Event cannot be null");
         if (event instanceof LogEventProxy) {
             final LogEventProxy proxy = (LogEventProxy) event;
             final Log4jLogEvent result = new Log4jLogEvent(proxy.loggerName, proxy.marker,

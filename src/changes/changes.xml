@@ -27,14 +27,8 @@
       <action issue="LOG4J2-1075" dev="rpopma" type="add">
         Added support for compressing to bzip2 format on file rollover.
       </action>
-      <action issue="LOG4J2-889" dev="rpopma" type="fix" due-to="Maciej Karaś, Kenneth Leider">
-        Header in layout should not be written on application startup if appending to an existing file. Fixes LOG4J2-1030.
-      </action>
-      <action issue="LOG4J2-918" dev="rpopma" type="fix">
-        Clarify documentation for combining async with sync loggers.
-      </action>
-      <action issue="LOG4J2-1044" dev="rgoers" type="update">
-        Support batchSize in FlumeAvroManager.
+      <action issue="LOG4J2-1077" dev="ggregory" type="add">
+        Support additional Apache Commons Compress compression formats on rollover: Deflate, Pack200, XY.
       </action>
       <action issue="LOG4J2-767" dev="ggregory" type="add" due-to="Mikael Ståldal">
         New module for Liquibase integration.
@@ -126,6 +120,18 @@
       <action issue="LOG4J2-1064" dev="ggregory" type="fix">
         org.apache.logging.slf4j.Log4jMarker does not implement org.slf4j.Marker.equals(Object) org.slf4j.Marker.hashCode().
       </action>            
+      <action issue="LOG4J2-889" dev="rpopma" type="fix" due-to="Maciej Karaś, Kenneth Leider">
+        Header in layout should not be written on application startup if appending to an existing file. Fixes LOG4J2-1030.
+      </action>
+      <action issue="LOG4J2-918" dev="rpopma" type="fix">
+        Clarify documentation for combining async with sync loggers.
+      </action>
+      <action issue="LOG4J2-1078" dev="ggregory" type="fix" due-to="Mikael Ståldal">
+        GelfLayout throws exception if some log event fields are null.
+      </action>
+      <action issue="LOG4J2-1044" dev="rgoers" type="update">
+        Support batchSize in FlumeAvroManager.
+      </action>
       <action issue="LOG4J2-1065" dev="ggregory" type="update">
         Define org.apache.logging.log4j.Marker.equals(Object) and org.apache.logging.log4j.Marker.hashCode().
       </action>
@@ -161,6 +167,9 @@
       </action>
       <action issue="LOG4J2-1070" dev="ggregory" type="update">
         Update Java Mail from 1.5.2 to 1.5.4.
+      </action>
+      <action issue="LOG4J2-1079" dev="ggregory" type="update">
+        Update Jackson from 2.5.3 to 2.5.4.
       </action>
     </release>
     <release version="2.3" date="2015-05-09" description="GA Release 2.3">

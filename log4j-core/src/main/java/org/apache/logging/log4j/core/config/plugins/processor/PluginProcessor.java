@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -121,9 +122,7 @@ public class PluginProcessor extends AbstractProcessor {
 
         @Override
         public PluginEntry visitType(final TypeElement e, final Plugin plugin) {
-            if (plugin == null) {
-                throw new NullPointerException("Plugin annotation is null.");
-            }
+            Objects.requireNonNull(plugin, "Plugin annotation is null.");
             final PluginEntry entry = new PluginEntry();
             entry.setKey(plugin.name().toLowerCase());
             entry.setClassName(elements.getBinaryName(e).toString());

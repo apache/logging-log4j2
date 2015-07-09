@@ -21,15 +21,23 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Objects;
 
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
+import org.apache.commons.compress.compressors.CompressorException;
+import org.apache.commons.compress.compressors.CompressorStreamFactory;
+import org.apache.commons.compress.utils.IOUtils;
 
 /**
  * Compresses a file using bzip2 compression.
  */
-public final class Bzip2CompressAction extends AbstractAction {
+public final class CommonsCompressAction extends AbstractAction {
 
     private static final int BUF_SIZE = 8102;
+
+    /**
+     * Compressor name. One of "gz", "bzip2", "xz", "pack200", or "deflate".
+     */
+    private final String name;
 
     /**
      * Source file.
@@ -47,85 +55,76 @@ public final class Bzip2CompressAction extends AbstractAction {
     private final boolean deleteSource;
 
     /**
-     * Create new instance of Bzip2CompressAction.
-     *
+     * Creates new instance of Bzip2CompressAction.
+     * @param name the compressor name. One of "gz", "bzip2", "xz", "pack200", or "deflate".
      * @param source file to compress, may not be null.
      * @param destination compressed file, may not be null.
      * @param deleteSource if true, attempt to delete file on completion. Failure to delete does not cause an exception
      *            to be thrown or affect return value.
      */
-    public Bzip2CompressAction(final File source, final File destination, final boolean deleteSource) {
-        if (source == null) {
-            throw new NullPointerException("source");
-        }
-
-        if (destination == null) {
-            throw new NullPointerException("destination");
-        }
-
+    public CommonsCompressAction(String name, final File source, final File destination, final boolean deleteSource) {
+        Objects.requireNonNull(source, "source");
+        Objects.requireNonNull(destination, "destination");
+        this.name = name;
         this.source = source;
         this.destination = destination;
         this.deleteSource = deleteSource;
     }
 
     /**
-     * Compress.
+     * Compresses.
      *
      * @return true if successfully compressed.
      * @throws IOException on IO exception.
      */
     @Override
     public boolean execute() throws IOException {
-        return execute(source, destination, deleteSource);
+        return execute(name, source, destination, deleteSource);
     }
 
     /**
-     * Compress a file.
-     *
+     * Compresses a file.
+     * @param name the compressor name, i.e. "gz", "bzip2", "xz", "pack200", or "deflate".
      * @param source file to compress, may not be null.
      * @param destination compressed file, may not be null.
      * @param deleteSource if true, attempt to delete file on completion. Failure to delete does not cause an exception
      *            to be thrown or affect return value.
+     *
      * @return true if source file compressed.
      * @throws IOException on IO exception.
      */
-    public static boolean execute(final File source, final File destination, final boolean deleteSource)
+    public static boolean execute(String name, final File source, final File destination, final boolean deleteSource)
             throws IOException {
-        if (source.exists()) {
-            try (final FileInputStream fis = new FileInputStream(source);
-                    final BufferedOutputStream os = new BufferedOutputStream(new BZip2CompressorOutputStream(
-                            new FileOutputStream(destination)))) {
-                final byte[] inbuf = new byte[BUF_SIZE];
-                int n;
-
-                while ((n = fis.read(inbuf)) != -1) {
-                    os.write(inbuf, 0, n);
-                }
-            }
-
-            if (deleteSource && !source.delete()) {
-                LOGGER.warn("Unable to delete " + source.toString() + '.');
-            }
-
-            return true;
+        if (!source.exists()) {
+            return false;
+        }
+        try (final FileInputStream input = new FileInputStream(source);
+                final BufferedOutputStream output = new BufferedOutputStream(new CompressorStreamFactory()
+                        .createCompressorOutputStream(name, new FileOutputStream(destination)))) {
+            IOUtils.copy(input, output, BUF_SIZE);
+        } catch (CompressorException e) {
+            throw new IOException(e);
         }
 
-        return false;
+        if (deleteSource && !source.delete()) {
+            LOGGER.warn("Unable to delete " + source.toString() + '.');
+        }
+        return true;
     }
 
     /**
-     * Capture exception.
+     * Reports exception.
      *
      * @param ex exception.
      */
     @Override
     protected void reportException(final Exception ex) {
-        LOGGER.warn("Exception during bzip2 compression of '" + source.toString() + "'.", ex);
+        LOGGER.warn("Exception during " + name + " compression of '" + source.toString() + "'.", ex);
     }
 
     @Override
     public String toString() {
-        return Bzip2CompressAction.class.getSimpleName() + '[' + source + " to " + destination //
+        return CommonsCompressAction.class.getSimpleName() + '[' + source + " to " + destination //
                 + ", deleteSource=" + deleteSource + ']';
     }
 }
