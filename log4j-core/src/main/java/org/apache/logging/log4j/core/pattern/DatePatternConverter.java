@@ -229,7 +229,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
             try {
                 tempFormat = FastDateFormat.getInstance(pattern, tz);
             } catch (final IllegalArgumentException e) {
-                LOGGER.warn("Could not instantiate SimpleDateFormat with pattern " + patternOption, e);
+                LOGGER.warn("Could not instantiate FastDateFormat with pattern " + patternOption, e);
 
                 // default to the DEFAULT format
                 tempFormat = FastDateFormat.getInstance(DEFAULT_PATTERN);
