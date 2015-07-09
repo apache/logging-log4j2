@@ -40,7 +40,7 @@ public class DefaultLevelConverter implements LevelConverter {
 
     static final class JulLevelComparator implements Comparator<java.util.logging.Level> {
         @Override
-        public int compare(java.util.logging.Level level1, java.util.logging.Level level2) {
+        public int compare(final java.util.logging.Level level1, final java.util.logging.Level level2) {
             return Integer.compare(level1.intValue(), level2.intValue());
         }
     }
@@ -77,29 +77,29 @@ public class DefaultLevelConverter implements LevelConverter {
 
     }
 
-    private long distance(java.util.logging.Level javaLevel, java.util.logging.Level customJavaLevel) {
+    private long distance(final java.util.logging.Level javaLevel, final java.util.logging.Level customJavaLevel) {
         return Math.abs((long) customJavaLevel.intValue() - (long) javaLevel.intValue());
     }
 
     /*
      * TODO consider making public for advanced configuration.
      */
-    private void mapJulToLog4j(java.util.logging.Level julLevel, Level level) {
+    private void mapJulToLog4j(final java.util.logging.Level julLevel, final Level level) {
         julToLog4j.put(julLevel, level);
     }
 
     /*
      * TODO consider making public for advanced configuration.
      */
-    private void mapLog4jToJul(Level level, java.util.logging.Level julLevel) {
+    private void mapLog4jToJul(final Level level, final java.util.logging.Level julLevel) {
         log4jToJul.put(level, julLevel);
     }
 
-    private Level nearestLevel(java.util.logging.Level customJavaLevel) {
+    private Level nearestLevel(final java.util.logging.Level customJavaLevel) {
         long prevDist = Long.MAX_VALUE;
         java.util.logging.Level prevLevel = null;
-        for (java.util.logging.Level mappedJavaLevel : sortedJulLevels) {
-            long distance = distance(customJavaLevel, mappedJavaLevel);
+        for (final java.util.logging.Level mappedJavaLevel : sortedJulLevels) {
+            final long distance = distance(customJavaLevel, mappedJavaLevel);
             if (distance > prevDist) {
                 return julToLog4j.get(prevLevel);
             }

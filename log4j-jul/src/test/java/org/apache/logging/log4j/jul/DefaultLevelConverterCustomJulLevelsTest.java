@@ -57,12 +57,12 @@ public class DefaultLevelConverterCustomJulLevelsTest {
 
         static CustomLevel OFF_M_1 = new CustomLevel("OFF_M_1", java.util.logging.Level.OFF.intValue() - 1);
 
-        protected CustomLevel(String name, int value) {
+        protected CustomLevel(final String name, final int value) {
             super(name, value);
         }
     }
 
-    private DefaultLevelConverter converter = new DefaultLevelConverter();
+    private final DefaultLevelConverter converter = new DefaultLevelConverter();
 
     @Test
     public void testCustomJulLevelNearAll() {

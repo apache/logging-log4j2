@@ -125,7 +125,7 @@ public class ThrowableProxy implements Serializable {
      * @param visited
      *        The set of visited suppressed exceptions.
      */
-    private ThrowableProxy(final Throwable throwable, Set<Throwable> visited) {
+    private ThrowableProxy(final Throwable throwable, final Set<Throwable> visited) {
         this.throwable = throwable;
         this.name = throwable.getClass().getName();
         this.message = throwable.getMessage();
@@ -154,7 +154,7 @@ public class ThrowableProxy implements Serializable {
      * @param causeVisited TODO
      */
     private ThrowableProxy(final Throwable parent, final Stack<Class<?>> stack, final Map<String, CacheEntry> map,
-            final Throwable cause, Set<Throwable> suppressedVisited, Set<Throwable> causeVisited) {
+            final Throwable cause, final Set<Throwable> suppressedVisited, final Set<Throwable> causeVisited) {
         causeVisited.add(cause);
         this.throwable = cause;
         this.name = cause.getClass().getName();
@@ -205,11 +205,11 @@ public class ThrowableProxy implements Serializable {
         return true;
     }
 
-	private void formatCause(final StringBuilder sb, String prefix, final ThrowableProxy cause, final List<String> ignorePackages) {
+	private void formatCause(final StringBuilder sb, final String prefix, final ThrowableProxy cause, final List<String> ignorePackages) {
 		formatThrowableProxy(sb, prefix, CAUSED_BY_LABEL, cause, ignorePackages);
 	}
 
-	private void formatThrowableProxy(final StringBuilder sb, String prefix, final String causeLabel,
+	private void formatThrowableProxy(final StringBuilder sb, final String prefix, final String causeLabel,
 			final ThrowableProxy throwableProxy, final List<String> ignorePackages) {
 		if (throwableProxy == null) {
 			return;
@@ -221,18 +221,18 @@ public class ThrowableProxy implements Serializable {
 		this.formatCause(sb, prefix, throwableProxy.causeProxy, ignorePackages);
 	}
 
-	private void formatSuppressed(final StringBuilder sb, String prefix, final ThrowableProxy[] suppressedProxies,
+	private void formatSuppressed(final StringBuilder sb, final String prefix, final ThrowableProxy[] suppressedProxies,
 			final List<String> ignorePackages) {
 		if (suppressedProxies == null) {
 			return;
 		}
-		for (ThrowableProxy suppressedProxy : suppressedProxies) {
+		for (final ThrowableProxy suppressedProxy : suppressedProxies) {
 			final ThrowableProxy cause = suppressedProxy;
 			formatThrowableProxy(sb, prefix, SUPPRESSED_LABEL, cause, ignorePackages);
 		}
 	}
 
-	private void formatElements(final StringBuilder sb, String prefix, final int commonCount,
+	private void formatElements(final StringBuilder sb, final String prefix, final int commonCount,
 			final StackTraceElement[] causedTrace, final ExtendedStackTraceElement[] extStackTrace,
 			final List<String> ignorePackages) {
 		if (ignorePackages == null || ignorePackages.isEmpty()) {
@@ -261,7 +261,7 @@ public class ThrowableProxy implements Serializable {
 		}
 	}
 
-    private void appendSuppressedCount(final StringBuilder sb, String prefix, final int count) {
+    private void appendSuppressedCount(final StringBuilder sb, final String prefix, final int count) {
     	sb.append(prefix);
         if (count == 1) {
             sb.append("\t....").append(EOL);
@@ -270,7 +270,7 @@ public class ThrowableProxy implements Serializable {
         }
     }
 
-    private void formatEntry(final ExtendedStackTraceElement extStackTraceElement, final StringBuilder sb, String prefix) {
+    private void formatEntry(final ExtendedStackTraceElement extStackTraceElement, final StringBuilder sb, final String prefix) {
         sb.append(prefix);
         sb.append("\tat ");
         sb.append(extStackTraceElement);

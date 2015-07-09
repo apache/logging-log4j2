@@ -62,7 +62,7 @@ public final class CommonsCompressAction extends AbstractAction {
      * @param deleteSource if true, attempt to delete file on completion. Failure to delete does not cause an exception
      *            to be thrown or affect return value.
      */
-    public CommonsCompressAction(String name, final File source, final File destination, final boolean deleteSource) {
+    public CommonsCompressAction(final String name, final File source, final File destination, final boolean deleteSource) {
         Objects.requireNonNull(source, "source");
         Objects.requireNonNull(destination, "destination");
         this.name = name;
@@ -93,7 +93,7 @@ public final class CommonsCompressAction extends AbstractAction {
      * @return true if source file compressed.
      * @throws IOException on IO exception.
      */
-    public static boolean execute(String name, final File source, final File destination, final boolean deleteSource)
+    public static boolean execute(final String name, final File source, final File destination, final boolean deleteSource)
             throws IOException {
         if (!source.exists()) {
             return false;
@@ -102,7 +102,7 @@ public final class CommonsCompressAction extends AbstractAction {
                 final BufferedOutputStream output = new BufferedOutputStream(new CompressorStreamFactory()
                         .createCompressorOutputStream(name, new FileOutputStream(destination)))) {
             IOUtils.copy(input, output, BUF_SIZE);
-        } catch (CompressorException e) {
+        } catch (final CompressorException e) {
             throw new IOException(e);
         }
 
