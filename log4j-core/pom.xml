@@ -75,6 +75,7 @@
       <artifactId>jackson-dataformat-xml</artifactId>
       <optional>true</optional>
     </dependency>
+    <!-- POM for jackson-dataformat-xml 2.5.4 depends on woodstox-core-asl 4.3.0 -->
     <dependency>
       <groupId>org.codehaus.woodstox</groupId>
       <artifactId>woodstox-core-asl</artifactId>
