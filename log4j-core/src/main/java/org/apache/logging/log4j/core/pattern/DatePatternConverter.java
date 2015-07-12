@@ -16,12 +16,13 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.util.datetime.FastDateFormat;
 
 /**
  * Converts and formats the event's date in a StringBuilder.
@@ -30,46 +31,58 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 @ConverterKeys({ "d", "date" })
 public final class DatePatternConverter extends LogEventPatternConverter implements ArrayPatternConverter {
 
+    private final class CurrentTime {
+        public long timestampMillis;
+        public String formatted;
+
+        public CurrentTime(final long timestampMillis) {
+            this.timestampMillis = timestampMillis;
+            this.formatted = formatter.format(this.timestampMillis);
+        }
+    }
+
+    private final AtomicReference<CurrentTime> currentTime;
+
     private abstract static class Formatter {
-        abstract String format(long time);
+        abstract String format(long timeMillis);
 
         public String toPattern() {
             return null;
         }
     }
 
-    private static class PatternFormatter extends Formatter {
-        private final SimpleDateFormat simpleDateFormat;
+    private static final class PatternFormatter extends Formatter {
+        private final FastDateFormat fastDateFormat;
 
-        PatternFormatter(final SimpleDateFormat simpleDateFormat) {
-            this.simpleDateFormat = simpleDateFormat;
+        PatternFormatter(final FastDateFormat fastDateFormat) {
+            this.fastDateFormat = fastDateFormat;
         }
 
         @Override
-        String format(final long time) {
-            return simpleDateFormat.format(Long.valueOf(time));
+        String format(final long timeMillis) {
+            return fastDateFormat.format(timeMillis);
         }
 
         @Override
         public String toPattern() {
-            return simpleDateFormat.toPattern();
+            return fastDateFormat.toPattern();
         }
     }
 
-    private static class UnixFormatter extends Formatter {
+    private static final class UnixFormatter extends Formatter {
 
         @Override
-        String format(final long time) {
-            return Long.toString(time / 1000);
+        String format(final long timeMillis) {
+            return Long.toString(timeMillis / 1000);
         }
 
     }
 
-    private static class UnixMillisFormatter extends Formatter {
+    private static final class UnixMillisFormatter extends Formatter {
 
         @Override
-        String format(final long time) {
-            return Long.toString(time);
+        String format(final long timeMillis) {
+            return Long.toString(timeMillis);
         }
 
     }
@@ -158,14 +171,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         return new DatePatternConverter(options);
     }
 
-    /**
-     * Date format.
-     */
-    private String cachedDateString;
-
     private final Formatter formatter;
-
-    private long lastTimestamp;
 
     /**
      * Private constructor.
@@ -203,25 +209,29 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         }
 
         if (pattern != null) {
-            SimpleDateFormat tempFormat;
+            FastDateFormat tempFormat;
 
-            try {
-                tempFormat = new SimpleDateFormat(pattern);
-            } catch (final IllegalArgumentException e) {
-                LOGGER.warn("Could not instantiate SimpleDateFormat with pattern " + patternOption, e);
-
-                // default to the DEFAULT format
-                tempFormat = new SimpleDateFormat(DEFAULT_PATTERN);
-            }
+            TimeZone tz = null;
 
             // if the option list contains a TZ option, then set it.
             if (options != null && options.length > 1) {
-                final TimeZone tz = TimeZone.getTimeZone(options[1]);
-                tempFormat.setTimeZone(tz);
+                tz = TimeZone.getTimeZone(options[1]);
             }
+
+            try {
+                tempFormat = FastDateFormat.getInstance(pattern, tz);
+            } catch (final IllegalArgumentException e) {
+                LOGGER.warn("Could not instantiate FastDateFormat with pattern " + patternOption, e);
+
+                // default to the DEFAULT format
+                tempFormat = FastDateFormat.getInstance(DEFAULT_PATTERN);
+            }
+
+
             tempFormatter = new PatternFormatter(tempFormat);
         }
         formatter = tempFormatter;
+        currentTime = new AtomicReference<>(new CurrentTime(System.currentTimeMillis()));
     }
 
     /**
@@ -233,9 +243,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
      *            buffer to which formatted date is appended.
      */
     public void format(final Date date, final StringBuilder toAppendTo) {
-        synchronized (this) {
             toAppendTo.append(formatter.format(date.getTime()));
-        }
     }
 
     /**
@@ -243,15 +251,18 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
      */
     @Override
     public void format(final LogEvent event, final StringBuilder output) {
-        final long timestamp = event.getTimeMillis();
-
-        synchronized (this) {
-            if (timestamp != lastTimestamp) {
-                lastTimestamp = timestamp;
-                cachedDateString = formatter.format(timestamp);
+        final long timestampMillis = event.getTimeMillis();
+        CurrentTime current = currentTime.get();
+        if (timestampMillis != current.timestampMillis) {
+            final CurrentTime newTime = new CurrentTime(timestampMillis);
+            if (currentTime.compareAndSet(current, newTime)) {
+                current = newTime;
+            } else {
+                current = currentTime.get();
             }
         }
-        output.append(cachedDateString);
+
+        output.append(current.formatted);
     }
 
     /**

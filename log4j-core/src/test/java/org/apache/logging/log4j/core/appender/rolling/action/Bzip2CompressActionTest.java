@@ -35,12 +35,12 @@ public class Bzip2CompressActionTest {
 
     @Test(expected = NullPointerException.class)
     public void testConstructorDisallowsNullSource() {
-        new Bzip2CompressAction(null, new File("any"), true);
+        new CommonsCompressAction("bzip2", null, new File("any"), true);
     }
 
     @Test(expected = NullPointerException.class)
     public void testConstructorDisallowsNullDestination() {
-        new Bzip2CompressAction(new File("any"), null, true);
+        new CommonsCompressAction("bzip2", new File("any"), null, true);
     }
 
     @Test
@@ -49,7 +49,7 @@ public class Bzip2CompressActionTest {
         while (source.exists()) {
             source = new File(source.getName() + Math.random());
         }
-        boolean actual = Bzip2CompressAction.execute(source, new File("any2"), true);
+        final boolean actual = CommonsCompressAction.execute("bzip2", source, new File("any2"), true);
         assertEquals("Cannot compress non-existing file", false, actual);
     }
 
@@ -69,7 +69,7 @@ public class Bzip2CompressActionTest {
         destination.delete(); // just in case
         assertFalse("Destination should not exist yet", destination.exists());
 
-        final boolean actual = Bzip2CompressAction.execute(source, destination, true);
+        final boolean actual = CommonsCompressAction.execute("bzip2", source, destination, true);
         assertEquals("Bzip2CompressAction should have succeeded", true, actual);
         assertTrue("Destination should exist after Bzip2CompressAction", destination.exists());
         assertFalse("Source should have been deleted", source.exists());

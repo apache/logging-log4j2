@@ -60,7 +60,6 @@ public class LoggerTest {
         noThrown = context.getListAppender("NoThrowable").clear();
     }
 
-
     org.apache.logging.log4j.Logger logger = context.getLogger("LoggerTest");
 
     @Test

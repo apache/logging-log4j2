@@ -183,7 +183,7 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
             } else {
                 try {
                     database.getCollectionNames(); // Check if the database actually requires authentication
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     LOGGER.error("The database is not already authenticated so you must supply a username and password for the MongoDB provider.", e);
                     return null;
                 }

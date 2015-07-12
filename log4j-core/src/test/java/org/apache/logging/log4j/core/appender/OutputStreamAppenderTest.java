@@ -60,7 +60,7 @@ public class OutputStreamAppenderTest {
         assertMessage("Test", app, expectedHeader);
     }
 
-    private void assertMessage(String string, InMemoryAppender app, String header) {
+    private void assertMessage(final String string, final InMemoryAppender app, final String header) {
         final LogEvent event = new Log4jLogEvent("TestLogger", null, OutputStreamAppenderTest.class.getName(),
                 Level.INFO, new SimpleMessage("Test"), null);
         app.start();

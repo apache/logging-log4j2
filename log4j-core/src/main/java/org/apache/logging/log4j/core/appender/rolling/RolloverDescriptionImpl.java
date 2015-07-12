@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import java.util.Objects;
+
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
 
 /**
@@ -55,9 +57,7 @@ public final class RolloverDescriptionImpl implements RolloverDescription {
      */
     public RolloverDescriptionImpl(final String activeFileName, final boolean append, final Action synchronous,
                                    final Action asynchronous) {
-        if (activeFileName == null) {
-            throw new NullPointerException("activeFileName");
-        }
+        Objects.requireNonNull(activeFileName, "activeFileName");
 
         this.append = append;
         this.activeFileName = activeFileName;

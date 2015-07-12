@@ -20,7 +20,9 @@ package org.apache.logging.log4j.perf.jmh;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
+import org.apache.logging.log4j.core.util.datetime.FastDateFormat;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Mode;
@@ -46,13 +48,56 @@ import org.openjdk.jmh.annotations.State;
 public class SimpleDateFormatBenchmark {
 
     private final Date date = new Date();
-    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
-    private ThreadLocal<SimpleDateFormat> threadLocal = new ThreadLocal<SimpleDateFormat>() {
+    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
+    private final ThreadLocal<SimpleDateFormat> threadLocal = new ThreadLocal<SimpleDateFormat>() {
         @Override
         protected SimpleDateFormat initialValue() {
             return new SimpleDateFormat("HH:mm:ss.SSS");
         }
     };
+
+    private final ThreadLocal<Formatter> localFormat = new ThreadLocal<Formatter>() {
+        @Override
+        protected Formatter initialValue() {
+            return new Formatter();
+        }
+    };
+
+    private final FastDateFormat fastFormat = FastDateFormat.getInstance("HH:mm:ss.SSS");
+
+    private class CurrentTime {
+        private final long timestamp;
+        private final String formatted;
+
+        public CurrentTime(final long timestamp) {
+            this.timestamp = timestamp;
+            this.formatted = fastFormat.format(timestamp);
+        }
+    }
+
+    private class Formatter {
+        private final SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
+        private long timestamp;
+        private String formatted;
+
+        public Formatter() {
+            this.timestamp = 0;
+        }
+
+        public String format(final long timestamp) {
+            if (timestamp != this.timestamp) {
+                this.timestamp = timestamp;
+                formatted = format.format(timestamp);
+            }
+            return formatted;
+        }
+
+    }
+
+    private final long currentTimestamp = 0;
+    private String cachedTime = null;
+
+    private final AtomicReference<CurrentTime> currentTime = new AtomicReference<>(new CurrentTime(System.currentTimeMillis()));
 
     public static void main(final String[] args) {
     }
@@ -67,8 +112,12 @@ public class SimpleDateFormatBenchmark {
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public String synchronizedFormat() {
+        final long timestamp = System.currentTimeMillis();
         synchronized (simpleDateFormat) {
-            return simpleDateFormat.format(date);
+            if (timestamp != currentTimestamp) {
+                cachedTime = simpleDateFormat.format(date);
+            }
+            return cachedTime;
         }
     }
 
@@ -76,6 +125,41 @@ public class SimpleDateFormatBenchmark {
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public String threadLocalFormat() {
-        return threadLocal.get().format(date);
+        final long timestamp = System.currentTimeMillis();
+        return threadLocal.get().format(timestamp);
+    }
+
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public String cachedFormat() {
+        final long timestamp = System.currentTimeMillis();
+        return localFormat.get().format(timestamp);
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public String fastFormat() {
+        return fastFormat.format(System.currentTimeMillis());
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public String atomicFormat() {
+        final long timestamp = System.currentTimeMillis();
+        final CurrentTime current = currentTime.get();
+        if (timestamp != current.timestamp) {
+            final CurrentTime newTime = new CurrentTime(timestamp);
+            if (currentTime.compareAndSet(current, newTime)) {
+                return newTime.formatted;
+            } else {
+                return currentTime.get().formatted;
+            }
+
+        }
+        return current.formatted;
     }
 }

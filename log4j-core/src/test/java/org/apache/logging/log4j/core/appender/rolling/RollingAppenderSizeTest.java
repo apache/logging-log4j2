@@ -53,7 +53,11 @@ public class RollingAppenderSizeTest {
                 new Object[][]{
                         { "log4j-rolling-gz.xml", ".gz" },
                         { "log4j-rolling-zip.xml", ".zip" },
+                        // Apache Commons Compress
                         { "log4j-rolling-bzip2.xml", ".bz2" },
+                        { "log4j-rolling-deflate.xml", ".deflate" },
+                        { "log4j-rolling-pack200.xml", ".pack200" },
+                        { "log4j-rolling-xy.xml", ".xy" },
                 }
         );
     }

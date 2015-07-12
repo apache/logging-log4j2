@@ -42,7 +42,8 @@ public interface Marker extends Serializable {
 	 * @return true if the given marker has the same name as this marker.
 	 * @since 2.4
 	 */
-    public boolean equals(Object obj);
+    @Override
+	public boolean equals(Object obj);
 
     /**
      * Returns the name of this Marker.
@@ -62,7 +63,8 @@ public interface Marker extends Serializable {
      * @return the computed hash code
 	 * @since 2.4
      */
-    public int hashCode();
+    @Override
+	public int hashCode();
 
     /**
      * Indicates whether this Marker has references to any other Markers.

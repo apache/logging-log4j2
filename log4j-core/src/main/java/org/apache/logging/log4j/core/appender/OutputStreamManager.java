@@ -31,7 +31,7 @@ public class OutputStreamManager extends AbstractManager {
     protected final Layout<?> layout;
 
     protected OutputStreamManager(final OutputStream os, final String streamName, final Layout<?> layout,
-            boolean writeHeader) {
+            final boolean writeHeader) {
         super(streamName);
         this.os = os;
         this.layout = layout;

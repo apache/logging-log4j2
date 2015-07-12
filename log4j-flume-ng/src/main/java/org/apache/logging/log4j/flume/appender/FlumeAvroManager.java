@@ -88,7 +88,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
      * @param requestTimeoutMillis The request timeout in ms.
      * @return A FlumeAvroManager.
      */
-    public static FlumeAvroManager getManager(final String name, final Agent[] agents, int batchSize, int delayMillis,
+    public static FlumeAvroManager getManager(final String name, final Agent[] agents, int batchSize, final int delayMillis,
                                               final int retries, final int connectTimeoutMillis, final int requestTimeoutMillis) {
         if (agents == null || agents.length == 0) {
             throw new IllegalArgumentException("At least one agent is required");
@@ -199,7 +199,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
             }
         } else {
             batchEvent.addEvent(event);
-            int count = batchEvent.getEvents().size();
+            final int count = batchEvent.getEvents().size();
             if (count == 1) {
                 nextSend = System.nanoTime() + delayNanos;
             }

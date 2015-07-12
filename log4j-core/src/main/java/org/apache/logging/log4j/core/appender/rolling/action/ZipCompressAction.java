@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -61,13 +62,8 @@ public final class ZipCompressAction extends AbstractAction {
      * @param level TODO
      */
     public ZipCompressAction(final File source, final File destination, final boolean deleteSource, final int level) {
-        if (source == null) {
-            throw new NullPointerException("source");
-        }
-
-        if (destination == null) {
-            throw new NullPointerException("destination");
-        }
+        Objects.requireNonNull(source, "source");
+        Objects.requireNonNull(destination, "destination");
 
         this.source = source;
         this.destination = destination;
