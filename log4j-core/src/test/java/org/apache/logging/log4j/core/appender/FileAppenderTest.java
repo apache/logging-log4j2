@@ -55,7 +55,7 @@ public class FileAppenderTest {
 
     @AfterClass
     public static void cleanupClass() {
-        assertTrue("Manager for " + FILENAME + " not removed", !OutputStreamManager.hasManager(FILENAME));
+        assertTrue("Manager for " + FILENAME + " not removed", !AbstractManager.hasManager(FILENAME));
     }
 
     @Test

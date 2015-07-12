@@ -82,42 +82,48 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
 
     private enum FileExtensions {
         ZIP(".zip") {
-            Action createCompressAction(String renameTo, String compressedName, boolean deleteSource,
-                    int compressionLevel) {
+            @Override
+            Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
+                    final int compressionLevel) {
                 return new ZipCompressAction(new File(baseName(renameTo)), new File(compressedName), deleteSource,
                         compressionLevel);
             }
         },
         GZIP(".gz") {
-            Action createCompressAction(String renameTo, String compressedName, boolean deleteSource,
-                    int compressionLevel) {
+            @Override
+            Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
+                    final int compressionLevel) {
                 return new GzCompressAction(new File(baseName(renameTo)), new File(compressedName), deleteSource);
             }
         },
         BZIP2(".bz2") {
-            Action createCompressAction(String renameTo, String compressedName, boolean deleteSource,
-                    int compressionLevel) {
+            @Override
+            Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
+                    final int compressionLevel) {
                 // One of "gz", "bzip2", "xz", "pack200", or "deflate".
                 return new CommonsCompressAction("bzip2", new File(baseName(renameTo)), new File(compressedName), deleteSource);
             }            
         },
         DEFALTE(".deflate") {
-            Action createCompressAction(String renameTo, String compressedName, boolean deleteSource,
-                    int compressionLevel) {
+            @Override
+            Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
+                    final int compressionLevel) {
                 // One of "gz", "bzip2", "xz", "pack200", or "deflate".
                 return new CommonsCompressAction("deflate", new File(baseName(renameTo)), new File(compressedName), deleteSource);
             }            
         },
         PACK200(".pack200") {
-            Action createCompressAction(String renameTo, String compressedName, boolean deleteSource,
-                    int compressionLevel) {
+            @Override
+            Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
+                    final int compressionLevel) {
                 // One of "gz", "bzip2", "xz", "pack200", or "deflate".
                 return new CommonsCompressAction("pack200", new File(baseName(renameTo)), new File(compressedName), deleteSource);
             }            
         },
         XY(".xy") {
-            Action createCompressAction(String renameTo, String compressedName, boolean deleteSource,
-                    int compressionLevel) {
+            @Override
+            Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
+                    final int compressionLevel) {
                 // One of "gz", "bzip2", "xz", "pack200", or "deflate".
                 return new CommonsCompressAction("xy", new File(baseName(renameTo)), new File(compressedName), deleteSource);
             }            
@@ -125,7 +131,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
 
         private final String extension;
 
-        private FileExtensions(String extension) {
+        private FileExtensions(final String extension) {
             Objects.requireNonNull(extension, "extension");
             this.extension = extension;
         }
@@ -134,7 +140,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             return extension;
         }
 
-        boolean isExtensionFor(String s) {
+        boolean isExtensionFor(final String s) {
             return s.endsWith(this.extension);
         }
 
@@ -142,7 +148,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             return extension.length();
         }
 
-        String baseName(String name) {
+        String baseName(final String name) {
             return name.substring(0, name.length() - length());
         }
 
@@ -442,7 +448,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         return lowIndex;
     }
 
-    private int suffixLength(String lowFilename) {
+    private int suffixLength(final String lowFilename) {
         if (FileExtensions.GZIP.isExtensionFor(lowFilename)) {
             return FileExtensions.GZIP.length();
         } else if (FileExtensions.ZIP.isExtensionFor(lowFilename)) {
@@ -483,7 +489,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         manager.getPatternProcessor().formatFileName(subst, buf, fileIndex);
         final String currentFileName = manager.getFileName();
 
-        String renameTo = buf.toString();
+        final String renameTo = buf.toString();
         final String compressedName = renameTo;
         Action compressAction = null;
 

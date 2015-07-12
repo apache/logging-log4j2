@@ -49,7 +49,7 @@ public class Bzip2CompressActionTest {
         while (source.exists()) {
             source = new File(source.getName() + Math.random());
         }
-        boolean actual = CommonsCompressAction.execute("bzip2", source, new File("any2"), true);
+        final boolean actual = CommonsCompressAction.execute("bzip2", source, new File("any2"), true);
         assertEquals("Cannot compress non-existing file", false, actual);
     }
 

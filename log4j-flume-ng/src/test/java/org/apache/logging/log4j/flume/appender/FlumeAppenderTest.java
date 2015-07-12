@@ -242,7 +242,7 @@ public class FlumeAppenderTest {
 
         try {
             Thread.sleep(500);
-        } catch (InterruptedException ie) {
+        } catch (final InterruptedException ie) {
         }
 
         avroLogger.info("Test message 1");

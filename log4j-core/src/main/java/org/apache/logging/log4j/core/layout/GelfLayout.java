@@ -223,7 +223,7 @@ public final class GelfLayout extends AbstractStringLayout {
         return builder.toString();
     }
 
-    private String toNullSafeString(String s) {
+    private String toNullSafeString(final String s) {
         return s == null ? Strings.EMPTY : s;
     }
 }

@@ -67,7 +67,7 @@ public class Log4jMarker implements Marker {
 	}
 
     @Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -77,7 +77,7 @@ public class Log4jMarker implements Marker {
 		if (!(obj instanceof Log4jMarker)) {
 			return false;
 		}
-		Log4jMarker other = (Log4jMarker) obj;
+		final Log4jMarker other = (Log4jMarker) obj;
 		if (marker == null) {
 			if (other.marker != null) {
 				return false;
@@ -117,7 +117,7 @@ public class Log4jMarker implements Marker {
 
 	@Override
     public Iterator<Marker> iterator() {
-        org.apache.logging.log4j.Marker[] log4jParents = this.marker.getParents();
+        final org.apache.logging.log4j.Marker[] log4jParents = this.marker.getParents();
         final List<Marker> parents = new ArrayList<>(log4jParents.length);
 		for (final org.apache.logging.log4j.Marker m : log4jParents) {
             parents.add(factory.getMarker(m.getName()));

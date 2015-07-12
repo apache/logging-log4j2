@@ -167,7 +167,7 @@ public class ThrowableProxyTest {
 		testSerialization_getExtendedStackTraceAsStringWithNestedThrowable(throwable);
 	}
 
-    private void testSerialization_getExtendedStackTraceAsStringWithNestedThrowable(Throwable throwable) throws Exception {
+    private void testSerialization_getExtendedStackTraceAsStringWithNestedThrowable(final Throwable throwable) throws Exception {
         final ThrowableProxy proxy = new ThrowableProxy(throwable);
         final byte[] binary = serialize(proxy);
         final ThrowableProxy proxy2 = deserialize(binary);
@@ -234,8 +234,8 @@ public class ThrowableProxyTest {
      */
     @Test
     public void testCircularSuppressedExceptions() {
-        Exception e1 = new Exception();
-        Exception e2 = new Exception();
+        final Exception e1 = new Exception();
+        final Exception e2 = new Exception();
         e2.addSuppressed(e1);
         e1.addSuppressed(e2);
         LogManager.getLogger().error("Error", e1);
@@ -243,24 +243,24 @@ public class ThrowableProxyTest {
 
     @Test
 	public void testSuppressedExceptions() {
-		Exception e = new Exception("Root exception");
+		final Exception e = new Exception("Root exception");
 		e.addSuppressed(new IOException("Suppressed #1"));
 		e.addSuppressed(new IOException("Suppressed #2"));
 		LogManager.getLogger().error("Error", e);
 		final ThrowableProxy proxy = new ThrowableProxy(e);
-		String extendedStackTraceAsString = proxy.getExtendedStackTraceAsString();
+		final String extendedStackTraceAsString = proxy.getExtendedStackTraceAsString();
 		assertTrue(extendedStackTraceAsString.contains("\tSuppressed: java.io.IOException: Suppressed #1"));
 		assertTrue(extendedStackTraceAsString.contains("\tSuppressed: java.io.IOException: Suppressed #1"));
 	}
 
     @Test
 	public void testCauseSuppressedExceptions() {
-		Exception cause = new Exception("Nested exception");
+		final Exception cause = new Exception("Nested exception");
 		cause.addSuppressed(new IOException("Suppressed #1"));
 		cause.addSuppressed(new IOException("Suppressed #2"));
 		LogManager.getLogger().error("Error", new Exception(cause));
 		final ThrowableProxy proxy = new ThrowableProxy(new Exception("Root exception", cause));
-		String extendedStackTraceAsString = proxy.getExtendedStackTraceAsString();
+		final String extendedStackTraceAsString = proxy.getExtendedStackTraceAsString();
 		assertTrue(extendedStackTraceAsString.contains("\tSuppressed: java.io.IOException: Suppressed #1"));
 		assertTrue(extendedStackTraceAsString.contains("\tSuppressed: java.io.IOException: Suppressed #1"));
 	}
@@ -270,8 +270,8 @@ public class ThrowableProxyTest {
      */
     @Test
     public void testCircularSuppressedNestedException() {
-        Exception e1 = new Exception();
-        Exception e2 = new Exception(e1);
+        final Exception e1 = new Exception();
+        final Exception e2 = new Exception(e1);
         e2.addSuppressed(e1);
         e1.addSuppressed(e2);
         LogManager.getLogger().error("Error", e1);
@@ -282,8 +282,8 @@ public class ThrowableProxyTest {
      */
     @Test
     public void testCircularCauseExceptions() {
-        Exception e1 = new Exception();
-        Exception e2 = new Exception(e1);
+        final Exception e1 = new Exception();
+        final Exception e2 = new Exception(e1);
         e1.initCause(e2);
         LogManager.getLogger().error("Error", e1);
     }

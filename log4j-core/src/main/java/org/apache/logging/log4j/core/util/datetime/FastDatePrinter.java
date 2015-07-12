@@ -1207,7 +1207,7 @@ public class FastDatePrinter implements DatePrinter, Serializable {
          * @return a Iso8601_Rule that can format TimeZone String of length {@code tokenLen}. If no such
          *          rule exists, an IllegalArgumentException will be thrown.
          */
-        static Iso8601_Rule getRule(int tokenLen) {
+        static Iso8601_Rule getRule(final int tokenLen) {
             switch(tokenLen) {
             case 1:
                 return Iso8601_Rule.ISO8601_HOURS;

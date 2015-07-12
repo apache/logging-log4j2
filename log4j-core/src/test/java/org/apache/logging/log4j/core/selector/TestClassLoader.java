@@ -57,7 +57,7 @@ public class TestClassLoader extends ClassLoader {
             final URLConnection uc = resource.openConnection();
             final int len = uc.getContentLength();
             final InputStream in = new BufferedInputStream(uc.getInputStream());
-            byte[] bytecode = new byte[len];
+            final byte[] bytecode = new byte[len];
             try {
                 IOUtils.readFully(in, bytecode);
             } finally {

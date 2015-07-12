@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicReference;
@@ -32,27 +31,27 @@ import org.apache.logging.log4j.core.util.datetime.FastDateFormat;
 @ConverterKeys({ "d", "date" })
 public final class DatePatternConverter extends LogEventPatternConverter implements ArrayPatternConverter {
 
-    private class CurrentTime {
-        public long timestamp;
+    private final class CurrentTime {
+        public long timestampMillis;
         public String formatted;
 
-        public CurrentTime(long timestamp) {
-            this.timestamp = timestamp;
-            this.formatted = formatter.format(this.timestamp);
+        public CurrentTime(final long timestampMillis) {
+            this.timestampMillis = timestampMillis;
+            this.formatted = formatter.format(this.timestampMillis);
         }
     }
 
-    private AtomicReference<CurrentTime> currentTime;
+    private final AtomicReference<CurrentTime> currentTime;
 
     private abstract static class Formatter {
-        abstract String format(long time);
+        abstract String format(long timeMillis);
 
         public String toPattern() {
             return null;
         }
     }
 
-    private static class PatternFormatter extends Formatter {
+    private static final class PatternFormatter extends Formatter {
         private final FastDateFormat fastDateFormat;
 
         PatternFormatter(final FastDateFormat fastDateFormat) {
@@ -60,8 +59,8 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         }
 
         @Override
-        String format(final long time) {
-            return fastDateFormat.format(time);
+        String format(final long timeMillis) {
+            return fastDateFormat.format(timeMillis);
         }
 
         @Override
@@ -70,20 +69,20 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         }
     }
 
-    private static class UnixFormatter extends Formatter {
+    private static final class UnixFormatter extends Formatter {
 
         @Override
-        String format(final long time) {
-            return Long.toString(time / 1000);
+        String format(final long timeMillis) {
+            return Long.toString(timeMillis / 1000);
         }
 
     }
 
-    private static class UnixMillisFormatter extends Formatter {
+    private static final class UnixMillisFormatter extends Formatter {
 
         @Override
-        String format(final long time) {
-            return Long.toString(time);
+        String format(final long timeMillis) {
+            return Long.toString(timeMillis);
         }
 
     }
@@ -172,14 +171,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         return new DatePatternConverter(options);
     }
 
-    /**
-     * Date format.
-     */
-    private String cachedDateString;
-
     private final Formatter formatter;
-
-    private long lastTimestamp;
 
     /**
      * Private constructor.
@@ -229,7 +221,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
             try {
                 tempFormat = FastDateFormat.getInstance(pattern, tz);
             } catch (final IllegalArgumentException e) {
-                LOGGER.warn("Could not instantiate SimpleDateFormat with pattern " + patternOption, e);
+                LOGGER.warn("Could not instantiate FastDateFormat with pattern " + patternOption, e);
 
                 // default to the DEFAULT format
                 tempFormat = FastDateFormat.getInstance(DEFAULT_PATTERN);
@@ -259,10 +251,10 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
      */
     @Override
     public void format(final LogEvent event, final StringBuilder output) {
-        final long timestamp = event.getTimeMillis();
+        final long timestampMillis = event.getTimeMillis();
         CurrentTime current = currentTime.get();
-        if (timestamp != current.timestamp) {
-            final CurrentTime newTime = new CurrentTime(timestamp);
+        if (timestampMillis != current.timestampMillis) {
+            final CurrentTime newTime = new CurrentTime(timestampMillis);
             if (currentTime.compareAndSet(current, newTime)) {
                 current = newTime;
             } else {

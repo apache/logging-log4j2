@@ -341,7 +341,7 @@ public class FastDateParser implements DateParser, Serializable {
 
     private static StringBuilder simpleQuote(final StringBuilder sb, final String value) {
         for(int i= 0; i<value.length(); ++i) {
-            char c= value.charAt(i);
+            final char c= value.charAt(i);
             switch(c) {
             case '\\':
             case '^':
@@ -790,7 +790,7 @@ public class FastDateParser implements DateParser, Serializable {
                 }
                 final TimeZone tz = TimeZone.getTimeZone(tzId);
                 for(int i= 1; i<zoneNames.length; ++i) {
-                    String zoneName = zoneNames[i].toLowerCase(locale);
+                    final String zoneName = zoneNames[i].toLowerCase(locale);
                     if (!tzNames.containsKey(zoneName)){
                         tzNames.put(zoneName, tz);
                         simpleQuote(sb.append('|'), zoneName);
@@ -841,7 +841,7 @@ public class FastDateParser implements DateParser, Serializable {
          * Construct a Strategy that parses a TimeZone
          * @param pattern The Pattern
          */
-        ISO8601TimeZoneStrategy(String pattern) {
+        ISO8601TimeZoneStrategy(final String pattern) {
             this.pattern = pattern;
         }
         
@@ -849,7 +849,7 @@ public class FastDateParser implements DateParser, Serializable {
          * {@inheritDoc}
          */
         @Override
-        boolean addRegex(FastDateParser parser, StringBuilder regex) {
+        boolean addRegex(final FastDateParser parser, final StringBuilder regex) {
             regex.append(pattern);
             return true;
         }
@@ -858,7 +858,7 @@ public class FastDateParser implements DateParser, Serializable {
          * {@inheritDoc}
          */
         @Override
-        void setCalendar(FastDateParser parser, Calendar cal, String value) {
+        void setCalendar(final FastDateParser parser, final Calendar cal, final String value) {
             if (value.equals("Z")) {
                 cal.setTimeZone(TimeZone.getTimeZone("UTC"));
             } else {
@@ -877,7 +877,7 @@ public class FastDateParser implements DateParser, Serializable {
          * @return a ISO8601TimeZoneStrategy that can format TimeZone String of length {@code tokenLen}. If no such
          *          strategy exists, an IllegalArgumentException will be thrown.
          */
-        static Strategy getStrategy(int tokenLen) {
+        static Strategy getStrategy(final int tokenLen) {
             switch(tokenLen) {
             case 1:
                 return ISO_8601_1_STRATEGY;
