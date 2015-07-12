@@ -126,7 +126,12 @@ public final class PatternLayout extends AbstractStringLayout {
         this.alwaysWriteExceptions = alwaysWriteExceptions;
         this.noConsoleNoAnsi = noConsoleNoAnsi;
         final PatternParser parser = createPatternParser(config);
-        this.formatters = parser.parse(pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern, this.alwaysWriteExceptions, this.noConsoleNoAnsi);
+        try {
+            this.formatters = parser.parse(pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern, 
+                    this.alwaysWriteExceptions, this.noConsoleNoAnsi);
+        } catch (RuntimeException ex) {
+            throw new IllegalArgumentException("Cannot parse pattern '" + pattern + "'", ex);
+        }
     }
 
     private static byte[] toBytes(final String str, final Charset charset) {
