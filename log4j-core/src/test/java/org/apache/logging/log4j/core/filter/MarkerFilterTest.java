@@ -46,12 +46,18 @@ public class MarkerFilterTest {
         assertSame(Filter.Result.NEUTRAL, filter.filter(null, null, child, null, (Throwable) null));
         assertSame(Filter.Result.NEUTRAL, filter.filter(null, null, grandChild, null, (Throwable) null));
         filter.stop();
-        LogEvent event = new Log4jLogEvent(null, grandChild, null, Level.DEBUG, new SimpleMessage("Test"), null);
+        LogEvent event = Log4jLogEvent.newBuilder() //
+                .setMarker(grandChild) //
+                .setLevel(Level.DEBUG) //
+                .setMessage(new SimpleMessage("Hello, world!")).build();
         assertSame(Filter.Result.NEUTRAL, filter.filter(event));
         filter = MarkerFilter.createFilter("Child", null, null);
         filter.start();
         assertSame(Filter.Result.NEUTRAL, filter.filter(event));
-        event = new Log4jLogEvent(null, sibling, null, Level.DEBUG, new SimpleMessage("Test"), null);
+        event = Log4jLogEvent.newBuilder() //
+                .setMarker(sibling) //
+                .setLevel(Level.DEBUG) //
+                .setMessage(new SimpleMessage("Hello, world!")).build();
         assertSame(Filter.Result.DENY, filter.filter(event));
         filter.stop();
     }

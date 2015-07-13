@@ -50,10 +50,15 @@ public class RegexFilterTest {
         assertSame(Filter.Result.NEUTRAL,
                 filter.filter(null, Level.DEBUG, null, "This is a test message", (Throwable) null));
         assertSame(Filter.Result.DENY, filter.filter(null, Level.ERROR, null, "This is not a test", (Throwable) null));
-        LogEvent event = new Log4jLogEvent(null, null, null, Level.DEBUG, new SimpleMessage("Another test message"),
-                null);
+        LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLevel(Level.DEBUG) //
+                .setMessage(new SimpleMessage("Another test message")) //
+                .build();
         assertSame(Filter.Result.NEUTRAL, filter.filter(event));
-        event = new Log4jLogEvent(null, null, null, Level.ERROR, new SimpleMessage("test"), null);
+        event = Log4jLogEvent.newBuilder() //
+                .setLevel(Level.ERROR) //
+                .setMessage(new SimpleMessage("test")) //
+                .build();
         assertSame(Filter.Result.DENY, filter.filter(event));
         filter = RegexFilter.createFilter(null, null, false, null, null);
         assertNull(filter);

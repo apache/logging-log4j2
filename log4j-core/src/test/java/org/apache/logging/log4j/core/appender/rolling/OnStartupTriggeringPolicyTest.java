@@ -36,7 +36,9 @@ public class OnStartupTriggeringPolicyTest {
         OnStartupTriggeringPolicy policy = OnStartupTriggeringPolicy.createPolicy();
         final MyRollingManager manager = new MyRollingManager(policy, null);
         manager.setFileTime(System.currentTimeMillis() - 36000000);
-        final LogEvent event = new Log4jLogEvent(null, null, null, Level.ERROR, new SimpleMessage("Test"), null);
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLevel(Level.ERROR) //
+                .setMessage(new SimpleMessage("Test")).build();
         assertTrue("Expected trigger to succeed", policy.isTriggeringEvent(event));
         assertTrue("Expected trigger not to fire", !policy.isTriggeringEvent(event));
         policy = OnStartupTriggeringPolicy.createPolicy();

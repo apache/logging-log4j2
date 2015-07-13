@@ -67,15 +67,36 @@ public class Log4jLogEvent implements LogEvent {
         private String loggerName;
         private Message message;
         private Throwable thrown;
-
-        public Builder setLoggerFqcn(final String loggerFqcn) {
-            this.loggerFqcn = loggerFqcn;
-            return this;
+        private long timeMillis = clock.currentTimeMillis();
+        private ThrowableProxy thrownProxy;
+        private Map<String, String> contextMap = ThreadContext.getImmutableContext();
+        private ThreadContext.ContextStack contextStack = ThreadContext.getImmutableStack();
+        private String threadName = null;
+        private StackTraceElement source;
+        private boolean includeLocation;
+        private boolean endOfBatch = false;
+        
+        public Builder() {
         }
-
-        public Builder setMarker(final Marker marker) {
-            this.marker = marker;
-            return this;
+        
+        public Builder(LogEvent other) {
+            Objects.requireNonNull(other);
+            this.loggerFqcn = other.getLoggerFqcn();
+            this.marker = other.getMarker();
+            this.level = other.getLevel();
+            this.loggerName = other.getLoggerName();
+            this.message = other.getMessage();
+            this.timeMillis = other.getTimeMillis();
+            this.thrown = other.getThrown();
+            // avoid creating thrownProxy until necessary
+            this.thrownProxy = other instanceof Log4jLogEvent ? ((Log4jLogEvent) other).thrownProxy 
+                    : other.getThrownProxy();
+            this.contextMap = other.getContextMap();
+            this.contextStack = other.getContextStack();
+            this.source = other.getSource();
+            this.threadName = other.getThreadName();
+            this.includeLocation = other.isIncludeLocation();
+            this.endOfBatch = other.isEndOfBatch();
         }
 
         public Builder setLevel(final Level level) {
@@ -83,8 +104,18 @@ public class Log4jLogEvent implements LogEvent {
             return this;
         }
 
+        public Builder setLoggerFqcn(final String loggerFqcn) {
+            this.loggerFqcn = loggerFqcn;
+            return this;
+        }
+
         public Builder setLoggerName(final String loggerName) {
             this.loggerName = loggerName;
+            return this;
+        }
+
+        public Builder setMarker(final Marker marker) {
+            this.marker = marker;
             return this;
         }
 
@@ -98,14 +129,70 @@ public class Log4jLogEvent implements LogEvent {
             return this;
         }
 
+        public Builder setTimeMillis(long timeMillis) {
+            this.timeMillis = timeMillis;
+            return this;
+        }
+
+        public Builder setThrownProxy(ThrowableProxy thrownProxy) {
+            this.thrownProxy = thrownProxy;
+            return this;
+        }
+
+        public Builder setContextMap(Map<String, String> contextMap) {
+            this.contextMap = contextMap;
+            return this;
+        }
+
+        public Builder setContextStack(ThreadContext.ContextStack contextStack) {
+            this.contextStack = contextStack;
+            return this;
+        }
+
+        public Builder setThreadName(String threadName) {
+            this.threadName = threadName;
+            return this;
+        }
+
+        public Builder setSource(StackTraceElement source) {
+            this.source = source;
+            return this;
+        }
+
+        public Builder setIncludeLocation(boolean includeLocation) {
+            this.includeLocation = includeLocation;
+            return this;
+        }
+
+        public Builder setEndOfBatch(boolean endOfBatch) {
+            this.endOfBatch = endOfBatch;
+            return this;
+        }
+
         @Override
         public Log4jLogEvent build() {
-            return new Log4jLogEvent(loggerName, marker, loggerFqcn, level, message, thrown);
+            final Log4jLogEvent result = new Log4jLogEvent(loggerName, marker, loggerFqcn, level, message, thrown, 
+                    thrownProxy, contextMap, contextStack, threadName, source, timeMillis);
+            result.setIncludeLocation(includeLocation);
+            result.setEndOfBatch(endOfBatch);
+            return result;
         }
     }
 
+    /**
+     * Returns a new empty {@code Log4jLogEvent.Builder} with all fields empty.
+     * @return a new empty builder.
+     */
     public static Builder newBuilder() {
         return new Builder();
+    }
+    
+    /**
+     * Returns a new fully initialized {@code Log4jLogEvent.Builder} containing a copy of all fields of this event.
+     * @return a new fully initialized builder.
+     */
+    public Builder asBuilder() {
+        return new Builder(this);
     }
 
     public Log4jLogEvent() {
@@ -113,85 +200,91 @@ public class Log4jLogEvent implements LogEvent {
     }
 
     /**
-     *
-     */
-    public Log4jLogEvent(final long timestamp) {
-        this(Strings.EMPTY, null, Strings.EMPTY, null, null, (Throwable) null, null, null, null, null, timestamp);
-    }
+    *
+    * @deprecated use {@link Log4jLogEvent.Builder} instead. This constructor will be removed in an upcoming release.
+    */
+   public Log4jLogEvent(final long timestamp) {
+       this(Strings.EMPTY, null, Strings.EMPTY, null, null, (Throwable) null, null, null, null, null, null, timestamp);
+   }
 
-    /**
-     * Constructor.
-     * @param loggerName The name of the Logger.
-     * @param marker The Marker or null.
-     * @param loggerFQCN The fully qualified class name of the caller.
-     * @param level The logging Level.
-     * @param message The Message.
-     * @param t A Throwable or null.
-     */
-    public Log4jLogEvent(final String loggerName, final Marker marker, final String loggerFQCN, final Level level,
-                         final Message message, final Throwable t) {
-        this(loggerName, marker, loggerFQCN, level, message, null, t);
-    }
+   /**
+    * Constructor.
+    * @param loggerName The name of the Logger.
+    * @param marker The Marker or null.
+    * @param loggerFQCN The fully qualified class name of the caller.
+    * @param level The logging Level.
+    * @param message The Message.
+    * @param t A Throwable or null.
+    * @deprecated use {@link Log4jLogEvent.Builder} instead. This constructor will be removed in an upcoming release.
+    */
+   public Log4jLogEvent(final String loggerName, final Marker marker, final String loggerFQCN, final Level level,
+                        final Message message, final Throwable t) {
+       this(loggerName, marker, loggerFQCN, level, message, null, t);
+   }
 
-    /**
-     * Constructor.
-     * @param loggerName The name of the Logger.
-     * @param marker The Marker or null.
-     * @param loggerFQCN The fully qualified class name of the caller.
-     * @param level The logging Level.
-     * @param message The Message.
-     * @param properties properties to add to the event.
-     * @param t A Throwable or null.
-     */
-    public Log4jLogEvent(final String loggerName, final Marker marker, final String loggerFQCN, final Level level,
-                         final Message message, final List<Property> properties, final Throwable t) {
-        this(loggerName, marker, loggerFQCN, level, message, t,
-            createMap(properties),
-            ThreadContext.getDepth() == 0 ? null : ThreadContext.cloneStack(), null,
-            null,
-            // LOG4J2-628 use log4j.Clock for timestamps
-            // LOG4J2-744 unless TimestampMessage already has one
-            message instanceof TimestampMessage ? ((TimestampMessage) message).getTimestamp() :
-                clock.currentTimeMillis());
-    }
+   /**
+    * Constructor.
+    * @param loggerName The name of the Logger.
+    * @param marker The Marker or null.
+    * @param loggerFQCN The fully qualified class name of the caller.
+    * @param level The logging Level.
+    * @param message The Message.
+    * @param properties properties to add to the event.
+    * @param t A Throwable or null.
+    */
+   // This constructor is called from DefaultLogEventFactory and is in the hot path.
+   // Do not replace this constructor with a Builder.
+   public Log4jLogEvent(final String loggerName, final Marker marker, final String loggerFQCN, final Level level,
+                        final Message message, final List<Property> properties, final Throwable t) {
+       this(loggerName, marker, loggerFQCN, level, message, t, null,
+           createMap(properties),
+           ThreadContext.getDepth() == 0 ? null : ThreadContext.cloneStack(), null,
+           null,
+           // LOG4J2-628 use log4j.Clock for timestamps
+           // LOG4J2-744 unless TimestampMessage already has one
+           message instanceof TimestampMessage ? ((TimestampMessage) message).getTimestamp() :
+               clock.currentTimeMillis());
+   }
 
-    /**
-     * Constructor.
-     * @param loggerName The name of the Logger.
-     * @param marker The Marker or null.
-     * @param loggerFQCN The fully qualified class name of the caller.
-     * @param level The logging Level.
-     * @param message The Message.
-     * @param t A Throwable or null.
-     * @param mdc The mapped diagnostic context.
-     * @param ndc the nested diagnostic context.
-     * @param threadName The name of the thread.
-     * @param location The locations of the caller.
-     * @param timestamp The timestamp of the event.
-     */
-    public Log4jLogEvent(final String loggerName, final Marker marker, final String loggerFQCN, final Level level,
-                         final Message message, final Throwable t, final Map<String, String> mdc,
-                         final ThreadContext.ContextStack ndc, final String threadName,
-                         final StackTraceElement location, final long timestamp) {
-        this(loggerName, marker, loggerFQCN, level, message, t, null, mdc, ndc, threadName,
-                location, timestamp);
-    }
+   /**
+    * Constructor.
+    * @param loggerName The name of the Logger.
+    * @param marker The Marker or null.
+    * @param loggerFQCN The fully qualified class name of the caller.
+    * @param level The logging Level.
+    * @param message The Message.
+    * @param t A Throwable or null.
+    * @param mdc The mapped diagnostic context.
+    * @param ndc the nested diagnostic context.
+    * @param threadName The name of the thread.
+    * @param location The locations of the caller.
+    * @param timestampMillis The timestamp of the event.
+    * @deprecated use {@link Log4jLogEvent.Builder} instead. This constructor will be removed in an upcoming release.
+    */
+   public Log4jLogEvent(final String loggerName, final Marker marker, final String loggerFQCN, final Level level,
+                        final Message message, final Throwable t, final Map<String, String> mdc,
+                        final ThreadContext.ContextStack ndc, final String threadName,
+                        final StackTraceElement location, final long timestampMillis) {
+       this(loggerName, marker, loggerFQCN, level, message, t, null, mdc, ndc, threadName,
+               location, timestampMillis);
+   }
 
-    /**
-     * Create a new LogEvent.
-     * @param loggerName The name of the Logger.
-     * @param marker The Marker or null.
-     * @param loggerFQCN The fully qualified class name of the caller.
-     * @param level The logging Level.
-     * @param message The Message.
-     * @param thrown A Throwable or null.
-     * @param thrownProxy A ThrowableProxy or null.
-     * @param mdc The mapped diagnostic context.
-     * @param ndc the nested diagnostic context.
-     * @param threadName The name of the thread.
-     * @param location The locations of the caller.
-     * @param timestamp The timestamp of the event.
-     */
+   /**
+    * Create a new LogEvent.
+    * @param loggerName The name of the Logger.
+    * @param marker The Marker or null.
+    * @param loggerFQCN The fully qualified class name of the caller.
+    * @param level The logging Level.
+    * @param message The Message.
+    * @param thrown A Throwable or null.
+    * @param thrownProxy A ThrowableProxy or null.
+    * @param mdc The mapped diagnostic context.
+    * @param ndc the nested diagnostic context.
+    * @param threadName The name of the thread.
+    * @param location The locations of the caller.
+    * @param timestamp The timestamp of the event.
+    * @deprecated use {@link Log4jLogEvent.Builder} instead. This method will be removed in an upcoming release.
+    */
     public static Log4jLogEvent createEvent(final String loggerName, final Marker marker, final String loggerFQCN,
                                             final Level level, final Message message, final Throwable thrown, 
                                             final ThrowableProxy thrownProxy,

@@ -253,8 +253,13 @@ public class JsonLayoutTest {
     @Test
     public void testLayoutLoggerName() throws Exception {
         final AbstractJacksonLayout layout = JsonLayout.createLayout(false, false, false, true, false, StandardCharsets.UTF_8);
-        final Log4jLogEvent expected = Log4jLogEvent.createEvent("a.B", null, "f.q.c.n", Level.DEBUG, 
-                new SimpleMessage("M"), null, null, null, null, "threadName", null, 1);
+        final Log4jLogEvent expected = Log4jLogEvent.newBuilder() //
+                .setLoggerName("a.B") //
+                .setLoggerFqcn("f.q.c.n") //
+                .setLevel(Level.DEBUG) //
+                .setMessage(new SimpleMessage("M")) //
+                .setThreadName("threadName") //
+                .setTimeMillis(1).build();
         final String str = layout.toSerializable(expected);
         assertTrue(str, str.contains("\"loggerName\":\"a.B\""));
         final Log4jLogEvent actual = new Log4jJsonObjectMapper().readValue(str, Log4jLogEvent.class);

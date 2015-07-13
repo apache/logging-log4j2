@@ -41,8 +41,14 @@ public class ExtendedThrowablePatternConverterTest {
 		final Throwable originalThrowable = new Exception("something bad happened");
 		final ThrowableProxy throwableProxy = new ThrowableProxy(originalThrowable);
 		final Throwable deserializedThrowable = null;
-		final LogEvent event = Log4jLogEvent.createEvent("testLogger", null, this.getClass().getName(), Level.DEBUG,
-				new SimpleMessage(""), deserializedThrowable, throwableProxy, null, null, null, null, 0);
+        final Log4jLogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("testLogger") //
+                .setLoggerFqcn(this.getClass().getName()) //
+                .setLevel(Level.DEBUG) //
+                .setMessage(new SimpleMessage("")) //
+                .setThrown(deserializedThrowable) //
+                .setThrownProxy(throwableProxy) //
+                .setTimeMillis(0).build();
 		final StringBuilder sb = new StringBuilder();
 		converter.format(event, sb);
 		final String result = sb.toString();
@@ -57,8 +63,12 @@ public class ExtendedThrowablePatternConverterTest {
         final ExtendedThrowablePatternConverter converter = ExtendedThrowablePatternConverter.newInstance(options);
         final Throwable cause = new NullPointerException("null pointer");
         final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
-        final LogEvent event = new Log4jLogEvent("testLogger", null, this.getClass().getName(), Level.DEBUG,
-            new SimpleMessage("test exception"), parent);
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("testLogger") //
+                .setLoggerFqcn(this.getClass().getName()) //
+                .setLevel(Level.DEBUG) //
+                .setMessage(new SimpleMessage("test exception")) //
+                .setThrown(parent).build();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
@@ -70,8 +80,12 @@ public class ExtendedThrowablePatternConverterTest {
         final ExtendedThrowablePatternConverter converter = ExtendedThrowablePatternConverter.newInstance(null);
         final Throwable cause = new NullPointerException("null pointer");
         final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
-        final LogEvent event = new Log4jLogEvent("testLogger", null, this.getClass().getName(), Level.DEBUG,
-            new SimpleMessage("test exception"), parent);
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("testLogger") //
+                .setLoggerFqcn(this.getClass().getName()) //
+                .setLevel(Level.DEBUG) //
+                .setMessage(new SimpleMessage("test exception")) //
+                .setThrown(parent).build();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final StringWriter sw = new StringWriter();

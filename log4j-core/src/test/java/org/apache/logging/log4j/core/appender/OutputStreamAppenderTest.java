@@ -61,8 +61,12 @@ public class OutputStreamAppenderTest {
     }
 
     private void assertMessage(final String string, final InMemoryAppender app, final String header) {
-        final LogEvent event = new Log4jLogEvent("TestLogger", null, OutputStreamAppenderTest.class.getName(),
-                Level.INFO, new SimpleMessage("Test"), null);
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("TestLogger") //
+                .setLoggerFqcn(OutputStreamAppenderTest.class.getName()) //
+                .setLevel(Level.INFO) //
+                .setMessage(new SimpleMessage("Test")) //
+                .build();
         app.start();
         assertTrue("Appender did not start", app.isStarted());
         app.append(event);

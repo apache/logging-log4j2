@@ -79,8 +79,19 @@ public class PatternLayoutBenchmark {
         final StackTraceElement location = null;
         final long timestamp = 12345678;
 
-        return new Log4jLogEvent("name(ignored)", marker, fqcn, level, message, t, mdc, ndc, threadName, location,
-                timestamp);
+        return Log4jLogEvent.newBuilder() //
+                .setLoggerName("name(ignored)") //
+                .setMarker(marker) //
+                .setLoggerFqcn(fqcn) //
+                .setLevel(level) //
+                .setMessage(message) //
+                .setThrown(t) //
+                .setContextMap(mdc) //
+                .setContextStack(ndc) //
+                .setThreadName(threadName) //
+                .setSource(location) //
+                .setTimeMillis(timestamp) //
+                .build();
     }
 
     @Benchmark

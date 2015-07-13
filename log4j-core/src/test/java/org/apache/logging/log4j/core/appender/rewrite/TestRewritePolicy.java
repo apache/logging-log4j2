@@ -29,10 +29,7 @@ public class TestRewritePolicy implements RewritePolicy {
 
     @Override
     public LogEvent rewrite(final LogEvent source) {
-
-        return new Log4jLogEvent(source.getLoggerName(), source.getMarker(), source.getLoggerFqcn(), source.getLevel(),
-            source.getMessage(), source.getThrown(), source.getContextMap(), source.getContextStack(),
-            source.getThreadName(), source.getSource(), source.getTimeMillis());
+        return new Log4jLogEvent.Builder(source).build();
     }
 
     @PluginFactory

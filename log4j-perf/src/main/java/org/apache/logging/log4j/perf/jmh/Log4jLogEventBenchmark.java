@@ -46,7 +46,7 @@ public class Log4jLogEventBenchmark {
 
     @Benchmark
     public LogEvent createLogEventWithoutException() {
-        return new Log4jLogEvent("a.b.c", null, "a.b.c", Level.INFO, MESSAGE, null);
+        return new Log4jLogEvent("a.b.c", null, "a.b.c", Level.INFO, MESSAGE, null, null);
     }
 
     @Benchmark
@@ -71,13 +71,13 @@ public class Log4jLogEventBenchmark {
 
     @Benchmark
     public Serializable createSerializableLogEventProxyWithoutException() {
-        final Log4jLogEvent event = new Log4jLogEvent("a.b.c", null, "a.b.c", Level.INFO, MESSAGE, null);
+        final Log4jLogEvent event = new Log4jLogEvent("a.b.c", null, "a.b.c", Level.INFO, MESSAGE, null, null);
         return Log4jLogEvent.serialize(event, false);
     }
 
     @Benchmark
     public Serializable createSerializableLogEventProxyWithException(final Blackhole bh) {
-        final Log4jLogEvent event = new Log4jLogEvent("a.b.c", null, "a.b.c", Level.INFO, MESSAGE, ERROR);
+        final Log4jLogEvent event = new Log4jLogEvent("a.b.c", null, "a.b.c", Level.INFO, MESSAGE, null, ERROR);
         return Log4jLogEvent.serialize(event, false);
     }
 

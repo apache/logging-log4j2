@@ -33,8 +33,11 @@ public class EncodingPatternConverterTest {
 
     @Test
     public void testReplacement() {
-        final LogEvent event = new Log4jLogEvent(EncodingPatternConverterTest.class.getName(), null, null, Level.DEBUG,
-            new SimpleMessage("Test \r\n<div class=\"test\">this</div> & <div class='test'>that</div>"), null);
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName(EncodingPatternConverterTest.class.getName()) //
+                .setLevel(Level.DEBUG) //
+                .setMessage(new SimpleMessage("Test \r\n<div class=\"test\">this</div> & <div class='test'>that</div>"))
+                .build();
         final StringBuilder sb = new StringBuilder();
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         final String[] options = new String[]{"%msg"};

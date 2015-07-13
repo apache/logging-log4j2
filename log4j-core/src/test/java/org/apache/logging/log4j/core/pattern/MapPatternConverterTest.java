@@ -37,7 +37,11 @@ public class MapPatternConverterTest {
         msg.put("verb", "love");
         msg.put("object", "Log4j");
         final MapPatternConverter converter = MapPatternConverter.newInstance(null);
-        final LogEvent event = new Log4jLogEvent("MyLogger", null, null, Level.DEBUG, msg, null);
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("MyLogger") //
+                .setLevel(Level.DEBUG) //
+                .setMessage(msg) //
+                .build();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String str = sb.toString();
@@ -57,7 +61,11 @@ public class MapPatternConverterTest {
         msg.put("verb", "love");
         msg.put("object", "Log4j");
         final MapPatternConverter converter = MapPatternConverter.newInstance(new String[] {"object"});
-        final LogEvent event = new Log4jLogEvent("MyLogger", null, null, Level.DEBUG, msg, null);
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("MyLogger") //
+                .setLevel(Level.DEBUG) //
+                .setMessage(msg) //
+                .build();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String str = sb.toString();

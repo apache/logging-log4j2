@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender;
 import static org.easymock.EasyMock.anyInt;
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.expectLastCall;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -103,8 +104,12 @@ public class ConsoleAppenderTest {
             app.start();
             assertTrue("Appender did not start", app.isStarted());
 
-            final LogEvent event = new Log4jLogEvent("TestLogger", null, ConsoleAppenderTest.class.getName(),
-                    Level.INFO, new SimpleMessage("Test"), null);
+            final LogEvent event = Log4jLogEvent.newBuilder() //
+                    .setLoggerName("TestLogger") //
+                    .setLoggerFqcn(ConsoleAppenderTest.class.getName()) //
+                    .setLevel(Level.INFO) //
+                    .setMessage(new SimpleMessage("Test")) //
+                    .build();
             app.append(event);
 
             app.stop();
@@ -130,8 +135,12 @@ public class ConsoleAppenderTest {
                 .setIgnoreExceptions(false).build();
         app.start();
         try {
-            final LogEvent event = new Log4jLogEvent("TestLogger", null, ConsoleAppenderTest.class.getName(),
-                    Level.INFO, new SimpleMessage("Test"), null);
+            final LogEvent event = Log4jLogEvent.newBuilder() //
+                    .setLoggerName("TestLogger") //
+                    .setLoggerFqcn(ConsoleAppenderTest.class.getName()) //
+                    .setLevel(Level.INFO) //
+                    .setMessage(new SimpleMessage("Test")) //
+                    .build();
 
             assertTrue("Appender did not start", app.isStarted());
             systemSetter.systemSet(new PrintStream(baos));

@@ -261,9 +261,7 @@ public class RingBufferLogEvent implements LogEvent {
      * @return a new immutable copy of the data in this {@code RingBufferLogEvent}
      */
     public LogEvent createMemento() {
-        // Ideally, would like to use the LogEventFactory here but signature does not match:
-        // results in factory re-creating the timestamp, context map and context stack, which we don't want.
-        return new Log4jLogEvent(loggerName, marker, fqcn, level, message, thrown, contextMap, contextStack,
-                threadName, location, currentTimeMillis);
+        final LogEvent result = new Log4jLogEvent.Builder(this).build();
+        return result;
     }
 }

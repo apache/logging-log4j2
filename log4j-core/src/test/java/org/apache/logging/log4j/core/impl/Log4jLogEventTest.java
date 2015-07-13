@@ -26,6 +26,7 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.core.util.ClockFactoryTest;
@@ -67,8 +68,12 @@ public class Log4jLogEventTest {
 
     @Test
     public void testJavaIoSerializable() throws Exception {
-        final Log4jLogEvent evt = new Log4jLogEvent("some.test", null, Strings.EMPTY, Level.INFO, new SimpleMessage(
-                "abc"), null);
+        final Log4jLogEvent evt = Log4jLogEvent.newBuilder() //
+                .setLoggerName("some.test") //
+                .setLoggerFqcn(Strings.EMPTY) //
+                .setLevel(Level.INFO) //
+                .setMessage(new SimpleMessage("abc")) //
+                .build();
 
         final byte[] binary = serialize(evt);
         final Log4jLogEvent evt2 = deserialize(binary);
@@ -91,8 +96,13 @@ public class Log4jLogEventTest {
     @Test
     public void testJavaIoSerializableWithThrown() throws Exception {
         final Error thrown = new InternalError("test error");
-        final Log4jLogEvent evt = new Log4jLogEvent("some.test", null, Strings.EMPTY, Level.INFO, new SimpleMessage(
-                "abc"), thrown);
+        final Log4jLogEvent evt = Log4jLogEvent.newBuilder() //
+                .setLoggerName("some.test") //
+                .setLoggerFqcn(Strings.EMPTY) //
+                .setLevel(Level.INFO) //
+                .setMessage(new SimpleMessage("abc")) //
+                .setThrown(thrown) //
+                .build();
 
         final byte[] binary = serialize(evt);
         final Log4jLogEvent evt2 = deserialize(binary);
@@ -174,21 +184,14 @@ public class Log4jLogEventTest {
 
     @Test
     public void testNullLevelReplacedWithOFF() throws Exception {
-        final Marker marker = null;
-        final Throwable t = null;
         final Level NULL_LEVEL = null;
-        final Log4jLogEvent evt = new Log4jLogEvent("some.test", marker, Strings.EMPTY, NULL_LEVEL, new SimpleMessage(
-                "abc"), t);
+        final Log4jLogEvent evt = Log4jLogEvent.newBuilder().setLevel(NULL_LEVEL).build();
         assertEquals(Level.OFF, evt.getLevel());
     }
 
     @Test
     public void testTimestampGeneratedByClock() {
-        final Marker marker = null;
-        final Throwable t = null;
-        final Level NULL_LEVEL = null;
-        final Log4jLogEvent evt = new Log4jLogEvent("some.test", marker, Strings.EMPTY, NULL_LEVEL, new SimpleMessage(
-                "abc"), t);
+        final LogEvent evt = Log4jLogEvent.newBuilder().build();
         assertEquals(FixedTimeClock.FIXED_TIME, evt.getTimeMillis());
 
     }

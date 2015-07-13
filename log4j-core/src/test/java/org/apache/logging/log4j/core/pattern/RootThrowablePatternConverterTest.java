@@ -34,8 +34,12 @@ public class RootThrowablePatternConverterTest {
         final RootThrowablePatternConverter converter = RootThrowablePatternConverter.newInstance(null);
         final Throwable cause = new NullPointerException("null pointer");
         final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
-        final LogEvent event = new Log4jLogEvent("testLogger", null, this.getClass().getName(), Level.DEBUG,
-                new SimpleMessage("test exception"), parent);
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("testLogger") //
+                .setLoggerFqcn(this.getClass().getName()) //
+                .setLevel(Level.DEBUG) //
+                .setMessage(new SimpleMessage("test exception")) //
+                .setThrown(parent).build();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
@@ -62,8 +66,12 @@ public class RootThrowablePatternConverterTest {
         } catch (final IllegalArgumentException e) {
             parent = e;
         }
-        final LogEvent event = new Log4jLogEvent("testLogger", null, this.getClass().getName(), Level.DEBUG,
-                new SimpleMessage("test exception"), parent);
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("testLogger") //
+                .setLoggerFqcn(this.getClass().getName()) //
+                .setLevel(Level.DEBUG) //
+                .setMessage(new SimpleMessage("test exception")) //
+                .setThrown(parent).build();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();

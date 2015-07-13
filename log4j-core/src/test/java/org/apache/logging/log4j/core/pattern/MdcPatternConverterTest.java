@@ -24,8 +24,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -40,7 +39,11 @@ public class MdcPatternConverterTest {
         ThreadContext.put("verb", "love");
         ThreadContext.put("object", "Log4j");
         final MdcPatternConverter converter = MdcPatternConverter.newInstance(null);
-        final LogEvent event = new Log4jLogEvent("MyLogger", null, null, Level.DEBUG, msg, null);
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("MyLogger") //
+                .setLevel(Level.DEBUG) //
+                .setMessage(msg) //
+                .build();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String str = sb.toString();
@@ -57,7 +60,11 @@ public class MdcPatternConverterTest {
         ThreadContext.put("verb", "love");
         ThreadContext.put("object", "Log4j");
         final MdcPatternConverter converter = MdcPatternConverter.newInstance(options);
-        final LogEvent event = new Log4jLogEvent("MyLogger", null, null, Level.DEBUG, msg, null);
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("MyLogger") //
+                .setLevel(Level.DEBUG) //
+                .setMessage(msg) //
+                .build();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String str = sb.toString();
@@ -74,7 +81,11 @@ public class MdcPatternConverterTest {
         ThreadContext.put("verb", "love");
         ThreadContext.put("object", "Log4j");
         final MdcPatternConverter converter = MdcPatternConverter.newInstance(options);
-        final LogEvent event = new Log4jLogEvent("MyLogger", null, null, Level.DEBUG, msg, null);
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("MyLogger") //
+                .setLevel(Level.DEBUG) //
+                .setMessage(msg) //
+                .build();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String str = sb.toString();

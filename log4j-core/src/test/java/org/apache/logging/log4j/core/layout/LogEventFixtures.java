@@ -63,9 +63,19 @@ class LogEventFixtures {
         contextStack.clear();
         contextStack.push("stack_msg1");
         contextStack.add("stack_msg2");
-        final Log4jLogEvent expected = Log4jLogEvent.createEvent("a.B", cMarker, "f.q.c.n", Level.DEBUG, 
-                new SimpleMessage("Msg"), ioException, throwableProxy, contextMap, contextStack, "MyThreadName", source,
-                1);
+        final Log4jLogEvent expected = Log4jLogEvent.newBuilder() //
+                .setLoggerName("a.B") //
+                .setMarker(cMarker) //
+                .setLoggerFqcn("f.q.c.n") //
+                .setLevel(Level.DEBUG) //
+                .setMessage(new SimpleMessage("Msg")) //
+                .setThrown(ioException) //
+                .setThrownProxy(throwableProxy) //
+                .setContextMap(contextMap) //
+                .setContextStack(contextStack) //
+                .setThreadName("MyThreadName") //
+                .setSource(source) //
+                .setTimeMillis(1).build();
         // validate event?
         return expected;
     }

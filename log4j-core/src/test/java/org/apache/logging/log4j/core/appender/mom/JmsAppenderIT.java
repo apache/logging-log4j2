@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
@@ -80,9 +81,10 @@ public class JmsAppenderIT {
         final String messageText = "Hello, World!";
         final String loggerName = this.getClass().getName();
         for (int i = 0; i < messageCount; i++) {
-            final LogEvent event = Log4jLogEvent.createEvent(loggerName, null, loggerName, Level.ERROR,
-                new SimpleMessage(messageText), null, null, null, null, Thread.currentThread().getName(), null,
-                System.currentTimeMillis());
+            final LogEvent event = Log4jLogEvent.newBuilder().setLoggerName(loggerName) //
+                    .setLoggerFqcn(loggerName).setLevel(Level.INFO) //
+                    .setMessage(new SimpleMessage(messageText)).setThreadName(Thread.currentThread().getName()) //
+                    .setTimeMillis(System.currentTimeMillis()).build();
             appender.append(event);
         }
         consumer.awaitAndAssertAllMessagesConsumed();

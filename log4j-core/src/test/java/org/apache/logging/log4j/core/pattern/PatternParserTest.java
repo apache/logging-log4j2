@@ -96,9 +96,16 @@ public class PatternParserTest {
         mdc.put("loginId", "Fred");
         final Throwable t = new Throwable();
         final StackTraceElement[] elements = t.getStackTrace();
-        final LogEvent event = new Log4jLogEvent("org.apache.logging.log4j.PatternParserTest", MarkerManager.getMarker("TEST"),
-            Logger.class.getName(), Level.INFO, new SimpleMessage("Hello, world"), null,
-            mdc, null, "Thread1", elements[0], System.currentTimeMillis());
+        final Log4jLogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("org.apache.logging.log4j.PatternParserTest") //
+                .setMarker(MarkerManager.getMarker("TEST")) //
+                .setLoggerFqcn(Logger.class.getName()) //
+                .setLevel(Level.INFO) //
+                .setMessage(new SimpleMessage("Hello, world")) //
+                .setContextMap(mdc) //
+                .setThreadName("Thread1") //
+                .setSource(elements[0])
+                .setTimeMillis(System.currentTimeMillis()).build();
         final StringBuilder buf = new StringBuilder();
         for (final PatternFormatter formatter : formatters) {
             formatter.format(event, buf);
@@ -112,9 +119,14 @@ public class PatternParserTest {
     public void testPatternTruncateFromBeginning() {
         final List<PatternFormatter> formatters = parser.parse(patternTruncateFromBeginning);
         assertNotNull(formatters);
-        final LogEvent event = new Log4jLogEvent("org.apache.logging.log4j.PatternParserTest", null,
-            Logger.class.getName(), Level.INFO, new SimpleMessage("Hello, world"), null,
-            null, null, "Thread1", null, System.currentTimeMillis());
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("org.apache.logging.log4j.PatternParserTest") //
+                .setLoggerFqcn(Logger.class.getName()) //
+                .setLevel(Level.INFO) //
+                .setMessage(new SimpleMessage("Hello, world")) //
+                .setThreadName("Thread1") //
+                .setTimeMillis(System.currentTimeMillis()) //
+                .build();
         final StringBuilder buf = new StringBuilder();
         for (final PatternFormatter formatter : formatters) {
             formatter.format(event, buf);
@@ -128,9 +140,14 @@ public class PatternParserTest {
     public void testPatternTruncateFromEnd() {
         final List<PatternFormatter> formatters = parser.parse(patternTruncateFromEnd);
         assertNotNull(formatters);
-        final LogEvent event = new Log4jLogEvent("org.apache.logging.log4j.PatternParserTest", null,
-            Logger.class.getName(), Level.INFO, new SimpleMessage("Hello, world"), null,
-            null, null, "Thread1", null, System.currentTimeMillis());
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("org.apache.logging.log4j.PatternParserTest") //
+                .setLoggerFqcn(Logger.class.getName()) //
+                .setLevel(Level.INFO) //
+                .setMessage(new SimpleMessage("Hello, world")) //
+                .setThreadName("Thread1") //
+                .setTimeMillis(System.currentTimeMillis()) //
+                .build();
         final StringBuilder buf = new StringBuilder();
         for (final PatternFormatter formatter : formatters) {
             formatter.format(event, buf);
@@ -152,9 +169,15 @@ public class PatternParserTest {
         assertNotNull(formatters);
         final Throwable t = new Throwable();
         final StackTraceElement[] elements = t.getStackTrace();
-        final LogEvent event = new Log4jLogEvent("a.b.c", null,
-            Logger.class.getName(), Level.INFO, new SimpleMessage("Hello, world"), null,
-            null, null, "Thread1", elements[0], timestamp);
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("a.b.c") //
+                .setLoggerFqcn(Logger.class.getName()) //
+                .setLevel(Level.INFO) //
+                .setMessage(new SimpleMessage("Hello, world")) //
+                .setThreadName("Thread1") //
+                .setSource(elements[0]) //
+                .setTimeMillis(timestamp) //
+                .build();
         final StringBuilder buf = new StringBuilder();
         for (final PatternFormatter formatter : formatters) {
             formatter.format(event, buf);
@@ -181,9 +204,16 @@ public class PatternParserTest {
         assertNotNull(formatters);
         final Throwable t = new Throwable();
         final StackTraceElement[] stackTraceElement = t.getStackTrace();
-        final LogEvent event = new Log4jLogEvent("org.apache.logging.log4j.PatternParserTest",
-                MarkerManager.getMarker("TEST"), Logger.class.getName(), level, new SimpleMessage("Hello, world"),
-                null, null, null, "Thread1", /*stackTraceElement[0]*/null, System.currentTimeMillis());
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("org.apache.logging.log4j.PatternParserTest") //
+                .setMarker(MarkerManager.getMarker("TEST")) //
+                .setLoggerFqcn(Logger.class.getName()) //
+                .setLevel(level) //
+                .setMessage(new SimpleMessage("Hello, world")) //
+                .setThreadName("Thread1") //
+                .setSource(/*stackTraceElement[0]*/ null) //
+                .setTimeMillis(System.currentTimeMillis()) //
+                .build();
         final StringBuilder buf = new StringBuilder();
         for (final PatternFormatter formatter : formatters) {
             formatter.format(event, buf);

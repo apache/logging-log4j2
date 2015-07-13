@@ -38,7 +38,8 @@ public class MarkerPatternConverterTest {
         final Message msg = new StructuredDataMessage("Test", "This is a test", "Audit");
         final Marker eventMarker = MarkerManager.getMarker("EVENT");
         final Marker auditMarker = MarkerManager.getMarker("AUDIT").setParents(eventMarker);
-        final LogEvent event = new Log4jLogEvent("MyLogger", auditMarker, null, Level.DEBUG, msg, null);
+        final LogEvent event = Log4jLogEvent.newBuilder().setLoggerName("MyLogger").setMarker(auditMarker)
+                .setLevel(Level.DEBUG).setMessage(msg).build();
         final StringBuilder sb = new StringBuilder();
         final MarkerPatternConverter converter = MarkerPatternConverter.newInstance(null);
         converter.format(event, sb);

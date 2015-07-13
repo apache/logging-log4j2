@@ -70,9 +70,8 @@ public final class PropertiesRewritePolicy implements RewritePolicy {
                 config.getStrSubstitutor().replace(prop.getValue()) : prop.getValue());
         }
 
-        return new Log4jLogEvent(source.getLoggerName(), source.getMarker(), source.getLoggerFqcn(), source.getLevel(),
-            source.getMessage(), source.getThrown(), props, source.getContextStack(), source.getThreadName(),
-            source.getSource(), source.getTimeMillis());
+        final LogEvent result = new Log4jLogEvent.Builder(source).setContextMap(props).build();
+        return result;
     }
 
     @Override

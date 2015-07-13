@@ -205,7 +205,7 @@ public class PatternProcessor {
         // for creating the file name of rolled-over files. 
         final long time = prevFileTime == 0 ? System.currentTimeMillis() : prevFileTime;
         formatFileName(buf, new Date(time), obj);
-        final LogEvent event = new Log4jLogEvent(time);
+        final LogEvent event = new Log4jLogEvent.Builder().setTimeMillis(time).build();
         final String fileName = subst.replace(event, buf);
         buf.setLength(0);
         buf.append(fileName);

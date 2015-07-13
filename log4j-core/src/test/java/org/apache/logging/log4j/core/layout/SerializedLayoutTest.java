@@ -145,8 +145,13 @@ public class SerializedLayoutTest {
     public void testSerialization() throws Exception {
         final SerializedLayout layout = SerializedLayout.createLayout();
         final Throwable throwable = new LoggingException("Test");
-        final LogEvent event = new Log4jLogEvent(this.getClass().getName(), null,
-            "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world!"), throwable);
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName(this.getClass().getName()) //
+                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
+                .setLevel(Level.INFO) //
+                .setMessage(new SimpleMessage("Hello, world!")) //
+                .setThrown(throwable) //
+                .build();
         final byte[] result = layout.toByteArray(event);
         assertNotNull(result);
         final FileOutputStream fos = new FileOutputStream(DAT_PATH);
@@ -160,8 +165,9 @@ public class SerializedLayoutTest {
         testSerialization();
         final File file = new File(DAT_PATH);
         final FileInputStream fis = new FileInputStream(file);
-        final ObjectInputStream ois = new ObjectInputStream(fis);
-        final LogEvent event = (LogEvent) ois.readObject();
-        assertNotNull(event);
+        try (final ObjectInputStream ois = new ObjectInputStream(fis) ) {
+            final LogEvent event = (LogEvent) ois.readObject();
+            assertNotNull(event);
+        }
     }
 }

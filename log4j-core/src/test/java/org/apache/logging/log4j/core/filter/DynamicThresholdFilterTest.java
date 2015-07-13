@@ -66,9 +66,9 @@ public class DynamicThresholdFilterTest {
         ThreadContext.clearMap();
         ThreadContext.put("userid", "JohnDoe");
         ThreadContext.put("organization", "apache");
-        LogEvent event = new Log4jLogEvent(null, null, null, Level.DEBUG, new SimpleMessage("Test"), null);
+        LogEvent event = Log4jLogEvent.newBuilder().setLevel(Level.DEBUG).setMessage(new SimpleMessage("Test")).build();
         assertSame(Filter.Result.DENY, filter.filter(event));
-        event = new Log4jLogEvent(null, null, null, Level.ERROR, new SimpleMessage("Test"), null);
+        event = Log4jLogEvent.newBuilder().setLevel(Level.ERROR).setMessage(new SimpleMessage("Test")).build();
         assertSame(Filter.Result.NEUTRAL, filter.filter(event));
         ThreadContext.clearMap();
     }

@@ -112,8 +112,11 @@ public class PatternLayoutTest {
             ThreadContext.put("key1", "value1");
             ThreadContext.put("key2", "value2");
         }
-        final LogEvent event = new Log4jLogEvent(this.getClass().getName(), null,
-                "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello"), null);
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName(this.getClass().getName())
+                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
+                .setLevel(Level.INFO) //
+                .setMessage(new SimpleMessage("Hello")).build();
         final byte[] result = layout.toByteArray(event);
         assertEquals(expectedStr, new String(result));
     }
@@ -147,8 +150,11 @@ public class PatternLayoutTest {
     public void testRegex() throws Exception {
         final PatternLayout layout = PatternLayout.newBuilder().withPattern(regexPattern)
                 .withConfiguration(ctx.getConfiguration()).build();
-        final LogEvent event = new Log4jLogEvent(this.getClass().getName(), null,
-                "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world!"), null);
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName(this.getClass().getName())
+                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
+                .setLevel(Level.INFO) //
+                .setMessage(new SimpleMessage("Hello, world!")).build();
         final byte[] result = layout.toByteArray(event);
         assertEquals("org/apache/logging/log4j/core/layout/PatternLayoutTest Hello, world!", new String(result));
     }
@@ -157,8 +163,11 @@ public class PatternLayoutTest {
     public void testSpecialChars() throws Exception {
         final PatternLayout layout = PatternLayout.newBuilder().withPattern("\\\\%level\\t%msg\\n\\t%logger\\r\\n\\f")
                 .withConfiguration(ctx.getConfiguration()).build();
-        final LogEvent event = new Log4jLogEvent(this.getClass().getName(), null,
-                "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world!"), null);
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName(this.getClass().getName())
+                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
+                .setLevel(Level.INFO) //
+                .setMessage(new SimpleMessage("Hello, world!")).build();
         final byte[] result = layout.toByteArray(event);
         assertEquals("\\INFO\tHello, world!\n\torg.apache.logging.log4j.core.layout.PatternLayoutTest\r\n\f",
                 new String(result));
@@ -168,13 +177,19 @@ public class PatternLayoutTest {
     public void testUnixTime() throws Exception {
         final PatternLayout layout = PatternLayout.newBuilder().withPattern("%d{UNIX} %m")
                 .withConfiguration(ctx.getConfiguration()).build();
-        final LogEvent event1 = new Log4jLogEvent(this.getClass().getName(), null,
-                "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world 1!"), null);
+        final LogEvent event1 = Log4jLogEvent.newBuilder() //
+                .setLoggerName(this.getClass().getName())
+                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
+                .setLevel(Level.INFO) //
+                .setMessage(new SimpleMessage("Hello, world 1!")).build();
         final byte[] result1 = layout.toByteArray(event1);
         assertEquals(event1.getTimeMillis() / 1000 + " Hello, world 1!", new String(result1));
         // System.out.println("event1=" + event1.getTimeMillis() / 1000);
-        final LogEvent event2 = new Log4jLogEvent(this.getClass().getName(), null,
-                "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world 2!"), null);
+        final LogEvent event2 = Log4jLogEvent.newBuilder() //
+                .setLoggerName(this.getClass().getName())
+                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
+                .setLevel(Level.INFO) //
+                .setMessage(new SimpleMessage("Hello, world 2!")).build();
         final byte[] result2 = layout.toByteArray(event2);
         assertEquals(event2.getTimeMillis() / 1000 + " Hello, world 2!", new String(result2));
         // System.out.println("event2=" + event2.getTimeMillis() / 1000);
@@ -183,13 +198,19 @@ public class PatternLayoutTest {
     private void testUnixTime(final String pattern) throws Exception {
         final PatternLayout layout = PatternLayout.newBuilder().withPattern(pattern + " %m")
                 .withConfiguration(ctx.getConfiguration()).build();
-        final LogEvent event1 = new Log4jLogEvent(this.getClass().getName(), null,
-                "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world 1!"), null);
+        final LogEvent event1 = Log4jLogEvent.newBuilder() //
+                .setLoggerName(this.getClass().getName())
+                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
+                .setLevel(Level.INFO) //
+                .setMessage(new SimpleMessage("Hello, world 1!")).build();
         final byte[] result1 = layout.toByteArray(event1);
         assertEquals(event1.getTimeMillis() + " Hello, world 1!", new String(result1));
         // System.out.println("event1=" + event1.getMillis());
-        final LogEvent event2 = new Log4jLogEvent(this.getClass().getName(), null,
-                "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world 2!"), null);
+        final LogEvent event2 = Log4jLogEvent.newBuilder() //
+                .setLoggerName(this.getClass().getName())
+                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
+                .setLevel(Level.INFO) //
+                .setMessage(new SimpleMessage("Hello, world 2!")).build();
         final byte[] result2 = layout.toByteArray(event2);
         assertEquals(event2.getTimeMillis() + " Hello, world 2!", new String(result2));
         // System.out.println("event2=" + event2.getMillis());
@@ -199,13 +220,19 @@ public class PatternLayoutTest {
     public void testUnixTimeMillis() throws Exception {
         final PatternLayout layout = PatternLayout.newBuilder().withPattern("%d{UNIX_MILLIS} %m")
                 .withConfiguration(ctx.getConfiguration()).build();
-        final LogEvent event1 = new Log4jLogEvent(this.getClass().getName(), null,
-                "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world 1!"), null);
+        final LogEvent event1 = Log4jLogEvent.newBuilder() //
+                .setLoggerName(this.getClass().getName())
+                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
+                .setLevel(Level.INFO) //
+                .setMessage(new SimpleMessage("Hello, world 1!")).build();
         final byte[] result1 = layout.toByteArray(event1);
         assertEquals(event1.getTimeMillis() + " Hello, world 1!", new String(result1));
         // System.out.println("event1=" + event1.getTimeMillis());
-        final LogEvent event2 = new Log4jLogEvent(this.getClass().getName(), null,
-                "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world 2!"), null);
+        final LogEvent event2 = Log4jLogEvent.newBuilder() //
+                .setLoggerName(this.getClass().getName())
+                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
+                .setLevel(Level.INFO) //
+                .setMessage(new SimpleMessage("Hello, world 2!")).build();
         final byte[] result2 = layout.toByteArray(event2);
         assertEquals(event2.getTimeMillis() + " Hello, world 2!", new String(result2));
         // System.out.println("event2=" + event2.getTimeMillis());

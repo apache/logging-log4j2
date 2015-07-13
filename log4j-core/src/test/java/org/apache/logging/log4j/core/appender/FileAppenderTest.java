@@ -77,9 +77,10 @@ public class FileAppenderTest {
         long prevLen = curLen;
         assertTrue("File length: " + curLen, curLen == 0);
         for (int i = 0; i < 100; ++i) {
-            final LogEvent event = new Log4jLogEvent("TestLogger", null, FileAppenderTest.class.getName(), Level.INFO,
-                    new SimpleMessage("Test"), null, null, null, this.getClass().getSimpleName(), null,
-                    System.currentTimeMillis());
+            final LogEvent event = Log4jLogEvent.newBuilder().setLoggerName("TestLogger") //
+                    .setLoggerFqcn(FileAppenderTest.class.getName()).setLevel(Level.INFO) //
+                    .setMessage(new SimpleMessage("Test")).setThreadName(this.getClass().getSimpleName()) //
+                    .setTimeMillis(System.currentTimeMillis()).build();
             try {
                 appender.append(event);
                 curLen = file.length();
@@ -166,8 +167,10 @@ public class FileAppenderTest {
         app.start();
         assertTrue("Appender did not start", app.isStarted());
         for (int i = 0; i < count; ++i) {
-            final LogEvent event = new Log4jLogEvent("TestLogger", null, FileAppenderTest.class.getName(), Level.INFO,
-                    new SimpleMessage("Test"), null, null, null, name, null, System.currentTimeMillis());
+            final LogEvent event = Log4jLogEvent.newBuilder().setLoggerName("TestLogger")
+                    .setLoggerFqcn(FileAppenderTest.class.getName()).setLevel(Level.INFO)
+                    .setMessage(new SimpleMessage("Test")).setThreadName(name).setTimeMillis(System.currentTimeMillis())
+                    .build();
             try {
                 app.append(event);
                 Thread.sleep(25); // Give up control long enough for another thread/process to occasionally do
