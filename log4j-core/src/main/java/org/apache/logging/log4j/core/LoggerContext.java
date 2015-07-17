@@ -190,10 +190,10 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
                             return "Shutdown callback for LoggerContext[name=" + LoggerContext.this.getName() + ']';
                         }
                     });
-                } catch (final IllegalStateException ise) {
-                    LOGGER.fatal(SHUTDOWN_HOOK_MARKER, "Unable to register shutdown hook because JVM is shutting down.");
-                } catch (final SecurityException se) {
-                    LOGGER.error(SHUTDOWN_HOOK_MARKER, "Unable to register shutdown hook due to security restrictions");
+                } catch (final IllegalStateException e) {
+                    LOGGER.fatal(SHUTDOWN_HOOK_MARKER, "Unable to register shutdown hook because JVM is shutting down.", e);
+                } catch (final SecurityException e) {
+                    LOGGER.error(SHUTDOWN_HOOK_MARKER, "Unable to register shutdown hook due to security restrictions", e);
                 }
             }
         }
