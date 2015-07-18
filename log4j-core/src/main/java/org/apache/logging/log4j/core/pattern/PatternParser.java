@@ -16,13 +16,6 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
-import org.apache.logging.log4j.core.config.plugins.util.PluginType;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Strings;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -31,6 +24,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
+import org.apache.logging.log4j.core.config.plugins.util.PluginType;
+import org.apache.logging.log4j.core.util.NanoClockFactory;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Most of the work of the {@link org.apache.logging.log4j.core.layout.PatternLayout} class is delegated to the
@@ -172,7 +173,13 @@ public final class PatternParser {
         final Iterator<FormattingInfo> fieldIter = fields.iterator();
         boolean handlesThrowable = false;
 
+        NanoClockFactory.setMode(NanoClockFactory.Mode.Dummy); // LOG4J2-1074 use dummy clock by default
         for (final PatternConverter converter : converters) {
+            if (converter instanceof NanoTimePatternConverter) {
+                // LOG4J2-1074 Switch to actual clock if nanosecond timestamps are required in config.
+                // LoggerContext will notify known NanoClockFactory users that the configuration has changed.
+                NanoClockFactory.setMode(NanoClockFactory.Mode.System);
+            }
             LogEventPatternConverter pc;
             if (converter instanceof LogEventPatternConverter) {
                 pc = (LogEventPatternConverter) converter;

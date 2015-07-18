@@ -40,9 +40,9 @@ import org.apache.logging.log4j.message.Message;
 /**
  * Users of the JPA appender may want to extend this class instead of {@link AbstractLogEventWrapperEntity}. This class
  * implements all of the required mutator methods but does not implement a mutable entity ID property. In order to
- * create an entity based on this class, you need only create two constructors matching this class's
- * constructors, annotate the class {@link javax.persistence.Entity @Entity} and {@link javax.persistence.Table @Table},
- * and implement the fully mutable entity ID property annotated with {@link javax.persistence.Id @Id} and
+ * create an entity based on this class, you need only create two constructors matching this class's constructors,
+ * annotate the class {@link javax.persistence.Entity @Entity} and {@link javax.persistence.Table @Table}, and implement
+ * the fully mutable entity ID property annotated with {@link javax.persistence.Id @Id} and
  * {@link javax.persistence.GeneratedValue @GeneratedValue} to tell the JPA provider how to calculate an ID for new
  * events.<br>
  * <br>
@@ -73,7 +73,6 @@ public abstract class BasicLogEventEntity extends AbstractLogEventWrapperEntity 
      * signature. The no-argument constructor is required for a standards-compliant JPA provider to accept this as an
      * entity.
      */
-    @SuppressWarnings("unused")
     public BasicLogEventEntity() {
         super();
     }
@@ -167,6 +166,18 @@ public abstract class BasicLogEventEntity extends AbstractLogEventWrapperEntity 
     @Basic
     public long getTimeMillis() {
         return this.getWrappedEvent().getTimeMillis();
+    }
+
+    /**
+     * Returns the value of the running Java Virtual Machine's high-resolution time source when this event was created,
+     * or a dummy value if it is known that this value will not be used downstream.
+     *
+     * @return the JVM nano time
+     */
+    @Override
+    @Basic
+    public long getNanoTime() {
+        return this.getWrappedEvent().getNanoTime();
     }
 
     /**

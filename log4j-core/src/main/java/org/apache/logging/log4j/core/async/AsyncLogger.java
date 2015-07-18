@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.async;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -30,8 +31,10 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
+import org.apache.logging.log4j.core.util.DummyNanoClock;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Loader;
+import org.apache.logging.log4j.core.util.NanoClock;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.TimestampMessage;
@@ -112,6 +115,7 @@ public class AsyncLogger extends Logger {
     }
     private static volatile Disruptor<RingBufferLogEvent> disruptor;
     private static final Clock clock = ClockFactory.getClock();
+    private static volatile NanoClock nanoClock = new DummyNanoClock();
 
     private static final ExecutorService executor = Executors
             .newSingleThreadExecutor(new DaemonThreadFactory("AsyncLogger-"));
@@ -276,7 +280,9 @@ public class AsyncLogger extends Logger {
                 // CachedClock: 10% faster than system clock, smaller gaps
                 // LOG4J2-744 avoid calling clock altogether if message has the timestamp
                 message instanceof TimestampMessage ? ((TimestampMessage) message).getTimestamp() :
-                        clock.currentTimeMillis());
+                        clock.currentTimeMillis(), //
+                nanoClock.nanoTime() //
+        );
 
         // LOG4J2-639: catch NPE if disruptor field was set to null after our check above
         try {
@@ -345,5 +351,25 @@ public class AsyncLogger extends Logger {
      */
     public static RingBufferAdmin createRingBufferAdmin(final String contextName) {
         return RingBufferAdmin.forAsyncLogger(disruptor.getRingBuffer(), contextName);
+    }
+    
+    /**
+     * Returns the {@code NanoClock} to use for creating the nanoTime timestamp of log events.
+     * @return the {@code NanoClock} to use for creating the nanoTime timestamp of log events
+     */
+    public static NanoClock getNanoClock() {
+        return nanoClock;
+    }
+    
+    /**
+     * Sets the {@code NanoClock} to use for creating the nanoTime timestamp of log events.
+     * <p>
+     * FOR INTERNAL USE. This method may be called with a different {@code NanoClock} implementation when the
+     * configuration changes.
+     * 
+     * @param nanoClock the {@code NanoClock} to use for creating the nanoTime timestamp of log events
+     */
+    public static void setNanoClock(NanoClock nanoClock) {
+        AsyncLogger.nanoClock = Objects.requireNonNull(nanoClock, "NanoClock must be non-null");
     }
 }

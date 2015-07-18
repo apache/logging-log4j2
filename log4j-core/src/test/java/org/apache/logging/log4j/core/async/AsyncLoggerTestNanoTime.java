@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.async;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,6 +27,7 @@ import org.apache.logging.log4j.core.CoreLoggerContexts;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.DummyNanoClock;
+import org.apache.logging.log4j.core.util.SystemNanoClock;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -33,14 +35,14 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class AsyncLoggerTest {
+public class AsyncLoggerTestNanoTime {
 
     @BeforeClass
     public static void beforeClass() {
         System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
                 AsyncLoggerContextSelector.class.getName());
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "AsyncLoggerTest.xml");
+                "NanoTimeToFileTest.xml");
     }
 
     @AfterClass
@@ -49,29 +51,42 @@ public class AsyncLoggerTest {
     }
 
     @Test
-    public void testAsyncLogWritesToLog() throws Exception {
-        final File file = new File("target", "AsyncLoggerTest.log");
+    public void testAsyncLogUsesNanoTimeClock() throws Exception {
+        final File file = new File("target", "NanoTimeToFileTest.log");
         // System.out.println(f.getAbsolutePath());
         file.delete();
         final Logger log = LogManager.getLogger("com.foo.Bar");
-        final String msg = "Async logger msg";
-        log.info(msg, new InternalError("this is not a real error"));
+        final long before = System.nanoTime();
+        log.info("Use actual System.nanoTime()");
+        assertTrue("using SystemNanoClock", AsyncLogger.getNanoClock() instanceof SystemNanoClock);
+
+        final long DUMMYNANOTIME = 123;
+        AsyncLogger.setNanoClock(new DummyNanoClock(DUMMYNANOTIME));
+        log.info("Use dummy nano clock");
+        assertTrue("using SystemNanoClock", AsyncLogger.getNanoClock() instanceof DummyNanoClock);
+        
         CoreLoggerContexts.stopLoggerContext(file); // stop async thread
 
         final BufferedReader reader = new BufferedReader(new FileReader(file));
         final String line1 = reader.readLine();
+        final String line2 = reader.readLine();
+        // System.out.println(line1);
+        // System.out.println(line2);
         reader.close();
         file.delete();
-        assertNotNull("line1", line1);
-        assertTrue("line1 correct", line1.contains(msg));
 
-        final String location = "testAsyncLogWritesToLog";
-        assertTrue("no location", !line1.contains(location));
-    }
-    
-    @Test
-    public void testNanoClockInitiallyDummy() {
-        assertTrue(AsyncLogger.getNanoClock() instanceof DummyNanoClock);
+        assertNotNull("line1", line1);
+        assertNotNull("line2", line2);
+        final String[] line1Parts = line1.split(" AND ");
+        assertEquals("Use actual System.nanoTime()", line1Parts[2]);
+        assertEquals(line1Parts[0], line1Parts[1]);
+        long loggedNanoTime = Long.parseLong(line1Parts[0]);
+        assertTrue("used system nano time", loggedNanoTime - before < TimeUnit.SECONDS.toNanos(1));
+        
+        final String[] line2Parts = line2.split(" AND ");
+        assertEquals("Use dummy nano clock", line2Parts[2]);
+        assertEquals(String.valueOf(DUMMYNANOTIME), line2Parts[0]);
+        assertEquals(String.valueOf(DUMMYNANOTIME), line2Parts[1]);
     }
 
 }

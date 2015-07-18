@@ -43,7 +43,6 @@ import org.apache.logging.log4j.message.Message;
 
 @Entity
 @Table(name = "jpaBaseLogEntry")
-@SuppressWarnings("unused")
 public class TestBaseEntity extends AbstractLogEventWrapperEntity {
     private static final long serialVersionUID = 1L;
 
@@ -121,6 +120,12 @@ public class TestBaseEntity extends AbstractLogEventWrapperEntity {
     @Transient
     public long getTimeMillis() {
         return this.getWrappedEvent().getTimeMillis();
+    }
+
+    @Override
+    @Transient
+    public long getNanoTime() {
+        return this.getWrappedEvent().getNanoTime();
     }
 
     @Override

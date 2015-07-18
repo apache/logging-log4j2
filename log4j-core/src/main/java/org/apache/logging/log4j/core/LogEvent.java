@@ -170,4 +170,11 @@ public interface LogEvent extends Serializable {
      */
     void setIncludeLocation(boolean locationRequired);
 
+    /**
+     * Returns the value of the running Java Virtual Machine's high-resolution time source when this event was created,
+     * or a dummy value if it is known that this value will not be used downstream.
+     * @return The value of the running Java Virtual Machine's high-resolution time source when this event was created.
+     * @since Log4J 2.4
+     */
+    long getNanoTime();
 }

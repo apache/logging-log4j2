@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.NanoClockFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.Before;
 import org.junit.Test;
@@ -111,7 +112,7 @@ public class PatternParserTest {
             formatter.format(event, buf);
         }
         final String str = buf.toString();
-        final String expected = "INFO  [PatternParserTest        :97  ] - Hello, world" + Constants.LINE_SEPARATOR;
+        final String expected = "INFO  [PatternParserTest        :98  ] - Hello, world" + Constants.LINE_SEPARATOR;
         assertTrue("Expected to end with: " + expected + ". Actual: " + str, str.endsWith(expected));
     }
 
@@ -223,5 +224,36 @@ public class PatternParserTest {
         assertTrue("Expected to start with: " + expectedStart + ". Actual: " + str, str.startsWith(expectedStart));
         assertTrue("Expected to end with: \"" + expectedEnd + "\". Actual: \"" + str, str.endsWith(expectedEnd));
     }
-
+    
+    @Test
+    public void testNanoPatternShort() {
+        final List<PatternFormatter> formatters = parser.parse("%N");
+        assertNotNull(formatters);
+        assertEquals(1, formatters.size());
+        assertTrue(formatters.get(0).getConverter() instanceof NanoTimePatternConverter);
+    }
+    
+    @Test
+    public void testNanoPatternLong() {
+        final List<PatternFormatter> formatters = parser.parse("%nano");
+        assertNotNull(formatters);
+        assertEquals(1, formatters.size());
+        assertTrue(formatters.get(0).getConverter() instanceof NanoTimePatternConverter);
+    }
+    
+    @Test
+    public void testNanoPatternShortChangesNanoClockFactoryMode() {
+        parser.parse("%m");
+        assertEquals(NanoClockFactory.Mode.Dummy, NanoClockFactory.getMode());
+        parser.parse("%nano");
+        assertEquals(NanoClockFactory.Mode.System, NanoClockFactory.getMode());
+    }
+    
+    @Test
+    public void testNanoPatternLongChangesNanoClockFactoryMode() {
+        parser.parse("%m");
+        assertEquals(NanoClockFactory.Mode.Dummy, NanoClockFactory.getMode());
+        parser.parse("%N");
+        assertEquals(NanoClockFactory.Mode.System, NanoClockFactory.getMode());
+    }
 }

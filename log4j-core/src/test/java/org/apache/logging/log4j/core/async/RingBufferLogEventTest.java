@@ -58,8 +58,9 @@ public class RingBufferLogEventTest {
         final String threadName = null;
         final StackTraceElement location = null;
         final long currentTimeMillis = 0;
+        final long nanoTime = 1;
         evt.setValues(null, loggerName, marker, fqcn, level, data, t, map,
-                contextStack, threadName, location, currentTimeMillis);
+                contextStack, threadName, location, currentTimeMillis, nanoTime);
         assertEquals(Level.OFF, evt.getLevel());
     }
 
@@ -77,8 +78,9 @@ public class RingBufferLogEventTest {
         final String threadName = null;
         final StackTraceElement location = null;
         final long currentTimeMillis = 0;
+        final long nanoTime = 1;
         evt.setValues(null, loggerName, marker, fqcn, level, data, t, map,
-                contextStack, threadName, location, currentTimeMillis);
+                contextStack, threadName, location, currentTimeMillis, nanoTime);
         assertNotNull(evt.getMessage());
     }
 
@@ -96,8 +98,9 @@ public class RingBufferLogEventTest {
         final String threadName = null;
         final StackTraceElement location = null;
         final long currentTimeMillis = 123;
+        final long nanoTime = 1;
         evt.setValues(null, loggerName, marker, fqcn, level, data, t, map,
-                contextStack, threadName, location, currentTimeMillis);
+                contextStack, threadName, location, currentTimeMillis, nanoTime);
         assertEquals(123, evt.getTimeMillis());
     }
 
@@ -115,8 +118,9 @@ public class RingBufferLogEventTest {
         final String threadName = "main";
         final StackTraceElement location = null;
         final long currentTimeMillis = 12345;
+        final long nanoTime = 1;
         evt.setValues(null, loggerName, marker, fqcn, level, data, t, map,
-                contextStack, threadName, location, currentTimeMillis);
+                contextStack, threadName, location, currentTimeMillis, nanoTime);
         
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final ObjectOutputStream out = new ObjectOutputStream(baos);
@@ -153,8 +157,9 @@ public class RingBufferLogEventTest {
         final String threadName = "main";
         final StackTraceElement location = null;
         final long currentTimeMillis = 12345;
+        final long nanoTime = 1;
         evt.setValues(null, loggerName, marker, fqcn, level, data, t, map,
-                contextStack, threadName, location, currentTimeMillis);
+                contextStack, threadName, location, currentTimeMillis, nanoTime);
         
         final LogEvent actual = evt.createMemento();
         assertEquals(evt.getLoggerName(), actual.getLoggerName());

@@ -818,6 +818,15 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+              <a name="NanoTime" />
+                <b>N</b><br />
+                <b>nano</b>
+              </td>
+              <td><p>Outputs the result of <code>System.nanoTime()</code> at the time the log event was created.</p>
+              </td>
+            </tr>
+            <tr>
+              <td align="center">
                 <b>p</b>|<b>level</b>{<em>level</em>=<em>label</em>, <em>level</em>=<em>label</em>, ...}
                 <b>p</b>|<b>level</b>{length=<em>n</em>}
                 <b>p</b>|<b>level</b>{lowerCase=<em>true</em>|<em>false</em>}

@@ -46,13 +46,14 @@ public class RingBufferLogEventTranslator implements
     private String threadName;
     private StackTraceElement location;
     private long currentTimeMillis;
+    private long nanoTime;
 
     // @Override
     @Override
     public void translateTo(final RingBufferLogEvent event, final long sequence) {
         event.setValues(asyncLogger, loggerName, marker, fqcn, level, message,
                 thrown, contextMap, contextStack, threadName, location,
-                currentTimeMillis);
+                currentTimeMillis, nanoTime);
         clear();
     }
 
@@ -72,7 +73,8 @@ public class RingBufferLogEventTranslator implements
                 null, // contextStack
                 null, // threadName
                 null, // location
-                0 // currentTimeMillis
+                0, // currentTimeMillis
+                0 // nanoTime
         );
     }
 
@@ -80,7 +82,7 @@ public class RingBufferLogEventTranslator implements
             final Marker marker, final String fqcn, final Level level, final Message message,
             final Throwable thrown, final Map<String, String> contextMap,
             final ContextStack contextStack, final String threadName,
-            final StackTraceElement location, final long currentTimeMillis) {
+            final StackTraceElement location, final long currentTimeMillis, final long nanoTime) {
         this.asyncLogger = asyncLogger;
         this.loggerName = loggerName;
         this.marker = marker;
@@ -93,6 +95,6 @@ public class RingBufferLogEventTranslator implements
         this.threadName = threadName;
         this.location = location;
         this.currentTimeMillis = currentTimeMillis;
+        this.nanoTime = nanoTime;
     }
-
 }

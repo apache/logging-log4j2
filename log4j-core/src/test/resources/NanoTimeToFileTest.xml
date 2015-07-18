@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="ERROR">
+  <Appenders>
+    <RandomAccessFile name="RandomAccessFile" fileName="target/NanoTimeToFileTest.log" 
+	    		immediateFlush="true" append="false">
+      <PatternLayout>
+        <Pattern>%N AND %nano AND %m%n</Pattern>
+      </PatternLayout>
+    </RandomAccessFile>
+  </Appenders>
+  
+  <Loggers>
+    <Root level="info" includeLocation="false">
+      <AppenderRef ref="RandomAccessFile"/>
+    </Root>
+  </Loggers>
+</Configuration>

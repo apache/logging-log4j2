@@ -29,6 +29,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.async.AsyncLogger;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationListener;
@@ -36,15 +37,17 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.Reconfigurable;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.core.util.Cancellable;
+import org.apache.logging.log4j.core.util.NanoClockFactory;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 
-import static org.apache.logging.log4j.core.util.ShutdownCallbackRegistry.SHUTDOWN_HOOK_MARKER;
+import static org.apache.logging.log4j.core.util.ShutdownCallbackRegistry.*;
 
 /**
  * The LoggerContext is the anchor for the logging system. It maintains a list
@@ -373,6 +376,13 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
             } catch (final Throwable t) {
                 // LOG4J2-716: Android has no java.lang.management
                 LOGGER.error("Could not reconfigure JMX", t);
+            }
+            Log4jLogEvent.setNanoClock(NanoClockFactory.createNanoClock());
+            try {
+                AsyncLogger.setNanoClock(NanoClockFactory.createNanoClock());
+            } catch (Throwable ignored) {
+                // LMAX Disruptor jar may not be in the classpath. Ignore this.
+                LOGGER.debug("Could not set AsyncLogger NanoClock. Ignoring: ", ignored);
             }
             return prev;
         } finally {

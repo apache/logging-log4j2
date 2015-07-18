@@ -21,16 +21,24 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.core.util.ClockFactoryTest;
+import org.apache.logging.log4j.core.util.DummyNanoClock;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
@@ -193,6 +201,206 @@ public class Log4jLogEventTest {
     public void testTimestampGeneratedByClock() {
         final LogEvent evt = Log4jLogEvent.newBuilder().build();
         assertEquals(FixedTimeClock.FIXED_TIME, evt.getTimeMillis());
+    }
+    
+    @Test
+    public void testInitiallyDummyNanoClock() {
+        assertTrue(Log4jLogEvent.getNanoClock() instanceof DummyNanoClock);
+        assertEquals("initial dummy nanotime", 0, Log4jLogEvent.getNanoClock().nanoTime());
+    }
+    
+    @Test
+    public void testNanoTimeGeneratedByNanoClock() {
+        Log4jLogEvent.setNanoClock(new DummyNanoClock(123));
+        verifyNanoTimeWithAllConstructors(123);
+        Log4jLogEvent.setNanoClock(new DummyNanoClock(87654));
+        verifyNanoTimeWithAllConstructors(87654);
+    }
 
+    @SuppressWarnings("deprecation")
+    private void verifyNanoTimeWithAllConstructors(long expected) {
+        assertEquals(expected, Log4jLogEvent.getNanoClock().nanoTime());
+
+        assertEquals("No-arg constructor", expected, new Log4jLogEvent().getNanoTime());
+        assertEquals("1-arg constructor", expected, new Log4jLogEvent(98).getNanoTime());
+        assertEquals("6-arg constructor", expected, new Log4jLogEvent("l", null, "a", null, null, null).getNanoTime());
+        assertEquals("7-arg constructor", expected, new Log4jLogEvent("l", null, "a", null, null, null, null)
+                .getNanoTime());
+        assertEquals("11-arg constructor", expected, new Log4jLogEvent("l", null, "a", null, null, null, null, null,
+                null, null, 0).getNanoTime());
+        assertEquals("12-arg factory method", expected, Log4jLogEvent.createEvent("l", null, "a", null, null, null,
+                null, null, null, null, null, 0).getNanoTime());
+    }
+    
+    @Test
+    public void testBuilderCorrectlyCopiesAllEventAttributes() {
+        final Map<String, String> contextMap = new HashMap<String, String>();
+        contextMap.put("A", "B");
+        final ContextStack contextStack = ThreadContext.getImmutableStack();
+        final Exception exception = new Exception("test");
+        final Marker marker = MarkerManager.getMarker("EVENTTEST");
+        final Message message = new SimpleMessage("foo");
+        final StackTraceElement stackTraceElement = new StackTraceElement("A", "B", "file", 123);
+        final String fqcn = "qualified";
+        final String name = "Ceci n'est pas une pipe";
+        final String threadName = "threadName";
+        final Log4jLogEvent event = Log4jLogEvent.newBuilder() //
+                .setContextMap(contextMap) //
+                .setContextStack(contextStack) //
+                .setEndOfBatch(true) //
+                .setIncludeLocation(true) //
+                .setLevel(Level.FATAL) //
+                .setLoggerFqcn(fqcn) //
+                .setLoggerName(name) //
+                .setMarker(marker) //
+                .setMessage(message) //
+                .setNanoTime(1234567890L) //
+                .setSource(stackTraceElement) //
+                .setThreadName(threadName) //
+                .setThrown(exception) //
+                .setTimeMillis(987654321L)
+                .build();
+        
+        assertSame(contextMap, event.getContextMap());
+        assertSame(contextStack, event.getContextStack());
+        assertEquals(true, event.isEndOfBatch());
+        assertEquals(true, event.isIncludeLocation());
+        assertSame(Level.FATAL, event.getLevel());
+        assertSame(fqcn, event.getLoggerFqcn());
+        assertSame(name, event.getLoggerName());
+        assertSame(marker, event.getMarker());
+        assertSame(message, event.getMessage());
+        assertEquals(1234567890L, event.getNanoTime());
+        assertSame(stackTraceElement, event.getSource());
+        assertSame(threadName, event.getThreadName());
+        assertSame(exception, event.getThrown());
+        assertEquals(987654321L, event.getTimeMillis());
+        
+        LogEvent event2 = new Log4jLogEvent.Builder(event).build();
+        assertEquals("copy constructor builder", event2, event);
+        assertEquals("same hashCode", event2.hashCode(), event.hashCode());
+    }
+    
+    @Test
+    public void testEquals() {
+        final Map<String, String> contextMap = new HashMap<String, String>();
+        contextMap.put("A", "B");
+        ThreadContext.push("first");
+        final ContextStack contextStack = ThreadContext.getImmutableStack();
+        final Exception exception = new Exception("test");
+        final Marker marker = MarkerManager.getMarker("EVENTTEST");
+        final Message message = new SimpleMessage("foo");
+        final StackTraceElement stackTraceElement = new StackTraceElement("A", "B", "file", 123);
+        final String fqcn = "qualified";
+        final String name = "Ceci n'est pas une pipe";
+        final String threadName = "threadName";
+        final Log4jLogEvent event = Log4jLogEvent.newBuilder() //
+                .setContextMap(contextMap) //
+                .setContextStack(contextStack) //
+                .setEndOfBatch(true) //
+                .setIncludeLocation(true) //
+                .setLevel(Level.FATAL) //
+                .setLoggerFqcn(fqcn) //
+                .setLoggerName(name) //
+                .setMarker(marker) //
+                .setMessage(message) //
+                .setNanoTime(1234567890L) //
+                .setSource(stackTraceElement) //
+                .setThreadName(threadName) //
+                .setThrown(exception) //
+                .setTimeMillis(987654321L)
+                .build();
+        
+        assertSame(contextMap, event.getContextMap());
+        assertSame(contextStack, event.getContextStack());
+        assertEquals(true, event.isEndOfBatch());
+        assertEquals(true, event.isIncludeLocation());
+        assertSame(Level.FATAL, event.getLevel());
+        assertSame(fqcn, event.getLoggerFqcn());
+        assertSame(name, event.getLoggerName());
+        assertSame(marker, event.getMarker());
+        assertSame(message, event.getMessage());
+        assertEquals(1234567890L, event.getNanoTime());
+        assertSame(stackTraceElement, event.getSource());
+        assertSame(threadName, event.getThreadName());
+        assertSame(exception, event.getThrown());
+        assertEquals(987654321L, event.getTimeMillis());
+        
+        final LogEvent event2 = builder(event).build();
+        assertEquals("copy constructor builder", event2, event);
+        assertEquals("same hashCode", event2.hashCode(), event.hashCode());
+        
+        assertSame(contextMap, event2.getContextMap());
+        assertSame(contextStack, event2.getContextStack());
+        assertEquals(true, event2.isEndOfBatch());
+        assertEquals(true, event2.isIncludeLocation());
+        assertSame(Level.FATAL, event2.getLevel());
+        assertSame(fqcn, event2.getLoggerFqcn());
+        assertSame(name, event2.getLoggerName());
+        assertSame(marker, event2.getMarker());
+        assertSame(message, event2.getMessage());
+        assertEquals(1234567890L, event2.getNanoTime());
+        assertSame(stackTraceElement, event2.getSource());
+        assertSame(threadName, event2.getThreadName());
+        assertSame(exception, event2.getThrown());
+        assertEquals(987654321L, event2.getTimeMillis());
+        
+        final Map<String, String> differentMap = Collections.emptyMap();
+        different("different contextMap", builder(event).setContextMap(differentMap), event);
+        different("null contextMap", builder(event).setContextMap(null), event);
+
+        ThreadContext.push("abc");
+        final ContextStack contextStack2 = ThreadContext.getImmutableStack();
+        different("different contextStack", builder(event).setContextStack(contextStack2), event);
+        different("null contextStack", builder(event).setContextStack(null), event);
+
+        different("different EndOfBatch", builder(event).setEndOfBatch(false), event);
+        different("different IncludeLocation", builder(event).setIncludeLocation(false), event);
+
+        different("different level", builder(event).setLevel(Level.INFO), event);
+        different("null level", builder(event).setLevel(null), event);
+
+        different("different fqcn", builder(event).setLoggerFqcn("different"), event);
+        different("null fqcn", builder(event).setLoggerFqcn(null), event);
+
+        different("different name", builder(event).setLoggerName("different"), event);
+        try { // TODO null logger name throws NPE in equals. Use Objects.requireNonNull in constructor?
+            different("null name", builder(event).setLoggerName(null), event);
+            fail("Expected NullPointerException");
+        } catch (NullPointerException ok) {
+        }
+
+        different("different marker", builder(event).setMarker(MarkerManager.getMarker("different")), event);
+        different("null marker", builder(event).setMarker(null), event);
+
+        different("different message", builder(event).setMessage(new ObjectMessage("different")), event);
+        try { // TODO null message throws NPE in equals(). Use Objects.requireNonNull in constructor?
+            different("null message", builder(event).setMessage(null), event);
+            fail("Expected NullPointerException");
+        } catch (NullPointerException ok) {
+        }
+
+        different("different nanoTime", builder(event).setNanoTime(135), event);
+        different("different milliTime", builder(event).setTimeMillis(137), event);
+
+        final StackTraceElement stack2 = new StackTraceElement("XXX", "YYY", "file", 123);
+        different("different source", builder(event).setSource(stack2), event);
+        different("null source", builder(event).setSource(null), event);
+        
+        different("different threadname", builder(event).setThreadName("different"), event);
+        different("null threadname", builder(event).setThreadName(null), event);
+        
+        different("different exception", builder(event).setThrown(new Error("Boo!")), event);
+        different("null exception", builder(event).setThrown(null), event);
+    }
+    
+    private static Log4jLogEvent.Builder builder(LogEvent event) {
+        return new Log4jLogEvent.Builder(event);
+    }
+    
+    private void different(String reason, Log4jLogEvent.Builder builder, LogEvent event) {
+        final LogEvent other = builder.build();
+        assertNotEquals(reason, other, event);
+        assertNotEquals(reason + " hashCode", other.hashCode(), event.hashCode());
     }
 }

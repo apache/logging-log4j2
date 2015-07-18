@@ -266,6 +266,16 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
     }
 
     /**
+     * Returns the value of the running Java Virtual Machine's high-resolution time source when this event was created,
+     * or a dummy value if it is known that this value will not be used downstream.
+     * @return the event nanosecond timestamp.
+     */
+    @Override
+    public long getNanoTime() {
+        return event.getNanoTime();
+    }
+
+    /**
      * Returns the Throwable associated with the event, if any.
      * @return the Throwable.
      */

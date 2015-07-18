@@ -172,6 +172,16 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
      * @param millis Ignored.
      */
     @SuppressWarnings("unused")
+    public void setNanoTime(final long nanoTime) {
+        // this entity is write-only
+    }
+
+    /**
+     * A no-op mutator to satisfy JPA requirements, as this entity is write-only.
+     *
+     * @param millis Ignored.
+     */
+    @SuppressWarnings("unused")
     public void setTimeMillis(final long millis) {
         // this entity is write-only
     }

@@ -117,4 +117,8 @@ public abstract class AbstractLogEvent implements LogEvent {
         // do nothing
     }
 
+    @Override
+    public long getNanoTime() {
+        return 0;
+    }
 }
