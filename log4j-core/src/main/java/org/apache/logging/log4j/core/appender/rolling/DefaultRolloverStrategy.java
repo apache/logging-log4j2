@@ -482,8 +482,8 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             return null;
         }
         if (LOGGER.isTraceEnabled()) {
-            final double durationSeconds = TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - startNanos);
-            LOGGER.trace("DefaultRolloverStrategy.purge() took {} seconds", durationSeconds);
+            final double durationMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNanos);
+            LOGGER.trace("DefaultRolloverStrategy.purge() took {} milliseconds", durationMillis);
         }
         final StringBuilder buf = new StringBuilder(255);
         manager.getPatternProcessor().formatFileName(subst, buf, fileIndex);
