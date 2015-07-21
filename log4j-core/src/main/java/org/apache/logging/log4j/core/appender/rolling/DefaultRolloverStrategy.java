@@ -282,15 +282,22 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
 	    return;
 	}
 	
+	final StringBuilder buf = new StringBuilder();
+
         // LOG4J2-531: directory scan & rollover must use same format
-        String filename = manager.getFileName();
+	manager.getPatternProcessor().formatFileName(buf, 0);
+	
+        String filename = buf.toString();
         File file = new File(filename);
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -maxAgeIndex);
         Date cutoffDate = cal.getTime();
 
         if (file.getParentFile().exists()) {
-            filename = file.getName().replaceAll("\\..*", "");
+	    // find the file prefix and ignore everything beyond the first subst element
+	    // this is a bit dirty, but no other way to get the rolling files is known
+	    String shortname = file.getName().substring(0, file.getName().indexOf("$"));
+            filename = shortname.replaceAll("\\..*", "");
 
             File[] files = file.getParentFile().listFiles(
                 new StartsWithFileFilter(filename, false));
