@@ -17,7 +17,12 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -163,11 +168,13 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
 
     private static final int MIN_WINDOW_SIZE = 1;
     private static final int DEFAULT_WINDOW_SIZE = 7;
+    private static final int NO_MAX_AGE = 0;
 
     /**
      * Create the DefaultRolloverStrategy.
      * @param max The maximum number of files to keep.
      * @param min The minimum number of files to keep.
+     * @param maxAge The maximum days to keep files, use 0 to keep files forever
      * @param fileIndex If set to "max" (the default), files with a higher index will be newer than files with a
      * smaller index. If set to "min", file renaming and the counter will follow the Fixed Window strategy.
      * @param compressionLevelStr The compression level, 0 (less) through 9 (more); applies only to ZIP files.
@@ -178,6 +185,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
     public static DefaultRolloverStrategy createStrategy(
             @PluginAttribute("max") final String max,
             @PluginAttribute("min") final String min,
+	    @PluginAttribute("maxAge") final String maxAge,
             @PluginAttribute("fileIndex") final String fileIndex,
             @PluginAttribute("compressionLevel") final String compressionLevelStr,
             @PluginConfiguration final Configuration config) {
@@ -198,8 +206,14 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
                 LOGGER.error("Maximum window size must be greater than the minimum windows size. Set to " + maxIndex);
             }
         }
+	int maxAgeIndex = NO_MAX_AGE;
+	if (maxAge != null) {
+	    int maxAgeInt = Integer.parseInt(maxAge);
+	    // max age may not be negative
+	    maxAgeIndex = (maxAgeInt > NO_MAX_AGE) ? maxAgeInt : NO_MAX_AGE;
+	}
         final int compressionLevel = Integers.parseInt(compressionLevelStr, Deflater.DEFAULT_COMPRESSION);
-        return new DefaultRolloverStrategy(minIndex, maxIndex, useMax, compressionLevel, config.getStrSubstitutor());
+        return new DefaultRolloverStrategy(minIndex, maxIndex, maxAgeIndex, useMax, compressionLevel, config.getStrSubstitutor());
     }
 
     /**
@@ -214,18 +228,25 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
     private final boolean useMax;
     private final StrSubstitutor subst;
     private final int compressionLevel;
+    private final int maxAgeIndex;
 
     /**
      * Constructs a new instance.
      * @param minIndex The minimum index.
      * @param maxIndex The maximum index.
+     * @param maxAgeIndex The maximum age of log files.
      */
-    protected DefaultRolloverStrategy(final int minIndex, final int maxIndex, final boolean useMax, final int compressionLevel, final StrSubstitutor subst) {
+    protected DefaultRolloverStrategy(final int minIndex, final int maxIndex, final int maxAgeIndex, final boolean useMax, final int compressionLevel, final StrSubstitutor subst) {
         this.minIndex = minIndex;
         this.maxIndex = maxIndex;
         this.useMax = useMax;
+	this.maxAgeIndex = maxAgeIndex;
         this.compressionLevel = compressionLevel;
         this.subst = subst;
+    }
+    
+    public int getMaxAgeIndex() {
+	return this.maxAgeIndex;
     }
 
     public int getCompressionLevel() {
@@ -243,6 +264,55 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
     private int purge(final int lowIndex, final int highIndex, final RollingFileManager manager) {
         return useMax ? purgeAscending(lowIndex, highIndex, manager) :
             purgeDescending(lowIndex, highIndex, manager);
+    }
+    
+    /**
+     * Purge files older than defined maxAge. 
+     * 
+     * If file older than current date - maxAge delete them or else keep it.
+     * If maxAgeIndex is 0, no file is deleted
+     * 
+     * @param maxAgeIndex maxAge Index
+     * @param manager The RollingFileManager
+     * @return true if purge was successful and rollover should be attempted.
+     */
+    private void purgeMaxAgeFiles(final int maxAgeIndex, final RollingFileManager manager) {
+
+	if (maxAgeIndex == NO_MAX_AGE) {
+	    return;
+	}
+	
+	final StringBuilder buf = new StringBuilder();
+
+        // LOG4J2-531: directory scan & rollover must use same format
+	manager.getPatternProcessor().formatFileName(buf, 0);
+	
+        String filename = buf.toString();
+        File file = new File(filename);
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -maxAgeIndex);
+        Date cutoffDate = cal.getTime();
+
+        if (file.getParentFile().exists()) {
+	    // find the file prefix and ignore everything beyond the first subst element
+	    // this is a bit dirty, but no other way to get the rolling files is known
+	    String shortname = file.getName().substring(0, file.getName().indexOf("$"));
+            filename = shortname.replaceAll("\\..*", "");
+
+            File[] files = file.getParentFile().listFiles(
+                new StartsWithFileFilter(filename, false));
+
+	    for (File purgeCandidate : files) {
+		try {
+		    BasicFileAttributes attr = Files.readAttributes(purgeCandidate.toPath(), BasicFileAttributes.class);
+		    if (new Date(attr.creationTime().toMillis()).before(cutoffDate)) {
+			purgeCandidate.delete();
+		    }
+		} catch(Exception e) {
+		    LOGGER.warn("unable to get basic file attributes : ", e);
+		}
+	    }
+        }
     }
 
     /**
@@ -473,7 +543,8 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
      */
     @Override
     public RolloverDescription rollover(final RollingFileManager manager) throws SecurityException {
-        if (maxIndex < 0) {
+        purgeMaxAgeFiles(maxAgeIndex, manager);
+	if (maxIndex < 0) {
             return null;
         }
         final long startNanos = System.nanoTime();
@@ -509,7 +580,34 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
 
     @Override
     public String toString() {
-        return "DefaultRolloverStrategy(min=" + minIndex + ", max=" + maxIndex + ')';
+        return "DefaultRolloverStrategy(min=" + minIndex + ", max=" + maxIndex + ", maxAgeIndex=" + maxAgeIndex + ')';
+    }
+    
+    class StartsWithFileFilter implements FileFilter {
+        private final String startsWith;
+        private final boolean inclDirs;
+
+        /**
+         *
+         */
+        public StartsWithFileFilter(String startsWith,
+            boolean includeDirectories) {
+            super();
+            this.startsWith = startsWith.toUpperCase();
+            inclDirs = includeDirectories;
+        }
+
+        /*
+         * (non-Javadoc)
+         *
+         * @see java.io.FileFilter#accept(java.io.File)
+         */
+        public boolean accept(File pathname) {
+            if (!inclDirs && pathname.isDirectory()) {
+                return false;
+            } else
+                return pathname.getName().toUpperCase().startsWith(startsWith);
+        }
     }
 
 }
