@@ -104,6 +104,9 @@ public class LogManager {
                 if (factories.isEmpty()) {
                     LOGGER.error("Log4j2 could not find a logging implementation. Please add log4j-core to the classpath. Using SimpleLogger to log to the console...");
                     factory = new SimpleLoggerContextFactory();
+                } else if ( factories.size() == 1 ) {
+                    // TODO: add logging message if required
+                    factory = factories.get(factories.lastKey());
                 } else {
                     final StringBuilder sb = new StringBuilder("Multiple logging implementations found: \n");
                     for (final Map.Entry<Integer, LoggerContextFactory> entry : factories.entrySet()) {
