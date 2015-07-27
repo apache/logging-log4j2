@@ -50,7 +50,10 @@
       </action>     
       <action issue="LOG4J2-1066" dev="ggregory" type="add" due-to="Charles Allen">
         Expose Log4jContextFactory's ShutdownCallbackRegistry.
-      </action>     
+      </action>          
+      <action issue="LOG4J2-1084" dev="ggregory" type="fix" due-to="Philipp Schneider">
+        Misleading StatusLogger WARN event in LogManager with java.util.Map.
+      </action>
       <action issue="LOG4J2-1051" dev="ggregory" type="fix" due-to="Lukasz Lenart">
         NoClassDefFoundError when starting app on Google App Engine.
       </action>
