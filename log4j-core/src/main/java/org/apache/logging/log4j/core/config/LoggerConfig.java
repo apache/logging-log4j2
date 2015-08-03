@@ -46,6 +46,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.Booleans;
@@ -355,11 +356,14 @@ public class LoggerConfig extends AbstractFilterable {
         List<Property> props = null;
         if (properties != null) {
             props = new ArrayList<>(properties.size());
-
+            Log4jLogEvent.Builder builder = new Log4jLogEvent.Builder();
+            builder.setMessage(data).setMarker(marker).setLevel(level).setLoggerName(loggerName);
+            builder.setLoggerFqcn(fqcn).setThrown(t);
+            LogEvent event = builder.build();
             for (final Map.Entry<Property, Boolean> entry : properties.entrySet()) {
                 final Property prop = entry.getKey();
                 final String value = entry.getValue() ? config.getStrSubstitutor()
-                        .replace(prop.getValue()) : prop.getValue();
+                        .replace(event, prop.getValue()) : prop.getValue();
                 props.add(Property.createProperty(prop.getName(), value));
             }
         }

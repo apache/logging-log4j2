@@ -82,6 +82,7 @@
     <module>flume-remote</module>
     <module>flume-embedded</module>
     <module>configuration</module>
+    <module>loggerProperties</module>
   </modules>
   <build>
     <plugins>
