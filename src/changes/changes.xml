@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.4" date="2015-MM-DD" description="GA Release 2.4">
+      <action issue="LOG4J2-1010" dev="rgoers" type="update">
+        Pass log event when interpolating logger properties.
+      </action>
       <action issue="LOG4J2-1076" dev="rpopma" type="add">
         Added support for system nanosecond time in pattern layout.
       </action>
