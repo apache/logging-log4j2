@@ -40,10 +40,10 @@ import java.util.concurrent.TimeUnit;
 // java -jar target/benchmarks.jar ".*FileAppenderBenchmark.*" -f 1 -i 5 -wi 5 -bm sample -tu ns
 @State(Scope.Thread)
 public class FileAppenderBenchmark {
-    Logger log4jLogger;
-    Logger log4jRandomLogger;
+    Logger log4j2Logger;
+    Logger log4j2RandomLogger;
     org.slf4j.Logger slf4jLogger;
-    org.apache.log4j.Logger log4jClassicLogger;
+    org.apache.log4j.Logger log4j1Logger;
     int j;
 
     @Setup
@@ -58,11 +58,13 @@ public class FileAppenderBenchmark {
         log4jFile.delete();
         File log4j2File = new File ("target/testlog4j2.log");
         log4j2File.delete();
+        File log4j2RAF = new File ("target/testRandomlog4j2.log");
+        log4j2RAF.delete();
 
-        log4jLogger = LogManager.getLogger(FileAppenderBenchmark.class);
-        log4jRandomLogger = LogManager.getLogger("TestRandom");
+        log4j2Logger = LogManager.getLogger(FileAppenderBenchmark.class);
+        log4j2RandomLogger = LogManager.getLogger("TestRandom");
         slf4jLogger = LoggerFactory.getLogger(FileAppenderBenchmark.class);
-        log4jClassicLogger = org.apache.log4j.Logger.getLogger(FileAppenderBenchmark.class);
+        log4j1Logger = org.apache.log4j.Logger.getLogger(FileAppenderBenchmark.class);
         j = 0;
     }
 
@@ -76,7 +78,7 @@ public class FileAppenderBenchmark {
         logbackFile.delete();
         File log4jFile = new File ("target/testlog4j.log");
         log4jFile.delete();
-        File log4jRandomFile = new File ("target/testRandomlog4j.log");
+        File log4jRandomFile = new File ("target/testRandomlog4j2.log");
         log4jRandomFile.delete();
         File log4j2File = new File ("target/testlog4j2.log");
         log4j2File.delete();
@@ -93,50 +95,50 @@ public class FileAppenderBenchmark {
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Benchmark
-    public void log4jRandomDebugStringConcatenation() {
-        log4jRandomLogger.debug("This is a debug [" + ++j + "] message");
+    public void log4j2RAFStringConcatenation() {
+        log4j2RandomLogger.debug("This is a debug [" + ++j + "] message");
     }
 
 
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Benchmark
-    public void log4jDebugStringConcatenation() {
-        log4jLogger.debug("This is a debug [" + ++j + "] message");
+    public void log4j2StringConcatenation() {
+        log4j2Logger.debug("This is a debug [" + ++j + "] message");
     }
 
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Benchmark
-    public void slf4jDebugStringConcatenation() {
+    public void slf4jStringConcatenation() {
         slf4jLogger.debug("This is a debug [" + ++j + "] message");
     }
 
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Benchmark
-    public void log4jClassicDebugStringConcatenation() {
-        log4jClassicLogger.debug("This is a debug [" + ++j + "] message");
+    public void log4j1StringConcatenation() {
+        log4j1Logger.debug("This is a debug [" + ++j + "] message");
     }
 
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Benchmark
-    public void log4jDebugRandomParameterizedString() {
-        log4jRandomLogger.debug("This is a debug [{}] message", ++j);
+    public void log4j2RAFParameterizedString() {
+        log4j2RandomLogger.debug("This is a debug [{}] message", ++j);
     }
 
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Benchmark
-    public void log4jDebugParameterizedString() {
-        log4jLogger.debug("This is a debug [{}] message", ++j);
+    public void log4j2ParameterizedString() {
+        log4j2Logger.debug("This is a debug [{}] message", ++j);
     }
 
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Benchmark
-    public void slf4jDebugParameterizedString() {
+    public void slf4jParameterizedString() {
         slf4jLogger.debug("This is a debug [{}] message", ++j);
     }
 }
