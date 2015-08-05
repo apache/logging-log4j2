@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j;
 
+import java.util.concurrent.Callable;
+
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 
@@ -181,6 +183,20 @@ public interface Logger {
      * @param t the exception to log, including its stack trace.
      */
     void debug(String message, Throwable t);
+
+    /**
+     * Logs a message which is only to be constructed if the logging level is the {@link Level#DEBUG DEBUG} level.
+     *
+     * @param msgSupplier A function, which when called, produces the desired log message.
+     */
+    void debug(Callable<?> msgSupplier);
+
+    /**
+     * Logs a message which is only to be constructed if the logging level is the {@link Level#DEBUG DEBUG} level.
+     *
+     * @param paramSupplier An array of functions, which when called, produce the desired log message parameters.
+     */
+    void debug(String message, Callable<?>... paramSupplier);
 
     /**
      * Logs entry to a method. Used when the method in question has no parameters or when the parameters should not be

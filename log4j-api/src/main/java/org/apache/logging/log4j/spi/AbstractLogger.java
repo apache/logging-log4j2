@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.spi;
 
 import java.io.Serializable;
+import java.util.concurrent.Callable;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
@@ -26,6 +27,7 @@ import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LambdaUtil;
 
 /**
  * Base implementation of a Logger. It is highly recommended that any Logger implementation extend this class.
@@ -215,6 +217,16 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     @Override
     public void debug(final Message msg, final Throwable t) {
         logIfEnabled(FQCN, Level.DEBUG, null, msg, t);
+    }
+
+    @Override
+    public void debug(Callable<?> msgSupplier) {
+        logIfEnabled(FQCN, Level.DEBUG, null, msgSupplier, null);
+    }
+
+    @Override
+    public void debug(String message, Callable<?>... paramSupplier) {
+        logIfEnabled(FQCN, Level.DEBUG, null, message, paramSupplier);
     }
 
     @Override
@@ -695,9 +707,25 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @Override
+    public void logIfEnabled(final String fqcn, final Level level, final Marker marker, final Callable<?> msgSupplier,
+            final Throwable t) {
+        if (isEnabled(level, marker, msgSupplier, t)) {
+            logMessage(fqcn, level, marker, msgSupplier, t);
+        }
+    }
+
+    @Override
     public void logIfEnabled(final String fqcn, final Level level, final Marker marker, final String message) {
         if (isEnabled(level, marker, message)) {
             logMessage(fqcn, level, marker, message);
+        }
+    }
+
+    @Override
+    public void logIfEnabled(final String fqcn, final Level level, final Marker marker, final String message,
+            final Callable<?>... paramSuppliers) {
+        if (isEnabled(level, marker, message)) {
+            logMessage(fqcn, level, marker, message, paramSuppliers);
         }
     }
 
@@ -722,6 +750,12 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         logMessage(fqcn, level, marker, messageFactory.newMessage(message), t);
     }
 
+    protected void logMessage(final String fqcn, final Level level, final Marker marker, final Callable<?> msgSupplier,
+            final Throwable t) {
+        Object message = LambdaUtil.call(msgSupplier);
+        logMessage(fqcn, level, marker, messageFactory.newMessage(message), t);
+    }
+
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Throwable t) {
         logMessage(fqcn, level, marker, messageFactory.newMessage(message), t);
@@ -735,6 +769,12 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Object... params) {
         final Message msg = messageFactory.newMessage(message, params);
+        logMessage(fqcn, level, marker, msg, msg.getThrowable());
+    }
+
+    protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
+            final Callable<?>... paramSuppliers) {
+        final Message msg = messageFactory.newMessage(message, LambdaUtil.callAll(paramSuppliers));
         logMessage(fqcn, level, marker, msg, msg.getThrowable());
     }
 
