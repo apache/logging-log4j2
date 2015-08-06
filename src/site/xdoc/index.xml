@@ -88,6 +88,14 @@
               Map, and data present in the event. Users can further customize the property providers by
               adding their own <a href="manual/lookups.html">Lookup</a> Plugin.
             </dd>
+            <dt>Java 8 Lambda Support</dt>
+            <dd>
+              Previously, if a log message was expensive to construct, you would often explicitly check if the
+              requested log level is enabled before constructing the message.
+              Client code running on Java 8 can benefit from Log4j's <a href="manual/api.html#LambdaSupport">lambda
+              support</a>. Since Log4j will not evaluate a lambda
+              expression if the requested log level is not enabled, the same effect can be achieved with less code.
+            </dd>
           </dl>
 
           <subsection name="Documentation">

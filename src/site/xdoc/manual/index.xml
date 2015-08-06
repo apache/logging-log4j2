@@ -104,6 +104,9 @@
               do not require a class name to be specified.</li>
             <li>Support for <a href="customloglevels.html">custom log levels</a>.
               Custom log levels can be defined in code or in configuration.</li>
+            <li>Support for <a href="api.html#LambdaSupport">lambda expressions</a>.
+              Client code running on Java 8 can use lambda expressions to lazily construct a log message only if
+              the requested log level is enabled. Explicit level checks are not needed, resulting in cleaner code.</li>
             <li>Support for <a href="messages.html">Message objects</a>. Messages allow support for interesting and
               complex constructs to be passed through the logging system and be efficiently
               manipulated. Users are free to create their own

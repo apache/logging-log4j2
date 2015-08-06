@@ -39,7 +39,7 @@ import java.util.concurrent.Callable;
  * <pre>
  * // Java-8 style optimization: no need to explicitly check the log level:
  * // the lambda expression is not evaluated if the TRACE level is not enabled
- * Logger2 logger = LogManager.getLambdaLogger();
+ * LambdaLogger logger = LogManager.getLambdaLogger();
  * logger.trace(&quot;Some long-running operation returned {}&quot;, () -&gt; expensiveOperation());
  * </pre>
  */
