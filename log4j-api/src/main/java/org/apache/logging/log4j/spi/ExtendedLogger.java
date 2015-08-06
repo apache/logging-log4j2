@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.spi;
 
-import java.util.concurrent.Callable;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
@@ -96,18 +94,6 @@ public interface ExtendedLogger extends Logger {
     void logIfEnabled(String fqcn, Level level, Marker marker, Message message, Throwable t);
 
     /**
-     * Logs a message which is only to be constructed if the specified level is active.
-     * 
-     * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class and
-     *            method when location information needs to be logged.
-     * @param level The logging Level to check.
-     * @param marker A Marker or null.
-     * @param msgSupplier A function, which when called, produces the desired log message.
-     * @param t the exception to log, including its stack trace.
-     */
-    void logIfEnabled(String fqcn, Level level, Marker marker, Callable<?> msgSupplier, Throwable t);
-
-    /**
      * Logs a message if the specified level is active.
      * 
      * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class and
@@ -153,18 +139,6 @@ public interface ExtendedLogger extends Logger {
      * @param params The message parameters.
      */
     void logIfEnabled(String fqcn, Level level, Marker marker, String message, Object... params);
-
-    /**
-     * Logs a message which is only to be constructed if the specified level is active.
-     * 
-     * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class and
-     *            method when location information needs to be logged.
-     * @param level The logging Level to check.
-     * @param marker A Marker or null.
-     * @param message The message format.
-     * @param paramSupplier An array of functions, which when called, produce the desired log message parameters.
-     */
-    void logIfEnabled(String fqcn, Level level, Marker marker, String message, Callable<?>... paramSuppliers);
 
     /**
      * Always logs a message at the specified level. It is the responsibility of the caller to ensure the specified

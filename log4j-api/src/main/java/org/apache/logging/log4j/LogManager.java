@@ -416,6 +416,114 @@ public class LogManager {
     }
 
     /**
+     * Returns a LambdaLogger with the name of the calling class.
+     * @return The LambdaLogger for the calling class.
+     * @throws UnsupportedOperationException if the calling class cannot be determined.
+     */
+    public static LambdaLogger getLambdaLogger() {
+        return (LambdaLogger) getLogger(ReflectionUtil.getCallerClass(2));
+    }
+    
+    private static Class<?> callerClass(final Class<?> clazz) {
+        if (clazz != null) {
+            return clazz;
+        }
+        final Class<?> candidate = ReflectionUtil.getCallerClass(3);
+        if (candidate == null) {
+            throw new UnsupportedOperationException("No class provided, and an appropriate one cannot be found.");
+        }
+        return candidate;
+    }
+
+    /**
+     * Returns a LambdaLogger using the fully qualified name of the Class as the Logger name.
+     * @param clazz The Class whose name should be used as the Logger name. If null it will default to the calling
+     *              class.
+     * @return The LambdaLogger.
+     * @throws UnsupportedOperationException if {@code clazz} is {@code null} and the calling class cannot be determined.
+     */
+    public static LambdaLogger getLambdaLogger(final Class<?> clazz) {
+        final Class<?> cls = callerClass(clazz);
+        return (LambdaLogger) getContext(cls.getClassLoader(), false).getLogger(cls.getName());
+    }
+
+    /**
+     * Returns a LambdaLogger using the fully qualified name of the Class as the Logger name.
+     * @param clazz The Class whose name should be used as the Logger name. If null it will default to the calling
+     *              class.
+     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change
+     *                       the logger but will log a warning if mismatched.
+     * @return The LambdaLogger.
+     * @throws UnsupportedOperationException if {@code clazz} is {@code null} and the calling class cannot be determined.
+     */
+    public static LambdaLogger getLambdaLogger(final Class<?> clazz, final MessageFactory messageFactory) {
+        final Class<?> cls = callerClass(clazz);
+        return (LambdaLogger) getContext(cls.getClassLoader(), false).getLogger(cls.getName(), messageFactory);
+    }
+
+    /**
+     * Returns a LambdaLogger with the name of the calling class.
+     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change
+     *                       the logger but will log a warning if mismatched.
+     * @return The LambdaLogger for the calling class.
+     * @throws UnsupportedOperationException if the calling class cannot be determined.
+     */
+    public static LambdaLogger getLambdaLogger(final MessageFactory messageFactory) {
+        return (LambdaLogger) getLogger(ReflectionUtil.getCallerClass(2), messageFactory);
+    }
+
+    /**
+     * Returns a LambdaLogger using the fully qualified class name of the value as the Logger name.
+     * @param value The value whose class name should be used as the Logger name. If null the name of the calling
+     *              class will be used as the logger name.
+     * @return The LambdaLogger.
+     * @throws UnsupportedOperationException if {@code value} is {@code null} and the calling class cannot be determined.
+     */
+    public static LambdaLogger getLambdaLogger(final Object value) {
+        return (LambdaLogger) getLogger(value != null ? value.getClass() : ReflectionUtil.getCallerClass(2));
+    }
+
+    /**
+     * Returns a LambdaLogger using the fully qualified class name of the value as the Logger name.
+     * @param value The value whose class name should be used as the Logger name. If null the name of the calling
+     *              class will be used as the logger name.
+     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change
+     *                       the logger but will log a warning if mismatched.
+     * @return The LambdaLogger.
+     * @throws UnsupportedOperationException if {@code value} is {@code null} and the calling class cannot be determined.
+     */
+    public static LambdaLogger getLambdaLogger(final Object value, final MessageFactory messageFactory) {
+        return (LambdaLogger) getLogger(value != null ? value.getClass() : ReflectionUtil.getCallerClass(2),
+                messageFactory);
+    }
+
+    /**
+     * Returns a LambdaLogger with the specified name.
+     *
+     * @param name The logger name. If null the name of the calling class will be used.
+     * @return The LambdaLogger.
+     * @throws UnsupportedOperationException if {@code name} is {@code null} and the calling class cannot be determined.
+     */
+    public static LambdaLogger getLambdaLogger(final String name) {
+        return (LambdaLogger) (name != null ? getContext(false).getLogger(name) : getLogger(
+                ReflectionUtil.getCallerClass(2)));
+    }
+
+    /**
+     * Returns a LambdaLogger with the specified name.
+     *
+     * @param name The logger name. If null the name of the calling class will be used.
+     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change
+     *                       the logger but will log a warning if mismatched.
+     * @return The LambdaLogger.
+     * @throws UnsupportedOperationException if {@code name} is {@code null} and the calling class cannot be determined.
+     */
+    public static LambdaLogger getLambdaLogger(final String name, final MessageFactory messageFactory) {
+        return (LambdaLogger) (name != null ? getContext(false).getLogger(name, messageFactory) : getLogger(
+            ReflectionUtil.getCallerClass(2), messageFactory));
+    }
+
+    /**
      * Returns a Logger with the name of the calling class.
      * @return The Logger for the calling class.
      * @throws UnsupportedOperationException if the calling class cannot be determined.
@@ -432,14 +540,8 @@ public class LogManager {
      * @throws UnsupportedOperationException if {@code clazz} is {@code null} and the calling class cannot be determined.
      */
     public static Logger getLogger(final Class<?> clazz) {
-        if (clazz == null) {
-            final Class<?> candidate = ReflectionUtil.getCallerClass(2);
-            if (candidate == null) {
-                throw new UnsupportedOperationException("No class provided, and an appropriate one cannot be found.");
-            }
-            return getLogger(candidate);
-        }
-        return getContext(clazz.getClassLoader(), false).getLogger(clazz.getName());
+        final Class<?> cls = callerClass(clazz);
+        return getContext(cls.getClassLoader(), false).getLogger(cls.getName());
     }
 
     /**
@@ -452,14 +554,8 @@ public class LogManager {
      * @throws UnsupportedOperationException if {@code clazz} is {@code null} and the calling class cannot be determined.
      */
     public static Logger getLogger(final Class<?> clazz, final MessageFactory messageFactory) {
-        if (clazz == null) {
-            final Class<?> candidate = ReflectionUtil.getCallerClass(2);
-            if (candidate == null) {
-                throw new UnsupportedOperationException("No class provided, and an appropriate one cannot be found.");
-            }
-            return getLogger(candidate, messageFactory);
-        }
-        return getContext(clazz.getClassLoader(), false).getLogger(clazz.getName(), messageFactory);
+        final Class<?> cls = callerClass(clazz);
+        return getContext(cls.getClassLoader(), false).getLogger(cls.getName(), messageFactory);
     }
 
     /**
