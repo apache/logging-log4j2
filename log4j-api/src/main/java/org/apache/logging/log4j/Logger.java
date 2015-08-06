@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j;
 
-import java.util.concurrent.Callable;
-
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 
