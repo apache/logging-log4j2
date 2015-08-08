@@ -24,6 +24,12 @@
   </properties>
   <body>
     <release version="2.4" date="2015-MM-DD" description="GA Release 2.4">
+      <action issue="LOG4J2-1017" dev="ggregory" type="update">
+        Update Java platform from Java 6 to 7. From this version onwards, log4j 2 requires Java 7.
+      </action>
+      <action dev="rpopma" type="remove">
+        Removed experimental interface LevelLogger which got committed to master by mistake.
+      </action>
       <action issue="LOG4J2-1010" dev="rgoers" type="update">
         Pass log event when interpolating logger properties.
       </action>
@@ -161,9 +167,6 @@
       </action>
       <action issue="LOG4J2-959" dev="ggregory" type="update">
         Fix FindBugs DM_DEFAULT_ENCODING bug in SimpleLogger.logMessage() and simplify code.
-      </action>
-      <action issue="LOG4J2-1017" dev="ggregory" type="update">
-        Update Java platform from Java 6 to 7.
       </action>
       <action issue="LOG4J2-1036" dev="ggregory" type="update">
         Update Apache Flume from 1.5.2 to 1.6.0.
