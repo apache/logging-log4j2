@@ -33,11 +33,56 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 public final class Configurator {
 
-    private static final Logger LOGGER = StatusLogger.getLogger();
-
     private static final String FQCN = Configurator.class.getName();
 
-    private Configurator() {
+    private static final Logger LOGGER = StatusLogger.getLogger();
+
+    private static Log4jContextFactory getFactory() {
+        final LoggerContextFactory factory = LogManager.getFactory();
+        if (factory instanceof Log4jContextFactory) {
+            return (Log4jContextFactory) factory;
+        } else if (factory != null) {
+            LOGGER.error("LogManager returned an instance of {} which does not implement {}. Unable to initialize Log4j.",
+                    factory.getClass().getName(), Log4jContextFactory.class.getName());
+            return null;
+        } else {
+            LOGGER.fatal("LogManager did not return a LoggerContextFactory. This indicates something has gone terribly wrong!");
+            return null;
+        }
+    }
+
+    /**
+     * Initializes the Logging Context.
+     * @param loader The ClassLoader for the Context (or null).
+     * @param source The InputSource for the configuration.
+     * @return The LoggerContext.
+     */
+    public static LoggerContext initialize(final ClassLoader loader,
+                                           final ConfigurationSource source) {
+        return initialize(loader, source, null);
+    }
+
+    /**
+     * Initializes the Logging Context.
+     * @param loader The ClassLoader for the Context (or null).
+     * @param source The InputSource for the configuration.
+     * @param externalContext The external context to be attached to the LoggerContext.
+     * @return The LoggerContext.
+     */
+
+    public static LoggerContext initialize(final ClassLoader loader,
+                                           final ConfigurationSource source,
+                                           final Object externalContext)
+    {
+
+        try {
+            final Log4jContextFactory factory = getFactory();
+            return factory == null ? null :
+                    factory.getContext(FQCN, loader, externalContext, false, source);
+        } catch (final Exception ex) {
+            LOGGER.error("There was a problem obtaining a LoggerContext using the configuration source [{}]", source, ex);
+        }
+        return null;
     }
 
     /**
@@ -75,16 +120,6 @@ public final class Configurator {
     /**
      * Initializes the Logging Context.
      * @param name The Context name.
-     * @param configLocation The configuration for the logging context.
-     * @return The LoggerContext.
-     */
-    public static LoggerContext initialize(final String name, final String configLocation) {
-        return initialize(name, null, configLocation);
-    }
-
-    /**
-     * Initializes the Logging Context.
-     * @param name The Context name.
      * @param loader The ClassLoader for the Context (or null).
      * @param configLocation The configuration for the logging context.
      * @return The LoggerContext.
@@ -117,50 +152,12 @@ public final class Configurator {
 
     /**
      * Initializes the Logging Context.
-     * @param loader The ClassLoader for the Context (or null).
-     * @param source The InputSource for the configuration.
+     * @param name The Context name.
+     * @param configLocation The configuration for the logging context.
      * @return The LoggerContext.
      */
-    public static LoggerContext initialize(final ClassLoader loader,
-                                           final ConfigurationSource source) {
-        return initialize(loader, source, null);
-    }
-
-    /**
-     * Initializes the Logging Context.
-     * @param loader The ClassLoader for the Context (or null).
-     * @param source The InputSource for the configuration.
-     * @param externalContext The external context to be attached to the LoggerContext.
-     * @return The LoggerContext.
-     */
-
-    public static LoggerContext initialize(final ClassLoader loader,
-                                           final ConfigurationSource source,
-                                           final Object externalContext)
-    {
-
-        try {
-            final Log4jContextFactory factory = getFactory();
-            return factory == null ? null :
-                    factory.getContext(FQCN, loader, externalContext, false, source);
-        } catch (final Exception ex) {
-            LOGGER.error("There was a problem obtaining a LoggerContext using the configuration source [{}]", source, ex);
-        }
-        return null;
-    }
-
-    private static Log4jContextFactory getFactory() {
-        final LoggerContextFactory factory = LogManager.getFactory();
-        if (factory instanceof Log4jContextFactory) {
-            return (Log4jContextFactory) factory;
-        } else if (factory != null) {
-            LOGGER.error("LogManager returned an instance of {} which does not implement {}. Unable to initialize Log4j.",
-                    factory.getClass().getName(), Log4jContextFactory.class.getName());
-            return null;
-        } else {
-            LOGGER.fatal("LogManager did not return a LoggerContextFactory. This indicates something has gone terribly wrong!");
-            return null;
-        }
+    public static LoggerContext initialize(final String name, final String configLocation) {
+        return initialize(name, null, configLocation);
     }
 
     /**
@@ -171,5 +168,8 @@ public final class Configurator {
         if (ctx != null) {
             ctx.stop();
         }
+    }
+
+    private Configurator() {
     }
 }
