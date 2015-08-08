@@ -56,21 +56,21 @@ public class VarargsBenchmark {
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public long varargParams() {
-        return vararg3Method("example {} {} {}", "one", "two", "three", "four");
+        return varargMethod("example {} {} {}", "one", "two", "three", "four");
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public long individualParams() {
-        return vararg3Method("example {} {} {}", "one", "two", "three");
+        return individualArgMethod("example {} {} {}", "one", "two", "three");
     }
 
-    private long vararg3Method(String string, String... params) {
+    private long varargMethod(String string, String... params) {
         return string.length() + params.length;
     }
 
-    private long vararg3Method(String string, String param1, String param2, String param3) {
+    private long individualArgMethod(String string, String param1, String param2, String param3) {
         return string.length() + param1.length();
     }
 }
