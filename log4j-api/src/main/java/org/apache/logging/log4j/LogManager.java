@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.logging.log4j.levellogger.LevelLoggers;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
@@ -413,6 +414,10 @@ public class LogManager {
     public static Logger getFormatterLogger(final String name) {
         return name == null ? getFormatterLogger(ReflectionUtil.getCallerClass(2)) : getLogger(name,
             StringFormatterMessageFactory.INSTANCE);
+    }
+
+    public static LevelLoggers getLevelLoggers(final String name) {
+        return new LevelLoggers(getLogger(name));
     }
 
     /**

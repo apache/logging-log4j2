@@ -16,20 +16,23 @@
  */
 package org.apache.logging.log4j;
 
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.logging.log4j.levellogger.LevelLoggers;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.hamcrest.CoreMatchers.*;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -72,6 +75,15 @@ public class LoggerTest {
     @Test
     public void debug() {
         logger.debug("Debug message");
+        assertEquals(1, results.size());
+        assertTrue("Incorrect message", results.get(0).startsWith(" DEBUG Debug message"));
+    }
+
+    // Should be in own class
+    @Test
+    public void loggerLevelDebug() {
+    	LevelLoggers loggers = LogManager.getLevelLoggers(logger.getName());
+    	loggers.debug.log("Debug message");
         assertEquals(1, results.size());
         assertTrue("Incorrect message", results.get(0).startsWith(" DEBUG Debug message"));
     }
