@@ -27,7 +27,7 @@ import org.apache.logging.log4j.message.Message;
  *
  * <p>Implementors are free to cache values or return a new or distinct value each time the supplier is invoked.
  *
- * @since log4j-2.4
+ * @since 2.4
  */
 public interface MessageSupplier {
 
