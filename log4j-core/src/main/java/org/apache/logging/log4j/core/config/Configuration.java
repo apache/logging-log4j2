@@ -91,6 +91,12 @@ public interface Configuration extends Filterable {
 
     Map<String, String> getProperties();
 
+    /**
+     * Returns the root Logger.
+     * @return the root Logger.
+     */
+    LoggerConfig getRootLogger();
+
     void addListener(ConfigurationListener listener);
 
     void removeListener(ConfigurationListener listener);
@@ -137,4 +143,5 @@ public interface Configuration extends Filterable {
      * @return the custom levels defined in the current configuration
      */
     List<CustomLevelConfig> getCustomLevels();
+
 }
