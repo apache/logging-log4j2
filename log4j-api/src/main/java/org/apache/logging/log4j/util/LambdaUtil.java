@@ -25,6 +25,12 @@ import org.apache.logging.log4j.message.Message;
  */
 public class LambdaUtil {
     /**
+     * Private constructor: this class is not intended to be instantiated.
+     */
+    private LambdaUtil() {
+    }
+
+    /**
      * Converts an array of lambda expressions into an array of their evaluation results.
      * 
      * @param suppliers an array of lambda expressions or {@code null}
