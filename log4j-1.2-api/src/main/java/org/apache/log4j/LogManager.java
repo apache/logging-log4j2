@@ -67,23 +67,23 @@ public final class LogManager {
     }
 
     public static Logger getRootLogger() {
-        return (Logger) Category.getInstance((LoggerContext) PrivateManager.getContext(), Strings.EMPTY);
+        return (Logger) Category.getInstance(PrivateManager.getContext(), Strings.EMPTY);
     }
 
     public static Logger getLogger(final String name) {
-        return (Logger) Category.getInstance((LoggerContext) PrivateManager.getContext(), name);
+        return (Logger) Category.getInstance(PrivateManager.getContext(), name);
     }
 
     public static Logger getLogger(@SuppressWarnings("rawtypes") final Class clazz) {
-        return (Logger) Category.getInstance((LoggerContext) PrivateManager.getContext(), clazz.getName());
+        return (Logger) Category.getInstance(PrivateManager.getContext(), clazz.getName());
     }
 
     public static Logger getLogger(final String name, final LoggerFactory factory) {
-        return (Logger) Category.getInstance((LoggerContext) PrivateManager.getContext(), name);
+        return (Logger) Category.getInstance(PrivateManager.getContext(), name);
     }
 
     public static Logger exists(final String name) {
-        final LoggerContext ctx = (LoggerContext) PrivateManager.getContext();
+        final LoggerContext ctx = PrivateManager.getContext();
         if (!ctx.hasLogger(name)) {
             return null;
         }
@@ -96,7 +96,7 @@ public final class LogManager {
     }
 
     static void reconfigure() {
-        final LoggerContext ctx = (LoggerContext) PrivateManager.getContext();
+        final LoggerContext ctx = PrivateManager.getContext();
         ctx.reconfigure();
     }
 
@@ -162,17 +162,17 @@ public final class LogManager {
 
         @Override
         public Logger getLogger(final String name) {
-            return (Logger) Category.getInstance((LoggerContext) PrivateManager.getContext(), name);
+            return (Logger) Category.getInstance(PrivateManager.getContext(), name);
         }
 
         @Override
         public Logger getLogger(final String name, final LoggerFactory factory) {
-            return (Logger) Category.getInstance((LoggerContext) PrivateManager.getContext(), name);
+            return (Logger) Category.getInstance(PrivateManager.getContext(), name);
         }
 
         @Override
         public Logger getRootLogger() {
-            return (Logger) Category.getRoot((LoggerContext) PrivateManager.getContext());
+            return (Logger) Category.getRoot(PrivateManager.getContext());
         }
 
         @Override
@@ -211,9 +211,8 @@ public final class LogManager {
     private static class PrivateManager extends org.apache.logging.log4j.LogManager {
         private static final String FQCN = LogManager.class.getName();
 
-
-        public static org.apache.logging.log4j.spi.LoggerContext getContext() {
-            return getContext(FQCN, false);
+        public static LoggerContext getContext() {
+            return (LoggerContext) getContext(FQCN, false);
         }
 
         public static org.apache.logging.log4j.Logger getLogger(final String name) {
