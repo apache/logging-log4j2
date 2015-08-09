@@ -39,7 +39,7 @@ public class LambdaUtil {
      */
     public static Object[] getAll(Supplier<?>... suppliers) {
         if (suppliers == null) {
-            return (Object[]) null;
+            return null;
         }
         final Object[] result = new Object[suppliers.length];
         for (int i = 0; i < result.length; i++) {
