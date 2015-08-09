@@ -45,7 +45,7 @@ import org.apache.logging.log4j.util.Supplier;
  * logger.trace(&quot;Some long-running operation returned {}&quot;, () -&gt; expensiveOperation());
  * </pre>
  * 
- * @since log4j-2.4
+ * @since 2.4
  */
 public interface Logger2 extends Logger {
 

@@ -27,7 +27,7 @@ package org.apache.logging.log4j.util;
  *
  * @param <T> the type of values returned by this supplier
  *
- * @since log4j-2.4
+ * @since 2.4
  */
 public interface Supplier<T> {
 
