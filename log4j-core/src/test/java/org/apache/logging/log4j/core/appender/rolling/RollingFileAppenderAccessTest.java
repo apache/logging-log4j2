@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender.rolling;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -34,7 +33,7 @@ public class RollingFileAppenderAccessTest {
      */
     @Test
     public void testAccessManager() throws IOException {
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final LoggerContext ctx = LoggerContext.getContext(false);
         final Configuration config = ctx.getConfiguration();
         final File file = File.createTempFile("RollingFileAppenderAccessTest", ".tmp");
         file.deleteOnExit();

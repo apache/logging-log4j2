@@ -69,7 +69,7 @@ public class MemoryMappedFileAppenderRemapTest {
             log.warn(new String(text));
             assertEquals("grown again", 256 * 3, f.length());
         } finally {
-            ((LoggerContext) LogManager.getContext(false)).stop();
+            (LoggerContext.getContext(false)).stop();
         }
         final int LINESEP = System.getProperty("line.separator").length();
         assertEquals("Shrunk to actual used size", 658 + 3 * LINESEP, f.length());

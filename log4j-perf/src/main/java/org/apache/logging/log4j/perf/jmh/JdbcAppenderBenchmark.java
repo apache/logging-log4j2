@@ -67,7 +67,7 @@ public class JdbcAppenderBenchmark {
         createTable(connectionH2, toCreateTableSqlStringH2("fmLogEntry"));
 
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "log4j2-jdbc-appender.xml");
-        final LoggerContext context = (LoggerContext) LogManager.getContext(false);
+        final LoggerContext context = LoggerContext.getContext(false);
         if (context.getConfiguration() instanceof DefaultConfiguration) {
             context.reconfigure();
         }
@@ -134,7 +134,7 @@ public class JdbcAppenderBenchmark {
 
     @TearDown
     public void tearDown() throws SQLException {
-        final LoggerContext context = (LoggerContext) LogManager.getContext(false);
+        final LoggerContext context = LoggerContext.getContext(false);
         try {
             ((JdbcAppender) context.getConfiguration().getAppender("H2Appender")).getManager().release();
             ((JdbcAppender) context.getConfiguration().getAppender("HSQLDBAppender")).getManager().release();

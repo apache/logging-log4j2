@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
@@ -39,7 +38,7 @@ public class EncodingPatternConverterTest {
                 .setMessage(new SimpleMessage("Test \r\n<div class=\"test\">this</div> & <div class='test'>that</div>"))
                 .build();
         final StringBuilder sb = new StringBuilder();
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        final LoggerContext ctx = LoggerContext.getContext();
         final String[] options = new String[]{"%msg"};
         final EncodingPatternConverter converter = EncodingPatternConverter
             .newInstance(ctx.getConfiguration(), options);

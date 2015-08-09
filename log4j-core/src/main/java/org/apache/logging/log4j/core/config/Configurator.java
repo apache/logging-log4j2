@@ -167,7 +167,7 @@ public final class Configurator {
      * @param level the new level
      */
     public static void setLevel(final String loggerName, final Level level) {
-        final LoggerContext loggerContext = (LoggerContext) LogManager.getContext(false);
+        final LoggerContext loggerContext = LoggerContext.getContext(false);
         final LoggerConfig loggerConfig = loggerContext.getConfiguration().getLoggerConfig(loggerName);
         setLevel(loggerContext, loggerConfig, level);
     }
@@ -177,7 +177,7 @@ public final class Configurator {
      * @param level the new level
      */
     public static void setRootLevel(final Level level) {
-        final LoggerContext loggerContext = (LoggerContext) LogManager.getContext(false);
+        final LoggerContext loggerContext = LoggerContext.getContext(false);
         final LoggerConfig loggerConfig = loggerContext.getConfiguration().getRootLogger();
         setLevel(loggerContext, loggerConfig, level);
     }

@@ -66,7 +66,7 @@ public abstract class AbstractJdbcAppenderTest {
         }
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
                 "org/apache/logging/log4j/core/appender/db/jdbc/" + configFileName);
-        final LoggerContext context = (LoggerContext) LogManager.getContext(false);
+        final LoggerContext context = LoggerContext.getContext(false);
         if (context.getConfiguration() instanceof DefaultConfiguration) {
             context.reconfigure();
         }
@@ -75,7 +75,7 @@ public abstract class AbstractJdbcAppenderTest {
 
     @After
     public void tearDown() throws SQLException {
-        final LoggerContext context = (LoggerContext) LogManager.getContext(false);
+        final LoggerContext context = LoggerContext.getContext(false);
         try {
             final Appender appender = context.getConfiguration().getAppender("databaseAppender");
             assertNotNull("The appender should not be null.", appender);

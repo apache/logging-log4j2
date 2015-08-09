@@ -26,7 +26,6 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -67,7 +66,7 @@ public class DataSourceConnectionSourceTest {
     @BeforeClass
     public static void beforeClass() {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        final LoggerContext ctx = LoggerContext.getContext();
         ctx.reconfigure();
         final StatusLogger logger = StatusLogger.getLogger();
         logger.setLevel(Level.FATAL);

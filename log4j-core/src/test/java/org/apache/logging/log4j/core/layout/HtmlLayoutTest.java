@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.BasicConfigurationFactory;
@@ -39,7 +38,7 @@ import static org.junit.Assert.*;
  *
  */
 public class HtmlLayoutTest {
-    LoggerContext ctx = (LoggerContext) LogManager.getContext();
+    LoggerContext ctx = LoggerContext.getContext();
     Logger root = ctx.getLogger("");
 
     static ConfigurationFactory cf = new BasicConfigurationFactory();
@@ -48,7 +47,7 @@ public class HtmlLayoutTest {
     public static void setupClass() {
         ThreadContext.clearAll();
         ConfigurationFactory.setConfigurationFactory(cf);
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        final LoggerContext ctx = LoggerContext.getContext();
         ctx.reconfigure();
     }
 

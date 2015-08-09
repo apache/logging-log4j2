@@ -42,7 +42,7 @@ public class AsyncLoggersWithAsyncLoggerConfigTest {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
                 "AsyncLoggersWithAsyncLoggerConfigTest.xml");
         System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, AsyncLoggerContextSelector.class.getName());
-        ctx = (LoggerContext) LogManager.getContext(false);
+        ctx = LoggerContext.getContext(false);
         config = ctx.getConfiguration();
         listAppender = (ListAppender) config.getAppender("List");
     }

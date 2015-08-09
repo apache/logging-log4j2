@@ -42,14 +42,14 @@ public class IfEnabledTagTest {
     @BeforeClass
     public static void setUpClass() {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        final LoggerContext context = (LoggerContext) LogManager.getContext(false);
+        final LoggerContext context = LoggerContext.getContext(false);
         context.getConfiguration();
     }
 
     @AfterClass
     public static void cleanUpClass() {
         System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        final LoggerContext context = (LoggerContext) LogManager.getContext(false);
+        final LoggerContext context = LoggerContext.getContext(false);
         context.reconfigure();
         StatusLogger.getLogger().reset();
     }

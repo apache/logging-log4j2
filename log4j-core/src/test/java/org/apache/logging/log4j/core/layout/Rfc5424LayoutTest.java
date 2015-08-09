@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
@@ -43,7 +42,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class Rfc5424LayoutTest {
-    LoggerContext ctx = (LoggerContext) LogManager.getContext();
+    LoggerContext ctx = LoggerContext.getContext();
     Logger root = ctx.getLogger("");
 
 
@@ -65,7 +64,7 @@ public class Rfc5424LayoutTest {
         ThreadContext.clearAll();
         StatusLogger.getLogger().setLevel(Level.OFF);
         ConfigurationFactory.setConfigurationFactory(cf);
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        final LoggerContext ctx = LoggerContext.getContext();
         ctx.reconfigure();
     }
 

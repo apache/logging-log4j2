@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.junit.AfterClass;
@@ -32,7 +31,7 @@ public class TcpSerializedSocketServerTest extends AbstractSocketServerTest {
 
     @BeforeClass
     public static void setupClass() throws Exception {
-        ((LoggerContext) LogManager.getContext(false)).reconfigure();
+        (LoggerContext.getContext(false)).reconfigure();
         server = TcpSocketServer.createSerializedSocketServer(PORT_NUM);
         thread = server.startNewThread();
     }

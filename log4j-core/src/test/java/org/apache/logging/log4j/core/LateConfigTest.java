@@ -21,7 +21,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
@@ -41,7 +40,7 @@ public class LateConfigTest {
 
     @BeforeClass
     public static void setupClass() {
-        context = (LoggerContext) LogManager.getContext(false);
+        context = LoggerContext.getContext(false);
     }
 
     @AfterClass
@@ -56,12 +55,12 @@ public class LateConfigTest {
         assertNotNull("No configuration", cfg);
         assertTrue("Not set to default configuration", cfg instanceof DefaultConfiguration);
         final File file = new File(CONFIG);
-        final LoggerContext loggerContext = (LoggerContext) LogManager.getContext(null, false, file.toURI());
+        final LoggerContext loggerContext = LoggerContext.getContext(null, false, file.toURI());
         assertNotNull("No Logger Context", loggerContext);
         final Configuration newConfig = loggerContext.getConfiguration();
         assertTrue("Configuration not reset", cfg != newConfig);
         assertTrue("Reconfiguration failed", newConfig instanceof XmlConfiguration);
-        context = (LoggerContext) LogManager.getContext(false);
+        context = LoggerContext.getContext(false);
         final Configuration sameConfig = context.getConfiguration();
         assertTrue("Configuration should not have been reset", newConfig == sameConfig);
     }

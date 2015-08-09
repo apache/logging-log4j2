@@ -24,7 +24,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.Map;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
@@ -45,7 +44,7 @@ public class DynamicThresholdFilterTest {
 
     @After
     public void cleanup() {
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final LoggerContext ctx = LoggerContext.getContext(false);
         ctx.reconfigure();
         StatusLogger.getLogger().reset();
     }

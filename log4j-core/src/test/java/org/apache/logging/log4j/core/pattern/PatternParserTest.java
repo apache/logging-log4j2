@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
@@ -43,7 +42,7 @@ public class PatternParserTest {
 
     static String OUTPUT_FILE   = "output/PatternParser";
     static String WITNESS_FILE  = "witness/PatternParser";
-    LoggerContext ctx = (LoggerContext) LogManager.getContext();
+    LoggerContext ctx = LoggerContext.getContext();
     Logger root = ctx.getLogger("");
 
     private static String msgPattern = "%m%n";

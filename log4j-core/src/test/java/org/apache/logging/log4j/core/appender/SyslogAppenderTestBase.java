@@ -22,7 +22,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
@@ -39,7 +38,7 @@ public class SyslogAppenderTestBase {
     protected static final String line1 =
             "TestApp - Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"]" +
                     "[RequestContext@18060 ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete";
-    protected LoggerContext ctx = (LoggerContext) LogManager.getContext();
+    protected LoggerContext ctx = LoggerContext.getContext();
     protected static final int DEFAULT_TIMEOUT_IN_MS = 100;
     protected static final int PORTNUM = 8199;
     protected MockSyslogServer syslogServer;
@@ -50,7 +49,7 @@ public class SyslogAppenderTestBase {
 
     @BeforeClass
     public static void setupClass() throws Exception {
-        ((LoggerContext) LogManager.getContext()).reconfigure();
+        (LoggerContext.getContext()).reconfigure();
     }
 
     protected void sendAndCheckLegacyBSDMessages(final List<String> messagesToSend) throws InterruptedException {

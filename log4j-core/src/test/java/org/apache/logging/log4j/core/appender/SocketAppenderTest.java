@@ -36,7 +36,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
@@ -66,7 +65,7 @@ public class SocketAppenderTest {
     private static TCPSocketServer tcpServer;
     private static UDPSocketServer udpServer;
 
-    LoggerContext context = (LoggerContext) LogManager.getContext();
+    LoggerContext context = LoggerContext.getContext();
     Logger root = context.getLogger("SocketAppenderTest");
 
     private static int tcpCount = 0;
@@ -78,7 +77,7 @@ public class SocketAppenderTest {
         tcpServer.start();
         udpServer = new UDPSocketServer();
         udpServer.start();
-        ((LoggerContext) LogManager.getContext()).reconfigure();
+        (LoggerContext.getContext()).reconfigure();
     }
 
     @AfterClass

@@ -44,7 +44,7 @@ public class AsyncAppenderTest {
     @BeforeClass
     public static void setupClass() {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        ctx = (LoggerContext) LogManager.getContext(false);
+        ctx = LoggerContext.getContext(false);
         config = ctx.getConfiguration();
         listAppender = (ListAppender) config.getAppender("List");
     }

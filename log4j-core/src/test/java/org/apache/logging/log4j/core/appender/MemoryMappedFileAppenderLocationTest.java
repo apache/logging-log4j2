@@ -69,7 +69,7 @@ public class MemoryMappedFileAppenderLocationTest {
             log.warn("Test log2");
             assertEquals("not grown", expectedFileLength, f.length());
         } finally {
-            ((LoggerContext) LogManager.getContext(false)).stop();
+            (LoggerContext.getContext(false)).stop();
         }
         final int LINESEP = System.getProperty("line.separator").length();
         assertEquals("Shrunk to actual used size", 474 + 2 * LINESEP, f.length());

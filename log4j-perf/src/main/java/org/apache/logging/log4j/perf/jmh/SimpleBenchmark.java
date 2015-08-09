@@ -51,10 +51,10 @@ public class SimpleBenchmark {
 
     @Setup
     public void setup() {
-        final Configuration config = ((LoggerContext) LogManager.getContext()).getConfiguration();
+        final Configuration config = (LoggerContext.getContext()).getConfiguration();
         if (!DefaultConfiguration.DEFAULT_NAME.equals(config.getName())) {
             System.out.println("Configuration was " + config.getName());
-            ((LoggerContext) LogManager.getContext()).start(new DefaultConfiguration());
+            (LoggerContext.getContext()).start(new DefaultConfiguration());
         }
         logger = LogManager.getLogger(SimpleBenchmark.class.getName());
     }

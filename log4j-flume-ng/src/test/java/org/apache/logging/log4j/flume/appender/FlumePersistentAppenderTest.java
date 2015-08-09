@@ -104,7 +104,7 @@ public class FlumePersistentAppenderTest {
         primary = new EventCollector(primaryPort);
         alternate = new EventCollector(altPort);
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        ctx = (LoggerContext) LogManager.getContext(false);
+        ctx = LoggerContext.getContext(false);
         ctx.reconfigure();
     }
 

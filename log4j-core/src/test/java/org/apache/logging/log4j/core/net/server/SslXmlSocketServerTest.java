@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -57,7 +56,7 @@ public class SslXmlSocketServerTest extends AbstractSocketServerTest {
 
     @BeforeClass
     public static void setupClass() throws Exception {
-        ((LoggerContext) LogManager.getContext(false)).reconfigure();
+        (LoggerContext.getContext(false)).reconfigure();
         initServerSocketFactory();
         // Use a large buffer just to test the code, the UDP test uses a tiny buffer
         server = new SecureTcpSocketServer<>(PORT_NUM, new XmlInputStreamLogEventBridge(1024 * 100,

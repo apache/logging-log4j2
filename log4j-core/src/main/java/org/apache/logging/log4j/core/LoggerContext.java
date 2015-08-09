@@ -63,6 +63,64 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     public static final String PROPERTY_CONFIG = "config";
     private static final Configuration NULL_CONFIGURATION = new NullConfiguration();
 
+    /**
+     * Returns the current LoggerContext.
+     * <p>
+     * Avoids the type cast for:
+     *</p>
+     *<pre>(LoggerContext) LogManager.getContext();</pre>
+     *
+     * <p>
+     * WARNING - The LoggerContext returned by this method may not be the LoggerContext used to create a Logger
+     * for the calling class.
+     * </p>
+     * @return  The current LoggerContext.
+     * @see LogManager#getContext()
+     */
+    public static LoggerContext getContext() {
+        return (LoggerContext) LogManager.getContext();
+    }
+
+    /**
+     * Returns a LoggerContext.
+     * <p>
+     * Avoids the type cast for:
+     *</p>
+     *<pre>(LoggerContext) LogManager.getContext(currentContext);</pre>
+     *
+     * @param currentContext if false the LoggerContext appropriate for the caller of this method is returned. For
+     * example, in a web application if the caller is a class in WEB-INF/lib then one LoggerContext may be
+     * returned and if the caller is a class in the container's classpath then a different LoggerContext may be
+     * returned. If true then only a single LoggerContext will be returned.
+     * @return a LoggerContext.
+     * @see LogManager#getContext(boolean)
+     */
+    public static LoggerContext getContext(final boolean currentContext) {
+        return (LoggerContext) LogManager.getContext(currentContext);
+    }
+
+    /**
+     * Returns a LoggerContext.
+     * <p>
+     * Avoids the type cast for:
+     *</p>
+     *<pre>(LoggerContext) LogManager.getContext(loader, currentContext, configLocation);</pre>
+     *
+     * @param loader The ClassLoader for the context. If null the context will attempt to determine the appropriate
+     * ClassLoader.
+     * @param currentContext if false the LoggerContext appropriate for the caller of this method is returned. For
+     * example, in a web application if the caller is a class in WEB-INF/lib then one LoggerContext may be
+     * returned and if the caller is a class in the container's classpath then a different LoggerContext may be
+     * returned. If true then only a single LoggerContext will be returned.
+     * @param configLocation The URI for the configuration to use.
+     * @return a LoggerContext.
+     * @see LogManager#getContext(ClassLoader, boolean, URI)
+     */
+    public static LoggerContext getContext(final ClassLoader loader, final boolean currentContext,
+            final URI configLocation) {
+        return (LoggerContext) LogManager.getContext(loader, currentContext, configLocation);
+    }
+
     private final ConcurrentMap<String, Logger> loggers = new ConcurrentHashMap<>();
     private final CopyOnWriteArrayList<PropertyChangeListener> propertyChangeListeners = new CopyOnWriteArrayList<>();
 

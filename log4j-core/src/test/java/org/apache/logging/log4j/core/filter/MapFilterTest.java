@@ -44,7 +44,7 @@ public class MapFilterTest {
 
     @After
     public void cleanup() {
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final LoggerContext ctx = LoggerContext.getContext(false);
         ctx.reconfigure();
         StatusLogger.getLogger().reset();
     }

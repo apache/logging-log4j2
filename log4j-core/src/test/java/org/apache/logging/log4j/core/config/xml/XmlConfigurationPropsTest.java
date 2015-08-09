@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.config.xml;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -38,7 +37,7 @@ public class XmlConfigurationPropsTest {
     @AfterClass
     public static void cleanupClass() {
         System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        final LoggerContext ctx = LoggerContext.getContext();
         ctx.reconfigure();
         StatusLogger.getLogger().reset();
     }
@@ -46,7 +45,7 @@ public class XmlConfigurationPropsTest {
     @Test
     public void testNoProps() {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        final LoggerContext ctx = LoggerContext.getContext();
         ctx.reconfigure();
         final Configuration config = ctx.getConfiguration();
         assertTrue("Configuration is not an XmlConfiguration", config instanceof XmlConfiguration);
@@ -58,7 +57,7 @@ public class XmlConfigurationPropsTest {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG1);
         System.setProperty(Constants.LOG4J_DEFAULT_STATUS_LEVEL, "WARN");
         try {
-            final LoggerContext ctx = (LoggerContext) LogManager.getContext();
+            final LoggerContext ctx = LoggerContext.getContext();
             ctx.reconfigure();
             final Configuration config = ctx.getConfiguration();
             assertTrue("Configuration is not an XmlConfiguration", config instanceof XmlConfiguration);
@@ -72,7 +71,7 @@ public class XmlConfigurationPropsTest {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         System.setProperty("log4j.level", "warn");
         try {
-            final LoggerContext ctx = (LoggerContext) LogManager.getContext();
+            final LoggerContext ctx = LoggerContext.getContext();
             ctx.reconfigure();
             final Configuration config = ctx.getConfiguration();
             assertTrue("Configuration is not an XmlConfiguration", config instanceof XmlConfiguration);
@@ -88,7 +87,7 @@ public class XmlConfigurationPropsTest {
         System.setProperty("log4j.level", "warn");
         System.setProperty("log.level", "warn");
         try {
-            final LoggerContext ctx = (LoggerContext) LogManager.getContext();
+            final LoggerContext ctx = LoggerContext.getContext();
             ctx.reconfigure();
             final Configuration config = ctx.getConfiguration();
             assertTrue("Configuration is not an XmlConfiguration", config instanceof XmlConfiguration);

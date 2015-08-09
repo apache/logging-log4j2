@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -76,7 +75,7 @@ public abstract class AbstractSocketServerTest {
 
     static final String PORT = String.valueOf(PORT_NUM);
 
-    private final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+    private final LoggerContext ctx = LoggerContext.getContext(false);
 
     private final boolean expectLengthException;
 

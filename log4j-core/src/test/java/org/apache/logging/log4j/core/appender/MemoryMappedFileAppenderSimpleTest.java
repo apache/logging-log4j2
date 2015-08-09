@@ -64,7 +64,7 @@ public class MemoryMappedFileAppenderSimpleTest {
             log.warn("Test log2");
             assertEquals("not grown", MemoryMappedFileManager.DEFAULT_REGION_LENGTH, f.length());
         } finally {
-            ((LoggerContext) LogManager.getContext(false)).stop();
+            (LoggerContext.getContext(false)).stop();
         }
         final int LINESEP = System.getProperty("line.separator").length();
         assertEquals("Shrunk to actual used size", 186 + 2 * LINESEP, f.length());

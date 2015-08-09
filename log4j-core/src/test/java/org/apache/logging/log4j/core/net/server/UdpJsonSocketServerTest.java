@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.net.server;
 import java.io.InputStream;
 import java.io.Serializable;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.junit.AfterClass;
@@ -31,7 +30,7 @@ public class UdpJsonSocketServerTest extends AbstractSocketServerTest {
 
     @BeforeClass
     public static void setupClass() throws Exception {
-        ((LoggerContext) LogManager.getContext(false)).reconfigure();
+        (LoggerContext.getContext(false)).reconfigure();
         server = UdpSocketServer.createJsonSocketServer(PORT_NUM);
         thread = server.startNewThread();
     }

@@ -18,7 +18,6 @@ package org.apache.log4j;
 
 import java.io.StringWriter;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -38,7 +37,7 @@ private static LoggerContext context;
     
     @BeforeClass
     public static void setupClass() {
-        context = (LoggerContext) LogManager.getContext(false);
+        context = LoggerContext.getContext(false);
     }
 
     @AfterClass

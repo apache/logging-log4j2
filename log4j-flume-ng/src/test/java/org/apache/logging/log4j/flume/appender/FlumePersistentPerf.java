@@ -44,7 +44,6 @@ import org.apache.flume.source.avro.AvroFlumeEvent;
 import org.apache.flume.source.avro.AvroSourceProtocol;
 import org.apache.flume.source.avro.Status;
 import org.apache.logging.log4j.EventLogger;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
@@ -100,7 +99,7 @@ public class FlumePersistentPerf {
         primary = new EventCollector(primaryPort);
         alternate = new EventCollector(altPort);
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        ctx = (LoggerContext) LogManager.getContext(false);
+        ctx = LoggerContext.getContext(false);
         ctx.reconfigure();
     }
 

@@ -43,14 +43,14 @@ public class EntryTagTest {
     @BeforeClass
     public static void setUpClass() {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        final LoggerContext context = (LoggerContext) LogManager.getContext(false);
+        final LoggerContext context = LoggerContext.getContext(false);
         context.getConfiguration();
     }
 
     @AfterClass
     public static void cleanUpClass() {
         System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        final LoggerContext context = (LoggerContext) LogManager.getContext(false);
+        final LoggerContext context = LoggerContext.getContext(false);
         context.reconfigure();
         StatusLogger.getLogger().reset();
     }
@@ -81,7 +81,7 @@ public class EntryTagTest {
     }
 
     private void verify(final String expected) {
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final LoggerContext ctx = LoggerContext.getContext(false);
         final Appender listApp = ctx.getConfiguration().getAppender("List");
         assertNotNull("Missing Appender", listApp);
         assertTrue("Not a ListAppender", listApp instanceof ListAppender);

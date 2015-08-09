@@ -47,7 +47,7 @@ public class AsyncLoggerConfigTest2 {
         final String msg = "Message before reconfig";
         log.info(msg);
 
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final LoggerContext ctx = LoggerContext.getContext(false);
         ctx.reconfigure();
         ctx.reconfigure();
         

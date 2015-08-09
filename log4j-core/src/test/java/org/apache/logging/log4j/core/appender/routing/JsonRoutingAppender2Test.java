@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender.routing;
 import java.io.File;
 import java.util.List;
 import org.apache.logging.log4j.EventLogger;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -45,7 +44,7 @@ public class JsonRoutingAppender2Test {
     @BeforeClass
     public static void setupClass() {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        ctx = (LoggerContext) LogManager.getContext(false);
+        ctx = LoggerContext.getContext(false);
         config = ctx.getConfiguration();
         listAppender = (ListAppender) config.getAppender("List");
         final File file = new File("target/rolling1/rollingtest-Unknown.log");

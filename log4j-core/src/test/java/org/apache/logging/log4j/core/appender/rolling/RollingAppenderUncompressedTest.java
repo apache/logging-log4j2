@@ -43,7 +43,7 @@ public class RollingAppenderUncompressedTest {
     public static void setupClass() {
         deleteDir();
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        final LoggerContext ctx = LoggerContext.getContext();
         final Configuration config = ctx.getConfiguration();
     }
 
@@ -51,7 +51,7 @@ public class RollingAppenderUncompressedTest {
     public static void cleanupClass() {
         //deleteDir();
         System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        final LoggerContext ctx = LoggerContext.getContext();
         ctx.reconfigure();
         StatusLogger.getLogger().reset();
     }
