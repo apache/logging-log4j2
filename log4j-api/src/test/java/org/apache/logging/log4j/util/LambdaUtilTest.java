@@ -62,26 +62,22 @@ public class LambdaUtilTest {
         assertNull(actual);
     }
 
-    @Test
+    @Test(expected = RuntimeException.class)
     public void testGetSupplierExceptionIfSupplierThrowsException() {
-        final RuntimeException expected = new RuntimeException();
-        final Object actual = LambdaUtil.get(new Supplier<String>() {
+        LambdaUtil.get(new Supplier<String>() {
             public String get() {
-                throw expected;
+                throw new RuntimeException();
             }
         });
-        assertSame(expected, actual);
     }
 
-    @Test
+    @Test(expected = RuntimeException.class)
     public void testGetMessageSupplierExceptionIfSupplierThrowsException() {
-        final RuntimeException expected = new RuntimeException();
-        final Object actual = LambdaUtil.get(new MessageSupplier() {
+        LambdaUtil.get(new MessageSupplier() {
             public Message get() {
-                throw expected;
+                throw new RuntimeException();
             }
         });
-        assertSame(expected, actual);
     }
 
     @Test
@@ -122,25 +118,20 @@ public class LambdaUtilTest {
         }
     }
 
-    @Test
-    public void testGetAllReturnsExceptionsIfSuppliersThrowsException() {
-        final RuntimeException expected1 = new RuntimeException();
+    @Test(expected = RuntimeException.class)
+    public void testGetAllThrowsExceptionIfAnyOfTheSuppliersThrowsException() {
         Supplier<String> function1 = new Supplier<String>() {
             public String get() {
-                throw expected1;
+                return "abc";
             }
         };
-        final RuntimeException expected2 = new RuntimeException();
         Supplier<String> function2 = new Supplier<String>() {
             public String get() {
-                throw expected2;
+                throw new RuntimeException();
             }
         };
 
         Supplier<?>[] functions = { function1, function2 };
-        final Object[] actual = LambdaUtil.getAll(functions);
-        assertEquals(actual.length, functions.length);
-        assertSame(expected1, actual[0]);
-        assertSame(expected2, actual[1]);
+        LambdaUtil.getAll(functions);
     }
 }

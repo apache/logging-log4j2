@@ -52,13 +52,7 @@ public class LambdaUtil {
         if (supplier == null) {
             return null;
         }
-        Object result = null;
-        try {
-            result = supplier.get();
-        } catch (Exception ex) {
-            result = ex;
-        }
-        return result;
+        return supplier.get();
     }
 
     /**
