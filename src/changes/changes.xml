@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.4" date="2015-MM-DD" description="GA Release 2.4">
+      <action issue="LOG4J2-1044" dev="rgoers" type="fix">
+        Write pending events to Flume when the appender is stopped.
+      </action>
       <action issue="LOG4J2-1017" dev="ggregory" type="update">
         Update Java platform from Java 6 to 7. From this version onwards, log4j 2 requires Java 7.
       </action>
