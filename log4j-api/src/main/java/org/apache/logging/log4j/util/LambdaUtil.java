@@ -17,7 +17,8 @@
 
 package org.apache.logging.log4j.util;
 
-import java.util.concurrent.Callable;
+import org.apache.logging.log4j.message.Message;
+
 
 /**
  * Utility class for lambda support.
@@ -30,13 +31,13 @@ public class LambdaUtil {
      * @return an array containing the results of evaluating the lambda expressions (or {@code null} if the suppliers
      *         array was {@code null}
      */
-    public static Object[] callAll(Callable<?>... suppliers) {
+    public static Object[] getAll(Supplier<?>... suppliers) {
         if (suppliers == null) {
             return (Object[]) null;
         }
         final Object[] result = new Object[suppliers.length];
         for (int i = 0; i < result.length; i++) {
-            result[i] = call(suppliers[i]);
+            result[i] = get(suppliers[i]);
         }
         return result;
     }
@@ -47,16 +48,29 @@ public class LambdaUtil {
      * @return the results of evaluating the lambda expression (or {@code null} if the supplier
      *         was {@code null}
      */
-    public static Object call(Callable<?> supplier) {
+    public static Object get(Supplier<?> supplier) {
         if (supplier == null) {
             return null;
         }
         Object result = null;
         try {
-            result = supplier.call();
+            result = supplier.get();
         } catch (Exception ex) {
             result = ex;
         }
         return result;
+    }
+
+    /**
+     * Returns the Message supplied by the specified function.
+     * @param supplier a lambda expression or {@code null}
+     * @return the Message resulting from evaluating the lambda expression (or {@code null} if the supplier was
+     * {@code null}
+     */
+    public static Message get(MessageSupplier supplier) {
+        if (supplier == null) {
+            return null;
+        }
+        return supplier.get();
     }
 }

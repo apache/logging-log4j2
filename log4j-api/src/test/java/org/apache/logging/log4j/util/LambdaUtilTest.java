@@ -17,8 +17,8 @@
 
 package org.apache.logging.log4j.util;
 
-import java.util.concurrent.Callable;
-
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -29,10 +29,10 @@ import static org.junit.Assert.*;
 public class LambdaUtilTest {
 
     @Test
-    public void testCallReturnsResultOfCallable() {
+    public void testGetSupplierResultOfSupplier() {
         final String expected = "result";
-        final Object actual = LambdaUtil.call(new Callable<String>() {
-            public String call() {
+        final Object actual = LambdaUtil.get(new Supplier<String>() {
+            public String get() {
                 return expected;
             }
         });
@@ -40,55 +40,82 @@ public class LambdaUtilTest {
     }
 
     @Test
-    public void testCallReturnsNullIfCallableNull() {
-        final Object actual = LambdaUtil.call(null);
+    public void testGetMessageSupplierResultOfSupplier() {
+        final Message expected = new SimpleMessage("hi");
+        final Message actual = LambdaUtil.get(new MessageSupplier() {
+            public Message get() {
+                return expected;
+            }
+        });
+        assertSame(expected, actual);
+    }
+
+    @Test
+    public void testGetSupplierReturnsNullIfSupplierNull() {
+        final Object actual = LambdaUtil.get((Supplier<?>) null);
         assertNull(actual);
     }
 
     @Test
-    public void testCallReturnsExceptionIfCallableThrowsException() {
-        final Exception expected = new RuntimeException();
-        final Object actual = LambdaUtil.call(new Callable<String>() {
-            public String call() throws Exception{
+    public void testGetMessageSupplierReturnsNullIfSupplierNull() {
+        final Object actual = LambdaUtil.get((MessageSupplier) null);
+        assertNull(actual);
+    }
+
+    @Test
+    public void testGetSupplierExceptionIfSupplierThrowsException() {
+        final RuntimeException expected = new RuntimeException();
+        final Object actual = LambdaUtil.get(new Supplier<String>() {
+            public String get() {
                 throw expected;
             }
         });
         assertSame(expected, actual);
     }
 
+    @Test
+    public void testGetMessageSupplierExceptionIfSupplierThrowsException() {
+        final RuntimeException expected = new RuntimeException();
+        final Object actual = LambdaUtil.get(new MessageSupplier() {
+            public Message get() {
+                throw expected;
+            }
+        });
+        assertSame(expected, actual);
+    }
 
     @Test
-    public void testCallAllReturnsResultOfCallables() {
+    public void testGetAllReturnsResultOfSuppliers() {
         final String expected1 = "result1";
-        Callable<String> function1 = new Callable<String>() {
-            public String call() {
+        Supplier<String> function1 = new Supplier<String>() {
+            public String get() {
                 return expected1;
             }
         };
         final String expected2 = "result2";
-        Callable<String> function2 = new Callable<String>() {
-            public String call() {
+        Supplier<String> function2 = new Supplier<String>() {
+            public String get() {
                 return expected2;
             }
         };
-        
-        Callable<?>[] functions = {function1, function2};
-        final Object[] actual = LambdaUtil.callAll(functions);
+
+        Supplier<?>[] functions = { function1, function2 };
+        final Object[] actual = LambdaUtil.getAll(functions);
         assertEquals(actual.length, functions.length);
         assertSame(expected1, actual[0]);
         assertSame(expected2, actual[1]);
     }
 
     @Test
-    public void testCallAllReturnsNullArrayIfCallablesArrayNull() {
-        final Object[] actual = LambdaUtil.callAll((Callable<?>[]) null);
+    public void testGetAllReturnsNullArrayIfSupplierArrayNull() {
+        final Object[] actual = LambdaUtil.getAll((Supplier<?>[]) null);
         assertNull(actual);
     }
 
     @Test
-    public void testCallAllReturnsNullElementsIfCallableArrayContainsNulls() {
-        final Callable<?>[] functions = new Callable[3];
-        final Object[] actual = LambdaUtil.callAll(functions);
+    public void testGetAllReturnsNullElementsIfSupplierArrayContainsNulls() {
+        final Supplier<?>[] functions = new Supplier[3];
+        final Object[] actual = LambdaUtil.getAll(functions);
         assertEquals(actual.length, functions.length);
         for (Object object : actual) {
             assertNull(object);
@@ -96,22 +123,22 @@ public class LambdaUtilTest {
     }
 
     @Test
-    public void testCallAllReturnsExceptionsIfCallablesThrowsException() {
-        final Exception expected1 = new RuntimeException();
-        Callable<String> function1 = new Callable<String>() {
-            public String call() throws Exception{
+    public void testGetAllReturnsExceptionsIfSuppliersThrowsException() {
+        final RuntimeException expected1 = new RuntimeException();
+        Supplier<String> function1 = new Supplier<String>() {
+            public String get() {
                 throw expected1;
             }
         };
-        final Exception expected2 = new RuntimeException();
-        Callable<String> function2 = new Callable<String>() {
-            public String call() throws Exception{
+        final RuntimeException expected2 = new RuntimeException();
+        Supplier<String> function2 = new Supplier<String>() {
+            public String get() {
                 throw expected2;
             }
         };
-        
-        Callable<?>[] functions = {function1, function2};
-        final Object[] actual = LambdaUtil.callAll(functions);
+
+        Supplier<?>[] functions = { function1, function2 };
+        final Object[] actual = LambdaUtil.getAll(functions);
         assertEquals(actual.length, functions.length);
         assertSame(expected1, actual[0]);
         assertSame(expected2, actual[1]);

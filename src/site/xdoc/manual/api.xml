@@ -118,7 +118,7 @@ logger.printf(Level.INFO, "Logging in user %1$s with birthday %2$tm %2$te,%2$tY"
           <a name="LambdaSupport"/>
             <h4>Java 8 lambda support for lazy logging</h4>
             <p>
-              The <code>LambdaLogger</code> interface extends <code>Logger</code> to add support for lambda expressions.
+              The <code>Logger2</code> interface extends <code>Logger</code> to add support for lambda expressions.
               This logger allows client code to lazily log messages without explicitly checking if the requested log
               level is enabled. For example, previously you would write:
             </p>
@@ -129,12 +129,12 @@ if (logger.isTraceEnabled()) {
     logger.trace(&quot;Some long-running operation returned {}&quot;, expensiveOperation());
 }</pre>
             <p>
-              With Java 8 and the <code>LambdaLogger</code> interface, you can achieve the same effect by using a
+              With Java 8 and the <code>Logger2</code> interface, you can achieve the same effect by using a
               lambda expression. You no longer need to explicitly check the log level:
             </p>
             <pre class="prettyprint linenums">// Java-8 style optimization: no need to explicitly check the log level:
 // the lambda expression is not evaluated if the TRACE level is not enabled
-LambdaLogger logger = LogManager.getLambdaLogger();
+Logger2 logger = LogManager.getLogger2();
 logger.trace(&quot;Some long-running operation returned {}&quot;, () -> expensiveOperation());</pre>
 
           <h4>Logger Names</h4>

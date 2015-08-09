@@ -17,29 +17,17 @@
 
 package org.apache.logging.log4j.spi;
 
-import java.util.concurrent.Callable;
-
-import org.apache.logging.log4j.LambdaLogger;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger2;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.util.MessageSupplier;
+import org.apache.logging.log4j.util.Supplier;
 
 /**
- * Extends the {@code LambdaLogger} interface with methods that facilitate implementing or extending
- * {@code LambdaLogger}s. Users should not need to use this interface.
+ * Extends the {@code Logger2} interface with methods that facilitate implementing or extending
+ * {@code Logger2}s. Users should not need to use this interface.
  */
-public interface ExtendedLambdaLogger extends ExtendedLogger, LambdaLogger {
-
-    /**
-     * Logs a message whose parameters are only to be constructed if the specified level is active.
-     * 
-     * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class and
-     *            method when location information needs to be logged.
-     * @param level The logging Level to check.
-     * @param marker A Marker or null.
-     * @param message The message format.
-     * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
-     */
-    void logIfEnabled(String fqcn, Level level, Marker marker, String message, Callable<?>... paramSuppliers);
+public interface ExtendedLogger2 extends ExtendedLogger, Logger2 {
 
     /**
      * Logs a message which is only to be constructed if the specified level is active.
@@ -51,6 +39,30 @@ public interface ExtendedLambdaLogger extends ExtendedLogger, LambdaLogger {
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t the exception to log, including its stack trace.
      */
-    void logIfEnabled(String fqcn, Level level, Marker marker, Callable<?> msgSupplier, Throwable t);
+    void logIfEnabled(String fqcn, Level level, Marker marker, MessageSupplier msgSupplier, Throwable t);
+
+    /**
+     * Logs a message whose parameters are only to be constructed if the specified level is active.
+     * 
+     * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class and
+     *            method when location information needs to be logged.
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param message The message format.
+     * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
+     */
+    void logIfEnabled(String fqcn, Level level, Marker marker, String message, Supplier<?>... paramSuppliers);
+
+    /**
+     * Logs a message which is only to be constructed if the specified level is active.
+     * 
+     * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class and
+     *            method when location information needs to be logged.
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param msgSupplier A function, which when called, produces the desired log message.
+     * @param t the exception to log, including its stack trace.
+     */
+    void logIfEnabled(String fqcn, Level level, Marker marker, Supplier<?> msgSupplier, Throwable t);
 
 }
