@@ -52,7 +52,7 @@ public class Logger2Test {
         }
     }
 
-    class Logger2Impl extends AbstractLogger {
+    private static class Logger2Impl extends AbstractLogger {
         private static final long serialVersionUID = 1L;
 
         boolean enabled = true;
@@ -110,7 +110,7 @@ public class Logger2Test {
     final Throwable throwable = new Error("I'm Bad");
     final Marker marker = MarkerManager.getMarker("test");
 
-    class MyMessageSupplier implements MessageSupplier {
+    private class MyMessageSupplier implements MessageSupplier {
         public boolean invoked = false;
 
         @Override
@@ -122,7 +122,7 @@ public class Logger2Test {
 
     final MyMessageSupplier messageSupplier = new MyMessageSupplier();
 
-    class MySupplier implements Supplier<String> {
+    private class MySupplier implements Supplier<String> {
         public boolean invoked = false;
 
         @Override
