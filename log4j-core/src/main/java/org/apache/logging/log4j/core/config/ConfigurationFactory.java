@@ -66,7 +66,7 @@ import org.apache.logging.log4j.util.Strings;
  * </ol>
  *
  * If the ConfigurationFactory that was added returns null on a call to
- * getConfiguration the any other ConfigurationFactories found as plugins will
+ * getConfiguration then any other ConfigurationFactories found as plugins will
  * be called in their respective order. DefaultConfiguration is always called
  * last if no configuration has been returned.
  */
