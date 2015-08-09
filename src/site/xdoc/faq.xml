@@ -34,6 +34,7 @@
       <li><a href="#config_sep_appender_level">How do I send log messages with different levels to different appenders?</a></li>
       <li><a href="#troubleshooting">How do I debug my configuration?</a></li>
       <li><a href="#separate_log_files">How do I dynamically write to separate log files?</a></li>
+      <li><a href="#reconfig_level_from_code">How do I set a logger's level programmatically?</a></li>      
       <!--
       <li><a href="#custom_plugin">How do I get log4j2 to recognize my custom plugin?</a></li>
       -->
@@ -226,6 +227,17 @@ Configurator.shutdown(context);</pre>
   </Routes>
 </Routing>]]></pre>
 
+        <a name="reconfig_level_from_code" />
+        <h4>How do I set a logger's level programmatically?</h4>
+        <p>You can set a logger's level with the class Configurator from Core module.
+         Be aware that the Configuration class is not part of the public API.</p>
+        <pre class="prettyprint linenums">// org.apache.logging.log4j.core.config.Configurator;
+
+Configurator.setLevel("com.example.Foo", Level.DEBUG);
+
+// You can also set the root logger:
+Configurator.setRootLevel(Level.DEBUG);
+</pre>
 
         <!--
 		<a name="custom_plugin" />

@@ -36,6 +36,9 @@
       <action issue="LOG4J2-1010" dev="rgoers" type="update">
         Pass log event when interpolating logger properties.
       </action>
+      <action issue="LOG4J2-1090" dev="ggregory" type="add">
+        Add Core Configurator APIs to change a logger's level.
+      </action>
       <action issue="LOG4J2-1076" dev="rpopma" type="add">
         Added support for system nanosecond time in pattern layout.
       </action>

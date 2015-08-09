@@ -27,6 +27,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.apache.logging.log4j.message.MessageFactory;
@@ -101,6 +102,19 @@ public class LoggerTest {
         logger.debug("Debug message");
         final List<LogEvent> events = app.getEvents();
         assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 1, events.size());
+    }
+
+    @Test
+    public void debugChangeLevel() {
+        logger.debug("Debug message 1");
+        final List<LogEvent> events = app.getEvents();
+        assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 1, events.size());
+        Configurator.setLevel(logger.getName(), Level.OFF);
+        logger.debug("Debug message 2");
+        assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 1, events.size());
+        Configurator.setLevel(logger.getName(), Level.DEBUG);
+        logger.debug("Debug message 3");
+        assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 2, events.size());
     }
 
     @Test
