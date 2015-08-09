@@ -173,8 +173,7 @@ public class FlumeAppenderTest {
 
         final Event event = channel.take();
         Assert.assertNotNull(event);
-        Assert.assertTrue("Channel contained event, but not expected message",
-                getBody(event).endsWith("Success"));
+        Assert.assertTrue("Channel contained event, but not expected message", getBody(event).endsWith("Success"));
         transaction.commit();
         transaction.close();
 
@@ -250,6 +249,40 @@ public class FlumeAppenderTest {
             event = channel.take();
             Assert.assertNotNull("No event for item " + i, event);
             Assert.assertTrue("Channel contained event, but not expected message",
+                    getBody(event).endsWith("Test message " + i));
+        }
+        transaction.commit();
+        transaction.close();
+
+        eventSource.stop();
+    }
+
+    @Test
+    public void testIncompleteBatch2() throws IOException {
+        final Agent[] agents = new Agent[] { Agent.createAgent("localhost",
+                testPort) };
+        final FlumeAppender avroAppender = FlumeAppender.createAppender(agents,
+                null, "false", "Avro", null, "1000", "1000", "1", "500",
+                "avro", "false", null, null, null, null, null, "true", "10",
+                null, null, null, null);
+        avroAppender.start();
+        avroLogger.addAppender(avroAppender);
+        avroLogger.setLevel(Level.ALL);
+
+        Assert.assertNotNull(avroLogger);
+
+        avroLogger.info("Test message 0");
+
+        final Transaction transaction = channel.getTransaction();
+        transaction.begin();
+
+        avroLogger.info("Test message 1");
+        avroLogger.info("Test message 2");
+        avroAppender.stop();
+        for (int i = 0; i < 3; ++i) {
+            Event event = channel.take();
+            Assert.assertNotNull("No event for item " + i, event);
+            Assert.assertTrue("Channel contained event, but not expected message. Received : " + getBody(event),
                     getBody(event).endsWith("Test message " + i));
         }
         transaction.commit();
@@ -389,7 +422,7 @@ public class FlumeAppenderTest {
 
         Event event = channel.take();
         Assert.assertNotNull(event);
-        Assert.assertTrue("Channel contained event, but not expected message",
+        Assert.assertTrue("Channel contained event, but not expected message. Received : " + getBody(event),
                 getBody(event).endsWith("Test message"));
         transaction.commit();
         transaction.close();
@@ -431,6 +464,9 @@ public class FlumeAppenderTest {
     }
 
     private String getBody(final Event event) throws IOException {
+        if (event == null) {
+            return "";
+        }
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final InputStream is = new GZIPInputStream(new ByteArrayInputStream(
                 event.getBody()));
