@@ -67,7 +67,7 @@ public class Category {
      * @param name The name of the Logger.
      */
     protected Category(final String name) {
-        this((LoggerContext) PrivateManager.getContext(), name);
+        this(PrivateManager.getContext(), name);
     }
 
     private Category(final org.apache.logging.log4j.core.Logger logger) {
@@ -75,7 +75,7 @@ public class Category {
     }
 
     public static Category getInstance(final String name) {
-        return getInstance((LoggerContext) PrivateManager.getContext(), name, loggerFactory);
+        return getInstance(PrivateManager.getContext(), name, loggerFactory);
     }
 
     static Category getInstance(final LoggerContext context, final String name) {
@@ -458,8 +458,8 @@ public class Category {
     private static class PrivateManager extends org.apache.logging.log4j.LogManager {
         private static final String FQCN = Category.class.getName();
 
-        public static org.apache.logging.log4j.spi.LoggerContext getContext() {
-            return getContext(FQCN, false);
+        public static LoggerContext getContext() {
+            return (LoggerContext) getContext(FQCN, false);
         }
 
         public static org.apache.logging.log4j.Logger getLogger(final String name) {
