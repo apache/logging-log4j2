@@ -266,7 +266,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
                     } catch (final Exception ex) {
                         LOGGER.error("Error sending final batch: {}", ex.getMessage());
                     }
-                } 
+                }
                 rpcClient.close();
             } catch (final Exception ex) {
                 LOGGER.error("Attempt to close RPC client failed", ex);
