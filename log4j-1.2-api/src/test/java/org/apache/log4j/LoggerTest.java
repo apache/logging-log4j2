@@ -73,8 +73,7 @@ public class LoggerTest {
 
     @After
     public void tearDown() {
-        final LoggerContext ctx = (LoggerContext) org.apache.logging.log4j.LogManager.getContext();
-        ctx.reconfigure();
+        LoggerContext.getContext().reconfigure();
         a1 = null;
         a2 = null;
     }

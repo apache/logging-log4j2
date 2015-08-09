@@ -53,8 +53,7 @@ public class CategoryTest {
     public static void setupClass() {
         appender.start();
         ConfigurationFactory.setConfigurationFactory(cf);
-        final LoggerContext ctx = (LoggerContext) org.apache.logging.log4j.LogManager.getContext();
-        ctx.reconfigure();
+        LoggerContext.getContext().reconfigure();
     }
 
     @AfterClass
