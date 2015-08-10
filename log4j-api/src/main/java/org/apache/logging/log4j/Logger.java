@@ -112,6 +112,7 @@ public interface Logger {
      *
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
+     * @since 2.4
      */
     void debug(Marker marker, MessageSupplier msgSupplier);
 
@@ -123,6 +124,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t A Throwable or null.
+     * @since 2.4
      */
     void debug(Marker marker, MessageSupplier msgSupplier, Throwable t);
 
@@ -169,6 +171,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param message the message to log; the format depends on the message factory.
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
+     * @since 2.4
      */
     void debug(Marker marker, String message, Supplier<?>... paramSuppliers);
 
@@ -189,6 +192,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
+     * @since 2.4
      */
     void debug(Marker marker, Supplier<?> msgSupplier);
 
@@ -200,6 +204,7 @@ public interface Logger {
      * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
      * @param t A Throwable or null.
+     * @since 2.4
      */
     void debug(Marker marker, Supplier<?> msgSupplier, Throwable t);
 
@@ -223,6 +228,7 @@ public interface Logger {
      * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param msgSupplier A function, which when called, produces the desired log message.
+     * @since 2.4
      */
     void debug(MessageSupplier msgSupplier);
 
@@ -233,6 +239,7 @@ public interface Logger {
      *
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t the exception to log, including its stack trace.
+     * @since 2.4
      */
     void debug(MessageSupplier msgSupplier, Throwable t);
 
@@ -274,6 +281,7 @@ public interface Logger {
      *
      * @param message the message to log; the format depends on the message factory.
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
+     * @since 2.4
      */
     void debug(String message, Supplier<?>... paramSuppliers);
 
@@ -291,6 +299,7 @@ public interface Logger {
      *
      * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
+     * @since 2.4
      */
     void debug(Supplier<?> msgSupplier);
 
@@ -301,6 +310,7 @@ public interface Logger {
      * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
      * @param t the exception to log, including its stack trace.
+     * @since 2.4
      */
     void debug(Supplier<?> msgSupplier, Throwable t);
 
@@ -353,6 +363,7 @@ public interface Logger {
      *
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
+     * @since 2.4
      */
     void error(Marker marker, MessageSupplier msgSupplier);
 
@@ -364,6 +375,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t A Throwable or null.
+     * @since 2.4
      */
     void error(Marker marker, MessageSupplier msgSupplier, Throwable t);
 
@@ -415,6 +427,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param message the message to log; the format depends on the message factory.
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
+     * @since 2.4
      */
     void error(Marker marker, String message, Supplier<?>... paramSuppliers);
 
@@ -435,6 +448,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
+     * @since 2.4
      */
     void error(Marker marker, Supplier<?> msgSupplier);
 
@@ -446,6 +460,7 @@ public interface Logger {
      * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
      * @param t A Throwable or null.
+     * @since 2.4
      */
     void error(Marker marker, Supplier<?> msgSupplier, Throwable t);
 
@@ -469,6 +484,7 @@ public interface Logger {
      * The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param msgSupplier A function, which when called, produces the desired log message.
+     * @since 2.4
      */
     void error(MessageSupplier msgSupplier);
 
@@ -479,6 +495,7 @@ public interface Logger {
      *
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t the exception to log, including its stack trace.
+     * @since 2.4
      */
     void error(MessageSupplier msgSupplier, Throwable t);
 
@@ -525,6 +542,7 @@ public interface Logger {
      *
      * @param message the message to log; the format depends on the message factory.
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
+     * @since 2.4
      */
     void error(String message, Supplier<?>... paramSuppliers);
 
@@ -542,6 +560,7 @@ public interface Logger {
      *
      * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
+     * @since 2.4
      */
     void error(Supplier<?> msgSupplier);
 
@@ -552,6 +571,7 @@ public interface Logger {
      * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
      * @param t the exception to log, including its stack trace.
+     * @since 2.4
      */
     void error(Supplier<?> msgSupplier, Throwable t);
 
@@ -596,6 +616,7 @@ public interface Logger {
      *
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
+     * @since 2.4
      */
     void fatal(Marker marker, MessageSupplier msgSupplier);
 
@@ -607,6 +628,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t A Throwable or null.
+     * @since 2.4
      */
     void fatal(Marker marker, MessageSupplier msgSupplier, Throwable t);
 
@@ -658,6 +680,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param message the message to log; the format depends on the message factory.
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
+     * @since 2.4
      */
     void fatal(Marker marker, String message, Supplier<?>... paramSuppliers);
 
@@ -678,6 +701,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
+     * @since 2.4
      */
     void fatal(Marker marker, Supplier<?> msgSupplier);
 
@@ -689,6 +713,7 @@ public interface Logger {
      * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
      * @param t A Throwable or null.
+     * @since 2.4
      */
     void fatal(Marker marker, Supplier<?> msgSupplier, Throwable t);
 
@@ -712,6 +737,7 @@ public interface Logger {
      * The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param msgSupplier A function, which when called, produces the desired log message.
+     * @since 2.4
      */
     void fatal(MessageSupplier msgSupplier);
 
@@ -722,6 +748,7 @@ public interface Logger {
      *
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t the exception to log, including its stack trace.
+     * @since 2.4
      */
     void fatal(MessageSupplier msgSupplier, Throwable t);
 
@@ -768,6 +795,7 @@ public interface Logger {
      *
      * @param message the message to log; the format depends on the message factory.
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
+     * @since 2.4
      */
     void fatal(String message, Supplier<?>... paramSuppliers);
 
@@ -785,6 +813,7 @@ public interface Logger {
      *
      * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
+     * @since 2.4
      */
     void fatal(Supplier<?> msgSupplier);
 
@@ -795,6 +824,7 @@ public interface Logger {
      * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
      * @param t the exception to log, including its stack trace.
+     * @since 2.4
      */
     void fatal(Supplier<?> msgSupplier, Throwable t);
 
@@ -843,6 +873,7 @@ public interface Logger {
      *
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
+     * @since 2.4
      */
     void info(Marker marker, MessageSupplier msgSupplier);
 
@@ -854,6 +885,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t A Throwable or null.
+     * @since 2.4
      */
     void info(Marker marker, MessageSupplier msgSupplier, Throwable t);
 
@@ -904,6 +936,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param message the message to log; the format depends on the message factory.
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
+     * @since 2.4
      */
     void info(Marker marker, String message, Supplier<?>... paramSuppliers);
 
@@ -924,6 +957,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
+     * @since 2.4
      */
     void info(Marker marker, Supplier<?> msgSupplier);
 
@@ -935,6 +969,7 @@ public interface Logger {
      * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
      * @param t A Throwable or null.
+     * @since 2.4
      */
     void info(Marker marker, Supplier<?> msgSupplier, Throwable t);
 
@@ -958,6 +993,7 @@ public interface Logger {
      * The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param msgSupplier A function, which when called, produces the desired log message.
+     * @since 2.4
      */
     void info(MessageSupplier msgSupplier);
 
@@ -968,6 +1004,7 @@ public interface Logger {
      *
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t the exception to log, including its stack trace.
+     * @since 2.4
      */
     void info(MessageSupplier msgSupplier, Throwable t);
 
@@ -1013,6 +1050,7 @@ public interface Logger {
      *
      * @param message the message to log; the format depends on the message factory.
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
+     * @since 2.4
      */
     void info(String message, Supplier<?>... paramSuppliers);
 
@@ -1030,6 +1068,7 @@ public interface Logger {
      *
      * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
+     * @since 2.4
      */
     void info(Supplier<?> msgSupplier);
 
@@ -1040,6 +1079,7 @@ public interface Logger {
      * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
      * @param t the exception to log, including its stack trace.
+     * @since 2.4
      */
     void info(Supplier<?> msgSupplier, Throwable t);
 
@@ -1187,6 +1227,7 @@ public interface Logger {
      * @param level the logging level
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
+     * @since 2.4
      */
     void log(Level level, Marker marker, MessageSupplier msgSupplier);
 
@@ -1199,6 +1240,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t A Throwable or null.
+     * @since 2.4
      */
     void log(Level level, Marker marker, MessageSupplier msgSupplier, Throwable t);
 
@@ -1250,6 +1292,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param message the message to log; the format depends on the message factory.
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
+     * @since 2.4
      */
     void log(Level level, Marker marker, String message, Supplier<?>... paramSuppliers);
 
@@ -1271,6 +1314,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
+     * @since 2.4
      */
     void log(Level level, Marker marker, Supplier<?> msgSupplier);
 
@@ -1283,6 +1327,7 @@ public interface Logger {
      * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
      * @param t A Throwable or null.
+     * @since 2.4
      */
     void log(Level level, Marker marker, Supplier<?> msgSupplier, Throwable t);
 
@@ -1309,6 +1354,7 @@ public interface Logger {
      *
      * @param level the logging level
      * @param msgSupplier A function, which when called, produces the desired log message.
+     * @since 2.4
      */
     void log(Level level, MessageSupplier msgSupplier);
 
@@ -1320,6 +1366,7 @@ public interface Logger {
      * @param level the logging level
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t the exception to log, including its stack log.
+     * @since 2.4
      */
     void log(Level level, MessageSupplier msgSupplier, Throwable t);
 
@@ -1365,6 +1412,7 @@ public interface Logger {
      * @param level the logging level
      * @param message the message to log; the format depends on the message factory.
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
+     * @since 2.4
      */
     void log(Level level, String message, Supplier<?>... paramSuppliers);
 
@@ -1384,6 +1432,7 @@ public interface Logger {
      * @param level the logging level
      * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
+     * @since 2.4
      */
     void log(Level level, Supplier<?> msgSupplier);
 
@@ -1395,6 +1444,7 @@ public interface Logger {
      * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
      * @param t the exception to log, including its stack log.
+     * @since 2.4
      */
     void log(Level level, Supplier<?> msgSupplier, Throwable t);
 
@@ -1466,6 +1516,7 @@ public interface Logger {
      *
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
+     * @since 2.4
      */
     void trace(Marker marker, MessageSupplier msgSupplier);
 
@@ -1477,6 +1528,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t A Throwable or null.
+     * @since 2.4
      */
     void trace(Marker marker, MessageSupplier msgSupplier, Throwable t);
 
@@ -1524,6 +1576,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param message the message to log; the format depends on the message factory.
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
+     * @since 2.4
      */
     void trace(Marker marker, String message, Supplier<?>... paramSuppliers);
 
@@ -1545,6 +1598,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
+     * @since 2.4
      */
     void trace(Marker marker, Supplier<?> msgSupplier);
 
@@ -1556,6 +1610,7 @@ public interface Logger {
      * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
      * @param t A Throwable or null.
+     * @since 2.4
      */
     void trace(Marker marker, Supplier<?> msgSupplier, Throwable t);
 
@@ -1579,6 +1634,7 @@ public interface Logger {
      * The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param msgSupplier A function, which when called, produces the desired log message.
+     * @since 2.4
      */
     void trace(MessageSupplier msgSupplier);
 
@@ -1589,6 +1645,7 @@ public interface Logger {
      *
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t the exception to log, including its stack trace.
+     * @since 2.4
      */
     void trace(MessageSupplier msgSupplier, Throwable t);
 
@@ -1631,6 +1688,7 @@ public interface Logger {
      *
      * @param message the message to log; the format depends on the message factory.
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
+     * @since 2.4
      */
     void trace(String message, Supplier<?>... paramSuppliers);
 
@@ -1649,6 +1707,7 @@ public interface Logger {
      *
      * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
+     * @since 2.4
      */
     void trace(Supplier<?> msgSupplier);
 
@@ -1659,6 +1718,7 @@ public interface Logger {
      * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
      * @param t the exception to log, including its stack trace.
+     * @since 2.4
      */
     void trace(Supplier<?> msgSupplier, Throwable t);
 
@@ -1686,6 +1746,7 @@ public interface Logger {
      *
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
+     * @since 2.4
      */
     void warn(Marker marker, MessageSupplier msgSupplier);
 
@@ -1697,6 +1758,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t A Throwable or null.
+     * @since 2.4
      */
     void warn(Marker marker, MessageSupplier msgSupplier, Throwable t);
 
@@ -1748,6 +1810,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param message the message to log; the format depends on the message factory.
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
+     * @since 2.4
      */
     void warn(Marker marker, String message, Supplier<?>... paramSuppliers);
 
@@ -1768,6 +1831,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
+     * @since 2.4
      */
     void warn(Marker marker, Supplier<?> msgSupplier);
 
@@ -1779,6 +1843,7 @@ public interface Logger {
      * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
      * @param t A Throwable or null.
+     * @since 2.4
      */
     void warn(Marker marker, Supplier<?> msgSupplier, Throwable t);
 
@@ -1802,6 +1867,7 @@ public interface Logger {
      * The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param msgSupplier A function, which when called, produces the desired log message.
+     * @since 2.4
      */
     void warn(MessageSupplier msgSupplier);
 
@@ -1812,6 +1878,7 @@ public interface Logger {
      *
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t the exception to log, including its stack warn.
+     * @since 2.4
      */
     void warn(MessageSupplier msgSupplier, Throwable t);
 
@@ -1858,6 +1925,7 @@ public interface Logger {
      *
      * @param message the message to log; the format depends on the message factory.
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
+     * @since 2.4
      */
     void warn(String message, Supplier<?>... paramSuppliers);
 
@@ -1875,6 +1943,7 @@ public interface Logger {
      *
      * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
+     * @since 2.4
      */
     void warn(Supplier<?> msgSupplier);
 
@@ -1885,6 +1954,7 @@ public interface Logger {
      * @param msgSupplier A function, which when called, produces the desired log message; the format depends on the
      *            message factory.
      * @param t the exception to log, including its stack warn.
+     * @since 2.4
      */
     void warn(Supplier<?> msgSupplier, Throwable t);
 
