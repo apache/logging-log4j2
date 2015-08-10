@@ -21,6 +21,7 @@ import javax.servlet.ServletContext;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.easymock.Capture;
+import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.junit.After;
 import org.junit.Before;
@@ -43,7 +44,7 @@ public class Log4jWebInitializerImplTest {
 
     @Before
     public void setUp() {
-        final Capture<Log4jWebLifeCycle> initializerCapture = new Capture<>();
+        final Capture<Log4jWebLifeCycle> initializerCapture = EasyMock.newCapture();
 
         this.servletContext = createStrictMock(ServletContext.class);
         expect(this.servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).andReturn(null);
@@ -104,7 +105,7 @@ public class Log4jWebInitializerImplTest {
 
     @Test
     public void testInitializeWithNoParametersThenSetLoggerContextThenDeinitialize() throws Exception {
-        final Capture<Object> loggerContextCapture = new Capture<>();
+        final Capture<Object> loggerContextCapture = EasyMock.newCapture();
 
         expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONTEXT_NAME)).andReturn(null);
         expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONFIG_LOCATION)).andReturn(null);
@@ -166,7 +167,7 @@ public class Log4jWebInitializerImplTest {
 
     @Test
     public void testInitializeWithClassLoaderNoParametersThenSetLoggerContextThenDeinitialize() throws Exception {
-        final Capture<Object> loggerContextCapture = new Capture<>();
+        final Capture<Object> loggerContextCapture = EasyMock.newCapture();
 
         expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONTEXT_NAME)).andReturn(null);
         expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONFIG_LOCATION)).andReturn(null);
@@ -229,7 +230,7 @@ public class Log4jWebInitializerImplTest {
 
     @Test
     public void testInitializeIsIdempotent() throws Exception {
-        final Capture<Object> loggerContextCapture = new Capture<>();
+        final Capture<Object> loggerContextCapture = EasyMock.newCapture();
 
         expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONTEXT_NAME)).andReturn(null);
         expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONFIG_LOCATION)).andReturn(null);
@@ -272,7 +273,7 @@ public class Log4jWebInitializerImplTest {
 
     @Test
     public void testInitializeFailsAfterDeinitialize() throws Exception {
-        final Capture<Object> loggerContextCapture = new Capture<>();
+        final Capture<Object> loggerContextCapture = EasyMock.newCapture();
 
         expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONTEXT_NAME)).andReturn(null);
         expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONFIG_LOCATION)).andReturn(null);
@@ -314,7 +315,7 @@ public class Log4jWebInitializerImplTest {
 
     @Test
     public void testDeinitializeIsIdempotent() throws Exception {
-        final Capture<Object> loggerContextCapture = new Capture<>();
+        final Capture<Object> loggerContextCapture = EasyMock.newCapture();
 
         expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONTEXT_NAME)).andReturn(null);
         expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONFIG_LOCATION)).andReturn(null);
@@ -370,7 +371,7 @@ public class Log4jWebInitializerImplTest {
 
     @Test
     public void testInitializeUsingJndiSelector() throws Exception {
-        final Capture<Object> loggerContextCapture = new Capture<>();
+        final Capture<Object> loggerContextCapture = EasyMock.newCapture();
 
         expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONTEXT_NAME)).andReturn("helloWorld6");
         expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONFIG_LOCATION)).andReturn(null);
@@ -421,7 +422,7 @@ public class Log4jWebInitializerImplTest {
 
     @Test
     public void testWrapExecutionWithNoParameters() throws Exception {
-        final Capture<Object> loggerContextCapture = new Capture<>();
+        final Capture<Object> loggerContextCapture = EasyMock.newCapture();
 
         expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONTEXT_NAME)).andReturn(null);
         expect(this.servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONFIG_LOCATION)).andReturn(null);
