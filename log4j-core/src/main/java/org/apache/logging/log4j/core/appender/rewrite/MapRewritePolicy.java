@@ -129,10 +129,6 @@ public final class MapRewritePolicy implements RewritePolicy {
             op = Mode.Add;
         } else {
             op = Mode.valueOf(mode);
-            if (op == null) {
-                LOGGER.error("Undefined mode " + mode);
-                return null;
-            }
         }
         if (pairs == null || pairs.length == 0) {
             LOGGER.error("keys and values must be specified for the MapRewritePolicy");
