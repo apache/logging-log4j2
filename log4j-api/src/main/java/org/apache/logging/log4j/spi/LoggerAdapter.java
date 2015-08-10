@@ -23,10 +23,10 @@ import java.io.Closeable;
  * Logger classes. This registry should not be used for Log4j Loggers; it is instead used for creating bridges to
  * other external log systems.
  *
- * @param <T> the external logger class for this registry (e.g., {@code org.slf4j.Logger})
+ * @param <L> the external logger class for this registry (e.g., {@code org.slf4j.Logger})
  * @since 2.1
  */
-public interface LoggerAdapter<T> extends Closeable {
+public interface LoggerAdapter<L> extends Closeable {
 
     /**
      * Gets a named logger. Implementations should defer to the abstract methods in {@link AbstractLoggerAdapter}.
@@ -34,5 +34,5 @@ public interface LoggerAdapter<T> extends Closeable {
      * @param name the name of the logger to get
      * @return the named logger
      */
-    T getLogger(String name);
+    L getLogger(String name);
 }
