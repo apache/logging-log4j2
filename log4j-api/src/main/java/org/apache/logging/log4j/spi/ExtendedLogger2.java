@@ -26,6 +26,8 @@ import org.apache.logging.log4j.util.Supplier;
 /**
  * Extends the {@code Logger2} interface with methods that facilitate implementing or extending
  * {@code Logger2}s. Users should not need to use this interface.
+ * 
+ * @since 2.4
  */
 public interface ExtendedLogger2 extends ExtendedLogger, Logger2 {
 
