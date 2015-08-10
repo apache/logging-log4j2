@@ -37,7 +37,7 @@ public class LambdaUtil {
      * @return an array containing the results of evaluating the lambda expressions (or {@code null} if the suppliers
      *         array was {@code null}
      */
-    public static Object[] getAll(Supplier<?>... suppliers) {
+    public static Object[] getAll(final Supplier<?>... suppliers) {
         if (suppliers == null) {
             return null;
         }
@@ -54,7 +54,7 @@ public class LambdaUtil {
      * @return the results of evaluating the lambda expression (or {@code null} if the supplier
      *         was {@code null}
      */
-    public static Object get(Supplier<?> supplier) {
+    public static Object get(final Supplier<?> supplier) {
         if (supplier == null) {
             return null;
         }
@@ -67,7 +67,7 @@ public class LambdaUtil {
      * @return the Message resulting from evaluating the lambda expression (or {@code null} if the supplier was
      * {@code null}
      */
-    public static Message get(MessageSupplier supplier) {
+    public static Message get(final MessageSupplier supplier) {
         if (supplier == null) {
             return null;
         }

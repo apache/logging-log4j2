@@ -43,7 +43,7 @@ public class LambdaLoggerTest {
         final Message message;
         final Throwable throwable;
 
-        public LogEvent(String fqcn, Level level, Marker marker, Message message, Throwable t) {
+        public LogEvent(final String fqcn, final Level level, final Marker marker, final Message message, final Throwable t) {
             this.fqcn = fqcn;
             this.level = level;
             this.marker = marker;
@@ -59,32 +59,32 @@ public class LambdaLoggerTest {
         final List<LambdaLoggerTest.LogEvent> list = new ArrayList<LambdaLoggerTest.LogEvent>();
 
         @Override
-        public boolean isEnabled(Level level, Marker marker, Message message, Throwable t) {
+        public boolean isEnabled(final Level level, final Marker marker, final Message message, final Throwable t) {
             return enabled;
         }
 
         @Override
-        public boolean isEnabled(Level level, Marker marker, Object message, Throwable t) {
+        public boolean isEnabled(final Level level, final Marker marker, final Object message, final Throwable t) {
             return enabled;
         }
 
         @Override
-        public boolean isEnabled(Level level, Marker marker, String message, Throwable t) {
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Throwable t) {
             return enabled;
         }
 
         @Override
-        public boolean isEnabled(Level level, Marker marker, String message) {
+        public boolean isEnabled(final Level level, final Marker marker, final String message) {
             return enabled;
         }
 
         @Override
-        public boolean isEnabled(Level level, Marker marker, String message, Object... params) {
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object... params) {
             return enabled;
         }
 
         @Override
-        public void logMessage(String fqcn, Level level, Marker marker, Message message, Throwable t) {
+        public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message, final Throwable t) {
             list.add(new LogEvent(fqcn, level, marker, message, t));
         }
 
@@ -151,7 +151,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(messageSupplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.DEBUG, event.level);
         assertSame(message, event.message);
         assertSame(marker, event.marker);
@@ -167,7 +167,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(messageSupplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.DEBUG, event.level);
         assertSame(message, event.message);
     }
@@ -182,7 +182,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(messageSupplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.DEBUG, event.level);
         assertSame(marker, event.marker);
         assertSame(message, event.message);
@@ -199,7 +199,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(messageSupplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.DEBUG, event.level);
         assertSame(message, event.message);
         assertSame(throwable, event.throwable);
@@ -215,7 +215,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.DEBUG, event.level);
         assertSame(stringMessage, event.message.getFormattedMessage());
         assertSame(marker, event.marker);
@@ -231,7 +231,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.DEBUG, event.level);
         assertSame(stringMessage, event.message.getFormattedMessage());
     }
@@ -246,7 +246,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.DEBUG, event.level);
         assertSame(marker, event.marker);
         assertSame(stringMessage, event.message.getFormattedMessage());
@@ -263,7 +263,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.DEBUG, event.level);
         assertSame(stringMessage, event.message.getFormattedMessage());
         assertSame(throwable, event.throwable);
@@ -279,7 +279,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.DEBUG, event.level);
         assertEquals("abc Hi", event.message.getFormattedMessage());
     }
@@ -294,7 +294,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.DEBUG, event.level);
         assertSame(marker, event.marker);
         assertEquals("abc Hi", event.message.getFormattedMessage());
@@ -310,7 +310,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(messageSupplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.ERROR, event.level);
         assertSame(message, event.message);
         assertSame(marker, event.marker);
@@ -326,7 +326,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(messageSupplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.ERROR, event.level);
         assertSame(message, event.message);
     }
@@ -341,7 +341,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(messageSupplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.ERROR, event.level);
         assertSame(marker, event.marker);
         assertSame(message, event.message);
@@ -358,7 +358,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(messageSupplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.ERROR, event.level);
         assertSame(message, event.message);
         assertSame(throwable, event.throwable);
@@ -374,7 +374,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.ERROR, event.level);
         assertSame(stringMessage, event.message.getFormattedMessage());
         assertSame(marker, event.marker);
@@ -390,7 +390,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.ERROR, event.level);
         assertSame(stringMessage, event.message.getFormattedMessage());
     }
@@ -405,7 +405,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.ERROR, event.level);
         assertSame(marker, event.marker);
         assertSame(stringMessage, event.message.getFormattedMessage());
@@ -422,7 +422,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.ERROR, event.level);
         assertSame(stringMessage, event.message.getFormattedMessage());
         assertSame(throwable, event.throwable);
@@ -438,7 +438,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.ERROR, event.level);
         assertEquals("abc Hi", event.message.getFormattedMessage());
     }
@@ -453,7 +453,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.ERROR, event.level);
         assertSame(marker, event.marker);
         assertEquals("abc Hi", event.message.getFormattedMessage());
@@ -469,7 +469,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(messageSupplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.FATAL, event.level);
         assertSame(message, event.message);
         assertSame(marker, event.marker);
@@ -485,7 +485,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(messageSupplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.FATAL, event.level);
         assertSame(message, event.message);
     }
@@ -500,7 +500,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(messageSupplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.FATAL, event.level);
         assertSame(marker, event.marker);
         assertSame(message, event.message);
@@ -517,7 +517,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(messageSupplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.FATAL, event.level);
         assertSame(message, event.message);
         assertSame(throwable, event.throwable);
@@ -533,7 +533,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.FATAL, event.level);
         assertSame(stringMessage, event.message.getFormattedMessage());
         assertSame(marker, event.marker);
@@ -549,7 +549,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.FATAL, event.level);
         assertSame(stringMessage, event.message.getFormattedMessage());
     }
@@ -564,7 +564,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.FATAL, event.level);
         assertSame(marker, event.marker);
         assertSame(stringMessage, event.message.getFormattedMessage());
@@ -581,7 +581,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.FATAL, event.level);
         assertSame(stringMessage, event.message.getFormattedMessage());
         assertSame(throwable, event.throwable);
@@ -597,7 +597,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.FATAL, event.level);
         assertEquals("abc Hi", event.message.getFormattedMessage());
     }
@@ -612,7 +612,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.FATAL, event.level);
         assertSame(marker, event.marker);
         assertEquals("abc Hi", event.message.getFormattedMessage());
@@ -628,7 +628,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(messageSupplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.INFO, event.level);
         assertSame(message, event.message);
         assertSame(marker, event.marker);
@@ -644,7 +644,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(messageSupplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.INFO, event.level);
         assertSame(message, event.message);
     }
@@ -659,7 +659,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(messageSupplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.INFO, event.level);
         assertSame(marker, event.marker);
         assertSame(message, event.message);
@@ -676,7 +676,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(messageSupplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.INFO, event.level);
         assertSame(message, event.message);
         assertSame(throwable, event.throwable);
@@ -692,7 +692,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.INFO, event.level);
         assertSame(stringMessage, event.message.getFormattedMessage());
         assertSame(marker, event.marker);
@@ -708,7 +708,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.INFO, event.level);
         assertSame(stringMessage, event.message.getFormattedMessage());
     }
@@ -723,7 +723,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.INFO, event.level);
         assertSame(marker, event.marker);
         assertSame(stringMessage, event.message.getFormattedMessage());
@@ -740,7 +740,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.INFO, event.level);
         assertSame(stringMessage, event.message.getFormattedMessage());
         assertSame(throwable, event.throwable);
@@ -756,7 +756,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.INFO, event.level);
         assertEquals("abc Hi", event.message.getFormattedMessage());
     }
@@ -771,7 +771,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.INFO, event.level);
         assertSame(marker, event.marker);
         assertEquals("abc Hi", event.message.getFormattedMessage());
@@ -787,7 +787,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(messageSupplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.TRACE, event.level);
         assertSame(message, event.message);
         assertSame(marker, event.marker);
@@ -803,7 +803,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(messageSupplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.TRACE, event.level);
         assertSame(message, event.message);
     }
@@ -818,7 +818,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(messageSupplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.TRACE, event.level);
         assertSame(marker, event.marker);
         assertSame(message, event.message);
@@ -835,7 +835,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(messageSupplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.TRACE, event.level);
         assertSame(message, event.message);
         assertSame(throwable, event.throwable);
@@ -851,7 +851,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.TRACE, event.level);
         assertSame(stringMessage, event.message.getFormattedMessage());
         assertSame(marker, event.marker);
@@ -867,7 +867,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.TRACE, event.level);
         assertSame(stringMessage, event.message.getFormattedMessage());
     }
@@ -882,7 +882,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.TRACE, event.level);
         assertSame(marker, event.marker);
         assertSame(stringMessage, event.message.getFormattedMessage());
@@ -899,7 +899,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.TRACE, event.level);
         assertSame(stringMessage, event.message.getFormattedMessage());
         assertSame(throwable, event.throwable);
@@ -915,7 +915,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.TRACE, event.level);
         assertEquals("abc Hi", event.message.getFormattedMessage());
     }
@@ -930,7 +930,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.TRACE, event.level);
         assertSame(marker, event.marker);
         assertEquals("abc Hi", event.message.getFormattedMessage());
@@ -946,7 +946,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(messageSupplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.WARN, event.level);
         assertSame(message, event.message);
         assertSame(marker, event.marker);
@@ -962,7 +962,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(messageSupplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.WARN, event.level);
         assertSame(message, event.message);
     }
@@ -977,7 +977,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(messageSupplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.WARN, event.level);
         assertSame(marker, event.marker);
         assertSame(message, event.message);
@@ -994,7 +994,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(messageSupplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.WARN, event.level);
         assertSame(message, event.message);
         assertSame(throwable, event.throwable);
@@ -1010,7 +1010,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.WARN, event.level);
         assertSame(stringMessage, event.message.getFormattedMessage());
         assertSame(marker, event.marker);
@@ -1026,7 +1026,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.WARN, event.level);
         assertSame(stringMessage, event.message.getFormattedMessage());
     }
@@ -1041,7 +1041,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.WARN, event.level);
         assertSame(marker, event.marker);
         assertSame(stringMessage, event.message.getFormattedMessage());
@@ -1058,7 +1058,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.WARN, event.level);
         assertSame(stringMessage, event.message.getFormattedMessage());
         assertSame(throwable, event.throwable);
@@ -1074,7 +1074,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.WARN, event.level);
         assertEquals("abc Hi", event.message.getFormattedMessage());
     }
@@ -1089,7 +1089,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.WARN, event.level);
         assertSame(marker, event.marker);
         assertEquals("abc Hi", event.message.getFormattedMessage());
@@ -1105,7 +1105,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(messageSupplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.WARN, event.level);
         assertSame(message, event.message);
         assertSame(marker, event.marker);
@@ -1121,7 +1121,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(messageSupplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.WARN, event.level);
         assertSame(message, event.message);
     }
@@ -1136,7 +1136,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(messageSupplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.WARN, event.level);
         assertSame(marker, event.marker);
         assertSame(message, event.message);
@@ -1153,7 +1153,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(messageSupplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.WARN, event.level);
         assertSame(message, event.message);
         assertSame(throwable, event.throwable);
@@ -1169,7 +1169,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.WARN, event.level);
         assertSame(stringMessage, event.message.getFormattedMessage());
         assertSame(marker, event.marker);
@@ -1185,7 +1185,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.WARN, event.level);
         assertSame(stringMessage, event.message.getFormattedMessage());
     }
@@ -1200,7 +1200,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.WARN, event.level);
         assertSame(marker, event.marker);
         assertSame(stringMessage, event.message.getFormattedMessage());
@@ -1217,7 +1217,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.WARN, event.level);
         assertSame(stringMessage, event.message.getFormattedMessage());
         assertSame(throwable, event.throwable);
@@ -1233,7 +1233,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.WARN, event.level);
         assertEquals("abc Hi", event.message.getFormattedMessage());
     }
@@ -1248,7 +1248,7 @@ public class LambdaLoggerTest {
         assertEquals(1, logger2.list.size());
         assertTrue(supplier.invoked);
 
-        LogEvent event = logger2.list.get(0);
+        final LogEvent event = logger2.list.get(0);
         assertEquals(Level.WARN, event.level);
         assertSame(marker, event.marker);
         assertEquals("abc Hi", event.message.getFormattedMessage());

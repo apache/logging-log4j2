@@ -83,19 +83,19 @@ public class LambdaUtilTest {
     @Test
     public void testGetAllReturnsResultOfSuppliers() {
         final String expected1 = "result1";
-        Supplier<String> function1 = new Supplier<String>() {
+        final Supplier<String> function1 = new Supplier<String>() {
             public String get() {
                 return expected1;
             }
         };
         final String expected2 = "result2";
-        Supplier<String> function2 = new Supplier<String>() {
+        final Supplier<String> function2 = new Supplier<String>() {
             public String get() {
                 return expected2;
             }
         };
 
-        Supplier<?>[] functions = { function1, function2 };
+        final Supplier<?>[] functions = { function1, function2 };
         final Object[] actual = LambdaUtil.getAll(functions);
         assertEquals(actual.length, functions.length);
         assertSame(expected1, actual[0]);
@@ -113,25 +113,25 @@ public class LambdaUtilTest {
         final Supplier<?>[] functions = new Supplier[3];
         final Object[] actual = LambdaUtil.getAll(functions);
         assertEquals(actual.length, functions.length);
-        for (Object object : actual) {
+        for (final Object object : actual) {
             assertNull(object);
         }
     }
 
     @Test(expected = RuntimeException.class)
     public void testGetAllThrowsExceptionIfAnyOfTheSuppliersThrowsException() {
-        Supplier<String> function1 = new Supplier<String>() {
+        final Supplier<String> function1 = new Supplier<String>() {
             public String get() {
                 return "abc";
             }
         };
-        Supplier<String> function2 = new Supplier<String>() {
+        final Supplier<String> function2 = new Supplier<String>() {
             public String get() {
                 throw new RuntimeException();
             }
         };
 
-        Supplier<?>[] functions = { function1, function2 };
+        final Supplier<?>[] functions = { function1, function2 };
         LambdaUtil.getAll(functions);
     }
 }

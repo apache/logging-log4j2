@@ -1001,13 +1001,13 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker,
             final MessageSupplier msgSupplier, final Throwable t) {
-        Message message = LambdaUtil.get(msgSupplier);
+        final Message message = LambdaUtil.get(msgSupplier);
         logMessage(fqcn, level, marker, message, t);
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final Supplier<?> msgSupplier,
             final Throwable t) {
-        Object message = LambdaUtil.get(msgSupplier);
+        final Object message = LambdaUtil.get(msgSupplier);
         logMessage(fqcn, level, marker, messageFactory.newMessage(message), t);
     }
 
