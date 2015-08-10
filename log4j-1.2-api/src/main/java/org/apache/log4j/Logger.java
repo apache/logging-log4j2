@@ -34,19 +34,19 @@ public class Logger extends Category {
     }
 
     public static Logger getLogger(final String name) {
-        return (Logger) Category.getInstance(PrivateManager.getContext(), name);
+        return Category.getInstance(PrivateManager.getContext(), name);
     }
 
     public static Logger getLogger(final Class<?> clazz) {
-        return (Logger) Category.getInstance(PrivateManager.getContext(), clazz);
+        return Category.getInstance(PrivateManager.getContext(), clazz);
     }
 
     public static Logger getRootLogger() {
-        return (Logger) Category.getRoot(PrivateManager.getContext());
+        return Category.getRoot(PrivateManager.getContext());
     }
 
     public static Logger getLogger(final String name, final LoggerFactory factory) {
-        return (Logger) Category.getInstance(PrivateManager.getContext(), name, factory);
+        return Category.getInstance(PrivateManager.getContext(), name, factory);
     }
 
     /**

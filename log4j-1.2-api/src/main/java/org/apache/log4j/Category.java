@@ -78,11 +78,11 @@ public class Category {
         return getInstance(PrivateManager.getContext(), name, loggerFactory);
     }
 
-    static Category getInstance(final LoggerContext context, final String name) {
+    static Logger getInstance(final LoggerContext context, final String name) {
         return getInstance(context, name, loggerFactory);
     }
 
-    static Category getInstance(final LoggerContext context, final String name, final LoggerFactory factory) {
+    static Logger getInstance(final LoggerContext context, final String name, final LoggerFactory factory) {
         final ConcurrentMap<String, Logger> loggers = getLoggersMap(context);
         Logger logger = loggers.get(name);
         if (logger != null) {
@@ -97,7 +97,7 @@ public class Category {
         return getInstance(clazz.getName());
     }
 
-    static Category getInstance(final LoggerContext context, @SuppressWarnings("rawtypes") final Class clazz) {
+    static Logger getInstance(final LoggerContext context, @SuppressWarnings("rawtypes") final Class clazz) {
         return getInstance(context, clazz.getName());
     }
 
@@ -123,8 +123,7 @@ public class Category {
         return getInstance(Strings.EMPTY);
     }
 
-
-    static Category getRoot(final LoggerContext context) {
+    static Logger getRoot(final LoggerContext context) {
         return getInstance(context, Strings.EMPTY);
     }
 
