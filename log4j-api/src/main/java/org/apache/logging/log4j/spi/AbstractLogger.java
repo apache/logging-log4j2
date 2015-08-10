@@ -33,7 +33,7 @@ import org.apache.logging.log4j.util.Supplier;
 /**
  * Base implementation of a Logger. It is highly recommended that any Logger implementation extend this class.
  */
-public abstract class AbstractLogger implements ExtendedLogger2, Serializable {
+public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     private static final long serialVersionUID = 2L;
 

@@ -415,16 +415,6 @@ public class LogManager {
             StringFormatterMessageFactory.INSTANCE);
     }
 
-    /**
-     * Returns a Logger2 with the name of the calling class.
-     * @return The Logger2 for the calling class.
-     * @throws UnsupportedOperationException if the calling class cannot be determined.
-     * @since 2.4
-     */
-    public static Logger2 getLogger2() {
-        return (Logger2) getLogger(ReflectionUtil.getCallerClass(2));
-    }
-    
     private static Class<?> callerClass(final Class<?> clazz) {
         if (clazz != null) {
             return clazz;
@@ -434,101 +424,6 @@ public class LogManager {
             throw new UnsupportedOperationException("No class provided, and an appropriate one cannot be found.");
         }
         return candidate;
-    }
-
-    /**
-     * Returns a Logger2 using the fully qualified name of the Class as the Logger name.
-     * @param clazz The Class whose name should be used as the Logger name. If null it will default to the calling
-     *              class.
-     * @return The Logger2.
-     * @throws UnsupportedOperationException if {@code clazz} is {@code null} and the calling class cannot be determined.
-     * @since 2.4
-     */
-    public static Logger2 getLogger2(final Class<?> clazz) {
-        final Class<?> cls = callerClass(clazz);
-        return (Logger2) getContext(cls.getClassLoader(), false).getLogger(cls.getName());
-    }
-
-    /**
-     * Returns a Logger2 using the fully qualified name of the Class as the Logger name.
-     * @param clazz The Class whose name should be used as the Logger name. If null it will default to the calling
-     *              class.
-     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change
-     *                       the logger but will log a warning if mismatched.
-     * @return The Logger2.
-     * @throws UnsupportedOperationException if {@code clazz} is {@code null} and the calling class cannot be determined.
-     * @since 2.4
-     */
-    public static Logger2 getLogger2(final Class<?> clazz, final MessageFactory messageFactory) {
-        final Class<?> cls = callerClass(clazz);
-        return (Logger2) getContext(cls.getClassLoader(), false).getLogger(cls.getName(), messageFactory);
-    }
-
-    /**
-     * Returns a Logger2 with the name of the calling class.
-     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change
-     *                       the logger but will log a warning if mismatched.
-     * @return The Logger2 for the calling class.
-     * @throws UnsupportedOperationException if the calling class cannot be determined.
-     * @since 2.4
-     */
-    public static Logger2 getLogger2(final MessageFactory messageFactory) {
-        return (Logger2) getLogger(ReflectionUtil.getCallerClass(2), messageFactory);
-    }
-
-    /**
-     * Returns a Logger2 using the fully qualified class name of the value as the Logger name.
-     * @param value The value whose class name should be used as the Logger name. If null the name of the calling
-     *              class will be used as the logger name.
-     * @return The Logger2.
-     * @throws UnsupportedOperationException if {@code value} is {@code null} and the calling class cannot be determined.
-     * @since 2.4
-     */
-    public static Logger2 getLogger2(final Object value) {
-        return (Logger2) getLogger(value != null ? value.getClass() : ReflectionUtil.getCallerClass(2));
-    }
-
-    /**
-     * Returns a Logger2 using the fully qualified class name of the value as the Logger name.
-     * @param value The value whose class name should be used as the Logger name. If null the name of the calling
-     *              class will be used as the logger name.
-     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change
-     *                       the logger but will log a warning if mismatched.
-     * @return The Logger2.
-     * @throws UnsupportedOperationException if {@code value} is {@code null} and the calling class cannot be determined.
-     * @since 2.4
-     */
-    public static Logger2 getLogger2(final Object value, final MessageFactory messageFactory) {
-        return (Logger2) getLogger(value != null ? value.getClass() : ReflectionUtil.getCallerClass(2),
-                messageFactory);
-    }
-
-    /**
-     * Returns a Logger2 with the specified name.
-     *
-     * @param name The logger name. If null the name of the calling class will be used.
-     * @return The Logger2.
-     * @throws UnsupportedOperationException if {@code name} is {@code null} and the calling class cannot be determined.
-     * @since 2.4
-     */
-    public static Logger2 getLogger2(final String name) {
-        return (Logger2) (name != null ? getContext(false).getLogger(name) : getLogger(
-                ReflectionUtil.getCallerClass(2)));
-    }
-
-    /**
-     * Returns a Logger2 with the specified name.
-     *
-     * @param name The logger name. If null the name of the calling class will be used.
-     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change
-     *                       the logger but will log a warning if mismatched.
-     * @return The Logger2.
-     * @throws UnsupportedOperationException if {@code name} is {@code null} and the calling class cannot be determined.
-     * @since 2.4
-     */
-    public static Logger2 getLogger2(final String name, final MessageFactory messageFactory) {
-        return (Logger2) (name != null ? getContext(false).getLogger(name, messageFactory) : getLogger(
-            ReflectionUtil.getCallerClass(2), messageFactory));
     }
 
     /**
