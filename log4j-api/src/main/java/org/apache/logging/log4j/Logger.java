@@ -59,12 +59,12 @@ import org.apache.logging.log4j.util.Supplier;
  * }
  * </pre>
  * <p>
- * With Java 8 and the {@code Logger2} interface, one can achieve the same effect by using a lambda expression:
+ * With Java 8 and the {@code Logger} interface, one can achieve the same effect by using a lambda expression:
  * 
  * <pre>
  * // Java-8 style optimization: no need to explicitly check the log level:
  * // the lambda expression is not evaluated if the TRACE level is not enabled
- * Logger2 logger = LogManager.getLogger2();
+ * Logger logger = LogManager.getLogger();
  * logger.trace(&quot;Some long-running operation returned {}&quot;, () -&gt; expensiveOperation());
  * </pre>
  */
