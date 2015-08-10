@@ -45,26 +45,22 @@ import org.apache.logging.log4j.util.Supplier;
  * {@link org.apache.logging.log4j.spi.AbstractLogger} class rather than implementing this interface directly.
  * </p>
  *
- * Since 2.4: Extends the {@code Logger} interface with support for lambda expressions.
- * <p>
- * This logger allows client code to lazily log messages without explicitly checking if the requested log level is
+ * Since 2.4, methods have been added to the {@code Logger} interface to support lambda expressions.
+ * The new methods allow client code to lazily log messages without explicitly checking if the requested log level is
  * enabled. For example, previously one would write:
  * 
  * <pre>
  * // pre-Java 8 style optimization: explicitly check the log level
  * // to make sure the expensiveOperation() method is only called if necessary
- * Logger logger = LogManager.getLogger();
  * if (logger.isTraceEnabled()) {
  *     logger.trace(&quot;Some long-running operation returned {}&quot;, expensiveOperation());
- * }
- * </pre>
+ * }</pre>
  * <p>
- * With Java 8 and the {@code Logger} interface, one can achieve the same effect by using a lambda expression:
+ * With Java 8, the same effect can be achieved with a lambda expression:
  * 
  * <pre>
  * // Java-8 style optimization: no need to explicitly check the log level:
  * // the lambda expression is not evaluated if the TRACE level is not enabled
- * Logger logger = LogManager.getLogger();
  * logger.trace(&quot;Some long-running operation returned {}&quot;, () -&gt; expensiveOperation());
  * </pre>
  */
