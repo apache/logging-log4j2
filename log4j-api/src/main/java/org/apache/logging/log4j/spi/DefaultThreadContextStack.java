@@ -128,7 +128,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         final ThreadContextStack other = (ThreadContextStack) obj;
         final MutableThreadContextStack values = stack.get();
         if (values == null) {
-            return other == null;
+            return false;
         }
         return values.equals(other);
     }
