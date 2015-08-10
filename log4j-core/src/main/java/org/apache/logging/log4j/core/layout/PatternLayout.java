@@ -37,6 +37,7 @@ import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.core.pattern.RegexReplacement;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * A flexible layout configurable with pattern string.
@@ -132,13 +133,6 @@ public final class PatternLayout extends AbstractStringLayout {
         } catch (RuntimeException ex) {
             throw new IllegalArgumentException("Cannot parse pattern '" + pattern + "'", ex);
         }
-    }
-
-    private static byte[] toBytes(final String str, final Charset charset) {
-        if (str != null) {
-            return str.getBytes(charset != null ? charset : Charset.defaultCharset());
-        }
-        return null;
     }
 
     private byte[] strSubstitutorReplace(final byte... b) {
