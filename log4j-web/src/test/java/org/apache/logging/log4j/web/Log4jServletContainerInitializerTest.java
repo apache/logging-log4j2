@@ -25,6 +25,7 @@ import javax.servlet.ServletContext;
 
 import org.apache.logging.log4j.util.Strings;
 import org.easymock.Capture;
+import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -104,8 +105,8 @@ public class Log4jServletContainerInitializerTest {
     public void testOnStartupWithServletVersion3_xEffectiveVersion3_x() throws Exception {
         final FilterRegistration.Dynamic registration = createStrictMock(FilterRegistration.Dynamic.class);
 
-        final Capture<EventListener> listenerCapture = new Capture<>();
-        final Capture<Class<? extends Filter>> filterCapture = new Capture<>();
+        final Capture<EventListener> listenerCapture = EasyMock.newCapture();
+        final Capture<Class<? extends Filter>> filterCapture = EasyMock.newCapture();
 
         expect(this.servletContext.getMajorVersion()).andReturn(3);
         expect(this.servletContext.getEffectiveMajorVersion()).andReturn(3);
