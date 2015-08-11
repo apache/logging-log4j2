@@ -32,7 +32,7 @@ public class ObjectMessage implements Message {
     private transient String objectString;
 
     /**
-     * Create the ObjectMessage.
+     * Creates the ObjectMessage.
      * @param obj The Object to format.
      */
     public ObjectMessage(final Object obj) {
