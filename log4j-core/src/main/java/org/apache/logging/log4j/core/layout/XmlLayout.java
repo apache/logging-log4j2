@@ -255,10 +255,10 @@ public final class XmlLayout extends AbstractJacksonLayout {
         return result;
     }
 
-    @Override
     /**
      * @return The content type.
      */
+    @Override
     public String getContentType() {
         return "text/xml; charset=" + this.getCharset();
     }
