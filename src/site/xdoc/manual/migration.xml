@@ -76,7 +76,7 @@
                 <li>
                   Calls to <code>org.apache.log4j.Logger.setLevel()</code> or similar methods are not supported in the API.
                   Applications should remove these. Equivalent functionality is provided in the Log4j 2 implementation
-                  classes, see <code>org.apache.logging.log4j.core.config.Configurator.setLevel()</code>,  but may leave 
+                  classes, see <code>org.apache.logging.log4j.core.config.Configurator.setLevel()</code>, but may leave 
                   the application susceptible to changes in Log4j 2 internals.                   
                 </li>
                 <li>
