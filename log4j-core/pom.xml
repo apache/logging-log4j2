@@ -114,12 +114,6 @@
       <artifactId>commons-compress</artifactId>
       <optional>true</optional>
     </dependency>
-    <!-- Used for the CSV layout -->
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-csv</artifactId>
-      <optional>true</optional>
-    </dependency>
 
     <!-- TEST DEPENDENCIES -->
 
