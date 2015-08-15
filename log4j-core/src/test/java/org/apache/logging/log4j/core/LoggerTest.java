@@ -139,6 +139,19 @@ public class LoggerTest {
     }
 
     @Test
+    public void debugChangeRootLevel() {
+        logger.debug("Debug message 1");
+        final List<LogEvent> events = app.getEvents();
+        assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 1, events.size());
+        Configurator.setRootLevel(Level.OFF);
+        logger.debug("Debug message 2");
+        assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 1, events.size());
+        Configurator.setRootLevel(Level.DEBUG);
+        logger.debug("Debug message 3");
+        assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 2, events.size());
+    }
+
+    @Test
     public void getLogger_String_MessageFactoryMismatch() {
         final Logger testLogger = testMessageFactoryMismatch("getLogger_String_MessageFactoryMismatch",
                 StringFormatterMessageFactory.INSTANCE, ParameterizedMessageFactory.INSTANCE);
