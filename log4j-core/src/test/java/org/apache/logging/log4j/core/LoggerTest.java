@@ -16,10 +16,17 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
@@ -38,8 +45,6 @@ import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -113,6 +118,22 @@ public class LoggerTest {
         logger.debug("Debug message 2");
         assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 1, events.size());
         Configurator.setLevel(logger.getName(), Level.DEBUG);
+        logger.debug("Debug message 3");
+        assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 2, events.size());
+    }
+
+    @Test
+    public void debugChangeLevels() {
+        logger.debug("Debug message 1");
+        final List<LogEvent> events = app.getEvents();
+        assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 1, events.size());
+        Map<String, Level> map = new HashMap<>();
+        map.put(logger.getName(), Level.OFF);
+        Configurator.setLevel(map);
+        logger.debug("Debug message 2");
+        assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 1, events.size());
+        map.put(logger.getName(), Level.DEBUG);
+        Configurator.setLevel(map);
         logger.debug("Debug message 3");
         assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 2, events.size());
     }

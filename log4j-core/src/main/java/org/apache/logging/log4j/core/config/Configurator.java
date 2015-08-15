@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.config;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -161,10 +162,47 @@ public final class Configurator {
         return initialize(name, null, configLocation);
     }
 
+    private static boolean setLevel(final LoggerConfig loggerConfig, Level level) {
+        boolean set = !loggerConfig.getLevel().equals(level);
+        if (set) {
+            loggerConfig.setLevel(level);
+        }
+        return set;
+    }
+
+    private static void setLevel(final LoggerContext loggerContext, final LoggerConfig loggerConfig,
+            final Level level) {
+        if (!loggerConfig.getLevel().equals(level)) {
+            loggerConfig.setLevel(level);
+            loggerContext.updateLoggers();
+        }
+    }
+
+    /**
+     * Sets a logger levels.
+     * @param level
+     *            a levelMap where keys are level names and values are new Levels.
+     */
+    public static void setLevel(final Map<String, Level> levelMap) {
+        final LoggerContext loggerContext = LoggerContext.getContext(false);
+        boolean set = false;
+        for (Map.Entry<String, Level> entry : levelMap.entrySet()) {
+            final LoggerConfig loggerConfig = loggerContext.getConfiguration().getLoggerConfig(entry.getKey());
+            Level level = entry.getValue();
+            set |= setLevel(loggerConfig, level);
+        }
+        if (set) {
+            loggerContext.updateLoggers();
+        }
+    }
+
     /**
      * Sets a logger's level.
-     * @param loggerName the logger name
-     * @param level the new level
+     * 
+     * @param loggerName
+     *            the logger name
+     * @param level
+     *            the new level
      */
     public static void setLevel(final String loggerName, final Level level) {
         final LoggerContext loggerContext = LoggerContext.getContext(false);
@@ -174,19 +212,14 @@ public final class Configurator {
 
     /**
      * Sets the root logger's level.
-     * @param level the new level
+     * 
+     * @param level
+     *            the new level
      */
     public static void setRootLevel(final Level level) {
         final LoggerContext loggerContext = LoggerContext.getContext(false);
         final LoggerConfig loggerConfig = loggerContext.getConfiguration().getRootLogger();
         setLevel(loggerContext, loggerConfig, level);
-    }
-
-    private static void setLevel(final LoggerContext loggerContext, final LoggerConfig loggerConfig, final Level level) {
-        if (!loggerConfig.getLevel().equals(level)) {
-            loggerConfig.setLevel(level);
-            loggerContext.updateLoggers();
-        }
     }
 
     /**
