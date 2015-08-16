@@ -394,123 +394,170 @@ public class ParameterizedMessage implements Message {
      * @param dejaVu a list of container identities that were already used.
      */
     private static void recursiveDeepToString(final Object o, final StringBuilder str, final Set<String> dejaVu) {
-        if (o == null) {
-            str.append("null");
+        if (appendStringDateOrNull(o, str)) {
             return;
         }
-        if (o instanceof String) {
-            str.append(o);
-            return;
+        if (isMaybeRecursive(o)) {
+            appendPotentiallyRecursiveValue(o, str, dejaVu);
+        } else {
+            tryObjectToString(o, str);
         }
+    }
 
+    private static boolean appendStringDateOrNull(final Object o, final StringBuilder str) {
+        if (o == null || o instanceof String) {
+            str.append(String.valueOf(o));
+            return true;
+        }
+        return appendDate(o, str);
+    }
+
+    private static boolean appendDate(final Object o, final StringBuilder str) {
+        if (!(o instanceof Date)) {
+            return false;
+        }
+        final Date date = (Date) o;
+        final SimpleDateFormat format = getSimpleDateFormat();
+        str.append(format.format(date));
+        return true;
+    }
+
+    private static SimpleDateFormat getSimpleDateFormat() {
+        // I'll leave it like this for the moment... this could probably be optimized using ThreadLocal...
+        return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    }
+
+    /**
+     * Returns {@code true} if the specified object is an array, a Map or a Collection.
+     */
+    private static boolean isMaybeRecursive(final Object o) {
+        return o.getClass().isArray() || o instanceof Map || o instanceof Collection;
+    }
+
+    private static void appendPotentiallyRecursiveValue(final Object o, final StringBuilder str,
+            final Set<String> dejaVu) {
         final Class<?> oClass = o.getClass();
         if (oClass.isArray()) {
-            if (oClass == byte[].class) {
-                str.append(Arrays.toString((byte[]) o));
-            } else if (oClass == short[].class) {
-                str.append(Arrays.toString((short[]) o));
-            } else if (oClass == int[].class) {
-                str.append(Arrays.toString((int[]) o));
-            } else if (oClass == long[].class) {
-                str.append(Arrays.toString((long[]) o));
-            } else if (oClass == float[].class) {
-                str.append(Arrays.toString((float[]) o));
-            } else if (oClass == double[].class) {
-                str.append(Arrays.toString((double[]) o));
-            } else if (oClass == boolean[].class) {
-                str.append(Arrays.toString((boolean[]) o));
-            } else if (oClass == char[].class) {
-                str.append(Arrays.toString((char[]) o));
-            } else {
-                // special handling of container Object[]
-                final String id = identityToString(o);
-                if (dejaVu.contains(id)) {
-                    str.append(RECURSION_PREFIX).append(id).append(RECURSION_SUFFIX);
-                } else {
-                    dejaVu.add(id);
-                    final Object[] oArray = (Object[]) o;
-                    str.append('[');
-                    boolean first = true;
-                    for (final Object current : oArray) {
-                        if (first) {
-                            first = false;
-                        } else {
-                            str.append(", ");
-                        }
-                        recursiveDeepToString(current, str, new HashSet<>(dejaVu));
-                    }
-                    str.append(']');
-                }
-                //str.append(Arrays.deepToString((Object[]) o));
-            }
+            appendArray(o, str, dejaVu, oClass);
         } else if (o instanceof Map) {
-            // special handling of container Map
-            final String id = identityToString(o);
-            if (dejaVu.contains(id)) {
-                str.append(RECURSION_PREFIX).append(id).append(RECURSION_SUFFIX);
-            } else {
-                dejaVu.add(id);
-                final Map<?, ?> oMap = (Map<?, ?>) o;
-                str.append('{');
-                boolean isFirst = true;
-                for (final Object o1 : oMap.entrySet()) {
-                    final Map.Entry<?, ?> current = (Map.Entry<?, ?>) o1;
-                    if (isFirst) {
-                        isFirst = false;
-                    } else {
-                        str.append(", ");
-                    }
-                    final Object key = current.getKey();
-                    final Object value = current.getValue();
-                    recursiveDeepToString(key, str, new HashSet<>(dejaVu));
-                    str.append('=');
-                    recursiveDeepToString(value, str, new HashSet<>(dejaVu));
-                }
-                str.append('}');
-            }
+            appendMap(o, str, dejaVu);
         } else if (o instanceof Collection) {
-            // special handling of container Collection
+            appendCollection(o, str, dejaVu);
+        }
+    }
+
+    private static void appendArray(final Object o, final StringBuilder str, final Set<String> dejaVu,
+            final Class<?> oClass) {
+        if (oClass == byte[].class) {
+            str.append(Arrays.toString((byte[]) o));
+        } else if (oClass == short[].class) {
+            str.append(Arrays.toString((short[]) o));
+        } else if (oClass == int[].class) {
+            str.append(Arrays.toString((int[]) o));
+        } else if (oClass == long[].class) {
+            str.append(Arrays.toString((long[]) o));
+        } else if (oClass == float[].class) {
+            str.append(Arrays.toString((float[]) o));
+        } else if (oClass == double[].class) {
+            str.append(Arrays.toString((double[]) o));
+        } else if (oClass == boolean[].class) {
+            str.append(Arrays.toString((boolean[]) o));
+        } else if (oClass == char[].class) {
+            str.append(Arrays.toString((char[]) o));
+        } else {
+            // special handling of container Object[]
             final String id = identityToString(o);
             if (dejaVu.contains(id)) {
                 str.append(RECURSION_PREFIX).append(id).append(RECURSION_SUFFIX);
             } else {
                 dejaVu.add(id);
-                final Collection<?> oCol = (Collection<?>) o;
+                final Object[] oArray = (Object[]) o;
                 str.append('[');
-                boolean isFirst = true;
-                for (final Object anOCol : oCol) {
-                    if (isFirst) {
-                        isFirst = false;
+                boolean first = true;
+                for (final Object current : oArray) {
+                    if (first) {
+                        first = false;
                     } else {
                         str.append(", ");
                     }
-                    recursiveDeepToString(anOCol, str, new HashSet<>(dejaVu));
+                    recursiveDeepToString(current, str, new HashSet<>(dejaVu));
                 }
                 str.append(']');
             }
-        } else if (o instanceof Date) {
-            final Date date = (Date) o;
-            final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-            // I'll leave it like this for the moment... this could probably be optimized using ThreadLocal...
-            str.append(format.format(date));
-        } else {
-            // it's just some other Object, we can only use toString().
-            try {
-                str.append(o.toString());
-            } catch (final Throwable t) {
-                str.append(ERROR_PREFIX);
-                str.append(identityToString(o));
-                str.append(ERROR_SEPARATOR);
-                final String msg = t.getMessage();
-                final String className = t.getClass().getName();
-                str.append(className);
-                if (!className.equals(msg)) {
-                    str.append(ERROR_MSG_SEPARATOR);
-                    str.append(msg);
-                }
-                str.append(ERROR_SUFFIX);
-            }
+            //str.append(Arrays.deepToString((Object[]) o));
         }
+    }
+
+    private static void appendMap(final Object o, final StringBuilder str, final Set<String> dejaVu) {
+        // special handling of container Map
+        final String id = identityToString(o);
+        if (dejaVu.contains(id)) {
+            str.append(RECURSION_PREFIX).append(id).append(RECURSION_SUFFIX);
+        } else {
+            dejaVu.add(id);
+            final Map<?, ?> oMap = (Map<?, ?>) o;
+            str.append('{');
+            boolean isFirst = true;
+            for (final Object o1 : oMap.entrySet()) {
+                final Map.Entry<?, ?> current = (Map.Entry<?, ?>) o1;
+                if (isFirst) {
+                    isFirst = false;
+                } else {
+                    str.append(", ");
+                }
+                final Object key = current.getKey();
+                final Object value = current.getValue();
+                recursiveDeepToString(key, str, new HashSet<>(dejaVu));
+                str.append('=');
+                recursiveDeepToString(value, str, new HashSet<>(dejaVu));
+            }
+            str.append('}');
+        }
+    }
+
+    private static void appendCollection(final Object o, final StringBuilder str, final Set<String> dejaVu) {
+        // special handling of container Collection
+        final String id = identityToString(o);
+        if (dejaVu.contains(id)) {
+            str.append(RECURSION_PREFIX).append(id).append(RECURSION_SUFFIX);
+        } else {
+            dejaVu.add(id);
+            final Collection<?> oCol = (Collection<?>) o;
+            str.append('[');
+            boolean isFirst = true;
+            for (final Object anOCol : oCol) {
+                if (isFirst) {
+                    isFirst = false;
+                } else {
+                    str.append(", ");
+                }
+                recursiveDeepToString(anOCol, str, new HashSet<>(dejaVu));
+            }
+            str.append(']');
+        }
+    }
+
+    private static void tryObjectToString(final Object o, final StringBuilder str) {
+        // it's just some other Object, we can only use toString().
+        try {
+            str.append(o.toString());
+        } catch (final Throwable t) {
+            handleErrorInObjectToString(o, str, t);
+        }
+    }
+
+    private static void handleErrorInObjectToString(final Object o, final StringBuilder str, final Throwable t) {
+        str.append(ERROR_PREFIX);
+        str.append(identityToString(o));
+        str.append(ERROR_SEPARATOR);
+        final String msg = t.getMessage();
+        final String className = t.getClass().getName();
+        str.append(className);
+        if (!className.equals(msg)) {
+            str.append(ERROR_MSG_SEPARATOR);
+            str.append(msg);
+        }
+        str.append(ERROR_SUFFIX);
     }
 
     /**
