@@ -66,51 +66,90 @@ public class AppenderControl extends AbstractFilterable {
      * @param event The event to process.
      */
     public void callAppender(final LogEvent event) {
-        if (getFilter() != null) {
-            final Filter.Result r = getFilter().filter(event);
-            if (r == Filter.Result.DENY) {
-                return;
-            }
-        }
-        if (level != null && intLevel < event.getLevel().intLevel()) {
+        if (shouldSkip(event)) {
             return;
         }
+        callAppenderPreventRecursion(event);
+    }
+
+    private boolean shouldSkip(final LogEvent event) {
+        return isFilteredByAppenderControl(event) || isFilteredByLevel(event) || isRecursiveCall();
+    }
+
+    private boolean isFilteredByAppenderControl(final LogEvent event) {
+        return getFilter() != null && Filter.Result.DENY == getFilter().filter(event);
+    }
+
+    private boolean isFilteredByLevel(final LogEvent event) {
+        return level != null && intLevel < event.getLevel().intLevel();
+    }
+
+    private boolean isRecursiveCall() {
         if (recursive.get() != null) {
-            appender.getHandler().error("Recursive call to appender " + appender.getName());
-            return;
+            appenderErrorHandlerMessage("Recursive call to appender ");
+            return true;
         }
+        return false;
+    }
+    
+    private String appenderErrorHandlerMessage(final String prefix) {
+        String result = createErrorMsg(prefix);
+        appender.getHandler().error(result);
+        return result;
+    }
+
+    private void callAppenderPreventRecursion(final LogEvent event) {
         try {
-            recursive.set(this);
-
-            if (!appender.isStarted()) {
-                appender.getHandler().error("Attempted to append to non-started appender " + appender.getName());
-
-                if (!appender.ignoreExceptions()) {
-                    throw new AppenderLoggingException(
-                        "Attempted to append to non-started appender " + appender.getName());
-                }
-            }
-
-            if (appender instanceof Filterable && ((Filterable) appender).isFiltered(event)) {
-                return;
-            }
-
-            try {
-                appender.append(event);
-            } catch (final RuntimeException ex) {
-                appender.getHandler().error("An exception occurred processing Appender " + appender.getName(), ex);
-                if (!appender.ignoreExceptions()) {
-                    throw ex;
-                }
-            } catch (final Exception ex) {
-                appender.getHandler().error("An exception occurred processing Appender " + appender.getName(), ex);
-                if (!appender.ignoreExceptions()) {
-                    throw new AppenderLoggingException(ex);
-                }
-            }
+            recursive.set(this);            
+            callAppender0(event);
         } finally {
             recursive.set(null);
         }
     }
 
+    private void callAppender0(final LogEvent event) {
+        ensureAppenderStarted();
+        if (!isFilteredByAppender(event)) {
+            tryCallAppender(event);
+        }
+    }
+
+    private void ensureAppenderStarted() {
+        if (!appender.isStarted()) {
+            handleError("Attempted to append to non-started appender ");
+        }
+    }
+
+    private void handleError(final String prefix) {
+        final String msg = appenderErrorHandlerMessage(prefix);
+        if (!appender.ignoreExceptions()) {
+            throw new AppenderLoggingException(msg);
+        }
+    }
+
+    private String createErrorMsg(final String prefix) {
+        final String msg = prefix + appender.getName();
+        return msg;
+    }
+    
+    private boolean isFilteredByAppender(final LogEvent event) {
+        return appender instanceof Filterable && ((Filterable) appender).isFiltered(event);
+    }
+
+    private void tryCallAppender(final LogEvent event) {
+        try {
+            appender.append(event);
+        } catch (final RuntimeException ex) {
+            handleAppenderError(ex);
+        } catch (final Exception ex) {
+            handleAppenderError(new AppenderLoggingException(ex));
+        }
+    }
+
+    private void handleAppenderError(final RuntimeException ex) {
+        appender.getHandler().error(createErrorMsg("An exception occurred processing Appender "), ex);
+        if (!appender.ignoreExceptions()) {
+            throw ex;
+        }
+    }
 }
