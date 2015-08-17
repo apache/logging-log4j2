@@ -24,6 +24,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.core.util.datetime.FastDateFormat;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Mode;
@@ -49,6 +50,7 @@ import org.openjdk.jmh.annotations.State;
 public class TimeFormatBenchmark {
 
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
+    FastDateFormat fastDateFormat = FastDateFormat.getInstance("HH:mm:ss.SSS");
     long midnightToday = 0;
     long midnightTomorrow = 0;
 
@@ -77,7 +79,7 @@ public class TimeFormatBenchmark {
     }
 
     public static void main(final String[] args) {
-        System.out.println(new TimeFormatBenchmark().customFastFormatString(new BufferState()));
+        System.out.println(new TimeFormatBenchmark().customBitFiddlingFormatString(new BufferState()));
         System.out.println(new TimeFormatBenchmark().customFormatString(new BufferState()));
     }
 
@@ -108,7 +110,25 @@ public class TimeFormatBenchmark {
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public String customFastFormatString(final BufferState state) {
+    public String fastDateFormatString() {
+        return fastDateFormat.format(new Date());
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public int fastDateFormatBytes(final BufferState state) {
+        final String str = fastDateFormat.format(new Date());
+        final byte[] bytes = str.getBytes(StandardCharsets.UTF_8);
+        state.buffer.clear();
+        state.buffer.put(bytes);
+        return state.buffer.position();
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public String customBitFiddlingFormatString(final BufferState state) {
         state.buffer.clear();
         fastFormat(System.currentTimeMillis(), state.buffer);
         return new String(state.buffer.array(), 0, state.buffer.position(), StandardCharsets.UTF_8);
@@ -117,7 +137,7 @@ public class TimeFormatBenchmark {
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public int customFastFormatBytes(final BufferState state) {
+    public int customBitFiddlingFormatBytes(final BufferState state) {
         state.buffer.clear();
         fastFormat(System.currentTimeMillis(), state.buffer);
         return state.buffer.position();
