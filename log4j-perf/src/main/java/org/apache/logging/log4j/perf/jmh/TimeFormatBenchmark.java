@@ -46,17 +46,24 @@ import org.openjdk.jmh.annotations.State;
 // Usage help:
 // java -jar log4j-perf/target/benchmarks.jar -help
 //
-@State(Scope.Thread)
+@State(Scope.Benchmark)
 public class TimeFormatBenchmark {
 
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
+    ThreadLocal<SimpleDateFormat> threadLocalSimpleDateFormat = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("HH:mm:ss.SSS");
+        }
+    };
+    // SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
     FastDateFormat fastDateFormat = FastDateFormat.getInstance("HH:mm:ss.SSS");
-    long midnightToday = 0;
-    long midnightTomorrow = 0;
+    volatile long midnightToday = 0;
+    volatile long midnightTomorrow = 0;
 
     @State(Scope.Thread)
     public static class BufferState {
         ByteBuffer buffer = ByteBuffer.allocate(12);
+        StringBuilder stringBuilder = new StringBuilder(12);
     }
 
     private long millisSinceMidnight(final long now) {
@@ -93,14 +100,14 @@ public class TimeFormatBenchmark {
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public String simpleDateFormatString() {
-        return simpleDateFormat.format(new Date());
+        return threadLocalSimpleDateFormat.get().format(new Date());
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public int simpleDateFormatBytes(final BufferState state) {
-        final String str = simpleDateFormat.format(new Date());
+        final String str = threadLocalSimpleDateFormat.get().format(new Date());
         final byte[] bytes = str.getBytes(StandardCharsets.UTF_8);
         state.buffer.clear();
         state.buffer.put(bytes);
@@ -147,9 +154,18 @@ public class TimeFormatBenchmark {
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public String customFormatString(final BufferState state) {
-        state.buffer.clear();
-        format(System.currentTimeMillis(), state.buffer);
-        return new String(state.buffer.array(), 0, state.buffer.position(), StandardCharsets.UTF_8);
+        state.stringBuilder.setLength(0);
+        formatText(System.currentTimeMillis(), state.stringBuilder);
+        return new String(state.stringBuilder);
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public int customFormatStringBuilder(final BufferState state) {
+        state.stringBuilder.setLength(0);
+        formatText(System.currentTimeMillis(), state.stringBuilder);
+        return state.stringBuilder.length();
     }
 
     @Benchmark
@@ -216,6 +232,58 @@ public class TimeFormatBenchmark {
 
         ms -= 10 * temp;
         buffer.put((byte) (ms + '0'));
+        return buffer;
+    }
+
+    public StringBuilder formatText(final long time, final StringBuilder buffer) {
+        // Calculate values by getting the ms values first and do then
+        // calculate the hour minute and second values divisions.
+
+        // Get daytime in ms which does fit into an int
+        // int ms = (int) (time % 86400000);
+        int ms = (int) (millisSinceMidnight(time));
+
+        final int hours = ms / 3600000;
+        ms -= 3600000 * hours;
+
+        final int minutes = ms / 60000;
+        ms -= 60000 * minutes;
+
+        final int seconds = ms / 1000;
+        ms -= 1000 * seconds;
+
+        // Hour
+        int temp = hours / 10;
+        buffer.append((char) (temp + '0'));
+
+        // Do subtract to get remainder instead of doing % 10
+        buffer.append((char) (hours - 10 * temp + '0'));
+        buffer.append((char) ':');
+
+        // Minute
+        temp = minutes / 10;
+        buffer.append((char) (temp + '0'));
+
+        // Do subtract to get remainder instead of doing % 10
+        buffer.append((char) (minutes - 10 * temp + '0'));
+        buffer.append((char) ':');
+
+        // Second
+        temp = seconds / 10;
+        buffer.append((char) (temp + '0'));
+        buffer.append((char) (seconds - 10 * temp + '0'));
+        buffer.append((char) '.');
+
+        // Millisecond
+        temp = ms / 100;
+        buffer.append((char) (temp + '0'));
+
+        ms -= 100 * temp;
+        temp = ms / 10;
+        buffer.append((char) (temp + '0'));
+
+        ms -= 10 * temp;
+        buffer.append((char) (ms + '0'));
         return buffer;
     }
 
