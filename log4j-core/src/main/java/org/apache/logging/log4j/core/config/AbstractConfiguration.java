@@ -625,13 +625,15 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     @Override
     public LoggerConfig getLoggerConfig(final String name) {
-        if (loggers.containsKey(name)) {
-            return loggers.get(name);
+        LoggerConfig loggerConfig = name == null ? null : loggers.get(name);
+        if (loggerConfig != null) {
+            return loggerConfig;
         }
         String substr = name;
         while ((substr = NameUtil.getSubName(substr)) != null) {
-            if (loggers.containsKey(substr)) {
-                return loggers.get(substr);
+            loggerConfig = loggers.get(substr);
+            if (loggerConfig != null) {
+                return loggerConfig;
             }
         }
         return root;

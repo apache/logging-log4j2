@@ -31,7 +31,7 @@ public final class NameUtil {
     }
 
     public static String getSubName(final String name) {
-        if (name.isEmpty()) {
+        if (Strings.isEmpty(name)) {
             return null;
         }
         final int i = name.lastIndexOf('.');

@@ -99,12 +99,11 @@ public class SimpleLoggerContext implements LoggerContext {
 
     @Override
     public ExtendedLogger getLogger(final String name, final MessageFactory messageFactory) {
-        if (loggers.containsKey(name)) {
-            final ExtendedLogger logger = loggers.get(name);
-            AbstractLogger.checkMessageFactory(logger, messageFactory);
-            return logger;
+        final ExtendedLogger extendedLogger = loggers.get(name);
+        if (extendedLogger != null) {
+			AbstractLogger.checkMessageFactory(extendedLogger, messageFactory);
+            return extendedLogger;
         }
-
         loggers.putIfAbsent(name, new SimpleLogger(name, defaultLevel, showLogName, showShortName, showDateTime,
                 showContextMap, dateTimeFormat, messageFactory, props, stream));
         return loggers.get(name);

@@ -162,8 +162,8 @@ public final class Configurator {
         return initialize(name, null, configLocation);
     }
 
-    private static boolean setLevel(final LoggerConfig loggerConfig, Level level) {
-        boolean set = !loggerConfig.getLevel().equals(level);
+    private static boolean setLevel(final LoggerConfig loggerConfig, final Level level) {
+        final boolean set = !loggerConfig.getLevel().equals(level);
         if (set) {
             loggerConfig.setLevel(level);
         }
@@ -185,11 +185,12 @@ public final class Configurator {
      */
     public static void setLevel(final Map<String, Level> levelMap) {
         final LoggerContext loggerContext = LoggerContext.getContext(false);
+        final Configuration configuration = loggerContext.getConfiguration();
         boolean set = false;
-        for (Map.Entry<String, Level> entry : levelMap.entrySet()) {
-            final LoggerConfig loggerConfig = loggerContext.getConfiguration().getLoggerConfig(entry.getKey());
-            Level level = entry.getValue();
-            set |= setLevel(loggerConfig, level);
+        for (final Map.Entry<String, Level> entry : levelMap.entrySet()) {
+            final String name = entry.getKey();
+            final Level level = entry.getValue();
+            set |= setLevel(configuration.getLoggerConfig(name), level);
         }
         if (set) {
             loggerContext.updateLoggers();

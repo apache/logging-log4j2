@@ -606,8 +606,9 @@ public class ThrowableProxy implements Serializable {
                 stack.pop();
                 clazz = stack.isEmpty() ? null : stack.peek();
             } else {
-                if (map.containsKey(className)) {
-                    final CacheEntry entry = map.get(className);
+                final CacheEntry cacheEntry = map.get(className);
+                if (cacheEntry != null) {
+                    final CacheEntry entry = cacheEntry;
                     extClassInfo = entry.element;
                     if (entry.loader != null) {
                         lastLoader = entry.loader;
