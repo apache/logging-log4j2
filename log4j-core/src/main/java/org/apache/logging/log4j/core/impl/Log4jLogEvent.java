@@ -270,8 +270,9 @@ public class Log4jLogEvent implements LogEvent {
                         final Message message, final List<Property> properties, final Throwable t) {
        this(loggerName, marker, loggerFQCN, level, message, t, null,
            createMap(properties),
-           ThreadContext.getDepth() == 0 ? null : ThreadContext.cloneStack(), null,
-           null,
+           ThreadContext.getImmutableStack(), // may be ThreadContext.EMPTY_STACK but not null
+           null, // thread name
+           null, // stack trace element
            // LOG4J2-628 use log4j.Clock for timestamps
            // LOG4J2-744 unless TimestampMessage already has one
            message instanceof TimestampMessage ? ((TimestampMessage) message).getTimestamp() :
@@ -372,11 +373,8 @@ public class Log4jLogEvent implements LogEvent {
 
     private static Map<String, String> createMap(final List<Property> properties) {
         final Map<String, String> contextMap = ThreadContext.getImmutableContext();
-        if (contextMap == null && (properties == null || properties.isEmpty())) {
-            return null;
-        }
         if (properties == null || properties.isEmpty()) {
-            return contextMap; // contextMap is not null
+            return contextMap; // may be ThreadContext.EMPTY_MAP but not null
         }
         final Map<String, String> map = new HashMap<>(contextMap);
 
