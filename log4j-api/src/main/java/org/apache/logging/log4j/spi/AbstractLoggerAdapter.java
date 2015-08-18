@@ -41,8 +41,9 @@ public abstract class AbstractLoggerAdapter<L> implements LoggerAdapter<L> {
     public L getLogger(final String name) {
         final LoggerContext context = getContext();
         final ConcurrentMap<String, L> loggers = getLoggersInContext(context);
-        if (loggers.containsKey(name)) {
-            return loggers.get(name);
+        final L logger = loggers.get(name);
+        if (logger != null) {
+			return logger;
         }
         loggers.putIfAbsent(name, newLogger(name, context));
         return loggers.get(name);

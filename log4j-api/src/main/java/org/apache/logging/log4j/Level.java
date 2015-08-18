@@ -279,8 +279,9 @@ public final class Level implements Comparable<Level>, Serializable {
     public static Level valueOf(final String name) {
     	Objects.requireNonNull(name, "No level name given.");
         final String levelName = name.toUpperCase(Locale.ENGLISH);
-        if (levels.containsKey(levelName)) {
-            return levels.get(levelName);
+        final Level level = levels.get(levelName);
+        if (level != null) {
+			return level;
         }
         throw new IllegalArgumentException("Unknown level constant [" + levelName + "].");
     }
