@@ -368,8 +368,9 @@ public class Category {
         String name = logger.getName();
         final ConcurrentMap<String, Logger> loggers = getLoggersMap(logger.getContext());
         while ((name = NameUtil.getSubName(name)) != null) {
-            if (loggers.containsKey(name)) {
-                final ResourceBundle rb = loggers.get(name).bundle;
+            final Logger subLogger = loggers.get(name);
+            if (subLogger != null) {
+				final ResourceBundle rb = subLogger.bundle;
                 if (rb != null) {
                     return rb;
                 }
