@@ -118,7 +118,8 @@ public class MapLookup implements StrLookup {
 
     @Override
     public String lookup(final LogEvent event, final String key) {
-        if (map == null && !(event.getMessage() instanceof MapMessage)) {
+        final boolean isMapMessage = event.getMessage() instanceof MapMessage;
+        if (map == null && !isMapMessage) {
             return null;
         }
         if (map != null && map.containsKey(key)) {
@@ -127,7 +128,7 @@ public class MapLookup implements StrLookup {
                 return obj;
             }
         }
-        if (event.getMessage() instanceof MapMessage) {
+        if (isMapMessage) {
             return ((MapMessage) event.getMessage()).get(key);
         }
         return null;
