@@ -100,6 +100,12 @@ public class ConfigurationTest {
     }
 
     @Test
+    public void testGetLoggerConfigNull() throws Exception {
+        final Configuration config = this.ctx.getConfiguration();
+        assertEquals(config.getRootLogger(), config.getLoggerConfig(null));
+    }
+    
+    @Test
     public void testLogger() throws Exception {
         final Logger logger = this.ctx.getLogger(LOGGER_NAME);
         assertThat(logger, is(instanceOf(org.apache.logging.log4j.core.Logger.class)));
