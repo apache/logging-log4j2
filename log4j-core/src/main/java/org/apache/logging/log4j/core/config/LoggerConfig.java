@@ -401,31 +401,47 @@ public class LoggerConfig extends AbstractFilterable {
      * @param event The log event.
      */
     public void log(final LogEvent event) {
-
-        counter.incrementAndGet();
+        beforeLogEvent();
         try {
-            if (isFiltered(event)) {
-                return;
-            }
-
-            event.setIncludeLocation(isIncludeLocation());
-
-            callAppenders(event);
-
-            if (additive && parent != null) {
-                parent.log(event);
+            if (!isFiltered(event)) {
+                processLogEvent(event);
             }
         } finally {
-            if (counter.decrementAndGet() == 0) {
-                shutdownLock.lock();
-                try {
-                    if (shutdown.get()) {
-                        noLogEvents.signalAll();
-                    }
-                } finally {
-                    shutdownLock.unlock();
-                }
+            afterLogEvent();
+        }
+    }
+
+    private void beforeLogEvent() {
+        counter.incrementAndGet();
+    }
+
+    private void afterLogEvent() {
+        if (counter.decrementAndGet() == 0) {
+            signalCompletionIfShutdown();
+        }
+    }
+
+    private void signalCompletionIfShutdown() {
+        final Lock lock = shutdownLock;
+        lock.lock();
+        try {
+            if (shutdown.get()) {
+                noLogEvents.signalAll();
             }
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    private void processLogEvent(final LogEvent event) {
+        event.setIncludeLocation(isIncludeLocation());
+        callAppenders(event);
+        logParent(event);
+    }
+
+    private void logParent(final LogEvent event) {
+        if (additive && parent != null) {
+            parent.log(event);
         }
     }
 
@@ -434,7 +450,6 @@ public class LoggerConfig extends AbstractFilterable {
             control.callAppender(event);
         }
     }
-
 
     @Override
     public String toString() {
