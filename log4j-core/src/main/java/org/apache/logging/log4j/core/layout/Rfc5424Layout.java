@@ -374,13 +374,14 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         }
 
         if (includeMdc && contextMap.size() > 0) {
-            if (sdElements.containsKey(mdcSdId.toString())) {
-                final StructuredDataElement union = sdElements.get(mdcSdId.toString());
+            final String mdcSdIdStr = mdcSdId.toString();
+            final StructuredDataElement union = sdElements.get(mdcSdIdStr);
+            if (union != null) {
                 union.union(contextMap);
-                sdElements.put(mdcSdId.toString(), union);
+                sdElements.put(mdcSdIdStr, union);
             } else {
                 final StructuredDataElement formattedContextMap = new StructuredDataElement(contextMap, false);
-                sdElements.put(mdcSdId.toString(), formattedContextMap);
+                sdElements.put(mdcSdIdStr, formattedContextMap);
             }
         }
 
