@@ -100,6 +100,12 @@ public class ConfigurationTest {
     }
 
     @Test
+    public void testGetLoggerConfigEmpty() throws Exception {
+        final Configuration config = this.ctx.getConfiguration();
+        assertEquals(config.getRootLogger(), config.getLoggerConfig(Strings.EMPTY));
+    }
+    
+    @Test
     public void testGetLoggerConfigNull() throws Exception {
         final Configuration config = this.ctx.getConfiguration();
         assertEquals(config.getRootLogger(), config.getLoggerConfig(null));
