@@ -105,7 +105,7 @@ public class ConfigurationTest {
         assertEquals(config.getRootLogger(), config.getLoggerConfig(Strings.EMPTY));
     }
     
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testGetLoggerConfigNull() throws Exception {
         final Configuration config = this.ctx.getConfiguration();
         assertEquals(config.getRootLogger(), config.getLoggerConfig(null));
