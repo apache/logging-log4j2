@@ -270,7 +270,7 @@ public class Log4jLogEvent implements LogEvent {
                         final Message message, final List<Property> properties, final Throwable t) {
        this(loggerName, marker, loggerFQCN, level, message, t, null,
            createMap(properties),
-           ThreadContext.getImmutableStack(), // may be ThreadContext.EMPTY_STACK but not null
+           ThreadContext.getDepth() == 0 ? null : ThreadContext.cloneStack(), // mutable copy
            null, // thread name
            null, // stack trace element
            // LOG4J2-628 use log4j.Clock for timestamps
