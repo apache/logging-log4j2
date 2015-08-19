@@ -71,13 +71,14 @@ public class ParameterizedMessageBenchmark {
         return format0_inlined2("pattern {} with {} two parameters and some text", ARGS);
     }
 
+    // 259 bytes
     public static String format0(final String messagePattern, final String[] arguments) {
         if (messagePattern == null || arguments == null || arguments.length == 0) {
             return messagePattern;
         }
 
         final int len = messagePattern.length();
-        final char[] result = new char[len + totalLength(arguments)];
+        final char[] result = new char[len + sumStringLengths(arguments)];
         int pos = 0;
         int escapeCounter = 0;
         int currentArgument = 0;
@@ -128,6 +129,7 @@ public class ParameterizedMessageBenchmark {
         return result.toString();
     }
 
+    // 33 bytes
     public static String format0_inlined2(final String messagePattern, final String[] arguments) {
         int len = 0;
         if (messagePattern == null || (len = messagePattern.length()) == 0 || arguments == null
@@ -138,8 +140,9 @@ public class ParameterizedMessageBenchmark {
         return format0_inlined22(messagePattern, len, arguments);
     }
 
+    // 157 bytes
     private static String format0_inlined22(final String messagePattern, final int len, final String[] arguments) {
-        final char[] result = new char[len + totalLength(arguments)];
+        final char[] result = new char[len + sumStringLengths(arguments)];
         int pos = 0;
         int escapeCounter = 0;
         int currentArgument = 0;
@@ -155,7 +158,7 @@ public class ParameterizedMessageBenchmark {
                     // write escaped escape chars
                     pos = format0_writeEscapedEscapeChars(escapeCounter, result, pos);
 
-                    if (isEscapeCounterOdd(escapeCounter)) {
+                    if (isOdd(escapeCounter)) {
                         // i.e. escaped
                         // write escaped escape chars
                         pos = format0_writeDelimPair(result, pos);
@@ -174,8 +177,11 @@ public class ParameterizedMessageBenchmark {
         return new String(result, 0, pos);
     }
 
+    /**
+     * Returns the sum of the lengths of all Strings in the specified array.
+     */
     // 27 bytes
-    private static int totalLength(String[] arguments) {
+    private static int sumStringLengths(String[] arguments) {
         int result = 0;
         for (int i = 0; i < arguments.length; i++) {
             result += arguments[i].length();
@@ -188,6 +194,7 @@ public class ParameterizedMessageBenchmark {
         return curChar == DELIM_START && messagePattern.charAt(i + 1) == DELIM_STOP;
     }
 
+    // 28 bytes
     private static int format0_handleMaybeLastChar(final String messagePattern, final int len, final char[] result,
             int pos, int escapeCounter, int i) {
         if (i == len - 1) {
@@ -197,6 +204,7 @@ public class ParameterizedMessageBenchmark {
         return pos;
     }
 
+    // 28 bytes
     private static int format0_handleLastChar(final char[] result, int pos, int escapeCounter, final char curChar) {
         if (curChar == ESCAPE_CHAR) {
             pos = format0_writeUnescapedEscapeChars(escapeCounter + 1, result, pos);
@@ -206,6 +214,7 @@ public class ParameterizedMessageBenchmark {
         return pos;
     }
 
+    // 16 bytes
     private static int format0_handleLiteralChar(final char[] result, int pos, int escapeCounter, final char curChar) {
         // any other char beside ESCAPE or DELIM_START/STOP-combo
         // write unescaped escape chars
@@ -214,21 +223,28 @@ public class ParameterizedMessageBenchmark {
         return pos;
     }
 
+    // 18 bytes
     private static int format0_writeDelimPair(final char[] result, int pos) {
         result[pos++] = DELIM_START;
         result[pos++] = DELIM_STOP;
         return pos;
     }
 
-    private static boolean isEscapeCounterOdd(int escapeCounter) {
-        return (escapeCounter & 1) == 1;
+    /**
+     * Returns {@code true} if the specified parameter is odd.
+     */
+    // 11 bytes
+    private static boolean isOdd(int number) {
+        return (number & 1) == 1;
     }
 
+    // 11 bytes
     private static int format0_writeEscapedEscapeChars(int escapeCounter, char[] result, int pos) {
         final int escapedEscapes = escapeCounter >> 1; // divide by two
         return format0_writeUnescapedEscapeChars(escapedEscapes, result, pos);
     }
 
+    // 20 bytes
     private static int format0_writeUnescapedEscapeChars(int escapeCounter, char[] result, int pos) {
         while (escapeCounter > 0) {
             result[pos++] = ESCAPE_CHAR;
@@ -237,6 +253,7 @@ public class ParameterizedMessageBenchmark {
         return pos;
     }
 
+    // 25 bytes
     private static int format0_appendArg(final String[] arguments, int currentArgument, final char[] result, int pos) {
         if (currentArgument < arguments.length) {
             pos = format0_appendArg0(arguments, currentArgument, result, pos);
@@ -246,6 +263,7 @@ public class ParameterizedMessageBenchmark {
         return pos;
     }
 
+    // 27 bytes
     private static int format0_appendArg0(final String[] arguments, int currentArgument, final char[] result, int pos) {
         final String arg = arguments[currentArgument];
         final int argLen = arg.length();
