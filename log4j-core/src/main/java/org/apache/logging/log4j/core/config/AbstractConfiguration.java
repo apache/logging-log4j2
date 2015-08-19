@@ -625,7 +625,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     @Override
     public LoggerConfig getLoggerConfig(final String name) {
-        LoggerConfig loggerConfig = name == null ? null : loggers.get(name);
+        LoggerConfig loggerConfig = loggers.get(name);
         if (loggerConfig != null) {
             return loggerConfig;
         }
