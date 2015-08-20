@@ -154,7 +154,7 @@ public class LoggerTest {
         loggerChild.debug("Debug message 1 child");
         final List<LogEvent> events = app.getEvents();
         assertEventCount(events, 2);
-        Configurator.setLevel(logger.getName(), Level.OFF);
+        Configurator.setLevel(logger.getName(), Level.ERROR);
         Configurator.setLevel(loggerChild.getName(), Level.DEBUG);
         logger.debug("Debug message 2");
         loggerChild.debug("Debug message 2 child");
