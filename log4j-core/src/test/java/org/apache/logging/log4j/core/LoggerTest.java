@@ -44,6 +44,7 @@ import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -138,6 +139,26 @@ public class LoggerTest {
         logger.debug("Debug message 3");
         loggerChild.debug("Debug message 3 child");
         assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 4, events.size());
+    }
+
+    @Test
+    @Ignore
+    public void debugChangeLevelsChildDifferentLevels() {
+        org.apache.logging.log4j.Logger loggerChild = context.getLogger(logger.getName() + ".child");
+        // Use logger AND loggerChild
+        logger.debug("Debug message 1");
+        loggerChild.debug("Debug message 1 child");
+        final List<LogEvent> events = app.getEvents();
+        assertEquals("Incorrect number of events. Expected 2, actual " + events.size(), 2, events.size());
+        Configurator.setLevel(logger.getName(), Level.OFF);
+        Configurator.setLevel(loggerChild.getName(), Level.DEBUG);
+        logger.debug("Debug message 2");
+        loggerChild.debug("Debug message 2 child");
+        assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 3, events.size());
+        Configurator.setLevel(logger.getName(), Level.DEBUG);
+        logger.debug("Debug message 3");
+        loggerChild.debug("Debug message 3 child");
+        assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 5, events.size());
     }
 
     @Test
