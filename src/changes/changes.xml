@@ -31,6 +31,9 @@
         Added support for Java 8 lambda expressions to lazily construct a log message only if
               the requested log level is enabled.
       </action>
+      <action issue="LOG4J2-1096" dev="rpopma" type="update">
+        Improved performance of ParameterizedMessage::getFormattedMessage by ~2X.
+      </action>
       <action issue="LOG4J2-1044" dev="rgoers" type="fix">
         Write pending events to Flume when the appender is stopped.
       </action>

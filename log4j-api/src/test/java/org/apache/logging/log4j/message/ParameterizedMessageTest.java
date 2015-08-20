@@ -38,6 +38,54 @@ public class ParameterizedMessageTest {
     }
 
     @Test
+    public void testFormat3StringArgs() {
+        final String testMsg = "Test message {}{} {}";
+        final String[] args = { "a", "b", "c" };
+        final String result = ParameterizedMessage.formatStringArgs(testMsg, args);
+        assertEquals("Test message ab c", result);
+    }
+
+    @Test
+    public void testFormatStringArgsIgnoresSuperfluousArgs() {
+        final String testMsg = "Test message {}{} {}";
+        final String[] args = { "a", "b", "c", "unnecessary", "superfluous" };
+        final String result = ParameterizedMessage.formatStringArgs(testMsg, args);
+        assertEquals("Test message ab c", result);
+    }
+
+    @Test
+    public void testFormatStringArgsWithEscape() {
+        final String testMsg = "Test message \\{}{} {}";
+        final String[] args = { "a", "b", "c" };
+        final String result = ParameterizedMessage.formatStringArgs(testMsg, args);
+        assertEquals("Test message {}a b", result);
+    }
+
+    @Test
+    public void testFormatStringArgsWithTrailingEscape() {
+        final String testMsg = "Test message {}{} {}\\";
+        final String[] args = { "a", "b", "c" };
+        final String result = ParameterizedMessage.formatStringArgs(testMsg, args);
+        assertEquals("Test message ab c\\", result);
+    }
+
+    @Test
+    public void testFormatStringArgsWithTrailingEscapedEscape() {
+        final String testMsg = "Test message {}{} {}\\\\";
+        final String[] args = { "a", "b", "c" };
+        final String result = ParameterizedMessage.formatStringArgs(testMsg, args);
+        assertEquals("Test message ab c\\\\", result);
+    }
+
+    @Test
+    public void testFormatStringArgsWithEscapedEscape() {
+        final String testMsg = "Test message \\\\{}{} {}";
+        final String[] args = { "a", "b", "c" };
+        final String result = ParameterizedMessage.formatStringArgs(testMsg, args);
+        assertEquals("Test message \\ab c", result);
+    }
+
+    @Test
     public void testSafeWithMutableParams() { // LOG4J2-763
         final String testMsg = "Test message {}";
         final Mutable param = new Mutable().set("abc");
