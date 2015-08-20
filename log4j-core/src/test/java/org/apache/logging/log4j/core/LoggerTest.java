@@ -138,7 +138,7 @@ public class LoggerTest {
         logger.debug("Debug message 3");
         loggerChild.debug("Debug message 3 child");
         assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 4, events.size());
-        }
+    }
 
     @Test
     public void debugChangeLevelsMap() {
