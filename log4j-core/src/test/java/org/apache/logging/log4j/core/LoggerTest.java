@@ -123,7 +123,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void debugChangeLevels() {
+    public void debugChangeLevelsMap() {
         logger.debug("Debug message 1");
         final List<LogEvent> events = app.getEvents();
         assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 1, events.size());
