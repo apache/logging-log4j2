@@ -123,6 +123,24 @@ public class LoggerTest {
     }
 
     @Test
+    public void debugChangeLevelsChild() {
+        org.apache.logging.log4j.Logger loggerChild = context.getLogger(logger.getName() + ".child");
+        // Use logger AND loggerChild
+        logger.debug("Debug message 1");
+        loggerChild.debug("Debug message 1 child");
+        final List<LogEvent> events = app.getEvents();
+        assertEquals("Incorrect number of events. Expected 2, actual " + events.size(), 2, events.size());
+        Configurator.setLevel(logger.getName(), Level.OFF);
+        logger.debug("Debug message 2");
+        loggerChild.debug("Debug message 2 child");
+        assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 2, events.size());
+        Configurator.setLevel(logger.getName(), Level.DEBUG);
+        logger.debug("Debug message 3");
+        loggerChild.debug("Debug message 3 child");
+        assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 4, events.size());
+        }
+
+    @Test
     public void debugChangeLevelsMap() {
         logger.debug("Debug message 1");
         final List<LogEvent> events = app.getEvents();
