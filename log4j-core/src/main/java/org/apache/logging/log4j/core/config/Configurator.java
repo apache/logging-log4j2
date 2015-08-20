@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.config;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collection;
 import java.util.Map;
 
 import org.apache.logging.log4j.Level;
@@ -170,15 +171,7 @@ public final class Configurator {
         }
         return set;
     }
-
-    private static void setLevel(final LoggerContext loggerContext, final LoggerConfig loggerConfig,
-            final Level level) {
-        if (!loggerConfig.getLevel().equals(level)) {
-            loggerConfig.setLevel(level);
-            loggerContext.updateLoggers();
-        }
-    }
-
+    
     /**
      * Sets a logger levels.
      * 
@@ -243,7 +236,10 @@ public final class Configurator {
     public static void setRootLevel(final Level level) {
         final LoggerContext loggerContext = LoggerContext.getContext(false);
         final LoggerConfig loggerConfig = loggerContext.getConfiguration().getRootLogger();
-        setLevel(loggerContext, loggerConfig, level);
+        if (!loggerConfig.getLevel().equals(level)) {
+            loggerConfig.setLevel(level);
+            loggerContext.updateLoggers();
+        }
     }
 
     /**
