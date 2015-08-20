@@ -43,8 +43,7 @@ import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -57,8 +56,8 @@ public class LoggerTest {
     private ListAppender host;
     private ListAppender noThrown;
 
-    @ClassRule
-    public static InitialLoggerContext context = new InitialLoggerContext(CONFIG);
+    @Rule
+    public InitialLoggerContext context = new InitialLoggerContext(CONFIG);
 
     private void assertEventCount(final List<LogEvent> events, final int expected) {
         assertEquals("Incorrect number of events.", expected, events.size());
@@ -66,12 +65,18 @@ public class LoggerTest {
     
     @Before
     public void before() {
+        logger = context.getLogger("LoggerTest");
+        loggerChild = context.getLogger("LoggerTest.child");
+        loggerGrandchild = context.getLogger("LoggerTest.child.grand");
+        //
         app = context.getListAppender("List").clear();
         host = context.getListAppender("HostTest").clear();
         noThrown = context.getListAppender("NoThrowable").clear();
     }
 
-    org.apache.logging.log4j.Logger logger = context.getLogger("LoggerTest");
+    org.apache.logging.log4j.Logger logger;
+    org.apache.logging.log4j.Logger loggerChild;
+    org.apache.logging.log4j.Logger loggerGrandchild;
 
     @Test
     public void basicFlow() {
@@ -128,26 +133,27 @@ public class LoggerTest {
     }
 
     @Test
-    public void debugChangeLevelsChild() {
-        org.apache.logging.log4j.Logger loggerChild = context.getLogger(logger.getName() + ".child");
-        // Use logger AND loggerChild
+    public void debugChangeLevelChildLogger() {
+        // Use logger AND child loggers
         logger.debug("Debug message 1");
         loggerChild.debug("Debug message 1 child");
+        loggerGrandchild.debug("Debug message 1 grandchild");
         final List<LogEvent> events = app.getEvents();
-        assertEventCount(events, 2);
+        assertEventCount(events, 3);
         Configurator.setLevel(logger.getName(), Level.OFF);
         logger.debug("Debug message 2");
         loggerChild.debug("Debug message 2 child");
-        assertEventCount(events, 2);
+        loggerGrandchild.debug("Debug message 2 grandchild");
+        assertEventCount(events, 3);
         Configurator.setLevel(logger.getName(), Level.DEBUG);
         logger.debug("Debug message 3");
         loggerChild.debug("Debug message 3 child");
-        assertEventCount(events, 4);
+        loggerGrandchild.debug("Debug message 3 grandchild");
+        assertEventCount(events, 6);
     }
 
     @Test
-    @Ignore
-    public void debugChangeLevelsChildDifferentLevels() {
+    public void debugChangeLevelsChildLoggers() {
         org.apache.logging.log4j.Logger loggerChild = context.getLogger(logger.getName() + ".child");
         // Use logger AND loggerChild
         logger.debug("Debug message 1");
@@ -179,6 +185,32 @@ public class LoggerTest {
         Configurator.setLevel(map);
         logger.debug("Debug message 3");
         assertEventCount(events, 2);
+    }
+
+    @Test
+    public void debugChangeLevelsMapChildLoggers() {
+        logger.debug("Debug message 1");
+        loggerChild.debug("Debug message 1 C");
+        loggerGrandchild.debug("Debug message 1 GC");
+        final List<LogEvent> events = app.getEvents();
+        assertEventCount(events, 3);
+        Map<String, Level> map = new HashMap<>();
+        map.put(logger.getName(), Level.OFF);
+        map.put(loggerChild.getName(), Level.DEBUG);
+        map.put(loggerGrandchild.getName(), Level.WARN);
+        Configurator.setLevel(map);
+        logger.debug("Debug message 2");
+        loggerChild.debug("Debug message 2 C");
+        loggerGrandchild.debug("Debug message 2 GC");
+        assertEventCount(events, 4);
+        map.put(logger.getName(), Level.DEBUG);
+        map.put(loggerChild.getName(), Level.OFF);
+        map.put(loggerGrandchild.getName(), Level.DEBUG);
+        Configurator.setLevel(map);
+        logger.debug("Debug message 3");
+        loggerChild.debug("Debug message 3 C");
+        loggerGrandchild.debug("Debug message 3 GC");
+        assertEventCount(events, 6);
     }
 
     @Test

@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Initializes and configure the Logging system. This class provides several ways to construct a LoggerContext using
@@ -180,17 +181,19 @@ public final class Configurator {
 
     /**
      * Sets a logger levels.
+     * 
      * @param level
-     *            a levelMap where keys are level names and values are new Levels.
+     *            a levelMap where keys are level names and values are new
+     *            Levels.
      */
     public static void setLevel(final Map<String, Level> levelMap) {
         final LoggerContext loggerContext = LoggerContext.getContext(false);
-        final Configuration configuration = loggerContext.getConfiguration();
+        final Configuration config = loggerContext.getConfiguration();
         boolean set = false;
         for (final Map.Entry<String, Level> entry : levelMap.entrySet()) {
-            final String name = entry.getKey();
+            final String loggerName = entry.getKey();
             final Level level = entry.getValue();
-            set |= setLevel(configuration.getLoggerConfig(name), level);
+            set |= setLevel(loggerName, level, config);
         }
         if (set) {
             loggerContext.updateLoggers();
@@ -207,8 +210,28 @@ public final class Configurator {
      */
     public static void setLevel(final String loggerName, final Level level) {
         final LoggerContext loggerContext = LoggerContext.getContext(false);
-        final LoggerConfig loggerConfig = loggerContext.getConfiguration().getLoggerConfig(loggerName);
-        setLevel(loggerContext, loggerConfig, level);
+        if (Strings.isEmpty(loggerName)) {
+            setRootLevel(level);
+        } else {
+            if (setLevel(loggerName, level, loggerContext.getConfiguration())) {
+                loggerContext.updateLoggers();
+            }
+        }
+    }
+
+    private static boolean setLevel(final String loggerName, final Level level, final Configuration config) {
+        boolean set;
+        LoggerConfig loggerConfig = config.getLoggerConfig(loggerName);
+        if (!loggerName.equals(loggerConfig.getName())) {
+            // TODO Should additivity be inherited?
+            loggerConfig = new LoggerConfig(loggerName, level, true);
+            config.addLogger(loggerName, loggerConfig);
+            loggerConfig.setLevel(level);
+            set = true;
+        } else {
+            set = setLevel(loggerConfig, level);
+        }
+        return set;
     }
 
     /**
