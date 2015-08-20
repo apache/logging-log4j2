@@ -46,6 +46,14 @@ public class ParameterizedMessageTest {
     }
 
     @Test
+    public void testFormatNullArgs() {
+        final String testMsg = "Test message {} {} {} {} {} {}";
+        final String[] args = { "a", null, "c", null, null, null };
+        final String result = ParameterizedMessage.formatStringArgs(testMsg, args);
+        assertEquals("Test message a null c null null null", result);
+    }
+
+    @Test
     public void testFormatStringArgsIgnoresSuperfluousArgs() {
         final String testMsg = "Test message {}{} {}";
         final String[] args = { "a", "b", "c", "unnecessary", "superfluous" };

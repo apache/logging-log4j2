@@ -323,11 +323,11 @@ public class ParameterizedMessage implements Message {
     /**
      * Returns the sum of the lengths of all Strings in the specified array.
      */
-    // 27 bytes
+    // 30 bytes
     private static int sumStringLengths(final String[] arguments) {
         int result = 0;
         for (int i = 0; i < arguments.length; i++) {
-            result += arguments[i].length();
+            result += String.valueOf(arguments[i]).length();
         }
         return result;
     }
@@ -441,11 +441,11 @@ public class ParameterizedMessage implements Message {
      * Appends the argument at the specified argument index to the specified result char array at the specified position
      * and returns the resulting position.
      */
-    // 27 bytes
+    // 30 bytes
     private static int writeArgAt0(final String[] arguments, final int currentArgument, final char[] result,
             final int pos) {
-        final String arg = arguments[currentArgument];
-        final int argLen = arg.length();
+        final String arg = String.valueOf(arguments[currentArgument]);
+        int argLen = arg.length();
         arg.getChars(0, argLen, result, pos);
         return pos + argLen;
     }
