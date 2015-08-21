@@ -272,6 +272,7 @@ public class ParameterizedMessage implements Message {
      * @param arguments      the arguments to be used to replace placeholders.
      * @return the formatted message.
      */
+    // Profiling showed this method is important to log4j performance. Modify with care!
     // 33 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
     static String formatStringArgs(final String messagePattern, final String[] arguments) {
         int len = 0;
@@ -283,6 +284,7 @@ public class ParameterizedMessage implements Message {
         return formatStringArgs0(messagePattern, len, arguments);
     }
 
+    // Profiling showed this method is important to log4j performance. Modify with care!
     // 157 bytes (will be inlined when hot enough: < 325 bytes)
     private static String formatStringArgs0(final String messagePattern, final int len, final String[] arguments) {
         final char[] result = new char[len + sumStringLengths(arguments)];
@@ -323,6 +325,7 @@ public class ParameterizedMessage implements Message {
     /**
      * Returns the sum of the lengths of all Strings in the specified array.
      */
+    // Profiling showed this method is important to log4j performance. Modify with care!
     // 30 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
     private static int sumStringLengths(final String[] arguments) {
         int result = 0;
@@ -336,6 +339,7 @@ public class ParameterizedMessage implements Message {
      * Returns {@code true} if the specified char and the char at {@code curCharIndex + 1} in the specified message
      * pattern together form a "{}" delimiter pair, returns {@code false} otherwise.
      */
+    // Profiling showed this method is important to log4j performance. Modify with care!
     // 22 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
     private static boolean isDelimPair(final char curChar, final String messagePattern, final int curCharIndex) {
         return curChar == DELIM_START && messagePattern.charAt(curCharIndex + 1) == DELIM_STOP;
@@ -345,6 +349,7 @@ public class ParameterizedMessage implements Message {
      * Detects whether the message pattern has been fully processed or if an unprocessed character remains and processes
      * it if necessary, returning the resulting position in the result char array.
      */
+    // Profiling showed this method is important to log4j performance. Modify with care!
     // 28 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
     private static int handleRemainingCharIfAny(final String messagePattern, final int len, final char[] result,
             int pos, int escapeCounter, int i) {
@@ -358,6 +363,7 @@ public class ParameterizedMessage implements Message {
     /**
      * Processes the last unprocessed character and returns the resulting position in the result char array.
      */
+    // Profiling showed this method is important to log4j performance. Modify with care!
     // 28 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
     private static int handleLastChar(final char[] result, int pos, final int escapeCounter, final char curChar) {
         if (curChar == ESCAPE_CHAR) {
@@ -372,6 +378,7 @@ public class ParameterizedMessage implements Message {
      * Processes a literal char (neither an '\' escape char nor a "{}" delimiter pair) and returns the resulting
      * position.
      */
+    // Profiling showed this method is important to log4j performance. Modify with care!
     // 16 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
     private static int handleLiteralChar(final char[] result, int pos, final int escapeCounter, final char curChar) {
         // any other char beside ESCAPE or DELIM_START/STOP-combo
@@ -384,6 +391,7 @@ public class ParameterizedMessage implements Message {
     /**
      * Writes "{}" to the specified result array at the specified position and returns the resulting position.
      */
+    // Profiling showed this method is important to log4j performance. Modify with care!
     // 18 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
     private static int writeDelimPair(final char[] result, int pos) {
         result[pos++] = DELIM_START;
@@ -394,6 +402,7 @@ public class ParameterizedMessage implements Message {
     /**
      * Returns {@code true} if the specified parameter is odd.
      */
+    // Profiling showed this method is important to log4j performance. Modify with care!
     // 11 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
     private static boolean isOdd(final int number) {
         return (number & 1) == 1;
@@ -403,6 +412,7 @@ public class ParameterizedMessage implements Message {
      * Writes a '\' char to the specified result array (starting at the specified position) for each <em>pair</em> of
      * '\' escape chars encountered in the message format and returns the resulting position.
      */
+    // Profiling showed this method is important to log4j performance. Modify with care!
     // 11 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
     private static int writeEscapedEscapeChars(final int escapeCounter, final char[] result, final int pos) {
         final int escapedEscapes = escapeCounter >> 1; // divide by two
@@ -413,6 +423,7 @@ public class ParameterizedMessage implements Message {
      * Writes the specified number of '\' chars to the specified result array (starting at the specified position) and
      * returns the resulting position.
      */
+    // Profiling showed this method is important to log4j performance. Modify with care!
     // 20 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
     private static int writeUnescapedEscapeChars(int escapeCounter, char[] result, int pos) {
         while (escapeCounter > 0) {
@@ -426,6 +437,7 @@ public class ParameterizedMessage implements Message {
      * Appends the argument at the specified argument index (or, if no such argument exists, the "{}" delimiter pair) to
      * the specified result char array at the specified position and returns the resulting position.
      */
+    // Profiling showed this method is important to log4j performance. Modify with care!
     // 25 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
     private static int writeArgOrDelimPair(final String[] arguments, final int currentArgument, final char[] result,
             int pos) {
@@ -441,6 +453,7 @@ public class ParameterizedMessage implements Message {
      * Appends the argument at the specified argument index to the specified result char array at the specified position
      * and returns the resulting position.
      */
+    // Profiling showed this method is important to log4j performance. Modify with care!
     // 30 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
     private static int writeArgAt0(final String[] arguments, final int currentArgument, final char[] result,
             final int pos) {
