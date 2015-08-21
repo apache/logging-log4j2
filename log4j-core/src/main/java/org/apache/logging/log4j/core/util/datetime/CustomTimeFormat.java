@@ -26,68 +26,72 @@ import java.util.Objects;
 public class CustomTimeFormat {
     /**
      * Enumeration over the supported date/time format patterns.
+     * <p>
+     * Package protected for unit tests.
      */
-    public static enum FixedFormat {
+    static enum FixedFormat {
         /**
          * ABSOLUTE time format: {@code "HH:mm:ss,SSS"}.
          */
-        ABSOLUTE("HH:mm:ss,SSS", null, ':', 1, ',', 1),
+        ABSOLUTE("HH:mm:ss,SSS", null, 0, ':', 1, ',', 1),
 
         /**
          * ABSOLUTE time format variation with period separator: {@code "HH:mm:ss.SSS"}.
          */
-        ABSOLUTE2("HH:mm:ss.SSS", null, ':', 1, '0', 1),
+        ABSOLUTE2("HH:mm:ss.SSS", null, 0, ':', 1, '.', 1),
 
         /**
          * COMPACT time format: {@code "yyyyMMddHHmmssSSS"}.
          */
-        COMPACT("yyyyMMddHHmmssSSS", "yyyyMMdd", ' ', 0, ' ', 0),
+        COMPACT("yyyyMMddHHmmssSSS", "yyyyMMdd", 0, ' ', 0, ' ', 0),
 
         /**
          * DATE time format: {@code "dd MMM yyyy HH:mm:ss,SSS"}.
          */
-        DATE("dd MMM yyyy HH:mm:ss,SSS", "dd MMM yyyy ", ':', 1, ',', 1),
+        DATE("dd MMM yyyy HH:mm:ss,SSS", "dd MMM yyyy ", 0, ':', 1, ',', 1),
 
         /**
          * DATE time format variation with period separator: {@code "dd MMM yyyy HH:mm:ss.SSS"}.
          */
-        DATE2("dd MMM yyyy HH:mm:ss.SSS", "dd MMM yyyy ", ':', 1, '.', 1),
+        DATE2("dd MMM yyyy HH:mm:ss.SSS", "dd MMM yyyy ", 0, ':', 1, '.', 1),
 
         /**
          * DEFAULT time format: {@code "yyyy-MM-dd HH:mm:ss,SSS"}.
          */
-        DEFAULT("yyyy-MM-dd HH:mm:ss,SSS", "yyyy-MM-dd ", ':', 1, ',', 1),
+        DEFAULT("yyyy-MM-dd HH:mm:ss,SSS", "yyyy-MM-dd ", 0, ':', 1, ',', 1),
 
         /**
          * DEFAULT time format variation with period separator: {@code "yyyy-MM-dd HH:mm:ss.SSS"}.
          */
-        DEFAULT2("yyyy-MM-dd HH:mm:ss.SSS", "yyyy-MM-dd ", ':', 1, '.', 1),
+        DEFAULT2("yyyy-MM-dd HH:mm:ss.SSS", "yyyy-MM-dd ", 0, ':', 1, '.', 1),
 
         /**
          * ISO8601_BASIC time format: {@code "yyyyMMdd'T'HHmmss,SSS"}.
          */
-        ISO8601_BASIC("yyyyMMdd'T'HHmmss,SSS", "yyyyMMdd'T'", ' ', 0, ',', 1),
+        ISO8601_BASIC("yyyyMMdd'T'HHmmss,SSS", "yyyyMMdd'T'", 2, ' ', 0, ',', 1),
 
         /**
          * ISO8601 time format: {@code "yyyy-MM-dd'T'HH:mm:ss,SSS"}.
          */
-        ISO8601("yyyy-MM-dd'T'HH:mm:ss,SSS", "yyyy-MM-dd'T'", ':', 1, ',', 1), ;
+        ISO8601("yyyy-MM-dd'T'HH:mm:ss,SSS", "yyyy-MM-dd'T'", 2, ':', 1, ',', 1), ;
 
         private final String pattern;
         private final String datePattern;
+        private final int escapeCount;
         private final char timeSeparatorChar;
         private final int timeSeparatorLength;
         private final char millisSeparatorChar;
         private final int millisSeparatorLength;
 
-        private FixedFormat(final String pattern, final String datePattern, char timeSeparator, int timeSepLength,
-                char millisSeparator, int millisSepLength) {
+        private FixedFormat(final String pattern, final String datePattern, final int escapeCount,
+                final char timeSeparator, final int timeSepLength, final char millisSeparator, final int millisSepLength) {
             this.timeSeparatorChar = timeSeparator;
             this.timeSeparatorLength = timeSepLength;
             this.millisSeparatorChar = millisSeparator;
             this.millisSeparatorLength = millisSepLength;
             this.pattern = Objects.requireNonNull(pattern);
             this.datePattern = datePattern; // may be null
+            this.escapeCount = escapeCount;
         }
 
         public String getPattern() {
@@ -101,8 +105,8 @@ public class CustomTimeFormat {
         /**
          * Returns the FixedFormat with the name or pattern matching the specified string or {@code null} if not found.
          */
-        public static FixedFormat lookup(String nameOrPattern) {
-            for (FixedFormat type : FixedFormat.values()) {
+        public static FixedFormat lookup(final String nameOrPattern) {
+            for (final FixedFormat type : FixedFormat.values()) {
                 if (type.name().equals(nameOrPattern) || type.getPattern().equals(nameOrPattern)) {
                     return type;
                 }
@@ -110,8 +114,12 @@ public class CustomTimeFormat {
             return null;
         }
 
+        public int getLength() {
+            return pattern.length() - escapeCount;
+        }
+
         public int getDatePatternLength() {
-            return getDatePattern() == null ? 0 : getDatePattern().length();
+            return getDatePattern() == null ? 0 : getDatePattern().length() - escapeCount;
         }
 
         public FastDateFormat getFastDateFormat() {
@@ -123,7 +131,7 @@ public class CustomTimeFormat {
         if (options == null || options.length == 0 || options.length > 1) {
             return null; // time zone not supported
         }
-        FixedFormat type = FixedFormat.lookup(options[0]);
+        final FixedFormat type = FixedFormat.lookup(options[0]);
         return type == null ? null : new CustomTimeFormat(type);
     }
 
@@ -138,6 +146,12 @@ public class CustomTimeFormat {
 
     private volatile long midnightToday = 0;
     private volatile long midnightTomorrow = 0;
+    // cachedDate does not need to be volatile because
+    // there is a write to a volatile field *after* cachedDate is modified,
+    // and there is a read from a volatile field *before* cachedDate is read.
+    // The Java memory model guarantees that because of the above,
+    // changes to cachedDate in one thread are visible to other threads.
+    // See http://g.oswego.edu/dl/jmm/cookbook.html
     private char[] cachedDate; // may be null
 
     /**
@@ -147,13 +161,13 @@ public class CustomTimeFormat {
      * 
      * @param type the fixed format
      */
-    CustomTimeFormat(FixedFormat type) {
+    CustomTimeFormat(final FixedFormat type) {
         this.type = Objects.requireNonNull(type);
         this.timeSeparatorChar = type.timeSeparatorChar;
         this.timeSeparatorLength = type.timeSeparatorLength;
         this.millisSeparatorChar = type.millisSeparatorChar;
         this.millisSeparatorLength = type.millisSeparatorLength;
-        this.length = type.getPattern().length();
+        this.length = type.getLength();
         this.dateLength = type.getDatePatternLength();
         this.fastDateFormat = type.getFastDateFormat();
     }
@@ -162,7 +176,8 @@ public class CustomTimeFormat {
         return type.getPattern();
     }
 
-    // 21 bytes (allows immediate JVM inlining: < 35 bytes)
+    // Profiling showed this method is important to log4j performance. Modify with care!
+    // 21 bytes (allows immediate JVM inlining: <= -XX:MaxInlineSize=35 bytes)
     private long millisSinceMidnight(final long now) {
         if (now >= midnightTomorrow) {
             updateMidnightMillis(now);
@@ -172,19 +187,15 @@ public class CustomTimeFormat {
 
     private void updateMidnightMillis(final long now) {
 
-        // cachedDate does not need to be volatile because
-        // there is a write to a volatile field *after* cachedDate is modified,
-        // and there is a read from a volatile field *before* cachedDate is read.
-        // The Java memory model guarantees that because of the above,
-        // changes to cachedDate in one thread are visible to other threads.
         updateCachedDate(now);
 
-        midnightToday = calcMidnightMillis(0);
-        midnightTomorrow = calcMidnightMillis(1);
+        midnightToday = calcMidnightMillis(now, 0);
+        midnightTomorrow = calcMidnightMillis(now, 1);
     }
 
-    private long calcMidnightMillis(final int addDays) {
+    static long calcMidnightMillis(final long time, final int addDays) {
         final Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(time);
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
@@ -193,41 +204,45 @@ public class CustomTimeFormat {
         return cal.getTimeInMillis();
     }
 
-    private void updateCachedDate(long now) {
+    private void updateCachedDate(final long now) {
         if (fastDateFormat != null) {
-            StringBuilder result = fastDateFormat.format(now, new StringBuilder());
+            final StringBuilder result = fastDateFormat.format(now, new StringBuilder());
             cachedDate = result.toString().toCharArray();
         }
     }
 
-    // 28 bytes (allows immediate JVM inlining: < 35 bytes)
+    // Profiling showed this method is important to log4j performance. Modify with care!
+    // 28 bytes (allows immediate JVM inlining: <= -XX:MaxInlineSize=35 bytes)
     public String format(final long time) {
         final char[] result = new char[length];
         int written = format(time, result, 0);
         return new String(result, 0, written);
     }
 
-    // 31 bytes (allows immediate JVM inlining: < 35 bytes)
-    public int format(final long time, final char[] buffer, int startPos) {
+    // Profiling showed this method is important to log4j performance. Modify with care!
+    // 31 bytes (allows immediate JVM inlining: <= -XX:MaxInlineSize=35 bytes)
+    public int format(final long time, final char[] buffer, final int startPos) {
         // Calculate values by getting the ms values first and do then
         // calculate the hour minute and second values divisions.
 
         // Get daytime in ms: this does fit into an int
         // int ms = (int) (time % 86400000);
         final int ms = (int) (millisSinceMidnight(time));
-        writeDate(buffer);
+        writeDate(buffer, startPos);
         return writeTime(ms, buffer, startPos + dateLength) - startPos;
     }
 
-    // 22 bytes (allows immediate JVM inlining: < 35 bytes)
-    private void writeDate(char[] buffer) {
+    // Profiling showed this method is important to log4j performance. Modify with care!
+    // 22 bytes (allows immediate JVM inlining: <= -XX:MaxInlineSize=35 bytes)
+    private void writeDate(final char[] buffer, final int startPos) {
         if (cachedDate != null) {
-            System.arraycopy(cachedDate, 0, buffer, 0, dateLength);
+            System.arraycopy(cachedDate, 0, buffer, startPos, dateLength);
         }
     }
 
-    // 262 bytes (will be inlined when hot enough: < 325 bytes)
-    private int writeTime(int ms, char[] buffer, int pos) {
+    // Profiling showed this method is important to log4j performance. Modify with care!
+    // 262 bytes (will be inlined when hot enough: <= -XX:FreqInlineSize=325 bytes on Linux)
+    private int writeTime(int ms, final char[] buffer, int pos) {
         final int hours = ms / 3600000;
         ms -= 3600000 * hours;
 

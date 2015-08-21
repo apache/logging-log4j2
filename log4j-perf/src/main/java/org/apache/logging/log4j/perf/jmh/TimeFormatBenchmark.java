@@ -18,12 +18,12 @@
 package org.apache.logging.log4j.perf.jmh;
 
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.core.util.datetime.CustomTimeFormat;
 import org.apache.logging.log4j.core.util.datetime.FastDateFormat;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -38,7 +38,7 @@ import org.openjdk.jmh.annotations.State;
 // ============================== HOW TO RUN THIS TEST: ====================================
 //
 // single thread:
-// java -jar log4j-perf/target/benchmarks.jar ".*TimeFormat.*" -f 1 -wi 5 -i 5
+// java -jar log4j-perf/target/benchmarks.jar ".*TimeFormat.*" -f 1 -wi 5 -i 10
 //
 // multiple threads (for example, 4 threads):
 // java -jar log4j-perf/target/benchmarks.jar ".*TimeFormat.*" -f 1 -wi 5 -i 5 -t 4 -si true
@@ -55,28 +55,29 @@ public class TimeFormatBenchmark {
             return new SimpleDateFormat("HH:mm:ss.SSS");
         }
     };
-    // SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
     FastDateFormat fastDateFormat = FastDateFormat.getInstance("HH:mm:ss.SSS");
+    CustomTimeFormat customTimeFormat = CustomTimeFormat.createIfSupported(new String[]{"ABSOLUTE"});
     volatile long midnightToday = 0;
     volatile long midnightTomorrow = 0;
 
     @State(Scope.Thread)
     public static class BufferState {
-        ByteBuffer buffer = ByteBuffer.allocate(12);
-        StringBuilder stringBuilder = new StringBuilder(12);
+        final ByteBuffer buffer = ByteBuffer.allocate(12);
+        final StringBuilder stringBuilder = new StringBuilder(12);
+        final char[] charArray = new char[12];
     }
 
     private long millisSinceMidnight(final long now) {
         if (now >= midnightTomorrow) {
-            midnightToday = calcMidnightMillis(0);
-            midnightTomorrow = calcMidnightMillis(1);
+            midnightToday = calcMidnightMillis(now, 0);
+            midnightTomorrow = calcMidnightMillis(now, 1);
         }
         return now - midnightToday;
     }
 
-    private long calcMidnightMillis(final int addDays) {
-        // Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UCT"));
+    private long calcMidnightMillis(final long time, final int addDays) {
         final Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(time);
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
@@ -86,98 +87,66 @@ public class TimeFormatBenchmark {
     }
 
     public static void main(final String[] args) {
-        System.out.println(new TimeFormatBenchmark().customBitFiddlingFormatString(new BufferState()));
-        System.out.println(new TimeFormatBenchmark().customFormatString(new BufferState()));
+        System.out.println(new TimeFormatBenchmark().customBitFiddlingReuseCharArray(new BufferState()));
+        System.out.println(new TimeFormatBenchmark().customFormatReuseStringBuilder(new BufferState()));
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public void baseline() {
-    }
-
-    @Benchmark
-    @BenchmarkMode(Mode.SampleTime)
-    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public String simpleDateFormatString() {
+    public String simpleDateFormat() {
         return threadLocalSimpleDateFormat.get().format(new Date());
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public int simpleDateFormatBytes(final BufferState state) {
-        final String str = threadLocalSimpleDateFormat.get().format(new Date());
-        final byte[] bytes = str.getBytes(StandardCharsets.UTF_8);
-        state.buffer.clear();
-        state.buffer.put(bytes);
-        return state.buffer.position();
-    }
-
-    @Benchmark
-    @BenchmarkMode(Mode.SampleTime)
-    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public String fastDateFormatString() {
+    public String fastDateFormatCreateNewStringBuilder() {
         return fastDateFormat.format(new Date());
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public int fastDateFormatBytes(final BufferState state) {
-        final String str = fastDateFormat.format(new Date());
-        final byte[] bytes = str.getBytes(StandardCharsets.UTF_8);
-        state.buffer.clear();
-        state.buffer.put(bytes);
-        return state.buffer.position();
-    }
-
-    @Benchmark
-    @BenchmarkMode(Mode.SampleTime)
-    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public String customBitFiddlingFormatString(final BufferState state) {
-        state.buffer.clear();
-        fastFormat(System.currentTimeMillis(), state.buffer);
-        return new String(state.buffer.array(), 0, state.buffer.position(), StandardCharsets.UTF_8);
-    }
-
-    @Benchmark
-    @BenchmarkMode(Mode.SampleTime)
-    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public int customBitFiddlingFormatBytes(final BufferState state) {
-        state.buffer.clear();
-        fastFormat(System.currentTimeMillis(), state.buffer);
-        return state.buffer.position();
-    }
-
-    @Benchmark
-    @BenchmarkMode(Mode.SampleTime)
-    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public String customFormatString(final BufferState state) {
+    public String fastDateFormatReuseStringBuilder(final BufferState state) {
         state.stringBuilder.setLength(0);
-        formatText(System.currentTimeMillis(), state.stringBuilder);
+        fastDateFormat.format(new Date(), state.stringBuilder);
         return new String(state.stringBuilder);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public int customFormatStringBuilder(final BufferState state) {
-        state.stringBuilder.setLength(0);
-        formatText(System.currentTimeMillis(), state.stringBuilder);
-        return state.stringBuilder.length();
+    public String customBitFiddlingReuseCharArray(final BufferState state) {
+        final int len = formatCharArrayBitFiddling(System.currentTimeMillis(), state.charArray, 0);
+        return new String(state.charArray, 0, len);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public int customFormatBytes(final BufferState state) {
-        state.buffer.clear();
-        format(System.currentTimeMillis(), state.buffer);
-        return state.buffer.position();
+    public String customTimeFormatCreateNewCharArray(final BufferState state) {
+        return customTimeFormat.format(System.currentTimeMillis());
     }
 
-    public ByteBuffer fastFormat(final long time, final ByteBuffer buffer) {
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public String customTimeFormatReuseCharArray(final BufferState state) {
+        final int len = customTimeFormat.format(System.currentTimeMillis(), state.charArray, 0);
+        return new String(state.charArray, 0, len);
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public String customFormatReuseStringBuilder(final BufferState state) {
+        state.stringBuilder.setLength(0);
+        formatStringBuilder(System.currentTimeMillis(), state.stringBuilder);
+        return new String(state.stringBuilder);
+    }
+
+    int formatCharArrayBitFiddling(final long time, final char[] buffer, int pos) {
         // Calculate values by getting the ms values first and do then
         // shave off the hour minute and second values with multiplications
         // and bit shifts instead of simple but expensive divisions.
@@ -199,43 +168,43 @@ public class TimeFormatBenchmark {
         // Hour
         // 13/128 is nearly the same as /10 for values up to 65
         int temp = (hour * 13) >> 7;
-        buffer.put((byte) (temp + '0'));
+        buffer[pos++] = ((char) (temp + '0'));
 
         // Do subtract to get remainder instead of doing % 10
-        buffer.put((byte) (hour - 10 * temp + '0'));
-        buffer.put((byte) ':');
+        buffer[pos++] = ((char) (hour - 10 * temp + '0'));
+        buffer[pos++] = ((char) ':');
 
         // Minute
         // 13/128 is nearly the same as /10 for values up to 65
         temp = (minute * 13) >> 7;
-        buffer.put((byte) (temp + '0'));
+        buffer[pos++] = ((char) (temp + '0'));
 
         // Do subtract to get remainder instead of doing % 10
-        buffer.put((byte) (minute - 10 * temp + '0'));
-        buffer.put((byte) ':');
+        buffer[pos++] = ((char) (minute - 10 * temp + '0'));
+        buffer[pos++] = ((char) ':');
 
         // Second
         // 13/128 is nearly the same as /10 for values up to 65
         temp = (second * 13) >> 7;
-        buffer.put((byte) (temp + '0'));
-        buffer.put((byte) (second - 10 * temp + '0'));
-        buffer.put((byte) '.');
+        buffer[pos++] = ((char) (temp + '0'));
+        buffer[pos++] = ((char) (second - 10 * temp + '0'));
+        buffer[pos++] = ((char) '.');
 
         // Millisecond
         // 41/4096 is nearly the same as /100
         temp = (ms * 41) >> 12;
-        buffer.put((byte) (temp + '0'));
+        buffer[pos++] = ((char) (temp + '0'));
 
         ms -= 100 * temp;
         temp = (ms * 205) >> 11; // 205/2048 is nearly the same as /10
-        buffer.put((byte) (temp + '0'));
+        buffer[pos++] = ((char) (temp + '0'));
 
         ms -= 10 * temp;
-        buffer.put((byte) (ms + '0'));
-        return buffer;
+        buffer[pos++] = ((char) (ms + '0'));
+        return pos;
     }
 
-    public StringBuilder formatText(final long time, final StringBuilder buffer) {
+    StringBuilder formatStringBuilder(final long time, final StringBuilder buffer) {
         // Calculate values by getting the ms values first and do then
         // calculate the hour minute and second values divisions.
 
@@ -287,7 +256,7 @@ public class TimeFormatBenchmark {
         return buffer;
     }
 
-    public ByteBuffer format(final long time, final ByteBuffer buffer) {
+    int formatCharArray(final long time, final char[] buffer, int pos) {
         // Calculate values by getting the ms values first and do then
         // calculate the hour minute and second values divisions.
 
@@ -306,36 +275,36 @@ public class TimeFormatBenchmark {
 
         // Hour
         int temp = hours / 10;
-        buffer.put((byte) (temp + '0'));
+        buffer[pos++] = ((char) (temp + '0'));
 
         // Do subtract to get remainder instead of doing % 10
-        buffer.put((byte) (hours - 10 * temp + '0'));
-        buffer.put((byte) ':');
+        buffer[pos++] = ((char) (hours - 10 * temp + '0'));
+        buffer[pos++] = ((char) ':');
 
         // Minute
         temp = minutes / 10;
-        buffer.put((byte) (temp + '0'));
+        buffer[pos++] = ((char) (temp + '0'));
 
         // Do subtract to get remainder instead of doing % 10
-        buffer.put((byte) (minutes - 10 * temp + '0'));
-        buffer.put((byte) ':');
+        buffer[pos++] = ((char) (minutes - 10 * temp + '0'));
+        buffer[pos++] = ((char) ':');
 
         // Second
         temp = seconds / 10;
-        buffer.put((byte) (temp + '0'));
-        buffer.put((byte) (seconds - 10 * temp + '0'));
-        buffer.put((byte) '.');
+        buffer[pos++] = ((char) (temp + '0'));
+        buffer[pos++] = ((char) (seconds - 10 * temp + '0'));
+        buffer[pos++] = ((char) '.');
 
         // Millisecond
         temp = ms / 100;
-        buffer.put((byte) (temp + '0'));
+        buffer[pos++] = ((char) (temp + '0'));
 
         ms -= 100 * temp;
         temp = ms / 10;
-        buffer.put((byte) (temp + '0'));
+        buffer[pos++] = ((char) (temp + '0'));
 
         ms -= 10 * temp;
-        buffer.put((byte) (ms + '0'));
-        return buffer;
+        buffer[pos++] = ((char) (ms + '0'));
+        return pos;
     }
 }
