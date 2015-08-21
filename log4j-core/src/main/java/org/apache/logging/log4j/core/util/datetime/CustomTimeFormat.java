@@ -127,7 +127,7 @@ public class CustomTimeFormat {
         }
     }
 
-    public static CustomTimeFormat createIfSupported(final String[] options) {
+    public static CustomTimeFormat createIfSupported(final String... options) {
         if (options == null || options.length == 0 || options.length > 1) {
             return null; // time zone not supported
         }

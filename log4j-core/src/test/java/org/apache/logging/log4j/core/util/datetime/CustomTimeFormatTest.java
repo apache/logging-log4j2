@@ -99,7 +99,7 @@ public class CustomTimeFormatTest {
 
     @Test
     public void testCreateIfSupported_nullIfOptionsArrayNull() {
-        assertNull("null", CustomTimeFormat.createIfSupported(null));
+        assertNull("null", CustomTimeFormat.createIfSupported((String[]) null));
     }
 
     @Test
