@@ -22,7 +22,7 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.logging.log4j.core.util.datetime.CustomTimeFormat;
+import org.apache.logging.log4j.core.util.datetime.FixedDateFormat;
 import org.apache.logging.log4j.core.util.datetime.FastDateFormat;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -50,50 +50,50 @@ public class ThreadsafeDateFormatBenchmark {
 
     private final Date date = new Date();
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
-    private final ThreadLocal<SimpleDateFormat> threadLocal = new ThreadLocal<SimpleDateFormat>() {
+    private final ThreadLocal<SimpleDateFormat> threadLocalSDFormat = new ThreadLocal<SimpleDateFormat>() {
         @Override
         protected SimpleDateFormat initialValue() {
             return new SimpleDateFormat("HH:mm:ss.SSS");
         }
     };
 
-    private final ThreadLocal<Formatter> localFormat = new ThreadLocal<Formatter>() {
+    private final ThreadLocal<FormatterSimple> threadLocalCachedSDFormat = new ThreadLocal<FormatterSimple>() {
         @Override
-        protected Formatter initialValue() {
-            return new Formatter();
+        protected FormatterSimple initialValue() {
+            return new FormatterSimple();
         }
     };
 
-    private final FastDateFormat fastFormat = FastDateFormat.getInstance("HH:mm:ss.SSS");
-    private final CustomTimeFormat customFormat = CustomTimeFormat.createIfSupported("HH:mm:ss.SSS");
-    private final CustomFormatReuseBuffer customFormatReuseBuffer = new CustomFormatReuseBuffer();
+    private final FastDateFormat fastDateFormat = FastDateFormat.getInstance("HH:mm:ss.SSS");
+    private final FixedDateFormat fixedDateFormat = FixedDateFormat.createIfSupported("HH:mm:ss.SSS");
+    private final FormatterFixedReuseBuffer formatFixedReuseBuffer = new FormatterFixedReuseBuffer();
     
-    private class CurrentTime {
+    private class CachedTimeFastFormat {
         private final long timestamp;
         private final String formatted;
 
-        public CurrentTime(final long timestamp) {
+        public CachedTimeFastFormat(final long timestamp) {
             this.timestamp = timestamp;
-            this.formatted = fastFormat.format(timestamp);
+            this.formatted = fastDateFormat.format(timestamp);
         }
     }
 
-    private class CustomCurrentTime {
+    private class CachedTimeFixedFmt {
         private final long timestamp;
         private final String formatted;
 
-        public CustomCurrentTime(final long timestamp) {
+        public CachedTimeFixedFmt(final long timestamp) {
             this.timestamp = timestamp;
-            this.formatted = customFormat.format(timestamp);
+            this.formatted = fixedDateFormat.format(timestamp);
         }
     }
 
-    private class Formatter {
+    private class FormatterSimple {
         private final SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
         private long timestamp;
         private String formatted;
 
-        public Formatter() {
+        public FormatterSimple() {
             this.timestamp = 0;
         }
 
@@ -106,8 +106,8 @@ public class ThreadsafeDateFormatBenchmark {
         }
     }
 
-    private class CustomFormatReuseBuffer {
-        private final CustomTimeFormat customFormat = CustomTimeFormat.createIfSupported("HH:mm:ss.SSS");
+    private class FormatterFixedReuseBuffer {
+        private final FixedDateFormat customFormat = FixedDateFormat.createIfSupported("HH:mm:ss.SSS");
         private long timestamp;
         private String formatted;
         private final ThreadLocal<char[]> reusableBuffer = new ThreadLocal<char[]>() {
@@ -117,7 +117,7 @@ public class ThreadsafeDateFormatBenchmark {
             }
         };
 
-        public CustomFormatReuseBuffer() {
+        public FormatterFixedReuseBuffer() {
             this.timestamp = 0;
         }
 
@@ -135,8 +135,8 @@ public class ThreadsafeDateFormatBenchmark {
     private final long currentTimestamp = 0;
     private String cachedTime = null;
 
-    private final AtomicReference<CurrentTime> currentTime = new AtomicReference<>(new CurrentTime(System.currentTimeMillis()));
-    private final AtomicReference<CustomCurrentTime> customCurrentTime = new AtomicReference<>(new CustomCurrentTime(System.currentTimeMillis()));
+    private final AtomicReference<CachedTimeFastFormat> cachedTimeFastFmt = new AtomicReference<>(new CachedTimeFastFormat(System.nanoTime()));
+    private final AtomicReference<CachedTimeFixedFmt> cachedTimeFixedFmt = new AtomicReference<>(new CachedTimeFixedFmt(System.nanoTime()));
 
     public static void main(final String[] args) {
     }
@@ -151,7 +151,7 @@ public class ThreadsafeDateFormatBenchmark {
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public String synchronizedSimpleDateFmt() {
-        final long timestamp = System.currentTimeMillis();
+        final long timestamp = System.nanoTime();
         synchronized (simpleDateFormat) {
             if (timestamp != currentTimestamp) {
                 cachedTime = simpleDateFormat.format(date);
@@ -164,52 +164,52 @@ public class ThreadsafeDateFormatBenchmark {
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public String threadLocalSimpleDateFmt() {
-        final long timestamp = System.currentTimeMillis();
-        return threadLocal.get().format(timestamp);
+        final long timestamp = System.nanoTime();
+        return threadLocalSDFormat.get().format(timestamp);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public String cachedThrdLocalSimpleDateFmt() {
-        final long timestamp = System.currentTimeMillis();
-        return localFormat.get().format(timestamp);
+        final long timestamp = System.nanoTime();
+        return threadLocalCachedSDFormat.get().format(timestamp);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public String cachedThrdLocalCustomFormat() {
-        final long timestamp = System.currentTimeMillis();
-        return customFormatReuseBuffer.format(timestamp);
+        final long timestamp = System.nanoTime();
+        return formatFixedReuseBuffer.format(timestamp);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public String fastFormat() {
-        return fastFormat.format(System.currentTimeMillis());
+    public String fastDateFormat() {
+        return fastDateFormat.format(System.nanoTime());
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public String customFormat() {
-        return customFormat.format(System.currentTimeMillis());
+    public String fixedDateFormat() {
+        return fixedDateFormat.format(System.nanoTime());
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public String atomicFastFormat() {
-        final long timestamp = System.currentTimeMillis();
-        final CurrentTime current = currentTime.get();
+        final long timestamp = System.nanoTime();
+        final CachedTimeFastFormat current = cachedTimeFastFmt.get();
         if (timestamp != current.timestamp) {
-            final CurrentTime newTime = new CurrentTime(timestamp);
-            if (currentTime.compareAndSet(current, newTime)) {
+            final CachedTimeFastFormat newTime = new CachedTimeFastFormat(timestamp);
+            if (cachedTimeFastFmt.compareAndSet(current, newTime)) {
                 return newTime.formatted;
             } else {
-                return currentTime.get().formatted;
+                return cachedTimeFastFmt.get().formatted;
             }
 
         }
@@ -219,15 +219,15 @@ public class ThreadsafeDateFormatBenchmark {
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public String atomicCustomFormat() {
-        final long timestamp = System.currentTimeMillis();
-        final CustomCurrentTime current = customCurrentTime.get();
+    public String atomicFixedFormat() {
+        final long timestamp = System.nanoTime();
+        final CachedTimeFixedFmt current = cachedTimeFixedFmt.get();
         if (timestamp != current.timestamp) {
-            final CustomCurrentTime newTime = new CustomCurrentTime(timestamp);
-            if (customCurrentTime.compareAndSet(current, newTime)) {
+            final CachedTimeFixedFmt newTime = new CachedTimeFixedFmt(timestamp);
+            if (cachedTimeFixedFmt.compareAndSet(current, newTime)) {
                 return newTime.formatted;
             } else {
-                return customCurrentTime.get().formatted;
+                return cachedTimeFixedFmt.get().formatted;
             }
 
         }

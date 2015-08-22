@@ -23,7 +23,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.logging.log4j.core.util.datetime.CustomTimeFormat;
+import org.apache.logging.log4j.core.util.datetime.FixedDateFormat;
 import org.apache.logging.log4j.core.util.datetime.FastDateFormat;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -56,7 +56,7 @@ public class TimeFormatBenchmark {
         }
     };
     FastDateFormat fastDateFormat = FastDateFormat.getInstance("HH:mm:ss.SSS");
-    CustomTimeFormat customTimeFormat = CustomTimeFormat.createIfSupported(new String[]{"ABSOLUTE"});
+    FixedDateFormat fixedDateFormat = FixedDateFormat.createIfSupported(new String[]{"ABSOLUTE"});
     volatile long midnightToday = 0;
     volatile long midnightTomorrow = 0;
 
@@ -87,8 +87,8 @@ public class TimeFormatBenchmark {
     }
 
     public static void main(final String[] args) {
-        System.out.println(new TimeFormatBenchmark().customBitFiddlingReuseCharArray(new BufferState()));
-        System.out.println(new TimeFormatBenchmark().customFormatReuseStringBuilder(new BufferState()));
+        System.out.println(new TimeFormatBenchmark().fixedBitFiddlingReuseCharArray(new BufferState()));
+        System.out.println(new TimeFormatBenchmark().fixedFormatReuseStringBuilder(new BufferState()));
     }
 
     @Benchmark
@@ -117,7 +117,7 @@ public class TimeFormatBenchmark {
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public String customBitFiddlingReuseCharArray(final BufferState state) {
+    public String fixedBitFiddlingReuseCharArray(final BufferState state) {
         final int len = formatCharArrayBitFiddling(System.currentTimeMillis(), state.charArray, 0);
         return new String(state.charArray, 0, len);
     }
@@ -125,22 +125,22 @@ public class TimeFormatBenchmark {
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public String customTimeFormatCreateNewCharArray(final BufferState state) {
-        return customTimeFormat.format(System.currentTimeMillis());
+    public String fixedDateFormatCreateNewCharArray(final BufferState state) {
+        return fixedDateFormat.format(System.currentTimeMillis());
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public String customTimeFormatReuseCharArray(final BufferState state) {
-        final int len = customTimeFormat.format(System.currentTimeMillis(), state.charArray, 0);
+    public String fixedDateFormatReuseCharArray(final BufferState state) {
+        final int len = fixedDateFormat.format(System.currentTimeMillis(), state.charArray, 0);
         return new String(state.charArray, 0, len);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public String customFormatReuseStringBuilder(final BufferState state) {
+    public String fixedFormatReuseStringBuilder(final BufferState state) {
         state.stringBuilder.setLength(0);
         formatStringBuilder(System.currentTimeMillis(), state.stringBuilder);
         return new String(state.stringBuilder);

@@ -23,13 +23,13 @@ import java.util.Objects;
 /**
  * Custom time formatter that trades flexibility for performance.
  */
-public class CustomTimeFormat {
+public class FixedDateFormat {
     /**
      * Enumeration over the supported date/time format patterns.
      * <p>
      * Package protected for unit tests.
      */
-    static enum FixedFormat {
+    public static enum FixedFormat {
         /**
          * ABSOLUTE time format: {@code "HH:mm:ss,SSS"}.
          */
@@ -38,7 +38,7 @@ public class CustomTimeFormat {
         /**
          * ABSOLUTE time format variation with period separator: {@code "HH:mm:ss.SSS"}.
          */
-        ABSOLUTE2("HH:mm:ss.SSS", null, 0, ':', 1, '.', 1),
+        ABSOLUTE_PERIOD("HH:mm:ss.SSS", null, 0, ':', 1, '.', 1),
 
         /**
          * COMPACT time format: {@code "yyyyMMddHHmmssSSS"}.
@@ -46,14 +46,14 @@ public class CustomTimeFormat {
         COMPACT("yyyyMMddHHmmssSSS", "yyyyMMdd", 0, ' ', 0, ' ', 0),
 
         /**
-         * DATE time format: {@code "dd MMM yyyy HH:mm:ss,SSS"}.
+         * DATE_AND_TIME time format: {@code "dd MMM yyyy HH:mm:ss,SSS"}.
          */
         DATE("dd MMM yyyy HH:mm:ss,SSS", "dd MMM yyyy ", 0, ':', 1, ',', 1),
 
         /**
-         * DATE time format variation with period separator: {@code "dd MMM yyyy HH:mm:ss.SSS"}.
+         * DATE_AND_TIME time format variation with period separator: {@code "dd MMM yyyy HH:mm:ss.SSS"}.
          */
-        DATE2("dd MMM yyyy HH:mm:ss.SSS", "dd MMM yyyy ", 0, ':', 1, '.', 1),
+        DATE_PERIOD("dd MMM yyyy HH:mm:ss.SSS", "dd MMM yyyy ", 0, ':', 1, '.', 1),
 
         /**
          * DEFAULT time format: {@code "yyyy-MM-dd HH:mm:ss,SSS"}.
@@ -63,7 +63,7 @@ public class CustomTimeFormat {
         /**
          * DEFAULT time format variation with period separator: {@code "yyyy-MM-dd HH:mm:ss.SSS"}.
          */
-        DEFAULT2("yyyy-MM-dd HH:mm:ss.SSS", "yyyy-MM-dd ", 0, ':', 1, '.', 1),
+        DEFAULT_PERIOD("yyyy-MM-dd HH:mm:ss.SSS", "yyyy-MM-dd ", 0, ':', 1, '.', 1),
 
         /**
          * ISO8601_BASIC time format: {@code "yyyyMMdd'T'HHmmss,SSS"}.
@@ -127,15 +127,22 @@ public class CustomTimeFormat {
         }
     }
 
-    public static CustomTimeFormat createIfSupported(final String... options) {
-        if (options == null || options.length == 0 || options.length > 1) {
+    public static FixedDateFormat createIfSupported(final String... options) {
+        if (options == null || options.length == 0 || options[0] == null) {
+            return new FixedDateFormat(FixedFormat.DEFAULT);
+        }
+        if (options.length > 1) {
             return null; // time zone not supported
         }
         final FixedFormat type = FixedFormat.lookup(options[0]);
-        return type == null ? null : new CustomTimeFormat(type);
+        return type == null ? null : new FixedDateFormat(type);
+    }
+    
+    public static FixedDateFormat create(FixedFormat format) {
+        return new FixedDateFormat(format);
     }
 
-    private final FixedFormat type;
+    private final FixedFormat fixedFormat;
     private final int length;
     private final int dateLength;
     private final FastDateFormat fastDateFormat; // may be null
@@ -155,31 +162,31 @@ public class CustomTimeFormat {
     private char[] cachedDate; // may be null
 
     /**
-     * Constructs a CustomTimeFormat for the specified fixed format.
+     * Constructs a FixedDateFormat for the specified fixed format.
      * <p>
      * Package protected for unit tests.
      * 
-     * @param type the fixed format
+     * @param fixedFormat the fixed format
      */
-    CustomTimeFormat(final FixedFormat type) {
-        this.type = Objects.requireNonNull(type);
-        this.timeSeparatorChar = type.timeSeparatorChar;
-        this.timeSeparatorLength = type.timeSeparatorLength;
-        this.millisSeparatorChar = type.millisSeparatorChar;
-        this.millisSeparatorLength = type.millisSeparatorLength;
-        this.length = type.getLength();
-        this.dateLength = type.getDatePatternLength();
-        this.fastDateFormat = type.getFastDateFormat();
+    FixedDateFormat(final FixedFormat fixedFormat) {
+        this.fixedFormat = Objects.requireNonNull(fixedFormat);
+        this.timeSeparatorChar = fixedFormat.timeSeparatorChar;
+        this.timeSeparatorLength = fixedFormat.timeSeparatorLength;
+        this.millisSeparatorChar = fixedFormat.millisSeparatorChar;
+        this.millisSeparatorLength = fixedFormat.millisSeparatorLength;
+        this.length = fixedFormat.getLength();
+        this.dateLength = fixedFormat.getDatePatternLength();
+        this.fastDateFormat = fixedFormat.getFastDateFormat();
     }
 
     public String getFormat() {
-        return type.getPattern();
+        return fixedFormat.getPattern();
     }
 
     // Profiling showed this method is important to log4j performance. Modify with care!
-    // 21 bytes (allows immediate JVM inlining: <= -XX:MaxInlineSize=35 bytes)
+    // 30 bytes (allows immediate JVM inlining: <= -XX:MaxInlineSize=35 bytes)
     private long millisSinceMidnight(final long now) {
-        if (now >= midnightTomorrow) {
+        if (now >= midnightTomorrow || now < midnightToday) {
             updateMidnightMillis(now);
         }
         return now - midnightToday;

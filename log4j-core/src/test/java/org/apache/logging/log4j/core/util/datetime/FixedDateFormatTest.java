@@ -21,32 +21,32 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.logging.log4j.core.util.datetime.CustomTimeFormat.FixedFormat;
+import org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 /**
- * Tests the CustomTimeFormat class.
+ * Tests the FixedDateFormat class.
  */
-public class CustomTimeFormatTest {
+public class FixedDateFormatTest {
 
     @Test
     public void testFixedFormat_getDatePatternNullIfNoDateInPattern() {
         assertNull(FixedFormat.ABSOLUTE.getDatePattern());
-        assertNull(FixedFormat.ABSOLUTE2.getDatePattern());
+        assertNull(FixedFormat.ABSOLUTE_PERIOD.getDatePattern());
     }
 
     @Test
     public void testFixedFormat_getDatePatternLengthZeroIfNoDateInPattern() {
         assertEquals(0, FixedFormat.ABSOLUTE.getDatePatternLength());
-        assertEquals(0, FixedFormat.ABSOLUTE2.getDatePatternLength());
+        assertEquals(0, FixedFormat.ABSOLUTE_PERIOD.getDatePatternLength());
     }
 
     @Test
     public void testFixedFormat_getFastDateFormatNullIfNoDateInPattern() {
         assertNull(FixedFormat.ABSOLUTE.getFastDateFormat());
-        assertNull(FixedFormat.ABSOLUTE2.getFastDateFormat());
+        assertNull(FixedFormat.ABSOLUTE_PERIOD.getFastDateFormat());
     }
 
     @Test
@@ -71,61 +71,75 @@ public class CustomTimeFormatTest {
     
     @Test
     public void testCreateIfSupported_nonNullIfNameMatches() {
-        for (final CustomTimeFormat.FixedFormat format : CustomTimeFormat.FixedFormat.values()) {
+        for (final FixedDateFormat.FixedFormat format : FixedDateFormat.FixedFormat.values()) {
             final String[] options = {format.name()};
-            assertNotNull(format.name(), CustomTimeFormat.createIfSupported(options));
+            assertNotNull(format.name(), FixedDateFormat.createIfSupported(options));
         }
     }
 
     @Test
     public void testCreateIfSupported_nonNullIfPatternMatches() {
-        for (final CustomTimeFormat.FixedFormat format : CustomTimeFormat.FixedFormat.values()) {
+        for (final FixedDateFormat.FixedFormat format : FixedDateFormat.FixedFormat.values()) {
             final String[] options = {format.getPattern()};
-            assertNotNull(format.name(), CustomTimeFormat.createIfSupported(options));
+            assertNotNull(format.name(), FixedDateFormat.createIfSupported(options));
         }
     }
 
     @Test
     public void testCreateIfSupported_nullIfNameDoesNotMatch() {
         final String[] options = {"DEFAULT3"};
-        assertNull("DEFAULT3", CustomTimeFormat.createIfSupported(options));
+        assertNull("DEFAULT3", FixedDateFormat.createIfSupported(options));
     }
 
     @Test
     public void testCreateIfSupported_nullIfPatternDoesNotMatch() {
         final String[] options = {"y M d H m s"};
-        assertNull("y M d H m s", CustomTimeFormat.createIfSupported(options));
+        assertNull("y M d H m s", FixedDateFormat.createIfSupported(options));
     }
 
     @Test
-    public void testCreateIfSupported_nullIfOptionsArrayNull() {
-        assertNull("null", CustomTimeFormat.createIfSupported((String[]) null));
+    public void testCreateIfSupported_defaultIfOptionsArrayNull() {
+        final FixedDateFormat fmt = FixedDateFormat.createIfSupported((String[]) null);
+        assertEquals(FixedFormat.DEFAULT.getPattern(), fmt.getFormat());
+    }
+
+    @Test
+    public void testCreateIfSupported_defaultIfOptionsArrayEmpty() {
+        final FixedDateFormat fmt = FixedDateFormat.createIfSupported(new String[0]);
+        assertEquals(FixedFormat.DEFAULT.getPattern(), fmt.getFormat());
+    }
+
+    @Test
+    public void testCreateIfSupported_defaultIfOptionsArrayWithSingleNullElement() {
+        final FixedDateFormat fmt = FixedDateFormat.createIfSupported(new String[1]);
+        assertEquals(FixedFormat.DEFAULT.getPattern(), fmt.getFormat());
     }
 
     @Test
     public void testCreateIfSupported_nullIfOptionsArrayHasTwoElements() {
-        final String[] options = {CustomTimeFormat.FixedFormat.ABSOLUTE.getPattern(), "+08:00"};
-        assertNull("timezone", CustomTimeFormat.createIfSupported(options));
+        final String[] options = {FixedDateFormat.FixedFormat.ABSOLUTE.getPattern(), "+08:00"};
+        assertNull("timezone", FixedDateFormat.createIfSupported(options));
     }
 
     @Test(expected=NullPointerException.class)
     public void testConstructorDisallowsNull() {
-        new CustomTimeFormat(null);
+        new FixedDateFormat(null);
     }
 
     @Test
     public void testGetFormatReturnsConstructorFixedFormatPattern() {
-        final CustomTimeFormat format = new CustomTimeFormat(CustomTimeFormat.FixedFormat.ABSOLUTE);
-        assertSame(CustomTimeFormat.FixedFormat.ABSOLUTE.getPattern(), format.getFormat());
+        final FixedDateFormat format = new FixedDateFormat(FixedDateFormat.FixedFormat.ABSOLUTE);
+        assertSame(FixedDateFormat.FixedFormat.ABSOLUTE.getPattern(), format.getFormat());
     }
 
     @Test
     public void testFormatLong() {
-        final long start = System.currentTimeMillis();
-        final long end = start + TimeUnit.HOURS.toMillis(25);
+        final long now = System.currentTimeMillis();
+        final long start = now - TimeUnit.HOURS.toMillis(25);
+        final long end = now + TimeUnit.HOURS.toMillis(25);
         for (final FixedFormat format : FixedFormat.values()) {
             final SimpleDateFormat simpleDF = new SimpleDateFormat(format.getPattern());
-            final CustomTimeFormat customTF = new CustomTimeFormat(format);
+            final FixedDateFormat customTF = new FixedDateFormat(format);
             for (long time = start; time < end; time += 12345) {
                 final String actual = customTF.format(time);
                 final String expected = simpleDF.format(new Date(time));
@@ -135,14 +149,49 @@ public class CustomTimeFormatTest {
     }
 
     @Test
+    public void testFormatLong_goingBackInTime() {
+        final long now = System.currentTimeMillis();
+        final long start = now - TimeUnit.HOURS.toMillis(25);
+        final long end = now + TimeUnit.HOURS.toMillis(25);
+        for (final FixedFormat format : FixedFormat.values()) {
+            final SimpleDateFormat simpleDF = new SimpleDateFormat(format.getPattern());
+            final FixedDateFormat customTF = new FixedDateFormat(format);
+            for (long time = end; time > start; time -= 12345) {
+                final String actual = customTF.format(time);
+                final String expected = simpleDF.format(new Date(time));
+                assertEquals(format + "/" + time, expected, actual);
+            }
+        }
+    }
+
+    @Test
     public void testFormatLongCharArrayInt() {
-        final long start = System.currentTimeMillis();
-        final long end = start + TimeUnit.HOURS.toMillis(25);
+        final long now = System.currentTimeMillis();
+        final long start = now - TimeUnit.HOURS.toMillis(25);
+        final long end = now + TimeUnit.HOURS.toMillis(25);
         final char[] buffer = new char[128];
         for (final FixedFormat format : FixedFormat.values()) {
             final SimpleDateFormat simpleDF = new SimpleDateFormat(format.getPattern());
-            final CustomTimeFormat customTF = new CustomTimeFormat(format);
+            final FixedDateFormat customTF = new FixedDateFormat(format);
             for (long time = start; time < end; time += 12345) {
+                final int length = customTF.format(time, buffer, 23);
+                final String actual = new String(buffer, 23, length);
+                final String expected = simpleDF.format(new Date(time));
+                assertEquals(format + "/" + time, expected, actual);
+            }
+        }
+    }
+
+    @Test
+    public void testFormatLongCharArrayInt_goingBackInTime() {
+        final long now = System.currentTimeMillis();
+        final long start = now - TimeUnit.HOURS.toMillis(25);
+        final long end = now + TimeUnit.HOURS.toMillis(25);
+        final char[] buffer = new char[128];
+        for (final FixedFormat format : FixedFormat.values()) {
+            final SimpleDateFormat simpleDF = new SimpleDateFormat(format.getPattern());
+            final FixedDateFormat customTF = new FixedDateFormat(format);
+            for (long time = end; time > start; time -= 12345) {
                 final int length = customTF.format(time, buffer, 23);
                 final String actual = new String(buffer, 23, length);
                 final String expected = simpleDF.format(new Date(time));
