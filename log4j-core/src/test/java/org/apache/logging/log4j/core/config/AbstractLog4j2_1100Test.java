@@ -47,7 +47,6 @@ public abstract class AbstractLog4j2_1100Test {
                 .getTriggeringPolicy();
         assertNotNull(compositeTriggeringPolicy);
         final TriggeringPolicy[] triggeringPolicies = compositeTriggeringPolicy.getTriggeringPolicies();
-        assertEquals(2, triggeringPolicies.length);
         SizeBasedTriggeringPolicy sizeBasedTriggeringPolicy = null;
         TimeBasedTriggeringPolicy timeBasedTriggeringPolicy = null;
         for (TriggeringPolicy triggeringPolicy : triggeringPolicies) {
