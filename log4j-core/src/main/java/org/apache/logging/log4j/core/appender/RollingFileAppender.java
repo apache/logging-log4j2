@@ -105,6 +105,14 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
     }
 
     /**
+     * Returns the triggering policy
+     * @return The TriggeringPolicy
+     */
+    public TriggeringPolicy getTriggeringPolicy() {
+        return getManager().getTriggeringPolicy();
+    }
+
+    /**
      * Create a RollingFileAppender.
      * @param fileName The name of the file that is actively written to. (required).
      * @param filePattern The pattern of the file name to use on rollover. (required).
