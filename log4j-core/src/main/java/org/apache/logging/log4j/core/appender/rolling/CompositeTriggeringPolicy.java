@@ -33,6 +33,10 @@ public final class CompositeTriggeringPolicy implements TriggeringPolicy {
         this.policies = policies;
     }
 
+    public TriggeringPolicy[] getTriggeringPolicies() {
+        return policies;
+    }
+
     /**
      * Initializes the policy.
      * @param manager The RollingFileManager.
@@ -84,4 +88,5 @@ public final class CompositeTriggeringPolicy implements TriggeringPolicy {
                                                 @PluginElement("Policies") final TriggeringPolicy... policies) {
         return new CompositeTriggeringPolicy(policies);
     }
+
 }
