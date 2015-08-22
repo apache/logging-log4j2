@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.config;
 
 import org.junit.Ignore;
 
-@Ignore
+//@Ignore
 public class JiraLog4j2_1100YamlTest extends AbstractLog4j2_1100Test {
 
     protected String getConfigurationResource() {
