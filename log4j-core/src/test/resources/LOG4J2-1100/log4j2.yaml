@@ -1,5 +1,5 @@
 Configuration:
-  status: warn
+  status: trace
   
   Appenders:
     Console:
