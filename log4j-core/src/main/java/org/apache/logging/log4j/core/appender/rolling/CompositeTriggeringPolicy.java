@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import java.util.Arrays;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -63,21 +65,6 @@ public final class CompositeTriggeringPolicy implements TriggeringPolicy {
         return false;
     }
 
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("CompositeTriggeringPolicy{");
-        boolean first = true;
-        for (final TriggeringPolicy policy : policies) {
-            if (!first) {
-                sb.append(", ");
-            }
-            sb.append(policy.toString());
-            first = false;
-        }
-        sb.append('}');
-        return sb.toString();
-    }
-
     /**
      * Create a CompositeTriggeringPolicy.
      * @param policies The triggering policies.
@@ -87,6 +74,11 @@ public final class CompositeTriggeringPolicy implements TriggeringPolicy {
     public static CompositeTriggeringPolicy createPolicy(
                                                 @PluginElement("Policies") final TriggeringPolicy... policies) {
         return new CompositeTriggeringPolicy(policies);
+    }
+
+    @Override
+    public String toString() {
+        return "CompositeTriggeringPolicy(policies=" + Arrays.toString(policies) + ")";
     }
 
 }
