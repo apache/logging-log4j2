@@ -21,7 +21,11 @@ import java.util.Calendar;
 import java.util.Objects;
 
 /**
- * Custom time formatter that trades flexibility for performance.
+ * Custom time formatter that trades flexibility for performance. This formatter only supports the date patterns defined
+ * in {@link FixedFormat}. For any other date patterns use {@link FastDateFormat}.
+ * <p>
+ * Related benchmarks: /log4j-perf/src/main/java/org/apache/logging/log4j/perf/jmh/TimeFormatBenchmark.java and
+ * /log4j-perf/src/main/java/org/apache/logging/log4j/perf/jmh/ThreadsafeDateFormatBenchmark.java
  */
 public class FixedDateFormat {
     /**
@@ -137,7 +141,7 @@ public class FixedDateFormat {
         final FixedFormat type = FixedFormat.lookup(options[0]);
         return type == null ? null : new FixedDateFormat(type);
     }
-    
+
     public static FixedDateFormat create(FixedFormat format) {
         return new FixedDateFormat(format);
     }
