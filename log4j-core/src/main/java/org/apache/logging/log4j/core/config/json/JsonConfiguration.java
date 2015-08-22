@@ -261,5 +261,10 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
             this.node = node;
             this.errorType = errorType;
         }
+
+        @Override
+        public String toString() {
+            return "Status [name=" + name + ", errorType=" + errorType + ", node=" + node + "]";
+        }
     }
 }
