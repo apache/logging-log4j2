@@ -31,6 +31,14 @@
         Added support for Java 8 lambda expressions to lazily construct a log message only if
               the requested log level is enabled.
       </action>
+      <action issue="LOG4J2-812" dev="rgoers" type="update">
+        PatternLayout timestamp formatting performance improvement: replaced synchronized SimpleDateFormat with
+        Apache Commons FastDateFormat. This and better caching resulted in a ~3-30X faster timestamp formatting.
+      </action>
+      <action issue="LOG4J2-1097" dev="rpopma" type="update">
+        PatternLayout timestamp formatting performance improvement: predefined date formats (and variants using
+        a period '.' millisecond separator instead of ',') are now formatted ~2-10X faster than other date formats.
+      </action>
       <action issue="LOG4J2-1096" dev="rpopma" type="update">
         Improved performance of ParameterizedMessage::getFormattedMessage by ~2X.
       </action>
