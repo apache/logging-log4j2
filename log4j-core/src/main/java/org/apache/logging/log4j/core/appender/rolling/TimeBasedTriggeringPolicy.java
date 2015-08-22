@@ -39,6 +39,10 @@ public final class TimeBasedTriggeringPolicy implements TriggeringPolicy {
         this.modulate = modulate;
     }
 
+    public int getInterval() {
+        return interval;
+    }
+
     public long getNextRolloverMillis() {
         return nextRolloverMillis;
     }
