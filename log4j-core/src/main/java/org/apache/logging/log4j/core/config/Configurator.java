@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.config;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
 import java.util.Map;
 
 import org.apache.logging.log4j.Level;
