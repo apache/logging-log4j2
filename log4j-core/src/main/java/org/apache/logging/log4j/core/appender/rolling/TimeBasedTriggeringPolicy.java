@@ -39,6 +39,10 @@ public final class TimeBasedTriggeringPolicy implements TriggeringPolicy {
         this.modulate = modulate;
     }
 
+    public long getNextRolloverMillis() {
+        return nextRolloverMillis;
+    }
+
     /**
      * Initializes the policy.
      * @param manager The RollingFileManager.
@@ -90,4 +94,5 @@ public final class TimeBasedTriggeringPolicy implements TriggeringPolicy {
         final boolean mod = Boolean.parseBoolean(modulate);
         return new TimeBasedTriggeringPolicy(increment, mod);
     }
+
 }
