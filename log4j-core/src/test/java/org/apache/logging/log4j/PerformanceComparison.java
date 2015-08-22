@@ -17,6 +17,7 @@
 package org.apache.logging.log4j;
 
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.OutputStream;
@@ -44,9 +45,9 @@ public class PerformanceComparison {
 
 
     // How many times should we try to log:
-    private static final int COUNT = 1000000;
+    private static final int COUNT = 500000;
     private static final int PROFILE_COUNT = 500000;
-    private static final int WARMUP = 1000;
+    private static final int WARMUP = 50000;
 
     private static final String CONFIG = "log4j2-perf.xml";
     private static final String LOGBACK_CONFIG = "logback-perf.xml";
@@ -67,6 +68,9 @@ public class PerformanceComparison {
         System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         System.clearProperty(LOGBACK_CONF);
         System.clearProperty(LOG4J_CONF);
+        new File("target/testlog4j.log").deleteOnExit();
+        new File("target/testlog4j2.log").deleteOnExit();
+        new File("target/testlogback.log").deleteOnExit();
     }
 
     @Test
@@ -85,19 +89,24 @@ public class PerformanceComparison {
             System.out.println("Log4j 2.0: " + result);
             System.out.println("###############################################");
         } else {
-            System.out.println("Starting Log4j 2.0");
-            final long result3 = log4j2(COUNT);
-            System.out.println("Starting Log4j");
-            final long result1 = log4j(COUNT);
-            System.out.println("Starting Logback");
-            final long result2 = logback(COUNT);
-
-            System.out.println("###############################################");
-            System.out.println("Log4j: " + result1);
-            System.out.println("Logback: " + result2);
-            System.out.println("Log4j 2.0: " + result3);
-            System.out.println("###############################################");
+            doRun();
+            doRun();
+            doRun();
+            doRun();
         }
+    }
+
+    private void doRun() {
+        System.out.print("Log4j    : ");
+        System.out.println(log4j(COUNT));
+
+        System.out.print("Logback  : ");
+        System.out.println(logback(COUNT));
+
+        System.out.print("Log4j 2.0: ");
+        System.out.println(log4j2(COUNT));
+
+        System.out.println("###############################################");
     }
 
     //@Test
