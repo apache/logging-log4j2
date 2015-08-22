@@ -20,6 +20,7 @@
  <appender name="TestLogfile" class="org.apache.log4j.FileAppender">
    <param name="File" value="target/testlog4j.log"/>
    <param name="immediateFlush" value="false"/>
+   <param name="Append" value="false" />
    <layout class="org.apache.log4j.PatternLayout">
      <param name="ConversionPattern" value="%d %5p [%t] %c{1} %X{transactionId} - %m%n"/>
    </layout>
