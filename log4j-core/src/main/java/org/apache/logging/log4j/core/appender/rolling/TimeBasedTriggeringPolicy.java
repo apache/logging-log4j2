@@ -79,11 +79,6 @@ public final class TimeBasedTriggeringPolicy implements TriggeringPolicy {
         return false;
     }
 
-    @Override
-    public String toString() {
-        return "TimeBasedTriggeringPolicy";
-    }
-
     /**
      * Creates a TimeBasedTriggeringPolicy.
      * @param interval The interval between rollovers.
@@ -97,6 +92,12 @@ public final class TimeBasedTriggeringPolicy implements TriggeringPolicy {
         final int increment = Integers.parseInt(interval, 1);
         final boolean mod = Boolean.parseBoolean(modulate);
         return new TimeBasedTriggeringPolicy(increment, mod);
+    }
+
+    @Override
+    public String toString() {
+        return "TimeBasedTriggeringPolicy(nextRolloverMillis=" + nextRolloverMillis + ", interval=" + interval
+                + ", modulate=" + modulate + ")";
     }
 
 }
