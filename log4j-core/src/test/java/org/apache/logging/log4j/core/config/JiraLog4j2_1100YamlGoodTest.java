@@ -17,13 +17,10 @@
 
 package org.apache.logging.log4j.core.config;
 
-import org.junit.Ignore;
-
-@Ignore
-public class JiraLog4j2_1100YamlTest extends AbstractLog4j2_1100Test {
+public class JiraLog4j2_1100YamlGoodTest extends AbstractLog4j2_1100Test {
 
     protected String getConfigurationResource() {
-        return "LOG4J2-1100/log4j2.yaml";
+        return "LOG4J2-1100/log4j2-good.yaml";
     }
 
 }
