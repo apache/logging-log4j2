@@ -26,17 +26,17 @@ import static org.junit.Assert.*;
 public class LevelTest {
 
     @Test
-    public void testGoodLevels() {
-        final Level level = Level.toLevel("INFO");
-        assertNotNull(level);
-        assertEquals(Level.INFO, level);
-    }
-
-    @Test
     public void testDefault() {
         final Level level = Level.toLevel("Information", Level.ERROR);
         assertNotNull(level);
         assertEquals(Level.ERROR, level);
+    }
+
+    @Test
+    public void testGoodLevels() {
+        final Level level = Level.toLevel("INFO");
+        assertNotNull(level);
+        assertEquals(Level.INFO, level);
     }
 
     @Test
