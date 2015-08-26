@@ -43,8 +43,7 @@ public abstract class AbstractLog4j2_1100Test {
         assertNotNull(configuration);
         final RollingFileAppender appender = configuration.getAppender("File");
         assertNotNull(appender);
-        final CompositeTriggeringPolicy compositeTriggeringPolicy = (CompositeTriggeringPolicy) appender
-                .getTriggeringPolicy();
+        final CompositeTriggeringPolicy compositeTriggeringPolicy = appender.getTriggeringPolicy();
         assertNotNull(compositeTriggeringPolicy);
         final TriggeringPolicy[] triggeringPolicies = compositeTriggeringPolicy.getTriggeringPolicies();
         SizeBasedTriggeringPolicy sizeBasedTriggeringPolicy = null;

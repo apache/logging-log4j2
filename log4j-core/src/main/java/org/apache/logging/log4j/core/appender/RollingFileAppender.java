@@ -108,7 +108,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
      * Returns the triggering policy
      * @return The TriggeringPolicy
      */
-    public TriggeringPolicy getTriggeringPolicy() {
+    public <T extends TriggeringPolicy> T getTriggeringPolicy() {
         return getManager().getTriggeringPolicy();
     }
 
