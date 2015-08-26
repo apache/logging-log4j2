@@ -695,6 +695,7 @@
         <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
+          <!--  Using version 2.5.4 causes Jenkins to get compiler errors in log4j-perf. -->
           <version>2.5.3</version>
           <inherited>true</inherited>
           <extensions>true</extensions>
