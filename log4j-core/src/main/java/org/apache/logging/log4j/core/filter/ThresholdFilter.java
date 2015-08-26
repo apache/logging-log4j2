@@ -74,6 +74,10 @@ public final class ThresholdFilter extends AbstractFilter {
         return level.isMoreSpecificThan(this.level) ? onMatch : onMismatch;
     }
 
+    public Level getLevel() {
+        return level;
+    }
+
     @Override
     public String toString() {
         return level.toString();
