@@ -58,7 +58,7 @@ public interface Configuration extends Filterable {
      * @param name The name of the Appender.
      * @return the Appender with the specified name or null if the Appender cannot be located.
      */
-    Appender getAppender(String name);
+    <T extends Appender> T getAppender(String name);
 
     /**
      * Returns a Map containing all the Appenders and their name.

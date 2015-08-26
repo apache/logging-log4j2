@@ -41,7 +41,7 @@ public abstract class AbstractLog4j2_1100Test {
     public void test() {
         final Configuration configuration = context.getConfiguration();
         assertNotNull(configuration);
-        final RollingFileAppender appender = (RollingFileAppender) configuration.getAppender("File");
+        final RollingFileAppender appender = configuration.getAppender("File");
         assertNotNull(appender);
         final CompositeTriggeringPolicy compositeTriggeringPolicy = (CompositeTriggeringPolicy) appender
                 .getTriggeringPolicy();
