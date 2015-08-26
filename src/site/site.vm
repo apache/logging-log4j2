@@ -471,9 +471,7 @@
 		#googleAnalytics( $decoration.googleAnalyticsAccountId )
 	</head>
 	<body class="composite">
-	    <a href="https://logging.apache.org/">
-		    <img class="logo-left" src="$relativePath/images/ls-logo.jpg" alt="Apache logging services logo" />
-		</a>
+		<img class="logo-left" src="$relativePath/images/ls-logo.jpg" alt="Apache logging services logo" />
 		<img class="logo-right" src="$relativePath/images/logo.jpg" alt="Apache log4j logo" />
 		<div class="clear"></div>
 
