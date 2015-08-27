@@ -140,12 +140,12 @@ public class LoggerTest {
         loggerGrandchild.debug("Debug message 1 grandchild");
         final List<LogEvent> events = app.getEvents();
         assertEventCount(events, 3);
-        Configurator.setChildren(logger.getName(), Level.OFF);
+        Configurator.setAllLevels(logger.getName(), Level.OFF);
         logger.debug("Debug message 2");
         loggerChild.warn("Warn message 2 child");
         loggerGrandchild.fatal("Fatal message 2 grandchild");
         assertEventCount(events, 3);
-        Configurator.setChildren(logger.getName(), Level.DEBUG);
+        Configurator.setAllLevels(logger.getName(), Level.DEBUG);
         logger.debug("Debug message 3");
         loggerChild.warn("Trace message 3 child");
         loggerGrandchild.trace("Fatal message 3 grandchild");

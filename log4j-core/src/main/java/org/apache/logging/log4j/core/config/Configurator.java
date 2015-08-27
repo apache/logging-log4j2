@@ -168,7 +168,7 @@ public final class Configurator {
      * @param parentLogger the parent logger
      * @param level the new level
      */
-    public static void setChildren(final String parentLogger, final Level level) {
+    public static void setAllLevels(final String parentLogger, final Level level) {
         // 1) get logger config
         // 2) if exact match, use it, if not, create it.
         // 3) set level on logger config 
