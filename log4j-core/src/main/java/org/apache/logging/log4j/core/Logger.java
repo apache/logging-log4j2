@@ -107,8 +107,7 @@ public class Logger extends AbstractLogger {
         if (level != null) {
             config = new PrivateConfig(config, level);
         } else {
-            // Reusing parent PC, should we make a copy instead?
-            config = getParent().config;
+            config = new PrivateConfig(config, getParent().getLevel());
         }
     }
 
