@@ -104,11 +104,8 @@ public class Logger extends AbstractLogger {
      * @param level The Level to use on this Logger, may be null.
      */
     public synchronized void setLevel(final Level level) {
-        if (level != null) {
-            config = new PrivateConfig(config, level);
-        } else {
-            config = new PrivateConfig(config, getParent().getLevel());
-        }
+        final Level actualLevel = level != null ? level : getParent().getLevel();
+        config = new PrivateConfig(config, actualLevel);
     }
 
     @Override
