@@ -45,6 +45,9 @@
       <action issue="LOG4J2-1044" dev="rgoers" type="fix">
         Write pending events to Flume when the appender is stopped.
       </action>
+      <action issue="LOG4J2-1108" dev="ggregory" type="fix" due-to="Mikael Ståldal">
+        NullPointerException when passing null to java.util.logging.Logger.setLevel().
+      </action>
       <action dev="rpopma" type="remove">
         Removed experimental interface LevelLogger which got committed to master by mistake.
       </action>

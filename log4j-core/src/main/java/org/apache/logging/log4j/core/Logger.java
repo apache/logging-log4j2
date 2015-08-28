@@ -97,11 +97,18 @@ public class Logger extends AbstractLogger {
 
     /**
      * This method is not exposed through the public API and is provided primarily for unit testing.
-     * @param level The Level to use on this Logger.
+     * <p>
+     * If the new level is null, this logger inherits the level from its parent.
+     * </p>
+     * 
+     * @param level The Level to use on this Logger, may be null.
      */
     public synchronized void setLevel(final Level level) {
         if (level != null) {
             config = new PrivateConfig(config, level);
+        } else {
+            // Reusing parent PC, should we make a copy instead?
+            config = getParent().config;
         }
     }
 
