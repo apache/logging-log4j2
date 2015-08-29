@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.PerformanceTests;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -43,7 +43,7 @@ public class ThreadedTest {
     private static final int LOOP_CNT = 25;
     private static final int THREADS = 4;
     private static final AtomicInteger counter = new AtomicInteger(0);
-    private static final InitialLoggerContext context = new InitialLoggerContext(CONFIG);
+    private static final LoggerContextRule context = new LoggerContextRule(CONFIG);
 
     private final Logger logger = context.getLogger(ThreadedTest.class.getName());
     private volatile Level lvl = Level.DEBUG;

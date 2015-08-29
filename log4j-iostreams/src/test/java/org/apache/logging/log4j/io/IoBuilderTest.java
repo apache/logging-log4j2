@@ -19,7 +19,7 @@ package org.apache.logging.log4j.io;
 import java.io.PrintStream;
 import java.util.List;
 
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Rule;
 import org.junit.Test;
@@ -33,7 +33,7 @@ import static org.junit.Assert.*;
 public class IoBuilderTest {
 
     @Rule
-    public InitialLoggerContext context = new InitialLoggerContext("log4j2-streams-calling-info.xml");
+    public LoggerContextRule context = new LoggerContextRule("log4j2-streams-calling-info.xml");
 
     @Test
     public void testNoArgBuilderCallerClassInfo() throws Exception {

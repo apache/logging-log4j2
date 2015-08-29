@@ -27,7 +27,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.JndiCloser;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -77,7 +77,7 @@ public class JmsAppenderTest {
     }
 
     @Rule
-    public InitialLoggerContext ctx = new InitialLoggerContext("JmsAppenderTest.xml");
+    public LoggerContextRule ctx = new LoggerContextRule("JmsAppenderTest.xml");
 
     @Test
     public void testAppendToQueue() throws Exception {

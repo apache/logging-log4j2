@@ -29,7 +29,7 @@ import java.util.concurrent.Future;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.AvailablePortFinder;
 import org.junit.ClassRule;
 import org.junit.Ignore;
@@ -44,7 +44,7 @@ public class SocketMessageLossTest {
     private static final String CONFIG = "log4j-socket2.xml";
 
     @ClassRule
-    public static InitialLoggerContext context = new InitialLoggerContext(CONFIG);
+    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
 
     @Test
     public void testSocket() throws Exception {

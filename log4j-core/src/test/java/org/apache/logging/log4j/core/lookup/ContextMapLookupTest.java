@@ -21,7 +21,7 @@ import java.io.File;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -39,7 +39,7 @@ public class ContextMapLookupTest {
     private static final String TESTKEY = "TestKey";
     private static final String TESTVAL = "TestValue";
 
-    private final InitialLoggerContext context = new InitialLoggerContext("ContextMapLookupTest.xml");
+    private final LoggerContextRule context = new LoggerContextRule("ContextMapLookupTest.xml");
 
     @Rule
     public RuleChain chain = RuleChain.outerRule(new TestRule() {

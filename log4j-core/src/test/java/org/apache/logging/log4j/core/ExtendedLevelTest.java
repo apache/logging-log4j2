@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core;
 import java.util.List;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.ExtendedLevels;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Before;
@@ -39,7 +39,7 @@ public class ExtendedLevelTest {
     private ListAppender list2;
 
     @ClassRule
-    public static InitialLoggerContext context = new InitialLoggerContext(CONFIG);
+    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
 
     @Before
     public void before() {

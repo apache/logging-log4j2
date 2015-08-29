@@ -18,7 +18,7 @@ package org.apache.logging.log4j.nosql.appender;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -27,7 +27,7 @@ import org.junit.Test;
 public class MongoDbTest {
 
     @ClassRule
-    public static InitialLoggerContext context = new InitialLoggerContext("log4j2-mongodb.xml");
+    public static LoggerContextRule context = new LoggerContextRule("log4j2-mongodb.xml");
 
     @Test
     public void test() {

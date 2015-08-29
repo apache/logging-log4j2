@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Before;
 import org.junit.Rule;
@@ -38,7 +38,7 @@ public class StyleConverterTest {
         + Constants.LINE_SEPARATOR;
 
     @Rule
-    public InitialLoggerContext init = new InitialLoggerContext("log4j-style.xml");
+    public LoggerContextRule init = new LoggerContextRule("log4j-style.xml");
 
     private Logger logger;
     private ListAppender app;

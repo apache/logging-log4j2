@@ -20,7 +20,7 @@ package org.apache.logging.log4j.io;
 import java.util.List;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -41,7 +41,7 @@ public abstract class AbstractStreamTest {
     protected final static String LAST = "last";
 
     @ClassRule
-    public static InitialLoggerContext ctx = new InitialLoggerContext("log4j2-streams-unit-test.xml");
+    public static LoggerContextRule ctx = new LoggerContextRule("log4j2-streams-unit-test.xml");
 
     protected void assertMessages(final String... messages) {
         final List<String> actualMsgs = ctx.getListAppender("UnitTest").getMessages();

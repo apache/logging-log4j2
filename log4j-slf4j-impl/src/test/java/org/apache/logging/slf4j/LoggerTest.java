@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.After;
 import org.junit.Before;
@@ -48,7 +48,7 @@ public class LoggerTest {
     private static final String CONFIG = "log4j-test1.xml";
 
     @ClassRule
-    public static InitialLoggerContext ctx = new InitialLoggerContext(CONFIG);
+    public static LoggerContextRule ctx = new LoggerContextRule(CONFIG);
 
     Logger logger = LoggerFactory.getLogger("LoggerTest");
     XLogger xlogger = XLoggerFactory.getXLogger("LoggerTest");

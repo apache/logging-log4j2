@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.selector.ContextSelector;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -38,7 +38,7 @@ import static org.junit.Assert.*;
 public class ShutdownCallbackRegistryTest {
 
     @Rule
-    public final InitialLoggerContext ctx = new InitialLoggerContext("ShutdownCallbackRegistryTest.xml");
+    public final LoggerContextRule ctx = new LoggerContextRule("ShutdownCallbackRegistryTest.xml");
 
     @BeforeClass
     public static void setUpClass() throws Exception {

@@ -32,7 +32,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.filter.ThreadContextMapFilter;
 import org.apache.logging.log4j.junit.CleanFiles;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Before;
 import org.junit.Rule;
@@ -66,7 +66,7 @@ public class XIncludeTest {
     @Rule
     public TestRule rules;
 
-    private final InitialLoggerContext init;
+    private final LoggerContextRule init;
 
     private LoggerContext ctx;
 
@@ -74,7 +74,7 @@ public class XIncludeTest {
 
     public XIncludeTest(final String configFileName, final String logFileName) {
         this.logFileName = logFileName;
-        this.init = new InitialLoggerContext(configFileName);
+        this.init = new LoggerContextRule(configFileName);
         this.rules = RuleChain.outerRule(new CleanFiles(logFileName)).around(this.init);
     }
 

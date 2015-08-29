@@ -26,7 +26,7 @@ import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.core.util.ClockFactoryTest;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
@@ -47,7 +47,7 @@ public class TimestampMessageTest {
     private ListAppender app;
 
     @ClassRule
-    public static InitialLoggerContext context = new InitialLoggerContext("log4j2-744.xml");
+    public static LoggerContextRule context = new LoggerContextRule("log4j2-744.xml");
 
     @BeforeClass
     public static void beforeClass() {

@@ -25,7 +25,7 @@ import static org.junit.Assert.assertThat;
 import java.util.List;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -39,7 +39,7 @@ public class CustomLevelsOverrideTest {
     private static final String CONFIG = "log4j-customLevels.xml";
 
     @ClassRule
-    public static InitialLoggerContext context = new InitialLoggerContext(CONFIG);
+    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
 
     private ListAppender listAppender;
     private Level warnLevel;

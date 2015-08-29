@@ -24,7 +24,7 @@ import java.util.Collection;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.CleanFiles;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.hamcrest.Matcher;
 import org.junit.Rule;
 import org.junit.Test;
@@ -54,7 +54,7 @@ public class RandomAccessFileAppenderTests {
         );
     }
 
-    private final InitialLoggerContext init;
+    private final LoggerContextRule init;
     private final CleanFiles files;
 
     @Rule
@@ -64,7 +64,7 @@ public class RandomAccessFileAppenderTests {
     private final boolean locationEnabled;
 
     public RandomAccessFileAppenderTests(final String testName, final boolean locationEnabled) {
-        this.init = new InitialLoggerContext(testName + ".xml");
+        this.init = new LoggerContextRule(testName + ".xml");
         this.logFile = new File("target", testName + ".log");
         this.files = new CleanFiles(this.logFile);
         this.locationEnabled = locationEnabled;

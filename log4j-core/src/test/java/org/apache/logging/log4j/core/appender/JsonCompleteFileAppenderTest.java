@@ -22,7 +22,7 @@ import java.io.FileReader;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.CleanFiles;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -36,7 +36,7 @@ public class JsonCompleteFileAppenderTest {
 
     private final File logFile = new File("target", "JsonCompleteFileAppenderTest.log");
 
-    private final InitialLoggerContext init = new InitialLoggerContext("JsonCompleteFileAppenderTest.xml");
+    private final LoggerContextRule init = new LoggerContextRule("JsonCompleteFileAppenderTest.xml");
     private final CleanFiles files = new CleanFiles(logFile);
 
     @Rule

@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,7 +38,7 @@ import static org.junit.Assert.*;
 public class MissingRootLoggerTest {
 
     @Rule
-    public InitialLoggerContext context = new InitialLoggerContext("missingRootLogger.xml");
+    public LoggerContextRule context = new LoggerContextRule("missingRootLogger.xml");
 
     @Test
     public void testMissingRootLogger() throws Exception {

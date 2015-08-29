@@ -21,7 +21,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Rule;
 import org.junit.Test;
@@ -38,7 +38,7 @@ public class LoggerTest {
     private static final String CONFIG = "log4j-test1.xml";
 
     @Rule
-    public final InitialLoggerContext context = new InitialLoggerContext(CONFIG);
+    public final LoggerContextRule context = new LoggerContextRule(CONFIG);
 
     @Test
     public void testLog() {

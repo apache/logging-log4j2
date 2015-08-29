@@ -36,7 +36,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
@@ -57,7 +57,7 @@ public class LoggerTest {
     private ListAppender noThrown;
 
     @Rule
-    public InitialLoggerContext context = new InitialLoggerContext(CONFIG);
+    public LoggerContextRule context = new LoggerContextRule(CONFIG);
 
     private void assertEventCount(final List<LogEvent> events, final int expected) {
         assertEquals("Incorrect number of events.", expected, events.size());

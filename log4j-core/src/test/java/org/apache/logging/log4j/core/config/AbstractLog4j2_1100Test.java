@@ -26,14 +26,14 @@ import org.apache.logging.log4j.core.appender.rolling.CompositeTriggeringPolicy;
 import org.apache.logging.log4j.core.appender.rolling.SizeBasedTriggeringPolicy;
 import org.apache.logging.log4j.core.appender.rolling.TimeBasedTriggeringPolicy;
 import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Rule;
 import org.junit.Test;
 
 public abstract class AbstractLog4j2_1100Test {
 
     @Rule
-    public InitialLoggerContext context = new InitialLoggerContext(getConfigurationResource());
+    public LoggerContextRule context = new LoggerContextRule(getConfigurationResource());
 
     protected abstract String getConfigurationResource();
 
