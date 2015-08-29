@@ -30,6 +30,11 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.ConsoleAppender;
+import org.apache.logging.log4j.core.config.assembler.api.AppenderAssembler;
+import org.apache.logging.log4j.core.config.assembler.api.ConfigurationAssembler;
+import org.apache.logging.log4j.core.config.assembler.api.ConfigurationAssemblerFactory;
+import org.apache.logging.log4j.core.config.assembler.impl.AssembledConfiguration;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.After;
@@ -353,6 +358,32 @@ public class TestConfigurator {
         assertNotNull("No configuration", config);
         assertEquals("Unexpected Configuration", "XMLConfigTest", config.getName());
         assertThat(config.getAppenders(), hasSize(equalTo(2)));
+    }
+
+    @Test
+    public void testAssembler() throws Exception {
+        ConfigurationAssembler<AssembledConfiguration> assembler = ConfigurationAssemblerFactory.newConfiguration();
+        assembler.setStatusLevel(Level.ERROR);
+        assembler.setConfigurationName("AssemblyTest");
+        assembler.add(assembler.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.NEUTRAL)
+                .addAttribute("level", Level.DEBUG));
+        AppenderAssembler appenderAssembler = assembler.newAppender("Stdout", "CONSOLE").addAttribute("target",
+                ConsoleAppender.Target.SYSTEM_OUT);
+        appenderAssembler.add(assembler.newLayout("PatternLayout").
+                addAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
+        appenderAssembler.add(assembler.newFilter("MarkerFilter", Filter.Result.DENY,
+                Filter.Result.NEUTRAL).addAttribute("marker", "FLOW"));
+        assembler.add(appenderAssembler);
+        assembler.add(assembler.newLogger("org.apache.logging.log4j", Level.DEBUG).
+                add(assembler.newAppenderRef("Stdout")).
+                addAttribute("additivity", false));
+        assembler.add(assembler.newRootLogger(Level.ERROR).add(assembler.newAppenderRef("Stdout")));
+        ctx = Configurator.initialize(assembler.assemble());
+        final Configuration config = ctx.getConfiguration();
+        assertNotNull("No configuration", config);
+        assertEquals("Unexpected Configuration", "AssemblyTest", config.getName());
+        assertThat(config.getAppenders(), hasSize(equalTo(1)));
+
     }
 
 }

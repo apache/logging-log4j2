@@ -179,6 +179,33 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
     }
 
     /**
+     * Loads the LoggerContext using the ContextSelector using the provided Configuration
+     * @param fqcn The fully qualified class name of the caller.
+     * @param loader The ClassLoader to use or null.
+     * @param externalContext An external context (such as a ServletContext) to be associated with the LoggerContext.
+     * @param currentContext If true returns the current Context, if false returns the Context appropriate
+     * for the caller if a more appropriate Context can be determined.
+     * @param configuration The Configuration.
+     * @return The LoggerContext.
+     */
+    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Object externalContext,
+            final boolean currentContext, final Configuration configuration) {
+        final LoggerContext ctx = selector.getContext(fqcn, loader, currentContext, null);
+        if (externalContext != null && ctx.getExternalContext() == null) {
+            ctx.setExternalContext(externalContext);
+        }
+        if (ctx.getState() == LifeCycle.State.INITIALIZED) {
+            ContextAnchor.THREAD_CONTEXT.set(ctx);
+            try {
+                ctx.start(configuration);
+            } finally {
+                ContextAnchor.THREAD_CONTEXT.remove();
+            }
+        }
+        return ctx;
+    }
+
+    /**
      * Loads the LoggerContext using the ContextSelector.
      * @param fqcn The fully qualified class name of the caller.
      * @param loader The ClassLoader to use or null.

@@ -49,7 +49,7 @@ public class PluginBuilderAttributeVisitor extends AbstractPluginVisitor<PluginB
         final String replacedValue = this.substitutor.replace(event, rawValue);
         final Object value = convert(replacedValue, null);
         final Object debugValue = this.annotation.sensitive() ? NameUtil.md5(value + this.getClass().getName()) : value;
-        StringBuilders.appendKeyDqValue(log, "name", debugValue);
+        StringBuilders.appendKeyDqValue(log, name, debugValue);
         return value;
     }
 }

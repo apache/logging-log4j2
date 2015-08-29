@@ -44,7 +44,7 @@ public class PluginAttributeVisitor extends AbstractPluginVisitor<PluginAttribut
         final Object defaultValue = findDefaultValue(event);
         final Object value = convert(replacedValue, defaultValue);
         final Object debugValue = this.annotation.sensitive() ? NameUtil.md5(value + this.getClass().getName()) : value;
-        StringBuilders.appendKeyDqValue(log, "name", debugValue);
+        StringBuilders.appendKeyDqValue(log, name, debugValue);
         return value;
     }
 

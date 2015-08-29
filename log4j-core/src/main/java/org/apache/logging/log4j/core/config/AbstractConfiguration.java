@@ -469,8 +469,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * @return the Appender with the specified name or null if the Appender cannot be located.
      */
     @Override
-    public Appender getAppender(final String name) {
-        return appenders.get(name);
+    @SuppressWarnings("unchecked")
+    public <T extends Appender> T getAppender(final String name) {
+        return (T)appenders.get(name);
     }
 
     /**
