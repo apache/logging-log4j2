@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.config.assembler.impl;
 
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.assembler.api.ComponentAssembler;
 import org.apache.logging.log4j.core.config.assembler.api.FilterAssembler;
 
 /**
