@@ -114,6 +114,10 @@ public class DefaultShutdownCallbackRegistry implements ShutdownCallbackRegistry
             state.get().name());
     }
 
+    @Override
+    public void initialize() {
+    }
+
     /**
      * Registers the shutdown thread only if this is initialized.
      */

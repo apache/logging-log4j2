@@ -17,21 +17,21 @@
 package org.apache.logging.log4j.core.config.assembler.api;
 
 /**
- * Assembler for constructing Loggers.
+ * Assembler for constructing the root Logger.
  */
-public interface LoggerAssembler extends ComponentAssembler<LoggerAssembler> {
+public interface RootLoggerComponentBuilder extends ComponentBuilder<RootLoggerComponentBuilder> {
 
     /**
      * Add an Appender reference to the Logger component.
-     * @param assembler The AppenderRefAssembler with all of its attributes and sub-components set.
+     * @param assembler The AppenderRefComponentBuilder with all of its attributes and sub-components set.
      * @return this Assembler.
      */
-    LoggerAssembler add(AppenderRefAssembler assembler);
+    RootLoggerComponentBuilder add(AppenderRefComponentBuilder assembler);
 
     /**
      * Add a Filter to the Logger component.
-     * @param assembler The FilterAssembler with all of its attributes and sub-components set.
+     * @param assembler The FilterComponentBuilder with all of its attributes and sub-components set.
      * @return this Assembler.
      */
-    LoggerAssembler add(FilterAssembler assembler);
+    RootLoggerComponentBuilder add(FilterComponentBuilder assembler);
 }

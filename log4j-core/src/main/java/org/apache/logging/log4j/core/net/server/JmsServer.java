@@ -80,6 +80,10 @@ public class JmsServer extends LogEventListener implements MessageListener, Life
     }
 
     @Override
+    public void initialize() {
+    }
+
+    @Override
     public void start() {
         if (state.compareAndSet(State.INITIALIZED, State.STARTING)) {
             try {

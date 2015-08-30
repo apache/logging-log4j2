@@ -18,18 +18,19 @@ package org.apache.logging.log4j.core.config.assembler.api;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.util.Builder;
 
 /**
  * Assembler for arbitrary components and the base class for the provided components.
  */
 @SuppressWarnings("rawtypes")
-public interface ComponentAssembler<T extends ComponentAssembler> extends Assembler<Component> {
+public interface ComponentBuilder<T extends ComponentBuilder> extends Builder<Component> {
 
     /**
      * Add an attribute to the component.
      * @param key The attribute key.
      * @param value The value of the attribute.
-     * @return The ComponentAssembler.
+     * @return The ComponentBuilder.
      */
     T addAttribute(String key, String value);
 
@@ -37,7 +38,7 @@ public interface ComponentAssembler<T extends ComponentAssembler> extends Assemb
      * Add a logging Level attribute to the component.
      * @param key The attribute key.
      * @param level The logging Level.
-     * @return The ComponentAssembler.
+     * @return The ComponentBuilder.
      */
     T addAttribute(String key, Level level);
 
@@ -45,7 +46,7 @@ public interface ComponentAssembler<T extends ComponentAssembler> extends Assemb
      * Add an enumeration.
      * @param key The attribute key.
      * @param value The enumeration.
-     * @return The ComponentAssembler.
+     * @return The ComponentBuilder.
      */
     T addAttribute(String key, Enum<?> value);
 
@@ -53,7 +54,7 @@ public interface ComponentAssembler<T extends ComponentAssembler> extends Assemb
      * Add an integer attribute.
      * @param key The attribute key.
      * @param value The integer value.
-     * @return The ComponentAssembler.
+     * @return The ComponentBuilder.
      */
     T addAttribute(String key, int value);
 
@@ -61,7 +62,7 @@ public interface ComponentAssembler<T extends ComponentAssembler> extends Assemb
      * Add a boolean attribute.
      * @param key The attribute key.
      * @param value The integer value.
-     * @return The ComponentAssembler.
+     * @return The ComponentBuilder.
      */
     T addAttribute(String key, boolean value);
 
@@ -69,16 +70,16 @@ public interface ComponentAssembler<T extends ComponentAssembler> extends Assemb
      * Add an Object attribute.
      * @param key The attribute key.
      * @param value The integer value.
-     * @return The ComponentAssembler.
+     * @return The ComponentBuilder.
      */
     T addAttribute(String key, Object value);
 
     /**
      * Add a sub component.
      * @param assembler The Assembler for the subcomponent with all of its attributes and sub-components set.
-     * @return The ComponentAssembler.
+     * @return The ComponentBuilder.
      */
-    T addComponent(ComponentAssembler<?> assembler);
+    T addComponent(ComponentBuilder<?> assembler);
 
     /**
      * Return the name of the component, if any.
@@ -87,8 +88,8 @@ public interface ComponentAssembler<T extends ComponentAssembler> extends Assemb
     String getName();
 
     /**
-     * Retrieve the ConfigurationAssembler.
+     * Retrieve the ConfigurationBuilder.
      * @return The ConfiguratonAssembler.
      */
-    ConfigurationAssembler<? extends Configuration> getAssembler();
+    ConfigurationBuilder<? extends Configuration> getBuilder();
 }

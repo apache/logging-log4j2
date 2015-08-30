@@ -19,8 +19,8 @@ package org.apache.logging.log4j.core.config.assembler.impl;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.assembler.api.Component;
-import org.apache.logging.log4j.core.config.assembler.api.ComponentAssembler;
-import org.apache.logging.log4j.core.config.assembler.api.ConfigurationAssembler;
+import org.apache.logging.log4j.core.config.assembler.api.ComponentBuilder;
+import org.apache.logging.log4j.core.config.assembler.api.ConfigurationBuilder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,24 +32,25 @@ import java.util.Map;
  * Component.
  */
 @SuppressWarnings("rawtypes")
-public class DefaultComponentAssembler<T extends ComponentAssembler> implements ComponentAssembler<T> {
+public class DefaultComponentBuilder<T extends ComponentBuilder> implements ComponentBuilder<T> {
 
-    private ConfigurationAssembler<? extends Configuration> assembler;
+    private ConfigurationBuilder<? extends Configuration> assembler;
     private String type;
     private Map<String, String> attributes = new HashMap<>();
     private List<Component> components = new ArrayList<>();
     private String name;
     private String value;
 
-    public DefaultComponentAssembler(ConfigurationAssembler<? extends Configuration> assembler, String type) {
+    public DefaultComponentBuilder(ConfigurationBuilder<? extends Configuration> assembler, String type) {
         this(assembler, null, type, null);
     }
 
-    public DefaultComponentAssembler(ConfigurationAssembler<? extends Configuration> assembler, String name, String type) {
+    public DefaultComponentBuilder(ConfigurationBuilder<? extends Configuration> assembler, String name, String type) {
         this(assembler, name, type, null);
     }
 
-    public DefaultComponentAssembler(ConfigurationAssembler<? extends Configuration> assembler, String name, String type, String value) {
+    public DefaultComponentBuilder(ConfigurationBuilder<? extends Configuration> assembler, String name, String type,
+            String value) {
         this.type = type;
         this.assembler = assembler;
         this.name = name;
@@ -102,8 +103,8 @@ public class DefaultComponentAssembler<T extends ComponentAssembler> implements 
 
     @Override
     @SuppressWarnings("unchecked")
-    public T addComponent(ComponentAssembler<?> assembler) {
-        components.add(assembler.assemble());
+    public T addComponent(ComponentBuilder<?> assembler) {
+        components.add(assembler.build());
         return (T) this;
     }
 
@@ -113,12 +114,12 @@ public class DefaultComponentAssembler<T extends ComponentAssembler> implements 
     }
 
     @Override
-    public ConfigurationAssembler<? extends Configuration> getAssembler() {
+    public ConfigurationBuilder<? extends Configuration> getBuilder() {
         return assembler;
     }
 
     @Override
-    public Component assemble() {
+    public Component build() {
         Component component = new Component(type, name, value);
         component.getAttributes().putAll(attributes);
         component.getComponents().addAll(components);

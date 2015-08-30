@@ -22,8 +22,8 @@ import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.assembler.api.AppenderAssembler;
-import org.apache.logging.log4j.core.config.assembler.api.ConfigurationAssembler;
+import org.apache.logging.log4j.core.config.assembler.api.AppenderComponentBuilder;
+import org.apache.logging.log4j.core.config.assembler.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.assembler.impl.AssembledConfiguration;
 
 import java.net.URI;
@@ -48,11 +48,11 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
 
     @Override
     public Configuration getConfiguration(final String name, final URI configLocation) {
-        ConfigurationAssembler<AssembledConfiguration> assembler = newConfiguration();
+        ConfigurationBuilder<AssembledConfiguration> assembler = newConfigurationBuilder();
         assembler.setStatusLevel(Level.ERROR);
         assembler.add(assembler.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.NEUTRAL)
                 .addAttribute("level", Level.DEBUG));
-        AppenderAssembler appenderAssembler = assembler.newAppender("Stdout", "CONSOLE").addAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
+        AppenderComponentBuilder appenderAssembler = assembler.newAppender("Stdout", "CONSOLE").addAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
         appenderAssembler.add(assembler.newLayout("PatternLayout").
                 addAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
         appenderAssembler.add(assembler.newFilter("MarkerFilter", Filter.Result.DENY,
@@ -62,6 +62,6 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
                 add(assembler.newAppenderRef("Stdout")).
                 addAttribute("additivity", false));
         assembler.add(assembler.newRootLogger(Level.ERROR).add(assembler.newAppenderRef("Stdout")));
-        return assembler.assemble();
+        return assembler.build();
     }
 }

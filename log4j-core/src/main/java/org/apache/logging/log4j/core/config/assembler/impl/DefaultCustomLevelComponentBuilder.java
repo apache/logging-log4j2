@@ -14,17 +14,20 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.config.assembler.api;
+package org.apache.logging.log4j.core.config.assembler.impl;
+
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.assembler.api.CustomLevelComponentBuilder;
 
 /**
- * Assembler for constructing AppenderRefs.
+ *
  */
-public interface AppenderRefAssembler extends ComponentAssembler<AppenderRefAssembler>  {
+public class DefaultCustomLevelComponentBuilder extends DefaultComponentBuilder<CustomLevelComponentBuilder> implements
+        CustomLevelComponentBuilder {
 
-    /**
-     * Add a Filter to the Appender component.
-     * @param assembler The FilterAssembler with all of its attributes and sub components set.
-     * @return this Assembler.
-     */
-    AppenderRefAssembler add(FilterAssembler assembler);
+    public DefaultCustomLevelComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> assembler,
+            String name, int level) {
+        super(assembler, name, "CustomLevel");
+        addAttribute("level", Integer.toString(level));
+    }
 }

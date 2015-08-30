@@ -14,17 +14,26 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
 package org.apache.logging.log4j.core.config.assembler.api;
 
+import org.apache.logging.log4j.core.config.assembler.impl.AssembledConfiguration;
+import org.apache.logging.log4j.core.config.assembler.impl.DefaultConfigurationBuilder;
+
 /**
- * Wraps multiple filter assemblers.
+ *
  */
-public interface CompositeFilterAssembler extends ComponentAssembler<CompositeFilterAssembler> {
+public class ConfigurationBuilderFactory {
 
     /**
-     * Add a FilterComponent.
-     * @param assembler The FilterAssembler with all of its attributes and sub-components set.
-     * @return The CompositeFilterAssembler.
+     * Returns the default ConfigurationBuilder to construct Log4j configurations.
+     * @return The ConfigurationBuilder.
      */
-    CompositeFilterAssembler add(FilterAssembler assembler);
+    public static ConfigurationBuilder<AssembledConfiguration> newConfigurationBuilder() {
+        return new DefaultConfigurationBuilder<>();
+    }
+
+    public static <T extends AssembledConfiguration> ConfigurationBuilder<T> newConfigurationBuilder(Class<T> clazz) {
+        return new DefaultConfigurationBuilder<T>(clazz);
+    }
 }

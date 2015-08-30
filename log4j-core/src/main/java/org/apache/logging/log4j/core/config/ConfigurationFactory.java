@@ -35,7 +35,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.assembler.api.ConfigurationAssemblerFactory;
+import org.apache.logging.log4j.core.config.assembler.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.lookup.Interpolator;
@@ -71,7 +71,7 @@ import org.apache.logging.log4j.util.Strings;
  * be called in their respective order. DefaultConfiguration is always called
  * last if no configuration has been returned.
  */
-public abstract class ConfigurationFactory extends ConfigurationAssemblerFactory {
+public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
     /**
      * Allow the ConfigurationFactory class to be specified as a system property.
      */

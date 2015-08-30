@@ -21,16 +21,16 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.assembler.api.AppenderAssembler;
-import org.apache.logging.log4j.core.config.assembler.api.AppenderRefAssembler;
+import org.apache.logging.log4j.core.config.assembler.api.AppenderComponentBuilder;
+import org.apache.logging.log4j.core.config.assembler.api.AppenderRefComponentBuilder;
 import org.apache.logging.log4j.core.config.assembler.api.Component;
-import org.apache.logging.log4j.core.config.assembler.api.ComponentAssembler;
-import org.apache.logging.log4j.core.config.assembler.api.ConfigurationAssembler;
-import org.apache.logging.log4j.core.config.assembler.api.CustomLevelAssembler;
-import org.apache.logging.log4j.core.config.assembler.api.FilterAssembler;
-import org.apache.logging.log4j.core.config.assembler.api.LayoutAssembler;
-import org.apache.logging.log4j.core.config.assembler.api.LoggerAssembler;
-import org.apache.logging.log4j.core.config.assembler.api.RootLoggerAssembler;
+import org.apache.logging.log4j.core.config.assembler.api.ComponentBuilder;
+import org.apache.logging.log4j.core.config.assembler.api.ConfigurationBuilder;
+import org.apache.logging.log4j.core.config.assembler.api.CustomLevelComponentBuilder;
+import org.apache.logging.log4j.core.config.assembler.api.FilterComponentBuilder;
+import org.apache.logging.log4j.core.config.assembler.api.LayoutComponentBuilder;
+import org.apache.logging.log4j.core.config.assembler.api.LoggerComponentBuilder;
+import org.apache.logging.log4j.core.config.assembler.api.RootLoggerComponentBuilder;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
@@ -38,7 +38,7 @@ import java.util.List;
 /**
  *
  */
-public class DefaultConfigurationAssembler<T extends AssembledConfiguration> implements ConfigurationAssembler<T> {
+public class DefaultConfigurationBuilder<T extends AssembledConfiguration> implements ConfigurationBuilder<T> {
 
     private AssembledConfiguration configuration;
 
@@ -66,12 +66,12 @@ public class DefaultConfigurationAssembler<T extends AssembledConfiguration> imp
      */
     private static final String LOG4J_ASYNC_LOGGERS = "Log4jContextSelector";
 
-    public DefaultConfigurationAssembler() {
+    public DefaultConfigurationBuilder() {
         this(AssembledConfiguration.class);
         root.addAttribute("name", "Assembled");
     }
 
-    public <T extends AssembledConfiguration> DefaultConfigurationAssembler(Class<T> clazz) {
+    public <T extends AssembledConfiguration> DefaultConfigurationBuilder(Class<T> clazz) {
         if (clazz == null) {
             throw new IllegalArgumentException("A Configuration class must be provided");
         }
@@ -97,7 +97,7 @@ public class DefaultConfigurationAssembler<T extends AssembledConfiguration> imp
      */
     @Override
     @SuppressWarnings("unchecked")
-    public ConfigurationAssembler<T> setConfigurationName(String name) {
+    public ConfigurationBuilder<T> setConfigurationName(String name) {
         this.name = name;
         return this;
     }
@@ -110,182 +110,182 @@ public class DefaultConfigurationAssembler<T extends AssembledConfiguration> imp
      */
     @Override
     @SuppressWarnings("unchecked")
-    public ConfigurationAssembler<T> setConfigurationSource(ConfigurationSource configurationSource) {
+    public ConfigurationBuilder<T> setConfigurationSource(ConfigurationSource configurationSource) {
         source = configurationSource;
         return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public ConfigurationAssembler<T> setMonitorInterval(String intervalSeconds) {
+    public ConfigurationBuilder<T> setMonitorInterval(String intervalSeconds) {
         monitorInterval = Integer.parseInt(intervalSeconds);
         return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public ConfigurationAssembler<T> setStatusLevel(Level level) {
+    public ConfigurationBuilder<T> setStatusLevel(Level level) {
         this.level = level;
         return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public ConfigurationAssembler<T> setVerbosity(String verbosity) {
+    public ConfigurationBuilder<T> setVerbosity(String verbosity) {
         this.verbosity = verbosity;
         return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public ConfigurationAssembler<T> setPackages(String packages) {
+    public ConfigurationBuilder<T> setPackages(String packages) {
         this.packages = packages;
         return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public ConfigurationAssembler<T> setShutdownHook(String flag) {
+    public ConfigurationBuilder<T> setShutdownHook(String flag) {
         this.shutdownFlag = flag;
         return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public ConfigurationAssembler<T> add(AppenderAssembler assembler) {
-        appenders.getComponents().add(assembler.assemble());
+    public ConfigurationBuilder<T> add(AppenderComponentBuilder assembler) {
+        appenders.getComponents().add(assembler.build());
         return this;
     }
 
     @Override
-    public ConfigurationAssembler<T> add(CustomLevelAssembler assembler) {
-        customLevels.getComponents().add(assembler.assemble());
-        return this;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public ConfigurationAssembler<T> add(LoggerAssembler assembler) {
-        loggers.getComponents().add(assembler.assemble());
+    public ConfigurationBuilder<T> add(CustomLevelComponentBuilder assembler) {
+        customLevels.getComponents().add(assembler.build());
         return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public ConfigurationAssembler<T> add(RootLoggerAssembler assembler) {
+    public ConfigurationBuilder<T> add(LoggerComponentBuilder assembler) {
+        loggers.getComponents().add(assembler.build());
+        return this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public ConfigurationBuilder<T> add(RootLoggerComponentBuilder assembler) {
         for (Component c : loggers.getComponents()) {
             if (c.getPluginType().equals("root")) {
                 throw new ConfigurationException("root Logger was previously defined");
             }
         }
-        loggers.getComponents().add(assembler.assemble());
+        loggers.getComponents().add(assembler.build());
         return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public ConfigurationAssembler<T> add(FilterAssembler assembler) {
-        filters.getComponents().add(assembler.assemble());
+    public ConfigurationBuilder<T> add(FilterComponentBuilder assembler) {
+        filters.getComponents().add(assembler.build());
         return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public ConfigurationAssembler<T> addProperty(String key, String value) {
-        properties.addComponent(newComponent(key, "Property", value).assemble());
+    public ConfigurationBuilder<T> addProperty(String key, String value) {
+        properties.addComponent(newComponent(key, "Property", value).build());
         return this;
     }
 
     @Override
-    public AppenderAssembler newAppender(String name, String type) {
-        return new DefaultAppenderAssembler(this, name, type);
+    public AppenderComponentBuilder newAppender(String name, String type) {
+        return new DefaultAppenderComponentBuilder(this, name, type);
     }
 
 
     @Override
-    public AppenderRefAssembler newAppenderRef(String ref) {
-        return new DefaultAppenderRefAssembler(this, ref);
+    public AppenderRefComponentBuilder newAppenderRef(String ref) {
+        return new DefaultAppenderRefComponentBuilder(this, ref);
     }
 
 
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public ComponentAssembler<ComponentAssembler> newComponent(String name, String type) {
-        return new DefaultComponentAssembler(this, name, type);
+    public ComponentBuilder<ComponentBuilder> newComponent(String name, String type) {
+        return new DefaultComponentBuilder(this, name, type);
     }
 
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public ComponentAssembler<ComponentAssembler> newComponent(String name, String type, String value) {
-        return new DefaultComponentAssembler(this, name, type, value);
+    public ComponentBuilder<ComponentBuilder> newComponent(String name, String type, String value) {
+        return new DefaultComponentBuilder(this, name, type, value);
     }
 
     @Override
-    public CustomLevelAssembler newCustomLevel(String name, int level) {
-        return new DefaultCustomLevelAssembler(this, name, level);
+    public CustomLevelComponentBuilder newCustomLevel(String name, int level) {
+        return new DefaultCustomLevelComponentBuilder(this, name, level);
     }
 
     @Override
     @SuppressWarnings("rawtypes")
-    public FilterAssembler newFilter(String type, String onMatch, String onMisMatch) {
-        return new DefaultFilterAssembler(this, type, onMatch, onMisMatch);
+    public FilterComponentBuilder newFilter(String type, String onMatch, String onMisMatch) {
+        return new DefaultFilterComponentBuilder(this, type, onMatch, onMisMatch);
     }
 
 
     @Override
     @SuppressWarnings("rawtypes")
-    public FilterAssembler newFilter(String type, Filter.Result onMatch, Filter.Result onMisMatch) {
-        return new DefaultFilterAssembler(this, type, onMatch.name(), onMisMatch.name());
+    public FilterComponentBuilder newFilter(String type, Filter.Result onMatch, Filter.Result onMisMatch) {
+        return new DefaultFilterComponentBuilder(this, type, onMatch.name(), onMisMatch.name());
     }
 
     @Override
-    public LayoutAssembler newLayout(String type) {
-        return new DefaultLayoutAssembler(this, type);
+    public LayoutComponentBuilder newLayout(String type) {
+        return new DefaultLayoutComponentBuilder(this, type);
     }
 
     @Override
-    public LoggerAssembler newLogger(String name, String level) {
-        return new DefaultLoggerAssembler(this, name, level);
+    public LoggerComponentBuilder newLogger(String name, String level) {
+        return new DefaultLoggerComponentBuilder(this, name, level);
     }
 
     @Override
-    public LoggerAssembler newLogger(String name, Level level) {
-        return new DefaultLoggerAssembler(this, name, level.toString());
+    public LoggerComponentBuilder newLogger(String name, Level level) {
+        return new DefaultLoggerComponentBuilder(this, name, level.toString());
     }
 
     @Override
-    public LoggerAssembler newAsyncLogger(String name, String level) {
-        return new DefaultLoggerAssembler(this, name, level, "AsyncLogger");
+    public LoggerComponentBuilder newAsyncLogger(String name, String level) {
+        return new DefaultLoggerComponentBuilder(this, name, level, "AsyncLogger");
     }
 
     @Override
-    public LoggerAssembler newAsyncLogger(String name, Level level) {
-        return new DefaultLoggerAssembler(this, name, level.toString(), "AsyncLogger");
+    public LoggerComponentBuilder newAsyncLogger(String name, Level level) {
+        return new DefaultLoggerComponentBuilder(this, name, level.toString(), "AsyncLogger");
     }
 
     @Override
-    public RootLoggerAssembler newRootLogger(String level) {
-        return new DefaultRootLoggerAssembler(this, level);
+    public RootLoggerComponentBuilder newRootLogger(String level) {
+        return new DefaultRootLoggerComponentBuilder(this, level);
     }
 
     @Override
-    public RootLoggerAssembler newRootLogger(Level level) {
-        return new DefaultRootLoggerAssembler(this, level.toString());
+    public RootLoggerComponentBuilder newRootLogger(Level level) {
+        return new DefaultRootLoggerComponentBuilder(this, level.toString());
     }
 
     @Override
-    public RootLoggerAssembler newAsyncRootLogger(String level) {
-        return new DefaultRootLoggerAssembler(this, level, "AsyncRoot");
+    public RootLoggerComponentBuilder newAsyncRootLogger(String level) {
+        return new DefaultRootLoggerComponentBuilder(this, level, "AsyncRoot");
     }
 
     @Override
-    public RootLoggerAssembler newAsyncRootLogger(Level level) {
-        return new DefaultRootLoggerAssembler(this, level.toString(), "AsyncRoot");
+    public RootLoggerComponentBuilder newAsyncRootLogger(Level level) {
+        return new DefaultRootLoggerComponentBuilder(this, level.toString(), "AsyncRoot");
     }
 
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public T assemble() {
+    public T build() {
         AssembledConfiguration configuration;
         try {
             if (source == null) {
@@ -313,6 +313,7 @@ public class DefaultConfigurationAssembler<T extends AssembledConfiguration> imp
             throw new IllegalArgumentException("Invalid Configuration class specified", ex);
         }
         configuration.getStatusConfiguration().initialize();
+        configuration.initialize();
         return (T)configuration;
     }
 }

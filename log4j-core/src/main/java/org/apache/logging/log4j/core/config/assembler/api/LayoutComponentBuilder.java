@@ -17,8 +17,8 @@
 package org.apache.logging.log4j.core.config.assembler.api;
 
 /**
- * Assembler for constructing Filters
+ * Assembler for constructing Layouts
  */
-public interface FilterAssembler extends ComponentAssembler<FilterAssembler> {
+public interface LayoutComponentBuilder extends ComponentBuilder<LayoutComponentBuilder> {
 
 }

@@ -31,9 +31,9 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
-import org.apache.logging.log4j.core.config.assembler.api.AppenderAssembler;
-import org.apache.logging.log4j.core.config.assembler.api.ConfigurationAssembler;
-import org.apache.logging.log4j.core.config.assembler.api.ConfigurationAssemblerFactory;
+import org.apache.logging.log4j.core.config.assembler.api.AppenderComponentBuilder;
+import org.apache.logging.log4j.core.config.assembler.api.ConfigurationBuilder;
+import org.apache.logging.log4j.core.config.assembler.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.assembler.impl.AssembledConfiguration;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
@@ -362,12 +362,12 @@ public class TestConfigurator {
 
     @Test
     public void testAssembler() throws Exception {
-        ConfigurationAssembler<AssembledConfiguration> assembler = ConfigurationAssemblerFactory.newConfiguration();
+        ConfigurationBuilder<AssembledConfiguration> assembler = ConfigurationBuilderFactory.newConfigurationBuilder();
         assembler.setStatusLevel(Level.ERROR);
-        assembler.setConfigurationName("AssemblyTest");
+        assembler.setConfigurationName("BuilderTest");
         assembler.add(assembler.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.NEUTRAL)
                 .addAttribute("level", Level.DEBUG));
-        AppenderAssembler appenderAssembler = assembler.newAppender("Stdout", "CONSOLE").addAttribute("target",
+        AppenderComponentBuilder appenderAssembler = assembler.newAppender("Stdout", "CONSOLE").addAttribute("target",
                 ConsoleAppender.Target.SYSTEM_OUT);
         appenderAssembler.add(assembler.newLayout("PatternLayout").
                 addAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
@@ -378,10 +378,10 @@ public class TestConfigurator {
                 add(assembler.newAppenderRef("Stdout")).
                 addAttribute("additivity", false));
         assembler.add(assembler.newRootLogger(Level.ERROR).add(assembler.newAppenderRef("Stdout")));
-        ctx = Configurator.initialize(assembler.assemble());
+        ctx = Configurator.initialize(assembler.build());
         final Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration", config);
-        assertEquals("Unexpected Configuration", "AssemblyTest", config.getName());
+        assertEquals("Unexpected Configuration", "BuilderTest", config.getName());
         assertThat(config.getAppenders(), hasSize(equalTo(1)));
 
     }

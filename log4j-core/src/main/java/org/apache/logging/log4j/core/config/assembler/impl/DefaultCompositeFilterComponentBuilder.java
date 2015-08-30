@@ -17,22 +17,24 @@
 package org.apache.logging.log4j.core.config.assembler.impl;
 
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.assembler.api.CompositeFilterAssembler;
-import org.apache.logging.log4j.core.config.assembler.api.FilterAssembler;
+import org.apache.logging.log4j.core.config.assembler.api.CompositeFilterComponentBuilder;
+import org.apache.logging.log4j.core.config.assembler.api.FilterComponentBuilder;
 
 /**
  *
  */
-public class DefaultCompositeFilterAssembler extends DefaultComponentAssembler<CompositeFilterAssembler> implements CompositeFilterAssembler {
+public class DefaultCompositeFilterComponentBuilder extends DefaultComponentBuilder<CompositeFilterComponentBuilder> implements
+        CompositeFilterComponentBuilder {
 
-    public DefaultCompositeFilterAssembler(DefaultConfigurationAssembler<? extends Configuration> assembler, String onMatch, String onMisMatch) {
+    public DefaultCompositeFilterComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> assembler,
+            String onMatch, String onMisMatch) {
         super(assembler, "Filters");
         addAttribute("onMatch", onMatch);
         addAttribute("onMisMatch", onMisMatch);
     }
 
     @Override
-    public CompositeFilterAssembler add(FilterAssembler assembler) {
+    public CompositeFilterComponentBuilder add(FilterComponentBuilder assembler) {
         addComponent(assembler);
         return this;
     }

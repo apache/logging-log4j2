@@ -117,6 +117,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         componentMap.put(Configuration.CONTEXT_PROPERTIES, properties);
         pluginManager = new PluginManager(Node.CATEGORY);
         rootNode = new Node();
+        setState(State.INITIAL);
     }
 
     @Override
@@ -138,9 +139,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * Initialize the configuration.
      */
     @Override
-    public void start() {
-        LOGGER.debug("Starting configuration {}", this);
-        this.setStarting();
+    public void initialize() {
+        LOGGER.debug("Initializing configuration {}", this);
         pluginManager.collectPlugins(pluginPackages);
         final PluginManager levelPlugins = new PluginManager(Level.CATEGORY);
         levelPlugins.collectPlugins(pluginPackages);
@@ -159,6 +159,21 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         setup();
         setupAdvertisement();
         doConfigure();
+        setState(State.INITIALIZED);
+        LOGGER.debug("Configuration {} initialized", this);
+    }
+
+    /**
+     * Start the configuration
+     */
+    @Override
+    public void start() {
+        // Preserve the prior behavior of initializing during start if not initialized.
+        if (getState().equals(State.INITIAL)) {
+            initialize();
+        }
+        LOGGER.debug("Starting configuration {}", this);
+        this.setStarting();
         final Set<LoggerConfig> alreadyStarted = new HashSet<>();
         for (final LoggerConfig logger : loggers.values()) {
             logger.start();

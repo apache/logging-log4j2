@@ -17,22 +17,24 @@
 package org.apache.logging.log4j.core.config.assembler.impl;
 
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.assembler.api.AppenderRefAssembler;
-import org.apache.logging.log4j.core.config.assembler.api.FilterAssembler;
+import org.apache.logging.log4j.core.config.assembler.api.AppenderRefComponentBuilder;
+import org.apache.logging.log4j.core.config.assembler.api.FilterComponentBuilder;
 
 /**
  * Holds the Appender Component attributes and subcomponents.
  */
-public class DefaultAppenderRefAssembler extends DefaultComponentAssembler<AppenderRefAssembler> implements AppenderRefAssembler {
+public class DefaultAppenderRefComponentBuilder extends DefaultComponentBuilder<AppenderRefComponentBuilder> implements
+        AppenderRefComponentBuilder {
 
-    public DefaultAppenderRefAssembler(DefaultConfigurationAssembler<? extends Configuration> assembler, String ref) {
+    public DefaultAppenderRefComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> assembler,
+            String ref) {
         super(assembler, "AppenderRef");
         addAttribute("ref", ref);
     }
 
 
     @Override
-    public AppenderRefAssembler add(FilterAssembler assembler) {
+    public AppenderRefComponentBuilder add(FilterComponentBuilder assembler) {
         addComponent(assembler);
         return this;
     }

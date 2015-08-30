@@ -17,15 +17,16 @@
 package org.apache.logging.log4j.core.config.assembler.impl;
 
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.assembler.api.FilterAssembler;
+import org.apache.logging.log4j.core.config.assembler.api.FilterComponentBuilder;
 
 /**
  *
  */
-public class DefaultFilterAssembler extends DefaultComponentAssembler<FilterAssembler> implements FilterAssembler {
+public class DefaultFilterComponentBuilder extends DefaultComponentBuilder<FilterComponentBuilder> implements
+        FilterComponentBuilder {
 
-    public DefaultFilterAssembler(DefaultConfigurationAssembler<? extends Configuration> assembler, String type, String onMatch,
-            String onMisMatch) {
+    public DefaultFilterComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> assembler, String type,
+            String onMatch, String onMisMatch) {
         super(assembler, type);
         addAttribute("onMatch", onMatch);
         addAttribute("onMisMatch", onMisMatch);

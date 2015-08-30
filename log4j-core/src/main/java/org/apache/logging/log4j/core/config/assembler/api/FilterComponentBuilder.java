@@ -14,20 +14,11 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.config.assembler.impl;
-
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.assembler.api.CustomLevelAssembler;
+package org.apache.logging.log4j.core.config.assembler.api;
 
 /**
- *
+ * Assembler for constructing Filters
  */
-public class DefaultCustomLevelAssembler extends DefaultComponentAssembler<CustomLevelAssembler> implements
-        CustomLevelAssembler {
+public interface FilterComponentBuilder extends ComponentBuilder<FilterComponentBuilder> {
 
-    public DefaultCustomLevelAssembler(DefaultConfigurationAssembler<? extends Configuration> assembler, String name,
-            int level) {
-        super(assembler, name, "CustomLevel");
-        addAttribute("level", Integer.toString(level));
-    }
 }

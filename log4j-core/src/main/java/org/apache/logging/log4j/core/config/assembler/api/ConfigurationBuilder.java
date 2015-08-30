@@ -20,11 +20,12 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.core.util.Builder;
 
 /**
  * Interface for assembling logging configurations.
  */
-public interface ConfigurationAssembler<T extends Configuration> extends Assembler<T> {
+public interface ConfigurationBuilder<T extends Configuration> extends Builder<T> {
 
     /**
      * Set the name of the configuration.
@@ -32,84 +33,84 @@ public interface ConfigurationAssembler<T extends Configuration> extends Assembl
      * @param name the name of the {@link Configuration}. By default is {@code "Constructed"}.
      * @return this Assembler instance.
      */
-    ConfigurationAssembler<T> setConfigurationName(String name);
+    ConfigurationBuilder<T> setConfigurationName(String name);
 
     /**
      * Set the configuration source, if one exists.
      * @param configurationSource the ConfigurationSource.
      * @return this Assembler instance.
      */
-    ConfigurationAssembler<T> setConfigurationSource(ConfigurationSource configurationSource);
+    ConfigurationBuilder<T> setConfigurationSource(ConfigurationSource configurationSource);
 
     /**
      * Set the level of the StatusLogger.
      * @param level The logging level.
      * @return this Assembler instance.
      */
-    ConfigurationAssembler<T> setStatusLevel(Level level);
+    ConfigurationBuilder<T> setStatusLevel(Level level);
 
     /**
      * Set whether the logging should include constructing Plugins.
      * @param verbosity "disable" will hide messages from plugin construction.
      * @return this Assembler instance.
      */
-    ConfigurationAssembler<T> setVerbosity(String verbosity);
+    ConfigurationBuilder<T> setVerbosity(String verbosity);
 
     /**
      * Set the list of packages to search for plugins.
      * @param packages The comma separated list of packages.
      * @return this Assembler instance.
      */
-    ConfigurationAssembler<T> setPackages(String packages);
+    ConfigurationBuilder<T> setPackages(String packages);
 
     /**
      * Set whether the shutdown hook should be disabled.
      * @param flag "disable" will prevent the shutdown hook from being set.
      * @return this Assembler instance.
      */
-    ConfigurationAssembler<T> setShutdownHook(String flag);
+    ConfigurationBuilder<T> setShutdownHook(String flag);
 
     /**
      * Sets the interval at which the configuration file should be checked for changes.
      * @param intervalSeconds The number of seconds that should pass between checks of the configuration file.
      * @return this Assembler instance.
      */
-    ConfigurationAssembler<T> setMonitorInterval(String intervalSeconds);
+    ConfigurationBuilder<T> setMonitorInterval(String intervalSeconds);
 
     /**
      * Adds an AppenderComponent.
-     * @param assembler The AppenderAssembler with all of its attributes and sub components set.
+     * @param assembler The AppenderComponentBuilder with all of its attributes and sub components set.
      * @return this Assembler instance.
      */
-    ConfigurationAssembler<T> add(AppenderAssembler assembler);
+    ConfigurationBuilder<T> add(AppenderComponentBuilder assembler);
 
     /**
      * Adds a CustomLevel component.
-     * @param assembler The CustomLevelAssembler with all of its attributes set.
+     * @param assembler The CustomLevelComponentBuilder with all of its attributes set.
      * @return this Assembler instance.
      */
-    ConfigurationAssembler<T> add(CustomLevelAssembler assembler);
+    ConfigurationBuilder<T> add(CustomLevelComponentBuilder assembler);
 
     /**
      * Add a Logger component.
-     * @param assembler The LoggerAssembler with all of its attributes and sub components set.
+     * @param assembler The LoggerComponentBuilder with all of its attributes and sub components set.
      * @return this Assembler instance.
      */
-    ConfigurationAssembler<T> add(LoggerAssembler assembler);
+    ConfigurationBuilder<T> add(LoggerComponentBuilder assembler);
 
     /**
      * Add the root Logger component.
-     * @param assembler The RootLoggerAssembler with all of its attributes and sub components set.
+     * @param assembler The RootLoggerComponentBuilder with all of its attributes and sub components set.
      * @return this Assembler instance.
      */
-    ConfigurationAssembler<T> add(RootLoggerAssembler assembler);
+    ConfigurationBuilder<T> add(RootLoggerComponentBuilder assembler);
 
     /**
      * Add a Filter component.
-     * @param assembler the FilterAssembler with all of its attributes and sub components set.
+     * @param assembler the FilterComponentBuilder with all of its attributes and sub components set.
      * @return this Assembler instance.
      */
-    ConfigurationAssembler<T> add(FilterAssembler assembler);
+    ConfigurationBuilder<T> add(FilterComponentBuilder assembler);
 
     /**
      * Add a Property key and value.
@@ -117,136 +118,136 @@ public interface ConfigurationAssembler<T extends Configuration> extends Assembl
      * @param value The property value.
      * @return this Assembler instance.
      */
-    ConfigurationAssembler<T> addProperty(String key, String value);
+    ConfigurationBuilder<T> addProperty(String key, String value);
 
     /**
      * Returns an Assembler for creating Appenders.
      * @param name The name of the Appender.
      * @param pluginName The Plugin type of the Appender.
-     * @return the AppenderAssembler.
+     * @return the AppenderComponentBuilder.
      */
-    AppenderAssembler newAppender(String name, String pluginName);
+    AppenderComponentBuilder newAppender(String name, String pluginName);
 
 
     /**
      * Returns an Assembler for creating AppenderRefs.
      * @param ref The name of the Appender being referenced.
-     * @return the AppenderRefAssembler.
+     * @return the AppenderRefComponentBuilder.
      */
-    AppenderRefAssembler newAppenderRef(String ref);
+    AppenderRefComponentBuilder newAppenderRef(String ref);
 
     /**
      * Returns an Assembler for creating generic components.
      * @param name The name of the component (may be null).
      * @param pluginName The Plugin type of the component.
-     * @return The ComponentAssembler.
+     * @return The ComponentBuilder.
      */
     @SuppressWarnings("rawtypes")
-    ComponentAssembler newComponent(String name, String pluginName);
+    ComponentBuilder newComponent(String name, String pluginName);
 
     /**
      * Returns an Assembler for creating generic components.
      * @param name The name of the component (may be null).
      * @param pluginName The Plugin type of the component.
      * @param value The value of the component.
-     * @return The ComponentAssembler.
+     * @return The ComponentBuilder.
      */
     @SuppressWarnings("rawtypes")
-    ComponentAssembler<ComponentAssembler> newComponent(String name, String pluginName, String value);
+    ComponentBuilder<ComponentBuilder> newComponent(String name, String pluginName, String value);
 
     /**
      * Returns an Asssembler for creating CustomLevels
      * @param name The name of the custom level.
      * @param level The integer value to be assigned to the level.
-     * @return The CustomLevelAssembler.
+     * @return The CustomLevelComponentBuilder.
      */
-    CustomLevelAssembler newCustomLevel(String name, int level);
+    CustomLevelComponentBuilder newCustomLevel(String name, int level);
 
     /**
      * Returns an Asssembler for creating Filters.
      * @param pluginName The Plugin type of the Filter.
      * @param onMatch "ACCEPT", "DENY", or "NEUTRAL"
      * @param onMisMatch "ACCEPT", "DENY", or "NEUTRAL"
-     * @return The FilterAssembler.
+     * @return The FilterComponentBuilder.
      */
-    FilterAssembler newFilter(String pluginName, Filter.Result onMatch, Filter.Result onMisMatch);
+    FilterComponentBuilder newFilter(String pluginName, Filter.Result onMatch, Filter.Result onMisMatch);
 
     /**
      * Returns an Asssembler for creating Filters.
      * @param pluginName The Plugin type of the Filter.
      * @param onMatch "ACCEPT", "DENY", or "NEUTRAL"
      * @param onMisMatch "ACCEPT", "DENY", or "NEUTRAL"
-     * @return The FilterAssembler.
+     * @return The FilterComponentBuilder.
      */
-    FilterAssembler newFilter(String pluginName, String onMatch, String onMisMatch);
+    FilterComponentBuilder newFilter(String pluginName, String onMatch, String onMisMatch);
 
     /**
      * Returns an Assembler for creating Layouts.
      * @param type The Plugin type of the Layout.
-     * @return The LayoutAssembler.
+     * @return The LayoutComponentBuilder.
      */
-    LayoutAssembler newLayout(String pluginName);
+    LayoutComponentBuilder newLayout(String pluginName);
 
     /**
      * Returns an Assembler for creating Loggers.
      * @param name The name of the Logger.
      * @param level The logging Level to be assigned to the Logger.
-     * @return The LoggerAssembler.
+     * @return The LoggerComponentBuilder.
      */
-    LoggerAssembler newLogger(String name, Level level);
+    LoggerComponentBuilder newLogger(String name, Level level);
 
 
     /**
      * Returns an Assembler for creating Loggers.
      * @param name The name of the Logger.
      * @param level The logging Level to be assigned to the Logger.
-     * @return The LoggerAssembler.
+     * @return The LoggerComponentBuilder.
      */
-    LoggerAssembler newLogger(String name, String level);
+    LoggerComponentBuilder newLogger(String name, String level);
 
     /**
      * Returns an Assembler for creating Async Loggers.
      * @param name The name of the Logger.
      * @param level The logging Level to be assigned to the Logger.
-     * @return The LoggerAssembler.
+     * @return The LoggerComponentBuilder.
      */
-    LoggerAssembler newAsyncLogger(String name, Level level);
+    LoggerComponentBuilder newAsyncLogger(String name, Level level);
 
     /**
      * Returns an Assembler for creating Async Loggers.
      * @param name The name of the Logger.
      * @param level The logging Level to be assigned to the Logger.
-     * @return The LoggerAssembler.
+     * @return The LoggerComponentBuilder.
      */
-    LoggerAssembler newAsyncLogger(String name, String level);
+    LoggerComponentBuilder newAsyncLogger(String name, String level);
 
     /**
      * Returns an Assembler for creating the root Logger.
      * @param level The logging Level to be assigned to the root Logger.
-     * @return The RootLoggerAssembler.
+     * @return The RootLoggerComponentBuilder.
      */
-    RootLoggerAssembler newRootLogger(Level level);
+    RootLoggerComponentBuilder newRootLogger(Level level);
 
     /**
      * Returns an Assembler for creating the root Logger.
      * @param level The logging Level to be assigned to the root Logger.
-     * @return The RootLoggerAssembler.
+     * @return The RootLoggerComponentBuilder.
      */
-    RootLoggerAssembler newRootLogger(String level);
+    RootLoggerComponentBuilder newRootLogger(String level);
 
 
     /**
      * Returns an Assembler for creating the async root Logger.
      * @param level The logging Level to be assigned to the root Logger.
-     * @return The RootLoggerAssembler.
+     * @return The RootLoggerComponentBuilder.
      */
-    RootLoggerAssembler newAsyncRootLogger(Level level);
+    RootLoggerComponentBuilder newAsyncRootLogger(Level level);
 
 
     /**
      * Returns an Assembler for creating the async root Logger.
      * @param level The logging Level to be assigned to the root Logger.
-     * @return The RootLoggerAssembler.
+     * @return The RootLoggerComponentBuilder.
      */
-    RootLoggerAssembler newAsyncRootLogger(String level);
+    RootLoggerComponentBuilder newAsyncRootLogger(String level);
 }

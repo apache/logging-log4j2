@@ -17,46 +17,48 @@
 package org.apache.logging.log4j.core.config.assembler.impl;
 
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.assembler.api.AppenderRefAssembler;
-import org.apache.logging.log4j.core.config.assembler.api.FilterAssembler;
-import org.apache.logging.log4j.core.config.assembler.api.LoggerAssembler;
+import org.apache.logging.log4j.core.config.assembler.api.AppenderRefComponentBuilder;
+import org.apache.logging.log4j.core.config.assembler.api.FilterComponentBuilder;
+import org.apache.logging.log4j.core.config.assembler.api.RootLoggerComponentBuilder;
 
 /**
  *
  */
-public class DefaultLoggerAssembler extends DefaultComponentAssembler<LoggerAssembler> implements LoggerAssembler {
+public class DefaultRootLoggerComponentBuilder extends DefaultComponentBuilder<RootLoggerComponentBuilder> implements
+        RootLoggerComponentBuilder {
 
     /**
-     * Configure a logger.
+     * Configure the root logger.
      * @param assembler
-     * @param name
      * @param level
      */
-    public DefaultLoggerAssembler(DefaultConfigurationAssembler<? extends Configuration> assembler, String name, String level) {
-        super(assembler, name, "Logger");
+    public DefaultRootLoggerComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> assembler,
+            String level) {
+        super(assembler, "", "Root");
         addAttribute("level", level);
     }
 
     /**
-     * Configure a logger.
+     * Configure the root logger.
      * @param assembler
-     * @param name
      * @param level
      * @param type
      */
-    public DefaultLoggerAssembler(DefaultConfigurationAssembler<? extends Configuration> assembler, String name, String level, String type) {
-        super(assembler, name, type);
+    public DefaultRootLoggerComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> assembler,
+            String level, String type) {
+        super(assembler, "", type);
         addAttribute("level", level);
     }
 
     @Override
-    public LoggerAssembler add(AppenderRefAssembler assembler) {
+    public RootLoggerComponentBuilder add(AppenderRefComponentBuilder assembler) {
         addComponent(assembler);
         return this;
     }
 
+
     @Override
-    public LoggerAssembler add(FilterAssembler assembler) {
+    public RootLoggerComponentBuilder add(FilterComponentBuilder assembler) {
         addComponent(assembler);
         return this;
     }
