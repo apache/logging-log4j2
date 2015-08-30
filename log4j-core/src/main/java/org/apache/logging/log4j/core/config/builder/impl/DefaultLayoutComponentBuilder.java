@@ -14,11 +14,18 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.config.assembler.api;
+package org.apache.logging.log4j.core.config.builder.impl;
+
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 
 /**
- * Assembler for constructing Filters
+ *
  */
-public interface CustomLevelComponentBuilder extends ComponentBuilder<CustomLevelComponentBuilder> {
+public class DefaultLayoutComponentBuilder extends DefaultComponentBuilder<LayoutComponentBuilder> implements
+        LayoutComponentBuilder {
 
+    public DefaultLayoutComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> assembler, String type) {
+        super(assembler, type);
+    }
 }

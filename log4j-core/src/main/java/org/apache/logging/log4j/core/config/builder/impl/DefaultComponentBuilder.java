@@ -14,13 +14,13 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.config.assembler.impl;
+package org.apache.logging.log4j.core.config.builder.impl;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.assembler.api.Component;
-import org.apache.logging.log4j.core.config.assembler.api.ComponentBuilder;
-import org.apache.logging.log4j.core.config.assembler.api.ConfigurationBuilder;
+import org.apache.logging.log4j.core.config.builder.api.Component;
+import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 
 import java.util.ArrayList;
 import java.util.HashMap;

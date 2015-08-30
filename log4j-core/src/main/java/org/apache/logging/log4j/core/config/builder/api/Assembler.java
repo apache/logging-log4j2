@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.logging.log4j.core.config.assembler.api;
+package org.apache.logging.log4j.core.config.builder.api;
 
 /**
  * Gathers information in preparation for creating components. These assemblers are primarily useful for

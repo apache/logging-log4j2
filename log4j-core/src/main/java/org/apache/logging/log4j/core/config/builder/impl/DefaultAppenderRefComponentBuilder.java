@@ -14,29 +14,28 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.config.assembler.impl;
+package org.apache.logging.log4j.core.config.builder.impl;
 
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.assembler.api.CompositeFilterComponentBuilder;
-import org.apache.logging.log4j.core.config.assembler.api.FilterComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.AppenderRefComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder;
 
 /**
- *
+ * Holds the Appender Component attributes and subcomponents.
  */
-public class DefaultCompositeFilterComponentBuilder extends DefaultComponentBuilder<CompositeFilterComponentBuilder> implements
-        CompositeFilterComponentBuilder {
+public class DefaultAppenderRefComponentBuilder extends DefaultComponentBuilder<AppenderRefComponentBuilder> implements
+        AppenderRefComponentBuilder {
 
-    public DefaultCompositeFilterComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> assembler,
-            String onMatch, String onMisMatch) {
-        super(assembler, "Filters");
-        addAttribute("onMatch", onMatch);
-        addAttribute("onMisMatch", onMisMatch);
+    public DefaultAppenderRefComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> assembler,
+            String ref) {
+        super(assembler, "AppenderRef");
+        addAttribute("ref", ref);
     }
 
+
     @Override
-    public CompositeFilterComponentBuilder add(FilterComponentBuilder assembler) {
+    public AppenderRefComponentBuilder add(FilterComponentBuilder assembler) {
         addComponent(assembler);
         return this;
     }
-
 }

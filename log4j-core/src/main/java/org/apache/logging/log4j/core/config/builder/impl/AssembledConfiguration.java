@@ -14,14 +14,14 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.config.assembler.impl;
+package org.apache.logging.log4j.core.config.builder.impl;
 
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.FileConfigurationMonitor;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.Reconfigurable;
-import org.apache.logging.log4j.core.config.assembler.api.Component;
+import org.apache.logging.log4j.core.config.builder.api.Component;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.config.plugins.util.ResolverUtil;

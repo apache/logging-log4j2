@@ -14,12 +14,12 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.config.assembler.impl;
+package org.apache.logging.log4j.core.config.builder.impl;
 
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.assembler.api.AppenderRefComponentBuilder;
-import org.apache.logging.log4j.core.config.assembler.api.FilterComponentBuilder;
-import org.apache.logging.log4j.core.config.assembler.api.RootLoggerComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.AppenderRefComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 
 /**
  *

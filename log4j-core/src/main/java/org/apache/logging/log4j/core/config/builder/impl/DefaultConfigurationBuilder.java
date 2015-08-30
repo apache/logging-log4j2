@@ -14,23 +14,23 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.config.assembler.impl;
+package org.apache.logging.log4j.core.config.builder.impl;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.assembler.api.AppenderComponentBuilder;
-import org.apache.logging.log4j.core.config.assembler.api.AppenderRefComponentBuilder;
-import org.apache.logging.log4j.core.config.assembler.api.Component;
-import org.apache.logging.log4j.core.config.assembler.api.ComponentBuilder;
-import org.apache.logging.log4j.core.config.assembler.api.ConfigurationBuilder;
-import org.apache.logging.log4j.core.config.assembler.api.CustomLevelComponentBuilder;
-import org.apache.logging.log4j.core.config.assembler.api.FilterComponentBuilder;
-import org.apache.logging.log4j.core.config.assembler.api.LayoutComponentBuilder;
-import org.apache.logging.log4j.core.config.assembler.api.LoggerComponentBuilder;
-import org.apache.logging.log4j.core.config.assembler.api.RootLoggerComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.AppenderRefComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.Component;
+import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
+import org.apache.logging.log4j.core.config.builder.api.CustomLevelComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.LoggerComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 
 import java.lang.reflect.Constructor;
 import java.util.List;

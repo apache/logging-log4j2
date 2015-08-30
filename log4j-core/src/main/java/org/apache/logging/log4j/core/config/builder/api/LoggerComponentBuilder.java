@@ -14,11 +14,24 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.config.assembler.api;
+package org.apache.logging.log4j.core.config.builder.api;
 
 /**
- * Assembler for constructing Filters
+ * Assembler for constructing Loggers.
  */
-public interface FilterComponentBuilder extends ComponentBuilder<FilterComponentBuilder> {
+public interface LoggerComponentBuilder extends ComponentBuilder<LoggerComponentBuilder> {
 
+    /**
+     * Add an Appender reference to the Logger component.
+     * @param assembler The AppenderRefComponentBuilder with all of its attributes and sub-components set.
+     * @return this Assembler.
+     */
+    LoggerComponentBuilder add(AppenderRefComponentBuilder assembler);
+
+    /**
+     * Add a Filter to the Logger component.
+     * @param assembler The FilterComponentBuilder with all of its attributes and sub-components set.
+     * @return this Assembler.
+     */
+    LoggerComponentBuilder add(FilterComponentBuilder assembler);
 }

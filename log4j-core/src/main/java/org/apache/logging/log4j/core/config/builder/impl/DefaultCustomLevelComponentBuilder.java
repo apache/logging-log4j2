@@ -14,21 +14,20 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.config.assembler.impl;
+package org.apache.logging.log4j.core.config.builder.impl;
 
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.assembler.api.FilterComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.CustomLevelComponentBuilder;
 
 /**
  *
  */
-public class DefaultFilterComponentBuilder extends DefaultComponentBuilder<FilterComponentBuilder> implements
-        FilterComponentBuilder {
+public class DefaultCustomLevelComponentBuilder extends DefaultComponentBuilder<CustomLevelComponentBuilder> implements
+        CustomLevelComponentBuilder {
 
-    public DefaultFilterComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> assembler, String type,
-            String onMatch, String onMisMatch) {
-        super(assembler, type);
-        addAttribute("onMatch", onMatch);
-        addAttribute("onMisMatch", onMisMatch);
+    public DefaultCustomLevelComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> assembler,
+            String name, int level) {
+        super(assembler, name, "CustomLevel");
+        addAttribute("level", Integer.toString(level));
     }
 }

@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.config.assembler;
+package org.apache.logging.log4j.core.config.builder;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
@@ -22,9 +22,9 @@ import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.assembler.api.AppenderComponentBuilder;
-import org.apache.logging.log4j.core.config.assembler.api.ConfigurationBuilder;
-import org.apache.logging.log4j.core.config.assembler.impl.AssembledConfiguration;
+import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
+import org.apache.logging.log4j.core.config.builder.impl.AssembledConfiguration;
 
 import java.net.URI;
 

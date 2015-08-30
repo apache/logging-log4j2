@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.config.assembler;
+package org.apache.logging.log4j.core.config.builder;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,7 +40,7 @@ public class ConfigurationAssemblerTest {
 
     @Test
     public void doConfigure() throws Exception {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FACTORY_PROPERTY, "org.apache.logging.log4j.core.config.assembler.CustomConfigurationFactory");
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FACTORY_PROPERTY, "org.apache.logging.log4j.core.config.builder.CustomConfigurationFactory");
         Configuration config = ((LoggerContext)LogManager.getContext(false)).getConfiguration();
         assertNotNull("No configuration created", config);
         assertEquals("Incorrect State: " + config.getState(), config.getState(), LifeCycle.State.STARTED);

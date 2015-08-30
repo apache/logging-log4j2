@@ -19,10 +19,9 @@ package org.apache.logging.log4j.core.config.properties;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Reconfigurable;
-import org.apache.logging.log4j.core.config.assembler.api.Component;
-import org.apache.logging.log4j.core.config.assembler.impl.AssembledConfiguration;
+import org.apache.logging.log4j.core.config.builder.api.Component;
+import org.apache.logging.log4j.core.config.builder.impl.AssembledConfiguration;
 
-import java.io.File;
 import java.io.IOException;
 
 /**

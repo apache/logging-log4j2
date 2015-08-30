@@ -14,33 +14,29 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.config.assembler.impl;
+package org.apache.logging.log4j.core.config.builder.impl;
 
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.assembler.api.AppenderComponentBuilder;
-import org.apache.logging.log4j.core.config.assembler.api.FilterComponentBuilder;
-import org.apache.logging.log4j.core.config.assembler.api.LayoutComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.CompositeFilterComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder;
 
 /**
- * Holds the Appender Component attributes and subcomponents.
+ *
  */
-public class DefaultAppenderComponentBuilder extends DefaultComponentBuilder<AppenderComponentBuilder> implements
-        AppenderComponentBuilder {
+public class DefaultCompositeFilterComponentBuilder extends DefaultComponentBuilder<CompositeFilterComponentBuilder> implements
+        CompositeFilterComponentBuilder {
 
-    public DefaultAppenderComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> assembler, String name,
-            String type) {
-        super(assembler, name, type);
+    public DefaultCompositeFilterComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> assembler,
+            String onMatch, String onMisMatch) {
+        super(assembler, "Filters");
+        addAttribute("onMatch", onMatch);
+        addAttribute("onMisMatch", onMisMatch);
     }
 
     @Override
-    public AppenderComponentBuilder add(LayoutComponentBuilder assembler) {
+    public CompositeFilterComponentBuilder add(FilterComponentBuilder assembler) {
         addComponent(assembler);
         return this;
     }
 
-    @Override
-    public AppenderComponentBuilder add(FilterComponentBuilder assembler) {
-        addComponent(assembler);
-        return this;
-    }
 }

@@ -14,30 +14,17 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.config.assembler.api;
+package org.apache.logging.log4j.core.config.builder.api;
 
 /**
- * Assembler for constructing Appenders.
+ * Wraps multiple filter assemblers.
  */
-public interface AppenderComponentBuilder extends ComponentBuilder<AppenderComponentBuilder> {
+public interface CompositeFilterComponentBuilder extends ComponentBuilder<CompositeFilterComponentBuilder> {
 
     /**
-     * Add a Layout to the Appender component.
-     * @param assembler The LayoutComponentBuilder with all of its attributes set.
-     * @return this Assembler.
+     * Add a FilterComponent.
+     * @param assembler The FilterComponentBuilder with all of its attributes and sub-components set.
+     * @return The CompositeFilterComponentBuilder.
      */
-    AppenderComponentBuilder add(LayoutComponentBuilder assembler);
-
-    /**
-     * Add a Filter to the Appender component.
-     * @param assembler The FilterComponentBuilder with all of its attributes and sub components set.
-     * @return this Assembler.
-     */
-    AppenderComponentBuilder add(FilterComponentBuilder assembler);
-
-    /**
-     * Return the name of the Appender.
-     * @return the name of the Appender.
-     */
-    String getName();
+    CompositeFilterComponentBuilder add(FilterComponentBuilder assembler);
 }

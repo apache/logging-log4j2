@@ -15,10 +15,10 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.core.config.assembler.api;
+package org.apache.logging.log4j.core.config.builder.api;
 
-import org.apache.logging.log4j.core.config.assembler.impl.AssembledConfiguration;
-import org.apache.logging.log4j.core.config.assembler.impl.DefaultConfigurationBuilder;
+import org.apache.logging.log4j.core.config.builder.impl.AssembledConfiguration;
+import org.apache.logging.log4j.core.config.builder.impl.DefaultConfigurationBuilder;
 
 /**
  *
