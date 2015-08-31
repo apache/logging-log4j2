@@ -33,7 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * This is the general version of the Configuration created by the Assembler. It may be extended to
+ * This is the general version of the Configuration created by the Builder. It may be extended to
  * enhance its functionality.
  */
 public class BuiltConfiguration extends AbstractConfiguration {
