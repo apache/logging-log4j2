@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuild
 /**
  *
  */
-public class DefaultRootLoggerComponentBuilder extends DefaultComponentBuilder<RootLoggerComponentBuilder> implements
+class DefaultRootLoggerComponentBuilder extends DefaultComponentBuilder<RootLoggerComponentBuilder> implements
         RootLoggerComponentBuilder {
 
     /**
