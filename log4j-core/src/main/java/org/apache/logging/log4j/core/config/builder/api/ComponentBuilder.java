@@ -77,7 +77,7 @@ public interface ComponentBuilder<T extends ComponentBuilder> extends Builder<Co
     /**
      * Adds a sub component.
      * @param builder The Assembler for the subcomponent with all of its attributes and sub-components set.
-     * @return The ComponentBuilder.
+     * @return This ComponentBuilder (<em>not</em> the argument).
      */
     T addComponent(ComponentBuilder<?> builder);
 
