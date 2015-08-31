@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.util.Builder;
 public interface ComponentBuilder<T extends ComponentBuilder> extends Builder<Component> {
 
     /**
-     * Add an attribute to the component.
+     * Adds an attribute to the component.
      * @param key The attribute key.
      * @param value The value of the attribute.
      * @return The ComponentBuilder.
@@ -35,7 +35,7 @@ public interface ComponentBuilder<T extends ComponentBuilder> extends Builder<Co
     T addAttribute(String key, String value);
 
     /**
-     * Add a logging Level attribute to the component.
+     * Adds a logging Level attribute to the component.
      * @param key The attribute key.
      * @param level The logging Level.
      * @return The ComponentBuilder.
@@ -43,7 +43,7 @@ public interface ComponentBuilder<T extends ComponentBuilder> extends Builder<Co
     T addAttribute(String key, Level level);
 
     /**
-     * Add an enumeration.
+     * Adds an enumeration.
      * @param key The attribute key.
      * @param value The enumeration.
      * @return The ComponentBuilder.
@@ -51,7 +51,7 @@ public interface ComponentBuilder<T extends ComponentBuilder> extends Builder<Co
     T addAttribute(String key, Enum<?> value);
 
     /**
-     * Add an integer attribute.
+     * Adds an integer attribute.
      * @param key The attribute key.
      * @param value The integer value.
      * @return The ComponentBuilder.
@@ -59,7 +59,7 @@ public interface ComponentBuilder<T extends ComponentBuilder> extends Builder<Co
     T addAttribute(String key, int value);
 
     /**
-     * Add a boolean attribute.
+     * Adds a boolean attribute.
      * @param key The attribute key.
      * @param value The integer value.
      * @return The ComponentBuilder.
@@ -67,7 +67,7 @@ public interface ComponentBuilder<T extends ComponentBuilder> extends Builder<Co
     T addAttribute(String key, boolean value);
 
     /**
-     * Add an Object attribute.
+     * Adds an Object attribute.
      * @param key The attribute key.
      * @param value The integer value.
      * @return The ComponentBuilder.
@@ -75,20 +75,20 @@ public interface ComponentBuilder<T extends ComponentBuilder> extends Builder<Co
     T addAttribute(String key, Object value);
 
     /**
-     * Add a sub component.
+     * Adds a sub component.
      * @param builder The Assembler for the subcomponent with all of its attributes and sub-components set.
      * @return The ComponentBuilder.
      */
     T addComponent(ComponentBuilder<?> builder);
 
     /**
-     * Return the name of the component, if any.
+     * Returns the name of the component, if any.
      * @return The components name or null if it doesn't have one.
      */
     String getName();
 
     /**
-     * Retrieve the ConfigurationBuilder.
+     * Retrieves the ConfigurationBuilder.
      * @return The ConfiguratonAssembler.
      */
     ConfigurationBuilder<? extends Configuration> getBuilder();
