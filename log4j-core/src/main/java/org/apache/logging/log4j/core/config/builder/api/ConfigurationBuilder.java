@@ -142,8 +142,7 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * @param pluginName The Plugin type of the component.
      * @return The ComponentBuilder.
      */
-    @SuppressWarnings("rawtypes")
-    ComponentBuilder newComponent(String name, String pluginName);
+    ComponentBuilder<?> newComponent(String name, String pluginName);
 
     /**
      * Returns an Assembler for creating generic components.
