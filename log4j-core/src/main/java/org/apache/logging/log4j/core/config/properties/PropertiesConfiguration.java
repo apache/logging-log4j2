@@ -46,7 +46,7 @@ public class PropertiesConfiguration extends AssembledConfiguration implements R
             final PropertiesConfiguration config = factory.getConfiguration(source);
             return config.root.getComponents().size() == 0 ? null : config;
         } catch (final IOException ex) {
-            LOGGER.error("Cannot locate file {}", getConfigurationSource(), ex);
+            LOGGER.error("Cannot locate file {}: {}", getConfigurationSource(), ex);
         }
         return null;
     }
