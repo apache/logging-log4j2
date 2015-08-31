@@ -313,8 +313,7 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
         return layoutAssembler;
     }
 
-    @SuppressWarnings("rawtypes")
-    private ComponentBuilder<?> createComponent(ComponentBuilder parent, String key, Properties properties) {
+    private ComponentBuilder<?> createComponent(ComponentBuilder<?> parent, String key, Properties properties) {
         String name = properties.getProperty(CONFIG_NAME);
         if (name != null) {
             properties.remove(CONFIG_NAME);
