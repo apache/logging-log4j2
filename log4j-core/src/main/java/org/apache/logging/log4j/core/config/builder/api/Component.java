@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Container for assembling Configurations. This class is not normally directly manipulated by users
+ * Container for building Configurations. This class is not normally directly manipulated by users
  * of the Assembler API.
  */
 public class Component {
