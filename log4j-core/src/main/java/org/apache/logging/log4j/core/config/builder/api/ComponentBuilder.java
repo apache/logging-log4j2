@@ -21,7 +21,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.util.Builder;
 
 /**
- * Assembler for arbitrary components and the base class for the provided components.
+ * Builds arbitrary components and is the base type for the provided components.
  */
 @SuppressWarnings("rawtypes")
 public interface ComponentBuilder<T extends ComponentBuilder> extends Builder<Component> {
