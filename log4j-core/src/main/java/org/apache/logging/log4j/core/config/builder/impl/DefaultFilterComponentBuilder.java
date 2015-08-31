@@ -22,7 +22,7 @@ import org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder;
 /**
  *
  */
-public class DefaultFilterComponentBuilder extends DefaultComponentBuilder<FilterComponentBuilder> implements
+class DefaultFilterComponentBuilder extends DefaultComponentBuilder<FilterComponentBuilder> implements
         FilterComponentBuilder {
 
     public DefaultFilterComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> assembler, String type,

@@ -22,7 +22,7 @@ import org.apache.logging.log4j.core.config.builder.api.CustomLevelComponentBuil
 /**
  *
  */
-public class DefaultCustomLevelComponentBuilder extends DefaultComponentBuilder<CustomLevelComponentBuilder> implements
+class DefaultCustomLevelComponentBuilder extends DefaultComponentBuilder<CustomLevelComponentBuilder> implements
         CustomLevelComponentBuilder {
 
     public DefaultCustomLevelComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> assembler,

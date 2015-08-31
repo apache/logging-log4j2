@@ -32,7 +32,7 @@ import java.util.Map;
  * Component.
  */
 @SuppressWarnings("rawtypes")
-public class DefaultComponentBuilder<T extends ComponentBuilder> implements ComponentBuilder<T> {
+class DefaultComponentBuilder<T extends ComponentBuilder> implements ComponentBuilder<T> {
 
     private ConfigurationBuilder<? extends Configuration> assembler;
     private String type;

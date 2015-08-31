@@ -22,7 +22,7 @@ import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 /**
  *
  */
-public class DefaultLayoutComponentBuilder extends DefaultComponentBuilder<LayoutComponentBuilder> implements
+class DefaultLayoutComponentBuilder extends DefaultComponentBuilder<LayoutComponentBuilder> implements
         LayoutComponentBuilder {
 
     public DefaultLayoutComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> assembler, String type) {

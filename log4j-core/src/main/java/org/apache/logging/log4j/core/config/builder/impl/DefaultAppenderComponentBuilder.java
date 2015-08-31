@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 /**
  * Holds the Appender Component attributes and subcomponents.
  */
-public class DefaultAppenderComponentBuilder extends DefaultComponentBuilder<AppenderComponentBuilder> implements
+class DefaultAppenderComponentBuilder extends DefaultComponentBuilder<AppenderComponentBuilder> implements
         AppenderComponentBuilder {
 
     public DefaultAppenderComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> assembler, String name,

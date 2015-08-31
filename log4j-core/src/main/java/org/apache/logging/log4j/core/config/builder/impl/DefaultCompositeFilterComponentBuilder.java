@@ -23,7 +23,7 @@ import org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder;
 /**
  *
  */
-public class DefaultCompositeFilterComponentBuilder extends DefaultComponentBuilder<CompositeFilterComponentBuilder> implements
+class DefaultCompositeFilterComponentBuilder extends DefaultComponentBuilder<CompositeFilterComponentBuilder> implements
         CompositeFilterComponentBuilder {
 
     public DefaultCompositeFilterComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> assembler,
