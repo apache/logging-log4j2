@@ -329,7 +329,7 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private void processRemainingProperties(ComponentBuilder builder, String name, Properties properties) {
+    private void processRemainingProperties(ComponentBuilder<?> builder, String name, Properties properties) {
         while (properties.size() > 0) {
             String propertyName = properties.stringPropertyNames().iterator().next();
 
