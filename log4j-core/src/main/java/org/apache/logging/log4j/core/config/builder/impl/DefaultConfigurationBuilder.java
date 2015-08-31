@@ -40,8 +40,6 @@ import java.util.List;
  */
 public class DefaultConfigurationBuilder<T extends AssembledConfiguration> implements ConfigurationBuilder<T> {
 
-    private AssembledConfiguration configuration;
-
     private final Component root = new Component();
     private Component loggers;
     private Component appenders;
