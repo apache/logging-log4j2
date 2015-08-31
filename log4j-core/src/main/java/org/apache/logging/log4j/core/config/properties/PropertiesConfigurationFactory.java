@@ -324,7 +324,7 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
             throw new ConfigurationException("No type attribute provided for component " + key);
         }
         properties.remove(CONFIG_TYPE);
-        @SuppressWarnings("unchecked") ComponentBuilder<?> componentAssembler = parent.getBuilder().newComponent(name, type);
+        ComponentBuilder<?> componentAssembler = parent.getBuilder().newComponent(name, type);
         processRemainingProperties(componentAssembler, name, properties);
         return componentAssembler;
     }
