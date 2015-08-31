@@ -34,7 +34,7 @@ import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
-import org.apache.logging.log4j.core.config.builder.impl.AssembledConfiguration;
+import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.After;
@@ -362,7 +362,7 @@ public class TestConfigurator {
 
     @Test
     public void testAssembler() throws Exception {
-        ConfigurationBuilder<AssembledConfiguration> assembler = ConfigurationBuilderFactory.newConfigurationBuilder();
+        ConfigurationBuilder<BuiltConfiguration> assembler = ConfigurationBuilderFactory.newConfigurationBuilder();
         assembler.setStatusLevel(Level.ERROR);
         assembler.setConfigurationName("BuilderTest");
         assembler.add(assembler.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.NEUTRAL)

@@ -38,7 +38,7 @@ import java.util.List;
 /**
  *
  */
-public class DefaultConfigurationBuilder<T extends AssembledConfiguration> implements ConfigurationBuilder<T> {
+public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implements ConfigurationBuilder<T> {
 
     private final Component root = new Component();
     private Component loggers;
@@ -65,11 +65,11 @@ public class DefaultConfigurationBuilder<T extends AssembledConfiguration> imple
     private static final String LOG4J_ASYNC_LOGGERS = "Log4jContextSelector";
 
     public DefaultConfigurationBuilder() {
-        this(AssembledConfiguration.class);
+        this(BuiltConfiguration.class);
         root.addAttribute("name", "Assembled");
     }
 
-    public <T extends AssembledConfiguration> DefaultConfigurationBuilder(Class<T> clazz) {
+    public <T extends BuiltConfiguration> DefaultConfigurationBuilder(Class<T> clazz) {
         if (clazz == null) {
             throw new IllegalArgumentException("A Configuration class must be provided");
         }
@@ -283,13 +283,13 @@ public class DefaultConfigurationBuilder<T extends AssembledConfiguration> imple
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
     public T build() {
-        AssembledConfiguration configuration;
+        BuiltConfiguration configuration;
         try {
             if (source == null) {
                 source = ConfigurationSource.NULL_SOURCE;
             }
             Constructor constructor = clazz.getConstructor(ConfigurationSource.class, Component.class);
-            configuration = (AssembledConfiguration) constructor.newInstance(source, root);
+            configuration = (BuiltConfiguration) constructor.newInstance(source, root);
             configuration.setMonitorInterval(monitorInterval);
             if (name != null) {
                 configuration.setName(name);

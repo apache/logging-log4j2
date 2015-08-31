@@ -20,14 +20,14 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.config.builder.api.Component;
-import org.apache.logging.log4j.core.config.builder.impl.AssembledConfiguration;
+import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 
 import java.io.IOException;
 
 /**
  * Configuration created from a properties file.
  */
-public class PropertiesConfiguration extends AssembledConfiguration implements Reconfigurable {
+public class PropertiesConfiguration extends BuiltConfiguration implements Reconfigurable {
 
     private static final long serialVersionUID = 5198216024278070407L;
 

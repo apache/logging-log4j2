@@ -17,7 +17,7 @@
 
 package org.apache.logging.log4j.core.config.builder.api;
 
-import org.apache.logging.log4j.core.config.builder.impl.AssembledConfiguration;
+import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.config.builder.impl.DefaultConfigurationBuilder;
 
 /**
@@ -29,11 +29,11 @@ public class ConfigurationBuilderFactory {
      * Returns a new default ConfigurationBuilder to construct Log4j configurations.
      * @return A new ConfigurationBuilder.
      */
-    public static ConfigurationBuilder<AssembledConfiguration> newConfigurationBuilder() {
+    public static ConfigurationBuilder<BuiltConfiguration> newConfigurationBuilder() {
         return new DefaultConfigurationBuilder<>();
     }
 
-    public static <T extends AssembledConfiguration> ConfigurationBuilder<T> newConfigurationBuilder(Class<T> clazz) {
+    public static <T extends BuiltConfiguration> ConfigurationBuilder<T> newConfigurationBuilder(Class<T> clazz) {
         return new DefaultConfigurationBuilder<>(clazz);
     }
 }

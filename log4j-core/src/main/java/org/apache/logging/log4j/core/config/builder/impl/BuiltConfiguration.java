@@ -36,7 +36,7 @@ import java.util.List;
  * This is the general version of the Configuration created by the Assembler. It may be extended to
  * enhance its functionality.
  */
-public class AssembledConfiguration extends AbstractConfiguration {
+public class BuiltConfiguration extends AbstractConfiguration {
     private static final long serialVersionUID = -3071897330997405132L;
     private static final String[] VERBOSE_CLASSES = new String[] { ResolverUtil.class.getName() };
     private final StatusConfiguration statusConfig;
@@ -47,7 +47,7 @@ public class AssembledConfiguration extends AbstractConfiguration {
     private Component propertiesComponent;
     private Component customLevelsComponent;
 
-    public AssembledConfiguration(ConfigurationSource source, Component rootComponent) {
+    public BuiltConfiguration(ConfigurationSource source, Component rootComponent) {
         super(source);
         statusConfig = new StatusConfiguration().withVerboseClasses(VERBOSE_CLASSES).withStatus(getDefaultStatus());
         for (Component component : rootComponent.getComponents()) {
