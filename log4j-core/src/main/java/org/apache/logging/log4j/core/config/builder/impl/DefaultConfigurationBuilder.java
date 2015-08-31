@@ -207,8 +207,7 @@ public class DefaultConfigurationBuilder<T extends AssembledConfiguration> imple
 
 
     @Override
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public ComponentBuilder<ComponentBuilder> newComponent(String name, String type) {
+    public ComponentBuilder<ComponentBuilder<?>> newComponent(String name, String type) {
         return new DefaultComponentBuilder<>(this, name, type);
     }
 
