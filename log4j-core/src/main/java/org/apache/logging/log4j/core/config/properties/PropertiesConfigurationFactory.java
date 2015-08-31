@@ -152,7 +152,7 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
             throw new ConfigurationException("No type attribute provided for Appender " + key);
         }
         properties.remove(CONFIG_TYPE);
-        AppenderComponentBuilder appenderAssembler = builder.newAppender(name, type);
+        AppenderComponentBuilder appenderBuilder = builder.newAppender(name, type);
         String filters = properties.getProperty("filters");
         if (filters != null) {
             properties.remove("filters");
@@ -160,19 +160,19 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
             for (String filterName : filterNames) {
                 filterName = filterName.trim();
                 Properties filterProps = PropertiesUtil.extractSubset(properties, "filter." + filterName);
-                appenderAssembler.add(createFilter(builder, filterName, filterProps));
+                appenderBuilder.add(createFilter(builder, filterName, filterProps));
             }
         }
         Properties layoutProps = PropertiesUtil.extractSubset(properties, "layout");
         if (layoutProps.size() > 0) {
-            appenderAssembler.add(createLayout(builder, name, layoutProps));
+            appenderBuilder.add(createLayout(builder, name, layoutProps));
         }
 
-        processRemainingProperties(appenderAssembler, name, properties);
-        return appenderAssembler;
+        processRemainingProperties(appenderBuilder, name, properties);
+        return appenderBuilder;
     }
 
-    private FilterComponentBuilder createFilter(ConfigurationBuilder<PropertiesConfiguration> assembler, String key, Properties properties) {
+    private FilterComponentBuilder createFilter(ConfigurationBuilder<PropertiesConfiguration> builder, String key, Properties properties) {
         String type = properties.getProperty(CONFIG_TYPE);
         if (Strings.isEmpty(type)) {
             throw new ConfigurationException("No type attribute provided for Appender " + key);
@@ -186,21 +186,21 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
         if (onMisMatch != null) {
             properties.remove("onMisMatch");
         }
-        FilterComponentBuilder filterAssembler = assembler.newFilter(type, onMatch, onMisMatch);
-        processRemainingProperties(filterAssembler, key, properties);
-        return filterAssembler;
+        FilterComponentBuilder filterBuilder = builder.newFilter(type, onMatch, onMisMatch);
+        processRemainingProperties(filterBuilder, key, properties);
+        return filterBuilder;
     }
 
-    private AppenderRefComponentBuilder createAppenderRef(ConfigurationBuilder<PropertiesConfiguration> assembler, String key, Properties properties) {
+    private AppenderRefComponentBuilder createAppenderRef(ConfigurationBuilder<PropertiesConfiguration> builder, String key, Properties properties) {
         String ref = properties.getProperty("ref");
         if (Strings.isEmpty(ref)) {
             throw new ConfigurationException("No ref attribute provided for AppenderRef " + key);
         }
         properties.remove("ref");
-        AppenderRefComponentBuilder appenderRefAssembler = assembler.newAppenderRef(ref);
+        AppenderRefComponentBuilder appenderRefBuilder = builder.newAppenderRef(ref);
         String level = properties.getProperty("level");
         if (!Strings.isEmpty(level)) {
-            appenderRefAssembler.addAttribute("level", level);
+            appenderRefBuilder.addAttribute("level", level);
         }
         String filters = properties.getProperty("filters");
         if (filters != null) {
@@ -209,13 +209,13 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
             for (String filterName : filterNames) {
                 filterName = filterName.trim();
                 Properties filterProps = PropertiesUtil.extractSubset(properties, "filter." + filterName);
-                appenderRefAssembler.add(createFilter(assembler, filterName, filterProps));
+                appenderRefBuilder.add(createFilter(builder, filterName, filterProps));
             }
         }
-        return appenderRefAssembler;
+        return appenderRefBuilder;
     }
 
-    private LoggerComponentBuilder createLogger(ConfigurationBuilder<PropertiesConfiguration> assembler, String key, Properties properties) {
+    private LoggerComponentBuilder createLogger(ConfigurationBuilder<PropertiesConfiguration> builder, String key, Properties properties) {
         String name = properties.getProperty(CONFIG_NAME);
         if (Strings.isEmpty(name)) {
             throw new ConfigurationException("No name attribute provided for Logger " + key);
@@ -225,16 +225,16 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
         if (level != null) {
             properties.remove("level");
         }
-        LoggerComponentBuilder loggerAssembler;
+        LoggerComponentBuilder loggerBuilder;
         String type = properties.getProperty(CONFIG_TYPE);
         if (type != null) {
             if (type.equalsIgnoreCase("asyncLogger")) {
-                loggerAssembler = assembler.newAsyncLogger(name, level);
+                loggerBuilder = builder.newAsyncLogger(name, level);
             } else {
                 throw new ConfigurationException("Unknown Logger type " + type + " for Logger " + name);
             }
         } else {
-            loggerAssembler = assembler.newLogger(name, level);
+            loggerBuilder = builder.newLogger(name, level);
         }
         String appenderRefs = properties.getProperty("appenderRefs");
         if (appenderRefs != null) {
@@ -243,7 +243,7 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
             for (String appenderRef : refNames) {
                 appenderRef = appenderRef.trim();
                 Properties refProps = PropertiesUtil.extractSubset(properties, "appenderRef." + appenderRef);
-                loggerAssembler.add(createAppenderRef(assembler, appenderRef, refProps));
+                loggerBuilder.add(createAppenderRef(builder, appenderRef, refProps));
             }
         }
         String filters = properties.getProperty("filters");
@@ -253,31 +253,31 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
             for (String filterName : filterNames) {
                 filterName = filterName.trim();
                 Properties filterProps = PropertiesUtil.extractSubset(properties, "filter." + filterName);
-                loggerAssembler.add(createFilter(assembler, filterName, filterProps));
+                loggerBuilder.add(createFilter(builder, filterName, filterProps));
             }
         }
         String additivity = properties.getProperty("additivity");
         if (!Strings.isEmpty(additivity)) {
-            loggerAssembler.addAttribute("additivity", additivity);
+            loggerBuilder.addAttribute("additivity", additivity);
         }
-        return loggerAssembler;
+        return loggerBuilder;
     }
 
-    private RootLoggerComponentBuilder createRootLogger(ConfigurationBuilder<PropertiesConfiguration> assembler, Properties properties) {
+    private RootLoggerComponentBuilder createRootLogger(ConfigurationBuilder<PropertiesConfiguration> builder, Properties properties) {
         String level = properties.getProperty("level");
         if (level != null) {
             properties.remove("level");
         }
-        RootLoggerComponentBuilder loggerAssembler;
+        RootLoggerComponentBuilder loggerBuilder;
         String type = properties.getProperty(CONFIG_TYPE);
         if (type != null) {
             if (type.equalsIgnoreCase("asyncRoot")) {
-                loggerAssembler = assembler.newAsyncRootLogger(level);
+                loggerBuilder = builder.newAsyncRootLogger(level);
             } else {
                 throw new ConfigurationException("Unknown Logger type for root logger" + type);
             }
         } else {
-            loggerAssembler = assembler.newRootLogger(level);
+            loggerBuilder = builder.newRootLogger(level);
         }
         String appenderRefs = properties.getProperty("appenderRefs");
         if (appenderRefs != null) {
@@ -286,7 +286,7 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
             for (String appenderRef : refNames) {
                 appenderRef = appenderRef.trim();
                 Properties refProps = PropertiesUtil.extractSubset(properties, "appenderRef." + appenderRef);
-                loggerAssembler.add(createAppenderRef(assembler, appenderRef, refProps));
+                loggerBuilder.add(createAppenderRef(builder, appenderRef, refProps));
             }
         }
         String filters = properties.getProperty("filters");
@@ -296,21 +296,21 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
             for (String filterName : filterNames) {
                 filterName = filterName.trim();
                 Properties filterProps = PropertiesUtil.extractSubset(properties, "filter." + filterName);
-                loggerAssembler.add(createFilter(assembler, filterName, filterProps));
+                loggerBuilder.add(createFilter(builder, filterName, filterProps));
             }
         }
-        return loggerAssembler;
+        return loggerBuilder;
     }
 
-    private LayoutComponentBuilder createLayout(ConfigurationBuilder<PropertiesConfiguration> assembler, String appenderName, Properties properties) {
+    private LayoutComponentBuilder createLayout(ConfigurationBuilder<PropertiesConfiguration> builder, String appenderName, Properties properties) {
         String type = properties.getProperty(CONFIG_TYPE);
         if (Strings.isEmpty(type)) {
             throw new ConfigurationException("No type attribute provided for Layout on Appender " + appenderName);
         }
         properties.remove(CONFIG_TYPE);
-        LayoutComponentBuilder layoutAssembler = assembler.newLayout(type);
-        processRemainingProperties(layoutAssembler, appenderName, properties);
-        return layoutAssembler;
+        LayoutComponentBuilder layoutBuilder = builder.newLayout(type);
+        processRemainingProperties(layoutBuilder, appenderName, properties);
+        return layoutBuilder;
     }
 
     private ComponentBuilder<?> createComponent(ComponentBuilder<?> parent, String key, Properties properties) {
@@ -323,9 +323,9 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
             throw new ConfigurationException("No type attribute provided for component " + key);
         }
         properties.remove(CONFIG_TYPE);
-        ComponentBuilder<?> componentAssembler = parent.getBuilder().newComponent(name, type);
-        processRemainingProperties(componentAssembler, name, properties);
-        return componentAssembler;
+        ComponentBuilder<?> componentBuilder = parent.getBuilder().newComponent(name, type);
+        processRemainingProperties(componentBuilder, name, properties);
+        return componentBuilder;
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
