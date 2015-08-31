@@ -23,7 +23,7 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.util.Builder;
 
 /**
- * Interface for assembling logging configurations.
+ * Interface for building logging configurations.
  */
 public interface ConfigurationBuilder<T extends Configuration> extends Builder<T> {
 
