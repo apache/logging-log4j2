@@ -329,7 +329,7 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private void processRemainingProperties(ComponentBuilder assembler, String name, Properties properties) {
+    private void processRemainingProperties(ComponentBuilder builder, String name, Properties properties) {
         while (properties.size() > 0) {
             String propertyName = properties.stringPropertyNames().iterator().next();
 
@@ -337,9 +337,9 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
             if (index > 0) {
                 String prefix = propertyName.substring(0, index);
                 Properties componentProperties = PropertiesUtil.extractSubset(properties, prefix);
-                assembler.addComponent(createComponent(assembler, prefix, componentProperties));
+                builder.addComponent(createComponent(builder, prefix, componentProperties));
             } else  {
-                assembler.addAttribute(propertyName, properties.getProperty(propertyName));
+                builder.addAttribute(propertyName, properties.getProperty(propertyName));
                 properties.remove(propertyName);
             }
         }
