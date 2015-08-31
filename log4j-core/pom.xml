@@ -108,6 +108,12 @@
       <scope>provided</scope>
       <optional>true</optional>
     </dependency>
+    <!-- Used for Kafka appender -->
+    <dependency>
+      <groupId>org.apache.kafka</groupId>
+      <artifactId>kafka-clients</artifactId>
+      <optional>true</optional>
+    </dependency>
     <!-- Used for compressing to formats other than zip and gz -->
     <dependency>
       <groupId>org.apache.commons</groupId>

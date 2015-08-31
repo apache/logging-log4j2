@@ -1225,6 +1225,90 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     ...
 }]]></pre>
         </subsection>
+        <a name="KafkaAppender"/>
+        <subsection name="KafkaAppender">
+          <p>The KafkaAppender log events to an Apache Kafka topic.</p>
+          <table>
+            <caption align="top">KafkaAppender Parameters</caption>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>topic</td>
+              <td>String</td>
+              <td>The Kafka topic to use. Required.</td>
+            </tr>
+            <tr>
+              <td>lilter</td>
+              <td>Filter</td>
+              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
+                may be used by using a CompositeFilter.</td>
+            </tr>
+            <tr>
+              <td>layout</td>
+              <td>Layout</td>
+              <td>
+                The Layout to use to format the LogEvent. If you do not specify a layout,
+                if not specified the <a class="javadoc" href="http://logging.apache.org/log4j/2.x/log4j-api/apidocs/org/apache/logging/log4j/message/Message.html#getFormattedMessage())">formatted message</a>
+                as an UTF-8 encoded string will be sent to Kafka.
+              </td>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td>The name of the Appender. Required.</td>
+            </tr>
+            <tr>
+              <td>ignoreExceptions</td>
+              <td>boolean</td>
+              <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
+                internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
+                caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
+                <a href="#FailoverAppender">FailoverAppender</a>.</td>
+            </tr>
+            <tr>
+              <td>properties</td>
+              <td>Property</td>
+              <td>
+                You can set any properties in <a href="http://kafka.apache.org/documentation.html#newproducerconfigs">Kafka new producer properties</a>.
+                You need to set the <code>bootstrap.servers</code> property, there are sensible default values for the others.
+              </td>
+            </tr>
+          </table>
+          <p>
+            Here is a sample KafkaAppender configuration snippet:
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+  ...
+  <Appenders>
+    <Kafka name="Kafka" topic="log-test">
+      <PatternLayout pattern="%date %message"/>
+        <Property name="bootstrap.servers">localhost:9092</Property>
+    </Kafka>
+  </Appenders>]]></pre>
+          <p>
+            This appender is synchronous and will block until the record has been acknowledged by the Kafka server, timeout for this
+            can be set with the <code>timeout.ms</code> property (defaults to 30 seconds). Wrap with
+            <a href="http://logging.apache.org/log4j/2.x/manual/appenders.html#AsyncAppender">Async appender</a> to log asynchronously.
+          </p>
+          <p>
+            This appender requires <a href="http://search.maven.org/#artifactdetails|org.apache.kafka|kafka-clients|0.8.2.1|jar">Kafka client library</a>
+          </p>
+          <p>
+            <em>Note:</em>Make sure to not let <code>org.apache.kafka</code> log to a Kafka appender on DEBUG level,
+            since that will cause recursive logging:
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+  ...
+  <Loggers>
+    <Root level="DEBUG">
+      <AppenderRef ref="Kafka"/>
+    </Root>
+    <Logger name="org.apache.kafka" level="INFO" /> <!-- avoid recursive logging -->
+  </Loggers>]]></pre>
+        </subsection>
       <a name="MemoryMappedFileAppender" />
       <subsection name="MemoryMappedFileAppender">
         <p><i>New since 2.1. Be aware that this is a new addition, and although it has been

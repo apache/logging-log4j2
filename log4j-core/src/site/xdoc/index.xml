@@ -48,6 +48,7 @@
                 <li>SMTPAppender requires Javax Mail.</li>
                 <li>JMSQueueAppender and JMSTopicAppender require a JMS implementation like
                 <a href="http://activemq.apache.org/">Apache ActiveMQ</a>.</li>
+                <li>Kafka appender requires <a href="http://search.maven.org/#artifactdetails|org.apache.kafka|kafka-clients|0.8.2.1|jar">Kafka client library</a></li>
                 <li>Windows color support requires <a href="http://jansi.fusesource.org/">Jansi</a>.</li>
                 <li>The JDBC Appender requires a JDBC driver for the database you choose to write events to.</li>
                 <li>The JPA Appender requires the Java Persistence API classes, a JPA provider implementation,
