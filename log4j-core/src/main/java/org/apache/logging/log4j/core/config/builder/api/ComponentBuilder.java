@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.util.Builder;
 public interface ComponentBuilder<T extends ComponentBuilder> extends Builder<Component> {
 
     /**
-     * Adds an attribute to the component.
+     * Adds a String attribute.
      * @param key The attribute key.
      * @param value The value of the attribute.
      * @return The ComponentBuilder.
@@ -35,7 +35,7 @@ public interface ComponentBuilder<T extends ComponentBuilder> extends Builder<Co
     T addAttribute(String key, String value);
 
     /**
-     * Adds a logging Level attribute to the component.
+     * Adds a logging Level attribute.
      * @param key The attribute key.
      * @param level The logging Level.
      * @return The ComponentBuilder.
@@ -43,7 +43,7 @@ public interface ComponentBuilder<T extends ComponentBuilder> extends Builder<Co
     T addAttribute(String key, Level level);
 
     /**
-     * Adds an enumeration.
+     * Adds an enumeration attribute.
      * @param key The attribute key.
      * @param value The enumeration.
      * @return The ComponentBuilder.
