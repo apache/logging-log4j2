@@ -34,6 +34,6 @@ public class ConfigurationBuilderFactory {
     }
 
     public static <T extends AssembledConfiguration> ConfigurationBuilder<T> newConfigurationBuilder(Class<T> clazz) {
-        return new DefaultConfigurationBuilder<T>(clazz);
+        return new DefaultConfigurationBuilder<>(clazz);
     }
 }
