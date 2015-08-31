@@ -14,24 +14,18 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.nosql.appender;
+package org.apache.logging.log4j.jul;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.junit.ClassRule;
-import org.junit.Ignore;
+import org.junit.Assert;
 import org.junit.Test;
 
-@Ignore("Requires a running MongoDB server")
-public class MongoDbTest {
+public class DefaultLevelConverterTest {
 
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule("log4j2-mongodb.xml");
-
+    /**
+     * (LOG4J2-1108) NullPointerException when passing null to java.util.logging.Logger.setLevel().
+     */
     @Test
-    public void test() {
-        final Logger logger = LogManager.getLogger();
-        logger.info("Hello log");
+    public void testJulSetNull() {
+        Assert.assertEquals(null, new DefaultLevelConverter().toLevel(null));
     }
 }

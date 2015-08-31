@@ -18,7 +18,7 @@ package org.apache.logging.log4j.io;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -38,7 +38,7 @@ public class IoBuilderCallerInfoTesting {
     protected final static Level LEVEL = Level.WARN;
 
     @ClassRule
-    public static InitialLoggerContext ctx = new InitialLoggerContext("log4j2-streams-calling-info.xml");
+    public static LoggerContextRule ctx = new LoggerContextRule("log4j2-streams-calling-info.xml");
 
     public void assertMessages(final String msg, final int size, final String methodName) {
         final ListAppender appender = ctx.getListAppender("ClassAndMethod");

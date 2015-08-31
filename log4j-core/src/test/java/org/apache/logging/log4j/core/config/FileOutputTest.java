@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.config;
 import java.io.File;
 
 import org.apache.logging.log4j.junit.CleanFiles;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -38,7 +38,7 @@ public class FileOutputTest {
     private static final String STATUS_LOG = "target/status.log";
 
     @Rule
-    public RuleChain rules = RuleChain.outerRule(new CleanFiles(STATUS_LOG)).around(new InitialLoggerContext(CONFIG));
+    public RuleChain rules = RuleChain.outerRule(new CleanFiles(STATUS_LOG)).around(new LoggerContextRule(CONFIG));
 
     @Test
     public void testConfig() {

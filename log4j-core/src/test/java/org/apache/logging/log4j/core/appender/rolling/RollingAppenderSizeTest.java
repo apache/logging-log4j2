@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -63,11 +63,11 @@ public class RollingAppenderSizeTest {
     }
 
     @Rule
-    public InitialLoggerContext init;
+    public LoggerContextRule init;
 
     public RollingAppenderSizeTest(final String configFile, final String fileExtension) {
         this.fileExtension = fileExtension;
-        this.init = new InitialLoggerContext(configFile);
+        this.init = new LoggerContextRule(configFile);
     }
 
     @Before

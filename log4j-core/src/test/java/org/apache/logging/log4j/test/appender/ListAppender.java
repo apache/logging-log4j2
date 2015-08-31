@@ -36,7 +36,7 @@ import org.apache.logging.log4j.core.layout.SerializedLayout;
 /**
  * This appender is primarily used for testing. Use in a real environment is discouraged as the
  * List could eventually grow to cause an OutOfMemoryError.
- * @see org.apache.logging.log4j.junit.InitialLoggerContext#getListAppender(String) ILC.getListAppender
+ * @see org.apache.logging.log4j.junit.LoggerContextRule#getListAppender(String) ILC.getListAppender
  */
 @Plugin(name = "List", category = "Core", elementType = "appender", printObject = true)
 public class ListAppender extends AbstractAppender {
@@ -178,7 +178,7 @@ public class ListAppender extends AbstractAppender {
      *
      * @param name the name of the ListAppender
      * @return the named ListAppender or {@code null} if it does not exist
-     * @see org.apache.logging.log4j.junit.InitialLoggerContext#getListAppender(String)
+     * @see org.apache.logging.log4j.junit.LoggerContextRule#getListAppender(String)
      */
     public static ListAppender getListAppender(final String name) {
         return ((ListAppender) (LoggerContext.getContext(false)).getConfiguration().getAppender(name));

@@ -24,7 +24,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -37,7 +37,7 @@ import org.junit.Test;
 public class MarkerLookupConfigTest {
 
     @ClassRule
-    public static InitialLoggerContext context = new InitialLoggerContext("log4j-marker-lookup.yaml");
+    public static LoggerContextRule context = new LoggerContextRule("log4j-marker-lookup.yaml");
     public static final Marker PAYLOAD = MarkerManager.getMarker("PAYLOAD");
     private static final String PAYLOAD_LOG = "Message in payload.log";
 

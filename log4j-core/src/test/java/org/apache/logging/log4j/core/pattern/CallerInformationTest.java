@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.pattern;
 import java.util.List;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -29,7 +29,7 @@ import static org.junit.Assert.*;
 public class CallerInformationTest {
 
     @ClassRule
-    public static InitialLoggerContext context = new InitialLoggerContext("log4j2-calling-class.xml");
+    public static LoggerContextRule context = new LoggerContextRule("log4j2-calling-class.xml");
 
     @Test
     public void testClassLogger() throws Exception {

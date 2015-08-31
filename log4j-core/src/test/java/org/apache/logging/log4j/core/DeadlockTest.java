@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core;
 
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -27,7 +27,7 @@ public class DeadlockTest {
 
     private static final String CONFIG = "log4j-deadlock.xml";
     @ClassRule
-    public static InitialLoggerContext context = new InitialLoggerContext(CONFIG);
+    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
 
     @Test
     public void deadlockOnReconfigure() {

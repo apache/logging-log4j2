@@ -16,7 +16,7 @@
  */
 package org.apache.log4j;
 
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -30,7 +30,7 @@ public class LoggingTest {
     private static final String CONFIG = "log4j2-config.xml";
 
     @ClassRule
-    public static final InitialLoggerContext CTX = new InitialLoggerContext(CONFIG);
+    public static final LoggerContextRule CTX = new LoggerContextRule(CONFIG);
 
     @Test
     public void testParent() {

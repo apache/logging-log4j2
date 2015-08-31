@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.FailOnceAppender;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.After;
@@ -40,7 +40,7 @@ public class FailoverAppenderTest {
     private Logger onceLogger;
 
     @Rule
-    public InitialLoggerContext init = new InitialLoggerContext("log4j-failover.xml");
+    public LoggerContextRule init = new LoggerContextRule("log4j-failover.xml");
 
     @Before
     public void setUp() throws Exception {

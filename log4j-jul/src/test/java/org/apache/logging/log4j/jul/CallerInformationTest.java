@@ -19,7 +19,7 @@ package org.apache.logging.log4j.jul;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -34,7 +34,7 @@ public class CallerInformationTest {
     private static final String CONFIG = "log4j2-calling-class.xml";
 
     @Rule
-    public final InitialLoggerContext ctx = new InitialLoggerContext(CONFIG);
+    public final LoggerContextRule ctx = new LoggerContextRule(CONFIG);
 
     @BeforeClass
     public static void setUpClass() {

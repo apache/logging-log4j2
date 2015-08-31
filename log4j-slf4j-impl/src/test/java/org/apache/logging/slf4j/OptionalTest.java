@@ -19,7 +19,7 @@ package org.apache.logging.slf4j;
 import java.util.List;
 
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -40,7 +40,7 @@ public class OptionalTest {
     private static final String CONFIG = "log4j-test1.xml";
 
     @ClassRule
-    public static final InitialLoggerContext CTX = new InitialLoggerContext(CONFIG);
+    public static final LoggerContextRule CTX = new LoggerContextRule(CONFIG);
 
     Logger logger = LoggerFactory.getLogger("EventLogger");
     Marker marker = MarkerFactory.getMarker("EVENT");

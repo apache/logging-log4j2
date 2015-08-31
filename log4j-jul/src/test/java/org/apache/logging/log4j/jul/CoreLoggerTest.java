@@ -18,6 +18,7 @@
 package org.apache.logging.log4j.jul;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.util.logging.Level;
@@ -73,4 +74,23 @@ public class CoreLoggerTest extends AbstractLoggerTest {
         assertThat(logger.getLevel(), equalTo(Level.FINE));
         assertThat(childLogger.getLevel(), equalTo(Level.FINE));
     }
+
+    @Test
+    public void testSetLevelToNull() throws Exception {
+        final Logger childLogger = Logger.getLogger(LOGGER_NAME + ".NullChild");
+        assertThat(childLogger.getLevel(), equalTo(Level.FINE));
+        assertThat(childLogger.isLoggable(Level.FINE), is(true));
+        childLogger.setLevel(Level.SEVERE);
+        assertThat(childLogger.getLevel(), equalTo(Level.SEVERE));
+        assertThat(childLogger.isLoggable(Level.FINE), is(false));
+        // null test
+        childLogger.setLevel(null);
+        assertThat(childLogger.getLevel(), equalTo(null));
+        assertThat(childLogger.isLoggable(Level.FINE), is(true));
+        // now go back
+        childLogger.setLevel(Level.SEVERE);
+        assertThat(childLogger.getLevel(), equalTo(Level.SEVERE));
+        assertThat(childLogger.isLoggable(Level.FINE), is(false));
+    }
+
 }

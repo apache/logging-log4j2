@@ -18,7 +18,7 @@ package org.apache.logging.slf4j;
 
 import java.io.Serializable;
 
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -36,7 +36,7 @@ public class SerializeTest {
     private static final String CONFIG = "log4j-test1.xml";
 
     @ClassRule
-    public static final InitialLoggerContext CTX = new InitialLoggerContext(CONFIG);
+    public static final LoggerContextRule CTX = new LoggerContextRule(CONFIG);
 
     Logger logger = LoggerFactory.getLogger("LoggerTest");
 

@@ -36,7 +36,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
@@ -57,7 +57,7 @@ public class LoggerTest {
     private ListAppender noThrown;
 
     @Rule
-    public InitialLoggerContext context = new InitialLoggerContext(CONFIG);
+    public LoggerContextRule context = new LoggerContextRule(CONFIG);
 
     private void assertEventCount(final List<LogEvent> events, final int expected) {
         assertEquals("Incorrect number of events.", expected, events.size());
@@ -140,12 +140,12 @@ public class LoggerTest {
         loggerGrandchild.debug("Debug message 1 grandchild");
         final List<LogEvent> events = app.getEvents();
         assertEventCount(events, 3);
-        Configurator.setChildren(logger.getName(), Level.OFF);
+        Configurator.setAllLevels(logger.getName(), Level.OFF);
         logger.debug("Debug message 2");
         loggerChild.warn("Warn message 2 child");
         loggerGrandchild.fatal("Fatal message 2 grandchild");
         assertEventCount(events, 3);
-        Configurator.setChildren(logger.getName(), Level.DEBUG);
+        Configurator.setAllLevels(logger.getName(), Level.DEBUG);
         logger.debug("Debug message 3");
         loggerChild.warn("Trace message 3 child");
         loggerGrandchild.trace("Fatal message 3 grandchild");

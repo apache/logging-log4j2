@@ -31,7 +31,7 @@ import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Before;
@@ -48,7 +48,7 @@ import org.junit.runners.model.Statement;
 public class LogEventFactoryTest {
 
     private static final String CONFIG = "log4j2-config.xml";
-    private static final InitialLoggerContext context = new InitialLoggerContext(CONFIG);
+    private static final LoggerContextRule context = new LoggerContextRule(CONFIG);
 
     private ListAppender app;
 

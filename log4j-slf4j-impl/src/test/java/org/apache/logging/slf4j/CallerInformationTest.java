@@ -18,7 +18,7 @@ package org.apache.logging.slf4j;
 
 import java.util.List;
 
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Rule;
 import org.junit.Test;
@@ -33,7 +33,7 @@ public class CallerInformationTest {
     private static final String CONFIG = "log4j2-calling-class.xml";
 
     @Rule
-    public final InitialLoggerContext ctx = new InitialLoggerContext(CONFIG);
+    public final LoggerContextRule ctx = new LoggerContextRule(CONFIG);
 
     @Test
     public void testClassLogger() throws Exception {

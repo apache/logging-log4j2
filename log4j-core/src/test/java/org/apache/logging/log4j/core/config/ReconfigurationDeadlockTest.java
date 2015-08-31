@@ -20,7 +20,7 @@ import java.io.File;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.ThreadDumpMessage;
 import org.junit.Rule;
 import org.junit.Test;
@@ -33,7 +33,7 @@ import static org.junit.Assert.*;
 public class ReconfigurationDeadlockTest {
 
     @Rule
-    public InitialLoggerContext init = new InitialLoggerContext("reconfiguration-deadlock.xml");
+    public LoggerContextRule init = new LoggerContextRule("reconfiguration-deadlock.xml");
     private static final int THREAD_COUNT = 5;
     private static final boolean[] finished = new boolean[THREAD_COUNT];
     private static LoggerThread[] threads = new LoggerThread[THREAD_COUNT];

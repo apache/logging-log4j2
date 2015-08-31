@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -56,7 +56,7 @@ public class CustomConfigurationTest {
     }
 
     @Rule
-    public InitialLoggerContext init = new InitialLoggerContext("log4j-props.xml");
+    public LoggerContextRule init = new LoggerContextRule("log4j-props.xml");
 
     @Before
     public void setUp() throws Exception {

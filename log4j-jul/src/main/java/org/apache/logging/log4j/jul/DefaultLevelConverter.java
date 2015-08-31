@@ -116,6 +116,9 @@ public class DefaultLevelConverter implements LevelConverter {
 
     @Override
     public Level toLevel(final java.util.logging.Level javaLevel) {
+        if (javaLevel == null) {
+            return null;
+        }
         final Level level = julToLog4j.get(javaLevel);
         if (level != null) {
             return level;

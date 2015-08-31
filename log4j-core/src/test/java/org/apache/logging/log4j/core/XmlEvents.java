@@ -20,7 +20,7 @@ import java.util.Locale;
 
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -33,7 +33,7 @@ public class XmlEvents {
     private static final String CONFIG = "xml-events.xml";
 
     @ClassRule
-    public static InitialLoggerContext context = new InitialLoggerContext(CONFIG);
+    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
 
     @Test
     public void testEvents() {

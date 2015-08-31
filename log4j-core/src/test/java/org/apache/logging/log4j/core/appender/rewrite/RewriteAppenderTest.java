@@ -23,7 +23,7 @@ import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataMessage;
@@ -43,7 +43,7 @@ public class RewriteAppenderTest {
     private ListAppender app2;
 
     @Rule
-    public InitialLoggerContext init = new InitialLoggerContext("log4j-rewrite.xml");
+    public LoggerContextRule init = new LoggerContextRule("log4j-rewrite.xml");
 
     @Before
     public void setUp() throws Exception {

@@ -36,7 +36,7 @@ import static org.junit.Assert.*;
  * StatusLogger will be set to the debug level. This allows for more debug messages as the StatusLogger will be in the
  * error level until a configuration file has been read and parsed into a tree of Nodes.
  */
-public class InitialLoggerContext implements TestRule {
+public class LoggerContextRule implements TestRule {
 
     private final String configLocation;
 
@@ -44,7 +44,7 @@ public class InitialLoggerContext implements TestRule {
 
     private String testClassName;
 
-    public InitialLoggerContext(final String configLocation) {
+    public LoggerContextRule(final String configLocation) {
         this.configLocation = configLocation;
     }
 

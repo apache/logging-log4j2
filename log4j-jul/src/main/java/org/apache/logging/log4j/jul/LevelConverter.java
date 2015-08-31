@@ -31,7 +31,7 @@ public interface LevelConverter {
     /**
      * Converts a JDK logging Level to a Log4j logging Level.
      *
-     * @param javaLevel JDK Level to convert.
+     * @param javaLevel JDK Level to convert, may be null per the JUL specification.
      * @return converted Level or {@code null} if the given level could not be converted.
      */
     Level toLevel(java.util.logging.Level javaLevel);

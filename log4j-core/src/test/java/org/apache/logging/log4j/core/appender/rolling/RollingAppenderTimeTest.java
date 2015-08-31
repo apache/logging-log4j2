@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.appender.rolling;
 import java.io.File;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.hamcrest.Matcher;
 import org.junit.Rule;
 import org.junit.Test;
@@ -40,7 +40,7 @@ public class RollingAppenderTimeTest {
     private static final String CONFIG = "log4j-rolling2.xml";
     private static final String DIR = "target/rolling2";
 
-    private final InitialLoggerContext ctx = new InitialLoggerContext(CONFIG);
+    private final LoggerContextRule ctx = new LoggerContextRule(CONFIG);
 
     @Rule
     public RuleChain chain = RuleChain.outerRule(new ExternalResource() {

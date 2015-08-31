@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core;
 
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -37,7 +37,7 @@ public class AppenderRefLevelJsonTest {
     private ListAppender app2;
 
     @ClassRule
-    public static InitialLoggerContext context = new InitialLoggerContext(CONFIG);
+    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
 
     org.apache.logging.log4j.Logger logger1 = context.getLogger("org.apache.logging.log4j.test1");
     org.apache.logging.log4j.Logger logger2 = context.getLogger("org.apache.logging.log4j.test2");

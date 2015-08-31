@@ -65,8 +65,8 @@ public final class LevelTranslator {
     /**
      * Converts a JDK logging Level to a Log4j logging Level.
      *
-     * @param level JDK Level to convert.
-     * @return converted Level.
+     * @param level JDK Level to convert, may be null per the JUL specification.
+     * @return converted Level or null
      */
     public static Level toLevel(final java.util.logging.Level level) {
         return LEVEL_CONVERTER.toLevel(level);

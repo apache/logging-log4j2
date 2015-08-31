@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -40,7 +40,7 @@ public class XmlLoggerPropsTest {
     private static final String CONFIG = "log4j-loggerprops.xml";
 
     @Rule
-    public final InitialLoggerContext context = new InitialLoggerContext(CONFIG);
+    public final LoggerContextRule context = new LoggerContextRule(CONFIG);
 
     @BeforeClass
     public static void setupClass() {
