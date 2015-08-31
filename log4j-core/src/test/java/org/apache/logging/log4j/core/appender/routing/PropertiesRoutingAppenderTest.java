@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.appender.routing;
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.junit.CleanFiles;
-import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.After;
@@ -45,7 +45,7 @@ public class PropertiesRoutingAppenderTest {
     private ListAppender app;
 
     @Rule
-    public InitialLoggerContext init = new InitialLoggerContext(CONFIG);
+    public LoggerContextRule init = new LoggerContextRule(CONFIG);
 
     @Rule
     public CleanFiles files = new CleanFiles(UNKNOWN_LOG_FILE, ALERT_LOG_FILE, ACTIVITY_LOG_FILE);
