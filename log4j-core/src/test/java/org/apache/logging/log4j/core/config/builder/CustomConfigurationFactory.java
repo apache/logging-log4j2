@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
-import org.apache.logging.log4j.core.config.builder.impl.AssembledConfiguration;
+import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 
 import java.net.URI;
 
@@ -48,7 +48,7 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
 
     @Override
     public Configuration getConfiguration(final String name, final URI configLocation) {
-        ConfigurationBuilder<AssembledConfiguration> assembler = newConfigurationBuilder();
+        ConfigurationBuilder<BuiltConfiguration> assembler = newConfigurationBuilder();
         assembler.setStatusLevel(Level.ERROR);
         assembler.add(assembler.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.NEUTRAL)
                 .addAttribute("level", Level.DEBUG));
