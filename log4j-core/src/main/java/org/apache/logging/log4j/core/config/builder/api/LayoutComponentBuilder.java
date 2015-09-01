@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.config.builder.api;
 
 /**
- * Assembler for constructing Layouts
+ * Assembler for constructing Layout Components
  */
 public interface LayoutComponentBuilder extends ComponentBuilder<LayoutComponentBuilder> {
 
