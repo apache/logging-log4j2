@@ -57,47 +57,35 @@ class DefaultComponentBuilder<T extends ComponentBuilder<T>> implements Componen
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public T addAttribute(String key, Level level) {
-        attributes.put(key, level.toString());
-        return (T) this;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public T addAttribute(String key, String value) {
-        attributes.put(key, value);
-        return (T) this;
-    }
-
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public T addAttribute(String key, Enum<?> value) {
-        attributes.put(key, value.name());
-        return (T) this;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public T addAttribute(String key, int value) {
-        attributes.put(key, Integer.toString(value));
-        return (T) this;
-    }
-
-
-    @Override
-    @SuppressWarnings("unchecked")
     public T addAttribute(String key, boolean value) {
-        attributes.put(key, Boolean.toString(value));
-        return (T) this;
+        return put(key, Boolean.toString(value));
+    }
+    
+    @Override
+    public T addAttribute(String key, Enum<?> value) {
+        return put(key, value.name());
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    public T addAttribute(String key, int value) {
+        return put(key, Integer.toString(value));
+    }
+
+
+    @Override
+    public T addAttribute(String key, Level level) {
+        return put(key, level.toString());
+    }
+
+    @Override
     public T addAttribute(String key, Object value) {
-        attributes.put(key, value.toString());
-        return (T) this;
+        return put(key, value.toString());
+    }
+
+
+    @Override
+    public T addAttribute(String key, String value) {
+        return put(key, value);
     }
 
     @Override
@@ -108,8 +96,11 @@ class DefaultComponentBuilder<T extends ComponentBuilder<T>> implements Componen
     }
 
     @Override
-    public String getName() {
-        return name;
+    public Component build() {
+        Component component = new Component(type, name, value);
+        component.getAttributes().putAll(attributes);
+        component.getComponents().addAll(components);
+        return component;
     }
 
     @Override
@@ -118,10 +109,12 @@ class DefaultComponentBuilder<T extends ComponentBuilder<T>> implements Componen
     }
 
     @Override
-    public Component build() {
-        Component component = new Component(type, name, value);
-        component.getAttributes().putAll(attributes);
-        component.getComponents().addAll(components);
-        return component;
+    public String getName() {
+        return name;
+    }
+
+    private T put(String key, String value) {
+        attributes.put(key, value);
+        return (T) this;
     }
 }
