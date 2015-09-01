@@ -86,32 +86,30 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         loggers = new Component("Loggers");
         components.add(loggers);
     }
+    
+    protected ConfigurationBuilder<T> add(Component parent, ComponentBuilder<?> builder) {
+        parent.getComponents().add(builder.build());
+        return this;
+    }
 
     @Override
-    @SuppressWarnings("unchecked")
     public ConfigurationBuilder<T> add(AppenderComponentBuilder builder) {
-        appenders.getComponents().add(builder.build());
-        return this;
+        return add(appenders, builder);
     }
 
     @Override
     public ConfigurationBuilder<T> add(CustomLevelComponentBuilder builder) {
-        customLevels.getComponents().add(builder.build());
-        return this;
+        return add(customLevels, builder);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public ConfigurationBuilder<T> add(FilterComponentBuilder builder) {
-        filters.getComponents().add(builder.build());
-        return this;
+        return add(filters, builder);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public ConfigurationBuilder<T> add(LoggerComponentBuilder builder) {
-        loggers.getComponents().add(builder.build());
-        return this;
+        return add(loggers, builder);
     }
 
     @Override
@@ -122,8 +120,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
                 throw new ConfigurationException("root Logger was previously defined");
             }
         }
-        loggers.getComponents().add(builder.build());
-        return this;
+        return add(loggers, builder);
     }
 
     @Override
