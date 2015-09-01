@@ -30,92 +30,92 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
     /**
      * Sets the name of the configuration.
      * @param name the name of the {@link Configuration}. By default is {@code "Constructed"}.
-     * @return this Assembler instance.
+     * @return this builder instance.
      */
     ConfigurationBuilder<T> setConfigurationName(String name);
 
     /**
      * Sets the configuration source, if one exists.
      * @param configurationSource the ConfigurationSource.
-     * @return this Assembler instance.
+     * @return this builder instance.
      */
     ConfigurationBuilder<T> setConfigurationSource(ConfigurationSource configurationSource);
 
     /**
      * Sets the level of the StatusLogger.
      * @param level The logging level.
-     * @return this Assembler instance.
+     * @return this builder instance.
      */
     ConfigurationBuilder<T> setStatusLevel(Level level);
 
     /**
      * Sets whether the logging should include constructing Plugins.
      * @param verbosity "disable" will hide messages from plugin construction.
-     * @return this Assembler instance.
+     * @return this builder instance.
      */
     ConfigurationBuilder<T> setVerbosity(String verbosity);
 
     /**
      * Sets the list of packages to search for plugins.
      * @param packages The comma separated list of packages.
-     * @return this Assembler instance.
+     * @return this builder instance.
      */
     ConfigurationBuilder<T> setPackages(String packages);
 
     /**
      * Sets whether the shutdown hook should be disabled.
      * @param flag "disable" will prevent the shutdown hook from being set.
-     * @return this Assembler instance.
+     * @return this builder instance.
      */
     ConfigurationBuilder<T> setShutdownHook(String flag);
 
     /**
      * Sets the interval at which the configuration file should be checked for changes.
      * @param intervalSeconds The number of seconds that should pass between checks of the configuration file.
-     * @return this Assembler instance.
+     * @return this builder instance.
      */
     ConfigurationBuilder<T> setMonitorInterval(String intervalSeconds);
 
     /**
      * Adds an AppenderComponent.
-     * @param assembler The AppenderComponentBuilder with all of its attributes and sub components set.
-     * @return this Assembler instance.
+     * @param builder The AppenderComponentBuilder with all of its attributes and sub components set.
+     * @return this builder instance.
      */
-    ConfigurationBuilder<T> add(AppenderComponentBuilder assembler);
+    ConfigurationBuilder<T> add(AppenderComponentBuilder builder);
 
     /**
      * Adds a CustomLevel component.
-     * @param assembler The CustomLevelComponentBuilder with all of its attributes set.
-     * @return this Assembler instance.
+     * @param builder The CustomLevelComponentBuilder with all of its attributes set.
+     * @return this builder instance.
      */
-    ConfigurationBuilder<T> add(CustomLevelComponentBuilder assembler);
+    ConfigurationBuilder<T> add(CustomLevelComponentBuilder builder);
 
     /**
      * Adds a Logger component.
-     * @param assembler The LoggerComponentBuilder with all of its attributes and sub components set.
-     * @return this Assembler instance.
+     * @param builder The LoggerComponentBuilder with all of its attributes and sub components set.
+     * @return this builder instance.
      */
-    ConfigurationBuilder<T> add(LoggerComponentBuilder assembler);
+    ConfigurationBuilder<T> add(LoggerComponentBuilder builder);
 
     /**
      * Adds the root Logger component.
-     * @param assembler The RootLoggerComponentBuilder with all of its attributes and sub components set.
-     * @return this Assembler instance.
+     * @param builder The RootLoggerComponentBuilder with all of its attributes and sub components set.
+     * @return this builder instance.
      */
-    ConfigurationBuilder<T> add(RootLoggerComponentBuilder assembler);
+    ConfigurationBuilder<T> add(RootLoggerComponentBuilder builder);
 
     /**
      * Adds a Filter component.
-     * @param assembler the FilterComponentBuilder with all of its attributes and sub components set.
-     * @return this Assembler instance.
+     * @param builder the FilterComponentBuilder with all of its attributes and sub components set.
+     * @return this builder instance.
      */
-    ConfigurationBuilder<T> add(FilterComponentBuilder assembler);
+    ConfigurationBuilder<T> add(FilterComponentBuilder builder);
 
     /**
      * Adds a Property key and value.
      * @param key The property key.
      * @param value The property value.
-     * @return this Assembler instance.
+     * @return this builder instance.
      */
     ConfigurationBuilder<T> addProperty(String key, String value);
 
