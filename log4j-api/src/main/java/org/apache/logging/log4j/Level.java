@@ -141,6 +141,20 @@ public final class Level implements Comparable<Level>, Serializable {
     }
 
     /**
+     * Compares this level against the levels passed as arguments and returns true if this level is in between the given levels.
+     *
+     * @param minLevel
+     *            The minimum level to test.
+     * @param maxLevel
+     *            The maximum level to test.
+     * @return True true if this level is in between the given levels
+     * @since 2.4
+     */
+    public boolean isInRange(final Level minLevel, final Level maxLevel) {
+        return this.intLevel >= minLevel.intLevel && this.intLevel <= maxLevel.intLevel;
+    }
+
+    /**
      * Compares this level against the level passed as an argument and returns true if this level is the same or is less
      * specific.T
      *

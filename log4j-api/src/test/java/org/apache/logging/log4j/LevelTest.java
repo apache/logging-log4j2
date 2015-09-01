@@ -16,9 +16,12 @@
  */
 package org.apache.logging.log4j;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
@@ -35,8 +38,8 @@ public class LevelTest {
     @Test
     public void testForNameEquals() {
         final String name = "Foo";
-		final int intValue = 1;
-		final Level level = Level.forName(name, intValue);
+        final int intValue = 1;
+        final Level level = Level.forName(name, intValue);
         assertNotNull(level);
         assertEquals(level, Level.forName(name, intValue));
         assertEquals(level, Level.getLevel(name));
@@ -48,6 +51,130 @@ public class LevelTest {
         final Level level = Level.toLevel("INFO");
         assertNotNull(level);
         assertEquals(Level.INFO, level);
+    }
+
+    @Test
+    public void testIsInRangeErrorToDebug() {
+        assertFalse(Level.OFF.isInRange(Level.ERROR, Level.DEBUG));
+        assertFalse(Level.FATAL.isInRange(Level.ERROR, Level.DEBUG));
+        assertTrue(Level.ERROR.isInRange(Level.ERROR, Level.DEBUG));
+        assertTrue(Level.WARN.isInRange(Level.ERROR, Level.DEBUG));
+        assertTrue(Level.INFO.isInRange(Level.ERROR, Level.DEBUG));
+        assertTrue(Level.DEBUG.isInRange(Level.ERROR, Level.DEBUG));
+        assertFalse(Level.TRACE.isInRange(Level.ERROR, Level.DEBUG));
+        assertFalse(Level.ALL.isInRange(Level.ERROR, Level.DEBUG));
+    }
+
+    @Test
+    public void testIsInRangeFatalToTrace() {
+        assertFalse(Level.OFF.isInRange(Level.FATAL, Level.TRACE));
+        assertTrue(Level.FATAL.isInRange(Level.FATAL, Level.TRACE));
+        assertTrue(Level.ERROR.isInRange(Level.FATAL, Level.TRACE));
+        assertTrue(Level.WARN.isInRange(Level.FATAL, Level.TRACE));
+        assertTrue(Level.INFO.isInRange(Level.FATAL, Level.TRACE));
+        assertTrue(Level.DEBUG.isInRange(Level.FATAL, Level.TRACE));
+        assertTrue(Level.TRACE.isInRange(Level.FATAL, Level.TRACE));
+        assertFalse(Level.ALL.isInRange(Level.FATAL, Level.TRACE));
+    }
+
+    @Test
+    public void testIsInRangeOffToAll() {
+        assertTrue(Level.OFF.isInRange(Level.OFF, Level.ALL));
+        assertTrue(Level.FATAL.isInRange(Level.OFF, Level.ALL));
+        assertTrue(Level.ERROR.isInRange(Level.OFF, Level.ALL));
+        assertTrue(Level.WARN.isInRange(Level.OFF, Level.ALL));
+        assertTrue(Level.INFO.isInRange(Level.OFF, Level.ALL));
+        assertTrue(Level.DEBUG.isInRange(Level.OFF, Level.ALL));
+        assertTrue(Level.TRACE.isInRange(Level.OFF, Level.ALL));
+        assertTrue(Level.ALL.isInRange(Level.OFF, Level.ALL));
+    }
+
+    @Test
+    public void testIsInRangeSameLevels() {
+        // Level.OFF
+        assertTrue(Level.OFF.isInRange(Level.OFF, Level.OFF));
+        assertFalse(Level.OFF.isInRange(Level.FATAL, Level.FATAL));
+        assertFalse(Level.OFF.isInRange(Level.ERROR, Level.ERROR));
+        assertFalse(Level.OFF.isInRange(Level.WARN, Level.WARN));
+        assertFalse(Level.OFF.isInRange(Level.INFO, Level.INFO));
+        assertFalse(Level.OFF.isInRange(Level.DEBUG, Level.DEBUG));
+        assertFalse(Level.OFF.isInRange(Level.TRACE, Level.TRACE));
+        assertFalse(Level.OFF.isInRange(Level.ALL, Level.ALL));
+        // Level.FATAL
+        assertFalse(Level.FATAL.isInRange(Level.OFF, Level.OFF));
+        assertTrue(Level.FATAL.isInRange(Level.FATAL, Level.FATAL));
+        assertFalse(Level.FATAL.isInRange(Level.ERROR, Level.ERROR));
+        assertFalse(Level.FATAL.isInRange(Level.WARN, Level.WARN));
+        assertFalse(Level.FATAL.isInRange(Level.INFO, Level.INFO));
+        assertFalse(Level.FATAL.isInRange(Level.DEBUG, Level.DEBUG));
+        assertFalse(Level.FATAL.isInRange(Level.TRACE, Level.TRACE));
+        assertFalse(Level.FATAL.isInRange(Level.ALL, Level.ALL));
+        // Level.ERROR
+        assertFalse(Level.ERROR.isInRange(Level.OFF, Level.OFF));
+        assertFalse(Level.ERROR.isInRange(Level.FATAL, Level.FATAL));
+        assertTrue(Level.ERROR.isInRange(Level.ERROR, Level.ERROR));
+        assertFalse(Level.ERROR.isInRange(Level.WARN, Level.WARN));
+        assertFalse(Level.ERROR.isInRange(Level.INFO, Level.INFO));
+        assertFalse(Level.ERROR.isInRange(Level.DEBUG, Level.DEBUG));
+        assertFalse(Level.ERROR.isInRange(Level.TRACE, Level.TRACE));
+        assertFalse(Level.ERROR.isInRange(Level.ALL, Level.ALL));
+        // Level.WARN
+        assertFalse(Level.WARN.isInRange(Level.OFF, Level.OFF));
+        assertFalse(Level.WARN.isInRange(Level.FATAL, Level.FATAL));
+        assertFalse(Level.WARN.isInRange(Level.ERROR, Level.ERROR));
+        assertTrue(Level.WARN.isInRange(Level.WARN, Level.WARN));
+        assertFalse(Level.WARN.isInRange(Level.INFO, Level.INFO));
+        assertFalse(Level.WARN.isInRange(Level.DEBUG, Level.DEBUG));
+        assertFalse(Level.WARN.isInRange(Level.TRACE, Level.TRACE));
+        assertFalse(Level.WARN.isInRange(Level.ALL, Level.ALL));
+        // Level.INFO
+        assertFalse(Level.INFO.isInRange(Level.OFF, Level.OFF));
+        assertFalse(Level.INFO.isInRange(Level.FATAL, Level.FATAL));
+        assertFalse(Level.INFO.isInRange(Level.ERROR, Level.ERROR));
+        assertFalse(Level.INFO.isInRange(Level.WARN, Level.WARN));
+        assertTrue(Level.INFO.isInRange(Level.INFO, Level.INFO));
+        assertFalse(Level.INFO.isInRange(Level.DEBUG, Level.DEBUG));
+        assertFalse(Level.INFO.isInRange(Level.TRACE, Level.TRACE));
+        assertFalse(Level.INFO.isInRange(Level.ALL, Level.ALL));
+        // Level.DEBUG
+        assertFalse(Level.DEBUG.isInRange(Level.OFF, Level.OFF));
+        assertFalse(Level.DEBUG.isInRange(Level.FATAL, Level.FATAL));
+        assertFalse(Level.DEBUG.isInRange(Level.ERROR, Level.ERROR));
+        assertFalse(Level.DEBUG.isInRange(Level.WARN, Level.WARN));
+        assertFalse(Level.DEBUG.isInRange(Level.INFO, Level.INFO));
+        assertTrue(Level.DEBUG.isInRange(Level.DEBUG, Level.DEBUG));
+        assertFalse(Level.DEBUG.isInRange(Level.TRACE, Level.TRACE));
+        assertFalse(Level.DEBUG.isInRange(Level.ALL, Level.ALL));
+        // Level.TRACE
+        assertFalse(Level.TRACE.isInRange(Level.OFF, Level.OFF));
+        assertFalse(Level.TRACE.isInRange(Level.FATAL, Level.FATAL));
+        assertFalse(Level.TRACE.isInRange(Level.ERROR, Level.ERROR));
+        assertFalse(Level.TRACE.isInRange(Level.WARN, Level.WARN));
+        assertFalse(Level.TRACE.isInRange(Level.INFO, Level.INFO));
+        assertFalse(Level.TRACE.isInRange(Level.DEBUG, Level.DEBUG));
+        assertTrue(Level.TRACE.isInRange(Level.TRACE, Level.TRACE));
+        assertFalse(Level.TRACE.isInRange(Level.ALL, Level.ALL));
+        // Level.ALL
+        assertFalse(Level.ALL.isInRange(Level.OFF, Level.OFF));
+        assertFalse(Level.ALL.isInRange(Level.FATAL, Level.FATAL));
+        assertFalse(Level.ALL.isInRange(Level.ERROR, Level.ERROR));
+        assertFalse(Level.ALL.isInRange(Level.WARN, Level.WARN));
+        assertFalse(Level.ALL.isInRange(Level.INFO, Level.INFO));
+        assertFalse(Level.ALL.isInRange(Level.DEBUG, Level.DEBUG));
+        assertFalse(Level.ALL.isInRange(Level.TRACE, Level.TRACE));
+        assertTrue(Level.ALL.isInRange(Level.ALL, Level.ALL));
+    }
+
+    @Test
+    public void testIsInRangeWarnToInfo() {
+        assertFalse(Level.OFF.isInRange(Level.WARN, Level.INFO));
+        assertFalse(Level.FATAL.isInRange(Level.WARN, Level.INFO));
+        assertFalse(Level.ERROR.isInRange(Level.WARN, Level.INFO));
+        assertTrue(Level.WARN.isInRange(Level.WARN, Level.INFO));
+        assertTrue(Level.INFO.isInRange(Level.WARN, Level.INFO));
+        assertFalse(Level.DEBUG.isInRange(Level.WARN, Level.INFO));
+        assertFalse(Level.TRACE.isInRange(Level.WARN, Level.INFO));
+        assertFalse(Level.ALL.isInRange(Level.WARN, Level.INFO));
     }
 
     @Test
@@ -133,82 +260,6 @@ public class LevelTest {
         assertTrue(Level.ALL.isLessSpecificThan(Level.DEBUG));
         assertTrue(Level.ALL.isLessSpecificThan(Level.TRACE));
         assertTrue(Level.ALL.isLessSpecificThan(Level.ALL));
-    }
-
-    @Test
-    public void testIsMoreSpecificThan() {
-        // Level.OFF
-        assertTrue(Level.OFF.isMoreSpecificThan(Level.OFF));
-        assertTrue(Level.OFF.isMoreSpecificThan(Level.FATAL));
-        assertTrue(Level.OFF.isMoreSpecificThan(Level.ERROR));
-        assertTrue(Level.OFF.isMoreSpecificThan(Level.WARN));
-        assertTrue(Level.OFF.isMoreSpecificThan(Level.INFO));
-        assertTrue(Level.OFF.isMoreSpecificThan(Level.DEBUG));
-        assertTrue(Level.OFF.isMoreSpecificThan(Level.TRACE));
-        assertTrue(Level.OFF.isMoreSpecificThan(Level.ALL));
-        // Level.FATAL
-        assertFalse(Level.FATAL.isMoreSpecificThan(Level.OFF));
-        assertTrue(Level.FATAL.isMoreSpecificThan(Level.FATAL));
-        assertTrue(Level.FATAL.isMoreSpecificThan(Level.ERROR));
-        assertTrue(Level.FATAL.isMoreSpecificThan(Level.WARN));
-        assertTrue(Level.FATAL.isMoreSpecificThan(Level.INFO));
-        assertTrue(Level.FATAL.isMoreSpecificThan(Level.DEBUG));
-        assertTrue(Level.FATAL.isMoreSpecificThan(Level.TRACE));
-        assertTrue(Level.FATAL.isMoreSpecificThan(Level.ALL));
-        // Level.ERROR
-        assertFalse(Level.ERROR.isMoreSpecificThan(Level.OFF));
-        assertFalse(Level.ERROR.isMoreSpecificThan(Level.FATAL));
-        assertTrue(Level.ERROR.isMoreSpecificThan(Level.ERROR));
-        assertTrue(Level.ERROR.isMoreSpecificThan(Level.WARN));
-        assertTrue(Level.ERROR.isMoreSpecificThan(Level.INFO));
-        assertTrue(Level.ERROR.isMoreSpecificThan(Level.DEBUG));
-        assertTrue(Level.ERROR.isMoreSpecificThan(Level.TRACE));
-        assertTrue(Level.ERROR.isMoreSpecificThan(Level.ALL));
-        // Level.WARN
-        assertFalse(Level.WARN.isMoreSpecificThan(Level.OFF));
-        assertFalse(Level.WARN.isMoreSpecificThan(Level.FATAL));
-        assertFalse(Level.WARN.isMoreSpecificThan(Level.ERROR));
-        assertTrue(Level.WARN.isMoreSpecificThan(Level.WARN));
-        assertTrue(Level.WARN.isMoreSpecificThan(Level.INFO));
-        assertTrue(Level.WARN.isMoreSpecificThan(Level.DEBUG));
-        assertTrue(Level.WARN.isMoreSpecificThan(Level.TRACE));
-        assertTrue(Level.WARN.isMoreSpecificThan(Level.ALL));
-        // Level.INFO
-        assertFalse(Level.INFO.isMoreSpecificThan(Level.OFF));
-        assertFalse(Level.INFO.isMoreSpecificThan(Level.FATAL));
-        assertFalse(Level.INFO.isMoreSpecificThan(Level.ERROR));
-        assertFalse(Level.INFO.isMoreSpecificThan(Level.WARN));
-        assertTrue(Level.INFO.isMoreSpecificThan(Level.INFO));
-        assertTrue(Level.INFO.isMoreSpecificThan(Level.DEBUG));
-        assertTrue(Level.INFO.isMoreSpecificThan(Level.TRACE));
-        assertTrue(Level.INFO.isMoreSpecificThan(Level.ALL));
-        // Level.DEBUG
-        assertFalse(Level.DEBUG.isMoreSpecificThan(Level.OFF));
-        assertFalse(Level.DEBUG.isMoreSpecificThan(Level.FATAL));
-        assertFalse(Level.DEBUG.isMoreSpecificThan(Level.ERROR));
-        assertFalse(Level.DEBUG.isMoreSpecificThan(Level.WARN));
-        assertFalse(Level.DEBUG.isMoreSpecificThan(Level.INFO));
-        assertTrue(Level.DEBUG.isMoreSpecificThan(Level.DEBUG));
-        assertTrue(Level.DEBUG.isMoreSpecificThan(Level.TRACE));
-        assertTrue(Level.DEBUG.isMoreSpecificThan(Level.ALL));
-        // Level.TRACE
-        assertFalse(Level.TRACE.isMoreSpecificThan(Level.OFF));
-        assertFalse(Level.TRACE.isMoreSpecificThan(Level.FATAL));
-        assertFalse(Level.TRACE.isMoreSpecificThan(Level.ERROR));
-        assertFalse(Level.TRACE.isMoreSpecificThan(Level.WARN));
-        assertFalse(Level.TRACE.isMoreSpecificThan(Level.INFO));
-        assertFalse(Level.TRACE.isMoreSpecificThan(Level.DEBUG));
-        assertTrue(Level.TRACE.isMoreSpecificThan(Level.TRACE));
-        assertTrue(Level.TRACE.isMoreSpecificThan(Level.ALL));
-        // Level.ALL
-        assertFalse(Level.ALL.isMoreSpecificThan(Level.OFF));
-        assertFalse(Level.ALL.isMoreSpecificThan(Level.FATAL));
-        assertFalse(Level.ALL.isMoreSpecificThan(Level.ERROR));
-        assertFalse(Level.ALL.isMoreSpecificThan(Level.WARN));
-        assertFalse(Level.ALL.isMoreSpecificThan(Level.INFO));
-        assertFalse(Level.ALL.isMoreSpecificThan(Level.DEBUG));
-        assertFalse(Level.ALL.isMoreSpecificThan(Level.TRACE));
-        assertTrue(Level.ALL.isMoreSpecificThan(Level.ALL));
     }
 
 }

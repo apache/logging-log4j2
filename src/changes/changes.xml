@@ -63,6 +63,9 @@
       <action issue="LOG4J2-1090" dev="ggregory" type="add">
         Add Core Configurator APIs to change a logger's level.
       </action>
+      <action issue="LOG4J2-1105" dev="ggregory" type="add" due-to="Gary Gregory">
+        Add API org.apache.logging.log4j.Level.isInRange(Level, Level).
+      </action>
       <action issue="LOG4J2-1076" dev="rpopma" type="add">
         Added support for system nanosecond time in pattern layout.
       </action>
