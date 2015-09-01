@@ -31,7 +31,6 @@ import java.util.Map;
  * Generic component that captures attributes and Components in preparation for assembling the Appender's
  * Component.
  */
-@SuppressWarnings("rawtypes")
 class DefaultComponentBuilder<T extends ComponentBuilder<T>> implements ComponentBuilder<T> {
 
     private ConfigurationBuilder<? extends Configuration> builder;
