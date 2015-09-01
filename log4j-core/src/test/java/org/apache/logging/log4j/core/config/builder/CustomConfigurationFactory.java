@@ -52,12 +52,12 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
         builder.setStatusLevel(Level.ERROR);
         builder.add(builder.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.NEUTRAL)
                 .addAttribute("level", Level.DEBUG));
-        AppenderComponentBuilder appenderAssembler = builder.newAppender("Stdout", "CONSOLE").addAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
-        appenderAssembler.add(builder.newLayout("PatternLayout").
+        AppenderComponentBuilder appenderBuilder = builder.newAppender("Stdout", "CONSOLE").addAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
+        appenderBuilder.add(builder.newLayout("PatternLayout").
                 addAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
-        appenderAssembler.add(builder.newFilter("MarkerFilter", Filter.Result.DENY,
+        appenderBuilder.add(builder.newFilter("MarkerFilter", Filter.Result.DENY,
                 Filter.Result.NEUTRAL).addAttribute("marker", "FLOW"));
-        builder.add(appenderAssembler);
+        builder.add(appenderBuilder);
         builder.add(builder.newLogger("org.apache.logging.log4j", Level.DEBUG).
                 add(builder.newAppenderRef("Stdout")).
                 addAttribute("additivity", false));
