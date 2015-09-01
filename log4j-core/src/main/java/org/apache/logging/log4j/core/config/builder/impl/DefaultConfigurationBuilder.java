@@ -46,7 +46,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     private Component filters;
     private Component properties;
     private Component customLevels;
-    private final Class<? extends BuiltConfiguration> clazz;
+    private final Class<T> clazz;
     private ConfigurationSource source;
     private int monitorInterval = 0;
     private Level level = null;
@@ -73,7 +73,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         if (clazz == null) {
             throw new IllegalArgumentException("A Configuration class must be provided");
         }
-        this.clazz = clazz;
+        this.clazz = (Class<T>) clazz;
         List<Component> components = root.getComponents();
         properties = new Component("Properties");
         components.add(properties);
@@ -283,12 +283,12 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     @Override
     @SuppressWarnings({"unchecked"})
     public T build() {
-        BuiltConfiguration configuration;
+        T configuration;
         try {
             if (source == null) {
                 source = ConfigurationSource.NULL_SOURCE;
             }
-            Constructor<? extends BuiltConfiguration> constructor = clazz.getConstructor(ConfigurationSource.class, Component.class);
+            Constructor<T> constructor = clazz.getConstructor(ConfigurationSource.class, Component.class);
             configuration = constructor.newInstance(source, root);
             configuration.setMonitorInterval(monitorInterval);
             if (name != null) {
@@ -311,6 +311,6 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         }
         configuration.getStatusConfiguration().initialize();
         configuration.initialize();
-        return (T) configuration;
+        return configuration;
     }
 }
