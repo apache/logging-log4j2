@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.util.Builder;
 
 /**
  * Interface for building logging configurations.
+ * @param <T> The Configuration type created by this builder.
  */
 public interface ConfigurationBuilder<T extends Configuration> extends Builder<T> {
 
@@ -117,6 +118,7 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
 
     /**
      * Returns a builder for creating generic components.
+     * @param <B> ComponentBuilder target type
      * @param name The name of the component (may be null).
      * @param pluginName The Plugin type of the component.
      * @return A new ComponentBuilder.
@@ -125,6 +127,7 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
 
     /**
      * Returns a builder for creating generic components.
+     * @param <B> ComponentBuilder target type
      * @param name The name of the component (may be null).
      * @param pluginName The Plugin type of the component.
      * @param value The value of the component.
@@ -161,7 +164,7 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
 
     /**
      * Returns a builder for creating Layouts.
-     * @param type The Plugin type of the Layout.
+     * @param pluginName The Plugin type of the Layout.
      * @return A new LayoutComponentBuilder.
      */
     LayoutComponentBuilder newLayout(String pluginName);

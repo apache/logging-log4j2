@@ -36,6 +36,7 @@ import java.lang.reflect.Constructor;
 import java.util.List;
 
 /**
+ * @param <T> The BuiltConfiguration type.
  *
  */
 public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implements ConfigurationBuilder<T> {
