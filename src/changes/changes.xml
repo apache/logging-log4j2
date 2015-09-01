@@ -66,6 +66,9 @@
       <action issue="LOG4J2-1105" dev="ggregory" type="add" due-to="Gary Gregory">
         Add API org.apache.logging.log4j.Level.isInRange(Level, Level).
       </action>
+      <action issue="LOG4J2-1106" dev="ggregory" type="add" due-to="Gary Gregory">
+        Add a LevelRangeFilter class.
+      </action>
       <action issue="LOG4J2-1076" dev="rpopma" type="add">
         Added support for system nanosecond time in pattern layout.
       </action>
