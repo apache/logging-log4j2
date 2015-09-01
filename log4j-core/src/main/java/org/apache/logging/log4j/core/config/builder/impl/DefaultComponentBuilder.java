@@ -36,8 +36,8 @@ class DefaultComponentBuilder<T extends ComponentBuilder<T>, CB extends Configur
 
     private CB builder;
     private String type;
-    private Map<String, String> attributes = new HashMap<>();
-    private List<Component> components = new ArrayList<>();
+    private final Map<String, String> attributes = new HashMap<>();
+    private final List<Component> components = new ArrayList<>();
     private String name;
     private String value;
 
