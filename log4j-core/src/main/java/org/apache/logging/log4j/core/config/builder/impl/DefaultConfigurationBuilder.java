@@ -65,15 +65,15 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     private static final String LOG4J_ASYNC_LOGGERS = "Log4jContextSelector";
 
     public DefaultConfigurationBuilder() {
-        this(BuiltConfiguration.class);
+        this((Class<T>) BuiltConfiguration.class);
         root.addAttribute("name", "Assembled");
     }
 
-    public <B extends BuiltConfiguration> DefaultConfigurationBuilder(Class<B> clazz) {
+    public DefaultConfigurationBuilder(Class<T> clazz) {
         if (clazz == null) {
             throw new IllegalArgumentException("A Configuration class must be provided");
         }
-        this.clazz = (Class<T>) clazz;
+        this.clazz = clazz;
         List<Component> components = root.getComponents();
         properties = new Component("Properties");
         components.add(properties);
