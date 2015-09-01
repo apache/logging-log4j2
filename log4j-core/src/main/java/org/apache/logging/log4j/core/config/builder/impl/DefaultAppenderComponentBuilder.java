@@ -27,18 +27,18 @@ import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 class DefaultAppenderComponentBuilder extends DefaultComponentAndConfigurationBuilder<AppenderComponentBuilder>
         implements AppenderComponentBuilder {
 
-    public DefaultAppenderComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> builder, String name,
-            String type) {
+    public DefaultAppenderComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder, final String name,
+            final String type) {
         super(builder, name, type);
     }
 
     @Override
-    public AppenderComponentBuilder add(LayoutComponentBuilder builder) {
+    public AppenderComponentBuilder add(final LayoutComponentBuilder builder) {
         return addComponent(builder);
     }
 
     @Override
-    public AppenderComponentBuilder add(FilterComponentBuilder builder) {
+    public AppenderComponentBuilder add(final FilterComponentBuilder builder) {
         return addComponent(builder);
     }
 }

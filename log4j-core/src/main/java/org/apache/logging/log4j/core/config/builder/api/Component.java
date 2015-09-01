@@ -32,15 +32,15 @@ public class Component {
     private final String pluginType;
     private final String value;
 
-    public Component(String pluginType) {
+    public Component(final String pluginType) {
         this(pluginType, null, null);
     }
 
-    public Component(String pluginType, String name) {
+    public Component(final String pluginType, final String name) {
         this(pluginType, name, null);
     }
 
-    public Component(String pluginType, String name, String value) {
+    public Component(final String pluginType, final String name, final String value) {
         this.pluginType = pluginType;
         this.value = value;
         if (name != null && name.length() > 0) {
@@ -54,11 +54,11 @@ public class Component {
     }
 
 
-    public String addAttribute(String key, String value) {
+    public String addAttribute(final String key, final String value) {
         return attributes.put(key, value);
     }
 
-    public void addComponent(Component component) {
+    public void addComponent(final Component component) {
         components.add(component);
     }
 

@@ -33,8 +33,8 @@ class DefaultLoggerComponentBuilder extends DefaultComponentAndConfigurationBuil
      * @param name
      * @param level
      */
-    public DefaultLoggerComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> builder, String name,
-            String level) {
+    public DefaultLoggerComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder, final String name,
+            final String level) {
         super(builder, name, "Logger");
         addAttribute("level", level);
     }
@@ -46,19 +46,19 @@ class DefaultLoggerComponentBuilder extends DefaultComponentAndConfigurationBuil
      * @param level
      * @param type
      */
-    public DefaultLoggerComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> builder, String name,
-            String level, String type) {
+    public DefaultLoggerComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder, final String name,
+            final String level, final String type) {
         super(builder, name, type);
         addAttribute("level", level);
     }
 
     @Override
-    public LoggerComponentBuilder add(AppenderRefComponentBuilder builder) {
+    public LoggerComponentBuilder add(final AppenderRefComponentBuilder builder) {
         return addComponent(builder);
     }
 
     @Override
-    public LoggerComponentBuilder add(FilterComponentBuilder builder) {
+    public LoggerComponentBuilder add(final FilterComponentBuilder builder) {
         return addComponent(builder);
     }
 }

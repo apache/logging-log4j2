@@ -47,10 +47,10 @@ public class BuiltConfiguration extends AbstractConfiguration {
     private Component propertiesComponent;
     private Component customLevelsComponent;
 
-    public BuiltConfiguration(ConfigurationSource source, Component rootComponent) {
+    public BuiltConfiguration(final ConfigurationSource source, final Component rootComponent) {
         super(source);
         statusConfig = new StatusConfiguration().withVerboseClasses(VERBOSE_CLASSES).withStatus(getDefaultStatus());
-        for (Component component : rootComponent.getComponents()) {
+        for (final Component component : rootComponent.getComponents()) {
             switch (component.getPluginType()) {
                 case "Loggers": {
                     loggersComponent = component;
@@ -79,7 +79,7 @@ public class BuiltConfiguration extends AbstractConfiguration {
 
     @Override
     public void setup() {
-        List<Node> children = rootNode.getChildren();
+        final List<Node> children = rootNode.getChildren();
         if (propertiesComponent.getComponents().size() > 0) {
             children.add(convertToNode(rootNode, propertiesComponent));
         }
@@ -102,17 +102,17 @@ public class BuiltConfiguration extends AbstractConfiguration {
         return statusConfig;
     }
 
-    public void setPluginPackages(String packages) {
+    public void setPluginPackages(final String packages) {
         pluginPackages.addAll(Arrays.asList(packages.split(Patterns.COMMA_SEPARATOR)));
     }
 
-    public void setShutdownHook(String flag) {
+    public void setShutdownHook(final String flag) {
         isShutdownHookEnabled = !"disable".equalsIgnoreCase(flag);
     }
 
-    public void setMonitorInterval(int intervalSeconds) {
+    public void setMonitorInterval(final int intervalSeconds) {
         if (this instanceof Reconfigurable && intervalSeconds > 0) {
-            ConfigurationSource configSource = getConfigurationSource();
+            final ConfigurationSource configSource = getConfigurationSource();
             if (configSource != null) {
                 final File configFile = configSource.getFile();
                 if (intervalSeconds > 0 && configFile != null) {
@@ -126,14 +126,14 @@ public class BuiltConfiguration extends AbstractConfiguration {
         return pluginManager;
     }
 
-    protected Node convertToNode(Node parent, Component component) {
-        String name = component.getPluginType();
-        PluginType<?> pluginType = pluginManager.getPluginType(name);
-        Node node = new Node(parent, name, pluginType);
+    protected Node convertToNode(final Node parent, final Component component) {
+        final String name = component.getPluginType();
+        final PluginType<?> pluginType = pluginManager.getPluginType(name);
+        final Node node = new Node(parent, name, pluginType);
         node.getAttributes().putAll(component.getAttributes());
         node.setValue(component.getValue());
-        List<Node> children = node.getChildren();
-        for (Component child : component.getComponents()) {
+        final List<Node> children = node.getChildren();
+        for (final Component child : component.getComponents()) {
             children.add(convertToNode(node, child));
         }
         return node;

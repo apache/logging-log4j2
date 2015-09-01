@@ -70,12 +70,12 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         root.addAttribute("name", "Assembled");
     }
 
-    public DefaultConfigurationBuilder(Class<T> clazz) {
+    public DefaultConfigurationBuilder(final Class<T> clazz) {
         if (clazz == null) {
             throw new IllegalArgumentException("A Configuration class must be provided");
         }
         this.clazz = clazz;
-        List<Component> components = root.getComponents();
+        final List<Component> components = root.getComponents();
         properties = new Component("Properties");
         components.add(properties);
         customLevels = new Component("CustomLevels");
@@ -88,34 +88,34 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         components.add(loggers);
     }
     
-    protected ConfigurationBuilder<T> add(Component parent, ComponentBuilder<?> builder) {
+    protected ConfigurationBuilder<T> add(final Component parent, final ComponentBuilder<?> builder) {
         parent.getComponents().add(builder.build());
         return this;
     }
 
     @Override
-    public ConfigurationBuilder<T> add(AppenderComponentBuilder builder) {
+    public ConfigurationBuilder<T> add(final AppenderComponentBuilder builder) {
         return add(appenders, builder);
     }
 
     @Override
-    public ConfigurationBuilder<T> add(CustomLevelComponentBuilder builder) {
+    public ConfigurationBuilder<T> add(final CustomLevelComponentBuilder builder) {
         return add(customLevels, builder);
     }
 
     @Override
-    public ConfigurationBuilder<T> add(FilterComponentBuilder builder) {
+    public ConfigurationBuilder<T> add(final FilterComponentBuilder builder) {
         return add(filters, builder);
     }
 
     @Override
-    public ConfigurationBuilder<T> add(LoggerComponentBuilder builder) {
+    public ConfigurationBuilder<T> add(final LoggerComponentBuilder builder) {
         return add(loggers, builder);
     }
 
     @Override
-    public ConfigurationBuilder<T> add(RootLoggerComponentBuilder builder) {
-        for (Component c : loggers.getComponents()) {
+    public ConfigurationBuilder<T> add(final RootLoggerComponentBuilder builder) {
+        for (final Component c : loggers.getComponents()) {
             if (c.getPluginType().equals("root")) {
                 throw new ConfigurationException("Root Logger was previously defined");
             }
@@ -124,7 +124,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public ConfigurationBuilder<T> addProperty(String key, String value) {
+    public ConfigurationBuilder<T> addProperty(final String key, final String value) {
         properties.addComponent(newComponent(key, "Property", value).build());
         return this;
     }
@@ -136,7 +136,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             if (source == null) {
                 source = ConfigurationSource.NULL_SOURCE;
             }
-            Constructor<T> constructor = clazz.getConstructor(ConfigurationSource.class, Component.class);
+            final Constructor<T> constructor = clazz.getConstructor(ConfigurationSource.class, Component.class);
             configuration = constructor.newInstance(source, root);
             configuration.setMonitorInterval(monitorInterval);
             if (name != null) {
@@ -154,7 +154,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             if (shutdownFlag != null) {
                 configuration.setShutdownHook(shutdownFlag);
             }
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             throw new IllegalArgumentException("Invalid Configuration class specified", ex);
         }
         configuration.getStatusConfiguration().initialize();
@@ -163,84 +163,84 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public AppenderComponentBuilder newAppender(String name, String type) {
+    public AppenderComponentBuilder newAppender(final String name, final String type) {
         return new DefaultAppenderComponentBuilder(this, name, type);
     }
 
     @Override
-    public AppenderRefComponentBuilder newAppenderRef(String ref) {
+    public AppenderRefComponentBuilder newAppenderRef(final String ref) {
         return new DefaultAppenderRefComponentBuilder(this, ref);
     }
 
     @Override
-    public LoggerComponentBuilder newAsyncLogger(String name, Level level) {
+    public LoggerComponentBuilder newAsyncLogger(final String name, final Level level) {
         return new DefaultLoggerComponentBuilder(this, name, level.toString(), "AsyncLogger");
     }
 
     @Override
-    public LoggerComponentBuilder newAsyncLogger(String name, String level) {
+    public LoggerComponentBuilder newAsyncLogger(final String name, final String level) {
         return new DefaultLoggerComponentBuilder(this, name, level, "AsyncLogger");
     }
 
     @Override
-    public RootLoggerComponentBuilder newAsyncRootLogger(Level level) {
+    public RootLoggerComponentBuilder newAsyncRootLogger(final Level level) {
         return new DefaultRootLoggerComponentBuilder(this, level.toString(), "AsyncRoot");
     }
 
     @Override
-    public RootLoggerComponentBuilder newAsyncRootLogger(String level) {
+    public RootLoggerComponentBuilder newAsyncRootLogger(final String level) {
         return new DefaultRootLoggerComponentBuilder(this, level, "AsyncRoot");
     }
 
     @Override
-    public <B extends ComponentBuilder<B>> ComponentBuilder<B> newComponent(String name, String type) {
+    public <B extends ComponentBuilder<B>> ComponentBuilder<B> newComponent(final String name, final String type) {
         return new DefaultComponentBuilder<>(this, name, type);
     }
 
     @Override
-    public <B extends ComponentBuilder<B>> ComponentBuilder<B> newComponent(String name, String type, String value) {
+    public <B extends ComponentBuilder<B>> ComponentBuilder<B> newComponent(final String name, final String type, final String value) {
         return new DefaultComponentBuilder<>(this, name, type, value);
     }
 
 
     @Override
-    public CustomLevelComponentBuilder newCustomLevel(String name, int level) {
+    public CustomLevelComponentBuilder newCustomLevel(final String name, final int level) {
         return new DefaultCustomLevelComponentBuilder(this, name, level);
     }
 
     @Override
-    public FilterComponentBuilder newFilter(String type, Filter.Result onMatch, Filter.Result onMisMatch) {
+    public FilterComponentBuilder newFilter(final String type, final Filter.Result onMatch, final Filter.Result onMisMatch) {
         return new DefaultFilterComponentBuilder(this, type, onMatch.name(), onMisMatch.name());
     }
 
     @Override
-    public FilterComponentBuilder newFilter(String type, String onMatch, String onMisMatch) {
+    public FilterComponentBuilder newFilter(final String type, final String onMatch, final String onMisMatch) {
         return new DefaultFilterComponentBuilder(this, type, onMatch, onMisMatch);
     }
 
     @Override
-    public LayoutComponentBuilder newLayout(String type) {
+    public LayoutComponentBuilder newLayout(final String type) {
         return new DefaultLayoutComponentBuilder(this, type);
     }
 
 
     @Override
-    public LoggerComponentBuilder newLogger(String name, Level level) {
+    public LoggerComponentBuilder newLogger(final String name, final Level level) {
         return new DefaultLoggerComponentBuilder(this, name, level.toString());
     }
 
     @Override
-    public LoggerComponentBuilder newLogger(String name, String level) {
+    public LoggerComponentBuilder newLogger(final String name, final String level) {
         return new DefaultLoggerComponentBuilder(this, name, level);
     }
 
     @Override
-    public RootLoggerComponentBuilder newRootLogger(Level level) {
+    public RootLoggerComponentBuilder newRootLogger(final Level level) {
         return new DefaultRootLoggerComponentBuilder(this, level.toString());
     }
 
     @Override
-    public RootLoggerComponentBuilder newRootLogger(String level) {
+    public RootLoggerComponentBuilder newRootLogger(final String level) {
         return new DefaultRootLoggerComponentBuilder(this, level);
     }
 
@@ -251,7 +251,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
      * @return this builder instance
      */
     @Override
-    public ConfigurationBuilder<T> setConfigurationName(String name) {
+    public ConfigurationBuilder<T> setConfigurationName(final String name) {
         this.name = name;
         return this;
     }
@@ -263,37 +263,37 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
      * @return this builder instance
      */
     @Override
-    public ConfigurationBuilder<T> setConfigurationSource(ConfigurationSource configurationSource) {
+    public ConfigurationBuilder<T> setConfigurationSource(final ConfigurationSource configurationSource) {
         source = configurationSource;
         return this;
     }
 
     @Override
-    public ConfigurationBuilder<T> setMonitorInterval(String intervalSeconds) {
+    public ConfigurationBuilder<T> setMonitorInterval(final String intervalSeconds) {
         monitorInterval = Integer.parseInt(intervalSeconds);
         return this;
     }
 
     @Override
-    public ConfigurationBuilder<T> setPackages(String packages) {
+    public ConfigurationBuilder<T> setPackages(final String packages) {
         this.packages = packages;
         return this;
     }
 
     @Override
-    public ConfigurationBuilder<T> setShutdownHook(String flag) {
+    public ConfigurationBuilder<T> setShutdownHook(final String flag) {
         this.shutdownFlag = flag;
         return this;
     }
 
     @Override
-    public ConfigurationBuilder<T> setStatusLevel(Level level) {
+    public ConfigurationBuilder<T> setStatusLevel(final Level level) {
         this.level = level;
         return this;
     }
 
     @Override
-    public ConfigurationBuilder<T> setVerbosity(String verbosity) {
+    public ConfigurationBuilder<T> setVerbosity(final String verbosity) {
         this.verbosity = verbosity;
         return this;
     }

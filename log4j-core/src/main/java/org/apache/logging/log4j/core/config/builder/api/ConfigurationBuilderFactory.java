@@ -33,7 +33,7 @@ public class ConfigurationBuilderFactory {
         return new DefaultConfigurationBuilder<>();
     }
 
-    public static <T extends BuiltConfiguration> ConfigurationBuilder<T> newConfigurationBuilder(Class<T> clazz) {
+    public static <T extends BuiltConfiguration> ConfigurationBuilder<T> newConfigurationBuilder(final Class<T> clazz) {
         return new DefaultConfigurationBuilder<>(clazz);
     }
 }

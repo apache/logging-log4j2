@@ -41,16 +41,16 @@ class DefaultComponentBuilder<T extends ComponentBuilder<T>, CB extends Configur
     private String name;
     private String value;
 
-    public DefaultComponentBuilder(CB builder, String type) {
+    public DefaultComponentBuilder(final CB builder, final String type) {
         this(builder, null, type, null);
     }
 
-    public DefaultComponentBuilder(CB builder, String name, String type) {
+    public DefaultComponentBuilder(final CB builder, final String name, final String type) {
         this(builder, name, type, null);
     }
 
-    public DefaultComponentBuilder(CB builder, String name, String type,
-            String value) {
+    public DefaultComponentBuilder(final CB builder, final String name, final String type,
+            final String value) {
         this.type = type;
         this.builder = builder;
         this.name = name;
@@ -58,47 +58,47 @@ class DefaultComponentBuilder<T extends ComponentBuilder<T>, CB extends Configur
     }
 
     @Override
-    public T addAttribute(String key, boolean value) {
+    public T addAttribute(final String key, final boolean value) {
         return put(key, Boolean.toString(value));
     }
     
     @Override
-    public T addAttribute(String key, Enum<?> value) {
+    public T addAttribute(final String key, final Enum<?> value) {
         return put(key, value.name());
     }
 
     @Override
-    public T addAttribute(String key, int value) {
+    public T addAttribute(final String key, final int value) {
         return put(key, Integer.toString(value));
     }
 
 
     @Override
-    public T addAttribute(String key, Level level) {
+    public T addAttribute(final String key, final Level level) {
         return put(key, level.toString());
     }
 
     @Override
-    public T addAttribute(String key, Object value) {
+    public T addAttribute(final String key, final Object value) {
         return put(key, value.toString());
     }
 
 
     @Override
-    public T addAttribute(String key, String value) {
+    public T addAttribute(final String key, final String value) {
         return put(key, value);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public T addComponent(ComponentBuilder<?> builder) {
+    public T addComponent(final ComponentBuilder<?> builder) {
         components.add(builder.build());
         return (T) this;
     }
 
     @Override
     public Component build() {
-        Component component = new Component(type, name, value);
+        final Component component = new Component(type, name, value);
         component.getAttributes().putAll(attributes);
         component.getComponents().addAll(components);
         return component;
@@ -114,7 +114,7 @@ class DefaultComponentBuilder<T extends ComponentBuilder<T>, CB extends Configur
         return name;
     }
 
-    protected T put(String key, String value) {
+    protected T put(final String key, final String value) {
         attributes.put(key, value);
         return (T) this;
     }

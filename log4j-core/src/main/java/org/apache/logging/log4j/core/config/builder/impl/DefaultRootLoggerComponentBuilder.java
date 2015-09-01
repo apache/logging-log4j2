@@ -32,8 +32,8 @@ class DefaultRootLoggerComponentBuilder extends DefaultComponentAndConfiguration
      * @param builder
      * @param level
      */
-    public DefaultRootLoggerComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> builder,
-            String level) {
+    public DefaultRootLoggerComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder,
+            final String level) {
         super(builder, "", "Root");
         addAttribute("level", level);
     }
@@ -44,20 +44,20 @@ class DefaultRootLoggerComponentBuilder extends DefaultComponentAndConfiguration
      * @param level
      * @param type
      */
-    public DefaultRootLoggerComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> builder,
-            String level, String type) {
+    public DefaultRootLoggerComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder,
+            final String level, final String type) {
         super(builder, "", type);
         addAttribute("level", level);
     }
 
     @Override
-    public RootLoggerComponentBuilder add(AppenderRefComponentBuilder builder) {
+    public RootLoggerComponentBuilder add(final AppenderRefComponentBuilder builder) {
         return addComponent(builder);
     }
 
 
     @Override
-    public RootLoggerComponentBuilder add(FilterComponentBuilder builder) {
+    public RootLoggerComponentBuilder add(final FilterComponentBuilder builder) {
         return addComponent(builder);
     }
 }
