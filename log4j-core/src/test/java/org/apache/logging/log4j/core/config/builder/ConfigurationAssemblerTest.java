@@ -31,7 +31,11 @@ import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
+import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
+import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.junit.Test;
 
@@ -39,6 +43,15 @@ import org.junit.Test;
  *
  */
 public class ConfigurationAssemblerTest {
+
+    @Test
+    public void testBuildConfiguration() throws Exception {
+        final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
+        CustomConfigurationFactory.addTestFixtures("config name", builder);
+        Configuration configuration = builder.build();
+        Configurator.initialize(configuration);
+        validate(configuration);
+    }
 
     @Test
     public void testCustomConfigurationFactory() throws Exception {
@@ -53,6 +66,7 @@ public class ConfigurationAssemblerTest {
     }
 
     private void validate(Configuration config) {
+        assertNotNull(config);
         assertNotNull(config.getName());
         assertFalse(config.getName().isEmpty());
         assertNotNull("No configuration created", config);

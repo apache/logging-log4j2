@@ -36,19 +36,7 @@ import java.net.URI;
 //@Order(50)
 public class CustomConfigurationFactory extends ConfigurationFactory {
 
-    @Override
-    protected String[] getSupportedTypes() {
-        return new String[] {"*"};
-    }
-
-    @Override
-    public Configuration getConfiguration(ConfigurationSource source) {
-        return getConfiguration(source.toString(), null);
-    }
-
-    @Override
-    public Configuration getConfiguration(final String name, final URI configLocation) {
-        ConfigurationBuilder<BuiltConfiguration> builder = newConfigurationBuilder();
+    static Configuration addTestFixtures(final String name, ConfigurationBuilder<BuiltConfiguration> builder) {
         builder.setConfigurationName(name);
         builder.setStatusLevel(Level.ERROR);
         builder.add(builder.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.NEUTRAL)
@@ -64,5 +52,21 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
                 addAttribute("additivity", false));
         builder.add(builder.newRootLogger(Level.ERROR).add(builder.newAppenderRef("Stdout")));
         return builder.build();
+    }
+
+    @Override
+    public Configuration getConfiguration(ConfigurationSource source) {
+        return getConfiguration(source.toString(), null);
+    }
+
+    @Override
+    public Configuration getConfiguration(final String name, final URI configLocation) {
+        ConfigurationBuilder<BuiltConfiguration> builder = newConfigurationBuilder();
+        return addTestFixtures(name, builder);
+    }
+
+    @Override
+    protected String[] getSupportedTypes() {
+        return new String[] {"*"};
     }
 }
