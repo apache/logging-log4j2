@@ -28,55 +28,6 @@ import org.apache.logging.log4j.core.util.Builder;
 public interface ConfigurationBuilder<T extends Configuration> extends Builder<T> {
 
     /**
-     * Sets the name of the configuration.
-     * @param name the name of the {@link Configuration}. By default is {@code "Constructed"}.
-     * @return this builder instance.
-     */
-    ConfigurationBuilder<T> setConfigurationName(String name);
-
-    /**
-     * Sets the configuration source, if one exists.
-     * @param configurationSource the ConfigurationSource.
-     * @return this builder instance.
-     */
-    ConfigurationBuilder<T> setConfigurationSource(ConfigurationSource configurationSource);
-
-    /**
-     * Sets the level of the StatusLogger.
-     * @param level The logging level.
-     * @return this builder instance.
-     */
-    ConfigurationBuilder<T> setStatusLevel(Level level);
-
-    /**
-     * Sets whether the logging should include constructing Plugins.
-     * @param verbosity "disable" will hide messages from plugin construction.
-     * @return this builder instance.
-     */
-    ConfigurationBuilder<T> setVerbosity(String verbosity);
-
-    /**
-     * Sets the list of packages to search for plugins.
-     * @param packages The comma separated list of packages.
-     * @return this builder instance.
-     */
-    ConfigurationBuilder<T> setPackages(String packages);
-
-    /**
-     * Sets whether the shutdown hook should be disabled.
-     * @param flag "disable" will prevent the shutdown hook from being set.
-     * @return this builder instance.
-     */
-    ConfigurationBuilder<T> setShutdownHook(String flag);
-
-    /**
-     * Sets the interval at which the configuration file should be checked for changes.
-     * @param intervalSeconds The number of seconds that should pass between checks of the configuration file.
-     * @return this builder instance.
-     */
-    ConfigurationBuilder<T> setMonitorInterval(String intervalSeconds);
-
-    /**
      * Adds an AppenderComponent.
      * @param builder The AppenderComponentBuilder with all of its attributes and sub components set.
      * @return this builder instance.
@@ -91,6 +42,13 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
     ConfigurationBuilder<T> add(CustomLevelComponentBuilder builder);
 
     /**
+     * Adds a Filter component.
+     * @param builder the FilterComponentBuilder with all of its attributes and sub components set.
+     * @return this builder instance.
+     */
+    ConfigurationBuilder<T> add(FilterComponentBuilder builder);
+
+    /**
      * Adds a Logger component.
      * @param builder The LoggerComponentBuilder with all of its attributes and sub components set.
      * @return this builder instance.
@@ -103,13 +61,6 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * @return this builder instance.
      */
     ConfigurationBuilder<T> add(RootLoggerComponentBuilder builder);
-
-    /**
-     * Adds a Filter component.
-     * @param builder the FilterComponentBuilder with all of its attributes and sub components set.
-     * @return this builder instance.
-     */
-    ConfigurationBuilder<T> add(FilterComponentBuilder builder);
 
     /**
      * Adds a Property key and value.
@@ -127,13 +78,42 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      */
     AppenderComponentBuilder newAppender(String name, String pluginName);
 
-
     /**
      * Returns a builder for creating AppenderRefs.
      * @param ref The name of the Appender being referenced.
      * @return the AppenderRefComponentBuilder.
      */
     AppenderRefComponentBuilder newAppenderRef(String ref);
+
+    /**
+     * Returns a builder for creating Async Loggers.
+     * @param name The name of the Logger.
+     * @param level The logging Level to be assigned to the Logger.
+     * @return The LoggerComponentBuilder.
+     */
+    LoggerComponentBuilder newAsyncLogger(String name, Level level);
+
+    /**
+     * Returns a builder for creating Async Loggers.
+     * @param name The name of the Logger.
+     * @param level The logging Level to be assigned to the Logger.
+     * @return The LoggerComponentBuilder.
+     */
+    LoggerComponentBuilder newAsyncLogger(String name, String level);
+
+    /**
+     * Returns a builder for creating the async root Logger.
+     * @param level The logging Level to be assigned to the root Logger.
+     * @return The RootLoggerComponentBuilder.
+     */
+    RootLoggerComponentBuilder newAsyncRootLogger(Level level);
+
+    /**
+     * Returns a builder for creating the async root Logger.
+     * @param level The logging Level to be assigned to the root Logger.
+     * @return The RootLoggerComponentBuilder.
+     */
+    RootLoggerComponentBuilder newAsyncRootLogger(String level);
 
     /**
      * Returns a builder for creating generic components.
@@ -151,6 +131,7 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * @return The ComponentBuilder.
      */
     ComponentBuilder<?> newComponent(String name, String pluginName, String value);
+
 
     /**
      * Returns a builder for creating CustomLevels
@@ -193,7 +174,6 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      */
     LoggerComponentBuilder newLogger(String name, Level level);
 
-
     /**
      * Returns a builder for creating Loggers.
      * @param name The name of the Logger.
@@ -201,22 +181,6 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * @return The LoggerComponentBuilder.
      */
     LoggerComponentBuilder newLogger(String name, String level);
-
-    /**
-     * Returns a builder for creating Async Loggers.
-     * @param name The name of the Logger.
-     * @param level The logging Level to be assigned to the Logger.
-     * @return The LoggerComponentBuilder.
-     */
-    LoggerComponentBuilder newAsyncLogger(String name, Level level);
-
-    /**
-     * Returns a builder for creating Async Loggers.
-     * @param name The name of the Logger.
-     * @param level The logging Level to be assigned to the Logger.
-     * @return The LoggerComponentBuilder.
-     */
-    LoggerComponentBuilder newAsyncLogger(String name, String level);
 
     /**
      * Returns a builder for creating the root Logger.
@@ -234,17 +198,53 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
 
 
     /**
-     * Returns a builder for creating the async root Logger.
-     * @param level The logging Level to be assigned to the root Logger.
-     * @return The RootLoggerComponentBuilder.
+     * Sets the name of the configuration.
+     * @param name the name of the {@link Configuration}. By default is {@code "Constructed"}.
+     * @return this builder instance.
      */
-    RootLoggerComponentBuilder newAsyncRootLogger(Level level);
+    ConfigurationBuilder<T> setConfigurationName(String name);
+
+    /**
+     * Sets the configuration source, if one exists.
+     * @param configurationSource the ConfigurationSource.
+     * @return this builder instance.
+     */
+    ConfigurationBuilder<T> setConfigurationSource(ConfigurationSource configurationSource);
+
+    /**
+     * Sets the interval at which the configuration file should be checked for changes.
+     * @param intervalSeconds The number of seconds that should pass between checks of the configuration file.
+     * @return this builder instance.
+     */
+    ConfigurationBuilder<T> setMonitorInterval(String intervalSeconds);
+
+    /**
+     * Sets the list of packages to search for plugins.
+     * @param packages The comma separated list of packages.
+     * @return this builder instance.
+     */
+    ConfigurationBuilder<T> setPackages(String packages);
+
+    /**
+     * Sets whether the shutdown hook should be disabled.
+     * @param flag "disable" will prevent the shutdown hook from being set.
+     * @return this builder instance.
+     */
+    ConfigurationBuilder<T> setShutdownHook(String flag);
 
 
     /**
-     * Returns a builder for creating the async root Logger.
-     * @param level The logging Level to be assigned to the root Logger.
-     * @return The RootLoggerComponentBuilder.
+     * Sets the level of the StatusLogger.
+     * @param level The logging level.
+     * @return this builder instance.
      */
-    RootLoggerComponentBuilder newAsyncRootLogger(String level);
+    ConfigurationBuilder<T> setStatusLevel(Level level);
+
+
+    /**
+     * Sets whether the logging should include constructing Plugins.
+     * @param verbosity "disable" will hide messages from plugin construction.
+     * @return this builder instance.
+     */
+    ConfigurationBuilder<T> setVerbosity(String verbosity);
 }
