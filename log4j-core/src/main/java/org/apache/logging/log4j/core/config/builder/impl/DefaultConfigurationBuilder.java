@@ -198,14 +198,12 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public ComponentBuilder<?> newComponent(String name, String type) {
+    public <B extends ComponentBuilder<B>> ComponentBuilder<B> newComponent(String name, String type) {
         return new DefaultComponentBuilder<>(this, name, type);
     }
 
-
     @Override
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public ComponentBuilder<?> newComponent(String name, String type, String value) {
+    public <B extends ComponentBuilder<B>> ComponentBuilder<B> newComponent(String name, String type, String value) {
         return new DefaultComponentBuilder<>(this, name, type, value);
     }
 

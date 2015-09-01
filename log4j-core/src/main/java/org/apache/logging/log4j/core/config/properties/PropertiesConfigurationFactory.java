@@ -313,7 +313,7 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
         return layoutBuilder;
     }
 
-    private ComponentBuilder<?> createComponent(ComponentBuilder<?> parent, String key, Properties properties) {
+    private <B extends ComponentBuilder<B>> ComponentBuilder<B> createComponent(ComponentBuilder<?> parent, String key, Properties properties) {
         String name = properties.getProperty(CONFIG_NAME);
         if (name != null) {
             properties.remove(CONFIG_NAME);
@@ -323,7 +323,7 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
             throw new ConfigurationException("No type attribute provided for component " + key);
         }
         properties.remove(CONFIG_TYPE);
-        ComponentBuilder<?> componentBuilder = parent.getBuilder().newComponent(name, type);
+        ComponentBuilder<B> componentBuilder = parent.getBuilder().newComponent(name, type);
         processRemainingProperties(componentBuilder, name, properties);
         return componentBuilder;
     }
