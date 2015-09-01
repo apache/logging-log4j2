@@ -113,7 +113,7 @@ class DefaultComponentBuilder<T extends ComponentBuilder<T>> implements Componen
         return name;
     }
 
-    private T put(String key, String value) {
+    protected T put(String key, String value) {
         attributes.put(key, value);
         return (T) this;
     }
