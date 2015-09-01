@@ -89,7 +89,7 @@ public interface ComponentBuilder<T extends ComponentBuilder<T>> extends Builder
 
     /**
      * Retrieves the ConfigurationBuilder.
-     * @return The ConfiguratonAssembler.
+     * @return The ConfigurationBuilder.
      */
     ConfigurationBuilder<? extends Configuration> getBuilder();
 }
