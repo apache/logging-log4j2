@@ -40,6 +40,14 @@ import java.util.List;
  */
 public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implements ConfigurationBuilder<T> {
 
+    /**
+     * The key with which Apache Log4j loads the selector class.
+     *
+     * @see <a href=
+     *      "http://logging.apache.org/log4j/2.0/manual/async.html">
+     *      Async Loggers</a>
+     */
+    private static final String LOG4J_ASYNC_LOGGERS = "Log4jContextSelector";
     private final Component root = new Component();
     private Component loggers;
     private Component appenders;
@@ -53,16 +61,8 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     private String verbosity = null;
     private String packages = null;
     private String shutdownFlag = null;
-    private String name = null;
 
-    /**
-     * The key with which Apache Log4j loads the selector class.
-     *
-     * @see <a href=
-     *      "http://logging.apache.org/log4j/2.0/manual/async.html">
-     *      Async Loggers</a>
-     */
-    private static final String LOG4J_ASYNC_LOGGERS = "Log4jContextSelector";
+    private String name = null;
 
     public DefaultConfigurationBuilder() {
         this((Class<T>) BuiltConfiguration.class);
@@ -85,6 +85,172 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         components.add(appenders);
         loggers = new Component("Loggers");
         components.add(loggers);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public ConfigurationBuilder<T> add(AppenderComponentBuilder assembler) {
+        appenders.getComponents().add(assembler.build());
+        return this;
+    }
+
+    @Override
+    public ConfigurationBuilder<T> add(CustomLevelComponentBuilder assembler) {
+        customLevels.getComponents().add(assembler.build());
+        return this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public ConfigurationBuilder<T> add(FilterComponentBuilder assembler) {
+        filters.getComponents().add(assembler.build());
+        return this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public ConfigurationBuilder<T> add(LoggerComponentBuilder assembler) {
+        loggers.getComponents().add(assembler.build());
+        return this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public ConfigurationBuilder<T> add(RootLoggerComponentBuilder assembler) {
+        for (Component c : loggers.getComponents()) {
+            if (c.getPluginType().equals("root")) {
+                throw new ConfigurationException("root Logger was previously defined");
+            }
+        }
+        loggers.getComponents().add(assembler.build());
+        return this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public ConfigurationBuilder<T> addProperty(String key, String value) {
+        properties.addComponent(newComponent(key, "Property", value).build());
+        return this;
+    }
+
+    @Override
+    @SuppressWarnings({"unchecked"})
+    public T build() {
+        T configuration;
+        try {
+            if (source == null) {
+                source = ConfigurationSource.NULL_SOURCE;
+            }
+            Constructor<T> constructor = clazz.getConstructor(ConfigurationSource.class, Component.class);
+            configuration = constructor.newInstance(source, root);
+            configuration.setMonitorInterval(monitorInterval);
+            if (name != null) {
+                configuration.setName(name);
+            }
+            if (level != null) {
+                configuration.getStatusConfiguration().withStatus(level);
+            }
+            if (verbosity != null) {
+                configuration.getStatusConfiguration().withVerbosity(verbosity);
+            }
+            if (packages != null) {
+                configuration.setPluginPackages(packages);
+            }
+            if (shutdownFlag != null) {
+                configuration.setShutdownHook(shutdownFlag);
+            }
+        } catch (Exception ex) {
+            throw new IllegalArgumentException("Invalid Configuration class specified", ex);
+        }
+        configuration.getStatusConfiguration().initialize();
+        configuration.initialize();
+        return configuration;
+    }
+
+    @Override
+    public AppenderComponentBuilder newAppender(String name, String type) {
+        return new DefaultAppenderComponentBuilder(this, name, type);
+    }
+
+    @Override
+    public AppenderRefComponentBuilder newAppenderRef(String ref) {
+        return new DefaultAppenderRefComponentBuilder(this, ref);
+    }
+
+    @Override
+    public LoggerComponentBuilder newAsyncLogger(String name, Level level) {
+        return new DefaultLoggerComponentBuilder(this, name, level.toString(), "AsyncLogger");
+    }
+
+    @Override
+    public LoggerComponentBuilder newAsyncLogger(String name, String level) {
+        return new DefaultLoggerComponentBuilder(this, name, level, "AsyncLogger");
+    }
+
+    @Override
+    public RootLoggerComponentBuilder newAsyncRootLogger(Level level) {
+        return new DefaultRootLoggerComponentBuilder(this, level.toString(), "AsyncRoot");
+    }
+
+    @Override
+    public RootLoggerComponentBuilder newAsyncRootLogger(String level) {
+        return new DefaultRootLoggerComponentBuilder(this, level, "AsyncRoot");
+    }
+
+    @Override
+    public ComponentBuilder<?> newComponent(String name, String type) {
+        return new DefaultComponentBuilder<>(this, name, type);
+    }
+
+
+    @Override
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public ComponentBuilder<?> newComponent(String name, String type, String value) {
+        return new DefaultComponentBuilder<>(this, name, type, value);
+    }
+
+
+    @Override
+    public CustomLevelComponentBuilder newCustomLevel(String name, int level) {
+        return new DefaultCustomLevelComponentBuilder(this, name, level);
+    }
+
+    @Override
+    @SuppressWarnings("rawtypes")
+    public FilterComponentBuilder newFilter(String type, Filter.Result onMatch, Filter.Result onMisMatch) {
+        return new DefaultFilterComponentBuilder(this, type, onMatch.name(), onMisMatch.name());
+    }
+
+    @Override
+    @SuppressWarnings("rawtypes")
+    public FilterComponentBuilder newFilter(String type, String onMatch, String onMisMatch) {
+        return new DefaultFilterComponentBuilder(this, type, onMatch, onMisMatch);
+    }
+
+    @Override
+    public LayoutComponentBuilder newLayout(String type) {
+        return new DefaultLayoutComponentBuilder(this, type);
+    }
+
+
+    @Override
+    public LoggerComponentBuilder newLogger(String name, Level level) {
+        return new DefaultLoggerComponentBuilder(this, name, level.toString());
+    }
+
+    @Override
+    public LoggerComponentBuilder newLogger(String name, String level) {
+        return new DefaultLoggerComponentBuilder(this, name, level);
+    }
+
+    @Override
+    public RootLoggerComponentBuilder newRootLogger(Level level) {
+        return new DefaultRootLoggerComponentBuilder(this, level.toString());
+    }
+
+    @Override
+    public RootLoggerComponentBuilder newRootLogger(String level) {
+        return new DefaultRootLoggerComponentBuilder(this, level);
     }
 
     /**
@@ -122,20 +288,6 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     @SuppressWarnings("unchecked")
-    public ConfigurationBuilder<T> setStatusLevel(Level level) {
-        this.level = level;
-        return this;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public ConfigurationBuilder<T> setVerbosity(String verbosity) {
-        this.verbosity = verbosity;
-        return this;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
     public ConfigurationBuilder<T> setPackages(String packages) {
         this.packages = packages;
         return this;
@@ -150,167 +302,15 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     @SuppressWarnings("unchecked")
-    public ConfigurationBuilder<T> add(AppenderComponentBuilder assembler) {
-        appenders.getComponents().add(assembler.build());
-        return this;
-    }
-
-    @Override
-    public ConfigurationBuilder<T> add(CustomLevelComponentBuilder assembler) {
-        customLevels.getComponents().add(assembler.build());
+    public ConfigurationBuilder<T> setStatusLevel(Level level) {
+        this.level = level;
         return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public ConfigurationBuilder<T> add(LoggerComponentBuilder assembler) {
-        loggers.getComponents().add(assembler.build());
+    public ConfigurationBuilder<T> setVerbosity(String verbosity) {
+        this.verbosity = verbosity;
         return this;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public ConfigurationBuilder<T> add(RootLoggerComponentBuilder assembler) {
-        for (Component c : loggers.getComponents()) {
-            if (c.getPluginType().equals("root")) {
-                throw new ConfigurationException("root Logger was previously defined");
-            }
-        }
-        loggers.getComponents().add(assembler.build());
-        return this;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public ConfigurationBuilder<T> add(FilterComponentBuilder assembler) {
-        filters.getComponents().add(assembler.build());
-        return this;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public ConfigurationBuilder<T> addProperty(String key, String value) {
-        properties.addComponent(newComponent(key, "Property", value).build());
-        return this;
-    }
-
-    @Override
-    public AppenderComponentBuilder newAppender(String name, String type) {
-        return new DefaultAppenderComponentBuilder(this, name, type);
-    }
-
-
-    @Override
-    public AppenderRefComponentBuilder newAppenderRef(String ref) {
-        return new DefaultAppenderRefComponentBuilder(this, ref);
-    }
-
-
-    @Override
-    public ComponentBuilder<?> newComponent(String name, String type) {
-        return new DefaultComponentBuilder<>(this, name, type);
-    }
-
-    @Override
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public ComponentBuilder<?> newComponent(String name, String type, String value) {
-        return new DefaultComponentBuilder<>(this, name, type, value);
-    }
-
-    @Override
-    public CustomLevelComponentBuilder newCustomLevel(String name, int level) {
-        return new DefaultCustomLevelComponentBuilder(this, name, level);
-    }
-
-    @Override
-    @SuppressWarnings("rawtypes")
-    public FilterComponentBuilder newFilter(String type, String onMatch, String onMisMatch) {
-        return new DefaultFilterComponentBuilder(this, type, onMatch, onMisMatch);
-    }
-
-
-    @Override
-    @SuppressWarnings("rawtypes")
-    public FilterComponentBuilder newFilter(String type, Filter.Result onMatch, Filter.Result onMisMatch) {
-        return new DefaultFilterComponentBuilder(this, type, onMatch.name(), onMisMatch.name());
-    }
-
-    @Override
-    public LayoutComponentBuilder newLayout(String type) {
-        return new DefaultLayoutComponentBuilder(this, type);
-    }
-
-    @Override
-    public LoggerComponentBuilder newLogger(String name, String level) {
-        return new DefaultLoggerComponentBuilder(this, name, level);
-    }
-
-    @Override
-    public LoggerComponentBuilder newLogger(String name, Level level) {
-        return new DefaultLoggerComponentBuilder(this, name, level.toString());
-    }
-
-    @Override
-    public LoggerComponentBuilder newAsyncLogger(String name, String level) {
-        return new DefaultLoggerComponentBuilder(this, name, level, "AsyncLogger");
-    }
-
-    @Override
-    public LoggerComponentBuilder newAsyncLogger(String name, Level level) {
-        return new DefaultLoggerComponentBuilder(this, name, level.toString(), "AsyncLogger");
-    }
-
-    @Override
-    public RootLoggerComponentBuilder newRootLogger(String level) {
-        return new DefaultRootLoggerComponentBuilder(this, level);
-    }
-
-    @Override
-    public RootLoggerComponentBuilder newRootLogger(Level level) {
-        return new DefaultRootLoggerComponentBuilder(this, level.toString());
-    }
-
-    @Override
-    public RootLoggerComponentBuilder newAsyncRootLogger(String level) {
-        return new DefaultRootLoggerComponentBuilder(this, level, "AsyncRoot");
-    }
-
-    @Override
-    public RootLoggerComponentBuilder newAsyncRootLogger(Level level) {
-        return new DefaultRootLoggerComponentBuilder(this, level.toString(), "AsyncRoot");
-    }
-
-    @Override
-    @SuppressWarnings({"unchecked"})
-    public T build() {
-        T configuration;
-        try {
-            if (source == null) {
-                source = ConfigurationSource.NULL_SOURCE;
-            }
-            Constructor<T> constructor = clazz.getConstructor(ConfigurationSource.class, Component.class);
-            configuration = constructor.newInstance(source, root);
-            configuration.setMonitorInterval(monitorInterval);
-            if (name != null) {
-                configuration.setName(name);
-            }
-            if (level != null) {
-                configuration.getStatusConfiguration().withStatus(level);
-            }
-            if (verbosity != null) {
-                configuration.getStatusConfiguration().withVerbosity(verbosity);
-            }
-            if (packages != null) {
-                configuration.setPluginPackages(packages);
-            }
-            if (shutdownFlag != null) {
-                configuration.setShutdownHook(shutdownFlag);
-            }
-        } catch (Exception ex) {
-            throw new IllegalArgumentException("Invalid Configuration class specified", ex);
-        }
-        configuration.getStatusConfiguration().initialize();
-        configuration.initialize();
-        return configuration;
     }
 }
