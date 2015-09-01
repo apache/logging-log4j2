@@ -117,7 +117,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     public ConfigurationBuilder<T> add(RootLoggerComponentBuilder builder) {
         for (Component c : loggers.getComponents()) {
             if (c.getPluginType().equals("root")) {
-                throw new ConfigurationException("root Logger was previously defined");
+                throw new ConfigurationException("Root Logger was previously defined");
             }
         }
         return add(loggers, builder);
