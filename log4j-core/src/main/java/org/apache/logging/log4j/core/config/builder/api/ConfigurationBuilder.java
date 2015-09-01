@@ -121,7 +121,7 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
     ConfigurationBuilder<T> addProperty(String key, String value);
 
     /**
-     * Returns an Assembler for creating Appenders.
+     * Returns a builder for creating Appenders.
      * @param name The name of the Appender.
      * @param pluginName The Plugin type of the Appender.
      * @return the AppenderComponentBuilder.
@@ -130,14 +130,14 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
 
 
     /**
-     * Returns an Assembler for creating AppenderRefs.
+     * Returns a builder for creating AppenderRefs.
      * @param ref The name of the Appender being referenced.
      * @return the AppenderRefComponentBuilder.
      */
     AppenderRefComponentBuilder newAppenderRef(String ref);
 
     /**
-     * Returns an Assembler for creating generic components.
+     * Returns a builder for creating generic components.
      * @param name The name of the component (may be null).
      * @param pluginName The Plugin type of the component.
      * @return The ComponentBuilder.
@@ -145,7 +145,7 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
     ComponentBuilder<?> newComponent(String name, String pluginName);
 
     /**
-     * Returns an Assembler for creating generic components.
+     * Returns a builder for creating generic components.
      * @param name The name of the component (may be null).
      * @param pluginName The Plugin type of the component.
      * @param value The value of the component.
@@ -154,7 +154,7 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
     ComponentBuilder<?> newComponent(String name, String pluginName, String value);
 
     /**
-     * Returns an Asssembler for creating CustomLevels
+     * Returns a builder for creating CustomLevels
      * @param name The name of the custom level.
      * @param level The integer value to be assigned to the level.
      * @return The CustomLevelComponentBuilder.
@@ -162,7 +162,7 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
     CustomLevelComponentBuilder newCustomLevel(String name, int level);
 
     /**
-     * Returns an Asssembler for creating Filters.
+     * Returns a builder for creating Filters.
      * @param pluginName The Plugin type of the Filter.
      * @param onMatch "ACCEPT", "DENY", or "NEUTRAL"
      * @param onMisMatch "ACCEPT", "DENY", or "NEUTRAL"
@@ -171,7 +171,7 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
     FilterComponentBuilder newFilter(String pluginName, Filter.Result onMatch, Filter.Result onMisMatch);
 
     /**
-     * Returns an Asssembler for creating Filters.
+     * Returns a builder for creating Filters.
      * @param pluginName The Plugin type of the Filter.
      * @param onMatch "ACCEPT", "DENY", or "NEUTRAL"
      * @param onMisMatch "ACCEPT", "DENY", or "NEUTRAL"
@@ -180,14 +180,14 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
     FilterComponentBuilder newFilter(String pluginName, String onMatch, String onMisMatch);
 
     /**
-     * Returns an Assembler for creating Layouts.
+     * Returns a builder for creating Layouts.
      * @param type The Plugin type of the Layout.
      * @return The LayoutComponentBuilder.
      */
     LayoutComponentBuilder newLayout(String pluginName);
 
     /**
-     * Returns an Assembler for creating Loggers.
+     * Returns a builder for creating Loggers.
      * @param name The name of the Logger.
      * @param level The logging Level to be assigned to the Logger.
      * @return The LoggerComponentBuilder.
@@ -196,7 +196,7 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
 
 
     /**
-     * Returns an Assembler for creating Loggers.
+     * Returns a builder for creating Loggers.
      * @param name The name of the Logger.
      * @param level The logging Level to be assigned to the Logger.
      * @return The LoggerComponentBuilder.
@@ -204,7 +204,7 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
     LoggerComponentBuilder newLogger(String name, String level);
 
     /**
-     * Returns an Assembler for creating Async Loggers.
+     * Returns a builder for creating Async Loggers.
      * @param name The name of the Logger.
      * @param level The logging Level to be assigned to the Logger.
      * @return The LoggerComponentBuilder.
@@ -212,7 +212,7 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
     LoggerComponentBuilder newAsyncLogger(String name, Level level);
 
     /**
-     * Returns an Assembler for creating Async Loggers.
+     * Returns a builder for creating Async Loggers.
      * @param name The name of the Logger.
      * @param level The logging Level to be assigned to the Logger.
      * @return The LoggerComponentBuilder.
@@ -220,14 +220,14 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
     LoggerComponentBuilder newAsyncLogger(String name, String level);
 
     /**
-     * Returns an Assembler for creating the root Logger.
+     * Returns a builder for creating the root Logger.
      * @param level The logging Level to be assigned to the root Logger.
      * @return The RootLoggerComponentBuilder.
      */
     RootLoggerComponentBuilder newRootLogger(Level level);
 
     /**
-     * Returns an Assembler for creating the root Logger.
+     * Returns a builder for creating the root Logger.
      * @param level The logging Level to be assigned to the root Logger.
      * @return The RootLoggerComponentBuilder.
      */
@@ -235,7 +235,7 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
 
 
     /**
-     * Returns an Assembler for creating the async root Logger.
+     * Returns a builder for creating the async root Logger.
      * @param level The logging Level to be assigned to the root Logger.
      * @return The RootLoggerComponentBuilder.
      */
@@ -243,7 +243,7 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
 
 
     /**
-     * Returns an Assembler for creating the async root Logger.
+     * Returns a builder for creating the async root Logger.
      * @param level The logging Level to be assigned to the root Logger.
      * @return The RootLoggerComponentBuilder.
      */
