@@ -31,24 +31,25 @@ import java.util.Map;
  * Generic component that captures attributes and Components in preparation for assembling the Appender's
  * Component.
  */
-class DefaultComponentBuilder<T extends ComponentBuilder<T>> implements ComponentBuilder<T> {
+class DefaultComponentBuilder<T extends ComponentBuilder<T>, CB extends ConfigurationBuilder<? extends Configuration>>
+        implements ComponentBuilder<T> {
 
-    private ConfigurationBuilder<? extends Configuration> builder;
+    private CB builder;
     private String type;
     private Map<String, String> attributes = new HashMap<>();
     private List<Component> components = new ArrayList<>();
     private String name;
     private String value;
 
-    public DefaultComponentBuilder(ConfigurationBuilder<? extends Configuration> builder, String type) {
+    public DefaultComponentBuilder(CB builder, String type) {
         this(builder, null, type, null);
     }
 
-    public DefaultComponentBuilder(ConfigurationBuilder<? extends Configuration> builder, String name, String type) {
+    public DefaultComponentBuilder(CB builder, String name, String type) {
         this(builder, name, type, null);
     }
 
-    public DefaultComponentBuilder(ConfigurationBuilder<? extends Configuration> builder, String name, String type,
+    public DefaultComponentBuilder(CB builder, String name, String type,
             String value) {
         this.type = type;
         this.builder = builder;
@@ -104,7 +105,7 @@ class DefaultComponentBuilder<T extends ComponentBuilder<T>> implements Componen
     }
 
     @Override
-    public ConfigurationBuilder<? extends Configuration> getBuilder() {
+    public CB getBuilder() {
         return builder;
     }
 

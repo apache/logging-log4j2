@@ -22,8 +22,8 @@ import org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder;
 /**
  *
  */
-class DefaultFilterComponentBuilder extends DefaultComponentBuilder<FilterComponentBuilder> implements
-        FilterComponentBuilder {
+class DefaultFilterComponentBuilder extends DefaultComponentAndConfigurationBuilder<FilterComponentBuilder>
+        implements FilterComponentBuilder {
 
     public DefaultFilterComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> builder, String type,
             String onMatch, String onMisMatch) {

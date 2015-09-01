@@ -23,8 +23,8 @@ import org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder;
 /**
  * Holds the Appender Component attributes and subcomponents.
  */
-class DefaultAppenderRefComponentBuilder extends DefaultComponentBuilder<AppenderRefComponentBuilder> implements
-        AppenderRefComponentBuilder {
+class DefaultAppenderRefComponentBuilder extends DefaultComponentAndConfigurationBuilder<AppenderRefComponentBuilder>
+        implements AppenderRefComponentBuilder {
 
     public DefaultAppenderRefComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> builder,
             String ref) {

@@ -124,14 +124,12 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public ConfigurationBuilder<T> addProperty(String key, String value) {
         properties.addComponent(newComponent(key, "Property", value).build());
         return this;
     }
 
     @Override
-    @SuppressWarnings({"unchecked"})
     public T build() {
         T configuration;
         try {
@@ -211,13 +209,11 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    @SuppressWarnings("rawtypes")
     public FilterComponentBuilder newFilter(String type, Filter.Result onMatch, Filter.Result onMisMatch) {
         return new DefaultFilterComponentBuilder(this, type, onMatch.name(), onMisMatch.name());
     }
 
     @Override
-    @SuppressWarnings("rawtypes")
     public FilterComponentBuilder newFilter(String type, String onMatch, String onMisMatch) {
         return new DefaultFilterComponentBuilder(this, type, onMatch, onMisMatch);
     }
@@ -255,7 +251,6 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
      * @return this builder instance
      */
     @Override
-    @SuppressWarnings("unchecked")
     public ConfigurationBuilder<T> setConfigurationName(String name) {
         this.name = name;
         return this;
@@ -268,42 +263,36 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
      * @return this builder instance
      */
     @Override
-    @SuppressWarnings("unchecked")
     public ConfigurationBuilder<T> setConfigurationSource(ConfigurationSource configurationSource) {
         source = configurationSource;
         return this;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public ConfigurationBuilder<T> setMonitorInterval(String intervalSeconds) {
         monitorInterval = Integer.parseInt(intervalSeconds);
         return this;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public ConfigurationBuilder<T> setPackages(String packages) {
         this.packages = packages;
         return this;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public ConfigurationBuilder<T> setShutdownHook(String flag) {
         this.shutdownFlag = flag;
         return this;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public ConfigurationBuilder<T> setStatusLevel(Level level) {
         this.level = level;
         return this;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public ConfigurationBuilder<T> setVerbosity(String verbosity) {
         this.verbosity = verbosity;
         return this;

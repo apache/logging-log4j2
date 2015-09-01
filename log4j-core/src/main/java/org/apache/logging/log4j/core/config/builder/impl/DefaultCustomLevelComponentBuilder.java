@@ -22,8 +22,8 @@ import org.apache.logging.log4j.core.config.builder.api.CustomLevelComponentBuil
 /**
  *
  */
-class DefaultCustomLevelComponentBuilder extends DefaultComponentBuilder<CustomLevelComponentBuilder> implements
-        CustomLevelComponentBuilder {
+class DefaultCustomLevelComponentBuilder extends DefaultComponentAndConfigurationBuilder<CustomLevelComponentBuilder>
+        implements CustomLevelComponentBuilder {
 
     public DefaultCustomLevelComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> builder,
             String name, int level) {
