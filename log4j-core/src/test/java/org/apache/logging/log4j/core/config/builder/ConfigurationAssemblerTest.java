@@ -41,7 +41,7 @@ import org.junit.Test;
 public class ConfigurationAssemblerTest {
 
     @Test
-    public void doConfigure() throws Exception {
+    public void testCustomConfigurationFactory() throws Exception {
         try {
             System.setProperty(ConfigurationFactory.CONFIGURATION_FACTORY_PROPERTY,
                     "org.apache.logging.log4j.core.config.builder.CustomConfigurationFactory");
