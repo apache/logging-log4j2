@@ -39,5 +39,6 @@ public interface AppenderComponentBuilder extends ComponentBuilder<AppenderCompo
      * Returns the name of the Appender.
      * @return the name of the Appender.
      */
+    @Override
     String getName();
 }
