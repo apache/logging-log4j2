@@ -89,40 +89,40 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     @SuppressWarnings("unchecked")
-    public ConfigurationBuilder<T> add(AppenderComponentBuilder assembler) {
-        appenders.getComponents().add(assembler.build());
+    public ConfigurationBuilder<T> add(AppenderComponentBuilder builder) {
+        appenders.getComponents().add(builder.build());
         return this;
     }
 
     @Override
-    public ConfigurationBuilder<T> add(CustomLevelComponentBuilder assembler) {
-        customLevels.getComponents().add(assembler.build());
-        return this;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public ConfigurationBuilder<T> add(FilterComponentBuilder assembler) {
-        filters.getComponents().add(assembler.build());
+    public ConfigurationBuilder<T> add(CustomLevelComponentBuilder builder) {
+        customLevels.getComponents().add(builder.build());
         return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public ConfigurationBuilder<T> add(LoggerComponentBuilder assembler) {
-        loggers.getComponents().add(assembler.build());
+    public ConfigurationBuilder<T> add(FilterComponentBuilder builder) {
+        filters.getComponents().add(builder.build());
         return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public ConfigurationBuilder<T> add(RootLoggerComponentBuilder assembler) {
+    public ConfigurationBuilder<T> add(LoggerComponentBuilder builder) {
+        loggers.getComponents().add(builder.build());
+        return this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public ConfigurationBuilder<T> add(RootLoggerComponentBuilder builder) {
         for (Component c : loggers.getComponents()) {
             if (c.getPluginType().equals("root")) {
                 throw new ConfigurationException("root Logger was previously defined");
             }
         }
-        loggers.getComponents().add(assembler.build());
+        loggers.getComponents().add(builder.build());
         return this;
     }
 
