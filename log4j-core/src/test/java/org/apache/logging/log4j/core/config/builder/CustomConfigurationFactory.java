@@ -49,6 +49,7 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
     @Override
     public Configuration getConfiguration(final String name, final URI configLocation) {
         ConfigurationBuilder<BuiltConfiguration> builder = newConfigurationBuilder();
+        builder.setConfigurationName(name);
         builder.setStatusLevel(Level.ERROR);
         builder.add(builder.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.NEUTRAL)
                 .addAttribute("level", Level.DEBUG));

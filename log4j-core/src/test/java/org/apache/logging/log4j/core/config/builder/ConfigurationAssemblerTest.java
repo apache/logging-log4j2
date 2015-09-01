@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.config.builder;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -45,6 +46,8 @@ public class ConfigurationAssemblerTest {
             System.setProperty(ConfigurationFactory.CONFIGURATION_FACTORY_PROPERTY,
                     "org.apache.logging.log4j.core.config.builder.CustomConfigurationFactory");
             Configuration config = ((LoggerContext) LogManager.getContext(false)).getConfiguration();
+            assertNotNull(config.getName());
+            assertFalse(config.getName().isEmpty());
             assertNotNull("No configuration created", config);
             assertEquals("Incorrect State: " + config.getState(), config.getState(), LifeCycle.State.STARTED);
             Map<String, Appender> appenders = config.getAppenders();
