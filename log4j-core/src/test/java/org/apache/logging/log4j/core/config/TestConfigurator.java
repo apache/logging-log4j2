@@ -361,29 +361,28 @@ public class TestConfigurator {
     }
 
     @Test
-    public void testAssembler() throws Exception {
-        ConfigurationBuilder<BuiltConfiguration> assembler = ConfigurationBuilderFactory.newConfigurationBuilder();
-        assembler.setStatusLevel(Level.ERROR);
-        assembler.setConfigurationName("BuilderTest");
-        assembler.add(assembler.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.NEUTRAL)
+    public void testBuilder() throws Exception {
+        ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
+        builder.setStatusLevel(Level.ERROR);
+        builder.setConfigurationName("BuilderTest");
+        builder.add(builder.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.NEUTRAL)
                 .addAttribute("level", Level.DEBUG));
-        AppenderComponentBuilder appenderAssembler = assembler.newAppender("Stdout", "CONSOLE").addAttribute("target",
+        AppenderComponentBuilder appenderBuilder = builder.newAppender("Stdout", "CONSOLE").addAttribute("target",
                 ConsoleAppender.Target.SYSTEM_OUT);
-        appenderAssembler.add(assembler.newLayout("PatternLayout").
+        appenderBuilder.add(builder.newLayout("PatternLayout").
                 addAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
-        appenderAssembler.add(assembler.newFilter("MarkerFilter", Filter.Result.DENY,
+        appenderBuilder.add(builder.newFilter("MarkerFilter", Filter.Result.DENY,
                 Filter.Result.NEUTRAL).addAttribute("marker", "FLOW"));
-        assembler.add(appenderAssembler);
-        assembler.add(assembler.newLogger("org.apache.logging.log4j", Level.DEBUG).
-                add(assembler.newAppenderRef("Stdout")).
+        builder.add(appenderBuilder);
+        builder.add(builder.newLogger("org.apache.logging.log4j", Level.DEBUG).
+                add(builder.newAppenderRef("Stdout")).
                 addAttribute("additivity", false));
-        assembler.add(assembler.newRootLogger(Level.ERROR).add(assembler.newAppenderRef("Stdout")));
-        ctx = Configurator.initialize(assembler.build());
+        builder.add(builder.newRootLogger(Level.ERROR).add(builder.newAppenderRef("Stdout")));
+        ctx = Configurator.initialize(builder.build());
         final Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration", config);
         assertEquals("Unexpected Configuration", "BuilderTest", config.getName());
         assertThat(config.getAppenders(), hasSize(equalTo(1)));
-
     }
 
 }
