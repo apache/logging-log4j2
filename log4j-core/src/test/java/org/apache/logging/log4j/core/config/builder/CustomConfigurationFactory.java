@@ -48,20 +48,20 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
 
     @Override
     public Configuration getConfiguration(final String name, final URI configLocation) {
-        ConfigurationBuilder<BuiltConfiguration> assembler = newConfigurationBuilder();
-        assembler.setStatusLevel(Level.ERROR);
-        assembler.add(assembler.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.NEUTRAL)
+        ConfigurationBuilder<BuiltConfiguration> builder = newConfigurationBuilder();
+        builder.setStatusLevel(Level.ERROR);
+        builder.add(builder.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.NEUTRAL)
                 .addAttribute("level", Level.DEBUG));
-        AppenderComponentBuilder appenderAssembler = assembler.newAppender("Stdout", "CONSOLE").addAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
-        appenderAssembler.add(assembler.newLayout("PatternLayout").
+        AppenderComponentBuilder appenderAssembler = builder.newAppender("Stdout", "CONSOLE").addAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
+        appenderAssembler.add(builder.newLayout("PatternLayout").
                 addAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
-        appenderAssembler.add(assembler.newFilter("MarkerFilter", Filter.Result.DENY,
+        appenderAssembler.add(builder.newFilter("MarkerFilter", Filter.Result.DENY,
                 Filter.Result.NEUTRAL).addAttribute("marker", "FLOW"));
-        assembler.add(appenderAssembler);
-        assembler.add(assembler.newLogger("org.apache.logging.log4j", Level.DEBUG).
-                add(assembler.newAppenderRef("Stdout")).
+        builder.add(appenderAssembler);
+        builder.add(builder.newLogger("org.apache.logging.log4j", Level.DEBUG).
+                add(builder.newAppenderRef("Stdout")).
                 addAttribute("additivity", false));
-        assembler.add(assembler.newRootLogger(Level.ERROR).add(assembler.newAppenderRef("Stdout")));
-        return assembler.build();
+        builder.add(builder.newRootLogger(Level.ERROR).add(builder.newAppenderRef("Stdout")));
+        return builder.build();
     }
 }
