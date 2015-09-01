@@ -74,14 +74,14 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * Returns a builder for creating Appenders.
      * @param name The name of the Appender.
      * @param pluginName The Plugin type of the Appender.
-     * @return the AppenderComponentBuilder.
+     * @return A new AppenderComponentBuilder.
      */
     AppenderComponentBuilder newAppender(String name, String pluginName);
 
     /**
      * Returns a builder for creating AppenderRefs.
      * @param ref The name of the Appender being referenced.
-     * @return the AppenderRefComponentBuilder.
+     * @return A new AppenderRefComponentBuilder.
      */
     AppenderRefComponentBuilder newAppenderRef(String ref);
 
@@ -89,7 +89,7 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * Returns a builder for creating Async Loggers.
      * @param name The name of the Logger.
      * @param level The logging Level to be assigned to the Logger.
-     * @return The LoggerComponentBuilder.
+     * @return A new LoggerComponentBuilder.
      */
     LoggerComponentBuilder newAsyncLogger(String name, Level level);
 
@@ -97,21 +97,21 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * Returns a builder for creating Async Loggers.
      * @param name The name of the Logger.
      * @param level The logging Level to be assigned to the Logger.
-     * @return The LoggerComponentBuilder.
+     * @return A new LoggerComponentBuilder.
      */
     LoggerComponentBuilder newAsyncLogger(String name, String level);
 
     /**
      * Returns a builder for creating the async root Logger.
      * @param level The logging Level to be assigned to the root Logger.
-     * @return The RootLoggerComponentBuilder.
+     * @return A new RootLoggerComponentBuilder.
      */
     RootLoggerComponentBuilder newAsyncRootLogger(Level level);
 
     /**
      * Returns a builder for creating the async root Logger.
      * @param level The logging Level to be assigned to the root Logger.
-     * @return The RootLoggerComponentBuilder.
+     * @return A new RootLoggerComponentBuilder.
      */
     RootLoggerComponentBuilder newAsyncRootLogger(String level);
 
@@ -119,7 +119,7 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * Returns a builder for creating generic components.
      * @param name The name of the component (may be null).
      * @param pluginName The Plugin type of the component.
-     * @return The ComponentBuilder.
+     * @return A new ComponentBuilder.
      */
     <B extends ComponentBuilder<B>> ComponentBuilder<B> newComponent(String name, String pluginName);
 
@@ -128,7 +128,7 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * @param name The name of the component (may be null).
      * @param pluginName The Plugin type of the component.
      * @param value The value of the component.
-     * @return The ComponentBuilder.
+     * @return A new ComponentBuilder.
      */
     <B extends ComponentBuilder<B>> ComponentBuilder<B> newComponent(String name, String pluginName, String value);
 
@@ -137,7 +137,7 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * Returns a builder for creating CustomLevels
      * @param name The name of the custom level.
      * @param level The integer value to be assigned to the level.
-     * @return The CustomLevelComponentBuilder.
+     * @return A new CustomLevelComponentBuilder.
      */
     CustomLevelComponentBuilder newCustomLevel(String name, int level);
 
@@ -146,7 +146,7 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * @param pluginName The Plugin type of the Filter.
      * @param onMatch "ACCEPT", "DENY", or "NEUTRAL"
      * @param onMisMatch "ACCEPT", "DENY", or "NEUTRAL"
-     * @return The FilterComponentBuilder.
+     * @return A new FilterComponentBuilder.
      */
     FilterComponentBuilder newFilter(String pluginName, Filter.Result onMatch, Filter.Result onMisMatch);
 
@@ -155,14 +155,14 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * @param pluginName The Plugin type of the Filter.
      * @param onMatch "ACCEPT", "DENY", or "NEUTRAL"
      * @param onMisMatch "ACCEPT", "DENY", or "NEUTRAL"
-     * @return The FilterComponentBuilder.
+     * @return A new FilterComponentBuilder.
      */
     FilterComponentBuilder newFilter(String pluginName, String onMatch, String onMisMatch);
 
     /**
      * Returns a builder for creating Layouts.
      * @param type The Plugin type of the Layout.
-     * @return The LayoutComponentBuilder.
+     * @return A new LayoutComponentBuilder.
      */
     LayoutComponentBuilder newLayout(String pluginName);
 
@@ -170,7 +170,7 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * Returns a builder for creating Loggers.
      * @param name The name of the Logger.
      * @param level The logging Level to be assigned to the Logger.
-     * @return The LoggerComponentBuilder.
+     * @return A new LoggerComponentBuilder.
      */
     LoggerComponentBuilder newLogger(String name, Level level);
 
@@ -178,21 +178,21 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * Returns a builder for creating Loggers.
      * @param name The name of the Logger.
      * @param level The logging Level to be assigned to the Logger.
-     * @return The LoggerComponentBuilder.
+     * @return A new LoggerComponentBuilder.
      */
     LoggerComponentBuilder newLogger(String name, String level);
 
     /**
      * Returns a builder for creating the root Logger.
      * @param level The logging Level to be assigned to the root Logger.
-     * @return The RootLoggerComponentBuilder.
+     * @return A new RootLoggerComponentBuilder.
      */
     RootLoggerComponentBuilder newRootLogger(Level level);
 
     /**
      * Returns a builder for creating the root Logger.
      * @param level The logging Level to be assigned to the root Logger.
-     * @return The RootLoggerComponentBuilder.
+     * @return A new RootLoggerComponentBuilder.
      */
     RootLoggerComponentBuilder newRootLogger(String level);
 
