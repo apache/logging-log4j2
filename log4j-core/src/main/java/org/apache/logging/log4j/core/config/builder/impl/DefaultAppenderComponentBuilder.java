@@ -34,13 +34,11 @@ class DefaultAppenderComponentBuilder extends DefaultComponentAndConfigurationBu
 
     @Override
     public AppenderComponentBuilder add(LayoutComponentBuilder builder) {
-        addComponent(builder);
-        return this;
+        return addComponent(builder);
     }
 
     @Override
     public AppenderComponentBuilder add(FilterComponentBuilder builder) {
-        addComponent(builder);
-        return this;
+        return addComponent(builder);
     }
 }

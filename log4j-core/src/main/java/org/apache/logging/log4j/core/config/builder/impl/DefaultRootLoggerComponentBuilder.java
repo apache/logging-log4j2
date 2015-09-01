@@ -52,14 +52,12 @@ class DefaultRootLoggerComponentBuilder extends DefaultComponentAndConfiguration
 
     @Override
     public RootLoggerComponentBuilder add(AppenderRefComponentBuilder builder) {
-        addComponent(builder);
-        return this;
+        return addComponent(builder);
     }
 
 
     @Override
     public RootLoggerComponentBuilder add(FilterComponentBuilder builder) {
-        addComponent(builder);
-        return this;
+        return addComponent(builder);
     }
 }

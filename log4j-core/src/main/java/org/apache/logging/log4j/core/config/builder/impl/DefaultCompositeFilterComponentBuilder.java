@@ -36,8 +36,7 @@ class DefaultCompositeFilterComponentBuilder
 
     @Override
     public CompositeFilterComponentBuilder add(FilterComponentBuilder builder) {
-        addComponent(builder);
-        return this;
+        return addComponent(builder);
     }
 
 }

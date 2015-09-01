@@ -35,7 +35,6 @@ class DefaultAppenderRefComponentBuilder extends DefaultComponentAndConfiguratio
 
     @Override
     public AppenderRefComponentBuilder add(FilterComponentBuilder builder) {
-        addComponent(builder);
-        return this;
+        return addComponent(builder);
     }
 }
