@@ -29,7 +29,6 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
 
     /**
      * Set the name of the configuration.
-     *
      * @param name the name of the {@link Configuration}. By default is {@code "Constructed"}.
      * @return this Assembler instance.
      */
