@@ -26,16 +26,16 @@ import org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder;
 class DefaultCompositeFilterComponentBuilder extends DefaultComponentBuilder<CompositeFilterComponentBuilder> implements
         CompositeFilterComponentBuilder {
 
-    public DefaultCompositeFilterComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> assembler,
+    public DefaultCompositeFilterComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> builder,
             String onMatch, String onMisMatch) {
-        super(assembler, "Filters");
+        super(builder, "Filters");
         addAttribute("onMatch", onMatch);
         addAttribute("onMisMatch", onMisMatch);
     }
 
     @Override
-    public CompositeFilterComponentBuilder add(FilterComponentBuilder assembler) {
-        addComponent(assembler);
+    public CompositeFilterComponentBuilder add(FilterComponentBuilder builder) {
+        addComponent(builder);
         return this;
     }
 

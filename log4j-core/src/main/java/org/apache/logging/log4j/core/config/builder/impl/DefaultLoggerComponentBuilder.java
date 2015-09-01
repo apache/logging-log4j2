@@ -29,38 +29,38 @@ class DefaultLoggerComponentBuilder extends DefaultComponentBuilder<LoggerCompon
 
     /**
      * Configure a logger.
-     * @param assembler
+     * @param builder
      * @param name
      * @param level
      */
-    public DefaultLoggerComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> assembler, String name,
+    public DefaultLoggerComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> builder, String name,
             String level) {
-        super(assembler, name, "Logger");
+        super(builder, name, "Logger");
         addAttribute("level", level);
     }
 
     /**
      * Configure a logger.
-     * @param assembler
+     * @param builder
      * @param name
      * @param level
      * @param type
      */
-    public DefaultLoggerComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> assembler, String name,
+    public DefaultLoggerComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> builder, String name,
             String level, String type) {
-        super(assembler, name, type);
+        super(builder, name, type);
         addAttribute("level", level);
     }
 
     @Override
-    public LoggerComponentBuilder add(AppenderRefComponentBuilder assembler) {
-        addComponent(assembler);
+    public LoggerComponentBuilder add(AppenderRefComponentBuilder builder) {
+        addComponent(builder);
         return this;
     }
 
     @Override
-    public LoggerComponentBuilder add(FilterComponentBuilder assembler) {
-        addComponent(assembler);
+    public LoggerComponentBuilder add(FilterComponentBuilder builder) {
+        addComponent(builder);
         return this;
     }
 }

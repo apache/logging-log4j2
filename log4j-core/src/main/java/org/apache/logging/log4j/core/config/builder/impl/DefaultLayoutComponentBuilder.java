@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 class DefaultLayoutComponentBuilder extends DefaultComponentBuilder<LayoutComponentBuilder> implements
         LayoutComponentBuilder {
 
-    public DefaultLayoutComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> assembler, String type) {
-        super(assembler, type);
+    public DefaultLayoutComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> builder, String type) {
+        super(builder, type);
     }
 }

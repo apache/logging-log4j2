@@ -102,8 +102,8 @@ class DefaultComponentBuilder<T extends ComponentBuilder<T>> implements Componen
 
     @Override
     @SuppressWarnings("unchecked")
-    public T addComponent(ComponentBuilder<?> assembler) {
-        components.add(assembler.build());
+    public T addComponent(ComponentBuilder<?> builder) {
+        components.add(builder.build());
         return (T) this;
     }
 

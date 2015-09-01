@@ -29,37 +29,37 @@ class DefaultRootLoggerComponentBuilder extends DefaultComponentBuilder<RootLogg
 
     /**
      * Configure the root logger.
-     * @param assembler
+     * @param builder
      * @param level
      */
-    public DefaultRootLoggerComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> assembler,
+    public DefaultRootLoggerComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> builder,
             String level) {
-        super(assembler, "", "Root");
+        super(builder, "", "Root");
         addAttribute("level", level);
     }
 
     /**
      * Configure the root logger.
-     * @param assembler
+     * @param builder
      * @param level
      * @param type
      */
-    public DefaultRootLoggerComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> assembler,
+    public DefaultRootLoggerComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> builder,
             String level, String type) {
-        super(assembler, "", type);
+        super(builder, "", type);
         addAttribute("level", level);
     }
 
     @Override
-    public RootLoggerComponentBuilder add(AppenderRefComponentBuilder assembler) {
-        addComponent(assembler);
+    public RootLoggerComponentBuilder add(AppenderRefComponentBuilder builder) {
+        addComponent(builder);
         return this;
     }
 
 
     @Override
-    public RootLoggerComponentBuilder add(FilterComponentBuilder assembler) {
-        addComponent(assembler);
+    public RootLoggerComponentBuilder add(FilterComponentBuilder builder) {
+        addComponent(builder);
         return this;
     }
 }

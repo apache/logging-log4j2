@@ -26,16 +26,16 @@ import org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder;
 class DefaultAppenderRefComponentBuilder extends DefaultComponentBuilder<AppenderRefComponentBuilder> implements
         AppenderRefComponentBuilder {
 
-    public DefaultAppenderRefComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> assembler,
+    public DefaultAppenderRefComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> builder,
             String ref) {
-        super(assembler, "AppenderRef");
+        super(builder, "AppenderRef");
         addAttribute("ref", ref);
     }
 
 
     @Override
-    public AppenderRefComponentBuilder add(FilterComponentBuilder assembler) {
-        addComponent(assembler);
+    public AppenderRefComponentBuilder add(FilterComponentBuilder builder) {
+        addComponent(builder);
         return this;
     }
 }

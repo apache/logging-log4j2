@@ -27,20 +27,20 @@ import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 class DefaultAppenderComponentBuilder extends DefaultComponentBuilder<AppenderComponentBuilder> implements
         AppenderComponentBuilder {
 
-    public DefaultAppenderComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> assembler, String name,
+    public DefaultAppenderComponentBuilder(DefaultConfigurationBuilder<? extends Configuration> builder, String name,
             String type) {
-        super(assembler, name, type);
+        super(builder, name, type);
     }
 
     @Override
-    public AppenderComponentBuilder add(LayoutComponentBuilder assembler) {
-        addComponent(assembler);
+    public AppenderComponentBuilder add(LayoutComponentBuilder builder) {
+        addComponent(builder);
         return this;
     }
 
     @Override
-    public AppenderComponentBuilder add(FilterComponentBuilder assembler) {
-        addComponent(assembler);
+    public AppenderComponentBuilder add(FilterComponentBuilder builder) {
+        addComponent(builder);
         return this;
     }
 }
