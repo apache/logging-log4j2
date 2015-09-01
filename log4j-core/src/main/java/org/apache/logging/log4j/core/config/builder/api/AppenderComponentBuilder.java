@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.config.builder.api;
 
 /**
- * Assembler for constructing Appenders.
+ * Builder for constructing Appenders.
  */
 public interface AppenderComponentBuilder extends ComponentBuilder<AppenderComponentBuilder> {
 
