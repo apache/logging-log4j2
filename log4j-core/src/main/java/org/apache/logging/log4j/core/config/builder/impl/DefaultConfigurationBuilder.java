@@ -46,7 +46,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     private Component filters;
     private Component properties;
     private Component customLevels;
-    private final Class<?> clazz;
+    private final Class<? extends BuiltConfiguration> clazz;
     private ConfigurationSource source;
     private int monitorInterval = 0;
     private Level level = null;
@@ -69,7 +69,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         root.addAttribute("name", "Assembled");
     }
 
-    public <T extends BuiltConfiguration> DefaultConfigurationBuilder(Class<T> clazz) {
+    public <B extends BuiltConfiguration> DefaultConfigurationBuilder(Class<B> clazz) {
         if (clazz == null) {
             throw new IllegalArgumentException("A Configuration class must be provided");
         }
@@ -207,13 +207,13 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
 
     @Override
-    public ComponentBuilder<ComponentBuilder<?>> newComponent(String name, String type) {
+    public ComponentBuilder<?> newComponent(String name, String type) {
         return new DefaultComponentBuilder<>(this, name, type);
     }
 
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public ComponentBuilder<ComponentBuilder> newComponent(String name, String type, String value) {
+    public ComponentBuilder<?> newComponent(String name, String type, String value) {
         return new DefaultComponentBuilder<>(this, name, type, value);
     }
 
@@ -281,15 +281,15 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({"unchecked"})
     public T build() {
         BuiltConfiguration configuration;
         try {
             if (source == null) {
                 source = ConfigurationSource.NULL_SOURCE;
             }
-            Constructor constructor = clazz.getConstructor(ConfigurationSource.class, Component.class);
-            configuration = (BuiltConfiguration) constructor.newInstance(source, root);
+            Constructor<? extends BuiltConfiguration> constructor = clazz.getConstructor(ConfigurationSource.class, Component.class);
+            configuration = constructor.newInstance(source, root);
             configuration.setMonitorInterval(monitorInterval);
             if (name != null) {
                 configuration.setName(name);
@@ -311,6 +311,6 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         }
         configuration.getStatusConfiguration().initialize();
         configuration.initialize();
-        return (T)configuration;
+        return (T) configuration;
     }
 }

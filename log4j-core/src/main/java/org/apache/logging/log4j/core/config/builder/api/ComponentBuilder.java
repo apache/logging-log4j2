@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.util.Builder;
  * Builds arbitrary components and is the base type for the provided components.
  */
 @SuppressWarnings("rawtypes")
-public interface ComponentBuilder<T extends ComponentBuilder> extends Builder<Component> {
+public interface ComponentBuilder<T extends ComponentBuilder<T>> extends Builder<Component> {
 
     /**
      * Adds a String attribute.

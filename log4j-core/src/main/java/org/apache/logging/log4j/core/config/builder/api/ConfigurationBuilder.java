@@ -151,8 +151,7 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * @param value The value of the component.
      * @return The ComponentBuilder.
      */
-    @SuppressWarnings("rawtypes")
-    ComponentBuilder<ComponentBuilder> newComponent(String name, String pluginName, String value);
+    ComponentBuilder<?> newComponent(String name, String pluginName, String value);
 
     /**
      * Returns an Asssembler for creating CustomLevels
