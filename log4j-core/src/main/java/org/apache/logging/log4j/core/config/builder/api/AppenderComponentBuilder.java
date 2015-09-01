@@ -23,17 +23,17 @@ public interface AppenderComponentBuilder extends ComponentBuilder<AppenderCompo
 
     /**
      * Adds a Layout to the Appender component.
-     * @param assembler The LayoutComponentBuilder with all of its attributes set.
-     * @return this Assembler.
+     * @param builder The LayoutComponentBuilder with all of its attributes set.
+     * @return this builder.
      */
-    AppenderComponentBuilder add(LayoutComponentBuilder assembler);
+    AppenderComponentBuilder add(LayoutComponentBuilder builder);
 
     /**
      * Adds a Filter to the Appender component.
-     * @param assembler The FilterComponentBuilder with all of its attributes and sub components set.
-     * @return this Assembler.
+     * @param builder The FilterComponentBuilder with all of its attributes and sub components set.
+     * @return this builder.
      */
-    AppenderComponentBuilder add(FilterComponentBuilder assembler);
+    AppenderComponentBuilder add(FilterComponentBuilder builder);
 
     /**
      * Returns the name of the Appender.
