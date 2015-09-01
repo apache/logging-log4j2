@@ -114,7 +114,6 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public ConfigurationBuilder<T> add(RootLoggerComponentBuilder builder) {
         for (Component c : loggers.getComponents()) {
             if (c.getPluginType().equals("root")) {
