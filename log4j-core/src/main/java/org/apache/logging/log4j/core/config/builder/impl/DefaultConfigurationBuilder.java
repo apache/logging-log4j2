@@ -41,14 +41,6 @@ import java.util.List;
  */
 public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implements ConfigurationBuilder<T> {
 
-    /**
-     * The key with which Apache Log4j loads the selector class.
-     *
-     * @see <a href=
-     *      "http://logging.apache.org/log4j/2.0/manual/async.html">
-     *      Async Loggers</a>
-     */
-    private static final String LOG4J_ASYNC_LOGGERS = "Log4jContextSelector";
     private final Component root = new Component();
     private Component loggers;
     private Component appenders;
