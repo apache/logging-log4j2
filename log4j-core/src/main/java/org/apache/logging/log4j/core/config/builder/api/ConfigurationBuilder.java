@@ -28,42 +28,42 @@ import org.apache.logging.log4j.core.util.Builder;
 public interface ConfigurationBuilder<T extends Configuration> extends Builder<T> {
 
     /**
-     * Set the name of the configuration.
+     * Sets the name of the configuration.
      * @param name the name of the {@link Configuration}. By default is {@code "Constructed"}.
      * @return this Assembler instance.
      */
     ConfigurationBuilder<T> setConfigurationName(String name);
 
     /**
-     * Set the configuration source, if one exists.
+     * Sets the configuration source, if one exists.
      * @param configurationSource the ConfigurationSource.
      * @return this Assembler instance.
      */
     ConfigurationBuilder<T> setConfigurationSource(ConfigurationSource configurationSource);
 
     /**
-     * Set the level of the StatusLogger.
+     * Sets the level of the StatusLogger.
      * @param level The logging level.
      * @return this Assembler instance.
      */
     ConfigurationBuilder<T> setStatusLevel(Level level);
 
     /**
-     * Set whether the logging should include constructing Plugins.
+     * Sets whether the logging should include constructing Plugins.
      * @param verbosity "disable" will hide messages from plugin construction.
      * @return this Assembler instance.
      */
     ConfigurationBuilder<T> setVerbosity(String verbosity);
 
     /**
-     * Set the list of packages to search for plugins.
+     * Sets the list of packages to search for plugins.
      * @param packages The comma separated list of packages.
      * @return this Assembler instance.
      */
     ConfigurationBuilder<T> setPackages(String packages);
 
     /**
-     * Set whether the shutdown hook should be disabled.
+     * Sets whether the shutdown hook should be disabled.
      * @param flag "disable" will prevent the shutdown hook from being set.
      * @return this Assembler instance.
      */
@@ -91,28 +91,28 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
     ConfigurationBuilder<T> add(CustomLevelComponentBuilder assembler);
 
     /**
-     * Add a Logger component.
+     * Adds a Logger component.
      * @param assembler The LoggerComponentBuilder with all of its attributes and sub components set.
      * @return this Assembler instance.
      */
     ConfigurationBuilder<T> add(LoggerComponentBuilder assembler);
 
     /**
-     * Add the root Logger component.
+     * Adds the root Logger component.
      * @param assembler The RootLoggerComponentBuilder with all of its attributes and sub components set.
      * @return this Assembler instance.
      */
     ConfigurationBuilder<T> add(RootLoggerComponentBuilder assembler);
 
     /**
-     * Add a Filter component.
+     * Adds a Filter component.
      * @param assembler the FilterComponentBuilder with all of its attributes and sub components set.
      * @return this Assembler instance.
      */
     ConfigurationBuilder<T> add(FilterComponentBuilder assembler);
 
     /**
-     * Add a Property key and value.
+     * Adds a Property key and value.
      * @param key The property key.
      * @param value The property value.
      * @return this Assembler instance.
