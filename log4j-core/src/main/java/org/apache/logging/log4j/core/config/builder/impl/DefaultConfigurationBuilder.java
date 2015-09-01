@@ -59,7 +59,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     public DefaultConfigurationBuilder() {
         this((Class<T>) BuiltConfiguration.class);
-        root.addAttribute("name", "Assembled");
+        root.addAttribute("name", "Built");
     }
 
     public DefaultConfigurationBuilder(final Class<T> clazz) {
