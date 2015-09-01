@@ -107,7 +107,13 @@ public class Logger extends AbstractLogger {
         if (level == getLevel()) {
             return;
         }
-        final Level actualLevel = level != null ? level : getParent().getLevel();
+        Level actualLevel;
+        if (level != null) {
+            actualLevel = level;
+        } else {
+            final Logger parent = getParent();
+            actualLevel = parent != null ? parent.getLevel() : config.level;
+        }
         config = new PrivateConfig(config, actualLevel);
     }
 
