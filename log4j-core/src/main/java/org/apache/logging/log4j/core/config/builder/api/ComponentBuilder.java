@@ -30,7 +30,7 @@ public interface ComponentBuilder<T extends ComponentBuilder<T>> extends Builder
      * Adds a String attribute.
      * @param key The attribute key.
      * @param value The value of the attribute.
-     * @return The ComponentBuilder.
+     * @return This ComponentBuilder.
      */
     T addAttribute(String key, String value);
 
@@ -38,7 +38,7 @@ public interface ComponentBuilder<T extends ComponentBuilder<T>> extends Builder
      * Adds a logging Level attribute.
      * @param key The attribute key.
      * @param level The logging Level.
-     * @return The ComponentBuilder.
+     * @return This ComponentBuilder.
      */
     T addAttribute(String key, Level level);
 
@@ -46,7 +46,7 @@ public interface ComponentBuilder<T extends ComponentBuilder<T>> extends Builder
      * Adds an enumeration attribute.
      * @param key The attribute key.
      * @param value The enumeration.
-     * @return The ComponentBuilder.
+     * @return This ComponentBuilder.
      */
     T addAttribute(String key, Enum<?> value);
 
@@ -54,7 +54,7 @@ public interface ComponentBuilder<T extends ComponentBuilder<T>> extends Builder
      * Adds an integer attribute.
      * @param key The attribute key.
      * @param value The integer value.
-     * @return The ComponentBuilder.
+     * @return This ComponentBuilder.
      */
     T addAttribute(String key, int value);
 
@@ -62,7 +62,7 @@ public interface ComponentBuilder<T extends ComponentBuilder<T>> extends Builder
      * Adds a boolean attribute.
      * @param key The attribute key.
      * @param value The integer value.
-     * @return The ComponentBuilder.
+     * @return This ComponentBuilder.
      */
     T addAttribute(String key, boolean value);
 
@@ -70,7 +70,7 @@ public interface ComponentBuilder<T extends ComponentBuilder<T>> extends Builder
      * Adds an Object attribute.
      * @param key The attribute key.
      * @param value The integer value.
-     * @return The ComponentBuilder.
+     * @return This ComponentBuilder.
      */
     T addAttribute(String key, Object value);
 
