@@ -34,25 +34,25 @@ import java.util.Map;
 @SuppressWarnings("rawtypes")
 class DefaultComponentBuilder<T extends ComponentBuilder> implements ComponentBuilder<T> {
 
-    private ConfigurationBuilder<? extends Configuration> assembler;
+    private ConfigurationBuilder<? extends Configuration> builder;
     private String type;
     private Map<String, String> attributes = new HashMap<>();
     private List<Component> components = new ArrayList<>();
     private String name;
     private String value;
 
-    public DefaultComponentBuilder(ConfigurationBuilder<? extends Configuration> assembler, String type) {
-        this(assembler, null, type, null);
+    public DefaultComponentBuilder(ConfigurationBuilder<? extends Configuration> builder, String type) {
+        this(builder, null, type, null);
     }
 
-    public DefaultComponentBuilder(ConfigurationBuilder<? extends Configuration> assembler, String name, String type) {
-        this(assembler, name, type, null);
+    public DefaultComponentBuilder(ConfigurationBuilder<? extends Configuration> builder, String name, String type) {
+        this(builder, name, type, null);
     }
 
-    public DefaultComponentBuilder(ConfigurationBuilder<? extends Configuration> assembler, String name, String type,
+    public DefaultComponentBuilder(ConfigurationBuilder<? extends Configuration> builder, String name, String type,
             String value) {
         this.type = type;
-        this.assembler = assembler;
+        this.builder = builder;
         this.name = name;
         this.value = value;
     }
@@ -115,7 +115,7 @@ class DefaultComponentBuilder<T extends ComponentBuilder> implements ComponentBu
 
     @Override
     public ConfigurationBuilder<? extends Configuration> getBuilder() {
-        return assembler;
+        return builder;
     }
 
     @Override
