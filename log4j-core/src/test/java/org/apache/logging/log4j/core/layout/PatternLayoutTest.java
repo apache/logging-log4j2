@@ -31,6 +31,7 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.lookup.MainMapLookup;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.After;
@@ -73,18 +74,20 @@ public class PatternLayoutTest {
         // % does not work here.
         final String pattern = "%d{UNIX} MyApp%n${java:version}%n${java:runtime}%n${java:vm}%n${java:os}%n${java:hw}";
         final PatternLayout layout = PatternLayout.newBuilder().withConfiguration(ctx.getConfiguration())
-                .withHeader(pattern).withFooter(pattern).build();
+                .withHeader("Header: " + pattern).withFooter("Footer: "+ pattern).build();
         final byte[] header = layout.getHeader();
         assertNotNull("No header", header);
         final String headerStr = new String(header);
+        assertTrue(headerStr, headerStr.contains("Header: "));
         assertTrue(headerStr, headerStr.contains("Java version "));
         assertTrue(headerStr, headerStr.contains("(build "));
         assertTrue(headerStr, headerStr.contains(" from "));
         assertTrue(headerStr, headerStr.contains(" architecture: "));
         //
         final byte[] footer = layout.getFooter();
-        assertNotNull("No header", footer);
-        final String footerStr = new String(header);
+        assertNotNull("No footer", footer);
+        final String footerStr = new String(footer);
+        assertTrue(footerStr, footerStr.contains("Footer: "));
         assertTrue(footerStr, footerStr.contains("Java version "));
         assertTrue(footerStr, footerStr.contains("(build "));
         assertTrue(footerStr, footerStr.contains(" from "));
@@ -104,7 +107,8 @@ public class PatternLayoutTest {
                 new String(header).equals(new String("Hello world Header")));
     }
 
-    private void testMdcPattern(final String patternStr, final String expectedStr, final boolean useThreadContext) throws Exception {
+    private void testMdcPattern(final String patternStr, final String expectedStr, final boolean useThreadContext)
+            throws Exception {
         final PatternLayout layout = PatternLayout.newBuilder().withPattern(patternStr)
                 .withConfiguration(ctx.getConfiguration()).build();
         if (useThreadContext) {
@@ -112,8 +116,7 @@ public class PatternLayoutTest {
             ThreadContext.put("key2", "value2");
         }
         final LogEvent event = Log4jLogEvent.newBuilder() //
-                .setLoggerName(this.getClass().getName())
-                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
+                .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage("Hello")).build();
         final byte[] result = layout.toByteArray(event);
@@ -150,8 +153,7 @@ public class PatternLayoutTest {
         final PatternLayout layout = PatternLayout.newBuilder().withPattern(regexPattern)
                 .withConfiguration(ctx.getConfiguration()).build();
         final LogEvent event = Log4jLogEvent.newBuilder() //
-                .setLoggerName(this.getClass().getName())
-                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
+                .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage("Hello, world!")).build();
         final byte[] result = layout.toByteArray(event);
@@ -163,8 +165,7 @@ public class PatternLayoutTest {
         final PatternLayout layout = PatternLayout.newBuilder().withPattern("\\\\%level\\t%msg\\n\\t%logger\\r\\n\\f")
                 .withConfiguration(ctx.getConfiguration()).build();
         final LogEvent event = Log4jLogEvent.newBuilder() //
-                .setLoggerName(this.getClass().getName())
-                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
+                .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage("Hello, world!")).build();
         final byte[] result = layout.toByteArray(event);
@@ -177,16 +178,14 @@ public class PatternLayoutTest {
         final PatternLayout layout = PatternLayout.newBuilder().withPattern("%d{UNIX} %m")
                 .withConfiguration(ctx.getConfiguration()).build();
         final LogEvent event1 = Log4jLogEvent.newBuilder() //
-                .setLoggerName(this.getClass().getName())
-                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
+                .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage("Hello, world 1!")).build();
         final byte[] result1 = layout.toByteArray(event1);
         assertEquals(event1.getTimeMillis() / 1000 + " Hello, world 1!", new String(result1));
         // System.out.println("event1=" + event1.getTimeMillis() / 1000);
         final LogEvent event2 = Log4jLogEvent.newBuilder() //
-                .setLoggerName(this.getClass().getName())
-                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
+                .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage("Hello, world 2!")).build();
         final byte[] result2 = layout.toByteArray(event2);
@@ -198,16 +197,14 @@ public class PatternLayoutTest {
         final PatternLayout layout = PatternLayout.newBuilder().withPattern(pattern + " %m")
                 .withConfiguration(ctx.getConfiguration()).build();
         final LogEvent event1 = Log4jLogEvent.newBuilder() //
-                .setLoggerName(this.getClass().getName())
-                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
+                .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage("Hello, world 1!")).build();
         final byte[] result1 = layout.toByteArray(event1);
         assertEquals(event1.getTimeMillis() + " Hello, world 1!", new String(result1));
         // System.out.println("event1=" + event1.getMillis());
         final LogEvent event2 = Log4jLogEvent.newBuilder() //
-                .setLoggerName(this.getClass().getName())
-                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
+                .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage("Hello, world 2!")).build();
         final byte[] result2 = layout.toByteArray(event2);
@@ -220,16 +217,14 @@ public class PatternLayoutTest {
         final PatternLayout layout = PatternLayout.newBuilder().withPattern("%d{UNIX_MILLIS} %m")
                 .withConfiguration(ctx.getConfiguration()).build();
         final LogEvent event1 = Log4jLogEvent.newBuilder() //
-                .setLoggerName(this.getClass().getName())
-                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
+                .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage("Hello, world 1!")).build();
         final byte[] result1 = layout.toByteArray(event1);
         assertEquals(event1.getTimeMillis() + " Hello, world 1!", new String(result1));
         // System.out.println("event1=" + event1.getTimeMillis());
         final LogEvent event2 = Log4jLogEvent.newBuilder() //
-                .setLoggerName(this.getClass().getName())
-                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
+                .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage("Hello, world 2!")).build();
         final byte[] result2 = layout.toByteArray(event2);
