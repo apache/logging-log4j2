@@ -60,7 +60,7 @@ public class MainMapLookup extends MapLookup {
      * @param args
      *        An application's {@code public static main(String[])} arguments.
      */
-    public static void setMainArguments(final String[] args) {
+    public static void setMainArguments(final String... args) {
         if (args == null) {
             return;
         }

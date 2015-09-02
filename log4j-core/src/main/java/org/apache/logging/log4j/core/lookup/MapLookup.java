@@ -71,7 +71,7 @@ public class MapLookup implements StrLookup {
      * @deprecated As of 2.4, use {@link MainMapLookup#setMainArguments(String[])}
      */
     @Deprecated
-    public static void setMainArguments(final String[] args) {
+    public static void setMainArguments(final String... args) {
         MainMapLookup.setMainArguments(args);
     }
 

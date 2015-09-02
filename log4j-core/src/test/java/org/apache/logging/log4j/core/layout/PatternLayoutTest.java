@@ -98,7 +98,7 @@ public class PatternLayoutTest {
      */
     @Test
     public void testHeaderFooterMainLookup() {
-        MainMapLookup.setMainArguments(new String[] { "value0", "value1", "value2" });
+        MainMapLookup.setMainArguments("value0", "value1", "value2");
         final PatternLayout layout = PatternLayout.newBuilder().withConfiguration(ctx.getConfiguration())
                 .withHeader("${main:0}").withFooter("${main:2}").build();
         final byte[] header = layout.getHeader();
