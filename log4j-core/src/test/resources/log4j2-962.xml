@@ -22,6 +22,11 @@
     <List name="List">
       <PatternLayout pattern="%d %msg%n" header="Header: ${main:0}" footer="Footer: ${main:1}" />
     </List>
+    <File name="File" fileName="target/${main:0}.log" bufferedIO="false">
+      <PatternLayout>
+        <Pattern>%d %m%n</Pattern>
+      </PatternLayout>
+    </File>    
   </Appenders>
   <Loggers>
     <Root level="TRACE">

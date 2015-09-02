@@ -20,6 +20,7 @@ package org.apache.logging.log4j.core.layout;
 import java.util.List;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.lookup.MainMapLookup;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
@@ -36,15 +37,20 @@ public class PatternLayoutMainMapLookupTest {
         // Must be set before Log4j writes the header to the appenders.
         MainMapLookup.setMainArguments("value0", "value1", "value2");
     }
-    
-    private ListAppender listApp;
 
     @Rule
     public LoggerContextRule context = new LoggerContextRule("log4j2-962.xml");
 
     @Test
+    public void testFileName() {
+        FileAppender fileApp = (FileAppender) context.getRequiredAppender("File");
+        final String name = fileApp.getFileName();
+        Assert.assertEquals("target/value0.log", name);
+    }
+
+    @Test
     public void testHeader() {
-        listApp = context.getListAppender("List");
+        ListAppender listApp = context.getListAppender("List");
         Logger logger = context.getLogger(this.getClass().getName());
         logger.info("Hello World");
         final List<String> messages = listApp.getMessages();
@@ -53,4 +59,5 @@ public class PatternLayoutMainMapLookupTest {
         listApp.stop();
         Assert.assertEquals("Footer: value1", messages.get(2));
     }
+
 }
