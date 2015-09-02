@@ -42,7 +42,6 @@ public class LoggerDateTest {
         fileApp = (FileAppender) context.getRequiredAppender("File");
     }
 
-
     @Test
     public void testFileName() {
         final String name = fileApp.getFileName();
