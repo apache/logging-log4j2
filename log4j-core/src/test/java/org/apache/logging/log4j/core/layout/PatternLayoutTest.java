@@ -74,7 +74,7 @@ public class PatternLayoutTest {
         // % does not work here.
         final String pattern = "%d{UNIX} MyApp%n${java:version}%n${java:runtime}%n${java:vm}%n${java:os}%n${java:hw}";
         final PatternLayout layout = PatternLayout.newBuilder().withConfiguration(ctx.getConfiguration())
-                .withHeader("Header: " + pattern).withFooter("Footer: "+ pattern).build();
+                .withHeader("Header: " + pattern).withFooter("Footer: " + pattern).build();
         final byte[] header = layout.getHeader();
         assertNotNull("No header", header);
         final String headerStr = new String(header);
@@ -92,6 +92,25 @@ public class PatternLayoutTest {
         assertTrue(footerStr, footerStr.contains("(build "));
         assertTrue(footerStr, footerStr.contains(" from "));
         assertTrue(footerStr, footerStr.contains(" architecture: "));
+    }
+
+    /**
+     * Tests LOG4J2-962.
+     */
+    @Test
+    public void testHeaderFooterMainLookup() {
+        MainMapLookup.setMainArguments(new String[] { "value0", "value1", "value2" });
+        final PatternLayout layout = PatternLayout.newBuilder().withConfiguration(ctx.getConfiguration())
+                .withHeader("${main:0}").withFooter("${main:2}").build();
+        final byte[] header = layout.getHeader();
+        assertNotNull("No header", header);
+        final String headerStr = new String(header);
+        assertTrue(headerStr, headerStr.contains("value0"));
+        //
+        final byte[] footer = layout.getFooter();
+        assertNotNull("No footer", footer);
+        final String footerStr = new String(footer);
+        assertTrue(footerStr, footerStr.contains("value2"));
     }
 
     @Test
