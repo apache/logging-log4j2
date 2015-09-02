@@ -66,7 +66,6 @@ public class PatternLayoutTest {
     @After
     public void after() {
         ThreadContext.clearMap();
-
     }
 
     @Test
