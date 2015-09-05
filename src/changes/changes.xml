@@ -118,7 +118,7 @@
         AsyncAppender now resets the thread interrupted flag after catching InterruptedException.
       </action>
       <action issue="LOG4J2-1048" dev="rpopma" type="fix" due-to="Nikhil">
-        FileConfigurationMonitor unnecessarily calls System.currentTimeMillis causing high CPU usage.
+        FileConfigurationMonitor unnecessarily calls System.currentTimeMillis() causing high CPU usage.
       </action>
       <action issue="LOG4J2-1037" dev="ggregory" type="fix" due-to="Marc Dergacz">
         Backward compatibility issue in log4j-1.2-api NDC pop() and peek().
