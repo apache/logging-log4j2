@@ -34,6 +34,9 @@
       <action issue="LOG4J2-1107" dev="ggregory" type="add" due-to="Mikael Ståldal">
         New Appender for Apache Kafka.
       </action>
+      <action issue="LOG4J2-1088" dev="ggregory" type="add" due-to="Gary Gregory">
+        Add Comma Separated Value (CSV) layouts for parameter and event logging.
+      </action>
       <action issue="LOG4J2-812" dev="rgoers" type="update">
         PatternLayout timestamp formatting performance improvement: replaced synchronized SimpleDateFormat with
         Apache Commons FastDateFormat. This and better caching resulted in a ~3-30X faster timestamp formatting.

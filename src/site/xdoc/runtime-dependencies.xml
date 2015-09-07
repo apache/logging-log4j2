@@ -53,6 +53,10 @@
           <th>Requirements</th>
         </tr>
         <tr>
+          <td>CSV Layout</td>
+          <td><a href="https://commons.apache.org/proper/commons-csv/">Apache Commons CSV</a></td>
+        </tr>        
+        <tr>
           <td>XML configuration</td>
           <td>-</td>
         </tr>

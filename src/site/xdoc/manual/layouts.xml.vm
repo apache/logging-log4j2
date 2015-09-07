@@ -49,6 +49,129 @@
           where the default there is UTF-8. Each layout that extends <code>org.apache.logging.log4j.core.layout.AbstractStringLayout</code> 
           can provide its own default. See each layout below.
         </p>
+        <a name="CSVLayouts"/>
+        <subsection name="CSV Layouts">
+          <p>
+            The CSV layout can be used in two ways: First, using <code>CsvParameterLayout</code> to log event parameters 
+            to create a custom database, usually to a logger and file appender uniquely configured for this purpose. 
+            Second, using <code>CsvLogEventLayout</code> to log events to create a database, as an alternative to using a 
+            full DBMS or using a JDBC driver that supports the CSV format.
+          </p>
+          <p>
+            The <code>CsvParameterLayout</code> converts an event's parameters into a CSV record, ignoring the message. 
+            To log CSV records, you can use the usual Logger methods <code>info()</code>, <code>debug()</code>, and so on:
+          </p>
+          <pre class="prettyprint linenums">
+logger.info("Ignored", value1, value2, value3);
+</pre>
+          <p>
+            Which will create the CSV record:
+          </p>            
+          <pre class="prettyprint linenums">
+value1, value2, value3
+</pre>            
+          <p>
+            Alternatively, you can use a <code>ObjectArrayMessage</code>, which only carries parameters:
+          </p>
+          <pre class="prettyprint linenums">
+logger.info(new ObjectArrayMessage(value1, value2, value3));
+</pre>
+          <p>
+            The layouts CsvParameterLayout and CsvLogEventLayout are configured with the following parameters:
+          </p>
+          <table>
+            <caption>CsvParameterLayout and CsvLogEventLayout</caption>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>format</td>
+              <td>String</td>
+              <td>
+                One of the predefined formats: <code>Default</code>, <code>Excel</code>, <code>MySQL</code>, 
+                <code>RFC4180</code>, <code>TDF</code>.
+                See 
+                  <a href="https://commons.apache.org/proper/commons-csv/archives/1.2/apidocs/org/apache/commons/csv/CSVFormat.Predefined.html">CSVFormat.Predefined</a>.
+              </td>
+            </tr>
+            <tr>
+              <td>delimiter</td>
+              <td>Character</td>
+              <td>Sets the delimiter of the format to the specified character.</td>
+            </tr>
+            <tr>
+              <td>escape</td>
+              <td>Character</td>
+              <td>Sets the escape character of the format to the specified character.</td>
+            </tr>
+            <tr>
+              <td>quote</td>
+              <td>Character</td>
+              <td>Sets the quoteChar of the format to the specified character.</td>
+            </tr>
+            <tr>
+              <td>quoteMode</td>
+              <td>String</td>
+              <td>
+                Sets the output quote policy of the format to the specified value. One of: <code>ALL</code>, 
+                <code>MINIMAL</code>, <code>NON_NUMERIC</code>, <code>NONE</code>.
+              </td>
+            </tr>
+            <tr>
+              <td>nullString</td>
+              <td>String</td>
+              <td>Writes null as the given nullString when writing records.</td>
+            </tr>
+            <tr>
+              <td>recordSeparator</td>
+              <td>String</td>
+              <td>Sets the record separator of the format to the specified String.</td>
+            </tr>
+            <tr>
+              <td>charset</td>
+              <td>Charset</td>
+              <td>The output Charset.</td>
+            </tr>
+            <tr>
+              <td>header</td>
+              <td>Sets the header to include when the stream is opened.</td>
+              <td>Desc.</td>
+            </tr>
+            <tr>
+              <td>footer</td>
+              <td>Sets the footer to include when the stream is closed.</td>
+              <td>Desc.</td>
+            </tr>
+        </table>           
+        <p>
+          Logging as a CSV events looks like this:
+        </p>
+        <pre class="prettyprint linenums">
+logger.debug("one={}, two={}, three={}", 1, 2, 3); 
+</pre>                    
+        <p>
+          Produces a CSV record with the following fields:
+          <ol>
+            <li>Time Nanos</li>
+            <li>Time Millis</li>
+            <li>Level</li>
+            <li>Thread Name</li>
+            <li>Formatted Message</li>
+            <li>Logger FQCN</li>
+            <li>Logger Name</li>
+            <li>Marker</li>
+            <li>Thrown Proxy</li>
+            <li>Source</li>
+            <li>Context Map</li>
+            <li>Context Stack</li>
+          </ol>
+        </p>            
+        <pre class="prettyprint linenums">
+0,1441617184044,DEBUG,main,"one=1, two=2, three=3",org.apache.logging.log4j.spi.AbstractLogger,,,,org.apache.logging.log4j.core.layout.CsvLogEventLayoutTest.testLayout(CsvLogEventLayoutTest.java:98),{},[]
+</pre>                    
+        </subsection>
         <a name="JSONLayout"/>
         <subsection name="JSONLayout">
           <!-- From Javadoc of org.apache.logging.log4j.core.layout.JSONLayout -->

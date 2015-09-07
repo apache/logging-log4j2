@@ -692,6 +692,12 @@
         <artifactId>commons-compress</artifactId>
         <version>1.10</version>
       </dependency>
+      <!-- Used for the CSV layout -->
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-csv</artifactId>
+        <version>1.2</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <build>
