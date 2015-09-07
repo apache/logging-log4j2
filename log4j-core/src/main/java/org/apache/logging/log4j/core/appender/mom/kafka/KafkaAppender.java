@@ -34,7 +34,7 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Requi
 import org.apache.logging.log4j.core.util.Booleans;
 
 /**
- * Appender to send log events to an Apache Kafka topic.
+ * Sends log events to an Apache Kafka topic.
  */
 @Plugin(name = "Kafka", category = "Core", elementType = "appender", printObject = true)
 public final class KafkaAppender extends AbstractAppender {
