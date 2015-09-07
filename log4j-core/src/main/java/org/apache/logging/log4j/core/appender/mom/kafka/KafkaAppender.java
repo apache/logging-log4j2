@@ -48,10 +48,10 @@ public final class KafkaAppender extends AbstractAppender {
             @PluginElement("Layout") final Layout<? extends Serializable> layout,
             @PluginElement("Filter") final Filter filter,
             @Required(message = "No name provided for KafkaAppender") @PluginAttribute("name") final String name,
-            @PluginAttribute(value = "ignoreExceptions", defaultBoolean = true) final String ignore,
+            @PluginAttribute(value = "ignoreExceptions", defaultBoolean = true) final String ignoreExceptionsStr,
             @Required(message = "No topic provided for KafkaAppender") @PluginAttribute("topic") final String topic,
             @PluginElement("Properties") final Property[] properties) {
-        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
+        final boolean ignoreExceptions = Booleans.parseBoolean(ignoreExceptionsStr, true);
         final KafkaManager kafkaManager = new KafkaManager(name, topic, properties);
         return new KafkaAppender(name, layout, filter, ignoreExceptions, kafkaManager);
     }
