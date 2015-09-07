@@ -304,7 +304,6 @@ public class PluginBuilder implements Builder<Object> {
                     sb.append(", ");
                 }
                 StringBuilders.appendDqValue(sb, key);
-
             }
             LOGGER.error(sb.toString());
         }
