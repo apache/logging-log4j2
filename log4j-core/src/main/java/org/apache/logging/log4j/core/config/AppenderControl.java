@@ -128,8 +128,7 @@ public class AppenderControl extends AbstractFilterable {
     }
 
     private String createErrorMsg(final String prefix) {
-        final String msg = prefix + appender.getName();
-        return msg;
+        return prefix + appender.getName();
     }
     
     private boolean isFilteredByAppender(final LogEvent event) {
