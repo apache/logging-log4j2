@@ -111,6 +111,11 @@ public class AbstractLifeCycle implements LifeCycle, Serializable {
     }
 
     @Override
+    public void initialize() {
+        this.state = State.INITIALIZED;
+    }
+
+    @Override
     public void start() {
         this.setStarted();
     }

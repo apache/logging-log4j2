@@ -33,6 +33,8 @@ public interface LifeCycle {
      * Status of a life cycle like a {@link LoggerContext}.
      */
     public enum State {
+        /** Object is in its initial state and not yet initialized */
+        INITIAL,
         /** Initialized but not yet started. */
         INITIALIZED,
         /** In the process of starting. */
@@ -51,6 +53,8 @@ public interface LifeCycle {
      * @return the life-cycle state
      */
     State getState();
+
+    void initialize();
     
     void start();
 

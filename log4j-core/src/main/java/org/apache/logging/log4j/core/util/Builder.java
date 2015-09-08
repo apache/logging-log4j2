@@ -18,27 +18,27 @@
 package org.apache.logging.log4j.core.util;
 
 /**
- * A type of Plugin builder that can be used to configure and create a plugin instance using a Java DSL instead of
+ * A type of builder that can be used to configure and create a instances using a Java DSL instead of
  * through a configuration file. These builders are primarily useful for internal code and unit tests, but they can
  * technically be used as a verbose alternative to configuration files.
  *
  * <p>
- *     When creating plugin builders, it is customary to create the builder class as a public static inner class
+ *     When creating <em>plugin</em> builders, it is customary to create the builder class as a public static inner class
  *     called {@code Builder}. For instance, the builder class for
  *     {@link org.apache.logging.log4j.core.layout.PatternLayout PatternLayout} would be
  *     {@code PatternLayout.Builder}.
  * </p>
  *
- * @param <T> the Plugin class this is a builder for.
+ * @param <T> This builder creates instances of this class.
  */
 public interface Builder<T> {
 
     /**
-     * Builds the plugin object after all configuration has been set. This will use default values for any
-     * unspecified attributes for the plugin.
+     * Builds the object after all configuration has been set. This will use default values for any
+     * unspecified attributes for the object.
      *
-     * @return the configured plugin instance.
-     * @throws org.apache.logging.log4j.core.config.ConfigurationException if there was an error building the plugin
+     * @return the configured instance.
+     * @throws org.apache.logging.log4j.core.config.ConfigurationException if there was an error building the
      * object.
      */
     T build();

@@ -164,6 +164,44 @@ public final class Configurator {
     }
 
     /**
+     * Initializes the Logging Context.
+     * @param configuration The Configuration.
+     * @return The LoggerContext.
+     */
+    public static LoggerContext initialize(Configuration configuration) {
+        return initialize(null, configuration, null);
+    }
+
+    /**
+     * Initializes the Logging Context.
+     * @param loader The ClassLoader.
+     * @param configuration The Configuration.
+     * @return The LoggerContext.
+     */
+    public static LoggerContext initialize(final ClassLoader loader, Configuration configuration) {
+        return initialize(loader, configuration, null);
+    }
+
+    /**
+     * Initializes the Logging Context.
+     * @param loader The ClassLoader.
+     * @param configuration The Configuration.
+     * @param externalContext - The external context to be attached to the LoggerContext.
+     * @return The LoggerContext.
+     */
+    public static LoggerContext initialize(final ClassLoader loader, Configuration configuration, final Object externalContext) {
+        try {
+            final Log4jContextFactory factory = getFactory();
+            return factory == null ? null :
+                    factory.getContext(FQCN, loader, externalContext, false, configuration);
+        } catch (final Exception ex) {
+            LOGGER.error("There was a problem initializing the LoggerContext using configuration {}",
+                    configuration.getName(), ex);
+        }
+        return null;
+    }
+
+    /**
      * Sets the levels of <code>parentLogger</code> and all 'child' loggers to the given <code>level</level>.
      * @param parentLogger the parent logger
      * @param level the new level
@@ -198,7 +236,7 @@ public final class Configurator {
     /**
      * Sets a logger levels.
      * 
-     * @param level
+     * @param levelMap
      *            a levelMap where keys are level names and values are new
      *            Levels.
      */
