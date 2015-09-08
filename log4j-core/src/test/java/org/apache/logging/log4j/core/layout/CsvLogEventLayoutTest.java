@@ -37,7 +37,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Tests {@link CsvLayout}.
+ * Tests {@link AbstractCsvLayout}.
  *
  * @since 2.4
  */
@@ -64,25 +64,25 @@ public class CsvLogEventLayoutTest {
 
     @Test
     public void testCustomCharset() {
-        final CsvLayout layout = CsvLogEventLayout.createLayout("Excel", null, null, null, null, null, null,
+        final AbstractCsvLayout layout = CsvLogEventLayout.createLayout("Excel", null, null, null, null, null, null,
                 StandardCharsets.UTF_16, null, null);
         assertEquals("text/csv; charset=UTF-16", layout.getContentType());
     }
 
     @Test
     public void testDefaultCharset() {
-        final CsvLayout layout = CsvLogEventLayout.createDefaultLayout();
+        final AbstractCsvLayout layout = CsvLogEventLayout.createDefaultLayout();
         assertEquals(StandardCharsets.UTF_8, layout.getCharset());
     }
 
     @Test
     public void testDefaultContentType() {
-        final CsvLayout layout = CsvLogEventLayout.createDefaultLayout();
+        final AbstractCsvLayout layout = CsvLogEventLayout.createDefaultLayout();
         assertEquals("text/csv; charset=UTF-8", layout.getContentType());
     }
 
     private void testLayout(final CSVFormat format) {
-        final CsvLayout layout = CsvLogEventLayout.createLayout(format);
+        final AbstractCsvLayout layout = CsvLogEventLayout.createLayout(format);
         final Map<String, Appender> appenders = root.getAppenders();
         for (final Appender appender : appenders.values()) {
             root.removeAppender(appender);

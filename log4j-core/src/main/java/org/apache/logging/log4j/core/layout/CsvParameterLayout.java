@@ -30,21 +30,21 @@ import org.apache.logging.log4j.status.StatusLogger;
  * 
  * @since 2.4
  */
-@Plugin(name = "CsvLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
-public class CsvParameterLayout extends CsvLayout {
+@Plugin(name = "CsvParameterLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
+public class CsvParameterLayout extends AbstractCsvLayout {
 
     private static final long serialVersionUID = 1L;
 
-    public static CsvLayout createDefaultLayout() {
+    public static AbstractCsvLayout createDefaultLayout() {
         return new CsvParameterLayout(Charset.forName(DEFAULT_CHARSET), CSVFormat.valueOf(DEFAULT_FORMAT), null, null);
     }
 
-    public static CsvLayout createLayout(final CSVFormat format) {
+    public static AbstractCsvLayout createLayout(final CSVFormat format) {
         return new CsvParameterLayout(Charset.forName(DEFAULT_CHARSET), format, null, null);
     }
 
     @PluginFactory
-    public static CsvLayout createLayout(
+    public static AbstractCsvLayout createLayout(
             // @formatter:off
             @PluginAttribute(value = "format", defaultString = DEFAULT_FORMAT) final String format,
             @PluginAttribute("delimiter") final Character delimiter,
