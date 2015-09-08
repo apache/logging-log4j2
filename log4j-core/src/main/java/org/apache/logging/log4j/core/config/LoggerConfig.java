@@ -367,8 +367,7 @@ public class LoggerConfig extends AbstractFilterable {
                 props.add(Property.createProperty(prop.getName(), value));
             }
         }
-        final LogEvent event = logEventFactory.createEvent(loggerName, marker, fqcn, level, data, props, t);
-        log(event);
+        log(logEventFactory.createEvent(loggerName, marker, fqcn, level, data, props, t));
     }
 
     /**
