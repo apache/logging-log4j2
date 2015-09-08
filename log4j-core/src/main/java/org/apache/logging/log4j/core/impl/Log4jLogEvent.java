@@ -58,7 +58,7 @@ public class Log4jLogEvent implements LogEvent {
     private ThrowableProxy thrownProxy;
     private final Map<String, String> contextMap;
     private final ThreadContext.ContextStack contextStack;
-    private String threadName = null;
+    private String threadName;
     private StackTraceElement source;
     private boolean includeLocation;
     private boolean endOfBatch = false;
