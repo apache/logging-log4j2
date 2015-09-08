@@ -54,6 +54,9 @@
       <action issue="LOG4J2-1096" dev="rpopma" type="update">
         Improved performance of ParameterizedMessage::getFormattedMessage by ~2X.
       </action>
+      <action issue="LOG4J2-1114" dev="ggregory" type="update">
+        Add thread name to status logger layout.
+      </action>
       <action issue="LOG4J2-1044" dev="rgoers" type="fix">
         Write pending events to Flume when the appender is stopped.
       </action>

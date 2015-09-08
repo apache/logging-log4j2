@@ -207,7 +207,7 @@ public final class StatusLogger extends AbstractLogger {
         if (fqcn != null) {
             element = getStackTraceElement(fqcn, Thread.currentThread().getStackTrace());
         }
-        final StatusData data = new StatusData(element, level, msg, t);
+        final StatusData data = new StatusData(element, level, msg, t, null);
         msgLock.lock();
         try {
             messages.add(data);
