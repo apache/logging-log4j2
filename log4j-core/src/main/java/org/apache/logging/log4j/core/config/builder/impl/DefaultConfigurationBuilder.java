@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.util.List;
 
@@ -54,6 +55,8 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     private String verbosity = null;
     private String packages = null;
     private String shutdownFlag = null;
+    private String advertiser = null;
+    private byte[] buffer = null;
 
     private String name = null;
 
@@ -146,6 +149,9 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             if (shutdownFlag != null) {
                 configuration.setShutdownHook(shutdownFlag);
             }
+            if (advertiser != null) {
+                configuration.createAdvertiser(advertiser, source);
+            }
         } catch (final Exception ex) {
             throw new IllegalArgumentException("Invalid Configuration class specified", ex);
         }
@@ -234,6 +240,12 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     @Override
     public RootLoggerComponentBuilder newRootLogger(final String level) {
         return new DefaultRootLoggerComponentBuilder(this, level);
+    }
+
+    @Override
+    public ConfigurationBuilder<T> setAdvertiser(final String advertiser) {
+        this.advertiser = advertiser;
+        return this;
     }
 
     /**

@@ -29,6 +29,8 @@ import org.apache.logging.log4j.core.config.status.StatusConfiguration;
 import org.apache.logging.log4j.core.util.Patterns;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -46,6 +48,7 @@ public class BuiltConfiguration extends AbstractConfiguration {
     private Component filtersComponent;
     private Component propertiesComponent;
     private Component customLevelsComponent;
+    private String contentType = "text";
 
     public BuiltConfiguration(final ConfigurationSource source, final Component rootComponent) {
         super(source);
@@ -96,6 +99,29 @@ public class BuiltConfiguration extends AbstractConfiguration {
             }
         }
         root = null;
+    }
+
+    public String getContentType() {
+        return this.contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public void createAdvertiser(final String advertiserString, final ConfigurationSource configSource) {
+        byte[] buffer = null;
+        try {
+            if (configSource != null) {
+                InputStream is = configSource.getInputStream();
+                if (is != null) {
+                    buffer = toByteArray(is);
+                }
+            }
+        } catch (IOException ioe) {
+            LOGGER.warn("Unable to read configuration source " + configSource.toString());
+        }
+        super.createAdvertiser(advertiserString, configSource, buffer, contentType);
     }
 
     public StatusConfiguration getStatusConfiguration() {

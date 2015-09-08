@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.util.Builder;
 /**
  * Interface for building logging configurations.
  * @param <T> The Configuration type created by this builder.
+ * @since 2.4
  */
 public interface ConfigurationBuilder<T extends Configuration> extends Builder<T> {
 
@@ -199,6 +200,12 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      */
     RootLoggerComponentBuilder newRootLogger(String level);
 
+    /**
+     * Set the Advertiser Plugin name.
+     * @param advertiser The Advertiser Plugin name.
+     * @return this builder instance.
+     */
+    ConfigurationBuilder<T> setAdvertiser(String advertiser);
 
     /**
      * Sets the name of the configuration.

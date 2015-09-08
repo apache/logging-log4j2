@@ -24,6 +24,7 @@ import java.util.Map;
 /**
  * Container for building Configurations. This class is not normally directly manipulated by users
  * of the Assembler API.
+ * @Since 2.4
  */
 public class Component {
 

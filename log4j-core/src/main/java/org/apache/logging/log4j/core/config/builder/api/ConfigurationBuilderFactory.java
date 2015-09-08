@@ -21,7 +21,8 @@ import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.config.builder.impl.DefaultConfigurationBuilder;
 
 /**
- *
+ * Provides methods to create ConfigurationBuilders.
+ * @since 2.4
  */
 public class ConfigurationBuilderFactory {
 

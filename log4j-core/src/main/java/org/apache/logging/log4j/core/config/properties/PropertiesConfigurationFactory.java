@@ -30,7 +30,7 @@ import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
 import java.io.IOException;
@@ -39,10 +39,12 @@ import java.util.Properties;
 
 /**
  * Creates a PropertiesConfiguration from a properties file.
+ * @since 2.4
  */
 @Plugin(name = "PropertiesConfigurationFactory", category = ConfigurationFactory.CATEGORY)
 @Order(8)
 public class PropertiesConfigurationFactory extends ConfigurationFactory {
+    private static final String ADVERTISER_KEY = "advertiser";
     private static final String STATUS_KEY = "status";
     private static final String SHUTDOWN_HOOK = "shutdownHook";
     private static final String VERBOSE = "verbose";
@@ -91,6 +93,10 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
         value = properties.getProperty(MONITOR_INTERVAL);
         if (value != null) {
             builder.setMonitorInterval(value);
+        }
+        value = properties.getProperty(ADVERTISER_KEY);
+        if (value != null) {
+            builder.setAdvertiser(value);
         }
         Properties props = PropertiesUtil.extractSubset(properties, "property");
         for (String key : props.stringPropertyNames()) {

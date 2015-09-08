@@ -22,7 +22,8 @@ import org.apache.logging.log4j.core.util.Builder;
 
 /**
  * Builds arbitrary components and is the base type for the provided components.
- * @param <T> The ComponentBuilder's own type for fluent APIs
+ * @param <T> The ComponentBuilder's own type for fluent APIs.
+ * @since 2.4
  */
 public interface ComponentBuilder<T extends ComponentBuilder<T>> extends Builder<Component> {
 

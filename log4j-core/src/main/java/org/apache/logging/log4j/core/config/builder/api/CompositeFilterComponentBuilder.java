@@ -25,6 +25,7 @@ public interface CompositeFilterComponentBuilder extends ComponentBuilder<Compos
      * Add a FilterComponent.
      * @param assembler The FilterComponentBuilder with all of its attributes and sub-components set.
      * @return The CompositeFilterComponentBuilder.
+     * @since 2.4
      */
     CompositeFilterComponentBuilder add(FilterComponentBuilder assembler);
 }

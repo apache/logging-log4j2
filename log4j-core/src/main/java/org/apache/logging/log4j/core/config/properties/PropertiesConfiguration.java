@@ -26,6 +26,7 @@ import java.io.IOException;
 
 /**
  * Configuration created from a properties file.
+ * @since 2.4
  */
 public class PropertiesConfiguration extends BuiltConfiguration implements Reconfigurable {
 

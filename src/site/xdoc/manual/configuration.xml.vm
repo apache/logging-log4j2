@@ -359,8 +359,6 @@ public class Bar {
             as the action being performed for a specific user, route output to Flume or a log reporting system,
             etc. Being able to do this requires understanding the syntax of the configuration files.
           </p>
-        <a name="XML"/>
-          <h4>Configuration with XML</h4>
           <p>
             The configuration element in the XML file accepts several attributes:
           </p>
@@ -807,6 +805,81 @@ public class Bar {
 
 </Configuration>
 ]]></pre>
+          <a name="Properties"/>
+          <h4>Configuration with Properties</h4>
+            <p>
+              As of version 2.4, Log4j now supports configuration via properties files. Note that the property
+              syntax is NOT the same as the syntax used in Log4j 1. Like the XML and JSON configurations, properties
+              configurations define the configuration in terms of plugins and attributes to the plugins.
+            </p>
+            <p>
+              The properties configuration requires that you list the identifiers of the appenders, filters and loggers,
+              in a comma separated list in properties with those names. Each of those components will then be expected
+              to be defined in sets of properties that begin with <i>component.identifier</i>. The identifier does not
+              have to match the name of the component being defined but must uniquely identify all the attributes and
+              subcomponents that are part of the component. Each individual component MUST have a "type" attribute
+              specified that identifies the component's Plugin type.
+            </p>
+            <p>
+              Unlike the base components, when creating subcomponents you cannot specify an element containing a list of
+              identifiers. Instead, you must define the wrapper element with its type as is shown in the policies
+              definition in the rolling file appender below. You then define each of the subcomponents below that
+              wrapper element, as the TimeBasedTriggeringPolicy and SizeBasedTriggeringPolicy are defined below.
+            </p>
+            <p>
+              Properties configuration files support the advertiser, monitorInterval, name, packages, shutdownHook,
+              status, and verbose attrbutes. See <a href="#ConfigurationSyntax">Configuration Syntax</a> for the
+              definitions of these attributes.
+            </p>
+          <pre class="prettyprint linenums">
+status = error
+name = PropertiesConfig
+
+property.filename = target/rolling/rollingtest.log
+
+filters = threshold
+
+filter.threshold.type = ThresholdFilter
+filter.threshold.level = debug
+
+appenders = console, rolling, list
+
+appender.console.type = Console
+appender.console.name = STDOUT
+appender.console.layout.type = PatternLayout
+appender.console.layout.pattern = %m%n
+
+appender.rolling.type = RollingFile
+appender.rolling.name = RollingFile
+appender.rolling.fileName = ${filename}
+appender.rolling.filePattern = target/rolling2/test1-%d{MM-dd-yy-HH-mm-ss}-%i.log.gz
+appender.rolling.layout.type = PatternLayout
+appender.rolling.layout.pattern = %d %p %C{1.} [%t] %m%n
+appender.rolling.policies.type = Policies
+appender.rolling.policies.time.type = TimeBasedTriggeringPolicy
+appender.rolling.policies.time.interval = 2
+appender.rolling.policies.time.modulate = true
+appender.rolling.policies.size.type = SizeBasedTriggeringPolicy
+appender.rolling.policies.size.size=100MB
+
+appender.list.type = List
+appender.list.name = List
+appender.list.filters = threshold
+appender.list.filter.threshold.type = ThresholdFilter
+appender.list.filter.threshold.level = error
+
+loggers = rolling
+
+logger.rolling.name = org.apache.logging.log4j.core.appender.rolling
+logger.rolling.level = debug
+logger.rolling.additivity = false
+logger.rolling.appenderRefs = rolling
+logger.rolling.appenderRef.rolling.ref = RollingFile
+
+rootLogger.level = info
+rootLogger.appenderRefs = stdout
+rootLogger.appenderRef.stdout.ref = STDOUT
+          </pre>
         </subsection>
         <a name="PropertySubstitution"/>
         <subsection name="Property Substitution">

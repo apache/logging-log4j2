@@ -67,6 +67,7 @@
         <item name="Configuration Syntax" href="/manual/configuration.html#ConfigurationSyntax" />
         <item name="XML Syntax" href="/manual/configuration.html#XML"/>
         <item name="JSON Syntax" href="/manual/configuration.html#JSON"/>
+        <item name="Properties Syntax" href="/manual/configuration.html#Properties"/>
         <item name="Configuring Loggers" href="/manual/configuration.html#Loggers"/>
         <item name="Configuring Appenders" href="/manual/configuration.html#Appenders"/>
         <item name="Configuring Filters" href="/manual/configuration.html#Filters"/>
@@ -184,6 +185,7 @@
 
       <item name="Extending Log4j Configuration" href="/manual/customconfig.html" collapse="true">
         <item name="ConfigurationFactory" href="/manual/customconfig.html#ConfigurationFactory"/>
+        <item name="ConfigurationBuilder" href="/manual/customconfig.html#ConfigurationBuilder"/>
         <item name="Manual" href="/manual/customconfig.html#AddingToCurrent"/>
       </item>
 
