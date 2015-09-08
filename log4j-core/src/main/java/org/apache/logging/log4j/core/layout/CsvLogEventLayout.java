@@ -14,6 +14,13 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 
+/**
+ * A Comma-Separated Value (CSV) layout to log events.
+ * 
+ * Depends on Apache Commons CSV 1.2.
+ * 
+ * @since 2.4
+ */
 @Plugin(name = "CsvLogEventLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public class CsvLogEventLayout extends AbstractCsvLayout {
 

@@ -6,14 +6,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.QuoteMode;
 
 /**
- * A Comma-Separated Value (CSV) layout.
- * 
- * <p>
- * Best used with:
- * </p>
- * <p>
- * {@code logger.debug(new ObjectArrayMessage(1, 2, "Bob"));}
- * </p>
+ * A superclass for Comma-Separated Value (CSV) layouts.
  * 
  * Depends on Apache Commons CSV 1.2.
  * 
