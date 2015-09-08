@@ -35,7 +35,7 @@
               The easiest way to create a custom Configuration is to extend one of the standard Configuration classes
               (XMLConfiguration, JSONConfiguration) and then create a new ConfigurationFactory for the extended class.
               After the standard configuration completes the custom configuration can be added to it.
-            </p>>
+            </p>
             <p>
               The example below shows how to extend XMLConfiguration to manually add an Appender and a LoggerConfig
               to the configuration.
@@ -107,9 +107,9 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
         AppenderComponentBuilder appenderBuilder = builder.newAppender("Stdout", "CONSOLE").
             addAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
         appenderBuilder.add(builder.newLayout("PatternLayout").
-        addAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
+            addAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
         appenderBuilder.add(builder.newFilter("MarkerFilter", Filter.Result.DENY,
-        Filter.Result.NEUTRAL).addAttribute("marker", "FLOW"));
+            Filter.Result.NEUTRAL).addAttribute("marker", "FLOW"));
         builder.add(appenderBuilder);
         builder.add(builder.newLogger("org.apache.logging.log4j", Level.DEBUG).
             add(builder.newAppenderRef("Stdout")).
@@ -145,9 +145,9 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
               up the Log4j configuration.
             </p>
             <p>
-              The ConfigurationBuilder is aware of the base components that can be cofigured such as Loggers, Appenders,
-              Filter, Properties, etc. However, it does know what components can be configured on specific components
-              such as the RollingFileAppender vs the RoutingAppender. As an example, when creating an appender
+              The ConfigurationBuilder is aware of the base components that can be configured such as Loggers, Appenders,
+              Filter, Properties, etc. However, it does not know what components can be configured on specific components
+              such as the RollingFileAppender vs. the RoutingAppender. As an example, when creating an appender
               builder.newFilter() can be called to create a Filter and then the add method can be called on the
               AppenderComponentBuilder to add the Filter to the Appender. However, the configuration builder doesn't
               know anything about triggering policies. For these, builder.newComponent() must be used.

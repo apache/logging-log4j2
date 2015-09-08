@@ -213,6 +213,7 @@
       <item name="Log4j Web Application Support" href="log4j-web/index.html"/>
       <item name="Log4j NoSQL support" href="log4j-nosql/index.html"/>
       <item name="Log4j IO Streams" href="log4j-iostreams/index.html"/>
+      <item name="Log4j Liquibase Binding" href="log4j-liquibase/index.html"/>
     </menu>
 
     <menu name="Project Information" img="icon-info-sign">
