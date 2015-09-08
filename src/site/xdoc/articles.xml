@@ -31,6 +31,18 @@
       <subsection name="English">
       <ul>
         <li>
+          <a href="http://www.infoq.com/news/2015/09/interview-log4j-pmc">The Transition to a New Log4j: a Q&amp;A with Log4j's Project Management Committee</a>
+          (September 8, 2015)
+        </li>
+        <li>
+          <a href="http://www.infoq.com/news/2015/08/log4j-version-1-reaches-eol">Log4j Version 1 Reaches End of Life</a>
+          (August 26, 2015)
+        </li>
+        <li>
+          <a href="https://blogs.apache.org/foundation/entry/apache_logging_services_project_announces">Apache Logging Services Project Announces Log4j 1 End-Of-Life; Recommends Upgrade to Log4j 2</a>
+          (August 6, 2015)
+        </li>
+        <li>
           <a href="https://www.innoq.com/en/blog/per-request-debugging-with-log4j2/">Per request debugging with Log4j 2 filters</a>
           (May 8, 2015)
         </li>
@@ -39,6 +51,10 @@
             href="http://www.journaldev.com/7128/apache-log4j-2-tutorial-configuration-levels-appenders-lookup-layouts-and-filters-example">Apache Log4j 2 Tutorial – Configuration, Levels, Appenders, Lookup, Layouts and
             Filters Example</a>
           (March 16, 2015)
+        </li>
+        <li>
+          <a href="http://blogs.mulesoft.com/dev/mule-dev/mule-3-6-asynchronous-logging/">Disrupting your Asynchronous Loggers</a>
+          (March 5, 2015)
         </li>
         <li>
           <a href="http://andrew-flower.com/blog/Create_Custom_Log4j_Plugins">Extending Log4j2 - Creating Custom Log4j2 Plugins</a>
