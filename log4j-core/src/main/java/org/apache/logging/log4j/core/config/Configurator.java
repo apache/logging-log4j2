@@ -93,7 +93,7 @@ public final class Configurator {
      * @param name The Context name.
      * @param loader The ClassLoader for the Context (or null).
      * @param configLocation The configuration for the logging context.
-     * @return The LoggerContext.
+     * @return The LoggerContext or null if an error occurred (check the status logger).
      */
     public static LoggerContext initialize(final String name, final ClassLoader loader, final String configLocation) {
         return initialize(name, loader, configLocation, null);
@@ -106,7 +106,7 @@ public final class Configurator {
      * @param loader The ClassLoader for the Context (or null).
      * @param configLocation The configuration for the logging context.
      * @param externalContext The external context to be attached to the LoggerContext
-     * @return The LoggerContext.
+     * @return The LoggerContext or null if an error occurred (check the status logger).
      */
     public static LoggerContext initialize(final String name, final ClassLoader loader, final String configLocation,
                                            final Object externalContext) {
@@ -157,7 +157,7 @@ public final class Configurator {
      * Initializes the Logging Context.
      * @param name The Context name.
      * @param configLocation The configuration for the logging context.
-     * @return The LoggerContext.
+     * @return The LoggerContext or null if an error occurred (check the status logger).
      */
     public static LoggerContext initialize(final String name, final String configLocation) {
         return initialize(name, null, configLocation);
