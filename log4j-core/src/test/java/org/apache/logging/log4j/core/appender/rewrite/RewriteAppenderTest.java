@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender.rewrite;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 import java.util.Map;
 
@@ -30,10 +35,8 @@ import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -42,8 +45,8 @@ public class RewriteAppenderTest {
     private ListAppender app;
     private ListAppender app2;
 
-    @Rule
-    public LoggerContextRule init = new LoggerContextRule("log4j-rewrite.xml");
+    @ClassRule
+    public static LoggerContextRule init = new LoggerContextRule("log4j-rewrite.xml");
 
     @Before
     public void setUp() throws Exception {

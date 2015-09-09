@@ -25,6 +25,7 @@ import org.apache.logging.log4j.test.appender.FailOnceAppender;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -39,8 +40,8 @@ public class FailoverAppenderTest {
     private Logger logger;
     private Logger onceLogger;
 
-    @Rule
-    public LoggerContextRule init = new LoggerContextRule("log4j-failover.xml");
+    @ClassRule
+    public static LoggerContextRule init = new LoggerContextRule("log4j-failover.xml");
 
     @Before
     public void setUp() throws Exception {

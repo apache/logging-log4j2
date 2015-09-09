@@ -16,20 +16,22 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.apache.logging.log4j.hamcrest.Descriptors.that;
+import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.hasItemInArray;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
-
-import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
-import static org.apache.logging.log4j.hamcrest.Descriptors.that;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -38,8 +40,8 @@ public class RollingAppenderTimeAndSizeTest {
 
     private static final String DIR = "target/rolling3/test";
 
-    @Rule
-    public LoggerContextRule init = new LoggerContextRule("log4j-rolling3.xml");
+    @ClassRule
+    public static LoggerContextRule init = new LoggerContextRule("log4j-rolling3.xml");
 
     private Logger logger;
 

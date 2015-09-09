@@ -25,7 +25,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.junit.CleanFiles;
 import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 
@@ -39,8 +39,8 @@ public class AsyncRootReloadTest {
     private static final String LOG = "target/" + ISSUE + ".log";
     private static final String RESOURCE = "classpath:" + ISSUE_CONFIG;
 
-    @Rule
-    public RuleChain rules = RuleChain.outerRule(new CleanFiles(LOG)).around(new LoggerContextRule(RESOURCE));
+    @ClassRule
+    public static RuleChain rules = RuleChain.outerRule(new CleanFiles(LOG)).around(new LoggerContextRule(RESOURCE));
 
     @Test
     public void testLog4j2_807() throws InterruptedException, URISyntaxException {

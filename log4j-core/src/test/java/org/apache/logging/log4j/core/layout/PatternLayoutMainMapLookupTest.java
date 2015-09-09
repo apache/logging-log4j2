@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.lookup.MainMapLookup;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Assert;
-import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 /**
@@ -38,8 +38,8 @@ public class PatternLayoutMainMapLookupTest {
         MainMapLookup.setMainArguments("value0", "value1", "value2");
     }
 
-    @Rule
-    public LoggerContextRule context = new LoggerContextRule("log4j2-962.xml");
+    @ClassRule
+    public static LoggerContextRule context = new LoggerContextRule("log4j2-962.xml");
 
     @Test
     public void testFileName() {

@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 
 import javax.naming.Context;
@@ -28,11 +31,9 @@ import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.mockejb.jndi.MockContextFactory;
-
-import static org.junit.Assert.*;
 
 /**
  * RoutingAppenderWithJndiTest
@@ -43,8 +44,8 @@ public class RoutingAppenderWithJndiTest {
     private ListAppender listAppender1;
     private ListAppender listAppender2;
 
-    @Rule
-    public LoggerContextRule init = new LoggerContextRule("log4j-routing-by-jndi.xml");
+    @ClassRule
+    public static LoggerContextRule init = new LoggerContextRule("log4j-routing-by-jndi.xml");
 
     @Before
     public void before() throws NamingException {

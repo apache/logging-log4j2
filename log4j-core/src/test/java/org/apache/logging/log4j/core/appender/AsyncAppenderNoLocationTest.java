@@ -24,6 +24,7 @@ import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -35,8 +36,8 @@ import static org.junit.Assert.*;
 public class AsyncAppenderNoLocationTest {
     private ListAppender app;
 
-    @Rule
-    public LoggerContextRule init = new LoggerContextRule("log4j-asynch-no-location.xml");
+    @ClassRule
+    public static LoggerContextRule init = new LoggerContextRule("log4j-asynch-no-location.xml");
 
     @Before
     public void setUp() throws Exception {
