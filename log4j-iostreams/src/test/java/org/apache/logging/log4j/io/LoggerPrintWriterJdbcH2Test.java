@@ -33,6 +33,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 public class LoggerPrintWriterJdbcH2Test {
+    
     @ClassRule
     public static LoggerContextRule context = new LoggerContextRule("log4j2-jdbc-driver-manager.xml");
 
