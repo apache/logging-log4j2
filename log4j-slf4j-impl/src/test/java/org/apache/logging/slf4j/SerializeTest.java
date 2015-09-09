@@ -32,7 +32,6 @@ import static org.junit.Assert.*;
  */
 public class SerializeTest {
 
-
     private static final String CONFIG = "log4j-test1.xml";
 
     @ClassRule
