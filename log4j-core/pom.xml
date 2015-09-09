@@ -114,6 +114,12 @@
       <artifactId>kafka-clients</artifactId>
       <optional>true</optional>
     </dependency>
+    <!-- Used for ZeroMQ JeroMQ appender -->
+    <dependency>
+      <groupId>org.zeromq</groupId>
+      <artifactId>jeromq</artifactId>
+      <optional>true</optional>
+    </dependency>
     <!-- Used for compressing to formats other than zip and gz -->
     <dependency>
       <groupId>org.apache.commons</groupId>

@@ -131,6 +131,7 @@
         <item name="SMTP" href="/manual/appenders.html#SMTPAppender"/>
         <item name="Socket" href="/manual/appenders.html#SocketAppender"/>
         <item name="Syslog" href="/manual/appenders.html#SyslogAppender"/>
+        <item name="ZeroMQ" href="/manual/appenders.html#ZeroMQAppender"/>        
       </item>
 
       <item name="Layouts" href="/manual/layouts.html" collapse="true">

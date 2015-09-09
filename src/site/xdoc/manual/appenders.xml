@@ -3288,6 +3288,167 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 </Configuration>]]></pre>
         </subsection>
 
+        <a name="ZeroMQAppender"/>
+        <subsection name="ZeroMQ Appender">
+          <p>
+            The ZeroMQ appender uses the <a href="https://github.com/zeromq/jeromq">JeroMQ</a> library to send log 
+            events to one or more endpoints.  
+          </p>
+          <p>
+            This is a simple JeroMQ configuration:
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Configuration name="JeroMQAppenderTest" status="TRACE">
+  <Appenders>
+    <JeroMQ name="JeroMQAppender">    
+      <Property name="endpoint">tcp://*:5556</Property>
+      <Property name="endpoint">ipc://info-topic</Property>
+    </JeroMQ>
+  </Appenders>
+  <Loggers>
+    <Root level="info">
+      <AppenderRef ref="JeroMQAppender"/>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre> 
+          <p>
+            The table below describes all options. Please consult the JeroMQ and ZeroMQ documentation for details.
+          </p>
+          <table>
+            <caption align="top">JeroMQ Parameters</caption>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td>The name of the Appender.</td>
+            </tr>
+            <tr>
+              <td>Layout</td>
+              <td>Layout</td>
+              <td>The Layout of the Appender.</td>
+            </tr>
+            <tr>
+              <td>Filters</td>
+              <td>Filter</td>
+              <td>The Filters of the Appender.</td>
+            </tr>
+            <tr>
+              <td>Property</td>
+              <td>Property</td>
+              <td>One or more Property elements, named <code>endpoint</code>.</td>
+            </tr>
+            <tr>
+              <td>ignoreExceptions</td>
+              <td>boolean</td>
+              <td>If true, exceptions will be logged and suppressed. If false errors will be logged and then passed to the application.</td>
+            </tr>
+            <tr>
+              <td>affinity</td>
+              <td>long</td>
+              <td>The ZMQ_AFFINITY option. Defaults to 0.</td>
+            </tr>
+            <tr>
+              <td>backlog</td>
+              <td>long</td>
+              <td>The ZMQ_BACKLOG option. Defaults to 100.</td>
+            </tr>
+            <tr>
+              <td>delayAttachOnConnect</td>
+              <td>boolean</td>
+              <td>The ZMQ_DELAY_ATTACH_ON_CONNECT option. Defaults to false.</td>
+            </tr>
+            <tr>
+              <td>identity</td>
+              <td>byte[]</td>
+              <td>The ZMQ_IDENTITY option. Defaults to none.</td>
+            </tr>
+            <tr>
+              <td>ipv4Only</td>
+              <td>boolean</td>
+              <td>The ZMQ_IPV4ONLY option. Defaults to true.</td>
+            </tr>
+            <tr>
+              <td>linger</td>
+              <td>long</td>
+              <td>The ZMQ_LINGER option. Defaults to -1.</td>
+            </tr>
+            <tr>
+              <td>maxMsgSize</td>
+              <td>long</td>
+              <td>The ZMQ_MAXMSGSIZE option. Defaults to -1.</td>
+            </tr>
+            <tr>
+              <td>rcvHwm</td>
+              <td>long</td>
+              <td>The ZMQ_RCVHWM option. Defaults to 1000.</td>
+            </tr>
+            <tr>
+              <td>receiveBufferSize</td>
+              <td>long</td>
+              <td>The ZMQ_RCVBUF option. Defaults to 0.</td>
+            </tr>
+            <tr>
+              <td>receiveTimeOut</td>
+              <td>int</td>
+              <td>The ZMQ_RCVTIMEO option. Defaults to -1.</td>
+            </tr>
+            <tr>
+              <td>reconnectIVL</td>
+              <td>long</td>
+              <td>The ZMQ_RECONNECT_IVL option. Defaults to 100.</td>
+            </tr>
+            <tr>
+              <td>reconnectIVLMax</td>
+              <td>long</td>
+              <td>The ZMQ_RECONNECT_IVL_MAX option. Defaults to 0.</td>
+            </tr>
+            <tr>
+              <td>sendBufferSize</td>
+              <td>long</td>
+              <td>The ZMQ_SNDBUF option. Defaults to 0.</td>
+            </tr>
+            <tr>
+              <td>sendTimeOut</td>
+              <td>int</td>
+              <td>The ZMQ_SNDTIMEO option. Defaults to -1.</td>
+            </tr>
+            <tr>
+              <td>sndHwm</td>
+              <td>long</td>
+              <td>The ZMQ_SNDHWM option. Defaults to 1000.</td>
+            </tr>
+            <tr>
+              <td>tcpKeepAlive</td>
+              <td>int</td>
+              <td>The ZMQ_TCP_KEEPALIVE option. Defaults to -1.</td>
+            </tr>
+            <tr>
+              <td>tcpKeepAliveCount</td>
+              <td>long</td>
+              <td>The ZMQ_TCP_KEEPALIVE_CNT option. Defaults to -1.</td>
+            </tr>
+            <tr>
+              <td>tcpKeepAliveIdle</td>
+              <td>long</td>
+              <td>The ZMQ_TCP_KEEPALIVE_IDLE option. Defaults to -1.</td>
+            </tr>
+            <tr>
+              <td>tcpKeepAliveInterval</td>
+              <td>long</td>
+              <td>The ZMQ_TCP_KEEPALIVE_INTVL option. Defaults to -1.</td>
+            </tr>
+            <tr>
+              <td>xpubVerbose</td>
+              <td>boolean</td>
+              <td>The ZMQ_XPUB_VERBOSE option. Defaults to false.</td>
+            </tr>
+          </table>          
+        </subsection>
+
       </section>
   </body>
 </document>
