@@ -26,6 +26,7 @@ import org.junit.Test;
 public class DeadlockTest {
 
     private static final String CONFIG = "log4j-deadlock.xml";
+    
     @ClassRule
     public static LoggerContextRule context = new LoggerContextRule(CONFIG);
 
