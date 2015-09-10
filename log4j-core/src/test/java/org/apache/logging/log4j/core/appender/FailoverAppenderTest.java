@@ -44,10 +44,10 @@ public class FailoverAppenderTest {
 
     @Before
     public void setUp() throws Exception {
-        app = this.init.getListAppender("List");
-        foApp = (FailOnceAppender) this.init.getAppender("Once");
-        logger = this.init.getLogger("LoggerTest");
-        onceLogger = this.init.getLogger("Once");
+        app = init.getListAppender("List");
+        foApp = (FailOnceAppender) init.getAppender("Once");
+        logger = init.getLogger("LoggerTest");
+        onceLogger = init.getLogger("Once");
     }
 
     @After
