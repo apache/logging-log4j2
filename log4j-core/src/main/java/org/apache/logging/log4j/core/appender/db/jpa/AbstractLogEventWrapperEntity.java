@@ -49,12 +49,12 @@ import org.apache.logging.log4j.message.Message;
  * </p>
  * <p>
  * Many of the return types of {@link LogEvent} methods (e.g., {@link StackTraceElement}, {@link Message},
- * {@link Marker}, {@link Throwable}, 
- * {@link org.apache.logging.log4j.ThreadContext.ContextStack ThreadContext.ContextStack}, and 
- * {@link Map Map&lt;String, String&gt;}) will not be recognized by the JPA provider. In conjunction with 
- * {@link javax.persistence.Convert @Convert}, you can use the converters in the 
+ * {@link Marker}, {@link Throwable},
+ * {@link org.apache.logging.log4j.ThreadContext.ContextStack ThreadContext.ContextStack}, and
+ * {@link Map Map&lt;String, String&gt;}) will not be recognized by the JPA provider. In conjunction with
+ * {@link javax.persistence.Convert @Convert}, you can use the converters in the
  * {@link org.apache.logging.log4j.core.appender.db.jpa.converter} package to convert these types to database columns.
- * If you want to retrieve log events from the database, you can create a true POJO entity and also use these 
+ * If you want to retrieve log events from the database, you can create a true POJO entity and also use these
  * converters for extracting persisted values.<br>
  * </p>
  * <p>
@@ -169,7 +169,7 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
     /**
      * A no-op mutator to satisfy JPA requirements, as this entity is write-only.
      *
-     * @param millis Ignored.
+     * @param nanoTime Ignored.
      */
     @SuppressWarnings("unused")
     public void setNanoTime(final long nanoTime) {
@@ -267,6 +267,6 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
     private static class NullLogEvent extends AbstractLogEvent {
 
         private static final long serialVersionUID = 1L;
-    	// Inherits everything
+        // Inherits everything
     }
 }

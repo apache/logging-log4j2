@@ -45,9 +45,10 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
     private final Advertiser advertiser;
     private Object advertisement;
 
-    private FileAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter, final FileManager manager,
-                         final String filename, final boolean ignoreExceptions, final boolean immediateFlush,
-                         final Advertiser advertiser) {
+    private FileAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
+            final FileManager manager, final String filename, final boolean ignoreExceptions,
+            final boolean immediateFlush, final Advertiser advertiser) {
+        
         super(name, layout, filter, ignoreExceptions, immediateFlush, manager);
         if (advertiser != null) {
             final Map<String, String> configuration = new HashMap<>(layout.getContentFormat());
