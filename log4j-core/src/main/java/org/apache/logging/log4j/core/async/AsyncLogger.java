@@ -113,7 +113,7 @@ public class AsyncLogger extends Logger {
         }
     }
     private static volatile Disruptor<RingBufferLogEvent> disruptor;
-    private static final Clock clock = ClockFactory.getClock();
+    private static final Clock CLOCK = ClockFactory.getClock();
     private static volatile NanoClock nanoClock = new DummyNanoClock();
 
     private static final ExecutorService executor = Executors
@@ -344,7 +344,7 @@ public class AsyncLogger extends Logger {
 
     private long eventTimeMillis(final Message message) {
         return message instanceof TimestampMessage ? ((TimestampMessage) message).getTimestamp() :
-                clock.currentTimeMillis();
+                CLOCK.currentTimeMillis();
     }
 
     /**
