@@ -80,52 +80,59 @@ import org.apache.logging.log4j.status.StatusLogger;
 @Plugin(name = "DefaultRolloverStrategy", category = "Core", printObject = true)
 public class DefaultRolloverStrategy implements RolloverStrategy {
 
+    /**
+     * Enumerates over supported file extensions.
+     */
     private enum FileExtensions {
         ZIP(".zip") {
             @Override
-            Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
-                    final int compressionLevel) {
+            Action createCompressAction(final String renameTo, final String compressedName,
+                    final boolean deleteSource, final int compressionLevel) {
                 return new ZipCompressAction(new File(baseName(renameTo)), new File(compressedName), deleteSource,
                         compressionLevel);
             }
         },
         GZIP(".gz") {
             @Override
-            Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
-                    final int compressionLevel) {
+            Action createCompressAction(final String renameTo, final String compressedName,
+                    final boolean deleteSource, final int compressionLevel) {
                 return new GzCompressAction(new File(baseName(renameTo)), new File(compressedName), deleteSource);
             }
         },
         BZIP2(".bz2") {
             @Override
-            Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
-                    final int compressionLevel) {
+            Action createCompressAction(final String renameTo, final String compressedName,
+                    final boolean deleteSource, final int compressionLevel) {
                 // One of "gz", "bzip2", "xz", "pack200", or "deflate".
-                return new CommonsCompressAction("bzip2", new File(baseName(renameTo)), new File(compressedName), deleteSource);
+                return new CommonsCompressAction("bzip2", new File(baseName(renameTo)), new File(compressedName),
+                        deleteSource);
             }            
         },
-        DEFALTE(".deflate") {
+        DEFLATE(".deflate") {
             @Override
-            Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
-                    final int compressionLevel) {
+            Action createCompressAction(final String renameTo, final String compressedName,
+                    final boolean deleteSource, final int compressionLevel) {
                 // One of "gz", "bzip2", "xz", "pack200", or "deflate".
-                return new CommonsCompressAction("deflate", new File(baseName(renameTo)), new File(compressedName), deleteSource);
+                return new CommonsCompressAction("deflate", new File(baseName(renameTo)), new File(compressedName),
+                        deleteSource);
             }            
         },
         PACK200(".pack200") {
             @Override
-            Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
-                    final int compressionLevel) {
+            Action createCompressAction(final String renameTo, final String compressedName,
+                    final boolean deleteSource, final int compressionLevel) {
                 // One of "gz", "bzip2", "xz", "pack200", or "deflate".
-                return new CommonsCompressAction("pack200", new File(baseName(renameTo)), new File(compressedName), deleteSource);
+                return new CommonsCompressAction("pack200", new File(baseName(renameTo)), new File(compressedName),
+                        deleteSource);
             }            
         },
         XY(".xy") {
             @Override
-            Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
-                    final int compressionLevel) {
+            Action createCompressAction(final String renameTo, final String compressedName,
+                    final boolean deleteSource, final int compressionLevel) {
                 // One of "gz", "bzip2", "xz", "pack200", or "deflate".
-                return new CommonsCompressAction("xy", new File(baseName(renameTo)), new File(compressedName), deleteSource);
+                return new CommonsCompressAction("xy", new File(baseName(renameTo)), new File(compressedName),
+                        deleteSource);
             }            
         };
 
@@ -220,7 +227,8 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
      * @param minIndex The minimum index.
      * @param maxIndex The maximum index.
      */
-    protected DefaultRolloverStrategy(final int minIndex, final int maxIndex, final boolean useMax, final int compressionLevel, final StrSubstitutor subst) {
+    protected DefaultRolloverStrategy(final int minIndex, final int maxIndex, final boolean useMax,
+            final int compressionLevel, final StrSubstitutor subst) {
         this.minIndex = minIndex;
         this.maxIndex = maxIndex;
         this.useMax = useMax;
@@ -449,18 +457,10 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
     }
 
     private int suffixLength(final String lowFilename) {
-        if (FileExtensions.GZIP.isExtensionFor(lowFilename)) {
-            return FileExtensions.GZIP.length();
-        } else if (FileExtensions.ZIP.isExtensionFor(lowFilename)) {
-            return FileExtensions.ZIP.length();
-        } else if (FileExtensions.BZIP2.isExtensionFor(lowFilename)) {
-            return FileExtensions.BZIP2.length();
-        } else if (FileExtensions.DEFALTE.isExtensionFor(lowFilename)) {
-            return FileExtensions.DEFALTE.length();
-        } else if (FileExtensions.PACK200.isExtensionFor(lowFilename)) {
-            return FileExtensions.PACK200.length();
-        } else if (FileExtensions.XY.isExtensionFor(lowFilename)) {
-            return FileExtensions.XY.length();
+        for (FileExtensions extension : FileExtensions.values()) {
+            if (extension.isExtensionFor(lowFilename)) {
+                return extension.length();
+            }
         }
         return 0;
     }
