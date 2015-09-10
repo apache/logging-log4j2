@@ -67,6 +67,11 @@
     <!--<module name="SuppressionFilter">
         <property name="file" value="conf/checkstyle-suppressions.xml"/>
     </module> -->
+    <module name="SuppressionCommentFilter">
+      <property name="offCommentFormat" value="Check\:OFF\: ([\w\|]+)"/>
+      <property name="onCommentFormat" value="Check\:ON\: ([\w\|]+)"/>
+      <property name="checkFormat" value="$1"/>
+    </module>
 
     <module name="TreeWalker">
 
