@@ -56,7 +56,7 @@ public class LambdaLoggerTest {
         private static final long serialVersionUID = 1L;
 
         boolean enabled = true;
-        final List<LambdaLoggerTest.LogEvent> list = new ArrayList<LambdaLoggerTest.LogEvent>();
+        final List<LambdaLoggerTest.LogEvent> list = new ArrayList<>();
 
         @Override
         public boolean isEnabled(final Level level, final Marker marker, final Message message, final Throwable t) {
