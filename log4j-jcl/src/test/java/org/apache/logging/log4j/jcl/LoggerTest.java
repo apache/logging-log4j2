@@ -24,7 +24,6 @@ import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.equalTo;

@@ -32,7 +32,6 @@ import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 
-import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.util.List;
 
