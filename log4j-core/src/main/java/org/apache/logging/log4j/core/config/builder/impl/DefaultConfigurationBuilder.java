@@ -55,7 +55,6 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     private String packages = null;
     private String shutdownFlag = null;
     private String advertiser = null;
-    private byte[] buffer = null;
 
     private String name = null;
 
