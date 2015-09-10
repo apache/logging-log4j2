@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.util.datetime;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.FieldPosition;
 import java.text.ParseException;
@@ -28,7 +29,7 @@ import java.util.TimeZone;
 /**
  * This is a copy of Commons Lang's Fast Date Formatter.
  */
-public class FastDateFormat extends Format implements DatePrinter, DateParser {
+public class FastDateFormat extends Format implements DatePrinter, DateParser, Serializable {
     /**
      * Required for serialization support.
      *
