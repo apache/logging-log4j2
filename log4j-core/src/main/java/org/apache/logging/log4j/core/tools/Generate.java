@@ -61,6 +61,8 @@ public final class Generate {
                         + "import org.apache.logging.log4j.message.MessageFactory;%n" //
                         + "import org.apache.logging.log4j.spi.AbstractLogger;%n" //
                         + "import org.apache.logging.log4j.spi.ExtendedLoggerWrapper;%n" //
+                        + "import org.apache.logging.log4j.util.MessageSupplier;%n" //
+                        + "import org.apache.logging.log4j.util.Supplier;%n"
                         + "%n";
             }
 
@@ -104,6 +106,8 @@ public final class Generate {
                         + "import org.apache.logging.log4j.message.MessageFactory;%n" //
                         + "import org.apache.logging.log4j.spi.AbstractLogger;%n" //
                         + "import org.apache.logging.log4j.spi.ExtendedLoggerWrapper;%n" //
+                        + "import org.apache.logging.log4j.util.MessageSupplier;%n" //
+                        + "import org.apache.logging.log4j.util.Supplier;%n"
                         + "%n";
             }
 
@@ -396,6 +400,142 @@ public final class Generate {
             + "     */%n" //
             + "    public void methodName(final String message, final Throwable t) {%n" //
             + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, null, message, t);%n" //
+            + "    }%n"
+            + "%n" //
+            + "    /**%n" //
+            + "     * Logs a message which is only to be constructed if the logging level is the {@code CUSTOM_LEVEL}"//
+            + "level.%n" //
+            + "     *%n" //
+            + "     * @param msgSupplier A function, which when called, produces the desired log message;%n" //
+            + "     *            the format depends on the message factory.%n" //
+            + "     * @since 2.4%n" //
+            + "     */%n" //
+            + "    public void methodName(final Supplier<?> msgSupplier) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, null, msgSupplier, (Throwable) null);%n" //
+            + "    }%n" //
+            + "%n" //
+            + "    /**%n" //
+            + "     * Logs a message (only to be constructed if the logging level is the {@code CUSTOM_LEVEL}%n" //
+            + "     * level) including the stack trace of the {@link Throwable} <code>t</code> passed as parameter.%n"//
+            + "     *%n" //
+            + "     * @param msgSupplier A function, which when called, produces the desired log message;%n" //
+            + "     *            the format depends on the message factory.%n" //
+            + "     * @param t the exception to log, including its stack trace.%n" //
+            + "     * @since 2.4%n" //
+            + "     */%n" //
+            + "    public void methodName(final Supplier<?> msgSupplier, final Throwable t) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, null, msgSupplier, t);%n" //
+            + "    }%n" //
+            + "%n" //
+            + "    /**%n" //
+            + "     * Logs a message which is only to be constructed if the logging level is the%n" //
+            + "     * {@code CUSTOM_LEVEL} level with the specified Marker.%n" //
+            + "     *%n" //
+            + "     * @param marker the marker data specific to this log statement%n" //
+            + "     * @param msgSupplier A function, which when called, produces the desired log message;%n" //
+            + "     *            the format depends on the message factory.%n" //
+            + "     * @since 2.4%n" //
+            + "     */%n" //
+            + "    public void methodName(final Marker marker, final Supplier<?> msgSupplier) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, marker, msgSupplier, (Throwable) null);%n" //
+            + "    }%n" //
+            + "%n" //
+            + "    /**%n" //
+            + "     * Logs a message with parameters which are only to be constructed if the logging level is the%n" //
+            + "     * {@code CUSTOM_LEVEL} level.%n" //
+            + "     *%n" //
+            + "     * @param marker the marker data specific to this log statement%n" //
+            + "     * @param message the message to log; the format depends on the message factory.%n" //
+            + "     * @param paramSuppliers An array of functions, which when called, produce the desired log" //
+            + " message parameters.%n" //
+            + "     * @since 2.4%n" //
+            + "     */%n" //
+            + "    public void methodName(final Marker marker, final String message, final Supplier<?>..." //
+            + " paramSuppliers) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, marker, message, paramSuppliers);%n" //
+            + "    }%n" //
+            + "%n" //
+            + "    /**%n" //
+            + "     * Logs a message (only to be constructed if the logging level is the {@code CUSTOM_LEVEL}%n" //
+            + "     * level) with the specified Marker and including the stack trace of the {@link Throwable}%n" //
+            + "     * <code>t</code> passed as parameter.%n"
+            + "     *%n" //
+            + "     * @param marker the marker data specific to this log statement%n" //
+            + "     * @param msgSupplier A function, which when called, produces the desired log message;%n" //
+            + "     *            the format depends on the message factory.%n" //
+            + "     * @param t A Throwable or null.%n" //
+            + "     * @since 2.4%n" //
+            + "     */%n" //
+            + "    public void methodName(final Marker marker, final Supplier<?> msgSupplier, final Throwable t) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, marker, msgSupplier, t);%n" //
+            + "    }%n" //
+            + "%n" //
+            + "    /**%n" //
+            + "     * Logs a message with parameters which are only to be constructed if the logging level is%n" //
+            + "     * the {@code CUSTOM_LEVEL} level.%n" //
+            + "     *%n" //
+            + "     * @param message the message to log; the format depends on the message factory.%n" //
+            + "     * @param paramSuppliers An array of functions, which when called, produce the desired log" //
+            + " message parameters.%n" //
+            + "     * @since 2.4%n" //
+            + "     */%n" //
+            + "    public void methodName(final String message, final Supplier<?>... paramSuppliers) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, null, message, paramSuppliers);%n" //
+            + "    }%n" //
+            + "%n" //
+            + "    /**%n" //
+            + "     * Logs a message which is only to be constructed if the logging level is the%n" //
+            + "     * {@code CUSTOM_LEVEL} level with the specified Marker. The {@code MessageSupplier} may or may%n" //
+            + "     * not use the {@link MessageFactory} to construct the {@code Message}.%n" //
+            + "     *%n" //
+            + "     * @param marker the marker data specific to this log statement%n" //
+            + "     * @param msgSupplier A function, which when called, produces the desired log message.%n" //
+            + "     * @since 2.4%n" //
+            + "     */%n" //
+            + "    public void methodName(final Marker marker, final MessageSupplier msgSupplier) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, marker, msgSupplier, (Throwable) null);%n" //
+            + "    }%n" //
+            + "%n" //
+            + "    /**%n" //
+            + "     * Logs a message (only to be constructed if the logging level is the {@code CUSTOM_LEVEL}%n" //
+            + "     * level) with the specified Marker and including the stack trace of the {@link Throwable}%n" //
+            + "     * <code>t</code> passed as parameter. The {@code MessageSupplier} may or may not use the%n" //
+            + "     * {@link MessageFactory} to construct the {@code Message}.%n"
+            + "     *%n" //
+            + "     * @param marker the marker data specific to this log statement%n" //
+            + "     * @param msgSupplier A function, which when called, produces the desired log message.%n" //
+            + "     * @param t A Throwable or null.%n" //
+            + "     * @since 2.4%n" //
+            + "     */%n" //
+            + "    public void methodName(final Marker marker, final MessageSupplier msgSupplier, final " //
+            + "Throwable t) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, marker, msgSupplier, t);%n" //
+            + "    }%n" //
+            + "%n" //
+            + "    /**%n" //
+            + "     * Logs a message which is only to be constructed if the logging level is the%n" //
+            + "     * {@code CUSTOM_LEVEL} level. The {@code MessageSupplier} may or may not use the%n" //
+            + "     * {@link MessageFactory} to construct the {@code Message}.%n"
+            + "     *%n" //
+            + "     * @param msgSupplier A function, which when called, produces the desired log message.%n" //
+            + "     * @since 2.4%n" //
+            + "     */%n" //
+            + "    public void methodName(final MessageSupplier msgSupplier) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, null, msgSupplier, (Throwable) null);%n" //
+            + "    }%n" //
+            + "%n" //
+            + "    /**%n" //
+            + "     * Logs a message (only to be constructed if the logging level is the {@code CUSTOM_LEVEL}%n" //
+            + "     * level) including the stack trace of the {@link Throwable} <code>t</code> passed as parameter.%n"//
+            + "     * The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the%n" //
+            + "     * {@code Message}.%n"
+            + "     *%n" //
+            + "     * @param msgSupplier A function, which when called, produces the desired log message.%n" //
+            + "     * @param t the exception to log, including its stack trace.%n" //
+            + "     * @since 2.4%n" //
+            + "     */%n" //
+            + "    public void methodName(final MessageSupplier msgSupplier, final Throwable t) {%n" //
+            + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, null, msgSupplier, t);%n" //
             + "    }%n";
 
     private Generate() {

@@ -37,9 +37,10 @@ import javax.tools.ToolProvider;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.TestLogger;
-import org.apache.logging.log4j.core.tools.Generate;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.util.MessageSupplier;
+import org.apache.logging.log4j.util.Supplier;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -117,6 +118,18 @@ public class GenerateCustomLoggerTest {
             cls.getDeclaredMethod(name, String.class, Throwable.class);
             cls.getDeclaredMethod(name, String.class, Object[].class);
             cls.getDeclaredMethod(name, Marker.class, String.class, Object[].class);
+
+            // 2.4 lambda support
+            cls.getDeclaredMethod(name, Marker.class, MessageSupplier.class);
+            cls.getDeclaredMethod(name, Marker.class, MessageSupplier.class, Throwable.class);
+            cls.getDeclaredMethod(name, Marker.class, String.class, Supplier[].class);
+            cls.getDeclaredMethod(name, Marker.class, Supplier.class);
+            cls.getDeclaredMethod(name, Marker.class, Supplier.class, Throwable.class);
+            cls.getDeclaredMethod(name, MessageSupplier.class);
+            cls.getDeclaredMethod(name, MessageSupplier.class, Throwable.class);
+            cls.getDeclaredMethod(name, String.class, Supplier[].class);
+            cls.getDeclaredMethod(name, Supplier.class);
+            cls.getDeclaredMethod(name, Supplier.class, Throwable.class);
         }
 
         // now see if it actually works...

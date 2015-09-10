@@ -169,7 +169,7 @@ logger.log(Level.getLevel("FORGOT_TO_DEFINE"), "some message"); // throws except
             <p>
               The built-in log levels have a set of convenience methods on the Logger
               interface that makes them easier to use. For example, the Logger interface
-              has fourteen <tt>debug()</tt> methods that support the DEBUG level:
+              has 24 <tt>debug()</tt> methods that support the DEBUG level:
             </p>
             <pre class="prettyprint">
 // convenience methods for the built-in DEBUG level
@@ -186,7 +186,18 @@ debug(Object)
 debug(Object, Throwable)
 debug(String)
 debug(String, Object...)
-debug(String, Throwable)</pre>
+debug(String, Throwable)
+// lambda support methods added in 2.4
+debug(Marker, MessageSupplier)
+debug(Marker, MessageSupplier, Throwable)
+debug(Marker, String, Supplier<?>...)
+debug(Marker, Supplier<?>)
+debug(Marker, Supplier<?>, Throwable)
+debug(MessageSupplier)
+debug(MessageSupplier, Throwable)
+debug(String, Supplier<?>...)
+debug(Supplier<?>)
+debug(Supplier<?>, Throwable)</pre>
             <p>
               Similar methods exist for the other built-in levels.
               Custom levels, in contrast, need to pass in the log level as an extra parameter.
