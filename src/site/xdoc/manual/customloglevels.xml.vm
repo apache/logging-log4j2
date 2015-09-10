@@ -308,7 +308,7 @@ public class MyService {
               Use the following command to generate a logger wrapper that adds methods to the built-in ones:
             </p>
             <pre class="prettyprint">
-java -cp log4j-core-${Log4jReleaseVersion}.jar org.apache.logging.log4j.core.tools.Generate${dollar}ExtendedLogger} \
+java -cp log4j-core-${Log4jReleaseVersion}.jar org.apache.logging.log4j.core.tools.Generate${dollar}ExtendedLogger \
         com.mycomp.ExtLogger DIAG=350 NOTICE=450 VERBOSE=550 > com/mycomp/ExtLogger.java</pre>
             <p>
               This will generate source code for a logger wrapper that has the convenience methods
