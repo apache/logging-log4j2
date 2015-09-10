@@ -47,7 +47,7 @@ public class RollingAppenderTimeAndSizeTest {
 
     @Before
     public void setUp() throws Exception {
-        this.logger = this.init.getLogger(RollingAppenderTimeAndSizeTest.class.getName());
+        this.logger = init.getLogger(RollingAppenderTimeAndSizeTest.class.getName());
         deleteDir();
     }
 

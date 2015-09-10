@@ -40,7 +40,7 @@ public class AsyncAppenderNoLocationTest {
 
     @Before
     public void setUp() throws Exception {
-        this.app = (ListAppender) this.init.getAppender("List");
+        this.app = (ListAppender) init.getAppender("List");
     }
 
     @After

@@ -50,8 +50,8 @@ public class RewriteAppenderTest {
 
     @Before
     public void setUp() throws Exception {
-        app = this.init.getListAppender("List");
-        app2 = this.init.getListAppender("List2");
+        app = init.getListAppender("List");
+        app2 = init.getListAppender("List2");
     }
 
     @After
