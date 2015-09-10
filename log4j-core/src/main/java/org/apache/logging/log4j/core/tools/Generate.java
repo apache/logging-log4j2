@@ -32,14 +32,16 @@ import java.util.List;
  * [CUSTOMLEVEL2=WEIGHT2 [CUSTOMLEVEL3=WEIGHT3] ...]}
  * <p>
  * Example of creating an extended logger:<br>
- * {@code java org.apache.logging.log4j.core.tools.Generate$ExtendedLogger com.mycomp.ExtLogger DIAG=350 NOTICE=450 VERBOSE=550}
+ * {@code java org.apache.logging.log4j.core.tools.Generate$ExtendedLogger com.mycomp.ExtLogger DIAG=350 NOTICE=450
+ * VERBOSE=550}
  * <p>
  * To generate source code for a custom logger that replaces the existing log levels with custom ones: <br>
  * {@code java org.apache.logging.log4j.core.tools.Generate$CustomLogger <logger.class.name> <CUSTOMLEVEL>=<WEIGHT>
  * [CUSTOMLEVEL2=WEIGHT2 [CUSTOMLEVEL3=WEIGHT3] ...]}
  * <p>
  * Example of creating a custom logger:<br>
- * {@code java org.apache.logging.log4j.core.tools.Generate$CustomLogger com.mycomp.MyLogger DEFCON1=350 DEFCON2=450 DEFCON3=550}
+ * {@code java org.apache.logging.log4j.core.tools.Generate$CustomLogger com.mycomp.MyLogger DEFCON1=350 DEFCON2=450
+ * DEFCON3=550}
  */
 public final class Generate {
 
@@ -52,7 +54,8 @@ public final class Generate {
                 return "" //
                         + "import java.io.Serializable;%n" //
                         + "import org.apache.logging.log4j.Level;%n" //
-                        + "import org.apache.logging.log4j.LogManager;%n" + "import org.apache.logging.log4j.Logger;%n" //
+                        + "import org.apache.logging.log4j.LogManager;%n" //
+                        + "import org.apache.logging.log4j.Logger;%n" //
                         + "import org.apache.logging.log4j.Marker;%n" //
                         + "import org.apache.logging.log4j.message.Message;%n" //
                         + "import org.apache.logging.log4j.message.MessageFactory;%n" //
@@ -71,8 +74,7 @@ public final class Generate {
                         + "public final class %s implements Serializable {%n" //
                         + "    private static final long serialVersionUID = " + System.nanoTime() + "L;%n" //
                         + "    private final ExtendedLoggerWrapper logger;%n" //
-                        + "%n" //
-                ;
+                        + "%n";
             }
 
             @Override
@@ -80,9 +82,9 @@ public final class Generate {
                 return "" //
                         + "%n" //
                         + "    private %s(final Logger logger) {%n" //
-                        + "        this.logger = new ExtendedLoggerWrapper((AbstractLogger) logger, logger.getName(), logger.getMessageFactory());%n" //
-                        + "    }%n" //
-                ;
+                        + "        this.logger = new ExtendedLoggerWrapper((AbstractLogger) logger, logger.getName(), "
+                        + "logger.getMessageFactory());%n" //
+                        + "    }%n";
             }
 
             @Override
@@ -95,7 +97,8 @@ public final class Generate {
             String imports() {
                 return "" //
                         + "import org.apache.logging.log4j.Level;%n" //
-                        + "import org.apache.logging.log4j.LogManager;%n" + "import org.apache.logging.log4j.Logger;%n" //
+                        + "import org.apache.logging.log4j.LogManager;%n" //
+                        + "import org.apache.logging.log4j.Logger;%n" //
                         + "import org.apache.logging.log4j.Marker;%n" //
                         + "import org.apache.logging.log4j.message.Message;%n" //
                         + "import org.apache.logging.log4j.message.MessageFactory;%n" //
@@ -114,8 +117,7 @@ public final class Generate {
                         + "public final class %s extends ExtendedLoggerWrapper {%n" //
                         + "    private static final long serialVersionUID = " + System.nanoTime() + "L;%n" //
                         + "    private final ExtendedLoggerWrapper logger;%n" //
-                        + "%n" //
-                ;
+                        + "%n";
             }
 
             @Override
@@ -125,8 +127,7 @@ public final class Generate {
                         + "    private %s(final Logger logger) {%n" //
                         + "        super((AbstractLogger) logger, logger.getName(), logger.getMessageFactory());%n" //
                         + "        this.logger = this;%n" //
-                        + "    }%n" //
-                ;
+                        + "    }%n";
             }
 
             @Override
@@ -246,8 +247,8 @@ public final class Generate {
             + "    public static CLASSNAME create(final String name, final MessageFactory factory) {%n" //
             + "        final Logger wrapped = LogManager.getLogger(name, factory);%n" //
             + "        return new CLASSNAME(wrapped);%n" //
-            + "    }%n" //
-    ;
+            + "    }%n";
+
     static final String METHODS = "" //
             + "%n" //
             + "    /**%n" //
@@ -395,8 +396,7 @@ public final class Generate {
             + "     */%n" //
             + "    public void methodName(final String message, final Throwable t) {%n" //
             + "        logger.logIfEnabled(FQCN, CUSTOM_LEVEL, null, message, t);%n" //
-            + "    }%n" //
-    ;
+            + "    }%n";
 
     private Generate() {
     }
@@ -491,8 +491,8 @@ public final class Generate {
 
     private static void usage(final PrintStream out, final Class<?> generator) {
         out.println("Usage: java " + generator.getName() + " className LEVEL1=intLevel1 [LEVEL2=intLevel2...]");
-        out.println("       Where className is the fully qualified class name of the custom/extended logger to generate,");
-        out.println("       followed by a space-separated list of custom log levels.");
+        out.println("       Where className is the fully qualified class name of the custom/extended logger");
+        out.println("       to generate, followed by a space-separated list of custom log levels.");
         out.println("       For each custom log level, specify NAME=intLevel (without spaces).");
     }
 
