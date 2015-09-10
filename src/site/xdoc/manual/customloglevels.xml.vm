@@ -190,14 +190,14 @@ debug(String, Throwable)
 // lambda support methods added in 2.4
 debug(Marker, MessageSupplier)
 debug(Marker, MessageSupplier, Throwable)
-debug(Marker, String, Supplier<?>...)
-debug(Marker, Supplier<?>)
-debug(Marker, Supplier<?>, Throwable)
+debug(Marker, String, Supplier&lt;?&gt;...)
+debug(Marker, Supplier&lt;?&gt;)
+debug(Marker, Supplier&lt;?&gt;, Throwable)
 debug(MessageSupplier)
 debug(MessageSupplier, Throwable)
-debug(String, Supplier<?>...)
-debug(Supplier<?>)
-debug(Supplier<?>, Throwable)</pre>
+debug(String, Supplier&lt;?&gt;...)
+debug(Supplier&lt;?&gt;)
+debug(Supplier&lt;?&gt;, Throwable)</pre>
             <p>
               Similar methods exist for the other built-in levels.
               Custom levels, in contrast, need to pass in the log level as an extra parameter.
