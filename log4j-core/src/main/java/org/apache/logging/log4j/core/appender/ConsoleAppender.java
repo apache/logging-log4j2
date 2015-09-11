@@ -39,7 +39,7 @@ import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
- * ConsoleAppender appends log events to <code>System.out</code> or
+ * Appends log events to <code>System.out</code> or
  * <code>System.err</code> using a layout specified by the user. The
  * default target is <code>System.out</code>.
  * TODO accessing System.out or .err as a byte stream instead of a writer
@@ -73,7 +73,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
     }
 
     /**
-     * Create a Console Appender.
+     * Creates a Console Appender.
      * @param layout The layout to use (required).
      * @param filter The Filter or null.
      * @param targetStr The target ("SYSTEM_OUT" or "SYSTEM_ERR"). The default is "SYSTEM_OUT".
