@@ -1496,10 +1496,12 @@ public class AwesomeTest {
   </tr>
   <tr>
     <td>log4j2.disable.jmx</td>
-    <td>false</td>
+    <td>true</td>
     <td>
       If <tt>true</tt>, Log4j configuration objects like LoggerContexts, Appenders, Loggers, etc.
       will not be instrumented with MBeans and cannot be remotely monitored and managed.
+      <p>From 2.4 the <a href="jmx.html#Enabling_JMX">default was changed</a> and users now need
+      to explicitly enable JMX support.</p>
     </td>
   </tr>
   <tr>

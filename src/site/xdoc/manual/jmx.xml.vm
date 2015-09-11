@@ -40,12 +40,17 @@
       </section>
       <section name="Enabling JMX">
         <a name="Enabling_JMX" />
-        <p>JMX support is enabled by default. When Log4j initializes,
-        the StatusLogger, ContextSelector, and all LoggerContexts,
-          LoggerConfigs and Appenders are instrumented with MBeans.
-        To disable JMX completely, and prevent these MBeans from being created,
-        specify system property <code>log4j2.disable.jmx=true</code> when you start
-        the Java VM.
+        <p>JMX support is <em>disabled</em> by default. 
+        	You can enable JMX support by specifying system property
+        	<code>log4j2.disable.jmx=false</code> when you start the Java VM,
+        and the StatusLogger, ContextSelector, and all LoggerContexts,
+          LoggerConfigs and Appenders will be instrumented with MBeans.
+        </p><p>
+          Note: In Log4j 2 versions up to and including 2.3, JMX support was
+          enabled by default. From 2.4 users need to explicitly enable JMX support.
+          We made this change because the default JMX transport is RMI, and RMI by default triggers a full GC every hour.
+          See the <a href="http://docs.oracle.com/javase/7/docs/technotes/guides/rmi/sunrmiproperties.html">Oracle
+          documentation</a> for the <code>sun.rmi.dgc.server.gcInterval</code> property.
         </p>
 		<subsection name="Local Monitoring and Management">
       <a name="Local" />

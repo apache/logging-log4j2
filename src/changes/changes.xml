@@ -40,6 +40,9 @@
       <action issue="LOG4J2-1118" dev="rpopma" type="add">
         Updated Logger wrapper generator tool to add Java 8 lambda support for custom log levels.
       </action>
+      <action issue="LOG4J2-1119" dev="rpopma" type="update">
+        Disable JMX support by default. Users now need to explicitly switch JMX support on.
+      </action>
       <action issue="LOG4J2-1107" dev="ggregory" type="add" due-to="Mikael Ståldal">
         New Appender for Apache Kafka.
       </action>

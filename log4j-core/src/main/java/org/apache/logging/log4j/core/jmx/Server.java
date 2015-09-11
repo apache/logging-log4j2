@@ -62,7 +62,7 @@ public final class Server {
     private static final String PROPERTY_ASYNC_NOTIF = "log4j2.jmx.notify.async";
     private static final String THREAD_NAME_PREFIX = "log4j2.jmx.notif";
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
-    static final Executor executor = createExecutor();
+    static final Executor executor = isJmxDisabled() ? null : createExecutor();
 
     private Server() {
     }
@@ -132,10 +132,14 @@ public final class Server {
         }
         return sb.toString();
     }
+    
+    private static boolean isJmxDisabled() {
+        return PropertiesUtil.getProperties().getBooleanProperty(PROPERTY_DISABLE_JMX, true);
+    }
 
     public static void reregisterMBeansAfterReconfigure() {
         // avoid creating Platform MBean Server if JMX disabled
-        if (PropertiesUtil.getProperties().getBooleanProperty(PROPERTY_DISABLE_JMX)) {
+        if (isJmxDisabled()) {
             LOGGER.debug("JMX disabled for log4j2. Not registering MBeans.");
             return;
         }
@@ -144,7 +148,7 @@ public final class Server {
     }
 
     public static void reregisterMBeansAfterReconfigure(final MBeanServer mbs) {
-        if (PropertiesUtil.getProperties().getBooleanProperty(PROPERTY_DISABLE_JMX)) {
+        if (isJmxDisabled()) {
             LOGGER.debug("JMX disabled for log4j2. Not registering MBeans.");
             return;
         }
