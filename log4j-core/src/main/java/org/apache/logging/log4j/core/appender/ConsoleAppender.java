@@ -176,7 +176,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
     private static OutputStreamManager getManager(final boolean follow, final Target target, final Layout<? extends Serializable> layout) {
         final String type = target.name();
         final OutputStream os = getOutputStream(follow, target);
-        return OutputStreamManager.getManager(target.name() + '.' + follow, new FactoryData(os, type, layout), factory);
+        return OutputStreamManager.getManager(type + '.' + follow, new FactoryData(os, type, layout), factory);
     }
 
     private static OutputStream getOutputStream(final boolean follow, final Target target) {
