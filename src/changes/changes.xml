@@ -66,6 +66,9 @@
       <action issue="LOG4J2-1114" dev="ggregory" type="update">
         Add thread name to status logger layout.
       </action>
+      <action issue="LOG4J2-1117" dev="ggregory" type="fix" due-to="Marcus Thiesen">
+        OutputStreamManager in ConsoleAppender leaking managers.
+      </action>
       <action issue="LOG4J2-1044" dev="rgoers" type="fix">
         Write pending events to Flume when the appender is stopped.
       </action>
