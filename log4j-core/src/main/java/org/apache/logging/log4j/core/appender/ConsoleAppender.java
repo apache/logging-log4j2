@@ -39,7 +39,7 @@ import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
- * ConsoleAppender appends log events to <code>System.out</code> or
+ * Appends log events to <code>System.out</code> or
  * <code>System.err</code> using a layout specified by the user. The
  * default target is <code>System.out</code>.
  * TODO accessing System.out or .err as a byte stream instead of a writer
@@ -73,7 +73,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
     }
 
     /**
-     * Create a Console Appender.
+     * Creates a Console Appender.
      * @param layout The layout to use (required).
      * @param filter The Filter or null.
      * @param targetStr The target ("SYSTEM_OUT" or "SYSTEM_ERR"). The default is "SYSTEM_OUT".
@@ -101,12 +101,12 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         final boolean isFollow = Boolean.parseBoolean(follow);
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         final Target target = targetStr == null ? DEFAULT_TARGET : Target.valueOf(targetStr);
-        return new ConsoleAppender(name, layout, filter, getManager(isFollow, target, layout), ignoreExceptions);
+        return new ConsoleAppender(name, layout, filter, getManager(target, isFollow, layout), ignoreExceptions);
     }
 
     public static ConsoleAppender createDefaultAppenderForLayout(final Layout<? extends Serializable> layout) {
         // this method cannot use the builder class without introducing an infinite loop due to DefaultConfiguration
-        return new ConsoleAppender("Console", layout, null, getManager(false, DEFAULT_TARGET, layout), true);
+        return new ConsoleAppender("Console", layout, null, getManager(DEFAULT_TARGET, false, layout), true);
     }
 
     @PluginBuilderFactory
@@ -169,14 +169,14 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
 
         @Override
         public ConsoleAppender build() {
-            return new ConsoleAppender(name, layout, filter, getManager(follow, target, layout), ignoreExceptions);
+            return new ConsoleAppender(name, layout, filter, getManager(target, follow, layout), ignoreExceptions);
         }
     }
 
-    private static OutputStreamManager getManager(final boolean follow, final Target target, final Layout<? extends Serializable> layout) {
-        final String type = target.name();
+    private static OutputStreamManager getManager(final Target target, final boolean follow, final Layout<? extends Serializable> layout) {
         final OutputStream os = getOutputStream(follow, target);
-        return OutputStreamManager.getManager(target.name() + '.' + follow, new FactoryData(os, type, layout), factory);
+        final String managerName = target.name() + '.' + follow;
+        return OutputStreamManager.getManager(managerName, new FactoryData(os, managerName, layout), factory);
     }
 
     private static OutputStream getOutputStream(final boolean follow, final Target target) {

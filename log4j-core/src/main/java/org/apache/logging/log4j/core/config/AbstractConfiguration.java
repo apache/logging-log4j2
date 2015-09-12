@@ -117,7 +117,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         componentMap.put(Configuration.CONTEXT_PROPERTIES, properties);
         pluginManager = new PluginManager(Node.CATEGORY);
         rootNode = new Node();
-        setState(State.INITIAL);
+        setState(State.INITIALIZING);
     }
 
     @Override
@@ -169,7 +169,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @Override
     public void start() {
         // Preserve the prior behavior of initializing during start if not initialized.
-        if (getState().equals(State.INITIAL)) {
+        if (getState().equals(State.INITIALIZING)) {
             initialize();
         }
         LOGGER.debug("Starting configuration {}", this);

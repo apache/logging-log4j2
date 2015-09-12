@@ -34,7 +34,7 @@ public interface LifeCycle {
      */
     public enum State {
         /** Object is in its initial state and not yet initialized */
-        INITIAL,
+        INITIALIZING,
         /** Initialized but not yet started. */
         INITIALIZED,
         /** In the process of starting. */
