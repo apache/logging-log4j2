@@ -69,6 +69,23 @@
         <a href="http://docs.oracle.com/javase/7/docs/technotes/guides/management/agent.html#gdenl">Remote
         Monitoring and Management</a>.</p>
         </subsection>
+		<subsection name="RMI impact on Garbage Collection">
+      <a name="RMI_GC" />
+      <p>
+      	Be aware that RMI by default triggers a full GC every hour.
+        See the <a href="http://docs.oracle.com/javase/7/docs/technotes/guides/rmi/sunrmiproperties.html">Oracle
+        documentation</a> for the <code>sun.rmi.dgc.server.gcInterval</code> and <code>sun.rmi.dgc.client.gcInterval</code> properties.
+        The default value of both properties is 3600000 milliseconds (one hour). Before Java 6, it was one minute.
+		  </p><p>
+		    The two sun.rmi arguments reflect whether your JVM is running in server or client mode. 
+		    If you want to modify the GC interval time it may be best to specify both properties to ensure the argument is picked up by the JVM.
+		  </p><p>
+		    An alternative may be to disable explicit calls to <code>System.gc()</code> altogether with 
+		    <code>-XX:+DisableExplicitGC</code>, or (if you are using the CMS or G1 collector)
+		    add <code>-XX:+ExplicitGCInvokesConcurrent</code> to ensure the full GCs are done
+		    concurrently in parallel with your application instead of forcing a stop-the-world collection.
+      </p>
+        </subsection>
       </section>
       <section name="Log4j Instrumented Components">
         <a name="Log4j_MBeans" />
