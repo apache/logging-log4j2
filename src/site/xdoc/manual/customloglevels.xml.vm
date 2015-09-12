@@ -213,7 +213,8 @@ logger.log(Level.forName("DIAG", 350), "another message");</pre>
             <pre class="prettyprint">
 // nice to have: descriptive methods and no need to pass the level as a parameter
 logger.verbose("a verbose message");
-logger.diag("another message");</pre>
+logger.diag("another message");
+logger.diag("java 8 lambda expression: {}", () -> someMethod());</pre>
             <p>The standard Logger interface cannot provide convenience methods for
               custom levels, but the next few sections introduce a code generation tool
               to create loggers that aim to make custom levels as easy to use
@@ -286,7 +287,7 @@ public class MyService {
     // instead of Logger logger = LogManager.getLogger(MyService.class):
     private static final ExtLogger logger = ExtLogger.create(MyService.class);
 
-    public void someMethod() {
+    public void demoExtendedLogger() {
         // ...
         logger.trace("the built-in TRACE level");
         logger.verbose("a custom level: a VERBOSE message");
@@ -297,6 +298,7 @@ public class MyService {
         logger.warn("the built-in WARN level");
         logger.error("the built-in ERROR level");
         logger.fatal("the built-in FATAL level");
+        logger.notice("java 8 lambda expression only executed if NOTICE is enabled: {}", () -> someMethod());
         // ...
     }
     ...
