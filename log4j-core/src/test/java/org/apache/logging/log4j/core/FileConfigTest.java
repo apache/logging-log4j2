@@ -57,8 +57,12 @@ public class FileConfigTest {
         for (int i = 0; i < 17; ++i) {
             logger.debug("Reconfigure");
         }
-        Thread.sleep(100);
-        final Configuration newConfig = context.getConfiguration();
+        int loopCount = 0;
+        Configuration newConfig;
+        do {
+            Thread.sleep(100);
+            newConfig = context.getConfiguration();
+        } while (newConfig == oldConfig && loopCount < 5);
         assertNotSame("Reconfiguration failed", newConfig, oldConfig);
     }
 }
