@@ -351,7 +351,7 @@ public class LoggerTest {
         }
         Thread.sleep(100);
         for (int i = 0; i < 20; i++) {
-            if (context.getConfiguration() == oldConfig) {
+            if (context.getConfiguration() != oldConfig) {
                 break;
             }
             Thread.sleep(50);
