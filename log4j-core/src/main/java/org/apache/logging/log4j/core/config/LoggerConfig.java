@@ -18,13 +18,13 @@ package org.apache.logging.log4j.core.config;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -68,7 +68,7 @@ public class LoggerConfig extends AbstractFilterable {
     private static LogEventFactory LOG_EVENT_FACTORY = null;
 
     private List<AppenderRef> appenderRefs = new ArrayList<>();
-    private final Map<String, AppenderControl> appenders = new ConcurrentHashMap<>();
+    private final Set<AppenderControl> appenders = new CopyOnWriteArraySet<>();
     private final String name;
     private LogEventFactory logEventFactory;
     private Level level;
@@ -192,8 +192,7 @@ public class LoggerConfig extends AbstractFilterable {
      */
     public void addAppender(final Appender appender, final Level level,
             final Filter filter) {
-        appenders.put(appender.getName(), new AppenderControl(appender, level,
-                filter));
+        appenders.add(new AppenderControl(appender, level, filter));
     }
 
     /**
@@ -202,9 +201,12 @@ public class LoggerConfig extends AbstractFilterable {
      * @param name The name of the Appender.
      */
     public void removeAppender(final String name) {
-        final AppenderControl ctl = appenders.remove(name);
-        if (ctl != null) {
-            cleanupFilter(ctl);
+        for (final AppenderControl appenderControl : appenders) {
+            if (Objects.equals(name, appenderControl.getAppenderName())) {
+                if (appenders.remove(appenderControl)) {
+                    cleanupFilter(appenderControl);
+                }
+            }
         }
     }
 
@@ -216,9 +218,8 @@ public class LoggerConfig extends AbstractFilterable {
      */
     public Map<String, Appender> getAppenders() {
         final Map<String, Appender> map = new HashMap<>();
-        for (final Map.Entry<String, AppenderControl> entry : appenders
-                .entrySet()) {
-            map.put(entry.getKey(), entry.getValue().getAppender());
+        for (final AppenderControl appenderControl : appenders) {
+            map.put(appenderControl.getAppenderName(), appenderControl.getAppender());
         }
         return map;
     }
@@ -228,12 +229,13 @@ public class LoggerConfig extends AbstractFilterable {
      */
     protected void clearAppenders() {
         waitForCompletion();
-        final Collection<AppenderControl> controls = appenders.values();
-        final Iterator<AppenderControl> iterator = controls.iterator();
-        while (iterator.hasNext()) {
-            final AppenderControl ctl = iterator.next();
-            iterator.remove();
-            cleanupFilter(ctl);
+        List<AppenderControl> copy = new ArrayList<AppenderControl>(appenders);
+        while (!copy.isEmpty()) {
+            appenders.removeAll(copy);
+            for (final AppenderControl ctl : copy) {
+                cleanupFilter(ctl);
+            }
+            copy = new ArrayList<AppenderControl>(appenders);
         }
     }
 
@@ -443,7 +445,7 @@ public class LoggerConfig extends AbstractFilterable {
     }
 
     protected void callAppenders(final LogEvent event) {
-        for (final AppenderControl control : appenders.values()) {
+        for (final AppenderControl control : appenders) {
             control.callAppender(event);
         }
     }
