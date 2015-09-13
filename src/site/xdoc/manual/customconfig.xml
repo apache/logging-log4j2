@@ -177,7 +177,7 @@ ctx = Configurator.initialize(builder.build());
 ]]></pre>
         </subsection>
         <a name="AddingToCurrent"/>
-        <subsection name="Programatically Adding to the Current Configuration">
+        <subsection name="Programmatically Adding to the Current Configuration">
             <p>
               Applications sometimes have the need to customize logging separate from the actual configuration.
               Log4j allows this although it suffers from a few limitations:
