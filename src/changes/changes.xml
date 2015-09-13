@@ -60,6 +60,9 @@
       <action issue="LOG4J2-1096" dev="rpopma" type="update">
         Improved performance of ParameterizedMessage::getFormattedMessage by ~2X.
       </action>
+      <action issue="LOG4J2-1120" dev="rpopma" type="update">
+        LoggerConfig performance improvements: avoid unnecessary lock acquisition, use more efficient data structure.
+      </action>
       <action issue="LOG4J2-1114" dev="ggregory" type="update">
         Add thread name to status logger layout.
       </action>
