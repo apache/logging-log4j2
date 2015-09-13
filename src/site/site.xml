@@ -185,9 +185,12 @@
       </item>
 
       <item name="Extending Log4j Configuration" href="/manual/customconfig.html" collapse="true">
-        <item name="ConfigurationFactory" href="/manual/customconfig.html#ConfigurationFactory"/>
-        <item name="ConfigurationBuilder" href="/manual/customconfig.html#ConfigurationBuilder"/>
-        <item name="Manual" href="/manual/customconfig.html#AddingToCurrent"/>
+        <item name="ConfigurationBuilder API" href="/manual/customconfig.html#ConfigurationBuilder"/>
+        <item name="Understanding ConfigurationFactory" href="/manual/customconfig.html#ConfigurationFactory"/>
+        <item name="Example" href="/manual/customconfig.html#Example"/>
+        <item name="Using Configurator" href="/manual/customconfig.html#Configurator"/>
+        <item name="Config File and Code" href="/manual/customconfig.html#Hybrid"/>
+        <item name="After Initialization" href="/manual/customconfig.html#AddingToCurrent"/>
       </item>
 
       <item name="Custom Log Levels" href="/manual/customloglevels.html" collapse="true">
