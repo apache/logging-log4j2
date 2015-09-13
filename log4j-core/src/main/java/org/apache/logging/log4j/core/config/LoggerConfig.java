@@ -415,7 +415,7 @@ public class LoggerConfig extends AbstractFilterable {
     }
 
     private void afterLogEvent() {
-        if (counter.decrementAndGet() == 0) {
+        if (counter.decrementAndGet() == 0 && shutdown.get()) {
             signalCompletionIfShutdown();
         }
     }
@@ -424,9 +424,7 @@ public class LoggerConfig extends AbstractFilterable {
         final Lock lock = shutdownLock;
         lock.lock();
         try {
-            if (shutdown.get()) {
-                noLogEvents.signalAll();
-            }
+            noLogEvents.signalAll();
         } finally {
             lock.unlock();
         }
