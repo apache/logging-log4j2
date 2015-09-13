@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.util.Objects;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -28,16 +30,13 @@ import org.apache.logging.log4j.core.filter.Filterable;
  * Wraps an {@link Appender} with details an appender implementation shouldn't need to know about.
  */
 public class AppenderControl extends AbstractFilterable {
-
     private static final long serialVersionUID = 1L;
 
     private final ThreadLocal<AppenderControl> recursive = new ThreadLocal<>();
-
     private final Appender appender;
-
     private final Level level;
-
     private final int intLevel;
+    private final String appenderName;
 
     /**
      * Constructor.
@@ -48,9 +47,18 @@ public class AppenderControl extends AbstractFilterable {
     public AppenderControl(final Appender appender, final Level level, final Filter filter) {
         super(filter);
         this.appender = appender;
+        this.appenderName = appender.getName();
         this.level = level;
         this.intLevel = level == null ? Level.ALL.intLevel() : level.intLevel();
         start();
+    }
+    
+    /**
+     * Returns the name the appender had when this AppenderControl was constructed.
+     * @return the appender name
+     */
+    public String getAppenderName() {
+        return appenderName;
     }
 
     /**
@@ -150,5 +158,27 @@ public class AppenderControl extends AbstractFilterable {
         if (!appender.ignoreExceptions()) {
             throw ex;
         }
+    }
+    
+    // AppenderControl is a helper object whose purpose is to make it
+    // easier for LoggerConfig to manage and invoke Appenders.
+    // LoggerConfig manages Appenders by their name. To facilitate this,
+    // two AppenderControl objects are considered equal if and only
+    // if they have the same appender name.
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof AppenderControl)) {
+            return false;
+        }
+        final AppenderControl other = (AppenderControl) obj;
+        return Objects.equals(appenderName, other.appenderName);
+    }
+    
+    @Override
+    public int hashCode() {
+        return appenderName.hashCode();
     }
 }
