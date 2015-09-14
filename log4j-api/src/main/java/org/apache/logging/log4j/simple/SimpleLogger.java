@@ -98,28 +98,28 @@ public class SimpleLogger extends AbstractLogger {
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final Message msg, final Throwable t) {
-        return this.level.intLevel() >= level.intLevel();
+    public boolean isEnabled(final Level testLevel, final Marker marker, final Message msg, final Throwable t) {
+        return this.level.intLevel() >= testLevel.intLevel();
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final Object msg, final Throwable t) {
-        return this.level.intLevel() >= level.intLevel();
+    public boolean isEnabled(final Level testLevel, final Marker marker, final Object msg, final Throwable t) {
+        return this.level.intLevel() >= testLevel.intLevel();
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String msg) {
-        return this.level.intLevel() >= level.intLevel();
+    public boolean isEnabled(final Level testLevel, final Marker marker, final String msg) {
+        return this.level.intLevel() >= testLevel.intLevel();
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String msg, final Object... p1) {
-        return this.level.intLevel() >= level.intLevel();
+    public boolean isEnabled(final Level testLevel, final Marker marker, final String msg, final Object... p1) {
+        return this.level.intLevel() >= testLevel.intLevel();
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String msg, final Throwable t) {
-        return this.level.intLevel() >= level.intLevel();
+    public boolean isEnabled(final Level testLevel, final Marker marker, final String msg, final Throwable t) {
+        return this.level.intLevel() >= testLevel.intLevel();
     }
 
     @Override
