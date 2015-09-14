@@ -149,6 +149,8 @@
         <!--<module name="FileLength"/>-->
         <module name="LineLength">
             <property name="max" value="120"/>
+            <!-- Ignore import statements -->
+            <property name="ignorePattern" value="^import\s.*$"/>
         </module>
         <module name="MethodLength"/>
         <module name="ParameterNumber">
