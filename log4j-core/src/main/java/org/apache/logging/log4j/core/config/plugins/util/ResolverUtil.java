@@ -247,12 +247,8 @@ public class ResolverUtil {
     }
 
     private void loadImplementationsInBundle(final Test test, final String packageName) {
-        // Do not remove the cast on the next line as removing it will cause a compile error on Java 7.
-        @SuppressWarnings("RedundantCast")
-        final BundleWiring wiring = (BundleWiring) FrameworkUtil.getBundle(ResolverUtil.class)
-                .adapt(BundleWiring.class);
-        @SuppressWarnings("unchecked")
-        final Collection<String> list = (Collection<String>) wiring.listResources(packageName, "*.class",
+        final BundleWiring wiring = FrameworkUtil.getBundle(ResolverUtil.class).adapt(BundleWiring.class);
+        final Collection<String> list = wiring.listResources(packageName, "*.class",
                 BundleWiring.LISTRESOURCES_RECURSE);
         for (final String name : list) {
             addIfMatching(test, name);
