@@ -284,7 +284,7 @@ public class AsyncLogger extends Logger {
             final String fqcn, final Level level, final Marker marker, final Message message, final Throwable thrown) {
         if (info.isAppenderThread && theDisruptor.getRingBuffer().remainingCapacity() == 0) {
             // bypass RingBuffer and invoke Appender directly
-            config.loggerConfig.log(getName(), fqcn, marker, level, message, thrown);
+            privateConfig.loggerConfig.log(getName(), fqcn, marker, level, message, thrown);
             return true;
         }
         return false;
@@ -353,7 +353,7 @@ public class AsyncLogger extends Logger {
      * @return the caller location if requested, {@code null} otherwise.
      */
     private StackTraceElement calcLocationIfRequested(String fqcn) {
-        final boolean includeLocation = config.loggerConfig.isIncludeLocation();
+        final boolean includeLocation = privateConfig.loggerConfig.isIncludeLocation();
         return includeLocation ? location(fqcn) : null;
     }
 
@@ -380,9 +380,9 @@ public class AsyncLogger extends Logger {
      * @param event the event to log
      */
     public void actualAsyncLog(final RingBufferLogEvent event) {
-        final Map<Property, Boolean> properties = config.loggerConfig.getProperties();
-        event.mergePropertiesIntoContextMap(properties, config.config.getStrSubstitutor());
-        config.logEvent(event);
+        final Map<Property, Boolean> properties = privateConfig.loggerConfig.getProperties();
+        event.mergePropertiesIntoContextMap(properties, privateConfig.config.getStrSubstitutor());
+        privateConfig.logEvent(event);
     }
 
     public static void stop() {

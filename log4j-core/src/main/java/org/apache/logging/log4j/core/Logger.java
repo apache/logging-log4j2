@@ -53,7 +53,7 @@ public class Logger extends AbstractLogger {
     /**
      * Config should be consistent across threads.
      */
-    protected volatile PrivateConfig config;
+    protected volatile PrivateConfig privateConfig;
 
     // FIXME: ditto to the above
     private final LoggerContext context;
@@ -67,7 +67,7 @@ public class Logger extends AbstractLogger {
     protected Logger(final LoggerContext context, final String name, final MessageFactory messageFactory) {
         super(name, messageFactory);
         this.context = context;
-        config = new PrivateConfig(context.getConfiguration(), this);
+        privateConfig = new PrivateConfig(context.getConfiguration(), this);
     }
 
     /**
@@ -76,8 +76,8 @@ public class Logger extends AbstractLogger {
      * @return The parent Logger.
      */
     public Logger getParent() {
-        final LoggerConfig lc = config.loggerConfig.getName().equals(getName()) ? config.loggerConfig.getParent() :
-            config.loggerConfig;
+        final LoggerConfig lc = privateConfig.loggerConfig.getName().equals(getName()) ? privateConfig.loggerConfig.getParent() :
+            privateConfig.loggerConfig;
         if (lc == null) {
             return null;
         }
@@ -112,41 +112,41 @@ public class Logger extends AbstractLogger {
             actualLevel = level;
         } else {
             final Logger parent = getParent();
-            actualLevel = parent != null ? parent.getLevel() : config.level;
+            actualLevel = parent != null ? parent.getLevel() : privateConfig.level;
         }
-        config = new PrivateConfig(config, actualLevel);
+        privateConfig = new PrivateConfig(privateConfig, actualLevel);
     }
 
     @Override
     public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message, final Throwable t) {
         final Message msg = message == null ? new SimpleMessage(Strings.EMPTY) : message;
-        config.config.getConfigurationMonitor().checkConfiguration();
-        config.loggerConfig.log(getName(), fqcn, marker, level, msg, t);
+        privateConfig.config.getConfigurationMonitor().checkConfiguration();
+        privateConfig.loggerConfig.log(getName(), fqcn, marker, level, msg, t);
     }
 
     @Override
     public boolean isEnabled(final Level level, final Marker marker, final String message, final Throwable t) {
-        return config.filter(level, marker, message, t);
+        return privateConfig.filter(level, marker, message, t);
     }
 
     @Override
     public boolean isEnabled(final Level level, final Marker marker, final String message) {
-        return config.filter(level, marker, message);
+        return privateConfig.filter(level, marker, message);
     }
 
     @Override
     public boolean isEnabled(final Level level, final Marker marker, final String message, final Object... params) {
-        return config.filter(level, marker, message, params);
+        return privateConfig.filter(level, marker, message, params);
     }
 
     @Override
     public boolean isEnabled(final Level level, final Marker marker, final Object message, final Throwable t) {
-        return config.filter(level, marker, message, t);
+        return privateConfig.filter(level, marker, message, t);
     }
 
     @Override
     public boolean isEnabled(final Level level, final Marker marker, final Message message, final Throwable t) {
-        return config.filter(level, marker, message, t);
+        return privateConfig.filter(level, marker, message, t);
     }
 
     /**
@@ -154,7 +154,7 @@ public class Logger extends AbstractLogger {
      * @param appender The Appender to add to the Logger.
      */
     public void addAppender(final Appender appender) {
-        config.config.addLoggerAppender(this, appender);
+        privateConfig.config.addLoggerAppender(this, appender);
     }
 
     /**
@@ -162,7 +162,7 @@ public class Logger extends AbstractLogger {
      * @param appender The Appender to remove from the Logger.
      */
     public void removeAppender(final Appender appender) {
-        config.loggerConfig.removeAppender(appender.getName());
+        privateConfig.loggerConfig.removeAppender(appender.getName());
     }
 
     /**
@@ -170,7 +170,7 @@ public class Logger extends AbstractLogger {
      * @return A Map containing the Appender's name as the key and the Appender as the value.
      */
     public Map<String, Appender> getAppenders() {
-         return config.loggerConfig.getAppenders();
+         return privateConfig.loggerConfig.getAppenders();
     }
 
     /**
@@ -179,7 +179,7 @@ public class Logger extends AbstractLogger {
      */
     // FIXME: this really ought to be an Iterable instead of an Iterator
     public Iterator<Filter> getFilters() {
-        final Filter filter = config.loggerConfig.getFilter();
+        final Filter filter = privateConfig.loggerConfig.getFilter();
         if (filter == null) {
             return new ArrayList<Filter>().iterator();
         } else if (filter instanceof CompositeFilter) {
@@ -198,7 +198,7 @@ public class Logger extends AbstractLogger {
      */
     @Override
     public Level getLevel() {
-        return config.level;
+        return privateConfig.level;
     }
 
     /**
@@ -206,7 +206,7 @@ public class Logger extends AbstractLogger {
      * @return The number of Filters associated with the Logger.
      */
     public int filterCount() {
-        final Filter filter = config.loggerConfig.getFilter();
+        final Filter filter = privateConfig.loggerConfig.getFilter();
         if (filter == null) {
             return 0;
         } else if (filter instanceof CompositeFilter) {
@@ -220,7 +220,7 @@ public class Logger extends AbstractLogger {
      * @param filter The Filter to add.
      */
     public void addFilter(final Filter filter) {
-        config.config.addLoggerFilter(this, filter);
+        privateConfig.config.addLoggerFilter(this, filter);
     }
 
     /**
@@ -229,7 +229,7 @@ public class Logger extends AbstractLogger {
      * @return true if the associated LoggerConfig is additive, false otherwise.
      */
     public boolean isAdditive() {
-        return config.loggerConfig.isAdditive();
+        return privateConfig.loggerConfig.isAdditive();
     }
 
     /**
@@ -238,7 +238,7 @@ public class Logger extends AbstractLogger {
      * @param additive Boolean value to indicate whether the Logger is additive or not.
      */
     public void setAdditive(final boolean additive) {
-        config.config.setLoggerAdditive(this, additive);
+        privateConfig.config.setLoggerAdditive(this, additive);
     }
 
     /**
@@ -254,7 +254,7 @@ public class Logger extends AbstractLogger {
      * @param newConfig The new Configuration.
      */
     protected void updateConfiguration(final Configuration newConfig) {
-        this.config = new PrivateConfig(newConfig, this);
+        this.privateConfig = new PrivateConfig(newConfig, this);
     }
 
     /**

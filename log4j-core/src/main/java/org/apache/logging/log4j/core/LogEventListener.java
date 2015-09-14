@@ -35,8 +35,8 @@ public class LogEventListener implements EventListener {
             return;
         }
         final Logger logger = context.getLogger(event.getLoggerName());
-        if (logger.config.filter(event.getLevel(), event.getMarker(), event.getMessage(), event.getThrown())) {
-            logger.config.logEvent(event);
+        if (logger.privateConfig.filter(event.getLevel(), event.getMarker(), event.getMessage(), event.getThrown())) {
+            logger.privateConfig.logEvent(event);
         }
     }
 }
