@@ -480,13 +480,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     /**
      * Returns the Appender with the specified name.
-     * @param name The name of the Appender.
+     * @param appenderName The name of the Appender.
      * @return the Appender with the specified name or null if the Appender cannot be located.
      */
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends Appender> T getAppender(final String name) {
-        return (T)appenders.get(name);
+    public <T extends Appender> T getAppender(final String appenderName) {
+        return (T) appenders.get(appenderName);
     }
 
     /**
@@ -594,14 +594,14 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @Override
     public synchronized void setLoggerAdditive(final org.apache.logging.log4j.core.Logger logger,
                                                final boolean additive) {
-        final String name = logger.getName();
-        final LoggerConfig lc = getLoggerConfig(name);
-        if (lc.getName().equals(name)) {
+        final String loggerName = logger.getName();
+        final LoggerConfig lc = getLoggerConfig(loggerName);
+        if (lc.getName().equals(loggerName)) {
             lc.setAdditive(additive);
         } else {
-            final LoggerConfig nlc = new LoggerConfig(name, lc.getLevel(), additive);
+            final LoggerConfig nlc = new LoggerConfig(loggerName, lc.getLevel(), additive);
             nlc.setParent(lc);
-            loggers.putIfAbsent(name, nlc);
+            loggers.putIfAbsent(loggerName, nlc);
             setParents();
             logger.getContext().updateLoggers();
         }
@@ -611,13 +611,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * Remove an Appender. First removes any associations between LoggerConfigs and the Appender, removes
      * the Appender from this appender list and then stops the appender. This method is synchronized in
      * case an Appender with the same name is being added during the removal.
-     * @param name the name of the appender to remove.
+     * @param appenderName the name of the appender to remove.
      */
-    public synchronized void removeAppender(final String name) {
+    public synchronized void removeAppender(final String appenderName) {
         for (final LoggerConfig logger : loggers.values()) {
-            logger.removeAppender(name);
+            logger.removeAppender(appenderName);
         }
-        final Appender app = appenders.remove(name);
+        final Appender app = appenders.remove(appenderName);
 
         if (app != null) {
             app.stop();
@@ -636,16 +636,16 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     /**
      * Locates the appropriate LoggerConfig for a Logger name. This will remove tokens from the
      * package name as necessary or return the root LoggerConfig if no other matches were found.
-     * @param name The Logger name.
+     * @param loggerName The Logger name.
      * @return The located LoggerConfig.
      */
     @Override
-    public LoggerConfig getLoggerConfig(final String name) {
-        LoggerConfig loggerConfig = loggers.get(name);
+    public LoggerConfig getLoggerConfig(final String loggerName) {
+        LoggerConfig loggerConfig = loggers.get(loggerName);
         if (loggerConfig != null) {
             return loggerConfig;
         }
-        String substr = name;
+        String substr = loggerName;
         while ((substr = NameUtil.getSubName(substr)) != null) {
             loggerConfig = loggers.get(substr);
             if (loggerConfig != null) {
@@ -674,34 +674,34 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     /**
      * Returns the LoggerConfig with the specified name.
-     * @param name The Logger name.
+     * @param loggerName The Logger name.
      * @return The LoggerConfig or null if no match was found.
      */
-    public LoggerConfig getLogger(final String name) {
-        return loggers.get(name);
+    public LoggerConfig getLogger(final String loggerName) {
+        return loggers.get(loggerName);
     }
 
     /**
      * Add a loggerConfig. The LoggerConfig must already be configured with Appenders, Filters, etc.
      * After addLogger is called LoggerContext.updateLoggers must be called.
      *
-     * @param name The name of the Logger.
+     * @param loggerName The name of the Logger.
      * @param loggerConfig The LoggerConfig.
      */
     @Override
-    public synchronized void addLogger(final String name, final LoggerConfig loggerConfig) {
-        loggers.putIfAbsent(name, loggerConfig);
+    public synchronized void addLogger(final String loggerName, final LoggerConfig loggerConfig) {
+        loggers.putIfAbsent(loggerName, loggerConfig);
         setParents();
     }
 
     /**
      * Remove a LoggerConfig.
      *
-     * @param name The name of the Logger.
+     * @param loggerName The name of the Logger.
      */
     @Override
-    public synchronized void removeLogger(final String name) {
-        loggers.remove(name);
+    public synchronized void removeLogger(final String loggerName) {
+        loggers.remove(loggerName);
         setParents();
     }
 
@@ -809,12 +809,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private void setParents() {
          for (final Map.Entry<String, LoggerConfig> entry : loggers.entrySet()) {
             final LoggerConfig logger = entry.getValue();
-            String name = entry.getKey();
-            if (!name.isEmpty()) {
-                final int i = name.lastIndexOf('.');
+            String key = entry.getKey();
+            if (!key.isEmpty()) {
+                final int i = key.lastIndexOf('.');
                 if (i > 0) {
-                    name = name.substring(0, i);
-                    LoggerConfig parent = getLoggerConfig(name);
+                    key = key.substring(0, i);
+                    LoggerConfig parent = getLoggerConfig(key);
                     if (parent == null) {
                         parent = root;
                     }
