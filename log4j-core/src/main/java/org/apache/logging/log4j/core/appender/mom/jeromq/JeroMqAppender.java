@@ -56,6 +56,14 @@ public final class JeroMqAppender extends AbstractAppender {
     // Per ZMQ docs, there should usually only be one ZMQ context per process.
     private static volatile ZMQ.Context context;
 
+    private static final int DEFAULT_BACKLOG = 100;
+
+    private static final int DEFAULT_IVL = 100;
+
+    private static final int DEFAULT_RCV_HWM = 1000;
+
+    private static final int DEFAULT_SND_HWM = 1000;
+
     private static Logger logger;
 
     // ZMQ sockets are not thread safe.
@@ -104,25 +112,25 @@ public final class JeroMqAppender extends AbstractAppender {
             @PluginAttribute("ignoreExceptions") final boolean ignoreExceptions,
             // ZMQ attributes; defaults picked from zmq.Options.
             @PluginAttribute(value = "affinity", defaultLong = 0) final long affinity,
-            @PluginAttribute(value = "backlog", defaultLong = 100) final long backlog,
-            @PluginAttribute(value = "delayAttachOnConnect", defaultBoolean=false) final boolean delayAttachOnConnect,
+            @PluginAttribute(value = "backlog", defaultLong = DEFAULT_BACKLOG) final long backlog,
+            @PluginAttribute(value = "delayAttachOnConnect", defaultBoolean = false) final boolean delayAttachOnConnect,
             @PluginAttribute(value = "identity") final byte[] identity,
             @PluginAttribute(value = "ipv4Only", defaultBoolean = true) final boolean ipv4Only,
             @PluginAttribute(value = "linger", defaultLong = -1) final long linger,
             @PluginAttribute(value = "maxMsgSize", defaultLong = -1) final long maxMsgSize,
-            @PluginAttribute(value = "rcvHwm", defaultLong = 1000) final long rcvHwm,
+            @PluginAttribute(value = "rcvHwm", defaultLong = DEFAULT_RCV_HWM) final long rcvHwm,
             @PluginAttribute(value = "receiveBufferSize", defaultLong = 0) final long receiveBufferSize,
             @PluginAttribute(value = "receiveTimeOut", defaultLong = -1) final int receiveTimeOut,
-            @PluginAttribute(value = "reconnectIVL", defaultLong = 100) final long reconnectIVL,
+            @PluginAttribute(value = "reconnectIVL", defaultLong = DEFAULT_IVL) final long reconnectIVL,
             @PluginAttribute(value = "reconnectIVLMax", defaultLong = 0) final long reconnectIVLMax,
             @PluginAttribute(value = "sendBufferSize", defaultLong = 0) final long sendBufferSize,
             @PluginAttribute(value = "sendTimeOut", defaultLong = -1) final int sendTimeOut,
-            @PluginAttribute(value = "sndHwm", defaultLong = 1000) final long sndHwm,
+            @PluginAttribute(value = "sndHwm", defaultLong = DEFAULT_SND_HWM) final long sndHwm,
             @PluginAttribute(value = "tcpKeepAlive", defaultInt = -1) final int tcpKeepAlive,
             @PluginAttribute(value = "tcpKeepAliveCount", defaultLong = -1) final long tcpKeepAliveCount,
             @PluginAttribute(value = "tcpKeepAliveIdle", defaultLong = -1) final long tcpKeepAliveIdle,
             @PluginAttribute(value = "tcpKeepAliveInterval", defaultLong = -1) final long tcpKeepAliveInterval,
-            @PluginAttribute(value = "xpubVerbose", defaultBoolean = false) final boolean xpubVerbose            
+            @PluginAttribute(value = "xpubVerbose", defaultBoolean = false) final boolean xpubVerbose
             // @formatter:on
     ) {
         if (layout == null) {
