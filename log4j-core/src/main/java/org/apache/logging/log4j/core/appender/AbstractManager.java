@@ -69,7 +69,7 @@ public abstract class AbstractManager {
             M manager = (M) MAP.get(name);
             if (manager == null) {
                 manager = factory.createManager(name, data);
-				if (manager == null) {
+                if (manager == null) {
 					throw new IllegalStateException("ManagerFactory [" + factory + "] unable to create manager for [" + name
 							+ "] with data [" + data + "]");
 				}
