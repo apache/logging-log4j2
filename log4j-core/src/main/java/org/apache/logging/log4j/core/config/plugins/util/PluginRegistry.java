@@ -238,7 +238,6 @@ public class PluginRegistry {
             mainEntry.setClassName(clazz.getName());
             mainEntry.setPrintable(plugin.printObject());
             mainEntry.setDefer(plugin.deferChildren());
-            @SuppressWarnings({"unchecked","rawtypes"})
             final PluginType<?> mainType = new PluginType<>(mainEntry, clazz, mainElementName);
             list.add(mainType);
             final PluginAliases pluginAliases = clazz.getAnnotation(PluginAliases.class);
@@ -253,7 +252,6 @@ public class PluginRegistry {
                     aliasEntry.setClassName(clazz.getName());
                     aliasEntry.setPrintable(plugin.printObject());
                     aliasEntry.setDefer(plugin.deferChildren());
-                    @SuppressWarnings({"unchecked","rawtypes"})
                     final PluginType<?> aliasType = new PluginType<>(aliasEntry, clazz, aliasElementName);
                     list.add(aliasType);
                 }
