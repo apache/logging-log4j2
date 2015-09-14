@@ -32,6 +32,7 @@ public class LambdaUtilTest {
     public void testGetSupplierResultOfSupplier() {
         final String expected = "result";
         final Object actual = LambdaUtil.get(new Supplier<String>() {
+            @Override
             public String get() {
                 return expected;
             }
@@ -43,6 +44,7 @@ public class LambdaUtilTest {
     public void testGetMessageSupplierResultOfSupplier() {
         final Message expected = new SimpleMessage("hi");
         final Message actual = LambdaUtil.get(new MessageSupplier() {
+            @Override
             public Message get() {
                 return expected;
             }
@@ -65,6 +67,7 @@ public class LambdaUtilTest {
     @Test(expected = RuntimeException.class)
     public void testGetSupplierExceptionIfSupplierThrowsException() {
         LambdaUtil.get(new Supplier<String>() {
+            @Override
             public String get() {
                 throw new RuntimeException();
             }
@@ -74,6 +77,7 @@ public class LambdaUtilTest {
     @Test(expected = RuntimeException.class)
     public void testGetMessageSupplierExceptionIfSupplierThrowsException() {
         LambdaUtil.get(new MessageSupplier() {
+            @Override
             public Message get() {
                 throw new RuntimeException();
             }
@@ -84,12 +88,14 @@ public class LambdaUtilTest {
     public void testGetAllReturnsResultOfSuppliers() {
         final String expected1 = "result1";
         final Supplier<String> function1 = new Supplier<String>() {
+            @Override
             public String get() {
                 return expected1;
             }
         };
         final String expected2 = "result2";
         final Supplier<String> function2 = new Supplier<String>() {
+            @Override
             public String get() {
                 return expected2;
             }
@@ -121,11 +127,13 @@ public class LambdaUtilTest {
     @Test(expected = RuntimeException.class)
     public void testGetAllThrowsExceptionIfAnyOfTheSuppliersThrowsException() {
         final Supplier<String> function1 = new Supplier<String>() {
+            @Override
             public String get() {
                 return "abc";
             }
         };
         final Supplier<String> function2 = new Supplier<String>() {
+            @Override
             public String get() {
                 throw new RuntimeException();
             }
