@@ -121,16 +121,16 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
      * events are written to the database without losing buffered or in-progress events. The existing manager is
      * released only after the new manager has been installed. This method is thread-safe.
      *
-     * @param manager The new manager to install.
+     * @param newManager The new manager to install.
      */
-    protected final void replaceManager(final T manager) {
+    protected final void replaceManager(final T newManager) {
         this.writeLock.lock();
         try {
             final T old = this.getManager();
-            if (!manager.isRunning()) {
-                manager.startup();
+            if (!newManager.isRunning()) {
+                newManager.startup();
             }
-            this.manager = manager;
+            this.manager = newManager;
             old.release();
         } finally {
             this.writeLock.unlock();
