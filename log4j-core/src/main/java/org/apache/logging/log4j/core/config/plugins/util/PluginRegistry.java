@@ -180,7 +180,7 @@ public class PluginRegistry {
                 try {
                     final Class<?> clazz = loader.loadClass(className);
                     @SuppressWarnings({"unchecked","rawtypes"})
-                    final PluginType<?> type = new PluginType(entry, clazz, entry.getName());
+                    final PluginType<?> type = new PluginType<>(entry, clazz, entry.getName());
                     types.add(type);
                     ++pluginCount;
                 } catch (final ClassNotFoundException e) {
@@ -239,7 +239,7 @@ public class PluginRegistry {
             mainEntry.setPrintable(plugin.printObject());
             mainEntry.setDefer(plugin.deferChildren());
             @SuppressWarnings({"unchecked","rawtypes"})
-            final PluginType<?> mainType = new PluginType(mainEntry, clazz, mainElementName);
+            final PluginType<?> mainType = new PluginType<>(mainEntry, clazz, mainElementName);
             list.add(mainType);
             final PluginAliases pluginAliases = clazz.getAnnotation(PluginAliases.class);
             if (pluginAliases != null) {
@@ -254,7 +254,7 @@ public class PluginRegistry {
                     aliasEntry.setPrintable(plugin.printObject());
                     aliasEntry.setDefer(plugin.deferChildren());
                     @SuppressWarnings({"unchecked","rawtypes"})
-                    final PluginType<?> aliasType = new PluginType(aliasEntry, clazz, aliasElementName);
+                    final PluginType<?> aliasType = new PluginType<>(aliasEntry, clazz, aliasElementName);
                     list.add(aliasType);
                 }
             }
