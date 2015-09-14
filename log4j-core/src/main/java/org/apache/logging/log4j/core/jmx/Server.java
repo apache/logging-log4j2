@@ -72,7 +72,7 @@ public final class Server {
      * background thread Executor, depending on the value of system property "log4j2.jmx.notify.async". If this
      * property is not set, use a {@code null} Executor for web apps to avoid memory leaks and other issues when the
      * web app is restarted.
-     * @see LOG4J2-938
+     * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-938">LOG4J2-938</a>
      */
     private static ExecutorService createExecutor() {
         final boolean defaultAsync = !isWebApp();
