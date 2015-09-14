@@ -199,15 +199,15 @@ public class FlumePersistentManager extends FlumeAvroManager {
             final Future<Integer> future = threadPool.submit(new BDBWriter(keyData, eventData, environment, database,
                 gate, dbCount, getBatchSize(), lockTimeoutRetryCount));
             boolean interrupted = false;
-            int count = 0;
+            int ieCount = 0;
             do {
                 try {
                     future.get();
                 } catch (final InterruptedException ie) {
                     interrupted = true;
-                    ++count;
+                    ++ieCount;
                 }
-            } while (interrupted && count <= 1);
+            } while (interrupted && ieCount <= 1);
 
         } catch (final Exception ex) {
             throw new LoggingException("Exception occurred writing log event", ex);
