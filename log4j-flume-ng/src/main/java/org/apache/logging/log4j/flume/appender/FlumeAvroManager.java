@@ -199,11 +199,11 @@ public class FlumeAvroManager extends AbstractFlumeManager {
             }
         } else {
             batchEvent.addEvent(event);
-            final int count = batchEvent.getEvents().size();
-            if (count == 1) {
+            final int eventCount = batchEvent.getEvents().size();
+            if (eventCount == 1) {
                 nextSend = System.nanoTime() + delayNanos;
             }
-            if (count >= batchSize || System.nanoTime() >= nextSend) {
+            if (eventCount >= batchSize || System.nanoTime() >= nextSend) {
                 send(batchEvent);
                 batchEvent = new BatchEvent();
             }
@@ -221,13 +221,13 @@ public class FlumeAvroManager extends AbstractFlumeManager {
 
             props.put("client.type", "default_failover");
 
-            int count = 1;
+            int agentCount = 1;
             final StringBuilder sb = new StringBuilder();
             for (final Agent agent : agents) {
                 if (sb.length() > 0) {
                     sb.append(' ');
                 }
-                final String hostName = "host" + count++;
+                final String hostName = "host" + agentCount++;
                 props.put("hosts." + hostName, agent.getHost() + ':' + agent.getPort());
                 sb.append(hostName);
             }
