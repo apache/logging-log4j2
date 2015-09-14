@@ -659,6 +659,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * Returns the root Logger.
      * @return the root Logger.
      */
+    @Override
     public LoggerConfig getRootLogger() {
         return root;
     }
