@@ -58,7 +58,7 @@
       <roles>
         <role>PMC Member</role>
       </roles>
-      <timezone>America/New_York</timezone>
+      <timezone>America/Los_Angeles</timezone>
     </developer>
     <developer>
       <id>sdeboy</id>
