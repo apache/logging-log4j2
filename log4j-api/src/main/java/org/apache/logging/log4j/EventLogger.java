@@ -36,6 +36,7 @@ public final class EventLogger {
     private static final ExtendedLogger LOGGER = LogManager.getContext(false).getLogger(NAME);
 
     private EventLogger() {
+        // empty
     }
 
     /**
