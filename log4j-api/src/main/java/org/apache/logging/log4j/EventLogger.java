@@ -20,14 +20,14 @@ import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**
- *  Logs "Events" that are represented as StructuredDataMessages.
+ *  Logs "Events" that are represented as {@link StructuredDataMessage}.
  */
 public final class EventLogger {
 
     private static final String NAME = "EventLogger";
 
     /**
-     * Define the Event Marker.
+     * Defines the Event Marker.
      */
     public static final Marker EVENT_MARKER = MarkerManager.getMarker("EVENT");
 
@@ -40,7 +40,7 @@ public final class EventLogger {
     }
 
     /**
-     * Log events with a level of ALL.
+     * Logs events with a level of ALL.
      * @param msg The event StructuredDataMessage.
      */
     public static void logEvent(final StructuredDataMessage msg) {
@@ -48,7 +48,7 @@ public final class EventLogger {
     }
 
     /**
-     * Log events and specify the logging level.
+     * Logs events and specify the logging level.
      * @param msg The event StructuredDataMessage.
      * @param level The logging Level.
      */
