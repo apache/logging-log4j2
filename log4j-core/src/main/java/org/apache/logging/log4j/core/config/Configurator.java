@@ -104,15 +104,14 @@ public final class Configurator {
      * Initializes the Logging Context.
      * @param name The Context name.
      * @param loader The ClassLoader for the Context (or null).
-     * @param configLocation The configuration for the logging context.
+     * @param configLocation The configuration for the logging context (or null, or blank).
      * @param externalContext The external context to be attached to the LoggerContext
      * @return The LoggerContext or null if an error occurred (check the status logger).
      */
     public static LoggerContext initialize(final String name, final ClassLoader loader, final String configLocation,
-                                           final Object externalContext) {
-
+            final Object externalContext) {
         try {
-            final URI uri = configLocation == null ? null : FileUtils.getCorrectedFilePathUri(configLocation);
+            final URI uri = Strings.isBlank(configLocation) ? null : FileUtils.getCorrectedFilePathUri(configLocation);
             return initialize(name, loader, uri, externalContext);
         } catch (final URISyntaxException ex) {
             LOGGER.error("There was a problem parsing the configuration location [{}].", configLocation, ex);
@@ -135,7 +134,7 @@ public final class Configurator {
      * Initializes the Logging Context.
      * @param name The Context name.
      * @param loader The ClassLoader for the Context (or null).
-     * @param configLocation The configuration for the logging context.
+     * @param configLocation The configuration for the logging context (or null).
      * @param externalContext The external context to be attached to the LoggerContext
      * @return The LoggerContext.
      */
