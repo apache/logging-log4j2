@@ -42,6 +42,7 @@ import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.Loader;
+import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.ReflectionUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
@@ -394,7 +395,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                 if (configLocationStr != null) {
                     ConfigurationSource source = null;
                     try {
-                        source = getInputFromUri(FileUtils.getCorrectedFilePathUri(configLocationStr));
+                        source = getInputFromUri(NetUtils.toURI(configLocationStr));
                     } catch (final Exception ex) {
                         // Ignore the error and try as a String.
                         LOGGER.catching(Level.DEBUG, ex);

@@ -66,6 +66,9 @@
       <action issue="LOG4J2-1114" dev="ggregory" type="update">
         Add thread name to status logger layout.
       </action>
+      <action issue="LOG4J2-1123" dev="ggregory" type="fix" due-to="Gary Gregory">
+        Core Configurator.initialize(String, ClassLoader, String) fails to work when config location is a file path.
+      </action>
       <action issue="LOG4J2-1117" dev="ggregory" type="fix" due-to="Marcus Thiesen">
         OutputStreamManager in ConsoleAppender leaking managers.
       </action>

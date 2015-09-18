@@ -16,9 +16,14 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import java.io.File;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
 
@@ -70,6 +75,27 @@ public final class NetUtils {
             }
             LOGGER.error("Could not determine local host name", uhe);
             return UNKNOWN_LOCALHOST;
+        }
+    }
+
+    /**
+     * Converts a URI string or file path to a URI object
+     * @param path the URI string or path
+     * @return the URI object
+     */
+    public static URI toURI(final String path) {
+        try {
+            // Resolves absolute URI
+            return new URI(path);
+        } catch (final URISyntaxException e) {
+            // A file path or a Apache Commons VFS URL might contain blanks.
+            // A file path may start with a driver letter
+            try {
+                final URL url = new URL(path);
+                return new URI(url.getProtocol(), url.getHost(), url.getPath(), null);
+            } catch (MalformedURLException | URISyntaxException nestedEx) {
+                return new File(path).toURI();
+            }
         }
     }
 

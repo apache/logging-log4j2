@@ -117,16 +117,4 @@ public final class FileUtils {
             throw new IOException("File " + dir + " exists and is not a directory. Unable to create directory.");
         }
     }
-
-    /**
-     * Takes a given URI string which may contain backslashes (illegal in URIs) in it due to user input or variable
-     * substitution and returns a URI with the backslashes replaced with forward slashes.
-     *
-     * @param uri The URI string
-     * @return the URI.
-     * @throws URISyntaxException if instantiating the URI threw a {@code URISyntaxException}.
-     */
-    public static URI getCorrectedFilePathUri(final String uri) throws URISyntaxException {
-        return new URI(WINDOWS_DIRECTORY_SEPARATOR.matcher(uri).replaceAll("/"));
-    }
 }

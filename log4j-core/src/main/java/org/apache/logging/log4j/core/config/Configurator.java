@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.config;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Map;
 
 import org.apache.logging.log4j.Level;
@@ -25,7 +24,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
-import org.apache.logging.log4j.core.util.FileUtils;
+import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
@@ -110,13 +109,8 @@ public final class Configurator {
      */
     public static LoggerContext initialize(final String name, final ClassLoader loader, final String configLocation,
             final Object externalContext) {
-        try {
-            final URI uri = Strings.isBlank(configLocation) ? null : FileUtils.getCorrectedFilePathUri(configLocation);
-            return initialize(name, loader, uri, externalContext);
-        } catch (final URISyntaxException ex) {
-            LOGGER.error("There was a problem parsing the configuration location [{}].", configLocation, ex);
-        }
-        return null;
+        final URI uri = Strings.isBlank(configLocation) ? null : NetUtils.toURI(configLocation);
+        return initialize(name, loader, uri, externalContext);
     }
 
     /**

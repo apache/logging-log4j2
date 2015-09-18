@@ -25,7 +25,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import org.junit.Test;
 
@@ -87,21 +86,4 @@ public class FileUtilsTest {
         assertFalse("file does not exist", file.exists());
     }
 
-    @Test
-    public void testGetCorrectedFilePathUriWithoutBackslashes() throws URISyntaxException {
-        final String config = "file:///path/to/something/on/unix";
-        final URI uri = FileUtils.getCorrectedFilePathUri(config);
-
-        assertNotNull("The URI should not be null.", uri);
-        assertEquals("The URI is not correct.", "file:///path/to/something/on/unix", uri.toString());
-    }
-
-    @Test
-    public void testGetCorrectedFilePathUriWithBackslashes() throws URISyntaxException {
-        final String config = "file:///D:\\path\\to\\something/on/windows";
-        final URI uri = FileUtils.getCorrectedFilePathUri(config);
-
-        assertNotNull("The URI should not be null.", uri);
-        assertEquals("The URI is not correct.", "file:///D:/path/to/something/on/windows", uri.toString());
-    }
 }

@@ -195,7 +195,7 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
         }
         if (location != null) {
             try {
-                final URI correctedFilePathUri = FileUtils.getCorrectedFilePathUri(location);
+                final URI correctedFilePathUri = NetUtils.toURI(location);
                 LOGGER.debug("getConfigURI found [{}] in servletConext at [{}]", correctedFilePathUri, location);
                 return correctedFilePathUri;
             } catch (final Exception e) {
