@@ -159,5 +159,6 @@ public final class Strings {
     }
 
     private Strings() {
+        // empty
     }
 }
