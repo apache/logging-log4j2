@@ -31,6 +31,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 public final class NetUtils {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
+    private static final String UNKNOWN_LOCALHOST = "UNKNOWN_LOCALHOST";
 
     private NetUtils() {
     }
@@ -64,10 +65,10 @@ public final class NetUtils {
                 }
             } catch (final SocketException se) {
                 LOGGER.error("Could not determine local host name", uhe);
-                return "UNKNOWN_LOCALHOST";
+                return UNKNOWN_LOCALHOST;
             }
             LOGGER.error("Could not determine local host name", uhe);
-            return "UNKNOWN_LOCALHOST";
+            return UNKNOWN_LOCALHOST;
         }
     }
 
