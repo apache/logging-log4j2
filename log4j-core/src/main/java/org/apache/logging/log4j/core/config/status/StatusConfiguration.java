@@ -113,8 +113,8 @@ public class StatusConfiguration {
         if (name.equalsIgnoreCase("err")) {
             return System.err;
         }
-        final URI destination = FileUtils.getCorrectedFilePathUri(name);
-        final File output = FileUtils.fileFromUri(destination);
+        final URI destUri = FileUtils.getCorrectedFilePathUri(name);
+        final File output = FileUtils.fileFromUri(destUri);
         if (output == null) {
             // don't want any NPEs, no sir
             return DEFAULT_STREAM;

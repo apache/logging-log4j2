@@ -233,7 +233,7 @@ public final class Configurator {
     }
     
     /**
-     * Sets a logger levels.
+     * Sets logger levels.
      * 
      * @param levelMap
      *            a levelMap where keys are level names and values are new
@@ -313,5 +313,6 @@ public final class Configurator {
     }
 
     private Configurator() {
+        // empty
     }
 }

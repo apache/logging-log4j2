@@ -28,7 +28,27 @@ public final class Strings {
      */
     public static final String EMPTY = "";
 
-    private Strings() {
+    /**
+     * Returns a double quoted string.
+     * 
+     * @param str
+     *        a String
+     * @return {@code "str"}
+     */
+    public static String dquote(final String str) {
+        return Chars.DQUOTE + str + Chars.DQUOTE;
+    }
+
+    /**
+     * Checks if a String is blank. A blank string is one that is {@code null}, empty, or when trimmed using
+     * {@link String#trim()} is empty.
+     *
+     * @param s
+     *        the String to check, may be {@code null}
+     * @return {@code true} if the String is {@code null}, empty, or trims to empty.
+     */
+    public static boolean isBlank(final String s) {
+        return s == null || s.trim().isEmpty();
     }
 
     /**
@@ -62,6 +82,17 @@ public final class Strings {
     }
 
     /**
+     * Checks if a String is not blank. The opposite of {@link #isBlank(String)}.
+     *
+     * @param s
+     *        the String to check, may be {@code null}
+     * @return {@code true} if the String is non-{@code null} and has content after being trimmed.
+     */
+    public static boolean isNotBlank(final String s) {
+        return !isBlank(s);
+    }
+
+    /**
      * <p>
      * Checks if a CharSequence is not empty ("") and not null.
      * </p>
@@ -87,26 +118,14 @@ public final class Strings {
     }
 
     /**
-     * Checks if a String is blank. A blank string is one that is {@code null}, empty, or when trimmed using
-     * {@link String#trim()} is empty.
-     *
-     * @param s
-     *        the String to check, may be {@code null}
-     * @return {@code true} if the String is {@code null}, empty, or trims to empty.
+     * Returns a quoted string.
+     * 
+     * @param str
+     *        a String
+     * @return {@code 'str'}
      */
-    public static boolean isBlank(final String s) {
-        return s == null || s.trim().isEmpty();
-    }
-
-    /**
-     * Checks if a String is not blank. The opposite of {@link #isBlank(String)}.
-     *
-     * @param s
-     *        the String to check, may be {@code null}
-     * @return {@code true} if the String is non-{@code null} and has content after being trimmed.
-     */
-    public static boolean isNotBlank(final String s) {
-        return !isBlank(s);
+    public static String quote(final String str) {
+        return Chars.QUOTE + str + Chars.QUOTE;
     }
 
     /**
@@ -139,25 +158,6 @@ public final class Strings {
         return isEmpty(ts) ? null : ts;
     }
 
-    /**
-     * Returns a quoted string.
-     * 
-     * @param str
-     *        a String
-     * @return {@code 'str'}
-     */
-    public static String quote(final String str) {
-        return Chars.QUOTE + str + Chars.QUOTE;
-    }
-
-    /**
-     * Returns a double quoted string.
-     * 
-     * @param str
-     *        a String
-     * @return {@code "str"}
-     */
-    public static String dquote(final String str) {
-        return Chars.DQUOTE + str + Chars.DQUOTE;
+    private Strings() {
     }
 }
