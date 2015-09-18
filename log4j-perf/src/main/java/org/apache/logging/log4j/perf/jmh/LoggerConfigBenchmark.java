@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.perf.jmh;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -37,7 +35,6 @@ import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.infra.Blackhole;
 
 // ============================== HOW TO RUN THIS TEST: ====================================
@@ -53,12 +50,7 @@ import org.openjdk.jmh.infra.Blackhole;
 //
 @State(Scope.Benchmark)
 public class LoggerConfigBenchmark {
-    private ConcurrentHashMap<String, Long> map1 = new ConcurrentHashMap<String, Long>();
-    private CopyOnWriteArraySet<Long> arraySet1 = new CopyOnWriteArraySet<Long>();
-    private ConcurrentHashMap<String, Long> map3 = new ConcurrentHashMap<String, Long>();
-    private CopyOnWriteArraySet<Long> arraySet3 = new CopyOnWriteArraySet<Long>();
 
-    private ConcurrentHashMap<String, AppenderControl> appenderMap = new ConcurrentHashMap<String, AppenderControl>();
     private CopyOnWriteArraySet<AppenderControl> appenderSet = new CopyOnWriteArraySet<AppenderControl>();
     private volatile Filter filter = null;
     private boolean additive = true;
@@ -69,22 +61,21 @@ public class LoggerConfigBenchmark {
     private final Lock shutdownLock = new ReentrantLock();
     private final Condition noLogEvents = shutdownLock.newCondition(); // should only be used when shutdown == true
     private final LogEvent LOGEVENT = createLogEventWithoutException();
-    private final static String APPENDERNAME = "LIST";
-    private SimpleListAppender listAppender = new SimpleListAppender(APPENDERNAME);
+    private SimpleListAppender listAppender = new SimpleListAppender();
 
     private static class SimpleListAppender extends AbstractAppender {
         private static final long serialVersionUID = 1L;
         private final AtomicInteger count = new AtomicInteger();
 
-        protected SimpleListAppender(String name) {
-            super(name, null, null);
+        protected SimpleListAppender() {
+            super("list", null, null);
         }
 
         @Override
         public void append(LogEvent event) {
             count.incrementAndGet();
         }
-        
+
         public int size() {
             return count.get();
         }
@@ -92,16 +83,9 @@ public class LoggerConfigBenchmark {
 
     @Setup
     public void setup() {
-        for (int i = 0; i < 3; i++) {
-            map3.put(String.valueOf(i), Long.valueOf(i));
-            arraySet3.add(Long.valueOf(i));
-        }
-        map1.put(String.valueOf(1), Long.valueOf(1));
-        arraySet1.add(Long.valueOf(1));
 
         listAppender.start();
         final AppenderControl control = new AppenderControl(listAppender, Level.ALL, null);
-        appenderMap.put(APPENDERNAME, control);
         appenderSet.add(control);
     }
 
@@ -111,42 +95,6 @@ public class LoggerConfigBenchmark {
 
     private static LogEvent createLogEventWithoutException() {
         return new Log4jLogEvent("a.b.c", null, "a.b.c", Level.INFO, new SimpleMessage("abc"), null, null);
-    }
-
-    @Benchmark
-    public long iterMap1Element() {
-        long total = 0;
-        for (Long value : map1.values()) {
-            total += value;
-        }
-        return total;
-    }
-
-    @Benchmark
-    public long iterArraySet1Element() {
-        long total = 0;
-        for (Long value : arraySet1) {
-            total += value;
-        }
-        return total;
-    }
-
-    @Benchmark
-    public long iterMap3Elements() {
-        long total = 0;
-        for (Long value : map3.values()) {
-            total += value;
-        }
-        return total;
-    }
-
-    @Benchmark
-    public long iterArraySet3Element() {
-        long total = 0;
-        for (Long value : arraySet3) {
-            total += value;
-        }
-        return total;
     }
 
     @Benchmark
@@ -204,6 +152,24 @@ public class LoggerConfigBenchmark {
      *
      * @param event The log event.
      */
+    public void logWithCounterAndFlag(final LogEvent event) {
+        while (!beforeLogEventCheckCounterPositive()) {
+
+        }
+        try {
+            if (!isFiltered(event)) {
+                processLogEvent(event);
+            }
+        } finally {
+            afterLogEvent2();
+        }
+    }
+
+    /**
+     * Logs an event.
+     *
+     * @param event The log event.
+     */
     public void log3(final LogEvent event) {
         if (!isFiltered(event)) {
             processLogEvent(event);
@@ -222,6 +188,10 @@ public class LoggerConfigBenchmark {
 
     private void beforeLogEvent() {
         counter.incrementAndGet();
+    }
+
+    private boolean beforeLogEventCheckCounterPositive() {
+        return counter.incrementAndGet() > 0;
     }
 
     private void afterLogEvent() {
@@ -265,7 +235,7 @@ public class LoggerConfigBenchmark {
     }
 
     protected void callAppenders(final LogEvent event) {
-        for (final AppenderControl control : appenderMap.values()) {
+        for (final AppenderControl control : appenderSet) {
             control.callAppender(event);
         }
     }
