@@ -23,9 +23,12 @@ import static org.junit.Assert.assertNotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.junit.Assume;
 import org.junit.Test;
 
 public class NetUtilsTest {
+
+    private static final boolean IS_WINDOWS = System.getProperty("os.name").startsWith("Windows");
 
     @Test
     public void testToUriWithoutBackslashes() throws URISyntaxException {
@@ -37,7 +40,8 @@ public class NetUtilsTest {
     }
 
     @Test
-    public void testToUriWithBackslashes() throws URISyntaxException {
+    public void testToUriWindowsWithBackslashes() throws URISyntaxException {
+        Assume.assumeTrue(IS_WINDOWS);
         final String config = "file:///D:\\path\\to\\something/on/windows";
         final URI uri = NetUtils.toURI(config);
 
@@ -47,6 +51,7 @@ public class NetUtilsTest {
 
     @Test
     public void testToUriWindowsAbsolutePath() throws URISyntaxException {
+        Assume.assumeTrue(IS_WINDOWS);
         final String config = "D:\\path\\to\\something\\on\\windows";
         final URI uri = NetUtils.toURI(config);
 
