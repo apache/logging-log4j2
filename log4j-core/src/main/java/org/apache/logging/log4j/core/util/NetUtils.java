@@ -34,6 +34,7 @@ public final class NetUtils {
     private static final String UNKNOWN_LOCALHOST = "UNKNOWN_LOCALHOST";
 
     private NetUtils() {
+        // empty
     }
 
     /**
