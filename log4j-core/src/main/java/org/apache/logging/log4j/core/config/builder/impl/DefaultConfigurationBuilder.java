@@ -261,7 +261,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     /**
      * Set the ConfigurationSource.
      *
-     * @param configurationSource the {@link ConfigurationSource).}
+     * @param configurationSource the {@link ConfigurationSource}
      * @return this builder instance
      */
     @Override

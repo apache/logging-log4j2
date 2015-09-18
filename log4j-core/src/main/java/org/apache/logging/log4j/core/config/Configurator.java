@@ -201,7 +201,7 @@ public final class Configurator {
     }
 
     /**
-     * Sets the levels of <code>parentLogger</code> and all 'child' loggers to the given <code>level</level>.
+     * Sets the levels of <code>parentLogger</code> and all 'child' loggers to the given <code>level</code>.
      * @param parentLogger the parent logger
      * @param level the new level
      */

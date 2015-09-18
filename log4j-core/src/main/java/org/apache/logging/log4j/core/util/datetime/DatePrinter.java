@@ -116,7 +116,7 @@ public interface DatePrinter {
      * <p>Formats a {@code Date}, {@code Calendar} or
      * {@code Long} (milliseconds) object.</p>
      * 
-     * See {@link java.text.DateFormat#format(Object, StringBuilder, FieldPosition)}
+     * See {@link java.text.DateFormat#format(Object, StringBuffer, FieldPosition)}
      * 
      * @param obj  the object to format
      * @param toAppendTo  the buffer to append to

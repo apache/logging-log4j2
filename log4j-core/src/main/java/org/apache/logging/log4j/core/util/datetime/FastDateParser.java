@@ -103,7 +103,7 @@ public class FastDateParser implements DateParser, Serializable {
      * @param locale non-null locale
      * @param centuryStart The start of the century for 2 digit year parsing
      * @param lenient if true, non-standard values for Calendar fields should be accepted;
-     * if false, non-standard values will cause a ParseException to be thrown {@link CalendaretLenient(boolean)}
+     * if false, non-standard values will cause a ParseException to be thrown {@link Calendar#setLenient(boolean)}
      *
      * @since 3.5
      */
