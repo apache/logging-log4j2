@@ -55,7 +55,7 @@ public class FileUtilsTest {
     }
 
     /**
-     * Help figure out why {@link #testFileFromUriWithPlusCharactersInName()} fails in Jenkins but asserting different
+     * Helps figure out why {@link #testFileFromUriWithPlusCharactersInName()} fails in Jenkins but asserting different
      * parts of the implementation of {@link FileUtils#fileFromUri(URI)}.
      */
     @Test
