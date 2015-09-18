@@ -109,6 +109,16 @@
       </roles>
       <timezone>America/Detroit</timezone>
     </developer>
+    <developer>
+      <id>mikes</id>
+      <name>Mikael Ståldal</name>
+      <email>mikes@apache.org</email>
+      <organization>Magine TV</organization>
+      <roles>
+        <role>Committer</role>
+      </roles>
+      <timezone>Europe/Stockholm</timezone>
+    </developer>
   </developers>
   <mailingLists>
     <mailingList>
