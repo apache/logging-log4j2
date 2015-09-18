@@ -313,5 +313,6 @@ public final class Configurator {
     }
 
     private Configurator() {
+        // empty
     }
 }
