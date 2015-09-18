@@ -392,6 +392,7 @@
           <links>
             <link>http://docs.oracle.com/javaee/6/api/</link>
             <link>http://www.osgi.org/javadoc/r4v43/core/</link>
+            <link>https://commons.apache.org/proper/commons-lang/javadocs/api-release/</link>
           </links>
           <groups>
             <group>
