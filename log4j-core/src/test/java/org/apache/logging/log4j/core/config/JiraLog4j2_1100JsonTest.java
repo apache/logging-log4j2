@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.config;
 
 public class JiraLog4j2_1100JsonTest extends AbstractLog4j2_1100Test {
 
+    @Override
     protected String getConfigurationResource() {
         return "LOG4J2-1100/log4j2.json";
     }

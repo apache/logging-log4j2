@@ -32,6 +32,7 @@ public class NanoClockFactory {
          * Creates dummy nano clocks that always return a fixed value.
          */
         Dummy {
+            @Override
             public NanoClock createNanoClock() {
                 return new DummyNanoClock();
             }
@@ -40,6 +41,7 @@ public class NanoClockFactory {
          * Creates real nano clocks which call {{System.nanoTime()}}.
          */
         System  {
+            @Override
             public NanoClock createNanoClock() {
                 return new SystemNanoClock();
             }
