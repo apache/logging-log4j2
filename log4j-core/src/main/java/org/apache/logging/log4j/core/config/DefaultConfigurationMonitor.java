@@ -28,4 +28,12 @@ public class DefaultConfigurationMonitor implements ConfigurationMonitor {
     public void checkConfiguration() {
         // do nothing
     }
+
+    /* (non-Javadoc)
+     * @see org.apache.logging.log4j.core.config.ReliabilityStrategyFactory#getReliabilityStrategy(org.apache.logging.log4j.core.config.LoggerConfig)
+     */
+    @Override
+    public ReliabilityStrategy getReliabilityStrategy(LoggerConfig loggerConfig) {
+        return new DefaultReliabilityStrategy(loggerConfig);
+    }
 }
