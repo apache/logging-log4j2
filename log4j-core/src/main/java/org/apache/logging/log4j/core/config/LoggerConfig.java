@@ -229,13 +229,13 @@ public class LoggerConfig extends AbstractFilterable {
      */
     protected void clearAppenders() {
         waitForCompletion();
-        List<AppenderControl> copy = new ArrayList<AppenderControl>(appenders);
+        List<AppenderControl> copy = new ArrayList<>(appenders);
         while (!copy.isEmpty()) {
             appenders.removeAll(copy);
             for (final AppenderControl ctl : copy) {
                 cleanupFilter(ctl);
             }
-            copy = new ArrayList<AppenderControl>(appenders);
+            copy = new ArrayList<>(appenders);
         }
     }
 
