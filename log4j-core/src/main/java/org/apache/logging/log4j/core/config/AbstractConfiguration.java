@@ -196,6 +196,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     public void stop() {
         this.setStopping();
         LOGGER.trace("Stopping {}...", this);
+        
+        for (final LoggerConfig loggerConfig : loggers.values()) {
+            loggerConfig.getReliabilityStrategy().beforeStopConfiguration(this);
+        }
+        LOGGER.trace("AbstractConfiguration notified {} ReliabilityStrategies that config will be stopped.",
+                loggers.size());
 
         // LOG4J2-392 first stop AsyncLogger Disruptor thread
         final LoggerContextFactory factory = LogManager.getFactory();
@@ -246,6 +252,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
         LOGGER.trace("AbstractConfiguration stopped {} AsyncAppenders.", asyncAppenderCount);
 
+        for (final LoggerConfig loggerConfig : loggers.values()) {
+            loggerConfig.getReliabilityStrategy().beforeStopAppenders();
+        }
+        LOGGER.trace("AbstractConfiguration notified {} ReliabilityStrategies that appenders will be stopped.",
+                loggers.size());
+
         int appenderCount = 0;
         for (int i = array.length - 1; i >= 0; --i) {
             if (array[i].isStarted()) { // then stop remaining Appenders
@@ -256,20 +268,18 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         LOGGER.trace("AbstractConfiguration stopped {} Appenders.", appenderCount);
 
         int loggerCount = 0;
-        for (final LoggerConfig logger : loggers.values()) {
-            // clear appenders, even if this logger is already stopped.
-            logger.clearAppenders();
+        for (final LoggerConfig loggerConfig : loggers.values()) {
 
             // AsyncLoggerConfigHelper decreases its ref count when an AsyncLoggerConfig is stopped.
             // Stopping the same AsyncLoggerConfig twice results in an incorrect ref count and
             // the shared Disruptor may be shut down prematurely, resulting in NPE or other errors.
-            if (alreadyStopped.contains(logger)) {
-                continue;
+            if (!alreadyStopped.contains(loggerConfig)) {
+                loggerConfig.stop();
+                loggerCount++;
             }
-            logger.stop();
-            loggerCount++;
+            loggerConfig.clearAppenders();
         }
-        LOGGER.trace("AbstractConfiguration stopped {} Loggers.", loggerCount);
+        LOGGER.trace("AbstractConfiguration stopped {} LoggerConfigs.", loggerCount);
 
         // AsyncLoggerConfigHelper decreases its ref count when an AsyncLoggerConfig is stopped.
         // Stopping the same AsyncLoggerConfig twice results in an incorrect ref count and
