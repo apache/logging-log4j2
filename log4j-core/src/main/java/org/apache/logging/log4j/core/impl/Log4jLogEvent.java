@@ -228,6 +228,7 @@ public class Log4jLogEvent implements LogEvent {
     *
     * @deprecated use {@link Log4jLogEvent.Builder} instead. This constructor will be removed in an upcoming release.
     */
+   @Deprecated
    public Log4jLogEvent(final long timestamp) {
        this(Strings.EMPTY, null, Strings.EMPTY, null, null, (Throwable) null, null, null, null, null, null,
                timestamp, nanoClock.nanoTime());
@@ -243,6 +244,7 @@ public class Log4jLogEvent implements LogEvent {
     * @param t A Throwable or null.
     * @deprecated use {@link Log4jLogEvent.Builder} instead. This constructor will be removed in an upcoming release.
     */
+   @Deprecated
    public Log4jLogEvent(final String loggerName, final Marker marker, final String loggerFQCN, final Level level,
                         final Message message, final Throwable t) {
        this(loggerName, marker, loggerFQCN, level, message, null, t);
@@ -288,7 +290,8 @@ public class Log4jLogEvent implements LogEvent {
     * @param timestampMillis The timestamp of the event.
     * @deprecated use {@link Log4jLogEvent.Builder} instead. This constructor will be removed in an upcoming release.
     */
-   public Log4jLogEvent(final String loggerName, final Marker marker, final String loggerFQCN, final Level level,
+   @Deprecated
+public Log4jLogEvent(final String loggerName, final Marker marker, final String loggerFQCN, final Level level,
                         final Message message, final Throwable t, final Map<String, String> mdc,
                         final ThreadContext.ContextStack ndc, final String threadName,
                         final StackTraceElement location, final long timestampMillis) {
@@ -313,6 +316,7 @@ public class Log4jLogEvent implements LogEvent {
     * @return a new LogEvent
     * @deprecated use {@link Log4jLogEvent.Builder} instead. This method will be removed in an upcoming release.
     */
+    @Deprecated
     public static Log4jLogEvent createEvent(final String loggerName, final Marker marker, final String loggerFQCN,
                                             final Level level, final Message message, final Throwable thrown,
                                             final ThrowableProxy thrownProxy,
