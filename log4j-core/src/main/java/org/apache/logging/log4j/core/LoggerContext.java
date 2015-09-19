@@ -440,7 +440,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
                 AsyncLogger.setNanoClock(NanoClockFactory.createNanoClock());
             } catch (Throwable ignored) {
                 // LMAX Disruptor jar may not be in the classpath. Ignore this.
-                LOGGER.debug("Could not set AsyncLogger NanoClock. Ignoring: ", ignored);
+                LOGGER.debug("Could not set AsyncLogger NanoClock. Ignoring: " + ignored.toString());
             }
             return prev;
         } finally {
