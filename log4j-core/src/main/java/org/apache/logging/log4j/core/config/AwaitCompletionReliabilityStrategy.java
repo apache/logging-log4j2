@@ -31,8 +31,8 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.Supplier;
 
 /**
- * Object responsible for ensuring log events are delivered to a working appender, even during or after a
- * reconfiguration.
+ * ReliabilityStrategy that counts the number of threads that have started to log an event but have not completed yet,
+ * and waits for these threads to finish before allowing the appenders to be stopped.
  */
 public class AwaitCompletionReliabilityStrategy implements ReliabilityStrategy {
     private static final int MAX_RETRIES = 3;
@@ -123,7 +123,7 @@ public class AwaitCompletionReliabilityStrategy implements ReliabilityStrategy {
         try {
             if (shutdown.compareAndSet(false, true)) {
                 int retries = 0;
-                // while (counter.get() > 0) {
+                // repeat while counter is non-zero
                 while (!counter.compareAndSet(0, Integer.MIN_VALUE)) {
 
                     // counter was non-zero

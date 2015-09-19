@@ -56,6 +56,9 @@ public interface ReliabilityStrategy {
      */
     LoggerConfig getActiveLoggerConfig(Supplier<LoggerConfig> next);
 
+    /**
+     * Called after a log event was logged.
+     */
     void afterLogEvent();
     
     /**
@@ -64,8 +67,9 @@ public interface ReliabilityStrategy {
     void beforeStopAppenders();
 
     /**
+     * Called before the configuration is stopped.
      * 
-     * @param abstractConfiguration
+     * @param configuration
      */
     void beforeStopConfiguration(Configuration configuration);
 

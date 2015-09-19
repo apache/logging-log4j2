@@ -26,7 +26,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.Supplier;
 
 /**
- * Reliability strategy that does nothing.
+ * Reliability strategy that assumes reconfigurations will never take place.
  */
 public class DefaultReliabilityStrategy implements ReliabilityStrategy {
 
