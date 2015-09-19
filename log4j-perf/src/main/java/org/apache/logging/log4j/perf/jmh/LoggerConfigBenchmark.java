@@ -115,6 +115,12 @@ public class LoggerConfigBenchmark {
         return listAppender.size();
     }
 
+    @Benchmark
+    public int logWithCountersRetryAfterReconfig() {
+        log4WithCounterAndFlag(LOGEVENT);
+        return listAppender.size();
+    }
+
     /**
      * Logs an event.
      *
@@ -152,27 +158,28 @@ public class LoggerConfigBenchmark {
      *
      * @param event The log event.
      */
-    public void logWithCounterAndFlag(final LogEvent event) {
-        while (!beforeLogEventCheckCounterPositive()) {
-
-        }
-        try {
-            if (!isFiltered(event)) {
-                processLogEvent(event);
-            }
-        } finally {
-            afterLogEvent2();
+    public void log3(final LogEvent event) {
+        if (!isFiltered(event)) {
+            processLogEvent(event);
         }
     }
+    
+    volatile LoggerConfigBenchmark loggerConfig = this;
 
     /**
      * Logs an event.
      *
      * @param event The log event.
      */
-    public void log3(final LogEvent event) {
-        if (!isFiltered(event)) {
-            processLogEvent(event);
+    public void log4WithCounterAndFlag(final LogEvent event) {
+        LoggerConfigBenchmark local = loggerConfig;
+        while (!local.beforeLogEventCheckCounterPositive()) {
+            local = loggerConfig;
+        }
+        try {
+            local.log3(event);
+        } finally {
+            local.afterLogEvent2();
         }
     }
 
