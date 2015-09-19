@@ -26,12 +26,14 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.config.ReliabilityStrategy;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util.Supplier;
 
 /**
  * The core implementation of the {@link org.apache.logging.log4j.Logger} interface. Besides providing an
@@ -46,7 +48,7 @@ import org.apache.logging.log4j.util.Strings;
  * Logger noticeably impacts performance. The message pattern and parameters are required so that they can be
  * used in global filters.
  */
-public class Logger extends AbstractLogger {
+public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
 
     private static final long serialVersionUID = 1L;
 
@@ -116,12 +118,24 @@ public class Logger extends AbstractLogger {
         }
         privateConfig = new PrivateConfig(privateConfig, actualLevel);
     }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.apache.logging.log4j.util.Supplier#get()
+     */
+    public LoggerConfig get() {
+        return privateConfig.loggerConfig;
+    }
 
     @Override
     public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message, final Throwable t) {
         final Message msg = message == null ? new SimpleMessage(Strings.EMPTY) : message;
+        
+        // check if we need to reconfigure
         privateConfig.config.getConfigurationMonitor().checkConfiguration();
-        privateConfig.loggerConfig.log(getName(), fqcn, marker, level, msg, t);
+        
+        final ReliabilityStrategy strategy = privateConfig.loggerConfig.getReliabilityStrategy();
+        strategy.log(this, getName(), fqcn, marker, level, msg, t);
     }
 
     @Override
