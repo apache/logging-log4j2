@@ -28,8 +28,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.Supplier;
 
 /**
- * ReliabilityStrategy that counts the number of threads that have started to log an event but have not completed yet,
- * and waits for these threads to finish before allowing the appenders to be stopped.
+ * ReliabilityStrategy that uses read/write locks to prevent the LoggerConfig from stopping while it is in use.
  */
 public class LockingReliabilityStrategy implements ReliabilityStrategy {
     private final LoggerConfig loggerConfig;
