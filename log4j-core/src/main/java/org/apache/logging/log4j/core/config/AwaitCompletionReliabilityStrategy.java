@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.core.config;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -43,7 +44,7 @@ public class AwaitCompletionReliabilityStrategy implements ReliabilityStrategy {
     private final LoggerConfig loggerConfig;
 
     public AwaitCompletionReliabilityStrategy(final LoggerConfig loggerConfig) {
-        this.loggerConfig = loggerConfig;
+        this.loggerConfig = Objects.requireNonNull(loggerConfig, "loggerConfig is null");
     }
 
     /* (non-Javadoc)
