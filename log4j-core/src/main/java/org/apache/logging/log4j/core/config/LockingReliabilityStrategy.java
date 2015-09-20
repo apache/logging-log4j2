@@ -17,16 +17,20 @@
 
 package org.apache.logging.log4j.core.config;
 
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.Supplier;
-
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.*;
 
 /**
  * ReliabilityStrategy that counts the number of threads that have started to log an event but have not completed yet,
@@ -43,7 +47,7 @@ public class LockingReliabilityStrategy implements ReliabilityStrategy {
     private volatile boolean isStopping = false;
 
     public LockingReliabilityStrategy(final LoggerConfig loggerConfig) {
-        this.loggerConfig = loggerConfig;
+        this.loggerConfig = Objects.requireNonNull(loggerConfig, "loggerConfig was null");
     }
 
     /* (non-Javadoc)
