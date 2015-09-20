@@ -34,6 +34,6 @@ public class DefaultConfigurationMonitor implements ConfigurationMonitor {
      */
     @Override
     public ReliabilityStrategy getReliabilityStrategy(LoggerConfig loggerConfig) {
-        return new DefaultReliabilityStrategy(loggerConfig);
+        return ReliabilityStrategyFactory.getReliabilityStrategy(loggerConfig);
     }
 }

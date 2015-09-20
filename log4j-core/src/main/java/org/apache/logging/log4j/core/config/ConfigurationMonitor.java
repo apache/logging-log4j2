@@ -19,10 +19,19 @@ package org.apache.logging.log4j.core.config;
 /**
  * Interface that must be implemented to provide notification of configuration changes.
  */
-public interface ConfigurationMonitor extends ReliabilityStrategyFactory {
+public interface ConfigurationMonitor {
 
     /**
      * Called to determine if the configuration has changed.
      */
     void checkConfiguration();
+
+    /**
+     * Determines how to log events reliably during or after a configuration change.
+     * 
+     * @param loggerConfig the LoggerConfig the resulting {@code ReliabilityStrategy} is associated with
+     * @return a ReliabilityStrategy that helps the specified LoggerConfig to log events reliably during or after a
+     *         configuration change
+     */
+    ReliabilityStrategy getReliabilityStrategy(final LoggerConfig loggerConfig);
 }

@@ -113,6 +113,6 @@ public class FileConfigurationMonitor implements ConfigurationMonitor {
      */
     @Override
     public ReliabilityStrategy getReliabilityStrategy(LoggerConfig loggerConfig) {
-        return new AwaitCompletionReliabilityStrategy(loggerConfig);
+        return ReliabilityStrategyFactory.getReliabilityStrategy(loggerConfig);
     }
 }
