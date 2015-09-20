@@ -27,6 +27,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.config.ReliabilityStrategy;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.util.Clock;
@@ -193,6 +194,7 @@ public class AsyncLogger extends Logger {
             return null;
         }
         try {
+            @SuppressWarnings("unchecked")
             final ExceptionHandler<RingBufferLogEvent> result = Loader.newCheckedInstanceOf(cls, ExceptionHandler.class);
             LOGGER.debug("AsyncLogger.ExceptionHandler={}", result);
             return result;
@@ -284,7 +286,8 @@ public class AsyncLogger extends Logger {
             final String fqcn, final Level level, final Marker marker, final Message message, final Throwable thrown) {
         if (info.isAppenderThread && theDisruptor.getRingBuffer().remainingCapacity() == 0) {
             // bypass RingBuffer and invoke Appender directly
-            privateConfig.loggerConfig.log(getName(), fqcn, marker, level, message, thrown);
+            final ReliabilityStrategy strategy = privateConfig.loggerConfig.getReliabilityStrategy();
+            strategy.log(this, getName(), fqcn, marker, level, message, thrown);
             return true;
         }
         return false;
@@ -382,7 +385,8 @@ public class AsyncLogger extends Logger {
     public void actualAsyncLog(final RingBufferLogEvent event) {
         final Map<Property, Boolean> properties = privateConfig.loggerConfig.getProperties();
         event.mergePropertiesIntoContextMap(properties, privateConfig.config.getStrSubstitutor());
-        privateConfig.logEvent(event);
+        final ReliabilityStrategy strategy = privateConfig.loggerConfig.getReliabilityStrategy();
+        strategy.log(this, event);
     }
 
     public static void stop() {
