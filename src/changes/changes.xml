@@ -66,6 +66,10 @@
       <action issue="LOG4J2-1125" dev="rpopma" type="update">
         PatternLayout performance improvement by caching and reusing a ThreadLocal StringBuilder.
       </action>
+      <action issue="LOG4J2-1121" dev="rpopma" type="fix">
+        Fixed potential race condition on reconfiguration. Introduced ReliabilityStrategy to facilitate
+        switching between different mechanisms for preventing log events from being dropped on reconfiguration.
+      </action>
       <action issue="LOG4J2-1114" dev="ggregory" type="update">
         Add thread name to status logger layout.
       </action>
