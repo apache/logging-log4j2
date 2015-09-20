@@ -37,11 +37,6 @@ import org.apache.logging.log4j.util.Supplier;
  * and waits for these threads to finish before allowing the appenders to be stopped.
  */
 public class LockingReliabilityStrategy implements ReliabilityStrategy {
-    private static final int MAX_RETRIES = 3;
-    private final AtomicInteger counter = new AtomicInteger();
-    private final AtomicBoolean shutdown = new AtomicBoolean(false);
-    private final Lock shutdownLock = new ReentrantLock();
-    private final Condition noLogEvents = shutdownLock.newCondition(); // should only be used when shutdown == true
     private final LoggerConfig loggerConfig;
     private final ReadWriteLock reconfigureLock = new ReentrantReadWriteLock();
     private volatile boolean isStopping = false;
