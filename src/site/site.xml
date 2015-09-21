@@ -135,6 +135,8 @@
       </item>
 
       <item name="Layouts" href="/manual/layouts.html" collapse="true">
+        <item name="CSV" href="/manual/layouts.html#CSVLayouts"/>
+        <item name="GELF" href="/manual/layouts.html#GELFLayout"/>
         <item name="HTML" href="/manual/layouts.html#HTMLLayout"/>
         <item name="JSON" href="/manual/layouts.html#JSONLayout"/>
         <item name="Pattern" href="/manual/layouts.html#PatternLayout"/>
@@ -142,7 +144,6 @@
         <item name="Serialized" href="/manual/layouts.html#SerializedLayout"/>
         <item name="Syslog" href="/manual/layouts.html#SyslogLayout"/>
         <item name="XML" href="/manual/layouts.html#XMLLayout"/>
-        <item name="GELF" href="/manual/layouts.html#GELFLayout"/>
         <item name="Location Information" href="/manual/layouts.html#LocationInformation"/>
       </item>
 
