@@ -176,6 +176,78 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
 0,1441617184044,DEBUG,main,"one=1, two=2, three=3",org.apache.logging.log4j.spi.AbstractLogger,,,,org.apache.logging.log4j.core.layout.CsvLogEventLayoutTest.testLayout(CsvLogEventLayoutTest.java:98),{},[]
 </pre>                    
         </subsection>
+        <a name="GELFLayout"/>
+        <subsection name="GELF Layout">
+          <!-- From Javadoc of org.apache.logging.log4j.core.layout.GELFLayout -->
+          <p>
+            Lays out events in the Graylog Extended Log Format (GELF) 1.1.
+          </p>
+          <p>
+            This layout compresses JSON to GZIP or ZLIB (the <code>compressionType</code>) if log event data is larger than 1024 bytes
+            (the <code>compressionThreshold</code>). This layout does not implement chunking.
+          </p>
+          <p>
+            Configure as follows to send to a Graylog2 server:
+          </p>
+          <pre class="prettyprint linenums">[
+  &lt;Appenders&gt;
+    &lt;Socket name="Graylog" protocol="udp" host="graylog.domain.com" port="12201"&gt;
+        &lt;GelfLayout host="someserver" compressionType="GZIP" compressionThreshold="1024"&gt;
+            &lt;KeyValuePair key="additionalField1" value="additional value 1"/&gt;
+            &lt;KeyValuePair key="additionalField2" value="additional value 2"/&gt;
+        &lt;/GelfLayout&gt;
+    &lt;/Socket&gt;
+  &lt;/Appenders&gt;
+]
+</pre>
+           <p>
+             See also:
+           </p>
+           <ul>
+             <li>The <a href="http://graylog2.org/gelf">GELF home page</a></li>
+             <li>The <a href="http://graylog2.org/resources/gelf/specification">GELF specification</a></li>
+           </ul>
+        </subsection>
+        <a name="HTMLLayout"/>
+        <subsection name="HTMLLayout">
+          <p>The HTMLLayout generates an HTML page and adds each LogEvent to a row in a table.
+          </p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>charset</td>
+              <td>String</td>
+              <td>The character set to use when converting the HTML String to a byte array. The value must be
+                a valid ${Charset}. If not specified, this layout uses UTF-8.</td>
+            </tr>
+            <tr>
+              <td>contentType</td>
+              <td>String</td>
+              <td>The value to assign to the Content-Type header. The default is "text/html".</td>
+            </tr>
+            <tr>
+              <td>locationInfo</td>
+              <td>boolean</td>
+              <td>
+              <a name="HtmlLocationInfo" />
+              <p>If true, the filename and line number will be included in the HTML output. The default value is
+                false.</p>
+                <p>Generating <a href="#LocationInformation">location information</a>
+                is an expensive operation and may impact performance. Use with caution.</p>
+                </td>
+            </tr>
+            <tr>
+              <td>title</td>
+              <td>String</td>
+              <td>A String that will appear as the HTML title.</td>
+            </tr>
+            <caption align="top">HTML Layout Parameters</caption>
+          </table>
+        </subsection>
         <a name="JSONLayout"/>
         <subsection name="JSONLayout">
           <!-- From Javadoc of org.apache.logging.log4j.core.layout.JSONLayout -->
@@ -275,46 +347,6 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
               </td>
             </tr>
             <caption align="top">JSON Layout Parameters</caption>
-          </table>
-        </subsection>
-        <a name="HTMLLayout"/>
-        <subsection name="HTMLLayout">
-          <p>The HTMLLayout generates an HTML page and adds each LogEvent to a row in a table.
-          </p>
-          <table>
-            <tr>
-              <th>Parameter Name</th>
-              <th>Type</th>
-              <th>Description</th>
-            </tr>
-            <tr>
-              <td>charset</td>
-              <td>String</td>
-              <td>The character set to use when converting the HTML String to a byte array. The value must be
-                a valid ${Charset}. If not specified, this layout uses UTF-8.</td>
-            </tr>
-            <tr>
-              <td>contentType</td>
-              <td>String</td>
-              <td>The value to assign to the Content-Type header. The default is "text/html".</td>
-            </tr>
-            <tr>
-              <td>locationInfo</td>
-              <td>boolean</td>
-              <td>
-              <a name="HtmlLocationInfo" />
-              <p>If true, the filename and line number will be included in the HTML output. The default value is
-                false.</p>
-                <p>Generating <a href="#LocationInformation">location information</a>
-                is an expensive operation and may impact performance. Use with caution.</p>
-                </td>
-            </tr>
-            <tr>
-              <td>title</td>
-              <td>String</td>
-              <td>A String that will appear as the HTML title.</td>
-            </tr>
-            <caption align="top">HTML Layout Parameters</caption>
           </table>
         </subsection>
         <a name="PatternLayout"/>
@@ -1638,38 +1670,6 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           <code>compact="true"</code>,  then no end-of-line or indentation is used. Message content may contain,
           of course, end-of-lines.
           </p>
-        </subsection>
-        <a name="GELFLayout"/>
-        <subsection name="GELF Layout">
-          <!-- From Javadoc of org.apache.logging.log4j.core.layout.GELFLayout -->
-          <p>
-            Lays out events in the Graylog Extended Log Format (GELF) 1.1.
-          </p>
-          <p>
-            This layout compresses JSON to GZIP or ZLIB (the <code>compressionType</code>) if log event data is larger than 1024 bytes
-            (the <code>compressionThreshold</code>). This layout does not implement chunking.
-          </p>
-          <p>
-            Configure as follows to send to a Graylog2 server:
-          </p>
-          <pre class="prettyprint linenums">[
-  &lt;Appenders&gt;
-    &lt;Socket name="Graylog" protocol="udp" host="graylog.domain.com" port="12201"&gt;
-        &lt;GelfLayout host="someserver" compressionType="GZIP" compressionThreshold="1024"&gt;
-            &lt;KeyValuePair key="additionalField1" value="additional value 1"/&gt;
-            &lt;KeyValuePair key="additionalField2" value="additional value 2"/&gt;
-        &lt;/GelfLayout&gt;
-    &lt;/Socket&gt;
-  &lt;/Appenders&gt;
-]
-</pre>
-           <p>
-             See also:
-           </p>
-           <ul>
-             <li>The <a href="http://graylog2.org/gelf">GELF home page</a></li>
-             <li>The <a href="http://graylog2.org/resources/gelf/specification">GELF specification</a></li>
-           </ul>
         </subsection>
         <a name="LocationInformation"/>
         <subsection name="Location Information">
