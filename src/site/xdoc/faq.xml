@@ -63,12 +63,9 @@
 
 		<a name="config_from_code" />
         <h4>How do I configure log4j2 in code without a configuration file?</h4>
-        <p>You could use the static method <code>#initialize(String contextName, ClassLoader loader, String configLocation)</code>
-         (see
-         <a href="log4j-core/xref/org/apache/logging/log4j/core/config/Configurator.html">source code</a>)
-          in <code>org.apache.logging.log4j.core.config.Configurator</code>.
-         (You can pass null for the class loader.)
-         Be aware that this class is not part of the public API so your code may break with any minor release.</p>
+        <p>Starting with version 2.4, Log4j 2 provides an [API for programmatic configuration|manual/customconfig.html]. 
+        The new ConfigurationBuilder API allows you to create Configurations in code by constructing component definitions 
+        without requiring you to know about the internals of actual configuration objects like Loggers and Appenders.</p>
 
         <a name="reconfig_from_code" />
         <h4>How do I reconfigure log4j2 in code with a specific configuration file?</h4>
