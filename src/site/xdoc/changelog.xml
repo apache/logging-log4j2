@@ -30,7 +30,7 @@
       <ul>
         <li>Log4j 2.4 and greater requires Java 7, versions 2.0-alpha1 to 2.3 required Java 6.</li>
         <li>The XML configuration has been simplified and is not compatible with Log4j 1.x</li>
-        <li>Configuration via property files is not supported.</li>
+        <li>Configuration via property files is supported from version 2.4, but is not compatible with Log4j 1.x.</li>
         <li>Configuration via JSON or YAML is supported.</li>
         <li>Although Log4j 2 is not directly compatible with Log4j 1.x a compatibility bridge
           has been provided to reduce the need to make coding changes.
