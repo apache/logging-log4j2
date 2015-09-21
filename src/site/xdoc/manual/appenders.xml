@@ -1227,7 +1227,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         </subsection>
         <a name="KafkaAppender"/>
         <subsection name="KafkaAppender">
-          <p>The KafkaAppender logs events to an Apache Kafka topic.</p>
+          <p>The KafkaAppender logs events to an <a href="https://kafka.apache.org/">Apache Kafka</a> topic.</p>
           <table>
             <caption align="top">KafkaAppender Parameters</caption>
             <tr>
