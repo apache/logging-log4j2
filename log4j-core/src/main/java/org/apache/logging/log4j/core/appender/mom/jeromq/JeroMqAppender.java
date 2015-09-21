@@ -106,7 +106,7 @@ public final class JeroMqAppender extends AbstractAppender {
             // @formatter:off
             @Required(message = "No name provided for JeroMqAppender") @PluginAttribute("name") final String name,
             @PluginElement("Layout") Layout<?> layout,
-            @PluginElement("Filters") final Filter filter,
+            @PluginElement("Filter") final Filter filter,
             @PluginElement("Properties") final Property[] properties,
             // Super attributes
             @PluginAttribute("ignoreExceptions") final boolean ignoreExceptions,

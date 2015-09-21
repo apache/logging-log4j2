@@ -3292,7 +3292,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         <subsection name="ZeroMQ Appender">
           <p>
             The ZeroMQ appender uses the <a href="https://github.com/zeromq/jeromq">JeroMQ</a> library to send log 
-            events to one or more endpoints.  
+            events to one or more ZeroMQ endpoints.  
           </p>
           <p>
             This is a simple JeroMQ configuration:
@@ -3324,17 +3324,19 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>name</td>
               <td>String</td>
-              <td>The name of the Appender.</td>
+              <td>The name of the Appender. Required.</td>
             </tr>
             <tr>
               <td>Layout</td>
-              <td>Layout</td>
-              <td>The Layout of the Appender.</td>
+              <td>layout</td>
+              <td>The Layout of the Appender. If you do not specify a layout, the appender uses the default 
+              pattern appender returned by 
+              <a href="https://logging.apache.org/log4j/2.x/log4j-core/apidocs/org/apache/logging/log4j/core/layout/PatternLayout.html#createDefaultLayout()">PatternLayout.html.createDefaultLayout()</a></td>
             </tr>
             <tr>
               <td>Filters</td>
               <td>Filter</td>
-              <td>The Filters of the Appender.</td>
+              <td>The Filter(s) of the Appender.</td>
             </tr>
             <tr>
               <td>Property</td>
