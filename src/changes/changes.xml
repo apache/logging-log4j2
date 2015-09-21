@@ -28,7 +28,7 @@
         Add support for configuration via Properties.
       </action>
       <action issue="LOG4J2-952" dev="rgoers" type="add">
-        Add ConfigurationBuilder.
+        Add ConfigurationBuilder for programmatic configuration.
       </action>
       <action issue="LOG4J2-1017" dev="ggregory" type="update">
         Update Java platform from Java 6 to 7. From this version onwards, log4j 2 requires Java 7.
