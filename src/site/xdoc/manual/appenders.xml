@@ -3288,8 +3288,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 </Configuration>]]></pre>
         </subsection>
 
-        <a name="ZeroMQAppender"/>
-        <subsection name="ZeroMQ Appender">
+        <a name="JeroMQAppender"/>
+        <subsection name="ZeroMQ/JeroMQ Appender">
           <p>
             The ZeroMQ appender uses the <a href="https://github.com/zeromq/jeromq">JeroMQ</a> library to send log 
             events to one or more ZeroMQ endpoints.  
