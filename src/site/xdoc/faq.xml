@@ -29,7 +29,6 @@
       <li><a href="#config_location">How do I specify the configuration file location?</a></li>
       <li><a href="#config_from_code">How do I configure log4j2 in code without a configuration file?</a></li>
       <li><a href="#reconfig_from_code">How do I reconfigure log4j2 in code with a specific configuration file?</a></li>
-      <li><a href="#set_logger_level_from_code">How do I change a logger's level in code?</a></li>
       <li><a href="#shutdown">How do I shut down log4j2 in code?</a></li>
       <li><a href="#config_sep_appender_level">How do I send log messages with different levels to different appenders?</a></li>
       <li><a href="#troubleshooting">How do I debug my configuration?</a></li>
@@ -78,28 +77,6 @@ File file = new File("path/to/a/different/log4j2.xml");
 
 // this will force a reconfiguration
 context.setConfigLocation(file.toURI());
-</pre>
-
-        <a name="set_logger_level_from_code" />
-        <h4>How do I change a logger's level in code?</h4>
-        <p>See the below example.
-         Be aware that these classes are not part of the public API so your code may break with any minor release.</p>
-        <pre class="prettyprint linenums">// import org.apache.logging.log4j.core.LoggerContext;
-// import org.apache.logging.log4j.core.config.Configuration;
-// import org.apache.logging.log4j.core.config.LoggerConfig;
-
-LoggerContext context = (LoggerContext) LogManager.getContext(false);
-Configuration config = context.getConfiguration();
-LoggerConfig rootConfig = config.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
-rootConfig.setLevel(Level.DEBUG);
-
-// You could also specify the actual logger name as below
-// and it will return the LoggerConfig used by the Logger.
-LoggerConfig loggerConfig = config.getLoggerConfig("com.apache.test");
-loggerConfig.setLevel(Level.TRACE);
-
-// This causes all Loggers to refetch information from their LoggerConfig.
-context.updateLoggers();
 </pre>
 
         <a name="shutdown" />
