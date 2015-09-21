@@ -25,9 +25,9 @@
     </properties>
 
     <body>
-      <section name="Custom Configurations">
+      <section name="Programmatic Configuration">
         <p>
-          Log4j 2 provides a few ways for applications to create their own custom configurations:
+          Log4j 2 provides a few ways for applications to create their own programmatic configuration:
         </p>
         <ul>
           <li>Specify a custom ConfigurationFactory</li>
