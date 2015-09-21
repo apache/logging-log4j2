@@ -352,7 +352,7 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
         this.loggerName = loggerName;
         this.marker = marker;
         this.loggerFqcn = loggerFQCN;
-        this.level = (level == null) ? Level.OFF : level; // LOG4J2-462, LOG4J2-465
+        this.level = level == null ? Level.OFF : level; // LOG4J2-462, LOG4J2-465
         this.message = message;
         this.thrown = thrown;
         this.thrownProxy = thrownProxy;
