@@ -1241,7 +1241,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>The Kafka topic to use. Required.</td>
             </tr>
             <tr>
-              <td>lilter</td>
+              <td>filter</td>
               <td>Filter</td>
               <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
                 may be used by using a CompositeFilter.</td>
