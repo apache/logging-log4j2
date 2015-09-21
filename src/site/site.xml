@@ -184,7 +184,7 @@
         <item name="Custom Plugins" href="/manual/extending.html#Custom_Plugins"/>
       </item>
 
-      <item name="Extending Log4j Configuration" href="/manual/customconfig.html" collapse="true">
+      <item name="Programmatic Log4j Configuration" href="/manual/customconfig.html" collapse="true">
         <item name="ConfigurationBuilder API" href="/manual/customconfig.html#ConfigurationBuilder"/>
         <item name="Understanding ConfigurationFactory" href="/manual/customconfig.html#ConfigurationFactory"/>
         <item name="Example" href="/manual/customconfig.html#Example"/>

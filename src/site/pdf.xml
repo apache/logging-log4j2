@@ -42,7 +42,7 @@
     <item name="JMX" ref="/manual/jmx.xml.vm"/>
     <item name="Logging Separation" ref="/manual/logsep.xml"/>
     <item name="Extending Log4j" ref="/manual/extending.xml"/>
-    <item name="Extending Log4j Configuration" ref="/manual/customconfig.xml"/>
+    <item name="Programmatic Log4j Configuration" ref="/manual/customconfig.xml"/>
     <item name="Custom Log Levels" ref="/manual/customloglevels.xml.vm" />
   </toc>
 
