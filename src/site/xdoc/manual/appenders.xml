@@ -2285,7 +2285,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                     created and starts being written to.</td>
                 </tr>
               </table>
-              <p>By way of contrast, when the the fileIndex attribute is set to "max" but all the other settings
+              <p>By way of contrast, when the fileIndex attribute is set to "max" but all the other settings
                 are the same the following actions will be performed.
               </p>
               <table>
