@@ -42,6 +42,8 @@ public class CsvLogEventLayout extends AbstractCsvLayout {
 
     private static final long serialVersionUID = 1L;
 
+    private static ThreadLocal<StringBuilder> strBuilder = newStringBuilderThreadLocal();
+    
     public static CsvLogEventLayout createDefaultLayout() {
         return new CsvLogEventLayout(Charset.forName(DEFAULT_CHARSET), CSVFormat.valueOf(DEFAULT_FORMAT), null, null);
     }
@@ -76,7 +78,7 @@ public class CsvLogEventLayout extends AbstractCsvLayout {
 
     @Override
     public String toSerializable(final LogEvent event) {
-        final StringBuilder buffer = new StringBuilder(1024);
+        final StringBuilder buffer = prepareStringBuilder(strBuilder);
         try {
             // Revisit when 1.3 is out so that we do not need to create a new
             // printer for each event.
