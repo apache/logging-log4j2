@@ -74,14 +74,16 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
 
     /**
      * Creates a new DocumentBuilder suitable for parsing a configuration file.
-     *
+     * @param xIncludeAware enabled XInclude
      * @return a new DocumentBuilder
      * @throws ParserConfigurationException
      */
-    static DocumentBuilder newDocumentBuilder() throws ParserConfigurationException {
+    static DocumentBuilder newDocumentBuilder(boolean xIncludeAware) throws ParserConfigurationException {
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
-        enableXInclude(factory);
+        if (xIncludeAware) {
+            enableXInclude(factory);
+        }
         return factory.newDocumentBuilder();
     }
 
@@ -102,13 +104,6 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         } catch (final NoSuchMethodError err) {
             // LOG4J2-919
             LOGGER.warn("The DocumentBuilderFactory [{}] is out of date and does not support XInclude: {}", factory, err);
-        } catch (final Exception e) {
-            // LOG4J2-1127
-            if (e.getCause() instanceof UnsupportedOperationException) {
-                LOGGER.warn("The DocumentBuilderFactory [{}] does not support XInclude: {}", factory, e);
-            } else {
-                throw e;
-            }
         }
         try {
             // Alternative: We could specify all features and values with system properties like:
@@ -144,7 +139,21 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             }
             final InputSource source = new InputSource(new ByteArrayInputStream(buffer));
             source.setSystemId(configSource.getLocation());
-            final Document document = newDocumentBuilder().parse(source);
+            final DocumentBuilder documentBuilder = newDocumentBuilder(true);
+            Document document;
+            try {
+                document = documentBuilder.parse(source);
+            } catch (final Exception e) {
+                // LOG4J2-1127
+                if (e.getCause() instanceof UnsupportedOperationException) {
+                    LOGGER.warn(
+                            "The DocumentBuilder {} does not support an operation: {}. Trying again without XInclude...",
+                            documentBuilder, e);
+                    document = newDocumentBuilder(false).parse(source);
+                } else {
+                    throw e;
+                }
+            }
             rootElement = document.getDocumentElement();
             final Map<String, String> attrs = processAttributes(rootNode, rootElement);
             final StatusConfiguration statusConfig = new StatusConfiguration().withVerboseClasses(VERBOSE_CLASSES)
