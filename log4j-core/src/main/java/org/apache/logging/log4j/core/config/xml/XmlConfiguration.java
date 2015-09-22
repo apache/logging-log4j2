@@ -239,7 +239,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         constructHierarchy(rootNode, rootElement);
         if (status.size() > 0) {
             for (final Status s : status) {
-                LOGGER.error("Error processing element {}: {}", s.name, s.errorType);
+                LOGGER.error("Error processing element {} ({}): {}", s.name, s.element, s.errorType);
             }
             return;
         }
