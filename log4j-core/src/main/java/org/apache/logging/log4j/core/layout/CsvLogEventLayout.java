@@ -40,9 +40,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 @Plugin(name = "CsvLogEventLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public class CsvLogEventLayout extends AbstractCsvLayout {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
 
     public static CsvLogEventLayout createDefaultLayout() {
