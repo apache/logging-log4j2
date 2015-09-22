@@ -145,7 +145,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                 document = documentBuilder.parse(source);
             } catch (final Exception e) {
                 // LOG4J2-1127
-                if (e.getCause() instanceof UnsupportedOperationException) {
+                if (e instanceof UnsupportedOperationException) {
                     LOGGER.warn(
                             "The DocumentBuilder {} does not support an operation: {}. Trying again without XInclude...",
                             documentBuilder, e);
