@@ -89,7 +89,7 @@ public final class PatternLayout extends AbstractStringLayout {
     private static ThreadLocal<StringBuilder> strBuilder = new ThreadLocal<StringBuilder>() {
         @Override
         protected StringBuilder initialValue() {
-            return new StringBuilder(1024);
+            return new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);
         }        
     };
 

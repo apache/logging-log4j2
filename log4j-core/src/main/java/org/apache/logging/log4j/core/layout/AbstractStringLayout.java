@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.LogEvent;
 public abstract class AbstractStringLayout extends AbstractLayout<String> {
 
     private static final long serialVersionUID = 1L;
+    protected static final int DEFAULT_STRING_BUILDER_SIZE = 1024;
 
     /**
      * Converts a String to a byte[].
