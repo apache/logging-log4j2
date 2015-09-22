@@ -86,12 +86,7 @@ public final class PatternLayout extends AbstractStringLayout {
      */
     private final PatternFormatter[] formatters;
 
-    private static ThreadLocal<StringBuilder> strBuilder = new ThreadLocal<StringBuilder>() {
-        @Override
-        protected StringBuilder initialValue() {
-            return new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);
-        }        
-    };
+    private static ThreadLocal<StringBuilder> strBuilder = newStringBuilderThreadLocal();
 
     /**
      * Conversion pattern.

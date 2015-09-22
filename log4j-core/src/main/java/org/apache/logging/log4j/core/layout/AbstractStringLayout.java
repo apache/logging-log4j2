@@ -45,6 +45,15 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
         return null;
     }
 
+    protected static ThreadLocal<StringBuilder> newStringBuilderThreadLocal() {
+        return new ThreadLocal<StringBuilder>() {
+            @Override
+            protected StringBuilder initialValue() {
+                return new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);
+            }        
+        };
+    }
+
     /**
      * The charset for the formatted message.
      */
