@@ -1270,7 +1270,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             </tr>
             <tr>
               <td>properties</td>
-              <td>Property</td>
+              <td>Property[]</td>
               <td>
                 You can set any properties in <a href="http://kafka.apache.org/documentation.html#newproducerconfigs">Kafka new producer properties</a>.
                 You need to set the <code>bootstrap.servers</code> property, there are sensible default values for the others.
@@ -3339,8 +3339,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>The Filter(s) of the Appender.</td>
             </tr>
             <tr>
-              <td>Property</td>
-              <td>Property</td>
+              <td>Properties</td>
+              <td>Property[]</td>
               <td>One or more Property elements, named <code>endpoint</code>.</td>
             </tr>
             <tr>
