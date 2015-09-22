@@ -356,6 +356,12 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             this.element = element;
             this.errorType = errorType;
         }
+        
+        @Override
+        public String toString() {
+            return "Status [name=" + name + ", element=" + element + ", errorType=" + errorType + "]";
+        }
+
     }
 
 }
