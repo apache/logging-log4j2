@@ -191,8 +191,7 @@ public final class PatternLayout extends AbstractStringLayout {
      */
     @Override
     public String toSerializable(final LogEvent event) {
-        final StringBuilder buf = strBuilder.get();
-        buf.setLength(0);
+        final StringBuilder buf = prepareStringBuilder(strBuilder);
         final int len = formatters.length;
         for (int i = 0; i < len; i++) {
             formatters[i].format(event, buf);

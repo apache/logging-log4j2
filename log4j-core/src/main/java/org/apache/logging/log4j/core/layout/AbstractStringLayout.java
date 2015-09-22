@@ -54,6 +54,12 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
         };
     }
 
+    protected static StringBuilder prepareStringBuilder(ThreadLocal<StringBuilder> threadLocal) {
+        final StringBuilder buf = threadLocal.get();
+        buf.setLength(0);
+        return buf;
+    }
+
     /**
      * The charset for the formatted message.
      */
