@@ -102,6 +102,13 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         } catch (final NoSuchMethodError err) {
             // LOG4J2-919
             LOGGER.warn("The DocumentBuilderFactory [{}] is out of date and does not support XInclude: {}", factory, err);
+        } catch (final Exception e) {
+            // LOG4J2-1127
+            if (e.getCause() instanceof UnsupportedOperationException) {
+                LOGGER.warn("The DocumentBuilderFactory [{}] does not support XInclude: {}", factory, e);
+            } else {
+                throw e;
+            }
         }
         try {
             // Alternative: We could specify all features and values with system properties like:
