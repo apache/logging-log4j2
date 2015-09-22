@@ -191,7 +191,6 @@ public final class PatternLayout extends AbstractStringLayout {
     /**
      * Formats a logging event to a writer.
      *
-     *
      * @param event logging event to be formatted.
      * @return The event formatted as a String.
      */
