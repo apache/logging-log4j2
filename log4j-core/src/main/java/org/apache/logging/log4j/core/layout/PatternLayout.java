@@ -81,12 +81,12 @@ public final class PatternLayout extends AbstractStringLayout {
     /** Key to identify pattern converters. */
     public static final String KEY = "Converter";
 
+    private static ThreadLocal<StringBuilder> strBuilder = newStringBuilderThreadLocal();
+
     /**
      * Initial converter for pattern.
      */
     private final PatternFormatter[] formatters;
-
-    private static ThreadLocal<StringBuilder> strBuilder = newStringBuilderThreadLocal();
 
     /**
      * Conversion pattern.
