@@ -1678,7 +1678,7 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
 			configured with a location-related attribute like
 			HTML <a href="#HtmlLocationInfo">locationInfo</a>,
 			or one of the patterns
-			<a href="#PatternClass">%C or $class</a>,
+			<a href="#PatternClass">%C or %class</a>,
 			<a href="#PatternFile">%F or %file</a>,
 			<a href="#PatternLocation">%l or %location</a>,
 			<a href="#PatternLine">%L or %line</a>,
