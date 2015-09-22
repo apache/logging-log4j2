@@ -46,6 +46,22 @@ public final class Throwables {
     }
 
     /**
+     * Returns the deepest cause of the given {@code throwable}.
+     * 
+     * @param throwable
+     *            the throwable to navigate
+     * @return the deepest throwable or the given throwable
+     */
+    public static Throwable getRootCause(final Throwable throwable) {
+        Throwable cause;
+        Throwable root = throwable;
+        while ((cause = root.getCause()) != null) {
+            root = cause;
+        }
+        return root;
+    }
+
+    /**
      * Has no effect on Java 6 and below.
      *
      * @param throwable a Throwable

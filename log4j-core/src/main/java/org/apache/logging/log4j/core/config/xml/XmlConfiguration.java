@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.config.status.StatusConfiguration;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Patterns;
+import org.apache.logging.log4j.core.util.Throwables;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -145,7 +146,8 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                 document = documentBuilder.parse(source);
             } catch (final Exception e) {
                 // LOG4J2-1127
-                if (e.getCause() instanceof UnsupportedOperationException) {
+                Throwable throwable = Throwables.getRootCause(e);
+                if (throwable instanceof UnsupportedOperationException) {
                     LOGGER.warn(
                             "The DocumentBuilder {} does not support an operation: {}. Trying again without XInclude...",
                             documentBuilder, e);
