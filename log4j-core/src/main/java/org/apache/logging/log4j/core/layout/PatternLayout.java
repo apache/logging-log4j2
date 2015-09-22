@@ -210,7 +210,7 @@ public final class PatternLayout extends AbstractStringLayout {
     }
 
     /**
-     * Create a PatternParser.
+     * Creates a PatternParser.
      * @param config The Configuration.
      * @return The PatternParser.
      */
@@ -233,7 +233,7 @@ public final class PatternLayout extends AbstractStringLayout {
     }
 
     /**
-     * Create a pattern layout.
+     * Creates a pattern layout.
      *
      * @param pattern
      *        The pattern. If not specified, defaults to DEFAULT_CONVERSION_PATTERN.
