@@ -24,14 +24,14 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.BasicConfigurationFactory;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.*;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.lookup.MainMapLookup;
+import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.After;
@@ -262,5 +262,34 @@ public class PatternLayoutTest {
         final PatternLayout layout = PatternLayout.newBuilder().withPattern("%m")
                 .withConfiguration(ctx.getConfiguration()).withCharset(StandardCharsets.UTF_8).build();
         assertEquals(StandardCharsets.UTF_8, layout.getCharset());
+    }
+
+    @Test
+    public void testPatternSelector() throws Exception {
+        PatternMatch[] patterns = new PatternMatch[1];
+        patterns[0] = new PatternMatch("FLOW", "%d %-5p [%t]: ====== %C{1}.%M:%L %m ======%n");
+        PatternSelector selector = MarkerPatternSelector.createSelector(patterns, "%d %-5p [%t]: %m%n", true, true, ctx.getConfiguration());
+        final PatternLayout layout = PatternLayout.newBuilder().withPatternSelector(selector)
+                .withConfiguration(ctx.getConfiguration()).build();
+        final LogEvent event1 = Log4jLogEvent.newBuilder() //
+                .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.layout.PatternLayoutTest$FauxLogger")
+                .setMarker(MarkerManager.getMarker("FLOW"))
+                .setLevel(Level.TRACE) //
+                .setIncludeLocation(true)
+                .setMessage(new SimpleMessage("entry")).build();
+        final String result1 = new FauxLogger().formatEvent(event1, layout);
+        assertTrue("Unexpected result: " + result1, result1.endsWith("====== PatternLayoutTest.testPatternSelector:280 entry ======\n"));
+        final LogEvent event2 = Log4jLogEvent.newBuilder() //
+                .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
+                .setLevel(Level.INFO) //
+                .setMessage(new SimpleMessage("Hello, world 1!")).build();
+        final String result2 = new String(layout.toByteArray(event2));
+        assertTrue("Unexpected result: " + result2, result2.endsWith("Hello, world 1!\n"));
+    }
+
+    public class FauxLogger {
+        public String formatEvent(LogEvent event, Layout layout) {
+            return new String(layout.toByteArray(event));
+        }
     }
 }
