@@ -31,6 +31,18 @@
       <subsection name="English">
       <ul>
         <li>
+          <a href="https://garygregory.wordpress.com/2015/09/16/a-gentle-introduction-to-the-log4j-api-and-lambda-basics/">Writing clean logging code using Java 8 lambdas</a>
+          (September 16, 2015)
+        </li>
+        <li>
+          <a href="https://garygregory.wordpress.com/2015/09/10/the-art-of-test-driven-development-understanding-logging/">The Art of Test Driven Development: Understanding Logging</a>
+          (September 10, 2015)
+        </li>
+        <li>
+          <a href="https://garygregory.wordpress.com/2015/09/08/the-art-of-test-driven-development-per-test-logging/">The Art of Test Driven Development: Per-Test Logging</a>
+          (September 8, 2015)
+        </li>
+        <li>
           <a href="http://www.infoq.com/news/2015/09/interview-log4j-pmc">The Transition to a New Log4j: a Q&amp;A with Log4j's Project Management Committee</a>
           (September 8, 2015)
         </li>
