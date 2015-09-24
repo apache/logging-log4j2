@@ -84,6 +84,15 @@ public final class Level implements Comparable<Level>, Serializable {
      */
     public static final Level ALL;
 
+    /**
+     * @since 2.1
+     */
+    public static final String CATEGORY = "Level";
+
+    private static final ConcurrentMap<String, Level> LEVELS = new ConcurrentHashMap<>(); // SUPPRESS CHECKSTYLE
+
+    private static final long serialVersionUID = 1581082L;
+
     static {
         OFF = new Level("OFF", StandardLevel.OFF.intLevel());
         FATAL = new Level("FATAL", StandardLevel.FATAL.intLevel());
@@ -94,14 +103,6 @@ public final class Level implements Comparable<Level>, Serializable {
         TRACE = new Level("TRACE", StandardLevel.TRACE.intLevel());
         ALL = new Level("ALL", StandardLevel.ALL.intLevel());
     }
-
-    /**
-     * @since 2.1
-     */
-    public static final String CATEGORY = "Level";
-
-    private static final long serialVersionUID = 1581082L;
-    private static final ConcurrentMap<String, Level> LEVELS = new ConcurrentHashMap<>();
 
     private final String name;
     private final int intLevel;
@@ -177,8 +178,8 @@ public final class Level implements Comparable<Level>, Serializable {
 
     @Override
     @SuppressWarnings("CloneDoesntCallSuperClone")
-    public Level clone() throws CloneNotSupportedException {
-        throw new CloneNotSupportedException();
+    public Level clone() throws CloneNotSupportedException { // SUPPRESS CHECKSTYLE
+        throw new CloneNotSupportedException(); // SUPPRESS CHECKSTYLE
     }
 
     @Override
