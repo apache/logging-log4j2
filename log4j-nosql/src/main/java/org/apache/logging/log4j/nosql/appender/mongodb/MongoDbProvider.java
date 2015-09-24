@@ -190,6 +190,13 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
             }
         }
 
+        WriteConcern writeConcern = toWriteConcern(writeConcernConstant, writeConcernConstantClassName);
+
+        return new MongoDbProvider(database, writeConcern, collectionName, description);
+    }
+
+    private static WriteConcern toWriteConcern(final String writeConcernConstant,
+            final String writeConcernConstantClassName) {
         WriteConcern writeConcern;
         if (Strings.isNotEmpty(writeConcernConstant)) {
             if (Strings.isNotEmpty(writeConcernConstantClassName)) {
@@ -212,7 +219,6 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
         } else {
             writeConcern = WriteConcern.ACKNOWLEDGED;
         }
-
-        return new MongoDbProvider(database, writeConcern, collectionName, description);
+        return writeConcern;
     }
 }
