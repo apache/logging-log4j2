@@ -28,6 +28,8 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.jackson.XmlConstants;
 
+// Lines too long...
+//CHECKSTYLE:OFF
 /**
  * Appends a series of {@code event} elements as defined in the <a href="log4j.dtd">log4j.dtd</a>.
  *
@@ -186,6 +188,7 @@ import org.apache.logging.log4j.core.jackson.XmlConstants;
  * Message content may contain, of course, end-of-lines.
  * </p>
  */
+//CHECKSTYLE:ON
 @Plugin(name = "XmlLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class XmlLayout extends AbstractJacksonLayout {
 

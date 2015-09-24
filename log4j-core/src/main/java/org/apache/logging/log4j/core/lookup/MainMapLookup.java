@@ -37,6 +37,17 @@ public class MainMapLookup extends MapLookup {
     static final MapLookup MAIN_SINGLETON = new MapLookup(MapLookup.newMap(0));
 
     /**
+     * Constructor when used directly as a plugin.
+     */
+    public MainMapLookup() {
+        // no-init
+    }
+
+    public MainMapLookup(final Map<String, String> map) {
+        super(map);
+    }
+
+    /**
      * An application's {@code public static main(String[])} method calls this method to make its main arguments
      * available for lookup with the prefix {@code main}.
      * <p>
@@ -65,17 +76,6 @@ public class MainMapLookup extends MapLookup {
             return;
         }
         initMap(args, MainMapLookup.MAIN_SINGLETON.getMap());
-    }
-
-    /**
-     * Constructor when used directly as a plugin.
-     */
-    public MainMapLookup() {
-        // no-init
-    }
-
-    public MainMapLookup(final Map<String, String> map) {
-        super(map);
     }
 
     @Override
