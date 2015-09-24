@@ -24,10 +24,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 @Ignore("Requires a running MongoDB server")
-public class MongoDbTest {
+public class MongoDbAuthTest {
 
     @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule("log4j2-mongodb.xml");
+    public static LoggerContextRule context = new LoggerContextRule("log4j2-mongodb-auth.xml");
 
     @Test
     public void test() {
