@@ -29,8 +29,8 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * <em>Consider this class private.</em>
  * <p>
- * Helps access properties. This utility provides a method to override system properties by specifying properties
- * in a properties file.
+ * Helps access properties. This utility provides a method to override system properties by specifying properties in a
+ * properties file.
  * </p>
  */
 public final class PropertiesUtil {
@@ -51,38 +51,8 @@ public final class PropertiesUtil {
     }
 
     /**
-     * Loads and closes the given property input stream.
-     * If an error occurs, log to the status logger.
-     *
-     * @param in
-     *            a property input stream.
-     * @param source
-     *            a source object describing the source, like a resource string
-     *            or a URL.
-     * @return a new Properties object
-     */
-    static Properties loadClose(final InputStream in, final Object source) {
-        final Properties props = new Properties();
-        if (null != in) {
-            try {
-                props.load(in);
-            } catch (final IOException e) {
-                LOGGER.error("Unable to read {}", source, e);
-            } finally {
-                try {
-                    in.close();
-                } catch (final IOException e) {
-                    LOGGER.error("Unable to close {}", source, e);
-                }
-            }
-        }
-        return props;
-    }
-
-    /**
      * Constructs a PropertiesUtil for a given properties file name on the classpath. The properties specified in this
-     * file are used by default. If a property is not defined in this file, then the equivalent system property is
-     * used.
+     * file are used by default. If a property is not defined in this file, then the equivalent system property is used.
      *
      * @param propertiesFileName the location of properties file to load
      */
@@ -107,6 +77,31 @@ public final class PropertiesUtil {
             }
         }
         this.props = properties;
+    }
+
+    /**
+     * Loads and closes the given property input stream. If an error occurs, log to the status logger.
+     *
+     * @param in a property input stream.
+     * @param source a source object describing the source, like a resource string or a URL.
+     * @return a new Properties object
+     */
+    static Properties loadClose(final InputStream in, final Object source) {
+        final Properties props = new Properties();
+        if (null != in) {
+            try {
+                props.load(in);
+            } catch (final IOException e) {
+                LOGGER.error("Unable to read {}", source, e);
+            } finally {
+                try {
+                    in.close();
+                } catch (final IOException e) {
+                    LOGGER.error("Unable to close {}", source, e);
+                }
+            }
+        }
+        return props;
     }
 
     /**
@@ -137,10 +132,10 @@ public final class PropertiesUtil {
     /**
      * Gets the named property as an integer.
      *
-     * @param name         the name of the property to look up
+     * @param name the name of the property to look up
      * @param defaultValue the default value to use if the property is undefined
      * @return the parsed integer value of the property or {@code defaultValue} if it was undefined or could not be
-     * parsed.
+     *         parsed.
      */
     public int getIntegerProperty(final String name, final int defaultValue) {
         String prop = null;
@@ -165,10 +160,9 @@ public final class PropertiesUtil {
     /**
      * Gets the named property as a long.
      *
-     * @param name         the name of the property to look up
+     * @param name the name of the property to look up
      * @param defaultValue the default value to use if the property is undefined
-     * @return the parsed long value of the property or {@code defaultValue} if it was undefined or could not be
-     * parsed.
+     * @return the parsed long value of the property or {@code defaultValue} if it was undefined or could not be parsed.
      */
     public long getLongProperty(final String name, final long defaultValue) {
         String prop = null;
@@ -193,7 +187,7 @@ public final class PropertiesUtil {
     /**
      * Gets the named property as a String.
      *
-     * @param name         the name of the property to look up
+     * @param name the name of the property to look up
      * @param defaultValue the default value to use if the property is undefined
      * @return the String value of the property or {@code defaultValue} if undefined.
      */
@@ -217,7 +211,7 @@ public final class PropertiesUtil {
     /**
      * Gets the named property as a boolean value.
      *
-     * @param name         the name of the property to look up
+     * @param name the name of the property to look up
      * @param defaultValue the default value to use if the property is undefined
      * @return the boolean value of the property or {@code defaultValue} if undefined.
      */
@@ -228,6 +222,7 @@ public final class PropertiesUtil {
 
     /**
      * Return the system properties or an empty Properties object if an error occurs.
+     * 
      * @return The system properties.
      */
     public static Properties getSystemProperties() {
@@ -241,8 +236,9 @@ public final class PropertiesUtil {
     }
 
     /**
-     * Extracts properties that start with or are equals to the specific prefix and returns them in a
-     * new Properties object with the prefix removed.
+     * Extracts properties that start with or are equals to the specific prefix and returns them in a new Properties
+     * object with the prefix removed.
+     * 
      * @param properties The Properties to evaluate.
      * @param prefix The prefix to extract.
      * @return The subset of properties.
