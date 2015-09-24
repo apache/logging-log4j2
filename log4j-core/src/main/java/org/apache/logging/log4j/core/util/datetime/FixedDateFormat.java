@@ -77,7 +77,7 @@ public class FixedDateFormat {
         /**
          * ISO8601 time format: {@code "yyyy-MM-dd'T'HH:mm:ss,SSS"}.
          */
-        ISO8601("yyyy-MM-dd'T'HH:mm:ss,SSS", "yyyy-MM-dd'T'", 2, ':', 1, ',', 1), ;
+        ISO8601("yyyy-MM-dd'T'HH:mm:ss,SSS", "yyyy-MM-dd'T'", 2, ':', 1, ',', 1);
 
         private final String pattern;
         private final String datePattern;
@@ -108,6 +108,9 @@ public class FixedDateFormat {
 
         /**
          * Returns the FixedFormat with the name or pattern matching the specified string or {@code null} if not found.
+         * 
+         * @param nameOrPattern the name or pattern to find a FixedFormat for
+         * @return the FixedFormat with the name or pattern matching the specified string
          */
         public static FixedFormat lookup(final String nameOrPattern) {
             for (final FixedFormat type : FixedFormat.values()) {
@@ -129,21 +132,6 @@ public class FixedDateFormat {
         public FastDateFormat getFastDateFormat() {
             return getDatePattern() == null ? null : FastDateFormat.getInstance(getDatePattern());
         }
-    }
-
-    public static FixedDateFormat createIfSupported(final String... options) {
-        if (options == null || options.length == 0 || options[0] == null) {
-            return new FixedDateFormat(FixedFormat.DEFAULT);
-        }
-        if (options.length > 1) {
-            return null; // time zone not supported
-        }
-        final FixedFormat type = FixedFormat.lookup(options[0]);
-        return type == null ? null : new FixedDateFormat(type);
-    }
-
-    public static FixedDateFormat create(FixedFormat format) {
-        return new FixedDateFormat(format);
     }
 
     private final FixedFormat fixedFormat;
@@ -181,6 +169,21 @@ public class FixedDateFormat {
         this.length = fixedFormat.getLength();
         this.dateLength = fixedFormat.getDatePatternLength();
         this.fastDateFormat = fixedFormat.getFastDateFormat();
+    }
+
+    public static FixedDateFormat createIfSupported(final String... options) {
+        if (options == null || options.length == 0 || options[0] == null) {
+            return new FixedDateFormat(FixedFormat.DEFAULT);
+        }
+        if (options.length > 1) {
+            return null; // time zone not supported
+        }
+        final FixedFormat type = FixedFormat.lookup(options[0]);
+        return type == null ? null : new FixedDateFormat(type);
+    }
+
+    public static FixedDateFormat create(FixedFormat format) {
+        return new FixedDateFormat(format);
     }
 
     public String getFormat() {
