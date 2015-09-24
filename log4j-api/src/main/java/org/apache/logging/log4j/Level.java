@@ -38,14 +38,11 @@ import org.apache.logging.log4j.spi.StandardLevel;
  * <li>{@link #ALL} (least specific, all data)</li>
  * </ul>
  *
- * Typically, configuring a level in a filter or on a logger will cause logging events of that level and those
- * that are more specific to pass through the filter.
- * A special level, {@link #ALL}, is guaranteed to capture all levels when used in logging configurations.
+ * Typically, configuring a level in a filter or on a logger will cause logging events of that level and those that are
+ * more specific to pass through the filter. A special level, {@link #ALL}, is guaranteed to capture all levels when
+ * used in logging configurations.
  */
 public final class Level implements Comparable<Level>, Serializable {
-
-    private static final long serialVersionUID = 1581082L;
-    private static final ConcurrentMap<String, Level> levels = new ConcurrentHashMap<>();
 
     /**
      * No events will be logged.
@@ -103,6 +100,9 @@ public final class Level implements Comparable<Level>, Serializable {
      */
     public static final String CATEGORY = "Level";
 
+    private static final long serialVersionUID = 1581082L;
+    private static final ConcurrentMap<String, Level> LEVELS = new ConcurrentHashMap<>();
+
     private final String name;
     private final int intLevel;
     private final StandardLevel standardLevel;
@@ -117,7 +117,7 @@ public final class Level implements Comparable<Level>, Serializable {
         this.name = name;
         this.intLevel = intLevel;
         this.standardLevel = StandardLevel.getStandardLevel(intLevel);
-        if (levels.putIfAbsent(name, this) != null) {
+        if (LEVELS.putIfAbsent(name, this) != null) {
             throw new IllegalStateException("Level " + name + " has already been defined.");
         }
     }
@@ -141,12 +141,11 @@ public final class Level implements Comparable<Level>, Serializable {
     }
 
     /**
-     * Compares this level against the levels passed as arguments and returns true if this level is in between the given levels.
+     * Compares this level against the levels passed as arguments and returns true if this level is in between the given
+     * levels.
      *
-     * @param minLevel
-     *            The minimum level to test.
-     * @param maxLevel
-     *            The maximum level to test.
+     * @param minLevel The minimum level to test.
+     * @param maxLevel The maximum level to test.
      * @return True true if this level is in between the given levels
      * @since 2.4
      */
@@ -156,10 +155,9 @@ public final class Level implements Comparable<Level>, Serializable {
 
     /**
      * Compares this level against the level passed as an argument and returns true if this level is the same or is less
-     * specific.T
+     * specific.
      *
-     * @param level
-     *            The level to test.
+     * @param level The level to test.
      * @return True if this level Level is less specific or the same as the given Level.
      */
     public boolean isLessSpecificThan(final Level level) {
@@ -170,8 +168,7 @@ public final class Level implements Comparable<Level>, Serializable {
      * Compares this level against the level passed as an argument and returns true if this level is the same or is more
      * specific.
      *
-     * @param level
-     *            The level to test.
+     * @param level The level to test.
      * @return True if this level Level is more specific or the same as the given Level.
      */
     public boolean isMoreSpecificThan(final Level level) {
@@ -219,13 +216,14 @@ public final class Level implements Comparable<Level>, Serializable {
 
     /**
      * Retrieves an existing Level or creates on if it didn't previously exist.
+     * 
      * @param name The name of the level.
      * @param intValue The integer value for the Level. If the level was previously created this value is ignored.
      * @return The Level.
      * @throws java.lang.IllegalArgumentException if the name is null or intValue is less than zero.
      */
     public static Level forName(final String name, final int intValue) {
-        final Level level = levels.get(name);
+        final Level level = LEVELS.get(name);
         if (level != null) {
             return level;
         }
@@ -233,22 +231,23 @@ public final class Level implements Comparable<Level>, Serializable {
             return new Level(name, intValue);
         } catch (final IllegalStateException ex) {
             // The level was added by something else so just return that one.
-            return levels.get(name);
+            return LEVELS.get(name);
         }
     }
 
     /**
      * Return the Level associated with the name or null if the Level cannot be found.
+     * 
      * @param name The name of the Level.
      * @return The Level or null.
      */
     public static Level getLevel(final String name) {
-        return levels.get(name);
+        return LEVELS.get(name);
     }
 
     /**
-     * Converts the string passed as argument to a level. If the
-     * conversion fails, then this method returns {@link #DEBUG}.
+     * Converts the string passed as argument to a level. If the conversion fails, then this method returns
+     * {@link #DEBUG}.
      *
      * @param sArg The name of the desired Level.
      * @return The Level associated with the String.
@@ -258,8 +257,7 @@ public final class Level implements Comparable<Level>, Serializable {
     }
 
     /**
-     * Converts the string passed as argument to a level. If the
-     * conversion fails, then this method returns the value of
+     * Converts the string passed as argument to a level. If the conversion fails, then this method returns the value of
      * <code>defaultLevel</code>.
      *
      * @param name The name of the desired Level.
@@ -270,32 +268,34 @@ public final class Level implements Comparable<Level>, Serializable {
         if (name == null) {
             return defaultLevel;
         }
-        final Level level = levels.get(name.toUpperCase(Locale.ENGLISH));
+        final Level level = LEVELS.get(name.toUpperCase(Locale.ENGLISH));
         return level == null ? defaultLevel : level;
     }
 
     /**
      * Return an array of all the Levels that have been registered.
+     * 
      * @return An array of Levels.
      */
     public static Level[] values() {
-        final Collection<Level> values = Level.levels.values();
+        final Collection<Level> values = Level.LEVELS.values();
         return values.toArray(new Level[values.size()]);
     }
 
     /**
      * Return the Level associated with the name.
+     * 
      * @param name The name of the Level to return.
      * @return The Level.
      * @throws java.lang.NullPointerException if the Level name is {@code null}.
      * @throws java.lang.IllegalArgumentException if the Level name is not registered.
      */
     public static Level valueOf(final String name) {
-    	Objects.requireNonNull(name, "No level name given.");
+        Objects.requireNonNull(name, "No level name given.");
         final String levelName = name.toUpperCase(Locale.ENGLISH);
-        final Level level = levels.get(levelName);
+        final Level level = LEVELS.get(levelName);
         if (level != null) {
-			return level;
+            return level;
         }
         throw new IllegalArgumentException("Unknown level constant [" + levelName + "].");
     }
@@ -305,12 +305,12 @@ public final class Level implements Comparable<Level>, Serializable {
      * identifier used to declare an enum constant in this type. (Extraneous whitespace characters are not permitted.)
      *
      * @param enumType the {@code Class} object of the enum type from which to return a constant
-     * @param name     the name of the constant to return
-     * @param <T>      The enum type whose constant is to be returned
+     * @param name the name of the constant to return
+     * @param <T> The enum type whose constant is to be returned
      * @return the enum constant of the specified enum type with the specified name
-     * @throws java.lang.IllegalArgumentException if the specified enum type has no constant with the specified name,
-     *                                            or the specified class object does not represent an enum type
-     * @throws java.lang.NullPointerException     if {@code enumType} or {@code name} are {@code null}
+     * @throws java.lang.IllegalArgumentException if the specified enum type has no constant with the specified name, or
+     *             the specified class object does not represent an enum type
+     * @throws java.lang.NullPointerException if {@code enumType} or {@code name} are {@code null}
      * @see java.lang.Enum#valueOf(Class, String)
      */
     public static <T extends Enum<T>> T valueOf(final Class<T> enumType, final String name) {
@@ -322,4 +322,3 @@ public final class Level implements Comparable<Level>, Serializable {
         return Level.valueOf(this.name);
     }
 }
-
