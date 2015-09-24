@@ -56,13 +56,15 @@ public final class CommonsCompressAction extends AbstractAction {
 
     /**
      * Creates new instance of Bzip2CompressAction.
+     * 
      * @param name the compressor name. One of "gz", "bzip2", "xz", "pack200", or "deflate".
      * @param source file to compress, may not be null.
      * @param destination compressed file, may not be null.
      * @param deleteSource if true, attempt to delete file on completion. Failure to delete does not cause an exception
      *            to be thrown or affect return value.
      */
-    public CommonsCompressAction(final String name, final File source, final File destination, final boolean deleteSource) {
+    public CommonsCompressAction(final String name, final File source, final File destination,
+            final boolean deleteSource) {
         Objects.requireNonNull(source, "source");
         Objects.requireNonNull(destination, "destination");
         this.name = name;
@@ -84,6 +86,7 @@ public final class CommonsCompressAction extends AbstractAction {
 
     /**
      * Compresses a file.
+     * 
      * @param name the compressor name, i.e. "gz", "bzip2", "xz", "pack200", or "deflate".
      * @param source file to compress, may not be null.
      * @param destination compressed file, may not be null.
@@ -93,14 +96,15 @@ public final class CommonsCompressAction extends AbstractAction {
      * @return true if source file compressed.
      * @throws IOException on IO exception.
      */
-    public static boolean execute(final String name, final File source, final File destination, final boolean deleteSource)
-            throws IOException {
+    public static boolean execute(final String name, final File source, final File destination,
+            final boolean deleteSource) throws IOException {
         if (!source.exists()) {
             return false;
         }
         try (final FileInputStream input = new FileInputStream(source);
-                final BufferedOutputStream output = new BufferedOutputStream(new CompressorStreamFactory()
-                        .createCompressorOutputStream(name, new FileOutputStream(destination)))) {
+                final BufferedOutputStream output = new BufferedOutputStream(
+                        new CompressorStreamFactory().createCompressorOutputStream(name, new FileOutputStream(
+                                destination)))) {
             IOUtils.copy(input, output, BUF_SIZE);
         } catch (final CompressorException e) {
             throw new IOException(e);
