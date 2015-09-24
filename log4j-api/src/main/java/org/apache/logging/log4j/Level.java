@@ -178,9 +178,11 @@ public final class Level implements Comparable<Level>, Serializable {
 
     @Override
     @SuppressWarnings("CloneDoesntCallSuperClone")
-    public Level clone() throws CloneNotSupportedException { // SUPPRESS CHECKSTYLE
-        throw new CloneNotSupportedException(); // SUPPRESS CHECKSTYLE
+    // CHECKSTYLE:OFF
+    public Level clone() throws CloneNotSupportedException {
+        throw new CloneNotSupportedException();
     }
+    // CHECKSTYLE:ON
 
     @Override
     public int compareTo(final Level other) {

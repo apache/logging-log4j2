@@ -49,8 +49,10 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 public final class ReflectionUtil {
     // Checkstyle Suppress: the lower-case 'u' ticks off CheckStyle...
-    static final int JDK_7u25_OFFSET; // SUPPRESS CHECKSTYLE
-
+    // CHECKSTYLE:OFF
+    static final int JDK_7u25_OFFSET;
+    // CHECKSTYLE:OFF
+    
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final boolean SUN_REFLECTION_SUPPORTED;
     private static final Method GET_CALLER_CLASS;
