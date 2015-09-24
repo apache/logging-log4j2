@@ -14,24 +14,35 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
 package org.apache.logging.log4j.nosql.appender;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.junit.ClassRule;
-import org.junit.Ignore;
-import org.junit.Test;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-//@Ignore("Requires a running MongoDB server")
-public class MongoDbTest {
+/**
+ * Facilitates implementations of {@link NoSqlConnection}.
+ *
+ * @param <W>
+ *            See {@link NoSqlConnection}.
+ * @param <T>See
+ *            {@link NoSqlConnection}.
+ */
+public abstract class AbstractNoSqlConnection<W, T extends NoSqlObject<W>> implements NoSqlConnection<W, T> {
 
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule("log4j2-mongodb-auth.xml");
+    private final AtomicBoolean closed = new AtomicBoolean(false);
 
-    @Test
-    public void test() {
-        final Logger logger = LogManager.getLogger();
-        logger.info("Hello log");
+    @Override
+    public void close() {
+        if (this.closed.compareAndSet(false, true)) {
+            closeImpl();
+        }
     }
+
+    protected abstract void closeImpl();
+
+    @Override
+    public boolean isClosed() {
+        return this.closed.get();
+    }
+
 }
