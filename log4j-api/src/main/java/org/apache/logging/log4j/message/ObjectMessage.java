@@ -33,6 +33,7 @@ public class ObjectMessage implements Message {
 
     /**
      * Creates the ObjectMessage.
+     * 
      * @param obj The Object to format.
      */
     public ObjectMessage(final Object obj) {
@@ -41,6 +42,7 @@ public class ObjectMessage implements Message {
 
     /**
      * Returns the formatted object message.
+     * 
      * @return the formatted object message.
      */
     @Override
@@ -54,6 +56,7 @@ public class ObjectMessage implements Message {
 
     /**
      * Returns the object formatted using its toString method.
+     * 
      * @return the String representation of the object.
      */
     @Override
@@ -63,6 +66,7 @@ public class ObjectMessage implements Message {
 
     /**
      * Returns the object as if it were a parameter.
+     * 
      * @return The object.
      */
     @Override
@@ -82,7 +86,7 @@ public class ObjectMessage implements Message {
         final ObjectMessage that = (ObjectMessage) o;
         return obj == null ? that.obj == null : equalObjectsOrStrings(obj, that.obj);
     }
-    
+
     private boolean equalObjectsOrStrings(final Object left, final Object right) {
         return left.equals(right) || String.valueOf(left).equals(String.valueOf(right));
     }
