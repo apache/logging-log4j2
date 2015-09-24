@@ -43,9 +43,9 @@
             will invoke the
             <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/config/plugins/util/PluginManager.html">PluginManager</a>
             to load the built-in Log4j plugins as well as any custom plugins. The <code>PluginManager</code> locates
-            plugins by looking in four places:
+            plugins by looking in five places:
           </p>
-          <ul>
+          <ol>
             <li>Serialized plugin listing files on the classpath. These files are generated automatically during
               the build (more details below).</li>
             <li>(OSGi only) Serialized plugin listing files in each active OSGi bundle. A <code>BundleListener</code>
@@ -56,7 +56,7 @@
               occurs).</li>
             <li>The <a href="./configuration.html#ConfigurationSyntax">packages</a> declared in your log4j2
               configuration file.</li>
-          </ul>
+          </ol>
           <p>
             If multiple Plugins specify the same (case-insensitive) <code>name</code>, then the load order above
             determines which one will be used. For example, to override the <code>File</code> plugin which is provided
