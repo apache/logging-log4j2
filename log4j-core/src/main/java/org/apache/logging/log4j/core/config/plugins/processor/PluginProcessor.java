@@ -17,9 +17,14 @@
 
 package org.apache.logging.log4j.core.config.plugins.processor;
 
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAliases;
-import org.apache.logging.log4j.util.Strings;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
@@ -33,14 +38,10 @@ import javax.lang.model.util.SimpleElementVisitor6;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+
+import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAliases;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Annotation processor for pre-scanning Log4j 2 plugins.
@@ -54,7 +55,8 @@ public class PluginProcessor extends AbstractProcessor {
      * The location of the plugin cache data file. This file is written to by this processor, and read from by
      * {@link org.apache.logging.log4j.core.config.plugins.util.PluginManager}.
      */
-    public static final String PLUGIN_CACHE_FILE = "META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat";
+    public static final String PLUGIN_CACHE_FILE =
+            "META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat";
 
     private final PluginCache pluginCache = new PluginCache();
 
@@ -85,10 +87,9 @@ public class PluginProcessor extends AbstractProcessor {
 
     private void collectPlugins(final Iterable<? extends Element> elements) {
         final Elements elementUtils = processingEnv.getElementUtils();
-        final ElementVisitor<PluginEntry, Plugin> pluginVisitor =
-                new PluginElementVisitor(elementUtils);
-        final ElementVisitor<Collection<PluginEntry>, Plugin> pluginAliasesVisitor =
-                new PluginAliasesElementVisitor(elementUtils);
+        final ElementVisitor<PluginEntry, Plugin> pluginVisitor = new PluginElementVisitor(elementUtils);
+        final ElementVisitor<Collection<PluginEntry>, Plugin> pluginAliasesVisitor = new PluginAliasesElementVisitor(
+                elementUtils);
         for (final Element element : elements) {
             final Plugin plugin = element.getAnnotation(Plugin.class);
             final PluginEntry entry = element.accept(pluginVisitor, plugin);
@@ -142,7 +143,7 @@ public class PluginProcessor extends AbstractProcessor {
         private final Elements elements;
 
         private PluginAliasesElementVisitor(final Elements elements) {
-            super(Collections.<PluginEntry>emptyList());
+            super(Collections.<PluginEntry> emptyList());
             this.elements = elements;
         }
 

@@ -14,23 +14,10 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.lookup;
 
 /**
- * A default lookup for others to extend.
- * 
- * @since 2.1
+ * Classes and interfaces for Kafka appender support.
+ *
+ * @since 2.4
  */
-public abstract class AbstractLookup implements StrLookup {
-
-    /**
-     * Calls {@code lookup(null, key)} in the super class.
-     * 
-     * @see StrLookup#lookup(LogEvent, String)
-     */
-    @Override
-    public String lookup(final String key) {
-        return lookup(null, key);
-    }
-
-}
+package org.apache.logging.log4j.core.appender.mom.kafka;
