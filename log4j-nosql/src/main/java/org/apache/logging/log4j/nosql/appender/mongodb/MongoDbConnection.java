@@ -93,36 +93,4 @@ public final class MongoDbConnection implements NoSqlConnection<BasicDBObject, M
     public boolean isClosed() {
         return !this.mongo.getConnector().isOpen();
     }
-
-    /**
-     * To prevent class loading issues during plugin discovery, this code cannot
-     * live within MongoDbProvider. This is because of how Java treats
-     * references to Exception classes different from references to other
-     * classes. When Java loads a class, it normally won't load that class's
-     * dependent classes until and unless A) they are used, B) the class being
-     * loaded extends or implements those classes, or C) those classes are the
-     * types of static members in the class. However, exceptions that a class
-     * uses are always loaded when the class is loaded, even before they are
-     * actually used.
-     *
-     * @param database
-     *            The database to authenticate
-     * @param userName
-     *            The username to authenticate with
-     * @param password
-     *            The password to authenticate with
-     */
-    static void authenticate(final DB database, final String userName, final String password) {
-        try {
-            if (!database.authenticate(userName, password.toCharArray())) {
-                LOGGER.error("Failed to authenticate against MongoDB server. Unknown error.");
-            }
-        } catch (final MongoException e) {
-            LOGGER.error("Failed to authenticate against MongoDB: " + e.getMessage(), e);
-        } catch (final IllegalStateException e) {
-            LOGGER.error(
-                    "Factory-supplied MongoDB database connection already authenticated with different credentials but lost connection.",
-                    e);
-        }
-    }
 }
