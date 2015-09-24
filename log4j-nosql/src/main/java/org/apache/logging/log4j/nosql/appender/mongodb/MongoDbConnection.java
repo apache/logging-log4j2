@@ -22,7 +22,6 @@ import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.nosql.appender.NoSqlConnection;
 import org.apache.logging.log4j.nosql.appender.NoSqlObject;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Strings;
 import org.bson.BSON;
 import org.bson.Transformer;
 
@@ -32,7 +31,6 @@ import com.mongodb.DBCollection;
 import com.mongodb.Mongo;
 import com.mongodb.MongoException;
 import com.mongodb.WriteConcern;
-import com.mongodb.WriteResult;
 
 /**
  * The MongoDB implementation of {@link NoSqlConnection}.
