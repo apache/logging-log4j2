@@ -25,23 +25,23 @@ import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.util.Strings;
 
 /**
- * A copy-on-write thread-safe variant of {@code org.apache.logging.log4j.spi.ThreadContextStack} in which all mutative operations (add,
- * pop, and so on) are implemented by making a fresh copy of the underlying list.
+ * A copy-on-write thread-safe variant of {@code org.apache.logging.log4j.spi.ThreadContextStack} in which all mutative
+ * operations (add, pop, and so on) are implemented by making a fresh copy of the underlying list.
  */
 public class DefaultThreadContextStack implements ThreadContextStack {
 
     private static final long serialVersionUID = 5050501L;
 
-    private static final ThreadLocal<MutableThreadContextStack> stack = new ThreadLocal<>();
+    private static final ThreadLocal<MutableThreadContextStack> STACK = new ThreadLocal<>();
 
     private final boolean useStack;
 
     public DefaultThreadContextStack(final boolean useStack) {
         this.useStack = useStack;
     }
-    
+
     private MutableThreadContextStack getNonNullStackCopy() {
-        final MutableThreadContextStack values = stack.get();
+        final MutableThreadContextStack values = STACK.get();
         return (MutableThreadContextStack) (values == null ? new MutableThreadContextStack() : values.copy());
     }
 
@@ -53,7 +53,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         final MutableThreadContextStack copy = getNonNullStackCopy();
         copy.add(s);
         copy.freeze();
-        stack.set(copy);
+        STACK.set(copy);
         return true;
     }
 
@@ -65,13 +65,13 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         final MutableThreadContextStack copy = getNonNullStackCopy();
         copy.addAll(strings);
         copy.freeze();
-        stack.set(copy);
+        STACK.set(copy);
         return true;
     }
 
     @Override
     public List<String> asList() {
-        final MutableThreadContextStack values = stack.get();
+        final MutableThreadContextStack values = STACK.get();
         if (values == null) {
             return Collections.emptyList();
         }
@@ -80,12 +80,12 @@ public class DefaultThreadContextStack implements ThreadContextStack {
 
     @Override
     public void clear() {
-        stack.remove();
+        STACK.remove();
     }
 
     @Override
     public boolean contains(final Object o) {
-        final MutableThreadContextStack values = stack.get();
+        final MutableThreadContextStack values = STACK.get();
         return values != null && values.contains(o);
     }
 
@@ -95,14 +95,14 @@ public class DefaultThreadContextStack implements ThreadContextStack {
             return true; // looks counter-intuitive, but see
                          // j.u.AbstractCollection
         }
-        final MutableThreadContextStack values = stack.get();
+        final MutableThreadContextStack values = STACK.get();
         return values != null && values.containsAll(objects);
     }
 
     @Override
     public ThreadContextStack copy() {
         MutableThreadContextStack values = null;
-        if (!useStack || (values = stack.get()) == null) {
+        if (!useStack || (values = STACK.get()) == null) {
             return new MutableThreadContextStack();
         }
         return values.copy();
@@ -126,7 +126,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
             return false;
         }
         final ThreadContextStack other = (ThreadContextStack) obj;
-        final MutableThreadContextStack values = stack.get();
+        final MutableThreadContextStack values = STACK.get();
         if (values == null) {
             return false;
         }
@@ -135,13 +135,13 @@ public class DefaultThreadContextStack implements ThreadContextStack {
 
     @Override
     public int getDepth() {
-        final MutableThreadContextStack values = stack.get();
+        final MutableThreadContextStack values = STACK.get();
         return values == null ? 0 : values.getDepth();
     }
 
     @Override
     public int hashCode() {
-        final MutableThreadContextStack values = stack.get();
+        final MutableThreadContextStack values = STACK.get();
         final int prime = 31;
         int result = 1;
         // Factor in the stack itself to compare vs. other implementors.
@@ -151,13 +151,13 @@ public class DefaultThreadContextStack implements ThreadContextStack {
 
     @Override
     public boolean isEmpty() {
-        final MutableThreadContextStack values = stack.get();
+        final MutableThreadContextStack values = STACK.get();
         return values == null || values.isEmpty();
     }
 
     @Override
     public Iterator<String> iterator() {
-        final MutableThreadContextStack values = stack.get();
+        final MutableThreadContextStack values = STACK.get();
         if (values == null) {
             final List<String> empty = Collections.emptyList();
             return empty.iterator();
@@ -167,7 +167,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
 
     @Override
     public String peek() {
-        final MutableThreadContextStack values = stack.get();
+        final MutableThreadContextStack values = STACK.get();
         if (values == null || values.size() == 0) {
             return Strings.EMPTY;
         }
@@ -179,7 +179,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         if (!useStack) {
             return Strings.EMPTY;
         }
-        final MutableThreadContextStack values = stack.get();
+        final MutableThreadContextStack values = STACK.get();
         if (values == null || values.size() == 0) {
             // Like version 1.2
             return Strings.EMPTY;
@@ -187,7 +187,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         final MutableThreadContextStack copy = (MutableThreadContextStack) values.copy();
         final String result = copy.pop();
         copy.freeze();
-        stack.set(copy);
+        STACK.set(copy);
         return result;
     }
 
@@ -204,14 +204,14 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         if (!useStack) {
             return false;
         }
-        final MutableThreadContextStack values = stack.get();
+        final MutableThreadContextStack values = STACK.get();
         if (values == null || values.size() == 0) {
             return false;
         }
         final MutableThreadContextStack copy = (MutableThreadContextStack) values.copy();
         final boolean result = copy.remove(o);
         copy.freeze();
-        stack.set(copy);
+        STACK.set(copy);
         return result;
     }
 
@@ -220,14 +220,14 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         if (!useStack || objects.isEmpty()) {
             return false;
         }
-        final MutableThreadContextStack values = stack.get();
+        final MutableThreadContextStack values = STACK.get();
         if (values == null || values.isEmpty()) {
             return false;
         }
         final MutableThreadContextStack copy = (MutableThreadContextStack) values.copy();
         final boolean result = copy.removeAll(objects);
         copy.freeze();
-        stack.set(copy);
+        STACK.set(copy);
         return result;
     }
 
@@ -236,26 +236,26 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         if (!useStack || objects.isEmpty()) {
             return false;
         }
-        final MutableThreadContextStack values = stack.get();
+        final MutableThreadContextStack values = STACK.get();
         if (values == null || values.isEmpty()) {
             return false;
         }
         final MutableThreadContextStack copy = (MutableThreadContextStack) values.copy();
         final boolean result = copy.retainAll(objects);
         copy.freeze();
-        stack.set(copy);
+        STACK.set(copy);
         return result;
     }
 
     @Override
     public int size() {
-        final MutableThreadContextStack values = stack.get();
+        final MutableThreadContextStack values = STACK.get();
         return values == null ? 0 : values.size();
     }
 
     @Override
     public Object[] toArray() {
-        final MutableThreadContextStack result = stack.get();
+        final MutableThreadContextStack result = STACK.get();
         if (result == null) {
             return new String[0];
         }
@@ -264,7 +264,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
 
     @Override
     public <T> T[] toArray(final T[] ts) {
-        final MutableThreadContextStack result = stack.get();
+        final MutableThreadContextStack result = STACK.get();
         if (result == null) {
             if (ts.length > 0) { // as per the contract of j.u.List#toArray(T[])
                 ts[0] = null;
@@ -276,7 +276,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
 
     @Override
     public String toString() {
-        final MutableThreadContextStack values = stack.get();
+        final MutableThreadContextStack values = STACK.get();
         return values == null ? "[]" : values.toString();
     }
 
@@ -285,21 +285,23 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         if (depth < 0) {
             throw new IllegalArgumentException("Maximum stack depth cannot be negative");
         }
-        final MutableThreadContextStack values = stack.get();
+        final MutableThreadContextStack values = STACK.get();
         if (values == null) {
             return;
         }
         final MutableThreadContextStack copy = (MutableThreadContextStack) values.copy();
         copy.trim(depth);
         copy.freeze();
-        stack.set(copy);
+        STACK.set(copy);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.apache.logging.log4j.ThreadContext.ContextStack#getImmutableStackOrNull()
      */
     @Override
     public ContextStack getImmutableStackOrNull() {
-        return stack.get();
+        return STACK.get();
     }
 }
