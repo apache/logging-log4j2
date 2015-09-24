@@ -23,7 +23,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 /**
- * Copied from Commons Lang 3
+ * Copied from Commons Lang 3.
  */
 public interface DatePrinter {
 
