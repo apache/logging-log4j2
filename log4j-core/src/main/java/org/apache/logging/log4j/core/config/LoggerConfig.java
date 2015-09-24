@@ -56,8 +56,8 @@ import org.apache.logging.log4j.util.Strings;
 @Plugin(name = "logger", category = Node.CATEGORY, printObject = true)
 public class LoggerConfig extends AbstractFilterable {
 
+    public static final String ROOT = "root";
     private static final long serialVersionUID = 1L;
-
     private static LogEventFactory LOG_EVENT_FACTORY = null;
 
     private List<AppenderRef> appenderRefs = new ArrayList<>();
@@ -393,7 +393,7 @@ public class LoggerConfig extends AbstractFilterable {
 
     @Override
     public String toString() {
-        return Strings.isEmpty(name) ? "root" : name;
+        return Strings.isEmpty(name) ? ROOT : name;
     }
 
     /**
@@ -422,7 +422,7 @@ public class LoggerConfig extends AbstractFilterable {
         }
 
         final List<AppenderRef> appenderRefs = Arrays.asList(refs);
-        final String name = loggerName.equals("root") ? Strings.EMPTY : loggerName;
+        final String name = loggerName.equals(ROOT) ? Strings.EMPTY : loggerName;
         final boolean additive = Booleans.parseBoolean(additivity, true);
 
         return new LoggerConfig(name, appenderRefs, filter, level, additive, properties, config,
@@ -443,7 +443,7 @@ public class LoggerConfig extends AbstractFilterable {
     /**
      * The root Logger.
      */
-    @Plugin(name = "root", category = "Core", printObject = true)
+    @Plugin(name = ROOT, category = "Core", printObject = true)
     public static class RootLogger extends LoggerConfig {
 
         private static final long serialVersionUID = 1L;

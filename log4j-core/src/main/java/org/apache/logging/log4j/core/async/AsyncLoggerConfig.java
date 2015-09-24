@@ -122,7 +122,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
     }
 
     private String displayName() {
-        return LogManager.ROOT_LOGGER_NAME.equals(getName()) ? "root" : getName();
+        return LogManager.ROOT_LOGGER_NAME.equals(getName()) ? LoggerConfig.ROOT : getName();
     }
 
     @Override
@@ -193,7 +193,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
                     levelName);
             level = Level.ERROR;
         }
-        final String name = loggerName.equals("root") ? Strings.EMPTY : loggerName;
+        final String name = loggerName.equals(LoggerConfig.ROOT) ? Strings.EMPTY : loggerName;
         final boolean additive = Booleans.parseBoolean(additivity, true);
 
         return new AsyncLoggerConfig(name, appenderRefs, filter, level,

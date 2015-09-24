@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.FileConfigurationMonitor;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
@@ -202,8 +203,8 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
             t = type.getElementName() + ':' + type.getPluginClass();
         }
 
-        final String p = node.getParent() == null ? "null" : node.getParent().getName() == null ? "root" : node
-                .getParent().getName();
+        final String p = node.getParent() == null ? "null"
+                : node.getParent().getName() == null ? LoggerConfig.ROOT : node.getParent().getName();
         LOGGER.debug("Returning {} with parent {} of type {}", node.getName(), p, t);
         return node;
     }
