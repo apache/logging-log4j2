@@ -27,13 +27,13 @@ import java.util.LinkedHashSet;
 
 /**
  * <em>Consider this class private.</em> Utility class for ClassLoaders.
+ * 
  * @see ClassLoader
  * @see RuntimePermission
  * @see Thread#getContextClassLoader()
  * @see ClassLoader#getSystemClassLoader()
  */
 public final class LoaderUtil {
-    private LoaderUtil() {}
 
     /**
      * System property to set to ignore the thread context ClassLoader.
@@ -67,11 +67,14 @@ public final class LoaderUtil {
         }
     }
 
+    private LoaderUtil() {
+    }
+
     /**
-     * Gets the current Thread ClassLoader. Returns the system ClassLoader if the TCCL is {@code null}. If the
-     * system ClassLoader is {@code null} as well, then the ClassLoader for this class is returned.
-     * If running with a {@link SecurityManager} that does not allow access to the Thread ClassLoader or system
-     * ClassLoader, then the ClassLoader for this class is returned.
+     * Gets the current Thread ClassLoader. Returns the system ClassLoader if the TCCL is {@code null}. If the system
+     * ClassLoader is {@code null} as well, then the ClassLoader for this class is returned. If running with a
+     * {@link SecurityManager} that does not allow access to the Thread ClassLoader or system ClassLoader, then the
+     * ClassLoader for this class is returned.
      *
      * @return the current ThreadContextClassLoader.
      */
@@ -81,11 +84,12 @@ public final class LoaderUtil {
             // however, if this is null, there's really no option left at this point
             return LoaderUtil.class.getClassLoader();
         }
-        return SECURITY_MANAGER == null
-            ? TCCL_GETTER.run()
-            : AccessController.doPrivileged(TCCL_GETTER);
+        return SECURITY_MANAGER == null ? TCCL_GETTER.run() : AccessController.doPrivileged(TCCL_GETTER);
     }
 
+    /**
+     * 
+     */
     private static class ThreadContextClassLoaderGetter implements PrivilegedAction<ClassLoader> {
         @Override
         public ClassLoader run() {
@@ -99,8 +103,8 @@ public final class LoaderUtil {
     }
 
     /**
-     * Loads a class by name. This method respects the {@link #IGNORE_TCCL_PROPERTY} Log4j property. If this property
-     * is specified and set to anything besides {@code false}, then the default ClassLoader will be used.
+     * Loads a class by name. This method respects the {@link #IGNORE_TCCL_PROPERTY} Log4j property. If this property is
+     * specified and set to anything besides {@code false}, then the default ClassLoader will be used.
      *
      * @param className The class name.
      * @return the Class for the given name.
@@ -123,16 +127,15 @@ public final class LoaderUtil {
      *
      * @param className The class name.
      * @return new instance of the class.
-     * @throws ClassNotFoundException    if the class isn't available to the usual ClassLoaders
-     * @throws IllegalAccessException    if the class can't be instantiated through a public constructor
-     * @throws InstantiationException    if there was an exception whilst instantiating the class
-     * @throws NoSuchMethodException     if there isn't a no-args constructor on the class
+     * @throws ClassNotFoundException if the class isn't available to the usual ClassLoaders
+     * @throws IllegalAccessException if the class can't be instantiated through a public constructor
+     * @throws InstantiationException if there was an exception whilst instantiating the class
+     * @throws NoSuchMethodException if there isn't a no-args constructor on the class
      * @throws InvocationTargetException if there was an exception whilst constructing the class
      * @since 2.1
      */
-    public static Object newInstanceOf(final String className)
-        throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException,
-        InvocationTargetException {
+    public static Object newInstanceOf(final String className) throws ClassNotFoundException, IllegalAccessException,
+            InstantiationException, NoSuchMethodException, InvocationTargetException {
         final Class<?> clazz = loadClass(className);
         try {
             return clazz.getConstructor().newInstance();
@@ -158,8 +161,8 @@ public final class LoaderUtil {
      * @since 2.1
      */
     public static <T> T newCheckedInstanceOf(final String className, final Class<T> clazz)
-        throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException,
-        IllegalAccessException {
+            throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException,
+            IllegalAccessException {
         return clazz.cast(newInstanceOf(className));
     }
 
@@ -189,11 +192,8 @@ public final class LoaderUtil {
     }
 
     static Collection<UrlResource> findUrlResources(final String resource) {
-        final ClassLoader[] candidates = {
-            getThreadContextClassLoader(),
-            LoaderUtil.class.getClassLoader(),
-            GET_CLASS_LOADER_DISABLED ? null : ClassLoader.getSystemClassLoader()
-        };
+        final ClassLoader[] candidates = { getThreadContextClassLoader(), LoaderUtil.class.getClassLoader(),
+                GET_CLASS_LOADER_DISABLED ? null : ClassLoader.getSystemClassLoader() };
         final Collection<UrlResource> resources = new LinkedHashSet<>();
         for (final ClassLoader cl : candidates) {
             if (cl != null) {
