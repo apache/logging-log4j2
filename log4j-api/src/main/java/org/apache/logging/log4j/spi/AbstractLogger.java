@@ -68,7 +68,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     /**
      * The default MessageFactory class.
      */
-    public static final Class<? extends MessageFactory> DEFAULT_MESSAGE_FACTORY_CLASS = 
+    public static final Class<? extends MessageFactory> DEFAULT_MESSAGE_FACTORY_CLASS =
             ParameterizedMessageFactory.class;
 
     private static final long serialVersionUID = 2L;

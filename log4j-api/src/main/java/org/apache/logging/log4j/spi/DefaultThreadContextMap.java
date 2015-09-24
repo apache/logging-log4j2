@@ -23,15 +23,15 @@ import java.util.Map;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
- * The actual ThreadContext Map. A new ThreadContext Map is created each time it is updated and the Map stored
- * is always immutable. This means the Map can be passed to other threads without concern that it will be updated.
- * Since it is expected that the Map will be passed to many more log events than the number of keys it contains
- * the performance should be much better than if the Map was copied for each event.
+ * The actual ThreadContext Map. A new ThreadContext Map is created each time it is updated and the Map stored is always
+ * immutable. This means the Map can be passed to other threads without concern that it will be updated. Since it is
+ * expected that the Map will be passed to many more log events than the number of keys it contains the performance
+ * should be much better than if the Map was copied for each event.
  */
 public class DefaultThreadContextMap implements ThreadContextMap {
-    /** 
-     * Property name ({@value}) for selecting {@code InheritableThreadLocal} (value "true")
-     * or plain {@code ThreadLocal} (value is not "true") in the implementation.
+    /**
+     * Property name ({@value} ) for selecting {@code InheritableThreadLocal} (value "true") or plain
+     * {@code ThreadLocal} (value is not "true") in the implementation.
      */
     public static final String INHERITABLE_MAP = "isThreadContextMapInheritable";
 
@@ -42,7 +42,7 @@ public class DefaultThreadContextMap implements ThreadContextMap {
         this.useMap = useMap;
         this.localMap = createThreadLocalMap(useMap);
     }
-    
+
     // LOG4J2-479: by default, use a plain ThreadLocal, only use InheritableThreadLocal if configured.
     // (This method is package protected for JUnit tests.)
     static ThreadLocal<Map<String, String>> createThreadLocalMap(final boolean isMapEnabled) {
@@ -53,7 +53,7 @@ public class DefaultThreadContextMap implements ThreadContextMap {
                 @Override
                 protected Map<String, String> childValue(final Map<String, String> parentValue) {
                     return parentValue != null && isMapEnabled //
-                            ? Collections.unmodifiableMap(new HashMap<>(parentValue)) //
+                    ? Collections.unmodifiableMap(new HashMap<>(parentValue)) //
                             : null;
                 }
             };
@@ -152,7 +152,7 @@ public class DefaultThreadContextMap implements ThreadContextMap {
         }
         final ThreadContextMap other = (ThreadContextMap) obj;
         final Map<String, String> map = this.localMap.get();
-        final Map<String, String> otherMap = other.getImmutableMapOrNull(); 
+        final Map<String, String> otherMap = other.getImmutableMapOrNull();
         if (map == null) {
             if (otherMap != null) {
                 return false;
