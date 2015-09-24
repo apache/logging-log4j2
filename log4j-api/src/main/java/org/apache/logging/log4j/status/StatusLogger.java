@@ -42,13 +42,13 @@ import org.apache.logging.log4j.util.Strings;
  */
 public final class StatusLogger extends AbstractLogger {
 
-    private static final long serialVersionUID = 2L;
-
     /**
-     * System property that can be configured with the number of entries in the queue. Once the limit
-     * is reached older entries will be removed as new entries are added.
+     * System property that can be configured with the number of entries in the queue. Once the limit is reached older
+     * entries will be removed as new entries are added.
      */
     public static final String MAX_STATUS_ENTRIES = "log4j2.status.entries";
+
+    private static final long serialVersionUID = 2L;
 
     private static final String NOT_AVAIL = "?";
 
@@ -63,25 +63,28 @@ public final class StatusLogger extends AbstractLogger {
     private final SimpleLogger logger;
 
     private final Collection<StatusListener> listeners = new CopyOnWriteArrayList<>();
-    
-    @SuppressWarnings("NonSerializableFieldInSerializableClass") // ReentrantReadWriteLock is Serializable
+
+    @SuppressWarnings("NonSerializableFieldInSerializableClass")
+    // ReentrantReadWriteLock is Serializable
     private final ReadWriteLock listenersLock = new ReentrantReadWriteLock();
 
     private final Queue<StatusData> messages = new BoundedQueue<>(MAX_ENTRIES);
-    
-    @SuppressWarnings("NonSerializableFieldInSerializableClass") // ReentrantLock is Serializable
+
+    @SuppressWarnings("NonSerializableFieldInSerializableClass")
+    // ReentrantLock is Serializable
     private final Lock msgLock = new ReentrantLock();
 
     private int listenersLevel;
 
     private StatusLogger() {
-        this.logger = new SimpleLogger("StatusLogger", Level.ERROR, false, true, false, false, Strings.EMPTY, null, PROPS,
-            System.err);
+        this.logger = new SimpleLogger("StatusLogger", Level.ERROR, false, true, false, false, Strings.EMPTY, null,
+                PROPS, System.err);
         this.listenersLevel = Level.toLevel(DEFAULT_STATUS_LEVEL, Level.WARN).intLevel();
     }
 
     /**
      * Retrieve the StatusLogger.
+     * 
      * @return The StatusLogger.
      */
     public static StatusLogger getLogger() {
@@ -94,6 +97,7 @@ public final class StatusLogger extends AbstractLogger {
 
     /**
      * Registers a new listener.
+     * 
      * @param listener The StatusListener to register.
      */
     public void registerListener(final StatusListener listener) {
@@ -111,6 +115,7 @@ public final class StatusLogger extends AbstractLogger {
 
     /**
      * Removes a StatusListener.
+     * 
      * @param listener The StatusListener to remove.
      */
     public void removeListener(final StatusListener listener) {
@@ -133,6 +138,7 @@ public final class StatusLogger extends AbstractLogger {
 
     /**
      * Returns a thread safe Iterable for the StatusListener.
+     * 
      * @return An Iterable for the list of StatusListeners.
      */
     public Iterable<StatusListener> getListeners() {
@@ -160,11 +166,13 @@ public final class StatusLogger extends AbstractLogger {
         try {
             resource.close();
         } catch (final IOException ignored) {
+            // ignored
         }
     }
 
     /**
      * Returns a List of all events as StatusData objects.
+     * 
      * @return The list of StatusData objects.
      */
     public List<StatusData> getStatusData() {
@@ -195,14 +203,16 @@ public final class StatusLogger extends AbstractLogger {
 
     /**
      * Adds an event.
+     * 
      * @param marker The Marker
-     * @param fqcn   The fully qualified class name of the <b>caller</b>
-     * @param level  The logging level
-     * @param msg    The message associated with the event.
-     * @param t      A Throwable or null.
+     * @param fqcn The fully qualified class name of the <b>caller</b>
+     * @param level The logging level
+     * @param msg The message associated with the event.
+     * @param t A Throwable or null.
      */
     @Override
-    public void logMessage(final String fqcn, final Level level, final Marker marker, final Message msg, final Throwable t) {
+    public void logMessage(final String fqcn, final Level level, final Marker marker, final Message msg,
+            final Throwable t) {
         StackTraceElement element = null;
         if (fqcn != null) {
             element = getStackTraceElement(fqcn, Thread.currentThread().getStackTrace());
@@ -279,6 +289,7 @@ public final class StatusLogger extends AbstractLogger {
 
     /**
      * Queues for status events.
+     * 
      * @param <E> Object type to be stored in the queue.
      */
     private class BoundedQueue<E> extends ConcurrentLinkedQueue<E> {
