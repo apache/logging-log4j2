@@ -20,10 +20,8 @@ import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-
 /**
- * Applications create Markers by using the Marker Manager. All Markers created by this Manager are
- * immutable.
+ * Applications create Markers by using the Marker Manager. All Markers created by this Manager are immutable.
  */
 public final class MarkerManager {
 
@@ -42,6 +40,7 @@ public final class MarkerManager {
 
     /**
      * Tests existence of the given marker.
+     * 
      * @param key the marker name
      * @return true if the marker exists.
      * @since 2.4
@@ -50,9 +49,9 @@ public final class MarkerManager {
         return MARKERS.containsKey(key);
     }
 
-
     /**
      * Retrieves a Marker or create a Marker that has no parent.
+     * 
      * @param name The name of the Marker.
      * @return The Marker with the specified name.
      * @throws IllegalArgumentException if the argument is {@code null}
@@ -64,6 +63,7 @@ public final class MarkerManager {
 
     /**
      * Retrieves or creates a Marker with the specified parent. The parent must have been previously created.
+     * 
      * @param name The name of the Marker.
      * @param parent The name of the parent Marker.
      * @return The Marker with the specified name.
@@ -83,6 +83,7 @@ public final class MarkerManager {
 
     /**
      * Retrieves or creates a Marker with the specified parent.
+     * 
      * @param name The name of the Marker.
      * @param parent The parent Marker.
      * @return The Marker with the specified name.
@@ -125,6 +126,7 @@ public final class MarkerManager {
 
         /**
          * Constructs a new Marker.
+         * 
          * @param name the name of the Marker.
          * @throws IllegalArgumentException if the argument is {@code null}
          */
@@ -141,8 +143,8 @@ public final class MarkerManager {
         // TODO: use java.util.concurrent
 
         @Override
-        public synchronized Marker addParents(final Marker... parents) {
-            if (parents == null) {
+        public synchronized Marker addParents(final Marker... parentMarkers) {
+            if (parentMarkers == null) {
                 throw new IllegalArgumentException("A parent marker must be specified");
             }
             // It is not strictly necessary to copy the variable here but it should perform better than
@@ -150,9 +152,9 @@ public final class MarkerManager {
             final Marker[] localParents = this.parents;
             // Don't add a parent that is already in the hierarchy.
             int count = 0;
-            int size = parents.length;
+            int size = parentMarkers.length;
             if (localParents != null) {
-                for (final Marker parent : parents) {
+                for (final Marker parent : parentMarkers) {
                     if (!(contains(parent, localParents) || parent.isInstanceOf(this))) {
                         ++count;
                     }
@@ -165,11 +167,11 @@ public final class MarkerManager {
             final Marker[] markers = new Marker[size];
             if (localParents != null) {
                 // It's perfectly OK to call arraycopy in a synchronized context; it's still faster
-                //noinspection CallToNativeMethodWhileLocked
+                // noinspection CallToNativeMethodWhileLocked
                 System.arraycopy(localParents, 0, markers, 0, localParents.length);
             }
             int index = localParents == null ? 0 : localParents.length;
-            for (final Marker parent : parents) {
+            for (final Marker parent : parentMarkers) {
                 if (localParents == null || !(contains(parent, localParents) || parent.isInstanceOf(this))) {
                     markers[index++] = parent;
                 }
@@ -197,7 +199,7 @@ public final class MarkerManager {
             }
             int index = 0;
             final Marker[] markers = new Marker[localParentsLength - 1];
-            //noinspection ForLoopReplaceableByForEach
+            // noinspection ForLoopReplaceableByForEach
             for (int i = 0; i < localParentsLength; i++) {
                 final Marker marker = localParents[i];
                 if (!marker.equals(parent)) {
@@ -260,7 +262,7 @@ public final class MarkerManager {
                 if (localParentsLength == 2) {
                     return checkParent(localParents[0], marker) || checkParent(localParents[1], marker);
                 }
-                //noinspection ForLoopReplaceableByForEach
+                // noinspection ForLoopReplaceableByForEach
                 for (int i = 0; i < localParentsLength; i++) {
                     final Marker localParent = localParents[i];
                     if (checkParent(localParent, marker)) {
@@ -293,7 +295,7 @@ public final class MarkerManager {
                 if (localParentsLength == 2) {
                     return checkParent(localParents[0], marker) || checkParent(localParents[1], marker);
                 }
-                //noinspection ForLoopReplaceableByForEach
+                // noinspection ForLoopReplaceableByForEach
                 for (int i = 0; i < localParentsLength; i++) {
                     final Marker localParent = localParents[i];
                     if (checkParent(localParent, marker)) {
@@ -309,7 +311,8 @@ public final class MarkerManager {
             if (parent == marker) {
                 return true;
             }
-            final Marker[] localParents = parent instanceof Log4jMarker ? ((Log4jMarker)parent).parents : parent.getParents();
+            final Marker[] localParents = parent instanceof Log4jMarker ? ((Log4jMarker) parent).parents : parent
+                    .getParents();
             if (localParents != null) {
                 final int localParentsLength = localParents.length;
                 if (localParentsLength == 1) {
@@ -318,7 +321,7 @@ public final class MarkerManager {
                 if (localParentsLength == 2) {
                     return checkParent(localParents[0], marker) || checkParent(localParents[1], marker);
                 }
-                //noinspection ForLoopReplaceableByForEach
+                // noinspection ForLoopReplaceableByForEach
                 for (int i = 0; i < localParentsLength; i++) {
                     final Marker localParent = localParents[i];
                     if (checkParent(localParent, marker)) {
@@ -333,7 +336,7 @@ public final class MarkerManager {
          * Called from add while synchronized.
          */
         private static boolean contains(final Marker parent, final Marker... localParents) {
-            //noinspection ForLoopReplaceableByForEach
+            // noinspection ForLoopReplaceableByForEach
             // performance tests showed a normal for loop is slightly faster than a for-each loop on some platforms
             for (int i = 0, localParentsLength = localParents.length; i < localParentsLength; i++) {
                 final Marker marker = localParents[i];
@@ -375,7 +378,7 @@ public final class MarkerManager {
         private static void addParentInfo(final StringBuilder sb, final Marker... parents) {
             sb.append("[ ");
             boolean first = true;
-            //noinspection ForLoopReplaceableByForEach
+            // noinspection ForLoopReplaceableByForEach
             for (int i = 0, parentsLength = parents.length; i < parentsLength; i++) {
                 final Marker marker = parents[i];
                 if (!first) {
