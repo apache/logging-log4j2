@@ -101,7 +101,7 @@ public class SimpleLoggerContext implements LoggerContext {
     public ExtendedLogger getLogger(final String name, final MessageFactory messageFactory) {
         final ExtendedLogger extendedLogger = loggers.get(name);
         if (extendedLogger != null) {
-			AbstractLogger.checkMessageFactory(extendedLogger, messageFactory);
+            AbstractLogger.checkMessageFactory(extendedLogger, messageFactory);
             return extendedLogger;
         }
         loggers.putIfAbsent(name, new SimpleLogger(name, defaultLevel, showLogName, showShortName, showDateTime,
