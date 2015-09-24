@@ -57,7 +57,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
      * Constructor with message pattern and arguments.
      *
      * @param messagePattern the message pattern that to be checked for placeholders.
-     * @param arguments      the argument array to be converted.
+     * @param arguments the argument array to be converted.
      */
     public LocalizedMessage(final String messagePattern, final Object[] arguments) {
         this((ResourceBundle) null, (Locale) null, messagePattern, arguments);
@@ -80,8 +80,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
         this.locale = locale;
     }
 
-    public LocalizedMessage(final ResourceBundle bundle, final Locale locale, final String key,
-                            final Object[] arguments) {
+    public LocalizedMessage(final ResourceBundle bundle, final Locale locale, final String key, final Object[] arguments) {
         this.key = key;
         this.argArray = arguments;
         this.throwable = null;
@@ -95,57 +94,58 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
     }
 
     public LocalizedMessage(final String messagePattern, final Object arg) {
-        this((ResourceBundle) null, (Locale) null, messagePattern, new Object[] {arg});
+        this((ResourceBundle) null, (Locale) null, messagePattern, new Object[] { arg });
     }
 
     public LocalizedMessage(final String baseName, final String key, final Object arg) {
-        this(baseName, (Locale) null, key, new Object[] {arg});
+        this(baseName, (Locale) null, key, new Object[] { arg });
     }
 
     public LocalizedMessage(final ResourceBundle bundle, final String key, final Object arg) {
-        this(bundle, (Locale) null, key, new Object[] {arg});
+        this(bundle, (Locale) null, key, new Object[] { arg });
     }
 
     public LocalizedMessage(final String baseName, final Locale locale, final String key, final Object arg) {
-        this(baseName, locale, key, new Object[] {arg});
+        this(baseName, locale, key, new Object[] { arg });
     }
 
     public LocalizedMessage(final ResourceBundle bundle, final Locale locale, final String key, final Object arg) {
-        this(bundle, locale, key, new Object[] {arg});
+        this(bundle, locale, key, new Object[] { arg });
     }
 
     public LocalizedMessage(final Locale locale, final String key, final Object arg) {
-        this((ResourceBundle) null, locale, key, new Object[] {arg});
+        this((ResourceBundle) null, locale, key, new Object[] { arg });
     }
 
     public LocalizedMessage(final String messagePattern, final Object arg1, final Object arg2) {
-        this((ResourceBundle) null, (Locale) null, messagePattern, new Object[] {arg1, arg2});
+        this((ResourceBundle) null, (Locale) null, messagePattern, new Object[] { arg1, arg2 });
     }
 
     public LocalizedMessage(final String baseName, final String key, final Object arg1, final Object arg2) {
-        this(baseName, (Locale) null, key, new Object[] {arg1, arg2});
+        this(baseName, (Locale) null, key, new Object[] { arg1, arg2 });
     }
 
     public LocalizedMessage(final ResourceBundle bundle, final String key, final Object arg1, final Object arg2) {
-        this(bundle, (Locale) null, key, new Object[] {arg1, arg2});
+        this(bundle, (Locale) null, key, new Object[] { arg1, arg2 });
     }
 
     public LocalizedMessage(final String baseName, final Locale locale, final String key, final Object arg1,
-                            final Object arg2) {
-        this(baseName, locale, key, new Object[] {arg1, arg2});
+            final Object arg2) {
+        this(baseName, locale, key, new Object[] { arg1, arg2 });
     }
 
     public LocalizedMessage(final ResourceBundle bundle, final Locale locale, final String key, final Object arg1,
-                            final Object arg2) {
-        this(bundle, locale, key, new Object[] {arg1, arg2});
+            final Object arg2) {
+        this(bundle, locale, key, new Object[] { arg1, arg2 });
     }
 
     public LocalizedMessage(final Locale locale, final String key, final Object arg1, final Object arg2) {
-        this((ResourceBundle) null, locale, key, new Object[] {arg1, arg2});
+        this((ResourceBundle) null, locale, key, new Object[] { arg1, arg2 });
     }
 
     /**
      * Set the name of the Logger.
+     * 
      * @param name The name of the Logger.
      */
     @Override
@@ -155,6 +155,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
 
     /**
      * Returns the name of the Logger.
+     * 
      * @return the name of the Logger.
      */
     @Override
@@ -164,6 +165,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
 
     /**
      * Returns the formatted message after looking up the format in the resource bundle.
+     * 
      * @return The formatted message String.
      */
     @Override
@@ -180,8 +182,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
             }
         }
         final String myKey = getFormat();
-        final String msgPattern = (bundle == null || !bundle.containsKey(myKey)) ?
-            myKey : bundle.getString(myKey);
+        final String msgPattern = (bundle == null || !bundle.containsKey(myKey)) ? myKey : bundle.getString(myKey);
         final Object[] array = argArray == null ? stringArgs : argArray;
         final FormattedMessage msg = new FormattedMessage(msgPattern, array);
         formattedMessage = msg.getFormattedMessage();
@@ -212,11 +213,12 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
      * 
      * @param rbBaseName The base name of the resource bundle, a fully qualified class name.
      * @param resourceBundleLocale The locale to use when formatting the message.
-     * @param loop If true the key will be treated as a package or class name and a resource bundle will
-     * be located based on all or part of the package name. If false the key is expected to be the exact bundle id.
+     * @param loop If true the key will be treated as a package or class name and a resource bundle will be located
+     *            based on all or part of the package name. If false the key is expected to be the exact bundle id.
      * @return The ResourceBundle.
      */
-    protected ResourceBundle getResourceBundle(final String rbBaseName, final Locale resourceBundleLocale, final boolean loop) {
+    protected ResourceBundle getResourceBundle(final String rbBaseName, final Locale resourceBundleLocale,
+            final boolean loop) {
         ResourceBundle rb = null;
 
         if (rbBaseName == null) {
