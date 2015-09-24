@@ -108,12 +108,12 @@ public final class MongoDbConnection implements NoSqlConnection<BasicDBObject, M
      * they are actually used.
      *
      * @param database The database to authenticate
-     * @param username The username to authenticate with
+     * @param userName The username to authenticate with
      * @param password The password to authenticate with
      */
-    static void authenticate(final DB database, final String username, final String password) {
+    static void authenticate(final DB database, final String userName, final String password) {
         try {
-            if (!database.authenticate(username, password.toCharArray())) {
+            if (!database.authenticate(userName, password.toCharArray())) {
                 LOGGER.error("Failed to authenticate against MongoDB server. Unknown error.");
             }
         } catch (final MongoException e) {
