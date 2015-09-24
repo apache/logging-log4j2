@@ -28,7 +28,8 @@
         Allow PatternLayout to select a pattern to use based on some selection criteria.
       </action>
       <action issue="LOG4J2-1127" dev="ggregory" type="fix">
-        log4j2.xml cannot be parsed on Oracle Weblogic 12c</action>
+        log4j2.xml cannot be parsed on Oracle Weblogic 12c
+      </action>
       <action issue="LOG4J2-1128" dev="ggregory" type="update">
         Reuse StringBuilder to improve performance for String-based layouts: CSV, GELF, HTML, RFC524, Syslog.
       </action>
