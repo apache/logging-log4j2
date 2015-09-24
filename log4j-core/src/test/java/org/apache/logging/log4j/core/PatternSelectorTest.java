@@ -47,7 +47,9 @@ public class PatternSelectorTest {
         List<String> messages = app.getMessages();
         assertNotNull("No Messages", messages);
         assertTrue("Incorrect number of messages. Expected 3, Actual " + messages.size(), messages.size() == 3);
-        assertEquals("[TRACE] TestPatternSelector ====== o.a.l.l.c.PatternSelectorTest.testPatternSelector:42 entry ======\n", messages.get(0));
-        assertEquals("[INFO ] TestPatternSelector Hello World\n", messages.get(1));
+        final String expect = String.format("[TRACE] TestPatternSelector ====== "
+                + "o.a.l.l.c.PatternSelectorTest.testPatternSelector:42 entry ======%n");
+        assertEquals(expect, messages.get(0));
+        assertEquals(String.format("[INFO ] TestPatternSelector Hello World%n"), messages.get(1));
     }
 }
