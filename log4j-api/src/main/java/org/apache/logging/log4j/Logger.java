@@ -30,11 +30,12 @@ import org.apache.logging.log4j.util.Supplier;
  * gets its own Logger named after its fully qualified class name (the default Logger name when obtained through the
  * {@link LogManager#getLogger()} method). Thus, the simplest way to use this would be like so:
  * </p>
+ * 
  * <pre>
- *     public class MyClass {
- *         private static final Logger LOGGER = LogManager.getLogger();
- *         // ...
- *     }
+ * public class MyClass {
+ *     private static final Logger LOGGER = LogManager.getLogger();
+ *     // ...
+ * }
  * </pre>
  * <p>
  * For ease of filtering, searching, sorting, etc., it is generally a good idea to create Loggers for each class rather
@@ -45,16 +46,17 @@ import org.apache.logging.log4j.util.Supplier;
  * {@link org.apache.logging.log4j.spi.AbstractLogger} class rather than implementing this interface directly.
  * </p>
  *
- * Since 2.4, methods have been added to the {@code Logger} interface to support lambda expressions.
- * The new methods allow client code to lazily log messages without explicitly checking if the requested log level is
- * enabled. For example, previously one would write:
+ * Since 2.4, methods have been added to the {@code Logger} interface to support lambda expressions. The new methods
+ * allow client code to lazily log messages without explicitly checking if the requested log level is enabled. For
+ * example, previously one would write:
  * 
  * <pre>
  * // pre-Java 8 style optimization: explicitly check the log level
  * // to make sure the expensiveOperation() method is only called if necessary
  * if (logger.isTraceEnabled()) {
  *     logger.trace(&quot;Some long-running operation returned {}&quot;, expensiveOperation());
- * }</pre>
+ * }
+ * </pre>
  * <p>
  * With Java 8, the same effect can be achieved with a lambda expression:
  * 
@@ -75,10 +77,10 @@ public interface Logger {
     void catching(Level level, Throwable t);
 
     /**
-     * Logs an exception or error that has been caught. Normally, one may wish to provide additional information with
-     * an exception while logging it; in these cases, one would not use this method. In other cases where simply
-     * logging the fact that an exception was swallowed somewhere (e.g., at the top of the stack trace in a
-     * {@code main()} method), this method is ideal for it.
+     * Logs an exception or error that has been caught. Normally, one may wish to provide additional information with an
+     * exception while logging it; in these cases, one would not use this method. In other cases where simply logging
+     * the fact that an exception was swallowed somewhere (e.g., at the top of the stack trace in a {@code main()}
+     * method), this method is ideal for it.
      *
      * @param t The Throwable.
      */
@@ -318,20 +320,23 @@ public interface Logger {
 
     /**
      * Logs entry to a method along with its parameters. For example,
+     * 
      * <pre>
-     *     public void doSomething(String foo, int bar) {
-     *         LOGGER.entry(foo, bar);
-     *         // do something
-     *     }
+     * public void doSomething(String foo, int bar) {
+     *     LOGGER.entry(foo, bar);
+     *     // do something
+     * }
      * </pre>
-     * <p>The use of methods such as this are more effective when combined with aspect-oriented programming or other
-     * bytecode manipulation tools. It can be rather tedious (and messy) to use this type of method manually.</p>
+     * <p>
+     * The use of methods such as this are more effective when combined with aspect-oriented programming or other
+     * bytecode manipulation tools. It can be rather tedious (and messy) to use this type of method manually.
+     * </p>
      *
-     * @param params The parameters to the method.
-     * TODO Use of varargs results in array creation which can be a substantial portion of no-op case. LogMF/LogSF
-     *        provides several overrides to avoid vararg except in edge cases. (RG) LogMF and LogSF implement these in
-     *        LogXF which calls logger.callAppenders. callAppenders is part of the implementation and cannot be used by
-     *        the API. Adding more methods here and in AbstractLogger is sufficient.
+     * @param params The parameters to the method. TODO Use of varargs results in array creation which can be a
+     *            substantial portion of no-op case. LogMF/LogSF provides several overrides to avoid vararg except in
+     *            edge cases. (RG) LogMF and LogSF implement these in LogXF which calls logger.callAppenders.
+     *            callAppenders is part of the implementation and cannot be used by the API. Adding more methods here
+     *            and in AbstractLogger is sufficient.
      */
     void entry(Object... params);
 
@@ -354,8 +359,8 @@ public interface Logger {
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#ERROR ERROR} level with
-     * the specified Marker. 
-     * The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * the specified Marker. The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the
+     * {@code Message}.
      *
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
@@ -365,8 +370,8 @@ public interface Logger {
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#ERROR ERROR} level) with the
-     * specified Marker and including the stack trace of the {@link Throwable} <code>t</code> passed as parameter.
-     * The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * specified Marker and including the stack trace of the {@link Throwable} <code>t</code> passed as parameter. The
+     * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
@@ -409,10 +414,10 @@ public interface Logger {
      * @param params parameters to the message.
      * @see #getMessageFactory()
      *
-     * TODO Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
-     *        array creation expense on every call. (RG) I assume you meant error, not info. It isn't possible to be
-     *        misinterpreted as the previous method is for that signature. Methods should be added to avoid varargs for
-     *        1, 2 or 3 parameters.
+     *      TODO Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
+     *      array creation expense on every call. (RG) I assume you meant error, not info. It isn't possible to be
+     *      misinterpreted as the previous method is for that signature. Methods should be added to avoid varargs for 1,
+     *      2 or 3 parameters.
      */
     void error(Marker marker, String message, Object... params);
 
@@ -476,8 +481,8 @@ public interface Logger {
     void error(Message msg, Throwable t);
 
     /**
-     * Logs a message which is only to be constructed if the logging level is the {@link Level#ERROR ERROR} level.
-     * The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * Logs a message which is only to be constructed if the logging level is the {@link Level#ERROR ERROR} level. The
+     * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @since 2.4
@@ -486,8 +491,8 @@ public interface Logger {
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#ERROR ERROR} level) including the
-     * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
-     * The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * stack trace of the {@link Throwable} <code>t</code> passed as parameter. The {@code MessageSupplier} may or may
+     * not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t the exception to log, including its stack trace.
@@ -525,10 +530,10 @@ public interface Logger {
      * @param params parameters to the message.
      * @see #getMessageFactory()
      *
-     * TODO Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
-     *        array creation expense on every call. (RG) I assume you meant error, not info. It isn't possible to be
-     *        misinterpreted as the previous method is for that signature. Methods should be added to avoid varargs for
-     *        1, 2 or 3 parameters.
+     *      TODO Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
+     *      array creation expense on every call. (RG) I assume you meant error, not info. It isn't possible to be
+     *      misinterpreted as the previous method is for that signature. Methods should be added to avoid varargs for 1,
+     *      2 or 3 parameters.
      */
     void error(String message, Object... params);
 
@@ -578,8 +583,9 @@ public interface Logger {
 
     /**
      * Logs exiting from a method with the result. This may be coded as:
+     * 
      * <pre>
-     *     return LOGGER.exit(myResult);
+     * return LOGGER.exit(myResult);
      * </pre>
      *
      * @param <R> The type of the parameter and object being returned.
@@ -607,8 +613,8 @@ public interface Logger {
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#FATAL FATAL} level with
-     * the specified Marker. 
-     * The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * the specified Marker. The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the
+     * {@code Message}.
      *
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
@@ -618,8 +624,8 @@ public interface Logger {
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#FATAL FATAL} level) with the
-     * specified Marker and including the stack trace of the {@link Throwable} <code>t</code> passed as parameter.
-     * The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * specified Marker and including the stack trace of the {@link Throwable} <code>t</code> passed as parameter. The
+     * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
@@ -662,10 +668,10 @@ public interface Logger {
      * @param params parameters to the message.
      * @see #getMessageFactory()
      *
-     * TODO Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
-     *        array creation expense on every call.(RG) I assume you meant fatal, not info. It isn't possible to be
-     *        misinterpreted as the previous method is for that signature. Methods should be added to avoid varargs for
-     *        1, 2 or 3 parameters.
+     *      TODO Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
+     *      array creation expense on every call.(RG) I assume you meant fatal, not info. It isn't possible to be
+     *      misinterpreted as the previous method is for that signature. Methods should be added to avoid varargs for 1,
+     *      2 or 3 parameters.
      */
     void fatal(Marker marker, String message, Object... params);
 
@@ -729,8 +735,8 @@ public interface Logger {
     void fatal(Message msg, Throwable t);
 
     /**
-     * Logs a message which is only to be constructed if the logging level is the {@link Level#FATAL FATAL} level.
-     * The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * Logs a message which is only to be constructed if the logging level is the {@link Level#FATAL FATAL} level. The
+     * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @since 2.4
@@ -739,8 +745,8 @@ public interface Logger {
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#FATAL FATAL} level) including the
-     * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
-     * The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * stack trace of the {@link Throwable} <code>t</code> passed as parameter. The {@code MessageSupplier} may or may
+     * not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t the exception to log, including its stack trace.
@@ -778,10 +784,10 @@ public interface Logger {
      * @param params parameters to the message.
      * @see #getMessageFactory()
      *
-     * TODO Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
-     *        array creation expense on every call.(RG) I assume you meant fatal, not info. It isn't possible to be
-     *        misinterpreted as the previous method is for that signature. Methods should be added to avoid varargs for
-     *        1, 2 or 3 parameters.
+     *      TODO Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
+     *      array creation expense on every call.(RG) I assume you meant fatal, not info. It isn't possible to be
+     *      misinterpreted as the previous method is for that signature. Methods should be added to avoid varargs for 1,
+     *      2 or 3 parameters.
      */
     void fatal(String message, Object... params);
 
@@ -863,9 +869,9 @@ public interface Logger {
     void info(Marker marker, Message msg, Throwable t);
 
     /**
-     * Logs a message which is only to be constructed if the logging level is the {@link Level#INFO INFO} level with
-     * the specified Marker. 
-     * The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * Logs a message which is only to be constructed if the logging level is the {@link Level#INFO INFO} level with the
+     * specified Marker. The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the
+     * {@code Message}.
      *
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
@@ -875,8 +881,8 @@ public interface Logger {
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#INFO INFO} level) with the
-     * specified Marker and including the stack trace of the {@link Throwable} <code>t</code> passed as parameter.
-     * The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * specified Marker and including the stack trace of the {@link Throwable} <code>t</code> passed as parameter. The
+     * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
@@ -919,9 +925,9 @@ public interface Logger {
      * @param params parameters to the message.
      * @see #getMessageFactory()
      *
-     * TODO Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
-     *        array creation expense on every call. (RG) It isn't possible to be misinterpreted as the previous method
-     *        is for that signature. Methods should be added to avoid varargs for 1, 2 or 3 parameters.
+     *      TODO Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
+     *      array creation expense on every call. (RG) It isn't possible to be misinterpreted as the previous method is
+     *      for that signature. Methods should be added to avoid varargs for 1, 2 or 3 parameters.
      */
     void info(Marker marker, String message, Object... params);
 
@@ -985,8 +991,8 @@ public interface Logger {
     void info(Message msg, Throwable t);
 
     /**
-     * Logs a message which is only to be constructed if the logging level is the {@link Level#INFO INFO} level.
-     * The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * Logs a message which is only to be constructed if the logging level is the {@link Level#INFO INFO} level. The
+     * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @since 2.4
@@ -995,8 +1001,8 @@ public interface Logger {
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#INFO INFO} level) including the
-     * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
-     * The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * stack trace of the {@link Throwable} <code>t</code> passed as parameter. The {@code MessageSupplier} may or may
+     * not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t the exception to log, including its stack trace.
@@ -1034,9 +1040,9 @@ public interface Logger {
      * @param params parameters to the message.
      * @see #getMessageFactory()
      *
-     * TODO Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
-     *        array creation expense on every call. (RG) It isn't possible to be misinterpreted as the previous method
-     *        is for that signature. Methods should be added to avoid varargs for 1, 2 or 3 parameters.
+     *      TODO Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
+     *      array creation expense on every call. (RG) It isn't possible to be misinterpreted as the previous method is
+     *      for that signature. Methods should be added to avoid varargs for 1, 2 or 3 parameters.
      */
     void info(String message, Object... params);
 
@@ -1216,9 +1222,9 @@ public interface Logger {
     void log(Level level, Marker marker, Message msg, Throwable t);
 
     /**
-     * Logs a message which is only to be constructed if the logging level is the specified level with
-     * the specified Marker. 
-     * The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * Logs a message which is only to be constructed if the logging level is the specified level with the specified
+     * Marker. The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the
+     * {@code Message}.
      *
      * @param level the logging level
      * @param marker the marker data specific to this log statement
@@ -1228,9 +1234,9 @@ public interface Logger {
     void log(Level level, Marker marker, MessageSupplier msgSupplier);
 
     /**
-     * Logs a message (only to be constructed if the logging level is the specified level) with the
-     * specified Marker and including the stack log of the {@link Throwable} <code>t</code> passed as parameter.
-     * The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * Logs a message (only to be constructed if the logging level is the specified level) with the specified Marker and
+     * including the stack log of the {@link Throwable} <code>t</code> passed as parameter. The {@code MessageSupplier}
+     * may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param level the logging level
      * @param marker the marker data specific to this log statement
@@ -1259,7 +1265,6 @@ public interface Logger {
      * @param t the exception to log, including its stack trace.
      */
     void log(Level level, Marker marker, Object message, Throwable t);
-
 
     /**
      * Logs a message object with the given level.
@@ -1345,8 +1350,8 @@ public interface Logger {
     void log(Level level, Message msg, Throwable t);
 
     /**
-     * Logs a message which is only to be constructed if the logging level is the specified level.
-     * The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * Logs a message which is only to be constructed if the logging level is the specified level. The
+     * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param level the logging level
      * @param msgSupplier A function, which when called, produces the desired log message.
@@ -1355,9 +1360,9 @@ public interface Logger {
     void log(Level level, MessageSupplier msgSupplier);
 
     /**
-     * Logs a message (only to be constructed if the logging level is the specified level) including the
-     * stack log of the {@link Throwable} <code>t</code> passed as parameter.
-     * The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * Logs a message (only to be constructed if the logging level is the specified level) including the stack log of
+     * the {@link Throwable} <code>t</code> passed as parameter. The {@code MessageSupplier} may or may not use the
+     * {@link MessageFactory} to construct the {@code Message}.
      *
      * @param level the logging level
      * @param msgSupplier A function, which when called, produces the desired log message.
@@ -1465,8 +1470,9 @@ public interface Logger {
 
     /**
      * Logs an exception or error to be thrown. This may be coded as:
+     * 
      * <pre>
-     *     throw logger.throwing(Level.DEBUG, myException);
+     * throw logger.throwing(Level.DEBUG, myException);
      * </pre>
      *
      * @param <T> the Throwable type.
@@ -1478,8 +1484,9 @@ public interface Logger {
 
     /**
      * Logs an exception or error to be thrown. This may be coded as:
+     * 
      * <pre>
-     *     throw logger.throwing(myException);
+     * throw logger.throwing(myException);
      * </pre>
      *
      * @param <T> the Throwable type.
@@ -1507,8 +1514,8 @@ public interface Logger {
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#TRACE TRACE} level with
-     * the specified Marker. 
-     * The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * the specified Marker. The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the
+     * {@code Message}.
      *
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
@@ -1518,8 +1525,8 @@ public interface Logger {
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#TRACE TRACE} level) with the
-     * specified Marker and including the stack trace of the {@link Throwable} <code>t</code> passed as parameter.
-     * The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * specified Marker and including the stack trace of the {@link Throwable} <code>t</code> passed as parameter. The
+     * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
@@ -1626,8 +1633,8 @@ public interface Logger {
     void trace(Message msg, Throwable t);
 
     /**
-     * Logs a message which is only to be constructed if the logging level is the {@link Level#TRACE TRACE} level.
-     * The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * Logs a message which is only to be constructed if the logging level is the {@link Level#TRACE TRACE} level. The
+     * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @since 2.4
@@ -1636,8 +1643,8 @@ public interface Logger {
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#TRACE TRACE} level) including the
-     * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
-     * The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * stack trace of the {@link Throwable} <code>t</code> passed as parameter. The {@code MessageSupplier} may or may
+     * not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t the exception to log, including its stack trace.
@@ -1736,9 +1743,9 @@ public interface Logger {
     void warn(Marker marker, Message msg, Throwable t);
 
     /**
-     * Logs a message which is only to be constructed if the logging level is the {@link Level#WARN WARN} level with
-     * the specified Marker. 
-     * The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * Logs a message which is only to be constructed if the logging level is the {@link Level#WARN WARN} level with the
+     * specified Marker. The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the
+     * {@code Message}.
      *
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
@@ -1748,8 +1755,8 @@ public interface Logger {
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#WARN WARN} level) with the
-     * specified Marker and including the stack warn of the {@link Throwable} <code>t</code> passed as parameter.
-     * The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * specified Marker and including the stack warn of the {@link Throwable} <code>t</code> passed as parameter. The
+     * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param marker the marker data specific to this log statement
      * @param msgSupplier A function, which when called, produces the desired log message.
@@ -1792,10 +1799,10 @@ public interface Logger {
      * @param params parameters to the message.
      * @see #getMessageFactory()
      *
-     * TODO Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
-     *        array creation expense on every call. (RG) I assume you meant warn, not info. It isn't possible to be
-     *        misinterpreted as the previous method is for that signature.Methods should be added to avoid varargs for
-     *        1, 2 or 3 parameters.
+     *      TODO Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
+     *      array creation expense on every call. (RG) I assume you meant warn, not info. It isn't possible to be
+     *      misinterpreted as the previous method is for that signature.Methods should be added to avoid varargs for 1,
+     *      2 or 3 parameters.
      */
     void warn(Marker marker, String message, Object... params);
 
@@ -1859,8 +1866,8 @@ public interface Logger {
     void warn(Message msg, Throwable t);
 
     /**
-     * Logs a message which is only to be constructed if the logging level is the {@link Level#WARN WARN} level.
-     * The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * Logs a message which is only to be constructed if the logging level is the {@link Level#WARN WARN} level. The
+     * {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @since 2.4
@@ -1869,8 +1876,8 @@ public interface Logger {
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#WARN WARN} level) including the
-     * stack warn of the {@link Throwable} <code>t</code> passed as parameter.
-     * The {@code MessageSupplier} may or may not use the {@link MessageFactory} to construct the {@code Message}.
+     * stack warn of the {@link Throwable} <code>t</code> passed as parameter. The {@code MessageSupplier} may or may
+     * not use the {@link MessageFactory} to construct the {@code Message}.
      *
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t the exception to log, including its stack warn.
@@ -1908,10 +1915,10 @@ public interface Logger {
      * @param params parameters to the message.
      * @see #getMessageFactory()
      *
-     * TODO Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
-     *        array creation expense on every call. (RG) I assume you meant warn, not info. It isn't possible to be
-     *        misinterpreted as the previous method is for that signature.Methods should be added to avoid varargs for
-     *        1, 2 or 3 parameters.
+     *      TODO Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
+     *      array creation expense on every call. (RG) I assume you meant warn, not info. It isn't possible to be
+     *      misinterpreted as the previous method is for that signature.Methods should be added to avoid varargs for 1,
+     *      2 or 3 parameters.
      */
     void warn(String message, Object... params);
 
