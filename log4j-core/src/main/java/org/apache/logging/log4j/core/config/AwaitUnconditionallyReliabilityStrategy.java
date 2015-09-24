@@ -39,7 +39,7 @@ public class AwaitUnconditionallyReliabilityStrategy implements ReliabilityStrat
     public AwaitUnconditionallyReliabilityStrategy(final LoggerConfig loggerConfig) {
         this.loggerConfig = Objects.requireNonNull(loggerConfig, "loggerConfig is null");
     }
-    
+
     private static long sleepMillis() {
         return PropertiesUtil.getProperties().getLongProperty("log4j.waitMillisBeforeStopOldConfig",
                 DEFAULT_SLEEP_MILLIS);
@@ -101,8 +101,12 @@ public class AwaitUnconditionallyReliabilityStrategy implements ReliabilityStrat
         // no action
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.logging.log4j.core.config.ReliabilityStrategy#beforeStopConfiguration(org.apache.logging.log4j.core.config.Configuration)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.apache.logging.log4j.core.config.ReliabilityStrategy#beforeStopConfiguration(org.apache.logging.log4j.core
+     * .config.Configuration)
      */
     @Override
     public void beforeStopConfiguration(Configuration configuration) {

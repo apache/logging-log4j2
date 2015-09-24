@@ -273,8 +273,8 @@ class AsyncLoggerConfigHelper {
     /**
      * Returns {@code true} if the specified disruptor still has unprocessed events.
      */
-    private static boolean hasBacklog(final Disruptor<?> disruptor) {
-        final RingBuffer<?> ringBuffer = disruptor.getRingBuffer();
+    private static boolean hasBacklog(final Disruptor<?> theDisruptor) {
+        final RingBuffer<?> ringBuffer = theDisruptor.getRingBuffer();
         return !ringBuffer.hasAvailableCapacity(ringBuffer.getBufferSize());
     }
 
