@@ -30,10 +30,9 @@ import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * <em>Consider this class private.</em>
- * Utility class for Log4j {@link Provider}s. When integrating with an application container framework, any Log4j
- * Providers not accessible through standard classpath scanning should {@link #loadProvider(java.net.URL, ClassLoader)}
- * a classpath accordingly.
+ * <em>Consider this class private.</em> Utility class for Log4j {@link Provider}s. When integrating with an application
+ * container framework, any Log4j Providers not accessible through standard classpath scanning should
+ * {@link #loadProvider(java.net.URL, ClassLoader)} a classpath accordingly.
  */
 public final class ProviderUtil {
 
@@ -41,14 +40,10 @@ public final class ProviderUtil {
      * Resource name for a Log4j 2 provider properties file.
      */
     protected static final String PROVIDER_RESOURCE = "META-INF/log4j-provider.properties";
-    private static final String API_VERSION = "Log4jAPIVersion";
 
-    private static final String[] COMPATIBLE_API_VERSIONS = {
-        "2.0.0", "2.1.0"
-    };
-
-    private static final Logger LOGGER = StatusLogger.getLogger();
-
+    /**
+     * Loaded providers.
+     */
     protected static final Collection<Provider> PROVIDERS = new HashSet<>();
 
     /**
@@ -57,9 +52,14 @@ public final class ProviderUtil {
      * @since 2.1
      */
     protected static final Lock STARTUP_LOCK = new ReentrantLock();
+
+    private static final String API_VERSION = "Log4jAPIVersion";
+    private static final String[] COMPATIBLE_API_VERSIONS = { "2.0.0", "2.1.0" };
+    private static final Logger LOGGER = StatusLogger.getLogger();
+
     // STARTUP_LOCK guards INSTANCE for lazy initialization; this allows the OSGi Activator to pause the startup and
     // wait for a Provider to be installed. See LOG4J2-373
-    private static volatile ProviderUtil INSTANCE;
+    private static volatile ProviderUtil instance;
 
     private ProviderUtil() {
         for (final LoaderUtil.UrlResource resource : LoaderUtil.findUrlResources(PROVIDER_RESOURCE)) {
@@ -68,8 +68,8 @@ public final class ProviderUtil {
     }
 
     /**
-     * Loads an individual Provider implementation. This method is really only useful for the OSGi bundle activator
-     * and this class itself.
+     * Loads an individual Provider implementation. This method is really only useful for the OSGi bundle activator and
+     * this class itself.
      *
      * @param url the URL to the provider properties file
      * @param cl the ClassLoader to load the provider classes with
@@ -113,13 +113,13 @@ public final class ProviderUtil {
      * @since 2.1
      */
     protected static void lazyInit() {
-        //noinspection DoubleCheckedLocking
-        if (INSTANCE == null) {
+        // noinspection DoubleCheckedLocking
+        if (instance == null) {
             try {
                 STARTUP_LOCK.lockInterruptibly();
                 try {
-                    if (INSTANCE == null) {
-                        INSTANCE = new ProviderUtil();
+                    if (instance == null) {
+                        instance = new ProviderUtil();
                     }
                 } finally {
                     STARTUP_LOCK.unlock();
