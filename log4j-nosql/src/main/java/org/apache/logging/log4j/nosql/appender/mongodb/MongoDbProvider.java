@@ -40,12 +40,13 @@ import org.apache.logging.log4j.util.Strings;
  */
 @Plugin(name = "MongoDb", category = "Core", printObject = true)
 public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
+    
+    private static final WriteConcern DEFAULT_WRITE_CONCERN = WriteConcern.ACKNOWLEDGED;
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final String collectionName;
     private final DB database;
     private final String description;
-
     private final WriteConcern writeConcern;
 
     private MongoDbProvider(final DB database, final WriteConcern writeConcern, final String collectionName,
@@ -207,17 +208,17 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
                 } catch (final Exception e) {
                     LOGGER.error("Write concern constant [{}.{}] not found, using default.",
                             writeConcernConstantClassName, writeConcernConstant);
-                    writeConcern = WriteConcern.ACKNOWLEDGED;
+                    writeConcern = DEFAULT_WRITE_CONCERN;
                 }
             } else {
                 writeConcern = WriteConcern.valueOf(writeConcernConstant);
                 if (writeConcern == null) {
                     LOGGER.warn("Write concern constant [{}] not found, using default.", writeConcernConstant);
-                    writeConcern = WriteConcern.ACKNOWLEDGED;
+                    writeConcern = DEFAULT_WRITE_CONCERN;
                 }
             }
         } else {
-            writeConcern = WriteConcern.ACKNOWLEDGED;
+            writeConcern = DEFAULT_WRITE_CONCERN;
         }
         return writeConcern;
     }
