@@ -433,7 +433,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 if (app != null) {
                     l.addAppender(app, ref.getLevel(), ref.getFilter());
                 } else {
-                    LOGGER.error("Unable to locate appender {} for logger {}", ref.getRef(), l.getName());
+                    LOGGER.error("Unable to locate appender \"{}\" for logger \"{}\"", ref.getRef(), l.getName());
                 }
             }
 
