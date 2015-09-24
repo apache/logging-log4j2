@@ -25,7 +25,10 @@ import javax.naming.NamingException;
  * 
  * This class is separate from {@link Closer} because JNDI is not in Android.
  */
-public class JndiCloser {
+public final class JndiCloser {
+    
+    private JndiCloser() {
+    }
 
     /**
      * Closes the specified {@code Context}.

@@ -16,12 +16,10 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import java.util.regex.Pattern;
-
 /**
  * Pattern strings used throughout Log4j.
  * 
- * @see Pattern
+ * @see java.util.regex.Pattern
  */
 public final class Patterns {
 
@@ -47,5 +45,4 @@ public final class Patterns {
     public static String toWhitespaceSeparator(final String separator) {
         return WHITESPACE + separator + WHITESPACE;
     }
-
 }
