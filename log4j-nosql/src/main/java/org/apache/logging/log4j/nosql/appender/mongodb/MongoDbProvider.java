@@ -81,7 +81,7 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
      *               {@code factoryClassName&factoryMethodName!=null}.
      * @param port The port the MongoDB server is listening on, defaults to the default MongoDB port and mutually
      *             exclusive with {@code factoryClassName&factoryMethodName!=null}.
-     * @param username The username to authenticate against the MongoDB server with.
+     * @param userName The username to authenticate against the MongoDB server with.
      * @param password The password to authenticate against the MongoDB server with.
      * @param factoryClassName A fully qualified class name containing a static factory method capable of returning a
      *                         {@link DB} or a {@link MongoClient}.
@@ -97,7 +97,7 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
             @PluginAttribute("databaseName") final String databaseName,
             @PluginAttribute("server") final String server,
             @PluginAttribute("port") final String port,
-            @PluginAttribute("username") final String username,
+            @PluginAttribute("userName") final String userName,
             @PluginAttribute(value = "password", sensitive = true) final String password,
             @PluginAttribute("factoryClassName") final String factoryClassName,
             @PluginAttribute("factoryMethodName") final String factoryMethodName) {
@@ -177,10 +177,10 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
         }
 
         if (!database.isAuthenticated()) {
-            if (Strings.isNotEmpty(username) && Strings.isNotEmpty(password)) {
-                description += ", username=" + username + ", passwordHash="
+            if (Strings.isNotEmpty(userName) && Strings.isNotEmpty(password)) {
+                description += ", username=" + userName + ", passwordHash="
                         + NameUtil.md5(password + MongoDbProvider.class.getName());
-                MongoDbConnection.authenticate(database, username, password);
+                MongoDbConnection.authenticate(database, userName, password);
             } else {
                 try {
                     database.getCollectionNames(); // Check if the database actually requires authentication
