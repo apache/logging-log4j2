@@ -123,6 +123,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
      * (non-Javadoc)
      * @see org.apache.logging.log4j.util.Supplier#get()
      */
+    @Override
     public LoggerConfig get() {
         return privateConfig.loggerConfig;
     }
