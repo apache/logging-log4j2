@@ -92,8 +92,12 @@ public class DefaultReliabilityStrategy implements ReliabilityStrategy {
         // no action
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.logging.log4j.core.config.ReliabilityStrategy#beforeStopConfiguration(org.apache.logging.log4j.core.config.Configuration)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.apache.logging.log4j.core.config.ReliabilityStrategy#beforeStopConfiguration(org.apache.logging.log4j.core
+     * .config.Configuration)
      */
     @Override
     public void beforeStopConfiguration(Configuration configuration) {
