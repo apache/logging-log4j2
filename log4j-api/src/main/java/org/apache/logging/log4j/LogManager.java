@@ -102,7 +102,8 @@ public class LogManager {
                 }
 
                 if (factories.isEmpty()) {
-                    LOGGER.error("Log4j2 could not find a logging implementation. Please add log4j-core to the classpath. Using SimpleLogger to log to the console...");
+                    LOGGER.error("Log4j2 could not find a logging implementation. "
+                            + "Please add log4j-core to the classpath. Using SimpleLogger to log to the console...");
                     factory = new SimpleLoggerContextFactory();
                 } else if (factories.size() == 1) {
                     factory = factories.get(factories.lastKey());
@@ -118,7 +119,8 @@ public class LogManager {
 
                 }
             } else {
-                LOGGER.error("Log4j2 could not find a logging implementation. Please add log4j-core to the classpath. Using SimpleLogger to log to the console...");
+                LOGGER.error("Log4j2 could not find a logging implementation. "
+                        + "Please add log4j-core to the classpath. Using SimpleLogger to log to the console...");
                 factory = new SimpleLoggerContextFactory();
             }
         }
@@ -280,7 +282,8 @@ public class LogManager {
      *            be returned. If true then only a single LoggerContext will be returned.
      * @return a LoggerContext.
      */
-    protected static LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
+    protected static LoggerContext getContext(final String fqcn, final ClassLoader loader,
+            final boolean currentContext) {
         return factory.getContext(fqcn, loader, null, currentContext);
     }
 
