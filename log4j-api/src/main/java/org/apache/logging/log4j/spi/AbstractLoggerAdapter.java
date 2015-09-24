@@ -26,6 +26,7 @@ import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
  * Provides an abstract base class to use for implementing LoggerAdapter.
+ * 
  * @param <L> the Logger class to adapt
  * @since 2.1
  */
@@ -34,8 +35,7 @@ public abstract class AbstractLoggerAdapter<L> implements LoggerAdapter<L> {
     /**
      * A map to store loggers for their given LoggerContexts.
      */
-    protected final Map<LoggerContext, ConcurrentMap<String, L>> registry =
-        new WeakHashMap<>();
+    protected final Map<LoggerContext, ConcurrentMap<String, L>> registry = new WeakHashMap<>();
 
     @Override
     public L getLogger(final String name) {
@@ -43,7 +43,7 @@ public abstract class AbstractLoggerAdapter<L> implements LoggerAdapter<L> {
         final ConcurrentMap<String, L> loggers = getLoggersInContext(context);
         final L logger = loggers.get(name);
         if (logger != null) {
-			return logger;
+            return logger;
         }
         loggers.putIfAbsent(name, newLogger(name, context));
         return loggers.get(name);
@@ -69,16 +69,16 @@ public abstract class AbstractLoggerAdapter<L> implements LoggerAdapter<L> {
     /**
      * Creates a new named logger for a given {@link LoggerContext}.
      *
-     * @param name    the name of the logger to create
+     * @param name the name of the logger to create
      * @param context the LoggerContext this logger will be associated with
      * @return the new named logger
      */
     protected abstract L newLogger(final String name, final LoggerContext context);
 
     /**
-     * Gets the {@link LoggerContext} that should be used to look up or create loggers. This is similar in spirit to
-     * the {@code ContextSelector} class in {@code log4j-core}. However, implementations can rely on their own
-     * framework's separation of contexts instead (or simply use a singleton).
+     * Gets the {@link LoggerContext} that should be used to look up or create loggers. This is similar in spirit to the
+     * {@code ContextSelector} class in {@code log4j-core}. However, implementations can rely on their own framework's
+     * separation of contexts instead (or simply use a singleton).
      *
      * @return the LoggerContext to be used for lookup and creation purposes
      * @see org.apache.logging.log4j.LogManager#getContext(ClassLoader, boolean)
