@@ -21,7 +21,7 @@ import java.util.Map.Entry;
 /**
  * <em>Consider this class private.</em>
  */
-public class StringBuilders {
+public final class StringBuilders {
     private StringBuilders() {
     }
 

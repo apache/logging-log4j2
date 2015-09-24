@@ -153,7 +153,8 @@ public class SimpleLogger extends AbstractLogger {
         }
         final Object[] params = msg.getParameters();
         Throwable t;
-        if (throwable == null && params != null && params.length > 0 && params[params.length - 1] instanceof Throwable) {
+        if (throwable == null && params != null && params.length > 0
+                && params[params.length - 1] instanceof Throwable) {
             t = (Throwable) params[params.length - 1];
         } else {
             t = throwable;

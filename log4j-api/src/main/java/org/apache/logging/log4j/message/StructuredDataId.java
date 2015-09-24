@@ -29,19 +29,19 @@ public class StructuredDataId implements Serializable {
      * RFC 5424 Time Quality.
      */
     public static final StructuredDataId TIME_QUALITY = new StructuredDataId("timeQuality", null, new String[] {
-            "tzKnown", "isSynced", "syncAccuracy" });
+            "tzKnown", "isSynced", "syncAccuracy"});
 
     /**
      * RFC 5424 Origin.
      */
-    public static final StructuredDataId ORIGIN = new StructuredDataId("origin", null, new String[] { "ip",
-            "enterpriseId", "software", "swVersion" });
+    public static final StructuredDataId ORIGIN = new StructuredDataId("origin", null, new String[] {"ip",
+            "enterpriseId", "software", "swVersion"});
 
     /**
      * RFC 5424 Meta.
      */
-    public static final StructuredDataId META = new StructuredDataId("meta", null, new String[] { "sequenceId",
-            "sysUpTime", "language" });
+    public static final StructuredDataId META = new StructuredDataId("meta", null, new String[] {"sequenceId",
+            "sysUpTime", "language"});
 
     /**
      * Reserved enterprise number.
