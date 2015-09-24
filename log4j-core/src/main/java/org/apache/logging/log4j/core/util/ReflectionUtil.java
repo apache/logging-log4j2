@@ -37,6 +37,7 @@ public final class ReflectionUtil {
     /**
      * Indicates whether or not a {@link Member} is both public and is contained in a public class.
      *
+     * @param <T> type of the object whose accessibility to test
      * @param member the Member to check for public accessibility (must not be {@code null}).
      * @return {@code true} if {@code member} is public and contained in a public class.
      * @throws NullPointerException if {@code member} is {@code null}.
@@ -49,6 +50,7 @@ public final class ReflectionUtil {
     /**
      * Makes a {@link Member} {@link AccessibleObject#isAccessible() accessible} if the member is not public.
      *
+     * @param <T> type of the object to make accessible
      * @param member the Member to make accessible (must not be {@code null}).
      * @throws NullPointerException if {@code member} is {@code null}.
      */

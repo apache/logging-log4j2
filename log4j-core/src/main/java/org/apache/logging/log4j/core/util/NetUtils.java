@@ -31,7 +31,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- *
+ * Networking-related convenience methods.
  */
 public final class NetUtils {
 
@@ -43,9 +43,8 @@ public final class NetUtils {
     }
 
     /**
-     * This method gets the network name of the machine we are running on.
-     * Returns "UNKNOWN_LOCALHOST" in the unlikely case where the host name
-     * cannot be found.
+     * This method gets the network name of the machine we are running on. Returns "UNKNOWN_LOCALHOST" in the unlikely
+     * case where the host name cannot be found.
      *
      * @return String the name of the local host
      */
@@ -79,7 +78,8 @@ public final class NetUtils {
     }
 
     /**
-     * Converts a URI string or file path to a URI object
+     * Converts a URI string or file path to a URI object.
+     * 
      * @param path the URI string or path
      * @return the URI object
      */
