@@ -66,15 +66,22 @@
     <!--<module name="SuppressionFilter">
         <property name="file" value="conf/checkstyle-suppressions.xml"/>
     </module> -->
+    <!--
     <module name="SuppressionCommentFilter">
       <property name="offCommentFormat" value="Check\:OFF\: ([\w\|]+)"/>
       <property name="onCommentFormat" value="Check\:ON\: ([\w\|]+)"/>
       <property name="checkFormat" value="$1"/>
     </module>
+    -->
+    <module name="SuppressionCommentFilter" />
+    <module name="SuppressWithNearbyCommentFilter"/>
 
     <module name="TreeWalker">
 
         <property name="cacheFile" value="${checkstyle.cache.file}"/>
+
+        <!-- Ensure that CHECKSTYLE:OFF comments are available to the filter: -->
+        <module name="FileContentsHolder"/>
 
         <!-- Checks for Javadoc comments.                     -->
         <!-- See http://checkstyle.sf.net/config_javadoc.html -->

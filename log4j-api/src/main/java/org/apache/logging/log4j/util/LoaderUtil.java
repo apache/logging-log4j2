@@ -24,6 +24,7 @@ import java.security.PrivilegedAction;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 
 /**
  * <em>Consider this class private.</em> Utility class for ClassLoaders.
@@ -253,9 +254,7 @@ public final class LoaderUtil {
 
         @Override
         public int hashCode() {
-            int result = classLoader != null ? classLoader.hashCode() : 0;
-            result = 31 * result + (url != null ? url.hashCode() : 0);
-            return result;
+            return Objects.hashCode(classLoader) + Objects.hashCode(url);
         }
     }
 }
