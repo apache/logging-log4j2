@@ -27,7 +27,7 @@ import org.apache.logging.log4j.message.MessageFactory;
 public class ExtendedLoggerWrapper extends AbstractLogger {
 
     private static final long serialVersionUID = 1L;
-    
+
     /**
      * The wrapped Logger.
      */
@@ -35,6 +35,7 @@ public class ExtendedLoggerWrapper extends AbstractLogger {
 
     /**
      * Constructor that wraps and existing Logger.
+     * 
      * @param logger The Logger to wrap.
      * @param name The name of the Logger.
      * @param messageFactory TODO
@@ -51,6 +52,7 @@ public class ExtendedLoggerWrapper extends AbstractLogger {
 
     /**
      * Detect if the event would be logged.
+     * 
      * @param level The logging Level to check.
      * @param marker A Marker or null.
      * @param message The Message.
@@ -64,6 +66,7 @@ public class ExtendedLoggerWrapper extends AbstractLogger {
 
     /**
      * Detect if the event would be logged.
+     * 
      * @param level The logging Level to check.
      * @param marker A Marker or null.
      * @param message The message.
@@ -77,6 +80,7 @@ public class ExtendedLoggerWrapper extends AbstractLogger {
 
     /**
      * Detect if the event would be logged.
+     * 
      * @param level The logging Level to check.
      * @param marker A Marker or null.
      * @param message The message.
@@ -89,6 +93,7 @@ public class ExtendedLoggerWrapper extends AbstractLogger {
 
     /**
      * Detect if the event would be logged.
+     * 
      * @param level The logging Level to check.
      * @param marker A Marker or null.
      * @param message The message.
@@ -99,9 +104,10 @@ public class ExtendedLoggerWrapper extends AbstractLogger {
     public boolean isEnabled(final Level level, final Marker marker, final String message, final Object... params) {
         return logger.isEnabled(level, marker, message, params);
     }
-    
+
     /**
      * Detect if the event would be logged.
+     * 
      * @param level The logging Level to check.
      * @param marker A Marker or null.
      * @param message The message.
@@ -114,16 +120,18 @@ public class ExtendedLoggerWrapper extends AbstractLogger {
     }
 
     /**
-     * Always log an event. This tends to be already guarded by an enabled check, so this method 
-     * should not check for the logger level again
-     * @param fqcn    The fully qualified class name of the <b>caller</b>
-     * @param level   The logging level
-     * @param marker  The Marker
+     * Always log an event. This tends to be already guarded by an enabled check, so this method should not check for
+     * the logger level again
+     * 
+     * @param fqcn The fully qualified class name of the <b>caller</b>
+     * @param level The logging level
+     * @param marker The Marker
      * @param message The Message.
-     * @param t       A Throwable or null.
+     * @param t A Throwable or null.
      */
     @Override
-    public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message, final Throwable t) {
+    public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message,
+            final Throwable t) {
         logger.logMessage(fqcn, level, marker, message, t);
     }
 }
