@@ -23,7 +23,7 @@ import org.apache.logging.log4j.message.Message;
 /**
  * Utility class for lambda support.
  */
-public class LambdaUtil {
+public final class LambdaUtil {
     /**
      * Private constructor: this class is not intended to be instantiated.
      */
