@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Order;
 import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.AppenderRefComponentBuilder;
@@ -132,7 +133,7 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
             String[] loggerNames = loggerProp.split(",");
             for (String loggerName : loggerNames) {
                 String name = loggerName.trim();
-                if (!name.equals("root")) {
+                if (!name.equals(LoggerConfig.ROOT)) {
                     builder.add(
                             createLogger(builder, name, PropertiesUtil.extractSubset(properties, "logger." + name)));
                 }

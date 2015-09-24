@@ -419,13 +419,14 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
 
         for (final Map.Entry<String, LoggerConfig> entry : loggers.entrySet()) {
-            final LoggerConfig l = entry.getValue();
-            for (final AppenderRef ref : l.getAppenderRefs()) {
+            final LoggerConfig loggerConfig = entry.getValue();
+            for (final AppenderRef ref : loggerConfig.getAppenderRefs()) {
                 final Appender app = appenders.get(ref.getRef());
                 if (app != null) {
-                    l.addAppender(app, ref.getLevel(), ref.getFilter());
+                    loggerConfig.addAppender(app, ref.getLevel(), ref.getFilter());
                 } else {
-                    LOGGER.error("Unable to locate appender {} for logger {}", ref.getRef(), l.getName());
+                    LOGGER.error("Unable to locate appender \"{}\" for logger config \"{}\"", ref.getRef(),
+                            loggerConfig);
                 }
             }
 

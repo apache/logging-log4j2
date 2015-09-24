@@ -17,9 +17,9 @@
 package org.apache.logging.log4j.nosql.appender.couchdb;
 
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
+import org.apache.logging.log4j.nosql.appender.AbstractNoSqlConnection;
 import org.apache.logging.log4j.nosql.appender.DefaultNoSqlObject;
 import org.apache.logging.log4j.nosql.appender.NoSqlConnection;
 import org.apache.logging.log4j.nosql.appender.NoSqlObject;
@@ -30,9 +30,8 @@ import org.lightcouch.Response;
 /**
  * The Apache CouchDB implementation of {@link NoSqlConnection}.
  */
-public final class CouchDbConnection implements NoSqlConnection<Map<String, Object>, DefaultNoSqlObject> {
+public final class CouchDbConnection extends AbstractNoSqlConnection<Map<String, Object>, DefaultNoSqlObject> {
     private final CouchDbClient client;
-    private final AtomicBoolean closed = new AtomicBoolean(false);
 
     public CouchDbConnection(final CouchDbClient client) {
         this.client = client;
@@ -53,8 +52,8 @@ public final class CouchDbConnection implements NoSqlConnection<Map<String, Obje
         try {
             final Response response = this.client.save(object.unwrap());
             if (Strings.isNotEmpty(response.getError())) {
-                throw new AppenderLoggingException("Failed to write log event to CouchDB due to error: " +
-                        response.getError() + '.');
+                throw new AppenderLoggingException(
+                        "Failed to write log event to CouchDB due to error: " + response.getError() + '.');
             }
         } catch (final Exception e) {
             throw new AppenderLoggingException("Failed to write log event to CouchDB due to error: " + e.getMessage(),
@@ -63,14 +62,8 @@ public final class CouchDbConnection implements NoSqlConnection<Map<String, Obje
     }
 
     @Override
-    public void close() {
-        if (this.closed.compareAndSet(false, true)) {
-            this.client.shutdown();
-        }
+    protected void closeImpl() {
+        this.client.shutdown();
     }
 
-    @Override
-    public boolean isClosed() {
-        return this.closed.get();
-    }
 }
