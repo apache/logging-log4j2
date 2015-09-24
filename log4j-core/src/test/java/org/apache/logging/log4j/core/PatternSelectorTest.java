@@ -47,7 +47,9 @@ public class PatternSelectorTest {
         List<String> messages = app.getMessages();
         assertNotNull("No Messages", messages);
         assertTrue("Incorrect number of messages. Expected 3, Actual " + messages.size(), messages.size() == 3);
-        assertEquals("[TRACE] TestMarkerPatternSelector ====== o.a.l.l.c.PatternSelectorTest.testMarkerPatternSelector:42 entry ======\n", messages.get(0));
+        final String expect = String.format("[TRACE] TestMarkerPatternSelector ====== "
+                + "o.a.l.l.c.PatternSelectorTest.testMarkerPatternSelector:42 entry ======%n");
+        assertEquals(expect, messages.get(0));
         assertEquals("[INFO ] TestMarkerPatternSelector Hello World\n", messages.get(1));
         app.clear();
     }
@@ -65,8 +67,12 @@ public class PatternSelectorTest {
         List<String> messages = app.getMessages();
         assertNotNull("No Messages", messages);
         assertTrue("Incorrect number of messages. Expected 4, Actual " + messages.size(), messages.size() == 4);
-        assertEquals("[TRACE] TestScriptPatternSelector ====== o.a.l.l.c.PatternSelectorTest.testScriptPatternSelector:59 entry ======\n", messages.get(0));
-        assertEquals("[INFO ] TestScriptPatternSelector o.a.l.l.c.PatternSelectorTest.testScriptPatternSelector.60 Hello World\n", messages.get(1));
+        String expect = "[TRACE] TestScriptPatternSelector ====== " +
+                "o.a.l.l.c.PatternSelectorTest.testScriptPatternSelector:61 entry ======\n";
+        assertEquals(expect, messages.get(0));
+        expect = "[INFO ] TestScriptPatternSelector o.a.l.l.c.PatternSelectorTest.testScriptPatternSelector.62 " +
+                "Hello World\n";
+        assertEquals(expect, messages.get(1));
         assertEquals("[INFO ] NoLocation No location information\n", messages.get(2));
         app.clear();
     }
@@ -84,8 +90,12 @@ public class PatternSelectorTest {
         List<String> messages = app.getMessages();
         assertNotNull("No Messages", messages);
         assertTrue("Incorrect number of messages. Expected 4, Actual " + messages.size(), messages.size() == 4);
-        assertEquals("[TRACE] TestJavaScriptPatternSelector ====== o.a.l.l.c.PatternSelectorTest.testJavaScriptPatternSelector:78 entry ======\n", messages.get(0));
-        assertEquals("[INFO ] TestJavaScriptPatternSelector o.a.l.l.c.PatternSelectorTest.testJavaScriptPatternSelector.79 Hello World\n", messages.get(1));
+        String expect = "[TRACE] TestJavaScriptPatternSelector ====== " +
+                "o.a.l.l.c.PatternSelectorTest.testJavaScriptPatternSelector:84 entry ======\n";
+        assertEquals(expect, messages.get(0));
+        expect = "[INFO ] TestJavaScriptPatternSelector " +
+                "o.a.l.l.c.PatternSelectorTest.testJavaScriptPatternSelector.85 Hello World\n";
+        assertEquals(expect, messages.get(1));
         assertEquals("[INFO ] JavascriptNoLocation No location information\n", messages.get(2));
         app.clear();
     }
