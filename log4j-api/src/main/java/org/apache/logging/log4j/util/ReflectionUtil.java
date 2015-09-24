@@ -23,14 +23,14 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * <em>Consider this class private.</em> Provides various methods to determine the caller class.
- * <h3>Background</h3>
- * <p>This method, available only in the Oracle/Sun/OpenJDK implementations of the Java
- * Virtual Machine, is a much more efficient mechanism for determining the {@link Class} of the caller of a particular
- * method. When it is not available, a {@link SecurityManager} is the second-best option. When this is also not
- * possible, the {@code StackTraceElement[]} returned by {@link Throwable#getStackTrace()} must be used, and its
- * {@code String} class name converted to a {@code Class} using the slow {@link Class#forName} (which can add an extra
- * microsecond or more for each invocation depending on the runtime ClassLoader hierarchy).
+ * <em>Consider this class private.</em> Provides various methods to determine the caller class. <h3>Background</h3>
+ * <p>
+ * This method, available only in the Oracle/Sun/OpenJDK implementations of the Java Virtual Machine, is a much more
+ * efficient mechanism for determining the {@link Class} of the caller of a particular method. When it is not available,
+ * a {@link SecurityManager} is the second-best option. When this is also not possible, the {@code StackTraceElement[]}
+ * returned by {@link Throwable#getStackTrace()} must be used, and its {@code String} class name converted to a
+ * {@code Class} using the slow {@link Class#forName} (which can add an extra microsecond or more for each invocation
+ * depending on the runtime ClassLoader hierarchy).
  * </p>
  * <p>
  * During Java 8 development, the {@code sun.reflect.Reflection.getCallerClass(int)} was removed from OpenJDK, and this
@@ -41,19 +41,20 @@ import org.apache.logging.log4j.status.StatusLogger;
  * <p>
  * After much community backlash, the JDK team agreed to restore {@code getCallerClass(int)} and keep its existing
  * behavior for the rest of Java 7. However, the method is deprecated in Java 8, and current Java 9 development has not
- * addressed this API. Therefore, the functionality of this class cannot be relied upon for all future versions of
- * Java. It does, however, work just fine in Sun JDK 1.6, OpenJDK 1.6, Oracle/OpenJDK 1.7, and Oracle/OpenJDK 1.8.
- * Other Java environments may fall back to using {@link Throwable#getStackTrace()} which is significantly slower due
- * to examination of every virtual frame of execution.
+ * addressed this API. Therefore, the functionality of this class cannot be relied upon for all future versions of Java.
+ * It does, however, work just fine in Sun JDK 1.6, OpenJDK 1.6, Oracle/OpenJDK 1.7, and Oracle/OpenJDK 1.8. Other Java
+ * environments may fall back to using {@link Throwable#getStackTrace()} which is significantly slower due to
+ * examination of every virtual frame of execution.
  * </p>
  */
 public final class ReflectionUtil {
+    // Check:OFF: ConstantName
+    static final int JDK_7u25_OFFSET;
+    // Check:ON: ConstantName
 
     private static final Logger LOGGER = StatusLogger.getLogger();
-
     private static final boolean SUN_REFLECTION_SUPPORTED;
     private static final Method GET_CALLER_CLASS;
-    static final int JDK_7u25_OFFSET;
     private static final PrivateSecurityManager SECURITY_MANAGER;
 
     static {
@@ -71,16 +72,15 @@ public final class ReflectionUtil {
             } else {
                 o = getCallerClass.invoke(null, 1);
                 if (o == sunReflectionClass) {
-                    LOGGER.warn(
-                        "You are using Java 1.7.0_25 which has a broken implementation of Reflection.getCallerClass.");
+                    LOGGER.warn("You are using Java 1.7.0_25 which has a broken implementation of Reflection.getCallerClass.");
                     LOGGER.warn("You should upgrade to at least Java 1.7.0_40 or later.");
                     LOGGER.debug("Using stack depth compensation offset of 1 due to Java 7u25.");
                     java7u25CompensationOffset = 1;
                 }
             }
         } catch (final Exception e) {
-            LOGGER.info("sun.reflect.Reflection.getCallerClass is not supported. " +
-                "ReflectionUtil.getCallerClass will be much slower due to this.", e);
+            LOGGER.info("sun.reflect.Reflection.getCallerClass is not supported. "
+                    + "ReflectionUtil.getCallerClass will be much slower due to this.", e);
             getCallerClass = null;
             java7u25CompensationOffset = -1;
         }
@@ -97,11 +97,13 @@ public final class ReflectionUtil {
             }
             psm = new PrivateSecurityManager();
         } catch (final SecurityException ignored) {
-            LOGGER.debug(
-                "Not allowed to create SecurityManager. Falling back to slowest ReflectionUtil implementation.");
+            LOGGER.debug("Not allowed to create SecurityManager. Falling back to slowest ReflectionUtil implementation.");
             psm = null;
         }
         SECURITY_MANAGER = psm;
+    }
+
+    private ReflectionUtil() {
     }
 
     public static boolean supportsFastReflection() {
@@ -142,7 +144,7 @@ public final class ReflectionUtil {
 
     static StackTraceElement getEquivalentStackTraceElement(final int depth) {
         // (MS) I tested the difference between using Throwable.getStackTrace() and Thread.getStackTrace(), and
-        //      the version using Throwable was surprisingly faster! at least on Java 1.8. See ReflectionBenchmark.
+        // the version using Throwable was surprisingly faster! at least on Java 1.8. See ReflectionBenchmark.
         final StackTraceElement[] elements = new Throwable().getStackTrace();
         int i = 0;
         for (final StackTraceElement element : elements) {
@@ -242,7 +244,7 @@ public final class ReflectionUtil {
         }
         try {
             return LoaderUtil.loadClass(getCallerClassName(anchor.getName(), Strings.EMPTY,
-                new Throwable().getStackTrace()));
+                    new Throwable().getStackTrace()));
         } catch (final ClassNotFoundException ignored) {
             // no problem really
         }
@@ -288,6 +290,9 @@ public final class ReflectionUtil {
         return new Stack<>();
     }
 
+    /**
+     * 
+     */
     static final class PrivateSecurityManager extends SecurityManager {
 
         @Override
@@ -323,9 +328,5 @@ public final class ReflectionUtil {
             }
             return Object.class;
         }
-
-    }
-
-    private ReflectionUtil() {
     }
 }
