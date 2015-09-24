@@ -108,7 +108,7 @@ public class FormattedMessage implements Message {
         return stringArgs;
     }
 
-    protected Message getMessage(final String msgPattern, final Object[] args, final Throwable throwable) {
+    protected Message getMessage(final String msgPattern, final Object[] args, final Throwable aThrowable) {
         try {
             final MessageFormat format = new MessageFormat(msgPattern);
             final Format[] formats = format.getFormats();
@@ -125,7 +125,7 @@ public class FormattedMessage implements Message {
         } catch (final Exception ignored) {
             // Also not properly formatted.
         }
-        return new ParameterizedMessage(msgPattern, args, throwable);
+        return new ParameterizedMessage(msgPattern, args, aThrowable);
     }
 
     @Override
