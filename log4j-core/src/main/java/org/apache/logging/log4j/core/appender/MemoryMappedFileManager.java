@@ -41,23 +41,22 @@ import org.apache.logging.log4j.core.util.NullOutputStream;
  * memory and writes to this memory region.
  * <p>
  * 
- * @see <a
- *      href="http://www.codeproject.com/Tips/683614/Things-to-Know-about-Memory-Mapped-File-in-Java">
- *        http://www.codeproject.com/Tips/683614/Things-to-Know-about-Memory-Mapped-File-in-Java</a>
+ * @see <a href="http://www.codeproject.com/Tips/683614/Things-to-Know-about-Memory-Mapped-File-in-Java">
+ *      http://www.codeproject.com/Tips/683614/Things-to-Know-about-Memory-Mapped-File-in-Java</a>
  * @see <a href="http://bugs.java.com/view_bug.do?bug_id=6893654">http://bugs.java.com/view_bug.do?bug_id=6893654</a>
  * @see <a href="http://bugs.java.com/view_bug.do?bug_id=4724038">http://bugs.java.com/view_bug.do?bug_id=4724038</a>
  * @see <a
  *      href="http://stackoverflow.com/questions/9261316/memory-mapped-mappedbytebuffer-or-direct-bytebuffer-for-db-implementation">
- *        http://stackoverflow.com/questions/9261316/memory-mapped-mappedbytebuffer-or-direct-bytebuffer-for-db-implementation</a>
+ *      http://stackoverflow.com/questions/9261316/memory-mapped-mappedbytebuffer-or-direct-bytebuffer-for-db-implementation</a>
  * 
  * @since 2.1
  */
 public class MemoryMappedFileManager extends OutputStreamManager {
     /**
-     * 
+     * Default length of region to map.
      */
-    private static final int MAX_REMAP_COUNT = 10;
     static final int DEFAULT_REGION_LENGTH = 32 * 1024 * 1024;
+    private static final int MAX_REMAP_COUNT = 10;
     private static final MemoryMappedFileManagerFactory FACTORY = new MemoryMappedFileManagerFactory();
     private static final double NANOS_PER_MILLISEC = 1000.0 * 1000.0;
 
@@ -104,8 +103,8 @@ public class MemoryMappedFileManager extends OutputStreamManager {
         return isEndOfBatch.get();
     }
 
-    public void setEndOfBatch(final boolean isEndOfBatch) {
-        this.isEndOfBatch.set(Boolean.valueOf(isEndOfBatch));
+    public void setEndOfBatch(final boolean endOfBatch) {
+        this.isEndOfBatch.set(Boolean.valueOf(endOfBatch));
     }
 
     @Override
@@ -293,7 +292,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
     /**
      * Factory to create a MemoryMappedFileManager.
      */
-    private static class MemoryMappedFileManagerFactory 
+    private static class MemoryMappedFileManagerFactory
             implements ManagerFactory<MemoryMappedFileManager, FactoryData> {
 
         /**

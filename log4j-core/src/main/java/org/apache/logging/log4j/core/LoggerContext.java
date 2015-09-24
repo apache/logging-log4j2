@@ -33,7 +33,7 @@ import org.apache.logging.log4j.core.async.AsyncLogger;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationListener;
-import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.core.config.ConfigurationSource; // SUPPRESS CHECKSTYLE
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.Reconfigurable;
@@ -50,87 +50,31 @@ import org.apache.logging.log4j.spi.LoggerContextFactory;
 import static org.apache.logging.log4j.core.util.ShutdownCallbackRegistry.*;
 
 /**
- * The LoggerContext is the anchor for the logging system. It maintains a list
- * of all the loggers requested by applications and a reference to the
- * Configuration. The Configuration will contain the configured loggers,
- * appenders, filters, etc and will be atomically updated whenever a reconfigure
- * occurs.
+ * The LoggerContext is the anchor for the logging system. It maintains a list of all the loggers requested by
+ * applications and a reference to the Configuration. The Configuration will contain the configured loggers, appenders,
+ * filters, etc and will be atomically updated whenever a reconfigure occurs.
  */
-public class LoggerContext extends AbstractLifeCycle implements org.apache.logging.log4j.spi.LoggerContext, ConfigurationListener {
+public class LoggerContext extends AbstractLifeCycle implements org.apache.logging.log4j.spi.LoggerContext,
+        ConfigurationListener {
+
+    /**
+     * Property name of the property change event fired if the configuration is changed.
+     */
+    public static final String PROPERTY_CONFIG = "config";
 
     private static final long serialVersionUID = 1L;
-
-    public static final String PROPERTY_CONFIG = "config";
     private static final Configuration NULL_CONFIGURATION = new NullConfiguration();
-
-    /**
-     * Returns the current LoggerContext.
-     * <p>
-     * Avoids the type cast for:
-     *</p>
-     *<pre>(LoggerContext) LogManager.getContext();</pre>
-     *
-     * <p>
-     * WARNING - The LoggerContext returned by this method may not be the LoggerContext used to create a Logger
-     * for the calling class.
-     * </p>
-     * @return  The current LoggerContext.
-     * @see LogManager#getContext()
-     */
-    public static LoggerContext getContext() {
-        return (LoggerContext) LogManager.getContext();
-    }
-
-    /**
-     * Returns a LoggerContext.
-     * <p>
-     * Avoids the type cast for:
-     *</p>
-     *<pre>(LoggerContext) LogManager.getContext(currentContext);</pre>
-     *
-     * @param currentContext if false the LoggerContext appropriate for the caller of this method is returned. For
-     * example, in a web application if the caller is a class in WEB-INF/lib then one LoggerContext may be
-     * returned and if the caller is a class in the container's classpath then a different LoggerContext may be
-     * returned. If true then only a single LoggerContext will be returned.
-     * @return a LoggerContext.
-     * @see LogManager#getContext(boolean)
-     */
-    public static LoggerContext getContext(final boolean currentContext) {
-        return (LoggerContext) LogManager.getContext(currentContext);
-    }
-
-    /**
-     * Returns a LoggerContext.
-     * <p>
-     * Avoids the type cast for:
-     *</p>
-     *<pre>(LoggerContext) LogManager.getContext(loader, currentContext, configLocation);</pre>
-     *
-     * @param loader The ClassLoader for the context. If null the context will attempt to determine the appropriate
-     * ClassLoader.
-     * @param currentContext if false the LoggerContext appropriate for the caller of this method is returned. For
-     * example, in a web application if the caller is a class in WEB-INF/lib then one LoggerContext may be
-     * returned and if the caller is a class in the container's classpath then a different LoggerContext may be
-     * returned. If true then only a single LoggerContext will be returned.
-     * @param configLocation The URI for the configuration to use.
-     * @return a LoggerContext.
-     * @see LogManager#getContext(ClassLoader, boolean, URI)
-     */
-    public static LoggerContext getContext(final ClassLoader loader, final boolean currentContext,
-            final URI configLocation) {
-        return (LoggerContext) LogManager.getContext(loader, currentContext, configLocation);
-    }
 
     private final ConcurrentMap<String, Logger> loggers = new ConcurrentHashMap<>();
     private final CopyOnWriteArrayList<PropertyChangeListener> propertyChangeListeners = new CopyOnWriteArrayList<>();
 
     /**
-     * The Configuration is volatile to guarantee that initialization of the
-     * Configuration has completed before the reference is updated.
+     * The Configuration is volatile to guarantee that initialization of the Configuration has completed before the
+     * reference is updated.
      */
-    private volatile Configuration config = new DefaultConfiguration();
+    private volatile Configuration configuration = new DefaultConfiguration();
     private Object externalContext;
-    private final String name;
+    private final String contextName;
     private volatile URI configLocation;
     private Cancellable shutdownCallback;
 
@@ -138,6 +82,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
 
     /**
      * Constructor taking only a name.
+     * 
      * @param name The context name.
      */
     public LoggerContext(final String name) {
@@ -146,6 +91,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
 
     /**
      * Constructor taking a name and a reference to an external context.
+     * 
      * @param name The context name.
      * @param externalContext The external context.
      */
@@ -155,26 +101,27 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
 
     /**
      * Constructor taking a name, external context and a configuration URI.
+     * 
      * @param name The context name.
      * @param externalContext The external context.
      * @param configLocn The location of the configuration as a URI.
      */
     public LoggerContext(final String name, final Object externalContext, final URI configLocn) {
-        this.name = name;
+        this.contextName = name;
         this.externalContext = externalContext;
         this.configLocation = configLocn;
     }
 
     /**
-     * Constructor taking a name external context and a configuration location
-     * String. The location must be resolvable to a File.
+     * Constructor taking a name external context and a configuration location String. The location must be resolvable
+     * to a File.
      *
      * @param name The configuration location.
      * @param externalContext The external context.
      * @param configLocn The configuration location.
      */
     public LoggerContext(final String name, final Object externalContext, final String configLocn) {
-        this.name = name;
+        this.contextName = name;
         this.externalContext = externalContext;
         if (configLocn != null) {
             URI uri;
@@ -189,6 +136,74 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
         }
     }
 
+    /**
+     * Returns the current LoggerContext.
+     * <p>
+     * Avoids the type cast for:
+     * </p>
+     *
+     * <pre>
+     * (LoggerContext) LogManager.getContext();
+     * </pre>
+     *
+     * <p>
+     * WARNING - The LoggerContext returned by this method may not be the LoggerContext used to create a Logger for the
+     * calling class.
+     * </p>
+     * 
+     * @return The current LoggerContext.
+     * @see LogManager#getContext()
+     */
+    public static LoggerContext getContext() {
+        return (LoggerContext) LogManager.getContext();
+    }
+
+    /**
+     * Returns a LoggerContext.
+     * <p>
+     * Avoids the type cast for:
+     * </p>
+     *
+     * <pre>
+     * (LoggerContext) LogManager.getContext(currentContext);
+     * </pre>
+     *
+     * @param currentContext if false the LoggerContext appropriate for the caller of this method is returned. For
+     *            example, in a web application if the caller is a class in WEB-INF/lib then one LoggerContext may be
+     *            returned and if the caller is a class in the container's classpath then a different LoggerContext may
+     *            be returned. If true then only a single LoggerContext will be returned.
+     * @return a LoggerContext.
+     * @see LogManager#getContext(boolean)
+     */
+    public static LoggerContext getContext(final boolean currentContext) {
+        return (LoggerContext) LogManager.getContext(currentContext);
+    }
+
+    /**
+     * Returns a LoggerContext.
+     * <p>
+     * Avoids the type cast for:
+     * </p>
+     *
+     * <pre>
+     * (LoggerContext) LogManager.getContext(loader, currentContext, configLocation);
+     * </pre>
+     *
+     * @param loader The ClassLoader for the context. If null the context will attempt to determine the appropriate
+     *            ClassLoader.
+     * @param currentContext if false the LoggerContext appropriate for the caller of this method is returned. For
+     *            example, in a web application if the caller is a class in WEB-INF/lib then one LoggerContext may be
+     *            returned and if the caller is a class in the container's classpath then a different LoggerContext may
+     *            be returned. If true then only a single LoggerContext will be returned.
+     * @param configLocation The URI for the configuration to use.
+     * @return a LoggerContext.
+     * @see LogManager#getContext(ClassLoader, boolean, URI)
+     */
+    public static LoggerContext getContext(final ClassLoader loader, final boolean currentContext,
+            final URI configLocation) {
+        return (LoggerContext) LogManager.getContext(loader, currentContext, configLocation);
+    }
+
     @Override
     public void start() {
         LOGGER.debug("Starting LoggerContext[name={}, {}]...", getName(), this);
@@ -197,7 +212,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
                 if (this.isInitialized() || this.isStopped()) {
                     this.setStarting();
                     reconfigure();
-                    if (this.config.isShutdownHookEnabled()) {
+                    if (this.configuration.isShutdownHookEnabled()) {
                         setUpShutdownHook();
                     }
                     this.setStarted();
@@ -211,6 +226,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
 
     /**
      * Starts with a specific configuration.
+     * 
      * @param config The new Configuration.
      */
     public void start(final Configuration config) {
@@ -218,7 +234,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
         if (configLock.tryLock()) {
             try {
                 if (this.isInitialized() || this.isStopped()) {
-                    if (this.config.isShutdownHookEnabled()) {
+                    if (this.configuration.isShutdownHookEnabled()) {
                         setUpShutdownHook();
                     }
                     this.setStarted();
@@ -241,8 +257,8 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
                         @Override
                         public void run() {
                             final LoggerContext context = LoggerContext.this;
-                            LOGGER.debug(SHUTDOWN_HOOK_MARKER, "Stopping LoggerContext[name={}, {}]", context.getName(),
-                                context);
+                            LOGGER.debug(SHUTDOWN_HOOK_MARKER, "Stopping LoggerContext[name={}, {}]",
+                                    context.getName(), context);
                             context.stop();
                         }
 
@@ -252,9 +268,11 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
                         }
                     });
                 } catch (final IllegalStateException e) {
-                    LOGGER.fatal(SHUTDOWN_HOOK_MARKER, "Unable to register shutdown hook because JVM is shutting down.", e);
+                    LOGGER.fatal(SHUTDOWN_HOOK_MARKER,
+                            "Unable to register shutdown hook because JVM is shutting down.", e);
                 } catch (final SecurityException e) {
-                    LOGGER.error(SHUTDOWN_HOOK_MARKER, "Unable to register shutdown hook due to security restrictions", e);
+                    LOGGER.error(SHUTDOWN_HOOK_MARKER, "Unable to register shutdown hook due to security restrictions",
+                            e);
                 }
             }
         }
@@ -279,8 +297,8 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
                 shutdownCallback.cancel();
                 shutdownCallback = null;
             }
-            final Configuration prev = config;
-            config = NULL_CONFIGURATION;
+            final Configuration prev = configuration;
+            configuration = NULL_CONFIGURATION;
             updateLoggers();
             prev.stop();
             externalContext = null;
@@ -298,11 +316,12 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      * @return the name.
      */
     public String getName() {
-        return name;
+        return contextName;
     }
 
     /**
      * Sets the external context.
+     * 
      * @param context The external context.
      */
     public void setExternalContext(final Object context) {
@@ -311,6 +330,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
 
     /**
      * Returns the external context.
+     * 
      * @return The external context.
      */
     @Override
@@ -320,6 +340,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
 
     /**
      * Obtains a Logger from the Context.
+     * 
      * @param name The name of the Logger to return.
      * @return The Logger.
      */
@@ -331,8 +352,8 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     /**
      * Gets a collection of the current loggers.
      * <p>
-     * Whether this collection is a copy of the underlying collection or not is undefined. Therefore, modify this collection at your own
-     * risk.
+     * Whether this collection is a copy of the underlying collection or not is undefined. Therefore, modify this
+     * collection at your own risk.
      * </p>
      *
      * @return a collection of the current loggers.
@@ -343,10 +364,10 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
 
     /**
      * Obtains a Logger from the Context.
+     * 
      * @param name The name of the Logger to return.
-     * @param messageFactory The message factory is used only when creating a
-     *            logger, subsequent use does not change the logger but will log
-     *            a warning if mismatched.
+     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change the
+     *            logger but will log a warning if mismatched.
      * @return The Logger.
      */
     @Override
@@ -364,6 +385,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
 
     /**
      * Determines if the specified Logger exists.
+     * 
      * @param name The Logger name to search for.
      * @return True if the Logger exists, false otherwise.
      */
@@ -373,34 +395,36 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     }
 
     /**
-     * Returns the current Configuration. The Configuration will be replaced
-     * when a reconfigure occurs.
+     * Returns the current Configuration. The Configuration will be replaced when a reconfigure occurs.
      *
      * @return The Configuration.
      */
     public Configuration getConfiguration() {
-        return config;
+        return configuration;
     }
 
     /**
-     * Adds a Filter to the Configuration. Filters that are added through the API will be lost
-     * when a reconfigure occurs.
+     * Adds a Filter to the Configuration. Filters that are added through the API will be lost when a reconfigure
+     * occurs.
+     * 
      * @param filter The Filter to add.
      */
     public void addFilter(final Filter filter) {
-        config.addFilter(filter);
+        configuration.addFilter(filter);
     }
 
     /**
      * Removes a Filter from the current Configuration.
+     * 
      * @param filter The Filter to remove.
      */
     public void removeFilter(final Filter filter) {
-        config.removeFilter(filter);
+        configuration.removeFilter(filter);
     }
 
     /**
      * Sets the Configuration to be used.
+     * 
      * @param config The new Configuration.
      * @return The previous Configuration.
      */
@@ -408,7 +432,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
         Objects.requireNonNull(config, "No Configuration was provided");
         configLock.lock();
         try {
-            final Configuration prev = this.config;
+            final Configuration prev = this.configuration;
             config.addListener(this);
             final ConcurrentMap<String, String> map = config.getComponent(Configuration.CONTEXT_PROPERTIES);
 
@@ -418,9 +442,9 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
                 LOGGER.debug("Ignoring {}, setting hostName to 'unknown'", ex.toString());
                 map.putIfAbsent("hostName", "unknown");
             }
-            map.putIfAbsent("contextName", name);
+            map.putIfAbsent("contextName", contextName);
             config.start();
-            this.config = config;
+            this.configuration = config;
             updateLoggers();
             if (prev != null) {
                 prev.removeListener(this);
@@ -464,9 +488,10 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
 
     /**
      * Returns the initial configuration location or {@code null}. The returned value may not be the location of the
-     * current configuration. Use
-     * {@link #getConfiguration()}.{@link Configuration#getConfigurationSource() getConfigurationSource()}.{@link
-     * ConfigurationSource#getLocation() getLocation()} to get the actual source of the current configuration.
+     * current configuration. Use {@link #getConfiguration()}.{@link Configuration#getConfigurationSource()
+     * getConfigurationSource()}.{@link ConfigurationSource#getLocation() getLocation()} to get the actual source of the
+     * current configuration.
+     * 
      * @return the initial configuration location or {@code null}
      */
     public URI getConfigLocation() {
@@ -475,6 +500,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
 
     /**
      * Sets the configLocation to the specified value and reconfigures this context.
+     * 
      * @param configLocation the location of the new configuration
      */
     public void setConfigLocation(final URI configLocation) {
@@ -488,17 +514,17 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      */
     private void reconfigure(final URI configURI) {
         final ClassLoader cl = ClassLoader.class.isInstance(externalContext) ? (ClassLoader) externalContext : null;
-        LOGGER.debug("Reconfiguration started for context[name={}] at URI {} ({}) with optional ClassLoader: {}", name,
-                configURI, this, cl);
-        final Configuration instance = ConfigurationFactory.getInstance().getConfiguration(name, configURI, cl);
+        LOGGER.debug("Reconfiguration started for context[name={}] at URI {} ({}) with optional ClassLoader: {}",
+                contextName, configURI, this, cl);
+        final Configuration instance = ConfigurationFactory.getInstance().getConfiguration(contextName, configURI, cl);
         setConfiguration(instance);
         /*
-         * instance.start(); Configuration old = setConfiguration(instance);
-         * updateLoggers(); if (old != null) { old.stop(); }
+         * instance.start(); Configuration old = setConfiguration(instance); updateLoggers(); if (old != null) {
+         * old.stop(); }
          */
 
-        LOGGER.debug("Reconfiguration complete for context[name={}] at URI {} ({}) with optional ClassLoader: {}", name,
-                configURI, this, cl);
+        LOGGER.debug("Reconfiguration complete for context[name={}] at URI {} ({}) with optional ClassLoader: {}",
+                contextName, configURI, this, cl);
     }
 
     /**
@@ -514,11 +540,12 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      * Causes all Loggers to be updated against the current Configuration.
      */
     public void updateLoggers() {
-        updateLoggers(this.config);
+        updateLoggers(this.configuration);
     }
 
     /**
      * Causes all Logger to be updated against the specified Configuration.
+     * 
      * @param config The Configuration.
      */
     public void updateLoggers(final Configuration config) {
@@ -528,20 +555,19 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     }
 
     /**
-     * Causes a reconfiguration to take place when the underlying configuration
-     * file changes.
+     * Causes a reconfiguration to take place when the underlying configuration file changes.
      *
      * @param reconfigurable The Configuration that can be reconfigured.
      */
     @Override
     public synchronized void onChange(final Reconfigurable reconfigurable) {
-        LOGGER.debug("Reconfiguration started for context {} ({})", name, this);
+        LOGGER.debug("Reconfiguration started for context {} ({})", contextName, this);
         final Configuration newConfig = reconfigurable.reconfigure();
         if (newConfig != null) {
             setConfiguration(newConfig);
-            LOGGER.debug("Reconfiguration completed for {} ({})", name, this);
+            LOGGER.debug("Reconfiguration completed for {} ({})", contextName, this);
         } else {
-            LOGGER.debug("Reconfiguration failed for {} ({})", name, this);
+            LOGGER.debug("Reconfiguration failed for {} ({})", contextName, this);
         }
     }
 
