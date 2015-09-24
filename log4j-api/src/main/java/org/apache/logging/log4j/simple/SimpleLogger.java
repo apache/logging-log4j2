@@ -32,7 +32,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
 /**
- *  This is the default logger that is used when no suitable logging implementation is available.
+ * This is the default logger that is used when no suitable logging implementation is available.
  */
 public class SimpleLogger extends AbstractLogger {
 
@@ -40,7 +40,7 @@ public class SimpleLogger extends AbstractLogger {
 
     private static final char SPACE = ' ';
 
-	/**
+    /**
      * Used to format times.
      * <p>
      * Note that DateFormat is not Thread-safe.
@@ -58,11 +58,10 @@ public class SimpleLogger extends AbstractLogger {
 
     private final String logName;
 
-
     public SimpleLogger(final String name, final Level defaultLevel, final boolean showLogName,
-                        final boolean showShortLogName, final boolean showDateTime, final boolean showContextMap,
-                        final String dateTimeFormat, final MessageFactory messageFactory, final PropertiesUtil props,
-                        final PrintStream stream) {
+            final boolean showShortLogName, final boolean showDateTime, final boolean showContextMap,
+            final String dateTimeFormat, final MessageFactory messageFactory, final PropertiesUtil props,
+            final PrintStream stream) {
         super(name, messageFactory);
         final String lvl = props.getStringProperty(SimpleLoggerContext.SYSTEM_PREFIX + name + ".level");
         this.level = Level.toLevel(lvl, defaultLevel);
@@ -76,7 +75,7 @@ public class SimpleLogger extends AbstractLogger {
         } else if (showLogName) {
             this.logName = name;
         } else {
-        	this.logName = null;
+            this.logName = null;
         }
         this.showDateTime = showDateTime;
         this.showContextMap = showContextMap;
@@ -123,7 +122,7 @@ public class SimpleLogger extends AbstractLogger {
     }
 
     @Override
-    public void logMessage(final String fqcn, final Level level, final Marker marker, final Message msg, 
+    public void logMessage(final String fqcn, final Level mgsLevel, final Marker marker, final Message msg,
             final Throwable throwable) {
         final StringBuilder sb = new StringBuilder();
         // Append date-time if so configured
@@ -137,7 +136,7 @@ public class SimpleLogger extends AbstractLogger {
             sb.append(SPACE);
         }
 
-        sb.append(level.toString());
+        sb.append(mgsLevel.toString());
         sb.append(SPACE);
         if (Strings.isNotEmpty(logName)) {
             sb.append(logName);
