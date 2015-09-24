@@ -129,7 +129,7 @@ public class DefaultThreadContextMap implements ThreadContextMap {
         int result = 1;
         final Map<String, String> map = this.localMap.get();
         result = prime * result + ((map == null) ? 0 : map.hashCode());
-        result = prime * result + (this.useMap ? 1231 : 1237);
+        result = prime * result + Boolean.valueOf(this.useMap).hashCode();
         return result;
     }
 
