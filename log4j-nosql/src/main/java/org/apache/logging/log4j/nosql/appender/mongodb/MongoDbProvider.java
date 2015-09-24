@@ -33,6 +33,7 @@ import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.nosql.appender.NoSqlProvider;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * The MongoDB implementation of {@link NoSqlProvider}.
@@ -101,8 +102,7 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
             @PluginAttribute("factoryMethodName") final String factoryMethodName) {
         DB database;
         String description;
-        if (factoryClassName != null && factoryClassName.length() > 0 &&
-                factoryMethodName != null && factoryMethodName.length() > 0) {
+        if (Strings.isNotEmpty(factoryClassName) && Strings.isNotEmpty(factoryMethodName)) {
             try {
                 final Class<?> factoryClass = Loader.loadClass(factoryClassName);
                 final Method method = factoryClass.getMethod(factoryMethodName);
@@ -111,7 +111,7 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
                 if (object instanceof DB) {
                     database = (DB) object;
                 } else if (object instanceof MongoClient) {
-                    if (databaseName != null && databaseName.length() > 0) {
+                    if (Strings.isNotEmpty(databaseName)) {
                         database = ((MongoClient) object).getDB(databaseName);
                     } else {
                         LOGGER.error("The factory method [{}.{}()] returned a MongoClient so the database name is "
@@ -150,10 +150,10 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
                         e);
                 return null;
             }
-        } else if (databaseName != null && databaseName.length() > 0) {
+        } else if (Strings.isNotEmpty(databaseName)) {
             description = "database=" + databaseName;
             try {
-                if (server != null && server.length() > 0) {
+                if (Strings.isNotEmpty(server)) {
                     final int portInt = AbstractAppender.parseInt(port, 0);
                     description += ", server=" + server;
                     if (portInt > 0) {
@@ -176,7 +176,7 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
         }
 
         if (!database.isAuthenticated()) {
-            if (username != null && username.length() > 0 && password != null && password.length() > 0) {
+            if (Strings.isNotEmpty(username) && Strings.isNotEmpty(password)) {
                 description += ", username=" + username + ", passwordHash="
                         + NameUtil.md5(password + MongoDbProvider.class.getName());
                 MongoDbConnection.authenticate(database, username, password);
@@ -191,8 +191,8 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
         }
 
         WriteConcern writeConcern;
-        if (writeConcernConstant != null && writeConcernConstant.length() > 0) {
-            if (writeConcernConstantClassName != null && writeConcernConstantClassName.length() > 0) {
+        if (Strings.isNotEmpty(writeConcernConstant)) {
+            if (Strings.isNotEmpty(writeConcernConstantClassName)) {
                 try {
                     final Class<?> writeConcernConstantClass = Loader.loadClass(writeConcernConstantClassName);
                     final Field field = writeConcernConstantClass.getField(writeConcernConstant);
