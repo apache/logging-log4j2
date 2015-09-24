@@ -19,6 +19,7 @@ package org.apache.logging.log4j.nosql.appender.mongodb;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
+import org.apache.logging.log4j.nosql.appender.AbstractNoSqlConnection;
 import org.apache.logging.log4j.nosql.appender.NoSqlConnection;
 import org.apache.logging.log4j.nosql.appender.NoSqlObject;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -28,14 +29,13 @@ import org.bson.Transformer;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
-import com.mongodb.Mongo;
 import com.mongodb.MongoException;
 import com.mongodb.WriteConcern;
 
 /**
  * The MongoDB implementation of {@link NoSqlConnection}.
  */
-public final class MongoDbConnection implements NoSqlConnection<BasicDBObject, MongoDbObject> {
+public final class MongoDbConnection extends AbstractNoSqlConnection<BasicDBObject, MongoDbObject> {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -52,11 +52,9 @@ public final class MongoDbConnection implements NoSqlConnection<BasicDBObject, M
     }
 
     private final DBCollection collection;
-    private final Mongo mongo;
     private final WriteConcern writeConcern;
 
     public MongoDbConnection(final DB database, final WriteConcern writeConcern, final String collectionName) {
-        this.mongo = database.getMongo();
         this.collection = database.getCollection(collectionName);
         this.writeConcern = writeConcern;
     }
@@ -82,15 +80,10 @@ public final class MongoDbConnection implements NoSqlConnection<BasicDBObject, M
     }
 
     @Override
-    public void close() {
-        // there's no need to call this.mongo.close() since that literally
-        // closes the connection
-        // MongoDBClient uses internal connection pooling
-        // for more details, see LOG4J2-591
+    public void closeImpl() {
+        // there's no need to call this.mongo.close() since that literally closes the connection.
+        // MongoDBClient uses internal connection pooling.
+        // For more details, see LOG4J2-591.
     }
 
-    @Override
-    public boolean isClosed() {
-        return !this.mongo.getConnector().isOpen();
-    }
 }
