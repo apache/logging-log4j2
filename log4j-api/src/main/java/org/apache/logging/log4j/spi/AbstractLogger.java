@@ -68,7 +68,8 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     /**
      * The default MessageFactory class.
      */
-    public static final Class<? extends MessageFactory> DEFAULT_MESSAGE_FACTORY_CLASS = ParameterizedMessageFactory.class;
+    public static final Class<? extends MessageFactory> DEFAULT_MESSAGE_FACTORY_CLASS = 
+            ParameterizedMessageFactory.class;
 
     private static final long serialVersionUID = 2L;
 
@@ -128,7 +129,8 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
             StatusLogger
                     .getLogger()
                     .warn("The Logger {} was created with the message factory {} and is now requested with a null "
-                            + "message factory (defaults to {}), which may create log events with unexpected formatting.",
+                            + "message factory (defaults to {}), which may create log events with unexpected "
+                            + "formatting.",
                             name, loggerMessageFactory, DEFAULT_MESSAGE_FACTORY_CLASS.getName());
         }
     }

@@ -72,7 +72,8 @@ public final class ReflectionUtil {
             } else {
                 o = getCallerClass.invoke(null, 1);
                 if (o == sunReflectionClass) {
-                    LOGGER.warn("You are using Java 1.7.0_25 which has a broken implementation of Reflection.getCallerClass.");
+                    LOGGER.warn("You are using Java 1.7.0_25 which has a broken implementation of "
+                            + "Reflection.getCallerClass.");
                     LOGGER.warn("You should upgrade to at least Java 1.7.0_40 or later.");
                     LOGGER.debug("Using stack depth compensation offset of 1 due to Java 7u25.");
                     java7u25CompensationOffset = 1;
@@ -97,7 +98,8 @@ public final class ReflectionUtil {
             }
             psm = new PrivateSecurityManager();
         } catch (final SecurityException ignored) {
-            LOGGER.debug("Not allowed to create SecurityManager. Falling back to slowest ReflectionUtil implementation.");
+            LOGGER.debug("Not allowed to create SecurityManager. "
+                    + "Falling back to slowest ReflectionUtil implementation.");
             psm = null;
         }
         SECURITY_MANAGER = psm;

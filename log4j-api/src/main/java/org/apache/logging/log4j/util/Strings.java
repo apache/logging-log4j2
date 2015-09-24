@@ -23,14 +23,14 @@ package org.apache.logging.log4j.util;
  */
 public final class Strings {
 
-    private Strings() {
-        // empty
-    }
-
     /**
      * The empty string.
      */
     public static final String EMPTY = "";
+
+    private Strings() {
+        // empty
+    }
 
     /**
      * Returns a double quoted string.

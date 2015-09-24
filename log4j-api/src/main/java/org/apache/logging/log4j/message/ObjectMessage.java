@@ -71,7 +71,7 @@ public class ObjectMessage implements Message {
      */
     @Override
     public Object[] getParameters() {
-        return new Object[] { obj };
+        return new Object[] {obj};
     }
 
     @Override
