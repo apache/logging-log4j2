@@ -113,7 +113,7 @@ public class AsyncLogger extends Logger {
     private static final Clock CLOCK = ClockFactory.getClock();
     private static volatile NanoClock nanoClock = new DummyNanoClock();
 
-    private static final ExecutorService executor = Executors.newSingleThreadExecutor(new DaemonThreadFactory(
+    private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor(new DaemonThreadFactory(
             "AsyncLogger-"));
 
     static {
@@ -122,7 +122,7 @@ public class AsyncLogger extends Logger {
         final int ringBufferSize = calculateRingBufferSize();
 
         final WaitStrategy waitStrategy = createWaitStrategy();
-        disruptor = new Disruptor<>(RingBufferLogEvent.FACTORY, ringBufferSize, executor, ProducerType.MULTI,
+        disruptor = new Disruptor<>(RingBufferLogEvent.FACTORY, ringBufferSize, EXECUTOR, ProducerType.MULTI,
                 waitStrategy);
         disruptor.handleExceptionsWith(getExceptionHandler());
         disruptor.handleEventsWith(new RingBufferLogEventHandler());
@@ -168,13 +168,13 @@ public class AsyncLogger extends Logger {
      * deadlock when the RingBuffer is full. (LOG4J2-471)
      */
     private static void initInfoForExecutorThread() {
-        executor.submit(new Runnable() {
+        EXECUTOR.submit(new Runnable() {
             @Override
             public void run() {
                 final boolean isAppenderThread = true;
                 final Info info = new Info(new RingBufferLogEventTranslator(), //
                         Thread.currentThread().getName(), isAppenderThread);
-                Info.threadlocalInfo.set(info);
+                Info.THREADLOCAL.set(info);
             }
         });
     }
@@ -215,7 +215,7 @@ public class AsyncLogger extends Logger {
      * Tuple with the event translator and thread name for a thread.
      */
     static class Info {
-        private static final ThreadLocal<Info> threadlocalInfo = new ThreadLocal<Info>() {
+        private static final ThreadLocal<Info> THREADLOCAL = new ThreadLocal<Info>() {
             @Override
             protected Info initialValue() {
                 // by default, set isAppenderThread to false
@@ -226,7 +226,8 @@ public class AsyncLogger extends Logger {
         private final String cachedThreadName;
         private final boolean isAppenderThread;
 
-        public Info(final RingBufferLogEventTranslator translator, final String threadName, final boolean appenderThread) {
+        public Info(final RingBufferLogEventTranslator translator, final String threadName,
+                final boolean appenderThread) {
             this.translator = translator;
             this.cachedThreadName = threadName;
             this.isAppenderThread = appenderThread;
@@ -252,7 +253,7 @@ public class AsyncLogger extends Logger {
 
     private void logMessage0(final Disruptor<RingBufferLogEvent> theDisruptor, final String fqcn, final Level level,
             final Marker marker, final Message message, final Throwable thrown) {
-        final Info info = Info.threadlocalInfo.get();
+        final Info info = Info.THREADLOCAL.get();
         logMessageInAppropriateThread(info, theDisruptor, fqcn, level, marker, message, thrown);
     }
 
@@ -404,8 +405,8 @@ public class AsyncLogger extends Logger {
             }
         }
         temp.shutdown(); // busy-spins until all events currently in the disruptor have been processed
-        executor.shutdown(); // finally, kill the processor thread
-        Info.threadlocalInfo.remove(); // LOG4J2-323
+        EXECUTOR.shutdown(); // finally, kill the processor thread
+        Info.THREADLOCAL.remove(); // LOG4J2-323
     }
 
     /**
@@ -420,6 +421,7 @@ public class AsyncLogger extends Logger {
      * Creates and returns a new {@code RingBufferAdmin} that instruments the ringbuffer of the {@code AsyncLogger}.
      *
      * @param contextName name of the global {@code AsyncLoggerContext}
+     * @return a new {@code RingBufferAdmin} that instruments the ringbuffer
      */
     public static RingBufferAdmin createRingBufferAdmin(final String contextName) {
         return RingBufferAdmin.forAsyncLogger(disruptor.getRingBuffer(), contextName);

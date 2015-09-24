@@ -23,7 +23,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 /**
  * Factory for ReliabilityStrategies.
  */
-public class ReliabilityStrategyFactory {
+public final class ReliabilityStrategyFactory {
     private ReliabilityStrategyFactory() {
     }
 
