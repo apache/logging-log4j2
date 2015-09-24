@@ -48,9 +48,8 @@ import org.apache.logging.log4j.status.StatusLogger;
  * </p>
  */
 public final class ReflectionUtil {
-    // Check:OFF: ConstantName
-    static final int JDK_7u25_OFFSET;
-    // Check:ON: ConstantName
+    // Checkstyle Suppress: the lower-case 'u' ticks off CheckStyle...
+    static final int JDK_7u25_OFFSET; // SUPPRESS CHECKSTYLE
 
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final boolean SUN_REFLECTION_SUPPORTED;
