@@ -76,11 +76,7 @@ public final class MongoDbConnection implements NoSqlConnection<BasicDBObject, M
     @Override
     public void insertObject(final NoSqlObject<BasicDBObject> object) {
         try {
-            final WriteResult result = this.collection.insert(object.unwrap(), this.writeConcern);
-            if (Strings.isNotEmpty(result.getError())) {
-                throw new AppenderLoggingException("Failed to write log event to MongoDB due to error: " +
-                        result.getError() + '.');
-            }
+            this.collection.insert(object.unwrap(), this.writeConcern);
         } catch (final MongoException e) {
             throw new AppenderLoggingException("Failed to write log event to MongoDB due to error: " + e.getMessage(),
                     e);
@@ -89,7 +85,8 @@ public final class MongoDbConnection implements NoSqlConnection<BasicDBObject, M
 
     @Override
     public void close() {
-        // there's no need to call this.mongo.close() since that literally closes the connection
+        // there's no need to call this.mongo.close() since that literally
+        // closes the connection
         // MongoDBClient uses internal connection pooling
         // for more details, see LOG4J2-591
     }
@@ -100,16 +97,22 @@ public final class MongoDbConnection implements NoSqlConnection<BasicDBObject, M
     }
 
     /**
-     * To prevent class loading issues during plugin discovery, this code cannot live within MongoDbProvider. This
-     * is because of how Java treats references to Exception classes different from references to other classes. When
-     * Java loads a class, it normally won't load that class's dependent classes until and unless A) they are used, B)
-     * the class being loaded extends or implements those classes, or C) those classes are the types of static members
-     * in the class. However, exceptions that a class uses are always loaded when the class is loaded, even before
-     * they are actually used.
+     * To prevent class loading issues during plugin discovery, this code cannot
+     * live within MongoDbProvider. This is because of how Java treats
+     * references to Exception classes different from references to other
+     * classes. When Java loads a class, it normally won't load that class's
+     * dependent classes until and unless A) they are used, B) the class being
+     * loaded extends or implements those classes, or C) those classes are the
+     * types of static members in the class. However, exceptions that a class
+     * uses are always loaded when the class is loaded, even before they are
+     * actually used.
      *
-     * @param database The database to authenticate
-     * @param userName The username to authenticate with
-     * @param password The password to authenticate with
+     * @param database
+     *            The database to authenticate
+     * @param userName
+     *            The username to authenticate with
+     * @param password
+     *            The password to authenticate with
      */
     static void authenticate(final DB database, final String userName, final String password) {
         try {
