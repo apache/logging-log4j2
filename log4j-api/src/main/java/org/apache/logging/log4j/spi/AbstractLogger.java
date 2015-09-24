@@ -321,14 +321,10 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
             return messageFactory.newMessage("entry");
         }
         final StringBuilder sb = new StringBuilder("entry params(");
-        int i = 0;
-        for (final Object parm : params) {
-            if (parm != null) {
-                sb.append(parm.toString());
-            } else {
-                sb.append("null");
-            }
-            if (++i < params.length) {
+        for (int i = 0; i < params.length; i++) {
+            Object parm = params[i];
+            sb.append(parm != null ? parm.toString() : "null");
+            if (i + 1 < params.length) {
                 sb.append(", ");
             }
         }
