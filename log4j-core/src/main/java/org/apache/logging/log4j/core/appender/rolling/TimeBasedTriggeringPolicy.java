@@ -49,16 +49,16 @@ public final class TimeBasedTriggeringPolicy implements TriggeringPolicy {
 
     /**
      * Initializes the policy.
-     * @param manager The RollingFileManager.
+     * @param aManager The RollingFileManager.
      */
     @Override
-    public void initialize(final RollingFileManager manager) {
-        this.manager = manager;
+    public void initialize(final RollingFileManager aManager) {
+        this.manager = aManager;
         
         // LOG4J2-531: call getNextTime twice to force initialization of both prevFileTime and nextFileTime
-        manager.getPatternProcessor().getNextTime(manager.getFileTime(), interval, modulate);
+        aManager.getPatternProcessor().getNextTime(aManager.getFileTime(), interval, modulate);
         
-        nextRolloverMillis = manager.getPatternProcessor().getNextTime(manager.getFileTime(), interval, modulate);
+        nextRolloverMillis = aManager.getPatternProcessor().getNextTime(aManager.getFileTime(), interval, modulate);
     }
 
     /**

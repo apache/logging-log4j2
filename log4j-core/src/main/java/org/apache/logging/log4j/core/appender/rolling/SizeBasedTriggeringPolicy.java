@@ -81,11 +81,11 @@ public class SizeBasedTriggeringPolicy implements TriggeringPolicy {
 
     /**
      * Initialize the TriggeringPolicy.
-     * @param manager The RollingFileManager.
+     * @param aManager The RollingFileManager.
      */
     @Override
-    public void initialize(final RollingFileManager manager) {
-        this.manager = manager;
+    public void initialize(final RollingFileManager aManager) {
+        this.manager = aManager;
     }
 
 

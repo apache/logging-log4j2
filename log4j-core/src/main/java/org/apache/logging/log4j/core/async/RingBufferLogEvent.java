@@ -39,6 +39,10 @@ import com.lmax.disruptor.EventFactory;
  * the life of the RingBuffer.
  */
 public class RingBufferLogEvent implements LogEvent {
+
+    /** The {@code EventFactory} for {@code RingBufferLogEvent}s. */
+    public static final Factory FACTORY = new Factory();
+
     private static final long serialVersionUID = 8462119088943934758L;
 
     /**
@@ -51,9 +55,6 @@ public class RingBufferLogEvent implements LogEvent {
             return new RingBufferLogEvent();
         }
     }
-
-    /** The {@code EventFactory} for {@code RingBufferLogEvent}s. */
-    public static final Factory FACTORY = new Factory();
 
     private transient AsyncLogger asyncLogger;
     private String loggerName;
@@ -292,7 +293,6 @@ public class RingBufferLogEvent implements LogEvent {
                 .setThreadName(threadName) //
                 .setThrown(getThrown()) // may deserialize from thrownProxy
                 .setThrownProxy(thrownProxy) // avoid unnecessarily creating thrownProxy
-                .setTimeMillis(currentTimeMillis) //
-                ;        
+                .setTimeMillis(currentTimeMillis);        
     }
 }
