@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -160,7 +161,7 @@ public final class HtmlLayout extends AbstractStringLayout {
 
         String escapedLogger = Transform.escapeHtmlTags(event.getLoggerName());
         if (escapedLogger.isEmpty()) {
-            escapedLogger = "root";
+            escapedLogger = LoggerConfig.ROOT;
         }
         sbuf.append("<td title=\"").append(escapedLogger).append(" logger\">");
         sbuf.append(escapedLogger);
