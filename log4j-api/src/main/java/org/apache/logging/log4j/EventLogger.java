@@ -24,12 +24,12 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
  */
 public final class EventLogger {
 
-    private static final String NAME = "EventLogger";
-
     /**
      * Defines the Event Marker.
      */
     public static final Marker EVENT_MARKER = MarkerManager.getMarker("EVENT");
+
+    private static final String NAME = "EventLogger";
 
     private static final String FQCN = EventLogger.class.getName();
 
