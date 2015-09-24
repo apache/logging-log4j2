@@ -23,7 +23,7 @@ import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Test;
 
-//@Ignore("Requires a running MongoDB server")
+@Ignore("Requires a running MongoDB server")
 public class MongoDbTest {
 
     @ClassRule
