@@ -80,7 +80,8 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
         this.locale = locale;
     }
 
-    public LocalizedMessage(final ResourceBundle bundle, final Locale locale, final String key, final Object[] arguments) {
+    public LocalizedMessage(final ResourceBundle bundle, final Locale locale, final String key,
+            final Object[] arguments) {
         this.key = key;
         this.argArray = arguments;
         this.throwable = null;
@@ -94,53 +95,53 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
     }
 
     public LocalizedMessage(final String messagePattern, final Object arg) {
-        this((ResourceBundle) null, (Locale) null, messagePattern, new Object[] { arg });
+        this((ResourceBundle) null, (Locale) null, messagePattern, new Object[] {arg});
     }
 
     public LocalizedMessage(final String baseName, final String key, final Object arg) {
-        this(baseName, (Locale) null, key, new Object[] { arg });
+        this(baseName, (Locale) null, key, new Object[] {arg});
     }
 
     public LocalizedMessage(final ResourceBundle bundle, final String key, final Object arg) {
-        this(bundle, (Locale) null, key, new Object[] { arg });
+        this(bundle, (Locale) null, key, new Object[] {arg});
     }
 
     public LocalizedMessage(final String baseName, final Locale locale, final String key, final Object arg) {
-        this(baseName, locale, key, new Object[] { arg });
+        this(baseName, locale, key, new Object[] {arg});
     }
 
     public LocalizedMessage(final ResourceBundle bundle, final Locale locale, final String key, final Object arg) {
-        this(bundle, locale, key, new Object[] { arg });
+        this(bundle, locale, key, new Object[] {arg});
     }
 
     public LocalizedMessage(final Locale locale, final String key, final Object arg) {
-        this((ResourceBundle) null, locale, key, new Object[] { arg });
+        this((ResourceBundle) null, locale, key, new Object[] {arg});
     }
 
     public LocalizedMessage(final String messagePattern, final Object arg1, final Object arg2) {
-        this((ResourceBundle) null, (Locale) null, messagePattern, new Object[] { arg1, arg2 });
+        this((ResourceBundle) null, (Locale) null, messagePattern, new Object[] {arg1, arg2});
     }
 
     public LocalizedMessage(final String baseName, final String key, final Object arg1, final Object arg2) {
-        this(baseName, (Locale) null, key, new Object[] { arg1, arg2 });
+        this(baseName, (Locale) null, key, new Object[] {arg1, arg2});
     }
 
     public LocalizedMessage(final ResourceBundle bundle, final String key, final Object arg1, final Object arg2) {
-        this(bundle, (Locale) null, key, new Object[] { arg1, arg2 });
+        this(bundle, (Locale) null, key, new Object[] {arg1, arg2});
     }
 
     public LocalizedMessage(final String baseName, final Locale locale, final String key, final Object arg1,
             final Object arg2) {
-        this(baseName, locale, key, new Object[] { arg1, arg2 });
+        this(baseName, locale, key, new Object[] {arg1, arg2});
     }
 
     public LocalizedMessage(final ResourceBundle bundle, final Locale locale, final String key, final Object arg1,
             final Object arg2) {
-        this(bundle, locale, key, new Object[] { arg1, arg2 });
+        this(bundle, locale, key, new Object[] {arg1, arg2});
     }
 
     public LocalizedMessage(final Locale locale, final String key, final Object arg1, final Object arg2) {
-        this((ResourceBundle) null, locale, key, new Object[] { arg1, arg2 });
+        this((ResourceBundle) null, locale, key, new Object[] {arg1, arg2});
     }
 
     /**
