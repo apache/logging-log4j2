@@ -27,15 +27,16 @@ package org.apache.logging.log4j.message;
  */
 public final class ParameterizedMessageFactory extends AbstractMessageFactory {
 
-    private static final long serialVersionUID = 1L;
-    
     /**
      * Instance of StringFormatterMessageFactory.
      */
     public static final ParameterizedMessageFactory INSTANCE = new ParameterizedMessageFactory();
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * Creates {@link ParameterizedMessage} instances.
+     * 
      * @param message The message pattern.
      * @param params The message parameters.
      * @return The Message.
