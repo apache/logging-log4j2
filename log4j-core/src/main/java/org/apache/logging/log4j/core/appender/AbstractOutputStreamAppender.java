@@ -35,13 +35,10 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
     private static final long serialVersionUID = 1L;
 
     /**
-     * Immediate flush means that the underlying writer or output stream
-     * will be flushed at the end of each append operation. Immediate
-     * flush is slower but ensures that each append request is actually
-     * written. If <code>immediateFlush</code> is set to
-     * {@code false}, then there is a good chance that the last few
-     * logs events are not actually written to persistent media if and
-     * when the application crashes.
+     * Immediate flush means that the underlying writer or output stream will be flushed at the end of each append
+     * operation. Immediate flush is slower but ensures that each append request is actually written. If
+     * <code>immediateFlush</code> is set to {@code false}, then there is a good chance that the last few logs events
+     * are not actually written to persistent media if and when the application crashes.
      */
     protected final boolean immediateFlush;
 
@@ -49,18 +46,17 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
 
     private final ReadWriteLock rwLock = new ReentrantReadWriteLock();
     private final Lock readLock = rwLock.readLock();
-    
+
     /**
-     * Instantiate a WriterAppender and set the output destination to a
-     * new {@link java.io.OutputStreamWriter} initialized with <code>os</code>
-     * as its {@link java.io.OutputStream}.
+     * Instantiate a WriterAppender and set the output destination to a new {@link java.io.OutputStreamWriter}
+     * initialized with <code>os</code> as its {@link java.io.OutputStream}.
+     * 
      * @param name The name of the Appender.
      * @param layout The layout to format the message.
      * @param manager The OutputStreamManager.
      */
-    protected AbstractOutputStreamAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
-                                           final boolean ignoreExceptions, final boolean immediateFlush,
-                                           final M manager) {
+    protected AbstractOutputStreamAppender(final String name, final Layout<? extends Serializable> layout,
+            final Filter filter, final boolean ignoreExceptions, final boolean immediateFlush, final M manager) {
         super(name, filter, layout, ignoreExceptions);
         this.manager = manager;
         this.immediateFlush = immediateFlush;
@@ -98,8 +94,7 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
      * Most subclasses of <code>AbstractOutputStreamAppender</code> will need to override this method.
      * </p>
      * 
-     * @param event
-     *        The LogEvent.
+     * @param event The LogEvent.
      */
     @Override
     public void append(final LogEvent event) {
