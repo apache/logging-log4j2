@@ -28,8 +28,10 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
+import org.apache.logging.log4j.core.script.Script;
 import org.apache.logging.log4j.status.StatusLogger;
 
+import javax.script.SimpleBindings;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +39,7 @@ import java.util.Map;
 /**
  * Selects the pattern to use based on the Marker in the LogEvent.
  */
-@Plugin(name = "MarkerPatternSelector", category = Node.CATEGORY, elementType = PatternSelector.ELEMENT_TYPE, printObject = true)
+@Plugin(name = "ScriptPatternSelector", category = Node.CATEGORY, elementType = PatternSelector.ELEMENT_TYPE, printObject = true)
 public class ScriptPatternSelector implements PatternSelector {
 
     private final Map<String, PatternFormatter[]> formatterMap = new HashMap<>();
@@ -49,11 +51,16 @@ public class ScriptPatternSelector implements PatternSelector {
     private final String defaultPattern;
 
     private static Logger LOGGER = StatusLogger.getLogger();
+    private final Script script;
+    private final Configuration configuration;
 
 
-    public ScriptPatternSelector(final PatternMatch[] properties, final String defaultPattern,
+    public ScriptPatternSelector(final Script script, final PatternMatch[] properties, final String defaultPattern,
                                  final boolean alwaysWriteExceptions, final boolean noConsoleNoAnsi,
                                  final Configuration config) {
+        this.script = script;
+        this.configuration = config;
+        config.getScriptManager().addScript(script);
         final PatternParser parser = PatternLayout.createPatternParser(config);
         for (PatternMatch property : properties) {
             try {
@@ -75,32 +82,38 @@ public class ScriptPatternSelector implements PatternSelector {
 
     @Override
     public PatternFormatter[] getFormatters(LogEvent event) {
-        Marker marker = event.getMarker();
-        if (marker == null) {
+        SimpleBindings bindings = new SimpleBindings();
+        bindings.putAll(configuration.getProperties());
+        bindings.put("substitutor", configuration.getStrSubstitutor());
+        bindings.put("logEvent", event);
+        Object object = configuration.getScriptManager().execute(script.getName(), bindings);
+        if (object == null) {
             return defaultFormatters;
         }
-        for (String key : formatterMap.keySet()) {
-            if (marker.isInstanceOf(key)) {
-                return formatterMap.get(key);
-            }
-        }
-        return defaultFormatters;
+        PatternFormatter[] patternFormatter = formatterMap.get(object.toString());
+
+        return patternFormatter == null ? defaultFormatters : patternFormatter;
     }
 
 
     @PluginFactory
-    public static ScriptPatternSelector createSelector(@PluginElement("PatternMatch") final PatternMatch[] properties,
+    public static ScriptPatternSelector createSelector(@PluginElement("Script") Script script,
+                                                       @PluginElement("PatternMatch") final PatternMatch[] properties,
                                                        @PluginAttribute("defaultPattern") String defaultPattern,
                                                        @PluginAttribute(value = "alwaysWriteExceptions", defaultBoolean = true) final boolean alwaysWriteExceptions,
                                                        @PluginAttribute(value = "noConsoleNoAnsi", defaultBoolean = false) final boolean noConsoleNoAnsi,
                                                        @PluginConfiguration final Configuration config) {
+        if (script == null) {
+            LOGGER.error("No script provided");
+            return null;
+        }
         if (defaultPattern == null) {
             defaultPattern = PatternLayout.DEFAULT_CONVERSION_PATTERN;
         }
         if (properties == null || properties.length == 0) {
             LOGGER.warn("No marker patterns were provided");
         }
-        return new ScriptPatternSelector(properties, defaultPattern, alwaysWriteExceptions,
+        return new ScriptPatternSelector(script, properties, defaultPattern, alwaysWriteExceptions,
                 noConsoleNoAnsi, config);
     }
 

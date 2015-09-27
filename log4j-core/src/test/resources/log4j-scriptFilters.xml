@@ -18,60 +18,40 @@
 <Configuration status="ERROR">
   <Appenders>
     <List name="List">
-      <PatternLayout>
-        <MarkerPatternSelector defaultPattern="[%-5level] %c{1.} %msg%n">
-          <PatternMatch key="FLOW" pattern="[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"/>
-        </MarkerPatternSelector>
-      </PatternLayout>
+      <PatternLayout pattern="[%-5level] %c{1.} %msg%n"/>
     </List>
-    <List name="List2">
-      <PatternLayout>
-        <ScriptPatternSelector defaultPattern="[%-5level] %c{1.} %C{1.}.%M.%L %msg%n">
-          <Script name="BeanShellSelector" language="bsh"><![CDATA[
-            if (logEvent.getLoggerName().equals("NoLocation")) {
-                return "NoLocation";
-            } else if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf("FLOW")) {
-                return "Flow";
-            } else {
-                return null;
-            }]]>
-          </Script>
-          <PatternMatch key="NoLocation" pattern="[%-5level] %c{1.} %msg%n"/>
-          <PatternMatch key="Flow" pattern="[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"/>
-        </ScriptPatternSelector>
-      </PatternLayout>
-    </List>
-    <List name="List3">
-      <PatternLayout>
-        <ScriptPatternSelector defaultPattern="[%-5level] %c{1.} %C{1.}.%M.%L %msg%n">
-          <Script name="JavaScriptSelector" language="JavaScript"><![CDATA[
-            var result;
-            if (logEvent.getLoggerName().equals("JavascriptNoLocation")) {
-                result = "NoLocation";
-            } else if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf("FLOW")) {
-                result = "Flow";
+  </Appenders>
+  <Loggers>
+    <Logger name="TestJavaScriptFilter" level="trace" additivity="false">
+      <AppenderRef ref="List">
+        <ScriptFilter onMatch="ACCEPT" onMisMatch="DENY">
+          <Script name="JavascriptFilter" language="JavaScript"><![CDATA[
+            var result = false;
+            if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf("FLOW")) {
+                result = true;
+            } else if (logEvent.getContextMap().containsKey("UserId")) {
+                result = true;
             }
             result;
             ]]>
           </Script>
-          <PatternMatch key="NoLocation" pattern="[%-5level] %c{1.} %msg%n"/>
-          <PatternMatch key="Flow" pattern="[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"/>
-        </ScriptPatternSelector>
-      </PatternLayout>
-    </List>
-  </Appenders>
-  <Loggers>
-    <Logger name="TestJavaScriptPatternSelector" level="trace" additivity="false">
-      <AppenderRef ref="List3"/>
+        </ScriptFilter>
+      </AppenderRef>
     </Logger>
-    <Logger name="JavascriptNoLocation" level="trace" additivity="false">
-      <AppenderRef ref="List3"/>
-    </Logger>
-    <Logger name="TestScriptPatternSelector" level="trace" additivity="false">
-      <AppenderRef ref="List2"/>
-    </Logger>
-    <Logger name="NoLocation" level="trace" additivity="false">
-      <AppenderRef ref="List2"/>
+    <Logger name="TestGroovyFilter" level="trace" additivity="false">
+      <AppenderRef ref="List">
+        <ScriptFilter onMatch="ACCEPT" onMisMatch="DENY">
+          <Script name="GroovyFilter" language="groovy"><![CDATA[
+            if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf("FLOW")) {
+                return true;
+            } else if (logEvent.getContextMap().containsKey("UserId")) {
+                return true;
+            }
+            return false;
+            ]]>
+          </Script>
+        </ScriptFilter>
+      </AppenderRef>
     </Logger>
     <Root level="trace">
       <AppenderRef ref="List" />

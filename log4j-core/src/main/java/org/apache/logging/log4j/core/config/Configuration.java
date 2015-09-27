@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.filter.Filterable;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.net.Advertiser;
+import org.apache.logging.log4j.core.script.ScriptManager;
 
 import java.util.List;
 import java.util.Map;
@@ -143,5 +144,7 @@ public interface Configuration extends Filterable {
      * @return the custom levels defined in the current configuration
      */
     List<CustomLevelConfig> getCustomLevels();
+
+    ScriptManager getScriptManager();
 
 }

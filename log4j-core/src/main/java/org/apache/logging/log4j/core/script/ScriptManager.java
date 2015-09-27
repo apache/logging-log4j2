@@ -16,22 +16,143 @@
  */
 package org.apache.logging.log4j.core.script;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.ConfigurationException;
+import org.apache.logging.log4j.status.StatusLogger;
+
+import javax.script.Bindings;
+import javax.script.Compilable;
+import javax.script.CompiledScript;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
- *
+ * Manages the scripts use by the Configuration.
  */
 public class ScriptManager {
 
+    private static final Logger logger = StatusLogger.getLogger();
     private final ScriptEngineManager manager = new ScriptEngineManager();
-
+    private final ConcurrentMap<String, ScriptRunner> scripts = new ConcurrentHashMap<>();
 
     public ScriptManager() {
-
+        if (logger.isDebugEnabled()) {
+            List<ScriptEngineFactory> factories = manager.getEngineFactories();
+            logger.debug("Installed script engines");
+            for (ScriptEngineFactory factory : factories) {
+                String threading = (String) factory.getParameter("THREADING");
+                if (threading == null) {
+                    threading = "Not Thread Safe";
+                }
+                StringBuilder names = new StringBuilder();
+                boolean first = true;
+                for (String name : factory.getNames()) {
+                    if (!first) {
+                        names.append(", ");
+                    }
+                    names.append(name);
+                    first = false;
+                }
+                boolean compiled = factory.getScriptEngine() instanceof Compilable;
+                logger.debug(factory.getEngineName() + " Version: " + factory.getEngineVersion() +
+                    ", Language: " + factory.getLanguageName() + ", Threading: " + threading +
+                    ", Compile: " + compiled + ", Names: {" + names.toString() + "}");
+            }
+        }
     }
 
     public void addScript(Script script) {
+        ScriptEngine engine = manager.getEngineByName(script.getLanguage());
+        if (engine == null) {
+            logger.error("No ScriptEngine found for language " + script.getLanguage());
+        }
+        if (engine.getFactory().getParameter("THREADING") == null) {
+            scripts.put(script.getName(), new ThreadLocalScriptRunner(script));
+        } else {
+            scripts.put(script.getName(), new MainScriptRunner(engine, script));
+        }
+    }
 
+    public Object execute(String name, Bindings bindings) {
+        ScriptRunner scriptRunner = scripts.get(name);
+        if (scriptRunner == null) {
+            logger.warn("No script named {} could be found");
+            return null;
+        }
+        return scriptRunner.execute(bindings);
+    }
+
+    private interface ScriptRunner {
+
+        public Object execute(Bindings bindings);
+    }
+
+    private class MainScriptRunner implements ScriptRunner {
+        private final Script script;
+        private final CompiledScript compiledScript;
+        private final ScriptEngine scriptEngine;
+
+
+        public MainScriptRunner(ScriptEngine scriptEngine, Script script) {
+            this.script = script;
+            this.scriptEngine = scriptEngine;
+            CompiledScript compiled = null;
+            if (scriptEngine instanceof Compilable) {
+                logger.debug("Script {} is compilable", script.getName());
+                try {
+                    compiled = ((Compilable) scriptEngine).compile(script.getScriptText());
+                } catch (Throwable ex) {
+                /* ScriptException is what really should be caught here. However, beanshell's ScriptEngine
+                 * implements Compilable but then throws Error when the compile method is called!
+                 */
+                    logger.warn("Error compiling script", ex);
+                }
+            }
+            compiledScript = compiled;
+        }
+
+        public Object execute(Bindings bindings) {
+            if (compiledScript != null) {
+                try {
+                    return compiledScript.eval(bindings);
+                } catch (ScriptException ex) {
+                    logger.error("Error running script " + script.getName(), ex);
+                    return null;
+                }
+            } else {
+                try {
+                    return scriptEngine.eval(script.getScriptText(), bindings);
+                }   catch (ScriptException ex) {
+                    logger.error("Error running script " + script.getName(), ex);
+                    return null;
+                }
+            }
+        }
+
+    }
+
+    private class ThreadLocalScriptRunner implements ScriptRunner {
+        private final Script script;
+
+        private ThreadLocal<MainScriptRunner> runners = new ThreadLocal<MainScriptRunner>() {
+            @Override protected MainScriptRunner initialValue() {
+                ScriptEngine engine = manager.getEngineByName(script.getLanguage());
+                return new MainScriptRunner(engine, script);
+            }
+        };
+
+        public ThreadLocalScriptRunner(Script script) {
+            this.script = script;
+        }
+
+        public Object execute(Bindings bindings) {
+            return runners.get().execute(bindings);
+        }
     }
 
 }

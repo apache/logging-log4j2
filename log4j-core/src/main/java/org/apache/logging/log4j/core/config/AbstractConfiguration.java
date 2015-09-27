@@ -54,6 +54,7 @@ import org.apache.logging.log4j.core.lookup.MapLookup;
 import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.net.Advertiser;
+import org.apache.logging.log4j.core.script.ScriptManager;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Loader;
@@ -108,6 +109,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     protected final List<String> pluginPackages = new ArrayList<>();
     protected PluginManager pluginManager;
     private final ConfigurationSource configurationSource;
+    private ScriptManager scriptManager;
 
     /**
      * Constructor.
@@ -135,12 +137,18 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         return properties;
     }
 
+    @Override
+    public ScriptManager getScriptManager() {
+        return scriptManager;
+    }
+
     /**
      * Initialize the configuration.
      */
     @Override
     public void initialize() {
         LOGGER.debug("Initializing configuration {}", this);
+        scriptManager = new ScriptManager();
         pluginManager.collectPlugins(pluginPackages);
         final PluginManager levelPlugins = new PluginManager(Level.CATEGORY);
         levelPlugins.collectPlugins(pluginPackages);

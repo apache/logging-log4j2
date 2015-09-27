@@ -37,8 +37,8 @@ public class PatternSelectorTest {
     public static LoggerContextRule context = new LoggerContextRule(CONFIG);
 
     @Test
-    public void testPatternSelector() throws Exception {
-        org.apache.logging.log4j.Logger logger = LogManager.getLogger("TestPatternSelector");
+    public void testMarkerPatternSelector() throws Exception {
+        org.apache.logging.log4j.Logger logger = LogManager.getLogger("TestMarkerPatternSelector");
         logger.entry();
         logger.info("Hello World");
         logger.exit();
@@ -47,7 +47,46 @@ public class PatternSelectorTest {
         List<String> messages = app.getMessages();
         assertNotNull("No Messages", messages);
         assertTrue("Incorrect number of messages. Expected 3, Actual " + messages.size(), messages.size() == 3);
-        assertEquals("[TRACE] TestPatternSelector ====== o.a.l.l.c.PatternSelectorTest.testPatternSelector:42 entry ======\n", messages.get(0));
-        assertEquals("[INFO ] TestPatternSelector Hello World\n", messages.get(1));
+        assertEquals("[TRACE] TestMarkerPatternSelector ====== o.a.l.l.c.PatternSelectorTest.testMarkerPatternSelector:42 entry ======\n", messages.get(0));
+        assertEquals("[INFO ] TestMarkerPatternSelector Hello World\n", messages.get(1));
+        app.clear();
+    }
+
+    @Test
+    public void testScriptPatternSelector() throws Exception {
+        org.apache.logging.log4j.Logger logger = LogManager.getLogger("TestScriptPatternSelector");
+        org.apache.logging.log4j.Logger logger2 = LogManager.getLogger("NoLocation");
+        logger.entry();
+        logger.info("Hello World");
+        logger2.info("No location information");
+        logger.exit();
+        final ListAppender app = (ListAppender) context.getRequiredAppender("List2");
+        assertNotNull("No ListAppender", app);
+        List<String> messages = app.getMessages();
+        assertNotNull("No Messages", messages);
+        assertTrue("Incorrect number of messages. Expected 4, Actual " + messages.size(), messages.size() == 4);
+        assertEquals("[TRACE] TestScriptPatternSelector ====== o.a.l.l.c.PatternSelectorTest.testScriptPatternSelector:59 entry ======\n", messages.get(0));
+        assertEquals("[INFO ] TestScriptPatternSelector o.a.l.l.c.PatternSelectorTest.testScriptPatternSelector.60 Hello World\n", messages.get(1));
+        assertEquals("[INFO ] NoLocation No location information\n", messages.get(2));
+        app.clear();
+    }
+
+    @Test
+    public void testJavaScriptPatternSelector() throws Exception {
+        org.apache.logging.log4j.Logger logger = LogManager.getLogger("TestJavaScriptPatternSelector");
+        org.apache.logging.log4j.Logger logger2 = LogManager.getLogger("JavascriptNoLocation");
+        logger.entry();
+        logger.info("Hello World");
+        logger2.info("No location information");
+        logger.exit();
+        final ListAppender app = (ListAppender) context.getRequiredAppender("List3");
+        assertNotNull("No ListAppender", app);
+        List<String> messages = app.getMessages();
+        assertNotNull("No Messages", messages);
+        assertTrue("Incorrect number of messages. Expected 4, Actual " + messages.size(), messages.size() == 4);
+        assertEquals("[TRACE] TestJavaScriptPatternSelector ====== o.a.l.l.c.PatternSelectorTest.testJavaScriptPatternSelector:78 entry ======\n", messages.get(0));
+        assertEquals("[INFO ] TestJavaScriptPatternSelector o.a.l.l.c.PatternSelectorTest.testJavaScriptPatternSelector.79 Hello World\n", messages.get(1));
+        assertEquals("[INFO ] JavascriptNoLocation No location information\n", messages.get(2));
+        app.clear();
     }
 }
