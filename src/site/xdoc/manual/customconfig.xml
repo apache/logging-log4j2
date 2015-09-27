@@ -41,7 +41,7 @@
               Starting with release 2.4, Log4j provides a ConfigurationBuilder and a set of component builders that
               allow a Configuration to be created fairly easily.
               Actual configuration objects like LoggerConfig or Appender can be unwieldy; they require a lot
-              of knowledge on Log4j internals which makes them difficult to work with if all you want is 
+              of knowledge about Log4j internals which makes them difficult to work with if all you want is to
               create a Configuration.
             </p>
             <p>
@@ -61,9 +61,12 @@
               for the component you want to configure.
             </p>
             <p>
-              For example, the builder does not know what components can be configured on specific components
+              For example, the builder does not know what sub-components can be configured on specific components
               such as the RollingFileAppender vs. the RoutingAppender. To specify a triggering policy on a 
               RollingFileAppender you would use builder.newComponent().
+            </p>
+            <p>
+              Examples of using the ConfigurationBuilder API are in the sections that follow.
             </p>
           </subsection>
           <a name="ConfigurationFactory"/>
