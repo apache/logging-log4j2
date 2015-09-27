@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.script;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import javax.script.Bindings;
@@ -39,10 +38,12 @@ public class ScriptManager {
     private static final Logger logger = StatusLogger.getLogger();
     private final ScriptEngineManager manager = new ScriptEngineManager();
     private final ConcurrentMap<String, ScriptRunner> scripts = new ConcurrentHashMap<>();
+    private final String languages;
 
     public ScriptManager() {
+        List<ScriptEngineFactory> factories = manager.getEngineFactories();
         if (logger.isDebugEnabled()) {
-            List<ScriptEngineFactory> factories = manager.getEngineFactories();
+            StringBuilder sb = new StringBuilder();
             logger.debug("Installed script engines");
             for (ScriptEngineFactory factory : factories) {
                 String threading = (String) factory.getParameter("THREADING");
@@ -50,26 +51,42 @@ public class ScriptManager {
                     threading = "Not Thread Safe";
                 }
                 StringBuilder names = new StringBuilder();
-                boolean first = true;
                 for (String name : factory.getNames()) {
-                    if (!first) {
+                    if (names.length() > 0) {
                         names.append(", ");
                     }
                     names.append(name);
-                    first = false;
                 }
+                if (sb.length() > 0) {
+                    sb.append(", ");
+                }
+                sb.append(names);
                 boolean compiled = factory.getScriptEngine() instanceof Compilable;
                 logger.debug(factory.getEngineName() + " Version: " + factory.getEngineVersion() +
                     ", Language: " + factory.getLanguageName() + ", Threading: " + threading +
                     ", Compile: " + compiled + ", Names: {" + names.toString() + "}");
             }
+            languages = sb.toString();
+        } else {
+            StringBuilder names = new StringBuilder();
+            for (ScriptEngineFactory factory : factories) {
+                for (String name : factory.getNames()) {
+                    if (names.length() > 0) {
+                        names.append(", ");
+                    }
+                    names.append(name);
+                }
+            }
+            languages = names.toString();
         }
     }
 
     public void addScript(Script script) {
         ScriptEngine engine = manager.getEngineByName(script.getLanguage());
         if (engine == null) {
-            logger.error("No ScriptEngine found for language " + script.getLanguage());
+            logger.error("No ScriptEngine found for language " + script.getLanguage() + ". Available languages are: " +
+                languages);
+            return;
         }
         if (engine.getFactory().getParameter("THREADING") == null) {
             scripts.put(script.getName(), new ThreadLocalScriptRunner(script));
