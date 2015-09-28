@@ -16,11 +16,18 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.apache.commons.compress.compressors.CompressorInputStream;
+import org.apache.commons.compress.compressors.CompressorStreamFactory;
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.After;
 import org.junit.Before;
@@ -29,10 +36,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
-import static org.apache.logging.log4j.hamcrest.Descriptors.that;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasItemInArray;
+import static org.apache.logging.log4j.hamcrest.Descriptors.*;
+import static org.apache.logging.log4j.hamcrest.FileMatchers.*;
+import static org.hamcrest.Matchers.*;
+
 import static org.junit.Assert.*;
 
 /**
@@ -49,17 +56,10 @@ public class RollingAppenderSizeTest {
 
     @Parameterized.Parameters(name = "{0} \u2192 {1}")
     public static Collection<Object[]> data() {
-        return Arrays.asList(
-                new Object[][]{
-                        { "log4j-rolling-gz.xml", ".gz" },
-                        { "log4j-rolling-zip.xml", ".zip" },
-                        // Apache Commons Compress
-                        { "log4j-rolling-bzip2.xml", ".bz2" },
-                        { "log4j-rolling-deflate.xml", ".deflate" },
-                        { "log4j-rolling-pack200.xml", ".pack200" },
-                        { "log4j-rolling-xy.xml", ".xy" },
-                }
-        );
+        return Arrays.asList(new Object[][] { {"log4j-rolling-gz.xml", ".gz"}, {"log4j-rolling-zip.xml", ".zip"},
+                // Apache Commons Compress
+                {"log4j-rolling-bzip2.xml", ".bz2"}, {"log4j-rolling-deflate.xml", ".deflate"},
+                {"log4j-rolling-pack200.xml", ".pack200"}, {"log4j-rolling-xy.xml", ".xy"},});
     }
 
     @Rule
@@ -82,7 +82,7 @@ public class RollingAppenderSizeTest {
 
     @Test
     public void testAppender() throws Exception {
-        for (int i=0; i < 100; ++i) {
+        for (int i = 0; i < 100; ++i) {
             logger.debug("This is test message number " + i);
         }
         final File dir = new File(DIR);
@@ -90,6 +90,30 @@ public class RollingAppenderSizeTest {
         final File[] files = dir.listFiles();
         assertNotNull(files);
         assertThat(files, hasItemInArray(that(hasName(that(endsWith(fileExtension))))));
+
+        DefaultRolloverStrategy.FileExtensions ext = DefaultRolloverStrategy.FileExtensions.lookup(fileExtension);
+        if (ext == null || DefaultRolloverStrategy.FileExtensions.ZIP == ext
+                || DefaultRolloverStrategy.FileExtensions.XY == ext
+                || DefaultRolloverStrategy.FileExtensions.PACK200 == ext) {
+            return; // commons compress cannot deflate zip and xy? TODO test decompressing these formats
+        }
+        for (File file : files) {
+            if (file.getName().endsWith(fileExtension)) {
+                CompressorInputStream in = null;
+                try (FileInputStream fis = new FileInputStream(file)) {
+                    in = new CompressorStreamFactory().createCompressorInputStream(ext.name().toLowerCase(), fis);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    IOUtils.copy(in, baos);
+                    String text = new String(baos.toByteArray(), Charset.defaultCharset());
+                    String[] lines = text.split("[\\r\\n]+");
+                    for (String line : lines) {
+                        assertTrue(line.contains("DEBUG o.a.l.l.c.a.r.RollingAppenderSizeTest [main] This is test message number"));
+                    }
+                } finally {
+                    Closer.close(in);
+                }
+            }
+        }
     }
 
     private static void deleteDir() {
