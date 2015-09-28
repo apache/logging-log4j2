@@ -52,11 +52,11 @@
         <a name="CSVLayouts"/>
         <subsection name="CSV Layouts">
           <p>
-            This layout creates <a href="https://en.wikipedia.org/wiki/Comma-separated_values">Comma Separated Value (CSV)</a> 
+            This layout creates <a href="https://en.wikipedia.org/wiki/Comma-separated_values">Comma Separated Value (CSV)</a>
             records and requires <a href="https://commons.apache.org/proper/commons-csv/">Apache Commons CSV</a> 1.2.
           </p>
           <p>
-            The CSV layout can be used in two ways: First, using <code>CsvParameterLayout</code> to log event parameters 
+            The CSV layout can be used in two ways: First, using <code>CsvParameterLayout</code> to log event parameters
             to create a custom database, usually to a logger and file appender uniquely configured for this purpose. 
             Second, using <code>CsvLogEventLayout</code> to log events to create a database, as an alternative to using a 
             full DBMS or using a JDBC driver that supports the CSV format.
