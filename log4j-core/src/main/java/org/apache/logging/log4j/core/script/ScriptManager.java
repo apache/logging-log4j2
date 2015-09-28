@@ -35,6 +35,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class ScriptManager {
 
+    private static final String KEY_THREADING = "THREADING";
     private static final Logger logger = StatusLogger.getLogger();
     private final ScriptEngineManager manager = new ScriptEngineManager();
     private final ConcurrentMap<String, ScriptRunner> scripts = new ConcurrentHashMap<>();
@@ -46,7 +47,7 @@ public class ScriptManager {
             StringBuilder sb = new StringBuilder();
             logger.debug("Installed script engines");
             for (ScriptEngineFactory factory : factories) {
-                String threading = (String) factory.getParameter("THREADING");
+                String threading = (String) factory.getParameter(KEY_THREADING);
                 if (threading == null) {
                     threading = "Not Thread Safe";
                 }
@@ -88,7 +89,7 @@ public class ScriptManager {
                 languages);
             return;
         }
-        if (engine.getFactory().getParameter("THREADING") == null) {
+        if (engine.getFactory().getParameter(KEY_THREADING) == null) {
             scripts.put(script.getName(), new ThreadLocalScriptRunner(script));
         } else {
             scripts.put(script.getName(), new MainScriptRunner(engine, script));
