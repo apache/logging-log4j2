@@ -63,6 +63,7 @@ public final class ScriptFilter extends AbstractFilter {
         bindings.put("marker", marker);
         bindings.put("message", new SimpleMessage(msg));
         bindings.put("parameters", params);
+        bindings.put("throwable", null);
         bindings.putAll(configuration.getProperties());
         bindings.put("substitutor", configuration.getStrSubstitutor());
         Object object = configuration.getScriptManager().execute(script.getName(), bindings);
@@ -77,6 +78,7 @@ public final class ScriptFilter extends AbstractFilter {
         bindings.put("level", level);
         bindings.put("marker", marker);
         bindings.put("message", msg instanceof String ? new SimpleMessage((String)msg) : new ObjectMessage(msg));
+        bindings.put("parameters", null);
         bindings.put("throwable", t);
         bindings.putAll(configuration.getProperties());
         bindings.put("substitutor", configuration.getStrSubstitutor());
@@ -92,6 +94,7 @@ public final class ScriptFilter extends AbstractFilter {
         bindings.put("level", level);
         bindings.put("marker", marker);
         bindings.put("message", msg);
+        bindings.put("parameters", null);
         bindings.put("throwable", t);
         bindings.putAll(configuration.getProperties());
         bindings.put("substitutor", configuration.getStrSubstitutor());
