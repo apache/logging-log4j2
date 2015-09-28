@@ -20,7 +20,7 @@ public class Script {
     private final String scriptText;
     private final String name;
 
-    public Script(String name, String language, String body) {
+    public Script(final String name, final String language, final String body) {
         this.language = language;
         this.scriptText = body;
         this.name = name == null ? this.toString() : name;
@@ -40,7 +40,7 @@ public class Script {
 
 
     @PluginFactory
-    public static Script createScript(@PluginAttribute("name") String name,
+    public static Script createScript(@PluginAttribute("name") final String name,
                                       @PluginAttribute("language") String language,
                                       @PluginValue("scriptText") final String scriptText) {
         if (language == null) {
