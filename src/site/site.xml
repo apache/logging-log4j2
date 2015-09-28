@@ -72,6 +72,7 @@
         <item name="Configuring Appenders" href="/manual/configuration.html#Appenders"/>
         <item name="Configuring Filters" href="/manual/configuration.html#Filters"/>
         <item name="Property Substitution" href="/manual/configuration.html#PropertySubstitution"/>
+        <item name-"Scripts" href="/manual/configuration.html#Scripts"/>
         <item name="XInclude" href="/manual/configuration.html#XInclude"/>
         <item name="Status Messages" href="/manual/configuration.html#StatusMessages"/>
         <item name="Unit Testing in Maven" href="/manual/configuration.html#UnitTestingInMaven"/>
@@ -155,6 +156,7 @@
         <item name="Map" href="/manual/filters.html#MapFilter"/>
         <item name="Marker" href="/manual/filters.html#MarkerFilter"/>
         <item name="Regex" href="/manual/filters.html#RegexFilter"/>
+        <item name="Script" href="/manual/filters.html#Script"/>
         <item name="Structured Data" href="/manual/filters.html#StructuredDataFilter"/>
         <item name="Thread Context Map" href="/manual/filters.html#ThreadContextMapFilter"/>
         <item name="Threshold" href="/manual/filters.html#ThresholdFilter"/>
