@@ -1663,8 +1663,7 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
              See also:
            </p>
            <ul>
-             <li>The <a href="http://graylog2.org/gelf">GELF home page</a></li>
-             <li>The <a href="http://graylog2.org/resources/gelf/specification">GELF specification</a></li>
+             <li>The <a href="https://www.graylog.org/resources/gelf/">GELF specification</a></li>
            </ul>
         </subsection>
         <a name="LocationInformation"/>
