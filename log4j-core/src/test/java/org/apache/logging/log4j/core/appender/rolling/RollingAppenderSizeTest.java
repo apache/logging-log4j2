@@ -56,10 +56,16 @@ public class RollingAppenderSizeTest {
 
     @Parameterized.Parameters(name = "{0} \u2192 {1}")
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { {"log4j-rolling-gz.xml", ".gz"}, {"log4j-rolling-zip.xml", ".zip"},
+        return Arrays.asList(new Object[][] { //
+                // @formatter:off
+                {"log4j-rolling-gz.xml", ".gz"}, //
+                {"log4j-rolling-zip.xml", ".zip"}, //
                 // Apache Commons Compress
-                {"log4j-rolling-bzip2.xml", ".bz2"}, {"log4j-rolling-deflate.xml", ".deflate"},
-                {"log4j-rolling-pack200.xml", ".pack200"}, {"log4j-rolling-xy.xml", ".xy"},});
+                {"log4j-rolling-bzip2.xml", ".bz2"}, //
+                {"log4j-rolling-deflate.xml", ".deflate"}, //
+                {"log4j-rolling-pack200.xml", ".pack200"}, //
+                {"log4j-rolling-xy.xml", ".xy"},});
+                // @formatter:on
     }
 
     @Rule
@@ -107,7 +113,8 @@ public class RollingAppenderSizeTest {
                     String text = new String(baos.toByteArray(), Charset.defaultCharset());
                     String[] lines = text.split("[\\r\\n]+");
                     for (String line : lines) {
-                        assertTrue(line.contains("DEBUG o.a.l.l.c.a.r.RollingAppenderSizeTest [main] This is test message number"));
+                        assertTrue(line
+                                .contains("DEBUG o.a.l.l.c.a.r.RollingAppenderSizeTest [main] This is test message number"));
                     }
                 } finally {
                     Closer.close(in);
