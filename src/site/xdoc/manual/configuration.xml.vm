@@ -1047,7 +1047,7 @@ rootLogger.appenderRef.stdout.ref = STDOUT
             scripting languages to be used in some of its components. Any language that provides support for the JSR
             223 scripting engine may be used. A list of the languages and bindings for them can be found at the
             <a href="https://java.net/projects/scripting/sources/svn/show/trunk/engines">Scripting Engine</a> web site.
-            However, some of the languages listed there, such as JavaScript, Groovy and Beanshel, directly support the
+            However, some of the languages listed there, such as JavaScript, Groovy and Beanshell, directly support the
             JSR 223 scripting framework and only require that the jars for that language be installed.
           </p>
           <p>
@@ -1056,7 +1056,7 @@ rootLogger.appenderRef.stdout.ref = STDOUT
             The name of the script is used to store the script, along with its ScriptEngine, so it can quickly be
             located each time the script needs to be run. While the name is not required, providing it will help in
             debugging problems when the script is running. The language must be provided and must specify one of
-            the language names that appear in the Configuration log as described in the next section.
+            the language names that appear in the Configuration status log as described in the next section.
           </p>
           <p>
             If the status attribute on the Configuration element is set to DEBUG the list of script engines currently
