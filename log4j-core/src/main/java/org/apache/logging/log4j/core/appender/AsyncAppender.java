@@ -58,6 +58,7 @@ public final class AsyncAppender extends AbstractAppender {
     private final BlockingQueue<Serializable> queue;
     private final int queueSize;
     private final boolean blocking;
+    private final long shutdownTimeout;
     private final Configuration config;
     private final AppenderRef[] appenderRefs;
     private final String errorRef;
@@ -67,11 +68,12 @@ public final class AsyncAppender extends AbstractAppender {
 
     private AsyncAppender(final String name, final Filter filter, final AppenderRef[] appenderRefs,
             final String errorRef, final int queueSize, final boolean blocking, final boolean ignoreExceptions,
-            final Configuration config, final boolean includeLocation) {
+            final long shutdownTimeout, final Configuration config, final boolean includeLocation) {
         super(name, filter, null, ignoreExceptions);
         this.queue = new ArrayBlockingQueue<>(queueSize);
         this.queueSize = queueSize;
         this.blocking = blocking;
+        this.shutdownTimeout = shutdownTimeout;
         this.config = config;
         this.appenderRefs = appenderRefs;
         this.errorRef = errorRef;
@@ -115,7 +117,7 @@ public final class AsyncAppender extends AbstractAppender {
         LOGGER.trace("AsyncAppender stopping. Queue still has {} events.", queue.size());
         thread.shutdown();
         try {
-            thread.join();
+            thread.join(shutdownTimeout);
         } catch (final InterruptedException ex) {
             LOGGER.warn("Interrupted while stopping AsyncAppender {}", getName());
         }
@@ -191,6 +193,8 @@ public final class AsyncAppender extends AbstractAppender {
      * @param appenderRefs The Appenders to reference.
      * @param errorRef An optional Appender to write to if the queue is full or other errors occur.
      * @param blocking True if the Appender should wait when the queue is full. The default is true.
+     * @param shutdownTimeout How many milliseconds the Appender should wait to flush outstanding log events
+     *                        in the queue on shutdown. The default is zero which means to wait forever.
      * @param size The size of the event queue. The default is 128.
      * @param name The name of the Appender.
      * @param includeLocation whether to include location information. The default is false.
@@ -204,6 +208,7 @@ public final class AsyncAppender extends AbstractAppender {
     public static AsyncAppender createAppender(@PluginElement("AppenderRef") final AppenderRef[] appenderRefs,
             @PluginAttribute("errorRef") @PluginAliases("error-ref") final String errorRef,
             @PluginAttribute(value = "blocking", defaultBoolean = true) final boolean blocking,
+            @PluginAttribute(value = "shutdownTimeout", defaultLong = 0L) final long shutdownTimeout,
             @PluginAttribute(value = "bufferSize", defaultInt = DEFAULT_QUEUE_SIZE) final int size,
             @PluginAttribute("name") final String name,
             @PluginAttribute(value = "includeLocation", defaultBoolean = false) final boolean includeLocation,
@@ -217,8 +222,8 @@ public final class AsyncAppender extends AbstractAppender {
             LOGGER.error("No appender references provided to AsyncAppender {}", name);
         }
 
-        return new AsyncAppender(name, filter, appenderRefs, errorRef, size, blocking, ignoreExceptions, config,
-                includeLocation);
+        return new AsyncAppender(name, filter, appenderRefs, errorRef, size, blocking, ignoreExceptions,
+                shutdownTimeout, config, includeLocation);
     }
 
     /**
