@@ -142,13 +142,12 @@ public class ScriptManager {
                     logger.error("Error running script " + script.getName(), ex);
                     return null;
                 }
-            } else {
-                try {
-                    return scriptEngine.eval(script.getScriptText(), bindings);
-                }   catch (ScriptException ex) {
-                    logger.error("Error running script " + script.getName(), ex);
-                    return null;
-                }
+            }
+            try {
+                return scriptEngine.eval(script.getScriptText(), bindings);
+            }   catch (ScriptException ex) {
+                logger.error("Error running script " + script.getName(), ex);
+                return null;
             }
         }
 
