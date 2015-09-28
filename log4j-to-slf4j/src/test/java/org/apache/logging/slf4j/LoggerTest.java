@@ -43,7 +43,7 @@ public class LoggerTest {
     private static final String CONFIG = "target/test-classes/logback-slf4j.xml";
 
     @ClassRule
-    public static final InitialLoggerContext CTX = new InitialLoggerContext(CONFIG);
+    public static final LoggerContextRule CTX = new LoggerContextRule(CONFIG);
 
     private Logger logger;
     private StringListAppender<ILoggingEvent> list;

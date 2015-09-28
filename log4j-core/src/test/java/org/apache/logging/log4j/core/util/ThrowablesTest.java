@@ -22,6 +22,25 @@ import org.junit.Test;
 
 public class ThrowablesTest {
 
+    @Test
+    public void testGetRootCauseNone() throws Exception {
+        final NullPointerException throwable = new NullPointerException();
+        org.junit.Assert.assertEquals(throwable, Throwables.getRootCause(throwable));
+    }
+
+    @Test
+    public void testGetRootCauseDepth1() throws Exception {
+        final NullPointerException throwable = new NullPointerException();
+        org.junit.Assert.assertEquals(throwable, Throwables.getRootCause(new UnsupportedOperationException(throwable)));
+    }
+
+    @Test
+    public void testGetRootCauseDepth2() throws Exception {
+        final NullPointerException throwable = new NullPointerException();
+        org.junit.Assert.assertEquals(throwable,
+                Throwables.getRootCause(new IllegalArgumentException(new UnsupportedOperationException(throwable))));
+    }
+
     @Test(expected = NullPointerException.class)
     public void testRethrowRuntimeException() throws Exception {
         Throwables.rethrow(new NullPointerException());

@@ -19,8 +19,7 @@ package org.apache.logging.log4j.spi;
 import java.util.EnumSet;
 
 /**
- * Standard Logging Levels as an enumeration for use internally. This enum is used as a parameter in
- * any public APIs.
+ * Standard Logging Levels as an enumeration for use internally. This enum is used as a parameter in any public APIs.
  */
 public enum StandardLevel {
 
@@ -64,10 +63,9 @@ public enum StandardLevel {
      */
     ALL(Integer.MAX_VALUE);
 
+    private static final EnumSet<StandardLevel> LEVELSET = EnumSet.allOf(StandardLevel.class);
 
     private final int intLevel;
-
-    private static final EnumSet<StandardLevel> levelSet = EnumSet.allOf(StandardLevel.class);
 
     private StandardLevel(final int val) {
         intLevel = val;
@@ -75,6 +73,7 @@ public enum StandardLevel {
 
     /**
      * Returns the integer value of the Level.
+     * 
      * @return the integer value of the Level.
      */
     public int intLevel() {
@@ -83,12 +82,13 @@ public enum StandardLevel {
 
     /**
      * Method to convert custom Levels into a StandardLevel for conversion to other systems.
+     * 
      * @param intLevel The integer value of the Level.
      * @return The StandardLevel.
      */
     public static StandardLevel getStandardLevel(final int intLevel) {
         StandardLevel level = StandardLevel.OFF;
-        for (final StandardLevel lvl : levelSet) {
+        for (final StandardLevel lvl : LEVELSET) {
             if (lvl.intLevel() > intLevel) {
                 break;
             }

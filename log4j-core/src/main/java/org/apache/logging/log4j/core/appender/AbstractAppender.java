@@ -27,21 +27,45 @@ import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.util.Integers;
 
 /**
- * Abstract base class for Appenders. Although Appenders do not have to extend this class, doing so
- * will simplify their implementation.
+ * Abstract base class for Appenders. Although Appenders do not have to extend this class, doing so will simplify their
+ * implementation.
  */
-public abstract class AbstractAppender extends AbstractFilterable
-    implements Appender {
+public abstract class AbstractAppender extends AbstractFilterable implements Appender {
 
     private static final long serialVersionUID = 1L;
 
+    private final String name;
     private final boolean ignoreExceptions;
-
+    private final Layout<? extends Serializable> layout;
     private ErrorHandler handler = new DefaultErrorHandler(this);
 
-    private final Layout<? extends Serializable> layout;
+    /**
+     * Constructor that defaults to suppressing exceptions.
+     * 
+     * @param name The Appender name.
+     * @param filter The Filter to associate with the Appender.
+     * @param layout The layout to use to format the event.
+     */
+    protected AbstractAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout) {
+        this(name, filter, layout, true);
+    }
 
-    private final String name;
+    /**
+     * Constructor.
+     * 
+     * @param name The Appender name.
+     * @param filter The Filter to associate with the Appender.
+     * @param layout The layout to use to format the event.
+     * @param ignoreExceptions If true, exceptions will be logged and suppressed. If false errors will be logged and
+     *            then passed to the application.
+     */
+    protected AbstractAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
+            final boolean ignoreExceptions) {
+        super(filter);
+        this.name = name;
+        this.layout = layout;
+        this.ignoreExceptions = ignoreExceptions;
+    }
 
     public static int parseInt(final String s, final int defaultValue) {
         try {
@@ -53,33 +77,8 @@ public abstract class AbstractAppender extends AbstractFilterable
     }
 
     /**
-     * Constructor that defaults to suppressing exceptions.
-     * @param name The Appender name.
-     * @param filter The Filter to associate with the Appender.
-     * @param layout The layout to use to format the event.
-     */
-    protected AbstractAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout) {
-        this(name, filter, layout, true);
-    }
-
-    /**
-     * Constructor.
-     * @param name The Appender name.
-     * @param filter The Filter to associate with the Appender.
-     * @param layout The layout to use to format the event.
-     * @param ignoreExceptions If true, exceptions will be logged and suppressed. If false errors will be
-     * logged and then passed to the application.
-     */
-    protected AbstractAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
-                               final boolean ignoreExceptions) {
-        super(filter);
-        this.name = name;
-        this.layout = layout;
-        this.ignoreExceptions = ignoreExceptions;
-    }
-
-    /**
      * Handle an error with a message using the {@link ErrorHandler} configured for this Appender.
+     * 
      * @param msg The message.
      */
     public void error(final String msg) {
@@ -89,6 +88,7 @@ public abstract class AbstractAppender extends AbstractFilterable
     /**
      * Handle an error with a message, exception, and a logging event, using the {@link ErrorHandler} configured for
      * this Appender.
+     * 
      * @param msg The message.
      * @param event The LogEvent.
      * @param t The Throwable.
@@ -99,6 +99,7 @@ public abstract class AbstractAppender extends AbstractFilterable
 
     /**
      * Handle an error with a message and an exception using the {@link ErrorHandler} configured for this Appender.
+     * 
      * @param msg The message.
      * @param t The Throwable.
      */
@@ -108,6 +109,7 @@ public abstract class AbstractAppender extends AbstractFilterable
 
     /**
      * Returns the ErrorHandler, if any.
+     * 
      * @return The ErrorHandler.
      */
     @Override
@@ -117,6 +119,7 @@ public abstract class AbstractAppender extends AbstractFilterable
 
     /**
      * Returns the Layout for the appender.
+     * 
      * @return The Layout used to format the event.
      */
     @Override
@@ -126,6 +129,7 @@ public abstract class AbstractAppender extends AbstractFilterable
 
     /**
      * Returns the name of the Appender.
+     * 
      * @return The name of the Appender.
      */
     @Override
@@ -146,6 +150,7 @@ public abstract class AbstractAppender extends AbstractFilterable
 
     /**
      * The handler must be set before the appender is started.
+     * 
      * @param handler The ErrorHandler to use.
      */
     @Override

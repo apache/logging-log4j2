@@ -20,17 +20,16 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- *
- *
- *
+ * Set-related convenience methods.
  */
 public final class SetUtils {
-    private SetUtils() {}
+    private SetUtils() {
+    }
 
     /**
      * Extracts the Strings from a Set that start with a given prefix.
      *
-     * @param set    a Set of Strings (assumed to all be non-{@code null})
+     * @param set a Set of Strings (assumed to all be non-{@code null})
      * @param prefix the prefix to look for in the string set
      * @return an array of the matching strings from the given set
      */

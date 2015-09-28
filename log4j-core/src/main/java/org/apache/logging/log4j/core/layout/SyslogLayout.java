@@ -45,6 +45,8 @@ public final class SyslogLayout extends AbstractStringLayout {
 
     private static final long serialVersionUID = 1L;
 
+    private static ThreadLocal<StringBuilder> strBuilder = newStringBuilderThreadLocal();
+
     /**
      * Match newlines in a platform-independent manner.
      */
@@ -78,7 +80,7 @@ public final class SyslogLayout extends AbstractStringLayout {
      */
     @Override
     public String toSerializable(final LogEvent event) {
-        final StringBuilder buf = new StringBuilder();
+        final StringBuilder buf = prepareStringBuilder(strBuilder);
 
         buf.append('<');
         buf.append(Priority.getPriority(facility, event.getLevel()));

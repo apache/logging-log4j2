@@ -21,15 +21,15 @@ import java.util.Map.Entry;
 /**
  * <em>Consider this class private.</em>
  */
-public class StringBuilders {
+public final class StringBuilders {
+    private StringBuilders() {
+    }
 
     /**
      * Appends in the following format: double quoted value.
      * 
-     * @param sb
-     *        a string builder
-     * @param value
-     *        a value
+     * @param sb a string builder
+     * @param value a value
      * @return {@code "value"}
      */
     public static StringBuilder appendDqValue(final StringBuilder sb, final Object value) {
@@ -39,10 +39,8 @@ public class StringBuilders {
     /**
      * Appends in the following format: key=double quoted value.
      * 
-     * @param sb
-     *        a string builder
-     * @param entry
-     *        a map entry
+     * @param sb a string builder
+     * @param entry a map entry
      * @return {@code key="value"}
      */
     public static StringBuilder appendKeyDqValue(final StringBuilder sb, final Entry<String, String> entry) {
@@ -52,12 +50,9 @@ public class StringBuilders {
     /**
      * Appends in the following format: key=double quoted value.
      * 
-     * @param sb
-     *        a string builder
-     * @param key
-     *        a key
-     * @param value
-     *        a value
+     * @param sb a string builder
+     * @param key a key
+     * @param value a value
      * @return {@code key="value"}
      */
     public static StringBuilder appendKeyDqValue(final StringBuilder sb, final String key, final Object value) {

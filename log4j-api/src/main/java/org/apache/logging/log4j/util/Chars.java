@@ -19,14 +19,29 @@ package org.apache.logging.log4j.util;
 /**
  * <em>Consider this class private.</em>
  */
-public class Chars {
+public final class Chars {
 
+    /** Carriage Return. */
     public static final char CR = '\r';
+
+    /** Double Quote. */
     public static final char DQUOTE = '\"';
+
+    /** Equals '='. */
     public static final char EQ = '=';
+
+    /** Line Feed. */
     public static final char LF = '\n';
+
+    /** Single Quote [']. */
     public static final char QUOTE = '\'';
+
+    /** Space. */
     public static final char SPACE = ' ';
+
+    /** Tab. */
     public static final char TAB = '\t';
 
+    private Chars() {
+    }
 }

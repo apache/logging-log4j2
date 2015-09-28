@@ -22,7 +22,7 @@ import java.util.Objects;
 /**
  * Creates the appropriate {@link NanoClock} instance for the current configuration.
  */
-public class NanoClockFactory {
+public final class NanoClockFactory {
 
     /**
      * Enum over the different kinds of nano clocks this factory can create.
@@ -45,13 +45,15 @@ public class NanoClockFactory {
             public NanoClock createNanoClock() {
                 return new SystemNanoClock();
             }
-        },
-        ;
+        };
         
         public abstract NanoClock createNanoClock();
     }
     
     private static volatile Mode mode = Mode.Dummy;
+    
+    private NanoClockFactory() {
+    }
     
     /**
      * Returns a new {@code NanoClock} determined by the mode of this factory.

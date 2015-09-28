@@ -18,12 +18,9 @@ package org.apache.logging.log4j.nosql.appender.mongodb;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
-import com.mongodb.DB;
-import com.mongodb.MongoClient;
-import com.mongodb.ServerAddress;
-import com.mongodb.WriteConcern;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -33,18 +30,26 @@ import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.nosql.appender.NoSqlProvider;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
+
+import com.mongodb.DB;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
+import com.mongodb.WriteConcern;
 
 /**
  * The MongoDB implementation of {@link NoSqlProvider}.
  */
 @Plugin(name = "MongoDb", category = "Core", printObject = true)
 public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
+    
+    private static final WriteConcern DEFAULT_WRITE_CONCERN = WriteConcern.ACKNOWLEDGED;
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final String collectionName;
     private final DB database;
     private final String description;
-
     private final WriteConcern writeConcern;
 
     private MongoDbProvider(final DB database, final WriteConcern writeConcern, final String collectionName,
@@ -79,7 +84,7 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
      *               {@code factoryClassName&factoryMethodName!=null}.
      * @param port The port the MongoDB server is listening on, defaults to the default MongoDB port and mutually
      *             exclusive with {@code factoryClassName&factoryMethodName!=null}.
-     * @param username The username to authenticate against the MongoDB server with.
+     * @param userName The username to authenticate against the MongoDB server with.
      * @param password The password to authenticate against the MongoDB server with.
      * @param factoryClassName A fully qualified class name containing a static factory method capable of returning a
      *                         {@link DB} or a {@link MongoClient}.
@@ -95,14 +100,13 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
             @PluginAttribute("databaseName") final String databaseName,
             @PluginAttribute("server") final String server,
             @PluginAttribute("port") final String port,
-            @PluginAttribute("username") final String username,
+            @PluginAttribute("userName") final String userName,
             @PluginAttribute(value = "password", sensitive = true) final String password,
             @PluginAttribute("factoryClassName") final String factoryClassName,
             @PluginAttribute("factoryMethodName") final String factoryMethodName) {
         DB database;
         String description;
-        if (factoryClassName != null && factoryClassName.length() > 0 &&
-                factoryMethodName != null && factoryMethodName.length() > 0) {
+        if (Strings.isNotEmpty(factoryClassName) && Strings.isNotEmpty(factoryMethodName)) {
             try {
                 final Class<?> factoryClass = Loader.loadClass(factoryClassName);
                 final Method method = factoryClass.getMethod(factoryMethodName);
@@ -111,7 +115,7 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
                 if (object instanceof DB) {
                     database = (DB) object;
                 } else if (object instanceof MongoClient) {
-                    if (databaseName != null && databaseName.length() > 0) {
+                    if (Strings.isNotEmpty(databaseName)) {
                         database = ((MongoClient) object).getDB(databaseName);
                     } else {
                         LOGGER.error("The factory method [{}.{}()] returned a MongoClient so the database name is "
@@ -150,24 +154,31 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
                         e);
                 return null;
             }
-        } else if (databaseName != null && databaseName.length() > 0) {
+        } else if (Strings.isNotEmpty(databaseName)) {
+            List<MongoCredential> credentials = new ArrayList<>();
             description = "database=" + databaseName;
+            if (Strings.isNotEmpty(userName) && Strings.isNotEmpty(password)) {
+                description += ", username=" + userName + ", passwordHash="
+                        + NameUtil.md5(password + MongoDbProvider.class.getName());
+                credentials.add(MongoCredential.createCredential(userName, databaseName, password.toCharArray()));
+            }
             try {
-                if (server != null && server.length() > 0) {
+                if (Strings.isNotEmpty(server)) {
                     final int portInt = AbstractAppender.parseInt(port, 0);
                     description += ", server=" + server;
                     if (portInt > 0) {
                         description += ", port=" + portInt;
-                        database = new MongoClient(server, portInt).getDB(databaseName);
+                        database = new MongoClient(new ServerAddress(server, portInt), credentials).getDB(databaseName);
                     } else {
-                        database = new MongoClient(server).getDB(databaseName);
+                        database = new MongoClient(new ServerAddress(server), credentials).getDB(databaseName);
                     }
                 } else {
-                    database = new MongoClient().getDB(databaseName);
+                    database = new MongoClient(new ServerAddress(), credentials).getDB(databaseName);
                 }
             } catch (final Exception e) {
-                LOGGER.error("Failed to obtain a database instance from the MongoClient at server [{}] and "
-                        + "port [{}].", server, port);
+                LOGGER.error(
+                        "Failed to obtain a database instance from the MongoClient at server [{}] and " + "port [{}].",
+                        server, port);
                 return null;
             }
         } else {
@@ -175,24 +186,25 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
             return null;
         }
 
-        if (!database.isAuthenticated()) {
-            if (username != null && username.length() > 0 && password != null && password.length() > 0) {
-                description += ", username=" + username + ", passwordHash="
-                        + NameUtil.md5(password + MongoDbProvider.class.getName());
-                MongoDbConnection.authenticate(database, username, password);
-            } else {
-                try {
-                    database.getCollectionNames(); // Check if the database actually requires authentication
-                } catch (final Exception e) {
-                    LOGGER.error("The database is not already authenticated so you must supply a username and password for the MongoDB provider.", e);
-                    return null;
-                }
-            }
+        try {
+            database.getCollectionNames(); // Check if the database actually requires authentication
+        } catch (final Exception e) {
+            LOGGER.error(
+                    "The database is not up, or you are not authenticated, try supplying a username and password to the MongoDB provider.",
+                    e);
+            return null;
         }
 
+        WriteConcern writeConcern = toWriteConcern(writeConcernConstant, writeConcernConstantClassName);
+
+        return new MongoDbProvider(database, writeConcern, collectionName, description);
+    }
+
+    private static WriteConcern toWriteConcern(final String writeConcernConstant,
+            final String writeConcernConstantClassName) {
         WriteConcern writeConcern;
-        if (writeConcernConstant != null && writeConcernConstant.length() > 0) {
-            if (writeConcernConstantClassName != null && writeConcernConstantClassName.length() > 0) {
+        if (Strings.isNotEmpty(writeConcernConstant)) {
+            if (Strings.isNotEmpty(writeConcernConstantClassName)) {
                 try {
                     final Class<?> writeConcernConstantClass = Loader.loadClass(writeConcernConstantClassName);
                     final Field field = writeConcernConstantClass.getField(writeConcernConstant);
@@ -200,19 +212,18 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
                 } catch (final Exception e) {
                     LOGGER.error("Write concern constant [{}.{}] not found, using default.",
                             writeConcernConstantClassName, writeConcernConstant);
-                    writeConcern = WriteConcern.ACKNOWLEDGED;
+                    writeConcern = DEFAULT_WRITE_CONCERN;
                 }
             } else {
                 writeConcern = WriteConcern.valueOf(writeConcernConstant);
                 if (writeConcern == null) {
                     LOGGER.warn("Write concern constant [{}] not found, using default.", writeConcernConstant);
-                    writeConcern = WriteConcern.ACKNOWLEDGED;
+                    writeConcern = DEFAULT_WRITE_CONCERN;
                 }
             }
         } else {
-            writeConcern = WriteConcern.ACKNOWLEDGED;
+            writeConcern = DEFAULT_WRITE_CONCERN;
         }
-
-        return new MongoDbProvider(database, writeConcern, collectionName, description);
+        return writeConcern;
     }
 }

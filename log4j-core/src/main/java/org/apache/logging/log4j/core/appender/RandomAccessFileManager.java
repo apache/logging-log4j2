@@ -80,8 +80,8 @@ public class RandomAccessFileManager extends OutputStreamManager {
         return isEndOfBatch.get();
     }
 
-    public void setEndOfBatch(final boolean isEndOfBatch) {
-        this.isEndOfBatch.set(Boolean.valueOf(isEndOfBatch));
+    public void setEndOfBatch(final boolean endOfBatch) {
+        this.isEndOfBatch.set(Boolean.valueOf(endOfBatch));
     }
 
     @Override

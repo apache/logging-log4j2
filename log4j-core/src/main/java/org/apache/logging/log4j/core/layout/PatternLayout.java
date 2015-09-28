@@ -81,22 +81,21 @@ public final class PatternLayout extends AbstractStringLayout {
     /** Key to identify pattern converters. */
     public static final String KEY = "Converter";
 
+    private static ThreadLocal<StringBuilder> strBuilder = newStringBuilderThreadLocal();
+
     /**
      * Initial converter for pattern.
      */
     private final PatternFormatter[] formatters;
 
-    private static ThreadLocal<StringBuilder> strBuilder = new ThreadLocal<StringBuilder>() {
-        @Override
-        protected StringBuilder initialValue() {
-            return new StringBuilder(1024);
-        }        
-    };
-
     /**
      * Conversion pattern.
      */
     private final String conversionPattern;
+
+    private final PatternSelector patternSelector;
+
+    private final Serializer serializer;
 
 
     /**
@@ -116,6 +115,7 @@ public final class PatternLayout extends AbstractStringLayout {
      * @param config The Configuration.
      * @param replace The regular expression to match.
      * @param pattern conversion pattern.
+     * @param patternSelector The PatternSelector.
      * @param charset The character set.
      * @param alwaysWriteExceptions Whether or not exceptions should always be handled in this pattern (if {@code true},
      *                         exceptions will be written even if the pattern does not specify so).
@@ -124,21 +124,29 @@ public final class PatternLayout extends AbstractStringLayout {
      * @param header
      */
     private PatternLayout(final Configuration config, final RegexReplacement replace, final String pattern,
-                          final Charset charset, final boolean alwaysWriteExceptions, final boolean noConsoleNoAnsi,
+                          final PatternSelector patternSelector, final Charset charset,
+                          final boolean alwaysWriteExceptions, final boolean noConsoleNoAnsi,
                           final String header, final String footer) {
         super(charset, toBytes(header, charset), toBytes(footer, charset));
         this.replace = replace;
         this.conversionPattern = pattern;
+        this.patternSelector = patternSelector;
         this.config = config;
         this.alwaysWriteExceptions = alwaysWriteExceptions;
         this.noConsoleNoAnsi = noConsoleNoAnsi;
-        final PatternParser parser = createPatternParser(config);
-        try {
-            List<PatternFormatter> list = parser.parse(pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern, 
-                    this.alwaysWriteExceptions, this.noConsoleNoAnsi);
-            this.formatters = list.toArray(new PatternFormatter[0]);
-        } catch (RuntimeException ex) {
-            throw new IllegalArgumentException("Cannot parse pattern '" + pattern + "'", ex);
+        if (patternSelector == null) {
+            serializer = new PatternSerializer();
+            final PatternParser parser = createPatternParser(config);
+            try {
+                List<PatternFormatter> list = parser.parse(pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern,
+                        this.alwaysWriteExceptions, this.noConsoleNoAnsi);
+                this.formatters = list.toArray(new PatternFormatter[0]);
+            } catch (RuntimeException ex) {
+                throw new IllegalArgumentException("Cannot parse pattern '" + pattern + "'", ex);
+            }
+        } else {
+            this.formatters = null;
+            serializer = new PatternSelectorSerializer();
         }
     }
 
@@ -191,27 +199,16 @@ public final class PatternLayout extends AbstractStringLayout {
     /**
      * Formats a logging event to a writer.
      *
-     *
      * @param event logging event to be formatted.
      * @return The event formatted as a String.
      */
     @Override
     public String toSerializable(final LogEvent event) {
-        final StringBuilder buf = strBuilder.get();
-        buf.setLength(0);
-        final int len = formatters.length;
-        for (int i = 0; i < len; i++) {
-            formatters[i].format(event, buf);
-        }
-        String str = buf.toString();
-        if (replace != null) {
-            str = replace.format(str);
-        }
-        return str;
+        return serializer.toSerializable(event);
     }
 
     /**
-     * Create a PatternParser.
+     * Creates a PatternParser.
      * @param config The Configuration.
      * @return The PatternParser.
      */
@@ -230,11 +227,11 @@ public final class PatternLayout extends AbstractStringLayout {
 
     @Override
     public String toString() {
-        return conversionPattern;
+        return patternSelector == null ? conversionPattern : patternSelector.toString();
     }
 
     /**
-     * Create a pattern layout.
+     * Creates a pattern layout.
      *
      * @param pattern
      *        The pattern. If not specified, defaults to DEFAULT_CONVERSION_PATTERN.
@@ -257,6 +254,7 @@ public final class PatternLayout extends AbstractStringLayout {
     @PluginFactory
     public static PatternLayout createLayout(
             @PluginAttribute(value = "pattern", defaultString = DEFAULT_CONVERSION_PATTERN) final String pattern,
+            @PluginElement("PatternSelector") final PatternSelector patternSelector,
             @PluginConfiguration final Configuration config,
             @PluginElement("Replace") final RegexReplacement replace,
             @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charset,
@@ -266,6 +264,7 @@ public final class PatternLayout extends AbstractStringLayout {
             @PluginAttribute("footer") final String footer) {
         return newBuilder()
             .withPattern(pattern)
+            .withPatternSelector(patternSelector)
             .withConfiguration(config)
             .withRegexReplacement(replace)
             .withCharset(charset)
@@ -274,6 +273,47 @@ public final class PatternLayout extends AbstractStringLayout {
             .withHeader(header)
             .withFooter(footer)
             .build();
+    }
+
+
+    private interface Serializer {
+
+        String toSerializable(final LogEvent event);
+    }
+
+    private class PatternSerializer implements Serializer {
+        @Override
+        public String toSerializable(final LogEvent event) {
+            final StringBuilder buf = strBuilder.get();
+            buf.setLength(0);
+            final int len = formatters.length;
+            for (int i = 0; i < len; i++) {
+                formatters[i].format(event, buf);
+            }
+            String str = buf.toString();
+            if (replace != null) {
+                str = replace.format(str);
+            }
+            return str;
+        }
+    }
+
+    private class PatternSelectorSerializer implements Serializer {
+        @Override
+        public String toSerializable(final LogEvent event) {
+            final StringBuilder buf = strBuilder.get();
+            buf.setLength(0);
+            PatternFormatter[] formatters = patternSelector.getFormatters(event);
+            final int len = formatters.length;
+            for (int i = 0; i < len; i++) {
+                formatters[i].format(event, buf);
+            }
+            String str = buf.toString();
+            if (replace != null) {
+                str = replace.format(str);
+            }
+            return str;
+        }
     }
 
     /**
@@ -307,6 +347,9 @@ public final class PatternLayout extends AbstractStringLayout {
         @PluginBuilderAttribute
         private String pattern = PatternLayout.DEFAULT_CONVERSION_PATTERN;
 
+        @PluginElement("PatternSelector")
+        private PatternSelector patternSelector = null;
+
         @PluginConfiguration
         private Configuration configuration = null;
 
@@ -336,6 +379,11 @@ public final class PatternLayout extends AbstractStringLayout {
 
         public Builder withPattern(final String pattern) {
             this.pattern = pattern;
+            return this;
+        }
+
+        public Builder withPatternSelector(final PatternSelector patternSelector) {
+            this.patternSelector = patternSelector;
             return this;
         }
 
@@ -381,8 +429,8 @@ public final class PatternLayout extends AbstractStringLayout {
             if (configuration == null) {
                 configuration = new DefaultConfiguration();
             }
-            return new PatternLayout(configuration, regexReplacement, pattern, charset, alwaysWriteExceptions,
-                noConsoleNoAnsi, header, footer);
+            return new PatternLayout(configuration, regexReplacement, pattern, patternSelector, charset,
+                alwaysWriteExceptions, noConsoleNoAnsi, header, footer);
         }
     }
 }

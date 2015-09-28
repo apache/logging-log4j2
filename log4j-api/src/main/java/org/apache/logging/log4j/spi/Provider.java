@@ -28,7 +28,6 @@ import org.apache.logging.log4j.status.StatusLogger;
  * not be used by providers.
  */
 public class Provider {
-    private static final Integer DEFAULT_PRIORITY = Integer.valueOf(-1);
     /**
      * Property name to set for a Log4j 2 provider to specify the priority of this implementation.
      */
@@ -42,6 +41,7 @@ public class Provider {
      */
     public static final String LOGGER_CONTEXT_FACTORY = "LoggerContextFactory";
 
+    private static final Integer DEFAULT_PRIORITY = Integer.valueOf(-1);
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final Integer priority;
@@ -99,8 +99,7 @@ public class Provider {
     }
 
     /**
-     * Gets the class name of the {@link org.apache.logging.log4j.spi.ThreadContextMap} implementation of this
-     * Provider.
+     * Gets the class name of the {@link org.apache.logging.log4j.spi.ThreadContextMap} implementation of this Provider.
      *
      * @return the class name of a ThreadContextMap implementation
      */

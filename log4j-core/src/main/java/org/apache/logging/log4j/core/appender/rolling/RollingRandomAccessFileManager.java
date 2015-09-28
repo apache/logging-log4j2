@@ -29,13 +29,12 @@ import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.util.NullOutputStream;
 
 /**
- * Extends RollingFileManager but instead of using a buffered output stream,
- * this class uses a {@code ByteBuffer} and a {@code RandomAccessFile} to do the
- * I/O.
+ * Extends RollingFileManager but instead of using a buffered output stream, this class uses a {@code ByteBuffer} and a
+ * {@code RandomAccessFile} to do the I/O.
  */
 public class RollingRandomAccessFileManager extends RollingFileManager {
     /**
-     * The default buffer size
+     * The default buffer size.
      */
     public static final int DEFAULT_BUFFER_SIZE = 256 * 1024;
 
@@ -46,10 +45,9 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
     private final ByteBuffer buffer;
     private final ThreadLocal<Boolean> isEndOfBatch = new ThreadLocal<>();
 
-    public RollingRandomAccessFileManager(final RandomAccessFile raf, final String fileName,
-            final String pattern, final OutputStream os, final boolean append,
-            final boolean immediateFlush, final int bufferSize, final long size, final long time,
-            final TriggeringPolicy policy, final RolloverStrategy strategy,
+    public RollingRandomAccessFileManager(final RandomAccessFile raf, final String fileName, final String pattern,
+            final OutputStream os, final boolean append, final boolean immediateFlush, final int bufferSize,
+            final long size, final long time, final TriggeringPolicy policy, final RolloverStrategy strategy,
             final String advertiseURI, final Layout<? extends Serializable> layout, final boolean writeHeader) {
         super(fileName, pattern, os, append, size, time, policy, strategy, advertiseURI, layout, bufferSize,
                 writeHeader);
@@ -80,10 +78,10 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
     }
 
     public static RollingRandomAccessFileManager getRollingRandomAccessFileManager(final String fileName,
-            final String filePattern, final boolean isAppend, final boolean immediateFlush, final int bufferSize, 
-            final TriggeringPolicy policy, final RolloverStrategy strategy, final String advertiseURI, 
+            final String filePattern, final boolean isAppend, final boolean immediateFlush, final int bufferSize,
+            final TriggeringPolicy policy, final RolloverStrategy strategy, final String advertiseURI,
             final Layout<? extends Serializable> layout) {
-        return (RollingRandomAccessFileManager) getManager(fileName, new FactoryData(filePattern, isAppend, 
+        return (RollingRandomAccessFileManager) getManager(fileName, new FactoryData(filePattern, isAppend,
                 immediateFlush, bufferSize, policy, strategy, advertiseURI, layout), FACTORY);
     }
 
@@ -91,8 +89,8 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
         return isEndOfBatch.get();
     }
 
-    public void setEndOfBatch(final boolean isEndOfBatch) {
-        this.isEndOfBatch.set(Boolean.valueOf(isEndOfBatch));
+    public void setEndOfBatch(final boolean endOfBatch) {
+        this.isEndOfBatch.set(Boolean.valueOf(endOfBatch));
     }
 
     @Override
@@ -142,13 +140,13 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
         try {
             randomAccessFile.close();
         } catch (final IOException ex) {
-            LOGGER.error("Unable to close RandomAccessFile " + getName() + ". "
-                    + ex);
+            LOGGER.error("Unable to close RandomAccessFile " + getName() + ". " + ex);
         }
     }
-    
+
     /**
      * Returns the buffer capacity.
+     * 
      * @return the buffer size
      */
     @Override
@@ -159,7 +157,8 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
     /**
      * Factory to create a RollingRandomAccessFileManager.
      */
-    private static class RollingRandomAccessFileManagerFactory implements ManagerFactory<RollingRandomAccessFileManager, FactoryData> {
+    private static class RollingRandomAccessFileManagerFactory implements
+            ManagerFactory<RollingRandomAccessFileManager, FactoryData> {
 
         /**
          * Create the RollingRandomAccessFileManager.

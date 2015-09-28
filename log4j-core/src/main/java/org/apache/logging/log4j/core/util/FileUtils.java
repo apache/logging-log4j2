@@ -21,11 +21,9 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -35,20 +33,18 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 public final class FileUtils {
 
-    /** Constant for the file URL protocol.*/
+    /** Constant for the file URL protocol. */
     private static final String PROTOCOL_FILE = "file";
 
     private static final String JBOSS_FILE = "vfsfile";
 
     private static final Logger LOGGER = StatusLogger.getLogger();
-    private static final Pattern WINDOWS_DIRECTORY_SEPARATOR = Pattern.compile("\\\\+");
 
     private FileUtils() {
     }
 
-      /**
-     * Tries to convert the specified URI to a file object. If this fails,
-     * <b>null</b> is returned.
+    /**
+     * Tries to convert the specified URI to a file object. If this fails, <b>null</b> is returned.
      *
      * @param uri the URI
      * @return the resulting file object
@@ -99,17 +95,18 @@ public final class FileUtils {
 
     /**
      * Asserts that the given directory exists and creates it if necessary.
+     * 
      * @param dir the directory that shall exist
      * @param createDirectoryIfNotExisting specifies if the directory shall be created if it does not exist.
      * @throws java.io.IOException thrown if the directory could not be created.
      */
-    public static void mkdir(final File dir, final boolean createDirectoryIfNotExisting ) throws IOException {
+    public static void mkdir(final File dir, final boolean createDirectoryIfNotExisting) throws IOException {
         // commons io FileUtils.forceMkdir would be useful here, we just want to omit this dependency
         if (!dir.exists()) {
-            if(!createDirectoryIfNotExisting) {
+            if (!createDirectoryIfNotExisting) {
                 throw new IOException("The directory " + dir.getAbsolutePath() + " does not exist.");
             }
-            if(!dir.mkdirs()) {
+            if (!dir.mkdirs()) {
                 throw new IOException("Could not create directory " + dir.getAbsolutePath());
             }
         }

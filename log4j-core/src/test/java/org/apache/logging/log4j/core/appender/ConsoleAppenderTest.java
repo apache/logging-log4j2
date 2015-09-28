@@ -98,7 +98,7 @@ public class ConsoleAppenderTest {
 
             mocks.replayAll();
             systemSetter.systemSet(psMock);
-            final Layout<String> layout = PatternLayout.createLayout(null, null, null, null, false, false, null, null);
+            final Layout<String> layout = PatternLayout.createLayout(null, null, null, null, null, false, false, null, null);
             final ConsoleAppender app = ConsoleAppender.createAppender(layout, null, targetName, "Console", "false",
                     "false");
             app.start();

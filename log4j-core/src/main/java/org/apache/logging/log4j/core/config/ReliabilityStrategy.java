@@ -32,6 +32,7 @@ public interface ReliabilityStrategy {
     /**
      * Logs an event.
      *
+     * @param reconfigured supplies the next LoggerConfig if the strategy's LoggerConfig is no longer active
      * @param loggerName The name of the Logger.
      * @param fqcn The fully qualified class name of the caller.
      * @param marker A Marker or null if none is present.
@@ -39,20 +40,22 @@ public interface ReliabilityStrategy {
      * @param data The Message.
      * @param t A Throwable or null.
      */
-    void log(Supplier<LoggerConfig> reconfigured, String loggerName, String fqcn, Marker marker,
-            Level level, Message data, Throwable t);
+    void log(Supplier<LoggerConfig> reconfigured, String loggerName, String fqcn, Marker marker, Level level,
+            Message data, Throwable t);
 
     /**
      * Logs an event.
      *
+     * @param reconfigured supplies the next LoggerConfig if the strategy's LoggerConfig is no longer active
      * @param event The log event.
      */
     void log(Supplier<LoggerConfig> reconfigured, LogEvent event);
 
     /**
      * For internal use by the ReliabilityStrategy; returns the LoggerConfig to use.
-     * @param next
-     * @return
+     * 
+     * @param next supplies the next LoggerConfig if the strategy's LoggerConfig is no longer active
+     * @return the currently active LoggerConfig
      */
     LoggerConfig getActiveLoggerConfig(Supplier<LoggerConfig> next);
 
@@ -60,7 +63,7 @@ public interface ReliabilityStrategy {
      * Called after a log event was logged.
      */
     void afterLogEvent();
-    
+
     /**
      * Called before all appenders are stopped.
      */
@@ -69,7 +72,7 @@ public interface ReliabilityStrategy {
     /**
      * Called before the configuration is stopped.
      * 
-     * @param configuration
+     * @param configuration the configuration that will be stopped
      */
     void beforeStopConfiguration(Configuration configuration);
 

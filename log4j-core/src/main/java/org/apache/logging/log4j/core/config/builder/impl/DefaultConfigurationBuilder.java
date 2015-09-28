@@ -21,6 +21,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.AppenderRefComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.Component;
@@ -109,7 +110,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     @Override
     public ConfigurationBuilder<T> add(final RootLoggerComponentBuilder builder) {
         for (final Component c : loggers.getComponents()) {
-            if (c.getPluginType().equals("root")) {
+            if (c.getPluginType().equals(LoggerConfig.ROOT)) {
                 throw new ConfigurationException("Root Logger was previously defined");
             }
         }

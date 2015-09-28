@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Order;
 import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.AppenderRefComponentBuilder;
@@ -39,6 +40,7 @@ import java.util.Properties;
 
 /**
  * Creates a PropertiesConfiguration from a properties file.
+ * 
  * @since 2.4
  */
 @Plugin(name = "PropertiesConfigurationFactory", category = ConfigurationFactory.CATEGORY)
@@ -123,8 +125,8 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
             String[] appenderNames = appenderProp.split(",");
             for (String appenderName : appenderNames) {
                 String name = appenderName.trim();
-                builder.add(
-                        createAppender(builder, name, PropertiesUtil.extractSubset(properties, "appender." + name)));
+                builder.add(createAppender(builder, name, PropertiesUtil.extractSubset(properties, "appender." +
+                        name)));
             }
         }
         String loggerProp = properties.getProperty("loggers");
@@ -132,9 +134,9 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
             String[] loggerNames = loggerProp.split(",");
             for (String loggerName : loggerNames) {
                 String name = loggerName.trim();
-                if (!name.equals("root")) {
-                    builder.add(
-                            createLogger(builder, name, PropertiesUtil.extractSubset(properties, "logger." + name)));
+                if (!name.equals(LoggerConfig.ROOT)) {
+                    builder.add(createLogger(builder, name, PropertiesUtil.extractSubset(properties, "logger." +
+                            name)));
                 }
             }
         }
@@ -147,7 +149,8 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
         return builder.build();
     }
 
-    private AppenderComponentBuilder createAppender(ConfigurationBuilder<PropertiesConfiguration> builder, String key, Properties properties) {
+    private AppenderComponentBuilder createAppender(ConfigurationBuilder<PropertiesConfiguration> builder, String key,
+            Properties properties) {
         String name = properties.getProperty(CONFIG_NAME);
         if (Strings.isEmpty(name)) {
             throw new ConfigurationException("No name attribute provided for Appender " + key);
@@ -178,7 +181,8 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
         return appenderBuilder;
     }
 
-    private FilterComponentBuilder createFilter(ConfigurationBuilder<PropertiesConfiguration> builder, String key, Properties properties) {
+    private FilterComponentBuilder createFilter(ConfigurationBuilder<PropertiesConfiguration> builder, String key,
+            Properties properties) {
         String type = properties.getProperty(CONFIG_TYPE);
         if (Strings.isEmpty(type)) {
             throw new ConfigurationException("No type attribute provided for Appender " + key);
@@ -197,7 +201,8 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
         return filterBuilder;
     }
 
-    private AppenderRefComponentBuilder createAppenderRef(ConfigurationBuilder<PropertiesConfiguration> builder, String key, Properties properties) {
+    private AppenderRefComponentBuilder createAppenderRef(ConfigurationBuilder<PropertiesConfiguration> builder,
+            String key, Properties properties) {
         String ref = properties.getProperty("ref");
         if (Strings.isEmpty(ref)) {
             throw new ConfigurationException("No ref attribute provided for AppenderRef " + key);
@@ -221,7 +226,8 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
         return appenderRefBuilder;
     }
 
-    private LoggerComponentBuilder createLogger(ConfigurationBuilder<PropertiesConfiguration> builder, String key, Properties properties) {
+    private LoggerComponentBuilder createLogger(ConfigurationBuilder<PropertiesConfiguration> builder, String key,
+            Properties properties) {
         String name = properties.getProperty(CONFIG_NAME);
         if (Strings.isEmpty(name)) {
             throw new ConfigurationException("No name attribute provided for Logger " + key);
@@ -269,7 +275,8 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
         return loggerBuilder;
     }
 
-    private RootLoggerComponentBuilder createRootLogger(ConfigurationBuilder<PropertiesConfiguration> builder, Properties properties) {
+    private RootLoggerComponentBuilder createRootLogger(ConfigurationBuilder<PropertiesConfiguration> builder,
+            Properties properties) {
         String level = properties.getProperty("level");
         if (level != null) {
             properties.remove("level");
@@ -308,7 +315,8 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
         return loggerBuilder;
     }
 
-    private LayoutComponentBuilder createLayout(ConfigurationBuilder<PropertiesConfiguration> builder, String appenderName, Properties properties) {
+    private LayoutComponentBuilder createLayout(ConfigurationBuilder<PropertiesConfiguration> builder,
+            String appenderName, Properties properties) {
         String type = properties.getProperty(CONFIG_TYPE);
         if (Strings.isEmpty(type)) {
             throw new ConfigurationException("No type attribute provided for Layout on Appender " + appenderName);
@@ -319,7 +327,8 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
         return layoutBuilder;
     }
 
-    private <B extends ComponentBuilder<B>> ComponentBuilder<B> createComponent(ComponentBuilder<?> parent, String key, Properties properties) {
+    private <B extends ComponentBuilder<B>> ComponentBuilder<B> createComponent(ComponentBuilder<?> parent, String key,
+            Properties properties) {
         String name = properties.getProperty(CONFIG_NAME);
         if (name != null) {
             properties.remove(CONFIG_NAME);
@@ -344,7 +353,7 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
                 String prefix = propertyName.substring(0, index);
                 Properties componentProperties = PropertiesUtil.extractSubset(properties, prefix);
                 builder.addComponent(createComponent(builder, prefix, componentProperties));
-            } else  {
+            } else {
                 builder.addAttribute(propertyName, properties.getProperty(propertyName));
                 properties.remove(propertyName);
             }

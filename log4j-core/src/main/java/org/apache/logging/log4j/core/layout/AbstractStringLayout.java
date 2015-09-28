@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.LogEvent;
 public abstract class AbstractStringLayout extends AbstractLayout<String> {
 
     private static final long serialVersionUID = 1L;
+    protected static final int DEFAULT_STRING_BUILDER_SIZE = 1024;
 
     /**
      * Converts a String to a byte[].
@@ -42,6 +43,21 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
             return str.getBytes(charset != null ? charset : Charset.defaultCharset());
         }
         return null;
+    }
+
+    protected static ThreadLocal<StringBuilder> newStringBuilderThreadLocal() {
+        return new ThreadLocal<StringBuilder>() {
+            @Override
+            protected StringBuilder initialValue() {
+                return new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);
+            }        
+        };
+    }
+
+    protected static StringBuilder prepareStringBuilder(ThreadLocal<StringBuilder> threadLocal) {
+        final StringBuilder buf = threadLocal.get();
+        buf.setLength(0);
+        return buf;
     }
 
     /**

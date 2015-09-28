@@ -27,12 +27,12 @@ package org.apache.logging.log4j.message;
  */
 public final class StringFormatterMessageFactory extends AbstractMessageFactory {
 
-    private static final long serialVersionUID = 1L;
-    
     /**
      * Instance of StringFormatterMessageFactory.
      */
     public static final StringFormatterMessageFactory INSTANCE = new StringFormatterMessageFactory();
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Creates {@link StringFormattedMessage} instances.

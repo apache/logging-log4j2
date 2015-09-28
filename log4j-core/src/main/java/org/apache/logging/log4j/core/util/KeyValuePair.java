@@ -95,13 +95,13 @@ public final class KeyValuePair implements Serializable {
         @PluginBuilderAttribute
         private String value;
 
-        public Builder setKey(final String key) {
-            this.key = key;
+        public Builder setKey(final String aKey) {
+            this.key = aKey;
             return this;
         }
 
-        public Builder setValue(final String value) {
-            this.value = value;
+        public Builder setValue(final String aValue) {
+            this.value = aValue;
             return this;
         }
 

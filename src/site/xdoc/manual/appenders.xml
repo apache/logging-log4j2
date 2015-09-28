@@ -1227,7 +1227,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         </subsection>
         <a name="KafkaAppender"/>
         <subsection name="KafkaAppender">
-          <p>The KafkaAppender log events to an Apache Kafka topic.</p>
+          <p>The KafkaAppender logs events to an <a href="https://kafka.apache.org/">Apache Kafka</a> topic.</p>
           <table>
             <caption align="top">KafkaAppender Parameters</caption>
             <tr>
@@ -1241,7 +1241,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>The Kafka topic to use. Required.</td>
             </tr>
             <tr>
-              <td>lilter</td>
+              <td>filter</td>
               <td>Filter</td>
               <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
                 may be used by using a CompositeFilter.</td>
@@ -1250,9 +1250,9 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>layout</td>
               <td>Layout</td>
               <td>
-                The Layout to use to format the LogEvent. If you do not specify a layout,
-                if not specified the <a class="javadoc" href="http://logging.apache.org/log4j/2.x/log4j-api/apidocs/org/apache/logging/log4j/message/Message.html#getFormattedMessage())">formatted message</a>
-                as an UTF-8 encoded string will be sent to Kafka.
+                The Layout to use to format the LogEvent. If you do not specify a layout, the appender will send the 
+                <a class="javadoc" href="http://logging.apache.org/log4j/2.x/log4j-api/apidocs/org/apache/logging/log4j/message/Message.html#getFormattedMessage())">formatted message</a> 
+                to Kafka as a UTF-8 encoded string.
               </td>
             </tr>
             <tr>
@@ -1270,7 +1270,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             </tr>
             <tr>
               <td>properties</td>
-              <td>Property</td>
+              <td>Property[]</td>
               <td>
                 You can set any properties in <a href="http://kafka.apache.org/documentation.html#newproducerconfigs">Kafka new producer properties</a>.
                 You need to set the <code>bootstrap.servers</code> property, there are sensible default values for the others.
@@ -1294,7 +1294,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <a href="http://logging.apache.org/log4j/2.x/manual/appenders.html#AsyncAppender">Async appender</a> to log asynchronously.
           </p>
           <p>
-            This appender requires <a href="http://search.maven.org/#artifactdetails|org.apache.kafka|kafka-clients|0.8.2.1|jar">Kafka client library</a>
+            This appender requires the <a href="http://search.maven.org/#artifactdetails|org.apache.kafka|kafka-clients|0.8.2.1|jar">Kafka client library</a>.
           </p>
           <p>
             <em>Note:</em>Make sure to not let <code>org.apache.kafka</code> log to a Kafka appender on DEBUG level,
@@ -2285,7 +2285,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                     created and starts being written to.</td>
                 </tr>
               </table>
-              <p>By way of contrast, when the the fileIndex attribute is set to "max" but all the other settings
+              <p>By way of contrast, when the fileIndex attribute is set to "max" but all the other settings
                 are the same the following actions will be performed.
               </p>
               <table>
@@ -3288,11 +3288,11 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 </Configuration>]]></pre>
         </subsection>
 
-        <a name="ZeroMQAppender"/>
-        <subsection name="ZeroMQ Appender">
+        <a name="JeroMQAppender"/>
+        <subsection name="ZeroMQ/JeroMQ Appender">
           <p>
             The ZeroMQ appender uses the <a href="https://github.com/zeromq/jeromq">JeroMQ</a> library to send log 
-            events to one or more endpoints.  
+            events to one or more ZeroMQ endpoints.  
           </p>
           <p>
             This is a simple JeroMQ configuration:
@@ -3324,21 +3324,23 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>name</td>
               <td>String</td>
-              <td>The name of the Appender.</td>
+              <td>The name of the Appender. Required.</td>
             </tr>
             <tr>
               <td>Layout</td>
-              <td>Layout</td>
-              <td>The Layout of the Appender.</td>
+              <td>layout</td>
+              <td>The Layout of the Appender. If you do not specify a layout, the appender uses the default 
+              pattern appender returned by 
+              <a href="https://logging.apache.org/log4j/2.x/log4j-core/apidocs/org/apache/logging/log4j/core/layout/PatternLayout.html#createDefaultLayout()">PatternLayout.createDefaultLayout()</a>.</td>
             </tr>
             <tr>
               <td>Filters</td>
               <td>Filter</td>
-              <td>The Filters of the Appender.</td>
+              <td>The Filter(s) of the Appender.</td>
             </tr>
             <tr>
-              <td>Property</td>
-              <td>Property</td>
+              <td>Properties</td>
+              <td>Property[]</td>
               <td>One or more Property elements, named <code>endpoint</code>.</td>
             </tr>
             <tr>

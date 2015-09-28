@@ -23,12 +23,32 @@
     <title>Changes</title>
   </properties>
   <body>
+    <release version="2.4.1" date="2015-MM-DD" description="GA Release 2.4.1">
+      <action issue="LOG4J2-1129" dev="rgoers" type="add">
+        Allow PatternLayout to select a pattern to use based on some selection criteria.
+      </action>
+      <action issue="LOG4J2-1127" dev="ggregory" type="fix">
+        log4j2.xml cannot be parsed on Oracle Weblogic 12c
+      </action>
+      <action issue="LOG4J2-1132" dev="ggregory" type="fix">
+        Do not use MongoDB driver 2.13.3 deprecated methods.
+      </action>
+      <action issue="LOG4J2-1040" dev="ggregory" type="update">
+        Update MongoDB driver from 2.13.3 to 3.0.4.
+      </action>
+      <action issue="LOG4J2-1128" dev="ggregory" type="update">
+        Reuse StringBuilder to improve performance for String-based layouts: CSV, GELF, HTML, RFC524, Syslog.
+      </action>
+      <action issue="LOG4J2-1131" dev="ggregory" type="update">
+        Update mongo-java-driver from 2.13.2 to 2.13.3.
+      </action>
+    </release>
     <release version="2.4" date="2015-09-20" description="GA Release 2.4">
       <action issue="LOG4J2-635" dev="rgoers" type="add">
         Add support for configuration via Properties.
       </action>
       <action issue="LOG4J2-952" dev="rgoers" type="add">
-        Add ConfigurationBuilder.
+        Add ConfigurationBuilder for programmatic configuration.
       </action>
       <action issue="LOG4J2-1017" dev="ggregory" type="update">
         Update Java platform from Java 6 to 7. From this version onwards, log4j 2 requires Java 7.

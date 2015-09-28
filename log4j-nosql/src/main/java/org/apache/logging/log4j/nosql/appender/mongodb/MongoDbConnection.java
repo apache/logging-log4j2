@@ -19,25 +19,23 @@ package org.apache.logging.log4j.nosql.appender.mongodb;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
+import org.apache.logging.log4j.nosql.appender.AbstractNoSqlConnection;
 import org.apache.logging.log4j.nosql.appender.NoSqlConnection;
 import org.apache.logging.log4j.nosql.appender.NoSqlObject;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Strings;
 import org.bson.BSON;
 import org.bson.Transformer;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
-import com.mongodb.Mongo;
 import com.mongodb.MongoException;
 import com.mongodb.WriteConcern;
-import com.mongodb.WriteResult;
 
 /**
  * The MongoDB implementation of {@link NoSqlConnection}.
  */
-public final class MongoDbConnection implements NoSqlConnection<BasicDBObject, MongoDbObject> {
+public final class MongoDbConnection extends AbstractNoSqlConnection<BasicDBObject, MongoDbObject> {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -54,11 +52,9 @@ public final class MongoDbConnection implements NoSqlConnection<BasicDBObject, M
     }
 
     private final DBCollection collection;
-    private final Mongo mongo;
     private final WriteConcern writeConcern;
 
     public MongoDbConnection(final DB database, final WriteConcern writeConcern, final String collectionName) {
-        this.mongo = database.getMongo();
         this.collection = database.getCollection(collectionName);
         this.writeConcern = writeConcern;
     }
@@ -76,11 +72,7 @@ public final class MongoDbConnection implements NoSqlConnection<BasicDBObject, M
     @Override
     public void insertObject(final NoSqlObject<BasicDBObject> object) {
         try {
-            final WriteResult result = this.collection.insert(object.unwrap(), this.writeConcern);
-            if (Strings.isNotEmpty(result.getError())) {
-                throw new AppenderLoggingException("Failed to write log event to MongoDB due to error: " +
-                        result.getError() + '.');
-            }
+            this.collection.insert(object.unwrap(), this.writeConcern);
         } catch (final MongoException e) {
             throw new AppenderLoggingException("Failed to write log event to MongoDB due to error: " + e.getMessage(),
                     e);
@@ -88,40 +80,10 @@ public final class MongoDbConnection implements NoSqlConnection<BasicDBObject, M
     }
 
     @Override
-    public void close() {
-        // there's no need to call this.mongo.close() since that literally closes the connection
-        // MongoDBClient uses internal connection pooling
-        // for more details, see LOG4J2-591
+    public void closeImpl() {
+        // there's no need to call this.mongo.close() since that literally closes the connection.
+        // MongoDBClient uses internal connection pooling.
+        // For more details, see LOG4J2-591.
     }
 
-    @Override
-    public boolean isClosed() {
-        return !this.mongo.getConnector().isOpen();
-    }
-
-    /**
-     * To prevent class loading issues during plugin discovery, this code cannot live within MongoDbProvider. This
-     * is because of how Java treats references to Exception classes different from references to other classes. When
-     * Java loads a class, it normally won't load that class's dependent classes until and unless A) they are used, B)
-     * the class being loaded extends or implements those classes, or C) those classes are the types of static members
-     * in the class. However, exceptions that a class uses are always loaded when the class is loaded, even before
-     * they are actually used.
-     *
-     * @param database The database to authenticate
-     * @param username The username to authenticate with
-     * @param password The password to authenticate with
-     */
-    static void authenticate(final DB database, final String username, final String password) {
-        try {
-            if (!database.authenticate(username, password.toCharArray())) {
-                LOGGER.error("Failed to authenticate against MongoDB server. Unknown error.");
-            }
-        } catch (final MongoException e) {
-            LOGGER.error("Failed to authenticate against MongoDB: " + e.getMessage(), e);
-        } catch (final IllegalStateException e) {
-            LOGGER.error(
-                    "Factory-supplied MongoDB database connection already authenticated with different credentials but lost connection.",
-                    e);
-        }
-    }
 }

@@ -36,13 +36,32 @@ import org.apache.logging.log4j.util.Strings;
  */
 public abstract class AbstractPluginVisitor<A extends Annotation> implements PluginVisitor<A> {
 
+    /** Status logger. */
     protected static final Logger LOGGER = StatusLogger.getLogger();
 
+    /**
+     * 
+     */
     protected final Class<A> clazz;
+    /**
+     * 
+     */
     protected A annotation;
+    /**
+     * 
+     */
     protected String[] aliases;
+    /**
+     * 
+     */
     protected Class<?> conversionType;
+    /**
+     * 
+     */
     protected StrSubstitutor substitutor;
+    /**
+     * 
+     */
     protected Member member;
 
     /**
@@ -56,8 +75,8 @@ public abstract class AbstractPluginVisitor<A extends Annotation> implements Plu
 
     @SuppressWarnings("unchecked")
     @Override
-    public PluginVisitor<A> setAnnotation(final Annotation annotation) {
-        final Annotation a = Objects.requireNonNull(annotation, "No annotation was provided");
+    public PluginVisitor<A> setAnnotation(final Annotation anAnnotation) {
+        final Annotation a = Objects.requireNonNull(anAnnotation, "No annotation was provided");
         if (this.clazz.isInstance(a)) {
             this.annotation = (A) a;
         }
@@ -65,26 +84,26 @@ public abstract class AbstractPluginVisitor<A extends Annotation> implements Plu
     }
 
     @Override
-    public PluginVisitor<A> setAliases(final String... aliases) {
-        this.aliases = aliases;
+    public PluginVisitor<A> setAliases(final String... someAliases) {
+        this.aliases = someAliases;
         return this;
     }
 
     @Override
-    public PluginVisitor<A> setConversionType(final Class<?> conversionType) {
-        this.conversionType = Objects.requireNonNull(conversionType, "No conversion type class was provided");
+    public PluginVisitor<A> setConversionType(final Class<?> aConversionType) {
+        this.conversionType = Objects.requireNonNull(aConversionType, "No conversion type class was provided");
         return this;
     }
 
     @Override
-    public PluginVisitor<A> setStrSubstitutor(final StrSubstitutor substitutor) {
-        this.substitutor = Objects.requireNonNull(substitutor, "No StrSubstitutor was provided");
+    public PluginVisitor<A> setStrSubstitutor(final StrSubstitutor aSubstitutor) {
+        this.substitutor = Objects.requireNonNull(aSubstitutor, "No StrSubstitutor was provided");
         return this;
     }
 
     @Override
-    public PluginVisitor<A> setMember(final Member member) {
-        this.member = member;
+    public PluginVisitor<A> setMember(final Member aMember) {
+        this.member = aMember;
         return this;
     }
 

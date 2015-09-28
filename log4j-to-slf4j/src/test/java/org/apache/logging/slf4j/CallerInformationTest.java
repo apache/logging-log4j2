@@ -31,7 +31,7 @@ public class CallerInformationTest {
     private static final String CONFIG = "target/test-classes/logback-calling-class.xml";
 
     @ClassRule
-    public static final InitialLoggerContext CTX = new InitialLoggerContext(CONFIG);
+    public static final LoggerContextRule CTX = new LoggerContextRule(CONFIG);
 
     @Test
     public void testClassLogger() throws Exception {

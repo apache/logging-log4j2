@@ -30,6 +30,28 @@ import org.apache.logging.log4j.message.MapMessage;
 @Plugin(name = "map", category = StrLookup.CATEGORY)
 public class MapLookup implements StrLookup {
 
+    /**
+     * Map keys are variable names and value.
+     */
+    private final Map<String, String> map;
+
+    /**
+     * Constructor when used directly as a plugin.
+     */
+    public MapLookup() {
+        this.map = null;
+    }
+
+    /**
+     * Creates a new instance backed by a Map. Used by the default lookup.
+     *
+     * @param map
+     *        the map of keys to values, may be null
+     */
+    public MapLookup(final Map<String, String> map) {
+        this.map = map;
+    }
+
     static Map<String, String> initMap(final String[] srcArgs, final Map<String, String> destMap) {
         for (int i = 0; i < srcArgs.length; i++) {
             final int next = i + 1;
@@ -88,28 +110,6 @@ public class MapLookup implements StrLookup {
             return null;
         }
         return initMap(args, newMap(args.length));
-    }
-
-    /**
-     * Map keys are variable names and value.
-     */
-    private final Map<String, String> map;
-
-    /**
-     * Constructor when used directly as a plugin.
-     */
-    public MapLookup() {
-        this.map = null;
-    }
-
-    /**
-     * Creates a new instance backed by a Map. Used by the default lookup.
-     *
-     * @param map
-     *        the map of keys to values, may be null
-     */
-    public MapLookup(final Map<String, String> map) {
-        this.map = map;
     }
 
     protected Map<String, String> getMap() {

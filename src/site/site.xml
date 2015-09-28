@@ -120,6 +120,7 @@
         <item name="JMS Queue" href="/manual/appenders.html#JMSQueueAppender"/>
         <item name="JMS Topic" href="/manual/appenders.html#JMSTopicAppender"/>
         <item name="JPA" href="/manual/appenders.html#JPAAppender"/>
+        <item name="Kafka" href="/manual/appenders.html#KafkaAppender"/>
         <item name="Memory Mapped File" href="/manual/appenders.html#MemoryMappedFileAppender"/>
         <item name="NoSQL" href="/manual/appenders.html#NoSQLAppender"/>
         <item name="Output Stream" href="/manual/appenders.html#OutputStreamAppender"/>
@@ -131,10 +132,12 @@
         <item name="SMTP" href="/manual/appenders.html#SMTPAppender"/>
         <item name="Socket" href="/manual/appenders.html#SocketAppender"/>
         <item name="Syslog" href="/manual/appenders.html#SyslogAppender"/>
-        <item name="ZeroMQ" href="/manual/appenders.html#ZeroMQAppender"/>        
+        <item name="ZeroMQ/JeroMQ" href="/manual/appenders.html#JeroMQAppender"/>        
       </item>
 
       <item name="Layouts" href="/manual/layouts.html" collapse="true">
+        <item name="CSV" href="/manual/layouts.html#CSVLayouts"/>
+        <item name="GELF" href="/manual/layouts.html#GELFLayout"/>
         <item name="HTML" href="/manual/layouts.html#HTMLLayout"/>
         <item name="JSON" href="/manual/layouts.html#JSONLayout"/>
         <item name="Pattern" href="/manual/layouts.html#PatternLayout"/>
@@ -142,7 +145,6 @@
         <item name="Serialized" href="/manual/layouts.html#SerializedLayout"/>
         <item name="Syslog" href="/manual/layouts.html#SyslogLayout"/>
         <item name="XML" href="/manual/layouts.html#XMLLayout"/>
-        <item name="GELF" href="/manual/layouts.html#GELFLayout"/>
         <item name="Location Information" href="/manual/layouts.html#LocationInformation"/>
       </item>
 
@@ -184,7 +186,7 @@
         <item name="Custom Plugins" href="/manual/extending.html#Custom_Plugins"/>
       </item>
 
-      <item name="Extending Log4j Configuration" href="/manual/customconfig.html" collapse="true">
+      <item name="Programmatic Log4j Configuration" href="/manual/customconfig.html" collapse="true">
         <item name="ConfigurationBuilder API" href="/manual/customconfig.html#ConfigurationBuilder"/>
         <item name="Understanding ConfigurationFactory" href="/manual/customconfig.html#ConfigurationFactory"/>
         <item name="Example" href="/manual/customconfig.html#Example"/>

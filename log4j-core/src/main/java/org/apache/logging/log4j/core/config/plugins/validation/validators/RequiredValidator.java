@@ -43,8 +43,8 @@ public class RequiredValidator implements ConstraintValidator<Required> {
     private Required annotation;
 
     @Override
-    public void initialize(final Required annotation) {
-        this.annotation = annotation;
+    public void initialize(final Required anAnnotation) {
+        this.annotation = anAnnotation;
     }
 
     @Override

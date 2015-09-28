@@ -30,6 +30,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.async.RingBufferLogEvent;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
@@ -352,7 +353,7 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
         this.loggerName = loggerName;
         this.marker = marker;
         this.loggerFqcn = loggerFQCN;
-        this.level = (level == null) ? Level.OFF : level; // LOG4J2-462, LOG4J2-465
+        this.level = level == null ? Level.OFF : level; // LOG4J2-462, LOG4J2-465
         this.message = message;
         this.thrown = thrown;
         this.thrownProxy = thrownProxy;
@@ -617,7 +618,7 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        final String n = loggerName.isEmpty() ? "root" : loggerName;
+        final String n = loggerName.isEmpty() ? LoggerConfig.ROOT : loggerName;
         sb.append("Logger=").append(n);
         sb.append(" Level=").append(level.name());
         sb.append(" Message=").append(message.getFormattedMessage());

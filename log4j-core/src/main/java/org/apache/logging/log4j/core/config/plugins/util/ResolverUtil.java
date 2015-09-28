@@ -131,11 +131,11 @@ public class ResolverUtil {
      * Sets an explicit ClassLoader that should be used when scanning for classes. If none is set then the context
      * classloader will be used.
      *
-     * @param classloader
+     * @param aClassloader
      *        a ClassLoader to use when scanning for classes
      */
-    public void setClassLoader(final ClassLoader classloader) {
-        this.classloader = classloader;
+    public void setClassLoader(final ClassLoader aClassloader) {
+        this.classloader = aClassloader;
     }
 
     /**

@@ -36,27 +36,23 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * less than 10,000 IDs are generated per millisecond on the same device (as identified by its MAC address).
  */
 public final class UuidUtil {
-    private static final Logger LOGGER = StatusLogger.getLogger();
     /**
      * System property that may be used to seed the UUID generation with an integer value.
      */
     public static final String UUID_SEQUENCE = "org.apache.logging.log4j.uuidSequence";
 
+    private static final Logger LOGGER = StatusLogger.getLogger();
+
     private static final String ASSIGNED_SEQUENCES = "org.apache.logging.log4j.assignedSequences";
 
-    private static final AtomicInteger count = new AtomicInteger(0);
-
+    private static final AtomicInteger COUNT = new AtomicInteger(0);
     private static final long TYPE1 = 0x1000L;
-
     private static final byte VARIANT = (byte) 0x80;
-
     private static final int SEQUENCE_MASK = 0x3FFF;
-
     private static final long NUM_100NS_INTERVALS_SINCE_UUID_EPOCH = 0x01b21dd213814000L;
+    private static final long INITIAL_UUID_SEQNO = PropertiesUtil.getProperties().getLongProperty(UUID_SEQUENCE, 0);
 
-    private static final long uuidSequence = PropertiesUtil.getProperties().getLongProperty(UUID_SEQUENCE, 0);
-
-    private static final long least;
+    private static final long LEAST;
 
     private static final long LOW_MASK = 0xffffffffL;
     private static final long MID_MASK = 0xffff00000000L;
@@ -84,7 +80,7 @@ public final class UuidUtil {
         }
         System.arraycopy(mac, index, node, index + 2, length);
         final ByteBuffer buf = ByteBuffer.wrap(node);
-        long rand = uuidSequence;
+        long rand = INITIAL_UUID_SEQNO;
         String assigned = PropertiesUtil.getProperties().getStringProperty(ASSIGNED_SEQUENCES);
         long[] sequences;
         if (assigned == null) {
@@ -118,7 +114,7 @@ public final class UuidUtil {
         assigned = assigned == null ? Long.toString(rand) : assigned + ',' + Long.toString(rand);
         System.setProperty(ASSIGNED_SEQUENCES, assigned);
 
-        least = buf.getLong() | rand << SHIFT_6;
+        LEAST = buf.getLong() | rand << SHIFT_6;
     }
 
 
@@ -145,12 +141,12 @@ public final class UuidUtil {
     public static UUID getTimeBasedUuid() {
 
         final long time = ((System.currentTimeMillis() * HUNDRED_NANOS_PER_MILLI) +
-            NUM_100NS_INTERVALS_SINCE_UUID_EPOCH) + (count.incrementAndGet() % HUNDRED_NANOS_PER_MILLI);
+            NUM_100NS_INTERVALS_SINCE_UUID_EPOCH) + (COUNT.incrementAndGet() % HUNDRED_NANOS_PER_MILLI);
         final long timeLow = (time & LOW_MASK) << SHIFT_4;
         final long timeMid = (time & MID_MASK) >> SHIFT_2;
         final long timeHi = (time & HIGH_MASK) >> SHIFT_6;
         final long most = timeLow | timeMid | TYPE1 | timeHi;
-        return new UUID(most, least);
+        return new UUID(most, LEAST);
     }
 
     /**
@@ -185,6 +181,7 @@ public final class UuidUtil {
                 mac = localHost.getAddress();
             }
         } catch (final UnknownHostException ignored) {
+            // ignored
         }
         return mac;
     }

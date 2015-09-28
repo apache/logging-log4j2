@@ -23,7 +23,7 @@ import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.PluginNode;
 
 /**
- * PluginVisitor implementation for {@link PluginNode}
+ * PluginVisitor implementation for {@link PluginNode}.
  */
 public class PluginNodeVisitor extends AbstractPluginVisitor<PluginNode> {
     public PluginNodeVisitor() {

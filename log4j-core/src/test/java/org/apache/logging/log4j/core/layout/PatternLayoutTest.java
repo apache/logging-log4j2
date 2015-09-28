@@ -16,16 +16,14 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.BasicConfigurationFactory;
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -37,6 +35,8 @@ import org.apache.logging.log4j.util.Strings;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  *
@@ -211,6 +211,7 @@ public class PatternLayoutTest {
         // System.out.println("event2=" + event2.getTimeMillis() / 1000);
     }
 
+    @SuppressWarnings("unused")
     private void testUnixTime(final String pattern) throws Exception {
         final PatternLayout layout = PatternLayout.newBuilder().withPattern(pattern + " %m")
                 .withConfiguration(ctx.getConfiguration()).build();
@@ -262,5 +263,36 @@ public class PatternLayoutTest {
         final PatternLayout layout = PatternLayout.newBuilder().withPattern("%m")
                 .withConfiguration(ctx.getConfiguration()).withCharset(StandardCharsets.UTF_8).build();
         assertEquals(StandardCharsets.UTF_8, layout.getCharset());
+    }
+
+    @Test
+    public void testPatternSelector() throws Exception {
+        PatternMatch[] patterns = new PatternMatch[1];
+        patterns[0] = new PatternMatch("FLOW", "%d %-5p [%t]: ====== %C{1}.%M:%L %m ======%n");
+        PatternSelector selector = MarkerPatternSelector.createSelector(patterns, "%d %-5p [%t]: %m%n", true, true, ctx.getConfiguration());
+        final PatternLayout layout = PatternLayout.newBuilder().withPatternSelector(selector)
+                .withConfiguration(ctx.getConfiguration()).build();
+        final LogEvent event1 = Log4jLogEvent.newBuilder() //
+                .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.layout.PatternLayoutTest$FauxLogger")
+                .setMarker(MarkerManager.getMarker("FLOW"))
+                .setLevel(Level.TRACE) //
+                .setIncludeLocation(true)
+                .setMessage(new SimpleMessage("entry")).build();
+        final String result1 = new FauxLogger().formatEvent(event1, layout);
+        final String expectSuffix1 = String.format("====== PatternLayoutTest.testPatternSelector:281 entry ======%n");
+        assertTrue("Unexpected result: " + result1, result1.endsWith(expectSuffix1));
+        final LogEvent event2 = Log4jLogEvent.newBuilder() //
+                .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
+                .setLevel(Level.INFO) //
+                .setMessage(new SimpleMessage("Hello, world 1!")).build();
+        final String result2 = new String(layout.toByteArray(event2));
+        final String expectSuffix2 = String.format("Hello, world 1!%n");
+        assertTrue("Unexpected result: " + result2, result2.endsWith(expectSuffix2));
+    }
+
+    public class FauxLogger {
+        public String formatEvent(LogEvent event, Layout<?> layout) {
+            return new String(layout.toByteArray(event));
+        }
     }
 }

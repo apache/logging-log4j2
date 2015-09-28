@@ -59,7 +59,7 @@ public class PatternLayoutComparisonBenchmark {
     final static LogEvent LOG4J2EVENT = createLog4j2Event();
     private static final Charset CHARSET_DEFAULT = Charset.defaultCharset();
     private static final String LOG4JPATTERN = "%d %5p [%t] %c{1} %X{transactionId} - %m%n";
-    private final PatternLayout LOG4J2_PATTERN_LAYOUT = PatternLayout.createLayout(LOG4JPATTERN,
+    private final PatternLayout LOG4J2_PATTERN_LAYOUT = PatternLayout.createLayout(LOG4JPATTERN, null,
             null, null, CHARSET_DEFAULT, false, true, null, null);
 
     private static LogEvent createLog4j2Event() {

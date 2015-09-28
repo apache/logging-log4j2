@@ -40,6 +40,7 @@ public class AppenderControl extends AbstractFilterable {
 
     /**
      * Constructor.
+     * 
      * @param appender The target Appender.
      * @param level the Level to filter on.
      * @param filter the Filter(s) to apply.
@@ -52,9 +53,10 @@ public class AppenderControl extends AbstractFilterable {
         this.intLevel = level == null ? Level.ALL.intLevel() : level.intLevel();
         start();
     }
-    
+
     /**
      * Returns the name the appender had when this AppenderControl was constructed.
+     * 
      * @return the appender name
      */
     public String getAppenderName() {
@@ -63,6 +65,7 @@ public class AppenderControl extends AbstractFilterable {
 
     /**
      * Returns the Appender.
+     * 
      * @return the Appender.
      */
     public Appender getAppender() {
@@ -71,6 +74,7 @@ public class AppenderControl extends AbstractFilterable {
 
     /**
      * Call the appender.
+     * 
      * @param event The event to process.
      */
     public void callAppender(final LogEvent event) {
@@ -99,7 +103,7 @@ public class AppenderControl extends AbstractFilterable {
         }
         return false;
     }
-    
+
     private String appenderErrorHandlerMessage(final String prefix) {
         String result = createErrorMsg(prefix);
         appender.getHandler().error(result);
@@ -108,7 +112,7 @@ public class AppenderControl extends AbstractFilterable {
 
     private void callAppenderPreventRecursion(final LogEvent event) {
         try {
-            recursive.set(this);            
+            recursive.set(this);
             callAppender0(event);
         } finally {
             recursive.set(null);
@@ -138,7 +142,7 @@ public class AppenderControl extends AbstractFilterable {
     private String createErrorMsg(final String prefix) {
         return prefix + appender.getName();
     }
-    
+
     private boolean isFilteredByAppender(final LogEvent event) {
         return appender instanceof Filterable && ((Filterable) appender).isFiltered(event);
     }
@@ -159,7 +163,7 @@ public class AppenderControl extends AbstractFilterable {
             throw ex;
         }
     }
-    
+
     // AppenderControl is a helper object whose purpose is to make it
     // easier for LoggerConfig to manage and invoke Appenders.
     // LoggerConfig manages Appenders by their name. To facilitate this,
@@ -176,7 +180,7 @@ public class AppenderControl extends AbstractFilterable {
         final AppenderControl other = (AppenderControl) obj;
         return Objects.equals(appenderName, other.appenderName);
     }
-    
+
     @Override
     public int hashCode() {
         return appenderName.hashCode();

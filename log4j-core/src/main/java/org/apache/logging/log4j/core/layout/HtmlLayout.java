@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -51,8 +52,6 @@ public final class HtmlLayout extends AbstractStringLayout {
 
     private static final long serialVersionUID = 1L;
 
-    private static final int BUF_SIZE = 256;
-
     private static final String TRACE_PREFIX = "<br />&nbsp;&nbsp;&nbsp;&nbsp;";
 
     private static final String REGEXP = Constants.LINE_SEPARATOR.equals("\n") ? "\n" : Constants.LINE_SEPARATOR + "|\n";
@@ -65,6 +64,8 @@ public final class HtmlLayout extends AbstractStringLayout {
 
     private final long jvmStartTime = ManagementFactory.getRuntimeMXBean().getStartTime();
 
+    private static ThreadLocal<StringBuilder> strBuilder = newStringBuilderThreadLocal();
+    
     // Print no location info by default
     private final boolean locationInfo;
 
@@ -131,7 +132,7 @@ public final class HtmlLayout extends AbstractStringLayout {
      */
     @Override
     public String toSerializable(final LogEvent event) {
-        final StringBuilder sbuf = new StringBuilder(BUF_SIZE);
+        final StringBuilder sbuf = prepareStringBuilder(strBuilder);
 
         sbuf.append(Constants.LINE_SEPARATOR).append("<tr>").append(Constants.LINE_SEPARATOR);
 
@@ -160,7 +161,7 @@ public final class HtmlLayout extends AbstractStringLayout {
 
         String escapedLogger = Transform.escapeHtmlTags(event.getLoggerName());
         if (escapedLogger.isEmpty()) {
-            escapedLogger = "root";
+            escapedLogger = LoggerConfig.ROOT;
         }
         sbuf.append("<td title=\"").append(escapedLogger).append(" logger\">");
         sbuf.append(escapedLogger);

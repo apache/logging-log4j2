@@ -25,13 +25,14 @@
     </properties>
 
     <body>
-      <section name="Custom Configurations">
+      <section name="Programmatic Configuration">
         <p>
-          Log4j 2 provides a few ways for applications to create their own custom configurations:
+          Log4j 2 provides a few ways for applications to create their own programmatic configuration:
         </p>
         <ul>
-          <li>Specify a custom ConfigurationFactory</li>
-          <li>Use the Configurator</li>
+          <li>Specify a custom ConfigurationFactory to start Log4j with a programmatic configuration</li>
+          <li>Use the Configurator to replace the configuration after Log4j started</li>
+          <li>Initialize Log4j with a combination of a configuration file and programmatic configuration</li>
           <li>Modify the current Configuration after initialization</li>
         </ul>
         <a name="ConfigurationBuilder"/>
@@ -40,7 +41,7 @@
               Starting with release 2.4, Log4j provides a ConfigurationBuilder and a set of component builders that
               allow a Configuration to be created fairly easily.
               Actual configuration objects like LoggerConfig or Appender can be unwieldy; they require a lot
-              of knowledge on Log4j internals which makes them difficult to work with if all you want is 
+              of knowledge about Log4j internals which makes them difficult to work with if all you want is to
               create a Configuration.
             </p>
             <p>
@@ -60,9 +61,12 @@
               for the component you want to configure.
             </p>
             <p>
-              For example, the builder does not know what components can be configured on specific components
+              For example, the builder does not know what sub-components can be configured on specific components
               such as the RollingFileAppender vs. the RoutingAppender. To specify a triggering policy on a 
               RollingFileAppender you would use builder.newComponent().
+            </p>
+            <p>
+              Examples of using the ConfigurationBuilder API are in the sections that follow.
             </p>
           </subsection>
           <a name="ConfigurationFactory"/>
@@ -89,7 +93,7 @@
             </p>
           </subsection>
           <a name="Example"/>
-          <subsection name="Using ConfigurationBuilder with a Custom ConfigurationFactory">
+          <subsection name="Initialize Log4j Using ConfigurationBuilder with a Custom ConfigurationFactory">
             <p>
               One way to programmatically configure Log4j 2 is to create a custom ConfigurationFactory
               that uses the <a href="#ConfigurationBuilder">ConfigurationBuilder</a> to create a Configuration.
@@ -140,7 +144,7 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
 }]]></pre>
           </subsection>
         <a name="Configurator"/>
-          <subsection name="Using ConfigurationBuilder with the Configurator">
+          <subsection name="Reconfigure Log4j Using ConfigurationBuilder with the Configurator">
             <p>
               An alternative to a custom ConfigurationFactory is to configure with the <code>Configurator</code>.
               Once a Configuration object has been constructed, it can be passed to one of the 
@@ -172,7 +176,7 @@ ctx = Configurator.initialize(builder.build());
         </subsection>
 
           <a name="Hybrid"/>
-          <subsection name="Combining Configuration File with Programmatic Configuration">
+          <subsection name="Initialize Log4j by Combining Configuration File with Programmatic Configuration">
             <p>
               Sometimes you want to configure with a configuration file but do some additional programmatic
               configuration. A possible use case might be that you want to allow for a flexible configuration using XML 
@@ -238,7 +242,7 @@ public class MyXMLConfiguration extends XMLConfiguration {
 }</pre>
           </subsection>
         <a name="AddingToCurrent"/>
-        <subsection name="Programmatically Adding to the Current Configuration">
+        <subsection name="Programmatically Modifying the Current Configuration after Initialization">
             <p>
               Applications sometimes have the need to customize logging separate from the actual configuration.
               Log4j allows this although it suffers from a few limitations:

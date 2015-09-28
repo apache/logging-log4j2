@@ -41,7 +41,7 @@ public class DefaultAdvertiser implements Advertiser, Serializable {
     }
 
     /**
-     * Does nothing
+     * Does nothing.
      * @param advertisedObject
      */
     @Override
