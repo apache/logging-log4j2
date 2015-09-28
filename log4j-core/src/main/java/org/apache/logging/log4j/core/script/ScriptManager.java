@@ -157,7 +157,7 @@ public class ScriptManager {
     private class ThreadLocalScriptRunner implements ScriptRunner {
         private final Script script;
 
-        private ThreadLocal<MainScriptRunner> runners = new ThreadLocal<MainScriptRunner>() {
+        private final ThreadLocal<MainScriptRunner> runners = new ThreadLocal<MainScriptRunner>() {
             @Override protected MainScriptRunner initialValue() {
                 ScriptEngine engine = manager.getEngineByName(script.getLanguage());
                 return new MainScriptRunner(engine, script);
