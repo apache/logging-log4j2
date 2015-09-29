@@ -48,7 +48,7 @@ public class RollingRandomAccessFileManagerHeaderFooterTest {
 
     @Before
     public void setUp() throws Exception {
-        this.logger = this.init.getLogger(RollingRandomAccessFileManagerHeaderFooterTest.class.getName());
+        this.logger = init.getLogger(RollingRandomAccessFileManagerHeaderFooterTest.class.getName());
         deleteDir();
     }
 
