@@ -31,6 +31,7 @@ import org.apache.logging.log4j.core.util.Constants;
 @Plugin(name = "BasicLayout", category = "Core", elementType = "layout", printObject = true)
 public class BasicLayout extends AbstractStringLayout {
 
+    private static final long serialVersionUID = 1L;
     private static final String HEADER = "Header" + Constants.LINE_SEPARATOR;
 
     @Override

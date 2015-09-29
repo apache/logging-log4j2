@@ -45,7 +45,7 @@ public abstract class InputStreamLogEventBridge extends AbstractLogEventBridge<I
         this.bufferSize = bufferSize;
         this.charset = charset;
         this.eventEndMarker = eventEndMarker;
-        this.objectReader = mapper.reader(Log4jLogEvent.class);
+        this.objectReader = mapper.readerFor(Log4jLogEvent.class);
     }
 
     abstract protected int[] getEventIndices(final String text, int beginIndex);

@@ -42,7 +42,7 @@ public class MarkerMixInTest {
     public void setUp() {
         final Log4jJsonObjectMapper log4jObjectMapper = new Log4jJsonObjectMapper();
         writer = log4jObjectMapper.writer();
-        reader = log4jObjectMapper.reader(Log4jMarker.class);
+        reader = log4jObjectMapper.readerFor(Log4jMarker.class);
         MarkerManager.clear();
     }
 

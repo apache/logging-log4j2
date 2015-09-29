@@ -65,27 +65,28 @@ public class GenerateExtendedLoggerTest {
         final String src = Generate.generateSource(CLASSNAME, levels, Generate.Type.EXTEND);
         final File f = new File("target/test-classes/org/myorg/MyExtendedLogger.java");
         f.getParentFile().mkdirs();
-        final FileOutputStream out = new FileOutputStream(f);
-        out.write(src.getBytes(Charset.defaultCharset()));
-        out.close();
+        try (final FileOutputStream out = new FileOutputStream(f)) {
+            out.write(src.getBytes(Charset.defaultCharset()));
+        }
 
         // set up compiler
         final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         final DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
-        final StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null);
-        final Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(f));
-
-        // compile generated source
-        compiler.getTask(null, fileManager, diagnostics, null, null, compilationUnits).call();
-
-        // check we don't have any compilation errors
         final List<String> errors = new ArrayList<>();
-        for (final Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
-            if (diagnostic.getKind() == Diagnostic.Kind.ERROR) {
-                errors.add(String.format("Compile error: %s%n", diagnostic.getMessage(Locale.getDefault())));
+        try (final StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null)) {
+            final Iterable<? extends JavaFileObject> compilationUnits = fileManager
+                    .getJavaFileObjectsFromFiles(Arrays.asList(f));
+
+            // compile generated source
+            compiler.getTask(null, fileManager, diagnostics, null, null, compilationUnits).call();
+
+            // check we don't have any compilation errors
+            for (final Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
+                if (diagnostic.getKind() == Diagnostic.Kind.ERROR) {
+                    errors.add(String.format("Compile error: %s%n", diagnostic.getMessage(Locale.getDefault())));
+                }
             }
         }
-        fileManager.close();
         assertTrue(errors.toString(), errors.isEmpty());
 
         // load the compiled class

@@ -32,6 +32,8 @@ import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
  */
 final class MessageSerializer extends StdScalarSerializer<Message> {
 
+    private static final long serialVersionUID = 1L;
+
     MessageSerializer() {
         super(Message.class);
     }

@@ -32,14 +32,17 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
  * </p>
  */
 @SuppressWarnings("rawtypes")
-public class ListOfMapEntrySerializer extends StdSerializer<Map> {
+public class ListOfMapEntrySerializer extends StdSerializer<Map<String, String>> {
+
+    private static final long serialVersionUID = 1L;
 
     protected ListOfMapEntrySerializer() {
-        super(Map.class);
+        super(Map.class, false);
     }
 
     @Override
-    public void serialize(final Map map, final JsonGenerator jgen, final SerializerProvider provider) throws IOException, JsonGenerationException {
+    public void serialize(final Map<String, String> map, final JsonGenerator jgen, final SerializerProvider provider)
+            throws IOException, JsonGenerationException {
         @SuppressWarnings("unchecked")
         final Set<Entry<String, String>> entrySet = map.entrySet();
         final MapEntry[] pairs = new MapEntry[entrySet.size()];

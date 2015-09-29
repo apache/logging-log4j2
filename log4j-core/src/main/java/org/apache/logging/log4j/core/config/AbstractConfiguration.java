@@ -337,17 +337,17 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     private void setupAdvertisement() {
         if (advertiserNode != null) {
-            final String name = advertiserNode.getName();
-            final PluginType<?> type = pluginManager.getPluginType(name);
+            final String nodeName = advertiserNode.getName();
+            final PluginType<?> type = pluginManager.getPluginType(nodeName);
             if (type != null) {
                 final Class<? extends Advertiser> clazz = type.getPluginClass().asSubclass(Advertiser.class);
                 try {
                     advertiser = clazz.newInstance();
                     advertisement = advertiser.advertise(advertiserNode.getAttributes());
                 } catch (final InstantiationException e) {
-                    LOGGER.error("InstantiationException attempting to instantiate advertiser: {}", name, e);
+                    LOGGER.error("InstantiationException attempting to instantiate advertiser: {}", nodeName, e);
                 } catch (final IllegalAccessException e) {
-                    LOGGER.error("IllegalAccessException attempting to instantiate advertiser: {}", name, e);
+                    LOGGER.error("IllegalAccessException attempting to instantiate advertiser: {}", nodeName, e);
                 }
             }
         }
@@ -355,13 +355,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T getComponent(final String name) {
-        return (T) componentMap.get(name);
+    public <T> T getComponent(final String componentName) {
+        return (T) componentMap.get(componentName);
     }
 
     @Override
-    public void addComponent(final String name, final Object obj) {
-        componentMap.putIfAbsent(name, obj);
+    public void addComponent(final String componentName, final Object obj) {
+        componentMap.putIfAbsent(componentName, obj);
     }
 
     protected void doConfigure() {
@@ -449,13 +449,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         final Appender appender = ConsoleAppender.createDefaultAppenderForLayout(layout);
         appender.start();
         addAppender(appender);
-        final LoggerConfig root = getRootLogger();
-        root.addAppender(appender, null, null);
+        final LoggerConfig loggerConfig = getRootLogger();
+        loggerConfig.addAppender(appender, null, null);
 
         final String levelName = PropertiesUtil.getProperties().getStringProperty(DefaultConfiguration.DEFAULT_LEVEL);
         final Level level = levelName != null && Level.getLevel(levelName) != null ? Level.getLevel(levelName)
                 : Level.ERROR;
-        root.setLevel(level);
+        loggerConfig.setLevel(level);
     }
 
     /**
@@ -566,16 +566,16 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @Override
     public synchronized void addLoggerAppender(final org.apache.logging.log4j.core.Logger logger,
             final Appender appender) {
-        final String name = logger.getName();
+        final String loggerName = logger.getName();
         appenders.putIfAbsent(appender.getName(), appender);
-        final LoggerConfig lc = getLoggerConfig(name);
-        if (lc.getName().equals(name)) {
+        final LoggerConfig lc = getLoggerConfig(loggerName);
+        if (lc.getName().equals(loggerName)) {
             lc.addAppender(appender, null, null);
         } else {
-            final LoggerConfig nlc = new LoggerConfig(name, lc.getLevel(), lc.isAdditive());
+            final LoggerConfig nlc = new LoggerConfig(loggerName, lc.getLevel(), lc.isAdditive());
             nlc.addAppender(appender, null, null);
             nlc.setParent(lc);
-            loggers.putIfAbsent(name, nlc);
+            loggers.putIfAbsent(loggerName, nlc);
             setParents();
             logger.getContext().updateLoggers();
         }
@@ -592,15 +592,15 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     @Override
     public synchronized void addLoggerFilter(final org.apache.logging.log4j.core.Logger logger, final Filter filter) {
-        final String name = logger.getName();
-        final LoggerConfig lc = getLoggerConfig(name);
-        if (lc.getName().equals(name)) {
+        final String loggerName = logger.getName();
+        final LoggerConfig lc = getLoggerConfig(loggerName);
+        if (lc.getName().equals(loggerName)) {
             lc.addFilter(filter);
         } else {
-            final LoggerConfig nlc = new LoggerConfig(name, lc.getLevel(), lc.isAdditive());
+            final LoggerConfig nlc = new LoggerConfig(loggerName, lc.getLevel(), lc.isAdditive());
             nlc.addFilter(filter);
             nlc.setParent(lc);
-            loggers.putIfAbsent(name, nlc);
+            loggers.putIfAbsent(loggerName, nlc);
             setParents();
             logger.getContext().updateLoggers();
         }
