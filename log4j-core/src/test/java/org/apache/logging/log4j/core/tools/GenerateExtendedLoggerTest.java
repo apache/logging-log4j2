@@ -65,9 +65,9 @@ public class GenerateExtendedLoggerTest {
         final String src = Generate.generateSource(CLASSNAME, levels, Generate.Type.EXTEND);
         final File f = new File("target/test-classes/org/myorg/MyExtendedLogger.java");
         f.getParentFile().mkdirs();
-        final FileOutputStream out = new FileOutputStream(f);
-        out.write(src.getBytes(Charset.defaultCharset()));
-        out.close();
+        try (final FileOutputStream out = new FileOutputStream(f)) {
+            out.write(src.getBytes(Charset.defaultCharset()));
+        }
 
         // set up compiler
         final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
