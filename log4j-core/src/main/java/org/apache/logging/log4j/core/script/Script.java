@@ -12,43 +12,27 @@ import org.apache.logging.log4j.status.StatusLogger;
  * Container for the language and body of a script.
  */
 @Plugin(name = "Script", category = Node.CATEGORY, printObject = true)
-public class Script {
+public class Script extends AbstractScript {
 
     private static final Logger logger = StatusLogger.getLogger();
 
-    private final String language;
-    private final String scriptText;
-    private final String name;
-
-    public Script(final String name, final String language, final String body) {
-        this.language = language;
-        this.scriptText = body;
-        this.name = name == null ? this.toString() : name;
+    public Script(String name, String language, String scriptText) {
+        super(name, language, scriptText);
     }
-
-    public String getLanguage() {
-        return this.language;
-    }
-
-    public String getScriptText() {
-        return this.scriptText;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
 
     @PluginFactory
-    public static Script createScript(@PluginAttribute("name") final String name,
-                                      @PluginAttribute("language") String language,
-                                      @PluginValue("scriptText") final String scriptText) {
+    public static Script createScript(
+            // @formatter:off
+            @PluginAttribute("name") final String name,
+            @PluginAttribute("language") String language,
+            @PluginValue("scriptText") final String scriptText) {
+            // @formatter:on
         if (language == null) {
-            logger.info("No script language supplied, defaulting to JavaScript");
-            language = "JavaScript";
+            logger.info("No script language supplied, defaulting to {}", DEFAULT_LANGUAGE);
+            language = DEFAULT_LANGUAGE;
         }
         if (scriptText == null) {
-            logger.error("No script provided");
+            logger.error("No scriptText attribute provided for ScriptFile {}", name);
             return null;
         }
         return new Script(name, language, scriptText);

@@ -22,9 +22,9 @@ import org.junit.ClassRule;
 /**
  *
  */
-public class ScriptFilterTest extends AbstractScriptFilterTest {
+public class ScriptFileFilterTest extends AbstractScriptFilterTest {
 
-    private static final String CONFIG = "log4j-script-filters.xml";
+    private static final String CONFIG = "log4j-scriptFile-filters.xml";
 
     @ClassRule
     public static LoggerContextRule context = new LoggerContextRule(CONFIG);

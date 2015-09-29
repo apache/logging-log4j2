@@ -82,7 +82,7 @@ public class ScriptManager {
         }
     }
 
-    public void addScript(final Script script) {
+    public void addScript(final AbstractScript script) {
         final ScriptEngine engine = manager.getEngineByName(script.getLanguage());
         if (engine == null) {
             logger.error("No ScriptEngine found for language " + script.getLanguage() + ". Available languages are: " +
@@ -111,12 +111,12 @@ public class ScriptManager {
     }
 
     private class MainScriptRunner implements ScriptRunner {
-        private final Script script;
+        private final AbstractScript script;
         private final CompiledScript compiledScript;
         private final ScriptEngine scriptEngine;
 
 
-        public MainScriptRunner(final ScriptEngine scriptEngine, final Script script) {
+        public MainScriptRunner(final ScriptEngine scriptEngine, final AbstractScript script) {
             this.script = script;
             this.scriptEngine = scriptEngine;
             CompiledScript compiled = null;
@@ -155,7 +155,7 @@ public class ScriptManager {
     }
 
     private class ThreadLocalScriptRunner implements ScriptRunner {
-        private final Script script;
+        private final AbstractScript script;
 
         private final ThreadLocal<MainScriptRunner> runners = new ThreadLocal<MainScriptRunner>() {
             @Override protected MainScriptRunner initialValue() {
@@ -164,7 +164,7 @@ public class ScriptManager {
             }
         };
 
-        public ThreadLocalScriptRunner(final Script script) {
+        public ThreadLocalScriptRunner(final AbstractScript script) {
             this.script = script;
         }
 

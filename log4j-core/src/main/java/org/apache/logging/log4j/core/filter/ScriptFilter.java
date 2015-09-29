@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import javax.script.SimpleBindings;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Filter;
@@ -28,25 +30,25 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.script.AbstractScript;
 import org.apache.logging.log4j.core.script.Script;
+import org.apache.logging.log4j.core.script.ScriptFile;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 
-import javax.script.SimpleBindings;
-
 /**
- * This filter returns the onMatch result if the script returns True and returns the onMisMatch value otherwise.
+ * Returns the onMatch result if the script returns True and returns the onMisMatch value otherwise.
  */
 @Plugin(name = "ScriptFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
 public final class ScriptFilter extends AbstractFilter {
 
     private static final long serialVersionUID = 1L;
 
-    private final Script script;
+    private final AbstractScript script;
     private final Configuration configuration;
 
-    private ScriptFilter(final Script script, final Configuration configuration, final Result onMatch,
+    private ScriptFilter(final AbstractScript script, final Configuration configuration, final Result onMatch,
                          final Result onMismatch) {
         super(onMatch, onMismatch);
         this.script = script;
@@ -118,8 +120,11 @@ public final class ScriptFilter extends AbstractFilter {
     }
 
     /**
-     * Create the ScriptFilter.
-     * @param script The script to run. The script must return a boolean value.
+     * Creates the ScriptFilter.
+     * @param script The script to run. The script must return a boolean value. Either script or scriptFile must be 
+     *      provided.
+     * @param scriptFile The script file to run. The script must return a boolean value. Either script or scriptFile 
+     *      must be provided.
      * @param match The action to take if a match occurs.
      * @param mismatch The action to take if no match occurs.
      * @param configuration the configuration 
@@ -128,15 +133,20 @@ public final class ScriptFilter extends AbstractFilter {
     @PluginFactory
     public static ScriptFilter createFilter(
             @PluginElement("Script") final Script script,
+            @PluginElement("ScriptFile") final ScriptFile scriptFile,
             @PluginAttribute("onMatch") final Result match,
             @PluginAttribute("onMismatch") final Result mismatch,
             @PluginConfiguration final Configuration configuration) {
 
-        if (script == null) {
-            LOGGER.error("A script must be provided for ScriptFilter");
+        if (script == null && scriptFile == null) {
+            LOGGER.error("A Script or ScriptFile element must be provided for this ScriptFilter");
             return null;
         }
-        return new ScriptFilter(script, configuration, match, mismatch);
+        if (script != null && scriptFile != null) {
+            LOGGER.error("One of a Script or ScriptFile element must be provided for this ScriptFilter, but not both");
+            return null;
+        }
+        return new ScriptFilter(script != null ? script : scriptFile, configuration, match, mismatch);
     }
 
 }
