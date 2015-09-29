@@ -1,7 +1,7 @@
 package org.apache.logging.log4j.core.script;
 
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -50,8 +50,8 @@ public class ScriptFile extends AbstractScript {
         final URI uri = NetUtils.toURI(filePathOrUri);
         final File file = FileUtils.fileFromUri(uri);
         String scriptText;
-        try (final Reader reader = file != null ? new FileReader(file)
-                : new InputStreamReader(uri.toURL().openStream(), actualCharset)) {
+        try (final Reader reader = new InputStreamReader(
+                file != null ? new FileInputStream(file) : uri.toURL().openStream(), actualCharset)) {
             scriptText = IOUtils.toString(reader);
         } catch (IOException e) {
             logger.error("{}: name={}, language={}, path={}, actualCharset={}", e.getClass().getSimpleName(), name,
