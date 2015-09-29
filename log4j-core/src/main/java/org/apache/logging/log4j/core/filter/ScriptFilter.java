@@ -126,7 +126,7 @@ public final class ScriptFilter extends AbstractFilter {
      */
     @PluginFactory
     public static ScriptFilter createFilter(
-            @PluginElement("script") final Script script,
+            @PluginElement("Script") final Script script,
             @PluginAttribute("onMatch") final Result match,
             @PluginAttribute("onMismatch") final Result mismatch,
             @PluginConfiguration final Configuration configuration) {
