@@ -122,6 +122,7 @@ public final class ScriptFilter extends AbstractFilter {
      * @param script The script to run. The script must return a boolean value.
      * @param match The action to take if a match occurs.
      * @param mismatch The action to take if no match occurs.
+     * @param configuration the configuration 
      * @return A ScriptFilter.
      */
     @PluginFactory
