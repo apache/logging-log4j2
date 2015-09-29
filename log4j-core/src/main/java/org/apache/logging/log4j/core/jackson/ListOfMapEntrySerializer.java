@@ -34,6 +34,8 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 @SuppressWarnings("rawtypes")
 public class ListOfMapEntrySerializer extends StdSerializer<Map> {
 
+    private static final long serialVersionUID = 1L;
+
     protected ListOfMapEntrySerializer() {
         super(Map.class);
     }
