@@ -76,7 +76,7 @@ public class LevelMixInTest {
     public void setUp() {
         log4jObjectMapper = new Log4jJsonObjectMapper();
         writer = log4jObjectMapper.writer();
-        reader = log4jObjectMapper.reader(Level.class);
+        reader = log4jObjectMapper.readerFor(Level.class);
     }
 
     @Test
@@ -84,7 +84,7 @@ public class LevelMixInTest {
         final Fixture expected = new Fixture();
         final String str = writer.writeValueAsString(expected);
         Assert.assertTrue(str.contains("DEBUG"));
-        final ObjectReader fixtureReader = log4jObjectMapper.reader(Fixture.class);
+        final ObjectReader fixtureReader = log4jObjectMapper.readerFor(Fixture.class);
         final Fixture actual = fixtureReader.readValue(str);
         Assert.assertEquals(expected, actual);
     }
