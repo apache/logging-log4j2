@@ -45,6 +45,9 @@
       <action issue="LOG4J2-1131" dev="ggregory" type="update">
         Update mongo-java-driver from 2.13.2 to 2.13.3.
       </action>
+      <action issue="LOG4J2-1138" dev="ggregory" type="update">
+        Do not use Jackson deprecated methods.
+      </action>      
     </release>
     <release version="2.4" date="2015-09-20" description="GA Release 2.4">
       <action issue="LOG4J2-635" dev="rgoers" type="add">
