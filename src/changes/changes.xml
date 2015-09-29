@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.4.1" date="2015-MM-DD" description="GA Release 2.4.1">
+      <action issue="LOG4J2-1020" dev="mikes" type="fix">
+        Possibility to set shutdown timeout on AsyncAppender
+      </action>
       <action issue="LOG4J2-1135" dev="rpopma" type="fix">
         Compression on rollover was broken: log file was renamed to .zip but not compressed.
       </action>
