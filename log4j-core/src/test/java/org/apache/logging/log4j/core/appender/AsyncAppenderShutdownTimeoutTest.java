@@ -31,7 +31,7 @@ public class AsyncAppenderShutdownTimeoutTest {
     @ClassRule
     public static LoggerContextRule init = new LoggerContextRule("log4j-asynch-shutdownTimeout.xml");
 
-    @Test(timeout = 2000)
+    @Test(timeout = 5000)
     public void shutdownTest() throws Exception {
         final LoggerContext ctx = (LoggerContext)LogManager.getContext(false);
         final Logger logger = ctx.getLogger("Logger");
