@@ -616,8 +616,8 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
-                <b>enc{pattern}</b><br />
-                <b>encode{pattern}</b>
+                <b>enc</b>{pattern}<br />
+                <b>encode</b>{pattern}</b>
               </td>
               <td>
                 <p>
