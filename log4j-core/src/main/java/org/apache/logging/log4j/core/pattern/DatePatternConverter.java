@@ -168,7 +168,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
 
         // if the option list contains a TZ option, then set it.
         TimeZone tz = null;
-        if (options != null && options.length > 1) {
+        if (options.length > 1) {
             tz = TimeZone.getTimeZone(options[1]);
         }
 
