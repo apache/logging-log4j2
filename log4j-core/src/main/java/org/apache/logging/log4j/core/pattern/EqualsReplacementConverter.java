@@ -36,8 +36,7 @@ public final class EqualsReplacementConverter extends LogEventPatternConverter {
      * @param config
      *            The current Configuration.
      * @param options
-     *            pattern options, may be null. If first element is "short",
-     *            only the first line of the throwable will be formatted.
+     *            pattern options, an array of three elements: pattern, testString, and substitution.
      * @return instance of class.
      */
     public static EqualsReplacementConverter newInstance(final Configuration config, final String[] options) {
