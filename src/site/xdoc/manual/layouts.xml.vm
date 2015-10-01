@@ -651,7 +651,8 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
-                <b>equals</b>{pattern}{test}{substitution}
+                <b>equals</b>{pattern}{test}{substitution}<br />
+                <b>equalsIgnoreCase</b>{pattern}{test}{substitution}
               </td>
               <td>
                 <p>Replaces occurrences of 'test', a string, with its replacement 'substitution' in the
