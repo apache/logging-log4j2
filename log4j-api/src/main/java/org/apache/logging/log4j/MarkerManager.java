@@ -226,16 +226,6 @@ public final class MarkerManager {
             return this;
         }
 
-        public String getFullName() {
-            // FIXME: might want to use an initial capacity; the default is 16 (or str.length() + 16)
-            final StringBuilder sb = new StringBuilder(name);
-            final Marker[] localParents = parents;
-            if (localParents != null) {
-                addParentInfo(sb, localParents);
-            }
-            return sb.toString();
-        }
-
         @Override
         public String getName() {
             return this.name;
@@ -376,7 +366,13 @@ public final class MarkerManager {
 
         @Override
         public String toString() {
-            return getFullName();
+            // FIXME: might want to use an initial capacity; the default is 16 (or str.length() + 16)
+            final StringBuilder sb = new StringBuilder(name);
+            final Marker[] localParents = parents;
+            if (localParents != null) {
+                addParentInfo(sb, localParents);
+            }
+            return sb.toString();
         }
 
         private static void addParentInfo(final StringBuilder sb, final Marker... parents) {
