@@ -77,4 +77,9 @@ public final class LiteralPatternConverter extends LogEventPatternConverter impl
     public String getLiteral() {
         return literal;
     }
+
+    @Override
+    public String toString() {
+        return "LiteralPatternConverter[literal=" + literal + ", config=" + config + ", substitute=" + substitute + "]";
+    }
 }
