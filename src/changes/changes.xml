@@ -27,6 +27,9 @@
       <action issue="LOG4J2-1129" dev="rgoers" type="add">
         Allow PatternLayout to select a pattern to use based on some selection criteria.
       </action>
+      <action issue="LOG4J2-1145" dev="ggregory" type="add">
+        Add %equals to PatternLayout to test and replace patterns with strings. 
+      </action>
       <action issue="LOG4J2-1020" dev="mikes" type="fix">
         Possibility to set shutdown timeout on AsyncAppender
       </action>
