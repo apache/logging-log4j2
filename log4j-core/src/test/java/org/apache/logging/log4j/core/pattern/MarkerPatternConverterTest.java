@@ -32,7 +32,6 @@ import static org.junit.Assert.*;
  */
 public class MarkerPatternConverterTest {
 
-
     @Test
     public void testLookup() {
         final Message msg = new StructuredDataMessage("Test", "This is a test", "Audit");
