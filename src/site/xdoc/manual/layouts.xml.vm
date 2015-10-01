@@ -959,7 +959,13 @@ WARN  [main]: Message 2</pre>
               <td align="center">
                 <b>marker</b>
               </td>
-              <td>The name of the marker, if one is present.</td>
+              <td>The full name of the marker, including parents, if one is present.</td>
+            </tr>
+            <tr>
+              <td align="center">
+                <b>markerSimpleName</b>
+              </td>
+              <td>The simple name of the marker (not including parents), if one is present.</td>
             </tr>
             <tr>
               <td align="center">

@@ -39,6 +39,9 @@
       <action issue="LOG4J2-1132" dev="ggregory" type="fix">
         Do not use MongoDB driver 2.13.3 deprecated methods.
       </action>
+      <action issue="LOG4J2-1144" dev="ggregory" type="fix">
+        Add %markerSimpleName in pattern layout should evaluate to marker name (not toString()).
+      </action>
       <action issue="LOG4J2-1040" dev="ggregory" type="update">
         Update MongoDB driver from 2.13.3 to 3.0.4.
       </action>
