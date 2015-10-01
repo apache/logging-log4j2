@@ -617,7 +617,7 @@ WARN  [main]: Message 2</pre>
             <tr>
               <td align="center">
                 <b>enc</b>{pattern}<br />
-                <b>encode</b>{pattern}</b>
+                <b>encode</b>{pattern}
               </td>
               <td>
                 <p>
@@ -646,6 +646,19 @@ WARN  [main]: Message 2</pre>
                      <td>Replaced with the corresponding HTML entity</td>
                    </tr>
                  </table>
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td align="center">
+                <b>equals</b>{pattern}{test}{substitution}
+              </td>
+              <td>
+                <p>Replaces occurrences of 'test', a string, with its replacement 'substitution' in the
+                  string resulting from evaluation of the pattern. For example, "%equals{[%marker]}{[]}{}" will
+                  replace '[]' strings produces by events without markers with an empty string.
+                </p>
+                <p>The pattern can be arbitrarily complex and in particular can contain multiple conversion keywords.
                 </p>
               </td>
             </tr>
