@@ -994,6 +994,23 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+              <a name="VariablesNotEmpty" />
+                <b>variablesNotEmpty</b>{pattern}<br />
+                <b>varsNotEmpty</b>{pattern}<br />
+                <b>notEmpty</b>{pattern}
+              </td>
+              <td>
+                <p>
+                  Outputs the result of evaluating the pattern if and only if all variables in the pattern are not empty.
+                </p>
+                <p>
+                  For example:
+                  <pre>%notEmpty{[%marker]}</pre>
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td align="center">
                 <b>p</b>|<b>level</b>{<em>level</em>=<em>label</em>, <em>level</em>=<em>label</em>, ...}
                 <b>p</b>|<b>level</b>{length=<em>n</em>}
                 <b>p</b>|<b>level</b>{lowerCase=<em>true</em>|<em>false</em>}
