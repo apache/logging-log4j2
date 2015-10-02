@@ -79,7 +79,13 @@ public final class LiteralPatternConverter extends LogEventPatternConverter impl
     }
 
     @Override
+    public boolean isVariable() {
+        return false;
+    }
+
+    @Override
     public String toString() {
         return "LiteralPatternConverter[literal=" + literal + ", config=" + config + ", substitute=" + substitute + "]";
     }
+    
 }

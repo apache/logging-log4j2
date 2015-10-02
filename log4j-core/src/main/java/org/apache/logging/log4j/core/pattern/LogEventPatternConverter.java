@@ -64,4 +64,8 @@ public abstract class LogEventPatternConverter extends AbstractPatternConverter 
     public boolean handlesThrowable() {
         return false;
     }
+
+    public boolean isVariable() {
+        return true;
+    }
 }
