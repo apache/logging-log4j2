@@ -32,12 +32,12 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 public abstract class AbstractLayout<T extends Serializable> implements Layout<T>, Serializable {
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * Allow subclasses access to the status logger without creating another instance.
      */
     protected static final Logger LOGGER = StatusLogger.getLogger();
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * The header to include when the stream is opened. May be null.
