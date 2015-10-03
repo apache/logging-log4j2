@@ -50,28 +50,28 @@ import org.apache.logging.log4j.core.util.Transform;
 @Plugin(name = "HtmlLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class HtmlLayout extends AbstractStringLayout {
 
-    private static final long serialVersionUID = 1L;
-
-    private static final String TRACE_PREFIX = "<br />&nbsp;&nbsp;&nbsp;&nbsp;";
-
-    private static final String REGEXP = Constants.LINE_SEPARATOR.equals("\n") ? "\n" : Constants.LINE_SEPARATOR + "|\n";
-
-    private static final String DEFAULT_TITLE = "Log4j Log Messages";
-
-    private static final String DEFAULT_CONTENT_TYPE = "text/html";
-
+    /**
+     * Default font family: {@value}.
+     */
     public static final String DEFAULT_FONT_FAMILY = "arial,sans-serif";
 
-    private final long jvmStartTime = ManagementFactory.getRuntimeMXBean().getStartTime();
+    private static final long serialVersionUID = 1L;
+    private static final String TRACE_PREFIX = "<br />&nbsp;&nbsp;&nbsp;&nbsp;";
+    private static final String REGEXP = Constants.LINE_SEPARATOR.equals("\n") ? "\n" : Constants.LINE_SEPARATOR + "|\n";
+    private static final String DEFAULT_TITLE = "Log4j Log Messages";
+    private static final String DEFAULT_CONTENT_TYPE = "text/html";
 
     private static ThreadLocal<StringBuilder> strBuilder = newStringBuilderThreadLocal();
+
+    private final long jvmStartTime = ManagementFactory.getRuntimeMXBean().getStartTime();
     
     // Print no location info by default
     private final boolean locationInfo;
-
     private final String title;
-
     private final String contentType;
+    private final String font;
+    private final String fontSize;
+    private final String headerSize;
 
     /**Possible font sizes */
     public static enum FontSize {
@@ -101,10 +101,6 @@ public final class HtmlLayout extends AbstractStringLayout {
             return this.ordinal() < XXLARGE.ordinal() ? FontSize.values()[this.ordinal() + 1] : this;
         }
     }
-
-    private final String font;
-    private final String fontSize;
-    private final String headerSize;
 
     private HtmlLayout(final boolean locationInfo, final String title, final String contentType, final Charset charset,
             final String font, final String fontSize, final String headerSize) {

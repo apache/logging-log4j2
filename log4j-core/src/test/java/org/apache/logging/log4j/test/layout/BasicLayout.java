@@ -34,13 +34,13 @@ public class BasicLayout extends AbstractStringLayout {
     private static final long serialVersionUID = 1L;
     private static final String HEADER = "Header" + Constants.LINE_SEPARATOR;
 
+    public BasicLayout(final Charset charset) {
+        super(charset);
+    }
+
     @Override
     public byte[] getHeader() {
         return getBytes(HEADER);
-    }
-
-    public BasicLayout(final Charset charset) {
-        super(charset);
     }
 
     @Override
