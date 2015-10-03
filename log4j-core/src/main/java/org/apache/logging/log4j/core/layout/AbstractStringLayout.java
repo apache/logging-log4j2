@@ -26,39 +26,11 @@ import org.apache.logging.log4j.core.LogEvent;
  */
 public abstract class AbstractStringLayout extends AbstractLayout<String> {
 
-    private static final long serialVersionUID = 1L;
-    protected static final int DEFAULT_STRING_BUILDER_SIZE = 1024;
-
     /**
-     * Converts a String to a byte[].
-     * 
-     * @param str
-     *            if null, return null.
-     * @param charset
-     *            if null, use the default charset.
-     * @return a byte[]
+     * Default length for new StringBuilder instances: {@value} .
      */
-    static byte[] toBytes(final String str, final Charset charset) {
-        if (str != null) {
-            return str.getBytes(charset != null ? charset : Charset.defaultCharset());
-        }
-        return null;
-    }
-
-    protected static ThreadLocal<StringBuilder> newStringBuilderThreadLocal() {
-        return new ThreadLocal<StringBuilder>() {
-            @Override
-            protected StringBuilder initialValue() {
-                return new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);
-            }        
-        };
-    }
-
-    protected static StringBuilder prepareStringBuilder(ThreadLocal<StringBuilder> threadLocal) {
-        final StringBuilder buf = threadLocal.get();
-        buf.setLength(0);
-        return buf;
-    }
+    protected static final int DEFAULT_STRING_BUILDER_SIZE = 1024;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The charset for the formatted message.
@@ -73,6 +45,35 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
     protected AbstractStringLayout(final Charset charset, final byte[] header, final byte[] footer) {
         super(header, footer);
         this.charset = charset == null ? StandardCharsets.UTF_8 : charset;
+    }
+
+    /**
+     * Converts a String to a byte[].
+     * 
+     * @param str if null, return null.
+     * @param charset if null, use the default charset.
+     * @return a byte[]
+     */
+    static byte[] toBytes(final String str, final Charset charset) {
+        if (str != null) {
+            return str.getBytes(charset != null ? charset : Charset.defaultCharset());
+        }
+        return null;
+    }
+
+    protected static ThreadLocal<StringBuilder> newStringBuilderThreadLocal() {
+        return new ThreadLocal<StringBuilder>() {
+            @Override
+            protected StringBuilder initialValue() {
+                return new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);
+            }
+        };
+    }
+
+    protected static StringBuilder prepareStringBuilder(ThreadLocal<StringBuilder> threadLocal) {
+        final StringBuilder buf = threadLocal.get();
+        buf.setLength(0);
+        return buf;
     }
 
     protected byte[] getBytes(final String s) {
@@ -94,8 +95,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
     /**
      * Formats the Log Event as a byte array.
      *
-     * @param event
-     *        The Log Event.
+     * @param event The Log Event.
      * @return The formatted event as a byte array.
      */
     @Override
