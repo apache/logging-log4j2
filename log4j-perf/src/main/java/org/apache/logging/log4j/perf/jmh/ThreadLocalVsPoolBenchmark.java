@@ -47,10 +47,10 @@ import org.openjdk.jmh.annotations.State;
 // (Quick build: mvn -DskipTests=true clean package -pl log4j-perf -am )
 //
 // single thread:
-// java -jar log4j-perf/target/benchmarks.jar ".*ThreadLocalVsPool.*" -f 1 -wi 10 -i 10 -tu ns -bm sample
+// java -jar log4j-perf/target/benchmarks.jar ".*ThreadLocalVsPool.*" -f 1 -wi 10 -i 20 -tu ns -bm sample
 //
 // four threads:
-// java -jar log4j-perf/target/benchmarks.jar ".*ThreadLocalVsPool.*" -f 1 -wi 10 -i 10 -tu ns -bm sample -t 4
+// java -jar log4j-perf/target/benchmarks.jar ".*ThreadLocalVsPool.*" -f 1 -wi 10 -i 20 -tu ns -bm sample -t 4
 //
 // Usage help:
 // java -jar log4j-perf/target/benchmarks.jar -help
