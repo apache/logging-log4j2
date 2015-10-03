@@ -36,14 +36,17 @@
       <action issue="LOG4J2-1146" dev="ggregory" type="add">
         Add %notEmpty to PatternLayout to avoid output of patterns where all variables are empty.
       </action>
-      <action issue="LOG4J2-1020" dev="mikes" type="fix">
-        Possibility to set shutdown timeout on AsyncAppender
+      <action issue="LOG4J2-1020" dev="mikes" type="add">
+        Add possibility to set shutdown timeout on AsyncAppender.
+      </action>
+      <action issue="LOG4J2-1142" dev="rpopma" type="fix">
+        Fix potential memory leak in web applications by using a straight ThreadLocal field instead of subclassing ThreadLocal.
       </action>
       <action issue="LOG4J2-1135" dev="rpopma" type="fix">
         Compression on rollover was broken: log file was renamed to .zip but not compressed.
       </action>
       <action issue="LOG4J2-1127" dev="ggregory" type="fix">
-        log4j2.xml cannot be parsed on Oracle Weblogic 12c
+        log4j2.xml cannot be parsed on Oracle Weblogic 12c.
       </action>
       <action issue="LOG4J2-1132" dev="ggregory" type="fix">
         Do not use MongoDB driver 2.13.3 deprecated methods.

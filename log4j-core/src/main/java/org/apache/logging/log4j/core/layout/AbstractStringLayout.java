@@ -30,6 +30,9 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
      * Default length for new StringBuilder instances: {@value} .
      */
     protected static final int DEFAULT_STRING_BUILDER_SIZE = 1024;
+    
+    private final static ThreadLocal<StringBuilder> threadLocal = new ThreadLocal<>();
+
     private static final long serialVersionUID = 1L;
 
     /**
@@ -61,19 +64,19 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
         return null;
     }
 
-    protected static ThreadLocal<StringBuilder> newStringBuilderThreadLocal() {
-        return new ThreadLocal<StringBuilder>() {
-            @Override
-            protected StringBuilder initialValue() {
-                return new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);
-            }
-        };
-    }
-
-    protected static StringBuilder prepareStringBuilder(ThreadLocal<StringBuilder> threadLocal) {
-        final StringBuilder buf = threadLocal.get();
-        buf.setLength(0);
-        return buf;
+    /**
+     * Returns a {@code StringBuilder} that this Layout implementation can use to write the formatted log event to.
+     * 
+     * @return a {@code StringBuilder}
+     */
+    protected StringBuilder getStringBuilder() {
+        StringBuilder result = threadLocal.get();
+        if (result == null) {
+            result = new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);
+            threadLocal.set(result);
+        }
+        result.setLength(0);
+        return result;
     }
 
     protected byte[] getBytes(final String s) {

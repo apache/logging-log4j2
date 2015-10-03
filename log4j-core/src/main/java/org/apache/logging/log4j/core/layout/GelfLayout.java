@@ -104,8 +104,6 @@ public final class GelfLayout extends AbstractStringLayout {
     private static final long serialVersionUID = 1L;
     private static final BigDecimal TIME_DIVISOR = new BigDecimal(1000);
 
-    private static ThreadLocal<StringBuilder> strBuilder = newStringBuilderThreadLocal();
-
     private final KeyValuePair[] additionalFields;
     private final int compressionThreshold;
     private final CompressionType compressionType;
@@ -188,7 +186,7 @@ public final class GelfLayout extends AbstractStringLayout {
 
     @Override
     public String toSerializable(final LogEvent event) {
-        final StringBuilder builder = prepareStringBuilder(strBuilder);
+        final StringBuilder builder = getStringBuilder();
         final JsonStringEncoder jsonEncoder = JsonStringEncoder.getInstance();
         builder.append('{');
         builder.append("\"version\":\"1.1\",");

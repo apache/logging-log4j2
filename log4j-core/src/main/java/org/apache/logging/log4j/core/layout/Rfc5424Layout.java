@@ -93,10 +93,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     private static final int THREE_DIGITS = 100;
     private static final int MILLIS_PER_MINUTE = 60000;
     private static final int MINUTES_PER_HOUR = 60;
-
     private static final String COMPONENT_KEY = "RFC5424-Converter";
-
-    private static ThreadLocal<StringBuilder> strBuilder = newStringBuilderThreadLocal();
 
     private final Facility facility;
     private final String defaultId;
@@ -267,7 +264,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
      */
     @Override
     public String toSerializable(final LogEvent event) {
-        final StringBuilder buf = prepareStringBuilder(strBuilder);
+        final StringBuilder buf = getStringBuilder();
         appendPriority(buf, event.getLevel());
         appendTimestamp(buf, event.getTimeMillis());
         appendSpace(buf);

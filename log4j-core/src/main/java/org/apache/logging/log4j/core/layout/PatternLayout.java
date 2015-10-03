@@ -81,8 +81,6 @@ public final class PatternLayout extends AbstractStringLayout {
 
     private static final long serialVersionUID = 1L;
 
-    private static ThreadLocal<StringBuilder> strBuilder = newStringBuilderThreadLocal();
-
     /**
      * Initial converter for pattern.
      */
@@ -284,8 +282,7 @@ public final class PatternLayout extends AbstractStringLayout {
     private class PatternSerializer implements Serializer {
         @Override
         public String toSerializable(final LogEvent event) {
-            final StringBuilder buf = strBuilder.get();
-            buf.setLength(0);
+            final StringBuilder buf = getStringBuilder();
             final int len = formatters.length;
             for (int i = 0; i < len; i++) {
                 formatters[i].format(event, buf);
@@ -301,8 +298,7 @@ public final class PatternLayout extends AbstractStringLayout {
     private class PatternSelectorSerializer implements Serializer {
         @Override
         public String toSerializable(final LogEvent event) {
-            final StringBuilder buf = strBuilder.get();
-            buf.setLength(0);
+            final StringBuilder buf = getStringBuilder();
             PatternFormatter[] formatters = patternSelector.getFormatters(event);
             final int len = formatters.length;
             for (int i = 0; i < len; i++) {

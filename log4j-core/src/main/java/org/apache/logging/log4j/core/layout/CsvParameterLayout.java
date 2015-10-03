@@ -50,8 +50,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 public class CsvParameterLayout extends AbstractCsvLayout {
 
     private static final long serialVersionUID = 1L;
-
-    private static ThreadLocal<StringBuilder> strBuilder = newStringBuilderThreadLocal();
     
     public static AbstractCsvLayout createDefaultLayout() {
         return new CsvParameterLayout(Charset.forName(DEFAULT_CHARSET), CSVFormat.valueOf(DEFAULT_FORMAT), null, null);
@@ -89,12 +87,11 @@ public class CsvParameterLayout extends AbstractCsvLayout {
     public String toSerializable(final LogEvent event) {
         final Message message = event.getMessage();
         final Object[] parameters = message.getParameters();
-        final StringBuilder buffer = prepareStringBuilder(strBuilder);
-        try {
-            // Revisit when 1.3 is out so that we do not need to create a new
-            // printer for each event.
-            // No need to close the printer.
-            final CSVPrinter printer = new CSVPrinter(buffer, getFormat());
+        final StringBuilder buffer = getStringBuilder();
+        // Revisit when 1.3 is out so that we do not need to create a new
+        // printer for each event.
+        // No need to close the printer.
+        try (final CSVPrinter printer = new CSVPrinter(buffer, getFormat())) {
             printer.printRecord(parameters);
             return buffer.toString();
         } catch (final IOException e) {
