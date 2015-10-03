@@ -94,7 +94,6 @@ public final class GelfLayout extends AbstractStringLayout {
         };
 
         public abstract DeflaterOutputStream createDeflaterOutputStream(OutputStream os) throws IOException;
-
     }
 
     private static final char C = ',';
@@ -106,6 +105,20 @@ public final class GelfLayout extends AbstractStringLayout {
     private static final BigDecimal TIME_DIVISOR = new BigDecimal(1000);
 
     private static ThreadLocal<StringBuilder> strBuilder = newStringBuilderThreadLocal();
+
+    private final KeyValuePair[] additionalFields;
+    private final int compressionThreshold;
+    private final CompressionType compressionType;
+    private final String host;
+
+    public GelfLayout(final String host, final KeyValuePair[] additionalFields, final CompressionType compressionType,
+            final int compressionThreshold) {
+        super(StandardCharsets.UTF_8);
+        this.host = host;
+        this.additionalFields = additionalFields;
+        this.compressionType = compressionType;
+        this.compressionThreshold = compressionThreshold;
+    }
     
     @PluginFactory
     public static GelfLayout createLayout(
@@ -138,23 +151,6 @@ public final class GelfLayout extends AbstractStringLayout {
 
     static String formatTimestamp(final long timeMillis) {
         return new BigDecimal(timeMillis).divide(TIME_DIVISOR).toPlainString();
-    }
-
-    private final KeyValuePair[] additionalFields;
-
-    private final int compressionThreshold;
-
-    private final CompressionType compressionType;
-
-    private final String host;
-
-    public GelfLayout(final String host, final KeyValuePair[] additionalFields, final CompressionType compressionType,
-            final int compressionThreshold) {
-        super(StandardCharsets.UTF_8);
-        this.host = host;
-        this.additionalFields = additionalFields;
-        this.compressionType = compressionType;
-        this.compressionThreshold = compressionThreshold;
     }
 
     private byte[] compress(final byte[] bytes) {

@@ -55,8 +55,6 @@ import org.apache.logging.log4j.core.pattern.RegexReplacement;
 @Plugin(name = "PatternLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class PatternLayout extends AbstractStringLayout {
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * Default pattern string for log output. Currently set to the
      * string <b>"%m%n"</b> which just prints the application supplied
@@ -80,6 +78,8 @@ public final class PatternLayout extends AbstractStringLayout {
 
     /** Key to identify pattern converters. */
     public static final String KEY = "Converter";
+
+    private static final long serialVersionUID = 1L;
 
     private static ThreadLocal<StringBuilder> strBuilder = newStringBuilderThreadLocal();
 
