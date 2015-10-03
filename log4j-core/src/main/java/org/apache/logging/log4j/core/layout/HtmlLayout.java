@@ -61,8 +61,6 @@ public final class HtmlLayout extends AbstractStringLayout {
     private static final String DEFAULT_TITLE = "Log4j Log Messages";
     private static final String DEFAULT_CONTENT_TYPE = "text/html";
 
-    private static ThreadLocal<StringBuilder> strBuilder = newStringBuilderThreadLocal();
-
     private final long jvmStartTime = ManagementFactory.getRuntimeMXBean().getStartTime();
     
     // Print no location info by default
@@ -128,7 +126,7 @@ public final class HtmlLayout extends AbstractStringLayout {
      */
     @Override
     public String toSerializable(final LogEvent event) {
-        final StringBuilder sbuf = prepareStringBuilder(strBuilder);
+        final StringBuilder sbuf = getStringBuilder();
 
         sbuf.append(Constants.LINE_SEPARATOR).append("<tr>").append(Constants.LINE_SEPARATOR);
 

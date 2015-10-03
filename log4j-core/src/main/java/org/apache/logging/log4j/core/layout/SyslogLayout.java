@@ -50,8 +50,6 @@ public final class SyslogLayout extends AbstractStringLayout {
 
     private static final long serialVersionUID = 1L;
 
-    private static ThreadLocal<StringBuilder> strBuilder = newStringBuilderThreadLocal();
-
     private final Facility facility;
     private final boolean includeNewLine;
     private final String escapeNewLine;
@@ -80,7 +78,7 @@ public final class SyslogLayout extends AbstractStringLayout {
      */
     @Override
     public String toSerializable(final LogEvent event) {
-        final StringBuilder buf = prepareStringBuilder(strBuilder);
+        final StringBuilder buf = getStringBuilder();
 
         buf.append('<');
         buf.append(Priority.getPriority(facility, event.getLevel()));
