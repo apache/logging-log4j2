@@ -99,6 +99,21 @@ public class ThreadLocalVsPoolBenchmark {
         return serializeWithPool(LOG4J2EVENT).getBytes(CHARSET_DEFAULT);
     }
 
+    @Benchmark
+    public String _stringNewInstance() {
+        return serializeWithNewInstance(LOG4J2EVENT);
+    }
+
+    @Benchmark
+    public String _stringThreadLocal() {
+        return serializeWithThreadLocal(LOG4J2EVENT);
+    }
+
+    @Benchmark
+    public String _stringObjectPool() {
+        return serializeWithPool(LOG4J2EVENT);
+    }
+
     private String serializeWithNewInstance(final LogEvent event) {
         final StringBuilder buf = new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);
         return serialize(event, buf);
