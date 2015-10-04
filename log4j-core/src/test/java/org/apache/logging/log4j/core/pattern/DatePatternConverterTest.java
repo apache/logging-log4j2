@@ -16,8 +16,10 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.apache.logging.log4j.core.AbstractLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
@@ -68,18 +70,34 @@ public class DatePatternConverterTest {
     }
 
     @Test
-    public void testFormatLogEventStringBuilderIso8601Timezone() {
+    public void testFormatLogEventStringBuilderIso8601TimezoneUTC() {
+        final LogEvent event = new MyLogEvent();
+        final DatePatternConverter converter = DatePatternConverter.newInstance(new String[] {"ISO8601", "UTC"});
+        final StringBuilder sb = new StringBuilder();
+        converter.format(event, sb);
+
+        final String expected = "2011-12-30T09:56:35,987";
+        assertEquals(expected, sb.toString());
+    }
+
+    @Test
+    public void testFormatLogEventStringBuilderIso8601TimezoneJST() {
         final LogEvent event = new MyLogEvent();
         final String[] optionsWithTimezone = {ISO8601_FORMAT, "JST"};
         final DatePatternConverter converter = DatePatternConverter.newInstance(optionsWithTimezone);
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
 
-        // JST=Japan Standard Time: UTC+9:00, but December has day light savings, so +8 hours
-        final String expected = "2011-12-30T18:56:35,987";
+        // JST=Japan Standard Time: UTC+9:00
+        final TimeZone tz = TimeZone.getTimeZone("JST");
+        final SimpleDateFormat sdf = new SimpleDateFormat(converter.getPattern());
+        sdf.setTimeZone(tz);
+        final long adjusted = event.getTimeMillis() + tz.getDSTSavings();
+        final String expected = sdf.format(new Date(adjusted));
+        // final String expected = "2011-12-30T18:56:35,987"; // in CET (Central Eastern Time: Amsterdam)
         assertEquals(expected, sb.toString());
     }
-    
+
     @Test
     public void testPredefinedFormatWithTimezone() {
         for (final FixedDateFormat.FixedFormat format : FixedDateFormat.FixedFormat.values()) {
@@ -88,7 +106,7 @@ public class DatePatternConverterTest {
             assertEquals(format.getPattern(), converter.getPattern());
         }
     }
-    
+
     @Test
     public void testPredefinedFormatWithoutTimezone() {
         for (final FixedDateFormat.FixedFormat format : FixedDateFormat.FixedFormat.values()) {
