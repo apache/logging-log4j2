@@ -165,18 +165,21 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         if (UNIX_MILLIS_FORMAT.equals(patternOption)) {
             return new UnixMillisFormatter();
         }
+        // LOG4J2-1149: patternOption may be a name (if a time zone was specified)
+        final FixedDateFormat.FixedFormat fixedFormat = FixedDateFormat.FixedFormat.lookup(patternOption);
+        final String pattern = fixedFormat == null ? patternOption : fixedFormat.getPattern();
 
         // if the option list contains a TZ option, then set it.
         TimeZone tz = null;
-        if (options.length > 1) {
+        if (options.length > 1 && options[1] != null) {
             tz = TimeZone.getTimeZone(options[1]);
         }
 
         try {
-            final FastDateFormat tempFormat = FastDateFormat.getInstance(patternOption, tz);
+            final FastDateFormat tempFormat = FastDateFormat.getInstance(pattern, tz);
             return new PatternFormatter(tempFormat);
         } catch (final IllegalArgumentException e) {
-            LOGGER.warn("Could not instantiate FastDateFormat with pattern " + patternOption, e);
+            LOGGER.warn("Could not instantiate FastDateFormat with pattern " + pattern, e);
 
             // default to the DEFAULT format
             return createFormatter(FixedDateFormat.create(FixedFormat.DEFAULT));

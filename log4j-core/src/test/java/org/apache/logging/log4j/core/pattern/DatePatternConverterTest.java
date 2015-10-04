@@ -38,7 +38,7 @@ public class DatePatternConverterTest {
      */
     private static final String ISO8601_FORMAT = FixedDateFormat.FixedFormat.ISO8601.name();
 
-    private static final String[] ISO8601_FORMAT_OPTIONS = { ISO8601_FORMAT };
+    private static final String[] ISO8601_FORMAT_OPTIONS = {ISO8601_FORMAT};
 
     @Test
     public void testNewInstanceAllowsNullParameter() {
@@ -65,6 +65,37 @@ public class DatePatternConverterTest {
 
         final String expected = "2011-12-30T10:56:35,987";
         assertEquals(expected, sb.toString());
+    }
+
+    @Test
+    public void testFormatLogEventStringBuilderIso8601Timezone() {
+        final LogEvent event = new MyLogEvent();
+        final String[] optionsWithTimezone = {ISO8601_FORMAT, "JST"};
+        final DatePatternConverter converter = DatePatternConverter.newInstance(optionsWithTimezone);
+        final StringBuilder sb = new StringBuilder();
+        converter.format(event, sb);
+
+        // JST=Japan Standard Time: UTC+9:00, but December has day light savings, so +8 hours
+        final String expected = "2011-12-30T18:56:35,987";
+        assertEquals(expected, sb.toString());
+    }
+    
+    @Test
+    public void testPredefinedFormatWithTimezone() {
+        for (final FixedDateFormat.FixedFormat format : FixedDateFormat.FixedFormat.values()) {
+            final String[] options = {format.name(), "PDT"}; // Pacific Daylight Time=UTC-8:00
+            final DatePatternConverter converter = DatePatternConverter.newInstance(options);
+            assertEquals(format.getPattern(), converter.getPattern());
+        }
+    }
+    
+    @Test
+    public void testPredefinedFormatWithoutTimezone() {
+        for (final FixedDateFormat.FixedFormat format : FixedDateFormat.FixedFormat.values()) {
+            final String[] options = {format.name()};
+            final DatePatternConverter converter = DatePatternConverter.newInstance(options);
+            assertEquals(format.getPattern(), converter.getPattern());
+        }
     }
 
     private class MyLogEvent extends AbstractLogEvent {
@@ -111,7 +142,7 @@ public class DatePatternConverterTest {
 
     @Test
     public void testFormatDateStringBuilderOriginalPattern() {
-        final String[] pattern = { "yyyy/MM/dd HH-mm-ss.SSS" };
+        final String[] pattern = {"yyyy/MM/dd HH-mm-ss.SSS"};
         final DatePatternConverter converter = DatePatternConverter.newInstance(pattern);
         final StringBuilder sb = new StringBuilder();
         converter.format(date(2001, 1, 1), sb);
@@ -169,19 +200,19 @@ public class DatePatternConverterTest {
 
     @Test
     public void testGetPatternReturnsDefaultForInvalidPattern() {
-        final String[] invalid = { "ABC I am not a valid date pattern" };
+        final String[] invalid = {"ABC I am not a valid date pattern"};
         assertEquals(DEFAULT_PATTERN, DatePatternConverter.newInstance(invalid).getPattern());
     }
 
     @Test
     public void testGetPatternReturnsNullForUnix() {
-        final String[] options = { "UNIX" };
+        final String[] options = {"UNIX"};
         assertNull(DatePatternConverter.newInstance(options).getPattern());
     }
 
     @Test
     public void testGetPatternReturnsNullForUnixMillis() {
-        final String[] options = { "UNIX_MILLIS" };
+        final String[] options = {"UNIX_MILLIS"};
         assertNull(DatePatternConverter.newInstance(options).getPattern());
     }
 
