@@ -303,6 +303,8 @@ public class RollingFileManager extends FileManager {
             if (null != parent && !parent.exists()) {
                 parent.mkdirs();
             }
+            // LOG4J2-1140: check writeHeader before creating the file
+            final boolean writeHeader = !data.append || !file.exists();
             try {
                 file.createNewFile();
             } catch (final IOException ioe) {
@@ -311,7 +313,6 @@ public class RollingFileManager extends FileManager {
             }
             final long size = data.append ? file.length() : 0;
 
-            final boolean writeHeader = !data.append || !file.exists();
             OutputStream os;
             try {
                 os = new FileOutputStream(name, data.append);
