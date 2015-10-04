@@ -32,6 +32,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -59,6 +61,7 @@ import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NameUtil;
+import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
@@ -118,6 +121,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private final ConcurrentMap<String, Object> componentMap = new ConcurrentHashMap<>();
     private final ConfigurationSource configurationSource;
     private ScriptManager scriptManager;
+    private ScheduledExecutorService executorService;
+    private final WatchManager watchManager = new WatchManager();
 
     /**
      * Constructor.
@@ -128,6 +133,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         pluginManager = new PluginManager(Node.CATEGORY);
         rootNode = new Node();
         setState(State.INITIALIZING);
+
     }
 
     @Override
@@ -150,13 +156,25 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         return scriptManager;
     }
 
+    public WatchManager getWatchManager() {
+        return watchManager;
+    }
+
+    public ScheduledExecutorService getExecutorService() {
+        return executorService;
+    }
+
     /**
      * Initialize the configuration.
      */
     @Override
     public void initialize() {
         LOGGER.debug("Initializing configuration {}", this);
-        scriptManager = new ScriptManager();
+        if (watchManager.getIntervalSeconds() > 0) {
+            executorService = new ScheduledThreadPoolExecutor(1);
+            watchManager.setExecutorService(executorService);
+        }
+        scriptManager = new ScriptManager(watchManager);
         pluginManager.collectPlugins(pluginPackages);
         final PluginManager levelPlugins = new PluginManager(Level.CATEGORY);
         levelPlugins.collectPlugins(pluginPackages);
@@ -190,6 +208,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
         LOGGER.debug("Starting configuration {}", this);
         this.setStarting();
+        if (watchManager.getIntervalSeconds() > 0) {
+            watchManager.start();
+        }
         final Set<LoggerConfig> alreadyStarted = new HashSet<>();
         for (final LoggerConfig logger : loggers.values()) {
             logger.start();
@@ -296,6 +317,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             loggerConfig.clearAppenders();
         }
         LOGGER.trace("AbstractConfiguration stopped {} LoggerConfigs.", loggerCount);
+
+        if (watchManager.isStarted()) {
+            watchManager.stop();
+        }
+        if (executorService != null) {
+            executorService.shutdown();
+        }
 
         // AsyncLoggerConfigHelper decreases its ref count when an AsyncLoggerConfig is stopped.
         // Stopping the same AsyncLoggerConfig twice results in an incorrect ref count and

@@ -17,6 +17,8 @@
 package org.apache.logging.log4j.core.script;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.util.FileWatcher;
+import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import javax.script.Bindings;
@@ -26,6 +28,8 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -33,15 +37,18 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * Manages the scripts use by the Configuration.
  */
-public class ScriptManager {
+public class ScriptManager implements FileWatcher {
 
     private static final String KEY_THREADING = "THREADING";
     private static final Logger logger = StatusLogger.getLogger();
+    private static final long serialVersionUID = -2534169384971965196L;
     private final ScriptEngineManager manager = new ScriptEngineManager();
     private final ConcurrentMap<String, ScriptRunner> scripts = new ConcurrentHashMap<>();
     private final String languages;
+    private final WatchManager watchManager;
 
-    public ScriptManager() {
+    public ScriptManager(WatchManager watchManager) {
+        this.watchManager = watchManager;
         final List<ScriptEngineFactory> factories = manager.getEngineFactories();
         if (logger.isDebugEnabled()) {
             final StringBuilder sb = new StringBuilder();
@@ -86,7 +93,7 @@ public class ScriptManager {
         final ScriptEngine engine = manager.getEngineByName(script.getLanguage());
         if (engine == null) {
             logger.error("No ScriptEngine found for language " + script.getLanguage() + ". Available languages are: " +
-                languages);
+                    languages);
             return;
         }
         if (engine.getFactory().getParameter(KEY_THREADING) == null) {
@@ -94,6 +101,31 @@ public class ScriptManager {
         } else {
             scripts.put(script.getName(), new MainScriptRunner(engine, script));
         }
+
+        if (script instanceof ScriptFile) {
+            ScriptFile scriptFile = (ScriptFile)script;
+            Path path = scriptFile.getPath();
+            if (scriptFile.isWatched() && path != null) {
+                watchManager.watchFile(path.toFile(), this);
+            }
+        }
+    }
+
+    @Override
+    public void fileModified(final File file) {
+        ScriptRunner runner = scripts.get(file.toString());
+        if (runner == null) {
+            logger.info("{} is not a running script");
+            return;
+        }
+        ScriptEngine engine = runner.getScriptEngine();
+        AbstractScript script = runner.getScript();
+        if (engine.getFactory().getParameter(KEY_THREADING) == null) {
+            scripts.put(script.getName(), new ThreadLocalScriptRunner(script));
+        } else {
+            scripts.put(script.getName(), new MainScriptRunner(engine, script));
+        }
+
     }
 
     public Object execute(final String name, final Bindings bindings) {
@@ -108,6 +140,10 @@ public class ScriptManager {
     private interface ScriptRunner {
 
         public Object execute(Bindings bindings);
+
+        public AbstractScript getScript();
+
+        public ScriptEngine getScriptEngine();
     }
 
     private class MainScriptRunner implements ScriptRunner {
@@ -135,6 +171,11 @@ public class ScriptManager {
         }
 
         @Override
+        public ScriptEngine getScriptEngine() {
+            return this.scriptEngine;
+        }
+
+        @Override
         public Object execute(final Bindings bindings) {
             if (compiledScript != null) {
                 try {
@@ -152,6 +193,10 @@ public class ScriptManager {
             }
         }
 
+        @Override
+        public AbstractScript getScript() {
+            return script;
+        }
     }
 
     private class ThreadLocalScriptRunner implements ScriptRunner {
@@ -172,6 +217,15 @@ public class ScriptManager {
         public Object execute(final Bindings bindings) {
             return runners.get().execute(bindings);
         }
-    }
 
+        @Override
+        public AbstractScript getScript() {
+            return script;
+        }
+
+        @Override
+        public ScriptEngine getScriptEngine() {
+            return runners.get().getScriptEngine();
+        }
+    }
 }

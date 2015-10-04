@@ -141,8 +141,12 @@ public class BuiltConfiguration extends AbstractConfiguration {
             final ConfigurationSource configSource = getConfigurationSource();
             if (configSource != null) {
                 final File configFile = configSource.getFile();
-                if (intervalSeconds > 0 && configFile != null) {
-                    monitor = new FileConfigurationMonitor((Reconfigurable)this, configFile, listeners, intervalSeconds);
+                if (intervalSeconds > 0) {
+                    getWatchManager().setIntervalSeconds(intervalSeconds);
+                    if (configFile != null) {
+                        monitor = new FileConfigurationMonitor((Reconfigurable)this, configFile, listeners,
+                                intervalSeconds);
+                    }
                 }
             }
         }

@@ -25,14 +25,14 @@
     <Logger name="TestJavaScriptFilter" level="trace" additivity="false">
       <AppenderRef ref="List">
         <ScriptFilter onMatch="ACCEPT" onMisMatch="DENY">
-          <ScriptFile name="JavascriptFilter" language="JavaScript" path="src/test/resources/scripts/filter.js" charset="UTF-8" />
+          <ScriptFile language="JavaScript" path="src/test/resources/scripts/filter.js" charset="UTF-8" />
         </ScriptFilter>
       </AppenderRef>
     </Logger>
     <Logger name="TestGroovyFilter" level="trace" additivity="false">
       <AppenderRef ref="List">
         <ScriptFilter onMatch="ACCEPT" onMisMatch="DENY">
-          <ScriptFile name="GroovyFilter" language="groovy" path="src/test/resources/scripts/filter.groovy" charset="UTF-8" />
+          <ScriptFile path="src/test/resources/scripts/filter.groovy" charset="UTF-8" />
         </ScriptFilter>
       </AppenderRef>
     </Logger>
