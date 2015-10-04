@@ -17,19 +17,25 @@ package org.apache.logging.log4j.core.lookup;
 
 import static org.apache.logging.log4j.core.lookup.Log4jLookup.KEY_CONFIG_LOCATION;
 import static org.apache.logging.log4j.core.lookup.Log4jLookup.KEY_CONFIG_PARENT_LOCATION;
+
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -37,15 +43,24 @@ import org.junit.Test;
  */
 public class Log4jLookupTest {
 
+    private final static File EXPECT = new File(System.getProperty("user.home"), "/a/b/c/d/e/log4j2.xml");
     private LoggerContext mockCtx = null;
 
     @Before
     public void setup() throws URISyntaxException {
         this.mockCtx = EasyMock.createMock(LoggerContext.class);
-        expect(mockCtx.getConfigLocation()).andReturn(new URI("/a/b/c/d/e/log4j2.xml"));
         ContextAnchor.THREAD_CONTEXT.set(mockCtx);
 
+        final Configuration config = EasyMock.createMock(Configuration.class);
+        expect(mockCtx.getConfiguration()).andReturn(config);
+        
+        final ConfigurationSource configSrc = EasyMock.createMock(ConfigurationSource.class);
+        expect(config.getConfigurationSource()).andReturn(configSrc);
+        expect(configSrc.getFile()).andReturn(EXPECT);
+
         replay(mockCtx);
+        replay(config);
+        replay(configSrc);
     }
 
     @After
@@ -60,13 +75,13 @@ public class Log4jLookupTest {
     public void lookupConfigLocation() {
         final StrLookup log4jLookup = new Log4jLookup();
         final String value = log4jLookup.lookup(KEY_CONFIG_LOCATION);
-        assertEquals("/a/b/c/d/e/log4j2.xml", value);
+        assertEquals(EXPECT.getAbsolutePath(), value);
     }
 
     @Test
     public void lookupConfigParentLocation() {
         final StrLookup log4jLookup = new Log4jLookup();
         final String value = log4jLookup.lookup(KEY_CONFIG_PARENT_LOCATION);
-        assertEquals("/a/b/c/d/e", value);
+        assertEquals(EXPECT.getParentFile().getAbsolutePath(), value);
     }
 }

@@ -39,6 +39,9 @@
       <action issue="LOG4J2-1020" dev="mikes" type="add">
         Add possibility to set shutdown timeout on AsyncAppender.
       </action>
+      <action issue="LOG4J2-1050" dev="rpopma" type="fix">
+        Fixed Log4jLookup.
+      </action>
       <action issue="LOG4J2-1142" dev="rpopma" type="fix">
         Fix potential memory leak in web applications by using a straight ThreadLocal field instead of subclassing ThreadLocal.
       </action>

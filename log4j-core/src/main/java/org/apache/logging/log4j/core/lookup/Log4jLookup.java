@@ -15,11 +15,14 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -57,20 +60,35 @@ public class Log4jLookup extends AbstractLookup {
         if (ctx == null) {
             return null;
         }
+        final ConfigurationSource configSrc = ctx.getConfiguration().getConfigurationSource();
+        final File file = configSrc.getFile();
+        if (file != null) {
+            switch (key) {
+            case KEY_CONFIG_LOCATION:
+                return file.getAbsolutePath();
 
-        switch (key) {
-        case KEY_CONFIG_LOCATION:
-            return asPath(ctx.getConfigLocation());
+            case KEY_CONFIG_PARENT_LOCATION:
+                return file.getParentFile().getAbsolutePath();
 
-        case KEY_CONFIG_PARENT_LOCATION:
-            try {
-                return asPath(getParent(ctx.getConfigLocation()));
-            } catch (final URISyntaxException use) {
-                LOGGER.error(use);
+            default:
                 return null;
             }
+        }
 
-        default:
+        final URL url = configSrc.getURL();
+        try {
+            switch (key) {
+            case KEY_CONFIG_LOCATION:
+                return asPath(url.toURI());
+
+            case KEY_CONFIG_PARENT_LOCATION:
+                return asPath(getParent(url.toURI()));
+
+            default:
+                return null;
+            }
+        } catch (final URISyntaxException use) {
+            LOGGER.error(use);
             return null;
         }
     }
