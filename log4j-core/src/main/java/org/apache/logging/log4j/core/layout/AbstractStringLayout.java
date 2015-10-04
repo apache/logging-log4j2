@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
@@ -40,6 +41,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
      */
     // TODO: Charset is not serializable. Implement read/writeObject() ?
     private final Charset charset;
+    private final String charsetName;
 
     protected AbstractStringLayout(final Charset charset) {
         this(charset, null, null);
@@ -48,6 +50,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
     protected AbstractStringLayout(final Charset charset, final byte[] header, final byte[] footer) {
         super(header, footer);
         this.charset = charset == null ? StandardCharsets.UTF_8 : charset;
+        this.charsetName = this.charset.name();
     }
 
     /**
@@ -59,7 +62,12 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
      */
     static byte[] toBytes(final String str, final Charset charset) {
         if (str != null) {
-            return str.getBytes(charset != null ? charset : Charset.defaultCharset());
+            final Charset actual = charset != null ? charset : Charset.defaultCharset();
+            try {
+                return str.getBytes(actual.name());
+            } catch (UnsupportedEncodingException e) {
+                return str.getBytes(actual);
+            }
         }
         return null;
     }
@@ -80,7 +88,11 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
     }
 
     protected byte[] getBytes(final String s) {
-        return s.getBytes(charset);
+        try {
+            return s.getBytes(charsetName);
+        } catch (UnsupportedEncodingException e) {
+            return s.getBytes(charset);
+        }
     }
 
     protected Charset getCharset() {
@@ -103,7 +115,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
      */
     @Override
     public byte[] toByteArray(final LogEvent event) {
-        return toSerializable(event).getBytes(charset);
+        return getBytes(toSerializable(event));
     }
 
 }

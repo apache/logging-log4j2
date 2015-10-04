@@ -66,6 +66,9 @@
       <action issue="LOG4J2-1126" dev="ggregory" type="fix">
         Web site corrections and updates.
       </action>
+      <action issue="LOG4J2-935" dev="rpopma" type="update">
+        Performance improvement when converting Strings to byte[] arrays.
+      </action>
       <action issue="LOG4J2-1040" dev="ggregory" type="update">
         Update MongoDB driver from 2.13.3 to 3.0.4.
       </action>
