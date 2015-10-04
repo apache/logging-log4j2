@@ -31,20 +31,8 @@ import org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat;
  * Converts and formats the event's date in a StringBuilder.
  */
 @Plugin(name = "DatePatternConverter", category = PatternConverter.CATEGORY)
-@ConverterKeys({ "d", "date" })
+@ConverterKeys({"d", "date"})
 public final class DatePatternConverter extends LogEventPatternConverter implements ArrayPatternConverter {
-
-    private final class CachedTime {
-        public long timestampMillis;
-        public String formatted;
-
-        public CachedTime(final long timestampMillis) {
-            this.timestampMillis = timestampMillis;
-            this.formatted = formatter.format(this.timestampMillis);
-        }
-    }
-
-    private final AtomicReference<CachedTime> cachedTime;
 
     private abstract static class Formatter {
         abstract String format(long timeMillis);
@@ -106,6 +94,16 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         }
     }
 
+    private final class CachedTime {
+        public long timestampMillis;
+        public String formatted;
+
+        public CachedTime(final long timestampMillis) {
+            this.timestampMillis = timestampMillis;
+            this.formatted = formatter.format(this.timestampMillis);
+        }
+    }
+
     /**
      * UNIX formatter in seconds (standard).
      */
@@ -116,24 +114,13 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
      */
     private static final String UNIX_MILLIS_FORMAT = "UNIX_MILLIS";
 
-    /**
-     * Obtains an instance of pattern converter.
-     *
-     * @param options
-     *            options, may be null.
-     * @return instance of pattern converter.
-     */
-    public static DatePatternConverter newInstance(final String[] options) {
-        return new DatePatternConverter(options);
-    }
-
+    private final AtomicReference<CachedTime> cachedTime;
     private final Formatter formatter;
 
     /**
      * Private constructor.
      *
-     * @param options
-     *            options, may be null.
+     * @param options options, may be null.
      */
     private DatePatternConverter(final String[] options) {
         super("Date", "date");
@@ -145,6 +132,16 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
             formatter = createFormatter(options);
         }
         cachedTime = new AtomicReference<>(new CachedTime(System.currentTimeMillis()));
+    }
+
+    /**
+     * Obtains an instance of pattern converter.
+     *
+     * @param options options, may be null.
+     * @return instance of pattern converter.
+     */
+    public static DatePatternConverter newInstance(final String[] options) {
+        return new DatePatternConverter(options);
     }
 
     private static Formatter createFormatter(final FixedDateFormat fixedDateFormat) {
@@ -189,10 +186,8 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     /**
      * Appends formatted date to string buffer.
      *
-     * @param date
-     *            date
-     * @param toAppendTo
-     *            buffer to which formatted date is appended.
+     * @param date date
+     * @param toAppendTo buffer to which formatted date is appended.
      */
     public void format(final Date date, final StringBuilder toAppendTo) {
         format(date.getTime(), toAppendTo);
@@ -205,7 +200,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     public void format(final LogEvent event, final StringBuilder output) {
         format(event.getTimeMillis(), output);
     }
-    
+
     public void format(final long timestampMillis, final StringBuilder output) {
         CachedTime cached = cachedTime.get();
         if (timestampMillis != cached.timestampMillis) {
