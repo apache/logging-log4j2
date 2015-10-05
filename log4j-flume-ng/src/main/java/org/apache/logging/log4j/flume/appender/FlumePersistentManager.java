@@ -22,6 +22,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -68,7 +69,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
     /** Attribute name for the key provider. */
     public static final String KEY_PROVIDER = "keyProvider";
 
-    private static final Charset UTF8 = Charset.forName("UTF-8");
+    private static final Charset UTF8 = StandardCharsets.UTF_8;
 
     private static final String DEFAULT_DATA_DIR = ".log4j/flumeData";
 
