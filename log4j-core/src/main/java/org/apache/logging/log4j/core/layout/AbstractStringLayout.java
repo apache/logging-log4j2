@@ -63,7 +63,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
     static byte[] toBytes(final String str, final Charset charset) {
         if (str != null) {
             final Charset actual = charset != null ? charset : Charset.defaultCharset();
-            try {
+            try { // LOG4J2-935: String.getBytes(String) gives better performance
                 return str.getBytes(actual.name());
             } catch (UnsupportedEncodingException e) {
                 return str.getBytes(actual);
@@ -88,7 +88,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
     }
 
     protected byte[] getBytes(final String s) {
-        try {
+        try { // LOG4J2-935: String.getBytes(String) gives better performance
             return s.getBytes(charsetName);
         } catch (UnsupportedEncodingException e) {
             return s.getBytes(charset);
