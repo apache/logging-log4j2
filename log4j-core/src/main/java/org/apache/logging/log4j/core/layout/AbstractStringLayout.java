@@ -25,6 +25,10 @@ import org.apache.logging.log4j.core.LogEvent;
 /**
  * Abstract base class for Layouts that result in a String.
  */
+/*
+ * Implementation note: prefer String.getBytes(String) to String.getBytes(Charset) for performance reasons.
+ * See https://issues.apache.org/jira/browse/LOG4J2-935 for details.
+ */
 public abstract class AbstractStringLayout extends AbstractLayout<String> {
 
     /**
