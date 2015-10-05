@@ -76,7 +76,12 @@ public class DatePatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
 
-        final String expected = "2011-12-30T09:56:35,987";
+        final TimeZone tz = TimeZone.getTimeZone("UTC");
+        final SimpleDateFormat sdf = new SimpleDateFormat(converter.getPattern());
+        sdf.setTimeZone(tz);
+        final long adjusted = event.getTimeMillis() + tz.getDSTSavings();
+        final String expected = sdf.format(new Date(adjusted));
+        // final String expected = "2011-12-30T09:56:35,987";
         assertEquals(expected, sb.toString());
     }
 
