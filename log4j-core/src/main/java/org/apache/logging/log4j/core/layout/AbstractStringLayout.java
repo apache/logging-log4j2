@@ -46,6 +46,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
     // TODO: Charset is not serializable. Implement read/writeObject() ?
     private final Charset charset;
     private final String charsetName;
+    private final boolean isIso8859_1;
 
     protected AbstractStringLayout(final Charset charset) {
         this(charset, null, null);
@@ -55,6 +56,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
         super(header, footer);
         this.charset = charset == null ? StandardCharsets.UTF_8 : charset;
         this.charsetName = this.charset.name();
+        isIso8859_1 = StandardCharsets.ISO_8859_1.equals(charset);
     }
 
     /**
@@ -66,6 +68,9 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
      */
     static byte[] toBytes(final String str, final Charset charset) {
         if (str != null) {
+            if (StandardCharsets.ISO_8859_1.equals(charset)) {
+                return customEncode(str);
+            }
             final Charset actual = charset != null ? charset : Charset.defaultCharset();
             try { // LOG4J2-935: String.getBytes(String) gives better performance
                 return str.getBytes(actual.name());
@@ -92,11 +97,29 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
     }
 
     protected byte[] getBytes(final String s) {
+        if (isIso8859_1) { // rely on branch prediction to eliminate this check if false
+            return customEncode(s);
+        }
         try { // LOG4J2-935: String.getBytes(String) gives better performance
             return s.getBytes(charsetName);
         } catch (UnsupportedEncodingException e) {
             return s.getBytes(charset);
         }
+    }
+
+    /**
+     * Encode the specified string by casting each character to a byte.
+     * @param s the string to encode
+     * @return the encoded String
+     * @see https://issues.apache.org/jira/browse/LOG4J2-1151
+     */
+    private static byte[] customEncode(String s) {
+        final int length = s.length();
+        final byte[] result = new byte[length];
+        for (int i = 0; i < length; i++) {
+            result[i] = (byte) s.charAt(i);
+        }
+        return result;
     }
 
     protected Charset getCharset() {
