@@ -51,8 +51,8 @@
         </p>
         <p>
           A custom character encoder was added to Log4j 2.4.1 for the ISO-8859-1 and US-ASCII charsets,
-          backporting the performance improvements from Java 8 for use on Java 7.
-          For applications that log only ISO-8859-1 characters, specifying this charset will improve performance.
+          backporting the performance improvements built-in to Java 8 to Log4j for use on Java 7.
+          For applications that log only ISO-8859-1 characters, specifying this charset will improve performance significantly.
         </p>
         <a name="CSVLayouts"/>
         <subsection name="CSV Layouts">

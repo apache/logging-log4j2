@@ -49,7 +49,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
     // TODO: Charset is not serializable. Implement read/writeObject() ?
     private final Charset charset;
     private final String charsetName;
-    private final boolean isDirectSingleByteMapping;
+    private final boolean useCustomEncoding;
 
     protected AbstractStringLayout(final Charset charset) {
         this(charset, null, null);
@@ -59,8 +59,20 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
         super(header, footer);
         this.charset = charset == null ? StandardCharsets.UTF_8 : charset;
         this.charsetName = this.charset.name();
-        isDirectSingleByteMapping = StandardCharsets.ISO_8859_1.equals(charset)
-                || StandardCharsets.US_ASCII.equals(charset);
+        useCustomEncoding = isPreJava8()
+                && (StandardCharsets.ISO_8859_1.equals(charset) || StandardCharsets.US_ASCII.equals(charset));
+    }
+
+    // LOG4J2-1151: If the built-in JDK 8 encoders are available we should use them.
+    private static boolean isPreJava8() {
+        final String version = System.getProperty("java.version");
+        final String[] parts = version.split("\\.");
+        try {
+            int major = Integer.parseInt(parts[1]);
+            return major < 8;
+        } catch (Exception ex) {
+            return true;
+        }
     }
 
     /**
@@ -101,7 +113,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
     }
 
     protected byte[] getBytes(final String s) {
-        if (isDirectSingleByteMapping) { // rely on branch prediction to eliminate this check if false
+        if (useCustomEncoding) { // rely on branch prediction to eliminate this check if false
             return encodeSingleByteChars(s);
         }
         try { // LOG4J2-935: String.getBytes(String) gives better performance
@@ -121,10 +133,47 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
     private static byte[] encodeSingleByteChars(String s) {
         final int length = s.length();
         final byte[] result = new byte[length];
-        for (int i = 0; i < length; i++) {
-            result[i] = (byte) s.charAt(i);
-        }
+        encode(s, 0, length, result);
         return result;
+    }
+
+    // LOG4J2-1151
+    private static int encodeISOArray(String charArray, int charIndex, byte[] byteArray, int byteIndex, int length) {
+        int i = 0;
+        for (; i < length; i++) {
+            char c = charArray.charAt(charIndex++);
+            if (c > 255) {
+                break;
+            }
+            byteArray[(byteIndex++)] = ((byte) c);
+        }
+        return i;
+    }
+
+    // LOG4J2-1151
+    private static int encode(String charArray, int charOffset, int charLength, byte[] byteArray) {
+        int offset = 0;
+        int length = Math.min(charLength, byteArray.length);
+        int charDoneIndex = charOffset + length;
+        while (charOffset < charDoneIndex) {
+            int m = encodeISOArray(charArray, charOffset, byteArray, offset, length);
+            charOffset += m;
+            offset += m;
+            if (m != length) {
+                char c = charArray.charAt(charOffset++);
+                if ((Character.isHighSurrogate(c)) && (charOffset < charDoneIndex)
+                        && (Character.isLowSurrogate(charArray.charAt(charOffset)))) {
+                    if (charLength > byteArray.length) {
+                        charDoneIndex++;
+                        charLength--;
+                    }
+                    charOffset++;
+                }
+                byteArray[(offset++)] = '?';
+                length = Math.min(charDoneIndex - charOffset, byteArray.length - offset);
+            }
+        }
+        return offset;
     }
 
     protected Charset getCharset() {
