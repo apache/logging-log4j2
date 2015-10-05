@@ -67,7 +67,7 @@
         Web site corrections and updates.
       </action>
       <action issue="LOG4J2-1151" dev="rpopma" type="update">
-        Performance improvement: backport fast Java 8 String to byte[] encoder to AbstractStringLayout.
+        Performance improvement: backport Java 8 fast ISO-8859-1 String to byte[] encoder to AbstractStringLayout.
       </action>
       <action issue="LOG4J2-935" dev="rpopma" type="update">
         Performance improvement when converting Strings to byte[] arrays.

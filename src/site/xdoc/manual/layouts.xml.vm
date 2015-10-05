@@ -49,6 +49,11 @@
           where the default there is UTF-8. Each layout that extends <code>org.apache.logging.log4j.core.layout.AbstractStringLayout</code> 
           can provide its own default. See each layout below.
         </p>
+        <p>
+          A custom character encoder was added to Log4j 2.4.1 for the ISO-8859-1 and US-ASCII charsets,
+          backporting the performance improvements from Java 8 for use on Java 7.
+          For applications that log only ISO-8859-1 characters, specifying this charset will improve performance.
+        </p>
         <a name="CSVLayouts"/>
         <subsection name="CSV Layouts">
           <p>
