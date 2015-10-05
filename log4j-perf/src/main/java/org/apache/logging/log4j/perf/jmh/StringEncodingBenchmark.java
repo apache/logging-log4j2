@@ -35,7 +35,7 @@ import org.openjdk.jmh.annotations.State;
  * Tests Log4j2 StringEncoding performance.
  */
 // ============================== HOW TO RUN THIS TEST: ====================================
-//(Quick build: mvn -DskipTests=true clean package -pl log4j-perf -am )
+// (Quick build: mvn -DskipTests=true clean package -pl log4j-perf -am )
 //
 // java -jar log4j-perf/target/benchmarks.jar ".*StringEncoding.*" -f 1 -wi 5 -i 10
 //
@@ -63,70 +63,70 @@ public class StringEncodingBenchmark {
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public byte[] stringGetBytes() {
+    public byte[] defaultStringGetBytes() {
         return LOGMSG.getBytes();
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public byte[] stringGetBytesString88591() throws Exception {
+    public byte[] iso8859_1StringGetBytesString() throws Exception {
         return LOGMSG.getBytes(STRING_ISO8859_1);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public byte[] stringGetBytesCharSet88591() {
+    public byte[] iso8859_1StringGetBytesCharSet() {
         return LOGMSG.getBytes(CHARSET_ISO8859_1);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public byte[] stringGetBytesStringUsAscii() throws Exception {
+    public byte[] usAsciiStringGetBytesString() throws Exception {
         return LOGMSG.getBytes(STRING_US_ASCII);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public byte[] stringGetBytesCharSetUsAscii() {
+    public byte[] usAsciiStringGetBytesCharSet() {
         return LOGMSG.getBytes(CHARSET_US_ASCII);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public byte[] stringGetBytesStringDefault() throws Exception {
+    public byte[] defaultStringGetBytesString() throws Exception {
         return LOGMSG.getBytes(DEFAULT_ENCODING);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public byte[] stringGetBytesCharSetDefault() {
+    public byte[] defaultStringGetBytesCharSet() {
         return LOGMSG.getBytes(CHARSET_DEFAULT);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public byte[] stringGetBytesStringShiftJIS() throws Exception {
+    public byte[] shiftJisStringGetBytesString() throws Exception {
         return LOGMSG.getBytes(STRING_SHIFT_JIS);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public byte[] stringGetBytesCharSetShiftJIS() {
+    public byte[] shiftJisStringGetBytesCharSet() {
         return LOGMSG.getBytes(CHARSET_SHIFT_JIS);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public byte[] encoderShiftJIS() throws CharacterCodingException {
+    public byte[] shiftJisEncoder() throws CharacterCodingException {
         ByteBuffer buf = ENCODER_SHIFT_JIS.encode(CharBuffer.wrap(LOGMSG));
         return buf.array();
     }
@@ -134,7 +134,7 @@ public class StringEncodingBenchmark {
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public byte[] encoderIso8859_1() throws CharacterCodingException {
+    public byte[] iso8859_1Encoder() throws CharacterCodingException {
         ByteBuffer buf = ENCODER_ISO8859_1.encode(CharBuffer.wrap(LOGMSG));
         return buf.array();
     }
@@ -142,12 +142,135 @@ public class StringEncodingBenchmark {
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public byte[] customIso8859_1() throws CharacterCodingException {
+    public byte[] iso8859_1CustomCastToByte() throws CharacterCodingException {
         final int length = LOGMSG.length();
         final byte[] result = new byte[length];
         for (int i = 0; i < length; i++) {
-            result[i] = (byte) LOGMSG.charAt(i);
+            final char c = LOGMSG.charAt(i);
+            result[i++] = (byte) c;
         }
         return result;
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public byte[] iso8859_1CustomVerifyAndCast() throws CharacterCodingException {
+        final int length = LOGMSG.length();
+        final byte[] result = new byte[length];
+        int j = 0;
+        for (int i = 0; i < length; i++) {
+            final char c = LOGMSG.charAt(i);
+            if (c <= 255) {
+                result[j++] = (byte) c;
+            } else {
+                i = nonIsoChar(LOGMSG, i);
+                result[j++] = (byte) '?';
+            }
+        }
+        return result;
+    }
+
+    private int nonIsoChar(String logmsg, int i) {
+        char c = logmsg.charAt(i++);
+        if ((Character.isHighSurrogate(c)) && (i < logmsg.length()) && (Character.isLowSurrogate(logmsg.charAt(i)))) {
+            i++;
+        }
+        return i;
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public byte[] iso8859_1CustomPortedJDK8() throws CharacterCodingException {
+        final int length = LOGMSG.length();
+        final byte[] result = new byte[length];
+        encode(LOGMSG, 0, length, result);
+        return result;
+    }
+
+    private static int encodeISOArray(String charArray, int charIndex, byte[] byteArray, int byteIndex, int length) {
+        int i = 0;
+        for (; i < length; i++) {
+            char c = charArray.charAt(charIndex++);
+            if (c > 255) {
+                break;
+            }
+            byteArray[(byteIndex++)] = ((byte) c);
+        }
+        return i;
+    }
+
+    private int encode(String charArray, int charOffset, int charLength, byte[] byteArray) {
+        int offset = 0;
+        int length = Math.min(charLength, byteArray.length);
+        int charDoneIndex = charOffset + length;
+        while (charOffset < charDoneIndex) {
+            int m = encodeISOArray(charArray, charOffset, byteArray, offset, length);
+            charOffset += m;
+            offset += m;
+            if (m != length) {
+                char c = charArray.charAt(charOffset++);
+                if ((Character.isHighSurrogate(c)) && (charOffset < charDoneIndex)
+                        && (Character.isLowSurrogate(charArray.charAt(charOffset)))) {
+                    if (charLength > byteArray.length) {
+                        charDoneIndex++;
+                        charLength--;
+                    }
+                    charOffset++;
+                }
+                byteArray[(offset++)] = '?';
+                length = Math.min(charDoneIndex - charOffset, byteArray.length - offset);
+            }
+        }
+        return offset;
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public byte[] iso8859_1CustomPortedJDK8CopyArray() throws CharacterCodingException {
+        char[] charArray = LOGMSG.toCharArray();
+        final int length = charArray.length;
+        final byte[] result = new byte[length];
+        encode0(charArray, 0, length, result);
+        return result;
+    }
+
+    private static int encodeISOArray0(char[] charArray, int charIndex, byte[] byteArray, int byteIndex, int length) {
+        int i = 0;
+        for (; i < length; i++) {
+            char c = charArray[(charIndex++)];
+            if (c > 255) {
+                break;
+            }
+            byteArray[(byteIndex++)] = ((byte) c);
+        }
+        return i;
+    }
+
+    private int encode0(char[] charArray, int charOffset, int charLength, byte[] byteArray) {
+        int offset = 0;
+        int length = Math.min(charLength, byteArray.length);
+        int charDoneIndex = charOffset + length;
+        while (charOffset < charDoneIndex) {
+            int m = encodeISOArray0(charArray, charOffset, byteArray, offset, length);
+            charOffset += m;
+            offset += m;
+            if (m != length) {
+                char c = charArray[(charOffset++)];
+                if ((Character.isHighSurrogate(c)) && (charOffset < charDoneIndex)
+                        && (Character.isLowSurrogate(charArray[(charOffset)]))) {
+                    if (charLength > byteArray.length) {
+                        charDoneIndex++;
+                        charLength--;
+                    }
+                    charOffset++;
+                }
+                byteArray[(offset++)] = '?';
+                length = Math.min(charDoneIndex - charOffset, byteArray.length - offset);
+            }
+        }
+        return offset;
     }
 }
