@@ -17,7 +17,11 @@
 
 package org.apache.logging.log4j.perf.jmh;
 
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
 import java.util.concurrent.TimeUnit;
 
 import org.openjdk.jmh.annotations.Benchmark;
@@ -31,70 +35,119 @@ import org.openjdk.jmh.annotations.State;
  * Tests Log4j2 StringEncoding performance.
  */
 // ============================== HOW TO RUN THIS TEST: ====================================
+//(Quick build: mvn -DskipTests=true clean package -pl log4j-perf -am )
 //
-// single thread:
-// java -jar log4j-perf/target/benchmarks.jar ".*StringEncoding.*" -f 1 -wi 5 -i 5
+// java -jar log4j-perf/target/benchmarks.jar ".*StringEncoding.*" -f 1 -wi 5 -i 10
+//
+// Latency numbers instead of throughput:
+// java -jar log4j-perf/target/benchmarks.jar ".*StringEncoding.*" -f 1 -wi 5 -i 10 -tu ns -bm sample
 //
 // Usage help:
 // java -jar log4j-perf/target/benchmarks.jar -help
 //
 @State(Scope.Thread)
 public class StringEncodingBenchmark {
-    
-    private final static String STR = "AB!(%087936DZYXQWEIOP$#^~-=/><nb"; // length=32
+
+    private final static String LOGMSG = "2015-10-02 00:26:28,517 DEBUG (main) [o.a.l.l.p.j.StringEncodingBenchmark] - Very short log message."; // length=100
     private static final String STRING_ISO8859_1 = "ISO-8859-1";
+    private static final String STRING_US_ASCII = "US-ASCII";
+    private static final String STRING_SHIFT_JIS = "SHIFT_JIS";
     private static final Charset CHARSET_ISO8859_1 = Charset.forName(STRING_ISO8859_1);
     private static final Charset CHARSET_DEFAULT = Charset.defaultCharset();
     private static final String DEFAULT_ENCODING = CHARSET_DEFAULT.name();
-    private static final String STRING_SHIFT_JIS = "SHIFT_JIS";
     private static final Charset CHARSET_SHIFT_JIS = Charset.forName(STRING_SHIFT_JIS);
+    private static final Charset CHARSET_US_ASCII = Charset.forName(STRING_US_ASCII);
+    private static final CharsetEncoder ENCODER_SHIFT_JIS = CHARSET_SHIFT_JIS.newEncoder();
+    private static final CharsetEncoder ENCODER_ISO8859_1 = CHARSET_ISO8859_1.newEncoder();
 
     @Benchmark
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    public byte[] throughputStringGetBytes() {
-        return STR.getBytes();
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public byte[] stringGetBytes() {
+        return LOGMSG.getBytes();
     }
 
     @Benchmark
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    public byte[] throughputStringGetBytesString88591() throws Exception {
-        return STR.getBytes(STRING_ISO8859_1);
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public byte[] stringGetBytesString88591() throws Exception {
+        return LOGMSG.getBytes(STRING_ISO8859_1);
     }
 
     @Benchmark
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    public byte[] throughputStringGetBytesCharSet88591() {
-        return STR.getBytes(CHARSET_ISO8859_1);
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public byte[] stringGetBytesCharSet88591() {
+        return LOGMSG.getBytes(CHARSET_ISO8859_1);
     }
 
     @Benchmark
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    public byte[] throughputStringGetBytesStringDefault() throws Exception {
-        return STR.getBytes(DEFAULT_ENCODING);
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public byte[] stringGetBytesStringUsAscii() throws Exception {
+        return LOGMSG.getBytes(STRING_US_ASCII);
     }
 
     @Benchmark
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    public byte[] throughputStringGetBytesCharSetDefault() {
-        return STR.getBytes(CHARSET_DEFAULT);
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public byte[] stringGetBytesCharSetUsAscii() {
+        return LOGMSG.getBytes(CHARSET_US_ASCII);
     }
 
     @Benchmark
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    public byte[] throughputStringGetBytesStringShiftJIS() throws Exception {
-        return STR.getBytes(STRING_SHIFT_JIS);
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public byte[] stringGetBytesStringDefault() throws Exception {
+        return LOGMSG.getBytes(DEFAULT_ENCODING);
     }
 
     @Benchmark
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    public byte[] throughputStringGetBytesCharSetShiftJIS() {
-        return STR.getBytes(CHARSET_SHIFT_JIS);
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public byte[] stringGetBytesCharSetDefault() {
+        return LOGMSG.getBytes(CHARSET_DEFAULT);
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public byte[] stringGetBytesStringShiftJIS() throws Exception {
+        return LOGMSG.getBytes(STRING_SHIFT_JIS);
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public byte[] stringGetBytesCharSetShiftJIS() {
+        return LOGMSG.getBytes(CHARSET_SHIFT_JIS);
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public byte[] encoderShiftJIS() throws CharacterCodingException {
+        ByteBuffer buf = ENCODER_SHIFT_JIS.encode(CharBuffer.wrap(LOGMSG));
+        return buf.array();
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public byte[] encoderIso8859_1() throws CharacterCodingException {
+        ByteBuffer buf = ENCODER_ISO8859_1.encode(CharBuffer.wrap(LOGMSG));
+        return buf.array();
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public byte[] customIso8859_1() throws CharacterCodingException {
+        final int length = LOGMSG.length();
+        final byte[] result = new byte[length];
+        for (int i = 0; i < length; i++) {
+            result[i] = (byte) LOGMSG.charAt(i);
+        }
+        return result;
     }
 }
