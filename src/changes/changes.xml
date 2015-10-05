@@ -84,6 +84,9 @@
       <action issue="LOG4J2-1139" dev="ggregory" type="update">
         Update Jackson from 2.6.1 to 2.6.2.
       </action>      
+      <action issue="LOG4J2-1150" dev="ggregory" type="update">
+        Update kafka-clients from 0.8.2.1 to 0.8.2.2.
+      </action>      
     </release>
     <release version="2.4" date="2015-09-20" description="GA Release 2.4">
       <action issue="LOG4J2-635" dev="rgoers" type="add">
