@@ -133,12 +133,16 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
     private static byte[] encodeSingleByteChars(String s) {
         final int length = s.length();
         final byte[] result = new byte[length];
-        encode(s, 0, length, result);
+        encodeString(s, 0, length, result);
         return result;
     }
 
     // LOG4J2-1151
-    private static int encodeISOArray(String charArray, int charIndex, byte[] byteArray, int byteIndex, int length) {
+    /*
+     * Implementation note: this is the fast path. If the char array contains only ISO-8859-1 characters, all the work
+     * will be done here.
+     */
+    private static int encodeIsoChars(String charArray, int charIndex, byte[] byteArray, int byteIndex, int length) {
         int i = 0;
         for (; i < length; i++) {
             char c = charArray.charAt(charIndex++);
@@ -151,15 +155,15 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
     }
 
     // LOG4J2-1151
-    private static int encode(String charArray, int charOffset, int charLength, byte[] byteArray) {
-        int offset = 0;
+    private static int encodeString(String charArray, int charOffset, int charLength, byte[] byteArray) {
+        int byteOffset = 0;
         int length = Math.min(charLength, byteArray.length);
         int charDoneIndex = charOffset + length;
         while (charOffset < charDoneIndex) {
-            int m = encodeISOArray(charArray, charOffset, byteArray, offset, length);
-            charOffset += m;
-            offset += m;
-            if (m != length) {
+            int done = encodeIsoChars(charArray, charOffset, byteArray, byteOffset, length);
+            charOffset += done;
+            byteOffset += done;
+            if (done != length) {
                 char c = charArray.charAt(charOffset++);
                 if ((Character.isHighSurrogate(c)) && (charOffset < charDoneIndex)
                         && (Character.isLowSurrogate(charArray.charAt(charOffset)))) {
@@ -169,11 +173,11 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
                     }
                     charOffset++;
                 }
-                byteArray[(offset++)] = '?';
-                length = Math.min(charDoneIndex - charOffset, byteArray.length - offset);
+                byteArray[(byteOffset++)] = '?';
+                length = Math.min(charDoneIndex - charOffset, byteArray.length - byteOffset);
             }
         }
-        return offset;
+        return byteOffset;
     }
 
     protected Charset getCharset() {
