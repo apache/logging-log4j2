@@ -46,12 +46,12 @@
         </p>
         <p>
           The root class for layouts that use a Charset is <code>org.apache.logging.log4j.core.layout.AbstractStringLayout</code> 
-          where the default there is UTF-8. Each layout that extends <code>org.apache.logging.log4j.core.layout.AbstractStringLayout</code> 
+          where the default is UTF-8. Each layout that extends <code>org.apache.logging.log4j.core.layout.AbstractStringLayout</code> 
           can provide its own default. See each layout below.
         </p>
         <p>
           A custom character encoder was added to Log4j 2.4.1 for the ISO-8859-1 and US-ASCII charsets,
-          backporting the performance improvements built-in to Java 8 to Log4j for use on Java 7.
+          to bring some of the performance improvements built-in to Java 8 to Log4j for use on Java 7.
           For applications that log only ISO-8859-1 characters, specifying this charset will improve performance significantly.
         </p>
         <a name="CSVLayouts"/>
@@ -400,7 +400,7 @@ WARN  [main]: Message 2</pre>
               <td>charset</td>
               <td>String</td>
               <td>The character set to use when converting the syslog String to a byte array. The String must be
-                a valid ${Charset}. If not specified, this layout uses UTF-8.
+                a valid ${Charset}. If not specified, this layout uses the platform default character set.
               </td>
             </tr>
             <tr>
@@ -556,7 +556,7 @@ WARN  [main]: Message 2</pre>
                 </p>
                 <p>You can also use a set of braces containing a time zone id per
                   <a class="javadoc" href="${javadocRoot}/java/util/TimeZone.html${sharp}getTimeZone(java.lang.String)">
-                    java.util.TimeZone.getTimeZone</a>. If no date format specifier is given then ISO8601 format is assumed.
+                    java.util.TimeZone.getTimeZone</a>. If no date format specifier is given then the DEFAULT format is used.
                   <table>
                     <tr>
                       <th>Pattern</th>
