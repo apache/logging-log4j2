@@ -238,7 +238,7 @@ public final class PatternLayout extends AbstractStringLayout {
      * @param replace
      *        A Regex replacement String.
      * @param charset
-     *        The character set.
+     *        The character set. The platform default is used if not specified.
      * @param alwaysWriteExceptions
      *        If {@code "true"} (default) exceptions are always written even if the pattern contains no exception tokens.
      * @param noConsoleNoAnsi
@@ -255,7 +255,8 @@ public final class PatternLayout extends AbstractStringLayout {
             @PluginElement("PatternSelector") final PatternSelector patternSelector,
             @PluginConfiguration final Configuration config,
             @PluginElement("Replace") final RegexReplacement replace,
-            @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charset,
+            // LOG4J2-783 use platform default by default, so do not specify defaultString for charset
+            @PluginAttribute(value = "charset") final Charset charset,
             @PluginAttribute(value = "alwaysWriteExceptions", defaultBoolean = true) final boolean alwaysWriteExceptions,
             @PluginAttribute(value = "noConsoleNoAnsi", defaultBoolean = false) final boolean noConsoleNoAnsi,
             @PluginAttribute("header") final String header,
@@ -395,7 +396,10 @@ public final class PatternLayout extends AbstractStringLayout {
         }
 
         public Builder withCharset(final Charset charset) {
-            this.charset = charset;
+            // LOG4J2-783 if null, use platform default by default
+            if (charset != null) {
+                this.charset = charset;
+            }
             return this;
         }
 
