@@ -39,6 +39,9 @@
       <action issue="LOG4J2-1020" dev="mikes" type="add">
         Add possibility to set shutdown timeout on AsyncAppender.
       </action>
+      <action issue="LOG4J2-1153" dev="rpopma" type="fix">
+        Fixed NullPointerException when only root logger is defined (and no named loggers) in configuration properties file.
+      </action>
       <action issue="LOG4J2-1140" dev="rpopma" type="fix">
         Fixed bug where headers were not being written to first file with RollingFileAppender.
       </action>

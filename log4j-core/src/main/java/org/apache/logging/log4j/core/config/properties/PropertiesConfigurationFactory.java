@@ -130,7 +130,7 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
             }
         }
         String loggerProp = properties.getProperty("loggers");
-        if (appenderProp != null) {
+        if (loggerProp != null) {
             String[] loggerNames = loggerProp.split(",");
             for (String loggerName : loggerNames) {
                 String name = loggerName.trim();
@@ -343,7 +343,6 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
         return componentBuilder;
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
     private void processRemainingProperties(ComponentBuilder<?> builder, String name, Properties properties) {
         while (properties.size() > 0) {
             String propertyName = properties.stringPropertyNames().iterator().next();
