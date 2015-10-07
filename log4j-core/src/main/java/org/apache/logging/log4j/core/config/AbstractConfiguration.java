@@ -56,6 +56,7 @@ import org.apache.logging.log4j.core.lookup.MapLookup;
 import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.net.Advertiser;
+import org.apache.logging.log4j.core.script.AbstractScript;
 import org.apache.logging.log4j.core.script.ScriptManager;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.util.Constants;
@@ -426,7 +427,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             if (child.getObject() == null) {
                 continue;
             }
-            if (child.getName().equalsIgnoreCase("Appenders")) {
+            if (child.getName().equalsIgnoreCase("Scripts")) {
+                for (AbstractScript script : child.getObject(AbstractScript[].class)) {
+                   scriptManager.addScript(script);
+                }
+            } else if (child.getName().equalsIgnoreCase("Appenders")) {
                 appenders = child.getObject();
             } else if (child.isInstanceOf(Filter.class)) {
                 addFilter(child.getObject(Filter.class));

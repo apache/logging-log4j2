@@ -28,7 +28,10 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
+import org.apache.logging.log4j.core.script.AbstractScript;
 import org.apache.logging.log4j.core.script.Script;
+import org.apache.logging.log4j.core.script.ScriptFile;
+import org.apache.logging.log4j.core.script.ScriptRef;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import javax.script.SimpleBindings;
@@ -51,16 +54,18 @@ public class ScriptPatternSelector implements PatternSelector {
     private final String defaultPattern;
 
     private static Logger LOGGER = StatusLogger.getLogger();
-    private final Script script;
+    private final AbstractScript script;
     private final Configuration configuration;
 
 
-    public ScriptPatternSelector(final Script script, final PatternMatch[] properties, final String defaultPattern,
+    public ScriptPatternSelector(final AbstractScript script, final PatternMatch[] properties, final String defaultPattern,
                                  final boolean alwaysWriteExceptions, final boolean noConsoleNoAnsi,
                                  final Configuration config) {
         this.script = script;
         this.configuration = config;
-        config.getScriptManager().addScript(script);
+        if (!(script instanceof ScriptRef)) {
+            config.getScriptManager().addScript(script);
+        }
         final PatternParser parser = PatternLayout.createPatternParser(config);
         for (PatternMatch property : properties) {
             try {
@@ -98,14 +103,26 @@ public class ScriptPatternSelector implements PatternSelector {
 
     @PluginFactory
     public static ScriptPatternSelector createSelector(@PluginElement("Script") Script script,
+                                                       @PluginElement("ScriptFile") ScriptFile scriptFile,
+                                                       @PluginElement("ScriptRef") ScriptRef scriptRef,
                                                        @PluginElement("PatternMatch") final PatternMatch[] properties,
                                                        @PluginAttribute("defaultPattern") String defaultPattern,
                                                        @PluginAttribute(value = "alwaysWriteExceptions", defaultBoolean = true) final boolean alwaysWriteExceptions,
                                                        @PluginAttribute(value = "noConsoleNoAnsi", defaultBoolean = false) final boolean noConsoleNoAnsi,
                                                        @PluginConfiguration final Configuration config) {
-        if (script == null) {
-            LOGGER.error("No script provided");
+        if (script == null && scriptFile == null && scriptRef == null) {
+            LOGGER.error("A Script, ScriptFile or ScriptRef element must be provided for this ScriptFilter");
             return null;
+        }
+        if ((script != null && (scriptFile != null || scriptRef != null)) || (scriptFile != null && scriptRef != null) ) {
+            LOGGER.error("Only one Script, ScriptFile or ScriptRef element can be provided for this ScriptFilter");
+            return null;
+        }
+        if (scriptRef != null) {
+            if (config.getScriptManager().getScript(script.getName()) == null) {
+                LOGGER.error("No script with name {} has been declared.", script.getName());
+                return null;
+            }
         }
         if (defaultPattern == null) {
             defaultPattern = PatternLayout.DEFAULT_CONVERSION_PATTERN;
@@ -113,8 +130,8 @@ public class ScriptPatternSelector implements PatternSelector {
         if (properties == null || properties.length == 0) {
             LOGGER.warn("No marker patterns were provided");
         }
-        return new ScriptPatternSelector(script, properties, defaultPattern, alwaysWriteExceptions,
-                noConsoleNoAnsi, config);
+        return new ScriptPatternSelector(script != null ? script : scriptFile != null ? scriptFile : scriptRef,
+                properties, defaultPattern, alwaysWriteExceptions, noConsoleNoAnsi, config);
     }
 
     @Override

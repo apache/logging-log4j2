@@ -33,9 +33,11 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.script.AbstractScript;
 import org.apache.logging.log4j.core.script.Script;
 import org.apache.logging.log4j.core.script.ScriptFile;
+import org.apache.logging.log4j.core.script.ScriptRef;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Returns the onMatch result if the script returns True and returns the onMisMatch value otherwise.
@@ -44,6 +46,7 @@ import org.apache.logging.log4j.message.SimpleMessage;
 public final class ScriptFilter extends AbstractFilter {
 
     private static final long serialVersionUID = 1L;
+    private static org.apache.logging.log4j.Logger logger = StatusLogger.getLogger();
 
     private final AbstractScript script;
     private final Configuration configuration;
@@ -53,7 +56,9 @@ public final class ScriptFilter extends AbstractFilter {
         super(onMatch, onMismatch);
         this.script = script;
         this.configuration = configuration;
-        configuration.getScriptManager().addScript(script);
+        if (!(script instanceof ScriptRef)) {
+            configuration.getScriptManager().addScript(script);
+        }
     }
 
     @Override
@@ -134,19 +139,28 @@ public final class ScriptFilter extends AbstractFilter {
     public static ScriptFilter createFilter(
             @PluginElement("Script") final Script script,
             @PluginElement("ScriptFile") final ScriptFile scriptFile,
+            @PluginElement("ScriptRef") final ScriptRef scriptRef,
             @PluginAttribute("onMatch") final Result match,
             @PluginAttribute("onMismatch") final Result mismatch,
             @PluginConfiguration final Configuration configuration) {
 
-        if (script == null && scriptFile == null) {
-            LOGGER.error("A Script or ScriptFile element must be provided for this ScriptFilter");
+        if (script == null && scriptFile == null && scriptRef == null) {
+            LOGGER.error("A Script, ScriptFile or ScriptRef element must be provided for this ScriptFilter");
             return null;
         }
-        if (script != null && scriptFile != null) {
-            LOGGER.error("One of a Script or ScriptFile element must be provided for this ScriptFilter, but not both");
+        if ((script != null && (scriptFile != null || scriptRef != null)) || (scriptFile != null && scriptRef != null) ) {
+            LOGGER.error("Only one Script, ScriptFile or ScriptRef element can be provided for this ScriptFilter");
             return null;
         }
-        return new ScriptFilter(script != null ? script : scriptFile, configuration, match, mismatch);
+        if (scriptRef != null) {
+            if (configuration.getScriptManager().getScript(scriptRef.getName()) == null) {
+                logger.error("No script with name {} has been declared.", script.getName());
+                return null;
+            }
+        }
+
+        return new ScriptFilter(script != null ? script : scriptFile != null ? scriptFile : scriptRef, configuration,
+                match, mismatch);
     }
 
 }

@@ -48,8 +48,8 @@ public class ScriptFile extends AbstractScript {
     private final boolean isWatched;
 
 
-    public ScriptFile(Path filePath, String language, boolean isWatched, String scriptText) {
-        super(filePath.toString(), language, scriptText);
+    public ScriptFile(String name, Path filePath, String language, boolean isWatched, String scriptText) {
+        super(name, language, scriptText);
         this.filePath = filePath;
         this.isWatched = isWatched;
     }
@@ -65,6 +65,7 @@ public class ScriptFile extends AbstractScript {
     @PluginFactory
     public static ScriptFile createScript(
             // @formatter:off
+            @PluginAttribute("name") String name,
             @PluginAttribute("language") String language, 
             @PluginAttribute("path") final String filePathOrUri,
             @PluginAttribute("isWatched") final Boolean isWatched,
@@ -73,6 +74,9 @@ public class ScriptFile extends AbstractScript {
         if (filePathOrUri == null) {
             logger.error("No script path provided for ScriptFile");
             return null;
+        }
+        if (name == null) {
+            name = filePathOrUri;
         }
         final URI uri = NetUtils.toURI(filePathOrUri);
         final File file = FileUtils.fileFromUri(uri);
@@ -105,6 +109,6 @@ public class ScriptFile extends AbstractScript {
             logger.error("Unable to convert {} to a Path", uri.toString());
             return null;
         }
-        return new ScriptFile(path, language, isWatched == null ? Boolean.FALSE : isWatched, scriptText);
+        return new ScriptFile(name, path, language, isWatched == null ? Boolean.FALSE : isWatched, scriptText);
     }
 }

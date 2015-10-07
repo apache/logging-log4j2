@@ -111,6 +111,11 @@ public class ScriptManager implements FileWatcher {
         }
     }
 
+    public AbstractScript getScript(final String name) {
+        ScriptRunner runner = scripts.get(name);
+        return runner != null ? runner.getScript() : null;
+    }
+
     @Override
     public void fileModified(final File file) {
         ScriptRunner runner = scripts.get(file.toString());
