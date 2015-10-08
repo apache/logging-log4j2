@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.layout;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Node;
@@ -29,8 +28,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.core.script.AbstractScript;
-import org.apache.logging.log4j.core.script.Script;
-import org.apache.logging.log4j.core.script.ScriptFile;
 import org.apache.logging.log4j.core.script.ScriptRef;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -102,23 +99,17 @@ public class ScriptPatternSelector implements PatternSelector {
 
 
     @PluginFactory
-    public static ScriptPatternSelector createSelector(@PluginElement("Script") Script script,
-                                                       @PluginElement("ScriptFile") ScriptFile scriptFile,
-                                                       @PluginElement("ScriptRef") ScriptRef scriptRef,
+    public static ScriptPatternSelector createSelector(@PluginElement("Script") AbstractScript script,
                                                        @PluginElement("PatternMatch") final PatternMatch[] properties,
                                                        @PluginAttribute("defaultPattern") String defaultPattern,
                                                        @PluginAttribute(value = "alwaysWriteExceptions", defaultBoolean = true) final boolean alwaysWriteExceptions,
                                                        @PluginAttribute(value = "noConsoleNoAnsi", defaultBoolean = false) final boolean noConsoleNoAnsi,
                                                        @PluginConfiguration final Configuration config) {
-        if (script == null && scriptFile == null && scriptRef == null) {
+        if (script == null) {
             LOGGER.error("A Script, ScriptFile or ScriptRef element must be provided for this ScriptFilter");
             return null;
         }
-        if ((script != null && (scriptFile != null || scriptRef != null)) || (scriptFile != null && scriptRef != null) ) {
-            LOGGER.error("Only one Script, ScriptFile or ScriptRef element can be provided for this ScriptFilter");
-            return null;
-        }
-        if (scriptRef != null) {
+        if (script instanceof ScriptRef) {
             if (config.getScriptManager().getScript(script.getName()) == null) {
                 LOGGER.error("No script with name {} has been declared.", script.getName());
                 return null;
@@ -130,8 +121,7 @@ public class ScriptPatternSelector implements PatternSelector {
         if (properties == null || properties.length == 0) {
             LOGGER.warn("No marker patterns were provided");
         }
-        return new ScriptPatternSelector(script != null ? script : scriptFile != null ? scriptFile : scriptRef,
-                properties, defaultPattern, alwaysWriteExceptions, noConsoleNoAnsi, config);
+        return new ScriptPatternSelector(script, properties, defaultPattern, alwaysWriteExceptions, noConsoleNoAnsi, config);
     }
 
     @Override

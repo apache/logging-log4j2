@@ -38,4 +38,9 @@ public class Script extends AbstractScript {
         return new Script(name, language, scriptText);
 
     }
+
+    @Override
+    public String toString() {
+        return getName() != null ? getName() : super.toString();
+    }
 }

@@ -31,8 +31,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.script.AbstractScript;
-import org.apache.logging.log4j.core.script.Script;
-import org.apache.logging.log4j.core.script.ScriptFile;
 import org.apache.logging.log4j.core.script.ScriptRef;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
@@ -128,8 +126,6 @@ public final class ScriptFilter extends AbstractFilter {
      * Creates the ScriptFilter.
      * @param script The script to run. The script must return a boolean value. Either script or scriptFile must be 
      *      provided.
-     * @param scriptFile The script file to run. The script must return a boolean value. Either script or scriptFile 
-     *      must be provided.
      * @param match The action to take if a match occurs.
      * @param mismatch The action to take if no match occurs.
      * @param configuration the configuration 
@@ -137,30 +133,23 @@ public final class ScriptFilter extends AbstractFilter {
      */
     @PluginFactory
     public static ScriptFilter createFilter(
-            @PluginElement("Script") final Script script,
-            @PluginElement("ScriptFile") final ScriptFile scriptFile,
-            @PluginElement("ScriptRef") final ScriptRef scriptRef,
+            @PluginElement("Script") final AbstractScript script,
             @PluginAttribute("onMatch") final Result match,
             @PluginAttribute("onMismatch") final Result mismatch,
             @PluginConfiguration final Configuration configuration) {
 
-        if (script == null && scriptFile == null && scriptRef == null) {
+        if (script == null) {
             LOGGER.error("A Script, ScriptFile or ScriptRef element must be provided for this ScriptFilter");
             return null;
         }
-        if ((script != null && (scriptFile != null || scriptRef != null)) || (scriptFile != null && scriptRef != null) ) {
-            LOGGER.error("Only one Script, ScriptFile or ScriptRef element can be provided for this ScriptFilter");
-            return null;
-        }
-        if (scriptRef != null) {
-            if (configuration.getScriptManager().getScript(scriptRef.getName()) == null) {
+        if (script instanceof ScriptRef) {
+            if (configuration.getScriptManager().getScript(script.getName()) == null) {
                 logger.error("No script with name {} has been declared.", script.getName());
                 return null;
             }
         }
 
-        return new ScriptFilter(script != null ? script : scriptFile != null ? scriptFile : scriptRef, configuration,
-                match, mismatch);
+        return new ScriptFilter(script, configuration, match, mismatch);
     }
 
 }

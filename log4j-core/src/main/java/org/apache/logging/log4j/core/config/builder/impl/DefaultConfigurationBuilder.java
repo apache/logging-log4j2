@@ -32,6 +32,8 @@ import org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.ScriptComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.ScriptFileComponentBuilder;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
@@ -48,6 +50,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     private Component filters;
     private Component properties;
     private Component customLevels;
+    private Component scripts;
     private final Class<T> clazz;
     private ConfigurationSource source;
     private int monitorInterval = 0;
@@ -72,6 +75,8 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         final List<Component> components = root.getComponents();
         properties = new Component("Properties");
         components.add(properties);
+        scripts = new Component("Scripts");
+        components.add(scripts);
         customLevels = new Component("CustomLevels");
         components.add(customLevels);
         filters = new Component("Filters");
@@ -100,6 +105,16 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     @Override
     public ConfigurationBuilder<T> add(final FilterComponentBuilder builder) {
         return add(filters, builder);
+    }
+
+    @Override
+    public ConfigurationBuilder<T> add(final ScriptComponentBuilder builder) {
+        return add(scripts, builder);
+    }
+
+    @Override
+    public ConfigurationBuilder<T> add(final ScriptFileComponentBuilder builder) {
+        return add(scripts, builder);
     }
 
     @Override
@@ -160,6 +175,22 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
+    public ScriptComponentBuilder newScript(final String name, final String language, final String text) {
+        return new DefaultScriptComponentBuilder(this, name, language, text);
+    }
+
+
+    @Override
+    public ScriptFileComponentBuilder newScriptFile(final String path) {
+        return new DefaultScriptFileComponentBuilder(this, path, path);
+    }
+
+    @Override
+    public ScriptFileComponentBuilder newScriptFile(final String name, final String path) {
+        return new DefaultScriptFileComponentBuilder(this, name, path);
+    }
+
+    @Override
     public AppenderComponentBuilder newAppender(final String name, final String type) {
         return new DefaultAppenderComponentBuilder(this, name, type);
     }
@@ -187,6 +218,12 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     @Override
     public RootLoggerComponentBuilder newAsyncRootLogger(final String level) {
         return new DefaultRootLoggerComponentBuilder(this, level, "AsyncRoot");
+    }
+
+
+    @Override
+    public <B extends ComponentBuilder<B>> ComponentBuilder<B> newComponent(final String type) {
+        return new DefaultComponentBuilder<>(this, type);
     }
 
     @Override

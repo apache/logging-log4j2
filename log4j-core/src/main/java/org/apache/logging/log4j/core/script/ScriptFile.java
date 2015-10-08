@@ -38,7 +38,7 @@ import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * Container for the language and body of a script file.
+ * Container for the language and body of a script file along with the file location.
  */
 @Plugin(name = "ScriptFile", category = Node.CATEGORY, printObject = true)
 public class ScriptFile extends AbstractScript {
@@ -110,5 +110,19 @@ public class ScriptFile extends AbstractScript {
             return null;
         }
         return new ScriptFile(name, path, language, isWatched == null ? Boolean.FALSE : isWatched, scriptText);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        if (!(getName().equals(filePath))) {
+            sb.append("name=").append(getName()).append(", ");
+        }
+        sb.append("path=").append(filePath);
+        if (getLanguage() != null) {
+            sb.append(", language=").append(getLanguage());
+        }
+        sb.append(", isWatched=").append(isWatched);
+        return sb.toString();
     }
 }

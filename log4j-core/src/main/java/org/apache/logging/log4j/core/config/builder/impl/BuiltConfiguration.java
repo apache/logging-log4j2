@@ -48,6 +48,7 @@ public class BuiltConfiguration extends AbstractConfiguration {
     private Component filtersComponent;
     private Component propertiesComponent;
     private Component customLevelsComponent;
+    private Component scriptsComponent;
     private String contentType = "text";
 
     public BuiltConfiguration(final ConfigurationSource source, final Component rootComponent) {
@@ -55,6 +56,10 @@ public class BuiltConfiguration extends AbstractConfiguration {
         statusConfig = new StatusConfiguration().withVerboseClasses(VERBOSE_CLASSES).withStatus(getDefaultStatus());
         for (final Component component : rootComponent.getComponents()) {
             switch (component.getPluginType()) {
+                case "Scripts": {
+                    scriptsComponent = component;
+                    break;
+                }
                 case "Loggers": {
                     loggersComponent = component;
                     break;
@@ -85,6 +90,9 @@ public class BuiltConfiguration extends AbstractConfiguration {
         final List<Node> children = rootNode.getChildren();
         if (propertiesComponent.getComponents().size() > 0) {
             children.add(convertToNode(rootNode, propertiesComponent));
+        }
+        if (scriptsComponent.getComponents().size() > 0) {
+            children.add(convertToNode(rootNode, scriptsComponent));
         }
         if (customLevelsComponent.getComponents().size() > 0) {
             children.add(convertToNode(rootNode, customLevelsComponent));

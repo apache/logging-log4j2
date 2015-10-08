@@ -11,7 +11,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginValue;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * Container for the language and body of a script.
+ * Contains a reference to a script defined elsewhere in the configuration.
  */
 @Plugin(name = "ScriptRef", category = Node.CATEGORY, printObject = true)
 public class ScriptRef extends AbstractScript {
@@ -49,5 +49,10 @@ public class ScriptRef extends AbstractScript {
         }
         return new ScriptRef(name, configuration.getScriptManager());
 
+    }
+
+    @Override
+    public String toString() {
+        return "ref=" + getName();
     }
 }

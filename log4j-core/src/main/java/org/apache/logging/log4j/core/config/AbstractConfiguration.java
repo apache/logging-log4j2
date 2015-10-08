@@ -58,6 +58,7 @@ import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.script.AbstractScript;
 import org.apache.logging.log4j.core.script.ScriptManager;
+import org.apache.logging.log4j.core.script.ScriptRef;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Loader;
@@ -429,7 +430,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             }
             if (child.getName().equalsIgnoreCase("Scripts")) {
                 for (AbstractScript script : child.getObject(AbstractScript[].class)) {
-                   scriptManager.addScript(script);
+                    if (script instanceof ScriptRef) {
+                        LOGGER.error("Script reference to {} not added. Scripts definition cannot contain script references",
+                                script.getName());
+                    } else {
+                        scriptManager.addScript(script);
+                    }
                 }
             } else if (child.getName().equalsIgnoreCase("Appenders")) {
                 appenders = child.getObject();
