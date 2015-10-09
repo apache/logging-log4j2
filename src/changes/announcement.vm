@@ -26,8 +26,8 @@ Log4j that provides significant improvements over its predecessor, Log4j 1.x, an
 many other modern features such as support for Markers, property substitution using Lookups, and asynchronous
 Loggers. In addition, Log4j 2 will not lose events while reconfiguring.
 
-This is the ${relCount} GA release. It contains several bugfixes and new features. As of this release
-Log4j now requires a minimum of Java 7.
+This is the ${relCount} GA release. It contains several bugfixes and new features.
+Log4j 2 requires a minimum of Java 7.
 
 ## Hack to improve layout: replace all pairs of spaces with a single new-line
 $release.description.replaceAll("  ", "

@@ -23,15 +23,15 @@
     <title>Changes</title>
   </properties>
   <body>
-    <release version="2.4.1" date="2015-MM-DD" description="GA Release 2.4.1">
+    <release version="2.4.1" date="2015-10-08" description="GA Release 2.4.1">
       <action issue="LOG4J2-1129" dev="rgoers" type="add">
         Allow PatternLayout to select a pattern to use based on some selection criteria.
       </action>
       <action issue="LOG4J2-1145" dev="ggregory" type="add">
-        Add %equals to PatternLayout to test and replace patterns with strings. 
+        Add %equals to PatternLayout to test and replace patterns with strings.
       </action>
       <action issue="LOG4J2-1147" dev="ggregory" type="add">
-        Add %equalsIgnoreCase to PatternLayout to test and replace patterns with strings. 
+        Add %equalsIgnoreCase to PatternLayout to test and replace patterns with strings.
       </action>
       <action issue="LOG4J2-1146" dev="ggregory" type="add">
         Add %notEmpty to PatternLayout to avoid output of patterns where all variables are empty.
@@ -86,13 +86,13 @@
       </action>
       <action issue="LOG4J2-1138" dev="ggregory" type="update">
         Do not use Jackson deprecated methods.
-      </action>      
+      </action>
       <action issue="LOG4J2-1139" dev="ggregory" type="update">
         Update Jackson from 2.6.1 to 2.6.2.
-      </action>      
+      </action>
       <action issue="LOG4J2-1150" dev="ggregory" type="update">
         Update kafka-clients from 0.8.2.1 to 0.8.2.2.
-      </action>      
+      </action>
     </release>
     <release version="2.4" date="2015-09-20" description="GA Release 2.4">
       <action issue="LOG4J2-635" dev="rgoers" type="add">
