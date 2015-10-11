@@ -1051,16 +1051,77 @@ rootLogger.appenderRef.stdout.ref = STDOUT
             JSR 223 scripting framework and only require that the jars for that language be installed.
           </p>
           <p>
-            The components that support using scripts do so by allowing a &lt;script&gt; element to be configured on
+            The components that support using scripts do so by allowing a &lt;script&gt;, &lt;scriptFile&gt;, or
+            &lt;scriptRef&gt; element to be configured on
             them. The script element contains a name for the script, the language of the script, and the script text.
+            The scriptFile element contains the name of the script, its location, its language, its charset, and
+            whether the file should be watched for changes. The scriptRef element contains the name of the
+            script that is defined in the &lt;scripts&gt; configuration element.
             The name of the script is used to store the script, along with its ScriptEngine, so it can quickly be
             located each time the script needs to be run. While the name is not required, providing it will help in
-            debugging problems when the script is running. The language must be provided and must specify one of
-            the language names that appear in the Configuration status log as described in the next section.
+            debugging problems when the script is running. The language must be provided on the script element and must
+            specify one of the language names that appear in the Configuration status log as described in the next
+            section. If the language is not specified on the scriptFile element the language will be determined by
+            the file extension of the script path. If file monitoring is requested it will only be enabled if
+            a non-zero monitorInterval is specified on the configuration element. That interval will be used to
+            check for changes in the file.
           </p>
+          <pre class="prettyprint linenums"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="debug" name="RoutingTest">
+  <Scripts>
+    <Script name="selector" language="javascript"><![CDATA[
+            var result;
+            if (logEvent.getLoggerName().equals("JavascriptNoLocation")) {
+                result = "NoLocation";
+            } else if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf("FLOW")) {
+                result = "Flow";
+            }
+            result;
+            ]]]]><![CDATA[></Script>
+    <ScriptFile name="groovy.filter" path="scripts/filter.groovy"/>
+  </Scripts>
+
+  <Appenders>
+    <Console name="STDOUT">
+      <ScriptPatternSelector defaultPattern="%d %p %m%n">
+        <ScriptRef ref="selector"/>
+          <PatternMatch key="NoLocation" pattern="[%-5level] %c{1.} %msg%n"/>
+          <PatternMatch key="Flow" pattern="[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"/>
+      </ScriptPatternSelector>
+      <PatternLayout pattern="%m%n"/>
+    </Console>
+  </Appenders>
+
+  <Loggers>
+    <Logger name="EventLogger" level="info" additivity="false">
+        <ScriptFilter onMatch="ACCEPT" onMisMatch="DENY">
+          <Script name="GroovyFilter" language="groovy"><![CDATA[
+            if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf("FLOW")) {
+                return true;
+            } else if (logEvent.getContextMap().containsKey("UserId")) {
+                return true;
+            }
+            return false;
+            ]]]]><![CDATA[>
+          </Script>
+        </ScriptFilter>
+      <AppenderRef ref="STDOUT"/>
+    </Logger>
+
+    <Root level="error">
+      <ScriptFilter onMatch="ACCEPT" onMisMatch="DENY">
+        <ScriptRef ref="groovy.filter"/>
+      </ScriptFilter>
+      <AppenderRef ref="STDOUT"/>
+    </Root>
+  </Loggers>
+
+</Configuration>]]>
+          </pre>
           <p>
             If the status attribute on the Configuration element is set to DEBUG the list of script engines currently
-            installed and their attributes will be listed. Although some engines may say they are not thread safe
+            installed and their attributes will be listed. Although some engines may say they are not thread safe,
             Log4j takes steps to insure that the scripts will run in a thread-safe manner if the engine advertises
             that it is not thread safe.
           </p>
@@ -1082,12 +1143,12 @@ rootLogger.appenderRef.stdout.ref = STDOUT
           </p>
           <p>
             The components that support scripting expect a return value to be passed back to the calling Java code.
-            This is not a problem for several of the scripting languages. However, Javascript does not allow a
+            This is not a problem for several of the scripting languages, but Javascript does not allow a
             return statement unless it is within a function. However, Javascript will return the value of the last
             statement executed in the script. As a consequence, code such as that shown below will result in the
             desired behavior.
           </p>
-          <pre>
+          <pre><![CDATA[
             var result;
             if (logEvent.getLoggerName().equals("JavascriptNoLocation")) {
                 result = "NoLocation";
@@ -1095,7 +1156,7 @@ rootLogger.appenderRef.stdout.ref = STDOUT
                 result = "Flow";
             }
             result;
-          </pre>
+          ]]></pre>
           <h4>A special note on Beanshell</h4>
           <p>
             JSR 223 scripting engines are supposed to identify that they support the Compilable interface if they
@@ -1104,14 +1165,14 @@ rootLogger.appenderRef.stdout.ref = STDOUT
             Beanshell script when it tries to compile them. All Beanshell scripts will then be interpreted on each
             execution.
           </p>
-          <pre>
+          <pre><![CDATA[
 2015-09-27 16:13:23,095 main DEBUG Script BeanShellSelector is compilable
 2015-09-27 16:13:23,096 main WARN Error compiling script java.lang.Error: unimplemented
             at bsh.engine.BshScriptEngine.compile(BshScriptEngine.java:175)
             at bsh.engine.BshScriptEngine.compile(BshScriptEngine.java:154)
             at org.apache.logging.log4j.core.script.ScriptManager$MainScriptRunner.<init>(ScriptManager.java:125)
             at org.apache.logging.log4j.core.script.ScriptManager.addScript(ScriptManager.java:94)
-          </pre>
+          ]]></pre>
         </subsection>
         <a name="XInclude"/>
         <subsection name="XInclude">

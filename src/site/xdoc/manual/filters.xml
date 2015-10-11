@@ -475,7 +475,7 @@
             </tr>
             <tr>
               <td>script</td>
-              <td>Script</td>
+              <td>Scriptm, ScriptFile or ScriptRef</td>
               <td>The Script element that specifies the logic to be executed.
               </td>
             </tr>
@@ -548,6 +548,41 @@
               <td>The StrSubstitutor used to replace lookup variables.</td>
             </tr>
           </table>
+          <p>
+            The sample below shows how to declare script fiels and then reference them in specific components.
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="ERROR">
+  <Scripts>
+    <ScriptFile name="filter.js" language="JavaScript" path="src/test/resources/scripts/filter.js" charset="UTF-8" />
+    <ScriptFile name="filter.groovy" path="src/test/resources/scripts/filter.groovy" charset="UTF-8" />
+  </Scripts>
+  <Appenders>
+    <List name="List">
+      <PatternLayout pattern="[%-5level] %c{1.} %msg%n"/>
+    </List>
+  </Appenders>
+  <Loggers>
+    <Logger name="TestJavaScriptFilter" level="trace" additivity="false">
+      <AppenderRef ref="List">
+        <ScriptFilter onMatch="ACCEPT" onMisMatch="DENY">
+          <ScriptRef ref="filter.js" />
+        </ScriptFilter>
+      </AppenderRef>
+    </Logger>
+    <Logger name="TestGroovyFilter" level="trace" additivity="false">
+      <AppenderRef ref="List">
+        <ScriptFilter onMatch="ACCEPT" onMisMatch="DENY">
+          <ScriptRef ref="filter.groovy" />
+        </ScriptFilter>
+      </AppenderRef>
+    </Logger>
+    <Root level="trace">
+      <AppenderRef ref="List" />
+    </Root>
+  </Loggers>
+</Configuration>
+          ]]></pre>pre>
         </subsection>
         <a name="StructuredDataFilter"/>
         <subsection name="StructuredDataFilter">

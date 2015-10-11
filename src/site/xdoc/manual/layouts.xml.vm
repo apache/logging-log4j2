@@ -407,7 +407,14 @@ WARN  [main]: Message 2</pre>
             <tr>
               <td>pattern</td>
               <td>String</td>
-              <td>A composite pattern string of one or more conversion patterns from the table below.</td>
+              <td>A composite pattern string of one or more conversion patterns from the table below. Cannot be
+                specified with a PatternSelector.</td>
+            </tr>
+            <tr>
+              <td>patternSelector</td>
+              <td>PatternSelector</td>
+              <td>A component that analyzes information in the LogEvent and determines which pattern should be
+                  used to format the event. The pattern and patternSelector parameters are mutually exclusive.</td>
             </tr>
             <tr>
               <td>replace</td>
@@ -557,7 +564,7 @@ WARN  [main]: Message 2</pre>
                 </p>
                 <p>You can also use a set of braces containing a time zone id per
                   <a class="javadoc" href="${javadocRoot}/java/util/TimeZone.html${sharp}getTimeZone(java.lang.String)">
-                    java.util.TimeZone.getTimeZone</a>. If no date format specifier is given then the DEFAULT format is used.
+                    java.util.TimeZone.getTimeZone</a>. If no date format specifier is given then ISO8601 format is assumed.
                   <table>
                     <tr>
                       <th>Pattern</th>
@@ -1472,7 +1479,49 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           <pre class="prettyprint linenums"><![CDATA[<PatternLayout>
   <pattern>%d %highlight{%p} %style{%C{1.} [%t] %m}{bold,green}%n</pattern>
 </PatternLayout>]]></pre>
-        </subsection>
+
+        <h4>Pattern Selectors</h4>
+        <p>
+          The PatternLayout can be configured with a PatternSelector to allow it to choose a pattern to use based on
+          attributes of the log event or other factors. A PatternSelector will normally be configured with a defaultPattern
+          attribute, which is used when other criteria don't match, and a set of PatternMatch elements that identify
+          the various patterns that can be selected.
+        </p>
+          <h5>MarkerPatternSelector</h5>
+          <p>
+            The MarkerPatternSelector selects patterns based on the Marker included in the log event. If the Marker in
+            the log event is equal to or is an ancestor of the name specified on the PatternMatch key attribute, then the
+            pattern specified on that PatternMatch element will be used.
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[<PatternLayout>
+  <MarkerPatternSelector defaultPattern="[%-5level] %c{1.} %msg%n">
+    <PatternMatch key="FLOW" pattern="[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"/>
+  </MarkerPatternSelector>
+</PatternLayout>]]></pre>
+          <h5>ScriptPatternSelector</h5>
+          <p>
+            The ScriptPatternSelector executes a script as descibed in the <a href="../configuration.html#Scripts">Scripts</a> section of the
+            Configuration chapter. The script is passed all the properties configured in the Properties section of the
+            configuration, the StrSubstitutor used by the Confguration in the "substitutor" vairables, and the
+            log event in the "logEvent" variable, and is expected to return the value of the PatternMatch key that
+            should be used, or null if the default pattern should be used.
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[<PatternLayout>
+  <ScriptPatternSelector defaultPattern="[%-5level] %c{1.} %C{1.}.%M.%L %msg%n">
+    <Script name="BeanShellSelector" language="bsh"><![CDATA[
+      if (logEvent.getLoggerName().equals("NoLocation")) {
+        return "NoLocation";
+      } else if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf("FLOW")) {
+        return "Flow";
+      } else {
+        return null;
+      }]]]]><![CDATA[>
+    </Script>
+    <PatternMatch key="NoLocation" pattern="[%-5level] %c{1.} %msg%n"/>
+    <PatternMatch key="Flow" pattern="[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"/>
+  </ScriptPatternSelector>
+</PatternLayout>]]></pre>
+      </subsection>
         <a name="RFC5424Layout"/>
         <subsection name="RFC5424Layout">
           <p>As the name implies, the RFC5424Layout formats LogEvents in accordance with
