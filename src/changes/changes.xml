@@ -24,9 +24,6 @@
   </properties>
   <body>
     <release version="2.4.1" date="2015-10-08" description="GA Release 2.4.1">
-      <action issue="LOG4J2-1099" dev="mattsicker" type="fix">
-        Fix serialization problem with all AbstractStringLayout-derived Layout plugins.
-      </action>
       <action issue="LOG4J2-1129" dev="rgoers" type="add">
         Allow PatternLayout to select a pattern to use based on some selection criteria.
       </action>
