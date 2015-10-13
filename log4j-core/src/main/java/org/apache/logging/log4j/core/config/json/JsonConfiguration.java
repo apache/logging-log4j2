@@ -87,8 +87,11 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
                     setName(value);
                 } else if ("monitorInterval".equalsIgnoreCase(key)) {
                     final int intervalSeconds = Integer.parseInt(value);
-                    if (intervalSeconds > 0 && configFile != null) {
-                        monitor = new FileConfigurationMonitor(this, configFile, listeners, intervalSeconds);
+                    if (intervalSeconds > 0) {
+                        getWatchManager().setIntervalSeconds(intervalSeconds);
+                        if (configFile != null) {
+                            monitor = new FileConfigurationMonitor(this, configFile, listeners, intervalSeconds);
+                        }
                     }
                 } else if ("advertiser".equalsIgnoreCase(key)) {
                     createAdvertiser(value, configSource, buffer, "application/json");

@@ -14,24 +14,19 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.config.plugins;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package org.apache.logging.log4j.core.config.builder.api;
 
 /**
- * Identifies a Method as the factory to create the plugin. This annotation should only be used on a {@code static}
- * method, and its parameters should be annotated with the appropriate Plugin annotations.
- * <p>
- * There can only be one factory method per class.
- * </p>
+ * Assembler for constructing ScriptFile Components.
+ * @since 2.5
  */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface PluginFactory {
+public interface ScriptFileComponentBuilder extends ComponentBuilder<ScriptFileComponentBuilder> {
 
+    ScriptFileComponentBuilder addLanguage(String language);
+
+    ScriptFileComponentBuilder addIsWatched(boolean isWatched);
+
+    ScriptFileComponentBuilder addIsWatched(String isWatched);
+
+    ScriptFileComponentBuilder addCharset(String charset);
 }

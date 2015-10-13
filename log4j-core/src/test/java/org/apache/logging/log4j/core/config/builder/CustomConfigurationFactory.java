@@ -39,6 +39,7 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
     static Configuration addTestFixtures(final String name, ConfigurationBuilder<BuiltConfiguration> builder) {
         builder.setConfigurationName(name);
         builder.setStatusLevel(Level.ERROR);
+        builder.add(builder.newScriptFile("target/test-classes/scripts/filter.groovy").addIsWatched(true));
         builder.add(builder.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.NEUTRAL)
                 .addAttribute("level", Level.DEBUG));
         AppenderComponentBuilder appenderBuilder = builder.newAppender("Stdout", "CONSOLE").addAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);

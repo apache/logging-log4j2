@@ -30,6 +30,8 @@ import org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.ScriptComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.ScriptFileComponentBuilder;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
@@ -105,6 +107,25 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
             builder.addProperty(key, props.getProperty(key));
         }
 
+        String scriptProp = properties.getProperty("scripts");
+        if (scriptProp != null) {
+            String[] scriptNames = scriptProp.split(",");
+            for (String scriptName : scriptNames) {
+                String name = scriptName.trim();
+                Properties scriptProps = PropertiesUtil.extractSubset(properties, "script." + name);
+                String type = scriptProps.getProperty("type");
+                if (type == null) {
+                    throw new ConfigurationException("No type provided for script - must be Script or ScriptFile");
+                }
+                scriptProps.remove("type");
+                if (type.equalsIgnoreCase("script")) {
+                    builder.add(createScript(builder, name, scriptProps));
+                } else {
+                    builder.add(createScriptFile(builder, name, scriptProps));
+                }
+            }
+        }
+
         Properties levelProps = PropertiesUtil.extractSubset(properties, "customLevel");
         if (levelProps.size() > 0) {
             for (String key : levelProps.stringPropertyNames()) {
@@ -148,6 +169,42 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
 
         return builder.build();
     }
+
+
+    private ScriptComponentBuilder createScript(ConfigurationBuilder<PropertiesConfiguration> builder, String key,
+                                                Properties properties) {
+        String name = properties.getProperty("name");
+        if (name != null) {
+            properties.remove("name");
+        }
+        String language = properties.getProperty("language");
+        if (language!= null) {
+            properties.remove("language");
+        }
+        String text = properties.getProperty("text");
+        if (text != null) {
+            properties.remove("text");
+        }
+        ScriptComponentBuilder scriptBuilder = builder.newScript(name, language, text);
+        processRemainingProperties(scriptBuilder, key, properties);
+        return scriptBuilder;
+    }
+
+    private ScriptFileComponentBuilder createScriptFile(ConfigurationBuilder<PropertiesConfiguration> builder, String key,
+                                                Properties properties) {
+        String name = properties.getProperty("name");
+        if (name != null) {
+            properties.remove("name");
+        }
+        String path = properties.getProperty("path");
+        if (path != null) {
+            properties.remove("path");
+        }
+        ScriptFileComponentBuilder scriptFileBuilder = builder.newScriptFile(name, path);
+        processRemainingProperties(scriptFileBuilder, key, properties);
+        return scriptFileBuilder;
+    }
+
 
     private AppenderComponentBuilder createAppender(ConfigurationBuilder<PropertiesConfiguration> builder, String key,
             Properties properties) {

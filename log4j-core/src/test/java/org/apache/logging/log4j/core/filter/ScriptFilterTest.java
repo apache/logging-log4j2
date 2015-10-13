@@ -14,24 +14,24 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.config.plugins;
+package org.apache.logging.log4j.core.filter;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.junit.ClassRule;
 
 /**
- * Identifies a Method as the factory to create the plugin. This annotation should only be used on a {@code static}
- * method, and its parameters should be annotated with the appropriate Plugin annotations.
- * <p>
- * There can only be one factory method per class.
- * </p>
+ *
  */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface PluginFactory {
+public class ScriptFilterTest extends AbstractScriptFilterTest {
+
+    private static final String CONFIG = "log4j-script-filters.xml";
+
+    @ClassRule
+    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
+
+    @Override
+    public LoggerContextRule getContext() {
+        return context;
+    }
 
 }

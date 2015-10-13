@@ -14,24 +14,30 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.config.plugins;
+package org.apache.logging.log4j.core.config;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.script.AbstractScript;
 
 /**
- * Identifies a Method as the factory to create the plugin. This annotation should only be used on a {@code static}
- * method, and its parameters should be annotated with the appropriate Plugin annotations.
- * <p>
- * There can only be one factory method per class.
- * </p>
+ * A  container of Scripts.
  */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface PluginFactory {
+@Plugin(name = "scripts", category = "Core")
+public final class ScriptsPlugin {
 
+    private ScriptsPlugin() {
+    }
+
+    /**
+     * Return the array of scripts
+     * @param scripts An array of Scripts.
+     * @return The array of AbstractScripts.
+     */
+    @PluginFactory
+    public static AbstractScript[] createScripts(@PluginElement("Scripts") final AbstractScript[] scripts) {
+
+        return scripts;
+    }
 }

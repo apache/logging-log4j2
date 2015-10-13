@@ -14,24 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.config.plugins;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 /**
- * Identifies a Method as the factory to create the plugin. This annotation should only be used on a {@code static}
- * method, and its parameters should be annotated with the appropriate Plugin annotations.
- * <p>
- * There can only be one factory method per class.
- * </p>
+ * Log4j 2 Script support.
  */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface PluginFactory {
-
-}
+package org.apache.logging.log4j.core.script;

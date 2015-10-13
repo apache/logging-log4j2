@@ -29,6 +29,21 @@ import org.apache.logging.log4j.core.util.Builder;
  */
 public interface ConfigurationBuilder<T extends Configuration> extends Builder<T> {
 
+
+    /**
+     * Adds a ScriptComponent.
+     * @param builder The ScriptComponentBuilder with all of its attributes and sub components set.
+     * @return this builder instance.
+     */
+    ConfigurationBuilder<T> add(ScriptComponentBuilder builder);
+
+    /**
+     * Adds a ScriptFileComponent.
+     * @param builder The ScriptFileComponentBuilder with all of its attributes and sub components set.
+     * @return this builder instance.
+     */
+    ConfigurationBuilder<T> add(ScriptFileComponentBuilder builder);
+
     /**
      * Adds an AppenderComponent.
      * @param builder The AppenderComponentBuilder with all of its attributes and sub components set.
@@ -71,6 +86,33 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * @return this builder instance.
      */
     ConfigurationBuilder<T> addProperty(String key, String value);
+
+
+    /**
+     * Returns a builder for creating Async Loggers.
+     * @param name The name of the Logger.
+     * @param language The script language
+     * @param text The script to execute.
+     * @return A new ScriptComponentBuilder.
+     */
+    ScriptComponentBuilder newScript(String name, String language, String text);
+
+    /**
+     * Returns a builder for creating Async Loggers.
+     * @param path The location of the script file.
+     * @return A new ScriptFileComponentBuilder.
+     */
+    ScriptFileComponentBuilder newScriptFile(String path);
+
+
+    /**
+     * Returns a builder for creating Async Loggers.
+     * @param name The name of the script file.
+     * @param path The location of the script file.
+     * @return A new ScriptFileComponentBuilder.
+     */
+    ScriptFileComponentBuilder newScriptFile(String name, String path);
+
 
     /**
      * Returns a builder for creating Appenders.
@@ -116,6 +158,14 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * @return A new RootLoggerComponentBuilder.
      */
     RootLoggerComponentBuilder newAsyncRootLogger(String level);
+
+    /**
+     * Returns a builder for creating generic components.
+     * @param <B> ComponentBuilder target type
+     * @param pluginName The Plugin type of the component.
+     * @return A new ComponentBuilder.
+     */
+    <B extends ComponentBuilder<B>> ComponentBuilder<B> newComponent(String pluginName);
 
     /**
      * Returns a builder for creating generic components.

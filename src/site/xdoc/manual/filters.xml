@@ -461,6 +461,129 @@
   </Loggers>
 </Configuration>]]></pre>
         </subsection>
+        <a name="Script"/>
+        <subsection name="Script">
+          <p>
+            The ScriptFilter executes a script that returns true or false.
+          </p>
+          <table>
+            <caption align="top">Script Filter Parameters</caption>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>script</td>
+              <td>Scriptm, ScriptFile or ScriptRef</td>
+              <td>The Script element that specifies the logic to be executed.
+              </td>
+            </tr>
+            <tr>
+              <td>onMatch</td>
+              <td>String</td>
+              <td>Action to take when the script returns true. May be ACCEPT, DENY or NEUTRAL. The default value is NEUTRAL.</td>
+            </tr>
+            <tr>
+              <td>onMismatch</td>
+              <td>String</td>
+              <td>Action to take when the filter returns false. May be ACCEPT, DENY or NEUTRAL. The default value is
+                DENY.</td>
+            </tr>
+          </table>
+          <table>
+            <caption align="top">Script Parameters</caption>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>configuration</td>
+              <td>Configuration</td>
+              <td>The Configuration that owns this ScriptFilter.</td>
+            </tr>
+            <tr>
+              <td>level</td>
+              <td>Level</td>
+              <td>The logging Level associated with the event. Only present when configured as a global filter.</td>
+            </tr>
+            <tr>
+              <td>loggerName</td>
+              <td>String</td>
+              <td>The name of the logger. Only present when configured as a global filter.</td>
+            </tr>
+            <tr>
+              <td>logEvent</td>
+              <td>LogEvent</td>
+              <td>The LogEvent being processed. Not present when configured as a global filter.</td>
+            </tr>
+            <tr>
+              <td>marker</td>
+              <td>Marker</td>
+              <td>The Marker passed on the logging call, if any. Only present when configured as a global filter.</td>
+            </tr>
+            <tr>
+              <td>message</td>
+              <td>Message</td>
+              <td>The Message associated with the logging call. Only present when configured as a global filter.</td>
+            </tr>
+            <tr>
+              <td>parameters</td>
+              <td>Object[]</td>
+              <td>The parameters passed to the logging call. Only present when configured as a global filter.
+                Some Messages include the parameters as part of the Message.
+              </td>
+            </tr>
+            <tr>
+              <td>throwable</td>
+              <td>Throwable</td>
+              <td>The Throwable passed to the logging call, if any. Only present when configured as a global filter.
+                Som Messages include Throwable as part of the Message.
+              </td>
+            </tr>
+            <tr>
+              <td>substitutor</td>
+              <td>StrSubstitutor</td>
+              <td>The StrSubstitutor used to replace lookup variables.</td>
+            </tr>
+          </table>
+          <p>
+            The sample below shows how to declare script fiels and then reference them in specific components.
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="ERROR">
+  <Scripts>
+    <ScriptFile name="filter.js" language="JavaScript" path="src/test/resources/scripts/filter.js" charset="UTF-8" />
+    <ScriptFile name="filter.groovy" path="src/test/resources/scripts/filter.groovy" charset="UTF-8" />
+  </Scripts>
+  <Appenders>
+    <List name="List">
+      <PatternLayout pattern="[%-5level] %c{1.} %msg%n"/>
+    </List>
+  </Appenders>
+  <Loggers>
+    <Logger name="TestJavaScriptFilter" level="trace" additivity="false">
+      <AppenderRef ref="List">
+        <ScriptFilter onMatch="ACCEPT" onMisMatch="DENY">
+          <ScriptRef ref="filter.js" />
+        </ScriptFilter>
+      </AppenderRef>
+    </Logger>
+    <Logger name="TestGroovyFilter" level="trace" additivity="false">
+      <AppenderRef ref="List">
+        <ScriptFilter onMatch="ACCEPT" onMisMatch="DENY">
+          <ScriptRef ref="filter.groovy" />
+        </ScriptFilter>
+      </AppenderRef>
+    </Logger>
+    <Root level="trace">
+      <AppenderRef ref="List" />
+    </Root>
+  </Loggers>
+</Configuration>
+          ]]></pre>pre>
+        </subsection>
         <a name="StructuredDataFilter"/>
         <subsection name="StructuredDataFilter">
           <p>
