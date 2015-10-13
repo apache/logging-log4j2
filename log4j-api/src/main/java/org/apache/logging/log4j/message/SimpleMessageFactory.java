@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.message;
 
 /**
- * Simplest message withou no arguments.
+ * Factory for the simplest possible implementation of Message, the Message String given as the constructor argument.
  * <p>
  * Creates {@link StringFormattedMessage} instances for
  * {@link #newMessage(String, Object...)}.
