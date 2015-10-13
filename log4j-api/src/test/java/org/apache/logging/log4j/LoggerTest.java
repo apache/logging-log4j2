@@ -215,6 +215,7 @@ public class LoggerTest {
         assertEquals(messageFactory, testLogger.getMessageFactory());
         final TestLogger testLogger2 = (TestLogger) LogManager.getLogger("getLogger_String_MessageFactoryMismatch",
                 ParameterizedMessageFactory.INSTANCE);
+        assertNotNull(testLogger2);
         //TODO: How to test?
         //This test context always creates new loggers, other test context impls I tried fail other tests.
         //assertEquals(messageFactory, testLogger2.getMessageFactory());
