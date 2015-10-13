@@ -255,6 +255,7 @@ public class PatternLayoutTest {
         // System.out.println("event2=" + event2.getTimeMillis() / 1000);
     }
 
+    @SuppressWarnings("unused")
     private void testUnixTime(final String pattern) throws Exception {
         final PatternLayout layout = PatternLayout.newBuilder().withPattern(pattern + " %m")
                 .withConfiguration(ctx.getConfiguration()).build();
