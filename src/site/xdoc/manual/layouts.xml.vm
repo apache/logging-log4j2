@@ -209,8 +209,7 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
              See also:
            </p>
            <ul>
-             <li>The <a href="http://graylog2.org/gelf">GELF home page</a></li>
-             <li>The <a href="http://graylog2.org/resources/gelf/specification">GELF specification</a></li>
+             <li>The <a href="https://www.graylog.org/resources/gelf/">GELF specification</a></li>
            </ul>
         </subsection>
         <a name="HTMLLayout"/>
@@ -564,7 +563,7 @@ WARN  [main]: Message 2</pre>
                 </p>
                 <p>You can also use a set of braces containing a time zone id per
                   <a class="javadoc" href="${javadocRoot}/java/util/TimeZone.html${sharp}getTimeZone(java.lang.String)">
-                    java.util.TimeZone.getTimeZone</a>. If no date format specifier is given then ISO8601 format is assumed.
+                    java.util.TimeZone.getTimeZone</a>. If no date format specifier is given then the DEFAULT format is used.
                   <table>
                     <tr>
                       <th>Pattern</th>

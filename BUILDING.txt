@@ -8,13 +8,14 @@ To perform a RAT check, run:
 
 mvn apache-rat:check
 
-To perform a Clirr check on the API modules, run:
+To perform a Clirr check on the API modules, run
 
-cd log4j-api
-mvn clirr:check
+mvn clirr:check -pl log4j-api
+mvn clirr:check -pl log4j-1.2-api
 
-cd log4j-1.2-api
-mvn clirr:check
+To build the site with Java 7, make sure you give Maven enough memory using 
+MAVEN_OPTS with options appropriate for your JVM. Alternatively, you can 
+build with Java 8 and not deal with MAVEN_OPTS.
 
 To build the site, from a command line, run:
 
