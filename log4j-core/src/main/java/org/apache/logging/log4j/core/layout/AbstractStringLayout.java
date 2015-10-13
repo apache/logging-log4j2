@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -46,8 +49,8 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
     /**
      * The charset for the formatted message.
      */
-    // TODO: Charset is not serializable. Implement read/writeObject() ?
-    private final Charset charset;
+    // LOG4J2-1099: charset cannot be final due to serialization needs, so we serialize as charset name instead
+    private transient Charset charset;
     private final String charsetName;
     private final boolean useCustomEncoding;
 
@@ -95,6 +98,17 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
             }
         }
         return null;
+    }
+
+    private void writeObject(final ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        out.writeUTF(charset.name());
+    }
+
+    private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        final String charsetName = in.readUTF();
+        charset = Charset.forName(charsetName);
     }
 
     /**
