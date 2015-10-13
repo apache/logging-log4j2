@@ -24,8 +24,8 @@
   </properties>
   <body>
     <release version="2.5" date="2015-MM-DD" description="GA Release 2.5">
-      <action issue="LOG4J2-nnnn" dev="..." type="...">
-        ...
+      <action issue="LOG4J2-1158" dev="ggregory" type="fix" due-to="Michael Fortin, Gary Gregory">
+        Log4J JUL adapter is using MessageFormat on String passed by java.util.function.Supplier&lt;String>.
       </action>
     </release>
     <release version="2.4.1" date="2015-10-08" description="GA Release 2.4.1">

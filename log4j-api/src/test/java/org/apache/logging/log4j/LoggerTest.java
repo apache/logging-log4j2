@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
+import org.apache.logging.log4j.message.SimpleMessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.util.Strings;
@@ -30,7 +31,6 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.*;
 
 import static org.junit.Assert.*;
-
 /**
  *
  */
@@ -234,6 +234,18 @@ public class LoggerTest {
         testLogger.debug("{}", Integer.MAX_VALUE);
         assertEquals(1, testLogger.getEntries().size());
         assertEquals(" DEBUG " + Integer.MAX_VALUE, testLogger.getEntries().get(0));
+    }
+
+    @Test
+    public void getLogger_String_SimpleMessageFactory() {
+        final SimpleMessageFactory messageFactory = SimpleMessageFactory.INSTANCE;
+        final TestLogger testLogger = (TestLogger) LogManager.getLogger("getLogger_String_StringFormatterMessageFactory",
+                messageFactory);
+        assertNotNull(testLogger);
+        assertEquals(messageFactory, testLogger.getMessageFactory());
+        testLogger.debug("{} %,d {foo}", Integer.MAX_VALUE);
+        assertEquals(1, testLogger.getEntries().size());
+        assertEquals(" DEBUG {} %,d {foo}", testLogger.getEntries().get(0));
     }
 
     @Test

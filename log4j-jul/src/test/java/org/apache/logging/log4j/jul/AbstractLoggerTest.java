@@ -101,4 +101,67 @@ public abstract class AbstractLoggerTest {
         final String message = messages.get(0);
         assertEquals(AbstractLoggerTest.class.getName(), message);
     }
+
+    @Test
+    public void testCurlyBraces() {
+        testMessage("{message}");
+    }
+
+    @Test
+    public void testPercent() {
+        testMessage("message%s");
+    }
+
+    @Test
+    public void testPercentAndCurlyBraces() {
+        testMessage("message{%s}");
+    }
+
+    private void testMessage(String string) {
+        final Logger root = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+        root.info("Test info " + string);
+        root.config("Test info " + string);
+        root.fine("Test info " + string);
+        final List<LogEvent> events = eventAppender.getEvents();
+        assertThat(events, hasSize(3));
+        for (final LogEvent event : events) {
+            final String message = event.getMessage().getFormattedMessage();
+            assertThat(message, equalTo("Test info " + string));
+        }
+    }
+
+    @Test
+    public void testLambdasGlobalLogger() {
+        testLambdaMessages("message");
+    }
+
+    @Test
+    public void testLambdasCurlyBraces() {
+        testLambdaMessages("{message}");
+    }
+
+    @Test
+    public void testLambdasPercent() {
+        testLambdaMessages("message%s");
+    }
+
+    @Test
+    public void testLambdasPercentAndCurlyBraces() {
+        testLambdaMessages("message{%s}");
+    }
+
+    private void testLambdaMessages(String string) {
+        // TODO FOR JAVA 8
+        // final Logger root = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+        // root.info(() -> "Test info " + string);
+        // root.config(() -> "Test info " + string);
+        // root.fine(() -> "Test info " + string);
+        // final List<LogEvent> events = eventAppender.getEvents();
+        // assertThat(events, hasSize(3));
+        // for (final LogEvent event : events) {
+        // final String message = event.getMessage().getFormattedMessage();
+        // assertThat(message, equalTo("Test info " + string));
+        // }
+    }
+
 }
