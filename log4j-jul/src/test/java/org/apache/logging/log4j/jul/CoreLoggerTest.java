@@ -19,6 +19,7 @@ package org.apache.logging.log4j.jul;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 import java.util.logging.Level;
@@ -49,13 +50,20 @@ public class CoreLoggerTest extends AbstractLoggerTest {
         logger = Logger.getLogger(LOGGER_NAME);
         assertThat(logger.getLevel(), equalTo(Level.FINE));
         eventAppender = ListAppender.getListAppender("TestAppender");
+        flowAppender = ListAppender.getListAppender("FlowAppender");
         stringAppender = ListAppender.getListAppender("StringAppender");
+        assertNotNull(eventAppender);
+        assertNotNull(flowAppender);
+        assertNotNull(stringAppender);
     }
 
     @After
     public void tearDown() throws Exception {
         if (eventAppender != null) {
             eventAppender.clear();
+        }
+        if (flowAppender != null) {
+            flowAppender.clear();
         }
         if (stringAppender != null) {
             stringAppender.clear();

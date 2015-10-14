@@ -18,6 +18,7 @@
 <Configuration name="LoggerTest" status="OFF">
   <Appenders>
     <List name="TestAppender"/>
+    <List name="FlowAppender"/>
     <List name="StringAppender">
       <PatternLayout pattern="%class"/>
     </List>
@@ -26,6 +27,9 @@
     </Console>
   </Appenders>
   <Loggers>
+    <Logger name="TestFlow" level="ALL" additivity="false">
+      <AppenderRef ref="FlowAppender"/>
+    </Logger>
     <Logger name="Test" level="DEBUG" additivity="false">
       <AppenderRef ref="TestAppender"/>
     </Logger>
