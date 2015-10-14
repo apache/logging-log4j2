@@ -95,9 +95,9 @@ public class DefaultShutdownCallbackRegistry implements ShutdownCallbackRegistry
 
                 @Override
                 public void run() {
-                    final Runnable hook = this.hook.get();
-                    if (hook != null) {
-                        hook.run();
+                    final Runnable runnableHook = this.hook.get();
+                    if (runnableHook != null) {
+                        runnableHook.run();
                         this.hook.clear();
                     }
                 }
