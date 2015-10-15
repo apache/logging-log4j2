@@ -37,7 +37,19 @@ public class StructuredDataMessageTest {
         assertEquals(expected, result);
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test
+    public void testBuilder() {
+        final String testMsg = "Test message {}";
+        final StructuredDataMessage msg = new StructuredDataMessage("MsgId@12345", testMsg, "Alert")
+                .withValue("message", testMsg)
+                .withValue("project", "Log4j")
+                .withValue("memo", "This is a very long test memo to prevent regression of LOG4J2-114");
+        final String result = msg.getFormattedMessage();
+        final String expected = "Alert [MsgId@12345 memo=\"This is a very long test memo to prevent regression of LOG4J2-114\" message=\"Test message {}\" project=\"Log4j\"] Test message {}";
+        assertEquals(expected, result);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
     public void testMsgWithKeyTooLong() {
         final String testMsg = "Test message {}";
         final StructuredDataMessage msg = new StructuredDataMessage("MsgId@12345", testMsg, "Alert");

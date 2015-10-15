@@ -130,6 +130,11 @@ public class StructuredDataMessage extends MapMessage {
 
     }
 
+    public StructuredDataMessage withValue(final String key, final String value) {
+        put(key, value);
+        return this;
+    }
+
     /**
      * Returns the supported formats.
      * @return An array of the supported format names.
