@@ -239,8 +239,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         for (final LoggerConfig loggerConfig : loggers.values()) {
             loggerConfig.getReliabilityStrategy().beforeStopConfiguration(this);
         }
-        LOGGER.trace("AbstractConfiguration notified {} ReliabilityStrategies that config will be stopped.",
-                loggers.size());
+        final String cls = getClass().getSimpleName();
+        LOGGER.trace("{} notified {} ReliabilityStrategies that config will be stopped.", cls, loggers.size());
 
         // LOG4J2-392 first stop AsyncLogger Disruptor thread
         final LoggerContextFactory factory = LogManager.getFactory();
@@ -276,7 +276,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             asyncLoggerConfigCount++;
             alreadyStopped.add(root);
         }
-        LOGGER.trace("AbstractConfiguration stopped {} AsyncLoggerConfigs.", asyncLoggerConfigCount);
+        LOGGER.trace("{} stopped {} AsyncLoggerConfigs.", cls, asyncLoggerConfigCount);
 
         // Stop the appenders in reverse order in case they still have activity.
         final Appender[] array = appenders.values().toArray(new Appender[appenders.size()]);
@@ -289,13 +289,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 asyncAppenderCount++;
             }
         }
-        LOGGER.trace("AbstractConfiguration stopped {} AsyncAppenders.", asyncAppenderCount);
+        LOGGER.trace("{} stopped {} AsyncAppenders.", cls, asyncAppenderCount);
 
         for (final LoggerConfig loggerConfig : loggers.values()) {
             loggerConfig.getReliabilityStrategy().beforeStopAppenders();
         }
-        LOGGER.trace("AbstractConfiguration notified {} ReliabilityStrategies that appenders will be stopped.",
-                loggers.size());
+        LOGGER.trace("{} notified {} ReliabilityStrategies that appenders will be stopped.", cls, loggers.size());
 
         int appenderCount = 0;
         for (int i = array.length - 1; i >= 0; --i) {
@@ -304,7 +303,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 appenderCount++;
             }
         }
-        LOGGER.trace("AbstractConfiguration stopped {} Appenders.", appenderCount);
+        LOGGER.trace("{} stopped {} Appenders.", cls, appenderCount);
 
         int loggerCount = 0;
         for (final LoggerConfig loggerConfig : loggers.values()) {
@@ -318,7 +317,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             }
             loggerConfig.clearAppenders();
         }
-        LOGGER.trace("AbstractConfiguration stopped {} LoggerConfigs.", loggerCount);
+        LOGGER.trace("{} stopped {} LoggerConfigs.", cls, loggerCount);
 
         if (watchManager.isStarted()) {
             watchManager.stop();
