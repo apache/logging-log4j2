@@ -2106,7 +2106,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 dependent on the RolloverPolicy that is used. The DefaultRolloverPolicy will accept both
                 a date/time pattern compatible with
                 <a href="http://download.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>
-                and and/or a %i which represents an integer counter. The pattern also supports interpolation at
+                and/or a %i which represents an integer counter. The pattern also supports interpolation at
                 runtime so any of the Lookups (such as the <a href="./lookups.html#DateLookup">DateLookup</a> can
                 be included in the pattern.</td>
             </tr>

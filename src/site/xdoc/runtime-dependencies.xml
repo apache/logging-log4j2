@@ -95,7 +95,7 @@
           </td>
         </tr>
         <tr>
-          <td>bzip2, Deflate, Pack200, and XZ compression on rollover</td>
+          <td>Bzip2, Deflate, Pack200, and XZ compression on rollover</td>
           <td><a href="http://commons.apache.org/proper/commons-compress/">Apache Commons Compress</a>.
             In addition, XZ requires <a href="http://tukaani.org/xz/java.html">XZ for Java</a>.
           </td>

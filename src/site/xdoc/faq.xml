@@ -41,13 +41,13 @@
       <subsection>
 		<a name="which_jars" />
         <h4>Which JAR files do I need?</h4>
-        <p>You need at least the log4j-api-2.4 and the log4j-core-2.4 jar files.</p>
+        <p>You need at least the log4j-api-2.x and the log4j-core-2.x jar files.</p>
         <p>The other jars are necessary if your application calls the API
         of another logging framework and you want to route logging calls to the Log4j 2 implementation.</p>
-        <p><img src="images/whichjar-2.1.png" alt="Diagram showing which JARs correspond to which systems" /></p>
+        <p><img src="images/whichjar-2.x.png" alt="Diagram showing which JARs correspond to which systems" /></p>
         <p>You can use the log4j-to-slf4j adapter jar when your application calls the Log4j 2 API and you
         want to route logging calls to a SLF4J implementation.</p>
-        <p><img src="images/whichjar-slf4j-2.1.png" alt="Diagram showing the dependency flow to use Log4j 2 API with SLF4J" /></p>
+        <p><img src="images/whichjar-slf4j-2.x.png" alt="Diagram showing the dependency flow to use Log4j 2 API with SLF4J" /></p>
         <p>Some of the Log4j components have features with optional dependencies.
           The component page will have more detail.
           For example, the <a href="log4j-core/index.html">log4j-core component page</a>
@@ -62,8 +62,10 @@
 
 		<a name="config_from_code" />
         <h4>How do I configure log4j2 in code without a configuration file?</h4>
-        <p>Starting with version 2.4, Log4j 2 provides an [API for programmatic configuration|manual/customconfig.html]. 
-        The new ConfigurationBuilder API allows you to create Configurations in code by constructing component definitions 
+        <p>Starting with version 2.4, Log4j 2 provides an <a href="manual/customconfig.html">API
+        for programmatic configuration</a>. 
+        The new <a href="log4j-core/apidocs/org/apache/logging/log4j/core/config/builder/api/ConfigurationBuilder.html">ConfigurationBuilder
+        API</a> allows you to create Configurations in code by constructing component definitions 
         without requiring you to know about the internals of actual configuration objects like Loggers and Appenders.</p>
 
         <a name="reconfig_from_code" />

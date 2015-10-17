@@ -44,7 +44,7 @@
           Configuration of Log4j 2 can be accomplished in 1 of 4 ways:
         </p>
           <ol>
-            <li>Through a configuration file written in XML, JSON, or YAML.</li>
+            <li>Through a configuration file written in XML, JSON, YAML, or properties format.</li>
             <li>Programmatically, by creating a ConfigurationFactory and Configuration implementation.</li>
             <li>Programmatically, by calling the APIs exposed in the Configuration interface to add
               components to the default configuration.</li>
@@ -52,7 +52,8 @@
           </ol>
         <p>
           This page focuses primarily on configuring Log4j through a configuration file. Information on
-          programmatically configuring Log4j can be found at <a href="./extending.html">Extending Log4j 2</a>.
+          programmatically configuring Log4j can be found at <a href="./extending.html">Extending Log4j 2</a>
+          and <a href="customconfig.html">Programmatic Log4j Configuration</a>.
         </p>
         <p>
           Note that unlike Log4j 1.x, the public Log4j 2 API does not expose methods to add, modify or remove
@@ -62,21 +63,25 @@
         <subsection name="Automatic Configuration">
           <p>
             Log4j has the ability to automatically configure itself during initialization.
-            When Log4j starts it will locate all the ConfigurationFactory plugins and arrange then in weighted
-            order from highest to lowest. As delivered, Log4j contains three ConfigurationFactory implementations:
-            one for JSON, one for YAML, and one for XML.
+            When Log4j starts it will locate all the ConfigurationFactory plugins and arrange them in weighted
+            order from highest to lowest. As delivered, Log4j contains four ConfigurationFactory implementations:
+            one for JSON, one for YAML, one for properties, and one for XML.
           </p>
             <ol>
               <li>Log4j will inspect the <code>"log4j.configurationFile"</code> system property and, if set,  will attempt to
                 load the configuration using the <code>ConfigurationFactory</code> that matches the file
                 extension.</li>
-              <li>If no system property is set the YAML ConfigurationFactory will look for 
+              <li>If no system property is set the properties ConfigurationFactory will look for 
+                <code>log4j2-test.properties</code> in the classpath.</li>
+              <li>If no such file is found the YAML ConfigurationFactory will look for 
                 <code>log4j2-test.yaml</code> or <code>log4j2-test.yml</code> in the classpath.</li>
               <li>If no such file is found the JSON ConfigurationFactory will look for
                 <code>log4j2-test.json</code> or <code>log4j2-test.jsn</code> in the classpath.</li>
               <li>If no such file is found the XML ConfigurationFactory will look for
                 <code>log4j2-test.xml</code> in the classpath.</li>
-              <li>If a test file cannot be located the YAML ConfigurationFactory will look for
+              <li>If a test file cannot be located the properties ConfigurationFactory will look for
+                <code>log4j2.properties</code> on the classpath.</li>
+              <li>If a properties file cannot be located the YAML ConfigurationFactory will look for
                 <code>log4j2.yaml</code> or <code>log4j2.yml</code> on the classpath.</li>
               <li>If a YAML file cannot be located the JSON ConfigurationFactory will look for
                 <code>log4j2.json</code> or <code>log4j2.jsn</code> on the classpath.</li>
@@ -190,6 +195,9 @@ public class Bar {
           <p>
             Note that status logging is disabled when the default configuration is used.
           </p>
+        </subsection>
+        <a name="Additivity"/>
+        <subsection name="Additivity">
           <p>
             Perhaps it is desired to eliminate all the TRACE output from everything except <code>com.foo.Bar</code>.
             Simply changing the log level would not accomplish the task. Instead, the solution is to
@@ -205,9 +213,6 @@ public class Bar {
             With this configuration all log events from <code>com.foo.Bar</code> will be recorded while only error
             events will be recorded from all other components.
           </p>
-        </subsection>
-        <a name="Additivity"/>
-        <subsection name="Additivity">
           <p>
             In the previous example all the events from <code>com.foo.Bar</code> were still written to the Console. This is
             because the logger for <code>com.foo.Bar</code> did not have any appenders configured while its parent did. In fact,
@@ -941,8 +946,9 @@ rootLogger.appenderRef.stdout.ref = STDOUT
           <p>
             While this is useful, there are many more places properties can originate from. To accommodate this,
             Log4j also supports the syntax <code>${dollar}{prefix:name}</code> where the prefix identifies tells Log4j
-            that variable name should be evaluated in a specific context. The contexts that are built in to Logj4
-            are:
+            that variable name should be evaluated in a specific context. 
+            See the <a href="lookups.html">Lookups</a> manual page for more details.
+            The contexts that are built in to Logj4 are:
           </p>
             <table>
               <tr>
@@ -1007,6 +1013,9 @@ rootLogger.appenderRef.stdout.ref = STDOUT
             pre-populated with a value for "hostName" that is the current system's host name or IP address and
             the "contextName" with is the value of the current logging context.
           </p>
+        </subsection>
+        <a name="RuntimeLookup"/>
+        <subsection name="Lookup Variables with Multiple Leading '$' Characters">
           <p>
             An interesting feature of StrLookup processing is that when a variable reference is declared with
             multiple leading '$' characters each time the variable is resolved the leading '$' is simply removed.

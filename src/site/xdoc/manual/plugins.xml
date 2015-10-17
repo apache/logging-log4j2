@@ -32,8 +32,8 @@
           <p>
             Log4j 1.x allowed for extension by requiring class attributes on most of the configuration
             declarations. In the case of some elements, notably the PatternLayout, the only way to add
-            new pattern converters was to extend the PatternLayout class and add them via code. One of
-            goals of Log4j 2 is to make extending it extremely easy through the use of plugins.
+            new pattern converters was to extend the PatternLayout class and add them via code. One
+            goal of Log4j 2 is to make extending it extremely easy through the use of plugins.
           </p>
           <p>
             In Log4j 2 a plugin is declared by adding a

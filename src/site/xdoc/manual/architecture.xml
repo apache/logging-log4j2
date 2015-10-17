@@ -580,7 +580,7 @@ Logger y = LogManager.getLogger("wombat");
           More than one Appender can be attached to a Logger.
         </p>
         <p>An Appender can be added to a Logger by calling the
-          <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/config/Configuration.html#addLoggerAppender(org.apache.logging.log4j.core.Logger, org.apache.logging.log4j.core.Appender)">addLoggerAppender</a>
+          <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/config/Configuration.html#addLoggerAppender(org.apache.logging.log4j.core.Logger,%20org.apache.logging.log4j.core.Appender)">addLoggerAppender</a>
           method of the current Configuration. If a LoggerConfig matching the name of the Logger does
           not exist, one will be created, the Appender will be attached to it and then all Loggers
           will be notified to update their LoggerConfig references.
