@@ -53,7 +53,7 @@ public final class StringBuilders {
      * @param sb a string builder
      * @param key a key
      * @param value a value
-     * @return {@code key="value"}
+     * @return the specified StringBuilder
      */
     public static StringBuilder appendKeyDqValue(final StringBuilder sb, final String key, final Object value) {
         return sb.append(key).append(Chars.EQ).append(Chars.DQUOTE).append(value).append(Chars.DQUOTE);
