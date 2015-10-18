@@ -45,6 +45,7 @@ import org.apache.logging.log4j.core.appender.AsyncAppender;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfig;
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
+import org.apache.logging.log4j.core.async.DaemonThreadFactory;
 import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
@@ -173,7 +174,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     public void initialize() {
         LOGGER.debug("Initializing configuration {}", this);
         if (watchManager.getIntervalSeconds() > 0) {
-            executorService = new ScheduledThreadPoolExecutor(1);
+            executorService = new ScheduledThreadPoolExecutor(1, new DaemonThreadFactory("Log4j2ConfigWatcher-"));
             watchManager.setExecutorService(executorService);
         }
         scriptManager = new ScriptManager(watchManager);
