@@ -28,7 +28,7 @@
         AbstractConfiguration executor should use a DaemonThreadFactory.
       </action>
       <action issue="LOG4J2-1165" dev="rpopma" type="fix">
-        Reduce verbosity of Log4j initialization status messages.
+        Improve Log4j initialization status messages.
       </action>
       <action issue="LOG4J2-1156" dev="rpopma" type="fix">
         Web site corrections and updates.

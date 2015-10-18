@@ -174,6 +174,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     public void initialize() {
         LOGGER.debug("Initializing configuration {}", this);
         if (watchManager.getIntervalSeconds() > 0) {
+            LOGGER.trace("Starting Log4j2ConfigWatcher thread");
             executorService = new ScheduledThreadPoolExecutor(1, new DaemonThreadFactory("Log4j2ConfigWatcher-"));
             watchManager.setExecutorService(executorService);
         }
@@ -324,6 +325,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             watchManager.stop();
         }
         if (executorService != null) {
+            LOGGER.trace("{} stopping Log4j2ConfigWatcher thread.", cls);
             executorService.shutdown();
         }
 
