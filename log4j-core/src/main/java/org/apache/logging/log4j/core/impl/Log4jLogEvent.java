@@ -39,6 +39,7 @@ import org.apache.logging.log4j.core.util.NanoClock;
 import org.apache.logging.log4j.message.LoggerNameAwareMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.TimestampMessage;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -403,6 +404,7 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
      */
     public static void setNanoClock(NanoClock nanoClock) {
         Log4jLogEvent.nanoClock = Objects.requireNonNull(nanoClock, "NanoClock must be non-null");
+        StatusLogger.getLogger().trace("Using {} for nanosecond timestamps.", nanoClock.getClass().getSimpleName());
     }
     
     /**

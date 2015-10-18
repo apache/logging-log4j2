@@ -126,7 +126,7 @@ class AsyncLoggerConfigHelper {
 
     private static WaitStrategy createWaitStrategy() {
         final String strategy = System.getProperty("AsyncLoggerConfig.WaitStrategy");
-        LOGGER.debug("property AsyncLoggerConfig.WaitStrategy={}", strategy);
+        LOGGER.trace("property AsyncLoggerConfig.WaitStrategy={}", strategy);
         if ("Sleep".equals(strategy)) {
             return new SleepingWaitStrategy();
         } else if ("Yield".equals(strategy)) {
@@ -134,7 +134,7 @@ class AsyncLoggerConfigHelper {
         } else if ("Block".equals(strategy)) {
             return new BlockingWaitStrategy();
         }
-        LOGGER.debug("disruptor event handler uses BlockingWaitStrategy");
+        LOGGER.trace("AsyncLoggerConfigHelper disruptor event handler uses BlockingWaitStrategy");
         return new BlockingWaitStrategy();
     }
 
