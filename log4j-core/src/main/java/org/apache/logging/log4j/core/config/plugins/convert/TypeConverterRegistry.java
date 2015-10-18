@@ -104,7 +104,7 @@ public class TypeConverterRegistry {
     }
 
     private TypeConverterRegistry() {
-        LOGGER.debug("TypeConverterRegistry initializing.");
+        LOGGER.trace("TypeConverterRegistry initializing.");
         final PluginManager manager = new PluginManager(TypeConverters.CATEGORY);
         manager.collectPlugins();
         loadKnownTypeConverters(manager.getPlugins().values());

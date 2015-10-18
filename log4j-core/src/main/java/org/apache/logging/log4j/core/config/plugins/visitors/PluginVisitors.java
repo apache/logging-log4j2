@@ -44,7 +44,6 @@ public final class PluginVisitors {
     public static PluginVisitor<? extends Annotation> findVisitor(final Class<? extends Annotation> annotation) {
         final PluginVisitorStrategy strategy = annotation.getAnnotation(PluginVisitorStrategy.class);
         if (strategy == null) {
-            LOGGER.debug("No PluginVisitorStrategy found on annotation [{}]. Ignoring.", annotation);
             return null;
         }
         try {

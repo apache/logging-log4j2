@@ -114,13 +114,12 @@ public class PluginBuilder implements Builder<Object> {
         verify();
         // first try to use a builder class if one is available
         try {
-            LOGGER.debug("Building Plugin[name={}, class={}]. Searching for builder factory method...", pluginType.getElementName(),
+            LOGGER.debug("Building Plugin[name={}, class={}].", pluginType.getElementName(),
                     pluginType.getPluginClass().getName());
             final Builder<?> builder = createBuilder(this.clazz);
             if (builder != null) {
                 injectFields(builder);
                 final Object result = builder.build();
-                LOGGER.debug("Built Plugin[name={}] OK from builder factory method.", pluginType.getElementName());
                 return result;
             }
         } catch (final Exception e) {
@@ -129,12 +128,9 @@ public class PluginBuilder implements Builder<Object> {
         }
         // or fall back to factory method if no builder class is available
         try {
-            LOGGER.debug("Still building Plugin[name={}, class={}]. Searching for factory method...",
-                    pluginType.getElementName(), pluginType.getPluginClass().getName());
             final Method factory = findFactoryMethod(this.clazz);
             final Object[] params = generateParameters(factory);
             final Object plugin = factory.invoke(null, params);
-            LOGGER.debug("Built Plugin[name={}] OK from factory method.", pluginType.getElementName());
             return plugin;
         } catch (final Exception e) {
             LOGGER.error("Unable to invoke factory method in class {} for element {}.", this.clazz, this.node.getName(),
@@ -156,12 +152,9 @@ public class PluginBuilder implements Builder<Object> {
                 TypeUtil.isAssignable(Builder.class, method.getGenericReturnType())) {
                 ReflectionUtil.makeAccessible(method);
                 final Builder<?> builder = (Builder<?>) method.invoke(null);
-                LOGGER.debug("Found builder factory method [{}]: {}.", method.getName(), method);
                 return builder;
             }
         }
-        LOGGER.debug("No builder factory method found in class {}. Going to try finding a factory method instead.",
-            clazz.getName());
         return null;
     }
 
@@ -171,7 +164,7 @@ public class PluginBuilder implements Builder<Object> {
         final StringBuilder log = new StringBuilder();
         boolean invalid = false;
         for (final Field field : fields) {
-            log.append(log.length() == 0 ? "with params(" : ", ");
+            log.append(log.length() == 0 ? simpleName(builder) + "(" : ", ");
             final Annotation[] annotations = field.getDeclaredAnnotations();
             final String[] aliases = extractPluginAliases(annotations);
             for (final Annotation a : annotations) {
@@ -197,16 +190,13 @@ public class PluginBuilder implements Builder<Object> {
                 ConstraintValidators.findValidators(annotations);
             final Object value = field.get(builder);
             for (final ConstraintValidator<?> validator : validators) {
-                if (!validator.isValid(value)) {
+                if (!validator.isValid(field.getName(), value)) {
                     invalid = true;
                 }
             }
         }
-        if (log.length() > 0) {
-            log.append(')');
-        }
-        LOGGER.debug("Calling build() on class {} for element {} {}", builder.getClass(), node.getName(),
-            log.toString());
+        log.append(log.length() == 0 ? builder.getClass().getSimpleName() + "()" : ")");
+        LOGGER.debug(log.toString());
         if (invalid) {
             throw new ConfigurationException("Arguments given for element " + node.getName() + " are invalid");
         }
@@ -214,11 +204,22 @@ public class PluginBuilder implements Builder<Object> {
         verifyNodeChildrenUsed();
     }
 
+    /**
+     * {@code object.getClass().getSimpleName()} returns {@code Builder}, when we want {@code PatternLayout$Builder}.
+     */
+    private String simpleName(final Object object) {
+        if (object == null) {
+            return "null";
+        }
+        final String cls = object.getClass().getName();
+        final int index = cls.lastIndexOf('.');
+        return index < 0 ? cls : cls.substring(index + 1);
+    }
+
     private static Method findFactoryMethod(final Class<?> clazz) {
         for (final Method method : clazz.getDeclaredMethods()) {
             if (method.isAnnotationPresent(PluginFactory.class) &&
                 Modifier.isStatic(method.getModifiers())) {
-                LOGGER.debug("Found factory method [{}]: {}.", method.getName(), method);
                 ReflectionUtil.makeAccessible(method);
                 return method;
             }
@@ -233,7 +234,7 @@ public class PluginBuilder implements Builder<Object> {
         final Object[] args = new Object[annotations.length];
         boolean invalid = false;
         for (int i = 0; i < annotations.length; i++) {
-            log.append(log.length() == 0 ? "with params(" : ", ");
+            log.append(log.length() == 0 ? factory.getName() + "(" : ", ");
             final String[] aliases = extractPluginAliases(annotations[i]);
             for (final Annotation a : annotations[i]) {
                 if (a instanceof PluginAliases) {
@@ -257,19 +258,17 @@ public class PluginBuilder implements Builder<Object> {
             final Collection<ConstraintValidator<?>> validators =
                 ConstraintValidators.findValidators(annotations[i]);
             final Object value = args[i];
+            final String argName = "arg[" + i + "](" + simpleName(value) + ")";
             for (final ConstraintValidator<?> validator : validators) {
-                if (!validator.isValid(value)) {
+                if (!validator.isValid(argName, value)) {
                     invalid = true;
                 }
             }
         }
-        if (log.length() > 0) {
-            log.append(')');
-        }
+        log.append(log.length() == 0 ? factory.getName() + "()" : ")");
         checkForRemainingAttributes();
         verifyNodeChildrenUsed();
-        LOGGER.debug("Calling {} on class {} for element {} {}", factory.getName(), clazz.getName(), node.getName(),
-            log.toString());
+        LOGGER.debug(log.toString());
         if (invalid) {
             throw new ConfigurationException("Arguments given for element " + node.getName() + " are invalid");
         }
