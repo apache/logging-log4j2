@@ -23,6 +23,8 @@ import java.util.List;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.selector.ContextSelector;
+import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * {@code ContextSelector} that returns the singleton {@code AsyncLoggerContext}.
@@ -33,6 +35,11 @@ public class AsyncLoggerContextSelector implements ContextSelector {
     private static final AsyncLoggerContext CONTEXT = new AsyncLoggerContext("AsyncLoggerContext@"
             + AsyncLoggerContext.class.hashCode());
 
+    public static boolean isSelected() {
+    	return AsyncLoggerContextSelector.class.getName().equals(
+                PropertiesUtil.getProperties().getStringProperty(Constants.LOG4J_CONTEXT_SELECTOR));
+    }
+    
     @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
         return CONTEXT;

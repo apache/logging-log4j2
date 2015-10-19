@@ -20,6 +20,7 @@ import java.net.URI;
 
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.message.MessageFactory;
 
 /**
@@ -53,9 +54,27 @@ public class AsyncLoggerContext extends LoggerContext {
         return new AsyncLogger(ctx, name, messageFactory);
     }
 
+    /* (non-Javadoc)
+     * @see org.apache.logging.log4j.core.LoggerContext#start()
+     */
+    @Override
+    public void start() {
+        AsyncLoggerHelper.start();
+        super.start();
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.logging.log4j.core.LoggerContext#start(org.apache.logging.log4j.core.config.Configuration)
+     */
+    @Override
+    public void start(Configuration config) {
+        AsyncLoggerHelper.start();
+        super.start(config);
+    }
+
     @Override
     public void stop() {
-        AsyncLogger.stop();
+        AsyncLoggerHelper.stop(); // first stop Disruptor
         super.stop();
     }
 }

@@ -460,12 +460,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
                 LOGGER.error("Could not reconfigure JMX", t);
             }
             Log4jLogEvent.setNanoClock(NanoClockFactory.createNanoClock());
-            try {
-                AsyncLogger.setNanoClock(NanoClockFactory.createNanoClock());
-            } catch (Throwable ignored) {
-                // LMAX Disruptor jar may not be in the classpath. Ignore this.
-                LOGGER.debug("Could not set AsyncLogger NanoClock. Ignoring: " + ignored.toString());
-            }
+            AsyncLogger.setNanoClock(NanoClockFactory.createNanoClock());
             return prev;
         } finally {
             configLock.unlock();
