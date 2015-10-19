@@ -35,11 +35,17 @@ public class AsyncLoggerContextSelector implements ContextSelector {
     private static final AsyncLoggerContext CONTEXT = new AsyncLoggerContext("AsyncLoggerContext@"
             + AsyncLoggerContext.class.hashCode());
 
+    /**
+     * Returns {@code true} if the user specified this selector as the Log4jContextSelector, to make all loggers
+     * asynchronous.
+     * 
+     * @return {@code true} if all loggers are asynchronous, {@code false} otherwise.
+     */
     public static boolean isSelected() {
-    	return AsyncLoggerContextSelector.class.getName().equals(
+        return AsyncLoggerContextSelector.class.getName().equals(
                 PropertiesUtil.getProperties().getStringProperty(Constants.LOG4J_CONTEXT_SELECTOR));
     }
-    
+
     @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
         return CONTEXT;
