@@ -126,8 +126,8 @@ public class MemoryMappedFileManager extends OutputStreamManager {
     }
 
     protected void logError(String message, Throwable throwable) {
-        Message m = LOGGER.getMessageFactory().newMessage("{} {} {} {}: {}",
-                getClass().getSimpleName(), getName(), message, getFileName(), throwable);
+        Message m = LOGGER.getMessageFactory().newMessage("{} {} {}: {}",
+                getClass().getSimpleName(), getName(), message, throwable);
         LOGGER.error(m, throwable);
     }
     
