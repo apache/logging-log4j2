@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -42,6 +43,7 @@ public class WatchManagerTest {
     private String originalFile = "target/test-classes/log4j-test1.xml";
     private String newFile = "target/test-classes/log4j-test1.yaml";
 
+    @Ignore
     @Test
     public void testWatchManager() throws Exception {
         ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(1);
