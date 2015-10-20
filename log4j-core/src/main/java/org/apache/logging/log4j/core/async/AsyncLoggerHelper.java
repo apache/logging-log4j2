@@ -20,7 +20,6 @@ package org.apache.logging.log4j.core.async;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.apache.logging.log4j.core.async.AsyncLogger.Info;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Loader;
@@ -185,7 +184,7 @@ public class AsyncLoggerHelper {
             count = 0; // ref count must not be negative or #claim() will not work correctly
             return; // disruptor was already shut down by another thread
         }
-        LOGGER.trace("AsyncLoggerHelper: shutting down disruptor: ref count is {}.", count);
+        LOGGER.debug("AsyncLoggerHelper: shutting down disruptor: ref count is {}.", count);
 
         // Must guarantee that publishing to the RingBuffer has stopped
         // before we call disruptor.shutdown()
@@ -201,6 +200,8 @@ public class AsyncLoggerHelper {
             }
         }
         temp.shutdown(); // busy-spins until all events currently in the disruptor have been processed
+
+        LOGGER.trace("AsyncLoggerHelper: shutting down disruptor executor.");
         executor.shutdown(); // finally, kill the processor thread
         executor = null;
         // Info.THREADLOCAL.remove(); // LOG4J2-323

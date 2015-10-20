@@ -44,7 +44,7 @@ public class AsyncLoggerThreadNameStrategyTest {
 
     @Test
     public void testUncachedThreadNameStrategyReturnsCurrentThreadName() throws Exception {
-        final AsyncLogger.Info info = new AsyncLogger.Info(null, "original", false);
+        final Info info = new Info(null, "original", false);
         final String name1 = "MODIFIED-THREADNAME1";
         Thread.currentThread().setName(name1);
         assertEquals(name1, AsyncLogger.ThreadNameStrategy.UNCACHED.getThreadName(info));
@@ -58,7 +58,7 @@ public class AsyncLoggerThreadNameStrategyTest {
     public void testCachedThreadNameStrategyReturnsCachedThreadName() throws Exception {
         final String original = "Original-ThreadName";
         Thread.currentThread().setName(original);
-        final AsyncLogger.Info info = new AsyncLogger.Info(null, original, false);
+        final Info info = new Info(null, original, false);
         assertEquals(original, AsyncLogger.ThreadNameStrategy.CACHED.getThreadName(info));
 
         final String name2 = "OTHER-THREADNAME2";

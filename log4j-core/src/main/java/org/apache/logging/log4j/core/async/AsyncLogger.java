@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.async;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ExecutorService;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
@@ -37,7 +36,6 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.TimestampMessage;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.PropertiesUtil;
 
 import com.lmax.disruptor.dsl.Disruptor;
 
@@ -62,97 +60,11 @@ import com.lmax.disruptor.dsl.Disruptor;
  */
 public class AsyncLogger extends Logger {
 
-    /**
-     * Strategy for deciding whether thread name should be cached or not.
-     */
-    static enum ThreadNameStrategy { // LOG4J2-467
-        CACHED {
-            @Override
-            public String getThreadName(final Info info) {
-                return info.cachedThreadName;
-            }
-        },
-        UNCACHED {
-            @Override
-            public String getThreadName(final Info info) {
-                return Thread.currentThread().getName();
-            }
-        };
-        abstract String getThreadName(Info info);
-
-        static ThreadNameStrategy create() {
-            final String name = PropertiesUtil.getProperties().getStringProperty("AsyncLogger.ThreadNameStrategy",
-                    CACHED.name());
-            try {
-                final ThreadNameStrategy result = ThreadNameStrategy.valueOf(name);
-                LOGGER.debug("AsyncLogger.ThreadNameStrategy={}", result);
-                return result;
-            } catch (final Exception ex) {
-                LOGGER.debug("Using AsyncLogger.ThreadNameStrategy.CACHED: '{}' not valid: {}", name, ex.toString());
-                return CACHED;
-            }
-        }
-    }
-
-    /**
-     * Tuple with the event translator and thread name for a thread.
-     */
-    static class Info {
-        private final RingBufferLogEventTranslator translator;
-        private final String cachedThreadName;
-        private final boolean isAppenderThread;
-
-        public Info(final RingBufferLogEventTranslator translator, final String threadName, final boolean appenderThread) {
-            this.translator = translator;
-            this.cachedThreadName = threadName;
-            this.isAppenderThread = appenderThread;
-        }
-
-        /**
-         * Initialize an {@code Info} object that is threadlocal to the consumer/appender thread. This Info object
-         * uniquely has attribute {@code isAppenderThread} set to {@code true}. All other Info objects will have this
-         * attribute set to {@code false}. This allows us to detect Logger.log() calls initiated from the appender
-         * thread, which may cause deadlock when the RingBuffer is full. (LOG4J2-471)
-         * 
-         * @param executor runs the appender thread
-         */
-        public static void initExecutorThreadInstance(final ExecutorService executor) {
-            executor.submit(new Runnable() {
-                @Override
-                public void run() {
-                    final boolean isAppenderThread = true;
-                    final Info info = new Info(new RingBufferLogEventTranslator(), //
-                            Thread.currentThread().getName(), isAppenderThread);
-                    THREADLOCAL.set(info);
-                }
-            });
-        }
-        
-        private static Info get() {
-            Info result = THREADLOCAL.get();
-            if (result == null) {
-                // by default, set isAppenderThread to false
-                result = new Info(new RingBufferLogEventTranslator(), Thread.currentThread().getName(), false);
-                THREADLOCAL.set(result);
-            }
-            return result;
-        }
-
-        // LOG4J2-467
-        private String threadName() {
-            return THREAD_NAME_STRATEGY.getThreadName(this);
-        }
-    }
-    
     private static final long serialVersionUID = 1L;
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
-    private static final ThreadNameStrategy THREAD_NAME_STRATEGY = ThreadNameStrategy.create();
-    private static final ThreadLocal<Info> THREADLOCAL = new ThreadLocal<Info>();
-
     private static final Clock CLOCK = ClockFactory.getClock();
     private static volatile NanoClock nanoClock = new DummyNanoClock();
-
 
     /**
      * Constructs an {@code AsyncLogger} with the specified context, name and message factory.
@@ -163,7 +75,6 @@ public class AsyncLogger extends Logger {
      */
     public AsyncLogger(final LoggerContext context, final String name, final MessageFactory messageFactory) {
         super(context, name, messageFactory);
-        LOGGER.info("Created AsyncLogger " + name);
     }
 
     @Override
