@@ -54,6 +54,22 @@ public class FileRenameAction extends AbstractAction {
     }
 
     /**
+     * Gets the source.
+     * @return the source.
+     */
+    public File getSource() {
+        return this.source;
+    }
+
+    /**
+     * Gets the destination.
+     * @return the destination.
+     */
+    public File getDestination() {
+        return this.destination;
+    }
+
+    /**
      * Rename file.
      *
      * @return true if successfully renamed.
