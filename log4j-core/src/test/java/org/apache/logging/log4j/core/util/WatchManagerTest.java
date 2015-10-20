@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import org.junit.Assume;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -43,9 +44,11 @@ public class WatchManagerTest {
     private String originalFile = "target/test-classes/log4j-test1.xml";
     private String newFile = "target/test-classes/log4j-test1.yaml";
 
-    @Ignore
+    private static final boolean IS_WINDOWS = System.getProperty("os.name").startsWith("Windows");
+
     @Test
     public void testWatchManager() throws Exception {
+        Assume.assumeFalse(IS_WINDOWS);
         ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(1);
         WatchManager watchManager = new WatchManager();
         watchManager.setIntervalSeconds(1);
