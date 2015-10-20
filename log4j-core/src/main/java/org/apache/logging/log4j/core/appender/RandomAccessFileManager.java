@@ -122,8 +122,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
         try {
             randomAccessFile.close();
         } catch (final IOException ex) {
-            LOGGER.error("Unable to close RandomAccessFile " + getName() + ". "
-                    + ex);
+            logError("unable to close RandomAccessFile", ex);
         }
     }
 
@@ -223,7 +222,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
                 return new RandomAccessFileManager(raf, name, os, data.immediateFlush,
                         data.bufferSize, data.advertiseURI, data.layout, writeHeader);
             } catch (final Exception ex) {
-                LOGGER.error("RandomAccessFileManager (" + name + ") " + ex);
+                LOGGER.error("RandomAccessFileManager (" + name + ") " + ex, ex);
             }
             return null;
         }

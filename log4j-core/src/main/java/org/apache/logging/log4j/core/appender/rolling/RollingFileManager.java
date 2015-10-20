@@ -112,13 +112,13 @@ public class RollingFileManager extends FileManager {
                 size = 0;
                 initialTime = System.currentTimeMillis();
                 createFileAfterRollover();
-            } catch (final IOException ex) {
-                LOGGER.error("FileManager (" + getFileName() + ") " + ex);
+            } catch (final IOException e) {
+                logError("failed to create file after rollover", e);
             }
         }
     }
 
-    protected void createFileAfterRollover() throws IOException {
+    protected void createFileAfterRollover() throws IOException  {
         final OutputStream os = new FileOutputStream(getFileName(), isAppend());
         if (getBufferSize() > 0) { // negative buffer size means no buffering
             setOutputStream(new BufferedOutputStream(os, getBufferSize()));
@@ -157,8 +157,8 @@ public class RollingFileManager extends FileManager {
         try {
             // Block until the asynchronous operation is completed.
             semaphore.acquire();
-        } catch (final InterruptedException ie) {
-            LOGGER.error("Thread interrupted while attempting to check rollover", ie);
+        } catch (final InterruptedException e) {
+            logError("Thread interrupted while attempting to check rollover", e);
             return false;
         }
 
@@ -175,7 +175,7 @@ public class RollingFileManager extends FileManager {
                     try {
                         success = descriptor.getSynchronous().execute();
                     } catch (final Exception ex) {
-                        LOGGER.error("Error in synchronous task", ex);
+                        logError("caught error in synchronous task", ex);
                     }
                 }
 
