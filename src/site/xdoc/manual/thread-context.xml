@@ -85,7 +85,7 @@ ThreadContext.pop();</pre>
             as follows:
           </p>
           <pre class="prettyprint linenums">
-ThreadContext.put("id", UUID.randomUUID().toString(); // Add the fishtag;
+ThreadContext.put("id", UUID.randomUUID().toString()); // Add the fishtag;
 ThreadContext.put("ipAddress", request.getRemoteAddr());
 ThreadContext.put("loginId", session.getAttribute("loginId"));
 ThreadContext.put("hostName", request.getServerName());
