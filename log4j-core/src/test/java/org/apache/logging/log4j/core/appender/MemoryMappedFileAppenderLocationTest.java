@@ -22,7 +22,7 @@ import java.io.FileReader;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.CoreLoggerContexts;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Integers;
 import org.junit.Before;
@@ -69,7 +69,7 @@ public class MemoryMappedFileAppenderLocationTest {
             log.warn("Test log2");
             assertEquals("not grown", expectedFileLength, f.length());
         } finally {
-            (LoggerContext.getContext(false)).stop();
+            CoreLoggerContexts.stopLoggerContext(false);
         }
         final int LINESEP = System.getProperty("line.separator").length();
         assertEquals("Shrunk to actual used size", 474 + 2 * LINESEP, f.length());

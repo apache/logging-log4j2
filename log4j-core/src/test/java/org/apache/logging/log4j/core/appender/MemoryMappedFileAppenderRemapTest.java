@@ -23,7 +23,7 @@ import java.util.Arrays;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.CoreLoggerContexts;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,7 +69,7 @@ public class MemoryMappedFileAppenderRemapTest {
             log.warn(new String(text));
             assertEquals("grown again", 256 * 3, f.length());
         } finally {
-            (LoggerContext.getContext(false)).stop();
+            CoreLoggerContexts.stopLoggerContext(false);
         }
         final int LINESEP = System.getProperty("line.separator").length();
         assertEquals("Shrunk to actual used size", 658 + 3 * LINESEP, f.length());
