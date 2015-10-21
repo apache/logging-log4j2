@@ -23,7 +23,9 @@ import java.io.OutputStream;
 import java.io.RandomAccessFile;
 
 import org.apache.logging.log4j.core.util.NullOutputStream;
+import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import static org.junit.Assert.*;
 
@@ -32,6 +34,9 @@ import static org.junit.Assert.*;
  */
 public class RandomAccessFileManagerTest {
 
+    @ClassRule
+    public static TemporaryFolder folder = new TemporaryFolder();
+
     /**
      * Test method for
      * {@link org.apache.logging.log4j.core.appender.RandomAccessFileManager#write(byte[], int, int)}
@@ -39,8 +44,7 @@ public class RandomAccessFileManagerTest {
      */
     @Test
     public void testWrite_multiplesOfBufferSize() throws IOException {
-        final File file = File.createTempFile("log4j2", "test");
-        file.deleteOnExit();
+        final File file = folder.newFile();
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
             final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
             final RandomAccessFileManager manager = new RandomAccessFileManager(raf, file.getName(), os, false,
@@ -61,8 +65,7 @@ public class RandomAccessFileManagerTest {
      */
     @Test
     public void testWrite_dataExceedingBufferSize() throws IOException {
-        final File file = File.createTempFile("log4j2", "test");
-        file.deleteOnExit();
+        final File file = folder.newFile();
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
             final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
             final RandomAccessFileManager manager = new RandomAccessFileManager(raf, file.getName(), os, false,
@@ -79,8 +82,7 @@ public class RandomAccessFileManagerTest {
     
     @Test
     public void testConfigurableBufferSize() throws IOException {
-        final File file = File.createTempFile("log4j2", "test");
-        file.deleteOnExit();
+        final File file = folder.newFile();
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
             final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
             final int bufferSize = 4 * 1024;
@@ -95,8 +97,7 @@ public class RandomAccessFileManagerTest {
 
     @Test
     public void testWrite_dataExceedingMinBufferSize() throws IOException {
-        final File file = File.createTempFile("log4j2", "test");
-        file.deleteOnExit();
+        final File file = folder.newFile();
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
             final OutputStream os = NullOutputStream.NULL_OUTPUT_STREAM;
             final int bufferSize = 1;
@@ -115,8 +116,7 @@ public class RandomAccessFileManagerTest {
     @Test
     public void testAppendDoesNotOverwriteExistingFile() throws IOException {
         final boolean isAppend = true;
-        final File file = File.createTempFile("log4j2", "test");
-        file.deleteOnExit();
+        final File file = folder.newFile();
         assertEquals(0, file.length());
 
         final byte[] bytes = new byte[4 * 1024];
