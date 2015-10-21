@@ -77,7 +77,7 @@ public class ReconfigurationDeadlockTest {
                 threads[i].interrupt();
             }
         }
-        assertTrue("loggerThread didn't finish", stillWaiting == false);
+        assertFalse("loggerThread didn't finish", stillWaiting);
 
     }
 
