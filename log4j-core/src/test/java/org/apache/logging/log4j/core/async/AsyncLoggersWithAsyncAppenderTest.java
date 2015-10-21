@@ -44,7 +44,7 @@ public class AsyncLoggersWithAsyncAppenderTest {
         System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, AsyncLoggerContextSelector.class.getName());
         ctx = LoggerContext.getContext(false);
         config = ctx.getConfiguration();
-        listAppender = (ListAppender) config.getAppender("List");
+        listAppender = config.getAppender("List");
     }
 
     @AfterClass

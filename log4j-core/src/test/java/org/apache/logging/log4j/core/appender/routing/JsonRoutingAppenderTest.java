@@ -46,7 +46,7 @@ public class JsonRoutingAppenderTest {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         ctx = LoggerContext.getContext(false);
         config = ctx.getConfiguration();
-        listAppender = (ListAppender) config.getAppender("List");
+        listAppender = config.getAppender("List");
         final File file = new File("target/rolling1/rollingtest-Unknown.log");
         file.delete();
     }
