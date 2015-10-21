@@ -36,7 +36,7 @@ public class LookupTest {
 
     @Test
     public void testHostname() {
-        final ConsoleAppender app = (ConsoleAppender) context.getRequiredAppender("console");
+        final ConsoleAppender app = context.getRequiredAppender("console", ConsoleAppender.class);
         final Layout<?> layout = app.getLayout();
         assertNotNull("No Layout", layout);
         assertTrue("Layout is not a PatternLayout", layout instanceof PatternLayout);
