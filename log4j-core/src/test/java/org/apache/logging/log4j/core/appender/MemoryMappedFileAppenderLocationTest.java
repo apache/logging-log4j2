@@ -75,13 +75,10 @@ public class MemoryMappedFileAppenderLocationTest {
         assertEquals("Shrunk to actual used size", 474 + 2 * LINESEP, f.length());
         
         String line1, line2, line3;
-        final BufferedReader reader = new BufferedReader(new FileReader(LOGFILE));
-        try {
+        try (final BufferedReader reader = new BufferedReader(new FileReader(LOGFILE))) {
             line1 = reader.readLine();
             line2 = reader.readLine();
             line3 = reader.readLine();
-        } finally {
-            reader.close();
         }
         assertNotNull(line1);
         assertThat(line1, containsString("Test log1"));

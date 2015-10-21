@@ -79,11 +79,8 @@ public class RandomAccessFileAppenderTests {
         this.init.getContext().stop(); // stop async thread
 
         String line;
-        final BufferedReader reader = new BufferedReader(new FileReader(this.logFile));
-        try {
+        try (final BufferedReader reader = new BufferedReader(new FileReader(this.logFile))) {
             line = reader.readLine();
-        } finally {
-            reader.close();
         }
         assertNotNull(line);
         assertThat(line, containsString(message));

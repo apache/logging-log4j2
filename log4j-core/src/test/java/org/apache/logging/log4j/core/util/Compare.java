@@ -57,14 +57,9 @@ public class Compare {
                                   final String file1,
                                   final String file2)
         throws IOException {
-        final BufferedReader in1 = new BufferedReader(new FileReader(file1));
-        final BufferedReader in2 = new BufferedReader(new InputStreamReader(
-            open(testClass, file2)));
-        try {
+        try (final BufferedReader in1 = new BufferedReader(new FileReader(file1));
+             final BufferedReader in2 = new BufferedReader(new InputStreamReader(open(testClass, file2)))) {
             return compare(testClass, file1, file2, in1, in2);
-        } finally {
-            in1.close();
-            in2.close();
         }
     }
 
