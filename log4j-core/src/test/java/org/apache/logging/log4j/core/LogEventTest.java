@@ -120,6 +120,7 @@ public class LogEventTest {
         assertEquals("both zero nanoTime", event2, actual);
     }
 
+    @Test
     public void testEquals() {
         final LogEvent event1 = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()) //
