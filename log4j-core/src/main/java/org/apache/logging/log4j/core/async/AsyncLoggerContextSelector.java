@@ -33,7 +33,7 @@ public class AsyncLoggerContextSelector implements ContextSelector {
 
     // LOG4J2-666 ensure unique name across separate instances created by webapp classloaders
     private static final AsyncLoggerContext CONTEXT = new AsyncLoggerContext("AsyncLoggerContext@"
-            + AsyncLoggerContext.class.hashCode());
+            + Integer.toHexString(AsyncLoggerContext.class.hashCode()));
 
     /**
      * Returns {@code true} if the user specified this selector as the Log4jContextSelector, to make all loggers

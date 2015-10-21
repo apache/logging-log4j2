@@ -161,8 +161,11 @@ public final class Server {
                 LOGGER.debug("Could not register MBeans: no ContextSelector found.");
                 return;
             }
+            LOGGER.trace("Reregistering MBeans after reconfigure. Selector={}", selector);
             final List<LoggerContext> contexts = selector.getLoggerContexts();
+            int i = 0;
             for (final LoggerContext ctx : contexts) {
+                LOGGER.trace("Reregistering context ({}/{}): '{}' {}", ++i, contexts.size(), ctx.getName(), ctx);
                 // first unregister the context and all nested loggers,
                 // appenders, statusLogger, contextSelector, ringbuffers...
                 unregisterLoggerContext(ctx.getName(), mbs);
@@ -329,8 +332,12 @@ public final class Server {
         try {
             final ObjectName pattern = new ObjectName(search);
             final Set<ObjectName> found = mbs.queryNames(pattern, null);
+            if (found.isEmpty()) {
+            	LOGGER.trace("Unregistering but no MBeans found matching '{}'", search);
+            } else {
+            	LOGGER.trace("Unregistering {} MBeans: {}", found.size(), found);
+            }
             for (final ObjectName objectName : found) {
-                LOGGER.debug("Unregistering MBean {}", objectName);
                 mbs.unregisterMBean(objectName);
             }
         } catch (final Exception ex) {
