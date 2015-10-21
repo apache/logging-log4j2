@@ -16,17 +16,17 @@
  */
 package org.apache.logging.log4j.core.filter;
 
-import java.util.List;
-import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.junit.ClassRule;
 import org.junit.Test;
+
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -35,6 +35,8 @@ import static org.junit.Assert.*;
  */
 public class StructuredDataFilterTest {
 
+    @ClassRule
+    public static LoggerContextRule context = new LoggerContextRule("log4j2-sdfilter.xml");
 
     @Test
     public void testFilter() {
@@ -64,8 +66,7 @@ public class StructuredDataFilterTest {
 
     @Test
     public void testConfig() {
-        final LoggerContext ctx = Configurator.initialize("Test1", "target/test-classes/log4j2-sdfilter.xml");
-        final Configuration config = ctx.getConfiguration();
+        final Configuration config = context.getConfiguration();
         final Filter filter = config.getFilter();
         assertNotNull("No StructuredDataFilter", filter);
         assertTrue("Not a StructuredDataFilter", filter instanceof  StructuredDataFilter);
