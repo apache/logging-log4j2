@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core;
 
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -72,10 +73,14 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
         privateConfig = new PrivateConfig(context.getConfiguration(), this);
     }
 
+    protected Object writeReplace() throws ObjectStreamException {
+        return new LoggerProxy(getName(), getMessageFactory());
+    }
+
     /**
      * This method is only used for 1.x compatibility. Returns the parent of this Logger. If it doesn't already exist
      * return a temporary Logger.
-     * 
+     *
      * @return The parent Logger.
      */
     public Logger getParent() {
@@ -285,9 +290,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
     /**
      * The binding between a Logger and its configuration.
      */
-    // TODO: Should not be Serializable per EJ item 74 (2nd Ed)?
-    protected class PrivateConfig implements Serializable {
-        private static final long serialVersionUID = 1L;
+    protected class PrivateConfig {
         // config fields are public to make them visible to Logger subclasses
         /** LoggerConfig to delegate the actual logging to. */
         public final LoggerConfig loggerConfig; // SUPPRESS CHECKSTYLE
@@ -389,6 +392,28 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
     }
 
     /**
+     * Serialization proxy class for Logger. Since the LoggerContext and config information can be reconstructed on the
+     * fly, the only information needed for a Logger are what's available in AbstractLogger.
+     *
+     * @since 2.5
+     */
+    protected static class LoggerProxy implements Serializable {
+        private static final long serialVersionUID = 1L;
+
+        private final String name;
+        private final MessageFactory messageFactory;
+
+        public LoggerProxy(String name, MessageFactory messageFactory) {
+            this.name = name;
+            this.messageFactory = messageFactory;
+        }
+
+        protected Object readResolve() throws ObjectStreamException {
+            return new Logger(LoggerContext.getContext(), name, messageFactory);
+        }
+    }
+
+    /**
      * Returns a String representation of this instance in the form {@code "name:level[ in context_name]"}.
      * 
      * @return A String describing this Logger instance.
@@ -401,5 +426,22 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
         }
         final String contextName = context.getName();
         return contextName == null ? nameLevel : nameLevel + " in " + contextName;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final Logger that = (Logger) o;
+        return getName().equals(that.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return getName().hashCode();
     }
 }
