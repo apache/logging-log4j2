@@ -43,8 +43,7 @@ public abstract class AbstractScriptFilterTest {
         ThreadContext.put("UserId", "JohnDoe");
         logger.info("This should be logged");
         ThreadContext.clearMap();
-        final ListAppender app = (ListAppender) getContext().getRequiredAppender("List");
-        assertNotNull("No ListAppender", app);
+        final ListAppender app = getContext().getListAppender("List");
         try {
             List<String> messages = app.getMessages();
             assertNotNull("No Messages", messages);
@@ -62,8 +61,7 @@ public abstract class AbstractScriptFilterTest {
         ThreadContext.put("UserId", "JohnDoe");
         logger.info("This should be logged");
         ThreadContext.clearMap();
-        final ListAppender app = (ListAppender) getContext().getRequiredAppender("List");
-        assertNotNull("No ListAppender", app);
+        final ListAppender app = getContext().getListAppender("List");
         List<String> messages = app.getMessages();
         try {
             assertNotNull("No Messages", messages);

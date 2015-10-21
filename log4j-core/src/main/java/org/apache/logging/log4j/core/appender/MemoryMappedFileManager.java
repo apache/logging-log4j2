@@ -35,7 +35,6 @@ import java.util.Objects;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.NullOutputStream;
-import org.apache.logging.log4j.message.Message;
 
 /**
  * Extends OutputStreamManager but instead of using a buffered output stream, this class maps a region of a file into
@@ -125,12 +124,6 @@ public class MemoryMappedFileManager extends OutputStreamManager {
         // already done in AbstractOutputStreamAppender.append
     }
 
-    protected void logError(String message, Throwable throwable) {
-        Message m = LOGGER.getMessageFactory().newMessage("{} {} {}: {}",
-                getClass().getSimpleName(), getName(), message, throwable);
-        LOGGER.error(m, throwable);
-    }
-    
     private synchronized void remap() {
         final long offset = this.mappingOffset + mappedBuffer.position();
         final int length = mappedBuffer.remaining() + regionLength;

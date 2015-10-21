@@ -46,7 +46,7 @@ public class HostNameTest {
     @Before
     public void before() {
         host = context.getListAppender("HostTest").clear();
-        hostFile = (RollingFileAppender) context.getRequiredAppender("HostFile");
+        hostFile = context.getRequiredAppender("HostFile", RollingFileAppender.class);
     }
 
     @Test

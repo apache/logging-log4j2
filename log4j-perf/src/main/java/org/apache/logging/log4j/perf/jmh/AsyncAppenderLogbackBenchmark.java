@@ -63,7 +63,7 @@ public class AsyncAppenderLogbackBenchmark {
         @Setup(Level.Trial)
         public void up() {
             System.setProperty("logback.configurationFile", "perf-logback-async.xml");
-            logger = (Logger) LoggerFactory.getLogger(getClass());
+            logger = LoggerFactory.getLogger(getClass());
         }
 
         @TearDown(Level.Trial)

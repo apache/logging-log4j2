@@ -166,11 +166,8 @@ public class JdbcAppenderBenchmark {
     }
 
     private void createTable(final Connection connection, final String createSQL) throws SQLException {
-        final Statement statement = connection.createStatement();
-        try {
+        try (final Statement statement = connection.createStatement()) {
             statement.executeUpdate(createSQL);
-        } finally {
-            statement.close();
         }
     }
 

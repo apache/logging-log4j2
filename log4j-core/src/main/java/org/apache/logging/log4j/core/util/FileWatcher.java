@@ -21,7 +21,7 @@ import java.io.File;
 /**
  * Watches for changes in a Path and performs an action when the file is modified.
  */
-public interface FileWatcher<T> {
+public interface FileWatcher {
 
     void fileModified(File file);
 }

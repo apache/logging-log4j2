@@ -121,7 +121,7 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
      * @return the buffer size
      */
     public int getBufferSize() {
-        return ((RollingRandomAccessFileManager) getManager()).getBufferSize();
+        return getManager().getBufferSize();
     }
 
     /**

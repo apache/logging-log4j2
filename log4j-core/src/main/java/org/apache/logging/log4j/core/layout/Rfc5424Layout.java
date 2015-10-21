@@ -234,7 +234,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         if (parser == null) {
             parser = new PatternParser(config, PatternLayout.KEY, ThrowablePatternConverter.class);
             config.addComponent(COMPONENT_KEY, parser);
-            parser = (PatternParser) config.getComponent(COMPONENT_KEY);
+            parser = config.getComponent(COMPONENT_KEY);
         }
         return parser;
     }

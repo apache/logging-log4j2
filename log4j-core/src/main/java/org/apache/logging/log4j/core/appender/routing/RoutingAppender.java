@@ -151,7 +151,7 @@ public final class RoutingAppender extends AbstractAppender {
                 final Node appNode = new Node(node);
                 config.createConfiguration(appNode, event);
                 if (appNode.getObject() instanceof Appender) {
-                    final Appender app = (Appender) appNode.getObject();
+                    final Appender app = appNode.getObject();
                     app.start();
                     return app;
                 }

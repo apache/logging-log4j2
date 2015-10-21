@@ -144,7 +144,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             try {
                 Closer.close(this.statement);
             } catch (final Exception e) {
-                LOGGER.warn("Failed to close SQL statement logging event or flushing buffer.", e);
+                logWarn("failed to close SQL statement logging event or flushing buffer", e);
             } finally {
                 this.statement = null;
             }
@@ -152,7 +152,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             try {
                 Closer.close(this.connection);
             } catch (final Exception e) {
-                LOGGER.warn("Failed to close database connection logging event or flushing buffer.", e);
+                logWarn("failed to close database connection logging event or flushing buffer", e);
             } finally {
                 this.connection = null;
             }

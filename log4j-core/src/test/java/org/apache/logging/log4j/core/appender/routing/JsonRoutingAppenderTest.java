@@ -18,17 +18,15 @@ package org.apache.logging.log4j.core.appender.routing;
 
 import java.io.File;
 import java.util.List;
+
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.junit.CleanFiles;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 
 import static org.junit.Assert.*;
 
@@ -37,39 +35,23 @@ import static org.junit.Assert.*;
  */
 public class JsonRoutingAppenderTest {
     private static final String CONFIG = "log4j-routing.json";
-    private static Configuration config;
-    private static ListAppender listAppender;
-    private static LoggerContext ctx;
+    private static final String LOG_FILENAME = "target/rolling1/rollingtest-Unknown.log";
 
-    @BeforeClass
-    public static void setupClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        ctx = LoggerContext.getContext(false);
-        config = ctx.getConfiguration();
-        listAppender = (ListAppender) config.getAppender("List");
-        final File file = new File("target/rolling1/rollingtest-Unknown.log");
-        file.delete();
-    }
+    private static LoggerContextRule context = new LoggerContextRule(CONFIG);
 
-    @AfterClass
-    public static void cleanupClass() {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        ctx.reconfigure();
-        StatusLogger.getLogger().reset();
-        final File file = new File("target/rolling1/rollingtest-Unknown.log");
-        file.delete();
-    }
+    @ClassRule
+    public static RuleChain rules = RuleChain.outerRule(new CleanFiles(LOG_FILENAME)).around(context);
 
     @Test
     public void routingTest() {
         StructuredDataMessage msg = new StructuredDataMessage("Test", "This is a test", "Service");
         EventLogger.logEvent(msg);
-        final List<LogEvent> list = listAppender.getEvents();
+        final List<LogEvent> list = context.getListAppender("List").getEvents();
         assertNotNull("No events generated", list);
         assertTrue("Incorrect number of events. Expected 1, got " + list.size(), list.size() == 1);
         msg = new StructuredDataMessage("Test", "This is a test", "Unknown");
         EventLogger.logEvent(msg);
-        final File file = new File("target/rolling1/rollingtest-Unknown.log");
+        final File file = new File(LOG_FILENAME);
         assertTrue("File was not created", file.exists());
     }
 }
