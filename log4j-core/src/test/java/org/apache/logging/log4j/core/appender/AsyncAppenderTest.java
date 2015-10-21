@@ -17,17 +17,15 @@
 package org.apache.logging.log4j.core.appender;
 
 import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LoggingException;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -37,23 +35,15 @@ import static org.junit.Assert.*;
  */
 public class AsyncAppenderTest {
     private static final String CONFIG = "log4j-asynch.xml";
-    private static Configuration config;
-    private static ListAppender listAppender;
-    private static LoggerContext ctx;
 
-    @BeforeClass
-    public static void setupClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        ctx = LoggerContext.getContext(false);
-        config = ctx.getConfiguration();
-        listAppender = (ListAppender) config.getAppender("List");
-    }
+    @ClassRule
+    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
 
-    @AfterClass
-    public static void cleanupClass() {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        ctx.reconfigure();
-        StatusLogger.getLogger().reset();
+    private ListAppender listAppender;
+
+    @Before
+    public void before() throws Exception {
+        listAppender = context.getListAppender("List");
     }
 
     @After
