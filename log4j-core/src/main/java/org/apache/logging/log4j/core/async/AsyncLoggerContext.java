@@ -21,6 +21,7 @@ import java.net.URI;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.message.MessageFactory;
 
 /**
@@ -29,29 +30,35 @@ import org.apache.logging.log4j.message.MessageFactory;
 public class AsyncLoggerContext extends LoggerContext {
 
     private static final long serialVersionUID = 1L;
+    
+    private final AsyncLoggerHelper helper;
 
     public AsyncLoggerContext(final String name) {
         super(name);
+        helper = new AsyncLoggerHelper();
     }
 
     public AsyncLoggerContext(final String name, final Object externalContext) {
         super(name, externalContext);
+        helper = new AsyncLoggerHelper();
     }
 
     public AsyncLoggerContext(final String name, final Object externalContext,
             final URI configLocn) {
         super(name, externalContext, configLocn);
+        helper = new AsyncLoggerHelper();
     }
 
     public AsyncLoggerContext(final String name, final Object externalContext,
             final String configLocn) {
         super(name, externalContext, configLocn);
+        helper = new AsyncLoggerHelper();
     }
 
     @Override
     protected Logger newInstance(final LoggerContext ctx, final String name,
             final MessageFactory messageFactory) {
-        return new AsyncLogger(ctx, name, messageFactory);
+        return new AsyncLogger(ctx, name, messageFactory, helper);
     }
 
     /* (non-Javadoc)
@@ -59,7 +66,7 @@ public class AsyncLoggerContext extends LoggerContext {
      */
     @Override
     public void start() {
-        AsyncLoggerHelper.start();
+        helper.start();
         super.start();
     }
 
@@ -68,13 +75,24 @@ public class AsyncLoggerContext extends LoggerContext {
      */
     @Override
     public void start(Configuration config) {
-        AsyncLoggerHelper.start();
+        helper.start();
         super.start(config);
     }
 
     @Override
     public void stop() {
-        AsyncLoggerHelper.stop(); // first stop Disruptor
+        helper.stop(); // first stop Disruptor
         super.stop();
+    }
+
+    /**
+     * Creates and returns a new {@code RingBufferAdmin} that instruments the ringbuffer of the {@code AsyncLogger}
+     * objects.
+     *
+     * @param contextName name of this {@code AsyncLoggerContext}
+     * @return a new {@code RingBufferAdmin} that instruments the ringbuffer
+     */
+    public RingBufferAdmin createRingBufferAdmin() {
+        return helper.createRingBufferAdmin(getName());
     }
 }
