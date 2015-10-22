@@ -174,7 +174,7 @@ public final class Server {
                 register(mbs, mbean, mbean.getObjectName());
 
                 if (ctx instanceof AsyncLoggerContext) {
-                    final RingBufferAdmin rbmbean = AsyncLogger.createRingBufferAdmin(ctx.getName());
+                    final RingBufferAdmin rbmbean = ((AsyncLoggerContext) ctx).createRingBufferAdmin();
                     register(mbs, rbmbean, rbmbean.getObjectName());
                 }
 
