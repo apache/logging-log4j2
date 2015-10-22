@@ -42,10 +42,17 @@ public class AsyncLoggerContextSelectorTest {
     }
 
     @Test
+    public void testLoggerContextsListInitiallyEmpty() {
+        final AsyncLoggerContextSelector selector = new AsyncLoggerContextSelector();
+        assertTrue(selector.getLoggerContexts().isEmpty());
+    }
+
+    @Test
     public void testLoggerContextsReturnsAsyncLoggerContext() {
         final AsyncLoggerContextSelector selector = new AsyncLoggerContextSelector();
-        final List<LoggerContext> list = selector.getLoggerContexts();
+        selector.getContext(null, null, false);
 
+        final List<LoggerContext> list = selector.getLoggerContexts();
         assertEquals(1, list.size());
         assertTrue(list.get(0) instanceof AsyncLoggerContext);
     }
@@ -54,7 +61,8 @@ public class AsyncLoggerContextSelectorTest {
     public void testContextNameIsAsyncLoggerContextWithClassHashCode() {
         final AsyncLoggerContextSelector selector = new AsyncLoggerContextSelector();
         final LoggerContext context = selector.getContext(null, null, false);
-        final String expectedContextName = "AsyncLoggerContext@" + Integer.toHexString(AsyncLoggerContext.class.hashCode());
+        final int hash = getClass().getClassLoader().hashCode();
+        final String expectedContextName = "AsyncLoggerContext@" + Integer.toHexString(hash);
         assertEquals(expectedContextName, context.getName());
     }
 
