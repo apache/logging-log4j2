@@ -163,7 +163,7 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
             String configLocation = location;
             if (configLocation == null) {
                 final String[] paths = SetUtils.prefixSet(servletContext.getResourcePaths(WEB_INF), WEB_INF + "log4j2");
-                LOGGER.debug("getConfigURI found resource paths {} in servletConext at [{}]", Arrays.toString(paths), WEB_INF);
+                LOGGER.debug("getConfigURI found resource paths {} in servletContext at [{}]", Arrays.toString(paths), WEB_INF);
                 if (paths.length == 1) {
                     configLocation = paths[0];
                 } else if (paths.length > 1) {
@@ -185,7 +185,7 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
                 final URL url = servletContext.getResource(configLocation);
                 if (url != null) {
                     final URI uri = url.toURI();
-                    LOGGER.debug("getConfigURI found resource [{}] in servletConext at [{}]", uri, configLocation);
+                    LOGGER.debug("getConfigURI found resource [{}] in servletContext at [{}]", uri, configLocation);
                     return uri;
                 }
             }
@@ -195,7 +195,7 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
         if (location != null) {
             try {
                 final URI correctedFilePathUri = NetUtils.toURI(location);
-                LOGGER.debug("getConfigURI found [{}] in servletConext at [{}]", correctedFilePathUri, location);
+                LOGGER.debug("getConfigURI found [{}] in servletContext at [{}]", correctedFilePathUri, location);
                 return correctedFilePathUri;
             } catch (final Exception e) {
                 LOGGER.error("Unable to convert configuration location [{}] to a URI", location, e);
