@@ -27,7 +27,6 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.ReliabilityStrategy;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.core.util.DummyNanoClock;
@@ -65,6 +64,7 @@ public class AsyncLogger extends Logger {
 
     private static final Clock CLOCK = ClockFactory.getClock();
     private static volatile NanoClock nanoClock = new DummyNanoClock();
+    private AsyncLoggerHelper helper;
 
     /**
      * Constructs an {@code AsyncLogger} with the specified context, name and message factory.
@@ -72,16 +72,19 @@ public class AsyncLogger extends Logger {
      * @param context context of this logger
      * @param name name of this logger
      * @param messageFactory message factory of this logger
+     * @param helper 
      */
-    public AsyncLogger(final LoggerContext context, final String name, final MessageFactory messageFactory) {
+    public AsyncLogger(final LoggerContext context, final String name, final MessageFactory messageFactory,
+            AsyncLoggerHelper helper) {
         super(context, name, messageFactory);
+        this.helper = helper;
     }
 
     @Override
     public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message,
             final Throwable thrown) {
 
-        final Disruptor<RingBufferLogEvent> temp = AsyncLoggerHelper.getDisruptor();
+        final Disruptor<RingBufferLogEvent> temp = helper.getDisruptor();
         if (temp == null) { // LOG4J2-639
             LOGGER.fatal("Ignoring log event after log4j was shut down");
         } else {
@@ -143,7 +146,7 @@ public class AsyncLogger extends Logger {
         message.getFormattedMessage(); // LOG4J2-763: ask message to freeze parameters
 
         initLogMessageInfo(info, fqcn, level, marker, message, thrown);
-        AsyncLoggerHelper.enqueueLogMessageInfo(info.translator);
+        helper.enqueueLogMessageInfo(info.translator);
     }
 
     private void initLogMessageInfo(Info info, final String fqcn, final Level level, final Marker marker,
@@ -209,16 +212,6 @@ public class AsyncLogger extends Logger {
         event.mergePropertiesIntoContextMap(properties, privateConfig.config.getStrSubstitutor());
         final ReliabilityStrategy strategy = privateConfig.loggerConfig.getReliabilityStrategy();
         strategy.log(this, event);
-    }
-
-    /**
-     * Creates and returns a new {@code RingBufferAdmin} that instruments the ringbuffer of the {@code AsyncLogger}.
-     *
-     * @param contextName name of the global {@code AsyncLoggerContext}
-     * @return a new {@code RingBufferAdmin} that instruments the ringbuffer
-     */
-    public static RingBufferAdmin createRingBufferAdmin(final String contextName) {
-        return AsyncLoggerHelper.createRingBufferAdmin(contextName);
     }
 
     /**
