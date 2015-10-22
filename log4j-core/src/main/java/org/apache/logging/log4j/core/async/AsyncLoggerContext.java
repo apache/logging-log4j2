@@ -30,38 +30,37 @@ import org.apache.logging.log4j.message.MessageFactory;
 public class AsyncLoggerContext extends LoggerContext {
 
     private static final long serialVersionUID = 1L;
-    
+
     private final AsyncLoggerHelper helper;
 
     public AsyncLoggerContext(final String name) {
         super(name);
-        helper = new AsyncLoggerHelper();
+        helper = new AsyncLoggerHelper(name);
     }
 
     public AsyncLoggerContext(final String name, final Object externalContext) {
         super(name, externalContext);
-        helper = new AsyncLoggerHelper();
+        helper = new AsyncLoggerHelper(name);
     }
 
-    public AsyncLoggerContext(final String name, final Object externalContext,
-            final URI configLocn) {
+    public AsyncLoggerContext(final String name, final Object externalContext, final URI configLocn) {
         super(name, externalContext, configLocn);
-        helper = new AsyncLoggerHelper();
+        helper = new AsyncLoggerHelper(name);
     }
 
-    public AsyncLoggerContext(final String name, final Object externalContext,
-            final String configLocn) {
+    public AsyncLoggerContext(final String name, final Object externalContext, final String configLocn) {
         super(name, externalContext, configLocn);
-        helper = new AsyncLoggerHelper();
+        helper = new AsyncLoggerHelper(name);
     }
 
     @Override
-    protected Logger newInstance(final LoggerContext ctx, final String name,
-            final MessageFactory messageFactory) {
+    protected Logger newInstance(final LoggerContext ctx, final String name, final MessageFactory messageFactory) {
         return new AsyncLogger(ctx, name, messageFactory, helper);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.apache.logging.log4j.core.LoggerContext#start()
      */
     @Override
@@ -70,7 +69,9 @@ public class AsyncLoggerContext extends LoggerContext {
         super.start();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.apache.logging.log4j.core.LoggerContext#start(org.apache.logging.log4j.core.config.Configuration)
      */
     @Override
