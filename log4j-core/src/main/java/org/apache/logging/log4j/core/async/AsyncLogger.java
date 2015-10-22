@@ -64,7 +64,7 @@ public class AsyncLogger extends Logger {
 
     private static final Clock CLOCK = ClockFactory.getClock();
     private static volatile NanoClock nanoClock = new DummyNanoClock();
-    private AsyncLoggerHelper helper;
+    private final AsyncLoggerHelper helper;
 
     /**
      * Constructs an {@code AsyncLogger} with the specified context, name and message factory.
@@ -72,10 +72,10 @@ public class AsyncLogger extends Logger {
      * @param context context of this logger
      * @param name name of this logger
      * @param messageFactory message factory of this logger
-     * @param helper 
+     * @param helper helper class that logging can be delegated to. This object owns the Disruptor.
      */
     public AsyncLogger(final LoggerContext context, final String name, final MessageFactory messageFactory,
-            AsyncLoggerHelper helper) {
+            final AsyncLoggerHelper helper) {
         super(context, name, messageFactory);
         this.helper = helper;
     }
