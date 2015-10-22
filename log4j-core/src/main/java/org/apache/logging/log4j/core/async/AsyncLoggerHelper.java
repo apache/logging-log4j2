@@ -36,16 +36,10 @@ import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 
 /**
- * Helper class for AsyncLogger:
- * <ul>
- * <li>Separates the AsyncLogger business logic (logging) from the mechanics of working with the LMAX Disruptor.</li>
- * <li>Disruptor initialization no longer happens in a initializer block in AsyncLogger to prevent problems where
- * the Disruptor is unintentionally initialized (and a thread started) because a method in AsyncLogger is called
- * (LOG4J2-1159).</li>
- * <li>Enable a reference counting scheme tracking the total number of starts and stops, so the Disruptor and associated
- * Executor can be shut down when usage becomes zero. This fixes a long-standing issue that made AsyncLoggers unsuitable
- * for use in web applications (LOG4J2-493).</li>
- * </ul>
+ * Helper class for async loggers: AsyncLoggerHelper handles the mechanics of working with the LMAX Disruptor, and
+ * works with its associated AsyncLoggerContext to synchronize the life cycle of the Disruptor and its thread with the
+ * life cycle of the context. The AsyncLoggerHelper of the context is shared by all AsyncLogger objects created by that
+ * AsyncLoggerContext.
  */
 public class AsyncLoggerHelper {
     private static final int SLEEP_MILLIS_BETWEEN_DRAIN_ATTEMPTS = 50;
@@ -54,34 +48,36 @@ public class AsyncLoggerHelper {
     private static final int RINGBUFFER_DEFAULT_SIZE = 256 * 1024;
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
+    private final String contextName;
     private ExecutorService executor;
     private volatile Disruptor<RingBufferLogEvent> disruptor;
-    private volatile int count = 0;
+
+    public AsyncLoggerHelper(String contextName) {
+        this.contextName = contextName;
+    }
+
+    public String getContextName() {
+        return contextName;
+    }
 
     Disruptor<RingBufferLogEvent> getDisruptor() {
         return disruptor;
     }
 
     /**
-     * Increases the reference count and creates and starts a new Disruptor and associated thread if none currently
-     * exists.
+     * Creates and starts a new Disruptor and associated thread if none currently exists.
      * 
-     * @see #release()
+     * @see #stop()
      */
     synchronized void start() {
-        count++;
-        initDisruptor();
-    }
-
-    private synchronized void initDisruptor() {
         if (disruptor != null) {
-            LOGGER.trace("AsyncLoggerHelper not starting new disruptor, using existing object. Ref count is {}.", count);
+            LOGGER.trace("[{}] AsyncLoggerHelper not starting new disruptor, using existing object.", contextName);
             return;
         }
-        LOGGER.trace("AsyncLoggerHelper creating new disruptor. Ref count is {}.", count);
+        LOGGER.trace("[{}] AsyncLoggerHelper creating new disruptor.", contextName);
         final int ringBufferSize = calculateRingBufferSize();
         final WaitStrategy waitStrategy = createWaitStrategy();
-        executor = Executors.newSingleThreadExecutor(new DaemonThreadFactory("AsyncLogger-"));
+        executor = Executors.newSingleThreadExecutor(new DaemonThreadFactory(contextName + "-Logger-"));
         Info.initExecutorThreadInstance(executor);
 
         disruptor = new Disruptor<>(RingBufferLogEvent.FACTORY, ringBufferSize, executor, ProducerType.MULTI,
@@ -91,8 +87,8 @@ public class AsyncLoggerHelper {
         final RingBufferLogEventHandler[] handlers = {new RingBufferLogEventHandler()};
         disruptor.handleEventsWith(handlers);
 
-        LOGGER.debug("Starting AsyncLogger disruptor with ringbuffer size {}...", disruptor.getRingBuffer()
-                .getBufferSize());
+        LOGGER.debug("[{}] Starting AsyncLogger disruptor with ringbuffer size {}...", contextName, disruptor
+                .getRingBuffer().getBufferSize());
         disruptor.start();
     }
 
@@ -104,19 +100,20 @@ public class AsyncLoggerHelper {
             int size = Integer.parseInt(userPreferredRBSize);
             if (size < RINGBUFFER_MIN_SIZE) {
                 size = RINGBUFFER_MIN_SIZE;
-                LOGGER.warn("Invalid RingBufferSize {}, using minimum size {}.", userPreferredRBSize,
+                LOGGER.warn("[{}] Invalid RingBufferSize {}, using minimum size {}.", contextName, userPreferredRBSize,
                         RINGBUFFER_MIN_SIZE);
             }
             ringBufferSize = size;
         } catch (final Exception ex) {
-            LOGGER.warn("Invalid RingBufferSize {}, using default size {}.", userPreferredRBSize, ringBufferSize);
+            LOGGER.warn("[{}] Invalid RingBufferSize {}, using default size {}.", contextName, userPreferredRBSize,
+                    ringBufferSize);
         }
         return Integers.ceilingNextPowerOfTwo(ringBufferSize);
     }
 
     private WaitStrategy createWaitStrategy() {
         final String strategy = PropertiesUtil.getProperties().getStringProperty("AsyncLogger.WaitStrategy");
-        LOGGER.debug("property AsyncLogger.WaitStrategy={}", strategy);
+        LOGGER.debug("[{}] property AsyncLogger.WaitStrategy={}", contextName, strategy);
         if ("Sleep".equals(strategy)) {
             return new SleepingWaitStrategy();
         } else if ("Yield".equals(strategy)) {
@@ -124,24 +121,25 @@ public class AsyncLoggerHelper {
         } else if ("Block".equals(strategy)) {
             return new BlockingWaitStrategy();
         }
-        LOGGER.debug("disruptor event handler uses BlockingWaitStrategy");
+        LOGGER.debug("[{}] disruptor event handler uses BlockingWaitStrategy", contextName);
         return new BlockingWaitStrategy();
     }
 
     private ExceptionHandler<RingBufferLogEvent> getExceptionHandler() {
         final String cls = PropertiesUtil.getProperties().getStringProperty("AsyncLogger.ExceptionHandler");
         if (cls == null) {
-            LOGGER.debug("No AsyncLogger.ExceptionHandler specified");
+            LOGGER.debug("[{}] No AsyncLogger.ExceptionHandler specified", contextName);
             return null;
         }
         try {
             @SuppressWarnings("unchecked")
             final ExceptionHandler<RingBufferLogEvent> result = Loader
                     .newCheckedInstanceOf(cls, ExceptionHandler.class);
-            LOGGER.debug("AsyncLogger.ExceptionHandler={}", result);
+            LOGGER.debug("[{}] AsyncLogger.ExceptionHandler={}", contextName, result);
             return result;
         } catch (final Exception ignored) {
-            LOGGER.debug("AsyncLogger.ExceptionHandler not set: error creating " + cls + ": ", ignored);
+            LOGGER.debug("[{}] AsyncLogger.ExceptionHandler not set: error creating " + cls + ": ", contextName,
+                    ignored);
             return null;
         }
     }
@@ -150,11 +148,11 @@ public class AsyncLoggerHelper {
         // LOG4J2-639: catch NPE if disruptor field was set to null in release()
         try {
             // Note: we deliberately access the volatile disruptor field afresh here.
-            // Avoiding this and using an older refrence could result in adding a log event to the disruptor after it
+            // Avoiding this and using an older reference could result in adding a log event to the disruptor after it
             // was shut down, which could cause the publishEvent method to hang and never return.
             disruptor.publishEvent(translator);
         } catch (final NullPointerException npe) {
-            LOGGER.fatal("Ignoring log event after log4j was shut down.");
+            LOGGER.fatal("[{}] Ignoring log event after log4j was shut down.", contextName);
         }
     }
 
@@ -173,18 +171,12 @@ public class AsyncLoggerHelper {
      * shut down and their references set to {@code null}.
      */
     synchronized void stop() {
-        if (--count > 0) {
-            LOGGER.trace("AsyncLoggerHelper: not shutting down disruptor: ref count is {}.", count);
-            return;
-        }
-
         final Disruptor<RingBufferLogEvent> temp = getDisruptor();
         if (temp == null) {
-            LOGGER.trace("AsyncLoggerHelper: disruptor already shut down: ref count is {}. (Resetting to zero.)", count);
-            count = 0; // ref count must not be negative or #claim() will not work correctly
+            LOGGER.trace("[{}] AsyncLoggerHelper: disruptor already shut down.", contextName);
             return; // disruptor was already shut down by another thread
         }
-        LOGGER.debug("AsyncLoggerHelper: shutting down disruptor: ref count is {}.", count);
+        LOGGER.debug("[{}] AsyncLoggerHelper: shutting down disruptor.", contextName);
 
         // Must guarantee that publishing to the RingBuffer has stopped
         // before we call disruptor.shutdown()
@@ -201,7 +193,7 @@ public class AsyncLoggerHelper {
         }
         temp.shutdown(); // busy-spins until all events currently in the disruptor have been processed
 
-        LOGGER.trace("AsyncLoggerHelper: shutting down disruptor executor.");
+        LOGGER.trace("[{}] AsyncLoggerHelper: shutting down disruptor executor.", contextName);
         executor.shutdown(); // finally, kill the processor thread
         executor = null;
         // Info.THREADLOCAL.remove(); // LOG4J2-323
@@ -210,7 +202,7 @@ public class AsyncLoggerHelper {
     /**
      * Returns {@code true} if the specified disruptor still has unprocessed events.
      */
-    private boolean hasBacklog(final Disruptor<?> theDisruptor) {
+    private static boolean hasBacklog(final Disruptor<?> theDisruptor) {
         final RingBuffer<?> ringBuffer = theDisruptor.getRingBuffer();
         return !ringBuffer.hasAvailableCapacity(ringBuffer.getBufferSize());
     }
