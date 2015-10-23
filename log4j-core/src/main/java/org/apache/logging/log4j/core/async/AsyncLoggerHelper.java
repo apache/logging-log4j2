@@ -41,14 +41,14 @@ import com.lmax.disruptor.dsl.ProducerType;
  * life cycle of the context. The AsyncLoggerHelper of the context is shared by all AsyncLogger objects created by that
  * AsyncLoggerContext.
  */
-public class AsyncLoggerHelper {
+class AsyncLoggerHelper {
     private static final int SLEEP_MILLIS_BETWEEN_DRAIN_ATTEMPTS = 50;
     private static final int MAX_DRAIN_ATTEMPTS_BEFORE_SHUTDOWN = 200;
     private static final int RINGBUFFER_MIN_SIZE = 128;
     private static final int RINGBUFFER_DEFAULT_SIZE = 256 * 1024;
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
-    private final String contextName;
+    private String contextName;
     private ExecutorService executor;
     private volatile Disruptor<RingBufferLogEvent> disruptor;
 
@@ -58,6 +58,10 @@ public class AsyncLoggerHelper {
 
     public String getContextName() {
         return contextName;
+    }
+
+    public void setContextName(String name) {
+        contextName = name;
     }
 
     Disruptor<RingBufferLogEvent> getDisruptor() {
@@ -77,18 +81,22 @@ public class AsyncLoggerHelper {
         LOGGER.trace("[{}] AsyncLoggerHelper creating new disruptor.", contextName);
         final int ringBufferSize = calculateRingBufferSize();
         final WaitStrategy waitStrategy = createWaitStrategy();
-        executor = Executors.newSingleThreadExecutor(new DaemonThreadFactory(contextName + "-Logger-"));
+        executor = Executors.newSingleThreadExecutor(new DaemonThreadFactory("AsyncLogger[" + contextName + "]"));
         Info.initExecutorThreadInstance(executor);
 
         disruptor = new Disruptor<>(RingBufferLogEvent.FACTORY, ringBufferSize, executor, ProducerType.MULTI,
                 waitStrategy);
-        disruptor.handleExceptionsWith(getExceptionHandler());
+
+        final ExceptionHandler<RingBufferLogEvent> errorHandler = getExceptionHandler();
+        disruptor.handleExceptionsWith(errorHandler);
 
         final RingBufferLogEventHandler[] handlers = {new RingBufferLogEventHandler()};
         disruptor.handleEventsWith(handlers);
 
-        LOGGER.debug("[{}] Starting AsyncLogger disruptor with ringbuffer size {}...", contextName, disruptor
-                .getRingBuffer().getBufferSize());
+        LOGGER.debug(
+        		"[{}] Starting AsyncLogger disruptor with ringbufferSize={}, waitStrategy={}, exceptionHandler={}...",
+        		contextName, disruptor.getRingBuffer().getBufferSize(), waitStrategy.getClass().getSimpleName(),
+        		errorHandler);
         disruptor.start();
     }
 
@@ -113,22 +121,22 @@ public class AsyncLoggerHelper {
 
     private WaitStrategy createWaitStrategy() {
         final String strategy = PropertiesUtil.getProperties().getStringProperty("AsyncLogger.WaitStrategy");
-        LOGGER.debug("[{}] property AsyncLogger.WaitStrategy={}", contextName, strategy);
-        if ("Sleep".equals(strategy)) {
-            return new SleepingWaitStrategy();
-        } else if ("Yield".equals(strategy)) {
-            return new YieldingWaitStrategy();
-        } else if ("Block".equals(strategy)) {
-            return new BlockingWaitStrategy();
+        if (strategy != null) {
+	        LOGGER.trace("[{}] property AsyncLogger.WaitStrategy={}", contextName, strategy);
+	        if ("Sleep".equals(strategy)) {
+	            return new SleepingWaitStrategy();
+	        } else if ("Yield".equals(strategy)) {
+	            return new YieldingWaitStrategy();
+	        } else if ("Block".equals(strategy)) {
+	            return new BlockingWaitStrategy();
+	        }
         }
-        LOGGER.debug("[{}] disruptor event handler uses BlockingWaitStrategy", contextName);
         return new BlockingWaitStrategy();
     }
 
     private ExceptionHandler<RingBufferLogEvent> getExceptionHandler() {
         final String cls = PropertiesUtil.getProperties().getStringProperty("AsyncLogger.ExceptionHandler");
         if (cls == null) {
-            LOGGER.debug("[{}] No AsyncLogger.ExceptionHandler specified", contextName);
             return null;
         }
         try {
@@ -163,7 +171,8 @@ public class AsyncLoggerHelper {
      * @return a new {@code RingBufferAdmin} that instruments the ringbuffer
      */
     public RingBufferAdmin createRingBufferAdmin(final String contextName) {
-        return RingBufferAdmin.forAsyncLogger(disruptor.getRingBuffer(), contextName);
+    	final RingBuffer<RingBufferLogEvent> ring = disruptor == null ? null : disruptor.getRingBuffer();
+        return RingBufferAdmin.forAsyncLogger(ring, contextName);
     }
 
     /**

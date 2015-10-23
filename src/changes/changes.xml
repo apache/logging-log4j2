@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.5" date="2015-MM-DD" description="GA Release 2.5">
+      <action issue="LOG4J2-1171" dev="rpopma" type="fix">
+        Use servlet context name for logger context name when available.
+      </action>
       <action issue="LOG4J2-1159" dev="rpopma" type="fix">
         Fixed a ThreadLocal memory leak in Tomcat8 that mentions AsyncLoggers when Async Loggers are not used.
       </action>

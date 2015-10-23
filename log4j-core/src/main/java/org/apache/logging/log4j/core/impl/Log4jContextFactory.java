@@ -222,6 +222,9 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
         if (externalContext != null && ctx.getExternalContext() == null) {
             ctx.setExternalContext(externalContext);
         }
+        if (name != null) {
+        	ctx.setName(name);
+        }
         if (ctx.getState() == LifeCycle.State.INITIALIZED) {
             if (configLocation != null || name != null) {
                 ContextAnchor.THREAD_CONTEXT.set(ctx);

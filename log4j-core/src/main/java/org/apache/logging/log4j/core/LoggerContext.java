@@ -74,7 +74,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      */
     private volatile Configuration configuration = new DefaultConfiguration();
     private Object externalContext;
-    private final String contextName;
+    private String contextName;
     private volatile URI configLocation;
     private Cancellable shutdownCallback;
 
@@ -317,6 +317,16 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      */
     public String getName() {
         return contextName;
+    }
+    
+    /**
+     * Sets the name.
+     * 
+     * @param name the new LoggerContext name
+     * @throws NullPointerException if the specified name is {@code null}
+     */
+    public void setName(final String name) {
+    	contextName = Objects.requireNonNull(name);
     }
 
     /**

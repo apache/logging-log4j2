@@ -57,6 +57,12 @@ public class AsyncLoggerContext extends LoggerContext {
     protected Logger newInstance(final LoggerContext ctx, final String name, final MessageFactory messageFactory) {
         return new AsyncLogger(ctx, name, messageFactory, helper);
     }
+    
+    @Override
+    public void setName(final String name) {
+    	super.setName("AsyncContext[" + name + "]");
+    	helper.setContextName(name);
+    }
 
     /*
      * (non-Javadoc)
