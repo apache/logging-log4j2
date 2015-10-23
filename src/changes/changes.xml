@@ -59,6 +59,9 @@
       <action issue="LOG4J2-801" dev="mattsicker" type="fix">
         org.apache.logging.log4j.core.Logger should be serializable.
       </action>
+      <action issue="LOG4J2-1174" dev="ggregory" type="update">
+        Update Jackson from 2.6.2 to 2.6.3.
+      </action>
     </release>
     <release version="2.4.1" date="2015-10-08" description="GA Release 2.4.1">
       <action issue="LOG4J2-1129" dev="rgoers" type="add">
