@@ -116,22 +116,23 @@ class AsyncLoggerConfigHelper implements AsyncLoggerConfigDelegate {
         disruptor.handleEventsWith(handlers);
 
         LOGGER.debug(
-                "Starting AsyncLoggerConfig disruptor with ringbuffer size={}, waitStrategy={}, exceptionHandler={}...",
+                "Starting AsyncLoggerConfig disruptor with ringbufferSize={}, waitStrategy={}, exceptionHandler={}...",
                 disruptor.getRingBuffer().getBufferSize(), waitStrategy.getClass().getSimpleName(), errorHandler);
         disruptor.start();
     }
 
     private static WaitStrategy createWaitStrategy() {
         final String strategy = System.getProperty("AsyncLoggerConfig.WaitStrategy");
-        LOGGER.trace("property AsyncLoggerConfig.WaitStrategy={}", strategy);
-        if ("Sleep".equals(strategy)) {
-            return new SleepingWaitStrategy();
-        } else if ("Yield".equals(strategy)) {
-            return new YieldingWaitStrategy();
-        } else if ("Block".equals(strategy)) {
-            return new BlockingWaitStrategy();
+        if (strategy != null) {
+	        LOGGER.trace("property AsyncLoggerConfig.WaitStrategy={}", strategy);
+	        if ("Sleep".equals(strategy)) {
+	            return new SleepingWaitStrategy();
+	        } else if ("Yield".equals(strategy)) {
+	            return new YieldingWaitStrategy();
+	        } else if ("Block".equals(strategy)) {
+	            return new BlockingWaitStrategy();
+	        }
         }
-        LOGGER.trace("AsyncLoggerConfigHelper disruptor event handler uses BlockingWaitStrategy");
         return new BlockingWaitStrategy();
     }
 
