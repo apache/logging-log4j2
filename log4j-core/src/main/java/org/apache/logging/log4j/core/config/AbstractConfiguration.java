@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -36,7 +37,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -44,13 +44,13 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AsyncAppender;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfig;
-import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
+import org.apache.logging.log4j.core.async.AsyncLoggerConfigDelegate;
+import org.apache.logging.log4j.core.async.AsyncLoggerConfigHelper;
 import org.apache.logging.log4j.core.async.DaemonThreadFactory;
 import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
-import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.MapLookup;
@@ -60,12 +60,10 @@ import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.script.AbstractScript;
 import org.apache.logging.log4j.core.script.ScriptManager;
 import org.apache.logging.log4j.core.script.ScriptRef;
-import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.core.util.WatchManager;
-import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -126,6 +124,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private ScriptManager scriptManager;
     private ScheduledExecutorService executorService;
     private final WatchManager watchManager = new WatchManager();
+    private AsyncLoggerConfigHelper asyncLoggerConfigHelper;
 
     /**
      * Constructor.
@@ -166,6 +165,16 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     public ScheduledExecutorService getExecutorService() {
         return executorService;
     }
+
+	@Override
+	public AsyncLoggerConfigDelegate getAsyncLoggerConfigDelegate() {
+	    // lazily instantiate only when requested by AsyncLoggers:
+	    // loading AsyncLoggerConfigHelper requires LMAX Disruptor jar on classpath
+	    if (asyncLoggerConfigHelper == null) {
+	        asyncLoggerConfigHelper = new AsyncLoggerConfigHelper();
+	    }
+		return asyncLoggerConfigHelper;
+	}
 
     /**
      * Initialize the configuration.
@@ -215,6 +224,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         if (watchManager.getIntervalSeconds() > 0) {
             watchManager.start();
         }
+        if (hasAsyncLoggers()) {
+        	asyncLoggerConfigHelper.start();
+        }
         final Set<LoggerConfig> alreadyStarted = new HashSet<>();
         for (final LoggerConfig logger : loggers.values()) {
             logger.start();
@@ -230,7 +242,19 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         LOGGER.debug("Started configuration {} OK.", this);
     }
 
-    /**
+    private boolean hasAsyncLoggers() {
+        if (root instanceof AsyncLoggerConfig) {
+            return true;
+        }
+        for (final LoggerConfig logger : loggers.values()) {
+            if (logger instanceof AsyncLoggerConfig) {
+            	return true;
+            }
+        }
+		return false;
+	}
+
+	/**
      * Tear down the configuration.
      */
     @Override
@@ -238,47 +262,39 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         this.setStopping();
         LOGGER.trace("Stopping {}...", this);
 
+        // Stop the components that are closest to the application first:
+        // 1. Notify all LoggerConfigs' ReliabilityStrategy that the configuration will be stopped.
+        // 2. Stop the LoggerConfig objects (this may stop nested Filters)
+        // 3. Stop the AsyncLoggerConfigDelegate. This shuts down the AsyncLoggerConfig Disruptor
+        //    and waits until all events in the RingBuffer have been processed.
+        // 4. Stop all AsyncAppenders. This shuts down the associated thread and
+        //    waits until all events in the queue have been processed. (With optional timeout.)
+        // 5. Notify all LoggerConfigs' ReliabilityStrategy that appenders will be stopped.
+        //    This guarantees that any event received by a LoggerConfig before reconfiguration
+        //    are passed on to the Appenders before the Appenders are stopped.
+        // 6. Stop the remaining running Appenders. (It should now be safe to do so.)
+        // 7. Notify all LoggerConfigs that their Appenders can be cleaned up.
+
         for (final LoggerConfig loggerConfig : loggers.values()) {
             loggerConfig.getReliabilityStrategy().beforeStopConfiguration(this);
         }
         final String cls = getClass().getSimpleName();
         LOGGER.trace("{} notified {} ReliabilityStrategies that config will be stopped.", cls, loggers.size());
-
-        // LOG4J2-392 first stop AsyncLogger Disruptor thread
-        final LoggerContextFactory factory = LogManager.getFactory();
-        if (factory instanceof Log4jContextFactory) {
-            final ContextSelector selector = ((Log4jContextFactory) factory).getSelector();
-            if (selector instanceof AsyncLoggerContextSelector) { // all loggers are async
-                // TODO until LOG4J2-493 is fixed we can only stop AsyncLogger once!
-                // but LoggerContext.setConfiguration will call config.stop()
-                // every time the configuration changes...
-                //
-                // Uncomment the line below after LOG4J2-493 is fixed
-                // AsyncLogger.stop();
-                // LOGGER.trace("AbstractConfiguration stopped AsyncLogger disruptor.");
-            }
-        }
-        // similarly, first stop AsyncLoggerConfig Disruptor thread(s)
-        final Set<LoggerConfig> alreadyStopped = new HashSet<>();
-        int asyncLoggerConfigCount = 0;
+        
+        LOGGER.trace("{} stopping {} LoggerConfigs.", cls, loggers.size());
         for (final LoggerConfig logger : loggers.values()) {
-            if (logger instanceof AsyncLoggerConfig) {
-                // LOG4J2-520, LOG4J2-392:
-                // Important: do not clear appenders until after all AsyncLoggerConfigs
-                // have been stopped! Stopping the last AsyncLoggerConfig will
-                // shut down the disruptor and wait for all enqueued events to be processed.
-                // Only *after this* the appenders can be cleared or events will be lost.
-                logger.stop();
-                asyncLoggerConfigCount++;
-                alreadyStopped.add(logger);
-            }
+            logger.stop();
         }
-        if (root instanceof AsyncLoggerConfig & !alreadyStopped.contains(root)) { // LOG4J2-807
+        if (!root.isStopped()) {
             root.stop();
-            asyncLoggerConfigCount++;
-            alreadyStopped.add(root);
         }
-        LOGGER.trace("{} stopped {} AsyncLoggerConfigs.", cls, asyncLoggerConfigCount);
+
+        if (hasAsyncLoggers()) {
+            LOGGER.trace("{} stopping AsyncLoggerConfigDelegate.", cls);
+            asyncLoggerConfigHelper.stop();
+        }
+        
+        LOGGER.trace("{} stopping AsyncAppenders.", cls);
 
         // Stop the appenders in reverse order in case they still have activity.
         final Appender[] array = appenders.values().toArray(new Appender[appenders.size()]);
@@ -293,11 +309,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
         LOGGER.trace("{} stopped {} AsyncAppenders.", cls, asyncAppenderCount);
 
+        LOGGER.trace("{} notifying ReliabilityStrategies that appenders will be stopped.", cls);
         for (final LoggerConfig loggerConfig : loggers.values()) {
             loggerConfig.getReliabilityStrategy().beforeStopAppenders();
         }
-        LOGGER.trace("{} notified {} ReliabilityStrategies that appenders will be stopped.", cls, loggers.size());
 
+        LOGGER.trace("{} stopping remaining Appenders.", cls);
         int appenderCount = 0;
         for (int i = array.length - 1; i >= 0; --i) {
             if (array[i].isStarted()) { // then stop remaining Appenders
@@ -305,21 +322,18 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 appenderCount++;
             }
         }
-        LOGGER.trace("{} stopped {} Appenders.", cls, appenderCount);
+        LOGGER.trace("{} stopped {} remaining Appenders.", cls, appenderCount);
 
-        int loggerCount = 0;
+        LOGGER.trace("{} cleaning Appenders from {} LoggerConfigs.", cls, loggers.size());
         for (final LoggerConfig loggerConfig : loggers.values()) {
 
-            // AsyncLoggerConfigHelper decreases its ref count when an AsyncLoggerConfig is stopped.
-            // Stopping the same AsyncLoggerConfig twice results in an incorrect ref count and
-            // the shared Disruptor may be shut down prematurely, resulting in NPE or other errors.
-            if (!alreadyStopped.contains(loggerConfig)) {
-                loggerConfig.stop();
-                loggerCount++;
-            }
+            // LOG4J2-520, LOG4J2-392:
+            // Important: do not clear appenders until after all AsyncLoggerConfigs
+            // have been stopped! Stopping the last AsyncLoggerConfig will
+            // shut down the disruptor and wait for all enqueued events to be processed.
+            // Only *after this* the appenders can be cleared or events will be lost.
             loggerConfig.clearAppenders();
         }
-        LOGGER.trace("{} stopped {} LoggerConfigs.", cls, loggerCount);
 
         if (watchManager.isStarted()) {
             watchManager.stop();
@@ -329,12 +343,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             executorService.shutdown();
         }
 
-        // AsyncLoggerConfigHelper decreases its ref count when an AsyncLoggerConfig is stopped.
-        // Stopping the same AsyncLoggerConfig twice results in an incorrect ref count and
-        // the shared Disruptor may be shut down prematurely, resulting in NPE or other errors.
-        if (!alreadyStopped.contains(root)) {
-            root.stop();
-        }
         super.stop();
         if (advertiser != null && advertisement != null) {
             advertiser.unadvertise(advertisement);
@@ -458,8 +466,10 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 copy.add(child.getObject(CustomLevelConfig.class));
                 customLevels = copy;
             } else {
-                LOGGER.error("Unknown object \"{}\" of type {} is ignored.", child.getName(), child.getObject()
-                        .getClass().getName());
+                final List<String> expected = Arrays.asList("\"Appenders\"", "\"Loggers\"", "\"Properties\"",
+                        "\"Scripts\"", "\"CustomLevels\"");
+                LOGGER.error("Unknown object \"{}\" of type {} is ignored: expected one of {}.", child.getName(),
+                        child.getObject().getClass().getName(), expected);
             }
         }
 

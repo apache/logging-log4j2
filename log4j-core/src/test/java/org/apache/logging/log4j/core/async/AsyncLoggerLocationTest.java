@@ -36,6 +36,9 @@ public class AsyncLoggerLocationTest {
 
     @BeforeClass
     public static void beforeClass() {
+        final File file = new File("target", "AsyncLoggerLocationTest.log");
+        file.delete();
+        
         System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
                 AsyncLoggerContextSelector.class.getName());
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
@@ -51,11 +54,10 @@ public class AsyncLoggerLocationTest {
     public void testAsyncLogWritesToLog() throws Exception {
         final File file = new File("target", "AsyncLoggerLocationTest.log");
         // System.out.println(f.getAbsolutePath());
-        file.delete();
         final Logger log = LogManager.getLogger("com.foo.Bar");
         final String msg = "Async logger msg with location";
         log.info(msg);
-        CoreLoggerContexts.stopLoggerContext(file); // stop async thread
+        CoreLoggerContexts.stopLoggerContext(false, file); // stop async thread
 
         final BufferedReader reader = new BufferedReader(new FileReader(file));
         final String line1 = reader.readLine();

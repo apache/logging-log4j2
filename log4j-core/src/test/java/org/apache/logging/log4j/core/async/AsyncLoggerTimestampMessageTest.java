@@ -70,7 +70,7 @@ public class AsyncLoggerTimestampMessageTest {
         file.delete();
         final Logger log = LogManager.getLogger("com.foo.Bar");
         log.info(new TimeMsg("Async logger msg with embedded timestamp", 123456789000L));
-        CoreLoggerContexts.stopLoggerContext(file); // stop async thread
+        CoreLoggerContexts.stopLoggerContext(false, file); // stop async thread
 
         final BufferedReader reader = new BufferedReader(new FileReader(file));
         final String line1 = reader.readLine();

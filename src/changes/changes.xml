@@ -24,6 +24,12 @@
   </properties>
   <body>
     <release version="2.5" date="2015-MM-DD" description="GA Release 2.5">
+      <action issue="LOG4J2-323" dev="rpopma" type="fix">
+        Better web app support for async loggers: Fixed a memory leak that occurred when the logging jars are placed
+        in the container's classpath and the configuration file uses AsyncRoot/AsyncLogger.
+        The problem was that the first web application started the Disruptor background thread [AsyncLoggerConfig-1] but did not stop it until all web apps are stopped.
+        Each web application now has its own Disruptor which is stopped/started together with the web app.
+      </action>
       <action issue="LOG4J2-493" dev="rpopma" type="fix">
         Better web app support for async loggers: it is now possible to place the logging jars in the container's
         classpath when making all loggers asynchronous by using AsyncLoggerContextSelector. This fixes a problem where

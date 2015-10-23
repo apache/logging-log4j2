@@ -79,6 +79,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
             final boolean includeLocation) {
         super(name, appenders, filter, level, additive, properties, config,
                 includeLocation);
+        helper = config.getAsyncLoggerConfigDelegate();
     }
 
     /**
@@ -109,20 +110,12 @@ public class AsyncLoggerConfig extends LoggerConfig {
     @Override
     public void start() {
         LOGGER.trace("AsyncLoggerConfig[{}] starting...", displayName());
-        this.setStarting();
-        if (helper == null) {
-            helper = new AsyncLoggerConfigHelper();
-        } else {
-            AsyncLoggerConfigHelper.claim(); // LOG4J2-336
-        }
         super.start();
     }
 
     @Override
     public void stop() {
         LOGGER.trace("AsyncLoggerConfig[{}] stopping...", displayName());
-        this.setStopping();
-        AsyncLoggerConfigHelper.release();
         super.stop();
     }
 

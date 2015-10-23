@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
  * Encapsulates the mechanism used to log asynchronously. There is one delegate per configuration, which is shared by
  * all AsyncLoggerConfig objects in the configuration.
  */
-interface AsyncLoggerConfigDelegate {
+public interface AsyncLoggerConfigDelegate {
 
     /**
      * If possible, delegates the invocation of {@code callAppenders} to the background thread and returns {@code true}.

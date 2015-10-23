@@ -16,18 +16,19 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.async.AsyncLoggerConfigDelegate;
 import org.apache.logging.log4j.core.filter.Filterable;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.script.ScriptManager;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Interface that must be implemented to create a configuration.
@@ -146,5 +147,13 @@ public interface Configuration extends Filterable {
     List<CustomLevelConfig> getCustomLevels();
 
     ScriptManager getScriptManager();
+
+    /**
+     * Returns the {@code AsyncLoggerConfigDelegate} shared by all
+     * {@code AsyncLoggerConfig} instances defined in this Configuration.
+     * 
+     * @return the {@code AsyncLoggerConfigDelegate}
+     */
+	AsyncLoggerConfigDelegate getAsyncLoggerConfigDelegate();
 
 }
