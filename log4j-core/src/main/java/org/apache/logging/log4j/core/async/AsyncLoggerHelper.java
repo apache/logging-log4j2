@@ -75,10 +75,11 @@ class AsyncLoggerHelper {
      */
     synchronized void start() {
         if (disruptor != null) {
-            LOGGER.trace("[{}] AsyncLoggerHelper not starting new disruptor, using existing object.", contextName);
+            LOGGER.trace("[{}] AsyncLoggerHelper not starting new disruptor for this context, using existing object.",
+                    contextName);
             return;
         }
-        LOGGER.trace("[{}] AsyncLoggerHelper creating new disruptor.", contextName);
+        LOGGER.trace("[{}] AsyncLoggerHelper creating new disruptor for this context.", contextName);
         final int ringBufferSize = calculateRingBufferSize();
         final WaitStrategy waitStrategy = createWaitStrategy();
         executor = Executors.newSingleThreadExecutor(new DaemonThreadFactory("AsyncLogger[" + contextName + "]"));
@@ -94,7 +95,7 @@ class AsyncLoggerHelper {
         disruptor.handleEventsWith(handlers);
 
         LOGGER.debug(
-        		"[{}] Starting AsyncLogger disruptor with ringbufferSize={}, waitStrategy={}, exceptionHandler={}...",
+        		"[{}] Starting AsyncLogger disruptor for this context with ringbufferSize={}, waitStrategy={}, exceptionHandler={}...",
         		contextName, disruptor.getRingBuffer().getBufferSize(), waitStrategy.getClass().getSimpleName(),
         		errorHandler);
         disruptor.start();
@@ -182,13 +183,12 @@ class AsyncLoggerHelper {
     synchronized void stop() {
         final Disruptor<RingBufferLogEvent> temp = getDisruptor();
         if (temp == null) {
-            LOGGER.trace("[{}] AsyncLoggerHelper: disruptor already shut down.", contextName);
+            LOGGER.trace("[{}] AsyncLoggerHelper: disruptor for this context already shut down.", contextName);
             return; // disruptor was already shut down by another thread
         }
-        LOGGER.debug("[{}] AsyncLoggerHelper: shutting down disruptor.", contextName);
+        LOGGER.debug("[{}] AsyncLoggerHelper: shutting down disruptor for this context.", contextName);
 
-        // Must guarantee that publishing to the RingBuffer has stopped
-        // before we call disruptor.shutdown()
+        // We must guarantee that publishing to the RingBuffer has stopped before we call disruptor.shutdown().
         disruptor = null; // client code fails with NPE if log after stop. This is by design.
 
         // Calling Disruptor.shutdown() will wait until all enqueued events are fully processed,
