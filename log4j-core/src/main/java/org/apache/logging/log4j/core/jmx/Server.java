@@ -174,7 +174,10 @@ public final class Server {
 
                 if (ctx instanceof AsyncLoggerContext) {
                     final RingBufferAdmin rbmbean = ((AsyncLoggerContext) ctx).createRingBufferAdmin();
-                    register(mbs, rbmbean, rbmbean.getObjectName());
+                    if (rbmbean.getBufferSize() > 0) {
+                    	// don't register if Disruptor not started (DefaultConfiguration: config not found)
+                    	register(mbs, rbmbean, rbmbean.getObjectName());
+                    }
                 }
 
                 // register the status logger and the context selector

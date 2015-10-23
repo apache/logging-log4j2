@@ -24,6 +24,11 @@
   </properties>
   <body>
     <release version="2.5" date="2015-MM-DD" description="GA Release 2.5">
+      <action issue="LOG4J2-493" dev="rpopma" type="fix">
+        Better web app support for async loggers: it is now possible to place the logging jars in the container's
+        classpath when making all loggers asynchronous by using AsyncLoggerContextSelector. This fixes a problem where
+        logging would stop working after stopping and restarting a web application.
+      </action>
       <action issue="LOG4J2-1171" dev="rpopma" type="fix">
         Use servlet context name for logger context name when available.
       </action>

@@ -21,8 +21,10 @@ import java.net.URI;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * {@code LoggerContext} that creates {@code AsyncLogger} objects.
@@ -60,8 +62,8 @@ public class AsyncLoggerContext extends LoggerContext {
     
     @Override
     public void setName(final String name) {
-    	super.setName("AsyncContext[" + name + "]");
-    	helper.setContextName(name);
+        super.setName("AsyncContext[" + name + "]");
+        helper.setContextName(name);
     }
 
     /*
@@ -82,8 +84,19 @@ public class AsyncLoggerContext extends LoggerContext {
      */
     @Override
     public void start(Configuration config) {
-        helper.start();
+        maybeStartHelper(config);
         super.start(config);
+    }
+
+    private void maybeStartHelper(Configuration config) {
+        // If no log4j configuration was found, there are no loggers
+        // and there is no point in starting the disruptor (which takes up
+        // significant memory and starts a thread).
+        if (config instanceof DefaultConfiguration) {
+            StatusLogger.getLogger().debug("[{}] Not starting Disruptor for DefaultConfiguration.", getName());
+        } else {
+            helper.start();
+        }
     }
 
     @Override
