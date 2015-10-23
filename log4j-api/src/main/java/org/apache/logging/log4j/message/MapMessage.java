@@ -109,7 +109,13 @@ public class MapMessage implements MultiformatMessage {
         data.clear();
     }
 
-    public MapMessage withValue(final String key, final String value) {
+    /**
+     * Add an item to the data Map in fluent style.
+     * @param key The name of the data item.
+     * @param value The value of the data item.
+     * @return {@code this}
+     */
+    public MapMessage with(final String key, final String value) {
         put(key, value);
         return this;
     }
