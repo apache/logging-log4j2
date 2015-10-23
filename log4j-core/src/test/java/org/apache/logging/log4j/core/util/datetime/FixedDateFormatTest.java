@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.util.datetime;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat;
@@ -68,7 +69,7 @@ public class FixedDateFormatTest {
         assertEquals("yyyyMMdd", FixedFormat.COMPACT.getFastDateFormat().getPattern());
         assertEquals("yyyy-MM-dd ", FixedFormat.DEFAULT.getFastDateFormat().getPattern());
     }
-    
+
     @Test
     public void testCreateIfSupported_nonNullIfNameMatches() {
         for (final FixedDateFormat.FixedFormat format : FixedDateFormat.FixedFormat.values()) {
@@ -121,7 +122,7 @@ public class FixedDateFormatTest {
         assertNull("timezone", FixedDateFormat.createIfSupported(options));
     }
 
-    @Test(expected=NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void testConstructorDisallowsNull() {
         new FixedDateFormat(null);
     }
@@ -138,7 +139,7 @@ public class FixedDateFormatTest {
         final long start = now - TimeUnit.HOURS.toMillis(25);
         final long end = now + TimeUnit.HOURS.toMillis(25);
         for (final FixedFormat format : FixedFormat.values()) {
-            final SimpleDateFormat simpleDF = new SimpleDateFormat(format.getPattern());
+            final SimpleDateFormat simpleDF = new SimpleDateFormat(format.getPattern(), Locale.getDefault());
             final FixedDateFormat customTF = new FixedDateFormat(format);
             for (long time = start; time < end; time += 12345) {
                 final String actual = customTF.format(time);
@@ -154,7 +155,7 @@ public class FixedDateFormatTest {
         final long start = now - TimeUnit.HOURS.toMillis(25);
         final long end = now + TimeUnit.HOURS.toMillis(25);
         for (final FixedFormat format : FixedFormat.values()) {
-            final SimpleDateFormat simpleDF = new SimpleDateFormat(format.getPattern());
+            final SimpleDateFormat simpleDF = new SimpleDateFormat(format.getPattern(), Locale.getDefault());
             final FixedDateFormat customTF = new FixedDateFormat(format);
             for (long time = end; time > start; time -= 12345) {
                 final String actual = customTF.format(time);
@@ -171,7 +172,7 @@ public class FixedDateFormatTest {
         final long end = now + TimeUnit.HOURS.toMillis(25);
         final char[] buffer = new char[128];
         for (final FixedFormat format : FixedFormat.values()) {
-            final SimpleDateFormat simpleDF = new SimpleDateFormat(format.getPattern());
+            final SimpleDateFormat simpleDF = new SimpleDateFormat(format.getPattern(), Locale.getDefault());
             final FixedDateFormat customTF = new FixedDateFormat(format);
             for (long time = start; time < end; time += 12345) {
                 final int length = customTF.format(time, buffer, 23);
@@ -189,7 +190,7 @@ public class FixedDateFormatTest {
         final long end = now + TimeUnit.HOURS.toMillis(25);
         final char[] buffer = new char[128];
         for (final FixedFormat format : FixedFormat.values()) {
-            final SimpleDateFormat simpleDF = new SimpleDateFormat(format.getPattern());
+            final SimpleDateFormat simpleDF = new SimpleDateFormat(format.getPattern(), Locale.getDefault());
             final FixedDateFormat customTF = new FixedDateFormat(format);
             for (long time = end; time > start; time -= 12345) {
                 final int length = customTF.format(time, buffer, 23);

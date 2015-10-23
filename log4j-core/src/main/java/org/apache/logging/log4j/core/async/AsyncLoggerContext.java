@@ -20,6 +20,8 @@ import java.net.URI;
 
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.message.MessageFactory;
 
 /**
@@ -29,33 +31,69 @@ public class AsyncLoggerContext extends LoggerContext {
 
     private static final long serialVersionUID = 1L;
 
+    private final AsyncLoggerHelper helper;
+
     public AsyncLoggerContext(final String name) {
         super(name);
+        helper = new AsyncLoggerHelper(name);
     }
 
     public AsyncLoggerContext(final String name, final Object externalContext) {
         super(name, externalContext);
+        helper = new AsyncLoggerHelper(name);
     }
 
-    public AsyncLoggerContext(final String name, final Object externalContext,
-            final URI configLocn) {
+    public AsyncLoggerContext(final String name, final Object externalContext, final URI configLocn) {
         super(name, externalContext, configLocn);
+        helper = new AsyncLoggerHelper(name);
     }
 
-    public AsyncLoggerContext(final String name, final Object externalContext,
-            final String configLocn) {
+    public AsyncLoggerContext(final String name, final Object externalContext, final String configLocn) {
         super(name, externalContext, configLocn);
+        helper = new AsyncLoggerHelper(name);
     }
 
     @Override
-    protected Logger newInstance(final LoggerContext ctx, final String name,
-            final MessageFactory messageFactory) {
-        return new AsyncLogger(ctx, name, messageFactory);
+    protected Logger newInstance(final LoggerContext ctx, final String name, final MessageFactory messageFactory) {
+        return new AsyncLogger(ctx, name, messageFactory, helper);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.logging.log4j.core.LoggerContext#start()
+     */
+    @Override
+    public void start() {
+        helper.start();
+        super.start();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.logging.log4j.core.LoggerContext#start(org.apache.logging.log4j.core.config.Configuration)
+     */
+    @Override
+    public void start(Configuration config) {
+        helper.start();
+        super.start(config);
     }
 
     @Override
     public void stop() {
-        AsyncLogger.stop();
+        helper.stop(); // first stop Disruptor
         super.stop();
+    }
+
+    /**
+     * Creates and returns a new {@code RingBufferAdmin} that instruments the ringbuffer of the {@code AsyncLogger}
+     * objects.
+     *
+     * @param contextName name of this {@code AsyncLoggerContext}
+     * @return a new {@code RingBufferAdmin} that instruments the ringbuffer
+     */
+    public RingBufferAdmin createRingBufferAdmin() {
+        return helper.createRingBufferAdmin(getName());
     }
 }

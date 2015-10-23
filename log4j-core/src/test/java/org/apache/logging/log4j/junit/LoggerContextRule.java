@@ -22,6 +22,8 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.selector.ContextSelector;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.rules.TestRule;
@@ -39,13 +41,31 @@ import static org.junit.Assert.*;
 public class LoggerContextRule implements TestRule {
 
     private final String configLocation;
+    private final Class<? extends ContextSelector> contextSelectorClass;
 
     private LoggerContext context;
 
     private String testClassName;
 
+    /**
+     * Constructs a new LoggerContextRule for a given configuration file.
+     *
+     * @param configLocation path to configuration file
+     */
     public LoggerContextRule(final String configLocation) {
+        this(configLocation, null);
+    }
+
+    /**
+     * Constructs a new LoggerContextRule for a given configuration file and a custom {@link ContextSelector} class.
+     *
+     * @param configLocation       path to configuration file
+     * @param contextSelectorClass custom ContextSelector class to use instead of default
+     * @since 2.5
+     */
+    public LoggerContextRule(final String configLocation, final Class<? extends ContextSelector> contextSelectorClass) {
         this.configLocation = configLocation;
+        this.contextSelectorClass = contextSelectorClass;
     }
 
     @Override
@@ -58,6 +78,9 @@ public class LoggerContextRule implements TestRule {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
+                if (contextSelectorClass != null) {
+                    System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, contextSelectorClass.getName());
+                }
                 context = Configurator.initialize(
                     description.getDisplayName(),
                     description.getTestClass().getClassLoader(),
@@ -68,6 +91,7 @@ public class LoggerContextRule implements TestRule {
                 } finally {
                     Configurator.shutdown(context);
                     StatusLogger.getLogger().reset();
+                    System.clearProperty(Constants.LOG4J_CONTEXT_SELECTOR);
                 }
             }
         };
@@ -75,6 +99,7 @@ public class LoggerContextRule implements TestRule {
 
     /**
      * Gets the current LoggerContext associated with this rule.
+     *
      * @return the current LoggerContext.
      */
     public LoggerContext getContext() {
@@ -83,6 +108,7 @@ public class LoggerContextRule implements TestRule {
 
     /**
      * Gets a named Logger using the test class's name from this LoggerContext.
+     *
      * @return the test class's named Logger.
      */
     public Logger getLogger() {
@@ -101,6 +127,7 @@ public class LoggerContextRule implements TestRule {
 
     /**
      * Gets the associated Configuration for the configuration file this was constructed with.
+     *
      * @return this LoggerContext's Configuration.
      */
     public Configuration getConfiguration() {
@@ -109,6 +136,7 @@ public class LoggerContextRule implements TestRule {
 
     /**
      * Gets a named Appender for this LoggerContext.
+     *
      * @param name the name of the Appender to look up.
      * @return the named Appender or {@code null} if it wasn't defined in the configuration.
      */
@@ -118,9 +146,10 @@ public class LoggerContextRule implements TestRule {
 
     /**
      * Gets a named Appender for this LoggerContext.
-     * @param <T> The target Appender class
+     *
+     * @param <T>  The target Appender class
      * @param name the name of the Appender to look up.
-     * @param cls The target Appender class
+     * @param cls  The target Appender class
      * @return the named Appender or {@code null} if it wasn't defined in the configuration.
      */
     public <T extends Appender> T getAppender(final String name, Class<T> cls) {
@@ -129,6 +158,7 @@ public class LoggerContextRule implements TestRule {
 
     /**
      * Gets a named Appender or throws an exception for this LoggerContext.
+     *
      * @param name the name of the Appender to look up.
      * @return the named Appender.
      * @throws AssertionError if the Appender doesn't exist.
@@ -141,9 +171,10 @@ public class LoggerContextRule implements TestRule {
 
     /**
      * Gets a named Appender or throws an exception for this LoggerContext.
-     * @param <T> The target Appender class
+     *
+     * @param <T>  The target Appender class
      * @param name the name of the Appender to look up.
-     * @param cls The target Appender class
+     * @param cls  The target Appender class
      * @return the named Appender.
      * @throws AssertionError if the Appender doesn't exist.
      */
@@ -155,6 +186,7 @@ public class LoggerContextRule implements TestRule {
 
     /**
      * Gets a named ListAppender or throws an exception for this LoggerContext.
+     *
      * @param name the name of the ListAppender to look up.
      * @return the named ListAppender.
      * @throws AssertionError if the named ListAppender doesn't exist or isn't a ListAppender.

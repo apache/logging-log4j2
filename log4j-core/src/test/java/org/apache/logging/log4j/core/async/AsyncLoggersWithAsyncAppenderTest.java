@@ -20,48 +20,25 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class AsyncLoggersWithAsyncAppenderTest {
-    private static Configuration config;
-    private static ListAppender listAppender;
-    private static LoggerContext ctx;
 
-    @BeforeClass
-    public static void beforeClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "AsyncLoggersWithAsyncAppenderTest.xml");
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, AsyncLoggerContextSelector.class.getName());
-        ctx = LoggerContext.getContext(false);
-        config = ctx.getConfiguration();
-        listAppender = (ListAppender) config.getAppender("List");
-    }
-
-    @AfterClass
-    public static void cleanupClass() {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        System.clearProperty(Constants.LOG4J_CONTEXT_SELECTOR);
-        ctx.reconfigure();
-        StatusLogger.getLogger().reset();
-    }
+    @ClassRule
+    public static LoggerContextRule context = new LoggerContextRule("AsyncLoggersWithAsyncAppenderTest.xml",
+        AsyncLoggerContextSelector.class);
 
     @Test
-    public void testLoggingWorks() throws Exception {        
+    public void testLoggingWorks() throws Exception {
         final Logger logger = LogManager.getLogger();
         logger.error("This is a test");
         logger.warn("Hello world!");
         Thread.sleep(100);
-        final List<String> list = listAppender.getMessages();
+        final List<String> list = context.getListAppender("List").getMessages();
         assertNotNull("No events generated", list);
         assertTrue("Incorrect number of events. Expected 2, got " + list.size(), list.size() == 2);
         String msg = list.get(0);

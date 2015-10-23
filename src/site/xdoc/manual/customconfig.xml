@@ -72,7 +72,8 @@
           <a name="ConfigurationFactory"/>
           <subsection name="Understanding ConfigurationFactory">
             <p>
-              Log4j 2 will search for available ConfigurationFactories and then select the one to use. The
+              During initialization, Log4j 2 will search for available <a href="extending.html#ConfigurationFactory">ConfigurationFactories</a>
+              and then select the one to use. The
               selected ConfigurationFactory creates the Configuration that Log4j will use. Here is how Log4j finds
               the available ConfigurationFactories:
             </p>

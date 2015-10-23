@@ -46,7 +46,7 @@
         </p>
         <p>
           The root class for layouts that use a Charset is <code>org.apache.logging.log4j.core.layout.AbstractStringLayout</code> 
-          where the default is UTF-8. Each layout that extends <code>org.apache.logging.log4j.core.layout.AbstractStringLayout</code> 
+          where the default is UTF-8. Each layout that extends <code>AbstractStringLayout</code> 
           can provide its own default. See each layout below.
         </p>
         <p>

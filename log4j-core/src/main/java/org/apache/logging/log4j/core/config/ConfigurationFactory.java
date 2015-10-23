@@ -143,8 +143,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                     final PluginManager manager = new PluginManager(CATEGORY);
                     manager.collectPlugins();
                     final Map<String, PluginType<?>> plugins = manager.getPlugins();
-                    final List<Class<? extends ConfigurationFactory>> ordered =
-                        new ArrayList<>(plugins.size());
+                    final List<Class<? extends ConfigurationFactory>> ordered = new ArrayList<>(plugins.size());
                     for (final PluginType<?> type : plugins.values()) {
                         try {
                             ordered.add(type.getPluginClass().asSubclass(ConfigurationFactory.class));

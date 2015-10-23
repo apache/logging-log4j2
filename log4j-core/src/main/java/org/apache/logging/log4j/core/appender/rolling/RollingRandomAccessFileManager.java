@@ -72,8 +72,8 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
         try {
             // write to the file, not to the buffer: the buffer may not be empty
             randomAccessFile.write(header, 0, header.length);
-        } catch (final IOException ioe) {
-            LOGGER.error("Unable to write header", ioe);
+        } catch (final IOException e) {
+            logError("unable to write header", e);
         }
     }
 
@@ -139,8 +139,8 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
         flush();
         try {
             randomAccessFile.close();
-        } catch (final IOException ex) {
-            LOGGER.error("Unable to close RandomAccessFile " + getName() + ". " + ex);
+        } catch (final IOException e) {
+            logError("unable to close RandomAccessFile", e);
         }
     }
 

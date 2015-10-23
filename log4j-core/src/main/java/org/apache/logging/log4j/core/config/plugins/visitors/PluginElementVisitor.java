@@ -86,7 +86,7 @@ public class PluginElementVisitor extends AbstractPluginVisitor<PluginElement> {
         }
         final Node namedNode = findNamedNode(name, node.getChildren());
         if (namedNode == null) {
-            log.append("null");
+            log.append(name).append("=null");
             return null;
         }
         log.append(namedNode.getName()).append('(').append(namedNode.toString()).append(')');

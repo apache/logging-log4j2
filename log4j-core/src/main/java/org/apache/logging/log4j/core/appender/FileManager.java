@@ -210,7 +210,7 @@ public class FileManager extends OutputStreamManager {
                 return new FileManager(name, os, data.append, data.locking, data.advertiseURI, data.layout, bufferSize,
                         writeHeader);
             } catch (final FileNotFoundException ex) {
-                LOGGER.error("FileManager (" + name + ") " + ex);
+                LOGGER.error("FileManager (" + name + ") " + ex, ex);
             }
             return null;
         }

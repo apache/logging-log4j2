@@ -24,11 +24,13 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class AsyncLoggerContextSelectorTest {
+    
+    private static final String FQCN = AsyncLoggerContextSelectorTest.class.getName();
 
     @Test
     public void testContextReturnsAsyncLoggerContext() {
         final AsyncLoggerContextSelector selector = new AsyncLoggerContextSelector();
-        final LoggerContext context = selector.getContext(null, null, false);
+        final LoggerContext context = selector.getContext(FQCN, null, false);
 
         assertTrue(context instanceof AsyncLoggerContext);
     }
@@ -36,7 +38,7 @@ public class AsyncLoggerContextSelectorTest {
     @Test
     public void testContext2ReturnsAsyncLoggerContext() {
         final AsyncLoggerContextSelector selector = new AsyncLoggerContextSelector();
-        final LoggerContext context = selector.getContext(null, null, false, null);
+        final LoggerContext context = selector.getContext(FQCN, null, false, null);
 
         assertTrue(context instanceof AsyncLoggerContext);
     }
@@ -44,8 +46,9 @@ public class AsyncLoggerContextSelectorTest {
     @Test
     public void testLoggerContextsReturnsAsyncLoggerContext() {
         final AsyncLoggerContextSelector selector = new AsyncLoggerContextSelector();
-        final List<LoggerContext> list = selector.getLoggerContexts();
+        selector.getContext(FQCN, null, false);
 
+        final List<LoggerContext> list = selector.getLoggerContexts();
         assertEquals(1, list.size());
         assertTrue(list.get(0) instanceof AsyncLoggerContext);
     }
@@ -53,8 +56,9 @@ public class AsyncLoggerContextSelectorTest {
     @Test
     public void testContextNameIsAsyncLoggerContextWithClassHashCode() {
         final AsyncLoggerContextSelector selector = new AsyncLoggerContextSelector();
-        final LoggerContext context = selector.getContext(null, null, false);
-        final String expectedContextName = "AsyncLoggerContext@" + AsyncLoggerContext.class.hashCode();
+        final LoggerContext context = selector.getContext(FQCN, null, false);
+        final int hash = getClass().getClassLoader().hashCode();
+        final String expectedContextName = "AsyncContext@" + Integer.toHexString(hash);
         assertEquals(expectedContextName, context.getName());
     }
 

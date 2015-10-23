@@ -93,7 +93,8 @@
           <subsection name="ConfigurationFactory">
             <p>
               Modifying the way in which logging can be configured is usually one of the areas with the most
-              interest. The primary method for doing that is by implementing or extending a ConfigurationFactory.
+              interest. The primary method for doing that is by implementing or extending a 
+              <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/config/ConfigurationFactory.html">ConfigurationFactory</a>.
               Log4j provides two ways of adding new ConfigurationFactories. The first is by defining the system
               property named "log4j.configurationFactory" to the name of the class that should be searched first
               for a configuration. The second method is by defining the ConfigurationFactory as a Plugin.

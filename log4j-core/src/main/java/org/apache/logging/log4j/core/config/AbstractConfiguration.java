@@ -45,6 +45,7 @@ import org.apache.logging.log4j.core.appender.AsyncAppender;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfig;
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
+import org.apache.logging.log4j.core.async.DaemonThreadFactory;
 import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
@@ -173,7 +174,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     public void initialize() {
         LOGGER.debug("Initializing configuration {}", this);
         if (watchManager.getIntervalSeconds() > 0) {
-            executorService = new ScheduledThreadPoolExecutor(1);
+            LOGGER.trace("Starting Log4j2ConfigWatcher thread");
+            executorService = new ScheduledThreadPoolExecutor(1, new DaemonThreadFactory("Log4j2ConfigWatcher-"));
             watchManager.setExecutorService(executorService);
         }
         scriptManager = new ScriptManager(watchManager);
@@ -239,8 +241,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         for (final LoggerConfig loggerConfig : loggers.values()) {
             loggerConfig.getReliabilityStrategy().beforeStopConfiguration(this);
         }
-        LOGGER.trace("AbstractConfiguration notified {} ReliabilityStrategies that config will be stopped.",
-                loggers.size());
+        final String cls = getClass().getSimpleName();
+        LOGGER.trace("{} notified {} ReliabilityStrategies that config will be stopped.", cls, loggers.size());
 
         // LOG4J2-392 first stop AsyncLogger Disruptor thread
         final LoggerContextFactory factory = LogManager.getFactory();
@@ -276,7 +278,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             asyncLoggerConfigCount++;
             alreadyStopped.add(root);
         }
-        LOGGER.trace("AbstractConfiguration stopped {} AsyncLoggerConfigs.", asyncLoggerConfigCount);
+        LOGGER.trace("{} stopped {} AsyncLoggerConfigs.", cls, asyncLoggerConfigCount);
 
         // Stop the appenders in reverse order in case they still have activity.
         final Appender[] array = appenders.values().toArray(new Appender[appenders.size()]);
@@ -289,13 +291,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 asyncAppenderCount++;
             }
         }
-        LOGGER.trace("AbstractConfiguration stopped {} AsyncAppenders.", asyncAppenderCount);
+        LOGGER.trace("{} stopped {} AsyncAppenders.", cls, asyncAppenderCount);
 
         for (final LoggerConfig loggerConfig : loggers.values()) {
             loggerConfig.getReliabilityStrategy().beforeStopAppenders();
         }
-        LOGGER.trace("AbstractConfiguration notified {} ReliabilityStrategies that appenders will be stopped.",
-                loggers.size());
+        LOGGER.trace("{} notified {} ReliabilityStrategies that appenders will be stopped.", cls, loggers.size());
 
         int appenderCount = 0;
         for (int i = array.length - 1; i >= 0; --i) {
@@ -304,7 +305,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 appenderCount++;
             }
         }
-        LOGGER.trace("AbstractConfiguration stopped {} Appenders.", appenderCount);
+        LOGGER.trace("{} stopped {} Appenders.", cls, appenderCount);
 
         int loggerCount = 0;
         for (final LoggerConfig loggerConfig : loggers.values()) {
@@ -318,12 +319,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             }
             loggerConfig.clearAppenders();
         }
-        LOGGER.trace("AbstractConfiguration stopped {} LoggerConfigs.", loggerCount);
+        LOGGER.trace("{} stopped {} LoggerConfigs.", cls, loggerCount);
 
         if (watchManager.isStarted()) {
             watchManager.stop();
         }
         if (executorService != null) {
+            LOGGER.trace("{} stopping Log4j2ConfigWatcher thread.", cls);
             executorService.shutdown();
         }
 

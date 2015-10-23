@@ -15,6 +15,6 @@
  * limitations under the license.
  */
 /**
- * Configuration Builder API.
+ * Configuration Builder API for programmatically configuring Log4j.
  */
 package org.apache.logging.log4j.core.config.builder.api;

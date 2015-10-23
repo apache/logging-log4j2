@@ -227,25 +227,25 @@ public class FlumePersistentManager extends FlumeAvroManager {
         threadPool.shutdown();
         try {
             threadPool.awaitTermination(SHUTDOWN_WAIT, TimeUnit.SECONDS);
-        } catch (final InterruptedException ie) {
-            LOGGER.warn("PersistentManager Thread pool failed to shut down");
+        } catch (final InterruptedException e) {
+            logWarn("PersistentManager Thread pool failed to shut down", e);
         }
         try {
             worker.join();
         } catch (final InterruptedException ex) {
-            LOGGER.debug("Interrupted while waiting for worker to complete");
+            logDebug("interrupted while waiting for worker to complete", ex);
         }
         try {
             LOGGER.debug("FlumePersistenceManager dataset status: {}", database.getStats(new StatsConfig()));
             database.close();
         } catch (final Exception ex) {
-            LOGGER.warn("Failed to close database", ex);
+            logWarn("failed to close database", ex);
         }
         try {
             environment.cleanLog();
             environment.close();
         } catch (final Exception ex) {
-            LOGGER.warn("Failed to close environment", ex);
+            logWarn("failed to close environment", ex);
         }
         super.releaseSub();
     }

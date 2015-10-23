@@ -149,13 +149,13 @@ public class SmtpManager extends AbstractManager {
 
             sendMultipartMessage(message, mp);
         } catch (final MessagingException e) {
-            LOGGER.error("Error occurred while sending e-mail notification.", e);
+            logError("caught exception while sending e-mail notification.", e);
             throw new LoggingException("Error occurred while sending email", e);
         } catch (final IOException e) {
-            LOGGER.error("Error occurred while sending e-mail notification.", e);
+            logError("caught exception while sending e-mail notification.", e);
             throw new LoggingException("Error occurred while sending email", e);
         } catch (final RuntimeException e) {
-            LOGGER.error("Error occurred while sending e-mail notification.", e);
+            logError("caught exception while sending e-mail notification.", e);
             throw new LoggingException("Error occurred while sending email", e);
         }
     }
@@ -288,7 +288,7 @@ public class SmtpManager extends AbstractManager {
                 .setRecipients(Message.RecipientType.TO, data.to).setRecipients(Message.RecipientType.CC, data.cc)
                 .setRecipients(Message.RecipientType.BCC, data.bcc).setSubject(data.subject).getMimeMessage();
         } catch (final MessagingException e) {
-            LOGGER.error("Could not set SmtpAppender message options.", e);
+            logError("could not set SmtpAppender message options", e);
             message = null;
         }
     }

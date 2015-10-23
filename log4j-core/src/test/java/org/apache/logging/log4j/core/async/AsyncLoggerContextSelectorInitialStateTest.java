@@ -14,14 +14,17 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.util;
+package org.apache.logging.log4j.core.async;
 
-import java.io.File;
+import org.junit.Test;
 
-/**
- * Watches for changes in a Path and performs an action when the file is modified.
- */
-public interface FileWatcher {
+import static org.junit.Assert.*;
 
-    void fileModified(File file);
+public class AsyncLoggerContextSelectorInitialStateTest {    
+
+    @Test
+    public void testLoggerContextsListInitiallyEmpty() {
+        final AsyncLoggerContextSelector selector = new AsyncLoggerContextSelector();
+        assertTrue(selector.getLoggerContexts().isEmpty());
+    }
 }

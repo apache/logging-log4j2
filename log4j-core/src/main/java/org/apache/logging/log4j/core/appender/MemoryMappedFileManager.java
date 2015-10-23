@@ -130,17 +130,19 @@ public class MemoryMappedFileManager extends OutputStreamManager {
         try {
             unsafeUnmap(mappedBuffer);
             final long fileLength = randomAccessFile.length() + regionLength;
-            LOGGER.debug("MMapAppender extending {} by {} bytes to {}", getFileName(), regionLength, fileLength);
+            LOGGER.debug("{} {} extending {} by {} bytes to {}", getClass().getSimpleName(), getName(), getFileName(),
+                    regionLength, fileLength);
 
             final long startNanos = System.nanoTime();
             randomAccessFile.setLength(fileLength);
             final float millis = (float) ((System.nanoTime() - startNanos) / NANOS_PER_MILLISEC);
-            LOGGER.debug("MMapAppender extended {} OK in {} millis", getFileName(), millis);
-
+            LOGGER.debug("{} {} extended {} OK in {} millis", getClass().getSimpleName(), getName(), getFileName(),
+                    millis);
+            
             mappedBuffer = mmap(randomAccessFile.getChannel(), getFileName(), offset, length);
             mappingOffset = offset;
         } catch (final Exception ex) {
-            LOGGER.error("Unable to remap " + getName() + ". " + ex);
+            logError("unable to remap", ex);
         }
     }
 
@@ -156,7 +158,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
         try {
             unsafeUnmap(mappedBuffer);
         } catch (final Exception ex) {
-            LOGGER.error("Unable to unmap MappedBuffer " + getName() + ". " + ex);
+            logError("unable to unmap MappedBuffer", ex);
         }
         try {
             LOGGER.debug("MMapAppender closing. Setting {} length to {} (offset {} + position {})", getFileName(),
@@ -164,7 +166,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
             randomAccessFile.setLength(length);
             randomAccessFile.close();
         } catch (final IOException ex) {
-            LOGGER.error("Unable to close MemoryMappedFile " + getName() + ". " + ex);
+            logError("unable to close MemoryMappedFile", ex);
         }
     }
 
@@ -324,7 +326,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
                 return new MemoryMappedFileManager(raf, name, os, data.force, position, data.regionLength,
                         data.advertiseURI, data.layout, writeHeader);
             } catch (final Exception ex) {
-                LOGGER.error("MemoryMappedFileManager (" + name + ") " + ex);
+                LOGGER.error("MemoryMappedFileManager (" + name + ") " + ex, ex);
                 Closer.closeSilently(raf);
             }
             return null;

@@ -72,6 +72,7 @@
         <item name="Configuring Appenders" href="/manual/configuration.html#Appenders"/>
         <item name="Configuring Filters" href="/manual/configuration.html#Filters"/>
         <item name="Property Substitution" href="/manual/configuration.html#PropertySubstitution"/>
+        <item name="Lookup Variables" href="/manual/configuration.html#RuntimeLookup"/>
         <item name="Scripts" href="/manual/configuration.html#Scripts"/>
         <item name="XInclude" href="/manual/configuration.html#XInclude"/>
         <item name="Status Messages" href="/manual/configuration.html#StatusMessages"/>
@@ -86,14 +87,6 @@
         <item name="Configuration Lookups" href="/manual/webapp.html#WebLookup" />
         <item name="JavaServer Pages Logging" href="/manual/webapp.html#JspLogging" />
         <item name="Asynchronous Requests" href="/manual/webapp.html#Async" />
-      </item>
-
-      <item name="Plugins" href="/manual/plugins.html" collapse="true">
-        <item name="Core" href="/manual/plugins.html#Core"/>
-        <item name="Converters" href="/manual/plugins.html#Converters"/>
-        <item name="Key Providers" href="/manual/plugins.html#KeyProviders"/>
-        <item name="Lookups" href="/manual/plugins.html#Lookups"/>
-        <item name="Preloading" href="/manual/plugins.html#Plugin_Preloading"/>
       </item>
 
       <item name="Lookups" href="/manual/lookups.html" collapse="true">
@@ -186,6 +179,14 @@
         <item name="Layouts" href="/manual/extending.html#Layouts"/>
         <item name="PatternConverters" href="/manual/extending.html#PatternConverters"/>
         <item name="Custom Plugins" href="/manual/extending.html#Custom_Plugins"/>
+      </item>
+
+      <item name="Plugins" href="/manual/plugins.html" collapse="true">
+        <item name="Core" href="/manual/plugins.html#Core"/>
+        <item name="Converters" href="/manual/plugins.html#Converters"/>
+        <item name="Key Providers" href="/manual/plugins.html#KeyProviders"/>
+        <item name="Lookups" href="/manual/plugins.html#Lookups"/>
+        <item name="Preloading" href="/manual/plugins.html#Plugin_Preloading"/>
       </item>
 
       <item name="Programmatic Log4j Configuration" href="/manual/customconfig.html" collapse="true">

@@ -25,8 +25,9 @@ import java.util.ResourceBundle;
 public class LocalizedMessageFactory extends AbstractMessageFactory {
 
     private static final long serialVersionUID = 1L;
-    
-    private final ResourceBundle resourceBundle;
+
+    // FIXME: cannot use ResourceBundle name for serialization until Java 8
+    private transient final ResourceBundle resourceBundle;
     private final String baseName;
 
     public LocalizedMessageFactory(final ResourceBundle resourceBundle) {

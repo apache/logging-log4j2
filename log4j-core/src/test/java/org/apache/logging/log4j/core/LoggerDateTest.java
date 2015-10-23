@@ -39,7 +39,7 @@ public class LoggerDateTest {
 
     @Before
     public void before() {
-        fileApp = (FileAppender) context.getRequiredAppender("File");
+        fileApp = context.getRequiredAppender("File", FileAppender.class);
     }
 
     @Test

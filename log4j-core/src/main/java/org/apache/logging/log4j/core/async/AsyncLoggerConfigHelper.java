@@ -53,7 +53,7 @@ import com.lmax.disruptor.dsl.ProducerType;
  * This class serves to make the dependency on the Disruptor optional, so that these classes are only loaded when the
  * {@code AsyncLoggerConfig} is actually used.
  */
-class AsyncLoggerConfigHelper {
+class AsyncLoggerConfigHelper implements AsyncLoggerConfigDelegate {
 
     private static final int MAX_DRAIN_ATTEMPTS_BEFORE_SHUTDOWN = 200;
     private static final int SLEEP_MILLIS_BETWEEN_DRAIN_ATTEMPTS = 50;
@@ -93,10 +93,7 @@ class AsyncLoggerConfigHelper {
         }
     };
 
-    private final AsyncLoggerConfig asyncLoggerConfig;
-
-    public AsyncLoggerConfigHelper(final AsyncLoggerConfig asyncLoggerConfig) {
-        this.asyncLoggerConfig = asyncLoggerConfig;
+    public AsyncLoggerConfigHelper() {
         claim();
     }
 
@@ -126,7 +123,7 @@ class AsyncLoggerConfigHelper {
 
     private static WaitStrategy createWaitStrategy() {
         final String strategy = System.getProperty("AsyncLoggerConfig.WaitStrategy");
-        LOGGER.debug("property AsyncLoggerConfig.WaitStrategy={}", strategy);
+        LOGGER.trace("property AsyncLoggerConfig.WaitStrategy={}", strategy);
         if ("Sleep".equals(strategy)) {
             return new SleepingWaitStrategy();
         } else if ("Yield".equals(strategy)) {
@@ -134,7 +131,7 @@ class AsyncLoggerConfigHelper {
         } else if ("Block".equals(strategy)) {
             return new BlockingWaitStrategy();
         }
-        LOGGER.debug("disruptor event handler uses BlockingWaitStrategy");
+        LOGGER.trace("AsyncLoggerConfigHelper disruptor event handler uses BlockingWaitStrategy");
         return new BlockingWaitStrategy();
     }
 
@@ -291,18 +288,11 @@ class AsyncLoggerConfigHelper {
         });
     }
 
-    /**
-     * If possible, delegates the invocation to {@code callAppenders} to another thread and returns {@code true}. If
-     * this is not possible (if it detects that delegating to another thread would cause deadlock because the current
-     * call to Logger.log() originated from the appender thread and the ringbuffer is full) then this method does
-     * nothing and returns {@code false}. It is the responsibility of the caller to process the event when this method
-     * returns {@code false}.
-     * 
-     * @param event the event to delegate to another thread
-     * @return {@code true} if delegation was successful, {@code false} if the calling thread needs to process the
-     *          event itself
+    /* (non-Javadoc)
+     * @see org.apache.logging.log4j.core.async.AsyncLoggerConfigDelegate#tryCallAppendersInBackground(org.apache.logging.log4j.core.LogEvent)
      */
-    public boolean callAppendersFromAnotherThread(final LogEvent event) {
+    @Override
+    public boolean tryCallAppendersInBackground(final LogEvent event, final AsyncLoggerConfig asyncLoggerConfig) {
         final Disruptor<Log4jEventWrapper> temp = disruptor;
         if (!hasLog4jBeenShutDown(temp)) {
 
@@ -312,7 +302,7 @@ class AsyncLoggerConfigHelper {
                 // bypass RingBuffer and invoke Appender directly
                 return false;
             }
-            enqueueEvent(event);
+            enqueueEvent(event, asyncLoggerConfig);
         }
         return true;
     }
@@ -328,11 +318,11 @@ class AsyncLoggerConfigHelper {
         return false;
     }
 
-    private void enqueueEvent(final LogEvent event) {
+    private void enqueueEvent(final LogEvent event, final AsyncLoggerConfig asyncLoggerConfig) {
         // LOG4J2-639: catch NPE if disruptor field was set to null after our check above
         try {
             final LogEvent logEvent = prepareEvent(event);
-            enqueue(logEvent);
+            enqueue(logEvent, asyncLoggerConfig);
         } catch (final NullPointerException npe) {
             LOGGER.fatal("Ignoring log event after log4j was shut down.");
         }
@@ -344,7 +334,7 @@ class AsyncLoggerConfigHelper {
         return logEvent;
     }
 
-    private void enqueue(LogEvent logEvent) {
+    private void enqueue(final LogEvent logEvent, final AsyncLoggerConfig asyncLoggerConfig) {
         // Note: do NOT use the temp variable above!
         // That could result in adding a log event to the disruptor after it was shut down,
         // which could cause the publishEvent method to hang and never return.
@@ -372,13 +362,10 @@ class AsyncLoggerConfigHelper {
         return isAppenderThread.get() == Boolean.TRUE && theDisruptor.getRingBuffer().remainingCapacity() == 0;
     }
 
-    /**
-     * Creates and returns a new {@code RingBufferAdmin} that instruments the ringbuffer of this
-     * {@code AsyncLoggerConfig}.
-     * 
-     * @param contextName name of the {@code LoggerContext}
-     * @param loggerConfigName name of the logger config
+    /* (non-Javadoc)
+     * @see org.apache.logging.log4j.core.async.AsyncLoggerConfigDelegate#createRingBufferAdmin(java.lang.String, java.lang.String)
      */
+    @Override
     public RingBufferAdmin createRingBufferAdmin(final String contextName, final String loggerConfigName) {
         return RingBufferAdmin.forAsyncLoggerConfig(disruptor.getRingBuffer(), contextName, loggerConfigName);
     }

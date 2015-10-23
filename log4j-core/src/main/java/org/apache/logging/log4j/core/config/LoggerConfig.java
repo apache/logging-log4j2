@@ -433,8 +433,7 @@ public class LoggerConfig extends AbstractFilterable {
     // for synchronous loggers, includeLocation default is TRUE.
     protected static boolean includeLocation(final String includeLocationConfigValue) {
         if (includeLocationConfigValue == null) {
-            final boolean sync = !AsyncLoggerContextSelector.class.getName().equals(
-                    PropertiesUtil.getProperties().getStringProperty(Constants.LOG4J_CONTEXT_SELECTOR));
+            final boolean sync = !AsyncLoggerContextSelector.isSelected();
             return sync;
         }
         return Boolean.parseBoolean(includeLocationConfigValue);

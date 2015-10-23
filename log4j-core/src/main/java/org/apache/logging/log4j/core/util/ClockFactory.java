@@ -65,25 +65,25 @@ public final class ClockFactory {
     private static Clock createClock() {
         final String userRequest = PropertiesUtil.getProperties().getStringProperty(PROPERTY_NAME);
         if (userRequest == null || "SystemClock".equals(userRequest)) {
-            LOGGER.debug("Using default SystemClock for timestamps");
+            LOGGER.trace("Using default SystemClock for timestamps.");
             return new SystemClock();
         }
         if (CachedClock.class.getName().equals(userRequest)
                 || "CachedClock".equals(userRequest)) {
-            LOGGER.debug("Using specified CachedClock for timestamps");
+            LOGGER.trace("Using specified CachedClock for timestamps.");
             return CachedClock.instance();
         }
         if (CoarseCachedClock.class.getName().equals(userRequest)
                 || "CoarseCachedClock".equals(userRequest)) {
-            LOGGER.debug("Using specified CoarseCachedClock for timestamps");
+            LOGGER.trace("Using specified CoarseCachedClock for timestamps.");
             return CoarseCachedClock.instance();
         }
         try {
             final Clock result = Loader.newCheckedInstanceOf(userRequest, Clock.class);
-            LOGGER.debug("Using {} for timestamps", result.getClass().getName());
+            LOGGER.trace("Using {} for timestamps.", result.getClass().getName());
             return result;
         } catch (final Exception e) {
-            final String fmt = "Could not create {}: {}, using default SystemClock for timestamps";
+            final String fmt = "Could not create {}: {}, using default SystemClock for timestamps.";
             LOGGER.error(fmt, userRequest, e);
             return new SystemClock();
         }

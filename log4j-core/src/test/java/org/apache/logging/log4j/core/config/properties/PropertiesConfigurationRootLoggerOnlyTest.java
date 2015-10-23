@@ -21,28 +21,28 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LifeCycle;
-import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
+import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  *
  */
 public class PropertiesConfigurationRootLoggerOnlyTest {
 
+    @ClassRule
+    public static LoggerContextRule context = new LoggerContextRule("log4j2-properties-root-only.properties");
+
     @Test
     public void testPropertiesConfiguration() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "target/test-classes/log4j2-properties-root-only.properties");
-        Configuration config = ((LoggerContext)LogManager.getContext(false)).getConfiguration();
+        Configuration config = context.getConfiguration();
         assertNotNull("No configuration created", config);
         assertEquals("Incorrect State: " + config.getState(), config.getState(), LifeCycle.State.STARTED);
         Map<String, Appender> appenders = config.getAppenders();
