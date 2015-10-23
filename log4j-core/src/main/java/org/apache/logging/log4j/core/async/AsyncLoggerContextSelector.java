@@ -25,6 +25,8 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * {@code ContextSelector} that manages {@code AsyncLoggerContext} instances.
+ * <p>
+ * As of version 2.5, this class extends ClassLoaderContextSelector for better web app support.
  */
 public class AsyncLoggerContextSelector extends ClassLoaderContextSelector {
 
