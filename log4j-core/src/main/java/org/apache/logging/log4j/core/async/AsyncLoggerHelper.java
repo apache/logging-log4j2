@@ -21,31 +21,23 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
-import org.apache.logging.log4j.core.util.Integers;
-import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.PropertiesUtil;
 
-import com.lmax.disruptor.BlockingWaitStrategy;
 import com.lmax.disruptor.ExceptionHandler;
 import com.lmax.disruptor.RingBuffer;
-import com.lmax.disruptor.SleepingWaitStrategy;
 import com.lmax.disruptor.WaitStrategy;
-import com.lmax.disruptor.YieldingWaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 
 /**
- * Helper class for async loggers: AsyncLoggerHelper handles the mechanics of working with the LMAX Disruptor, and
- * works with its associated AsyncLoggerContext to synchronize the life cycle of the Disruptor and its thread with the
- * life cycle of the context. The AsyncLoggerHelper of the context is shared by all AsyncLogger objects created by that
+ * Helper class for async loggers: AsyncLoggerHelper handles the mechanics of working with the LMAX Disruptor, and works
+ * with its associated AsyncLoggerContext to synchronize the life cycle of the Disruptor and its thread with the life
+ * cycle of the context. The AsyncLoggerHelper of the context is shared by all AsyncLogger objects created by that
  * AsyncLoggerContext.
  */
 class AsyncLoggerHelper {
     private static final int SLEEP_MILLIS_BETWEEN_DRAIN_ATTEMPTS = 50;
     private static final int MAX_DRAIN_ATTEMPTS_BEFORE_SHUTDOWN = 200;
-    private static final int RINGBUFFER_MIN_SIZE = 128;
-    private static final int RINGBUFFER_DEFAULT_SIZE = 256 * 1024;
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     private String contextName;
@@ -80,77 +72,25 @@ class AsyncLoggerHelper {
             return;
         }
         LOGGER.trace("[{}] AsyncLoggerHelper creating new disruptor for this context.", contextName);
-        final int ringBufferSize = calculateRingBufferSize();
-        final WaitStrategy waitStrategy = createWaitStrategy();
+        final int ringBufferSize = DisruptorUtil.calculateRingBufferSize("AsyncLogger.RingBufferSize");
+        final WaitStrategy waitStrategy = DisruptorUtil.createWaitStrategy("AsyncLogger.WaitStrategy");
         executor = Executors.newSingleThreadExecutor(new DaemonThreadFactory("AsyncLogger[" + contextName + "]"));
         Info.initExecutorThreadInstance(executor);
 
         disruptor = new Disruptor<>(RingBufferLogEvent.FACTORY, ringBufferSize, executor, ProducerType.MULTI,
                 waitStrategy);
 
-        final ExceptionHandler<RingBufferLogEvent> errorHandler = getExceptionHandler();
+        final ExceptionHandler<RingBufferLogEvent> errorHandler = DisruptorUtil.getExceptionHandler(
+                "AsyncLogger.ExceptionHandler", RingBufferLogEvent.class);
         disruptor.handleExceptionsWith(errorHandler);
 
         final RingBufferLogEventHandler[] handlers = {new RingBufferLogEventHandler()};
         disruptor.handleEventsWith(handlers);
 
-        LOGGER.debug(
-        		"[{}] Starting AsyncLogger disruptor for this context with ringbufferSize={}, waitStrategy={}, exceptionHandler={}...",
-        		contextName, disruptor.getRingBuffer().getBufferSize(), waitStrategy.getClass().getSimpleName(),
-        		errorHandler);
+        LOGGER.debug("[{}] Starting AsyncLogger disruptor for this context with ringbufferSize={}, waitStrategy={}, "
+                + "exceptionHandler={}...", contextName, disruptor.getRingBuffer().getBufferSize(), waitStrategy
+                .getClass().getSimpleName(), errorHandler);
         disruptor.start();
-    }
-
-    private int calculateRingBufferSize() {
-        int ringBufferSize = RINGBUFFER_DEFAULT_SIZE;
-        final String userPreferredRBSize = PropertiesUtil.getProperties().getStringProperty(
-                "AsyncLogger.RingBufferSize", String.valueOf(ringBufferSize));
-        try {
-            int size = Integer.parseInt(userPreferredRBSize);
-            if (size < RINGBUFFER_MIN_SIZE) {
-                size = RINGBUFFER_MIN_SIZE;
-                LOGGER.warn("[{}] Invalid RingBufferSize {}, using minimum size {}.", contextName, userPreferredRBSize,
-                        RINGBUFFER_MIN_SIZE);
-            }
-            ringBufferSize = size;
-        } catch (final Exception ex) {
-            LOGGER.warn("[{}] Invalid RingBufferSize {}, using default size {}.", contextName, userPreferredRBSize,
-                    ringBufferSize);
-        }
-        return Integers.ceilingNextPowerOfTwo(ringBufferSize);
-    }
-
-    private WaitStrategy createWaitStrategy() {
-        final String strategy = PropertiesUtil.getProperties().getStringProperty("AsyncLogger.WaitStrategy");
-        if (strategy != null) {
-	        LOGGER.trace("[{}] property AsyncLogger.WaitStrategy={}", contextName, strategy);
-	        if ("Sleep".equals(strategy)) {
-	            return new SleepingWaitStrategy();
-	        } else if ("Yield".equals(strategy)) {
-	            return new YieldingWaitStrategy();
-	        } else if ("Block".equals(strategy)) {
-	            return new BlockingWaitStrategy();
-	        }
-        }
-        return new BlockingWaitStrategy();
-    }
-
-    private ExceptionHandler<RingBufferLogEvent> getExceptionHandler() {
-        final String cls = PropertiesUtil.getProperties().getStringProperty("AsyncLogger.ExceptionHandler");
-        if (cls == null) {
-            return null;
-        }
-        try {
-            @SuppressWarnings("unchecked")
-            final ExceptionHandler<RingBufferLogEvent> result = Loader
-                    .newCheckedInstanceOf(cls, ExceptionHandler.class);
-            LOGGER.debug("[{}] AsyncLogger.ExceptionHandler={}", contextName, result);
-            return result;
-        } catch (final Exception ignored) {
-            LOGGER.debug("[{}] AsyncLogger.ExceptionHandler not set: error creating " + cls + ": ", contextName,
-                    ignored);
-            return null;
-        }
     }
 
     void enqueueLogMessageInfo(final RingBufferLogEventTranslator translator) {
@@ -172,7 +112,7 @@ class AsyncLoggerHelper {
      * @return a new {@code RingBufferAdmin} that instruments the ringbuffer
      */
     public RingBufferAdmin createRingBufferAdmin(final String contextName) {
-    	final RingBuffer<RingBufferLogEvent> ring = disruptor == null ? null : disruptor.getRingBuffer();
+        final RingBuffer<RingBufferLogEvent> ring = disruptor == null ? null : disruptor.getRingBuffer();
         return RingBufferAdmin.forAsyncLogger(ring, contextName);
     }
 

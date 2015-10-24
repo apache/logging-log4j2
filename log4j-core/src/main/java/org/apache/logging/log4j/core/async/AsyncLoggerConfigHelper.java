@@ -23,20 +23,15 @@ import java.util.concurrent.ThreadFactory;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
-import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.PropertiesUtil;
 
-import com.lmax.disruptor.BlockingWaitStrategy;
 import com.lmax.disruptor.EventFactory;
 import com.lmax.disruptor.EventTranslatorTwoArg;
 import com.lmax.disruptor.ExceptionHandler;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.Sequence;
 import com.lmax.disruptor.SequenceReportingEventHandler;
-import com.lmax.disruptor.SleepingWaitStrategy;
 import com.lmax.disruptor.WaitStrategy;
-import com.lmax.disruptor.YieldingWaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 
@@ -56,8 +51,6 @@ public class AsyncLoggerConfigHelper implements AsyncLoggerConfigDelegate {
 
     private static final int MAX_DRAIN_ATTEMPTS_BEFORE_SHUTDOWN = 200;
     private static final int SLEEP_MILLIS_BETWEEN_DRAIN_ATTEMPTS = 50;
-    private static final int RINGBUFFER_MIN_SIZE = 128;
-    private static final int RINGBUFFER_DEFAULT_SIZE = 256 * 1024;
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     /**
@@ -157,14 +150,15 @@ public class AsyncLoggerConfigHelper implements AsyncLoggerConfigDelegate {
             return;
         }
         LOGGER.trace("AsyncLoggerConfigHelper creating new disruptor for this configuration.");
-        final int ringBufferSize = calculateRingBufferSize();
-        final WaitStrategy waitStrategy = createWaitStrategy();
+        final int ringBufferSize = DisruptorUtil.calculateRingBufferSize("AsyncLoggerConfig.RingBufferSize");
+        final WaitStrategy waitStrategy = DisruptorUtil.createWaitStrategy("AsyncLoggerConfig.WaitStrategy");
         executor = Executors.newSingleThreadExecutor(threadFactory);
         initThreadLocalForExecutorThread(executor);
         
         disruptor = new Disruptor<>(FACTORY, ringBufferSize, executor, ProducerType.MULTI, waitStrategy);
 
-        final ExceptionHandler<Log4jEventWrapper> errorHandler = getExceptionHandler();
+        final ExceptionHandler<Log4jEventWrapper> errorHandler = DisruptorUtil.getExceptionHandler(
+                "AsyncLoggerConfig.ExceptionHandler", Log4jEventWrapper.class);
         disruptor.handleExceptionsWith(errorHandler);
 
         final Log4jEventWrapperHandler[] handlers = {new Log4jEventWrapperHandler()};
@@ -174,55 +168,6 @@ public class AsyncLoggerConfigHelper implements AsyncLoggerConfigDelegate {
                 "Starting AsyncLoggerConfig disruptor for this configuration with ringbufferSize={}, waitStrategy={}, exceptionHandler={}...",
                 disruptor.getRingBuffer().getBufferSize(), waitStrategy.getClass().getSimpleName(), errorHandler);
         disruptor.start();
-    }
-
-    private static WaitStrategy createWaitStrategy() {
-        final String strategy = System.getProperty("AsyncLoggerConfig.WaitStrategy");
-        if (strategy != null) {
-	        LOGGER.trace("property AsyncLoggerConfig.WaitStrategy={}", strategy);
-	        if ("Sleep".equals(strategy)) {
-	            return new SleepingWaitStrategy();
-	        } else if ("Yield".equals(strategy)) {
-	            return new YieldingWaitStrategy();
-	        } else if ("Block".equals(strategy)) {
-	            return new BlockingWaitStrategy();
-	        }
-        }
-        return new BlockingWaitStrategy();
-    }
-
-    private static int calculateRingBufferSize() {
-        int ringBufferSize = RINGBUFFER_DEFAULT_SIZE;
-        final String userPreferredRBSize = PropertiesUtil.getProperties().getStringProperty(
-                "AsyncLoggerConfig.RingBufferSize", String.valueOf(ringBufferSize));
-        try {
-            int size = Integer.parseInt(userPreferredRBSize);
-            if (size < RINGBUFFER_MIN_SIZE) {
-                size = RINGBUFFER_MIN_SIZE;
-                LOGGER.warn("Invalid RingBufferSize {}, using minimum size {}.", userPreferredRBSize,
-                        RINGBUFFER_MIN_SIZE);
-            }
-            ringBufferSize = size;
-        } catch (final Exception ex) {
-            LOGGER.warn("Invalid RingBufferSize {}, using default size {}.", userPreferredRBSize, ringBufferSize);
-        }
-        return Integers.ceilingNextPowerOfTwo(ringBufferSize);
-    }
-
-    private static ExceptionHandler<Log4jEventWrapper> getExceptionHandler() {
-        final String cls = System.getProperty("AsyncLoggerConfig.ExceptionHandler");
-        if (cls == null) {
-            return null;
-        }
-        try {
-            @SuppressWarnings("unchecked")
-            final Class<? extends ExceptionHandler<Log4jEventWrapper>> klass =
-                    (Class<? extends ExceptionHandler<Log4jEventWrapper>>) Class.forName(cls);
-            return klass.newInstance();
-        } catch (final Exception ignored) {
-            LOGGER.debug("AsyncLoggerConfig.ExceptionHandler not set: error creating " + cls + ": ", ignored);
-            return null;
-        }
     }
 
     /**
