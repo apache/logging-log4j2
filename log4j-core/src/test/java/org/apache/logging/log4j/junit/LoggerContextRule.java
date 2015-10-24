@@ -40,6 +40,8 @@ import static org.junit.Assert.*;
  */
 public class LoggerContextRule implements TestRule {
 
+    private static final String SYS_PROP_KEY_DISPLAY_NAME = "org.apache.logging.log4j.junit.LoggerContextRule#DisplayName";
+    private static final String SYS_PROP_KEY_CLASS_NAME = "org.apache.logging.log4j.junit.LoggerContextRule#ClassName";
     private final String configLocation;
     private final Class<? extends ContextSelector> contextSelectorClass;
 
@@ -81,6 +83,8 @@ public class LoggerContextRule implements TestRule {
                 if (contextSelectorClass != null) {
                     System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, contextSelectorClass.getName());
                 }
+                System.setProperty(SYS_PROP_KEY_CLASS_NAME, description.getClassName());
+                System.setProperty(SYS_PROP_KEY_DISPLAY_NAME, description.getDisplayName());
                 context = Configurator.initialize(
                     description.getDisplayName(),
                     description.getTestClass().getClassLoader(),
@@ -92,6 +96,8 @@ public class LoggerContextRule implements TestRule {
                     Configurator.shutdown(context);
                     StatusLogger.getLogger().reset();
                     System.clearProperty(Constants.LOG4J_CONTEXT_SELECTOR);
+                    System.clearProperty(SYS_PROP_KEY_CLASS_NAME);
+                    System.clearProperty(SYS_PROP_KEY_DISPLAY_NAME);
                 }
             }
         };
