@@ -72,7 +72,7 @@ public final class TimeBasedTriggeringPolicy implements TriggeringPolicy {
             return false;
         }
         final long nowMillis = event.getTimeMillis();
-        if (nowMillis > nextRolloverMillis) {
+        if (nowMillis >= nextRolloverMillis) {
             nextRolloverMillis = manager.getPatternProcessor().getNextTime(nowMillis, interval, modulate);
             return true;
         }

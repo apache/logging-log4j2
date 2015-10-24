@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.5" date="2015-MM-DD" description="GA Release 2.5">
+      <action issue="LOG4J2-999" dev="rpopma" type="fix" due-to="Joan Balagueró">
+        RollingFileAppender should also roll over when log event time is equal to rollover time, not only when later.
+      </action>
       <action issue="LOG4J2-873" dev="rpopma" type="fix" due-to="Martin Dickins, LC, Luke Woodward">
         Fixed bug where omitting the &lt;display-name&gt; element in web.xml caused incorrect log4j initialization,
         resulting in memory leaks when the web application was stopped or reloaded.
