@@ -64,6 +64,30 @@ public class FileRenameAction extends AbstractAction {
     }
 
     /**
+     * Gets the destination.
+     * @return the destination.
+     */
+    public File getDestination() {
+        return this.destination;
+    }
+
+    /**
+     * Whether to rename empty files. If true, rename empty files, otherwise delete empty files.
+     * @return Whether to rename empty files.
+     */
+    public boolean getRenameEmptyFiles() {
+        return renameEmptyFiles;
+    }
+
+    /**
+     * Gets the source.
+     * @return the source.
+     */
+    public File getSource() {
+        return this.source;
+    }
+
+    /**
      * Rename file.
      *
      * @param source           current file name.
@@ -127,4 +151,5 @@ public class FileRenameAction extends AbstractAction {
         return FileRenameAction.class.getSimpleName() + '[' + source + " to " + destination //
                 + ", renameEmptyFiles=" + renameEmptyFiles + ']';
     }
+
 }

@@ -44,6 +44,9 @@
       <action issue="LOG4J2-1136" dev="rgoers" type="add">
         Add support for JSR 223 scripts in filters and the PatternSelector.
       </action>
+      <action issue="LOG4J2-1168" dev="ggregory" type="add" due-to="Steven Swor">
+        Add getters for source and destination file in file rename action.
+      </action>
       <action issue="LOG4J2-1166" dev="rpopma" type="fix">
         AbstractConfiguration executor should use a DaemonThreadFactory.
       </action>
