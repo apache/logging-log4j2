@@ -72,19 +72,19 @@ public class FileRenameAction extends AbstractAction {
     }
 
     /**
-     * Whether to rename empty files. If true, rename empty files, otherwise delete empty files.
-     * @return Whether to rename empty files.
-     */
-    public boolean getRenameEmptyFiles() {
-        return renameEmptyFiles;
-    }
-
-    /**
      * Gets the source.
      * @return the source.
      */
     public File getSource() {
         return this.source;
+    }
+
+    /**
+     * Whether to rename empty files. If true, rename empty files, otherwise delete empty files.
+     * @return Whether to rename empty files.
+     */
+    public boolean isRenameEmptyFiles() {
+        return renameEmptyFiles;
     }
 
     /**
