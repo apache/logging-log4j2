@@ -40,7 +40,7 @@ class DisruptorUtil {
     }
 
     static WaitStrategy createWaitStrategy(final String propertyName) {
-        final String strategy = System.getProperty(propertyName);
+        final String strategy = PropertiesUtil.getProperties().getStringProperty(propertyName);
         if (strategy != null) {
             LOGGER.trace("property {}={}", propertyName, strategy);
             if ("Sleep".equalsIgnoreCase(strategy)) {
@@ -73,7 +73,7 @@ class DisruptorUtil {
     }
 
     static <T> ExceptionHandler<T> getExceptionHandler(final String propertyName, Class<T> type) {
-        final String cls = System.getProperty(propertyName);
+        final String cls = PropertiesUtil.getProperties().getStringProperty(propertyName);
         if (cls == null) {
             return null;
         }
