@@ -23,6 +23,7 @@ import java.util.concurrent.ThreadFactory;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import com.lmax.disruptor.EventFactory;
@@ -265,7 +266,9 @@ public class AsyncLoggerConfigHelper implements AsyncLoggerConfigDelegate {
 
     private LogEvent prepareEvent(final LogEvent event) {
         final LogEvent logEvent = ensureImmutable(event);
-        logEvent.getMessage().getFormattedMessage(); // LOG4J2-763: ask message to freeze parameters
+        if (!Constants.FORMAT_MESSAGES_IN_BACKGROUND) { // LOG4J2-898: user may choose
+            logEvent.getMessage().getFormattedMessage(); // LOG4J2-763: ask message to freeze parameters
+        }
         return logEvent;
     }
 

@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.config.ReliabilityStrategy;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.DummyNanoClock;
 import org.apache.logging.log4j.core.util.NanoClock;
 import org.apache.logging.log4j.message.Message;
@@ -143,8 +144,9 @@ public class AsyncLogger extends Logger {
     private void logMessageInBackgroundThread(Info info, final String fqcn, final Level level, final Marker marker,
             final Message message, final Throwable thrown) {
 
-        message.getFormattedMessage(); // LOG4J2-763: ask message to freeze parameters
-
+        if (!Constants.FORMAT_MESSAGES_IN_BACKGROUND) { // LOG4J2-898: user may choose
+            message.getFormattedMessage(); // LOG4J2-763: ask message to freeze parameters
+        }
         initLogMessageInfo(info, fqcn, level, marker, message, thrown);
         helper.enqueueLogMessageInfo(info.translator);
     }

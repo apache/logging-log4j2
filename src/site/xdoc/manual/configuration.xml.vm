@@ -1860,6 +1860,16 @@ public class AwesomeTest {
       <code>ApiLogggerAdapter</code> will be used. Custom implementations must provide a public default constructor.
     </td>
   </tr>
+  <tr>
+    <td>log4j.format.msg.async</td>
+    <td>
+      false
+    </td>
+    <td>
+      If <tt>false</tt> (the default), Log4j will make sure the message is formatted in the caller thread, to ensure
+      the value at the time of the call to the logger is the value that is logged.
+    </td>
+  </tr>
 </table>
 
         </subsection>

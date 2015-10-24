@@ -62,6 +62,12 @@ public final class Constants {
     public static final Charset UTF_8 = StandardCharsets.UTF_8;
 
     /**
+     * Supports user request LOG4J2-898 to have the option to format a message in the background thread.
+     */
+    public static final boolean FORMAT_MESSAGES_IN_BACKGROUND = PropertiesUtil.getProperties().getBooleanProperty(
+            "log4j.format.msg.async", false);
+
+    /**
      * Prevent class instantiation.
      */
     private Constants() {

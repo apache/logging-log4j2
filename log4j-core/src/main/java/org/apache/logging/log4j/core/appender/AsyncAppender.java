@@ -39,6 +39,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.util.Constants;
 
 /**
  * Appends to one or more Appenders asynchronously. You can configure an AsyncAppender with one or more Appenders and an
@@ -140,7 +141,9 @@ public final class AsyncAppender extends AbstractAppender {
             }
             logEvent = ((RingBufferLogEvent) logEvent).createMemento();
         }
-        logEvent.getMessage().getFormattedMessage(); // LOG4J2-763: ask message to freeze parameters
+        if (!Constants.FORMAT_MESSAGES_IN_BACKGROUND) { // LOG4J2-898: user may choose
+            logEvent.getMessage().getFormattedMessage(); // LOG4J2-763: ask message to freeze parameters
+        }
         final Log4jLogEvent coreEvent = (Log4jLogEvent) logEvent;
         boolean appendSuccessful = false;
         if (blocking) {
