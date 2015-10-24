@@ -31,7 +31,7 @@ import com.lmax.disruptor.YieldingWaitStrategy;
 /**
  * Utility methods for getting Disruptor related configuration.
  */
-class DisruptorUtil {
+final class DisruptorUtil {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final int RINGBUFFER_MIN_SIZE = 128;
     private static final int RINGBUFFER_DEFAULT_SIZE = 256 * 1024;
