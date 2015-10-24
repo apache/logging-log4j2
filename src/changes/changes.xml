@@ -47,6 +47,9 @@
       <action issue="LOG4J2-1168" dev="ggregory" type="add" due-to="Steven Swor">
         Add getters for source and destination file in file rename action.
       </action>
+      <action issue="LOG4J2-1175" dev="ggregory" type="add">
+        Add getters for classes in org.apache.logging.log4j.core.appender.rolling.action.
+      </action>
       <action issue="LOG4J2-1166" dev="rpopma" type="fix">
         AbstractConfiguration executor should use a DaemonThreadFactory.
       </action>
