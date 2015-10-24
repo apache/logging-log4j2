@@ -91,6 +91,10 @@ public abstract class AbstractAction implements Action {
         return complete;
     }
 
+    public boolean isInterrupted() {
+        return interrupted;
+    }
+
     /**
      * Captures exception.
      *
@@ -98,4 +102,5 @@ public abstract class AbstractAction implements Action {
      */
     protected void reportException(final Exception ex) {
     }
+
 }

@@ -124,4 +124,16 @@ public final class GzCompressAction extends AbstractAction {
         return GzCompressAction.class.getSimpleName() + '[' + source + " to " + destination //
                 + ", deleteSource=" + deleteSource + ']';
     }
+
+    public File getSource() {
+        return source;
+    }
+
+    public File getDestination() {
+        return destination;
+    }
+
+    public boolean isDeleteSource() {
+        return deleteSource;
+    }
 }

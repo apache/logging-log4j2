@@ -131,4 +131,20 @@ public final class CommonsCompressAction extends AbstractAction {
         return CommonsCompressAction.class.getSimpleName() + '[' + source + " to " + destination //
                 + ", deleteSource=" + deleteSource + ']';
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public File getSource() {
+        return source;
+    }
+
+    public File getDestination() {
+        return destination;
+    }
+
+    public boolean isDeleteSource() {
+        return deleteSource;
+    }
 }
