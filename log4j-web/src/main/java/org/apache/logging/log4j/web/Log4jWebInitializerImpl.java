@@ -148,6 +148,10 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
             this.name = this.servletContext.getServletContextName();
             LOGGER.debug("Using the servlet context name \"{}\".", this.name);
         }
+        if (this.name == null) {
+            this.name = this.servletContext.getContextPath();
+            LOGGER.debug("Using the servlet context context-path \"{}\".", this.name);
+        }
 
         if (this.name == null && location == null) {
             LOGGER.error("No Log4j context configuration provided. This is very unusual.");
