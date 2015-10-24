@@ -18,7 +18,9 @@ package org.apache.logging.log4j.web;
 
 import java.net.URI;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -155,7 +157,7 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
 
         if (this.name == null && location == null) {
             LOGGER.error("No Log4j context configuration provided. This is very unusual.");
-            return;
+            this.name = new SimpleDateFormat("yyyyMMdd_HHmmss.SSS").format(new Date());
         }
 
         final URI uri = getConfigURI(location);
