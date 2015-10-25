@@ -81,6 +81,9 @@
       <action issue="LOG4J2-1157" dev="mattsicker" type="fix" due-to="Norbert Bartels">
         Fix compilation error for classes annotated with @Plugin.
       </action>
+      <action issue="LOG4J2-948" dev="mattsicker" type="fix" due-to="Andrew Flower">
+        Fix plugin documentation error about Converters.
+      </action>
     </release>
     <release version="2.4.1" date="2015-10-08" description="GA Release 2.4.1">
       <action issue="LOG4J2-1129" dev="rgoers" type="add">
