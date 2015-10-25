@@ -21,10 +21,10 @@ import java.util.concurrent.TimeUnit;
 
 import com.lmax.disruptor.collections.Histogram;
 
-public class MtPerfTest extends PerfTest {
+public class MultiThreadPerfTest extends PerfTest {
 
     public static void main(final String[] args) throws Exception {
-        new MtPerfTest().doMain(args);
+        new MultiThreadPerfTest().doMain(args);
     }
 
     @Override
