@@ -121,7 +121,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
             @PluginAttribute("immediateFlush") final String immediateFlush,
             @PluginAttribute("ignoreExceptions") final String ignore,
             @PluginElement("Layout") Layout<? extends Serializable> layout,
-            @PluginElement("Filter") final Filter filter, 
+            @PluginElement("Filter") final Filter filter,
             @PluginAttribute("advertise") final String advertise, @PluginConfiguration final Configuration config) {
             // @formatter:on
         boolean isFlush = Booleans.parseBoolean(immediateFlush, true);

@@ -136,16 +136,17 @@ public class RollingFileManager extends FileManager {
     }
 
     /**
-     * Returns the triggering policy
+     * Returns the triggering policy.
+     * @param <T> TriggeringPolicy type
      * @return The TriggeringPolicy
      */
     public <T extends TriggeringPolicy> T getTriggeringPolicy() {
-        // TODO We could parameterize this class with a TriggeringPolicy instead of type casting here. 
+        // TODO We could parameterize this class with a TriggeringPolicy instead of type casting here.
         return (T) this.triggeringPolicy;
     }
 
     /**
-     * Returns the rollover strategy
+     * Returns the rollover strategy.
      * @return The RolloverStrategy
      */
     public RolloverStrategy getRolloverStrategy() {

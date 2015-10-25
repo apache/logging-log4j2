@@ -44,7 +44,8 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
 
     private static final long serialVersionUID = 1L;
 
-    private static final int MAX_REGION_LENGTH = 1 << 30; // 1GB
+    private static final int BIT_POSITION_1GB = 30; // 2^30 ~= 1GB
+    private static final int MAX_REGION_LENGTH = 1 << BIT_POSITION_1GB;
     private static final int MIN_REGION_LENGTH = 256;
 
     private final String fileName;

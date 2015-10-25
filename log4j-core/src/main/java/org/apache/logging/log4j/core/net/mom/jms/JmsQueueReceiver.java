@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.net.server.JmsServer;
  * Receives Log Events over a JMS Queue. This implementation expects that all messages will
  * contain a serialized LogEvent.
  */
-public class JmsQueueReceiver {
+public abstract class JmsQueueReceiver {
 
     /**
      * Main startup for the receiver.

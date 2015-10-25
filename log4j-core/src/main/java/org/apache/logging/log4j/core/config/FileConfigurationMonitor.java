@@ -29,9 +29,9 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class FileConfigurationMonitor implements ConfigurationMonitor {
 
-    private static final int MASK = 0x0f;
-
     static final int MIN_INTERVAL = 5;
+
+    private static final int MASK = 0x0f;
 
     private final File file;
 
@@ -51,14 +51,14 @@ public class FileConfigurationMonitor implements ConfigurationMonitor {
 
     /**
      * Constructor.
+     * 
      * @param reconfigurable The Configuration that can be reconfigured.
      * @param file The File to monitor.
      * @param listeners The List of ConfigurationListeners to notify upon a change.
      * @param intervalSeconds The monitor interval in seconds. The minimum interval is 5 seconds.
      */
     public FileConfigurationMonitor(final Reconfigurable reconfigurable, final File file,
-                                    final List<ConfigurationListener> listeners,
-                                    final int intervalSeconds) {
+            final List<ConfigurationListener> listeners, final int intervalSeconds) {
         this.reconfigurable = reconfigurable;
         this.file = file;
         this.lastModified = file.lastModified();
@@ -92,6 +92,9 @@ public class FileConfigurationMonitor implements ConfigurationMonitor {
         }
     }
 
+    /**
+     * Helper class for triggering a reconfiguration in a background thread.
+     */
     private static class ReconfigurationWorker implements Runnable {
 
         private final ConfigurationListener listener;
@@ -108,8 +111,12 @@ public class FileConfigurationMonitor implements ConfigurationMonitor {
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.logging.log4j.core.config.ReliabilityStrategyFactory#getReliabilityStrategy(org.apache.logging.log4j.core.config.LoggerConfig)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.apache.logging.log4j.core.config.ReliabilityStrategyFactory#getReliabilityStrategy(org.apache.logging.log4j
+     * .core.config.LoggerConfig)
      */
     @Override
     public ReliabilityStrategy getReliabilityStrategy(LoggerConfig loggerConfig) {

@@ -30,6 +30,19 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 @ConverterKeys({ "notEmpty", "varsNotEmpty", "variablesNotEmpty", })
 public final class VariablesNotEmptyReplacementConverter extends LogEventPatternConverter {
 
+    private final List<PatternFormatter> formatters;
+
+    /**
+     * Construct the converter.
+     * 
+     * @param formatters
+     *            The PatternFormatters to generate the text to manipulate.
+     */
+    private VariablesNotEmptyReplacementConverter(final List<PatternFormatter> formatters) {
+        super("notEmpty", "notEmpty");
+        this.formatters = formatters;
+    }
+
     /**
      * Gets an instance of the class.
      *
@@ -52,19 +65,6 @@ public final class VariablesNotEmptyReplacementConverter extends LogEventPattern
         final PatternParser parser = PatternLayout.createPatternParser(config);
         final List<PatternFormatter> formatters = parser.parse(options[0]);
         return new VariablesNotEmptyReplacementConverter(formatters);
-    }
-
-    private final List<PatternFormatter> formatters;
-
-    /**
-     * Construct the converter.
-     * 
-     * @param formatters
-     *            The PatternFormatters to generate the text to manipulate.
-     */
-    private VariablesNotEmptyReplacementConverter(final List<PatternFormatter> formatters) {
-        super("notEmpty", "notEmpty");
-        this.formatters = formatters;
     }
 
     /**

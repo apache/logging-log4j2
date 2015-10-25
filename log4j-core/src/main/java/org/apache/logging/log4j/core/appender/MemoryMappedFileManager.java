@@ -36,6 +36,8 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.NullOutputStream;
 
+//Lines too long...
+//CHECKSTYLE:OFF
 /**
  * Extends OutputStreamManager but instead of using a buffered output stream, this class maps a region of a file into
  * memory and writes to this memory region.
@@ -51,6 +53,7 @@ import org.apache.logging.log4j.core.util.NullOutputStream;
  * 
  * @since 2.1
  */
+//CHECKSTYLE:ON
 public class MemoryMappedFileManager extends OutputStreamManager {
     /**
      * Default length of region to map.

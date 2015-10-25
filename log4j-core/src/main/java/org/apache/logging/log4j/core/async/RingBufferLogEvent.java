@@ -266,7 +266,7 @@ public class RingBufferLogEvent implements LogEvent {
 
     /**
      * Creates and returns a new immutable copy of this {@code RingBufferLogEvent}.
-     * 
+     *
      * @return a new immutable copy of the data in this {@code RingBufferLogEvent}
      */
     public LogEvent createMemento() {

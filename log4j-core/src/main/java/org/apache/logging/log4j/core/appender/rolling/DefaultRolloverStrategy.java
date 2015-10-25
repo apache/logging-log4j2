@@ -39,42 +39,36 @@ import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * When rolling over, <code>DefaultRolloverStrategy</code> renames files
- * according to an algorithm as described below.
+ * When rolling over, <code>DefaultRolloverStrategy</code> renames files according to an algorithm as described below.
  *
  * <p>
- * The DefaultRolloverStrategy is a combination of a time-based policy and a fixed-window policy. When
- * the file name pattern contains a date format then the rollover time interval will be used to calculate the
- * time to use in the file pattern. When the file pattern contains an integer replacement token one of the
- * counting techniques will be used.
+ * The DefaultRolloverStrategy is a combination of a time-based policy and a fixed-window policy. When the file name
+ * pattern contains a date format then the rollover time interval will be used to calculate the time to use in the file
+ * pattern. When the file pattern contains an integer replacement token one of the counting techniques will be used.
  * </p>
  * <p>
- * When the ascending attribute is set to true (the default) then the counter will be incremented and the
- * current log file will be renamed to include the counter value. If the counter hits the maximum value then
- * the oldest file, which will have the smallest counter, will be deleted, all other files will be renamed to
- * have their counter decremented and then the current file will be renamed to have the maximum counter value.
- * Note that with this counting strategy specifying a large maximum value may entirely avoid renaming files.
+ * When the ascending attribute is set to true (the default) then the counter will be incremented and the current log
+ * file will be renamed to include the counter value. If the counter hits the maximum value then the oldest file, which
+ * will have the smallest counter, will be deleted, all other files will be renamed to have their counter decremented
+ * and then the current file will be renamed to have the maximum counter value. Note that with this counting strategy
+ * specifying a large maximum value may entirely avoid renaming files.
  * </p>
  * <p>
  * When the ascending attribute is false, then the "normal" fixed-window strategy will be used.
  * </p>
  * <p>
- * Let <em>max</em> and <em>min</em> represent the values of respectively
- * the <b>MaxIndex</b> and <b>MinIndex</b> options. Let "foo.log" be the value
- * of the <b>ActiveFile</b> option and "foo.%i.log" the value of
- * <b>FileNamePattern</b>. Then, when rolling over, the file
- * <code>foo.<em>max</em>.log</code> will be deleted, the file
- * <code>foo.<em>max-1</em>.log</code> will be renamed as
- * <code>foo.<em>max</em>.log</code>, the file <code>foo.<em>max-2</em>.log</code>
- * renamed as <code>foo.<em>max-1</em>.log</code>, and so on,
- * the file <code>foo.<em>min+1</em>.log</code> renamed as
- * <code>foo.<em>min+2</em>.log</code>. Lastly, the active file <code>foo.log</code>
- * will be renamed as <code>foo.<em>min</em>.log</code> and a new active file name
+ * Let <em>max</em> and <em>min</em> represent the values of respectively the <b>MaxIndex</b> and <b>MinIndex</b>
+ * options. Let "foo.log" be the value of the <b>ActiveFile</b> option and "foo.%i.log" the value of
+ * <b>FileNamePattern</b>. Then, when rolling over, the file <code>foo.<em>max</em>.log</code> will be deleted, the file
+ * <code>foo.<em>max-1</em>.log</code> will be renamed as <code>foo.<em>max</em>.log</code>, the file
+ * <code>foo.<em>max-2</em>.log</code> renamed as <code>foo.<em>max-1</em>.log</code>, and so on, the file
+ * <code>foo.<em>min+1</em>.log</code> renamed as <code>foo.<em>min+2</em>.log</code>. Lastly, the active file
+ * <code>foo.log</code> will be renamed as <code>foo.<em>min</em>.log</code> and a new active file name
  * <code>foo.log</code> will be created.
  * </p>
  * <p>
- * Given that this rollover algorithm requires as many file renaming
- * operations as the window size, large window sizes are discouraged.
+ * Given that this rollover algorithm requires as many file renaming operations as the window size, large window sizes
+ * are discouraged.
  * </p>
  */
 @Plugin(name = "DefaultRolloverStrategy", category = "Core", printObject = true)
@@ -85,52 +79,52 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
      * <p>
      * Package-protected for unit tests.
      */
-    enum FileExtensions {
+    static enum FileExtensions {
         ZIP(".zip") {
             @Override
-            Action createCompressAction(final String renameTo, final String compressedName,
-                    final boolean deleteSource, final int compressionLevel) {
+            Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
+                    final int compressionLevel) {
                 return new ZipCompressAction(source(renameTo), target(compressedName), deleteSource, compressionLevel);
             }
         },
         GZ(".gz") {
             @Override
-            Action createCompressAction(final String renameTo, final String compressedName,
-                    final boolean deleteSource, final int compressionLevel) {
+            Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
+                    final int compressionLevel) {
                 return new GzCompressAction(source(renameTo), target(compressedName), deleteSource);
             }
         },
         BZIP2(".bz2") {
             @Override
-            Action createCompressAction(final String renameTo, final String compressedName,
-                    final boolean deleteSource, final int compressionLevel) {
+            Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
+                    final int compressionLevel) {
                 // One of "gz", "bzip2", "xz", "pack200", or "deflate".
                 return new CommonsCompressAction("bzip2", source(renameTo), target(compressedName), deleteSource);
-            }            
+            }
         },
         DEFLATE(".deflate") {
             @Override
-            Action createCompressAction(final String renameTo, final String compressedName,
-                    final boolean deleteSource, final int compressionLevel) {
+            Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
+                    final int compressionLevel) {
                 // One of "gz", "bzip2", "xz", "pack200", or "deflate".
                 return new CommonsCompressAction("deflate", source(renameTo), target(compressedName), deleteSource);
-            }            
+            }
         },
         PACK200(".pack200") {
             @Override
-            Action createCompressAction(final String renameTo, final String compressedName,
-                    final boolean deleteSource, final int compressionLevel) {
+            Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
+                    final int compressionLevel) {
                 // One of "gz", "bzip2", "xz", "pack200", or "deflate".
                 return new CommonsCompressAction("pack200", source(renameTo), target(compressedName), deleteSource);
-            }            
+            }
         },
         XY(".xy") {
             @Override
-            Action createCompressAction(final String renameTo, final String compressedName,
-                    final boolean deleteSource, final int compressionLevel) {
+            Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
+                    final int compressionLevel) {
                 // One of "gz", "bzip2", "xz", "pack200", or "deflate".
                 return new CommonsCompressAction("xy", source(renameTo), target(compressedName), deleteSource);
-            }            
+            }
         };
 
         private final String extension;
@@ -151,11 +145,11 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         int length() {
             return extension.length();
         }
-        
+
         File source(String fileName) {
             return new File(fileName);
         }
-        
+
         File target(String fileName) {
             return new File(fileName);
         }
@@ -182,20 +176,47 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
     private static final int DEFAULT_WINDOW_SIZE = 7;
 
     /**
+     * Index for oldest retained log file.
+     */
+    private final int maxIndex;
+
+    /**
+     * Index for most recent log file.
+     */
+    private final int minIndex;
+    private final boolean useMax;
+    private final StrSubstitutor subst;
+    private final int compressionLevel;
+
+    /**
+     * Constructs a new instance.
+     * 
+     * @param minIndex The minimum index.
+     * @param maxIndex The maximum index.
+     */
+    protected DefaultRolloverStrategy(final int minIndex, final int maxIndex, final boolean useMax,
+            final int compressionLevel, final StrSubstitutor subst) {
+        this.minIndex = minIndex;
+        this.maxIndex = maxIndex;
+        this.useMax = useMax;
+        this.compressionLevel = compressionLevel;
+        this.subst = subst;
+    }
+
+    /**
      * Create the DefaultRolloverStrategy.
+     * 
      * @param max The maximum number of files to keep.
      * @param min The minimum number of files to keep.
      * @param fileIndex If set to "max" (the default), files with a higher index will be newer than files with a
-     * smaller index. If set to "min", file renaming and the counter will follow the Fixed Window strategy.
+     *            smaller index. If set to "min", file renaming and the counter will follow the Fixed Window strategy.
      * @param compressionLevelStr The compression level, 0 (less) through 9 (more); applies only to ZIP files.
      * @param config The Configuration.
      * @return A DefaultRolloverStrategy.
      */
     @PluginFactory
-    public static DefaultRolloverStrategy createStrategy(
-            @PluginAttribute("max") final String max,
-            @PluginAttribute("min") final String min,
-            @PluginAttribute("fileIndex") final String fileIndex,
+    public static DefaultRolloverStrategy createStrategy(@PluginAttribute("max") final String max,
+            @PluginAttribute("min") final String min, @PluginAttribute("fileIndex") final String fileIndex,
             @PluginAttribute("compressionLevel") final String compressionLevelStr,
             @PluginConfiguration final Configuration config) {
         final boolean useMax = fileIndex == null ? true : fileIndex.equalsIgnoreCase("max");
@@ -219,33 +240,6 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         return new DefaultRolloverStrategy(minIndex, maxIndex, useMax, compressionLevel, config.getStrSubstitutor());
     }
 
-    /**
-     * Index for oldest retained log file.
-     */
-    private final int maxIndex;
-
-    /**
-     * Index for most recent log file.
-     */
-    private final int minIndex;
-    private final boolean useMax;
-    private final StrSubstitutor subst;
-    private final int compressionLevel;
-
-    /**
-     * Constructs a new instance.
-     * @param minIndex The minimum index.
-     * @param maxIndex The maximum index.
-     */
-    protected DefaultRolloverStrategy(final int minIndex, final int maxIndex, final boolean useMax,
-            final int compressionLevel, final StrSubstitutor subst) {
-        this.minIndex = minIndex;
-        this.maxIndex = maxIndex;
-        this.useMax = useMax;
-        this.compressionLevel = compressionLevel;
-        this.subst = subst;
-    }
-
     public int getCompressionLevel() {
         return this.compressionLevel;
     }
@@ -259,16 +253,15 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
     }
 
     private int purge(final int lowIndex, final int highIndex, final RollingFileManager manager) {
-        return useMax ? purgeAscending(lowIndex, highIndex, manager) :
-            purgeDescending(lowIndex, highIndex, manager);
+        return useMax ? purgeAscending(lowIndex, highIndex, manager) : purgeDescending(lowIndex, highIndex, manager);
     }
 
     /**
-     * Purge and rename old log files in preparation for rollover. The oldest file will have the smallest index,
-     * the newest the highest.
+     * Purge and rename old log files in preparation for rollover. The oldest file will have the smallest index, the
+     * newest the highest.
      *
-     * @param lowIndex  low index
-     * @param highIndex high index.  Log file associated with high index will be deleted if needed.
+     * @param lowIndex low index
+     * @param highIndex high index. Log file associated with high index will be deleted if needed.
      * @param manager The RollingFileManager
      * @return true if purge was successful and rollover should be attempted.
      */
@@ -294,8 +287,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             boolean isBase = false;
 
             if (suffixLength > 0) {
-                final File toRenameBase =
-                    new File(highFilename.substring(0, highFilename.length() - suffixLength));
+                final File toRenameBase = new File(highFilename.substring(0, highFilename.length() - suffixLength));
 
                 if (toRename.exists()) {
                     if (toRenameBase.exists()) {
@@ -311,11 +303,11 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
 
             if (toRename.exists()) {
                 //
-                //    if at lower index and then all slots full
-                //        attempt to delete last file
-                //        if that fails then abandon purge
+                // if at lower index and then all slots full
+                // attempt to delete last file
+                // if that fails then abandon purge
                 if (i == lowIndex) {
-                    LOGGER.debug("DefaultRolloverStrategy.purgeAscending deleting {} at low index {}: all slots full.", //
+                    LOGGER.debug("DefaultRolloverStrategy.purgeAscending deleting {} at low index {}: all slots full.",
                             toRename, i);
                     if (!toRename.delete()) {
                         return -1;
@@ -325,8 +317,8 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
                 }
 
                 //
-                //   if intermediate index
-                //     add a rename action to the list
+                // if intermediate index
+                // add a rename action to the list
                 buf.setLength(0);
                 // LOG4J2-531: directory scan & rollover must use same format
                 manager.getPatternProcessor().formatFileName(subst, buf, i - 1);
@@ -353,7 +345,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         }
 
         //
-        //   work renames backwards
+        // work renames backwards
         //
         for (int i = renames.size() - 1; i >= 0; i--) {
             final Action action = renames.get(i);
@@ -375,8 +367,8 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
      * Purge and rename old log files in preparation for rollover. The newest file will have the smallest index, the
      * oldest will have the highest.
      *
-     * @param lowIndex  low index
-     * @param highIndex high index.  Log file associated with high index will be deleted if needed.
+     * @param lowIndex low index
+     * @param highIndex high index. Log file associated with high index will be deleted if needed.
      * @param manager The RollingFileManager
      * @return true if purge was successful and rollover should be attempted.
      */
@@ -395,8 +387,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             boolean isBase = false;
 
             if (suffixLength > 0) {
-                final File toRenameBase =
-                    new File(lowFilename.substring(0, lowFilename.length() - suffixLength));
+                final File toRenameBase = new File(lowFilename.substring(0, lowFilename.length() - suffixLength));
 
                 if (toRename.exists()) {
                     if (toRenameBase.exists()) {
@@ -412,11 +403,12 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
 
             if (toRename.exists()) {
                 //
-                //    if at upper index then
-                //        attempt to delete last file
-                //        if that fails then abandon purge
+                // if at upper index then
+                // attempt to delete last file
+                // if that fails then abandon purge
                 if (i == highIndex) {
-                    LOGGER.debug("DefaultRolloverStrategy.purgeDescending deleting {} at high index {}: all slots full.", //
+                    LOGGER.debug(
+                            "DefaultRolloverStrategy.purgeDescending deleting {} at high index {}: all slots full.", //
                             toRename, i);
                     if (!toRename.delete()) {
                         return -1;
@@ -426,8 +418,8 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
                 }
 
                 //
-                //   if intermediate index
-                //     add a rename action to the list
+                // if intermediate index
+                // add a rename action to the list
                 buf.setLength(0);
                 // LOG4J2-531: directory scan & rollover must use same format
                 manager.getPatternProcessor().formatFileName(subst, buf, i + 1);
@@ -447,7 +439,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         }
 
         //
-        //   work renames backwards
+        // work renames backwards
         //
         for (int i = renames.size() - 1; i >= 0; i--) {
             final Action action = renames.get(i);
@@ -477,6 +469,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
 
     /**
      * Perform the rollover.
+     * 
      * @param manager The RollingFileManager name for current active log file.
      * @return A RolloverDescription.
      * @throws SecurityException if an error occurs.
@@ -511,8 +504,8 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             }
         }
 
-        final FileRenameAction renameAction =
-            new FileRenameAction(new File(currentFileName), new File(renameTo), false);
+        final FileRenameAction renameAction = new FileRenameAction(new File(currentFileName), new File(renameTo),
+                false);
 
         return new RolloverDescriptionImpl(currentFileName, false, renameAction, compressAction);
     }

@@ -29,8 +29,8 @@ import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
  */
 public class SecureTcpSocketServer<T extends InputStream> extends TcpSocketServer<T> {
 
-    public SecureTcpSocketServer(final int port, final LogEventBridge<T> logEventInput, final SslConfiguration sslConfig)
-            throws IOException {
+    public SecureTcpSocketServer(final int port, final LogEventBridge<T> logEventInput,
+            final SslConfiguration sslConfig) throws IOException {
         super(port, logEventInput, sslConfig.getSslServerSocketFactory().createServerSocket(port));
     }
 

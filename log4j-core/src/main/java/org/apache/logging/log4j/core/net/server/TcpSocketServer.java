@@ -86,6 +86,42 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
         }
     }
 
+    private final ConcurrentMap<Long, SocketHandler> handlers = new ConcurrentHashMap<>();
+
+    private final ServerSocket serverSocket;
+
+    /**
+     * Constructor.
+     * 
+     * @param port
+     *        to listen.
+     * @param logEventInput
+     *        the log even input
+     * @throws IOException
+     *         if an I/O error occurs when opening the socket.
+     */
+    public TcpSocketServer(final int port, final LogEventBridge<T> logEventInput) throws IOException {
+        this(port, logEventInput, new ServerSocket(port));
+    }
+
+    /**
+     * Constructor.
+     * 
+     * @param port
+     *        to listen.
+     * @param logEventInput
+     *        the log even input
+     * @param serverSocket
+     *        the socket server
+     * @throws IOException
+     *         if an I/O error occurs when opening the socket.
+     */
+    public TcpSocketServer(final int port, final LogEventBridge<T> logEventInput, final ServerSocket serverSocket)
+            throws IOException {
+        super(port, logEventInput);
+        this.serverSocket = serverSocket;
+    }
+
     /**
      * Creates a socket server that reads JSON log events.
      * 
@@ -168,42 +204,6 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
         System.out.println("Usage: ServerSocket port configFilePath");
     }
 
-    private final ConcurrentMap<Long, SocketHandler> handlers = new ConcurrentHashMap<>();
-
-    private final ServerSocket serverSocket;
-
-    /**
-     * Constructor.
-     * 
-     * @param port
-     *        to listen.
-     * @param logEventInput
-     *        the log even input
-     * @throws IOException
-     *         if an I/O error occurs when opening the socket.
-     */
-    public TcpSocketServer(final int port, final LogEventBridge<T> logEventInput) throws IOException {
-        this(port, logEventInput, new ServerSocket(port));
-    }
-
-    /**
-     * Constructor.
-     * 
-     * @param port
-     *        to listen.
-     * @param logEventInput
-     *        the log even input
-     * @param serverSocket
-     *        the socket server
-     * @throws IOException
-     *         if an I/O error occurs when opening the socket.
-     */
-    public TcpSocketServer(final int port, final LogEventBridge<T> logEventInput, final ServerSocket serverSocket)
-            throws IOException {
-        super(port, logEventInput);
-        this.serverSocket = serverSocket;
-    }
-
     /**
      * Accept incoming events and processes them.
      */
@@ -248,7 +248,7 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
     /**
      * Shutdown the server.
      * 
-     * @throws IOException
+     * @throws IOException if the server socket could not be closed
      */
     public void shutdown() throws IOException {
         setActive(false);

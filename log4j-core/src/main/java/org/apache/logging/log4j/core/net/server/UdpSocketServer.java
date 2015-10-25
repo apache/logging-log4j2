@@ -37,6 +37,25 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
  */
 public class UdpSocketServer<T extends InputStream> extends AbstractSocketServer<T> {
 
+    private final DatagramSocket datagramSocket;
+
+    // max size so we only have to deal with one packet
+    private final int maxBufferSize = 1024 * 65 + 1024;
+
+    /**
+     * Constructor.
+     * 
+     * @param port
+     *            to listen on.
+     * @param logEventInput
+     * @throws IOException
+     *             If an error occurs.
+     */
+    public UdpSocketServer(final int port, final LogEventBridge<T> logEventInput) throws IOException {
+        super(port, logEventInput);
+        this.datagramSocket = new DatagramSocket(port);
+    }
+
     /**
      * Creates a socket server that reads JSON log events.
      * 
@@ -116,25 +135,6 @@ public class UdpSocketServer<T extends InputStream> extends AbstractSocketServer
 
     private static void printUsage() {
         System.out.println("Usage: ServerSocket port configFilePath");
-    }
-
-    private final DatagramSocket datagramSocket;
-
-    // max size so we only have to deal with one packet
-    private final int maxBufferSize = 1024 * 65 + 1024;
-
-    /**
-     * Constructor.
-     * 
-     * @param port
-     *            to listen on.
-     * @param logEventInput
-     * @throws IOException
-     *             If an error occurs.
-     */
-    public UdpSocketServer(final int port, final LogEventBridge<T> logEventInput) throws IOException {
-        super(port, logEventInput);
-        this.datagramSocket = new DatagramSocket(port);
     }
 
     /**

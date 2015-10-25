@@ -30,6 +30,9 @@ import java.util.Objects;
  * Represents the source for the logging configuration.
  */
 public class ConfigurationSource {
+    /**
+     * ConfigurationSource to use with Configurations that do not require a "real" configuration source.
+     */
     public static final ConfigurationSource NULL_SOURCE = new ConfigurationSource(new byte[0]);
 
     private final File file;
@@ -37,45 +40,6 @@ public class ConfigurationSource {
     private final String location;
     private final InputStream stream;
     private final byte[] data;
-
-    /**
-     * Returns the contents of the specified {@code InputStream} as a byte array.
-     * 
-     * @param inputStream the stream to read
-     * @return the contents of the specified stream
-     * @throws IOException if a problem occurred reading from the stream
-     */
-    private static byte[] toByteArray(final InputStream inputStream) throws IOException {
-        final int buffSize = Math.max(4096, inputStream.available());
-        final ByteArrayOutputStream contents = new ByteArrayOutputStream(buffSize);
-        final byte[] buff = new byte[buffSize];
-
-        int length = inputStream.read(buff);
-        while (length > 0) {
-            contents.write(buff, 0, length);
-            length = inputStream.read(buff);
-        }
-        return contents.toByteArray();
-    }
-
-    /**
-     * Constructs a new {@code ConfigurationSource} with the specified input stream. Since the stream is the only source
-     * of data, this constructor makes a copy of the stream contents.
-     * 
-     * @param stream the input stream
-     * @throws IOException if an exception occurred reading from the specified stream
-     */
-    public ConfigurationSource(final InputStream stream) throws IOException {
-        this(toByteArray(stream));
-    }
-
-    private ConfigurationSource(final byte[] data) {
-        this.data = Objects.requireNonNull(data, "data is null");
-        this.stream = new ByteArrayInputStream(data);
-        this.file = null;
-        this.url = null;
-        this.location = null;
-    }
 
     /**
      * Constructs a new {@code ConfigurationSource} with the specified input stream that originated from the specified
@@ -105,6 +69,45 @@ public class ConfigurationSource {
         this.location = url.toString();
         this.file = null;
         this.data = null;
+    }
+
+    /**
+     * Constructs a new {@code ConfigurationSource} with the specified input stream. Since the stream is the only source
+     * of data, this constructor makes a copy of the stream contents.
+     * 
+     * @param stream the input stream
+     * @throws IOException if an exception occurred reading from the specified stream
+     */
+    public ConfigurationSource(final InputStream stream) throws IOException {
+        this(toByteArray(stream));
+    }
+
+    private ConfigurationSource(final byte[] data) {
+        this.data = Objects.requireNonNull(data, "data is null");
+        this.stream = new ByteArrayInputStream(data);
+        this.file = null;
+        this.url = null;
+        this.location = null;
+    }
+
+    /**
+     * Returns the contents of the specified {@code InputStream} as a byte array.
+     * 
+     * @param inputStream the stream to read
+     * @return the contents of the specified stream
+     * @throws IOException if a problem occurred reading from the stream
+     */
+    private static byte[] toByteArray(final InputStream inputStream) throws IOException {
+        final int buffSize = Math.max(4096, inputStream.available());
+        final ByteArrayOutputStream contents = new ByteArrayOutputStream(buffSize);
+        final byte[] buff = new byte[buffSize];
+
+        int length = inputStream.read(buff);
+        while (length > 0) {
+            contents.write(buff, 0, length);
+            length = inputStream.read(buff);
+        }
+        return contents.toByteArray();
     }
 
     /**

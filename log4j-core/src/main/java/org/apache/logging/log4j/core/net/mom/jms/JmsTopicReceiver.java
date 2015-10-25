@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.net.server.JmsServer;
  * Receives Topic messages that contain LogEvents. This implementation expects that all messages
  * are serialized log events.
  */
-public class JmsTopicReceiver {
+public abstract class JmsTopicReceiver {
 
     /**
      * Main startup for the receiver.

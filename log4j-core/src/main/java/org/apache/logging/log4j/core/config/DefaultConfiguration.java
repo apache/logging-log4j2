@@ -33,8 +33,6 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  */
 public class DefaultConfiguration extends AbstractConfiguration {
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * The name of the default configuration.
      */
@@ -47,6 +45,8 @@ public class DefaultConfiguration extends AbstractConfiguration {
      * The default Pattern used for the default Layout.
      */
     public static final String DEFAULT_PATTERN = "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n";
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Constructor to create the default configuration.

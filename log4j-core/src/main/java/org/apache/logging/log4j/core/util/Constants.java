@@ -36,6 +36,9 @@ public final class Constants {
      */
     public static final String LOG4J_CONTEXT_SELECTOR = "Log4jContextSelector";
 
+    /**
+     * Property name for the default status (internal log4j logging) level to use if not specified in configuration.
+     */
     public static final String LOG4J_DEFAULT_STATUS_LEVEL = "Log4jDefaultStatusLevel";
 
     /**
@@ -46,7 +49,8 @@ public final class Constants {
     /**
      * Line separator.
      */
-    public static final String LINE_SEPARATOR = PropertiesUtil.getProperties().getStringProperty("line.separator", "\n");
+    public static final String LINE_SEPARATOR = PropertiesUtil.getProperties().getStringProperty("line.separator",
+            "\n");
 
     /**
      * Number of milliseconds in a second.
