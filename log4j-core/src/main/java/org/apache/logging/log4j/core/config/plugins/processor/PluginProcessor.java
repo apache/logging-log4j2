@@ -92,6 +92,7 @@ public class PluginProcessor extends AbstractProcessor {
                 elementUtils);
         for (final Element element : elements) {
             final Plugin plugin = element.getAnnotation(Plugin.class);
+            if (plugin == null) continue;
             final PluginEntry entry = element.accept(pluginVisitor, plugin);
             final Map<String, PluginEntry> category = pluginCache.getCategory(entry.getCategory());
             category.put(entry.getKey(), entry);
