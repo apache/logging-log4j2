@@ -192,20 +192,6 @@ public class PerfTestDriver {
         }
     }
 
-    // single-threaded performance test
-    private static Setup s(final String config, final Runner runner, final String name,
-            final String... systemProperties) throws IOException {
-        final WaitStrategy wait = WaitStrategy.get();
-        return new Setup(PerfTest.class, runner, name, config, 1, wait, systemProperties);
-    }
-
-    // multi-threaded performance test
-    private static Setup m(final String config, final Runner runner, final String name, final int threadCount,
-            final String... systemProperties) throws IOException {
-        final WaitStrategy wait = WaitStrategy.get();
-        return new Setup(MultiThreadPerfTest.class, runner, name, config, threadCount, wait, systemProperties);
-    }
-
     static enum Runner {
         Log4j12(RunLog4j1.class), //
         Log4j2(RunLog4j2.class), //
@@ -233,78 +219,70 @@ public class PerfTestDriver {
     private static List<Setup> selectTests() throws IOException {
         final List<Setup> tests = new ArrayList<>();
         
-        final String ALL_ASYNC = "-DLog4jContextSelector=" + AsyncLoggerContextSelector.class.getName();
-        final String CACHEDCLOCK = "-Dlog4j.Clock=CachedClock";
+        // final String CACHEDCLOCK = "-Dlog4j.Clock=CachedClock";
         final String SYSCLOCK = "-Dlog4j.Clock=SystemClock";
+        final String ALL_ASYNC = "-DLog4jContextSelector=" + AsyncLoggerContextSelector.class.getName();
 
         final String THREADNAME = "-DAsyncLogger.ThreadNameStrategy=" //
                 + System.getProperty("AsyncLogger.ThreadNameStrategy", "CACHED");
 
         // includeLocation=false
-        tests.add(s("perf3PlainNoLoc.xml", Runner.Log4j2, "Loggers all async", ALL_ASYNC, SYSCLOCK, THREADNAME));
-        tests.add(s("perf7MixedNoLoc.xml", Runner.Log4j2, "Loggers mixed sync/async"));
-        tests.add(s("perf-logback.xml", Runner.Logback, "Sync"));
-        tests.add(s("perf-log4j12.xml", Runner.Log4j12, "Sync"));
-        tests.add(s("perf3PlainNoLoc.xml", Runner.Log4j2, "Sync"));
-        tests.add(s("perf-logback-async.xml", Runner.Logback, "Async Appender"));
-        tests.add(s("perf-log4j12-async.xml", Runner.Log4j12, "Async Appender"));
-        tests.add(s("perf5AsyncApndNoLoc.xml", Runner.Log4j2, "Async Appender"));
+        add(tests, 1, "perf3PlainNoLoc.xml", Runner.Log4j2, "Loggers all async", ALL_ASYNC, SYSCLOCK, THREADNAME);
+        add(tests, 1, "perf7MixedNoLoc.xml", Runner.Log4j2, "Loggers mixed sync/async");
+        add(tests, 1, "perf-logback.xml", Runner.Logback, "Sync");
+        add(tests, 1, "perf-log4j12.xml", Runner.Log4j12, "Sync");
+        add(tests, 1, "perf3PlainNoLoc.xml", Runner.Log4j2, "Sync");
+        add(tests, 1, "perf-logback-async.xml", Runner.Logback, "Async Appender");
+        add(tests, 1, "perf-log4j12-async.xml", Runner.Log4j12, "Async Appender");
+        add(tests, 1, "perf5AsyncApndNoLoc.xml", Runner.Log4j2, "Async Appender");
 
         // includeLocation=true
-        // tests.add(s("perf6AsyncApndLoc.xml", LOG20,
-        // "Async Appender includeLocation"));
-        // tests.add(s("perf8MixedLoc.xml", LOG20,
-        // "Mixed sync/async includeLocation"));
-        // tests.add(s("perf4PlainLocation.xml", LOG20,
-        // "Loggers all async includeLocation", ALL_ASYNC));
-        // tests.add(s("perf4PlainLocation.xml", LOG20,
-        // "Loggers all async includeLocation CachedClock", ALL_ASYNC,
-        // CACHEDCLOCK));
-        // tests.add(s("perf4PlainLocation.xml", LOG20,
-        // "Sync includeLocation"));
+        // add(tests, 1, "perf6AsyncApndLoc.xml", Runner.Log4j2, "Async Appender includeLocation");
+        // add(tests, 1, "perf8MixedLoc.xml", Runner.Log4j2, "Mixed sync/async includeLocation");
+        // add(tests, 1, "perf4PlainLocation.xml", Runner.Log4j2, "Loggers all async includeLocation", ALL_ASYNC);
+        // add(tests, 1, "perf4PlainLocation.xml", Runner.Log4j2, "Loggers all async includeLocation CachedClock", ALL_ASYNC, CACHEDCLOCK);
+        // add(tests, 1, "perf4PlainLocation.xml", Runner.Log4j2, "Sync includeLocation");
 
         // appenders
-        // tests.add(s("perf1syncFile.xml", LOG20, "FileAppender"));
-        // tests.add(s("perf1syncRandomAccessFile.xml", LOG20, "RandomAccessFileAppender"));
-        // tests.add(s("perf2syncRollFile.xml", LOG20, "RollFileAppender"));
-        // tests.add(s("perf2syncRollRandomAccessFile.xml", LOG20,
-        // "RollRandomAccessFileAppender"));
+        // add(tests, 1, "perf1syncFile.xml", Runner.Log4j2, "FileAppender");
+        // add(tests, 1, "perf1syncRandomAccessFile.xml", Runner.Log4j2, "RandomAccessFileAppender");
+        // add(tests, 1, "perf2syncRollFile.xml", Runner.Log4j2, "RollFileAppender");
+        // add(tests, 1, "perf2syncRollRandomAccessFile.xml", Runner.Log4j2, "RollRandomAccessFileAppender");
 
         final int MAX_THREADS = 4; // 64 takes a LONG time
         for (int i = 2; i <= MAX_THREADS; i *= 2) {
             // includeLocation = false
-            tests.add(m("perf-logback.xml", Runner.Logback, "Sync", i));
-            tests.add(m("perf-log4j12.xml", Runner.Log4j12, "Sync", i));
-            tests.add(m("perf3PlainNoLoc.xml", Runner.Log4j2, "Sync", i));
-            tests.add(m("perf-logback-async.xml", Runner.Logback, "Async Appender", i));
-            tests.add(m("perf-log4j12-async.xml", Runner.Log4j12, "Async Appender", i));
-            tests.add(m("perf5AsyncApndNoLoc.xml", Runner.Log4j2, "Async Appender", i));
-            tests.add(m("perf3PlainNoLoc.xml", Runner.Log4j2, "Loggers all async", i, ALL_ASYNC, SYSCLOCK, THREADNAME));
-            tests.add(m("perf7MixedNoLoc.xml", Runner.Log4j2, "Loggers mixed sync/async", i));
+            add(tests, i, "perf-logback.xml", Runner.Logback, "Sync");
+            add(tests, i, "perf-log4j12.xml", Runner.Log4j12, "Sync");
+            add(tests, i, "perf3PlainNoLoc.xml", Runner.Log4j2, "Sync");
+            add(tests, i, "perf-logback-async.xml", Runner.Logback, "Async Appender");
+            add(tests, i, "perf-log4j12-async.xml", Runner.Log4j12, "Async Appender");
+            add(tests, i, "perf5AsyncApndNoLoc.xml", Runner.Log4j2, "Async Appender");
+            add(tests, i, "perf3PlainNoLoc.xml", Runner.Log4j2, "Loggers all async", ALL_ASYNC, SYSCLOCK, THREADNAME);
+            add(tests, i, "perf7MixedNoLoc.xml", Runner.Log4j2, "Loggers mixed sync/async");
 
             // includeLocation=true
-            // tests.add(m("perf6AsyncApndLoc.xml", LOG20,
-            // "Async Appender includeLocation", i));
-            // tests.add(m("perf8MixedLoc.xml", LOG20,
-            // "Mixed sync/async includeLocation", i));
-            // tests.add(m("perf4PlainLocation.xml", LOG20,
-            // "Loggers all async includeLocation", i, ALL_ASYNC));
-            // tests.add(m("perf4PlainLocation.xml", LOG20,
-            // "Loggers all async includeLocation CachedClock", i,
-            // ALL_ASYNC, CACHEDCLOCK));
-            // tests.add(m("perf4PlainLocation.xml", LOG20,
-            // "Sync includeLocation", i));
+            // add(tests, i, "perf6AsyncApndLoc.xml", Runner.Log4j2, "Async Appender includeLocation");
+            // add(tests, i, "perf8MixedLoc.xml", Runner.Log4j2, "Mixed sync/async includeLocation");
+            // add(tests, i, "perf4PlainLocation.xml", Runner.Log4j2, "Loggers all async includeLocation", ALL_ASYNC));
+            // add(tests, i, "perf4PlainLocation.xml", Runner.Log4j2, "Loggers all async includeLocation CachedClock", ALL_ASYNC, CACHEDCLOCK));
+            // add(tests, i, "perf4PlainLocation.xml", Runner.Log4j2, "Sync includeLocation");
 
             // appenders
-            // tests.add(m("perf1syncFile.xml", LOG20, "FileAppender", i));
-            // tests.add(m("perf1syncRandomAccessFile.xml", LOG20, "RandomAccessFileAppender",
-            // i));
-            // tests.add(m("perf2syncRollFile.xml", LOG20, "RollFileAppender",
-            // i));
-            // tests.add(m("perf2syncRollRandomAccessFile.xml", LOG20,
-            // "RollRandomAccessFileAppender", i));
+            // add(tests, i, "perf1syncFile.xml", Runner.Log4j2, "FileAppender");
+            // add(tests, i, "perf1syncRandomAccessFile.xml", Runner.Log4j2, "RandomAccessFileAppender");
+            // add(tests, i, "perf2syncRollFile.xml", Runner.Log4j2, "RollFileAppender");
+            // add(tests, i, "perf2syncRollRandomAccessFile.xml", Runner.Log4j2, "RollRandomAccessFileAppender");
         }
         return tests;
+    }
+
+    private static void add(final List<Setup> tests, int threadCount, final String config, final Runner runner, final String name,
+            final String... systemProperties) throws IOException {
+        final WaitStrategy wait = WaitStrategy.get();
+        final Class<?> perfTest = threadCount == 1 ? PerfTest.class : MultiThreadPerfTest.class;
+        final Setup setup = new Setup(perfTest, runner, name, config, threadCount, wait, systemProperties);
+        tests.add(setup);
     }
 
     private static void runPerfTests(final String[] args, final List<Setup> tests) throws IOException,
