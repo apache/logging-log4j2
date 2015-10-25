@@ -41,15 +41,18 @@ public class AsyncLoggerContextSelector extends ClassLoaderContextSelector {
                 PropertiesUtil.getProperties().getStringProperty(Constants.LOG4J_CONTEXT_SELECTOR));
     }
 
+    @Override
     protected LoggerContext createContext(final String name, final URI configLocation) {
         return new AsyncLoggerContext(name, null, configLocation);
     }
 
+    @Override
     protected String toContextMapKey(final ClassLoader loader) {
         // LOG4J2-666 ensure unique name across separate instances created by webapp classloaders
         return "AsyncContext@" + Integer.toHexString(System.identityHashCode(loader));
     }
 
+    @Override
     protected String defaultContextName() {
         return "DefaultAsyncContext@" + Thread.currentThread().getName();
     }
