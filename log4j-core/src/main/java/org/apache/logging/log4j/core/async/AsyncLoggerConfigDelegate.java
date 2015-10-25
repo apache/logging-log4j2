@@ -46,7 +46,7 @@ public interface AsyncLoggerConfigDelegate {
      * 
      * @param contextName name of the {@code LoggerContext}
      * @param loggerConfigName name of the logger config
+     * @return the RingBufferAdmin that instruments the ringbuffer
      */
     RingBufferAdmin createRingBufferAdmin(String contextName, String loggerConfigName);
-
 }
