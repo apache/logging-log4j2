@@ -468,8 +468,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             } else {
                 final List<String> expected = Arrays.asList("\"Appenders\"", "\"Loggers\"", "\"Properties\"",
                         "\"Scripts\"", "\"CustomLevels\"");
-                LOGGER.error("Unknown object \"{}\" of type {} is ignored: expected one of {}.", child.getName(),
-                        child.getObject().getClass().getName(), expected);
+                LOGGER.error("Unknown object \"{}\" of type {} is ignored: try nesting it inside one of: {}.",
+                        child.getName(), child.getObject().getClass().getName(), expected);
             }
         }
 
