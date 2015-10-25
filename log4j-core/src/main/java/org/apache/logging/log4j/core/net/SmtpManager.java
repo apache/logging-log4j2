@@ -234,11 +234,11 @@ public class SmtpManager extends AbstractManager {
         return mp;
     }
 
-    protected void sendMultipartMessage(final MimeMessage message, final MimeMultipart mp) throws MessagingException {
-        synchronized (message) {
-            message.setContent(mp);
-            message.setSentDate(new Date());
-            Transport.send(message);
+    protected void sendMultipartMessage(final MimeMessage msg, final MimeMultipart mp) throws MessagingException {
+        synchronized (msg) {
+            msg.setContent(mp);
+            msg.setSentDate(new Date());
+            Transport.send(msg);
         }
     }
 
