@@ -73,24 +73,24 @@ public class RingBufferLogEvent implements LogEvent {
     private boolean includeLocation;
     private long nanoTime;
 
-    public void setValues(final AsyncLogger asyncLogger, final String loggerName, final Marker marker,
-            final String fqcn, final Level level, final Message data, final Throwable throwable,
-            final Map<String, String> map, final ContextStack contextStack, final String threadName,
-            final StackTraceElement location, final long currentTimeMillis, final long nanoTime) {
-        this.asyncLogger = asyncLogger;
-        this.loggerName = loggerName;
-        this.marker = marker;
-        this.fqcn = fqcn;
-        this.level = level;
-        this.message = data;
-        this.thrown = throwable;
+    public void setValues(final AsyncLogger anAsyncLogger, final String aLoggerName, final Marker aMarker,
+            final String theFqcn, final Level aLevel, final Message msg, final Throwable aThrowable,
+            final Map<String, String> aMap, final ContextStack aContextStack, final String aThreadName,
+            final StackTraceElement aLocation, final long aCurrentTimeMillis, final long aNanoTime) {
+        this.asyncLogger = anAsyncLogger;
+        this.loggerName = aLoggerName;
+        this.marker = aMarker;
+        this.fqcn = theFqcn;
+        this.level = aLevel;
+        this.message = msg;
+        this.thrown = aThrowable;
         this.thrownProxy = null;
-        this.contextMap = map;
-        this.contextStack = contextStack;
-        this.threadName = threadName;
-        this.location = location;
-        this.currentTimeMillis = currentTimeMillis;
-        this.nanoTime = nanoTime;
+        this.contextMap = aMap;
+        this.contextStack = aContextStack;
+        this.threadName = aThreadName;
+        this.location = aLocation;
+        this.currentTimeMillis = aCurrentTimeMillis;
+        this.nanoTime = aNanoTime;
     }
 
     /**
@@ -293,6 +293,6 @@ public class RingBufferLogEvent implements LogEvent {
                 .setThreadName(threadName) //
                 .setThrown(getThrown()) // may deserialize from thrownProxy
                 .setThrownProxy(thrownProxy) // avoid unnecessarily creating thrownProxy
-                .setTimeMillis(currentTimeMillis);        
+                .setTimeMillis(currentTimeMillis);
     }
 }

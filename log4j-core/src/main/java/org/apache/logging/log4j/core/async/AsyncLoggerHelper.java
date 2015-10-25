@@ -44,7 +44,7 @@ class AsyncLoggerHelper {
     private ExecutorService executor;
     private volatile Disruptor<RingBufferLogEvent> disruptor;
 
-    public AsyncLoggerHelper(String contextName) {
+    AsyncLoggerHelper(String contextName) {
         this.contextName = contextName;
     }
 
@@ -108,12 +108,12 @@ class AsyncLoggerHelper {
     /**
      * Creates and returns a new {@code RingBufferAdmin} that instruments the ringbuffer of the {@code AsyncLogger}.
      *
-     * @param contextName name of the global {@code AsyncLoggerContext}
+     * @param jmxContextName name of the {@code AsyncLoggerContext}
      * @return a new {@code RingBufferAdmin} that instruments the ringbuffer
      */
-    public RingBufferAdmin createRingBufferAdmin(final String contextName) {
+    public RingBufferAdmin createRingBufferAdmin(final String jmxContextName) {
         final RingBuffer<RingBufferLogEvent> ring = disruptor == null ? null : disruptor.getRingBuffer();
-        return RingBufferAdmin.forAsyncLogger(ring, contextName);
+        return RingBufferAdmin.forAsyncLogger(ring, jmxContextName);
     }
 
     /**

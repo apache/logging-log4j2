@@ -29,7 +29,7 @@ class Info {
     /**
      * Strategy for deciding whether thread name should be cached or not.
      */
-    static enum ThreadNameStrategy { // LOG4J2-467
+    enum ThreadNameStrategy { // LOG4J2-467
         CACHED {
             @Override
             public String getThreadName(final Info info) {
@@ -63,10 +63,10 @@ class Info {
     private static final ThreadLocal<Info> THREADLOCAL = new ThreadLocal<Info>();
 
     final RingBufferLogEventTranslator translator;
-    private final String cachedThreadName;
     final boolean isAppenderThread;
+    private final String cachedThreadName;
 
-    public Info(final RingBufferLogEventTranslator translator, final String threadName, final boolean appenderThread) {
+    Info(final RingBufferLogEventTranslator translator, final String threadName, final boolean appenderThread) {
         this.translator = translator;
         this.cachedThreadName = threadName;
         this.isAppenderThread = appenderThread;

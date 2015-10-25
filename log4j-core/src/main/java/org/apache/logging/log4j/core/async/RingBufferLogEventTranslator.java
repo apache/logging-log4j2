@@ -78,23 +78,22 @@ public class RingBufferLogEventTranslator implements
         );
     }
 
-    public void setValues(final AsyncLogger asyncLogger, final String loggerName,
-            final Marker marker, final String fqcn, final Level level, final Message message,
-            final Throwable thrown, final Map<String, String> contextMap,
-            final ContextStack contextStack, final String threadName,
-            final StackTraceElement location, final long currentTimeMillis, final long nanoTime) {
-        this.asyncLogger = asyncLogger;
-        this.loggerName = loggerName;
-        this.marker = marker;
-        this.fqcn = fqcn;
-        this.level = level;
-        this.message = message;
-        this.thrown = thrown;
-        this.contextMap = contextMap;
-        this.contextStack = contextStack;
-        this.threadName = threadName;
-        this.location = location;
-        this.currentTimeMillis = currentTimeMillis;
-        this.nanoTime = nanoTime;
+    public void setValues(final AsyncLogger anAsyncLogger, final String aLoggerName, final Marker aMarker,
+            final String theFqcn, final Level aLevel, final Message msg, final Throwable aThrowable,
+            final Map<String, String> aMap, final ContextStack aContextStack, final String aThreadName,
+            final StackTraceElement aLocation, final long aCurrentTimeMillis, final long aNanoTime) {
+        this.asyncLogger = anAsyncLogger;
+        this.loggerName = aLoggerName;
+        this.marker = aMarker;
+        this.fqcn = theFqcn;
+        this.level = aLevel;
+        this.message = msg;
+        this.thrown = aThrowable;
+        this.contextMap = aMap;
+        this.contextStack = aContextStack;
+        this.threadName = aThreadName;
+        this.location = aLocation;
+        this.currentTimeMillis = aCurrentTimeMillis;
+        this.nanoTime = aNanoTime;
     }
 }

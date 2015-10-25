@@ -107,9 +107,8 @@ public class AsyncLoggerContext extends LoggerContext {
 
     /**
      * Creates and returns a new {@code RingBufferAdmin} that instruments the ringbuffer of the {@code AsyncLogger}
-     * objects.
+     * objects in this {@code LoggerContext}.
      *
-     * @param contextName name of this {@code AsyncLoggerContext}
      * @return a new {@code RingBufferAdmin} that instruments the ringbuffer
      */
     public RingBufferAdmin createRingBufferAdmin() {
