@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.5" date="2015-MM-DD" description="GA Release 2.5">
+      <action issue="LOG4J2-879" dev="rpopma" type="fix">
+        Documentation: fixed minor issues with the site and manual pages.
+      </action>
       <action issue="LOG4J2-898" dev="rpopma" type="add">
         Added system property to allow users to control whether messages should be formatted in the background.
       </action>
