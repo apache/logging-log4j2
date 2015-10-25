@@ -26,7 +26,7 @@
 	<body>
 		<section name="Building and Installing Log4j">
 
-      <p class="text-info">
+      <p>
         <i>The information below is for developers who want to modify Log4j or
         contribute to Log4j. If your goal is to add logging to your application
         you don't need to build from the source code,

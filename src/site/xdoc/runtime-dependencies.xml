@@ -136,7 +136,9 @@
       </p>
       <p class="text-warning">
         <i class="icon-exclamation-sign"/>
+        <b><font color="red">
         Do not use this with the <a href="#log4j-to-slf4j">log4j-to-slf4j</a> module.
+        </font></b>
       </p>
 
       <a name="log4j-jul" />
@@ -156,7 +158,9 @@
       </p>
       <p class="text-warning">
         <i class="icon-exclamation-sign"/>
+        <b><font color="red">
         Do not use this with the <a href="#log4j-slf4j-impl">log4j-slf4j-impl</a> module.
+        </font></b>
       </p>
 
       <a name="log4j-flume-ng" />
