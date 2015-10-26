@@ -35,6 +35,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.Booleans;
+import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
@@ -275,43 +276,6 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         @Override
         public void write(final int b) throws IOException {
             System.out.write(b);
-        }
-    }
-
-    /**
-     * A delegating OutputStream that does not close its delegate.
-     */
-    private static class CloseShieldOutputStream extends OutputStream {
-
-        private final OutputStream delegate;
-
-        public CloseShieldOutputStream(final OutputStream delegate) {
-            this.delegate = delegate;
-        }
-
-        @Override
-        public void close() {
-            // do not close delegate
-        }
-
-        @Override
-        public void flush() throws IOException {
-            delegate.flush();
-        }
-
-        @Override
-        public void write(final byte[] b) throws IOException {
-            delegate.write(b);
-        }
-
-        @Override
-        public void write(final byte[] b, final int off, final int len) throws IOException {
-            delegate.write(b, off, len);
-        }
-
-        @Override
-        public void write(final int b) throws IOException {
-            delegate.write(b);
         }
     }
 
