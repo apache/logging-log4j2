@@ -75,6 +75,12 @@
                 will be written to the error appender if the queue is full. The default is true.</td>
             </tr>
             <tr>
+              <td>shutdownTimeout</td>
+              <td>integer</td>
+              <td>How many milliseconds the Appender should wait to flush outstanding log events in the queue
+                on shutdown. The default is zero which means to wait forever.</td>
+            </tr>
+            <tr>
               <td>bufferSize</td>
               <td>integer</td>
               <td>Specifies the maximum number of events that can be queued. The default is 128.</td>
