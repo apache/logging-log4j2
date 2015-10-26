@@ -25,7 +25,6 @@ import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
-import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.apache.logging.log4j.core.LoggerContext;
@@ -35,7 +34,6 @@ import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
