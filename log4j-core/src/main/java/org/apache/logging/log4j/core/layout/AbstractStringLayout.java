@@ -58,6 +58,13 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
         this(charset, null, null);
     }
 
+    /**
+     * Builds a new layout.
+     * @param charset the charset used to encode the header bytes, footer bytes and anything else that needs to be 
+     *      converted from strings to bytes.
+     * @param header the header bytes
+     * @param footer the footer bytes
+     */
     protected AbstractStringLayout(final Charset charset, final byte[] header, final byte[] footer) {
         super(header, footer);
         this.charset = charset == null ? StandardCharsets.UTF_8 : charset;
