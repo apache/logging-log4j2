@@ -194,8 +194,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
             throw new IllegalStateException("Unsupported default encoding " + enc, ex);
         }
         final PropertiesUtil propsUtil = PropertiesUtil.getProperties();
-        if (!propsUtil.getStringProperty("os.name").startsWith("Windows")
-                || propsUtil.getBooleanProperty("log4j.skipJansi")) {
+        if (!propsUtil.isOsWindows() || propsUtil.getBooleanProperty("log4j.skipJansi")) {
             return outputStream;
         }
         try {
