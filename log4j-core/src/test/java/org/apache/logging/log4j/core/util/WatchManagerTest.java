@@ -31,6 +31,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.Assume;
 import org.junit.Test;
 
@@ -43,7 +44,7 @@ public class WatchManagerTest {
     private String originalFile = "target/test-classes/log4j-test1.xml";
     private String newFile = "target/test-classes/log4j-test1.yaml";
 
-    private static final boolean IS_WINDOWS = System.getProperty("os.name").startsWith("Windows");
+    private static final boolean IS_WINDOWS = PropertiesUtil.getProperties().isOsWindows();
 
     @Test
     public void testWatchManager() throws Exception {
