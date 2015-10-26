@@ -114,8 +114,8 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
 
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
-        final String charsetName = in.readUTF();
-        charset = Charset.forName(charsetName);
+        final String csName = in.readUTF();
+        charset = Charset.forName(csName);
     }
 
     /**
