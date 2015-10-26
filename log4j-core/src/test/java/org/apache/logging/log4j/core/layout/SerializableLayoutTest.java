@@ -27,6 +27,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.charset.Charset;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -45,7 +46,8 @@ public class SerializableLayoutTest {
 
     @Test
     public void testPluginObjectSerialization() throws Exception {
-        final SerializableLayout originalLayout = new SerializableLayout(MESSAGE_PREFIX, HEADER.getBytes(), FOOTER.getBytes());
+        final SerializableLayout originalLayout = new SerializableLayout(MESSAGE_PREFIX, Charset.defaultCharset(),
+                HEADER.getBytes(), FOOTER.getBytes());
         final File serializedFile = temporaryFolder.newFile();
         try (final FileOutputStream fileOutputStream = new FileOutputStream(serializedFile)) {
             final ObjectOutputStream out = new ObjectOutputStream(fileOutputStream);

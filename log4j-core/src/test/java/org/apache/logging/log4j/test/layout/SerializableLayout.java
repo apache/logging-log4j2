@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.test.layout;
 
+import java.nio.charset.Charset;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
 import org.apache.logging.log4j.core.util.Constants;
-
-import java.nio.charset.StandardCharsets;
 
 /**
  * Test Layout for verification AbstractStringLayout subclass serialization compatibility.
@@ -31,8 +31,8 @@ public class SerializableLayout extends AbstractStringLayout {
 
     private final String messagePrefix;
 
-    public SerializableLayout(final String messagePrefix, final byte[] header, final byte[] footer) {
-        super(StandardCharsets.UTF_8, header, footer);
+    public SerializableLayout(final String messagePrefix, Charset charset, final byte[] header, final byte[] footer) {
+        super(charset, header, footer);
         this.messagePrefix = messagePrefix;
     }
 
