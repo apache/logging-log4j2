@@ -20,7 +20,7 @@ package org.apache.logging.log4j.jul;
 import java.util.logging.Logger;
 
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.message.SimpleMessageFactory;
+import org.apache.logging.log4j.message.MessageFormatMessageFactory;
 import org.apache.logging.log4j.spi.LoggerContext;
 
 /**
@@ -30,7 +30,7 @@ import org.apache.logging.log4j.spi.LoggerContext;
  */
 public class CoreLoggerAdapter extends AbstractLoggerAdapter {
 
-    private static final MessageFactory MESSAGE_FACTORY = new SimpleMessageFactory();
+    private static final MessageFactory MESSAGE_FACTORY = new MessageFormatMessageFactory();
 
     @Override
     protected Logger newLogger(final String name, final LoggerContext context) {

@@ -30,7 +30,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -87,7 +86,6 @@ public abstract class AbstractLoggerTest {
     }
 
     @Test
-    @Ignore
     public void testLogParamMarkers() {
         final Logger flowLogger = Logger.getLogger("TestFlow");
         flowLogger.logp(java.util.logging.Level.FINER, "sourceClass", "sourceMethod", "ENTRY {0}", "params");
