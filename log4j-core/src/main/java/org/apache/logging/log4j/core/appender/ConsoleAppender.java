@@ -320,7 +320,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
      */
     private static class FactoryData {
         private final OutputStream os;
-        private final String type;
+        private final String name;
         private final Layout<? extends Serializable> layout;
 
         /**
@@ -332,7 +332,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
          */
         public FactoryData(final OutputStream os, final String type, final Layout<? extends Serializable> layout) {
             this.os = os;
-            this.type = type;
+            this.name = type;
             this.layout = layout;
         }
     }
@@ -351,7 +351,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
          */
         @Override
         public OutputStreamManager createManager(final String name, final FactoryData data) {
-            return new OutputStreamManager(data.os, data.type, data.layout, true);
+            return new OutputStreamManager(data.os, data.name, data.layout, true);
         }
     }
 
