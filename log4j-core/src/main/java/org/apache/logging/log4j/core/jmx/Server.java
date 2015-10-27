@@ -54,7 +54,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 public final class Server {
 
     /**
-     * The domain part, or prefix ({@value} ) of the {@code ObjectName} of all MBeans that instrument Log4J2 components.
+     * The domain part, or prefix ({@value}) of the {@code ObjectName} of all MBeans that instrument Log4J2 components.
      */
     public static final String DOMAIN = "org.apache.logging.log4j2";
     private static final String PROPERTY_DISABLE_JMX = "log4j2.disable.jmx";
