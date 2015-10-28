@@ -70,7 +70,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
 
     private static final long serialVersionUID = 1L;
 
-    private AsyncLoggerConfigDelegate helper;
+    private AsyncLoggerConfigDelegate delegate;
 
     protected AsyncLoggerConfig(final String name,
             final List<AppenderRef> appenders, final Filter filter,
@@ -79,7 +79,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
             final boolean includeLocation) {
         super(name, appenders, filter, level, additive, properties, config,
                 includeLocation);
-        helper = config.getAsyncLoggerConfigDelegate();
+        delegate = config.getAsyncLoggerConfigDelegate();
     }
 
     /**
@@ -93,7 +93,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
         event.getThreadName();
 
         // pass on the event to a separate thread
-        if (!helper.tryCallAppendersInBackground(event, this)) {
+        if (!delegate.tryCallAppendersInBackground(event, this)) {
             super.callAppenders(event);
         }
     }
@@ -127,7 +127,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
      * @return a new {@code RingBufferAdmin} that instruments the ringbuffer
      */
     public RingBufferAdmin createRingBufferAdmin(final String contextName) {
-        return helper.createRingBufferAdmin(contextName, getName());
+        return delegate.createRingBufferAdmin(contextName, getName());
     }
 
     /**

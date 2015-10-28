@@ -48,7 +48,7 @@ import com.lmax.disruptor.dsl.ProducerType;
  * This class serves to make the dependency on the Disruptor optional, so that these classes are only loaded when the
  * {@code AsyncLoggerConfig} is actually used.
  */
-public class AsyncLoggerConfigHelper implements AsyncLoggerConfigDelegate {
+public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
 
     private static final int MAX_DRAIN_ATTEMPTS_BEFORE_SHUTDOWN = 200;
     private static final int SLEEP_MILLIS_BETWEEN_DRAIN_ATTEMPTS = 50;
@@ -136,7 +136,7 @@ public class AsyncLoggerConfigHelper implements AsyncLoggerConfigDelegate {
     private volatile Disruptor<Log4jEventWrapper> disruptor;
     private ExecutorService executor;
 
-    public AsyncLoggerConfigHelper() {
+    public AsyncLoggerConfigDisruptor() {
     }
 
     /**

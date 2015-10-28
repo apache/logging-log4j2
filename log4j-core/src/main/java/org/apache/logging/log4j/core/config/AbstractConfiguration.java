@@ -45,7 +45,7 @@ import org.apache.logging.log4j.core.appender.AsyncAppender;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfig;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfigDelegate;
-import org.apache.logging.log4j.core.async.AsyncLoggerConfigHelper;
+import org.apache.logging.log4j.core.async.AsyncLoggerConfigDisruptor;
 import org.apache.logging.log4j.core.async.DaemonThreadFactory;
 import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
@@ -124,7 +124,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private ScriptManager scriptManager;
     private ScheduledExecutorService executorService;
     private final WatchManager watchManager = new WatchManager();
-    private AsyncLoggerConfigHelper asyncLoggerConfigHelper;
+    private AsyncLoggerConfigDisruptor asyncLoggerConfigDisruptor;
 
     /**
      * Constructor.
@@ -169,11 +169,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 	@Override
 	public AsyncLoggerConfigDelegate getAsyncLoggerConfigDelegate() {
 	    // lazily instantiate only when requested by AsyncLoggers:
-	    // loading AsyncLoggerConfigHelper requires LMAX Disruptor jar on classpath
-	    if (asyncLoggerConfigHelper == null) {
-	        asyncLoggerConfigHelper = new AsyncLoggerConfigHelper();
+	    // loading AsyncLoggerConfigDisruptor requires LMAX Disruptor jar on classpath
+	    if (asyncLoggerConfigDisruptor == null) {
+	        asyncLoggerConfigDisruptor = new AsyncLoggerConfigDisruptor();
 	    }
-		return asyncLoggerConfigHelper;
+		return asyncLoggerConfigDisruptor;
 	}
 
     /**
@@ -225,7 +225,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             watchManager.start();
         }
         if (hasAsyncLoggers()) {
-        	asyncLoggerConfigHelper.start();
+        	asyncLoggerConfigDisruptor.start();
         }
         final Set<LoggerConfig> alreadyStarted = new HashSet<>();
         for (final LoggerConfig logger : loggers.values()) {
@@ -290,8 +290,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
 
         if (hasAsyncLoggers()) {
-            LOGGER.trace("{} stopping AsyncLoggerConfigDelegate.", cls);
-            asyncLoggerConfigHelper.stop();
+            LOGGER.trace("{} stopping AsyncLoggerConfigDisruptor.", cls);
+            asyncLoggerConfigDisruptor.stop();
         }
         
         LOGGER.trace("{} stopping AsyncAppenders.", cls);

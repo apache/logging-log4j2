@@ -65,7 +65,7 @@ public class AsyncLogger extends Logger {
 
     private static final Clock CLOCK = ClockFactory.getClock();
     private static volatile NanoClock nanoClock = new DummyNanoClock();
-    private final AsyncLoggerHelper helper;
+    private final AsyncLoggerDisruptor loggerDisruptor;
 
     /**
      * Constructs an {@code AsyncLogger} with the specified context, name and message factory.
@@ -73,19 +73,19 @@ public class AsyncLogger extends Logger {
      * @param context context of this logger
      * @param name name of this logger
      * @param messageFactory message factory of this logger
-     * @param helper helper class that logging can be delegated to. This object owns the Disruptor.
+     * @param loggerDisruptor helper class that logging can be delegated to. This object owns the Disruptor.
      */
     public AsyncLogger(final LoggerContext context, final String name, final MessageFactory messageFactory,
-            final AsyncLoggerHelper helper) {
+            final AsyncLoggerDisruptor loggerDisruptor) {
         super(context, name, messageFactory);
-        this.helper = helper;
+        this.loggerDisruptor = loggerDisruptor;
     }
 
     @Override
     public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message,
             final Throwable thrown) {
 
-        final Disruptor<RingBufferLogEvent> temp = helper.getDisruptor();
+        final Disruptor<RingBufferLogEvent> temp = loggerDisruptor.getDisruptor();
         if (temp == null) { // LOG4J2-639
             LOGGER.fatal("Ignoring log event after log4j was shut down");
         } else {
@@ -148,7 +148,7 @@ public class AsyncLogger extends Logger {
             message.getFormattedMessage(); // LOG4J2-763: ask message to freeze parameters
         }
         initLogMessageInfo(info, fqcn, level, marker, message, thrown);
-        helper.enqueueLogMessageInfo(info.translator);
+        loggerDisruptor.enqueueLogMessageInfo(info.translator);
     }
 
     private void initLogMessageInfo(Info info, final String fqcn, final Level level, final Marker marker,

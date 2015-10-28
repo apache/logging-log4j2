@@ -33,37 +33,37 @@ public class AsyncLoggerContext extends LoggerContext {
 
     private static final long serialVersionUID = 1L;
 
-    private final AsyncLoggerHelper helper;
+    private final AsyncLoggerDisruptor loggerDisruptor;
 
     public AsyncLoggerContext(final String name) {
         super(name);
-        helper = new AsyncLoggerHelper(name);
+        loggerDisruptor = new AsyncLoggerDisruptor(name);
     }
 
     public AsyncLoggerContext(final String name, final Object externalContext) {
         super(name, externalContext);
-        helper = new AsyncLoggerHelper(name);
+        loggerDisruptor = new AsyncLoggerDisruptor(name);
     }
 
     public AsyncLoggerContext(final String name, final Object externalContext, final URI configLocn) {
         super(name, externalContext, configLocn);
-        helper = new AsyncLoggerHelper(name);
+        loggerDisruptor = new AsyncLoggerDisruptor(name);
     }
 
     public AsyncLoggerContext(final String name, final Object externalContext, final String configLocn) {
         super(name, externalContext, configLocn);
-        helper = new AsyncLoggerHelper(name);
+        loggerDisruptor = new AsyncLoggerDisruptor(name);
     }
 
     @Override
     protected Logger newInstance(final LoggerContext ctx, final String name, final MessageFactory messageFactory) {
-        return new AsyncLogger(ctx, name, messageFactory, helper);
+        return new AsyncLogger(ctx, name, messageFactory, loggerDisruptor);
     }
     
     @Override
     public void setName(final String name) {
         super.setName("AsyncContext[" + name + "]");
-        helper.setContextName(name);
+        loggerDisruptor.setContextName(name);
     }
 
     /*
@@ -73,7 +73,7 @@ public class AsyncLoggerContext extends LoggerContext {
      */
     @Override
     public void start() {
-        helper.start();
+        loggerDisruptor.start();
         super.start();
     }
 
@@ -95,13 +95,13 @@ public class AsyncLoggerContext extends LoggerContext {
         if (config instanceof DefaultConfiguration) {
             StatusLogger.getLogger().debug("[{}] Not starting Disruptor for DefaultConfiguration.", getName());
         } else {
-            helper.start();
+            loggerDisruptor.start();
         }
     }
 
     @Override
     public void stop() {
-        helper.stop(); // first stop Disruptor
+        loggerDisruptor.stop(); // first stop Disruptor
         super.stop();
     }
 
@@ -112,6 +112,6 @@ public class AsyncLoggerContext extends LoggerContext {
      * @return a new {@code RingBufferAdmin} that instruments the ringbuffer
      */
     public RingBufferAdmin createRingBufferAdmin() {
-        return helper.createRingBufferAdmin(getName());
+        return loggerDisruptor.createRingBufferAdmin(getName());
     }
 }

@@ -30,12 +30,12 @@ import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 
 /**
- * Helper class for async loggers: AsyncLoggerHelper handles the mechanics of working with the LMAX Disruptor, and works
- * with its associated AsyncLoggerContext to synchronize the life cycle of the Disruptor and its thread with the life
- * cycle of the context. The AsyncLoggerHelper of the context is shared by all AsyncLogger objects created by that
- * AsyncLoggerContext.
+ * Helper class for async loggers: AsyncLoggerDisruptor handles the mechanics of working with the LMAX Disruptor, and
+ * works with its associated AsyncLoggerContext to synchronize the life cycle of the Disruptor and its thread with the
+ * life cycle of the context. The AsyncLoggerDisruptor of the context is shared by all AsyncLogger objects created by
+ * that AsyncLoggerContext.
  */
-class AsyncLoggerHelper {
+class AsyncLoggerDisruptor {
     private static final int SLEEP_MILLIS_BETWEEN_DRAIN_ATTEMPTS = 50;
     private static final int MAX_DRAIN_ATTEMPTS_BEFORE_SHUTDOWN = 200;
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
@@ -44,7 +44,7 @@ class AsyncLoggerHelper {
     private ExecutorService executor;
     private volatile Disruptor<RingBufferLogEvent> disruptor;
 
-    AsyncLoggerHelper(String contextName) {
+    AsyncLoggerDisruptor(String contextName) {
         this.contextName = contextName;
     }
 
