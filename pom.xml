@@ -1131,6 +1131,11 @@
           </excludes>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>net.alchim31.maven</groupId>
+        <artifactId>scala-maven-plugin</artifactId>
+        <version>3.2.2</version>
+      </plugin>
     </plugins>
   </reporting>
   <distributionManagement>
@@ -1167,6 +1172,7 @@
     <module>log4j-iostreams</module>
     <module>log4j-jul</module>
     <module>log4j-liquibase</module>
+    <module>log4j-scala_2.11</module>
   </modules>
   <profiles>
     <profile>
