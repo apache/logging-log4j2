@@ -1,6 +1,6 @@
 package org.apache.logging.log4j.scala
 
-import org.apache.logging.log4j.message.Message
+import org.apache.logging.log4j.message.{MessageFactory, Message}
 import org.apache.logging.log4j.spi.ExtendedLogger
 import org.apache.logging.log4j.{Level, Marker}
 
@@ -186,7 +186,12 @@ class Logger(val delegate: ExtendedLogger) {
 
   def name: String = delegate.getName
 
-  /** Should normally not be used directly from application code, but needs to be public for access by macros.
+  def messageFactory: MessageFactory = delegate.getMessageFactory
+
+  /** Always logs a message at the specified level. It is the responsibility of the caller to ensure the specified
+    * level is enabled.
+    *
+    * Should normally not be used directly from application code, but needs to be public for access by macros.
     *
     * @param level    log level
     * @param marker   marker or `null`
@@ -194,10 +199,13 @@ class Logger(val delegate: ExtendedLogger) {
     * @param cause    cause or `null`
     */
   def logMessage(level: Level, marker: Marker, message: Message, cause: Throwable): Unit = {
-    delegate.logIfEnabled(FQCN, level, marker, message, cause)
+    delegate.logMessage(FQCN, level, marker, message, cause)
   }
 
-  /** Should normally not be used directly from application code, but needs to be public for access by macros.
+  /** Always logs a message at the specified level. It is the responsibility of the caller to ensure the specified
+    * level is enabled.
+    *
+    * Should normally not be used directly from application code, but needs to be public for access by macros.
     *
     * @param level    log level
     * @param marker   marker or `null`
@@ -205,7 +213,7 @@ class Logger(val delegate: ExtendedLogger) {
     * @param cause    cause or `null`
     */
   def logMessage(level: Level, marker: Marker, message: String, cause: Throwable): Unit = {
-    delegate.logIfEnabled(FQCN, level, marker, message, cause)
+    delegate.logMessage(FQCN, level, marker, delegate.getMessageFactory.newMessage(message), cause)
   }
 
 }
