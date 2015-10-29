@@ -29,11 +29,10 @@ import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.*;
 
 public abstract class AbstractLoggerOutputStreamTest extends AbstractStreamTest {
+    
     protected OutputStream out;
     protected ByteArrayOutputStream wrapped;
-
     protected abstract ByteArrayOutputStream createOutputStream();
-
     protected abstract OutputStream createOutputStreamWrapper();
 
     @Before
