@@ -63,19 +63,19 @@ public abstract class AbstractLoggerOutputStreamTest extends AbstractStreamTest 
 
     @Test
     public void testFlush() throws IOException {
-        final OutputStream out = EasyMock.createMock("out", OutputStream.class);
-        out.flush(); // expect the flush to come through to the mocked OutputStream
-        out.close();
-        replay(out);
+        final OutputStream os = EasyMock.createMock("out", OutputStream.class);
+        os.flush(); // expect the flush to come through to the mocked OutputStream
+        os.close();
+        replay(os);
 
         try (final OutputStream filteredOut =
             IoBuilder.forLogger(getExtendedLogger())
-                .filter(out)
+                .filter(os)
                 .setLevel(LEVEL)
                 .buildOutputStream()) {
           filteredOut.flush();
         }
-        verify(out);
+        verify(os);
     }
 
     @Test
