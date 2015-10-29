@@ -182,7 +182,8 @@ class Logger(val delegate: ExtendedLogger) {
 
   def isEnabled(level: Level, marker: Marker): Boolean = delegate.isEnabled(level, marker)
 
-  def entry(params: AnyRef*): Unit = delegate.entry(params)
+  def entry(params: AnyRef*): Unit =
+    delegate.entry(params) // TODO would be useful to have this as a macro to avoid varargs array creation
 
   def entry(): Unit = delegate.entry()
 
