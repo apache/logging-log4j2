@@ -182,6 +182,22 @@ class Logger(val delegate: ExtendedLogger) {
 
   def isEnabled(level: Level, marker: Marker): Boolean = delegate.isEnabled(level, marker)
 
+  def entry(params: AnyRef*): Unit = delegate.entry(params)
+
+  def entry(): Unit = delegate.entry()
+
+  def exit[R](result: R): R = delegate.exit(result)
+
+  def exit(): Unit = delegate.exit()
+
+  def throwing[T <: Throwable](t: T): T = delegate.throwing(t)
+
+  def throwing[T <: Throwable](level: Level, t: T): T = delegate.throwing(level, t)
+
+  def catching(t: Throwable): Unit = delegate.catching(t)
+
+  def catching(level: Level, t: Throwable): Unit = delegate.catching(level, t)
+
   def level: Level = delegate.getLevel
 
   def name: String = delegate.getName
