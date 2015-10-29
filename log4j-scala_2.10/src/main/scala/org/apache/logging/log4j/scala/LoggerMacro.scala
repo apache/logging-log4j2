@@ -5,7 +5,7 @@ import org.apache.logging.log4j.{Level, Marker}
 
 import scala.language.experimental.macros
 
-import scala.reflect.macros.whitebox.Context
+import scala.reflect.macros.Context
 
 private object LoggerMacro {
 

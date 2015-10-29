@@ -1167,6 +1167,7 @@
     <module>log4j-iostreams</module>
     <module>log4j-jul</module>
     <module>log4j-liquibase</module>
+    <module>log4j-scala_2.10</module>
     <module>log4j-scala_2.11</module>
   </modules>
   <profiles>
