@@ -111,7 +111,7 @@ public final class Level implements Comparable<Level>, Serializable {
 
     private Level(final String name, final int intLevel) {
         if (Strings.isEmpty(name)) {
-            throw new IllegalArgumentException("Illegal null Level constant");
+            throw new IllegalArgumentException("Illegal null or empty Level name");
         }
         if (intLevel < 0) {
             throw new IllegalArgumentException("Illegal Level int less than zero.");
