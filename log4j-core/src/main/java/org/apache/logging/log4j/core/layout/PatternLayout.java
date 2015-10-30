@@ -84,7 +84,7 @@ public final class PatternLayout extends AbstractStringLayout {
     /**
      * Initial converter for pattern.
      */
-    private final PatternFormatter[] formatters;
+    private final PatternFormatter[] patternFormatters;
 
     /**
      * Conversion pattern.
@@ -138,12 +138,12 @@ public final class PatternLayout extends AbstractStringLayout {
             try {
                 List<PatternFormatter> list = parser.parse(pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern,
                         this.alwaysWriteExceptions, this.noConsoleNoAnsi);
-                this.formatters = list.toArray(new PatternFormatter[0]);
+                this.patternFormatters = list.toArray(new PatternFormatter[0]);
             } catch (RuntimeException ex) {
                 throw new IllegalArgumentException("Cannot parse pattern '" + pattern + "'", ex);
             }
         } else {
-            this.formatters = null;
+            this.patternFormatters = null;
             serializer = new PatternSelectorSerializer();
         }
     }
@@ -286,9 +286,9 @@ public final class PatternLayout extends AbstractStringLayout {
         @Override
         public String toSerializable(final LogEvent event) {
             final StringBuilder buf = getStringBuilder();
-            final int len = formatters.length;
+            final int len = patternFormatters.length;
             for (int i = 0; i < len; i++) {
-                formatters[i].format(event, buf);
+                patternFormatters[i].format(event, buf);
             }
             String str = buf.toString();
             if (replace != null) {
