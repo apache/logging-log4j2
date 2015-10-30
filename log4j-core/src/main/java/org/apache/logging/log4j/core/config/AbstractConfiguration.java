@@ -500,21 +500,23 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         setParents();
     }
 
-    private void setToDefault() {
-        // TODO: reduce duplication between this method and DefaultConfiguration constructor
+    protected void setToDefault() {
         setName(DefaultConfiguration.DEFAULT_NAME);
         final Layout<? extends Serializable> layout = PatternLayout.newBuilder()
-                .withPattern(DefaultConfiguration.DEFAULT_PATTERN).withConfiguration(this).build();
+                .withPattern(DefaultConfiguration.DEFAULT_PATTERN)
+                .withConfiguration(this)
+                .build();
         final Appender appender = ConsoleAppender.createDefaultAppenderForLayout(layout);
         appender.start();
         addAppender(appender);
-        final LoggerConfig loggerConfig = getRootLogger();
-        loggerConfig.addAppender(appender, null, null);
+        final LoggerConfig rootLoggerConfig = getRootLogger();
+        rootLoggerConfig.addAppender(appender, null, null);
 
-        final String levelName = PropertiesUtil.getProperties().getStringProperty(DefaultConfiguration.DEFAULT_LEVEL);
-        final Level level = levelName != null && Level.getLevel(levelName) != null ? Level.getLevel(levelName)
-                : Level.ERROR;
-        loggerConfig.setLevel(level);
+        final Level defaultLevel = Level.ERROR;
+        final String levelName = PropertiesUtil.getProperties().getStringProperty(DefaultConfiguration.DEFAULT_LEVEL,
+                defaultLevel.name());
+        final Level level = Level.valueOf(levelName);
+        rootLoggerConfig.setLevel(level != null ? level : defaultLevel);
     }
 
     /**
