@@ -233,6 +233,8 @@ public final class PatternLayout extends AbstractStringLayout {
      *
      * @param pattern
      *        The pattern. If not specified, defaults to DEFAULT_CONVERSION_PATTERN.
+     * @param patternSelector 
+     *        Allows different patterns to be used based on some selection criteria.
      * @param config
      *        The Configuration. Some Converters require access to the Interpolator.
      * @param replace
