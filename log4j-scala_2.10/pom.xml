@@ -91,45 +91,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <excludes>
-            <exclude>**/*Test.java</exclude>
-          </excludes>
-        </configuration>
-        <executions>
-          <execution>
-            <id>default-tests</id>
-            <phase>test</phase>
-            <goals>
-              <goal>test</goal>
-            </goals>
-            <configuration>
-              <includes>
-                <include>**/*Test.java</include>
-              </includes>
-              <excludes>
-                <exclude>**/OptionalTest.java</exclude>
-              </excludes>
-            </configuration>
-          </execution>
-          <execution>
-            <id>test-optional</id>
-            <phase>test</phase>
-            <goals>
-              <goal>test</goal>
-            </goals>
-            <configuration>
-              <excludes>
-                <exclude>**/LoggerTest.java</exclude>
-                <exclude>**/MarkerTest.java</exclude>
-                <exclude>**/SerializeTest.java</exclude>
-              </excludes>
-              <includes>
-                <include>**/OptionalTest.java</include>
-              </includes>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
       <!-- Include the standard NOTICE and LICENSE -->
       <plugin>
