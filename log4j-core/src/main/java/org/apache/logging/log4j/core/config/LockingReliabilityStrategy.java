@@ -100,6 +100,7 @@ public class LockingReliabilityStrategy implements ReliabilityStrategy {
         return true;
     }
 
+    @Override
     public void afterLogEvent() {
         reconfigureLock.readLock().unlock();
     }

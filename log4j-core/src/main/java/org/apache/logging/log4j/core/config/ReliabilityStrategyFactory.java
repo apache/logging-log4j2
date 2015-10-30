@@ -62,7 +62,7 @@ public final class ReliabilityStrategyFactory {
             return cls.getConstructor(LoggerConfig.class).newInstance(loggerConfig);
         } catch (Exception dynamicFailed) {
             StatusLogger.getLogger().warn(
-                    "Could not create ReliabilityStrategy for '{}', using default AwaitCompletionReliabilityStrategy");
+                    "Could not create ReliabilityStrategy for '{}', using default AwaitCompletionReliabilityStrategy: {}", strategy, dynamicFailed);
             return new AwaitCompletionReliabilityStrategy(loggerConfig);
         }
     }

@@ -31,7 +31,7 @@ import static org.junit.Assert.*;
 /**
  *
  */
-public class OutputStreamAppenderTest {
+public class InMemoryAppenderTest {
 
     @Test
     public void testAppender() {
@@ -63,7 +63,7 @@ public class OutputStreamAppenderTest {
     private void assertMessage(final String string, final InMemoryAppender app, final String header) {
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName("TestLogger") //
-                .setLoggerFqcn(OutputStreamAppenderTest.class.getName()) //
+                .setLoggerFqcn(InMemoryAppenderTest.class.getName()) //
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage("Test")) //
                 .build();

@@ -52,6 +52,7 @@ public class WatchManager extends AbstractLifeCycle {
         return this.intervalSeconds;
     }
 
+    @Override
     public void start() {
         super.start();
         if (intervalSeconds > 0) {
@@ -60,6 +61,7 @@ public class WatchManager extends AbstractLifeCycle {
         }
     }
 
+    @Override
     public void stop() {
         future.cancel(true);
         super.stop();
@@ -72,6 +74,7 @@ public class WatchManager extends AbstractLifeCycle {
 
     private class WatchWorker implements Runnable {
 
+        @Override
         public void run() {
             for (Map.Entry<File, FileMonitor> entry : watchers.entrySet()) {
                 File file = entry.getKey();

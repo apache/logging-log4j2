@@ -30,7 +30,7 @@ public class OutputStreamManager extends AbstractManager {
     private volatile OutputStream os;
     protected final Layout<?> layout;
 
-    public OutputStreamManager(final OutputStream os, final String streamName, final Layout<?> layout,
+    protected OutputStreamManager(final OutputStream os, final String streamName, final Layout<?> layout,
             final boolean writeHeader) {
         super(streamName);
         this.os = os;

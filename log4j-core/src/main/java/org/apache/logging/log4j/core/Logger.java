@@ -274,14 +274,21 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
     }
 
     /**
-     * Associates the Logger with a new Configuration. This method is not exposed through the public API.
+     * Associates this Logger with a new Configuration. This method is not
+     * exposed through the public API.
+     * <p>
+     * There are two ways this could be used to guarantee all threads are aware
+     * of changes to config.
+     * <ol>
+     * <li>Synchronize this method. Accessors don't need to be synchronized as
+     * Java will treat all variables within a synchronized block as volatile.
+     * </li>
+     * <li>Declare the variable volatile. Option 2 is used here as the
+     * performance cost is very low and it does a better job at documenting how
+     * it is used.</li>
      *
-     * There are two ways that could be used to guarantee all threads are aware of changes to config. 1. synchronize
-     * this method. Accessors don't need to be synchronized as Java will treat all variables within a synchronized block
-     * as volatile. 2. Declare the variable volatile. Option 2 is used here as the performance cost is very low and it
-     * does a better job at documenting how it is used.
-     *
-     * @param newConfig The new Configuration.
+     * @param newConfig
+     *            The new Configuration.
      */
     protected void updateConfiguration(final Configuration newConfig) {
         this.privateConfig = new PrivateConfig(newConfig, this);

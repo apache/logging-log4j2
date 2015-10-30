@@ -57,6 +57,7 @@ public interface Configuration extends Filterable {
     /**
      * Returns the Appender with the specified name.
      * 
+     * @param <T> The expected Appender type.
      * @param name The name of the Appender.
      * @return the Appender with the specified name or null if the Appender cannot be located.
      */

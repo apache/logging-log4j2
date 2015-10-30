@@ -103,6 +103,7 @@ public class AwaitCompletionReliabilityStrategy implements ReliabilityStrategy {
         return counter.incrementAndGet() > 0;
     }
 
+    @Override
     public void afterLogEvent() {
         if (counter.decrementAndGet() == 0 && shutdown.get()) {
             signalCompletionIfShutdown();

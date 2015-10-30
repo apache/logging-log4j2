@@ -113,7 +113,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private Object advertisement;
     private String name;
     private ConcurrentMap<String, Appender> appenders = new ConcurrentHashMap<>();
-    private ConcurrentMap<String, LoggerConfig> loggers = new ConcurrentHashMap<>();
+    private ConcurrentMap<String, LoggerConfig> loggerConfigs = new ConcurrentHashMap<>();
     private List<CustomLevelConfig> customLevels = Collections.emptyList();
     private final ConcurrentMap<String, String> properties = new ConcurrentHashMap<>();
     private final StrLookup tempLookup = new Interpolator(properties);
@@ -228,7 +228,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         	asyncLoggerConfigDisruptor.start();
         }
         final Set<LoggerConfig> alreadyStarted = new HashSet<>();
-        for (final LoggerConfig logger : loggers.values()) {
+        for (final LoggerConfig logger : loggerConfigs.values()) {
             logger.start();
             alreadyStarted.add(logger);
         }
@@ -246,7 +246,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         if (root instanceof AsyncLoggerConfig) {
             return true;
         }
-        for (final LoggerConfig logger : loggers.values()) {
+        for (final LoggerConfig logger : loggerConfigs.values()) {
             if (logger instanceof AsyncLoggerConfig) {
             	return true;
             }
@@ -275,14 +275,14 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         // 6. Stop the remaining running Appenders. (It should now be safe to do so.)
         // 7. Notify all LoggerConfigs that their Appenders can be cleaned up.
 
-        for (final LoggerConfig loggerConfig : loggers.values()) {
+        for (final LoggerConfig loggerConfig : loggerConfigs.values()) {
             loggerConfig.getReliabilityStrategy().beforeStopConfiguration(this);
         }
         final String cls = getClass().getSimpleName();
-        LOGGER.trace("{} notified {} ReliabilityStrategies that config will be stopped.", cls, loggers.size());
+        LOGGER.trace("{} notified {} ReliabilityStrategies that config will be stopped.", cls, loggerConfigs.size());
         
-        LOGGER.trace("{} stopping {} LoggerConfigs.", cls, loggers.size());
-        for (final LoggerConfig logger : loggers.values()) {
+        LOGGER.trace("{} stopping {} LoggerConfigs.", cls, loggerConfigs.size());
+        for (final LoggerConfig logger : loggerConfigs.values()) {
             logger.stop();
         }
         if (!root.isStopped()) {
@@ -310,7 +310,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         LOGGER.trace("{} stopped {} AsyncAppenders.", cls, asyncAppenderCount);
 
         LOGGER.trace("{} notifying ReliabilityStrategies that appenders will be stopped.", cls);
-        for (final LoggerConfig loggerConfig : loggers.values()) {
+        for (final LoggerConfig loggerConfig : loggerConfigs.values()) {
             loggerConfig.getReliabilityStrategy().beforeStopAppenders();
         }
 
@@ -324,8 +324,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
         LOGGER.trace("{} stopped {} remaining Appenders.", cls, appenderCount);
 
-        LOGGER.trace("{} cleaning Appenders from {} LoggerConfigs.", cls, loggers.size());
-        for (final LoggerConfig loggerConfig : loggers.values()) {
+        LOGGER.trace("{} cleaning Appenders from {} LoggerConfigs.", cls, loggerConfigs.size());
+        for (final LoggerConfig loggerConfig : loggerConfigs.values()) {
 
             // LOG4J2-520, LOG4J2-392:
             // Important: do not clear appenders until after all AsyncLoggerConfigs
@@ -453,7 +453,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 addFilter(child.getObject(Filter.class));
             } else if (child.getName().equalsIgnoreCase("Loggers")) {
                 final Loggers l = child.getObject();
-                loggers = l.getMap();
+                loggerConfigs = l.getMap();
                 setLoggers = true;
                 if (l.getRoot() != null) {
                     root = l.getRoot();
@@ -483,7 +483,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             // return; // LOG4J2-219: creating default root=ok, but don't exclude configured Loggers
         }
 
-        for (final Map.Entry<String, LoggerConfig> entry : loggers.entrySet()) {
+        for (final Map.Entry<String, LoggerConfig> entry : loggerConfigs.entrySet()) {
             final LoggerConfig loggerConfig = entry.getValue();
             for (final AppenderRef ref : loggerConfig.getAppenderRefs()) {
                 final Appender app = appenders.get(ref.getRef());
@@ -634,7 +634,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             final LoggerConfig nlc = new LoggerConfig(loggerName, lc.getLevel(), lc.isAdditive());
             nlc.addAppender(appender, null, null);
             nlc.setParent(lc);
-            loggers.putIfAbsent(loggerName, nlc);
+            loggerConfigs.putIfAbsent(loggerName, nlc);
             setParents();
             logger.getContext().updateLoggers();
         }
@@ -659,7 +659,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             final LoggerConfig nlc = new LoggerConfig(loggerName, lc.getLevel(), lc.isAdditive());
             nlc.addFilter(filter);
             nlc.setParent(lc);
-            loggers.putIfAbsent(loggerName, nlc);
+            loggerConfigs.putIfAbsent(loggerName, nlc);
             setParents();
             logger.getContext().updateLoggers();
         }
@@ -683,7 +683,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         } else {
             final LoggerConfig nlc = new LoggerConfig(loggerName, lc.getLevel(), additive);
             nlc.setParent(lc);
-            loggers.putIfAbsent(loggerName, nlc);
+            loggerConfigs.putIfAbsent(loggerName, nlc);
             setParents();
             logger.getContext().updateLoggers();
         }
@@ -697,7 +697,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * @param appenderName the name of the appender to remove.
      */
     public synchronized void removeAppender(final String appenderName) {
-        for (final LoggerConfig logger : loggers.values()) {
+        for (final LoggerConfig logger : loggerConfigs.values()) {
             logger.removeAppender(appenderName);
         }
         final Appender app = appenders.remove(appenderName);
@@ -726,13 +726,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     @Override
     public LoggerConfig getLoggerConfig(final String loggerName) {
-        LoggerConfig loggerConfig = loggers.get(loggerName);
+        LoggerConfig loggerConfig = loggerConfigs.get(loggerName);
         if (loggerConfig != null) {
             return loggerConfig;
         }
         String substr = loggerName;
         while ((substr = NameUtil.getSubName(substr)) != null) {
-            loggerConfig = loggers.get(substr);
+            loggerConfig = loggerConfigs.get(substr);
             if (loggerConfig != null) {
                 return loggerConfig;
             }
@@ -757,7 +757,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     @Override
     public Map<String, LoggerConfig> getLoggers() {
-        return Collections.unmodifiableMap(loggers);
+        return Collections.unmodifiableMap(loggerConfigs);
     }
 
     /**
@@ -767,7 +767,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * @return The LoggerConfig or null if no match was found.
      */
     public LoggerConfig getLogger(final String loggerName) {
-        return loggers.get(loggerName);
+        return loggerConfigs.get(loggerName);
     }
 
     /**
@@ -779,7 +779,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     @Override
     public synchronized void addLogger(final String loggerName, final LoggerConfig loggerConfig) {
-        loggers.putIfAbsent(loggerName, loggerConfig);
+        loggerConfigs.putIfAbsent(loggerName, loggerConfig);
         setParents();
     }
 
@@ -790,7 +790,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     @Override
     public synchronized void removeLogger(final String loggerName) {
-        loggers.remove(loggerName);
+        loggerConfigs.remove(loggerName);
         setParents();
     }
 
@@ -892,7 +892,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     private void setParents() {
-        for (final Map.Entry<String, LoggerConfig> entry : loggers.entrySet()) {
+        for (final Map.Entry<String, LoggerConfig> entry : loggerConfigs.entrySet()) {
             final LoggerConfig logger = entry.getValue();
             String key = entry.getKey();
             if (!key.isEmpty()) {
