@@ -185,11 +185,11 @@ public final class LoaderUtil {
     public static <T> T newCheckedInstanceOfProperty(final String propertyName, final Class<T> clazz)
         throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException,
         IllegalAccessException {
-        final String property = PropertiesUtil.getProperties().getStringProperty(propertyName);
-        if (property == null) {
+        final String className = PropertiesUtil.getProperties().getStringProperty(propertyName);
+        if (className == null) {
             return null;
         }
-        return newCheckedInstanceOf(propertyName, clazz);
+        return newCheckedInstanceOf(className, clazz);
     }
 
     private static boolean isIgnoreTccl() {
