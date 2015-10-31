@@ -89,7 +89,7 @@ public final class LoaderUtil {
     }
 
     /**
-     * 
+     *
      */
     private static class ThreadContextClassLoaderGetter implements PrivilegedAction<ClassLoader> {
         @Override
@@ -165,6 +165,31 @@ public final class LoaderUtil {
             throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException,
             IllegalAccessException {
         return clazz.cast(newInstanceOf(className));
+    }
+
+    /**
+     * Loads and instantiates a class given by a property name.
+     *
+     * @param propertyName The property name to look up a class name for.
+     * @param clazz        The class to cast it to.
+     * @param <T>          The type to cast it to.
+     * @return new instance of the class given in the property or {@code null} if the property was unset.
+     * @throws ClassNotFoundException    if the class isn't available to the usual ClassLoaders
+     * @throws IllegalAccessException    if the class can't be instantiated through a public constructor
+     * @throws InstantiationException    if there was an exception whilst instantiating the class
+     * @throws NoSuchMethodException     if there isn't a no-args constructor on the class
+     * @throws InvocationTargetException if there was an exception whilst constructing the class
+     * @throws ClassCastException        if the constructed object isn't type compatible with {@code T}
+     * @since 2.5
+     */
+    public static <T> T newCheckedInstanceOfProperty(final String propertyName, final Class<T> clazz)
+        throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException,
+        IllegalAccessException {
+        final String property = PropertiesUtil.getProperties().getStringProperty(propertyName);
+        if (property == null) {
+            return null;
+        }
+        return newCheckedInstanceOf(propertyName, clazz);
     }
 
     private static boolean isIgnoreTccl() {

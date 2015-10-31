@@ -29,10 +29,10 @@ import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.DefaultShutdownCallbackRegistry;
-import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -89,29 +89,28 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
     }
 
     private static ContextSelector createContextSelector() {
-        final String sel = PropertiesUtil.getProperties().getStringProperty(Constants.LOG4J_CONTEXT_SELECTOR);
-        if (sel != null) {
-            try {
-                return Loader.newCheckedInstanceOf(sel, ContextSelector.class);
-            } catch (final Exception ex) {
-                LOGGER.error("Unable to create context {}", sel, ex);
+        try {
+            final ContextSelector selector = LoaderUtil.newCheckedInstanceOfProperty(Constants.LOG4J_CONTEXT_SELECTOR,
+                ContextSelector.class);
+            if (selector != null) {
+                return selector;
             }
+        } catch (final Exception e) {
+            LOGGER.error("Unable to create custom ContextSelector. Falling back to default.", e);
         }
         return new ClassLoaderContextSelector();
     }
 
     private static ShutdownCallbackRegistry createShutdownCallbackRegistry() {
-        // TODO: this is such a common idiom it really deserves a utility method somewhere
-        final String registry = PropertiesUtil.getProperties().getStringProperty(
-            ShutdownCallbackRegistry.SHUTDOWN_CALLBACK_REGISTRY);
-        if (registry != null) {
-            try {
-                return Loader.newCheckedInstanceOf(registry, ShutdownCallbackRegistry.class);
-            } catch (final Exception e) {
-                LOGGER.error(SHUTDOWN_HOOK_MARKER,
-                    "There was an error loading the ShutdownCallbackRegistry [{}]. "
-                        + "Falling back to DefaultShutdownCallbackRegistry.", registry, e);
+        try {
+            final ShutdownCallbackRegistry registry = LoaderUtil.newCheckedInstanceOfProperty(
+                ShutdownCallbackRegistry.SHUTDOWN_CALLBACK_REGISTRY, ShutdownCallbackRegistry.class
+            );
+            if (registry != null) {
+                return registry;
             }
+        } catch (final Exception e) {
+            LOGGER.error("Unable to create custom ShutdownCallbackRegistry. Falling back to default.", e);
         }
         return new DefaultShutdownCallbackRegistry();
     }
