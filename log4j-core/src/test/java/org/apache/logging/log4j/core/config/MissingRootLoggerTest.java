@@ -55,7 +55,7 @@ public class MissingRootLoggerTest {
         assertNotNull("Appenders not null", map);
         assertThat("There should only be two appenders", map, hasSize(2));
         assertThat(map, hasKey("List"));
-        assertThat(map, hasKey("Console"));
+        assertThat(map, hasKey("DefaultConsole-2"));
 
         final Map<String, LoggerConfig> loggerMap = config.getLoggers();
         assertNotNull("loggerMap not null", loggerMap);
@@ -74,7 +74,7 @@ public class MissingRootLoggerTest {
         final Map<String, Appender> rootAppenders = root.getAppenders();
         assertThat("The root logger should only have one appender", rootAppenders, hasSize(1));
         // root only has Console appender!
-        assertThat("The root appender should be a ConsoleAppender", rootAppenders, hasKey("Console"));
+        assertThat("The root appender should be a ConsoleAppender", rootAppenders, hasKey("DefaultConsole-2"));
         assertEquals(Level.ERROR, root.getLevel());
     }
 
