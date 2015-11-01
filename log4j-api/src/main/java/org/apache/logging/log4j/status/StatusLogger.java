@@ -32,6 +32,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
 import org.apache.logging.log4j.simple.SimpleLogger;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -58,7 +60,9 @@ public final class StatusLogger extends AbstractLogger {
 
     private static final String DEFAULT_STATUS_LEVEL = PROPS.getStringProperty("log4j2.StatusLogger.level");
 
-    private static final StatusLogger STATUS_LOGGER = new StatusLogger();
+    // LOG4J2-1176: normal parameterized message remembers param object, causing memory leaks.
+    private static final StatusLogger STATUS_LOGGER = new StatusLogger(StatusLogger.class.getName(),
+            ParameterizedNoReferenceMessageFactory.INSTANCE);
 
     private final SimpleLogger logger;
 
@@ -76,9 +80,10 @@ public final class StatusLogger extends AbstractLogger {
 
     private int listenersLevel;
 
-    private StatusLogger() {
-        this.logger = new SimpleLogger("StatusLogger", Level.ERROR, false, true, false, false, Strings.EMPTY, null,
-                PROPS, System.err);
+    private StatusLogger(String name, MessageFactory messageFactory) {
+        super(name, messageFactory);
+        this.logger = new SimpleLogger("StatusLogger", Level.ERROR, false, true, false, false, Strings.EMPTY,
+                messageFactory, PROPS, System.err);
         this.listenersLevel = Level.toLevel(DEFAULT_STATUS_LEVEL, Level.WARN).intLevel();
     }
 
