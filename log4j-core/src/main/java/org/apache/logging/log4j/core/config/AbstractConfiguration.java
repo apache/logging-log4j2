@@ -501,7 +501,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     protected void setToDefault() {
-        setName(DefaultConfiguration.DEFAULT_NAME);
+        // LOG4J2-1176 facilitate memory leak investigation
+        setName(DefaultConfiguration.DEFAULT_NAME + "@" + Integer.toHexString(hashCode()));
         final Layout<? extends Serializable> layout = PatternLayout.newBuilder()
                 .withPattern(DefaultConfiguration.DEFAULT_PATTERN)
                 .withConfiguration(this)

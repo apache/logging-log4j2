@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 import java.nio.charset.Charset;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -54,6 +55,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
     private static final String JANSI_CLASS = "org.fusesource.jansi.WindowsAnsiOutputStream";
     private static ConsoleManagerFactory factory = new ConsoleManagerFactory();
     private static final Target DEFAULT_TARGET = Target.SYSTEM_OUT;
+    private static final AtomicInteger COUNT = new AtomicInteger();
 
     /**
      * Enumeration of console destinations.
@@ -104,7 +106,8 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
 
     public static ConsoleAppender createDefaultAppenderForLayout(final Layout<? extends Serializable> layout) {
         // this method cannot use the builder class without introducing an infinite loop due to DefaultConfiguration
-        return new ConsoleAppender("Console", layout, null, getManager(DEFAULT_TARGET, false, layout), true);
+        return new ConsoleAppender("DefaultConsole-" + COUNT.incrementAndGet(), layout, null,
+                getDefaultManager(DEFAULT_TARGET, false, layout), true);
     }
 
     @PluginBuilderFactory
@@ -172,6 +175,15 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         public ConsoleAppender build() {
             return new ConsoleAppender(name, layout, filter, getManager(target, follow, layout), ignoreExceptions);
         }
+    }
+
+    private static OutputStreamManager getDefaultManager(final Target target, final boolean follow,
+            final Layout<? extends Serializable> layout) {
+        final OutputStream os = getOutputStream(follow, target);
+
+        // LOG4J2-1176 DefaultConfiguration should not share OutputStreamManager instances to avoid memory leaks.
+        final String managerName = target.name() + '.' + follow + "-" + COUNT.get();
+        return OutputStreamManager.getManager(managerName, new FactoryData(os, managerName, layout), factory);
     }
 
     private static OutputStreamManager getManager(final Target target, final boolean follow,
