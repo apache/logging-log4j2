@@ -39,6 +39,9 @@
       <action issue="LOG4J2-1178" dev="ggregory" type="add">
         Support use-case for JDBC's CommonDataSource.setLogWriter(PrintWriter) and java.sql.DriverManager.setLogWriter(PrintWriter).
       </action>
+      <action issue="LOG4J2-1187" dev="ggregory" type="add">
+        Support use case for java.sql.DriverManager.setLogStream(PrintStream).
+      </action>
       <action issue="LOG4J2-879" dev="rpopma" type="fix">
         Documentation: fixed minor issues with the site and manual pages.
       </action>
