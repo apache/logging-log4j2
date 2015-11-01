@@ -24,6 +24,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.StringLayout;
 
 /**
  * Abstract base class for Layouts that result in a String.
@@ -35,7 +36,7 @@ import org.apache.logging.log4j.core.LogEvent;
  * Implementation note: prefer String.getBytes(String) to String.getBytes(Charset) for performance reasons. See
  * https://issues.apache.org/jira/browse/LOG4J2-935 for details.
  */
-public abstract class AbstractStringLayout extends AbstractLayout<String> {
+public abstract class AbstractStringLayout extends AbstractLayout<String> implements StringLayout {
 
     /**
      * Default length for new StringBuilder instances: {@value} .
@@ -201,7 +202,8 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
         return byteOffset;
     }
 
-    protected Charset getCharset() {
+    @Override
+    public Charset getCharset() {
         return charset;
     }
 

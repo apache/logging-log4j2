@@ -36,6 +36,9 @@
       <action issue="LOG4J2-898" dev="rpopma" type="add">
         Added system property to allow users to control whether messages should be formatted in the background.
       </action>
+      <action issue="LOG4J2-1178" dev="ggregory" type="add">
+        Support use-case for JDBC's CommonDataSource.setLogWriter(PrintWriter) and java.sql.DriverManager.setLogWriter(PrintWriter).
+      </action>
       <action issue="LOG4J2-879" dev="rpopma" type="fix">
         Documentation: fixed minor issues with the site and manual pages.
       </action>

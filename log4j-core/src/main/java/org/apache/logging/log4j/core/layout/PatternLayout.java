@@ -84,7 +84,7 @@ public final class PatternLayout extends AbstractStringLayout {
     /**
      * Initial converter for pattern.
      */
-    private final PatternFormatter[] patternFormatters;
+    private final PatternFormatter[] formatters;
 
     /**
      * Conversion pattern.
@@ -138,12 +138,12 @@ public final class PatternLayout extends AbstractStringLayout {
             try {
                 List<PatternFormatter> list = parser.parse(pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern,
                         this.alwaysWriteExceptions, this.noConsoleNoAnsi);
-                this.patternFormatters = list.toArray(new PatternFormatter[0]);
+                this.formatters = list.toArray(new PatternFormatter[0]);
             } catch (RuntimeException ex) {
                 throw new IllegalArgumentException("Cannot parse pattern '" + pattern + "'", ex);
             }
         } else {
-            this.patternFormatters = null;
+            this.formatters = null;
             serializer = new PatternSelectorSerializer();
         }
     }
@@ -286,9 +286,9 @@ public final class PatternLayout extends AbstractStringLayout {
         @Override
         public String toSerializable(final LogEvent event) {
             final StringBuilder buf = getStringBuilder();
-            final int len = patternFormatters.length;
+            final int len = formatters.length;
             for (int i = 0; i < len; i++) {
-                patternFormatters[i].format(event, buf);
+                formatters[i].format(event, buf);
             }
             String str = buf.toString();
             if (replace != null) {
@@ -324,6 +324,20 @@ public final class PatternLayout extends AbstractStringLayout {
      */
     public static PatternLayout createDefaultLayout() {
         return newBuilder().build();
+    }
+
+    /**
+     * Creates a PatternLayout using the default options and the given
+     * configuration. These options include using UTF-8, the default conversion
+     * pattern, exceptions being written, and with ANSI escape codes.
+     * 
+     * @param configuration The Configuration.
+     *
+     * @return the PatternLayout.
+     * @see #DEFAULT_CONVERSION_PATTERN Default conversion pattern
+     */
+    public static PatternLayout createDefaultLayout(Configuration configuration) {
+        return newBuilder().withConfiguration(configuration).build();
     }
 
     /**

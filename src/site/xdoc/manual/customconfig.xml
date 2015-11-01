@@ -282,7 +282,55 @@ public class MyXMLConfiguration extends XMLConfiguration {
         ctx.updateLoggers();
 }]]></pre>
           </subsection>
+        <a name="AppendingToWritersAndOutputStreams"/>
+        <subsection name="Appending Log Events to Writers and OutputStreams Programmatically">
+            <p>
+              Log4j 2.5 provides facilities to append log events to Writers and OutputStreams. For example, this 
+              provides simple integration for JDBC Driver implementors that use Log4j internally and still want 
+              to support the JDBC APIs <code>CommonDataSource.setLogWriter(PrintWriter)</code>, 
+              <code>java.sql.DriverManager.setLogWriter(PrintWriter)</code>, and 
+              <code>java.sql.DriverManager.setLogStream(PrintStream)</code>.              
+            </p>
+            <p>
+              Given any <code>Writer</code>, like a <code>PrintWriter</code>, you tell Log4j to append events to 
+              that writer by creating a <code>WriterAppender</code> and updating the Log4j configuration:
+            </p>
+            <pre class="prettyprint linenums"><![CDATA[
+void addAppender(final Writer writer, final String writerName) {
+    final LoggerContext context = LoggerContext.getContext(false);
+    final Configuration config = context.getConfiguration();
+    final PatternLayout layout = PatternLayout.createDefaultLayout(config);
+    final Appender appender = WriterAppender.createAppender(layout, null, writer, writerName, false, true);
+    appender.start();
+    config.addAppender(appender);
+    updateLoggers(appender, config);
+}
 
+private void updateLoggers(final Appender appender, final Configuration config) {
+    final Level level = null;
+    final Filter filter = null;
+    for (final LoggerConfig loggerConfig : config.getLoggers().values()) {
+        loggerConfig.addAppender(appender, level, filter);
+    }
+    config.getRootLogger().addAppender(appender, level, filter);
+}]]></pre>
+            <p>
+              You can achieve the same effect with an <code>OutputStream</code>, like a <code>PrintStream</code>:
+            </p>            
+            <pre class="prettyprint linenums"><![CDATA[
+void addAppender(final OutputStream outputStream, final String outputStreamName) {
+    final LoggerContext context = LoggerContext.getContext(false);
+    final Configuration config = context.getConfiguration();
+    final PatternLayout layout = PatternLayout.createDefaultLayout(config);
+    final Appender appender = OutputStreamAppender.createAppender(layout, null, outputStream, outputStreamName, false, true);
+    appender.start();
+    config.addAppender(appender);
+    updateLoggers(appender, config);
+}]]></pre>
+        </subsection>
+            <p>
+              The difference is the use of <code>OutputStreamAppender</code> instead of <code>WriterAppender</code>.
+            </p>            
       </section>
 
     </body>
