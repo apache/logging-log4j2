@@ -45,6 +45,7 @@ import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
 /**
  *
@@ -52,6 +53,9 @@ import org.junit.Test;
 public class LoggerTest {
 
     private static final String CONFIG = "log4j-test2.xml";
+    
+    @Rule
+    public final TestName testName = new TestName(); 
     private ListAppender app;
     private ListAppender host;
     private ListAppender noThrown;
@@ -248,7 +252,7 @@ public class LoggerTest {
 
     @Test
     public void getLogger_String_MessageFactoryMismatch() {
-        final Logger testLogger = testMessageFactoryMismatch("getLogger_String_MessageFactoryMismatch",
+        final Logger testLogger = testMessageFactoryMismatch(testName.getMethodName(),
                 StringFormatterMessageFactory.INSTANCE, ParameterizedMessageFactory.INSTANCE);
         testLogger.debug("%,d", Integer.MAX_VALUE);
         final List<LogEvent> events = app.getEvents();
@@ -258,7 +262,7 @@ public class LoggerTest {
 
     @Test
     public void getLogger_String_MessageFactoryMismatchNull() {
-        final Logger testLogger =  testMessageFactoryMismatch("getLogger_String_MessageFactoryMismatchNull", StringFormatterMessageFactory.INSTANCE, null);
+        final Logger testLogger =  testMessageFactoryMismatch(testName.getMethodName(), StringFormatterMessageFactory.INSTANCE, null);
         testLogger.debug("%,d", Integer.MAX_VALUE);
         final List<LogEvent> events = app.getEvents();
         assertEventCount(events, 1);
