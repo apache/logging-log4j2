@@ -60,6 +60,8 @@ final class Log4jTaglibLoggerContext implements LoggerContext {
 
     @Override
     public Log4jTaglibLogger getLogger(final String name, final MessageFactory messageFactory) {
+        // Note: This is the only method where we add entries to the 'loggers' ivar. 
+        // The loggers map key is the logger name plus the messageFactory FQCN.
         String key = LoggerContextKey.create(name, messageFactory);
         Log4jTaglibLogger logger = this.loggers.get(key);
         if (logger != null) {
