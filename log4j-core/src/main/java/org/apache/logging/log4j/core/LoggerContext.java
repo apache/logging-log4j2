@@ -359,7 +359,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     }
 
     /**
-     * Obtains a Logger from the Context.
+     * Gets a Logger from the Context.
      * 
      * @param name The name of the Logger to return.
      * @return The Logger.
