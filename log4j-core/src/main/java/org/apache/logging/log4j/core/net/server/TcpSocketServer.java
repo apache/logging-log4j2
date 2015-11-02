@@ -231,13 +231,12 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
                 final SocketHandler handler = new SocketHandler(clientSocket);
                 handlers.put(Long.valueOf(handler.getId()), handler);
                 handler.start();
-            } catch (final IOException ioe) {
+            } catch (final IOException e) {
                 if (serverSocket.isClosed()) {
                     // OK we're done.
                     return;
                 }
-                System.out.println("Exception encountered on accept. Ignoring. Stack Trace :");
-                ioe.printStackTrace();
+                logger.error("Exception encountered on accept. Ignoring. Stack Trace :", e);
             }
         }
         for (final Map.Entry<Long, SocketHandler> entry : handlers.entrySet()) {
