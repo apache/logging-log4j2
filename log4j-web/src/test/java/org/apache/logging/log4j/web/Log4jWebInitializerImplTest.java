@@ -40,7 +40,7 @@ import static org.junit.Assert.*;
 public class Log4jWebInitializerImplTest {
     private ServletContext servletContext;
 
-    private Log4jWebInitializerImpl initializer;
+    private Log4jWebInitializerImpl initializerImpl;
 
     @Before
     public void setUp() {
@@ -61,7 +61,7 @@ public class Log4jWebInitializerImplTest {
         verify(this.servletContext);
         reset(this.servletContext);
 
-        this.initializer = (Log4jWebInitializerImpl) initializer;
+        this.initializerImpl = (Log4jWebInitializerImpl) initializer;
     }
 
     @After
@@ -74,7 +74,7 @@ public class Log4jWebInitializerImplTest {
         replay(this.servletContext);
 
         try {
-            this.initializer.stop();
+            this.initializerImpl.stop();
             fail("Expected an IllegalStateException.");
         } catch (final IllegalStateException ignore) {
 
@@ -87,7 +87,7 @@ public class Log4jWebInitializerImplTest {
 
         assertNull("The context should be null.", ContextAnchor.THREAD_CONTEXT.get());
 
-        this.initializer.setLoggerContext();
+        this.initializerImpl.setLoggerContext();
 
         assertNull("The context should still be null.", ContextAnchor.THREAD_CONTEXT.get());
     }
@@ -98,7 +98,7 @@ public class Log4jWebInitializerImplTest {
 
         assertNull("The context should be null.", ContextAnchor.THREAD_CONTEXT.get());
 
-        this.initializer.clearLoggerContext();
+        this.initializerImpl.clearLoggerContext();
 
         assertNull("The context should still be null.", ContextAnchor.THREAD_CONTEXT.get());
     }
@@ -120,7 +120,7 @@ public class Log4jWebInitializerImplTest {
 
         assertNull("The context should be null.", ContextAnchor.THREAD_CONTEXT.get());
 
-        this.initializer.start();
+        this.initializerImpl.start();
 
         assertNotNull("The context attribute should not be null.", loggerContextCapture.getValue());
         assertTrue("The context attribute is not correct.",
@@ -134,13 +134,13 @@ public class Log4jWebInitializerImplTest {
 
         assertNull("The context should still be null.", ContextAnchor.THREAD_CONTEXT.get());
 
-        this.initializer.setLoggerContext();
+        this.initializerImpl.setLoggerContext();
 
         final LoggerContext context = ContextAnchor.THREAD_CONTEXT.get();
         assertNotNull("The context should not be null.", context);
         assertSame("The context is not correct.", loggerContext, context);
 
-        this.initializer.clearLoggerContext();
+        this.initializerImpl.clearLoggerContext();
 
         assertNull("The context should be null again.", ContextAnchor.THREAD_CONTEXT.get());
 
@@ -152,7 +152,7 @@ public class Log4jWebInitializerImplTest {
 
         replay(this.servletContext);
 
-        this.initializer.stop();
+        this.initializerImpl.stop();
 
         verify(this.servletContext);
         reset(this.servletContext);
@@ -160,7 +160,7 @@ public class Log4jWebInitializerImplTest {
 
         assertNull("The context should again still be null.", ContextAnchor.THREAD_CONTEXT.get());
 
-        this.initializer.setLoggerContext();
+        this.initializerImpl.setLoggerContext();
 
         assertNull("The context should finally still be null.", ContextAnchor.THREAD_CONTEXT.get());
     }
@@ -183,7 +183,7 @@ public class Log4jWebInitializerImplTest {
 
         assertNull("The context should be null.", ContextAnchor.THREAD_CONTEXT.get());
 
-        this.initializer.start();
+        this.initializerImpl.start();
 
         assertNotNull("The context attribute should not be null.", loggerContextCapture.getValue());
         assertTrue("The context attribute is not correct.",
@@ -197,13 +197,13 @@ public class Log4jWebInitializerImplTest {
 
         assertNull("The context should still be null.", ContextAnchor.THREAD_CONTEXT.get());
 
-        this.initializer.setLoggerContext();
+        this.initializerImpl.setLoggerContext();
 
         final LoggerContext context = ContextAnchor.THREAD_CONTEXT.get();
         assertNotNull("The context should not be null.", context);
         assertSame("The context is not correct.", loggerContext, context);
 
-        this.initializer.clearLoggerContext();
+        this.initializerImpl.clearLoggerContext();
 
         assertNull("The context should be null again.", ContextAnchor.THREAD_CONTEXT.get());
 
@@ -215,7 +215,7 @@ public class Log4jWebInitializerImplTest {
 
         replay(this.servletContext);
 
-        this.initializer.stop();
+        this.initializerImpl.stop();
 
         verify(this.servletContext);
         reset(this.servletContext);
@@ -223,7 +223,7 @@ public class Log4jWebInitializerImplTest {
 
         assertNull("The context should again still be null.", ContextAnchor.THREAD_CONTEXT.get());
 
-        this.initializer.setLoggerContext();
+        this.initializerImpl.setLoggerContext();
 
         assertNull("The context should finally still be null.", ContextAnchor.THREAD_CONTEXT.get());
     }
@@ -246,7 +246,7 @@ public class Log4jWebInitializerImplTest {
 
         assertNull("The context should be null.", ContextAnchor.THREAD_CONTEXT.get());
 
-        this.initializer.start();
+        this.initializerImpl.start();
 
         assertNotNull("The context attribute should not be null.", loggerContextCapture.getValue());
         assertTrue("The context attribute is not correct.",
@@ -256,9 +256,9 @@ public class Log4jWebInitializerImplTest {
         reset(this.servletContext);
         replay(this.servletContext);
 
-        this.initializer.start();
-        this.initializer.start();
-        this.initializer.start();
+        this.initializerImpl.start();
+        this.initializerImpl.start();
+        this.initializerImpl.start();
 
         verify(this.servletContext);
         reset(this.servletContext);
@@ -268,7 +268,7 @@ public class Log4jWebInitializerImplTest {
 
         replay(this.servletContext);
 
-        this.initializer.stop();
+        this.initializerImpl.stop();
     }
 
     @Test
@@ -289,7 +289,7 @@ public class Log4jWebInitializerImplTest {
 
         assertNull("The context should be null.", ContextAnchor.THREAD_CONTEXT.get());
 
-        this.initializer.start();
+        this.initializerImpl.start();
 
         assertNotNull("The context attribute should not be null.", loggerContextCapture.getValue());
         assertTrue("The context attribute is not correct.",
@@ -303,10 +303,10 @@ public class Log4jWebInitializerImplTest {
 
         replay(this.servletContext);
 
-        this.initializer.stop();
+        this.initializerImpl.stop();
 
         try {
-            this.initializer.start();
+            this.initializerImpl.start();
             fail("Expected an IllegalStateException.");
         } catch (final IllegalStateException ignore) {
 
@@ -331,7 +331,7 @@ public class Log4jWebInitializerImplTest {
 
         assertNull("The context should be null.", ContextAnchor.THREAD_CONTEXT.get());
 
-        this.initializer.start();
+        this.initializerImpl.start();
 
         assertNotNull("The context attribute should not be null.", loggerContextCapture.getValue());
         assertTrue("The context attribute is not correct.",
@@ -345,9 +345,9 @@ public class Log4jWebInitializerImplTest {
 
         replay(this.servletContext);
 
-        this.initializer.stop();
-        this.initializer.stop();
-        this.initializer.stop();
+        this.initializerImpl.stop();
+        this.initializerImpl.stop();
+        this.initializerImpl.stop();
     }
 
     @Test
@@ -362,7 +362,7 @@ public class Log4jWebInitializerImplTest {
         assertNull("The context should be null.", ContextAnchor.THREAD_CONTEXT.get());
 
         try {
-            this.initializer.start();
+            this.initializerImpl.start();
             fail("Expected an IllegalStateException.");
         } catch (final IllegalStateException ignore) {
             // ignore
@@ -385,7 +385,7 @@ public class Log4jWebInitializerImplTest {
 
         assertNull("The context should be null.", ContextAnchor.THREAD_CONTEXT.get());
 
-        this.initializer.start();
+        this.initializerImpl.start();
 
         assertNull("The context attribute should be null.", loggerContextCapture.getValue());
 
@@ -395,11 +395,11 @@ public class Log4jWebInitializerImplTest {
 
         assertNull("The context should still be null.", ContextAnchor.THREAD_CONTEXT.get());
 
-        this.initializer.setLoggerContext();
+        this.initializerImpl.setLoggerContext();
 
         assertNull("The context should still be null because no named selector.", ContextAnchor.THREAD_CONTEXT.get());
 
-        this.initializer.clearLoggerContext();
+        this.initializerImpl.clearLoggerContext();
 
         assertNull("The context should be null again.", ContextAnchor.THREAD_CONTEXT.get());
 
@@ -407,7 +407,7 @@ public class Log4jWebInitializerImplTest {
         reset(this.servletContext);
         replay(this.servletContext);
 
-        this.initializer.stop();
+        this.initializerImpl.stop();
 
         verify(this.servletContext);
         reset(this.servletContext);
@@ -415,7 +415,7 @@ public class Log4jWebInitializerImplTest {
 
         assertNull("The context should again still be null.", ContextAnchor.THREAD_CONTEXT.get());
 
-        this.initializer.setLoggerContext();
+        this.initializerImpl.setLoggerContext();
 
         assertNull("The context should finally still be null.", ContextAnchor.THREAD_CONTEXT.get());
     }
@@ -437,7 +437,7 @@ public class Log4jWebInitializerImplTest {
 
         assertNull("The context should be null.", ContextAnchor.THREAD_CONTEXT.get());
 
-        this.initializer.start();
+        this.initializerImpl.start();
 
         assertNotNull("The context attribute should not be null.", loggerContextCapture.getValue());
         assertTrue("The context attribute is not correct.",
@@ -464,7 +464,7 @@ public class Log4jWebInitializerImplTest {
 
         replay(this.servletContext, runnable);
 
-        this.initializer.wrapExecution(runnable);
+        this.initializerImpl.wrapExecution(runnable);
 
         assertNull("The context should be null again.", ContextAnchor.THREAD_CONTEXT.get());
 
@@ -476,7 +476,7 @@ public class Log4jWebInitializerImplTest {
 
         replay(this.servletContext);
 
-        this.initializer.stop();
+        this.initializerImpl.stop();
 
         verify(this.servletContext);
         reset(this.servletContext);
@@ -484,7 +484,7 @@ public class Log4jWebInitializerImplTest {
 
         assertNull("The context should again still be null.", ContextAnchor.THREAD_CONTEXT.get());
 
-        this.initializer.setLoggerContext();
+        this.initializerImpl.setLoggerContext();
 
         assertNull("The context should finally still be null.", ContextAnchor.THREAD_CONTEXT.get());
     }
