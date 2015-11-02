@@ -61,7 +61,7 @@ public class Log4jWebInitializerImplTest {
         verify(this.servletContext);
         reset(this.servletContext);
 
-        this.initializer = (Log4jWebInitializerImpl)initializer;
+        this.initializer = (Log4jWebInitializerImpl) initializer;
     }
 
     @After
