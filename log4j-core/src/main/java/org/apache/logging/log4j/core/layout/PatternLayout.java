@@ -355,9 +355,6 @@ public final class PatternLayout extends AbstractStringLayout {
      */
     public static class Builder implements org.apache.logging.log4j.core.util.Builder<PatternLayout> {
 
-        // FIXME: it seems rather redundant to repeat default values (same goes for field names)
-        // perhaps introduce a @PluginBuilderAttribute that has no values of its own and uses reflection?
-
         @PluginBuilderAttribute
         private String pattern = PatternLayout.DEFAULT_CONVERSION_PATTERN;
 
