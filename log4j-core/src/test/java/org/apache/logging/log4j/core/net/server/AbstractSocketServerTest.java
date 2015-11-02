@@ -161,8 +161,8 @@ public abstract class AbstractSocketServerTest {
     }
 
     protected void testServer(final String... messages) throws Exception {
-        final Filter socketFilter = new ThreadFilter(Filter.Result.NEUTRAL, Filter.Result.DENY);
-        final Filter serverFilter = new ThreadFilter(Filter.Result.DENY, Filter.Result.NEUTRAL);
+        final Filter socketFilter = new ThreadNameFilter(Filter.Result.NEUTRAL, Filter.Result.DENY);
+        final Filter serverFilter = new ThreadNameFilter(Filter.Result.DENY, Filter.Result.NEUTRAL);
         final Layout<? extends Serializable> socketLayout = createLayout();
         final SocketAppender socketAppender = createSocketAppender(socketFilter, socketLayout);
         socketAppender.start();
