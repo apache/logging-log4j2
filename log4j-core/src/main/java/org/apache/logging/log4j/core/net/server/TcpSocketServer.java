@@ -132,7 +132,9 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
      *         if an I/O error occurs when opening the socket.
      */
     public static TcpSocketServer<InputStream> createJsonSocketServer(final int port) throws IOException {
-        return new TcpSocketServer<>(port, new JsonInputStreamLogEventBridge());
+        LOGGER.entry("createJsonSocketServer", port);
+        final TcpSocketServer<InputStream> socketServer = new TcpSocketServer<>(port, new JsonInputStreamLogEventBridge());
+        return LOGGER.exit(socketServer);
     }
 
     /**
@@ -145,7 +147,9 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
      *         if an I/O error occurs when opening the socket.
      */
     public static TcpSocketServer<ObjectInputStream> createSerializedSocketServer(final int port) throws IOException {
-        return new TcpSocketServer<>(port, new ObjectInputStreamLogEventBridge());
+        LOGGER.entry(port);
+        final TcpSocketServer<ObjectInputStream> socketServer = new TcpSocketServer<>(port, new ObjectInputStreamLogEventBridge());
+        return LOGGER.exit(socketServer);
     }
 
     /**
@@ -158,7 +162,9 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
      *         if an I/O error occurs when opening the socket.
      */
     public static TcpSocketServer<InputStream> createXmlSocketServer(final int port) throws IOException {
-        return new TcpSocketServer<>(port, new XmlInputStreamLogEventBridge());
+        LOGGER.entry(port);
+        final TcpSocketServer<InputStream> socketServer = new TcpSocketServer<>(port, new XmlInputStreamLogEventBridge());
+        return LOGGER.exit(socketServer);
     }
 
     /**
