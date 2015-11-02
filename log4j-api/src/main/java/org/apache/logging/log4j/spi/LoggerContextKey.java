@@ -19,6 +19,11 @@ package org.apache.logging.log4j.spi;
 
 import org.apache.logging.log4j.message.MessageFactory;
 
+/**
+ * Creates keys used in maps for use in LoggerContext implementations.
+ * 
+ * @since 2.5
+ */
 public class LoggerContextKey {
 
     public static String create(final String name) {
