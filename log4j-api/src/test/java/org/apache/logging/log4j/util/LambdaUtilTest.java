@@ -116,7 +116,7 @@ public class LambdaUtilTest {
 
     @Test
     public void testGetAllReturnsNullElementsIfSupplierArrayContainsNulls() {
-        final Supplier<?>[] functions = new Supplier[3];
+        final Supplier<?>[] functions = new Supplier<?>[3];
         final Object[] actual = LambdaUtil.getAll(functions);
         assertEquals(actual.length, functions.length);
         for (final Object object : actual) {
