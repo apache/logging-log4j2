@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -52,13 +53,18 @@ public final class RoutingAppender extends AbstractAppender {
     private final Configuration config;
     private final ConcurrentMap<String, AppenderControl> appenders = new ConcurrentHashMap<>();
     private final RewritePolicy rewritePolicy;
+	private final PurgePolicy purgePolicy;
 
     private RoutingAppender(final String name, final Filter filter, final boolean ignoreExceptions, final Routes routes,
-                            final RewritePolicy rewritePolicy, final Configuration config) {
+                            final RewritePolicy rewritePolicy, final Configuration config, PurgePolicy purgePolicy) {
         super(name, filter, null, ignoreExceptions);
         this.routes = routes;
         this.config = config;
         this.rewritePolicy = rewritePolicy;
+        this.purgePolicy = purgePolicy;
+        if(this.purgePolicy != null) {
+        	this.purgePolicy.initialize(this);
+        }
         Route defRoute = null;
         for (final Route route : routes.getRoutes()) {
             if (route.getKey() == null) {
@@ -111,9 +117,14 @@ public final class RoutingAppender extends AbstractAppender {
         if (control != null) {
             control.callAppender(event);
         }
+        
+        if(purgePolicy != null) {
+        	purgePolicy.update(key, event);
+        	purgePolicy.purge();
+        }
     }
 
-    private synchronized AppenderControl getControl(final String key, final LogEvent event) {
+	private synchronized AppenderControl getControl(final String key, final LogEvent event) {
         AppenderControl control = appenders.get(key);
         if (control != null) {
             return control;
@@ -162,6 +173,21 @@ public final class RoutingAppender extends AbstractAppender {
         LOGGER.error("No Appender was configured for route " + route.getKey());
         return null;
     }
+    
+    public Map<String, AppenderControl> getAppenders() {
+		return Collections.unmodifiableMap(appenders);
+	}    
+    
+    /**
+     * Delete specified appender
+     * 
+     * @param key
+     */
+    public void deleteAppender(String key) {
+    	LOGGER.debug("Stopping route with key" + key);
+    	AppenderControl control = appenders.remove(key);
+    	control.getAppender().stop();
+    }
 
     /**
      * Create a RoutingAppender.
@@ -181,6 +207,7 @@ public final class RoutingAppender extends AbstractAppender {
             @PluginElement("Routes") final Routes routes,
             @PluginConfiguration final Configuration config,
             @PluginElement("RewritePolicy") final RewritePolicy rewritePolicy,
+            @PluginElement("PurgePolicy") final PurgePolicy purgePolicy,
             @PluginElement("Filter") final Filter filter) {
 
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
@@ -192,6 +219,6 @@ public final class RoutingAppender extends AbstractAppender {
             LOGGER.error("No routes defined for RoutingAppender");
             return null;
         }
-        return new RoutingAppender(name, filter, ignoreExceptions, routes, rewritePolicy, config);
+        return new RoutingAppender(name, filter, ignoreExceptions, routes, rewritePolicy, config, purgePolicy);
     }
 }
