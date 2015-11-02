@@ -321,6 +321,15 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     }
     
     /**
+     * Gets the root logger.
+     * 
+     * @return the root logger.
+     */
+    public Logger getRootLogger() {
+        return getLogger(LogManager.ROOT_LOGGER_NAME);
+    }
+    
+    /**
      * Sets the name.
      * 
      * @param name the new LoggerContext name
