@@ -394,10 +394,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     public Logger getLogger(final String name, final MessageFactory messageFactory) {
         // Note: This is the only method where we add entries to the 'loggers' ivar. 
         // The loggers map key is the logger name plus the messageFactory FQCN (if any).
-        String key = name;
-        if (messageFactory != null) {
-            key = LoggerContextKey.create(name, messageFactory);
-        }
+        String key = LoggerContextKey.create(name, messageFactory);
         Logger logger = loggers.get(key);
         if (logger != null) {
             AbstractLogger.checkMessageFactory(logger, messageFactory);
