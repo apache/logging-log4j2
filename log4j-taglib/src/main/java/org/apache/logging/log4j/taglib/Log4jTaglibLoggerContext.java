@@ -23,8 +23,9 @@ import javax.servlet.ServletContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.ExtendedLogger;
+import org.apache.logging.log4j.spi.LoggerContext;
+import org.apache.logging.log4j.spi.LoggerContextKey;
 
 /**
  * This bridge between the tag library and the Log4j API ensures that instances of {@link Log4jTaglibLogger} are
@@ -82,7 +83,17 @@ final class Log4jTaglibLoggerContext implements LoggerContext {
 
     @Override
     public boolean hasLogger(final String name) {
-        return this.loggers.containsKey(name);
+        return loggers.containsKey(LoggerContextKey.create(name));
+    }
+
+    @Override
+    public boolean hasLogger(String name, MessageFactory messageFactory) {
+        return loggers.containsKey(LoggerContextKey.create(name, messageFactory));
+    }
+
+    @Override
+    public boolean hasLogger(String name, Class<? extends MessageFactory> messageFactoryClass) {
+        return loggers.containsKey(LoggerContextKey.create(name, messageFactoryClass));
     }
 
     static synchronized Log4jTaglibLoggerContext getInstance(final ServletContext servletContext) {
