@@ -23,14 +23,14 @@
     <version>2.5-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
-  <artifactId>log4j-scala_2.10</artifactId>
+  <artifactId>log4j-api-scala_2.11</artifactId>
   <packaging>jar</packaging>
   <name>Scala warpper for Log4j API</name>
   <description>Scala warpper for Log4j API</description>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
-    <projectDir>/scala_2.10</projectDir>
-    <scala.version>2.10.6</scala.version>
+    <projectDir>/scala_2.11</projectDir>
+    <scala.version>2.11.7</scala.version>
   </properties>
   <dependencies>
     <dependency>
@@ -60,7 +60,7 @@
     </dependency>
     <dependency>
       <groupId>org.scalatest</groupId>
-      <artifactId>scalatest_2.10</artifactId>
+      <artifactId>scalatest_2.11</artifactId>
       <version>2.2.5</version>
       <scope>test</scope>
     </dependency>
