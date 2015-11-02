@@ -233,6 +233,8 @@ public final class PatternLayout extends AbstractStringLayout {
      *
      * @param pattern
      *        The pattern. If not specified, defaults to DEFAULT_CONVERSION_PATTERN.
+     * @param patternSelector 
+     *        Allows different patterns to be used based on some selection criteria.
      * @param config
      *        The Configuration. Some Converters require access to the Interpolator.
      * @param replace
@@ -322,6 +324,20 @@ public final class PatternLayout extends AbstractStringLayout {
      */
     public static PatternLayout createDefaultLayout() {
         return newBuilder().build();
+    }
+
+    /**
+     * Creates a PatternLayout using the default options and the given
+     * configuration. These options include using UTF-8, the default conversion
+     * pattern, exceptions being written, and with ANSI escape codes.
+     * 
+     * @param configuration The Configuration.
+     *
+     * @return the PatternLayout.
+     * @see #DEFAULT_CONVERSION_PATTERN Default conversion pattern
+     */
+    public static PatternLayout createDefaultLayout(Configuration configuration) {
+        return newBuilder().withConfiguration(configuration).build();
     }
 
     /**

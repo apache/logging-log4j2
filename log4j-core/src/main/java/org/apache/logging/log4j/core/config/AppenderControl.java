@@ -185,4 +185,10 @@ public class AppenderControl extends AbstractFilterable {
     public int hashCode() {
         return appenderName.hashCode();
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + "[appender=" + appender + ", appenderName=" + appenderName + ", level=" + level
+                + ", intLevel=" + intLevel + ", recursive=" + recursive + ", filter=" + getFilter() + "]";
+    }
 }

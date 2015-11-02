@@ -55,6 +55,7 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
 
         @Override
         public void run() {
+            logger.entry();
             boolean closed = false;
             try {
                 try {
@@ -78,6 +79,7 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
             } finally {
                 handlers.remove(Long.valueOf(getId()));
             }
+            logger.exit();
         }
 
         public void shutdown() {
@@ -132,7 +134,9 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
      *         if an I/O error occurs when opening the socket.
      */
     public static TcpSocketServer<InputStream> createJsonSocketServer(final int port) throws IOException {
-        return new TcpSocketServer<>(port, new JsonInputStreamLogEventBridge());
+        LOGGER.entry("createJsonSocketServer", port);
+        final TcpSocketServer<InputStream> socketServer = new TcpSocketServer<>(port, new JsonInputStreamLogEventBridge());
+        return LOGGER.exit(socketServer);
     }
 
     /**
@@ -145,7 +149,9 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
      *         if an I/O error occurs when opening the socket.
      */
     public static TcpSocketServer<ObjectInputStream> createSerializedSocketServer(final int port) throws IOException {
-        return new TcpSocketServer<>(port, new ObjectInputStreamLogEventBridge());
+        LOGGER.entry(port);
+        final TcpSocketServer<ObjectInputStream> socketServer = new TcpSocketServer<>(port, new ObjectInputStreamLogEventBridge());
+        return LOGGER.exit(socketServer);
     }
 
     /**
@@ -158,7 +164,9 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
      *         if an I/O error occurs when opening the socket.
      */
     public static TcpSocketServer<InputStream> createXmlSocketServer(final int port) throws IOException {
-        return new TcpSocketServer<>(port, new XmlInputStreamLogEventBridge());
+        LOGGER.entry(port);
+        final TcpSocketServer<InputStream> socketServer = new TcpSocketServer<>(port, new XmlInputStreamLogEventBridge());
+        return LOGGER.exit(socketServer);
     }
 
     /**
@@ -209,13 +217,16 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
      */
     @Override
     public void run() {
+        logger.entry();
         while (isActive()) {
             if (serverSocket.isClosed()) {
                 return;
             }
             try {
                 // Accept incoming connections.
+                logger.debug("Socket accept()...");
                 final Socket clientSocket = serverSocket.accept();
+                logger.debug("Socket accepted: {}", clientSocket);
                 clientSocket.setSoLinger(true, 0);
 
                 // accept() will block until a client connects to the server.
@@ -225,13 +236,13 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
                 final SocketHandler handler = new SocketHandler(clientSocket);
                 handlers.put(Long.valueOf(handler.getId()), handler);
                 handler.start();
-            } catch (final IOException ioe) {
+            } catch (final IOException e) {
                 if (serverSocket.isClosed()) {
                     // OK we're done.
+                    logger.exit();
                     return;
                 }
-                System.out.println("Exception encountered on accept. Ignoring. Stack Trace :");
-                ioe.printStackTrace();
+                logger.error("Exception encountered on accept. Ignoring. Stack Trace :", e);
             }
         }
         for (final Map.Entry<Long, SocketHandler> entry : handlers.entrySet()) {
@@ -243,6 +254,7 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
                 // Ignore the exception
             }
         }
+        logger.exit();
     }
 
     /**
@@ -251,8 +263,10 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
      * @throws IOException if the server socket could not be closed
      */
     public void shutdown() throws IOException {
+        logger.entry();
         setActive(false);
         Thread.currentThread().interrupt();
         serverSocket.close();
+        logger.exit();
     }
 }

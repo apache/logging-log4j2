@@ -45,7 +45,9 @@ public final class LevelRangeFilter extends AbstractFilter {
      * Create a ThresholdFilter.
      * 
      * @param minLevel
-     *            The log Level.
+     *            The minimum log Level.
+     * @param maxLevel
+     *            The maximum log Level.
      * @param match
      *            The action to take on a match.
      * @param mismatch

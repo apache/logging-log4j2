@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="OFF" name="ServletTest">
+<Configuration status="WARN" name="ServletTest">
 
     <Appenders>
         <Servlet name="Servlet">

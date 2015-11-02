@@ -46,6 +46,7 @@ import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
+import org.apache.logging.log4j.spi.LoggerContextKey;
 
 import static org.apache.logging.log4j.core.util.ShutdownCallbackRegistry.*;
 
@@ -320,6 +321,15 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     }
     
     /**
+     * Gets the root logger.
+     * 
+     * @return the root logger.
+     */
+    public Logger getRootLogger() {
+        return getLogger(LogManager.ROOT_LOGGER_NAME);
+    }
+    
+    /**
      * Sets the name.
      * 
      * @param name the new LoggerContext name
@@ -349,7 +359,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     }
 
     /**
-     * Obtains a Logger from the Context.
+     * Gets a Logger from the Context.
      * 
      * @param name The name of the Logger to return.
      * @return The Logger.
@@ -382,14 +392,21 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      */
     @Override
     public Logger getLogger(final String name, final MessageFactory messageFactory) {
-        Logger logger = loggers.get(name);
+        // The loggers map key is the logger name plus the messageFactory FQCN (if any).
+        String key = name;
+        if (messageFactory != null) {
+            key = LoggerContextKey.create(name, messageFactory);
+        }
+        Logger logger = loggers.get(key);
         if (logger != null) {
             AbstractLogger.checkMessageFactory(logger, messageFactory);
             return logger;
         }
 
         logger = newInstance(this, name, messageFactory);
-        final Logger prev = loggers.putIfAbsent(name, logger);
+        // If messageFactory was null then we need to pull it out of the logger now
+        key = LoggerContextKey.create(name, logger.getMessageFactory());
+        final Logger prev = loggers.putIfAbsent(key, logger);
         return prev == null ? logger : prev;
     }
 
@@ -401,7 +418,29 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      */
     @Override
     public boolean hasLogger(final String name) {
-        return loggers.containsKey(name);
+        return loggers.containsKey(LoggerContextKey.create(name));
+    }
+
+    /**
+     * Determines if the specified Logger exists.
+     * 
+     * @param name The Logger name to search for.
+     * @return True if the Logger exists, false otherwise.
+     */
+    @Override
+    public boolean hasLogger(final String name, MessageFactory messageFactory) {
+        return loggers.containsKey(LoggerContextKey.create(name, messageFactory));
+    }
+
+    /**
+     * Determines if the specified Logger exists.
+     * 
+     * @param name The Logger name to search for.
+     * @return True if the Logger exists, false otherwise.
+     */
+    @Override
+    public boolean hasLogger(final String name, Class<? extends MessageFactory> messageFactoryClass) {
+        return loggers.containsKey(LoggerContextKey.create(name, messageFactoryClass));
     }
 
     /**
@@ -515,7 +554,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     }
 
     /**
-     * Reconfigure the context.
+     * Reconfigures the context.
      */
     private void reconfigure(final URI configURI) {
         final ClassLoader cl = ClassLoader.class.isInstance(externalContext) ? (ClassLoader) externalContext : null;
@@ -533,7 +572,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     }
 
     /**
-     * Reconfigure the context. Log4j does not remove Loggers during a reconfiguration. Log4j will create new
+     * Reconfigures the context. Log4j does not remove Loggers during a reconfiguration. Log4j will create new
      * LoggerConfig objects and Log4j will point the Loggers at the new LoggerConfigs. Log4j will free the old
      * LoggerConfig, along with old Appenders and Filters.
      */

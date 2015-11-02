@@ -28,7 +28,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Tests the FixedDateFormat class.
+ * Tests {@link FixedDateFormat}.
  */
 public class FixedDateFormatTest {
 

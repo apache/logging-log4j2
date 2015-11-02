@@ -290,7 +290,8 @@ public class TestConfigurator {
         LogManager.getLogger("org.apache.test.TestConfigurator");
         final Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration", config);
-        assertEquals("Unexpected Configuration.", DefaultConfiguration.DEFAULT_NAME, config.getName());
+        final String name = DefaultConfiguration.DEFAULT_NAME + "@" + Integer.toHexString(config.hashCode());
+        assertEquals("Unexpected Configuration.", name, config.getName());
     }
 
     @Test

@@ -27,6 +27,7 @@ import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
+import org.apache.logging.log4j.spi.LoggerContextKey;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -44,8 +45,9 @@ public class SimpleLoggerContext implements LoggerContext {
 
     /** Include the instance name in the log message? */
     private final boolean showLogName;
+    
     /**
-     * Include the short name ( last component ) of the logger in the log message. Defaults to true - otherwise we'll be
+     * Include the short name (last component) of the logger in the log message. Defaults to true - otherwise we'll be
      * lost in a flood of messages without knowing who sends them.
      */
     private final boolean showShortName;
@@ -99,14 +101,22 @@ public class SimpleLoggerContext implements LoggerContext {
 
     @Override
     public ExtendedLogger getLogger(final String name, final MessageFactory messageFactory) {
-        final ExtendedLogger extendedLogger = loggers.get(name);
+        // The loggers map key is the logger name plus the messageFactory FQCN (if any).
+        String key = name;
+        if (messageFactory != null) {
+            key = LoggerContextKey.create(name, messageFactory);
+        }
+        final ExtendedLogger extendedLogger = loggers.get(key);
         if (extendedLogger != null) {
             AbstractLogger.checkMessageFactory(extendedLogger, messageFactory);
             return extendedLogger;
         }
-        loggers.putIfAbsent(name, new SimpleLogger(name, defaultLevel, showLogName, showShortName, showDateTime,
-                showContextMap, dateTimeFormat, messageFactory, props, stream));
-        return loggers.get(name);
+        final SimpleLogger simpleLogger = new SimpleLogger(name, defaultLevel, showLogName, showShortName, showDateTime,
+                showContextMap, dateTimeFormat, messageFactory, props, stream);
+        // If messageFactory was null then we need to pull it out of the logger now
+        key = LoggerContextKey.create(name, simpleLogger.getMessageFactory());
+        loggers.putIfAbsent(key, simpleLogger);
+        return loggers.get(key);
     }
 
     @Override
@@ -115,7 +125,18 @@ public class SimpleLoggerContext implements LoggerContext {
     }
 
     @Override
+    public boolean hasLogger(String name, MessageFactory messageFactory) {
+        return false;
+    }
+    
+    @Override
+    public boolean hasLogger(String name, Class<? extends MessageFactory> messageFactoryClass) {
+        return false;
+    }
+    
+    @Override
     public Object getExternalContext() {
         return null;
     }
+
 }

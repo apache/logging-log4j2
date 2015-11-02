@@ -41,10 +41,12 @@ import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
 /**
  *
@@ -52,6 +54,9 @@ import org.junit.Test;
 public class LoggerTest {
 
     private static final String CONFIG = "log4j-test2.xml";
+    
+    @Rule
+    public final TestName testName = new TestName(); 
     private ListAppender app;
     private ListAppender host;
     private ListAppender noThrown;
@@ -248,7 +253,7 @@ public class LoggerTest {
 
     @Test
     public void getLogger_String_MessageFactoryMismatch() {
-        final Logger testLogger = testMessageFactoryMismatch("getLogger_String_MessageFactoryMismatch",
+        final Logger testLogger = testMessageFactoryMismatch(testName.getMethodName(),
                 StringFormatterMessageFactory.INSTANCE, ParameterizedMessageFactory.INSTANCE);
         testLogger.debug("%,d", Integer.MAX_VALUE);
         final List<LogEvent> events = app.getEvents();
@@ -258,7 +263,7 @@ public class LoggerTest {
 
     @Test
     public void getLogger_String_MessageFactoryMismatchNull() {
-        final Logger testLogger =  testMessageFactoryMismatch("getLogger_String_MessageFactoryMismatchNull", StringFormatterMessageFactory.INSTANCE, null);
+        final Logger testLogger =  testMessageFactoryMismatch(testName.getMethodName(), StringFormatterMessageFactory.INSTANCE, null);
         testLogger.debug("%,d", Integer.MAX_VALUE);
         final List<LogEvent> events = app.getEvents();
         assertEventCount(events, 1);
@@ -267,13 +272,22 @@ public class LoggerTest {
 
     private static Logger testMessageFactoryMismatch(final String name,
                                                      final MessageFactory messageFactory1,
-                                                     final MessageFactory messageFactory2) {
-        final Logger testLogger = (Logger) LogManager.getLogger(name, messageFactory1);
-        assertNotNull(testLogger);
-        assertEquals(messageFactory1, testLogger.getMessageFactory());
+            final MessageFactory messageFactory2) {
+        final Logger testLogger1 = (Logger) LogManager.getLogger(name, messageFactory1);
+        assertNotNull(testLogger1);
+        checkMessageFactory(messageFactory1, testLogger1);
         final Logger testLogger2 = (Logger) LogManager.getLogger(name, messageFactory2);
-        assertEquals(messageFactory1, testLogger2.getMessageFactory());
-        return testLogger;
+        assertNotNull(testLogger2);
+        checkMessageFactory(messageFactory2, testLogger2);
+        return testLogger1;
+    }
+
+    private static void checkMessageFactory(final MessageFactory messageFactory1, final Logger testLogger1) {
+        if (messageFactory1 == null) {
+            assertEquals(AbstractLogger.DEFAULT_MESSAGE_FACTORY_CLASS, testLogger1.getMessageFactory().getClass());
+        } else {
+            assertEquals(messageFactory1, testLogger1.getMessageFactory());
+        }
     }
 
     @Test

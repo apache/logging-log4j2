@@ -74,7 +74,7 @@ public final class LogManager {
         return Category.getInstance(PrivateManager.getContext(), name);
     }
 
-    public static Logger getLogger(@SuppressWarnings("rawtypes") final Class clazz) {
+    public static Logger getLogger(final Class<?> clazz) {
         return Category.getInstance(PrivateManager.getContext(), clazz.getName());
     }
 

@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.apache.logging.log4j.spi.StandardLevel;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Levels used for identifying the severity of an event. Levels are organized from most specific to least:
@@ -109,8 +110,8 @@ public final class Level implements Comparable<Level>, Serializable {
     private final StandardLevel standardLevel;
 
     private Level(final String name, final int intLevel) {
-        if (name == null || name.isEmpty()) {
-            throw new IllegalArgumentException("Illegal null Level constant");
+        if (Strings.isEmpty(name)) {
+            throw new IllegalArgumentException("Illegal null or empty Level name.");
         }
         if (intLevel < 0) {
             throw new IllegalArgumentException("Illegal Level int less than zero.");

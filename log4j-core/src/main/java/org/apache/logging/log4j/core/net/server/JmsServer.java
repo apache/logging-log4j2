@@ -40,7 +40,6 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 public class JmsServer extends LogEventListener implements MessageListener, LifeCycle {
 
-    private static final Logger LOGGER = StatusLogger.getLogger();
     private final AtomicReference<State> state = new AtomicReference<>(State.INITIALIZED);
     private final JmsManager jmsManager;
     private MessageConsumer messageConsumer;

@@ -73,10 +73,7 @@ public class LogManager {
         final String factoryClassName = managerProps.getStringProperty(FACTORY_PROPERTY_NAME);
         if (factoryClassName != null) {
             try {
-                final Class<?> clazz = LoaderUtil.loadClass(factoryClassName);
-                if (LoggerContextFactory.class.isAssignableFrom(clazz)) {
-                    factory = clazz.asSubclass(LoggerContextFactory.class).newInstance();
-                }
+                factory = LoaderUtil.newCheckedInstanceOf(factoryClassName, LoggerContextFactory.class);
             } catch (final ClassNotFoundException cnfe) {
                 LOGGER.error("Unable to locate configured LoggerContextFactory {}", factoryClassName);
             } catch (final Exception ex) {

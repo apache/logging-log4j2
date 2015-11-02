@@ -196,6 +196,7 @@
         <item name="Using Configurator" href="/manual/customconfig.html#Configurator"/>
         <item name="Config File and Code" href="/manual/customconfig.html#Hybrid"/>
         <item name="After Initialization" href="/manual/customconfig.html#AddingToCurrent"/>
+        <item name="Appending to Writers &amp; OutputStreams" href="/manual/customconfig.html#AppendingToWritersAndOutputStreams"/>        
       </item>
 
       <item name="Custom Log Levels" href="/manual/customloglevels.html" collapse="true">

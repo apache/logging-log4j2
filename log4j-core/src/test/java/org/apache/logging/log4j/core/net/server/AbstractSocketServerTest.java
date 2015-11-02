@@ -32,7 +32,6 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.appender.SocketAppender;
-import org.apache.logging.log4j.core.filter.AbstractFilter;
 import org.apache.logging.log4j.core.layout.JsonLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.layout.XmlLayout;
@@ -50,20 +49,6 @@ import static org.junit.Assert.*;
 public abstract class AbstractSocketServerTest {
 
     protected static Thread thread;
-
-    private class ThreadFilter extends AbstractFilter {
-
-        private static final long serialVersionUID = 1L;
-
-        public ThreadFilter(final Result onMatch, final Result onMismatch) {
-            super(onMatch, onMismatch);
-        }
-
-        @Override
-        public Filter.Result filter(final LogEvent event) {
-            return event.getThreadName().equals(Thread.currentThread().getName()) ? onMatch : onMismatch;
-        }
-    }
 
     private static final String MESSAGE = "This is test message";
 
@@ -176,8 +161,8 @@ public abstract class AbstractSocketServerTest {
     }
 
     protected void testServer(final String... messages) throws Exception {
-        final Filter socketFilter = new ThreadFilter(Filter.Result.NEUTRAL, Filter.Result.DENY);
-        final Filter serverFilter = new ThreadFilter(Filter.Result.DENY, Filter.Result.NEUTRAL);
+        final Filter socketFilter = new ThreadNameFilter(Filter.Result.NEUTRAL, Filter.Result.DENY);
+        final Filter serverFilter = new ThreadNameFilter(Filter.Result.DENY, Filter.Result.NEUTRAL);
         final Layout<? extends Serializable> socketLayout = createLayout();
         final SocketAppender socketAppender = createSocketAppender(socketFilter, socketLayout);
         socketAppender.start();
