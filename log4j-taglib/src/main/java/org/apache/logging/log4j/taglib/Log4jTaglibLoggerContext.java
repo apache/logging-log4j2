@@ -59,22 +59,24 @@ final class Log4jTaglibLoggerContext implements LoggerContext {
     }
 
     @Override
-    public Log4jTaglibLogger getLogger(final String name, final MessageFactory factory) {
-        Log4jTaglibLogger logger = this.loggers.get(name);
+    public Log4jTaglibLogger getLogger(final String name, final MessageFactory messageFactory) {
+        String key = LoggerContextKey.create(name, messageFactory);
+        Log4jTaglibLogger logger = this.loggers.get(key);
         if (logger != null) {
-            AbstractLogger.checkMessageFactory(logger, factory);
+            AbstractLogger.checkMessageFactory(logger, messageFactory);
             return logger;
         }
 
         synchronized (this.loggers) {
-            logger = this.loggers.get(name);
+            logger = this.loggers.get(key);
             if (logger == null) {
                 final LoggerContext context = LogManager.getContext(false);
-                final ExtendedLogger original = factory == null ?
-                        context.getLogger(name) : context.getLogger(name, factory);
+                final ExtendedLogger original = messageFactory == null ?
+                        context.getLogger(name) : context.getLogger(name, messageFactory);
                 // wrap a logger from an underlying implementation
                 logger = new Log4jTaglibLogger(original, name, original.getMessageFactory());
-                this.loggers.put(name, logger);
+                key = LoggerContextKey.create(name, original.getMessageFactory());
+                this.loggers.put(key, logger);
             }
         }
 
