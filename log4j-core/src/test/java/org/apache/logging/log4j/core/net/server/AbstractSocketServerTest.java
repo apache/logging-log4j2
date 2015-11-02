@@ -51,7 +51,7 @@ public abstract class AbstractSocketServerTest {
 
     protected static Thread thread;
 
-    private class ThreadFilter extends AbstractFilter {
+    private static class ThreadFilter extends AbstractFilter {
 
         private static final long serialVersionUID = 1L;
 
