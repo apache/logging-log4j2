@@ -89,10 +89,12 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
         if (lc == null) {
             return null;
         }
-        if (context.hasLogger(lc.getName())) {
-            return context.getLogger(lc.getName(), getMessageFactory());
+        final String lcName = lc.getName();
+        final MessageFactory messageFactory = getMessageFactory();
+        if (context.hasLogger(lcName, messageFactory)) {
+            return context.getLogger(lcName, messageFactory);
         }
-        return new Logger(context, lc.getName(), this.getMessageFactory());
+        return new Logger(context, lcName, messageFactory);
     }
 
     /**

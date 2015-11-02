@@ -51,4 +51,20 @@ public interface LoggerContext {
      * @return true if the Logger exists, false otherwise.
      */
     boolean hasLogger(String name);
+
+    /**
+     * Detects if a Logger with the specified name and MessageFactory exists.
+     * @param name The Logger name to search for.
+     * @return true if the Logger exists, false otherwise.
+     * @since 2.5
+     */
+    boolean hasLogger(String name, MessageFactory messageFactory);
+
+    /**
+     * Detects if a Logger with the specified name and MessageFactory type exists.
+     * @param name The Logger name to search for.
+     * @return true if the Logger exists, false otherwise.
+     * @since 2.5
+     */
+    boolean hasLogger(String name, Class<? extends MessageFactory> messageFactoryClass);
 }

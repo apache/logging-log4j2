@@ -46,13 +46,23 @@ public class TestLoggerContext implements LoggerContext {
     }
 
     @Override
+    public Object getExternalContext() {
+        return null;
+    }
+
+    @Override
     public boolean hasLogger(final String name) {
         return false;
     }
 
     @Override
-    public Object getExternalContext() {
-        return null;
+    public boolean hasLogger(String name, MessageFactory messageFactory) {
+        return false;
+    }
+
+    @Override
+    public boolean hasLogger(String name, Class<? extends MessageFactory> messageFactoryClass) {
+        return false;
     }
 
 }

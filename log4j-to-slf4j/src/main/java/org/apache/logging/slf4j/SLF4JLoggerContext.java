@@ -20,8 +20,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.ExtendedLogger;
+import org.apache.logging.log4j.spi.LoggerContext;
+import org.apache.logging.log4j.spi.LoggerContextKey;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -53,6 +54,16 @@ public class SLF4JLoggerContext implements LoggerContext {
 
     @Override
     public boolean hasLogger(final String name) {
-        return loggers.containsKey(name);
+        return loggers.containsKey(LoggerContextKey.create(name));
+    }
+
+    @Override
+    public boolean hasLogger(String name, MessageFactory messageFactory) {
+        return loggers.containsKey(LoggerContextKey.create(name, messageFactory));
+    }
+
+    @Override
+    public boolean hasLogger(String name, Class<? extends MessageFactory> messageFactoryClass) {
+        return loggers.containsKey(LoggerContextKey.create(name, messageFactoryClass));
     }
 }
