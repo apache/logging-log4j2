@@ -32,7 +32,6 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.appender.SocketAppender;
-import org.apache.logging.log4j.core.filter.AbstractFilter;
 import org.apache.logging.log4j.core.layout.JsonLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.layout.XmlLayout;
@@ -50,20 +49,6 @@ import static org.junit.Assert.*;
 public abstract class AbstractSocketServerTest {
 
     protected static Thread thread;
-
-    private static class ThreadFilter extends AbstractFilter {
-
-        private static final long serialVersionUID = 1L;
-
-        public ThreadFilter(final Result onMatch, final Result onMismatch) {
-            super(onMatch, onMismatch);
-        }
-
-        @Override
-        public Filter.Result filter(final LogEvent event) {
-            return event.getThreadName().equals(Thread.currentThread().getName()) ? onMatch : onMismatch;
-        }
-    }
 
     private static final String MESSAGE = "This is test message";
 
