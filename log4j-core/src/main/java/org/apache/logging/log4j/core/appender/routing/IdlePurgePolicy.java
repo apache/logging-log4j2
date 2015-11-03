@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
@@ -23,11 +24,15 @@ public class IdlePurgePolicy implements PurgePolicy {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 	private int timeToLive;
+	private TimeUnit timeUnit;
+	
 	private final ConcurrentMap<String, Calendar> appendersUsage = new ConcurrentHashMap<>();
 	private RoutingAppender routingAppender;
     
-	public IdlePurgePolicy(int timeToLive) {
+	public IdlePurgePolicy(int timeToLive, TimeUnit timeUnit) {
 		this.timeToLive = timeToLive;		
+		this.timeUnit = timeUnit;
+		
 	}	
 
     @Override
@@ -42,10 +47,10 @@ public class IdlePurgePolicy implements PurgePolicy {
 	@Override
 	public void purge() {
 		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.MINUTE, -timeToLive);
+		calendar.setTimeInMillis(calendar.getTimeInMillis()-timeUnit.toMillis(timeToLive));
 		
     	for (Entry<String, Calendar> entry : appendersUsage.entrySet()) {
-			if(calendar.after(entry.getValue())) {				
+			if(calendar.after(entry.getValue())) {
 				appendersUsage.remove(entry.getKey());
 		       	routingAppender.deleteAppender(entry.getKey());
 			}
@@ -65,7 +70,8 @@ public class IdlePurgePolicy implements PurgePolicy {
      */
     @PluginFactory
     public static PurgePolicy createPurgePolicy(
-            @PluginAttribute("timetolive") final String time) {
+            @PluginAttribute("timeToLive") final String time,
+            @PluginAttribute("timeUnit") final String timeUnit) {
     	
         if (time == null) {
             LOGGER.error("A timeToLive is required");
@@ -74,7 +80,13 @@ public class IdlePurgePolicy implements PurgePolicy {
         
         final int timeToLive = Integers.parseInt(time);
         
-        return new IdlePurgePolicy(timeToLive);
+        if(timeUnit == null) {
+        	LOGGER.error("A timeUnit is required");
+        	return null;
+        }
+        TimeUnit unit = TimeUnit.valueOf(timeUnit.toUpperCase());    
+        
+        return new IdlePurgePolicy(timeToLive, unit);
     }
 
 }

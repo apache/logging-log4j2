@@ -184,7 +184,7 @@ public final class RoutingAppender extends AbstractAppender {
      * @param key
      */
     public void deleteAppender(String key) {
-    	LOGGER.debug("Stopping route with key" + key);
+    	LOGGER.debug("Stopping route with key " + key);
     	AppenderControl control = appenders.remove(key);
     	control.getAppender().stop();
     }
