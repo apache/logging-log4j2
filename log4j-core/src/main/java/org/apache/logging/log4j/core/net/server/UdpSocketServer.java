@@ -28,6 +28,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.util.Log4jThread;
 
 /**
  * Listens for events over a socket connection.
@@ -119,7 +120,7 @@ public class UdpSocketServer<T extends InputStream> extends AbstractSocketServer
             ConfigurationFactory.setConfigurationFactory(new ServerConfigurationFactory(args[1]));
         }
         final UdpSocketServer<ObjectInputStream> socketServer = UdpSocketServer.createSerializedSocketServer(port);
-        final Thread server = new Thread(socketServer);
+        final Thread server = new Log4jThread(socketServer);
         server.start();
         final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         while (true) {

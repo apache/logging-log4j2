@@ -34,6 +34,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
@@ -94,7 +95,7 @@ public final class JeroMqAppender extends AbstractAppender {
         context = ZMQ.context(ioThreads);
         logger.trace("{} created ZMQ context {}", simpleName, context);
         if (enableShutdownHook) {
-            final Thread hook = new Thread(simpleName + "-shutdown") {
+            final Thread hook = new Log4jThread(simpleName + "-shutdown") {
                 @Override
                 public void run() {
                     shutdown();

@@ -34,7 +34,7 @@ public final class CachedClock implements Clock {
     private short count = 0;
 
     private CachedClock() {
-        final Thread updater = new Thread(new Runnable() {
+        final Thread updater = new Log4jThread(new Runnable() {
             @Override
             public void run() {
                 while (true) {
