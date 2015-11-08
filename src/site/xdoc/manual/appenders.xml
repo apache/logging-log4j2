@@ -2037,8 +2037,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     <Rewrite name="rewrite">
       <AppenderRef ref="STDOUT"/>
       <LoggerNameLevelRewritePolicy loggerName="com.foo.bar">
-        <LevelPair key="INFO" value="DEBUG"/>
-        <LevelPair key="WARN" value="INFO"/>
+        <KeyValuePair key="INFO" value="DEBUG"/>
+        <KeyValuePair key="WARN" value="INFO"/>
       </LoggerNameLevelRewritePolicy>
     </Rewrite>
   </Appenders>
