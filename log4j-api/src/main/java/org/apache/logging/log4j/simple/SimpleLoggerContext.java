@@ -101,11 +101,9 @@ public class SimpleLoggerContext implements LoggerContext {
 
     @Override
     public ExtendedLogger getLogger(final String name, final MessageFactory messageFactory) {
-        // The loggers map key is the logger name plus the messageFactory FQCN (if any).
-        String key = name;
-        if (messageFactory != null) {
-            key = LoggerContextKey.create(name, messageFactory);
-        }
+        // Note: This is the only method where we add entries to the 'loggers' ivar.
+        // The loggers map key is the logger name plus the messageFactory FQCN.
+        String key = LoggerContextKey.create(name, messageFactory);
         final ExtendedLogger extendedLogger = loggers.get(key);
         if (extendedLogger != null) {
             AbstractLogger.checkMessageFactory(extendedLogger, messageFactory);

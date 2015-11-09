@@ -31,6 +31,7 @@ import org.apache.logging.log4j.core.appender.FileManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.rolling.action.AbstractAction;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
+import org.apache.logging.log4j.core.util.Log4jThread;
 
 /**
  * The Rolling File Manager.
@@ -182,7 +183,7 @@ public class RollingFileManager extends FileManager {
 
                 if (success && descriptor.getAsynchronous() != null) {
                     LOGGER.debug("RollingFileManager executing async {}", descriptor.getAsynchronous());
-                    thread = new Thread(new AsyncAction(descriptor.getAsynchronous(), this));
+                    thread = new Log4jThread(new AsyncAction(descriptor.getAsynchronous(), this));
                     thread.start();
                 }
                 return true;

@@ -42,6 +42,9 @@
       <action issue="LOG4J2-1187" dev="ggregory" type="add">
         Support use case for java.sql.DriverManager.setLogStream(PrintStream).
       </action>
+      <action issue="LOG4J2-1176" dev="rpopma" type="fix">
+        Fixed memory leak when log4j jars are in Tomcat's lib folder.
+      </action>
       <action issue="LOG4J2-1180" dev="ggregory" type="fix" due-to="Mikael Ståldal">
         Logger cache does not account for message factory.
       </action>
@@ -92,6 +95,12 @@
       </action>
       <action issue="LOG4J2-948" dev="mattsicker" type="fix" due-to="Andrew Flower">
         Fix plugin documentation error about Converters.
+      </action>
+      <action issue="LOG4J2-1193" dev="ggregory" type="fix">
+        Prefix all thread names Log4j creates with "Log4j2-".
+      </action>
+      <action issue="LOG4J2-1194" dev="ggregory" type="fix" due-to="Adam Brin">
+        Documentation does not match parameters for LoggerNameLevelRewritePolicy.
       </action>
       <action issue="LOG4J2-1174" dev="ggregory" type="update">
         Update Jackson from 2.6.2 to 2.6.3.

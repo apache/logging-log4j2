@@ -45,6 +45,7 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.util.FileUtils;
+import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.core.util.SecretKeyProvider;
 import org.apache.logging.log4j.util.Strings;
 
@@ -842,7 +843,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
 
         @Override
         public Thread newThread(final Runnable r) {
-            final Thread thread = new Thread(group, r, namePrefix + threadNumber.getAndIncrement(), 0);
+            final Thread thread = new Log4jThread(group, r, namePrefix + threadNumber.getAndIncrement(), 0);
             thread.setDaemon(true);
             if (thread.getPriority() != Thread.NORM_PRIORITY) {
                 thread.setPriority(Thread.NORM_PRIORITY);

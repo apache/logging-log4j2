@@ -23,6 +23,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.apache.logging.log4j.core.util.Log4jThread;
+
 /**
  * Configuration monitor that periodically checks the timestamp of the configuration file and calls the
  * ConfigurationListeners when an update occurs.
@@ -81,7 +83,7 @@ public class FileConfigurationMonitor implements ConfigurationMonitor {
                 if (currentLastModified > lastModified) {
                     lastModified = currentLastModified;
                     for (final ConfigurationListener listener : listeners) {
-                        final Thread thread = new Thread(new ReconfigurationWorker(listener, reconfigurable));
+                        final Thread thread = new Log4jThread(new ReconfigurationWorker(listener, reconfigurable));
                         thread.setDaemon(true);
                         thread.start();
                     }

@@ -278,13 +278,19 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         for (final LoggerConfig loggerConfig : loggerConfigs.values()) {
             loggerConfig.getReliabilityStrategy().beforeStopConfiguration(this);
         }
-        final String cls = getClass().getSimpleName();
-        LOGGER.trace("{} notified {} ReliabilityStrategies that config will be stopped.", cls, loggerConfigs.size());
+        root.getReliabilityStrategy().beforeStopConfiguration(this);
         
-        LOGGER.trace("{} stopping {} LoggerConfigs.", cls, loggerConfigs.size());
-        for (final LoggerConfig logger : loggerConfigs.values()) {
-            logger.stop();
+        final String cls = getClass().getSimpleName();
+        LOGGER.trace("{} notified {} ReliabilityStrategies that config will be stopped.", cls, loggerConfigs.size()
+                + 1);
+        
+        if (!loggerConfigs.isEmpty()) {
+            LOGGER.trace("{} stopping {} LoggerConfigs.", cls, loggerConfigs.size());
+            for (final LoggerConfig logger : loggerConfigs.values()) {
+                logger.stop();
+            }
         }
+        LOGGER.trace("{} stopping root LoggerConfig.", cls);
         if (!root.isStopped()) {
             root.stop();
         }
@@ -293,27 +299,24 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             LOGGER.trace("{} stopping AsyncLoggerConfigDisruptor.", cls);
             asyncLoggerConfigDisruptor.stop();
         }
-        
-        LOGGER.trace("{} stopping AsyncAppenders.", cls);
-
+                
         // Stop the appenders in reverse order in case they still have activity.
         final Appender[] array = appenders.values().toArray(new Appender[appenders.size()]);
-
-        // LOG4J2-511, LOG4J2-392 stop AsyncAppenders first
-        int asyncAppenderCount = 0;
-        for (int i = array.length - 1; i >= 0; --i) {
-            if (array[i] instanceof AsyncAppender) {
-                array[i].stop();
-                asyncAppenderCount++;
+        final List<Appender> async = getAsyncAppenders(array);
+        if (!async.isEmpty()) {
+            // LOG4J2-511, LOG4J2-392 stop AsyncAppenders first
+            LOGGER.trace("{} stopping {} AsyncAppenders.", cls, async.size());
+            for (Appender appender : async) {
+                appender.stop();
             }
         }
-        LOGGER.trace("{} stopped {} AsyncAppenders.", cls, asyncAppenderCount);
 
         LOGGER.trace("{} notifying ReliabilityStrategies that appenders will be stopped.", cls);
         for (final LoggerConfig loggerConfig : loggerConfigs.values()) {
             loggerConfig.getReliabilityStrategy().beforeStopAppenders();
         }
-
+        root.getReliabilityStrategy().beforeStopAppenders();
+        
         LOGGER.trace("{} stopping remaining Appenders.", cls);
         int appenderCount = 0;
         for (int i = array.length - 1; i >= 0; --i) {
@@ -324,7 +327,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
         LOGGER.trace("{} stopped {} remaining Appenders.", cls, appenderCount);
 
-        LOGGER.trace("{} cleaning Appenders from {} LoggerConfigs.", cls, loggerConfigs.size());
+        LOGGER.trace("{} cleaning Appenders from {} LoggerConfigs.", cls, loggerConfigs.size() + 1);
         for (final LoggerConfig loggerConfig : loggerConfigs.values()) {
 
             // LOG4J2-520, LOG4J2-392:
@@ -334,6 +337,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             // Only *after this* the appenders can be cleared or events will be lost.
             loggerConfig.clearAppenders();
         }
+        root.clearAppenders();
 
         if (watchManager.isStarted()) {
             watchManager.stop();
@@ -348,6 +352,16 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             advertiser.unadvertise(advertisement);
         }
         LOGGER.debug("Stopped {} OK", this);
+    }
+    
+    private List<Appender> getAsyncAppenders(final Appender[] all) {
+        final List<Appender> result = new ArrayList<Appender>();
+        for (int i = all.length - 1; i >= 0; --i) {
+            if (all[i] instanceof AsyncAppender) {
+                result.add(all[i]);
+            }
+        }
+        return result;
     }
 
     @Override

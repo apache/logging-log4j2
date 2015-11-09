@@ -31,6 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.util.Log4jThread;
 
 /**
  * Listens for events over a socket connection.
@@ -193,7 +194,7 @@ public class TcpSocketServer<T extends InputStream> extends AbstractSocketServer
             ConfigurationFactory.setConfigurationFactory(new ServerConfigurationFactory(args[1]));
         }
         final TcpSocketServer<ObjectInputStream> socketServer = TcpSocketServer.createSerializedSocketServer(port);
-        final Thread serverThread = new Thread(socketServer);
+        final Thread serverThread = new Log4jThread(socketServer);
         serverThread.start();
         final Charset enc = Charset.defaultCharset();
         final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in, enc));

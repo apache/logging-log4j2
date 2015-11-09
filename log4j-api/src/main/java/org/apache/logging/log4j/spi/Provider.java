@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.spi;
 
+import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.util.Properties;
 
@@ -48,11 +49,11 @@ public class Provider {
     private final String className;
     private final String threadContextMap;
     private final URL url;
-    private final ClassLoader classLoader;
+    private final WeakReference<ClassLoader> classLoader;
 
     public Provider(final Properties props, final URL url, final ClassLoader classLoader) {
         this.url = url;
-        this.classLoader = classLoader;
+        this.classLoader = new WeakReference<ClassLoader>(classLoader);
         final String weight = props.getProperty(FACTORY_PRIORITY);
         priority = weight == null ? DEFAULT_PRIORITY : Integer.valueOf(weight);
         className = props.getProperty(LOGGER_CONTEXT_FACTORY);
@@ -87,8 +88,12 @@ public class Provider {
         if (className == null) {
             return null;
         }
+        ClassLoader loader = classLoader.get();
+        if (loader == null) {
+            return null;
+        }
         try {
-            final Class<?> clazz = classLoader.loadClass(className);
+            final Class<?> clazz = loader.loadClass(className);
             if (LoggerContextFactory.class.isAssignableFrom(clazz)) {
                 return clazz.asSubclass(LoggerContextFactory.class);
             }
@@ -116,8 +121,12 @@ public class Provider {
         if (threadContextMap == null) {
             return null;
         }
+        ClassLoader loader = classLoader.get();
+        if (loader == null) {
+            return null;
+        }
         try {
-            final Class<?> clazz = classLoader.loadClass(threadContextMap);
+            final Class<?> clazz = loader.loadClass(threadContextMap);
             if (ThreadContextMap.class.isAssignableFrom(clazz)) {
                 return clazz.asSubclass(ThreadContextMap.class);
             }
@@ -134,5 +143,28 @@ public class Provider {
      */
     public URL getUrl() {
         return url;
+    }
+    
+    @Override
+    public String toString() {
+        String result = "Provider[";
+        if (priority != DEFAULT_PRIORITY) {
+            result += "priority=" + priority + ", ";
+        }
+        if (threadContextMap != null) {
+            result += "threadContextMap=" + threadContextMap + ", ";
+        }
+        if (className != null) {
+            result += "className=" + className + ", ";
+        }
+        result += "url=" + url;
+        final ClassLoader loader = classLoader.get();
+        if (loader == null) {
+            result += ", classLoader=null(not reachable)";
+        } else {
+            result += ", classLoader=" + loader;
+        }
+        result += "]";
+        return result;
     }
 }
