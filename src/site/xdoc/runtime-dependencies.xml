@@ -73,6 +73,10 @@
           <td><a href="http://lmax-exchange.github.io/disruptor/">LMAX Disruptor</a></td>
         </tr>
         <tr>
+          <td>Kafka Appender</td>
+          <td><a href="http://search.maven.org/#artifactdetails|org.apache.kafka|kafka-clients|0.8.2.2|jar">Kafka client library</a></td>
+        </tr>
+        <tr>
           <td>SMTP Appender</td>
           <td>an implementation of <code>javax.mail</code></td>
         </tr>
