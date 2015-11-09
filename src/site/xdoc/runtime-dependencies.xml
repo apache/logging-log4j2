@@ -55,14 +55,22 @@
         <tr>
           <td>CSV Layout</td>
           <td><a href="https://commons.apache.org/proper/commons-csv/">Apache Commons CSV</a></td>
-        </tr>        
+        </tr>
+        <tr>
+          <td>GELF Layout</td>
+          <td><a href="https://github.com/FasterXML/jackson">Jackson core</a></td>
+        </tr>
+        <tr>
+          <td>JSON Layout</td>
+          <td><a href="https://github.com/FasterXML/jackson">Jackson core and databind</a></td>
+        </tr>
         <tr>
           <td>XML configuration</td>
           <td>-</td>
         </tr>
         <tr>
           <td>JSON configuration</td>
-          <td><a href="https://github.com/FasterXML/jackson">Jackson Data Processor</a></td>
+          <td><a href="https://github.com/FasterXML/jackson">Jackson core and databind</a></td>
         </tr>
         <tr>
           <td>YAML configuration</td>
