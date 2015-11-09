@@ -25,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
+import org.apache.logging.log4j.core.util.StringEncoder;
 
 /**
  * Abstract base class for Layouts that result in a String.
@@ -86,28 +87,6 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
         }
     }
 
-    /**
-     * Converts a String to a byte[].
-     * 
-     * @param str if null, return null.
-     * @param charset if null, use the default charset.
-     * @return a byte[]
-     */
-    static byte[] toBytes(final String str, final Charset charset) {
-        if (str != null) {
-            if (StandardCharsets.ISO_8859_1.equals(charset)) {
-                return encodeSingleByteChars(str);
-            }
-            final Charset actual = charset != null ? charset : Charset.defaultCharset();
-            try { // LOG4J2-935: String.getBytes(String) gives better performance
-                return str.getBytes(actual.name());
-            } catch (UnsupportedEncodingException e) {
-                return str.getBytes(actual);
-            }
-        }
-        return null;
-    }
-
     private void writeObject(final ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
         out.writeUTF(charset.name());
@@ -136,70 +115,13 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
 
     protected byte[] getBytes(final String s) {
         if (useCustomEncoding) { // rely on branch prediction to eliminate this check if false
-            return encodeSingleByteChars(s);
+            return StringEncoder.encodeSingleByteChars(s);
         }
         try { // LOG4J2-935: String.getBytes(String) gives better performance
             return s.getBytes(charsetName);
         } catch (UnsupportedEncodingException e) {
             return s.getBytes(charset);
         }
-    }
-
-    /**
-     * Encode the specified string by casting each character to a byte.
-     * 
-     * @param s the string to encode
-     * @return the encoded String
-     * @see https://issues.apache.org/jira/browse/LOG4J2-1151
-     */
-    private static byte[] encodeSingleByteChars(String s) {
-        final int length = s.length();
-        final byte[] result = new byte[length];
-        encodeString(s, 0, length, result);
-        return result;
-    }
-
-    // LOG4J2-1151
-    /*
-     * Implementation note: this is the fast path. If the char array contains only ISO-8859-1 characters, all the work
-     * will be done here.
-     */
-    private static int encodeIsoChars(String charArray, int charIndex, byte[] byteArray, int byteIndex, int length) {
-        int i = 0;
-        for (; i < length; i++) {
-            char c = charArray.charAt(charIndex++);
-            if (c > 255) {
-                break;
-            }
-            byteArray[(byteIndex++)] = ((byte) c);
-        }
-        return i;
-    }
-
-    // LOG4J2-1151
-    private static int encodeString(String charArray, int charOffset, int charLength, byte[] byteArray) {
-        int byteOffset = 0;
-        int length = Math.min(charLength, byteArray.length);
-        int charDoneIndex = charOffset + length;
-        while (charOffset < charDoneIndex) {
-            int done = encodeIsoChars(charArray, charOffset, byteArray, byteOffset, length);
-            charOffset += done;
-            byteOffset += done;
-            if (done != length) {
-                char c = charArray.charAt(charOffset++);
-                if ((Character.isHighSurrogate(c)) && (charOffset < charDoneIndex)
-                        && (Character.isLowSurrogate(charArray.charAt(charOffset)))) {
-                    if (charLength > byteArray.length) {
-                        charDoneIndex++;
-                        charLength--;
-                    }
-                    charOffset++;
-                }
-                byteArray[(byteOffset++)] = '?';
-                length = Math.min(charDoneIndex - charOffset, byteArray.length - byteOffset);
-            }
-        }
-        return byteOffset;
     }
 
     @Override
