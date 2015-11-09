@@ -57,6 +57,7 @@
         <item name="Event Logging" href="/manual/eventlogging.html"/>
         <item name="Messages" href="/manual/messages.html"/>
         <item name="ThreadContext" href="/manual/thread-context.html"/>
+        <item name="Scala API" href="/manual/scala-api.html"/>
       </item>
 
       <item name="Configuration" href="/manual/configuration.html" collapse="true">
