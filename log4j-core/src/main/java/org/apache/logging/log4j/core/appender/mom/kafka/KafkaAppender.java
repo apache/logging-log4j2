@@ -31,6 +31,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.core.util.StringEncoder;
 
 /**
  * Sends log events to an Apache Kafka topic.
@@ -70,7 +71,7 @@ public final class KafkaAppender extends AbstractAppender {
                 if (getLayout() != null) {
                     manager.send(getLayout().toByteArray(event));
                 } else {
-                    manager.send(event.getMessage().getFormattedMessage().getBytes(StandardCharsets.UTF_8));
+                    manager.send(StringEncoder.toBytes(event.getMessage().getFormattedMessage(), StandardCharsets.UTF_8));
                 }
             } catch (final Exception e) {
                 LOGGER.error("Unable to write to Kafka [{}] for appender [{}].", manager.getName(), getName(), e);
