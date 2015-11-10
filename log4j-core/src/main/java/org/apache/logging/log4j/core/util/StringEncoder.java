@@ -21,7 +21,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 /**
- * String to byte encoding support.
+ * Encodes Strings to bytes.
  *
  * @since 2.5
  */
@@ -53,7 +53,7 @@ public final class StringEncoder {
     }
 
     /**
-     * Encode the specified string by casting each character to a byte.
+     * Encodes the specified string by casting each character to a byte.
      *
      * @param s the string to encode
      * @return the encoded String
