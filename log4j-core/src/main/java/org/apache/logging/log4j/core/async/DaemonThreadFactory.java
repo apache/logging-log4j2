@@ -26,8 +26,8 @@ import org.apache.logging.log4j.core.util.Log4jThread;
  */
 public class DaemonThreadFactory implements ThreadFactory {
 
+    private static final AtomicInteger THREAD_NUMBER = new AtomicInteger(1);
     private final ThreadGroup group;
-    private final AtomicInteger threadNumber = new AtomicInteger(1);
     private final String threadNamePrefix;
 
     public DaemonThreadFactory(final String threadNamePrefix) {
@@ -40,7 +40,7 @@ public class DaemonThreadFactory implements ThreadFactory {
     @Override
     public Thread newThread(final Runnable runnable) {
         final Thread thread = new Log4jThread(group, runnable, threadNamePrefix
-                + threadNumber.getAndIncrement(), 0);
+                + THREAD_NUMBER.getAndIncrement(), 0);
         if (!thread.isDaemon()) {
             thread.setDaemon(true);
         }
