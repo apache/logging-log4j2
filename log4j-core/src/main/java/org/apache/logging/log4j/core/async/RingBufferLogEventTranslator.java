@@ -96,4 +96,25 @@ public class RingBufferLogEventTranslator implements
         this.currentTimeMillis = aCurrentTimeMillis;
         this.nanoTime = aNanoTime;
     }
+
+    public void setValuesPart1(final AsyncLogger anAsyncLogger, final String aLoggerName, final Marker aMarker,
+            final String theFqcn, final Level aLevel, final Message msg, final Throwable aThrowable) {
+        this.asyncLogger = anAsyncLogger;
+        this.loggerName = aLoggerName;
+        this.marker = aMarker;
+        this.fqcn = theFqcn;
+        this.level = aLevel;
+        this.message = msg;
+        this.thrown = aThrowable;
+    }
+
+    public void setValuesPart2(final Map<String, String> aMap, final ContextStack aContextStack, final String aThreadName,
+            final StackTraceElement aLocation, final long aCurrentTimeMillis, final long aNanoTime) {
+        this.contextMap = aMap;
+        this.contextStack = aContextStack;
+        this.threadName = aThreadName;
+        this.location = aLocation;
+        this.currentTimeMillis = aCurrentTimeMillis;
+        this.nanoTime = aNanoTime;
+    }
 }
