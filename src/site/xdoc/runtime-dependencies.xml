@@ -55,14 +55,22 @@
         <tr>
           <td>CSV Layout</td>
           <td><a href="https://commons.apache.org/proper/commons-csv/">Apache Commons CSV</a></td>
-        </tr>        
+        </tr>
+        <tr>
+          <td>GELF Layout</td>
+          <td><a href="https://github.com/FasterXML/jackson">Jackson core</a></td>
+        </tr>
+        <tr>
+          <td>JSON Layout</td>
+          <td><a href="https://github.com/FasterXML/jackson">Jackson core and databind</a></td>
+        </tr>
         <tr>
           <td>XML configuration</td>
           <td>-</td>
         </tr>
         <tr>
           <td>JSON configuration</td>
-          <td><a href="https://github.com/FasterXML/jackson">Jackson Data Processor</a></td>
+          <td><a href="https://github.com/FasterXML/jackson">Jackson core and databind</a></td>
         </tr>
         <tr>
           <td>YAML configuration</td>
@@ -71,6 +79,10 @@
         <tr>
           <td>Async Loggers</td>
           <td><a href="http://lmax-exchange.github.io/disruptor/">LMAX Disruptor</a></td>
+        </tr>
+        <tr>
+          <td>Kafka Appender</td>
+          <td><a href="http://kafka.apache.org/">Kafka client library</a></td>
         </tr>
         <tr>
           <td>SMTP Appender</td>
@@ -93,6 +105,14 @@
           <td>the Java Persistence API classes, a JPA provider implementation, and a decorated
             entity that the user implements. It also requires an appropriate JDBC driver
           </td>
+        </tr>
+        <tr>
+          <td>NoSQL Appender with MongoDB provider</td>
+          <td>MongoDB Java Client driver</td>
+        </tr>
+        <tr>
+          <td>NoSQL Appender with Apache CouchDB provider</td>
+          <td>LightCouch CouchDB client library</td>
         </tr>
         <tr>
           <td>Bzip2, Deflate, Pack200, and XZ compression on rollover</td>

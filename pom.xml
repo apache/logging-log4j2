@@ -78,7 +78,7 @@
       </roles>
       <timezone>Asia/Tokyo</timezone>
       <properties>
-        <!--<picUrl>http://people.apache.org/~rpopma/img/profilepic.jpg</picUrl>-->
+        <picUrl>http://people.apache.org/~rpopma/img/profilepic.jpg</picUrl>
       </properties>
     </developer>
     <developer>
@@ -120,6 +120,22 @@
       <timezone>Europe/Stockholm</timezone>
     </developer>
   </developers>
+  <!-- Contributors -->
+  <contributors>
+      <contributor>
+        <name>Murad Ersoy</name>
+        <email>muradersoy@gmail.com</email>
+        <url>https://www.behance.net/muradersoy</url>
+        <roles>
+          <role>Illustrator and Designer</role>
+          <role>created the new Log4j 2 logo.</role>
+        </roles>
+        <timezone>Europe/Istanbul</timezone>
+        <properties>
+          <picUrl>https://mir-s3-cdn-cf.behance.net/user/138/403dcf1521581.54d67f8fb01f7.jpg</picUrl>
+        </properties>
+      </contributor>
+   </contributors>
   <mailingLists>
     <mailingList>
       <name>log4j-user</name>

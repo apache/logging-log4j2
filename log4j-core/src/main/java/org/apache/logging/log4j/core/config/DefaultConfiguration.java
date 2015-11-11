@@ -28,10 +28,12 @@ public class DefaultConfiguration extends AbstractConfiguration {
      * The name of the default configuration.
      */
     public static final String DEFAULT_NAME = "Default";
+    
     /**
      * The System Property used to specify the logging level.
      */
     public static final String DEFAULT_LEVEL = "org.apache.logging.log4j.level";
+    
     /**
      * The default Pattern used for the default Layout.
      */

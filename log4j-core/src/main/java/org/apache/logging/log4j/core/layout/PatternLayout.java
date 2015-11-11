@@ -37,6 +37,7 @@ import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.core.pattern.RegexReplacement;
+import org.apache.logging.log4j.core.util.StringEncoder;
 
 /**
  * A flexible layout configurable with pattern string.
@@ -125,7 +126,7 @@ public final class PatternLayout extends AbstractStringLayout {
                           final PatternSelector patternSelector, final Charset charset,
                           final boolean alwaysWriteExceptions, final boolean noConsoleNoAnsi,
                           final String header, final String footer) {
-        super(charset, toBytes(header, charset), toBytes(footer, charset));
+        super(charset, StringEncoder.toBytes(header, charset), StringEncoder.toBytes(footer, charset));
         this.replace = replace;
         this.conversionPattern = pattern;
         this.patternSelector = patternSelector;
