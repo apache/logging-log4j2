@@ -17,6 +17,10 @@
 
 package org.apache.logging.log4j.core.async;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -56,8 +60,8 @@ final class DisruptorUtil {
 
     static int calculateRingBufferSize(final String propertyName) {
         int ringBufferSize = RINGBUFFER_DEFAULT_SIZE;
-        final String userPreferredRBSize = PropertiesUtil.getProperties().getStringProperty(
-                propertyName, String.valueOf(ringBufferSize));
+        final String userPreferredRBSize = PropertiesUtil.getProperties().getStringProperty(propertyName,
+                String.valueOf(ringBufferSize));
         try {
             int size = Integer.parseInt(userPreferredRBSize);
             if (size < RINGBUFFER_MIN_SIZE) {
@@ -79,12 +83,36 @@ final class DisruptorUtil {
         }
         try {
             @SuppressWarnings("unchecked")
-            final Class<? extends ExceptionHandler<T>> klass =
-                    (Class<? extends ExceptionHandler<T>>) Class.forName(cls);
+            final Class<? extends ExceptionHandler<T>> klass = (Class<? extends ExceptionHandler<T>>) Class
+                    .forName(cls);
             return klass.newInstance();
         } catch (final Exception ignored) {
             LOGGER.debug("Invalid {} value: error creating {}: ", propertyName, cls, ignored);
             return null;
         }
     }
+
+    /**
+     * Returns the thread ID of the background appender thread. This allows us to detect Logger.log() calls initiated
+     * from the appender thread, which may cause deadlock when the RingBuffer is full. (LOG4J2-471)
+     * 
+     * @param executor runs the appender thread
+     * @return the thread ID of the background appender thread
+     */
+    public static long getExecutorThreadId(final ExecutorService executor) {
+        Future<Long> result = executor.submit(new Callable<Long>() {
+            @Override
+            public Long call() {
+                return Thread.currentThread().getId();
+            }
+        });
+        try {
+            return result.get();
+        } catch (final Exception ex) {
+            final String msg = "Could not obtain executor thread Id. "
+                    + "Giving up to avoid the risk of application deadlock.";
+            throw new IllegalStateException(msg, ex);
+        }
+    }
+
 }
