@@ -34,7 +34,7 @@
             <p>
                 As of version 2.4, Log4j 2 requires Java 7. Versions 2.3 and earlier require Java 6.
                 Some features may require optional
-                <a href="dependencies.html">dependencies</a>. These dependencies are specified in the
+                <a href="../runtime-dependencies.html">dependencies</a>. These dependencies are specified in the
                 documentation for those features.
             </p>
             <p>
