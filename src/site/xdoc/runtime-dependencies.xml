@@ -243,6 +243,13 @@
         This only requires the Log4j API.
       </p>
 
+      <a name="log4j-api-scala" />
+      <h4>log4j-api-scala</h4>
+      <p>
+        The Log4j <a href="log4j-api-scala_2.11/index.html">Scala API</a> requires Scala runtime library and reflection in
+        addition to the Log4j API.
+      </p>
+
     </section>
   </body>
 </document>
