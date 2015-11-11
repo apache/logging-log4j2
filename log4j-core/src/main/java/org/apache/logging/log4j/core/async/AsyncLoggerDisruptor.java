@@ -40,9 +40,12 @@ class AsyncLoggerDisruptor {
     private static final int MAX_DRAIN_ATTEMPTS_BEFORE_SHUTDOWN = 200;
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
-    private String contextName;
-    private ExecutorService executor;
     private volatile Disruptor<RingBufferLogEvent> disruptor;
+    private ExecutorService executor;
+    private String contextName;
+
+    private boolean useThreadLocalTranslator;
+    private long backgroundThreadId;
 
     AsyncLoggerDisruptor(String contextName) {
         this.contextName = contextName;
@@ -67,15 +70,16 @@ class AsyncLoggerDisruptor {
      */
     synchronized void start() {
         if (disruptor != null) {
-            LOGGER.trace("[{}] AsyncLoggerHelper not starting new disruptor for this context, using existing object.",
+            LOGGER.trace(
+                    "[{}] AsyncLoggerDisruptor not starting new disruptor for this context, using existing object.",
                     contextName);
             return;
         }
-        LOGGER.trace("[{}] AsyncLoggerHelper creating new disruptor for this context.", contextName);
+        LOGGER.trace("[{}] AsyncLoggerDisruptor creating new disruptor for this context.", contextName);
         final int ringBufferSize = DisruptorUtil.calculateRingBufferSize("AsyncLogger.RingBufferSize");
         final WaitStrategy waitStrategy = DisruptorUtil.createWaitStrategy("AsyncLogger.WaitStrategy");
         executor = Executors.newSingleThreadExecutor(new DaemonThreadFactory("AsyncLogger[" + contextName + "]"));
-        Info.initExecutorThreadInstance(executor);
+        backgroundThreadId = DisruptorUtil.getExecutorThreadId(executor);
 
         disruptor = new Disruptor<>(RingBufferLogEvent.FACTORY, ringBufferSize, executor, ProducerType.MULTI,
                 waitStrategy);
@@ -91,29 +95,9 @@ class AsyncLoggerDisruptor {
                 + "exceptionHandler={}...", contextName, disruptor.getRingBuffer().getBufferSize(), waitStrategy
                 .getClass().getSimpleName(), errorHandler);
         disruptor.start();
-    }
 
-    void enqueueLogMessageInfo(final RingBufferLogEventTranslator translator) {
-        // LOG4J2-639: catch NPE if disruptor field was set to null in release()
-        try {
-            // Note: we deliberately access the volatile disruptor field afresh here.
-            // Avoiding this and using an older reference could result in adding a log event to the disruptor after it
-            // was shut down, which could cause the publishEvent method to hang and never return.
-            disruptor.publishEvent(translator);
-        } catch (final NullPointerException npe) {
-            LOGGER.fatal("[{}] Ignoring log event after log4j was shut down.", contextName);
-        }
-    }
-
-    /**
-     * Creates and returns a new {@code RingBufferAdmin} that instruments the ringbuffer of the {@code AsyncLogger}.
-     *
-     * @param jmxContextName name of the {@code AsyncLoggerContext}
-     * @return a new {@code RingBufferAdmin} that instruments the ringbuffer
-     */
-    public RingBufferAdmin createRingBufferAdmin(final String jmxContextName) {
-        final RingBuffer<RingBufferLogEvent> ring = disruptor == null ? null : disruptor.getRingBuffer();
-        return RingBufferAdmin.forAsyncLogger(ring, jmxContextName);
+        LOGGER.trace("[{}] AsyncLoggers use a {} translator", contextName, useThreadLocalTranslator ? "threadlocal"
+                : "vararg");
     }
 
     /**
@@ -123,10 +107,10 @@ class AsyncLoggerDisruptor {
     synchronized void stop() {
         final Disruptor<RingBufferLogEvent> temp = getDisruptor();
         if (temp == null) {
-            LOGGER.trace("[{}] AsyncLoggerHelper: disruptor for this context already shut down.", contextName);
+            LOGGER.trace("[{}] AsyncLoggerDisruptor: disruptor for this context already shut down.", contextName);
             return; // disruptor was already shut down by another thread
         }
-        LOGGER.debug("[{}] AsyncLoggerHelper: shutting down disruptor for this context.", contextName);
+        LOGGER.debug("[{}] AsyncLoggerDisruptor: shutting down disruptor for this context.", contextName);
 
         // We must guarantee that publishing to the RingBuffer has stopped before we call disruptor.shutdown().
         disruptor = null; // client code fails with NPE if log after stop. This is by design.
@@ -142,10 +126,9 @@ class AsyncLoggerDisruptor {
         }
         temp.shutdown(); // busy-spins until all events currently in the disruptor have been processed
 
-        LOGGER.trace("[{}] AsyncLoggerHelper: shutting down disruptor executor.", contextName);
+        LOGGER.trace("[{}] AsyncLoggerDisruptor: shutting down disruptor executor.", contextName);
         executor.shutdown(); // finally, kill the processor thread
         executor = null;
-        // Info.THREADLOCAL.remove(); // LOG4J2-323
     }
 
     /**
@@ -156,4 +139,78 @@ class AsyncLoggerDisruptor {
         return !ringBuffer.hasAvailableCapacity(ringBuffer.getBufferSize());
     }
 
+    /**
+     * Creates and returns a new {@code RingBufferAdmin} that instruments the ringbuffer of the {@code AsyncLogger}.
+     *
+     * @param jmxContextName name of the {@code AsyncLoggerContext}
+     * @return a new {@code RingBufferAdmin} that instruments the ringbuffer
+     */
+    public RingBufferAdmin createRingBufferAdmin(final String jmxContextName) {
+        final RingBuffer<RingBufferLogEvent> ring = disruptor == null ? null : disruptor.getRingBuffer();
+        return RingBufferAdmin.forAsyncLogger(ring, jmxContextName);
+    }
+
+    /**
+     * Returns {@code true} if the current log event should be logged in the current thread, {@code false} if it should
+     * be logged in a background thread. (LOG4J2-471)
+     * 
+     * @return whether the current log event should be logged in the current thread
+     */
+    boolean shouldLogInCurrentThread() {
+        return currentThreadIsAppenderThread() && isRingBufferFull();
+    }
+
+    /**
+     * Returns {@code true} if the current thread is the Disruptor background thread, {@code false} otherwise.
+     * 
+     * @return whether this thread is the Disruptor background thread.
+     */
+    private boolean currentThreadIsAppenderThread() {
+        return Thread.currentThread().getId() == backgroundThreadId;
+    }
+
+    /**
+     * Returns {@code true} if the Disruptor is {@code null} because it has been stopped, or if its Ringbuffer is full.
+     * 
+     * @return {@code true} if the disruptor is currently not usable
+     */
+    private boolean isRingBufferFull() {
+        final Disruptor<RingBufferLogEvent> theDisruptor = this.disruptor;
+        return theDisruptor == null || theDisruptor.getRingBuffer().remainingCapacity() == 0;
+    }
+
+    void enqueueLogMessageInfo(final RingBufferLogEventTranslator translator) {
+        // LOG4J2-639: catch NPE if disruptor field was set to null in stop()
+        try {
+            // Note: we deliberately access the volatile disruptor field afresh here.
+            // Avoiding this and using an older reference could result in adding a log event to the disruptor after it
+            // was shut down, which could cause the publishEvent method to hang and never return.
+            disruptor.publishEvent(translator);
+        } catch (final NullPointerException npe) {
+            LOGGER.fatal("[{}] Ignoring log event after log4j was shut down.", contextName);
+        }
+    }
+
+    /**
+     * Returns whether it is allowed to store non-JDK classes in ThreadLocal objects for efficiency.
+     * 
+     * @return whether AsyncLoggers are allowed to use ThreadLocal objects
+     * @since 2.5
+     * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-1172">LOG4J2-1172</a>
+     */
+    public boolean isUseThreadLocals() {
+        return useThreadLocalTranslator;
+    }
+
+    /**
+     * Signals this AsyncLoggerDisruptor whether it is allowed to store non-JDK classes in ThreadLocal objects for
+     * efficiency.
+     * 
+     * @param allow whether AsyncLoggers are allowed to use ThreadLocal objects
+     * @since 2.5
+     * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-1172">LOG4J2-1172</a>
+     */
+    public void setUseThreadLocals(final boolean allow) {
+        useThreadLocalTranslator = allow;
+    }
 }

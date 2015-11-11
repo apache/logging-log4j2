@@ -22,11 +22,12 @@ import java.io.FileReader;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.CoreLoggerContexts;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.DummyNanoClock;
+import org.apache.logging.log4j.core.util.NanoClockFactory;
+import org.apache.logging.log4j.core.util.NanoClockFactory.Mode;
 import org.apache.logging.log4j.core.util.SystemNanoClock;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
@@ -55,15 +56,19 @@ public class AsyncLoggerTestNanoTime {
         final File file = new File("target", "NanoTimeToFileTest.log");
         // System.out.println(f.getAbsolutePath());
         file.delete();
-        final Logger log = LogManager.getLogger("com.foo.Bar");
+        final AsyncLogger log = (AsyncLogger) LogManager.getLogger("com.foo.Bar");
         final long before = System.nanoTime();
         log.info("Use actual System.nanoTime()");
-        assertTrue("using SystemNanoClock", AsyncLogger.getNanoClock() instanceof SystemNanoClock);
+        assertTrue("using SystemNanoClock", log.getNanoClock() instanceof SystemNanoClock);
 
-        final long DUMMYNANOTIME = 123;
-        AsyncLogger.setNanoClock(new DummyNanoClock(DUMMYNANOTIME));
+        NanoClockFactory.setMode(Mode.Dummy);
+        final long DUMMYNANOTIME = 0;
+        
+        // trigger a new nano clock lookup
+        log.updateConfiguration(log.getContext().getConfiguration());
+        
         log.info("Use dummy nano clock");
-        assertTrue("using SystemNanoClock", AsyncLogger.getNanoClock() instanceof DummyNanoClock);
+        assertTrue("using SystemNanoClock", log.getNanoClock() instanceof DummyNanoClock);
         
         CoreLoggerContexts.stopLoggerContext(file); // stop async thread
 

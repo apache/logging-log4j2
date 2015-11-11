@@ -48,6 +48,9 @@
       <action issue="LOG4J2-1187" dev="ggregory" type="add">
         Support use case for java.sql.DriverManager.setLogStream(PrintStream).
       </action>
+      <action issue="LOG4J2-1172" dev="rpopma" type="fix">
+        Fixed ThreadLocal leak [AsyncLogger$Info] on Tomcat when using AsyncLoggerContextSelector.
+      </action>
       <action issue="LOG4J2-1176" dev="rpopma" type="fix">
         Fixed memory leak when log4j jars are in Tomcat's lib folder.
       </action>

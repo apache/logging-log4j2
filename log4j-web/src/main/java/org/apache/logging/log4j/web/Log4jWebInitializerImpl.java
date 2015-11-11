@@ -29,6 +29,7 @@ import javax.servlet.ServletContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.async.AsyncLoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
@@ -107,6 +108,9 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
                 this.initializeJndi(location);
             } else {
                 this.initializeNonJndi(location);
+            }
+            if (this.loggerContext instanceof AsyncLoggerContext) {
+                ((AsyncLoggerContext) this.loggerContext).setUseThreadLocals(false);
             }
 
             this.servletContext.setAttribute(CONTEXT_ATTRIBUTE, this.loggerContext);
