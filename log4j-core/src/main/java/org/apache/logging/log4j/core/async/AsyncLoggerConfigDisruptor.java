@@ -131,10 +131,10 @@ public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
     };
 
     private static final ThreadFactory THREAD_FACTORY = new DaemonThreadFactory("AsyncLoggerConfig-");
-    private static final ThreadLocal<Boolean> IS_APPENDER_THREAD = new ThreadLocal<>();
 
     private volatile Disruptor<Log4jEventWrapper> disruptor;
     private ExecutorService executor;
+    private long backgroundThreadId; // LOG4J2-471
 
     public AsyncLoggerConfigDisruptor() {
     }
@@ -155,7 +155,7 @@ public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
         final int ringBufferSize = DisruptorUtil.calculateRingBufferSize("AsyncLoggerConfig.RingBufferSize");
         final WaitStrategy waitStrategy = DisruptorUtil.createWaitStrategy("AsyncLoggerConfig.WaitStrategy");
         executor = Executors.newSingleThreadExecutor(THREAD_FACTORY);
-        initThreadLocalForExecutorThread(executor);
+        backgroundThreadId = DisruptorUtil.getExecutorThreadId(executor);
 
         disruptor = new Disruptor<>(FACTORY, ringBufferSize, executor, ProducerType.MULTI, waitStrategy);
 
@@ -209,21 +209,6 @@ public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
     private static boolean hasBacklog(final Disruptor<?> theDisruptor) {
         final RingBuffer<?> ringBuffer = theDisruptor.getRingBuffer();
         return !ringBuffer.hasAvailableCapacity(ringBuffer.getBufferSize());
-    }
-
-    /**
-     * Initialize the threadlocal that allows us to detect Logger.log() calls initiated from the appender thread, which
-     * may cause deadlock when the RingBuffer is full. (LOG4J2-471)
-     * 
-     * @param executor contains the appender background thread
-     */
-    private static void initThreadLocalForExecutorThread(final ExecutorService executor) {
-        executor.submit(new Runnable() {
-            @Override
-            public void run() {
-                IS_APPENDER_THREAD.set(Boolean.TRUE);
-            }
-        });
     }
 
     /*
@@ -303,7 +288,16 @@ public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
      * Returns true if the specified ringbuffer is full and the Logger.log() call was made from the appender thread.
      */
     private boolean isCalledFromAppenderThreadAndBufferFull(Disruptor<Log4jEventWrapper> theDisruptor) {
-        return IS_APPENDER_THREAD.get() == Boolean.TRUE && theDisruptor.getRingBuffer().remainingCapacity() == 0;
+        return currentThreadIsAppenderThread() && theDisruptor.getRingBuffer().remainingCapacity() == 0;
+    }
+
+    /**
+     * Returns {@code true} if the current thread is the Disruptor background thread, {@code false} otherwise.
+     * 
+     * @return whether this thread is the Disruptor background thread.
+     */
+    private boolean currentThreadIsAppenderThread() {
+        return Thread.currentThread().getId() == backgroundThreadId;
     }
 
     /*
