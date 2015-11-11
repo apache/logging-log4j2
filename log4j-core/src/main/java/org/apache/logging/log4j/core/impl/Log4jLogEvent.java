@@ -542,7 +542,7 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
         if (fqcnOfLogger == null) {
             return null;
         }
-        final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
         StackTraceElement last = null;
         for (int i = stackTrace.length - 1; i > 0; i--) {
             final String className = stackTrace[i].getClassName();
