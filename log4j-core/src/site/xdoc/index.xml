@@ -38,31 +38,10 @@
                 documentation for those features.
             </p>
             <p>
-              Below is a list of Log4j features that require external dependencies.
+              Some Log4j features require external dependencies.
               See the <a href="dependencies.html#Dependency_Tree">Dependency Tree</a>
               for the exact list of JAR files needed for these features.
             </p>
-            <ul>
-                <li>JSON configuration requires the Jackson Data Processor.</li>
-                <li>Async Loggers require the LMAX Disruptor.</li>
-                <li>The SMTPAppender requires Javax Mail.</li>
-                <li>The JMSQueueAppender and JMSTopicAppender require a JMS implementation like
-                  <a href="http://activemq.apache.org/">Apache ActiveMQ</a>.</li>
-                <li>The Kafka appender requires <a href="http://search.maven.org/#artifactdetails|org.apache.kafka|kafka-clients|0.8.2.2|jar">Kafka client library</a></li>
-                <li>Windows console color support requires <a href="http://jansi.fusesource.org/">Jansi</a>.</li>
-                <li>The JDBC Appender requires a JDBC driver for the database you choose to write events to.</li>
-                <li>The JPA Appender requires the Java Persistence API classes, a JPA provider implementation,
-                and a decorated entity that the user implements. It also requires an appropriate JDBC driver.</li>
-                <li>The NoSQL Appender with MongoDB provider requires the MongoDB Java Client driver.</li>
-                <li>The NoSQL Appender with Apache CouchDB provider requires the LightCouch CouchDB client library.</li>
-                <li>The NoSQL Appender can be customized with a user-supplied provider, which will require the
-                appropriate client library.</li>
-                <li>Bzip2, Deflate, Pack200, and XZ compression on rollover requires
-                <a href="http://commons.apache.org/proper/commons-compress/">Apache Commons Compress</a>. In addition, 
-                XZ requires <a href="http://tukaani.org/xz/java.html">XZ for Java</a>.</li>
-                <li>The CSV layout requires the <a href="https://commons.apache.org/proper/commons-csv/">Apache Commons CSV</a> library.</li>
-                <li>The ZeroMQ/JeroMQ requires the <a href="https://github.com/zeromq/jeromq">JeroMQ</a> library.</li>
-            </ul>
         </section>
 
     </body>

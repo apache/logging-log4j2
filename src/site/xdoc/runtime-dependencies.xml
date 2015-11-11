@@ -82,7 +82,7 @@
         </tr>
         <tr>
           <td>Kafka Appender</td>
-          <td><a href="http://search.maven.org/#artifactdetails|org.apache.kafka|kafka-clients|0.8.2.2|jar">Kafka client library</a></td>
+          <td><a href="http://kafka.apache.org/">Kafka client library</a></td>
         </tr>
         <tr>
           <td>SMTP Appender</td>
@@ -105,6 +105,14 @@
           <td>the Java Persistence API classes, a JPA provider implementation, and a decorated
             entity that the user implements. It also requires an appropriate JDBC driver
           </td>
+        </tr>
+        <tr>
+          <td>NoSQL Appender with MongoDB provider</td>
+          <td>MongoDB Java Client driver</td>
+        </tr>
+        <tr>
+          <td>NoSQL Appender with Apache CouchDB provider</td>
+          <td>LightCouch CouchDB client library</td>
         </tr>
         <tr>
           <td>Bzip2, Deflate, Pack200, and XZ compression on rollover</td>
