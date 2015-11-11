@@ -29,7 +29,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.async.AsyncLogger;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationListener;
@@ -506,8 +505,9 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
                 // LOG4J2-716: Android has no java.lang.management
                 LOGGER.error("Could not reconfigure JMX", t);
             }
+            // AsyncLoggers update their nanoClock when the configuration changes
             Log4jLogEvent.setNanoClock(NanoClockFactory.createNanoClock());
-            AsyncLogger.setNanoClock(NanoClockFactory.createNanoClock());
+            
             return prev;
         } finally {
             configLock.unlock();
