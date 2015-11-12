@@ -24,11 +24,16 @@
       <PatternLayout pattern="[%m]"/>
       <Property name="bootstrap.servers">localhost:9092</Property>
     </Kafka>
+  <Kafka name="KafkaAppenderWithSerializedLayout" topic="kafka-topic">
+    <SerializedLayout/>
+    <Property name="bootstrap.servers">localhost:9092</Property>
+  </Kafka>
   </Appenders>
   <Loggers>
     <Root level="info">
       <AppenderRef ref="KafkaAppender"/>
       <AppenderRef ref="KafkaAppenderWithLayout"/>
+      <AppenderRef ref="KafkaAppenderWithSerializedLayout"/>
     </Root>
   </Loggers>
 </Configuration>
