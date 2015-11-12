@@ -21,7 +21,6 @@ import java.io.File;
 import java.io.FileReader;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.CoreLoggerContexts;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Constants;
@@ -53,7 +52,10 @@ public class AsyncLoggerTest {
         final File file = new File("target", "AsyncLoggerTest.log");
         // System.out.println(f.getAbsolutePath());
         file.delete();
-        final Logger log = LogManager.getLogger("com.foo.Bar");
+        
+        final AsyncLogger log = (AsyncLogger) LogManager.getLogger("com.foo.Bar");
+        assertTrue(log.getNanoClock() instanceof DummyNanoClock);
+        
         final String msg = "Async logger msg";
         log.info(msg, new InternalError("this is not a real error"));
         CoreLoggerContexts.stopLoggerContext(false, file); // stop async thread
@@ -68,10 +70,12 @@ public class AsyncLoggerTest {
         final String location = "testAsyncLogWritesToLog";
         assertTrue("no location", !line1.contains(location));
     }
-    
-    @Test
-    public void testNanoClockInitiallyDummy() {
-        assertTrue(AsyncLogger.getNanoClock() instanceof DummyNanoClock);
-    }
+
+    // NOTE: only define one @Test method per test class with Async Loggers to prevent spurious failures
+    // @Test
+    // public void testNanoClockInitiallyDummy() {
+    // final AsyncLogger log = (AsyncLogger) LogManager.getLogger("com.foo.Bar");
+    // assertTrue(log.getNanoClock() instanceof DummyNanoClock);
+    // }
 
 }

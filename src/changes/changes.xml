@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.5" date="2015-MM-DD" description="GA Release 2.5">
+      <action issue="LOG4J2-1195" dev="mikes" type="fix" due-to="Melvin Du">
+        Make KafkaAppender support SerializedLayout.
+      </action>
       <action issue="LOG4J2-1136" dev="rgoers" type="add">
         Add support for JSR 223 scripts in filters and the PatternSelector.
       </action>
@@ -41,6 +44,12 @@
       </action>
       <action issue="LOG4J2-1187" dev="ggregory" type="add">
         Support use case for java.sql.DriverManager.setLogStream(PrintStream).
+      </action>
+      <action issue="LOG4J2-1029" dev="rpopma" type="fix" due-to="Stefan Leonhartsberger">
+        Performance improvement when gathering location information.
+      </action>
+      <action issue="LOG4J2-1172" dev="rpopma" type="fix">
+        Fixed ThreadLocal leak [AsyncLogger$Info] on Tomcat when using AsyncLoggerContextSelector.
       </action>
       <action issue="LOG4J2-1176" dev="rpopma" type="fix">
         Fixed memory leak when log4j jars are in Tomcat's lib folder.

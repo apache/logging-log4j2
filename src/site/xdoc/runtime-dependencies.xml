@@ -93,7 +93,7 @@
           <td>a JMS broker like <a href="http://activemq.apache.org/">Apache ActiveMQ</a></td>
         </tr>
         <tr>
-          <td>Windows color support</td>
+          <td>Windows console color support</td>
           <td><a href="http://jansi.fusesource.org/">Jansi</a></td>
         </tr>
         <tr>

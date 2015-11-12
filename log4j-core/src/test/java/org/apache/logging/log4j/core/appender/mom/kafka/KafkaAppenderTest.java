@@ -17,19 +17,12 @@
 
 package org.apache.logging.log4j.core.appender.mom.kafka;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Properties;
-
 import org.apache.kafka.clients.producer.MockProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.SimpleMessage;
@@ -37,6 +30,16 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Properties;
+
+import static org.junit.Assert.*;
 
 public class KafkaAppenderTest {
 
@@ -98,4 +101,24 @@ public class KafkaAppenderTest {
         assertEquals("[" + LOG_MESSAGE + "]", new String(item.value(), StandardCharsets.UTF_8));
     }
 
+    @Test
+    public void testAppendWithSerializedLayout() throws Exception {
+        final Appender appender = ctx.getRequiredAppender("KafkaAppenderWithSerializedLayout");
+        LogEvent logEvent = createLogEvent();
+        appender.append(logEvent);
+        final List<ProducerRecord<byte[], byte[]>> history = kafka.history();
+        assertEquals(1, history.size());
+        final ProducerRecord<byte[], byte[]> item = history.get(0);
+        assertNotNull(item);
+        assertEquals(TOPIC_NAME, item.topic());
+        assertNull(item.key());
+        assertEquals(LOG_MESSAGE, deserializeLogEvent(item.value()).getMessage().getFormattedMessage());
+    }
+
+    private LogEvent deserializeLogEvent(byte[] data) throws IOException, ClassNotFoundException {
+        ByteArrayInputStream bis = new ByteArrayInputStream(data);
+        try (ObjectInput ois = new ObjectInputStream(bis)) {
+            return (LogEvent) ois.readObject();
+        }
+    }
 }

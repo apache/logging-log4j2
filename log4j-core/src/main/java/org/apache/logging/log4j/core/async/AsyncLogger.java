@@ -17,26 +17,28 @@
 package org.apache.logging.log4j.core.async;
 
 import java.util.Map;
-import java.util.Objects;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.ReliabilityStrategy;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.core.util.DummyNanoClock;
 import org.apache.logging.log4j.core.util.NanoClock;
+import org.apache.logging.log4j.core.util.NanoClockFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.TimestampMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 
+import com.lmax.disruptor.EventTranslatorVararg;
 import com.lmax.disruptor.dsl.Disruptor;
 
 /**
@@ -58,14 +60,22 @@ import com.lmax.disruptor.dsl.Disruptor;
  * and they will flush to disk at the end of each batch. This means that even with immediateFlush=false, there will
  * never be any items left in the buffer; all log events will all be written to disk in a very efficient manner.
  */
-public class AsyncLogger extends Logger {
+public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBufferLogEvent> {
+    // Implementation note: many methods in this class are tuned for performance. MODIFY WITH CARE!
+    // Specifically, try to keep the hot methods to 35 bytecodes or less:
+    // this is within the MaxInlineSize threshold and makes these methods candidates for
+    // immediate inlining instead of waiting until they are designated "hot enough".
 
     private static final long serialVersionUID = 1L;
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
+    private static final Clock CLOCK = ClockFactory.getClock(); // not reconfigurable
 
-    private static final Clock CLOCK = ClockFactory.getClock();
-    private static volatile NanoClock nanoClock = new DummyNanoClock();
+    private static final ThreadNameCachingStrategy THREAD_NAME_CACHING_STRATEGY = ThreadNameCachingStrategy.create();
+
+    private final ThreadLocal<RingBufferLogEventTranslator> threadLocalTranslator = new ThreadLocal<>();
     private final AsyncLoggerDisruptor loggerDisruptor;
+
+    private volatile NanoClock nanoClock; // reconfigurable
 
     /**
      * Constructs an {@code AsyncLogger} with the specified context, name and message factory.
@@ -79,30 +89,45 @@ public class AsyncLogger extends Logger {
             final AsyncLoggerDisruptor loggerDisruptor) {
         super(context, name, messageFactory);
         this.loggerDisruptor = loggerDisruptor;
+        nanoClock = NanoClockFactory.createNanoClock(); // based on initial configuration
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.logging.log4j.core.Logger#updateConfiguration(org.apache.logging.log4j.core.config.Configuration)
+     */
+    @Override
+    protected void updateConfiguration(Configuration newConfig) {
+        super.updateConfiguration(newConfig);
+        nanoClock = NanoClockFactory.createNanoClock();
+        LOGGER.trace("[{}] AsyncLogger {} uses {}.", getContext().getName(), getName(), nanoClock);
+    }
+    
+    // package protected for unit tests
+    NanoClock getNanoClock() {
+        return nanoClock;
+    }
+
+    private RingBufferLogEventTranslator getCachedTranslator() {
+        RingBufferLogEventTranslator result = threadLocalTranslator.get();
+        if (result == null) {
+            result = new RingBufferLogEventTranslator();
+            threadLocalTranslator.set(result);
+        }
+        return result;
     }
 
     @Override
     public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message,
             final Throwable thrown) {
 
-        final Disruptor<RingBufferLogEvent> temp = loggerDisruptor.getDisruptor();
-        if (temp == null) { // LOG4J2-639
-            LOGGER.fatal("Ignoring log event after log4j was shut down");
+        // Implementation note: this method is tuned for performance. MODIFY WITH CARE!
+
+        if (loggerDisruptor.shouldLogInCurrentThread()) {
+            logMessageInCurrentThread(fqcn, level, marker, message, thrown);
         } else {
-            logMessage0(temp, fqcn, level, marker, message, thrown);
-        }
-    }
-
-    private void logMessage0(final Disruptor<RingBufferLogEvent> theDisruptor, final String fqcn, final Level level,
-            final Marker marker, final Message message, final Throwable thrown) {
-        final Info info = Info.get();
-        logMessageInAppropriateThread(info, theDisruptor, fqcn, level, marker, message, thrown);
-    }
-
-    private void logMessageInAppropriateThread(final Info info, final Disruptor<RingBufferLogEvent> theDisruptor,
-            final String fqcn, final Level level, final Marker marker, final Message message, final Throwable thrown) {
-        if (!logMessageInCurrentThread(info, theDisruptor, fqcn, level, marker, message, thrown)) {
-            logMessageInBackgroundThread(info, fqcn, level, marker, message, thrown);
+            logMessageInBackgroundThread(fqcn, level, marker, message, thrown);
         }
     }
 
@@ -110,8 +135,6 @@ public class AsyncLogger extends Logger {
      * LOG4J2-471: prevent deadlock when RingBuffer is full and object being logged calls Logger.log() from its
      * toString() method
      *
-     * @param info threadlocal information - used to determine if the current thread is the background appender thread
-     * @param theDisruptor used to check if the buffer is full
      * @param fqcn fully qualified caller name
      * @param level log level
      * @param marker optional marker
@@ -120,15 +143,11 @@ public class AsyncLogger extends Logger {
      * @return {@code true} if the event has been logged in the current thread, {@code false} if it should be passed to
      *         the background thread
      */
-    private boolean logMessageInCurrentThread(Info info, final Disruptor<RingBufferLogEvent> theDisruptor,
-            final String fqcn, final Level level, final Marker marker, final Message message, final Throwable thrown) {
-        if (info.isAppenderThread && theDisruptor.getRingBuffer().remainingCapacity() == 0) {
-            // bypass RingBuffer and invoke Appender directly
-            final ReliabilityStrategy strategy = privateConfig.loggerConfig.getReliabilityStrategy();
-            strategy.log(this, getName(), fqcn, marker, level, message, thrown);
-            return true;
-        }
-        return false;
+    private void logMessageInCurrentThread(final String fqcn, final Level level, final Marker marker,
+            final Message message, final Throwable thrown) {
+        // bypass RingBuffer and invoke Appender directly
+        final ReliabilityStrategy strategy = privateConfig.loggerConfig.getReliabilityStrategy();
+        strategy.log(this, getName(), fqcn, marker, level, message, thrown);
     }
 
     /**
@@ -141,24 +160,88 @@ public class AsyncLogger extends Logger {
      * @param message log message
      * @param thrown optional exception
      */
-    private void logMessageInBackgroundThread(Info info, final String fqcn, final Level level, final Marker marker,
+    private void logMessageInBackgroundThread(final String fqcn, final Level level, final Marker marker,
             final Message message, final Throwable thrown) {
+
+        // Implementation note: this method is tuned for performance. MODIFY WITH CARE!
 
         if (!Constants.FORMAT_MESSAGES_IN_BACKGROUND) { // LOG4J2-898: user may choose
             message.getFormattedMessage(); // LOG4J2-763: ask message to freeze parameters
         }
-        initLogMessageInfo(info, fqcn, level, marker, message, thrown);
-        loggerDisruptor.enqueueLogMessageInfo(info.translator);
+        logInBackground(fqcn, level, marker, message, thrown);
     }
 
-    private void initLogMessageInfo(Info info, final String fqcn, final Level level, final Marker marker,
-            final Message message, final Throwable thrown) {
-        info.translator.setValues(this, getName(), marker, fqcn, level, message, //
-                // don't construct ThrowableProxy until required
-                thrown, //
+    /**
+     * Enqueues the specified log event data for logging in a background thread.
+     * 
+     * @param asyncLogger the {@code AsyncLogger} to call from the background thread
+     * @param location location information or {@code null}
+     * @param fqcn fully qualified name of the caller
+     * @param level level at which the caller wants to log the message
+     * @param marker message marker
+     * @param message the log message
+     * @param thrown a {@code Throwable} or {@code null}
+     */
+    private void logInBackground(final String fqcn, final Level level, final Marker marker, final Message message,
+            final Throwable thrown) {
+        // Implementation note: this method is tuned for performance. MODIFY WITH CARE!
 
-                // config properties are taken care of in the EventHandler
-                // thread in the #actualAsyncLog method
+        if (loggerDisruptor.isUseThreadLocals()) {
+            logWithThreadLocalTranslator(fqcn, level, marker, message, thrown);
+        } else {
+            // LOG4J2-1172: avoid storing non-JDK classes in ThreadLocals to avoid memory leaks in web apps
+            logWithVarargTranslator(fqcn, level, marker, message, thrown);
+        }
+    }
+
+    /**
+     * Enqueues the specified log event data for logging in a background thread.
+     * <p>
+     * This re-uses a {@code RingBufferLogEventTranslator} instance cached in a {@code ThreadLocal} to avoid creating
+     * unnecessary objects with each event.
+     * 
+     * @param fqcn fully qualified name of the caller
+     * @param level level at which the caller wants to log the message
+     * @param marker message marker
+     * @param message the log message
+     * @param thrown a {@code Throwable} or {@code null}
+     */
+    private void logWithThreadLocalTranslator(final String fqcn, final Level level, final Marker marker,
+            final Message message, final Throwable thrown) {
+        // Implementation note: this method is tuned for performance. MODIFY WITH CARE!
+
+        final RingBufferLogEventTranslator translator = getCachedTranslator();
+        initTranslator(translator, fqcn, level, marker, message, thrown);
+        loggerDisruptor.enqueueLogMessageInfo(translator);
+    }
+
+    private void initTranslator(final RingBufferLogEventTranslator translator, final String fqcn,
+            final Level level, final Marker marker, final Message message, final Throwable thrown) {
+
+        // Implementation note: this method is tuned for performance. MODIFY WITH CARE!
+
+        initTranslatorPart1(translator, fqcn, level, marker, message, thrown);
+        initTranslatorPart2(translator, fqcn, message);
+    }
+
+    private void initTranslatorPart1(final RingBufferLogEventTranslator translator, final String fqcn,
+            final Level level, final Marker marker, final Message message, final Throwable thrown) {
+        
+        // Implementation note: this method is tuned for performance. MODIFY WITH CARE!
+
+        translator.setValuesPart1(this, getName(), marker, fqcn, level, message, //
+                // don't construct ThrowableProxy until required
+                thrown);
+    }
+
+    private void initTranslatorPart2(final RingBufferLogEventTranslator translator, final String fqcn,
+            final Message message) {
+        
+        // Implementation note: this method is tuned for performance. MODIFY WITH CARE!
+
+        translator.setValuesPart2(
+                // config properties are taken care of in the EventHandler thread
+                // in the AsyncLogger#actualAsyncLog method
 
                 // needs shallow copy to be fast (LOG4J2-154)
                 ThreadContext.getImmutableContext(), //
@@ -167,26 +250,81 @@ public class AsyncLogger extends Logger {
                 ThreadContext.getImmutableStack(), //
 
                 // Thread.currentThread().getName(), //
-                // info.cachedThreadName, //
-                info.threadName(), //
+                THREAD_NAME_CACHING_STRATEGY.getThreadName(), //
 
-                // location: very expensive operation. LOG4J2-153:
-                // Only include if "includeLocation=true" is specified,
-                // exclude if not specified or if "false" was specified.
+                // location (expensive to calculate)
                 calcLocationIfRequested(fqcn),
 
-                // System.currentTimeMillis());
-                // CoarseCachedClock: 20% faster than system clock, 16ms gaps
-                // CachedClock: 10% faster than system clock, smaller gaps
-                // LOG4J2-744 avoid calling clock altogether if message has the timestamp
                 eventTimeMillis(message), //
                 nanoClock.nanoTime() //
                 );
     }
 
     private long eventTimeMillis(final Message message) {
+        // Implementation note: this method is tuned for performance. MODIFY WITH CARE!
+
+        // System.currentTimeMillis());
+        // CoarseCachedClock: 20% faster than system clock, 16ms gaps
+        // CachedClock: 10% faster than system clock, smaller gaps
+        // LOG4J2-744 avoid calling clock altogether if message has the timestamp
         return message instanceof TimestampMessage ? ((TimestampMessage) message).getTimestamp() : CLOCK
                 .currentTimeMillis();
+    }
+
+    /**
+     * Enqueues the specified log event data for logging in a background thread.
+     * <p>
+     * This creates a new varargs Object array for each invocation, but does not store any non-JDK classes in a
+     * {@code ThreadLocal} to avoid memory leaks in web applications (see LOG4J2-1172).
+     * 
+     * @param asyncLogger the {@code AsyncLogger} to call from the background thread
+     * @param location location information or {@code null}
+     * @param fqcn fully qualified name of the caller
+     * @param level level at which the caller wants to log the message
+     * @param marker message marker
+     * @param message the log message
+     * @param thrown a {@code Throwable} or {@code null}
+     */
+    private void logWithVarargTranslator(final String fqcn, final Level level, final Marker marker,
+            final Message message, final Throwable thrown) {
+        // Implementation note: candidate for optimization: exceeds 35 bytecodes.
+        
+        final Disruptor<RingBufferLogEvent> disruptor = loggerDisruptor.getDisruptor();
+        if (disruptor == null) {
+            LOGGER.error("Ignoring log event after Log4j has been shut down.");
+            return;
+        }
+        // calls the translateTo method on this AsyncLogger
+        disruptor.getRingBuffer().publishEvent(this, this, calcLocationIfRequested(fqcn), fqcn, level, marker, message,
+                thrown);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.lmax.disruptor.EventTranslatorVararg#translateTo(java.lang.Object, long, java.lang.Object[])
+     */
+    @Override
+    public void translateTo(final RingBufferLogEvent event, final long sequence, final Object... args) {
+        // Implementation note: candidate for optimization: exceeds 35 bytecodes.
+        final AsyncLogger asyncLogger = (AsyncLogger) args[0];
+        final StackTraceElement location = (StackTraceElement) args[1];
+        final String fqcn = (String) args[2];
+        final Level level = (Level) args[3];
+        final Marker marker = (Marker) args[4];
+        final Message message = (Message) args[5];
+        final Throwable thrown = (Throwable) args[6];
+
+        // needs shallow copy to be fast (LOG4J2-154)
+        final Map<String, String> contextMap = ThreadContext.getImmutableContext();
+
+        // needs shallow copy to be fast (LOG4J2-154)
+        final ContextStack contextStack = ThreadContext.getImmutableStack();
+
+        final String threadName = THREAD_NAME_CACHING_STRATEGY.getThreadName();
+
+        event.setValues(asyncLogger, asyncLogger.getName(), marker, fqcn, level, message, thrown, contextMap,
+                contextStack, threadName, location, eventTimeMillis(message), nanoClock.nanoTime());
     }
 
     /**
@@ -196,12 +334,11 @@ public class AsyncLogger extends Logger {
      * @return the caller location if requested, {@code null} otherwise.
      */
     private StackTraceElement calcLocationIfRequested(String fqcn) {
+        // location: very expensive operation. LOG4J2-153:
+        // Only include if "includeLocation=true" is specified,
+        // exclude if not specified or if "false" was specified.
         final boolean includeLocation = privateConfig.loggerConfig.isIncludeLocation();
-        return includeLocation ? location(fqcn) : null;
-    }
-
-    private static StackTraceElement location(final String fqcnOfLogger) {
-        return Log4jLogEvent.calcLocation(fqcnOfLogger);
+        return includeLocation ? Log4jLogEvent.calcLocation(fqcn) : null;
     }
 
     /**
@@ -214,26 +351,5 @@ public class AsyncLogger extends Logger {
         event.mergePropertiesIntoContextMap(properties, privateConfig.config.getStrSubstitutor());
         final ReliabilityStrategy strategy = privateConfig.loggerConfig.getReliabilityStrategy();
         strategy.log(this, event);
-    }
-
-    /**
-     * Returns the {@code NanoClock} to use for creating the nanoTime timestamp of log events.
-     * 
-     * @return the {@code NanoClock} to use for creating the nanoTime timestamp of log events
-     */
-    public static NanoClock getNanoClock() {
-        return nanoClock;
-    }
-
-    /**
-     * Sets the {@code NanoClock} to use for creating the nanoTime timestamp of log events.
-     * <p>
-     * FOR INTERNAL USE. This method may be called with a different {@code NanoClock} implementation when the
-     * configuration changes.
-     * 
-     * @param nanoClock the {@code NanoClock} to use for creating the nanoTime timestamp of log events
-     */
-    public static void setNanoClock(NanoClock nanoClock) {
-        AsyncLogger.nanoClock = Objects.requireNonNull(nanoClock, "NanoClock must be non-null");
     }
 }

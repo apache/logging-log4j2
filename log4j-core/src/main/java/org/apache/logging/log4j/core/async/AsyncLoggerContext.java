@@ -114,4 +114,12 @@ public class AsyncLoggerContext extends LoggerContext {
     public RingBufferAdmin createRingBufferAdmin() {
         return loggerDisruptor.createRingBufferAdmin(getName());
     }
+
+    /**
+     * Signals this context whether it is allowed to use ThreadLocal objects for efficiency.
+     * @param useThreadLocals whether this context is allowed to use ThreadLocal objects
+     */
+    public void setUseThreadLocals(final boolean useThreadLocals) {
+        loggerDisruptor.setUseThreadLocals(useThreadLocals);
+    }
 }
