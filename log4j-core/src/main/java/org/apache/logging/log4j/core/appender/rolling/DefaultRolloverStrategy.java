@@ -215,10 +215,14 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
      * @return A DefaultRolloverStrategy.
      */
     @PluginFactory
-    public static DefaultRolloverStrategy createStrategy(@PluginAttribute("max") final String max,
-            @PluginAttribute("min") final String min, @PluginAttribute("fileIndex") final String fileIndex,
+    public static DefaultRolloverStrategy createStrategy(
+            // @formatter:off
+            @PluginAttribute("max") final String max,
+            @PluginAttribute("min") final String min,
+            @PluginAttribute("fileIndex") final String fileIndex,
             @PluginAttribute("compressionLevel") final String compressionLevelStr,
             @PluginConfiguration final Configuration config) {
+            // @formatter:on
         final boolean useMax = fileIndex == null ? true : fileIndex.equalsIgnoreCase("max");
         int minIndex = MIN_WINDOW_SIZE;
         if (min != null) {
