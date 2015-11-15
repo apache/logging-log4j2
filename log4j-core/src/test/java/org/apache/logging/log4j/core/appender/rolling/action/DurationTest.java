@@ -43,8 +43,8 @@ public class DurationTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testParseFailsIfMissingTForTime() {
-        Duration.parse("P1S");
+    public void testParseFailsIfTButMissingTime() {
+        Duration.parse("P1dT");
     }
 
     @Test
@@ -77,6 +77,30 @@ public class DurationTest {
         assertEquals("PT2M1S", Duration.parse("PT2M1S").toString());
         assertEquals("PT3H2M1S", Duration.parse("PT3H2M1S").toString());
         assertEquals("P4DT3H2M1S", Duration.parse("P4DT3H2M1S").toString());
+    }
+
+    @Test
+    public void testPrefixPNotRequired() {
+        assertEquals("PT1S", Duration.parse("T1S").toString());
+        assertEquals("PT2M1S", Duration.parse("T2M1S").toString());
+        assertEquals("PT3H2M1S", Duration.parse("T3H2M1S").toString());
+        assertEquals("P4DT3H2M1S", Duration.parse("4DT3H2M1S").toString());
+    }
+
+    @Test
+    public void testInfixTNotRequired() {
+        assertEquals("PT1S", Duration.parse("P1S").toString());
+        assertEquals("PT2M1S", Duration.parse("P2M1S").toString());
+        assertEquals("PT3H2M1S", Duration.parse("P3H2M1S").toString());
+        assertEquals("P4DT3H2M1S", Duration.parse("P4D3H2M1S").toString());
+    }
+
+    @Test
+    public void testPrefixPAndInfixTNotRequired() {
+        assertEquals("PT1S", Duration.parse("1S").toString());
+        assertEquals("PT2M1S", Duration.parse("2M1S").toString());
+        assertEquals("PT3H2M1S", Duration.parse("3H2M1S").toString());
+        assertEquals("P4DT3H2M1S", Duration.parse("4D3H2M1S").toString());
     }
 
     @Test

@@ -63,8 +63,8 @@ public class Duration implements Serializable, Comparable<Duration> {
     /**
      * The pattern for parsing.
      */
-    private static final Pattern PATTERN = Pattern.compile("P(?:([0-9]+)D)?"
-            + "(T(?:([0-9]+)H)?(?:([0-9]+)M)?(?:([0-9]+)?S)?)?", Pattern.CASE_INSENSITIVE);
+    private static final Pattern PATTERN = Pattern.compile("P?(?:([0-9]+)D)?"
+            + "(T?(?:([0-9]+)H)?(?:([0-9]+)M)?(?:([0-9]+)?S)?)?", Pattern.CASE_INSENSITIVE);
 
     /**
      * The number of seconds in the duration.
