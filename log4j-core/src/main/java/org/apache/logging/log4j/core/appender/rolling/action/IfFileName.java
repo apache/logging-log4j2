@@ -36,7 +36,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * <p>
  * The path pattern may contain '?' and '*' wildcarts.
  */
-@Plugin(name = "FileNameFilter", category = "Core", printObject = true)
+@Plugin(name = "IfFileName", category = "Core", printObject = true)
 public final class IfFileName implements PathCondition {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private final Pattern regex;

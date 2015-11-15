@@ -37,7 +37,7 @@
       <DefaultRolloverStrategy stopCustomActionsOnError="true">
     <!-- custom action executed asynchronously after the rollover -->
         <Delete basePath="${base}/test" maxDepth="2" followLinks="false">
-          <FileNameFilter path="test-4.log.gz" /> <!-- only keep files 1, 2 and 3 -->
+          <IfFileName path="test-4.log.gz" /> <!-- only keep files 1, 2 and 3 -->
         </Delete>
       </DefaultRolloverStrategy>
     </RollingFile>
