@@ -20,7 +20,7 @@ package org.apache.logging.log4j.core.appender.rolling.action;
 import java.nio.file.attribute.FileTime;
 
 import org.apache.logging.log4j.core.appender.rolling.action.Duration;
-import org.apache.logging.log4j.core.appender.rolling.action.FileLastModifiedFilter;
+import org.apache.logging.log4j.core.appender.rolling.action.IfLastModified;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -28,17 +28,17 @@ import static org.junit.Assert.*;
 /**
  * Tests the FileAgeFilter class.
  */
-public class FileLastModifiedFilterTest {
+public class IfLastModifiedTest {
 
     @Test
     public void testGetDurationReturnsConstructorValue() {
-        FileLastModifiedFilter filter = FileLastModifiedFilter.createAgeFilter(Duration.parse("P7D"));
+        IfLastModified filter = IfLastModified.createAgeFilter(Duration.parse("P7D"));
         assertEquals(0, filter.getDuration().compareTo(Duration.parse("P7D")));
     }
 
     @Test
     public void testAcceptsIfFileAgeEqualToDuration() {
-        FileLastModifiedFilter filter = FileLastModifiedFilter.createAgeFilter(Duration.parse("PT33S"));
+        IfLastModified filter = IfLastModified.createAgeFilter(Duration.parse("PT33S"));
         DummyFileAttributes attrs = new DummyFileAttributes();
         final long age = 33 * 1000;
         attrs.lastModified = FileTime.fromMillis(System.currentTimeMillis() - age);
@@ -47,7 +47,7 @@ public class FileLastModifiedFilterTest {
 
     @Test
     public void testAcceptsIfFileAgeExceedsDuration() {
-        FileLastModifiedFilter filter = FileLastModifiedFilter.createAgeFilter(Duration.parse("PT33S"));
+        IfLastModified filter = IfLastModified.createAgeFilter(Duration.parse("PT33S"));
         DummyFileAttributes attrs = new DummyFileAttributes();
         final long age = 33 * 1000 + 5;
         attrs.lastModified = FileTime.fromMillis(System.currentTimeMillis() - age);
@@ -56,7 +56,7 @@ public class FileLastModifiedFilterTest {
 
     @Test
     public void testDoesNotAcceptIfFileAgeLessThanDuration() {
-        FileLastModifiedFilter filter = FileLastModifiedFilter.createAgeFilter(Duration.parse("PT33S"));
+        IfLastModified filter = IfLastModified.createAgeFilter(Duration.parse("PT33S"));
         DummyFileAttributes attrs = new DummyFileAttributes();
         final long age = 33 * 1000 - 5;
         attrs.lastModified = FileTime.fromMillis(System.currentTimeMillis() - age);

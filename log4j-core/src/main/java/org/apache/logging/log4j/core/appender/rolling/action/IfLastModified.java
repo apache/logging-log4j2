@@ -21,22 +21,25 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.util.Objects;
 
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * PathFilter that accepts paths that are older than the specified duration.
  */
-@Plugin(name = "LastModified", category = "Core", printObject = true)
-public final class FileLastModifiedFilter implements PathFilter {
+@Plugin(name = "IfLastModified", category = "Core", printObject = true)
+public final class IfLastModified implements PathCondition {
+    private static final Logger LOGGER = StatusLogger.getLogger();
     private static final Clock CLOCK = ClockFactory.getClock();
 
     private final Duration duration;
 
-    private FileLastModifiedFilter(final Duration duration) {
+    private IfLastModified(final Duration duration) {
         this.duration = Objects.requireNonNull(duration, "duration");
     }
 
@@ -55,7 +58,11 @@ public final class FileLastModifiedFilter implements PathFilter {
         final FileTime fileTime = attrs.lastModifiedTime();
         final long millis = fileTime.toMillis();
         final long ageMillis = CLOCK.currentTimeMillis() - millis;
-        return ageMillis >= duration.toMillis();
+        final boolean result = ageMillis >= duration.toMillis();
+        final String match = result ? ">=" : "<";
+        LOGGER.trace("LastModifiedFilter: {} ageMillis '{}' {} duration '{}'", relativePath, ageMillis, match,
+                duration);
+        return result;
     }
 
     /**
@@ -65,9 +72,9 @@ public final class FileLastModifiedFilter implements PathFilter {
      * @return A FileLastModifiedFilter filter.
      */
     @PluginFactory
-    public static FileLastModifiedFilter createAgeFilter( //
+    public static IfLastModified createAgeFilter( //
             @PluginAttribute("duration") final Duration duration) {
-        return new FileLastModifiedFilter(duration);
+        return new IfLastModified(duration);
     }
 
     @Override
