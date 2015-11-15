@@ -23,7 +23,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 /**
  * Filter that accepts or rejects a candidate {@code Path} for deletion.
  */
-public interface PathFilter {
+public interface PathCondition {
 
     /**
      * Returns {@code true} if the specified candidate path should be deleted, {@code false} otherwise.

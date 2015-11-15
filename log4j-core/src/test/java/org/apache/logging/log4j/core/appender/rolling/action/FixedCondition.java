@@ -20,16 +20,16 @@ package org.apache.logging.log4j.core.appender.rolling.action;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 
-import org.apache.logging.log4j.core.appender.rolling.action.PathFilter;
+import org.apache.logging.log4j.core.appender.rolling.action.PathCondition;
 
 /**
  * Test helper class.
  */
-public class FixedFilter implements PathFilter {
+public class FixedCondition implements PathCondition {
 
     private final boolean accept;
 
-    public FixedFilter(boolean accept) {
+    public FixedCondition(boolean accept) {
         this.accept = accept;
     }
 

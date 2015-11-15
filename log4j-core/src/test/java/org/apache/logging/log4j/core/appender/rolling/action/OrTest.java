@@ -18,7 +18,7 @@
 package org.apache.logging.log4j.core.appender.rolling.action;
 
 import org.apache.logging.log4j.core.appender.rolling.action.Or;
-import org.apache.logging.log4j.core.appender.rolling.action.PathFilter;
+import org.apache.logging.log4j.core.appender.rolling.action.PathCondition;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -30,12 +30,12 @@ public class OrTest {
 
     @Test
     public void test() {
-        final PathFilter TRUE = new FixedFilter(true);
-        final PathFilter FALSE = new FixedFilter(false);
-        assertTrue(Or.createOrFilter(TRUE, TRUE).accept(null, null, null));
-        assertTrue(Or.createOrFilter(FALSE, TRUE).accept(null, null, null));
-        assertTrue(Or.createOrFilter(TRUE, FALSE).accept(null, null, null));
-        assertFalse(Or.createOrFilter(FALSE, FALSE).accept(null, null, null));
+        final PathCondition TRUE = new FixedCondition(true);
+        final PathCondition FALSE = new FixedCondition(false);
+        assertTrue(Or.createOrCondition(TRUE, TRUE).accept(null, null, null));
+        assertTrue(Or.createOrCondition(FALSE, TRUE).accept(null, null, null));
+        assertTrue(Or.createOrCondition(TRUE, FALSE).accept(null, null, null));
+        assertFalse(Or.createOrCondition(FALSE, FALSE).accept(null, null, null));
     }
 
 }

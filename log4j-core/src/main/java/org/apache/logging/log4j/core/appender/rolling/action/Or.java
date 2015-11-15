@@ -26,18 +26,18 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
 /**
- * Composite {@code DeleteFilter} that accepts objects that are accepted by <em>any</em> component filters.
+ * Composite {@code PathCondition} that accepts objects that are accepted by <em>any</em> component filters.
  */
 @Plugin(name = "Or", category = "Core", printObject = true)
-public final class Or implements PathFilter {
+public final class Or implements PathCondition {
 
-    private final PathFilter[] components;
+    private final PathCondition[] components;
 
-    private Or(final PathFilter... filters) {
+    private Or(final PathCondition... filters) {
         this.components = Objects.requireNonNull(filters, "filters");
     }
 
-    public PathFilter[] getDeleteFilters() {
+    public PathCondition[] getDeleteFilters() {
         return components;
     }
 
@@ -47,7 +47,7 @@ public final class Or implements PathFilter {
      */
     @Override
     public boolean accept(final Path baseDir, final Path relativePath, final BasicFileAttributes attrs) {
-        for (final PathFilter component : components) {
+        for (final PathCondition component : components) {
             if (component.accept(baseDir, relativePath, attrs)) {
                 return true;
             }
@@ -56,19 +56,19 @@ public final class Or implements PathFilter {
     }
 
     /**
-     * Create a Composite DeleteFilter.
+     * Create a Composite PathCondition: accepts if any of the nested conditions accepts.
      * 
-     * @param components The component filters.
-     * @return A CompositeDeleteFilter.
+     * @param components The component conditions.
+     * @return A Composite PathCondition.
      */
     @PluginFactory
-    public static Or createOrFilter( //
-            @PluginElement("Filters") final PathFilter... components) {
+    public static Or createOrCondition( //
+            @PluginElement("PathConditions") final PathCondition... components) {
         return new Or(components);
     }
 
     @Override
     public String toString() {
-        return "Or(filters=" + Arrays.toString(components) + ")";
+        return "Or" + Arrays.toString(components);
     }
 }

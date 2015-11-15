@@ -47,13 +47,13 @@ public class DeleteAction extends AbstractPathAction {
      *            deleted).
      */
     DeleteAction(final String basePath, final boolean followSymbolicLinks, final int maxDepth,
-            final PathFilter[] pathFilters, final StrSubstitutor subst) {
+            final PathCondition[] pathFilters, final StrSubstitutor subst) {
         super(basePath, followSymbolicLinks, maxDepth, pathFilters, subst);
     }
 
     @Override
-    protected FileVisitor<Path> createFileVisitor(final Path visitorBaseDir, final List<PathFilter> visitorFilters) {
-        return new DeletingVisitor(visitorBaseDir, visitorFilters);
+    protected FileVisitor<Path> createFileVisitor(final Path visitorBaseDir, final List<PathCondition> conditions) {
+        return new DeletingVisitor(visitorBaseDir, conditions);
     }
 
     /**
@@ -75,7 +75,7 @@ public class DeleteAction extends AbstractPathAction {
             @PluginAttribute("basePath") final String basePath, //
             @PluginAttribute(value = "followLinks", defaultBoolean = false) final boolean followLinks,
             @PluginAttribute(value = "maxDepth", defaultInt = 1) final int maxDepth,
-            @PluginElement("PathFilters") final PathFilter[] pathFilters,
+            @PluginElement("PathFilters") final PathCondition[] pathFilters,
             @PluginConfiguration final Configuration config) {
             // @formatter:on
         return new DeleteAction(basePath, followLinks, maxDepth, pathFilters, config.getStrSubstitutor());

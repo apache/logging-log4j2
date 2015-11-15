@@ -40,7 +40,7 @@ public abstract class AbstractPathAction extends AbstractAction {
     private final String basePathString;
     private final Set<FileVisitOption> options;
     private final int maxDepth;
-    private final List<PathFilter> pathFilters;
+    private final List<PathCondition> pathConditions;
     private final StrSubstitutor subst;
 
     /**
@@ -55,18 +55,18 @@ public abstract class AbstractPathAction extends AbstractAction {
      *            processed).
      */
     protected AbstractPathAction(final String basePath, final boolean followSymbolicLinks, final int maxDepth,
-            final PathFilter[] pathFilters, final StrSubstitutor subst) {
+            final PathCondition[] pathFilters, final StrSubstitutor subst) {
         this.basePathString = basePath;
         this.options = followSymbolicLinks ? EnumSet.of(FileVisitOption.FOLLOW_LINKS) //
                 : Collections.<FileVisitOption> emptySet();
         this.maxDepth = maxDepth;
-        this.pathFilters = Arrays.asList(Arrays.copyOf(pathFilters, pathFilters.length));
+        this.pathConditions = Arrays.asList(Arrays.copyOf(pathFilters, pathFilters.length));
         this.subst = subst;
     }
 
     @Override
     public boolean execute() throws IOException {
-        return execute(createFileVisitor(getBasePath(), pathFilters));
+        return execute(createFileVisitor(getBasePath(), pathConditions));
     }
 
     public boolean execute(final FileVisitor<Path> visitor) throws IOException {
@@ -89,11 +89,11 @@ public abstract class AbstractPathAction extends AbstractAction {
      * The visitor is responsible for processing the files it encounters that are accepted by all filters.
      * 
      * @param visitorBaseDir base dir from where to start scanning for files to process
-     * @param visitorFilters filters that determine if a file should be processed
+     * @param conditions filters that determine if a file should be processed
      * @return a new {@code FileVisitor<Path>}
      */
     protected abstract FileVisitor<Path> createFileVisitor(final Path visitorBaseDir,
-            final List<PathFilter> visitorFilters);
+            final List<PathCondition> conditions);
 
     /**
      * Returns the base path from where to start scanning for files to delete. Lookups are resolved, so if the
@@ -138,17 +138,17 @@ public abstract class AbstractPathAction extends AbstractAction {
     }
 
     /**
-     * Returns the list of PathFilter objects.
+     * Returns the list of PathCondition objects.
      * 
      * @return the pathFilters
      */
-    public List<PathFilter> getPathFilters() {
-        return Collections.unmodifiableList(pathFilters);
+    public List<PathCondition> getPathConditions() {
+        return Collections.unmodifiableList(pathConditions);
     }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + "[basePath=" + getBasePath() + ", options=" + options + ", maxDepth="
-                + maxDepth + ", filters=" + pathFilters + "]";
+                + maxDepth + ", conditions=" + pathConditions + "]";
     }
 }

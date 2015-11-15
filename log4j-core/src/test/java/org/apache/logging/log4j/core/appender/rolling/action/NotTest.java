@@ -29,11 +29,11 @@ public class NotTest {
 
     @Test
     public void test() {
-        assertTrue(new FixedFilter(true).accept(null, null, null));
-        assertFalse(Not.createNotFilter(new FixedFilter(true)).accept(null, null, null));
+        assertTrue(new FixedCondition(true).accept(null, null, null));
+        assertFalse(Not.createNotCondition(new FixedCondition(true)).accept(null, null, null));
 
-        assertFalse(new FixedFilter(false).accept(null, null, null));
-        assertTrue(Not.createNotFilter(new FixedFilter(false)).accept(null, null, null));
+        assertFalse(new FixedCondition(false).accept(null, null, null));
+        assertTrue(Not.createNotCondition(new FixedCondition(false)).accept(null, null, null));
     }
 
 }

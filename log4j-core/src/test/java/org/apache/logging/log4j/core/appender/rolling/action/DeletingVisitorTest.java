@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.logging.log4j.core.appender.rolling.action.DeletingVisitor;
-import org.apache.logging.log4j.core.appender.rolling.action.PathFilter;
+import org.apache.logging.log4j.core.appender.rolling.action.PathCondition;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -42,7 +42,7 @@ public class DeletingVisitorTest {
     static class DeletingVisitorHelper extends DeletingVisitor {
         List<Path> deleted = new ArrayList<Path>();
 
-        public DeletingVisitorHelper(final Path basePath, final List<? extends PathFilter> pathFilters) {
+        public DeletingVisitorHelper(final Path basePath, final List<? extends PathCondition> pathFilters) {
             super(basePath, pathFilters);
         }
 
@@ -55,7 +55,7 @@ public class DeletingVisitorTest {
     @Test
     public void testAcceptedFilesAreDeleted() throws IOException {
         Path base = FileSystems.getDefault().getPath("/a/b/c");
-        final FixedFilter ACCEPT_ALL = new FixedFilter(true);
+        final FixedCondition ACCEPT_ALL = new FixedCondition(true);
         DeletingVisitorHelper visitor = new DeletingVisitorHelper(base, Arrays.asList(ACCEPT_ALL));
 
         Path any = FileSystems.getDefault().getPath("/a/b/c/any");
@@ -66,7 +66,7 @@ public class DeletingVisitorTest {
     @Test
     public void testRejectedFilesAreNotDeleted() throws IOException {
         Path base = FileSystems.getDefault().getPath("/a/b/c");
-        final FixedFilter REJECT_ALL = new FixedFilter(false);
+        final FixedCondition REJECT_ALL = new FixedCondition(false);
         DeletingVisitorHelper visitor = new DeletingVisitorHelper(base, Arrays.asList(REJECT_ALL));
 
         Path any = FileSystems.getDefault().getPath("/a/b/c/any");
@@ -77,9 +77,9 @@ public class DeletingVisitorTest {
     @Test
     public void testAllFiltersMustAcceptOrFileIsNotDeleted() throws IOException {
         Path base = FileSystems.getDefault().getPath("/a/b/c");
-        final FixedFilter ACCEPT_ALL = new FixedFilter(true);
-        final FixedFilter REJECT_ALL = new FixedFilter(false);
-        List<? extends PathFilter> filters = Arrays.asList(ACCEPT_ALL, ACCEPT_ALL, REJECT_ALL);
+        final FixedCondition ACCEPT_ALL = new FixedCondition(true);
+        final FixedCondition REJECT_ALL = new FixedCondition(false);
+        List<? extends PathCondition> filters = Arrays.asList(ACCEPT_ALL, ACCEPT_ALL, REJECT_ALL);
         DeletingVisitorHelper visitor = new DeletingVisitorHelper(base, filters);
 
         Path any = FileSystems.getDefault().getPath("/a/b/c/any");
@@ -90,8 +90,8 @@ public class DeletingVisitorTest {
     @Test
     public void testIfAllFiltersAcceptFileIsDeleted() throws IOException {
         Path base = FileSystems.getDefault().getPath("/a/b/c");
-        final FixedFilter ACCEPT_ALL = new FixedFilter(true);
-        List<? extends PathFilter> filters = Arrays.asList(ACCEPT_ALL, ACCEPT_ALL, ACCEPT_ALL);
+        final FixedCondition ACCEPT_ALL = new FixedCondition(true);
+        List<? extends PathCondition> filters = Arrays.asList(ACCEPT_ALL, ACCEPT_ALL, ACCEPT_ALL);
         DeletingVisitorHelper visitor = new DeletingVisitorHelper(base, filters);
 
         Path any = FileSystems.getDefault().getPath("/a/b/c/any");
@@ -102,7 +102,7 @@ public class DeletingVisitorTest {
     @Test
     public void testVisitFileRelativizesAgainstBase() throws IOException {
         
-        PathFilter filter = new PathFilter() {
+        PathCondition filter = new PathCondition() {
             
             @Override
             public boolean accept(Path baseDir, Path relativePath, BasicFileAttributes attrs) {

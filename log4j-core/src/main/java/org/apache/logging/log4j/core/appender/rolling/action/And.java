@@ -26,18 +26,18 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
 /**
- * Composite {@code DeleteFilter} that only accepts objects that are accepted by <em>all</em> component filters.
+ * Composite {@code PathCondition} that only accepts objects that are accepted by <em>all</em> component filters.
  */
 @Plugin(name = "And", category = "Core", printObject = true)
-public final class And implements PathFilter {
+public final class And implements PathCondition {
 
-    private final PathFilter[] components;
+    private final PathCondition[] components;
 
-    private And(final PathFilter... filters) {
+    private And(final PathCondition... filters) {
         this.components = Objects.requireNonNull(filters, "filters");
     }
 
-    public PathFilter[] getDeleteFilters() {
+    public PathCondition[] getDeleteFilters() {
         return components;
     }
 
@@ -49,7 +49,7 @@ public final class And implements PathFilter {
      */
     @Override
     public boolean accept(final Path baseDir, final Path relativePath, final BasicFileAttributes attrs) {
-        for (final PathFilter component : components) {
+        for (final PathCondition component : components) {
             if (!component.accept(baseDir, relativePath, attrs)) {
                 return false;
             }
@@ -58,19 +58,19 @@ public final class And implements PathFilter {
     }
 
     /**
-     * Create a Composite DeleteFilter.
+     * Create a Composite PathCondition that all need to accept before this condition accepts.
      * 
      * @param components The component filters.
-     * @return A CompositeDeleteFilter.
+     * @return A Composite PathCondition.
      */
     @PluginFactory
-    public static And createAndFilter( //
-            @PluginElement("Filters") final PathFilter... components) {
+    public static And createAndCondition( //
+            @PluginElement("PathConditions") final PathCondition... components) {
         return new And(components);
     }
 
     @Override
     public String toString() {
-        return "And(filters=" + Arrays.toString(components) + ")";
+        return "And" + Arrays.toString(components);
     }
 }

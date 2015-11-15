@@ -25,18 +25,18 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
 /**
- * Wrapper {@code DeleteFilter} that accepts objects that are rejected by the wrapped component filter.
+ * Wrapper {@code PathCondition} that accepts objects that are rejected by the wrapped component filter.
  */
 @Plugin(name = "Not", category = "Core", printObject = true)
-public final class Not implements PathFilter {
+public final class Not implements PathCondition {
 
-    private final PathFilter negate;
+    private final PathCondition negate;
 
-    private Not(final PathFilter negate) {
+    private Not(final PathCondition negate) {
         this.negate = Objects.requireNonNull(negate, "filter");
     }
 
-    public PathFilter getWrappedFilter() {
+    public PathCondition getWrappedFilter() {
         return negate;
     }
 
@@ -52,19 +52,19 @@ public final class Not implements PathFilter {
     }
 
     /**
-     * Create a Not filter.
+     * Create a Not PathCondition.
      * 
-     * @param filter The filter to negate.
-     * @return A Not filter.
+     * @param condition The condition to negate.
+     * @return A Not PathCondition.
      */
     @PluginFactory
-    public static Not createNotFilter( //
-            @PluginElement("Filters") final PathFilter filter) {
-        return new Not(filter);
+    public static Not createNotCondition( //
+            @PluginElement("PathConditions") final PathCondition condition) {
+        return new Not(condition);
     }
 
     @Override
     public String toString() {
-        return "Not(filters=" + negate + ")";
+        return "Not(" + negate + ")";
     }
 }

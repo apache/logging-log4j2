@@ -28,7 +28,7 @@ import java.util.EnumSet;
 import org.apache.logging.log4j.core.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.appender.rolling.action.DeleteAction;
 import org.apache.logging.log4j.core.appender.rolling.action.DeletingVisitor;
-import org.apache.logging.log4j.core.appender.rolling.action.PathFilter;
+import org.apache.logging.log4j.core.appender.rolling.action.PathCondition;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.junit.Test;
 
@@ -40,11 +40,11 @@ import static org.junit.Assert.*;
 public class DeleteActionTest {
 
     private static DeleteAction createAnyFilter(String path, boolean followLinks, int maxDepth) {
-        PathFilter[] pathFilters = {new FixedFilter(true)};
+        PathCondition[] pathFilters = {new FixedCondition(true)};
         return create(path, followLinks, maxDepth, pathFilters);
     }
 
-    private static DeleteAction create(String path, boolean followLinks, int maxDepth, PathFilter[] filters) {
+    private static DeleteAction create(String path, boolean followLinks, int maxDepth, PathCondition[] filters) {
         Configuration config = new BasicConfigurationFactory().new BasicConfiguration();
         DeleteAction delete = DeleteAction.createDeleteAction(path, followLinks, maxDepth, filters, config);
         return delete;
@@ -86,16 +86,16 @@ public class DeleteActionTest {
 
     @Test
     public void testGetFiltersReturnsConstructorValue() {
-        PathFilter[] filters = {new FixedFilter(true), new FixedFilter(false)};
+        PathCondition[] filters = {new FixedCondition(true), new FixedCondition(false)};
         
         DeleteAction delete = create("any", true, 0, filters);
-        assertEquals(Arrays.asList(filters), delete.getPathFilters());
+        assertEquals(Arrays.asList(filters), delete.getPathConditions());
     }
 
     @Test
     public void testCreateFileVisitorReturnsDeletingVisitor() {
         DeleteAction delete = createAnyFilter("any", true, 0);
-        FileVisitor<Path> visitor = delete.createFileVisitor(delete.getBasePath(), delete.getPathFilters());
+        FileVisitor<Path> visitor = delete.createFileVisitor(delete.getBasePath(), delete.getPathConditions());
         assertTrue(visitor instanceof DeletingVisitor);
     }
 }
