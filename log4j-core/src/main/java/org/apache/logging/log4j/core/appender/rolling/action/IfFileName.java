@@ -21,9 +21,11 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * PathFilter that accepts files for deletion if their relative path matches either a path pattern or a regular
@@ -34,9 +36,9 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
  * <p>
  * The path pattern may contain '?' and '*' wildcarts.
  */
-@Plugin(name = "File", category = "Core", printObject = true)
-public final class FileNameFilter implements PathFilter {
-
+@Plugin(name = "FileNameFilter", category = "Core", printObject = true)
+public final class IfFileName implements PathCondition {
+    private static final Logger LOGGER = StatusLogger.getLogger();
     private final Pattern regex;
     private final String pathPattern;
 
@@ -47,7 +49,7 @@ public final class FileNameFilter implements PathFilter {
      * @param path the baseDir-relative path pattern of the files to delete (may contain '*' and '?' wildcarts)
      * @param regex the regular expression that matches the baseDir-relative path of the file(s) to delete
      */
-    private FileNameFilter(final String path, final String regex) {
+    private IfFileName(final String path, final String regex) {
         if (regex == null && path == null) {
             throw new IllegalArgumentException("Specify either a path or a regular expression. Both cannot be null.");
         }
@@ -82,12 +84,20 @@ public final class FileNameFilter implements PathFilter {
      * java.nio.file.Path)
      */
     @Override
-    public boolean accept(final Path baseDir, final Path relativePath, final BasicFileAttributes attrs) {
+    public boolean accept(final Path basePath, final Path relativePath, final BasicFileAttributes attrs) {
         if (pathPattern != null) {
-            return isMatch(relativePath.toString(), pathPattern);
+            final boolean result = isMatch(relativePath.toString(), pathPattern);
+            final String match = result ? "" : "not ";
+            LOGGER.trace("FileNameFilter: pathPattern '{}' does {}match relative path '{}'", pathPattern, match,
+                    relativePath);
+            return result;
         } else {
-            Matcher matcher = regex.matcher(relativePath.toString());
-            return (matcher.matches());
+            final Matcher matcher = regex.matcher(relativePath.toString());
+            final boolean result = matcher.matches();
+            final String match = result ? "" : "not ";
+            LOGGER.trace("FileNameFilter: regex '{}' does {}match relative path '{}'", regex.pattern(), match,
+                    relativePath);
+            return result;
         }
     }
 
@@ -130,15 +140,15 @@ public final class FileNameFilter implements PathFilter {
      * @return A FileNameFilter filter.
      */
     @PluginFactory
-    public static FileNameFilter createNameFilter( //
+    public static IfFileName createNameFilter( //
             @PluginAttribute("path") final String path, //
             @PluginAttribute("regex") final String regex) {
-        return new FileNameFilter(path, regex);
+        return new IfFileName(path, regex);
     }
 
     @Override
     public String toString() {
         final String pattern = regex == null ? "null" : regex.pattern();
-        return "FileNameFilter(regex=" + pattern + ", name=" + pathPattern + ")";
+        return "FileNameFilter(regex=" + pattern + ", path=" + pathPattern + ")";
     }
 }

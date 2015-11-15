@@ -20,40 +20,40 @@ package org.apache.logging.log4j.core.appender.rolling.action;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 
-import org.apache.logging.log4j.core.appender.rolling.action.FileNameFilter;
+import org.apache.logging.log4j.core.appender.rolling.action.IfFileName;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class FileNameFilterTest {
+public class IfFileNameTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreateNameFilterFailsIfBothRegexAndPathAreNull() {
-        FileNameFilter.createNameFilter(null, null);
+        IfFileName.createNameFilter(null, null);
     }
 
     @Test()
     public void testCreateNameFilterAcceptsIfEitherRegexOrPathOrBothAreNonNull() {
-        FileNameFilter.createNameFilter("bar", null);
-        FileNameFilter.createNameFilter(null, "foo");
-        FileNameFilter.createNameFilter("bar", "foo");
+        IfFileName.createNameFilter("bar", null);
+        IfFileName.createNameFilter(null, "foo");
+        IfFileName.createNameFilter("bar", "foo");
     }
 
     @Test
     public void testGetRegexReturnsConstructorValue() {
-        assertEquals("bar", FileNameFilter.createNameFilter(null, "bar").getRegex().pattern());
-        assertEquals(null, FileNameFilter.createNameFilter("path", null).getRegex());
+        assertEquals("bar", IfFileName.createNameFilter(null, "bar").getRegex().pattern());
+        assertEquals(null, IfFileName.createNameFilter("path", null).getRegex());
     }
 
     @Test
     public void testGetPathReturnsConstructorValue() {
-        assertEquals("path", FileNameFilter.createNameFilter("path", null).getPathPattern());
-        assertEquals(null, FileNameFilter.createNameFilter(null, "bar").getPathPattern());
+        assertEquals("path", IfFileName.createNameFilter("path", null).getPathPattern());
+        assertEquals(null, IfFileName.createNameFilter(null, "bar").getPathPattern());
     }
 
     @Test
     public void testAcceptUsesPathPatternIfExists() {
-        final FileNameFilter filter = FileNameFilter.createNameFilter("path", "regex");
+        final IfFileName filter = IfFileName.createNameFilter("path", "regex");
         final Path relativePath = FileSystems.getDefault().getPath("path");
         assertTrue(filter.accept(null, relativePath, null));
         
@@ -63,7 +63,7 @@ public class FileNameFilterTest {
 
     @Test
     public void testAcceptUsesRegexIfNoPathPatternExists() {
-        final FileNameFilter regexFilter = FileNameFilter.createNameFilter(null, "regex");
+        final IfFileName regexFilter = IfFileName.createNameFilter(null, "regex");
         final Path pathMatchingRegex = FileSystems.getDefault().getPath("regex");
         assertTrue(regexFilter.accept(null, pathMatchingRegex, null));
         
@@ -73,34 +73,34 @@ public class FileNameFilterTest {
 
     @Test
     public void testAcceptIgnoresBasePathAndAttributes() {
-        final FileNameFilter pathFilter = FileNameFilter.createNameFilter("path", null);
+        final IfFileName pathFilter = IfFileName.createNameFilter("path", null);
         final Path relativePath = FileSystems.getDefault().getPath("path");
         assertTrue(pathFilter.accept(null, relativePath, null));
         
-        final FileNameFilter regexFilter = FileNameFilter.createNameFilter(null, "regex");
+        final IfFileName regexFilter = IfFileName.createNameFilter(null, "regex");
         final Path pathMatchingRegex = FileSystems.getDefault().getPath("regex");
         assertTrue(regexFilter.accept(null, pathMatchingRegex, null));
     }
 
     @Test
     public void testIsMatch() {
-        assertTrue(FileNameFilter.isMatch("abc", "???"));
-        assertTrue(FileNameFilter.isMatch("abc", "a??"));
-        assertTrue(FileNameFilter.isMatch("abc", "?b?"));
-        assertTrue(FileNameFilter.isMatch("abc", "??c"));
-        assertTrue(FileNameFilter.isMatch("abc", "ab?"));
-        assertTrue(FileNameFilter.isMatch("abc", "?bc"));
-        assertTrue(FileNameFilter.isMatch("abc", "*"));
-        assertTrue(FileNameFilter.isMatch("abc", "*bc"));
-        assertTrue(FileNameFilter.isMatch("abc", "*c"));
-        assertTrue(FileNameFilter.isMatch("abc", "*c*"));
-        assertTrue(FileNameFilter.isMatch("abc", "a*"));
-        assertTrue(FileNameFilter.isMatch("abc", "*a*"));
-        assertTrue(FileNameFilter.isMatch("abc", "*b*"));
+        assertTrue(IfFileName.isMatch("abc", "???"));
+        assertTrue(IfFileName.isMatch("abc", "a??"));
+        assertTrue(IfFileName.isMatch("abc", "?b?"));
+        assertTrue(IfFileName.isMatch("abc", "??c"));
+        assertTrue(IfFileName.isMatch("abc", "ab?"));
+        assertTrue(IfFileName.isMatch("abc", "?bc"));
+        assertTrue(IfFileName.isMatch("abc", "*"));
+        assertTrue(IfFileName.isMatch("abc", "*bc"));
+        assertTrue(IfFileName.isMatch("abc", "*c"));
+        assertTrue(IfFileName.isMatch("abc", "*c*"));
+        assertTrue(IfFileName.isMatch("abc", "a*"));
+        assertTrue(IfFileName.isMatch("abc", "*a*"));
+        assertTrue(IfFileName.isMatch("abc", "*b*"));
 
-        assertFalse(FileNameFilter.isMatch("abc", "????"));
-        assertFalse(FileNameFilter.isMatch("abc", "b*"));
-        assertFalse(FileNameFilter.isMatch("abc", "*b"));
+        assertFalse(IfFileName.isMatch("abc", "????"));
+        assertFalse(IfFileName.isMatch("abc", "b*"));
+        assertFalse(IfFileName.isMatch("abc", "*b"));
     }
 
 }
