@@ -117,6 +117,9 @@
       <action issue="LOG4J2-1194" dev="ggregory" type="fix" due-to="Adam Brin">
         Documentation does not match parameters for LoggerNameLevelRewritePolicy.
       </action>
+      <action issue="LOG4J2-1196" dev="mattsicker" type="fix" due-to="René Zanner">
+        MongoDbConnection does not close MongoClient.
+      </action>
       <action issue="LOG4J2-1174" dev="ggregory" type="update">
         Update Jackson from 2.6.2 to 2.6.3.
       </action>
