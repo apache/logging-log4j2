@@ -1,6 +1,21 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache license, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
+ */
 package org.apache.logging.log4j.core.appender.routing;
 
-import java.util.Calendar;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -26,7 +41,7 @@ public class IdlePurgePolicy implements PurgePolicy {
 	private int timeToLive;
 	private TimeUnit timeUnit;
 	
-	private final ConcurrentMap<String, Calendar> appendersUsage = new ConcurrentHashMap<>();
+	private final ConcurrentMap<String, Long> appendersUsage = new ConcurrentHashMap<>();
 	private RoutingAppender routingAppender;
     
 	public IdlePurgePolicy(int timeToLive, TimeUnit timeUnit) {
@@ -46,11 +61,10 @@ public class IdlePurgePolicy implements PurgePolicy {
 	 */
 	@Override
 	public void purge() {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(calendar.getTimeInMillis()-timeUnit.toMillis(timeToLive));
+		long expiredTime = System.currentTimeMillis() - timeUnit.toMillis(timeToLive);
 		
-    	for (Entry<String, Calendar> entry : appendersUsage.entrySet()) {
-			if(calendar.after(entry.getValue())) {
+    	for (Entry<String, Long> entry : appendersUsage.entrySet()) {
+			if(expiredTime > entry.getValue()) {
 				appendersUsage.remove(entry.getKey());
 		       	routingAppender.deleteAppender(entry.getKey());
 			}
@@ -59,7 +73,7 @@ public class IdlePurgePolicy implements PurgePolicy {
 
 	@Override
 	public void update(String key, LogEvent event) {
-		appendersUsage.put(key, Calendar.getInstance());
+		appendersUsage.put(key, System.currentTimeMillis());
 	}
 
 	/**
