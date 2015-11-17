@@ -122,6 +122,8 @@ public interface Configuration extends Filterable {
 
     boolean isShutdownHookEnabled();
 
+    ConfigurationScheduler getScheduler();
+
     /**
      * Returns the source of this configuration.
      * 

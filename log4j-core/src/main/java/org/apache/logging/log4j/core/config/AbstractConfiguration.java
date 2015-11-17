@@ -122,9 +122,10 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private final ConcurrentMap<String, Object> componentMap = new ConcurrentHashMap<>();
     private final ConfigurationSource configurationSource;
     private ScriptManager scriptManager;
-    private ScheduledExecutorService executorService;
-    private final WatchManager watchManager = new WatchManager();
+    private ConfigurationScheduler configurationScheduler = new ConfigurationScheduler();
+    private final WatchManager watchManager = new WatchManager(configurationScheduler);
     private AsyncLoggerConfigDisruptor asyncLoggerConfigDisruptor;
+
 
     /**
      * Constructor.
@@ -162,8 +163,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         return watchManager;
     }
 
-    public ScheduledExecutorService getExecutorService() {
-        return executorService;
+    @Override
+    public ConfigurationScheduler getScheduler() {
+        return configurationScheduler;
     }
 
 	@Override
@@ -182,11 +184,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @Override
     public void initialize() {
         LOGGER.debug("Initializing configuration {}", this);
-        if (watchManager.getIntervalSeconds() > 0) {
-            LOGGER.trace("Starting Log4j2ConfigWatcher thread");
-            executorService = new ScheduledThreadPoolExecutor(1, new DaemonThreadFactory("Log4j2ConfigWatcher-"));
-            watchManager.setExecutorService(executorService);
-        }
         scriptManager = new ScriptManager(watchManager);
         pluginManager.collectPlugins(pluginPackages);
         final PluginManager levelPlugins = new PluginManager(Level.CATEGORY);
@@ -338,10 +335,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         if (watchManager.isStarted()) {
             watchManager.stop();
         }
-        if (executorService != null) {
-            LOGGER.trace("{} stopping Log4j2ConfigWatcher thread.", cls);
-            executorService.shutdown();
-        }
+        configurationScheduler.stop();
 
         super.stop();
         if (advertiser != null && advertisement != null) {
@@ -412,7 +406,19 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         componentMap.putIfAbsent(componentName, obj);
     }
 
+    protected void preConfigure(Node node) {
+        for (final Node child : node.getChildren()) {
+            Class<?> clazz = child.getType().getPluginClass();
+            if (clazz.isAnnotationPresent(Scheduled.class)) {
+                configurationScheduler.incrementScheduledItems();
+            }
+            preConfigure(child);
+        }
+    }
+
     protected void doConfigure() {
+        preConfigure(rootNode);
+        configurationScheduler.start();
         if (rootNode.hasChildren() && rootNode.getChildren().get(0).getName().equalsIgnoreCase("Properties")) {
             final Node first = rootNode.getChildren().get(0);
             createConfiguration(first, null);

@@ -108,7 +108,13 @@ public class RollingFileManager extends FileManager {
      * @param event The LogEvent.
      */
     public synchronized void checkRollover(final LogEvent event) {
-        if (triggeringPolicy.isTriggeringEvent(event) && rollover(rolloverStrategy)) {
+        if (triggeringPolicy.isTriggeringEvent(event)) {
+            rollover();
+        }
+    }
+
+    public synchronized void rollover() {
+        if (rollover(rolloverStrategy)) {
             try {
                 size = 0;
                 initialTime = System.currentTimeMillis();

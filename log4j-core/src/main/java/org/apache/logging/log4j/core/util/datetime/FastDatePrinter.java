@@ -233,6 +233,9 @@ public class FastDatePrinter implements DatePrinter, Serializable {
             case 'K': // hour in am/pm (0..11)
                 rule = selectNumberRule(Calendar.HOUR, tokenLen);
                 break;
+            case 'u': // day of week (1..7)
+                rule = selectNumberRule(Calendar.DAY_OF_WEEK, tokenLen);
+                break;
             case 'X': // ISO 8601
                 rule = Iso8601_Rule.getRule(tokenLen);
                 break;

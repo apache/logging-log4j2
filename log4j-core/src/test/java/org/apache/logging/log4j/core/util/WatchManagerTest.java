@@ -31,6 +31,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.core.config.ConfigurationScheduler;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.Assume;
 import org.junit.Test;
@@ -49,10 +50,11 @@ public class WatchManagerTest {
     @Test
     public void testWatchManager() throws Exception {
         Assume.assumeFalse(IS_WINDOWS);
-        ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(1);
-        WatchManager watchManager = new WatchManager();
+        ConfigurationScheduler scheduler = new ConfigurationScheduler();
+        scheduler.incrementScheduledItems();
+        scheduler.start();
+        WatchManager watchManager = new WatchManager(scheduler);
         watchManager.setIntervalSeconds(1);
-        watchManager.setExecutorService(executorService);
         watchManager.start();
         try {
             File sourceFile = new File(originalFile);
@@ -71,7 +73,7 @@ public class WatchManagerTest {
             assertNotNull("File change not detected", f);
         } finally {
             watchManager.stop();
-            executorService.shutdown();
+            scheduler.stop();
         }
     }
 
