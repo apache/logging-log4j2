@@ -110,9 +110,12 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
      * @param command The Runnable to run,
      * @return a ScheduledFuture representing the next time the command will run.
      */
-    public ScheduledFuture<?> scheduleWithCron(CronExpression cronExpression, Runnable command) {
+    public CronScheduledFuture<?> scheduleWithCron(CronExpression cronExpression, Runnable command) {
         CronRunnable runnable = new CronRunnable(command, cronExpression);
-        return schedule(runnable, nextFireInterval(cronExpression), TimeUnit.MILLISECONDS);
+        ScheduledFuture<?> future = schedule(runnable, nextFireInterval(cronExpression), TimeUnit.MILLISECONDS);
+        CronScheduledFuture<?> cronScheduledFuture = new CronScheduledFuture<>(future);
+        runnable.setScheduledFuture(cronScheduledFuture);
+        return cronScheduledFuture;
     }
 
 
@@ -149,10 +152,15 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
 
         private final CronExpression cronExpression;
         private final Runnable runnable;
+        private CronScheduledFuture<?> scheduledFuture;
 
         public CronRunnable(Runnable runnable, CronExpression cronExpression) {
             this.cronExpression = cronExpression;
             this.runnable = runnable;
+        }
+
+        public void setScheduledFuture(CronScheduledFuture<?> future) {
+            this.scheduledFuture = future;
         }
 
         public void run() {
@@ -161,7 +169,8 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
             } catch(Throwable ex) {
                 LOGGER.error("Error running command", ex);
             } finally {
-                schedule(this, nextFireInterval(cronExpression), TimeUnit.MILLISECONDS);
+                ScheduledFuture<?> future = schedule(this, nextFireInterval(cronExpression), TimeUnit.MILLISECONDS);
+                scheduledFuture.setScheduledFuture(future);
             }
         }
     }
