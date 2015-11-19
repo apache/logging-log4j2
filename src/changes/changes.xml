@@ -24,6 +24,12 @@
   </properties>
   <body>
     <release version="2.5" date="2015-MM-DD" description="GA Release 2.5">
+      <action issue="LOG4J2-89" dev="rgoers" type="add">
+        Allow rollover to occur at any time. Add CronTriggeringPolicy
+      </action>
+      <action issue="LOG4J2-381" dev="rgoers" type="fix" due-to="Anthony Baldocchi">
+        Allow triggering policy and rollover strategy to be modified during reconfiguration.
+      </action>
       <action issue="LOG4J2-1136" dev="rgoers" type="add">
         Add support for JSR 223 scripts in filters and the PatternSelector.
       </action>
