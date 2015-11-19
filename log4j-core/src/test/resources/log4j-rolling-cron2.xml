@@ -32,7 +32,7 @@
       <PatternLayout>
         <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
       </PatternLayout>
-      <CronTriggeringPolicy schedule="* * * * * ?"/>
+      <CronTriggeringPolicy schedule="* * * ? * *"/>
     </RollingFile>
     <List name="List">
       <Filters>

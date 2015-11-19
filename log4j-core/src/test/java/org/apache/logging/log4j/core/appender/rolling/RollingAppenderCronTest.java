@@ -17,6 +17,8 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.appender.RollingFileAppender;
+import org.apache.logging.log4j.core.util.CronExpression;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.hamcrest.Matcher;
 import org.junit.Rule;
@@ -25,13 +27,17 @@ import org.junit.rules.ExternalResource;
 import org.junit.rules.RuleChain;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import static org.apache.logging.log4j.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -61,15 +67,35 @@ public class RollingAppenderCronTest {
 
         final int MAX_TRIES = 20;
         final Matcher<File[]> hasGzippedFile = hasItemInArray(that(hasName(that(endsWith(".gz")))));
+        boolean succeeded = false;
         for (int i = 0; i < MAX_TRIES; i++) {
             final File[] files = dir.listFiles();
             if (hasGzippedFile.matches(files)) {
-                return; // test succeeded
+                succeeded = true;
+                break;
             }
             logger.debug("Adding additional event " + i);
             Thread.sleep(100); // Allow time for rollover to complete
         }
-        fail("No compressed files found");
+        if (!succeeded) {
+            fail("No compressed files found");
+        }
+        Path src = FileSystems.getDefault().getPath("target/test-classes/log4j-rolling-cron2.xml");
+        OutputStream os = new FileOutputStream("target/test-classes/log4j-rolling-cron.xml");
+        Files.copy(src, os);
+        Thread.sleep(5000);
+        // force a reconfiguration
+        for (int i = 0; i < MAX_TRIES; ++i) {
+            logger.debug("Adding new event {}", i);
+        }
+        Thread.sleep(1000);
+        RollingFileAppender app = (RollingFileAppender) ctx.getContext().getConfiguration().getAppender("RollingFile");
+        TriggeringPolicy policy = app.getManager().getTriggeringPolicy();
+        assertNotNull("No triggering policy", policy);
+        assertTrue("Incorrect policy type", policy instanceof CronTriggeringPolicy);
+        CronExpression expression = ((CronTriggeringPolicy) policy).getCronExpression();
+        assertTrue("Incorrect triggering policy", expression.getCronExpression().equals("* * * ? * *"));
+
     }
 
     private static void deleteDir() {

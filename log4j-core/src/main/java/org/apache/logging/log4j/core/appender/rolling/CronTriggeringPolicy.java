@@ -67,6 +67,10 @@ public final class CronTriggeringPolicy implements TriggeringPolicy {
         return false;
     }
 
+    public CronExpression getCronExpression() {
+        return cronExpression;
+    }
+
     /**
      * Creates a ScheduledTriggeringPolicy.
      * @param configuration the Configuration.
