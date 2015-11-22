@@ -23,8 +23,7 @@ import java.io.File;
 import java.util.List;
 
 /**
- * Class Description goes here.
- * Created by rgoers on 11/21/15
+ * Watcher for configuration files. Causes a reconfiguration when a file changes.
  */
 public class ConfiguratonFileWatcher implements FileWatcher {
 
