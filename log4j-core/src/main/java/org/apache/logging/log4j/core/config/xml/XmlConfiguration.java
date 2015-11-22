@@ -38,7 +38,7 @@ import javax.xml.validation.Validator;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.FileWatcherConfigurationMonitor;
+import org.apache.logging.log4j.core.config.ConfiguratonFileWatcher;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
@@ -136,7 +136,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                     if (intervalSeconds > 0) {
                         getWatchManager().setIntervalSeconds(intervalSeconds);
                         if (configFile != null) {
-                            FileWatcher watcher = new FileWatcherConfigurationMonitor(this, listeners);
+                            FileWatcher watcher = new ConfiguratonFileWatcher(this, listeners);
                             getWatchManager().watchFile(configFile, watcher);
                         }
                     }

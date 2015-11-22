@@ -26,12 +26,12 @@ import java.util.List;
  * Class Description goes here.
  * Created by rgoers on 11/21/15
  */
-public class FileWatcherConfigurationMonitor implements FileWatcher {
+public class ConfiguratonFileWatcher implements FileWatcher {
 
     private Reconfigurable reconfigurable;
     private List<ConfigurationListener> listeners;
 
-    public FileWatcherConfigurationMonitor(Reconfigurable reconfigurable, final List<ConfigurationListener> listeners) {
+    public ConfiguratonFileWatcher(Reconfigurable reconfigurable, final List<ConfigurationListener> listeners) {
         this.reconfigurable = reconfigurable;
         this.listeners = listeners;
     }

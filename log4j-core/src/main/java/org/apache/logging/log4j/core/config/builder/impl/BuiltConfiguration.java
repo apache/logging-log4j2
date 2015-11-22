@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.config.builder.impl;
 
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.FileWatcherConfigurationMonitor;
+import org.apache.logging.log4j.core.config.ConfiguratonFileWatcher;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.config.builder.api.Component;
@@ -153,7 +153,7 @@ public class BuiltConfiguration extends AbstractConfiguration {
                 if (intervalSeconds > 0) {
                     getWatchManager().setIntervalSeconds(intervalSeconds);
                     if (configFile != null) {
-                        FileWatcher watcher = new FileWatcherConfigurationMonitor((Reconfigurable) this, listeners);
+                        FileWatcher watcher = new ConfiguratonFileWatcher((Reconfigurable) this, listeners);
                         getWatchManager().watchFile(configFile, watcher);
                     }
                 }
