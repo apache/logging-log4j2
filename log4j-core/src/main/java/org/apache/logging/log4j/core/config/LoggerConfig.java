@@ -138,7 +138,7 @@ public class LoggerConfig extends AbstractFilterable {
         } else {
             this.properties = null;
         }
-        this.reliabilityStrategy = config.getConfigurationMonitor().getReliabilityStrategy(this);
+        this.reliabilityStrategy = config.getReliabilityStrategy(this);
     }
 
     @Override

@@ -223,11 +223,6 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
     }
 
     @Override
-    public String getConfigMonitorClassName() {
-        return getConfig().getConfigurationMonitor().getClass().getName();
-    }
-
-    @Override
     public Map<String, String> getConfigProperties() {
         return getConfig().getProperties();
     }

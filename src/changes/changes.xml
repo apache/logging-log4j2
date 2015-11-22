@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.5" date="2015-MM-DD" description="GA Release 2.5">
+      <action issue="LOG4J2-1202" dev="rgoers" type="update">
+        Remove ConfigurationMonitor. The WatchManager is now used to check for configuration changes.
+      </action>
       <action issue="LOG4J2-1195" dev="mikes" type="fix" due-to="Melvin Du">
         Make KafkaAppender support SerializedLayout.
       </action>

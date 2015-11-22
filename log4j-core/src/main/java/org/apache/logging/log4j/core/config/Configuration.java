@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.filter.Filterable;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.script.ScriptManager;
+import org.apache.logging.log4j.core.util.WatchManager;
 
 /**
  * Interface that must be implemented to create a configuration.
@@ -112,10 +113,6 @@ public interface Configuration extends Filterable {
 
     void addComponent(String name, Object object);
 
-    void setConfigurationMonitor(ConfigurationMonitor monitor);
-
-    ConfigurationMonitor getConfigurationMonitor();
-
     void setAdvertiser(Advertiser advertiser);
 
     Advertiser getAdvertiser();
@@ -158,5 +155,21 @@ public interface Configuration extends Filterable {
      * @return the {@code AsyncLoggerConfigDelegate}
      */
 	AsyncLoggerConfigDelegate getAsyncLoggerConfigDelegate();
+
+    /**
+     * Return the WatchManager.
+     * @return the WatchManager.
+     */
+    WatchManager getWatchManager();
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * org.apache.logging.log4j.core.config.ReliabilityStrategyFactory#getReliabilityStrategy(org.apache.logging.log4j
+     * .core.config.LoggerConfig)
+     */
+
+    ReliabilityStrategy getReliabilityStrategy(LoggerConfig loggerConfig);
 
 }
