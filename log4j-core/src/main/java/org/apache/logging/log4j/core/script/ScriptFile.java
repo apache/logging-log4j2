@@ -43,7 +43,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 @Plugin(name = "ScriptFile", category = Node.CATEGORY, printObject = true)
 public class ScriptFile extends AbstractScript {
 
-    private static final Logger logger = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
     private final Path filePath;
     private final boolean isWatched;
 
@@ -66,13 +66,13 @@ public class ScriptFile extends AbstractScript {
     public static ScriptFile createScript(
             // @formatter:off
             @PluginAttribute("name") String name,
-            @PluginAttribute("language") String language, 
+            @PluginAttribute("language") String language,
             @PluginAttribute("path") final String filePathOrUri,
             @PluginAttribute("isWatched") final Boolean isWatched,
             @PluginAttribute("charset") final Charset charset) {
             // @formatter:on
         if (filePathOrUri == null) {
-            logger.error("No script path provided for ScriptFile");
+            LOGGER.error("No script path provided for ScriptFile");
             return null;
         }
         if (name == null) {
@@ -90,7 +90,7 @@ public class ScriptFile extends AbstractScript {
             }
         }
         if (language == null) {
-            logger.info("No script language supplied, defaulting to {}", DEFAULT_LANGUAGE);
+            LOGGER.info("No script language supplied, defaulting to {}", DEFAULT_LANGUAGE);
             language = DEFAULT_LANGUAGE;
         }
 
@@ -100,13 +100,13 @@ public class ScriptFile extends AbstractScript {
                 file != null ? new FileInputStream(file) : uri.toURL().openStream(), actualCharset)) {
             scriptText = IOUtils.toString(reader);
         } catch (IOException e) {
-            logger.error("{}: language={}, path={}, actualCharset={}", e.getClass().getSimpleName(),
+            LOGGER.error("{}: language={}, path={}, actualCharset={}", e.getClass().getSimpleName(),
                     language, filePathOrUri, actualCharset);
             return null;
         }
         Path path = file != null ? Paths.get(file.toURI()) : Paths.get(uri);
         if (path == null) {
-            logger.error("Unable to convert {} to a Path", uri.toString());
+            LOGGER.error("Unable to convert {} to a Path", uri.toString());
             return null;
         }
         return new ScriptFile(name, path, language, isWatched == null ? Boolean.FALSE : isWatched, scriptText);
@@ -115,7 +115,7 @@ public class ScriptFile extends AbstractScript {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        if (!(getName().equals(filePath))) {
+        if (!(getName().equals(filePath.toString()))) {
             sb.append("name=").append(getName()).append(", ");
         }
         sb.append("path=").append(filePath);
