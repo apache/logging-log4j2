@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 
@@ -24,6 +25,12 @@ import java.nio.file.attribute.BasicFileAttributes;
  * Filter that accepts or rejects a candidate {@code Path} for deletion.
  */
 public interface PathCondition {
+
+    /**
+     * Invoked before a new {@linkplain Files#walkFileTree(Path, java.util.Set, int, java.nio.file.FileVisitor) file
+     * tree walk} is started. Stateful PathConditions can reset their state when this method is called.
+     */
+    void beforeFileTreeWalk();
 
     /**
      * Returns {@code true} if the specified candidate path should be deleted, {@code false} otherwise.
