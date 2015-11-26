@@ -34,11 +34,11 @@ public final class IfAccumulatedFileCount implements PathCondition {
     private final int threshold;
     private int count;
 
-    private IfAccumulatedFileCount(final int threshold) {
-        if (threshold <= 0) {
-            throw new IllegalArgumentException("Count must be a positive integer but was " + threshold);
+    private IfAccumulatedFileCount(final int thresholdParam) {
+        if (thresholdParam <= 0) {
+            throw new IllegalArgumentException("Count must be a positive integer but was " + thresholdParam);
         }
-        this.threshold = threshold;
+        this.threshold = thresholdParam;
     }
 
     public int getThresholdCount() {
@@ -76,7 +76,7 @@ public final class IfAccumulatedFileCount implements PathCondition {
      * @return An IfAccumulatedFileCount condition.
      */
     @PluginFactory
-    public static IfAccumulatedFileCount createAgeCondition( //
+    public static IfAccumulatedFileCount createFileCountCondition( //
             @PluginAttribute(value = "exceeds", defaultInt = Integer.MAX_VALUE) final int threshold) {
         if (threshold == Integer.MAX_VALUE) {
             LOGGER.error("IfAccumulatedFileCount invalid or missing threshold value.");
