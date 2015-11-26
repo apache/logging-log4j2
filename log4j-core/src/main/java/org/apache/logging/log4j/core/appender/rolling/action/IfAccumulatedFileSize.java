@@ -79,7 +79,7 @@ public final class IfAccumulatedFileSize implements PathCondition {
      * @return An IfAccumulatedFileSize condition.
      */
     @PluginFactory
-    public static IfAccumulatedFileSize createAgeCondition( //
+    public static IfAccumulatedFileSize createFileSizeCondition( //
             @PluginAttribute("exceeds") final String size) {
         if (size == null) {
             LOGGER.error("IfAccumulatedFileSize missing mandatory size threshold.");
