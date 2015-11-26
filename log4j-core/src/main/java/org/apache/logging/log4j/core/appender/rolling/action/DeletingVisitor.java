@@ -36,22 +36,25 @@ public class DeletingVisitor extends SimpleFileVisitor<Path> {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final Path basePath;
-    private final List<? extends PathCondition> pathFilters;
+    private final List<? extends PathCondition> pathConditions;
 
     /**
      * Constructs a new DeletingVisitor.
      * 
      * @param basePath used to relativize paths
-     * @param pathFilters objects that need to confirm whether a file can be deleted
+     * @param pathConditions objects that need to confirm whether a file can be deleted
      */
-    public DeletingVisitor(final Path basePath, final List<? extends PathCondition> pathFilters) {
+    public DeletingVisitor(final Path basePath, final List<? extends PathCondition> pathConditions) {
         this.basePath = Objects.requireNonNull(basePath, "basePath");
-        this.pathFilters = Objects.requireNonNull(pathFilters, "filters");
+        this.pathConditions = Objects.requireNonNull(pathConditions, "pathConditions");
+        for (final PathCondition condition : pathConditions) {
+            condition.beforeFileTreeWalk();
+        }
     }
 
     @Override
     public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
-        for (final PathCondition pathFilter : pathFilters) {
+        for (final PathCondition pathFilter : pathConditions) {
             final Path relative = basePath.relativize(file);
             if (!pathFilter.accept(basePath, relative, attrs)) {
                 LOGGER.trace("Not deleting base={}, relative={}", basePath, relative);
