@@ -35,11 +35,13 @@ public class IfAccumulatedFileCountTest {
     @Test
     public void testAccept() {
         int[] counts = {3, 5, 9};
-        for (int count: counts) {
+        for (int count : counts) {
             IfAccumulatedFileCount condition = IfAccumulatedFileCount.createFileCountCondition(count);
             for (int i = 0; i < count; i++) {
                 assertFalse(condition.accept(null, null, null));
+                // exact match: does not accept
             }
+            // accept when threshold is exceeded
             assertTrue(condition.accept(null, null, null));
             assertTrue(condition.accept(null, null, null));
         }
