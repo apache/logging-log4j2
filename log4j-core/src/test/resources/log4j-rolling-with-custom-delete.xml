@@ -27,17 +27,17 @@
     </Console>
 
     <RollingFile name="RollingFile" fileName="${base}/rollingtest.log" 
-                   filePattern="${base}/test/test-%i.log.gz">
+                   filePattern="${base}/test/test-%i.log">
       <PatternLayout>
         <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
       </PatternLayout>
       <Policies>
         <SizeBasedTriggeringPolicy size="50" />
       </Policies>
-      <DefaultRolloverStrategy stopCustomActionsOnError="true">
+      <DefaultRolloverStrategy max="100" stopCustomActionsOnError="true">
     <!-- custom action executed asynchronously after the rollover -->
         <Delete basePath="${base}/test" maxDepth="2" followLinks="false">
-          <IfFileName path="test-4.log.gz" /> <!-- only keep files 1, 2 and 3 -->
+          <IfFileName glob="test-4.log" /> <!-- only keep files 1, 2 and 3 -->
         </Delete>
       </DefaultRolloverStrategy>
     </RollingFile>

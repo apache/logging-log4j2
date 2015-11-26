@@ -58,7 +58,8 @@ public class RollingAppenderCustomDeleteActionTest {
         Thread.sleep(100); // Allow time for rollover to complete
 
         final File dir = new File(DIR);
-        assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
+        assertTrue("Dir " + DIR + " should exist", dir.exists());
+        assertTrue("Dir " + DIR + " should contain files", dir.listFiles().length > 0);
 
         final int MAX_TRIES = 20;
         for (int i = 0; i < MAX_TRIES; i++) {
@@ -68,8 +69,8 @@ public class RollingAppenderCustomDeleteActionTest {
             }
             if (files.length == 3) {
                 for (File file : files) {
-                    assertTrue("test-4.log.gz should have been deleted",
-                            Arrays.asList("test-1.log.gz", "test-2.log.gz", "test-3.log.gz").contains(file.getName()));
+                    assertTrue("test-4.log should have been deleted",
+                            Arrays.asList("test-1.log", "test-2.log", "test-3.log").contains(file.getName()));
                 }
                 return; // test succeeded
             }

@@ -48,13 +48,17 @@ public class DeleteAction extends AbstractPathAction {
      *            means that only the starting file is visited, unless denied by the security manager. A value of
      *            MAX_VALUE may be used to indicate that all levels should be visited.
      * @param sorter sorts
-     * @param pathFilters an array of path filters (if more than one, they all need to accept a path before it is
+     * @param pathConditions an array of path filters (if more than one, they all need to accept a path before it is
      *            deleted).
      */
     DeleteAction(final String basePath, final boolean followSymbolicLinks, final int maxDepth, final PathSorter sorter,
-            final PathCondition[] pathFilters, final StrSubstitutor subst) {
-        super(basePath, followSymbolicLinks, maxDepth, pathFilters, subst);
+            final PathCondition[] pathConditions, final StrSubstitutor subst) {
+        super(basePath, followSymbolicLinks, maxDepth, pathConditions, subst);
         this.pathSorter = Objects.requireNonNull(sorter, "sorter");
+        if (pathConditions == null || pathConditions.length == 0) {
+            LOGGER.error("Missing Delete conditions: unconditional Delete not supported");
+            throw new IllegalArgumentException("Unconditional Delete not supported");
+        }
     }
 
     /*
