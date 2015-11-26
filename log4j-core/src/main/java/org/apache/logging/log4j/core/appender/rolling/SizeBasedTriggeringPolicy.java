@@ -16,12 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -39,21 +33,10 @@ public class SizeBasedTriggeringPolicy implements TriggeringPolicy {
      */
     protected static final Logger LOGGER = StatusLogger.getLogger();
 
-    private static final long KB = 1024;
-    private static final long MB = KB * KB;
-    private static final long GB = KB * MB;
-
     /**
      * Rollover threshold size in bytes.
      */
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // let 10 MB the default max size
-
-
-    /**
-     * Pattern for string parsing.
-     */
-    private static final Pattern VALUE_PATTERN =
-        Pattern.compile("([0-9]+([\\.,][0-9]+)?)\\s*(|K|M|G)B?", Pattern.CASE_INSENSITIVE);
 
     private final long maxFileSize;
 
@@ -116,50 +99,8 @@ public class SizeBasedTriggeringPolicy implements TriggeringPolicy {
     @PluginFactory
     public static SizeBasedTriggeringPolicy createPolicy(@PluginAttribute("size") final String size) {
 
-        final long maxSize = size == null ? MAX_FILE_SIZE : valueOf(size);
+        final long maxSize = size == null ? MAX_FILE_SIZE : FileSize.parse(size, MAX_FILE_SIZE);
         return new SizeBasedTriggeringPolicy(maxSize);
-    }
-
-    /**
-     * Converts a string to a number of bytes. Strings consist of a floating point value followed by
-     * K, M, or G for kilobytes, megabytes, gigabytes, respectively. The
-     * abbreviations KB, MB, and GB are also accepted. Matching is case insensitive.
-     *
-     * @param string The string to convert
-     * @return The Bytes value for the string
-     */
-    private static long valueOf(final String string) {
-        final Matcher matcher = VALUE_PATTERN.matcher(string);
-
-        // Valid input?
-        if (matcher.matches()) {
-            try {
-                // Get double precision value
-                final long value = NumberFormat.getNumberInstance(Locale.getDefault()).parse(
-                    matcher.group(1)).longValue();
-
-                // Get units specified
-                final String units = matcher.group(3);
-
-                if (units.isEmpty()) {
-                    return value;
-                } else if (units.equalsIgnoreCase("K")) {
-                    return value * KB;
-                } else if (units.equalsIgnoreCase("M")) {
-                    return value * MB;
-                } else if (units.equalsIgnoreCase("G")) {
-                    return value * GB;
-                } else {
-                    LOGGER.error("Units not recognized: " + string);
-                    return MAX_FILE_SIZE;
-                }
-            } catch (final ParseException e) {
-                LOGGER.error("Unable to parse numeric part: " + string, e);
-                return MAX_FILE_SIZE;
-            }
-        }
-        LOGGER.error("Unable to parse bytes: " + string);
-        return MAX_FILE_SIZE;
     }
 
 }
