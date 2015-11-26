@@ -2177,6 +2177,24 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
   <SizeBasedTriggeringPolicy size="20 MB" />
   <TimeBasedTriggeringPolicy />
 </Policies>]]></pre>
+            <h5>Cron Triggering Policy</h5>
+              <p>The <code>CronTriggeringPolicy</code> triggers rollover based on a cron expression.</p>
+              <table>
+                <caption align="top">CronTriggeringPolicy Parameters</caption>
+                <tr>
+                  <th>Parameter Name</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                </tr>
+                <tr>
+                  <td>schedule</td>
+                  <td>String</td>
+                  <td>The cron expression. The expression is the same as what is allowed in the Quartz scheduler. See
+                    <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/util/CronExpression.html">CronExpression</a>
+                    for a full description of the expression.
+                  </td>
+                </tr>
+              </table>
             <h5>OnStartup Triggering Policy</h5>
               <p>
                 The <code>OnStartupTriggeringPolicy</code> policy takes no parameters and causes a rollover if the log

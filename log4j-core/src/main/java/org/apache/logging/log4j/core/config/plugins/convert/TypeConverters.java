@@ -35,6 +35,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.rolling.action.Duration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.util.CronExpression;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -175,6 +176,14 @@ public final class TypeConverters {
         @Override
         public Class<?> convert(final String s) throws ClassNotFoundException {
             return Loader.loadClass(s);
+        }
+    }
+
+    @Plugin(name = "CronExpression", category = CATEGORY)
+    public static class CronExpressionConverter implements TypeConverter<CronExpression> {
+        @Override
+        public CronExpression convert(final String s) throws Exception {
+            return new CronExpression(s);
         }
     }
 

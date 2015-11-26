@@ -18,6 +18,8 @@ package org.apache.logging.log4j.core.util;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationScheduler;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import java.io.File;
@@ -36,16 +38,23 @@ public class WatchManager extends AbstractLifeCycle {
     private static final long serialVersionUID = 8998356999926962686L;
     private static Logger logger = StatusLogger.getLogger();
     private final ConcurrentMap<File, FileMonitor> watchers = new ConcurrentHashMap<>();
-    private ScheduledExecutorService executorService;
     private int intervalSeconds = 0;
     private ScheduledFuture<?> future;
+    private ConfigurationScheduler scheduler;
 
-    public void setExecutorService(ScheduledExecutorService executorService) {
-        this.executorService = executorService;
+    public WatchManager(ConfigurationScheduler scheduler) {
+        this.scheduler = scheduler;
     }
 
     public void setIntervalSeconds(int intervalSeconds) {
-        this.intervalSeconds = intervalSeconds;
+        if (!isStarted()) {
+            if (this.intervalSeconds > 0 && intervalSeconds == 0) {
+                scheduler.decrementScheduledItems();
+            } else if (this.intervalSeconds == 0 && intervalSeconds > 0) {
+                scheduler.incrementScheduledItems();
+            }
+            this.intervalSeconds = intervalSeconds;
+        }
     }
 
     public int getIntervalSeconds() {
@@ -56,7 +65,7 @@ public class WatchManager extends AbstractLifeCycle {
     public void start() {
         super.start();
         if (intervalSeconds > 0) {
-            future = executorService.scheduleWithFixedDelay(new WatchWorker(), intervalSeconds, intervalSeconds,
+            future = scheduler.scheduleWithFixedDelay(new WatchWorker(), intervalSeconds, intervalSeconds,
                     TimeUnit.SECONDS);
         }
     }

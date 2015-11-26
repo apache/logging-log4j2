@@ -16,28 +16,17 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
- * The default configuration monitor does not do anything.
+ * Annotation that identifies a Class as requiring a Scheduled thread.
  */
-public class DefaultConfigurationMonitor implements ConfigurationMonitor {
-
-    /**
-     * Does nothing.
-     */
-    @Override
-    public void checkConfiguration() {
-        // do nothing
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.apache.logging.log4j.core.config.ReliabilityStrategyFactory#getReliabilityStrategy(org.apache.logging.log4j
-     * .core.config.LoggerConfig)
-     */
-    @Override
-    public ReliabilityStrategy getReliabilityStrategy(LoggerConfig loggerConfig) {
-        return ReliabilityStrategyFactory.getReliabilityStrategy(loggerConfig);
-    }
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface Scheduled {
 }

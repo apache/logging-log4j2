@@ -247,23 +247,6 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
             this.advertiseURI = advertiseURI;
             this.layout = layout;
         }
-
-        public TriggeringPolicy getTriggeringPolicy()
-        {
-            return this.policy;
-        }
-
-        public RolloverStrategy getRolloverStrategy()
-        {
-            return this.strategy;
-        }
     }
 
-    @Override
-    public void updateData(final Object data)
-    {
-        final FactoryData factoryData = (FactoryData) data;
-        setRolloverStrategy(factoryData.getRolloverStrategy());
-        setTriggeringPolicy(factoryData.getTriggeringPolicy());
-    }
 }
