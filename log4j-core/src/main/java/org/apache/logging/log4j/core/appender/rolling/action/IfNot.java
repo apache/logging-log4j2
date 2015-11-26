@@ -27,12 +27,12 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 /**
  * Wrapper {@code PathCondition} that accepts objects that are rejected by the wrapped component filter.
  */
-@Plugin(name = "Not", category = "Core", printObject = true)
-public final class Not implements PathCondition {
+@Plugin(name = "IfNot", category = "Core", printObject = true)
+public final class IfNot implements PathCondition {
 
     private final PathCondition negate;
 
-    private Not(final PathCondition negate) {
+    private IfNot(final PathCondition negate) {
         this.negate = Objects.requireNonNull(negate, "filter");
     }
 
@@ -42,29 +42,36 @@ public final class Not implements PathCondition {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see org.apache.logging.log4j.core.appender.rolling.action.DeleteFilter#accept(java.nio.file.Path,
-     * java.nio.file.Path)
+     * @see org.apache.logging.log4j.core.appender.rolling.action.PathCondition#accept(java.nio.file.Path, java.nio.file.Path, java.nio.file.attribute.BasicFileAttributes)
      */
     @Override
     public boolean accept(final Path baseDir, final Path relativePath, final BasicFileAttributes attrs) {
         return !negate.accept(baseDir, relativePath, attrs);
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.apache.logging.log4j.core.appender.rolling.action.PathCondition#beforeFileTreeWalk()
+     */
+    @Override
+    public void beforeFileTreeWalk() {
+        negate.beforeFileTreeWalk();
+    }
+
     /**
-     * Create a Not PathCondition.
+     * Create an IfNot PathCondition.
      * 
      * @param condition The condition to negate.
-     * @return A Not PathCondition.
+     * @return An IfNot PathCondition.
      */
     @PluginFactory
-    public static Not createNotCondition( //
+    public static IfNot createNotCondition( //
             @PluginElement("PathConditions") final PathCondition condition) {
-        return new Not(condition);
+        return new IfNot(condition);
     }
 
     @Override
     public String toString() {
-        return "Not(" + negate + ")";
+        return "IfNot(" + negate + ")";
     }
 }

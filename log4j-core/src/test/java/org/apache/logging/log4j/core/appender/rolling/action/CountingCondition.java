@@ -25,20 +25,38 @@ import org.apache.logging.log4j.core.appender.rolling.action.PathCondition;
 /**
  * Test helper class.
  */
-public class FixedCondition implements PathCondition {
+public class CountingCondition implements PathCondition {
 
     private final boolean accept;
+    private int acceptCount;
+    private int beforeFileTreeWalkCount;
 
-    public FixedCondition(boolean accept) {
+    public CountingCondition(boolean accept) {
         this.accept = accept;
     }
 
     @Override
     public boolean accept(Path baseDir, Path path, BasicFileAttributes attrs) {
+        acceptCount++;
         return accept;
     }
 
     @Override
     public void beforeFileTreeWalk() {
+        beforeFileTreeWalkCount++;
+    }
+
+    /**
+     * @return the acceptCount
+     */
+    public int getAcceptCount() {
+        return acceptCount;
+    }
+
+    /**
+     * @return the beforeFileTreeWalkCount
+     */
+    public int getBeforeFileTreeWalkCount() {
+        return beforeFileTreeWalkCount;
     }
 }

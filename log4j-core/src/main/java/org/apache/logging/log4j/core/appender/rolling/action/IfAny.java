@@ -26,14 +26,15 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
 /**
- * Composite {@code PathCondition} that accepts objects that are accepted by <em>any</em> component filters.
+ * Composite {@code PathCondition} that accepts objects that are accepted by <em>any</em> component conditions.
+ * Corresponds to logical "OR".
  */
-@Plugin(name = "Or", category = "Core", printObject = true)
-public final class Or implements PathCondition {
+@Plugin(name = "IfAny", category = "Core", printObject = true)
+public final class IfAny implements PathCondition {
 
     private final PathCondition[] components;
 
-    private Or(final PathCondition... filters) {
+    private IfAny(final PathCondition... filters) {
         this.components = Objects.requireNonNull(filters, "filters");
     }
 
@@ -41,9 +42,9 @@ public final class Or implements PathCondition {
         return components;
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.logging.log4j.core.appender.rolling.action.DeleteFilter#accept(java.nio.file.Path,
-     * java.nio.file.Path)
+    /*
+     * (non-Javadoc)
+     * @see org.apache.logging.log4j.core.appender.rolling.action.PathCondition#accept(java.nio.file.Path, java.nio.file.Path, java.nio.file.attribute.BasicFileAttributes)
      */
     @Override
     public boolean accept(final Path baseDir, final Path relativePath, final BasicFileAttributes attrs) {
@@ -55,6 +56,17 @@ public final class Or implements PathCondition {
         return false;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.apache.logging.log4j.core.appender.rolling.action.PathCondition#beforeFileTreeWalk()
+     */
+    @Override
+    public void beforeFileTreeWalk() {
+        for (PathCondition condition : components) {
+            condition.beforeFileTreeWalk();
+        }
+    }
+
     /**
      * Create a Composite PathCondition: accepts if any of the nested conditions accepts.
      * 
@@ -62,13 +74,13 @@ public final class Or implements PathCondition {
      * @return A Composite PathCondition.
      */
     @PluginFactory
-    public static Or createOrCondition( //
+    public static IfAny createOrCondition( //
             @PluginElement("PathConditions") final PathCondition... components) {
-        return new Or(components);
+        return new IfAny(components);
     }
 
     @Override
     public String toString() {
-        return "Or" + Arrays.toString(components);
+        return "IfAny" + Arrays.toString(components);
     }
 }

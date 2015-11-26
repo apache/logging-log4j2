@@ -17,25 +17,33 @@
 
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import org.apache.logging.log4j.core.appender.rolling.action.And;
+import org.apache.logging.log4j.core.appender.rolling.action.IfAll;
 import org.apache.logging.log4j.core.appender.rolling.action.PathCondition;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 /**
- * Tests the And composite filter.
+ * Tests the And composite condition.
  */
-public class AndTest {
+public class IfAllTest {
 
     @Test
-    public void test() {
+    public void testAccept() {
         final PathCondition TRUE = new FixedCondition(true);
         final PathCondition FALSE = new FixedCondition(false);
-        assertTrue(And.createAndCondition(TRUE, TRUE).accept(null, null, null));
-        assertFalse(And.createAndCondition(FALSE, TRUE).accept(null, null, null));
-        assertFalse(And.createAndCondition(TRUE, FALSE).accept(null, null, null));
-        assertFalse(And.createAndCondition(FALSE, FALSE).accept(null, null, null));
+        assertTrue(IfAll.createAndCondition(TRUE, TRUE).accept(null, null, null));
+        assertFalse(IfAll.createAndCondition(FALSE, TRUE).accept(null, null, null));
+        assertFalse(IfAll.createAndCondition(TRUE, FALSE).accept(null, null, null));
+        assertFalse(IfAll.createAndCondition(FALSE, FALSE).accept(null, null, null));
+    }
+    
+    @Test
+    public void testBeforeTreeWalk() {
+        final CountingCondition counter = new CountingCondition(true);
+        final IfAll and = IfAll.createAndCondition(counter, counter, counter);
+        and.beforeFileTreeWalk();
+        assertEquals(3, counter.getBeforeFileTreeWalkCount());
     }
 
 }

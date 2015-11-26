@@ -26,14 +26,15 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
 /**
- * Composite {@code PathCondition} that only accepts objects that are accepted by <em>all</em> component filters.
+ * Composite {@code PathCondition} that only accepts objects that are accepted by <em>all</em> component conditions.
+ * Corresponds to logical "AND".
  */
-@Plugin(name = "And", category = "Core", printObject = true)
-public final class And implements PathCondition {
+@Plugin(name = "IfAll", category = "Core", printObject = true)
+public final class IfAll implements PathCondition {
 
     private final PathCondition[] components;
 
-    private And(final PathCondition... filters) {
+    private IfAll(final PathCondition... filters) {
         this.components = Objects.requireNonNull(filters, "filters");
     }
 
@@ -43,9 +44,7 @@ public final class And implements PathCondition {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see org.apache.logging.log4j.core.appender.rolling.action.DeleteFilter#accept(java.nio.file.Path,
-     * java.nio.file.Path)
+     * @see org.apache.logging.log4j.core.appender.rolling.action.PathCondition#accept(java.nio.file.Path, java.nio.file.Path, java.nio.file.attribute.BasicFileAttributes)
      */
     @Override
     public boolean accept(final Path baseDir, final Path relativePath, final BasicFileAttributes attrs) {
@@ -57,20 +56,31 @@ public final class And implements PathCondition {
         return true;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.apache.logging.log4j.core.appender.rolling.action.PathCondition#beforeFileTreeWalk()
+     */
+    @Override
+    public void beforeFileTreeWalk() {
+        for (PathCondition condition : components) {
+            condition.beforeFileTreeWalk();
+        }
+    }
+
     /**
-     * Create a Composite PathCondition that all need to accept before this condition accepts.
+     * Create a Composite PathCondition whose components all need to accept before this condition accepts.
      * 
      * @param components The component filters.
      * @return A Composite PathCondition.
      */
     @PluginFactory
-    public static And createAndCondition( //
+    public static IfAll createAndCondition( //
             @PluginElement("PathConditions") final PathCondition... components) {
-        return new And(components);
+        return new IfAll(components);
     }
 
     @Override
     public String toString() {
-        return "And" + Arrays.toString(components);
+        return "IfAll" + Arrays.toString(components);
     }
 }

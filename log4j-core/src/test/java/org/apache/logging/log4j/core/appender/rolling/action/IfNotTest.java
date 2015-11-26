@@ -17,25 +17,31 @@
 
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import org.apache.logging.log4j.core.appender.rolling.action.Or;
-import org.apache.logging.log4j.core.appender.rolling.action.PathCondition;
+import org.apache.logging.log4j.core.appender.rolling.action.IfNot;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 /**
- * Tests the Or composite filter.
+ * Tests the Not composite condition.
  */
-public class OrTest {
+public class IfNotTest {
 
     @Test
     public void test() {
-        final PathCondition TRUE = new FixedCondition(true);
-        final PathCondition FALSE = new FixedCondition(false);
-        assertTrue(Or.createOrCondition(TRUE, TRUE).accept(null, null, null));
-        assertTrue(Or.createOrCondition(FALSE, TRUE).accept(null, null, null));
-        assertTrue(Or.createOrCondition(TRUE, FALSE).accept(null, null, null));
-        assertFalse(Or.createOrCondition(FALSE, FALSE).accept(null, null, null));
+        assertTrue(new FixedCondition(true).accept(null, null, null));
+        assertFalse(IfNot.createNotCondition(new FixedCondition(true)).accept(null, null, null));
+
+        assertFalse(new FixedCondition(false).accept(null, null, null));
+        assertTrue(IfNot.createNotCondition(new FixedCondition(false)).accept(null, null, null));
+    }
+    
+    @Test
+    public void testBeforeTreeWalk() {
+        final CountingCondition counter = new CountingCondition(true);
+        final IfNot not = IfNot.createNotCondition(counter);
+        not.beforeFileTreeWalk();
+        assertEquals(1, counter.getBeforeFileTreeWalkCount());
     }
 
 }
