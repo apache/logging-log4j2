@@ -18,11 +18,11 @@
 package org.apache.logging.log4j.core.appender.rolling.action;
 
 import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -103,7 +103,7 @@ public abstract class AbstractPathAction extends AbstractAction {
      * @return the base path (all lookups resolved)
      */
     public Path getBasePath() {
-        return FileSystems.getDefault().getPath(subst.replace(getBasePathString()));
+        return Paths.get(subst.replace(getBasePathString()));
     }
 
     /**
@@ -126,6 +126,15 @@ public abstract class AbstractPathAction extends AbstractAction {
      */
     public Set<FileVisitOption> getOptions() {
         return Collections.unmodifiableSet(options);
+    }
+    
+    /**
+     * Returns whether to follow symbolic links or not.
+     * 
+     * @return whether to follow symbolic links or not
+     */
+    public boolean isFollowSymbolicLinks() {
+        return options.contains(FileVisitOption.FOLLOW_LINKS);
     }
 
     /**
