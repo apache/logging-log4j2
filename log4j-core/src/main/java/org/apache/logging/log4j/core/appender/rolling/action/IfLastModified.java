@@ -30,55 +30,60 @@ import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * PathFilter that accepts paths that are older than the specified duration.
+ * PathCondition that accepts paths that are older than the specified duration.
  */
 @Plugin(name = "IfLastModified", category = "Core", printObject = true)
 public final class IfLastModified implements PathCondition {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final Clock CLOCK = ClockFactory.getClock();
 
-    private final Duration duration;
+    private final Duration age;
 
-    private IfLastModified(final Duration duration) {
-        this.duration = Objects.requireNonNull(duration, "duration");
+    private IfLastModified(final Duration age) {
+        this.age = Objects.requireNonNull(age, "age");
     }
 
-    public Duration getDuration() {
-        return duration;
+    public Duration getAge() {
+        return age;
     }
 
     /*
      * (non-Javadoc)
-     * 
-     * @see org.apache.logging.log4j.core.appender.rolling.action.PathFilter#accept(java.nio.file.Path,
-     * java.nio.file.Path)
+     * @see org.apache.logging.log4j.core.appender.rolling.action.PathCondition#accept(java.nio.file.Path, java.nio.file.Path, java.nio.file.attribute.BasicFileAttributes)
      */
     @Override
     public boolean accept(final Path baseDir, final Path relativePath, final BasicFileAttributes attrs) {
         final FileTime fileTime = attrs.lastModifiedTime();
         final long millis = fileTime.toMillis();
         final long ageMillis = CLOCK.currentTimeMillis() - millis;
-        final boolean result = ageMillis >= duration.toMillis();
+        final boolean result = ageMillis >= age.toMillis();
         final String match = result ? ">=" : "<";
-        LOGGER.trace("LastModifiedFilter: {} ageMillis '{}' {} duration '{}'", relativePath, ageMillis, match,
-                duration);
+        LOGGER.trace("IfLastModified: {} ageMillis '{}' {} '{}'", relativePath, ageMillis, match, age);
         return result;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.apache.logging.log4j.core.appender.rolling.action.PathCondition#beforeFileTreeWalk()
+     */
+    @Override
+    public void beforeFileTreeWalk() {
+    }
+
     /**
-     * Create a FileLastModifiedFilter filter.
+     * Create an IfLastModified condition.
      * 
-     * @param duration The path age that is accepted by this filter. Must be a valid Duration.
-     * @return A FileLastModifiedFilter filter.
+     * @param age The path age that is accepted by this condition. Must be a valid Duration.
+     * @return An IfLastModified condition.
      */
     @PluginFactory
-    public static IfLastModified createAgeFilter( //
-            @PluginAttribute("duration") final Duration duration) {
-        return new IfLastModified(duration);
+    public static IfLastModified createAgeCondition( //
+            @PluginAttribute("age") final Duration age) {
+        return new IfLastModified(age);
     }
 
     @Override
     public String toString() {
-        return "FileLastModifiedFilter(age=" + duration + ")";
+        return "IfLastModified(age=" + age + ")";
     }
 }

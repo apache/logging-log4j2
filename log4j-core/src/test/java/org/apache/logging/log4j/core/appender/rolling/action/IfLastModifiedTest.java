@@ -32,13 +32,13 @@ public class IfLastModifiedTest {
 
     @Test
     public void testGetDurationReturnsConstructorValue() {
-        IfLastModified filter = IfLastModified.createAgeFilter(Duration.parse("P7D"));
-        assertEquals(0, filter.getDuration().compareTo(Duration.parse("P7D")));
+        IfLastModified filter = IfLastModified.createAgeCondition(Duration.parse("P7D"));
+        assertEquals(0, filter.getAge().compareTo(Duration.parse("P7D")));
     }
 
     @Test
     public void testAcceptsIfFileAgeEqualToDuration() {
-        IfLastModified filter = IfLastModified.createAgeFilter(Duration.parse("PT33S"));
+        IfLastModified filter = IfLastModified.createAgeCondition(Duration.parse("PT33S"));
         DummyFileAttributes attrs = new DummyFileAttributes();
         final long age = 33 * 1000;
         attrs.lastModified = FileTime.fromMillis(System.currentTimeMillis() - age);
@@ -47,7 +47,7 @@ public class IfLastModifiedTest {
 
     @Test
     public void testAcceptsIfFileAgeExceedsDuration() {
-        IfLastModified filter = IfLastModified.createAgeFilter(Duration.parse("PT33S"));
+        IfLastModified filter = IfLastModified.createAgeCondition(Duration.parse("PT33S"));
         DummyFileAttributes attrs = new DummyFileAttributes();
         final long age = 33 * 1000 + 5;
         attrs.lastModified = FileTime.fromMillis(System.currentTimeMillis() - age);
@@ -56,7 +56,7 @@ public class IfLastModifiedTest {
 
     @Test
     public void testDoesNotAcceptIfFileAgeLessThanDuration() {
-        IfLastModified filter = IfLastModified.createAgeFilter(Duration.parse("PT33S"));
+        IfLastModified filter = IfLastModified.createAgeCondition(Duration.parse("PT33S"));
         DummyFileAttributes attrs = new DummyFileAttributes();
         final long age = 33 * 1000 - 5;
         attrs.lastModified = FileTime.fromMillis(System.currentTimeMillis() - age);
