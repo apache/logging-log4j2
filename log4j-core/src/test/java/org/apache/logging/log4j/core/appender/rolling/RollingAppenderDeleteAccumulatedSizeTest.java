@@ -20,6 +20,8 @@ import java.io.File;
 import java.util.Arrays;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.util.datetime.FixedDateFormat;
+import org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -60,7 +62,10 @@ public class RollingAppenderDeleteAccumulatedSizeTest {
         assertTrue("Dir " + DIR + " should contain files", dir.listFiles().length > 0);
 
         final File[] files = dir.listFiles();
-        // for (File file : files) { System.out.println(file); }
+        for (File file : files) {
+            System.out.println(file + " (" + file.length() + "B) "
+                    + FixedDateFormat.create(FixedFormat.ABSOLUTE).format(file.lastModified()));
+        }
         assertEquals(Arrays.toString(files), 4, files.length);
         long total = 0;
         for (File file : files) {

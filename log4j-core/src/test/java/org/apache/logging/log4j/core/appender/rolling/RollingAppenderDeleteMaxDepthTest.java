@@ -24,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.Logger;
@@ -73,10 +74,11 @@ public class RollingAppenderDeleteMaxDepthTest {
         assertTrue("Dir " + DIR + " should contain files", dir.listFiles().length > 0);
 
         final File[] files = dir.listFiles();
-        assertEquals(Arrays.toString(files), 5, files.length);
+        List<String> expected = Arrays.asList("1", "2", "test-1.log", "test-2.log", "test-3.log");
+        assertEquals(Arrays.toString(files), expected.size(), files.length);
         for (File file : files) {
             assertTrue("test-4.log should have been deleted",
-                    Arrays.asList("1", "2", "test-1.log", "test-2.log", "test-3.log").contains(file.getName()));
+                    expected.contains(file.getName()));
         }
 
         assertTrue(p1 + " should not have been deleted", Files.exists(p1));
