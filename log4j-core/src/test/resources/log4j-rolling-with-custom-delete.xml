@@ -22,10 +22,6 @@
   </Properties>
 
   <Appenders>
-    <Console name="STDOUT">
-      <PatternLayout pattern="%m%n" />
-    </Console>
-
     <RollingFile name="RollingFile" fileName="${base}/rollingtest.log" 
                    filePattern="${base}/test/test-%i.log">
       <PatternLayout>
@@ -35,25 +31,16 @@
         <SizeBasedTriggeringPolicy size="50" />
       </Policies>
       <DefaultRolloverStrategy max="100" stopCustomActionsOnError="true">
-    <!-- custom action executed asynchronously after the rollover -->
         <Delete basePath="${base}/test" maxDepth="2" followLinks="false">
           <IfFileName glob="test-4.log" /> <!-- only keep files 1, 2 and 3 -->
         </Delete>
       </DefaultRolloverStrategy>
     </RollingFile>
-    <List name="List">
-      <ThresholdFilter level="error" />
-    </List>
   </Appenders>
 
   <Loggers>
-    <Logger name="org.apache.logging.log4j.core.appender.rolling" level="debug" additivity="false">
+    <Root level="trace">
       <AppenderRef ref="RollingFile" />
-    </Logger>
-    >
-
-    <Root level="error">
-      <AppenderRef ref="STDOUT" />
     </Root>
   </Loggers>
 
