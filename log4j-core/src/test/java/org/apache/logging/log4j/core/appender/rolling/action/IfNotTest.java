@@ -35,7 +35,12 @@ public class IfNotTest {
         assertFalse(new FixedCondition(false).accept(null, null, null));
         assertTrue(IfNot.createNotCondition(new FixedCondition(false)).accept(null, null, null));
     }
-    
+
+    @Test(expected = NullPointerException.class)
+    public void testEmptyIsFalse() {
+        assertFalse(IfNot.createNotCondition(null).accept(null, null, null));
+    }
+
     @Test
     public void testBeforeTreeWalk() {
         final CountingCondition counter = new CountingCondition(true);

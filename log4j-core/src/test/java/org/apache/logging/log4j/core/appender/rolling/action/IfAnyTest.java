@@ -37,6 +37,11 @@ public class IfAnyTest {
     }
     
     @Test
+    public void testEmptyIsFalse() {
+        assertFalse(IfAny.createOrCondition().accept(null, null, null));
+    }
+    
+    @Test
     public void testBeforeTreeWalk() {
         final CountingCondition counter = new CountingCondition(true);
         final IfAny or = IfAny.createOrCondition(counter, counter, counter);

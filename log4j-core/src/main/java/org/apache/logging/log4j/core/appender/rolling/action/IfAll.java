@@ -48,6 +48,9 @@ public final class IfAll implements PathCondition {
      */
     @Override
     public boolean accept(final Path baseDir, final Path relativePath, final BasicFileAttributes attrs) {
+        if (components == null || components.length == 0) {
+            return false; // unconditional delete not supported
+        }
         for (final PathCondition component : components) {
             if (!component.accept(baseDir, relativePath, attrs)) {
                 return false;

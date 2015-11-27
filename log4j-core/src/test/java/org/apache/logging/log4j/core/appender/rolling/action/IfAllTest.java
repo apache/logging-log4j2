@@ -39,6 +39,11 @@ public class IfAllTest {
     }
     
     @Test
+    public void testEmptyIsFalse() {
+        assertFalse(IfAll.createAndCondition().accept(null, null, null));
+    }
+    
+    @Test
     public void testBeforeTreeWalk() {
         final CountingCondition counter = new CountingCondition(true);
         final IfAll and = IfAll.createAndCondition(counter, counter, counter);
