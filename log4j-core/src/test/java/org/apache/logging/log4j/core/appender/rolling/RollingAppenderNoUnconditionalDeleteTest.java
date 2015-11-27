@@ -22,7 +22,6 @@ import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
@@ -30,8 +29,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExternalResource;
-import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -42,10 +39,6 @@ import static org.junit.Assert.*;
  */
 @RunWith(Parameterized.class)
 public class RollingAppenderNoUnconditionalDeleteTest {
-
-//    private static final String DIR = "target/rolling1";
-//    private static final String CONFIG = "log4j-rolling-with-custom-delete-unconditional1.xml";
-//    private static final String DIR = "target/rolling-unconditional-delete1/test";
 
     private final File directory;
     private Logger logger;
@@ -78,17 +71,6 @@ public class RollingAppenderNoUnconditionalDeleteTest {
     public void tearDown() throws Exception {
         deleteDir();
     }
-
-
-//    private final LoggerContextRule ctx = new LoggerContextRule(CONFIG);
-//
-//    @Rule
-//    public RuleChain chain = RuleChain.outerRule(new ExternalResource() {
-//        @Override
-//        protected void before() throws Throwable {
-//            deleteDir();
-//        }
-//    }).around(ctx);
 
     @Test
     public void testAppender() throws Exception {
