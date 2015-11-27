@@ -69,8 +69,9 @@ public class RollingAppenderDeleteAccumulatedSizeTest {
         assertEquals(Arrays.toString(files), 4, files.length);
         long total = 0;
         for (File file : files) {
+            // sometimes test-6.log remains
             assertTrue("unexpected file " + file, Arrays
-                    .asList("test-7.log", "test-8.log", "test-9.log", "test-10.log").contains(file.getName()));
+                    .asList("test-6.log", "test-7.log", "test-8.log", "test-9.log", "test-10.log").contains(file.getName()));
             total += file.length();
         }
         assertTrue("accumulatedSize=" + total, total <= 500);

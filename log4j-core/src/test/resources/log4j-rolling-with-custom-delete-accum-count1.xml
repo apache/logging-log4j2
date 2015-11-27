@@ -28,7 +28,7 @@
         <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
       </PatternLayout>
       <Policies>
-        <SizeBasedTriggeringPolicy size="50" />
+        <SizeBasedTriggeringPolicy size="30" />
       </Policies>
       <DefaultRolloverStrategy max="100" stopCustomActionsOnError="true">
         <Delete basePath="${base}/test">
