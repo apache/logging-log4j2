@@ -57,7 +57,7 @@ public class RollingAppenderDeleteAccumulatedCount1Test {
 
     @Test
     public void testAppender() throws Exception {
-        Path p1 = writeTextTo(DIR + "/my-1.log"); // glob="**/test-4.log"
+        Path p1 = writeTextTo(DIR + "/my-1.log"); // glob="test-*.log"
         Path p2 = writeTextTo(DIR + "/my-2.log");
         Path p3 = writeTextTo(DIR + "/my-3.log");
         Path p4 = writeTextTo(DIR + "/my-4.log");
