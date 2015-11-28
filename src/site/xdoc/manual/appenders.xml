@@ -2473,13 +2473,11 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           <a name="CustomDeleteOnRollover"/>
           <h5>Custom Delete on Rollover</h5>
           <p>
-            DefaultRolloverStrategy's <tt>max</tt> attribute only applies if the file pattern contains a <tt>%i</tt>
-            integer counter.
-          </p>
-          <p>
             Log4j-2.5 introduces a <tt>Delete</tt> action that gives users more control
-            over what files are deleted at rollover time.
-            The Delete action lets users configure one or more conditions that select the files to delete.
+            over what files are deleted at rollover time than what was possible with the DefaultRolloverStrategy
+            <tt>max</tt> attribute.
+            The Delete action lets users configure one or more conditions that select the files to delete
+            relative to a base directory.
             Note that it is possible to delete any file, not just rolled over log files, so use this action with care!
           </p>
           <table>
@@ -2659,7 +2657,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             Below is a sample configuration that uses a RollingFileAppender with the cron
             triggering policy configured to trigger every day at midnight.
             Archives are stored in a directory based on the current year and month.
-            Rolled over archives that are 60 days or older are deleted at rollover time.
+            All files that match the "*/app-*.log.gz" glob and are 60 days old
+            or older are deleted at rollover time.
           </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -2669,7 +2668,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
   </Properties>
   <Appenders>
     <RollingFile name="RollingFile" fileName="${baseDir}/app.log"
-                 filePattern="${baseDir}/$${date:yyyy-MM}/app-%d{yyyy-MM-dd}.log.gz">
+          filePattern="${baseDir}/$${date:yyyy-MM}/app-%d{yyyy-MM-dd}.log.gz">
       <PatternLayout pattern="%d %p %c{1.} [%t] %m%n" />
       <CronTriggeringPolicy schedule="0 0 0 * * ?"/>
       <DefaultRolloverStrategy>
@@ -2703,7 +2702,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
   </Properties>
   <Appenders>
     <RollingFile name="RollingFile" fileName="${baseDir}/app.log"
-                 filePattern="${baseDir}/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
+          filePattern="${baseDir}/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
       <PatternLayout pattern="%d %p %c{1.} [%t] %m%n" />
       <Policies>
         <TimeBasedTriggeringPolicy />
@@ -2712,6 +2711,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
       <DefaultRolloverStrategy max="100">
         <Delete basePath="${baseDir}" maxDepth="2">
           <IfFileName glob="*/app-*.log.gz">
+            <!-- nested: consider only the size of files that
+                 match the glob pattern, ignore other files -->
             <IfAccumulatedFileSize exceeds="100 GB" />
           </IfFileName>
         </Delete>
