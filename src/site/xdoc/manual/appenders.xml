@@ -2540,13 +2540,14 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 </p>
                 <p>Users can create custom conditions or use the built-in conditions:</p>
                 <ul>
-                  <li>IfFileName - accepts files whose name matches a regular expression or a
+                  <li><a href="#DeleteIfFileName">IfFileName</a> - accepts files whose path (relative to the base path) matches a
+                    <a href="https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html">regular expression</a> or a
                     <a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)">glob</a>.</li>
-                  <li>IfLastModified - accepts files that are as old as or older than the specified
+                  <li><a href="#DeleteIfLastModified">IfLastModified</a> - accepts files that are as old as or older than the specified
                     <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/appender/rolling/action/Duration.html#parse(CharSequence)">duration</a>.
                   </li>
-                  <li>IfAccumulatedFileCount - accepts paths after some count threshold is exceeded during the file tree walk.</li>
-                  <li>IfAccumulatedFileCount - accepts paths after the accumulated file size threshold is exceeded during the file tree walk.</li>
+                  <li><a href="#DeleteIfAccumulatedFileCount">IfAccumulatedFileCount</a> - accepts paths after some count threshold is exceeded during the file tree walk.</li>
+                  <li><a href="#DeleteIfAccumulatedFileSize">IfAccumulatedFileSize</a> - accepts paths after the accumulated file size threshold is exceeded during the file tree walk.</li>
                   <li>IfAll - accepts a path if all nested conditions accept it (logical AND).
                     Nested conditions may be evaluated in any order.</li>
                   <li>IfAny - accepts a path if one of the nested conditions accept it (logical OR).
@@ -2577,7 +2578,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>String</td>
               <td><em>Required if glob not specified.</em> 
                 Matches the relative path (relative to the base path) using a regular expression as defined by the
-                <a href="http://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html">Pattern</a> class.
+                <a href="https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html">Pattern</a> class.
               </td>
             </tr>
             <tr>
@@ -2585,7 +2586,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>PathCondition[]</td>
               <td>An optional set of nested <a href="#DeletePathCondition">PathConditions</a>. If any nested conditions
                 exist they all need to accept the file before it is deleted. Nested conditions are only evaluated if the
-                outer condition accepts a file (because the path name matches). 
+                outer condition accepts a file (if the path name matches). 
               </td>
             </tr>
           </table>
@@ -2610,7 +2611,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>PathCondition[]</td>
               <td>An optional set of nested <a href="#DeletePathCondition">PathConditions</a>. If any nested conditions
                 exist they all need to accept the file before it is deleted. Nested conditions are only evaluated if the
-                outer condition accepts a file (because the file is old enough). 
+                outer condition accepts a file (if the file is old enough). 
               </td>
             </tr>
           </table>
@@ -2634,7 +2635,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>PathCondition[]</td>
               <td>An optional set of nested <a href="#DeletePathCondition">PathConditions</a>. If any nested conditions
                 exist they all need to accept the file before it is deleted. Nested conditions are only evaluated if the
-                outer condition accepts a file (because the threshold count has been exceeded). 
+                outer condition accepts a file (if the threshold count has been exceeded). 
               </td>
             </tr>
           </table>
@@ -2659,7 +2660,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>PathCondition[]</td>
               <td>An optional set of nested <a href="#DeletePathCondition">PathConditions</a>. If any nested conditions
                 exist they all need to accept the file before it is deleted. Nested conditions are only evaluated if the
-                outer condition accepts a file (because the threshold accumulated file size has been exceeded). 
+                outer condition accepts a file (if the threshold accumulated file size has been exceeded). 
               </td>
             </tr>
           </table>
