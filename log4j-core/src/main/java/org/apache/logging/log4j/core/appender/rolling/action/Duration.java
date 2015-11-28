@@ -24,7 +24,8 @@ import java.util.regex.Pattern;
 
 /**
  * Simplified implementation of the <a href="https://en.wikipedia.org/wiki/ISO_8601#Durations">ISO-8601 Durations</a>
- * standard. The supported format is {@code PnDTnHnMnS}. Days are considered to be exactly 24 hours.
+ * standard. The supported format is {@code PnDTnHnMnS}, with 'P' and 'T' optional. Days are considered to be exactly 24
+ * hours.
  * <p>
  * Similarly to the {@code java.time.Duration} class, this class does not support year or month sections in the format.
  * This implementation does not support fractions or negative values.
@@ -91,12 +92,12 @@ public class Duration implements Serializable, Comparable<Duration> {
      * This implementation does not support negative numbers or fractions (so the smallest non-zero value a Duration can
      * have is one second).
      * <p>
-     * The string starts with the ASCII letter "P" in upper or lower case. There are then four sections, each consisting
-     * of a number and a suffix. The sections have suffixes in ASCII of "D", "H", "M" and "S" for days, hours, minutes
-     * and seconds, accepted in upper or lower case. The suffixes must occur in order. The ASCII letter "T" must occur
-     * before the first occurrence, if any, of an hour, minute or second section. At least one of the four sections must
-     * be present, and if "T" is present there must be at least one section after the "T". The number part of each
-     * section must consist of one or more ASCII digits. The number may not be prefixed by the ASCII negative or
+     * The string optionally starts with the ASCII letter "P" in upper or lower case. There are then four sections, each
+     * consisting of a number and a suffix. The sections have suffixes in ASCII of "D", "H", "M" and "S" for days,
+     * hours, minutes and seconds, accepted in upper or lower case. The suffixes must occur in order. The ASCII letter
+     * "T" may occur before the first occurrence, if any, of an hour, minute or second section. At least one of the four
+     * sections must be present, and if "T" is present there must be at least one section after the "T". The number part
+     * of each section must consist of one or more ASCII digits. The number may not be prefixed by the ASCII negative or
      * positive symbol. The number of days, hours, minutes and seconds must parse to a {@code long}.
      * <p>
      * Examples:
