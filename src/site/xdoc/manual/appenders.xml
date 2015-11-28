@@ -2063,6 +2063,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <a href="#RolloverStrategies">RolloverStrategy</a>. The triggering policy determines if a rollover should
             be performed while the RolloverStrategy defines how the rollover should be done. If no RolloverStrategy
             is configured, RollingFileAppender will use the <a href="#DefaultRolloverStrategy">DefaultRolloverStrategy</a>.
+            Since log4j-2.5, a <a href="#CustomDeleteOnRollover">custom delete action</a> can be configured in the
+            DefaultRolloverStrategy to run at rollover.
           </p>
           <p>
             File locking is not supported by the RollingFileAppender.
@@ -2468,6 +2470,75 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     </Root>
   </Loggers>
 </Configuration>]]></pre>
+          <a name="CustomDeleteOnRollover"/>
+          <h5>Custom Delete on Rollover</h5>
+          <p>
+            DefaultRolloverStrategy's <tt>max</tt> attribute only applies if the file pattern contains a <tt>%i</tt>
+            integer counter. Log4j-2.5 introduces a <tt>Delete</tt> action that gives users more control
+            over what files are deleted at rollover time.
+          </p>
+          <p>
+            The Delete action lets users configure one or more conditions that select the files to delete.
+            Note that it is possible to delete any file, not just rolled over log files, so use this action with care!
+          </p>
+          <table>
+            <caption align="top">Delete Parameters</caption>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>basePath</td>
+              <td>String</td>
+              <td><em>Required.</em> Base path from where to start scanning for files to delete.</td>
+            </tr>
+            <tr>
+              <td>maxDepth</td>
+              <td>int</td>
+              <td>The maximum number of levels of directories to visit. A value of 0
+                  means that only the starting file (the base path itself) is visited,
+                  unless denied by the security manager. A value of
+                  Integer.MAX_VALUE indicates that all levels should be visited. The default is 1,
+                  meaning all files in the specified base path.</td>
+            </tr>
+            <tr>
+              <td>followLinks</td>
+              <td>boolean</td>
+              <td>Whether to follow symbolic links. Default is false.</td>
+            </tr>
+            <tr>
+              <td>pathSorter</td>
+              <td>PathSorter</td>
+              <td>A plugin implementing the 
+                <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/appender/rolling/action/PathSorter.html">PathSorter</a>
+                interface to sort the files before selecting the files to delete. The default is to sort most recently
+                modified files first.</td>
+            </tr>
+            <tr>
+              <td>pathConditions</td>
+              <td>PathCondition[]</td>
+              <td><em>Required.</em> One or more PathCondition elements. If more than one condition is specified,
+                they all need to accept a path before it is deleted. Conditions can be nested, in which case the
+                inner condition(s) are only evaluated if the outer condition accepts the path.
+                Conditions can also be combined with the logical operators AND, OR and NOT by using the 
+                <tt>IfAll</tt>, <tt>IfAny</tt> and <tt>IfNot</tt> composite conditions. Users can create custom
+                conditions or use the built-in conditions:
+                <ul>
+                  <li>IfFileName - accepts files whose name matches a regular expression or a
+                    <a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)">glob</a>.</li>
+                  <li>IfLastModified - accepts files that are as old as or older than the specified
+                    <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/appender/rolling/action/Duration.html#parse(CharSequence)">duration</a>.
+                  </li>
+                  <li>IfAccumulatedFileCount - accepts paths after some count threshold is exceeded during the file tree walk.</li>
+                  <li>IfAccumulatedFileCount - accepts paths after the accumulated file size threshold is exceeded during the file tree walk.</li>
+                  <li>IfAll - accepts a path if all nested conditions accept it (logical AND)</li>
+                  <li>IfAny - accepts a path if one of the nested conditions accept it (logical OR)</li>
+                  <li>IfNot - accepts a path if the nested condition does not accept it (logical NOT)</li>
+                </ul>
+              </td>
+            </tr>
+            </table>
         </subsection>
 			<a name="RollingRandomAccessFileAppender" />
 			<subsection name="RollingRandomAccessFileAppender">
@@ -2477,48 +2548,34 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 				<p>
 					The RollingRandomAccessFileAppender is similar to the standard
 					<a href="#RollingFileAppender">RollingFileAppender</a>
-					except it is always buffered (this cannot be switched off)
-					and
-					internally it uses a
-					<tt>ByteBuffer + RandomAccessFile</tt>
-					instead of a
-					<tt>BufferedOutputStream</tt>.
+					except it is always buffered (this cannot be switched off) and
+					internally it uses a <tt>ByteBuffer + RandomAccessFile</tt>
+					instead of a <tt>BufferedOutputStream</tt>.
 					We saw a 20-200% performance improvement compared to
 					RollingFileAppender with "bufferedIO=true"
-					in our
-					<a href="async.html#RandomAccessFileAppenderPerformance">measurements</a>.
+					in our <a href="async.html#RandomAccessFileAppenderPerformance">measurements</a>.
 
-					The RollingRandomAccessFileAppender writes
-					to the File named in the
-					fileName parameter
-					and rolls the file over according the
-					TriggeringPolicy
-					and the RolloverPolicy.
+					The RollingRandomAccessFileAppender writes to the File named in the
+					fileName parameter and rolls the file over according the
+					TriggeringPolicy and the RolloverPolicy.
 
-					Similar to the RollingFileAppender,
-					RollingRandomAccessFileAppender uses a RollingRandomAccessFileManager
-					to actually perform the
-					file I/O and perform the rollover. While RollingRandomAccessFileAppender
-					from different Configurations cannot be
-					shared, the RollingRandomAccessFileManagers can be
-					if the Manager is accessible.
-					For example, two web applications in a servlet
+					Similar to the RollingFileAppender, RollingRandomAccessFileAppender uses a RollingRandomAccessFileManager
+					to actually perform the file I/O and perform the rollover. While RollingRandomAccessFileAppender
+					from different Configurations cannot be shared, the RollingRandomAccessFileManagers can be
+					if the Manager is accessible. For example, two web applications in a servlet
 					container can have their own configuration and safely write to the
 					same file if Log4j is in a ClassLoader that is common to both of them.
 				</p>
 				<p>
 					A RollingRandomAccessFileAppender requires a
-					<a href="#TriggeringPolicies">TriggeringPolicy</a>
-					and a
+					<a href="#TriggeringPolicies">TriggeringPolicy</a> and a
 					<a href="#RolloverStrategies">RolloverStrategy</a>.
-					The triggering policy determines if a rollover should
-					be performed
-					while the RolloverStrategy defines how the rollover
-					should be done.
-					If no RolloverStrategy
-					is configured, RollingRandomAccessFileAppender will
-					use the
+					The triggering policy determines if a rollover should be performed
+					while the RolloverStrategy defines how the rollover should be done.
+					If no RolloverStrategy is configured, RollingRandomAccessFileAppender will use the
 					<a href="#DefaultRolloverStrategy">DefaultRolloverStrategy</a>.
+            Since log4j-2.5, a <a href="#CustomDeleteOnRollover">custom delete action</a> can be configured in the
+            DefaultRolloverStrategy to run at rollover.
 				</p>
 				<p>
 					File locking is not supported by the RollingRandomAccessFileAppender.
