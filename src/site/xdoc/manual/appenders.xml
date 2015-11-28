@@ -2668,7 +2668,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             Below is a sample configuration that uses a RollingFileAppender with the cron
             triggering policy configured to trigger every day at midnight.
             Archives are stored in a directory based on the current year and month.
-            All files that match the "*/app-*.log.gz" glob and are 60 days old
+            All files under the base directory that match the "*/app-*.log.gz" glob and are 60 days old
             or older are deleted at rollover time.
           </p>
 
@@ -2701,7 +2701,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             triggering policies, will create up to 100 archives on the same day (1-100) that are stored in a directory
             based on the current year and month, and will compress each
             archive using gzip and will roll every hour.
-            Of the old archives that match the "*/app-*.log.gz" glob, only the most recent files up to 100 GB are kept,
+            Of the old archives under the base directory that match the "*/app-*.log.gz" glob, only the most recent files up to 100 GB are kept,
             other files (that match the "*/app-*.log.gz" glob) are deleted. Files that do not match the
             "*/app-*.log.gz" glob are not deleted.
           </p>
