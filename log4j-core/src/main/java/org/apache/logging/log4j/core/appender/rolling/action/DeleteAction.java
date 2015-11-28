@@ -37,7 +37,8 @@ import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 @Plugin(name = "Delete", category = "Core", printObject = true)
 public class DeleteAction extends AbstractPathAction {
 
-    private PathSorter pathSorter;
+    private final PathSorter pathSorter;
+    private final boolean testMode;
 
     /**
      * Creates a new DeleteAction that starts scanning for files to delete from the specified base path.
@@ -47,13 +48,17 @@ public class DeleteAction extends AbstractPathAction {
      * @param maxDepth The maxDepth parameter is the maximum number of levels of directories to visit. A value of 0
      *            means that only the starting file is visited, unless denied by the security manager. A value of
      *            MAX_VALUE may be used to indicate that all levels should be visited.
+     * @param testMode if true, files are not deleted but instead a message is printed to the <a
+     *            href="http://logging.apache.org/log4j/2.x/manual/configuration.html#StatusMessages">status logger</a>
+     *            at INFO level. Users can use this to do a dry run to test if their configuration works as expected.
      * @param sorter sorts
      * @param pathConditions an array of path filters (if more than one, they all need to accept a path before it is
      *            deleted).
      */
-    DeleteAction(final String basePath, final boolean followSymbolicLinks, final int maxDepth, final PathSorter sorter,
-            final PathCondition[] pathConditions, final StrSubstitutor subst) {
+    DeleteAction(final String basePath, final boolean followSymbolicLinks, final int maxDepth, final boolean testMode,
+            final PathSorter sorter, final PathCondition[] pathConditions, final StrSubstitutor subst) {
         super(basePath, followSymbolicLinks, maxDepth, pathConditions, subst);
+        this.testMode = testMode;
         this.pathSorter = Objects.requireNonNull(sorter, "sorter");
         if (pathConditions == null || pathConditions.length == 0) {
             LOGGER.error("Missing Delete conditions: unconditional Delete not supported");
@@ -94,9 +99,18 @@ public class DeleteAction extends AbstractPathAction {
         return sortedPaths;
     }
 
+    /**
+     * Returns {@code true} if files are not deleted even when all conditions accept a path, {@code false} otherwise.
+     * 
+     * @return {@code true} if files are not deleted even when all conditions accept a path, {@code false} otherwise
+     */
+    public boolean isTestMode() {
+        return testMode;
+    }
+
     @Override
     protected FileVisitor<Path> createFileVisitor(final Path visitorBaseDir, final List<PathCondition> conditions) {
-        return new DeletingVisitor(visitorBaseDir, conditions);
+        return new DeletingVisitor(visitorBaseDir, conditions, testMode);
     }
 
     /**
@@ -107,6 +121,10 @@ public class DeleteAction extends AbstractPathAction {
      * @param maxDepth The maxDepth parameter is the maximum number of levels of directories to visit. A value of 0
      *            means that only the starting file is visited, unless denied by the security manager. A value of
      *            MAX_VALUE may be used to indicate that all levels should be visited.
+     * @param testMode if true, files are not deleted but instead a message is printed to the <a
+     *            href="http://logging.apache.org/log4j/2.x/manual/configuration.html#StatusMessages">status logger</a>
+     *            at INFO level. Users can use this to do a dry run to test if their configuration works as expected.
+     *            Default is false.
      * @param PathSorter a plugin implementing the {@link PathSorter} interface
      * @param PathConditions an array of path conditions (if more than one, they all need to accept a path before it is
      *            deleted).
@@ -119,11 +137,13 @@ public class DeleteAction extends AbstractPathAction {
             @PluginAttribute("basePath") final String basePath, //
             @PluginAttribute(value = "followLinks", defaultBoolean = false) final boolean followLinks,
             @PluginAttribute(value = "maxDepth", defaultInt = 1) final int maxDepth,
+            @PluginAttribute(value = "testMode", defaultBoolean = false) final boolean testMode,
             @PluginElement("PathSorter") final PathSorter sorterParameter,
             @PluginElement("PathConditions") final PathCondition[] pathConditions,
             @PluginConfiguration final Configuration config) {
             // @formatter:on
         final PathSorter sorter = sorterParameter == null ? new PathSortByModificationTime(true) : sorterParameter;
-        return new DeleteAction(basePath, followLinks, maxDepth, sorter, pathConditions, config.getStrSubstitutor());
+        return new DeleteAction(basePath, followLinks, maxDepth, testMode, sorter, pathConditions,
+                config.getStrSubstitutor());
     }
 }

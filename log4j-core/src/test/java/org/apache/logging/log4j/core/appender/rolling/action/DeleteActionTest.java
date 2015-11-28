@@ -39,22 +39,24 @@ import static org.junit.Assert.*;
  */
 public class DeleteActionTest {
 
-    private static DeleteAction createAnyFilter(String path, boolean followLinks, int maxDepth) {
+    private static DeleteAction createAnyFilter(String path, boolean followLinks, int maxDepth, boolean testMode) {
         PathCondition[] pathFilters = {new FixedCondition(true)};
-        return create(path, followLinks, maxDepth, pathFilters);
+        return create(path, followLinks, maxDepth, testMode, pathFilters);
     }
 
-    private static DeleteAction create(String path, boolean followLinks, int maxDepth, PathCondition[] filters) {
+    private static DeleteAction create(String path, boolean followLinks, int maxDepth, boolean testMode,
+            PathCondition[] filters) {
         Configuration config = new BasicConfigurationFactory().new BasicConfiguration();
-        DeleteAction delete = DeleteAction.createDeleteAction(path, followLinks, maxDepth, null, filters, config);
+        DeleteAction delete = DeleteAction.createDeleteAction(path, followLinks, maxDepth, testMode, null, filters,
+                config);
         return delete;
     }
 
     @Test
     public void testGetBasePathResolvesLookups() {
-        DeleteAction delete = createAnyFilter("${sys:user.home}/a/b/c", false, 1);
-        
-        Path actual = delete.getBasePath();        
+        DeleteAction delete = createAnyFilter("${sys:user.home}/a/b/c", false, 1, false);
+
+        Path actual = delete.getBasePath();
         String expected = System.getProperty("user.home") + "/a/b/c";
 
         assertEquals(FileSystems.getDefault().getPath(expected), actual);
@@ -62,40 +64,56 @@ public class DeleteActionTest {
 
     @Test
     public void testGetBasePathStringReturnsOriginalParam() {
-        DeleteAction delete = createAnyFilter("${sys:user.home}/a/b/c", false, 1);
+        DeleteAction delete = createAnyFilter("${sys:user.home}/a/b/c", false, 1, false);
         assertEquals("${sys:user.home}/a/b/c", delete.getBasePathString());
     }
 
     @Test
     public void testGetMaxDepthReturnsConstructorValue() {
-        DeleteAction delete = createAnyFilter("any", false, 23);
+        DeleteAction delete = createAnyFilter("any", false, 23, false);
         assertEquals(23, delete.getMaxDepth());
     }
 
     @Test
     public void testGetOptionsReturnsEmptySetIfNotFollowingLinks() {
-        DeleteAction delete = createAnyFilter("any", false, 0);
+        DeleteAction delete = createAnyFilter("any", false, 0, false);
         assertEquals(Collections.emptySet(), delete.getOptions());
     }
 
     @Test
     public void testGetOptionsReturnsSetWithFollowLinksIfFollowingLinks() {
-        DeleteAction delete = createAnyFilter("any", true, 0);
+        DeleteAction delete = createAnyFilter("any", true, 0, false);
         assertEquals(EnumSet.of(FileVisitOption.FOLLOW_LINKS), delete.getOptions());
     }
 
     @Test
     public void testGetFiltersReturnsConstructorValue() {
         PathCondition[] filters = {new FixedCondition(true), new FixedCondition(false)};
-        
-        DeleteAction delete = create("any", true, 0, filters);
+
+        DeleteAction delete = create("any", true, 0, false, filters);
         assertEquals(Arrays.asList(filters), delete.getPathConditions());
     }
 
     @Test
     public void testCreateFileVisitorReturnsDeletingVisitor() {
-        DeleteAction delete = createAnyFilter("any", true, 0);
+        DeleteAction delete = createAnyFilter("any", true, 0, false);
         FileVisitor<Path> visitor = delete.createFileVisitor(delete.getBasePath(), delete.getPathConditions());
         assertTrue(visitor instanceof DeletingVisitor);
+    }
+
+    @Test
+    public void testCreateFileVisitorTestModeIsActionTestMode() {
+        DeleteAction delete = createAnyFilter("any", true, 0, false);
+        assertFalse(delete.isTestMode());
+        FileVisitor<Path> visitor = delete.createFileVisitor(delete.getBasePath(), delete.getPathConditions());
+        assertTrue(visitor instanceof DeletingVisitor);
+        assertFalse(((DeletingVisitor) visitor).isTestMode());
+
+        DeleteAction deleteTestMode = createAnyFilter("any", true, 0, true);
+        assertTrue(deleteTestMode.isTestMode());
+        FileVisitor<Path> testVisitor = deleteTestMode.createFileVisitor(delete.getBasePath(),
+                delete.getPathConditions());
+        assertTrue(testVisitor instanceof DeletingVisitor);
+        assertTrue(((DeletingVisitor) testVisitor).isTestMode());
     }
 }

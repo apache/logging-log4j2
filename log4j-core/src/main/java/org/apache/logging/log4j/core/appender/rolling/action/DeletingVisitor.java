@@ -36,6 +36,7 @@ public class DeletingVisitor extends SimpleFileVisitor<Path> {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final Path basePath;
+    private final boolean testMode;
     private final List<? extends PathCondition> pathConditions;
 
     /**
@@ -43,8 +44,13 @@ public class DeletingVisitor extends SimpleFileVisitor<Path> {
      * 
      * @param basePath used to relativize paths
      * @param pathConditions objects that need to confirm whether a file can be deleted
+     * @param testMode if true, files are not deleted but instead a message is printed to the <a
+     *            href="http://logging.apache.org/log4j/2.x/manual/configuration.html#StatusMessages">status logger</a>
+     *            at INFO level. Users can use this to do a dry run to test if their configuration works as expected.
      */
-    public DeletingVisitor(final Path basePath, final List<? extends PathCondition> pathConditions) {
+    public DeletingVisitor(final Path basePath, final List<? extends PathCondition> pathConditions,
+            final boolean testMode) {
+        this.testMode = testMode;
         this.basePath = Objects.requireNonNull(basePath, "basePath");
         this.pathConditions = Objects.requireNonNull(pathConditions, "pathConditions");
         for (final PathCondition condition : pathConditions) {
@@ -61,7 +67,11 @@ public class DeletingVisitor extends SimpleFileVisitor<Path> {
                 return FileVisitResult.CONTINUE;
             }
         }
-        delete(file);
+        if (isTestMode()) {
+            LOGGER.info("Deleting {} (TEST MODE: file not actually deleted)", file);
+        } else {
+            delete(file);
+        }
         return FileVisitResult.CONTINUE;
     }
 
@@ -74,5 +84,14 @@ public class DeletingVisitor extends SimpleFileVisitor<Path> {
     protected void delete(final Path file) throws IOException {
         LOGGER.trace("Deleting {}", file);
         Files.delete(file);
+    }
+
+    /**
+     * Returns {@code true} if files are not deleted even when all conditions accept a path, {@code false} otherwise.
+     * 
+     * @return {@code true} if files are not deleted even when all conditions accept a path, {@code false} otherwise
+     */
+    public boolean isTestMode() {
+        return testMode;
     }
 }

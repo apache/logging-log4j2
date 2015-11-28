@@ -40,8 +40,9 @@ public class DeletingVisitorTest {
     static class DeletingVisitorHelper extends DeletingVisitor {
         List<Path> deleted = new ArrayList<Path>();
 
-        public DeletingVisitorHelper(final Path basePath, final List<? extends PathCondition> pathFilters) {
-            super(basePath, pathFilters);
+        public DeletingVisitorHelper(final Path basePath, final List<? extends PathCondition> pathFilters,
+                final boolean testMode) {
+            super(basePath, pathFilters, testMode);
         }
 
         @Override
@@ -54,7 +55,7 @@ public class DeletingVisitorTest {
     public void testAcceptedFilesAreDeleted() throws IOException {
         Path base = Paths.get("/a/b/c");
         final FixedCondition ACCEPT_ALL = new FixedCondition(true);
-        DeletingVisitorHelper visitor = new DeletingVisitorHelper(base, Arrays.asList(ACCEPT_ALL));
+        DeletingVisitorHelper visitor = new DeletingVisitorHelper(base, Arrays.asList(ACCEPT_ALL), false);
 
         Path any = Paths.get("/a/b/c/any");
         visitor.visitFile(any, null);
@@ -65,7 +66,7 @@ public class DeletingVisitorTest {
     public void testRejectedFilesAreNotDeleted() throws IOException {
         Path base = Paths.get("/a/b/c");
         final FixedCondition REJECT_ALL = new FixedCondition(false);
-        DeletingVisitorHelper visitor = new DeletingVisitorHelper(base, Arrays.asList(REJECT_ALL));
+        DeletingVisitorHelper visitor = new DeletingVisitorHelper(base, Arrays.asList(REJECT_ALL), false);
 
         Path any = Paths.get("/a/b/c/any");
         visitor.visitFile(any, null);
@@ -78,7 +79,7 @@ public class DeletingVisitorTest {
         final FixedCondition ACCEPT_ALL = new FixedCondition(true);
         final FixedCondition REJECT_ALL = new FixedCondition(false);
         List<? extends PathCondition> filters = Arrays.asList(ACCEPT_ALL, ACCEPT_ALL, REJECT_ALL);
-        DeletingVisitorHelper visitor = new DeletingVisitorHelper(base, filters);
+        DeletingVisitorHelper visitor = new DeletingVisitorHelper(base, filters, false);
 
         Path any = Paths.get("/a/b/c/any");
         visitor.visitFile(any, null);
@@ -90,11 +91,23 @@ public class DeletingVisitorTest {
         Path base = Paths.get("/a/b/c");
         final FixedCondition ACCEPT_ALL = new FixedCondition(true);
         List<? extends PathCondition> filters = Arrays.asList(ACCEPT_ALL, ACCEPT_ALL, ACCEPT_ALL);
-        DeletingVisitorHelper visitor = new DeletingVisitorHelper(base, filters);
+        DeletingVisitorHelper visitor = new DeletingVisitorHelper(base, filters, false);
 
         Path any = Paths.get("/a/b/c/any");
         visitor.visitFile(any, null);
         assertTrue(visitor.deleted.contains(any));
+    }
+
+    @Test
+    public void testInTestModeFileIsNotDeletedEvenIfAllFiltersAccept() throws IOException {
+        Path base = Paths.get("/a/b/c");
+        final FixedCondition ACCEPT_ALL = new FixedCondition(true);
+        List<? extends PathCondition> filters = Arrays.asList(ACCEPT_ALL, ACCEPT_ALL, ACCEPT_ALL);
+        DeletingVisitorHelper visitor = new DeletingVisitorHelper(base, filters, true);
+
+        Path any = Paths.get("/a/b/c/any");
+        visitor.visitFile(any, null);
+        assertFalse(visitor.deleted.contains(any));
     }
 
     @Test
@@ -114,7 +127,7 @@ public class DeletingVisitorTest {
             }
         };
         Path base = Paths.get("/a/b/c");
-        DeletingVisitorHelper visitor = new DeletingVisitorHelper(base, Arrays.asList(filter));
+        DeletingVisitorHelper visitor = new DeletingVisitorHelper(base, Arrays.asList(filter), false);
 
         Path child = Paths.get("/a/b/c/relative");
         visitor.visitFile(child, null);

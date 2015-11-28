@@ -2478,7 +2478,10 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tt>max</tt> attribute.
             The Delete action lets users configure one or more conditions that select the files to delete
             relative to a base directory.
+          </p>
+          <p>
             Note that it is possible to delete any file, not just rolled over log files, so use this action with care!
+            With the <tt>testMode</tt> parameter you can test your configuration without accidentally deleting the wrong files.
           </p>
           <table>
             <caption align="top">Delete Parameters</caption>
@@ -2505,6 +2508,13 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>followLinks</td>
               <td>boolean</td>
               <td>Whether to follow symbolic links. Default is false.</td>
+            </tr>
+            <tr>
+              <td>testMode</td>
+              <td>boolean</td>
+              <td>If true, files are not deleted but instead a message is printed to the <a
+                 href="configuration.html#StatusMessages">status logger</a> at INFO level.
+                 Use this to do a dry run to test if the configuration works as expected. Default is false.</td>
             </tr>
             <tr>
               <td>pathSorter</td>
