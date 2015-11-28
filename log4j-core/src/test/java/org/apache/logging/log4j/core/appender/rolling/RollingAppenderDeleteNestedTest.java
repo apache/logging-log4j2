@@ -39,12 +39,11 @@ import org.junit.rules.RuleChain;
 import static org.junit.Assert.*;
 
 /**
- * Tests that sibling conditions are invoked in configured order.
- * This does not work for properties configurations. Use nested conditions instead.
+ *
  */
-public class RollingAppenderDeleteAccumulatedCount1Test {
-    private static final String CONFIG = "log4j-rolling-with-custom-delete-accum-count1.xml";
-    private static final String DIR = "target/rolling-with-delete-accum-count1/test";
+public class RollingAppenderDeleteNestedTest {
+    private static final String CONFIG = "log4j-rolling-with-custom-delete-nested.xml";
+    private static final String DIR = "target/rolling-with-delete-nested/test";
 
     private final LoggerContextRule ctx = new LoggerContextRule(CONFIG);
 
@@ -82,9 +81,9 @@ public class RollingAppenderDeleteAccumulatedCount1Test {
             System.out.println(file + " (" + file.length() + "B) "
                     + FixedDateFormat.create(FixedFormat.ABSOLUTE).format(file.lastModified()));
         }
-        // sometimes "test-4.log" remains
-        List<String> expected = Arrays.asList("test-4.log", "test-5.log", "test-6.log", "test-7.log", "test-8.log",
-                "test-9.log", "test-10.log", "my-1.log", "my-2.log", "my-3.log", "my-4.log", "my-5.log");
+        
+        List<String> expected = Arrays.asList("test-7.log", "test-8.log", "test-9.log", "test-10.log",
+                "my-1.log", "my-2.log", "my-3.log", "my-4.log", "my-5.log");
         assertEquals(Arrays.toString(files), expected.size() - 1, files.length);
         for (File file : files) {
             assertTrue("unexpected file " + file, expected.contains(file.getName()));

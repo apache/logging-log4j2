@@ -18,10 +18,14 @@ package org.apache.logging.log4j.core.appender.rolling.action;
 
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -33,16 +37,23 @@ public final class IfAccumulatedFileCount implements PathCondition {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private final int threshold;
     private int count;
+    private final PathCondition[] nestedConditions;
 
-    private IfAccumulatedFileCount(final int thresholdParam) {
+    private IfAccumulatedFileCount(final int thresholdParam, final PathCondition[] nestedConditions) {
         if (thresholdParam <= 0) {
             throw new IllegalArgumentException("Count must be a positive integer but was " + thresholdParam);
         }
         this.threshold = thresholdParam;
+        this.nestedConditions = nestedConditions == null ? new PathCondition[0] : Arrays.copyOf(nestedConditions,
+                nestedConditions.length);
     }
 
     public int getThresholdCount() {
         return threshold;
+    }
+    
+    public List<PathCondition> getNestedConditions() {
+        return Collections.unmodifiableList(Arrays.asList(nestedConditions));
     }
 
     /*
@@ -52,10 +63,13 @@ public final class IfAccumulatedFileCount implements PathCondition {
      * java.nio.file.Path, java.nio.file.attribute.BasicFileAttributes)
      */
     @Override
-    public boolean accept(final Path baseDir, final Path relativePath, final BasicFileAttributes attrs) {
+    public boolean accept(final Path basePath, final Path relativePath, final BasicFileAttributes attrs) {
         final boolean result = ++count > threshold;
         final String match = result ? ">" : "<=";
         LOGGER.trace("IfAccumulatedFileCount: {} count '{}' {} threshold '{}'", relativePath, count, match, threshold);
+        if (result) {
+            return IfAll.accept(nestedConditions, basePath, relativePath, attrs);
+        }
         return result;
     }
 
@@ -67,6 +81,7 @@ public final class IfAccumulatedFileCount implements PathCondition {
     @Override
     public void beforeFileTreeWalk() {
         count = 0;
+        IfAll.beforeFileTreeWalk(nestedConditions);
     }
 
     /**
@@ -77,15 +92,20 @@ public final class IfAccumulatedFileCount implements PathCondition {
      */
     @PluginFactory
     public static IfAccumulatedFileCount createFileCountCondition( //
-            @PluginAttribute(value = "exceeds", defaultInt = Integer.MAX_VALUE) final int threshold) {
+            // @formatter:off
+            @PluginAttribute(value = "exceeds", defaultInt = Integer.MAX_VALUE) final int threshold,
+            @PluginElement("PathConditions") final PathCondition... nestedConditions) {
+            // @formatter:on
+        
         if (threshold == Integer.MAX_VALUE) {
             LOGGER.error("IfAccumulatedFileCount invalid or missing threshold value.");
         }
-        return new IfAccumulatedFileCount(threshold);
+        return new IfAccumulatedFileCount(threshold, nestedConditions);
     }
 
     @Override
     public String toString() {
-        return "IfAccumulatedFileCount(exceeds=" + threshold + ")";
+        final String nested = nestedConditions.length == 0 ? "" : " AND " + Arrays.toString(nestedConditions);
+        return "IfAccumulatedFileCount(exceeds=" + threshold + nested + ")";
     }
 }

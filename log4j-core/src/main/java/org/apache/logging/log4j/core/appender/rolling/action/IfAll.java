@@ -44,14 +44,31 @@ public final class IfAll implements PathCondition {
 
     /*
      * (non-Javadoc)
-     * @see org.apache.logging.log4j.core.appender.rolling.action.PathCondition#accept(java.nio.file.Path, java.nio.file.Path, java.nio.file.attribute.BasicFileAttributes)
+     * 
+     * @see org.apache.logging.log4j.core.appender.rolling.action.PathCondition#accept(java.nio.file.Path,
+     * java.nio.file.Path, java.nio.file.attribute.BasicFileAttributes)
      */
     @Override
     public boolean accept(final Path baseDir, final Path relativePath, final BasicFileAttributes attrs) {
         if (components == null || components.length == 0) {
             return false; // unconditional delete not supported
         }
-        for (final PathCondition component : components) {
+        return accept(components, baseDir, relativePath, attrs);
+    }
+
+    /**
+     * Returns {@code true} if all the specified conditions accept the specified path, {@code false} otherwise.
+     * 
+     * @param list the array of conditions to evaluate
+     * @param baseDir the directory from where to start scanning for deletion candidate files
+     * @param relativePath the candidate for deletion. This path is relative to the baseDir.
+     * @param attrs attributes of the candidate path
+     * @return {@code true} if all the specified conditions accept the specified path, {@code false} otherwise
+     * @throws NullPointerException if any of the parameters is {@code null}
+     */
+    public static boolean accept(final PathCondition[] list, final Path baseDir, final Path relativePath,
+            final BasicFileAttributes attrs) {
+        for (final PathCondition component : list) {
             if (!component.accept(baseDir, relativePath, attrs)) {
                 return false;
             }
@@ -61,11 +78,21 @@ public final class IfAll implements PathCondition {
 
     /*
      * (non-Javadoc)
+     * 
      * @see org.apache.logging.log4j.core.appender.rolling.action.PathCondition#beforeFileTreeWalk()
      */
     @Override
     public void beforeFileTreeWalk() {
-        for (PathCondition condition : components) {
+        beforeFileTreeWalk(components);
+    }
+
+    /**
+     * Calls {@link #beforeFileTreeWalk()} on all of the specified nested conditions.
+     * 
+     * @param nestedConditions the conditions to call {@link #beforeFileTreeWalk()} on
+     */
+    public static void beforeFileTreeWalk(PathCondition[] nestedConditions) {
+        for (PathCondition condition : nestedConditions) {
             condition.beforeFileTreeWalk();
         }
     }

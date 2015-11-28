@@ -91,4 +91,40 @@ public class IfAccumulatedFileSizeTest {
         }
     }
 
+    @Test
+    public void testAcceptCallsNestedConditionsOnlyIfPathAccepted() {
+        final CountingCondition counter = new CountingCondition(true);
+        IfAccumulatedFileSize condition = IfAccumulatedFileSize.createFileSizeCondition("2KB", counter);
+        DummyFileAttributes attribs = new DummyFileAttributes();
+
+        long quarter = condition.getThresholdBytes() / 4;
+        attribs.size = quarter;
+        assertFalse(condition.accept(null, null, attribs));
+        assertEquals(0, counter.getAcceptCount());
+
+        assertFalse(condition.accept(null, null, attribs));
+        assertEquals(0, counter.getAcceptCount());
+
+        assertFalse(condition.accept(null, null, attribs));
+        assertEquals(0, counter.getAcceptCount());
+
+        assertFalse(condition.accept(null, null, attribs));
+        assertEquals(0, counter.getAcceptCount());
+
+        assertTrue(condition.accept(null, null, attribs));
+        assertEquals(1, counter.getAcceptCount());
+
+        assertTrue(condition.accept(null, null, attribs));
+        assertEquals(2, counter.getAcceptCount());
+    }
+
+    @Test
+    public void testBeforeTreeWalk() {
+        final CountingCondition counter = new CountingCondition(true);
+        final IfAccumulatedFileSize filter = IfAccumulatedFileSize.createFileSizeCondition("2GB", counter, counter,
+                counter);
+        filter.beforeFileTreeWalk();
+        assertEquals(3, counter.getBeforeFileTreeWalkCount());
+    }
+
 }

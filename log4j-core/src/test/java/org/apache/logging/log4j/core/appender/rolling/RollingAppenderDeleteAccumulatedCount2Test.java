@@ -39,7 +39,8 @@ import org.junit.rules.RuleChain;
 import static org.junit.Assert.*;
 
 /**
- *
+ * Tests that sibling conditions are invoked in configured order.
+ * This does not work for properties configurations. Use nested conditions instead.
  */
 public class RollingAppenderDeleteAccumulatedCount2Test {
     private static final String CONFIG = "log4j-rolling-with-custom-delete-accum-count2.xml";

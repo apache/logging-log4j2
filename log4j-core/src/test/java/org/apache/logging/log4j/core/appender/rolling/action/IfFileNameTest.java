@@ -76,4 +76,56 @@ public class IfFileNameTest {
         final Path pathMatchingRegex = Paths.get("regex");
         assertTrue(regexFilter.accept(null, pathMatchingRegex, null));
     }
+
+    @Test
+    public void testAcceptCallsNestedConditionsOnlyIfPathAccepted1() {
+        final CountingCondition counter = new CountingCondition(true);
+        final IfFileName regexFilter = IfFileName.createNameCondition(null, "regex", counter);
+        final Path pathMatchingRegex = Paths.get("regex");
+        
+        assertTrue(regexFilter.accept(null, pathMatchingRegex, null));
+        assertEquals(1, counter.getAcceptCount());
+        assertTrue(regexFilter.accept(null, pathMatchingRegex, null));
+        assertEquals(2, counter.getAcceptCount());
+        assertTrue(regexFilter.accept(null, pathMatchingRegex, null));
+        assertEquals(3, counter.getAcceptCount());
+        
+        final Path noMatch = Paths.get("nomatch");
+        assertFalse(regexFilter.accept(null, noMatch, null));
+        assertEquals(3, counter.getAcceptCount()); // no increase
+        assertFalse(regexFilter.accept(null, noMatch, null));
+        assertEquals(3, counter.getAcceptCount());
+        assertFalse(regexFilter.accept(null, noMatch, null));
+        assertEquals(3, counter.getAcceptCount());
+    }
+
+    @Test
+    public void testAcceptCallsNestedConditionsOnlyIfPathAccepted2() {
+        final CountingCondition counter = new CountingCondition(true);
+        final IfFileName globFilter = IfFileName.createNameCondition("glob", null, counter);
+        final Path pathMatchingGlob = Paths.get("glob");
+        
+        assertTrue(globFilter.accept(null, pathMatchingGlob, null));
+        assertEquals(1, counter.getAcceptCount());
+        assertTrue(globFilter.accept(null, pathMatchingGlob, null));
+        assertEquals(2, counter.getAcceptCount());
+        assertTrue(globFilter.accept(null, pathMatchingGlob, null));
+        assertEquals(3, counter.getAcceptCount());
+
+        final Path noMatch = Paths.get("nomatch");
+        assertFalse(globFilter.accept(null, noMatch, null));
+        assertEquals(3, counter.getAcceptCount()); // no increase
+        assertFalse(globFilter.accept(null, noMatch, null));
+        assertEquals(3, counter.getAcceptCount());
+        assertFalse(globFilter.accept(null, noMatch, null));
+        assertEquals(3, counter.getAcceptCount());
+    }
+
+    @Test
+    public void testBeforeTreeWalk() {
+        final CountingCondition counter = new CountingCondition(true);
+        final IfFileName pathFilter = IfFileName.createNameCondition("path", null, counter, counter, counter);
+        pathFilter.beforeFileTreeWalk();
+        assertEquals(3, counter.getBeforeFileTreeWalkCount());
+    }
 }
