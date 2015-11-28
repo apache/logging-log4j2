@@ -49,6 +49,8 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
                 scheduledItems = 5;
             }
             executorService = new ScheduledThreadPoolExecutor(scheduledItems, new DaemonThreadFactory("Log4j2Scheduled-"));
+        } else {
+            LOGGER.debug("No scheduled items");
         }
     }
 
@@ -67,6 +69,8 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
     public void incrementScheduledItems() {
         if (!isStarted()) {
             ++scheduledItems;
+        } else {
+            LOGGER.error("Attempted to increment scheduled items after start");
         }
     }
 

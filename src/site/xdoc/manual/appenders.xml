@@ -3048,6 +3048,13 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               Appender definition then an Appender will be created within the context of the RoutingAppender and
               will be reused each time a matching Appender name is referenced through a Route.
             </p>
+          <h4>Purge Policy</h4>
+          <p>The RoutingAppender can be configured with a PurgePolicy whose purpose is to stop and remove dormant
+            Appenders that have been dynamically created by the RoutingAppender. Log4j currently provides the
+            IdlePurgePolicy as the only PurgePolicy available for cleaning up the Appenders. The IdlePurgePolicy
+            accepts 2 attributes; timeToLive, which is the number of timeUnits the Appender should survive without
+            having any events sent to it, and timeUnit, the String representation of java.util.concurrent.TimeUnit
+            which is used with the timeToLive attribute.</p>
           <p>
             Below is a sample configuration that uses a RoutingAppender to route all Audit events to
             a FlumeAppender and all other events will be routed to a RollingFileAppender that captures only
@@ -3076,6 +3083,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         </Route>
         <Route ref="AuditLogger" key="Audit"/>
       </Routes>
+      <IdlePurgePolicy timeToLive="15" timeUnit="minutes"/>
     </Routing>
   </Appenders>
   <Loggers>

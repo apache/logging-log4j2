@@ -52,9 +52,9 @@ public class WatchManagerTest {
         Assume.assumeFalse(IS_WINDOWS);
         ConfigurationScheduler scheduler = new ConfigurationScheduler();
         scheduler.incrementScheduledItems();
-        scheduler.start();
         WatchManager watchManager = new WatchManager(scheduler);
         watchManager.setIntervalSeconds(1);
+        scheduler.start();
         watchManager.start();
         try {
             File sourceFile = new File(originalFile);
