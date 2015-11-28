@@ -2474,10 +2474,11 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           <h5>Custom Delete on Rollover</h5>
           <p>
             DefaultRolloverStrategy's <tt>max</tt> attribute only applies if the file pattern contains a <tt>%i</tt>
-            integer counter. Log4j-2.5 introduces a <tt>Delete</tt> action that gives users more control
-            over what files are deleted at rollover time.
+            integer counter.
           </p>
           <p>
+            Log4j-2.5 introduces a <tt>Delete</tt> action that gives users more control
+            over what files are deleted at rollover time.
             The Delete action lets users configure one or more conditions that select the files to delete.
             Note that it is possible to delete any file, not just rolled over log files, so use this action with care!
           </p>
@@ -2500,7 +2501,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                   means that only the starting file (the base path itself) is visited,
                   unless denied by the security manager. A value of
                   Integer.MAX_VALUE indicates that all levels should be visited. The default is 1,
-                  meaning all files in the specified base path.</td>
+                  meaning only the files in the specified base directory.</td>
             </tr>
             <tr>
               <td>followLinks</td>
@@ -2516,14 +2517,20 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 modified files first.</td>
             </tr>
             <tr>
-              <td>pathConditions</td>
+              <td>pathConditions <a name="DeletePathCondition"/></td>
               <td>PathCondition[]</td>
-              <td><em>Required.</em> One or more PathCondition elements. If more than one condition is specified,
-                they all need to accept a path before it is deleted. Conditions can be nested, in which case the
-                inner condition(s) are only evaluated if the outer condition accepts the path.
-                Conditions can also be combined with the logical operators AND, OR and NOT by using the 
-                <tt>IfAll</tt>, <tt>IfAny</tt> and <tt>IfNot</tt> composite conditions. Users can create custom
-                conditions or use the built-in conditions:
+              <td><p><em>Required.</em> One or more PathCondition elements.</p>
+                <p>
+                  If more than one condition is specified,
+                  they all need to accept a path before it is deleted. Conditions can be nested, in which case the
+                  inner condition(s) are evaluated only if the outer condition accepts the path.
+                  If conditions are not nested they may be evaluated in any order.
+                </p>
+                <p>
+                  Conditions can also be combined with the logical operators AND, OR and NOT by using the 
+                  <tt>IfAll</tt>, <tt>IfAny</tt> and <tt>IfNot</tt> composite conditions. 
+                </p>
+                <p>Users can create custom conditions or use the built-in conditions:</p>
                 <ul>
                   <li>IfFileName - accepts files whose name matches a regular expression or a
                     <a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)">glob</a>.</li>
@@ -2532,13 +2539,191 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                   </li>
                   <li>IfAccumulatedFileCount - accepts paths after some count threshold is exceeded during the file tree walk.</li>
                   <li>IfAccumulatedFileCount - accepts paths after the accumulated file size threshold is exceeded during the file tree walk.</li>
-                  <li>IfAll - accepts a path if all nested conditions accept it (logical AND)</li>
-                  <li>IfAny - accepts a path if one of the nested conditions accept it (logical OR)</li>
-                  <li>IfNot - accepts a path if the nested condition does not accept it (logical NOT)</li>
+                  <li>IfAll - accepts a path if all nested conditions accept it (logical AND).
+                    Nested conditions may be evaluated in any order.</li>
+                  <li>IfAny - accepts a path if one of the nested conditions accept it (logical OR).
+                    Nested conditions may be evaluated in any order.</li>
+                  <li>IfNot - accepts a path if the nested condition does not accept it (logical NOT).</li>
                 </ul>
               </td>
             </tr>
-            </table>
+          </table>
+          <a name="DeleteIfFileName"/>
+          <table>
+            <caption align="top">IfFileName Condition Parameters</caption>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>glob</td>
+              <td>String</td>
+              <td><em>Required if regex not specified.</em> 
+                Matches the relative path (relative to the base path) using a limited pattern language that resembles regular expressions but with a 
+                <a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)">simpler syntax</a>.
+              </td>
+            </tr>
+            <tr>
+              <td>regex</td>
+              <td>String</td>
+              <td><em>Required if glob not specified.</em> 
+                Matches the relative path (relative to the base path) using a regular expression as defined by the
+                <a href="http://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html">Pattern</a> class.
+              </td>
+            </tr>
+            <tr>
+              <td>nestedConditions</td>
+              <td>PathCondition[]</td>
+              <td>An optional set of nested <a href="#DeletePathCondition">PathConditions</a>. If any nested conditions
+                exist they all need to accept the file before it is deleted. Nested conditions are only evaluated if the
+                outer condition accepts a file (because the path name matches). 
+              </td>
+            </tr>
+          </table>
+          <a name="DeleteIfLastModified"/>
+          <table>
+            <caption align="top">IfLastModified Condition Parameters</caption>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>age</td>
+              <td>String</td>
+              <td><em>Required.</em> 
+                Specifies a <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/appender/rolling/action/Duration.html#parse(CharSequence)">duration</a>.
+                The condition accepts files that are as old or older than the specified duration.
+              </td>
+            </tr>
+            <tr>
+              <td>nestedConditions</td>
+              <td>PathCondition[]</td>
+              <td>An optional set of nested <a href="#DeletePathCondition">PathConditions</a>. If any nested conditions
+                exist they all need to accept the file before it is deleted. Nested conditions are only evaluated if the
+                outer condition accepts a file (because the file is old enough). 
+              </td>
+            </tr>
+          </table>
+          <a name="DeleteIfAccumulatedFileCount"/>
+          <table>
+            <caption align="top">IfAccumulatedFileCount Condition Parameters</caption>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>exceeds</td>
+              <td>int</td>
+              <td><em>Required.</em> 
+                The threshold count from which files will be deleted.
+              </td>
+            </tr>
+            <tr>
+              <td>nestedConditions</td>
+              <td>PathCondition[]</td>
+              <td>An optional set of nested <a href="#DeletePathCondition">PathConditions</a>. If any nested conditions
+                exist they all need to accept the file before it is deleted. Nested conditions are only evaluated if the
+                outer condition accepts a file (because the threshold count has been exceeded). 
+              </td>
+            </tr>
+          </table>
+          <a name="DeleteIfAccumulatedFileSize"/>
+          <table>
+            <caption align="top">IfAccumulatedFileSize Condition Parameters</caption>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>exceeds</td>
+              <td>String</td>
+              <td><em>Required.</em> 
+                The threshold accumulated file size from which files will be deleted.
+                The size can be specified in bytes, with the suffix KB, MB or GB, for example <tt>20MB</tt>.
+              </td>
+            </tr>
+            <tr>
+              <td>nestedConditions</td>
+              <td>PathCondition[]</td>
+              <td>An optional set of nested <a href="#DeletePathCondition">PathConditions</a>. If any nested conditions
+                exist they all need to accept the file before it is deleted. Nested conditions are only evaluated if the
+                outer condition accepts a file (because the threshold accumulated file size has been exceeded). 
+              </td>
+            </tr>
+          </table>
+          <p>
+            Below is a sample configuration that uses a RollingFileAppender with the cron
+            triggering policy configured to trigger every day at midnight.
+            Archives are stored in a directory based on the current year and month.
+            Rolled over archives that are 60 days or older are deleted at rollover time.
+          </p>
+
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp" packages="">
+  <Properties>
+    <Property name="baseDir">logs</Property>
+  </Properties>
+  <Appenders>
+    <RollingFile name="RollingFile" fileName="${baseDir}/app.log"
+                 filePattern="${baseDir}/$${date:yyyy-MM}/app-%d{yyyy-MM-dd}.log.gz">
+      <PatternLayout pattern="%d %p %c{1.} [%t] %m%n" />
+      <CronTriggeringPolicy schedule="0 0 0 * * ?"/>
+      <DefaultRolloverStrategy>
+        <Delete basePath="${baseDir}" maxDepth="2">
+          <IfFileName glob="*/app-*.log.gz" />
+          <IfLastModified age="60d" />
+        </Delete>
+      </DefaultRolloverStrategy>
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="RollingFile"/>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
+          <p>
+            Below is a sample configuration that uses a RollingFileAppender with both the time and size based
+            triggering policies, will create up to 100 archives on the same day (1-100) that are stored in a directory
+            based on the current year and month, and will compress each
+            archive using gzip and will roll every hour.
+            Of the old archives that match the "*/app-*.log.gz" glob, only the most recent files up to 100 GB are kept,
+            other files (that match the "*/app-*.log.gz" glob) are deleted. Files that do not match the
+            "*/app-*.log.gz" glob are not deleted.
+          </p>
+
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp" packages="">
+  <Properties>
+    <Property name="baseDir">logs</Property>
+  </Properties>
+  <Appenders>
+    <RollingFile name="RollingFile" fileName="${baseDir}/app.log"
+                 filePattern="${baseDir}/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
+      <PatternLayout pattern="%d %p %c{1.} [%t] %m%n" />
+      <Policies>
+        <TimeBasedTriggeringPolicy />
+        <SizeBasedTriggeringPolicy size="250 MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="100">
+        <Delete basePath="${baseDir}" maxDepth="2">
+          <IfFileName glob="*/app-*.log.gz">
+            <IfAccumulatedFileSize exceeds="100 GB" />
+          </IfFileName>
+        </Delete>
+      </DefaultRolloverStrategy>
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="RollingFile"/>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
         </subsection>
 			<a name="RollingRandomAccessFileAppender" />
 			<subsection name="RollingRandomAccessFileAppender">
