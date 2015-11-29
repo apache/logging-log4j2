@@ -83,11 +83,12 @@ public class RollingAppenderDeleteAccumulatedCount2Test {
                     + FixedDateFormat.create(FixedFormat.ABSOLUTE).format(file.lastModified()));
         }
         // sometimes "test-9.log", sometimes "test-10.log" remains
-        List<String> expected = Arrays.asList("test-9.log", "test-10.log",
-                "my-1.log", "my-2.log", "my-3.log", "my-4.log", "my-5.log");
-        assertEquals(Arrays.toString(files), expected.size() - 1, files.length);
+        List<String> expected = Arrays.asList("my-1.log", "my-2.log", "my-3.log", "my-4.log", "my-5.log");
+        assertEquals(Arrays.toString(files), expected.size() + 1, files.length);
         for (File file : files) {
-            assertTrue("unexpected file " + file, expected.contains(file.getName()));
+            if (!expected.contains(file.getName()) && !file.getName().startsWith("test-")) {
+                fail("unexpected file" + file);
+            }
         }
     }
 
