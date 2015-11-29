@@ -54,12 +54,13 @@ public class PathSortByModificationTime implements PathSorter {
 
     /**
      * Returns whether this sorter sorts recent files first.
+     * 
      * @return whether this sorter sorts recent files first
      */
     public boolean isRecentFirst() {
         return recentFirst;
     }
-    
+
     /*
      * (non-Javadoc)
      * 
@@ -69,6 +70,14 @@ public class PathSortByModificationTime implements PathSorter {
     public int compare(final PathWithAttributes path1, final PathWithAttributes path2) {
         final long lastModified1 = path1.getAttributes().lastModifiedTime().toMillis();
         final long lastModified2 = path2.getAttributes().lastModifiedTime().toMillis();
-        return multiplier * Long.signum(lastModified2 - lastModified1);
+        int result = multiplier * Long.signum(lastModified2 - lastModified1);
+        if (result == 0) { // if same time compare paths lexicographically
+            try {
+                result = path1.getPath().compareTo(path2.getPath());
+            } catch (final ClassCastException ex) {
+                result = path1.getPath().toString().compareTo(path2.getPath().toString());
+            }
+        }
+        return result;
     }
 }
