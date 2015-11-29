@@ -100,8 +100,8 @@ public final class IfFileName implements PathCondition {
     public boolean accept(final Path basePath, final Path relativePath, final BasicFileAttributes attrs) {
         final boolean result = pathMatcher.matches(relativePath);
 
-        final String match = result ? " " : " not ";
-        LOGGER.trace("IfFileName: '{}' does{}match relative path '{}'", syntaxAndPattern, match, relativePath);
+        final String match = result ? "matches" : "does not match";
+        LOGGER.trace("IfFileName: '{}' {} relative path '{}'", syntaxAndPattern, match, relativePath);
         if (result) {
             return IfAll.accept(nestedConditions, basePath, relativePath, attrs);
         }
