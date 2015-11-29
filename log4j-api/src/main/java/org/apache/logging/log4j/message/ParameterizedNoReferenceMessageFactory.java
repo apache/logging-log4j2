@@ -19,8 +19,8 @@ package org.apache.logging.log4j.message;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * Specialized {@link ParameterizedMessageFactory} that creates {@link ParameterizedMessage} objects that do not retain
- * a reference to the parameter object.
+ * Specialized {@link ParameterizedMessageFactory} that creates {@link SimpleMessage} objects that do not retain a
+ * reference to the parameter object.
  * <p>
  * Intended for use by the {@link StatusLogger}: this logger retains a queue of recently logged messages in memory,
  * causing memory leaks in web applications. (LOG4J2-1176)
@@ -39,7 +39,7 @@ public final class ParameterizedNoReferenceMessageFactory extends AbstractMessag
     private static final long serialVersionUID = 1L;
 
     /**
-     * Creates {@link ParameterizedMessage} instances.
+     * Creates {@link SimpleMessage} instances containing the formatted parameterized message string.
      * 
      * @param message The message pattern.
      * @param params The message parameters.
@@ -50,12 +50,9 @@ public final class ParameterizedNoReferenceMessageFactory extends AbstractMessag
     @Override
     public Message newMessage(final String message, final Object... params) {
         if (params == null) {
-            return new ParameterizedMessage(message, null);
+            return new SimpleMessage(message);
         }
-        String[] stringParams = new String[params.length];
-        for (int i = 0; i < stringParams.length; i++) {
-            stringParams[i] = String.valueOf(params[i]);
-        }
-        return new ParameterizedMessage(message, stringParams);
+        final String formatted = new ParameterizedMessage(message, params).getFormattedMessage();
+        return new SimpleMessage(formatted);
     }
 }
