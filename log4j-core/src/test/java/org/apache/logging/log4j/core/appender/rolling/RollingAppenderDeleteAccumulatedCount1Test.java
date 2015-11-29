@@ -93,7 +93,7 @@ public class RollingAppenderDeleteAccumulatedCount1Test {
 
     private void updateLastModified(Path... paths) throws IOException {
         for (Path path : paths) {
-            Files.setLastModifiedTime(path, FileTime.fromMillis(System.currentTimeMillis() + 100));
+            Files.setLastModifiedTime(path, FileTime.fromMillis(System.currentTimeMillis() + 2000));
         }
     }
 
