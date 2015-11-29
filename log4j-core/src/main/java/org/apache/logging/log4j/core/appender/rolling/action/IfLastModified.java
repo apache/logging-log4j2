@@ -71,7 +71,7 @@ public final class IfLastModified implements PathCondition {
         final long ageMillis = CLOCK.currentTimeMillis() - millis;
         final boolean result = ageMillis >= age.toMillis();
         final String match = result ? ">=" : "<";
-        final String accept = result ? "ACCEPT" : "REJECT";
+        final String accept = result ? "ACCEPTED" : "REJECTED";
         LOGGER.trace("IfLastModified {}: {} ageMillis '{}' {} '{}'", accept, relativePath, ageMillis, match, age);
         if (result) {
             return IfAll.accept(nestedConditions, basePath, relativePath, attrs);
