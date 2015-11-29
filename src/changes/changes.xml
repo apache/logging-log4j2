@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.5" date="2015-MM-DD" description="GA Release 2.5">
+      <action issue="LOG4J2-1173" dev="rpopma" type="fix">
+        Fixed rollover error when copying to a directory mapped to a remote Linux host.
+      </action>
       <action issue="LOG4J2-435" dev="rpopma" type="add" due-to="Robert Schaft">
         Added support for custom delete actions triggered by a rollover.
       </action>
