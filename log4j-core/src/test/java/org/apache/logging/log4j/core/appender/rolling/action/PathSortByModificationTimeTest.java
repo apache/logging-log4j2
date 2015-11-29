@@ -59,8 +59,8 @@ public class PathSortByModificationTimeTest {
         assertEquals("path ignored, 1st more recent", -1, sorter.compare(path(p2, a2), path(p1, a1)));
         
         assertEquals("same path, same time", 0, sorter.compare(path(p1, a1), path(p1, a1)));
-        assertEquals("path ignored, same time", 0, sorter.compare(path(p1, a1), path(p2, a1)));
-        assertEquals("path ignored, same time", 0, sorter.compare(path(p2, a1), path(p1, a1)));
+        assertEquals("p2 < p1, same time", 1, sorter.compare(path(p1, a1), path(p2, a1)));
+        assertEquals("p2 < p1, same time", -1, sorter.compare(path(p2, a1), path(p1, a1)));
     }
 
     @Test
@@ -82,8 +82,8 @@ public class PathSortByModificationTimeTest {
         assertEquals("path ignored, 1st more recent", 1, sorter.compare(path(p2, a2), path(p1, a1)));
         
         assertEquals("same path, same time", 0, sorter.compare(path(p1, a1), path(p1, a1)));
-        assertEquals("path ignored, same time", 0, sorter.compare(path(p1, a1), path(p2, a1)));
-        assertEquals("path ignored, same time", 0, sorter.compare(path(p2, a1), path(p1, a1)));
+        assertEquals("p1 < p2, same time", -1, sorter.compare(path(p1, a1), path(p2, a1)));
+        assertEquals("p1 < p2, same time", 1, sorter.compare(path(p2, a1), path(p1, a1)));
     }
 
     private PathWithAttributes path(Path path, DummyFileAttributes attributes) {
