@@ -30,6 +30,8 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.io.File;
 import java.nio.file.Path;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -46,6 +48,7 @@ public class ScriptManager implements FileWatcher {
     private final ConcurrentMap<String, ScriptRunner> scripts = new ConcurrentHashMap<>();
     private final String languages;
     private final WatchManager watchManager;
+    private static final SecurityManager SECURITY_MANAGER = System.getSecurityManager();
 
     public ScriptManager(WatchManager watchManager) {
         this.watchManager = watchManager;
@@ -139,7 +142,16 @@ public class ScriptManager implements FileWatcher {
             logger.warn("No script named {} could be found");
             return null;
         }
-        return scriptRunner.execute(bindings);
+        if (SECURITY_MANAGER == null) {
+            return scriptRunner.execute(bindings);
+        } else {
+            return AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                @Override
+                public Object run() {
+                    return scriptRunner.execute(bindings);
+                }
+            });
+        }
     }
 
     private interface ScriptRunner {
@@ -163,13 +175,32 @@ public class ScriptManager implements FileWatcher {
             CompiledScript compiled = null;
             if (scriptEngine instanceof Compilable) {
                 logger.debug("Script {} is compilable", script.getName());
-                try {
-                    compiled = ((Compilable) scriptEngine).compile(script.getScriptText());
-                } catch (final Throwable ex) {
-                /* ScriptException is what really should be caught here. However, beanshell's ScriptEngine
-                 * implements Compilable but then throws Error when the compile method is called!
-                 */
-                    logger.warn("Error compiling script", ex);
+
+                if (SECURITY_MANAGER == null) {
+                    try {
+                        compiled = ((Compilable) scriptEngine).compile(script.getScriptText());
+                    } catch (final Throwable ex) {
+                        /* ScriptException is what really should be caught here. However, beanshell's ScriptEngine
+                         * implements Compilable but then throws Error when the compile method is called!
+                         */
+                        logger.warn("Error compiling script", ex);
+                    }
+                } else {
+                    compiled = AccessController.doPrivileged(new PrivilegedAction<CompiledScript>() {
+                        @Override
+                        public CompiledScript run() {
+                            try {
+                                return ((Compilable) scriptEngine).compile(script.getScriptText());
+                            } catch (final Throwable ex) {
+                                /* ScriptException is what really should be caught here. However, beanshell's
+                                 * ScriptEngine implements Compilable but then throws Error when the compile method
+                                 * is called!
+                                 */
+                                logger.warn("Error compiling script", ex);
+                                return null;
+                            }
+                        }
+                    });
                 }
             }
             compiledScript = compiled;
