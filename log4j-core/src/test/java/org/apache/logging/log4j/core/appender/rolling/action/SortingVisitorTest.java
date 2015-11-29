@@ -21,6 +21,7 @@ import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.FileTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -45,10 +46,15 @@ public class SortingVisitorTest {
     public void setUp() throws Exception {
         base = Files.createTempDirectory("tempDir", new FileAttribute<?>[0]);
         aaa = Files.createTempFile(base, "aaa", null, new FileAttribute<?>[0]);
+        Files.setLastModifiedTime(aaa, FileTime.fromMillis(System.currentTimeMillis()));
+        
         Thread.sleep(1);
         bbb = Files.createTempFile(base, "bbb", null, new FileAttribute<?>[0]);
+        Files.setLastModifiedTime(bbb, FileTime.fromMillis(System.currentTimeMillis() + 1));
+        
         Thread.sleep(1);
         ccc = Files.createTempFile(base, "ccc", null, new FileAttribute<?>[0]);
+        Files.setLastModifiedTime(ccc, FileTime.fromMillis(System.currentTimeMillis() + 2));
     }
     
     @After
