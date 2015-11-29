@@ -52,7 +52,7 @@ public final class IfAccumulatedFileSize implements PathCondition {
     public long getThresholdBytes() {
         return thresholdBytes;
     }
-    
+
     public List<PathCondition> getNestedConditions() {
         return Collections.unmodifiableList(Arrays.asList(nestedConditions));
     }
@@ -68,7 +68,8 @@ public final class IfAccumulatedFileSize implements PathCondition {
         accumulatedSize += attrs.size();
         final boolean result = accumulatedSize > thresholdBytes;
         final String match = result ? ">" : "<=";
-        LOGGER.trace("IfAccumulatedFileSize: {} accumulated size '{}' {} thresholdBytes '{}'", relativePath,
+        final String accept = result ? "ACCEPT" : "REJECT";
+        LOGGER.trace("IfAccumulatedFileSize {}: {} accumulated size '{}' {} thresholdBytes '{}'", accept, relativePath,
                 accumulatedSize, match, thresholdBytes);
         if (result) {
             return IfAll.accept(nestedConditions, basePath, relativePath, attrs);
@@ -99,7 +100,7 @@ public final class IfAccumulatedFileSize implements PathCondition {
             @PluginAttribute("exceeds") final String size,
             @PluginElement("PathConditions") final PathCondition... nestedConditions) {
             // @formatter:on
-        
+
         if (size == null) {
             LOGGER.error("IfAccumulatedFileSize missing mandatory size threshold.");
         }

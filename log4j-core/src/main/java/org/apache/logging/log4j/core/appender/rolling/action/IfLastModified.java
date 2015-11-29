@@ -53,14 +53,16 @@ public final class IfLastModified implements PathCondition {
     public Duration getAge() {
         return age;
     }
-    
+
     public List<PathCondition> getNestedConditions() {
         return Collections.unmodifiableList(Arrays.asList(nestedConditions));
     }
 
     /*
      * (non-Javadoc)
-     * @see org.apache.logging.log4j.core.appender.rolling.action.PathCondition#accept(java.nio.file.Path, java.nio.file.Path, java.nio.file.attribute.BasicFileAttributes)
+     * 
+     * @see org.apache.logging.log4j.core.appender.rolling.action.PathCondition#accept(java.nio.file.Path,
+     * java.nio.file.Path, java.nio.file.attribute.BasicFileAttributes)
      */
     @Override
     public boolean accept(final Path basePath, final Path relativePath, final BasicFileAttributes attrs) {
@@ -69,7 +71,8 @@ public final class IfLastModified implements PathCondition {
         final long ageMillis = CLOCK.currentTimeMillis() - millis;
         final boolean result = ageMillis >= age.toMillis();
         final String match = result ? ">=" : "<";
-        LOGGER.trace("IfLastModified: {} ageMillis '{}' {} '{}'", relativePath, ageMillis, match, age);
+        final String accept = result ? "ACCEPT" : "REJECT";
+        LOGGER.trace("IfLastModified {}: {} ageMillis '{}' {} '{}'", accept, relativePath, ageMillis, match, age);
         if (result) {
             return IfAll.accept(nestedConditions, basePath, relativePath, attrs);
         }
@@ -78,6 +81,7 @@ public final class IfLastModified implements PathCondition {
 
     /*
      * (non-Javadoc)
+     * 
      * @see org.apache.logging.log4j.core.appender.rolling.action.PathCondition#beforeFileTreeWalk()
      */
     @Override

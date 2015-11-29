@@ -51,7 +51,7 @@ public final class IfAccumulatedFileCount implements PathCondition {
     public int getThresholdCount() {
         return threshold;
     }
-    
+
     public List<PathCondition> getNestedConditions() {
         return Collections.unmodifiableList(Arrays.asList(nestedConditions));
     }
@@ -66,7 +66,9 @@ public final class IfAccumulatedFileCount implements PathCondition {
     public boolean accept(final Path basePath, final Path relativePath, final BasicFileAttributes attrs) {
         final boolean result = ++count > threshold;
         final String match = result ? ">" : "<=";
-        LOGGER.trace("IfAccumulatedFileCount: {} count '{}' {} threshold '{}'", relativePath, count, match, threshold);
+        final String accept = result ? "ACCEPT" : "REJECT";
+        LOGGER.trace("IfAccumulatedFileCount {}: {} count '{}' {} threshold '{}'", accept, relativePath, count, match,
+                threshold);
         if (result) {
             return IfAll.accept(nestedConditions, basePath, relativePath, attrs);
         }
@@ -96,7 +98,7 @@ public final class IfAccumulatedFileCount implements PathCondition {
             @PluginAttribute(value = "exceeds", defaultInt = Integer.MAX_VALUE) final int threshold,
             @PluginElement("PathConditions") final PathCondition... nestedConditions) {
             // @formatter:on
-        
+
         if (threshold == Integer.MAX_VALUE) {
             LOGGER.error("IfAccumulatedFileCount invalid or missing threshold value.");
         }

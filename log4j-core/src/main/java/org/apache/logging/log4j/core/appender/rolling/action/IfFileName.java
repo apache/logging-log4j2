@@ -85,7 +85,7 @@ public final class IfFileName implements PathCondition {
     public String getSyntaxAndPattern() {
         return syntaxAndPattern;
     }
-    
+
     public List<PathCondition> getNestedConditions() {
         return Collections.unmodifiableList(Arrays.asList(nestedConditions));
     }
@@ -101,7 +101,8 @@ public final class IfFileName implements PathCondition {
         final boolean result = pathMatcher.matches(relativePath);
 
         final String match = result ? "matches" : "does not match";
-        LOGGER.trace("IfFileName: '{}' {} relative path '{}'", syntaxAndPattern, match, relativePath);
+        final String accept = result ? "ACCEPT" : "REJECT";
+        LOGGER.trace("IfFileName {}: '{}' {} relative path '{}'", accept, syntaxAndPattern, match, relativePath);
         if (result) {
             return IfAll.accept(nestedConditions, basePath, relativePath, attrs);
         }
