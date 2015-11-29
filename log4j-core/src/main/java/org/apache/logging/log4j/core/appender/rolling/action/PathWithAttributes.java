@@ -42,7 +42,7 @@ public class PathWithAttributes implements BasicFileAttributes {
     public PathWithAttributes(final Path path, final BasicFileAttributes attributes) {
         this.path = Objects.requireNonNull(path, "path");
         this.attributes = Objects.requireNonNull(attributes, "attributes");
-        
+
         // take snapshot of attributes, it may be just a view whose values change
         this.lastModifiedTime = attributes.lastModifiedTime();
         this.lastAccessTime = attributes.lastAccessTime();
@@ -54,10 +54,11 @@ public class PathWithAttributes implements BasicFileAttributes {
         this.size = attributes.size();
         this.fileKey = attributes.fileKey();
     }
-    
+
     @Override
     public String toString() {
-        return path + " (created: " + creationTime + ", modified: " + lastModifiedTime + ")";
+        return path + " (created: " + creationTime + ", modified: " + lastModifiedTime + ", attrMod="
+                + attributes.lastModifiedTime() + ")";
     }
 
     /**
