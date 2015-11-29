@@ -74,11 +74,16 @@ public class DeleteAction extends AbstractPathAction {
     @Override
     public boolean execute(final FileVisitor<Path> visitor) throws IOException {
         final List<PathWithAttributes> sortedPaths = getSortedPaths();
+        LOGGER.trace("Sorted paths:");
+        for (PathWithAttributes pathWithAttributes : sortedPaths) {
+            LOGGER.trace(pathWithAttributes);
+        }
 
         for (PathWithAttributes element : sortedPaths) {
             try {
                 visitor.visitFile(element.getPath(), element.getAttributes());
             } catch (final IOException ioex) {
+                LOGGER.error("Error in post-rollover Delete when visiting {}", element.getPath(), ioex);
                 visitor.visitFileFailed(element.getPath(), ioex);
             }
         }

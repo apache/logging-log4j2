@@ -54,6 +54,11 @@ public class PathWithAttributes implements BasicFileAttributes {
         this.size = attributes.size();
         this.fileKey = attributes.fileKey();
     }
+    
+    @Override
+    public String toString() {
+        return path + " (created: " + creationTime + ", modified: " + lastModifiedTime + ")";
+    }
 
     /**
      * Returns the path.

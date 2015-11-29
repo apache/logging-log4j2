@@ -46,15 +46,13 @@ public class SortingVisitorTest {
     public void setUp() throws Exception {
         base = Files.createTempDirectory("tempDir", new FileAttribute<?>[0]);
         aaa = Files.createTempFile(base, "aaa", null, new FileAttribute<?>[0]);
-        Files.setLastModifiedTime(aaa, FileTime.fromMillis(System.currentTimeMillis()));
-        
-        Thread.sleep(1);
         bbb = Files.createTempFile(base, "bbb", null, new FileAttribute<?>[0]);
-        Files.setLastModifiedTime(bbb, FileTime.fromMillis(System.currentTimeMillis() + 1));
-        
-        Thread.sleep(1);
         ccc = Files.createTempFile(base, "ccc", null, new FileAttribute<?>[0]);
-        Files.setLastModifiedTime(ccc, FileTime.fromMillis(System.currentTimeMillis() + 2));
+        
+        final long now = System.currentTimeMillis();
+        Files.setLastModifiedTime(aaa, FileTime.fromMillis(now));
+        Files.setLastModifiedTime(bbb, FileTime.fromMillis(now + 1));
+        Files.setLastModifiedTime(ccc, FileTime.fromMillis(now + 2));
     }
     
     @After
@@ -74,9 +72,9 @@ public class SortingVisitorTest {
         List<PathWithAttributes> found = visitor.getSortedPaths();
         assertNotNull(found);
         assertEquals("file count", 3, found.size());
-        assertEquals("1st: most recent", ccc, found.get(0).getPath());
-        assertEquals("2nd", bbb, found.get(1).getPath());
-        assertEquals("3rd: oldest", aaa, found.get(2).getPath());
+        assertEquals("1st: most recent; sorted=" + found, ccc, found.get(0));
+        assertEquals("2nd; sorted=" + found, bbb, found.get(1));
+        assertEquals("3rd: oldest; sorted=" + found, aaa, found.get(2));
     }
 
     @Test
@@ -88,8 +86,8 @@ public class SortingVisitorTest {
         List<PathWithAttributes> found = visitor.getSortedPaths();
         assertNotNull(found);
         assertEquals("file count", 3, found.size());
-        assertEquals("1st: oldest first", aaa, found.get(0).getPath());
-        assertEquals("2nd", bbb, found.get(1).getPath());
-        assertEquals("3rd: most recent last", ccc, found.get(2).getPath());
+        assertEquals("1st: oldest first; sorted=" + found, aaa, found.get(0));
+        assertEquals("2nd; sorted=" + found, bbb, found.get(1));
+        assertEquals("3rd: most recent sorted; list=" + found, ccc, found.get(2));
     }
 }
