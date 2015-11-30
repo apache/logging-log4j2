@@ -31,6 +31,7 @@ import java.util.Collection;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.appender.rolling.action.Duration;
 import org.apache.logging.log4j.core.layout.GelfLayout;
 import org.apache.logging.log4j.core.net.Facility;
 import org.junit.Test;
@@ -174,6 +175,8 @@ public class TypeConvertersTest {
                 // JRE Security Provider
                 { Security.getProviders()[0].getName(), Security.getProviders()[0], null, Provider.class },
                 { "\n", null, null, Provider.class },
+                // Duration
+                { "P7DT10H", Duration.parse("P7DT10H"), null, Duration.class }, 
             }
         );
     }

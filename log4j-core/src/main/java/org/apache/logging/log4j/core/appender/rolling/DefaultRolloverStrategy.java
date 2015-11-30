@@ -18,6 +18,8 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -26,6 +28,7 @@ import java.util.zip.Deflater;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
 import org.apache.logging.log4j.core.appender.rolling.action.CommonsCompressAction;
+import org.apache.logging.log4j.core.appender.rolling.action.CompositeAction;
 import org.apache.logging.log4j.core.appender.rolling.action.FileRenameAction;
 import org.apache.logging.log4j.core.appender.rolling.action.GzCompressAction;
 import org.apache.logging.log4j.core.appender.rolling.action.ZipCompressAction;
@@ -33,6 +36,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.Integers;
@@ -188,19 +192,28 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
     private final StrSubstitutor subst;
     private final int compressionLevel;
 
+    private List<Action> customActions;
+
+    private boolean stopCustomActionsOnError;
+
     /**
      * Constructs a new instance.
      * 
      * @param minIndex The minimum index.
      * @param maxIndex The maximum index.
+     * @param customActions custom actions to perform asynchronously after rollover
+     * @param stopCustomActionsOnError whether to stop executing asynchronous actions if an error occurs
      */
     protected DefaultRolloverStrategy(final int minIndex, final int maxIndex, final boolean useMax,
-            final int compressionLevel, final StrSubstitutor subst) {
+            final int compressionLevel, final StrSubstitutor subst, final Action[] customActions,
+            final boolean stopCustomActionsOnError) {
         this.minIndex = minIndex;
         this.maxIndex = maxIndex;
         this.useMax = useMax;
         this.compressionLevel = compressionLevel;
         this.subst = subst;
+        this.stopCustomActionsOnError = stopCustomActionsOnError;
+        this.customActions = customActions == null ? Collections.<Action> emptyList() : Arrays.asList(customActions);
     }
 
     /**
@@ -208,9 +221,11 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
      * 
      * @param max The maximum number of files to keep.
      * @param min The minimum number of files to keep.
-     * @param fileIndex If set to "max" (the default), files with a higher index will be newer than files with a
-     *            smaller index. If set to "min", file renaming and the counter will follow the Fixed Window strategy.
+     * @param fileIndex If set to "max" (the default), files with a higher index will be newer than files with a smaller
+     *            index. If set to "min", file renaming and the counter will follow the Fixed Window strategy.
      * @param compressionLevelStr The compression level, 0 (less) through 9 (more); applies only to ZIP files.
+     * @param customActions custom actions to perform asynchronously after rollover
+     * @param stopCustomActionsOnError whether to stop executing asynchronous actions if an error occurs
      * @param config The Configuration.
      * @return A DefaultRolloverStrategy.
      */
@@ -221,6 +236,9 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             @PluginAttribute("min") final String min,
             @PluginAttribute("fileIndex") final String fileIndex,
             @PluginAttribute("compressionLevel") final String compressionLevelStr,
+            @PluginElement("Actions") final Action[] customActions,
+            @PluginAttribute(value = "stopCustomActionsOnError", defaultBoolean = true)
+                    final boolean stopCustomActionsOnError,
             @PluginConfiguration final Configuration config) {
             // @formatter:on
         final boolean useMax = fileIndex == null ? true : fileIndex.equalsIgnoreCase("max");
@@ -241,7 +259,8 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             }
         }
         final int compressionLevel = Integers.parseInt(compressionLevelStr, Deflater.DEFAULT_COMPRESSION);
-        return new DefaultRolloverStrategy(minIndex, maxIndex, useMax, compressionLevel, config.getStrSubstitutor());
+        return new DefaultRolloverStrategy(minIndex, maxIndex, useMax, compressionLevel, config.getStrSubstitutor(),
+                customActions, stopCustomActionsOnError);
     }
 
     public int getCompressionLevel() {
@@ -508,10 +527,23 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             }
         }
 
-        final FileRenameAction renameAction = new FileRenameAction(new File(currentFileName), new File(renameTo),
-                false);
+        final FileRenameAction renameAction = new FileRenameAction(new File(currentFileName), new File(renameTo), false);
 
-        return new RolloverDescriptionImpl(currentFileName, false, renameAction, compressAction);
+        final Action asyncAction = merge(compressAction, customActions, stopCustomActionsOnError);
+        return new RolloverDescriptionImpl(currentFileName, false, renameAction, asyncAction);
+    }
+
+    private Action merge(final Action compressAction, final List<Action> custom, final boolean stopOnError) {
+        if (custom.isEmpty()) {
+            return compressAction;
+        }
+        if (compressAction == null) {
+            return new CompositeAction(custom, stopOnError);
+        }
+        final List<Action> all = new ArrayList<>();
+        all.add(compressAction);
+        all.addAll(custom);
+        return new CompositeAction(all, stopOnError);
     }
 
     @Override

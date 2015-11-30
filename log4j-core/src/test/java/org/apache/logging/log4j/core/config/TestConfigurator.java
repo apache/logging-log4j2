@@ -246,7 +246,7 @@ public class TestConfigurator {
             Thread.sleep(500);
         }
         assertTrue("setLastModified should have succeeded.", file.setLastModified(System.currentTimeMillis()));
-        TimeUnit.SECONDS.sleep(FileConfigurationMonitor.MIN_INTERVAL + 1);
+        TimeUnit.SECONDS.sleep(config.getWatchManager().getIntervalSeconds()+1);
         for (int i = 0; i < 17; ++i) {
             logger.debug("Test message " + i);
         }

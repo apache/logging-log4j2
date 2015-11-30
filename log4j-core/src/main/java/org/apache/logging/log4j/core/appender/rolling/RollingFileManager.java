@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -44,8 +45,14 @@ public class RollingFileManager extends FileManager {
     private long initialTime;
     private final PatternProcessor patternProcessor;
     private final Semaphore semaphore = new Semaphore(1);
-    private final TriggeringPolicy triggeringPolicy;
-    private final RolloverStrategy rolloverStrategy;
+    private volatile TriggeringPolicy triggeringPolicy;
+    private volatile RolloverStrategy rolloverStrategy;
+
+    private static final AtomicReferenceFieldUpdater<RollingFileManager, TriggeringPolicy> triggeringPolicyUpdater =
+            AtomicReferenceFieldUpdater.newUpdater(RollingFileManager.class, TriggeringPolicy.class, "triggeringPolicy");
+
+    private static final AtomicReferenceFieldUpdater<RollingFileManager, RolloverStrategy> rolloverStrategyUpdater =
+            AtomicReferenceFieldUpdater.newUpdater(RollingFileManager.class, RolloverStrategy.class, "rolloverStrategy");
 
     protected RollingFileManager(final String fileName, final String pattern, final OutputStream os,
             final boolean append, final long size, final long time, final TriggeringPolicy triggeringPolicy,
@@ -108,7 +115,13 @@ public class RollingFileManager extends FileManager {
      * @param event The LogEvent.
      */
     public synchronized void checkRollover(final LogEvent event) {
-        if (triggeringPolicy.isTriggeringEvent(event) && rollover(rolloverStrategy)) {
+        if (triggeringPolicy.isTriggeringEvent(event)) {
+            rollover();
+        }
+    }
+
+    public synchronized void rollover() {
+        if (rollover(rolloverStrategy)) {
             try {
                 size = 0;
                 initialTime = System.currentTimeMillis();
@@ -134,6 +147,17 @@ public class RollingFileManager extends FileManager {
      */
     public PatternProcessor getPatternProcessor() {
         return patternProcessor;
+    }
+
+    public void setTriggeringPolicy(final TriggeringPolicy triggeringPolicy)
+    {
+        triggeringPolicy.initialize(this);
+        triggeringPolicyUpdater.compareAndSet(this, this.triggeringPolicy, triggeringPolicy);
+    }
+
+    public void setRolloverStrategy(final RolloverStrategy rolloverStrategy)
+    {
+        rolloverStrategyUpdater.compareAndSet(this, this.rolloverStrategy, rolloverStrategy);
     }
 
     /**
@@ -285,6 +309,24 @@ public class RollingFileManager extends FileManager {
             this.advertiseURI = advertiseURI;
             this.layout = layout;
         }
+
+        public TriggeringPolicy getTriggeringPolicy()
+        {
+            return this.policy;
+        }
+
+        public RolloverStrategy getRolloverStrategy()
+        {
+            return this.strategy;
+        }
+    }
+
+    @Override
+    public void updateData(final Object data)
+    {
+        final FactoryData factoryData = (FactoryData) data;
+        setRolloverStrategy(factoryData.getRolloverStrategy());
+        setTriggeringPolicy(factoryData.getTriggeringPolicy());
     }
 
     /**

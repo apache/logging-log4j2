@@ -43,7 +43,7 @@ import static org.junit.Assert.*;
 
 public class KafkaAppenderTest {
 
-    private static final MockProducer kafka = new MockProducer();
+    private static final MockProducer<byte[], byte[]> kafka = new MockProducer<>(true, null, null);
 
     private static final String LOG_MESSAGE = "Hello, world!";
     private static final String TOPIC_NAME = "kafka-topic";

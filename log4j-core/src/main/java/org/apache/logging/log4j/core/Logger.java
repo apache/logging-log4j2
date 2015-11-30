@@ -143,9 +143,6 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
             final Throwable t) {
         final Message msg = message == null ? new SimpleMessage(Strings.EMPTY) : message;
 
-        // check if we need to reconfigure
-        privateConfig.config.getConfigurationMonitor().checkConfiguration();
-
         final ReliabilityStrategy strategy = privateConfig.loggerConfig.getReliabilityStrategy();
         strategy.log(this, getName(), fqcn, marker, level, msg, t);
     }
@@ -335,12 +332,10 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
 
         // LOG4J2-151: changed visibility to public
         public void logEvent(final LogEvent event) {
-            config.getConfigurationMonitor().checkConfiguration();
             loggerConfig.log(event);
         }
 
         boolean filter(final Level level, final Marker marker, final String msg) {
-            config.getConfigurationMonitor().checkConfiguration();
             final Filter filter = config.getFilter();
             if (filter != null) {
                 final Filter.Result r = filter.filter(logger, level, marker, msg);
@@ -352,7 +347,6 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
         }
 
         boolean filter(final Level level, final Marker marker, final String msg, final Throwable t) {
-            config.getConfigurationMonitor().checkConfiguration();
             final Filter filter = config.getFilter();
             if (filter != null) {
                 final Filter.Result r = filter.filter(logger, level, marker, msg, t);
@@ -364,7 +358,6 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
         }
 
         boolean filter(final Level level, final Marker marker, final String msg, final Object... p1) {
-            config.getConfigurationMonitor().checkConfiguration();
             final Filter filter = config.getFilter();
             if (filter != null) {
                 final Filter.Result r = filter.filter(logger, level, marker, msg, p1);
@@ -376,7 +369,6 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
         }
 
         boolean filter(final Level level, final Marker marker, final Object msg, final Throwable t) {
-            config.getConfigurationMonitor().checkConfiguration();
             final Filter filter = config.getFilter();
             if (filter != null) {
                 final Filter.Result r = filter.filter(logger, level, marker, msg, t);
@@ -388,7 +380,6 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
         }
 
         boolean filter(final Level level, final Marker marker, final Message msg, final Throwable t) {
-            config.getConfigurationMonitor().checkConfiguration();
             final Filter filter = config.getFilter();
             if (filter != null) {
                 final Filter.Result r = filter.filter(logger, level, marker, msg, t);

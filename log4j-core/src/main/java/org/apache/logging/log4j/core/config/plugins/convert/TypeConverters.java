@@ -28,11 +28,14 @@ import java.nio.charset.Charset;
 import java.security.Provider;
 import java.security.Security;
 import java.util.regex.Pattern;
+
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.appender.rolling.action.Duration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.util.CronExpression;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -176,6 +179,14 @@ public final class TypeConverters {
         }
     }
 
+    @Plugin(name = "CronExpression", category = CATEGORY)
+    public static class CronExpressionConverter implements TypeConverter<CronExpression> {
+        @Override
+        public CronExpression convert(final String s) throws Exception {
+            return new CronExpression(s);
+        }
+    }
+
     /**
      * Converts a {@link String} into a {@link Double}.
      */
@@ -184,6 +195,18 @@ public final class TypeConverters {
         @Override
         public Double convert(final String s) {
             return Double.valueOf(s);
+        }
+    }
+
+    /**
+     * Converts a {@link String} into a {@link Duration}.
+     * @since 2.5
+     */
+    @Plugin(name = "Duration", category = CATEGORY)
+    public static class DurationConverter implements TypeConverter<Duration> {
+        @Override
+        public Duration convert(final String s) {
+            return Duration.parse(s);
         }
     }
 

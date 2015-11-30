@@ -16,26 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -46,7 +26,6 @@ import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfig;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfigDelegate;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfigDisruptor;
-import org.apache.logging.log4j.core.async.DaemonThreadFactory;
 import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
@@ -66,6 +45,24 @@ import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 /**
  * The base Configuration. Many configuration implementations will extend this class.
  */
@@ -84,11 +81,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * Listeners for configuration changes.
      */
     protected final List<ConfigurationListener> listeners = new CopyOnWriteArrayList<>();
-
-    /**
-     * The ConfigurationMonitor that checks for configuration changes.
-     */
-    protected ConfigurationMonitor monitor = new DefaultConfigurationMonitor();
 
     /**
      * Packages found in configuration "packages" attribute.
@@ -122,9 +114,10 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private final ConcurrentMap<String, Object> componentMap = new ConcurrentHashMap<>();
     private final ConfigurationSource configurationSource;
     private ScriptManager scriptManager;
-    private ScheduledExecutorService executorService;
-    private final WatchManager watchManager = new WatchManager();
+    private ConfigurationScheduler configurationScheduler = new ConfigurationScheduler();
+    private final WatchManager watchManager = new WatchManager(configurationScheduler);
     private AsyncLoggerConfigDisruptor asyncLoggerConfigDisruptor;
+
 
     /**
      * Constructor.
@@ -162,8 +155,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         return watchManager;
     }
 
-    public ScheduledExecutorService getExecutorService() {
-        return executorService;
+    @Override
+    public ConfigurationScheduler getScheduler() {
+        return configurationScheduler;
     }
 
 	@Override
@@ -182,11 +176,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @Override
     public void initialize() {
         LOGGER.debug("Initializing configuration {}", this);
-        if (watchManager.getIntervalSeconds() > 0) {
-            LOGGER.trace("Starting Log4j2ConfigWatcher thread");
-            executorService = new ScheduledThreadPoolExecutor(1, new DaemonThreadFactory("Log4j2ConfigWatcher-"));
-            watchManager.setExecutorService(executorService);
-        }
         scriptManager = new ScriptManager(watchManager);
         pluginManager.collectPlugins(pluginPackages);
         final PluginManager levelPlugins = new PluginManager(Level.CATEGORY);
@@ -342,10 +331,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         if (watchManager.isStarted()) {
             watchManager.stop();
         }
-        if (executorService != null) {
-            LOGGER.trace("{} stopping Log4j2ConfigWatcher thread.", cls);
-            executorService.shutdown();
-        }
+        configurationScheduler.stop();
 
         super.stop();
         if (advertiser != null && advertisement != null) {
@@ -426,7 +412,19 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         componentMap.putIfAbsent(componentName, obj);
     }
 
+    protected void preConfigure(Node node) {
+        for (final Node child : node.getChildren()) {
+            Class<?> clazz = child.getType().getPluginClass();
+            if (clazz.isAnnotationPresent(Scheduled.class)) {
+                configurationScheduler.incrementScheduledItems();
+            }
+            preConfigure(child);
+        }
+    }
+
     protected void doConfigure() {
+        preConfigure(rootNode);
+        configurationScheduler.start();
         if (rootNode.hasChildren() && rootNode.getChildren().get(0).getName().equalsIgnoreCase("Properties")) {
             final Node first = rootNode.getChildren().get(0);
             createConfiguration(first, null);
@@ -611,16 +609,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     @Override
-    public void setConfigurationMonitor(final ConfigurationMonitor monitor) {
-        this.monitor = monitor;
-    }
-
-    @Override
-    public ConfigurationMonitor getConfigurationMonitor() {
-        return monitor;
-    }
-
-    @Override
     public void setAdvertiser(final Advertiser advertiser) {
         this.advertiser = advertiser;
     }
@@ -628,6 +616,17 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @Override
     public Advertiser getAdvertiser() {
         return advertiser;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.apache.logging.log4j.core.config.ReliabilityStrategyFactory#getReliabilityStrategy(org.apache.logging.log4j
+     * .core.config.LoggerConfig)
+     */
+    @Override
+    public ReliabilityStrategy getReliabilityStrategy(LoggerConfig loggerConfig) {
+        return ReliabilityStrategyFactory.getReliabilityStrategy(loggerConfig);
     }
 
     /**

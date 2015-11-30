@@ -309,10 +309,11 @@ public final class StatusLogger extends AbstractLogger {
 
         @Override
         public boolean add(final E object) {
+            super.add(object);
             while (messages.size() > size) {
                 messages.poll();
             }
-            return super.add(object);
+            return size > 0;
         }
     }
 }

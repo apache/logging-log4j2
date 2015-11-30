@@ -76,12 +76,17 @@ public abstract class AbstractManager {
                             + name + "] with data [" + data + "]");
                 }
                 MAP.put(name, manager);
+            } else {
+                manager.updateData(data);
             }
             manager.count++;
             return manager;
         } finally {
             LOCK.unlock();
         }
+    }
+
+    public void updateData(final Object data) {
     }
 
     /**

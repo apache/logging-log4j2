@@ -2063,6 +2063,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <a href="#RolloverStrategies">RolloverStrategy</a>. The triggering policy determines if a rollover should
             be performed while the RolloverStrategy defines how the rollover should be done. If no RolloverStrategy
             is configured, RollingFileAppender will use the <a href="#DefaultRolloverStrategy">DefaultRolloverStrategy</a>.
+            Since log4j-2.5, a <a href="#CustomDeleteOnRollover">custom delete action</a> can be configured in the
+            DefaultRolloverStrategy to run at rollover.
           </p>
           <p>
             File locking is not supported by the RollingFileAppender.
@@ -2177,6 +2179,24 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
   <SizeBasedTriggeringPolicy size="20 MB" />
   <TimeBasedTriggeringPolicy />
 </Policies>]]></pre>
+            <h5>Cron Triggering Policy</h5>
+              <p>The <code>CronTriggeringPolicy</code> triggers rollover based on a cron expression.</p>
+              <table>
+                <caption align="top">CronTriggeringPolicy Parameters</caption>
+                <tr>
+                  <th>Parameter Name</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                </tr>
+                <tr>
+                  <td>schedule</td>
+                  <td>String</td>
+                  <td>The cron expression. The expression is the same as what is allowed in the Quartz scheduler. See
+                    <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/util/CronExpression.html">CronExpression</a>
+                    for a full description of the expression.
+                  </td>
+                </tr>
+              </table>
             <h5>OnStartup Triggering Policy</h5>
               <p>
                 The <code>OnStartupTriggeringPolicy</code> policy takes no parameters and causes a rollover if the log
@@ -2450,6 +2470,272 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     </Root>
   </Loggers>
 </Configuration>]]></pre>
+          <a name="CustomDeleteOnRollover"/>
+          <h5>Custom Delete on Rollover</h5>
+          <p>
+            Log4j-2.5 introduces a <tt>Delete</tt> action that gives users more control
+            over what files are deleted at rollover time than what was possible with the DefaultRolloverStrategy
+            <tt>max</tt> attribute.
+            The Delete action lets users configure one or more conditions that select the files to delete
+            relative to a base directory.
+          </p>
+          <p>
+            Note that it is possible to delete any file, not just rolled over log files, so use this action with care!
+            With the <tt>testMode</tt> parameter you can test your configuration without accidentally deleting the wrong files.
+          </p>
+          <table>
+            <caption align="top">Delete Parameters</caption>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>basePath</td>
+              <td>String</td>
+              <td><em>Required.</em> Base path from where to start scanning for files to delete.</td>
+            </tr>
+            <tr>
+              <td>maxDepth</td>
+              <td>int</td>
+              <td>The maximum number of levels of directories to visit. A value of 0
+                  means that only the starting file (the base path itself) is visited,
+                  unless denied by the security manager. A value of
+                  Integer.MAX_VALUE indicates that all levels should be visited. The default is 1,
+                  meaning only the files in the specified base directory.</td>
+            </tr>
+            <tr>
+              <td>followLinks</td>
+              <td>boolean</td>
+              <td>Whether to follow symbolic links. Default is false.</td>
+            </tr>
+            <tr>
+              <td>testMode</td>
+              <td>boolean</td>
+              <td>If true, files are not deleted but instead a message is printed to the <a
+                 href="configuration.html#StatusMessages">status logger</a> at INFO level.
+                 Use this to do a dry run to test if the configuration works as expected. Default is false.</td>
+            </tr>
+            <tr>
+              <td>pathSorter</td>
+              <td>PathSorter</td>
+              <td>A plugin implementing the 
+                <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/appender/rolling/action/PathSorter.html">PathSorter</a>
+                interface to sort the files before selecting the files to delete. The default is to sort most recently
+                modified files first.</td>
+            </tr>
+            <tr>
+              <td>pathConditions <a name="DeletePathCondition"/></td>
+              <td>PathCondition[]</td>
+              <td><p><em>Required.</em> One or more PathCondition elements.</p>
+                <p>
+                  If more than one condition is specified,
+                  they all need to accept a path before it is deleted. Conditions can be nested, in which case the
+                  inner condition(s) are evaluated only if the outer condition accepts the path.
+                  If conditions are not nested they may be evaluated in any order.
+                </p>
+                <p>
+                  Conditions can also be combined with the logical operators AND, OR and NOT by using the 
+                  <tt>IfAll</tt>, <tt>IfAny</tt> and <tt>IfNot</tt> composite conditions. 
+                </p>
+                <p>Users can create custom conditions or use the built-in conditions:</p>
+                <ul>
+                  <li><a href="#DeleteIfFileName">IfFileName</a> - accepts files whose path (relative to the base path) matches a
+                    <a href="https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html">regular expression</a> or a
+                    <a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)">glob</a>.</li>
+                  <li><a href="#DeleteIfLastModified">IfLastModified</a> - accepts files that are as old as or older than the specified
+                    <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/appender/rolling/action/Duration.html#parse(CharSequence)">duration</a>.
+                  </li>
+                  <li><a href="#DeleteIfAccumulatedFileCount">IfAccumulatedFileCount</a> - accepts paths after some count threshold is exceeded during the file tree walk.</li>
+                  <li><a href="#DeleteIfAccumulatedFileSize">IfAccumulatedFileSize</a> - accepts paths after the accumulated file size threshold is exceeded during the file tree walk.</li>
+                  <li>IfAll - accepts a path if all nested conditions accept it (logical AND).
+                    Nested conditions may be evaluated in any order.</li>
+                  <li>IfAny - accepts a path if one of the nested conditions accept it (logical OR).
+                    Nested conditions may be evaluated in any order.</li>
+                  <li>IfNot - accepts a path if the nested condition does not accept it (logical NOT).</li>
+                </ul>
+              </td>
+            </tr>
+          </table>
+          <a name="DeleteIfFileName"/>
+          <table>
+            <caption align="top">IfFileName Condition Parameters</caption>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>glob</td>
+              <td>String</td>
+              <td><em>Required if regex not specified.</em> 
+                Matches the relative path (relative to the base path) using a limited pattern language that resembles regular expressions but with a 
+                <a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)">simpler syntax</a>.
+              </td>
+            </tr>
+            <tr>
+              <td>regex</td>
+              <td>String</td>
+              <td><em>Required if glob not specified.</em> 
+                Matches the relative path (relative to the base path) using a regular expression as defined by the
+                <a href="https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html">Pattern</a> class.
+              </td>
+            </tr>
+            <tr>
+              <td>nestedConditions</td>
+              <td>PathCondition[]</td>
+              <td>An optional set of nested <a href="#DeletePathCondition">PathConditions</a>. If any nested conditions
+                exist they all need to accept the file before it is deleted. Nested conditions are only evaluated if the
+                outer condition accepts a file (if the path name matches). 
+              </td>
+            </tr>
+          </table>
+          <a name="DeleteIfLastModified"/>
+          <table>
+            <caption align="top">IfLastModified Condition Parameters</caption>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>age</td>
+              <td>String</td>
+              <td><em>Required.</em> 
+                Specifies a <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/appender/rolling/action/Duration.html#parse(CharSequence)">duration</a>.
+                The condition accepts files that are as old or older than the specified duration.
+              </td>
+            </tr>
+            <tr>
+              <td>nestedConditions</td>
+              <td>PathCondition[]</td>
+              <td>An optional set of nested <a href="#DeletePathCondition">PathConditions</a>. If any nested conditions
+                exist they all need to accept the file before it is deleted. Nested conditions are only evaluated if the
+                outer condition accepts a file (if the file is old enough). 
+              </td>
+            </tr>
+          </table>
+          <a name="DeleteIfAccumulatedFileCount"/>
+          <table>
+            <caption align="top">IfAccumulatedFileCount Condition Parameters</caption>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>exceeds</td>
+              <td>int</td>
+              <td><em>Required.</em> 
+                The threshold count from which files will be deleted.
+              </td>
+            </tr>
+            <tr>
+              <td>nestedConditions</td>
+              <td>PathCondition[]</td>
+              <td>An optional set of nested <a href="#DeletePathCondition">PathConditions</a>. If any nested conditions
+                exist they all need to accept the file before it is deleted. Nested conditions are only evaluated if the
+                outer condition accepts a file (if the threshold count has been exceeded). 
+              </td>
+            </tr>
+          </table>
+          <a name="DeleteIfAccumulatedFileSize"/>
+          <table>
+            <caption align="top">IfAccumulatedFileSize Condition Parameters</caption>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>exceeds</td>
+              <td>String</td>
+              <td><em>Required.</em> 
+                The threshold accumulated file size from which files will be deleted.
+                The size can be specified in bytes, with the suffix KB, MB or GB, for example <tt>20MB</tt>.
+              </td>
+            </tr>
+            <tr>
+              <td>nestedConditions</td>
+              <td>PathCondition[]</td>
+              <td>An optional set of nested <a href="#DeletePathCondition">PathConditions</a>. If any nested conditions
+                exist they all need to accept the file before it is deleted. Nested conditions are only evaluated if the
+                outer condition accepts a file (if the threshold accumulated file size has been exceeded). 
+              </td>
+            </tr>
+          </table>
+          <p>
+            Below is a sample configuration that uses a RollingFileAppender with the cron
+            triggering policy configured to trigger every day at midnight.
+            Archives are stored in a directory based on the current year and month.
+            All files under the base directory that match the "*/app-*.log.gz" glob and are 60 days old
+            or older are deleted at rollover time.
+          </p>
+
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp" packages="">
+  <Properties>
+    <Property name="baseDir">logs</Property>
+  </Properties>
+  <Appenders>
+    <RollingFile name="RollingFile" fileName="${baseDir}/app.log"
+          filePattern="${baseDir}/$${date:yyyy-MM}/app-%d{yyyy-MM-dd}.log.gz">
+      <PatternLayout pattern="%d %p %c{1.} [%t] %m%n" />
+      <CronTriggeringPolicy schedule="0 0 0 * * ?"/>
+      <DefaultRolloverStrategy>
+        <Delete basePath="${baseDir}" maxDepth="2">
+          <IfFileName glob="*/app-*.log.gz" />
+          <IfLastModified age="60d" />
+        </Delete>
+      </DefaultRolloverStrategy>
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="RollingFile"/>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
+          <p>
+            Below is a sample configuration that uses a RollingFileAppender with both the time and size based
+            triggering policies, will create up to 100 archives on the same day (1-100) that are stored in a directory
+            based on the current year and month, and will compress each
+            archive using gzip and will roll every hour.
+            Of the old archives under the base directory that match the "*/app-*.log.gz" glob, only the most recent files up to 100 GB are kept,
+            other files (that match the "*/app-*.log.gz" glob) are deleted. Files that do not match the
+            "*/app-*.log.gz" glob are not deleted.
+          </p>
+
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp" packages="">
+  <Properties>
+    <Property name="baseDir">logs</Property>
+  </Properties>
+  <Appenders>
+    <RollingFile name="RollingFile" fileName="${baseDir}/app.log"
+          filePattern="${baseDir}/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
+      <PatternLayout pattern="%d %p %c{1.} [%t] %m%n" />
+      <Policies>
+        <TimeBasedTriggeringPolicy />
+        <SizeBasedTriggeringPolicy size="250 MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="100">
+        <Delete basePath="${baseDir}" maxDepth="2">
+          <IfFileName glob="*/app-*.log.gz">
+            <!-- nested: consider only the size of files that
+                 match the glob pattern, ignore other files -->
+            <IfAccumulatedFileSize exceeds="100 GB" />
+          </IfFileName>
+        </Delete>
+      </DefaultRolloverStrategy>
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="RollingFile"/>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
         </subsection>
 			<a name="RollingRandomAccessFileAppender" />
 			<subsection name="RollingRandomAccessFileAppender">
@@ -2459,48 +2745,34 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 				<p>
 					The RollingRandomAccessFileAppender is similar to the standard
 					<a href="#RollingFileAppender">RollingFileAppender</a>
-					except it is always buffered (this cannot be switched off)
-					and
-					internally it uses a
-					<tt>ByteBuffer + RandomAccessFile</tt>
-					instead of a
-					<tt>BufferedOutputStream</tt>.
+					except it is always buffered (this cannot be switched off) and
+					internally it uses a <tt>ByteBuffer + RandomAccessFile</tt>
+					instead of a <tt>BufferedOutputStream</tt>.
 					We saw a 20-200% performance improvement compared to
 					RollingFileAppender with "bufferedIO=true"
-					in our
-					<a href="async.html#RandomAccessFileAppenderPerformance">measurements</a>.
+					in our <a href="async.html#RandomAccessFileAppenderPerformance">measurements</a>.
 
-					The RollingRandomAccessFileAppender writes
-					to the File named in the
-					fileName parameter
-					and rolls the file over according the
-					TriggeringPolicy
-					and the RolloverPolicy.
+					The RollingRandomAccessFileAppender writes to the File named in the
+					fileName parameter and rolls the file over according the
+					TriggeringPolicy and the RolloverPolicy.
 
-					Similar to the RollingFileAppender,
-					RollingRandomAccessFileAppender uses a RollingRandomAccessFileManager
-					to actually perform the
-					file I/O and perform the rollover. While RollingRandomAccessFileAppender
-					from different Configurations cannot be
-					shared, the RollingRandomAccessFileManagers can be
-					if the Manager is accessible.
-					For example, two web applications in a servlet
+					Similar to the RollingFileAppender, RollingRandomAccessFileAppender uses a RollingRandomAccessFileManager
+					to actually perform the file I/O and perform the rollover. While RollingRandomAccessFileAppender
+					from different Configurations cannot be shared, the RollingRandomAccessFileManagers can be
+					if the Manager is accessible. For example, two web applications in a servlet
 					container can have their own configuration and safely write to the
 					same file if Log4j is in a ClassLoader that is common to both of them.
 				</p>
 				<p>
 					A RollingRandomAccessFileAppender requires a
-					<a href="#TriggeringPolicies">TriggeringPolicy</a>
-					and a
+					<a href="#TriggeringPolicies">TriggeringPolicy</a> and a
 					<a href="#RolloverStrategies">RolloverStrategy</a>.
-					The triggering policy determines if a rollover should
-					be performed
-					while the RolloverStrategy defines how the rollover
-					should be done.
-					If no RolloverStrategy
-					is configured, RollingRandomAccessFileAppender will
-					use the
+					The triggering policy determines if a rollover should be performed
+					while the RolloverStrategy defines how the rollover should be done.
+					If no RolloverStrategy is configured, RollingRandomAccessFileAppender will use the
 					<a href="#DefaultRolloverStrategy">DefaultRolloverStrategy</a>.
+            Since log4j-2.5, a <a href="#CustomDeleteOnRollover">custom delete action</a> can be configured in the
+            DefaultRolloverStrategy to run at rollover.
 				</p>
 				<p>
 					File locking is not supported by the RollingRandomAccessFileAppender.
@@ -2777,6 +3049,13 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               Appender definition then an Appender will be created within the context of the RoutingAppender and
               will be reused each time a matching Appender name is referenced through a Route.
             </p>
+          <h4>Purge Policy</h4>
+          <p>The RoutingAppender can be configured with a PurgePolicy whose purpose is to stop and remove dormant
+            Appenders that have been dynamically created by the RoutingAppender. Log4j currently provides the
+            IdlePurgePolicy as the only PurgePolicy available for cleaning up the Appenders. The IdlePurgePolicy
+            accepts 2 attributes; timeToLive, which is the number of timeUnits the Appender should survive without
+            having any events sent to it, and timeUnit, the String representation of java.util.concurrent.TimeUnit
+            which is used with the timeToLive attribute.</p>
           <p>
             Below is a sample configuration that uses a RoutingAppender to route all Audit events to
             a FlumeAppender and all other events will be routed to a RollingFileAppender that captures only
@@ -2805,6 +3084,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         </Route>
         <Route ref="AuditLogger" key="Audit"/>
       </Routes>
+      <IdlePurgePolicy timeToLive="15" timeUnit="minutes"/>
     </Routing>
   </Appenders>
   <Loggers>
