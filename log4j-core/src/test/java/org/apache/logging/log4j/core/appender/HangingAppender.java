@@ -33,10 +33,14 @@ public class HangingAppender extends AbstractAppender {
     private static final long serialVersionUID = 1L;
 
     private final long delay;
+    private final long startupDelay;
+    private final long shutdownDelay;
 
-    public HangingAppender(final String name, final long delay) {
+    public HangingAppender(final String name, final long delay, final long startupDelay, final long shutdownDelay) {
         super(name, null, null);
         this.delay = delay;
+        this.startupDelay = startupDelay;
+        this.shutdownDelay = shutdownDelay;
     }
 
     @Override
@@ -54,9 +58,30 @@ public class HangingAppender extends AbstractAppender {
             @Required(message = "No name provided for HangingAppender")
             final String name,
             @PluginAttribute("delay") final long delay,
+            @PluginAttribute("startupDelay") final long startupDelay,
+            @PluginAttribute("shutdownDelay") final long shutdownDelay,
             @PluginElement("Layout") final Layout<? extends Serializable> layout,
             @PluginElement("Filter") final Filter filter) {
-        return new HangingAppender(name, delay);
+        return new HangingAppender(name, delay, startupDelay, shutdownDelay);
     }
 
+    @Override
+    public void start() {
+        try {
+            Thread.sleep(startupDelay);
+        } catch (InterruptedException ignore) {
+            // ignore
+        }
+        super.start();
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+        try {
+            Thread.sleep(shutdownDelay);
+        } catch (InterruptedException ignore) {
+            // ignore
+        }
+    }
 }
