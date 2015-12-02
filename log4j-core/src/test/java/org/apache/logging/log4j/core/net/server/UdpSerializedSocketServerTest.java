@@ -21,6 +21,7 @@ import java.io.Serializable;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.net.Protocol;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -46,7 +47,7 @@ public class UdpSerializedSocketServerTest extends AbstractSocketServerTest {
     }
 
     public UdpSerializedSocketServerTest() {
-        super("udp", PORT, true);
+        super(Protocol.UDP, PORT, true);
     }
 
     @Override

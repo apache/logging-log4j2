@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.SocketAppender;
+import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.StoreConfigurationException;
@@ -79,7 +80,7 @@ public class SslXmlSocketServerTest extends AbstractSocketServerTest {
     }
 
     public SslXmlSocketServerTest() {
-        super("SSL", PORT, false);
+        super(Protocol.SSL, PORT, false);
     }
 
     @Override

@@ -35,6 +35,7 @@ import org.apache.logging.log4j.core.appender.SocketAppender;
 import org.apache.logging.log4j.core.layout.JsonLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.layout.XmlLayout;
+import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.test.AvailablePortFinder;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.After;
@@ -66,11 +67,11 @@ public abstract class AbstractSocketServerTest {
 
     protected final String port;
 
-    protected final String protocol;
+    protected final Protocol protocol;
 
     private final Logger rootLogger = ctx.getLogger(AbstractSocketServerTest.class.getSimpleName());
 
-    protected AbstractSocketServerTest(final String protocol, final String port, final boolean expectLengthException) {
+    protected AbstractSocketServerTest(final Protocol protocol, final String port, final boolean expectLengthException) {
         this.protocol = protocol;
         this.port = port;
         this.expectLengthException = expectLengthException;

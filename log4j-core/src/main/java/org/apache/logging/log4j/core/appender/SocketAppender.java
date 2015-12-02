@@ -79,7 +79,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
      *        The name of the host to connect to.
      * @param portNum
      *        The port to connect to on the target host.
-     * @param protocolStr
+     * @param protocolIn
      *        The Protocol to use.
      * @param sslConfig
      *        The SSL configuration file for TCP/SSL, ignored for UPD.
@@ -111,7 +111,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
             // @formatter:off
             @PluginAttribute("host") final String host,
             @PluginAttribute("port") final String portNum,
-            @PluginAttribute("protocol") final String protocolStr,
+            @PluginAttribute("protocol") final Protocol protocolIn,
             @PluginElement("SSL") final SslConfiguration sslConfig,
             @PluginAttribute(value = "connectTimeoutMillis", defaultInt = 0) final int connectTimeoutMillis,
             @PluginAliases("reconnectionDelay") // deprecated
@@ -139,8 +139,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
             return null;
         }
 
-        final Protocol protocol = EnglishEnums.valueOf(Protocol.class,
-                protocolStr != null ? protocolStr : Protocol.TCP.name());
+        final Protocol protocol = protocolIn != null ? protocolIn : Protocol.TCP;
         if (protocol == Protocol.UDP) {
             isFlush = true;
         }

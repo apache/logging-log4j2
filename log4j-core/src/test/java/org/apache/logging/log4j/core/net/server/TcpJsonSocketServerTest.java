@@ -21,6 +21,7 @@ import java.io.InputStream;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.net.Protocol;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -50,7 +51,7 @@ public class TcpJsonSocketServerTest extends AbstractSocketServerTest {
     }
 
     public TcpJsonSocketServerTest() {
-        super("tcp", PORT, false);
+        super(Protocol.TCP, PORT, false);
     }
 
     @Override
