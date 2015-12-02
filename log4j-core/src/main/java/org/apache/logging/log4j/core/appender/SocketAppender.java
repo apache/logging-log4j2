@@ -77,34 +77,34 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
      * Creates a socket appender.
      * 
      * @param host
-     *        The name of the host to connect to.
+     *            The name of the host to connect to.
      * @param portNum
-     *        The port to connect to on the target host.
+     *            The port to connect to on the target host.
      * @param protocolIn
-     *        The Protocol to use.
+     *            The Protocol to use.
      * @param sslConfig
-     *        The SSL configuration file for TCP/SSL, ignored for UPD.
+     *            The SSL configuration file for TCP/SSL, ignored for UPD.
      * @param connectTimeoutMillis
-     *        the connect timeout in milliseconds.
+     *            the connect timeout in milliseconds.
      * @param delayMillis
-     *        The interval in which failed writes should be retried.
+     *            The interval in which failed writes should be retried.
      * @param immediateFail
-     *        True if the write should fail if no socket is immediately available.
+     *            True if the write should fail if no socket is immediately available.
      * @param name
-     *        The name of the Appender.
+     *            The name of the Appender.
      * @param immediateFlush
-     *        "true" if data should be flushed on each write.
+     *            "true" if data should be flushed on each write.
      * @param ignore
-     *        If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise they are
-     *        propagated to the caller.
+     *            If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise they
+     *            are propagated to the caller.
      * @param layout
-     *        The layout to use (defaults to SerializedLayout).
+     *            The layout to use (defaults to SerializedLayout).
      * @param filter
-     *        The Filter or null.
+     *            The Filter or null.
      * @param advertise
-     *        "true" if the appender configuration should be advertised, "false" otherwise.
+     *            "true" if the appender configuration should be advertised, "false" otherwise.
      * @param config
-     *        The Configuration
+     *            The Configuration
      * @return A SocketAppender.
      */
     @PluginFactory
@@ -153,10 +153,67 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
     }
 
     /**
+     * Creates a socket appender.
+     * 
+     * @param host
+     *            The name of the host to connect to.
+     * @param portNum
+     *            The port to connect to on the target host.
+     * @param protocolIn
+     *            The Protocol to use.
+     * @param sslConfig
+     *            The SSL configuration file for TCP/SSL, ignored for UPD.
+     * @param connectTimeoutMillis
+     *            the connect timeout in milliseconds.
+     * @param delayMillis
+     *            The interval in which failed writes should be retried.
+     * @param immediateFail
+     *            True if the write should fail if no socket is immediately available.
+     * @param name
+     *            The name of the Appender.
+     * @param immediateFlush
+     *            "true" if data should be flushed on each write.
+     * @param ignore
+     *            If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise they
+     *            are propagated to the caller.
+     * @param layout
+     *            The layout to use (defaults to SerializedLayout).
+     * @param filter
+     *            The Filter or null.
+     * @param advertise
+     *            "true" if the appender configuration should be advertised, "false" otherwise.
+     * @param config
+     *            The Configuration
+     * @return A SocketAppender.
+     * @deprecated Use {@link #createAppender(String, String, Protocol, SslConfiguration, int, String, String, String, String, String, Layout, Filter, String, Configuration)}.
+     */
+    @Deprecated
+    public static SocketAppender createAppender(
+            // @formatter:off
+            @PluginAttribute("host") final String host,
+            @PluginAttribute("port") final String portNum,
+            @PluginAttribute("protocol") final String protocolIn,
+            @PluginElement("SSL") final SslConfiguration sslConfig,
+            @PluginAttribute(value = "connectTimeoutMillis", defaultInt = 0) final int connectTimeoutMillis,
+            @PluginAliases("reconnectionDelay") // deprecated
+            @PluginAttribute("reconnectionDelayMillis") final String delayMillis,
+            @PluginAttribute("immediateFail") final String immediateFail,
+            @PluginAttribute("name") final String name,
+            @PluginAttribute("immediateFlush") final String immediateFlush,
+            @PluginAttribute("ignoreExceptions") final String ignore,
+            @PluginElement("Layout") Layout<? extends Serializable> layout,
+            @PluginElement("Filter") final Filter filter,
+            @PluginAttribute("advertise") final String advertise, @PluginConfiguration final Configuration config) {
+            // @formatter:on
+        return createAppender(host, portNum, protocolIn, sslConfig, connectTimeoutMillis, delayMillis, immediateFail,
+                name, immediateFlush, ignore, layout, filter, advertise, config);
+    }
+
+    /**
      * Creates an AbstractSocketManager for TCP, UDP, and SSL.
      * 
      * @throws IllegalArgumentException
-     *         if the protocol cannot be handled.
+     *             if the protocol cannot be handled.
      */
     protected static AbstractSocketManager createSocketManager(final String name, Protocol protocol, final String host,
             final int port, final int connectTimeoutMillis, final SslConfiguration sslConfig, final int delayMillis,
