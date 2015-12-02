@@ -74,6 +74,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
     }
 
     /**
+     * Creates a socket appender.
      * 
      * @param host
      *        The name of the host to connect to.
