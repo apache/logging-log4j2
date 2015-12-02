@@ -123,7 +123,8 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
             @PluginAttribute("ignoreExceptions") final String ignore,
             @PluginElement("Layout") Layout<? extends Serializable> layout,
             @PluginElement("Filter") final Filter filter,
-            @PluginAttribute("advertise") final String advertise, @PluginConfiguration final Configuration config) {
+            @PluginAttribute("advertise") final String advertise, 
+            @PluginConfiguration final Configuration config) {
             // @formatter:on
         boolean isFlush = Booleans.parseBoolean(immediateFlush, true);
         final boolean isAdvertise = Boolean.parseBoolean(advertise);
@@ -203,7 +204,8 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
             @PluginAttribute("ignoreExceptions") final String ignore,
             @PluginElement("Layout") Layout<? extends Serializable> layout,
             @PluginElement("Filter") final Filter filter,
-            @PluginAttribute("advertise") final String advertise, @PluginConfiguration final Configuration config) {
+            @PluginAttribute("advertise") final String advertise, 
+            @PluginConfiguration final Configuration config) {
             // @formatter:on
         return createAppender(host, portNum, protocolIn, sslConfig, connectTimeoutMillis, delayMillis, immediateFail,
                 name, immediateFlush, ignore, layout, filter, advertise, config);
