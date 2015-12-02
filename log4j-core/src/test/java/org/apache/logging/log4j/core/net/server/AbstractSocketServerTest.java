@@ -59,19 +59,19 @@ public abstract class AbstractSocketServerTest {
     
     static final int PORT_NUM = AvailablePortFinder.getNextAvailable();
 
-    static final String PORT = String.valueOf(PORT_NUM);
+    static final int PORT = PORT_NUM;
 
     private final LoggerContext ctx = LoggerContext.getContext(false);
 
     private final boolean expectLengthException;
 
-    protected final String port;
+    protected final int port;
 
     protected final Protocol protocol;
 
     private final Logger rootLogger = ctx.getLogger(AbstractSocketServerTest.class.getSimpleName());
 
-    protected AbstractSocketServerTest(final Protocol protocol, final String port, final boolean expectLengthException) {
+    protected AbstractSocketServerTest(final Protocol protocol, final int port, final boolean expectLengthException) {
         this.protocol = protocol;
         this.port = port;
         this.expectLengthException = expectLengthException;
@@ -206,8 +206,8 @@ public abstract class AbstractSocketServerTest {
 
     protected SocketAppender createSocketAppender(final Filter socketFilter,
             final Layout<? extends Serializable> socketLayout) {
-        return SocketAppender.createAppender("localhost", this.port, this.protocol, null, 0, "-1", null,
-                "Test", "true", "false", socketLayout, socketFilter, null, null);
+        return SocketAppender.createAppender("localhost", this.port, this.protocol, null, 0, -1, true,
+                "Test", true, false, socketLayout, socketFilter, false, null);
     }
 
 }
