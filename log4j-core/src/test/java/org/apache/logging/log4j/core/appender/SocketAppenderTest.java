@@ -54,11 +54,8 @@ import org.junit.Test;
  */
 public class SocketAppenderTest {
 
-    private static final int PORTNUM1 = AvailablePortFinder.getNextAvailable();
-    private static final int PORTNUM2 = AvailablePortFinder.getNextAvailable();
-
-    private static final int PORT = PORTNUM1;
-    private static final int DYN_PORT = PORTNUM2;
+    private static final int PORT = AvailablePortFinder.getNextAvailable();
+    private static final int DYN_PORT = AvailablePortFinder.getNextAvailable();
     private static final int ERROR_PORT = AvailablePortFinder.getNextAvailable();
 
     private static BlockingQueue<LogEvent> list = new ArrayBlockingQueue<>(10);
@@ -74,7 +71,7 @@ public class SocketAppenderTest {
 
     @BeforeClass
     public static void setupClass() throws Exception {
-        tcpServer = new TCPSocketServer(PORTNUM1);
+        tcpServer = new TCPSocketServer(AvailablePortFinder.getNextAvailable());
         tcpServer.start();
         udpServer = new UDPSocketServer();
         udpServer.start();
@@ -178,7 +175,7 @@ public class SocketAppenderTest {
         root.setAdditive(false);
         root.setLevel(Level.DEBUG);
 
-        new TCPSocketServer(PORTNUM2).start();
+        new TCPSocketServer(AvailablePortFinder.getNextAvailable()).start();
 
         root.debug("This message is written because a deadlock never.");
 
@@ -212,7 +209,7 @@ public class SocketAppenderTest {
         private Thread thread;
 
         public UDPSocketServer() throws IOException {
-            this.sock = new DatagramSocket(PORTNUM1);
+            this.sock = new DatagramSocket(AvailablePortFinder.getNextAvailable());
         }
 
         public void shutdown() {
