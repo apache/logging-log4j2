@@ -40,7 +40,7 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
      * <code>immediateFlush</code> is set to {@code false}, then there is a good chance that the last few logs events
      * are not actually written to persistent media if and when the application crashes.
      */
-    protected final boolean immediateFlush;
+    private final boolean immediateFlush;
 
     private final M manager;
 
@@ -60,6 +60,15 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
         super(name, filter, layout, ignoreExceptions);
         this.manager = manager;
         this.immediateFlush = immediateFlush;
+    }
+
+    /**
+     * Gets the immediate flush setting.
+     * 
+     * @return immediate flush.
+     */
+    public boolean getImmediateFlush() {
+        return immediateFlush;
     }
 
     /**
@@ -114,4 +123,5 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
             readLock.unlock();
         }
     }
+
 }
