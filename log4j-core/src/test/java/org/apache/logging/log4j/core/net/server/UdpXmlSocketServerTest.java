@@ -22,6 +22,7 @@ import java.nio.charset.Charset;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.net.Protocol;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -49,7 +50,7 @@ public class UdpXmlSocketServerTest extends AbstractSocketServerTest {
     }
 
     public UdpXmlSocketServerTest() {
-        super("udp", PORT, true);
+        super(Protocol.UDP, PORT, true);
     }
 
     @Override
