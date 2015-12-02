@@ -144,7 +144,7 @@ public class SocketAppenderTest {
     @Test
     public void testDefaultProtocol() throws Exception {
 
-        final SocketAppender appender = SocketAppender.createAppender("localhost", PORT, null, null, 0, "-1",
+        final SocketAppender appender = SocketAppender.createAppender("localhost", PORT, (Protocol) null, null, 0, "-1",
                 "false", "Test", null, null, null, null, null, null);
         assertNotNull(appender);
     }
