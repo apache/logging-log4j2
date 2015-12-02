@@ -38,7 +38,6 @@ import org.apache.logging.log4j.core.net.SslSocketManager;
 import org.apache.logging.log4j.core.net.TcpSocketManager;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.util.Booleans;
-import org.apache.logging.log4j.util.EnglishEnums;
 
 /**
  * An Appender that delivers events over socket connections. Supports both TCP and UDP.
