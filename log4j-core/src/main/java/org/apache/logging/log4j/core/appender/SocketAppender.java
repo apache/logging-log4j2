@@ -185,21 +185,21 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
     @Deprecated
     public static SocketAppender createAppender(
             // @formatter:off
-            @PluginAttribute("host") final String host,
-            @PluginAttribute("port") final String portNum,
-            @PluginAttribute("protocol") final String protocolIn,
-            @PluginElement("SSL") final SslConfiguration sslConfig,
-            @PluginAttribute(value = "connectTimeoutMillis", defaultInt = 0) final int connectTimeoutMillis,
-            @PluginAliases("reconnectionDelay") // deprecated
-            @PluginAttribute("reconnectionDelayMillis") final String delayMillis,
-            @PluginAttribute("immediateFail") final String immediateFail,
-            @PluginAttribute("name") final String name,
-            @PluginAttribute("immediateFlush") final String immediateFlush,
-            @PluginAttribute("ignoreExceptions") final String ignore,
-            @PluginElement("Layout") Layout<? extends Serializable> layout,
-            @PluginElement("Filter") final Filter filter,
-            @PluginAttribute("advertise") final String advertise, 
-            @PluginConfiguration final Configuration config) {
+            final String host,
+            final String portNum,
+            final String protocolIn,
+            final SslConfiguration sslConfig,
+            final int connectTimeoutMillis,
+            // deprecated
+            final String delayMillis,
+            final String immediateFail,
+            final String name,
+            final String immediateFlush,
+            final String ignore,
+            Layout<? extends Serializable> layout,
+            final Filter filter,
+            final String advertise, 
+            final Configuration config) {
             // @formatter:on
         boolean isFlush = Booleans.parseBoolean(immediateFlush, true);
         final boolean isAdvertise = Boolean.parseBoolean(advertise);
