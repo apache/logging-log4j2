@@ -38,7 +38,6 @@ import org.apache.logging.log4j.core.net.SslSocketManager;
 import org.apache.logging.log4j.core.net.TcpSocketManager;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.util.Booleans;
-import org.apache.logging.log4j.util.EnglishEnums;
 
 /**
  * An Appender that delivers events over socket connections. Supports both TCP and UDP.
@@ -78,15 +77,15 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
      * 
      * @param host
      *            The name of the host to connect to.
-     * @param portNum
+     * @param port
      *            The port to connect to on the target host.
-     * @param protocolIn
+     * @param protocol
      *            The Protocol to use.
      * @param sslConfig
      *            The SSL configuration file for TCP/SSL, ignored for UPD.
      * @param connectTimeoutMillis
      *            the connect timeout in milliseconds.
-     * @param delayMillis
+     * @param reconnectDelayMillis
      *            The interval in which failed writes should be retried.
      * @param immediateFail
      *            True if the write should fail if no socket is immediately available.
@@ -94,7 +93,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
      *            The name of the Appender.
      * @param immediateFlush
      *            "true" if data should be flushed on each write.
-     * @param ignore
+     * @param ignoreExceptions
      *            If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise they
      *            are propagated to the caller.
      * @param layout
@@ -111,26 +110,22 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
     public static SocketAppender createAppender(
             // @formatter:off
             @PluginAttribute("host") final String host,
-            @PluginAttribute("port") final String portNum,
-            @PluginAttribute("protocol") final Protocol protocolIn,
+            @PluginAttribute(value = "port", defaultInt = 0) final int port,
+            @PluginAttribute("protocol") final Protocol protocol,
             @PluginElement("SSL") final SslConfiguration sslConfig,
             @PluginAttribute(value = "connectTimeoutMillis", defaultInt = 0) final int connectTimeoutMillis,
             @PluginAliases("reconnectionDelay") // deprecated
-            @PluginAttribute("reconnectionDelayMillis") final String delayMillis,
-            @PluginAttribute("immediateFail") final String immediateFail,
+            @PluginAttribute(value = "reconnectionDelayMillis", defaultInt = 0) final int reconnectDelayMillis,
+            @PluginAttribute(value = "immediateFail", defaultBoolean = true) final boolean immediateFail,
             @PluginAttribute("name") final String name,
-            @PluginAttribute("immediateFlush") final String immediateFlush,
-            @PluginAttribute("ignoreExceptions") final String ignore,
+            @PluginAttribute(value = "immediateFlush", defaultBoolean = true) boolean immediateFlush,
+            @PluginAttribute(value = "ignoreExceptions", defaultBoolean = true) final boolean ignoreExceptions,
             @PluginElement("Layout") Layout<? extends Serializable> layout,
             @PluginElement("Filter") final Filter filter,
-            @PluginAttribute("advertise") final String advertise, @PluginConfiguration final Configuration config) {
+            @PluginAttribute(value = "advertise", defaultBoolean = false) final boolean advertise, 
+            @PluginConfiguration final Configuration config) {
             // @formatter:on
-        boolean isFlush = Booleans.parseBoolean(immediateFlush, true);
-        final boolean isAdvertise = Boolean.parseBoolean(advertise);
-        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
-        final boolean fail = Booleans.parseBoolean(immediateFail, true);
-        final int reconnectDelayMillis = AbstractAppender.parseInt(delayMillis, 0);
-        final int port = AbstractAppender.parseInt(portNum, 0);
+        
         if (layout == null) {
             layout = SerializedLayout.createLayout();
         }
@@ -140,16 +135,16 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
             return null;
         }
 
-        final Protocol protocol = protocolIn != null ? protocolIn : Protocol.TCP;
-        if (protocol == Protocol.UDP) {
-            isFlush = true;
+        final Protocol actualProtocol = protocol != null ? protocol : Protocol.TCP;
+        if (actualProtocol == Protocol.UDP) {
+            immediateFlush = true;
         }
 
-        final AbstractSocketManager manager = createSocketManager(name, protocol, host, port, connectTimeoutMillis,
-                sslConfig, reconnectDelayMillis, fail, layout);
+        final AbstractSocketManager manager = createSocketManager(name, actualProtocol, host, port, connectTimeoutMillis,
+                sslConfig, reconnectDelayMillis, immediateFail, layout);
 
-        return new SocketAppender(name, layout, filter, manager, ignoreExceptions, isFlush,
-                isAdvertise ? config.getAdvertiser() : null);
+        return new SocketAppender(name, layout, filter, manager, ignoreExceptions, immediateFlush,
+                advertise ? config.getAdvertiser() : null);
     }
 
     /**
@@ -190,23 +185,31 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
     @Deprecated
     public static SocketAppender createAppender(
             // @formatter:off
-            @PluginAttribute("host") final String host,
-            @PluginAttribute("port") final String portNum,
-            @PluginAttribute("protocol") final String protocolIn,
-            @PluginElement("SSL") final SslConfiguration sslConfig,
-            @PluginAttribute(value = "connectTimeoutMillis", defaultInt = 0) final int connectTimeoutMillis,
-            @PluginAliases("reconnectionDelay") // deprecated
-            @PluginAttribute("reconnectionDelayMillis") final String delayMillis,
-            @PluginAttribute("immediateFail") final String immediateFail,
-            @PluginAttribute("name") final String name,
-            @PluginAttribute("immediateFlush") final String immediateFlush,
-            @PluginAttribute("ignoreExceptions") final String ignore,
-            @PluginElement("Layout") Layout<? extends Serializable> layout,
-            @PluginElement("Filter") final Filter filter,
-            @PluginAttribute("advertise") final String advertise, @PluginConfiguration final Configuration config) {
+            final String host,
+            final String portNum,
+            final String protocolIn,
+            final SslConfiguration sslConfig,
+            final int connectTimeoutMillis,
+            // deprecated
+            final String delayMillis,
+            final String immediateFail,
+            final String name,
+            final String immediateFlush,
+            final String ignore,
+            Layout<? extends Serializable> layout,
+            final Filter filter,
+            final String advertise, 
+            final Configuration config) {
             // @formatter:on
-        return createAppender(host, portNum, protocolIn, sslConfig, connectTimeoutMillis, delayMillis, immediateFail,
-                name, immediateFlush, ignore, layout, filter, advertise, config);
+        boolean isFlush = Booleans.parseBoolean(immediateFlush, true);
+        final boolean isAdvertise = Boolean.parseBoolean(advertise);
+        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
+        final boolean fail = Booleans.parseBoolean(immediateFail, true);
+        final int reconnectDelayMillis = AbstractAppender.parseInt(delayMillis, 0);
+        final int port = AbstractAppender.parseInt(portNum, 0);
+        final Protocol p = protocolIn == null ? Protocol.UDP : Protocol.valueOf(protocolIn);
+        return createAppender(host, port, p, sslConfig, connectTimeoutMillis, reconnectDelayMillis, fail, name, isFlush,
+                ignoreExceptions, layout, filter, isAdvertise, config);
     }
 
     /**
