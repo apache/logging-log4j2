@@ -201,8 +201,15 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
             @PluginAttribute("advertise") final String advertise, 
             @PluginConfiguration final Configuration config) {
             // @formatter:on
-        return createAppender(host, portNum, protocolIn, sslConfig, connectTimeoutMillis, delayMillis, immediateFail,
-                name, immediateFlush, ignore, layout, filter, advertise, config);
+        boolean isFlush = Booleans.parseBoolean(immediateFlush, true);
+        final boolean isAdvertise = Boolean.parseBoolean(advertise);
+        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
+        final boolean fail = Booleans.parseBoolean(immediateFail, true);
+        final int reconnectDelayMillis = AbstractAppender.parseInt(delayMillis, 0);
+        final int port = AbstractAppender.parseInt(portNum, 0);
+        final Protocol p = protocolIn == null ? Protocol.UDP : Protocol.valueOf(protocolIn);
+        return createAppender(host, port, p, sslConfig, connectTimeoutMillis, reconnectDelayMillis, fail, name, isFlush,
+                ignoreExceptions, layout, filter, isAdvertise, config);
     }
 
     /**
