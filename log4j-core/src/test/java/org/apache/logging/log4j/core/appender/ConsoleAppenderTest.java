@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender;
 import static org.easymock.EasyMock.anyInt;
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.expectLastCall;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -37,9 +36,11 @@ import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.easymock.EasyMockSupport;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 
 /**
  *
@@ -133,6 +134,7 @@ public class ConsoleAppenderTest {
     private void testFollowSystemPrintStream(final PrintStream ps, final Target target, final SystemSetter systemSetter) {
         final ConsoleAppender app = ConsoleAppender.newBuilder().setTarget(target).setFollow(true)
                 .setIgnoreExceptions(false).build();
+        Assert.assertEquals(target, app.getTarget());
         app.start();
         try {
             final LogEvent event = Log4jLogEvent.newBuilder() //

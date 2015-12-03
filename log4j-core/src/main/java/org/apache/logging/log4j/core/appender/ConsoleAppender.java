@@ -57,6 +57,8 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
     private static final Target DEFAULT_TARGET = Target.SYSTEM_OUT;
     private static final AtomicInteger COUNT = new AtomicInteger();
 
+    private final Target target;
+    
     /**
      * Enumeration of console destinations.
      */
@@ -68,8 +70,9 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
     }
 
     private ConsoleAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
-            final OutputStreamManager manager, final boolean ignoreExceptions) {
+            final OutputStreamManager manager, final boolean ignoreExceptions, Target target) {
         super(name, layout, filter, ignoreExceptions, true, manager);
+        this.target = target;
     }
 
     /**
@@ -101,13 +104,13 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         final boolean isFollow = Boolean.parseBoolean(follow);
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         final Target target = targetStr == null ? DEFAULT_TARGET : Target.valueOf(targetStr);
-        return new ConsoleAppender(name, layout, filter, getManager(target, isFollow, layout), ignoreExceptions);
+        return new ConsoleAppender(name, layout, filter, getManager(target, isFollow, layout), ignoreExceptions, target);
     }
 
     public static ConsoleAppender createDefaultAppenderForLayout(final Layout<? extends Serializable> layout) {
         // this method cannot use the builder class without introducing an infinite loop due to DefaultConfiguration
         return new ConsoleAppender("DefaultConsole-" + COUNT.incrementAndGet(), layout, null,
-                getDefaultManager(DEFAULT_TARGET, false, layout), true);
+                getDefaultManager(DEFAULT_TARGET, false, layout), true, DEFAULT_TARGET);
     }
 
     @PluginBuilderFactory
@@ -173,7 +176,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
 
         @Override
         public ConsoleAppender build() {
-            return new ConsoleAppender(name, layout, filter, getManager(target, follow, layout), ignoreExceptions);
+            return new ConsoleAppender(name, layout, filter, getManager(target, follow, layout), ignoreExceptions, target);
         }
     }
 
@@ -329,6 +332,10 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         public OutputStreamManager createManager(final String name, final FactoryData data) {
             return new OutputStreamManager(data.os, data.name, data.layout, true);
         }
+    }
+
+    public Target getTarget() {
+        return target;
     }
 
 }
