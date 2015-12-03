@@ -71,7 +71,7 @@ public class SocketAppenderTest {
 
     @BeforeClass
     public static void setupClass() throws Exception {
-        tcpServer = new TCPSocketServer(AvailablePortFinder.getNextAvailable());
+        tcpServer = new TCPSocketServer(PORT);
         tcpServer.start();
         udpServer = new UDPSocketServer();
         udpServer.start();
@@ -175,7 +175,7 @@ public class SocketAppenderTest {
         root.setAdditive(false);
         root.setLevel(Level.DEBUG);
 
-        new TCPSocketServer(AvailablePortFinder.getNextAvailable()).start();
+        new TCPSocketServer(DYN_PORT).start();
 
         root.debug("This message is written because a deadlock never.");
 
@@ -209,7 +209,7 @@ public class SocketAppenderTest {
         private Thread thread;
 
         public UDPSocketServer() throws IOException {
-            this.sock = new DatagramSocket(AvailablePortFinder.getNextAvailable());
+            this.sock = new DatagramSocket(PORT);
         }
 
         public void shutdown() {
