@@ -90,7 +90,7 @@ public class ConsoleAppenderTest {
         abstract void systemSet(PrintStream printStream);
     }
 
-    private void testConsoleStreamManagerDoesNotClose(final PrintStream ps, final String targetName, final SystemSetter systemSetter) {
+    private void testConsoleStreamManagerDoesNotClose(final PrintStream ps, final Target targetName, final SystemSetter systemSetter) {
         try {
             psMock.write((byte[]) anyObject(), anyInt(), anyInt());
             expectLastCall().anyTimes();
@@ -100,8 +100,8 @@ public class ConsoleAppenderTest {
             mocks.replayAll();
             systemSetter.systemSet(psMock);
             final Layout<String> layout = PatternLayout.createLayout(null, null, null, null, null, false, false, null, null);
-            final ConsoleAppender app = ConsoleAppender.createAppender(layout, null, targetName, "Console", "false",
-                    "false");
+            final ConsoleAppender app = ConsoleAppender.createAppender(layout, null, targetName, "Console", false,
+                    false);
             app.start();
             assertTrue("Appender did not start", app.isStarted());
 
@@ -162,12 +162,12 @@ public class ConsoleAppenderTest {
 
     @Test
     public void testSystemErrStreamManagerDoesNotClose() {
-        testConsoleStreamManagerDoesNotClose(System.err, "SYSTEM_ERR", SystemSetter.SYSTEM_ERR);
+        testConsoleStreamManagerDoesNotClose(System.err, Target.SYSTEM_ERR, SystemSetter.SYSTEM_ERR);
     }
 
     @Test
     public void testSystemOutStreamManagerDoesNotClose() {
-        testConsoleStreamManagerDoesNotClose(System.out, "SYSTEM_OUT", SystemSetter.SYSTEM_OUT);
+        testConsoleStreamManagerDoesNotClose(System.out, Target.SYSTEM_OUT, SystemSetter.SYSTEM_OUT);
     }
 
 }

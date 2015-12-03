@@ -86,14 +86,15 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
      * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise they
      *            are propagated to the caller.
      * @return The ConsoleAppender.
+     * @deprecated Use {@link #createAppender(Layout, Filter, Target, String, String, boolean)}.
      */
-    @PluginFactory
-    public static ConsoleAppender createAppender(@PluginElement("Layout") Layout<? extends Serializable> layout,
-            @PluginElement("Filter") final Filter filter,
-            @PluginAttribute(value = "target", defaultString = "SYSTEM_OUT") final String targetStr,
-            @PluginAttribute("name") final String name,
-            @PluginAttribute(value = "follow", defaultBoolean = false) final String follow,
-            @PluginAttribute(value = "ignoreExceptions", defaultBoolean = true) final String ignore) {
+    @Deprecated
+    public static ConsoleAppender createAppender(Layout<? extends Serializable> layout,
+            final Filter filter,
+            final String targetStr,
+            final String name,
+            final String follow,
+            final String ignore) {
         if (name == null) {
             LOGGER.error("No name provided for ConsoleAppender");
             return null;
@@ -105,6 +106,36 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         final Target target = targetStr == null ? DEFAULT_TARGET : Target.valueOf(targetStr);
         return new ConsoleAppender(name, layout, filter, getManager(target, isFollow, layout), ignoreExceptions, target);
+    }
+
+    /**
+     * Creates a Console Appender.
+     * 
+     * @param layout The layout to use (required).
+     * @param filter The Filter or null.
+     * @param target The target (SYSTEM_OUT or SYSTEM_ERR). The default is SYSTEM_OUT.
+     * @param follow If true will follow changes to the underlying output stream.
+     * @param name The name of the Appender (required).
+     * @param ignoreExceptions If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise they
+     *            are propagated to the caller.
+     * @return The ConsoleAppender.
+     */
+    @PluginFactory
+    public static ConsoleAppender createAppender(@PluginElement("Layout") Layout<? extends Serializable> layout,
+            @PluginElement("Filter") final Filter filter,
+            @PluginAttribute(value = "target") Target target,
+            @PluginAttribute("name") final String name,
+            @PluginAttribute(value = "follow", defaultBoolean = false) final boolean follow,
+            @PluginAttribute(value = "ignoreExceptions", defaultBoolean = true) final boolean ignoreExceptions) {
+        if (name == null) {
+            LOGGER.error("No name provided for ConsoleAppender");
+            return null;
+        }
+        if (layout == null) {
+            layout = PatternLayout.createDefaultLayout();
+        }
+        target = target == null ? Target.SYSTEM_OUT : target;
+        return new ConsoleAppender(name, layout, filter, getManager(target, follow, layout), ignoreExceptions, target);
     }
 
     public static ConsoleAppender createDefaultAppenderForLayout(final Layout<? extends Serializable> layout) {
