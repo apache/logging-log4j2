@@ -2817,7 +2817,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             Below is a sample configuration that uses a RollingFileAppender with the cron
             triggering policy configured to trigger every day at midnight.
             Archives are stored in a directory based on the current year and month.
-            The script will delete all files created on Friday the 13th.
+            The script will delete all rolled over files under the base directory dated Friday the 13th.
           </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -2836,33 +2836,30 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <Script name="GroovyCondition" language="groovy"><![CDATA[
                 import java.nio.file.*;
                 
-                // copy the files that were found under the base path
-                def filesToDelete = pathList.collect{it};
-                
+                def result = [];                
                 def pattern = ~/\d*\/app-(\d*)\.log\.gz/;
                 
                 pathList.each { pathWithAttributes ->
                   def relative = basePath.relativize pathWithAttributes.path
                   def str = relative.toString();
-                  statusLogger.trace 'SCRIPT: relative path is ' + str + " (base=$basePath)";
+                  statusLogger.trace 'SCRIPT: relative path=' + str + " (base=$basePath)";
                   
-                  // keep only files with odd indexes
+                  // remove files dated Friday the 13th
                   
                   def m = pattern.matcher(str);
                   if (m.find()) {
                     def dateString = m.group(1);
                     def calendar = Date.parse("yyyyMMdd", dateString).toCalendar();
-                    def friday13th = calendar.get(Calendar.DAY_OF_MONTH) == 13 
+                    def friday13th = calendar.get(Calendar.DAY_OF_MONTH) == 13 \
                                   && calendar.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY;
-                    if (!friday13th) {
-                      // returned list (files to delete) should only contain files created on Friday 13th
-                      filesToDelete.remove pathWithAttributes;
-                      statusLogger.trace 'SCRIPT: not deleting path ' + pathWithAttributes;
+                    if (friday13th) {
+                      result.add pathWithAttributes;
+                      statusLogger.trace 'SCRIPT: deleting path ' + pathWithAttributes;
                     }
                   }
                 }
-                statusLogger.trace 'SCRIPT: returning ' + filesToDelete;
-                filesToDelete;
+                statusLogger.trace 'SCRIPT: returning ' + result;
+                result;
               ]] > <!-- delete space between ]] and > -->
             </Script>
           </ScriptCondition>
