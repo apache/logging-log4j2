@@ -114,6 +114,7 @@ class DefaultComponentBuilder<T extends ComponentBuilder<T>, CB extends Configur
         return name;
     }
 
+    @SuppressWarnings("unchecked")
     protected T put(final String key, final String value) {
         attributes.put(key, value);
         return (T) this;

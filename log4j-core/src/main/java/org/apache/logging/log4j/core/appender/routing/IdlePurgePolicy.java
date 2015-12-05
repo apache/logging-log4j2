@@ -28,7 +28,8 @@ import org.apache.logging.log4j.status.StatusLogger;
 public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, Runnable {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
-	private final long timeToLive;
+    private static final long serialVersionUID = 7481062062560624564L;
+    private final long timeToLive;
 	private final ConcurrentMap<String, Long> appendersUsage = new ConcurrentHashMap<>();
 	private RoutingAppender routingAppender;
     private final ConfigurationScheduler scheduler;

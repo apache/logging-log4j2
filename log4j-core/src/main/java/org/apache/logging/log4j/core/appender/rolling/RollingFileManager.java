@@ -165,6 +165,7 @@ public class RollingFileManager extends FileManager {
      * @param <T> TriggeringPolicy type
      * @return The TriggeringPolicy
      */
+    @SuppressWarnings("unchecked")
     public <T extends TriggeringPolicy> T getTriggeringPolicy() {
         // TODO We could parameterize this class with a TriggeringPolicy instead of type casting here.
         return (T) this.triggeringPolicy;

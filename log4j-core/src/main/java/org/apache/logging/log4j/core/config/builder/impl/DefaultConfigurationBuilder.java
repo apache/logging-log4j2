@@ -62,6 +62,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     private String name = null;
 
+    @SuppressWarnings("unchecked")
     public DefaultConfigurationBuilder() {
         this((Class<T>) BuiltConfiguration.class);
         root.addAttribute("name", "Built");
