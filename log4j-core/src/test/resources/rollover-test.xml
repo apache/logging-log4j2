@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="trace">
+<Configuration status="warn">
     <Appenders>
         <RollingFile name="Test" fileName="target/logs/test.log" filePattern="target/logs/test/$${date:yyyyMMddHHmm}/TEST-%d{yyyyMMddHHmm}-%i.log.gz">
             <PatternLayout pattern="%d %p (%t) [%c] - %m%n"/>

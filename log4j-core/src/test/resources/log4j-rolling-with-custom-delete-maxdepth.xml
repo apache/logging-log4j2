@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="TRACE" name="RollingWithCustomDeleteTest">
+<Configuration status="WARN" name="RollingWithCustomDeleteTest">
   <Properties>
     <Property name="base">target/rolling-with-delete-depth/</Property>
   </Properties>

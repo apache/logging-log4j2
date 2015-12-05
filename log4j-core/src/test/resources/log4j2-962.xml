@@ -17,7 +17,7 @@
 
 -->
 <!-- https://issues.apache.org/jira/browse/LOG4J2-962 -->
-<Configuration status="ALL">
+<Configuration status="warn">
   <Appenders>
     <List name="List">
       <PatternLayout pattern="%d %msg%n" header="Header: ${main:0}" footer="Footer: ${main:1}" />
