@@ -2563,9 +2563,12 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 <p>
                   The ScriptCondition should contain a <a href="#ScriptCondition">Script, 
                   ScriptRef or ScriptFile</a> element that specifies the logic to be executed.
-                  See also the <a href="filters.html#Script">ScriptFilter</a> documentation for more examples of
-                  configuring ScriptFiles and ScriptRefs.
+                  (See also the <a href="filters.html#Script">ScriptFilter</a> documentation for more examples of
+                  configuring ScriptFiles and ScriptRefs.)
                 </p>
+                <p>The script is passed a number of <a href="#ScriptParameters">parameters</a>,
+                  including a list of paths found under the base path (up to <tt>maxDepth</tt>)
+                  and must return a list with the paths to delete.</p>
               </td>
             </tr>
           </table>
@@ -2765,13 +2768,15 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>script</td>
               <td>Script, ScriptFile or ScriptRef</td>
-              <td>The Script element that specifies the logic to be executed. The script must return a 
+              <td>The Script element that specifies the logic to be executed. The script is passed
+                a list of paths found under the base path and must return the paths to delete as a
                 <tt>java.util.List&lt;<a href="../log4j-core/apidocs/org/apache/logging/log4j/core/appender/rolling/action/PathWithAttributes.html">PathWithAttributes</a>&gt;</tt>.
                 See also the <a href="filters.html#Script">ScriptFilter</a> documentation for an example of
                 how ScriptFiles and ScriptRefs can be configured.
               </td>
             </tr>
           </table>
+          <a name="ScriptParameters"/>
           <table>
             <caption align="top">Script Parameters</caption>
             <tr>
@@ -2817,11 +2822,12 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             Below is a sample configuration that uses a RollingFileAppender with the cron
             triggering policy configured to trigger every day at midnight.
             Archives are stored in a directory based on the current year and month.
-            The script will delete all rolled over files under the base directory dated Friday the 13th.
+            The script returns a list of rolled over files under the base directory dated Friday the 13th.
+            The Delete action will delete all files returned by the script.
           </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="trace" name="MyApp" packages="">
   <Properties>
     <Property name="baseDir">logs</Property>
   </Properties>
@@ -2859,7 +2865,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 }
                 statusLogger.trace 'SCRIPT: returning ' + result;
                 result;
-              ]] > <!-- delete space between ]] and > -->
+              ]] >
             </Script>
           </ScriptCondition>
         </Delete>
