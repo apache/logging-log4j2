@@ -33,7 +33,7 @@
       <DefaultRolloverStrategy max="100" stopCustomActionsOnError="true">
         <Delete basePath="${base}/test" maxDepth="1" followLinks="false">
           <ScriptCondition>
-            <Script name="GroovyCondition" language="groovy"><![CDATA[
+            <Script name="superstitious" language="groovy"><![CDATA[
                 import java.nio.file.*;
                 
                 def result = [];
@@ -41,14 +41,13 @@
                 
                 pathList.each { pathWithAttributes ->
                   def relative = basePath.relativize pathWithAttributes.path
-                  def str = relative.toString();
-                  statusLogger.trace 'SCRIPT: relative path=' + str + " (base=$basePath)";
+                  statusLogger.trace 'SCRIPT: relative path=' + relative + " (base=$basePath)";
                   
-                  // remove files created on Friday the 13th
-
-                  def m = pattern.matcher(str);
-                  if (m.find()) {
-                    def dateString = m.group(1);
+                  // remove files dated Friday the 13th
+                  
+                  def matcher = pattern.matcher(relative.toString());
+                  if (matcher.find()) {
+                    def dateString = matcher.group(1);
                     def calendar = Date.parse("yyyyMMdd", dateString).toCalendar();
                     def friday13th = calendar.get(Calendar.DAY_OF_MONTH) == 13 \
                                   && calendar.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY;

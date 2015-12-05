@@ -2833,7 +2833,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
       <DefaultRolloverStrategy>
         <Delete basePath="${baseDir}" maxDepth="2">
           <ScriptCondition>
-            <Script name="GroovyCondition" language="groovy"><![CDATA[
+            <Script name="superstitious" language="groovy"><![CDATA[
                 import java.nio.file.*;
                 
                 def result = [];                
@@ -2841,14 +2841,13 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 
                 pathList.each { pathWithAttributes ->
                   def relative = basePath.relativize pathWithAttributes.path
-                  def str = relative.toString();
-                  statusLogger.trace 'SCRIPT: relative path=' + str + " (base=$basePath)";
+                  statusLogger.trace 'SCRIPT: relative path=' + relative + " (base=$basePath)";
                   
                   // remove files dated Friday the 13th
                   
-                  def m = pattern.matcher(str);
-                  if (m.find()) {
-                    def dateString = m.group(1);
+                  def matcher = pattern.matcher(relative.toString());
+                  if (matcher.find()) {
+                    def dateString = matcher.group(1);
                     def calendar = Date.parse("yyyyMMdd", dateString).toCalendar();
                     def friday13th = calendar.get(Calendar.DAY_OF_MONTH) == 13 \
                                   && calendar.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY;
