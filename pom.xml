@@ -1313,6 +1313,8 @@
                 <exclude>src/test/resources/**/*</exclude>
                 <exclude>src/site/resources/**/*</exclude>
                 <exclude>src/site/site.vm</exclude>
+                <exclude>src/ide/**/*</exclude>
+                <exclude>**/target/generated-sources/**/*</exclude>
               </excludes>
             </configuration>
             <executions>
