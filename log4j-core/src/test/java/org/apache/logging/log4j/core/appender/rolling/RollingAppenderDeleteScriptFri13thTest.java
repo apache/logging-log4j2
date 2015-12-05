@@ -57,14 +57,11 @@ public class RollingAppenderDeleteScriptFri13thTest {
 
         final Logger logger = ctx.getLogger();
         // Trigger the rollover
-        for (int i = 0; i < 2; ++i) {
-            // 30 chars per message: each message triggers a rollover
-            logger.debug("This is a test message number " + i); // 30 chars:
+        while (dir.listFiles().length < 32) {
+            // 60+ chars per message: each message should trigger a rollover
+            logger.debug("This is a very, very, very, very long test message............."); // 60+ chars:
+            Thread.sleep(100); // Allow time for rollover to complete
         }
-        Thread.sleep(100); // Allow time for rollover to complete
-
-        assertTrue("Dir " + DIR + " should exist", dir.exists());
-        assertTrue("Dir " + DIR + " filecount=" + dir.listFiles().length, dir.listFiles().length >= 30);
 
         final File[] files = dir.listFiles();
         for (File file : files) {
@@ -74,7 +71,7 @@ public class RollingAppenderDeleteScriptFri13thTest {
             assertTrue(file.getName() + " starts with 'test-'", file.getName().startsWith("test-"));
             assertTrue(file.getName() + " ends with '.log'", file.getName().endsWith(".log"));
             String strDate = file.getName().substring(5, 13);
-            assertFalse(file + " is not Fri 13th", strDate.endsWith("13"));
+            assertFalse(file + " is not Fri 13th", strDate.endsWith("20151113"));
         }
     }
 
