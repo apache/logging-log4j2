@@ -43,7 +43,7 @@
                 pathList.each { pathWithAttributes ->
                   def relative = basePath.relativize pathWithAttributes.path
                   def str = relative.toString();
-                  LOGGER.trace 'SCRIPT: relative ' + str + " (base=$basePath)";
+                  statusLogger.trace 'SCRIPT: relative path is ' + str + " (base=$basePath)";
                   
                   // keep only files with odd indexes
                   
@@ -53,11 +53,11 @@
                     def isOdd = (index % 2) == 1;
                     if (isOdd) {
                       copy.remove pathWithAttributes; // remove path with odd index from list to delete
-                      LOGGER.trace 'SCRIPT: not deleting path ' + pathWithAttributes;
+                      statusLogger.trace 'SCRIPT: not deleting path ' + pathWithAttributes;
                     }
                   }
                 }
-                LOGGER.trace 'SCRIPT: returning' + copy;
+                statusLogger.trace 'SCRIPT: returning ' + copy;
                 copy;
               ]]>
             </Script>

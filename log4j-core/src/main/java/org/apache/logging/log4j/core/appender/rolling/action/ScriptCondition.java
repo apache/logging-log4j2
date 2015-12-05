@@ -73,8 +73,9 @@ public class ScriptCondition {
         bindings.put("basePath", basePath);
         bindings.put("pathList", candidates);
         bindings.putAll(configuration.getProperties());
+        bindings.put("configuration", configuration);
         bindings.put("substitutor", configuration.getStrSubstitutor());
-        bindings.put("LOGGER", LOGGER);
+        bindings.put("statusLogger", LOGGER);
         final Object object = configuration.getScriptManager().execute(script.getName(), bindings);
         return (List<PathWithAttributes>) object;
     }
@@ -92,7 +93,7 @@ public class ScriptCondition {
      *            free to modify and return this list.)</li>
      *            <li>substitutor - a {@link StrSubstitutor} that can be used to look up variables embedded in the base
      *            dir or other properties
-     *            <li>LOGGER - the {@link StatusLogger} that can be used to log events during script execution
+     *            <li>statusLogger - the {@link StatusLogger} that can be used to log events during script execution
      *            <li>any properties declared in the configuration</li>
      *            </ul>
      * @param configuration the configuration

@@ -2527,7 +2527,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>pathConditions <a name="DeletePathCondition"/></td>
               <td>PathCondition[]</td>
-              <td><p><em>Required.</em> One or more PathCondition elements.</p>
+              <td><p><em>Required if no ScriptCondition is specified.</em> One or more PathCondition elements.</p>
                 <p>
                   If more than one condition is specified,
                   they all need to accept a path before it is deleted. Conditions can be nested, in which case the
@@ -2554,6 +2554,18 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                     Nested conditions may be evaluated in any order.</li>
                   <li>IfNot - accepts a path if the nested condition does not accept it (logical NOT).</li>
                 </ul>
+              </td>
+            </tr>
+            <tr>
+              <td>scriptCondition <a name="DeleteScriptCondition"/></td>
+              <td>ScriptCondition</td>
+              <td><p><em>Required if no PathConditions are specified.</em> A ScriptCondition element specifying a script.</p>
+                <p>
+                  The ScriptCondition should contain a <a href="#ScriptCondition">Script, 
+                  ScriptRef or ScriptFile</a> element that specifies the logic to be executed.
+                  See also the <a href="filters.html#Script">ScriptFilter</a> documentation for more examples of
+                  configuring ScriptFiles and ScriptRefs.
+                </p>
               </td>
             </tr>
           </table>
@@ -2701,9 +2713,10 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             triggering policies, will create up to 100 archives on the same day (1-100) that are stored in a directory
             based on the current year and month, and will compress each
             archive using gzip and will roll every hour.
-            Of the old archives under the base directory that match the "*/app-*.log.gz" glob, only the most recent files up to 100 GB are kept,
-            other files (that match the "*/app-*.log.gz" glob) are deleted. Files that do not match the
-            "*/app-*.log.gz" glob are not deleted.
+            
+            During every rollover, this configuration will delete files that match "*/app-*.log.gz" 
+            and are 30 days old or older, 
+            but keep the most recent 100 GB or the most recent 10 files, whichever comes first.
           </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -2720,11 +2733,16 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         <SizeBasedTriggeringPolicy size="250 MB"/>
       </Policies>
       <DefaultRolloverStrategy max="100">
+        <!--
+        -->
         <Delete basePath="${baseDir}" maxDepth="2">
           <IfFileName glob="*/app-*.log.gz">
-            <!-- nested: consider only the size of files that
-                 match the glob pattern, ignore other files -->
-            <IfAccumulatedFileSize exceeds="100 GB" />
+            <IfLastModified age="30d">
+              <IfAny>
+                <IfAccumulatedFileSize exceeds="100 GB" />
+                <IfAccumulatedFileCount exceeds="10" />
+              </IfAny>
+            </IfLastModified>
           </IfFileName>
         </Delete>
       </DefaultRolloverStrategy>
@@ -2736,7 +2754,130 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     </Root>
   </Loggers>
 </Configuration>]]></pre>
+          <a name="ScriptCondition"/>
+          <table>
+            <caption align="top">ScriptCondition Parameters</caption>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>script</td>
+              <td>Script, ScriptFile or ScriptRef</td>
+              <td>The Script element that specifies the logic to be executed. The script must return a 
+                <tt>java.util.List&lt;<a href="../log4j-core/apidocs/org/apache/logging/log4j/core/appender/rolling/action/PathWithAttributes.html">PathWithAttributes</a>&gt;</tt>.
+                See also the <a href="filters.html#Script">ScriptFilter</a> documentation for an example of
+                how ScriptFiles and ScriptRefs can be configured.
+              </td>
+            </tr>
+          </table>
+          <table>
+            <caption align="top">Script Parameters</caption>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>basePath</td>
+              <td><tt>java.nio.file.Path</tt></td>
+              <td>The directory from where the Delete action started scanning for
+                 files to delete. Can be used to relativize the paths in the pathList.</td>
+            </tr>
+            <tr>
+              <td>pathList</td>
+              <td><tt>java.util.List&lt;<a href="../log4j-core/apidocs/org/apache/logging/log4j/core/appender/rolling/action/PathWithAttributes.html">PathWithAttributes</a>&gt;</tt></td>
+              <td>The list of paths found under the base path up to the specified max depth,
+                sorted most recently modified files first.
+                The script is free to modify and return this list.</td>
+            </tr>
+            <tr>
+              <td>statusLogger</td>
+              <td>StatusLogger</td>
+              <td>The StatusLogger that can be used to log internal events during script execution.</td>
+            </tr>
+            <tr>
+              <td>configuration</td>
+              <td>Configuration</td>
+              <td>The Configuration that owns this ScriptCondition.</td>
+            </tr>
+            <tr>
+              <td>substitutor</td>
+              <td>StrSubstitutor</td>
+              <td>The StrSubstitutor used to replace lookup variables.</td>
+            </tr>
+            <tr>
+              <td>?</td>
+              <td>String</td>
+              <td>Any properties declared in the configuration.</td>
+            </tr>
+          </table>
+          <p>
+            Below is a sample configuration that uses a RollingFileAppender with the cron
+            triggering policy configured to trigger every day at midnight.
+            Archives are stored in a directory based on the current year and month.
+            The script will delete all files created on Friday the 13th.
+          </p>
+
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp" packages="">
+  <Properties>
+    <Property name="baseDir">logs</Property>
+  </Properties>
+  <Appenders>
+    <RollingFile name="RollingFile" fileName="${baseDir}/app.log"
+          filePattern="${baseDir}/$${date:yyyy-MM}/app-%d{yyyyMMdd}.log.gz">
+      <PatternLayout pattern="%d %p %c{1.} [%t] %m%n" />
+      <CronTriggeringPolicy schedule="0 0 0 * * ?"/>
+      <DefaultRolloverStrategy>
+        <Delete basePath="${baseDir}" maxDepth="2">
+          <ScriptCondition>
+            <Script name="GroovyCondition" language="groovy"><![CDATA[
+                import java.nio.file.*;
+                
+                // copy the files that were found under the base path
+                def filesToDelete = pathList.collect{it};
+                
+                def pattern = ~/\d*\/app-(\d*)\.log\.gz/;
+                
+                pathList.each { pathWithAttributes ->
+                  def relative = basePath.relativize pathWithAttributes.path
+                  def str = relative.toString();
+                  statusLogger.trace 'SCRIPT: relative path is ' + str + " (base=$basePath)";
+                  
+                  // keep only files with odd indexes
+                  
+                  def m = pattern.matcher(str);
+                  if (m.find()) {
+                    def dateString = m.group(1);
+                    def calendar = Date.parse("yyyyMMdd", dateString).toCalendar();
+                    def friday13th = calendar.get(Calendar.DAY_OF_MONTH) == 13 
+                                  && calendar.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY;
+                    if (!friday13th) {
+                      // returned list (files to delete) should only contain files created on Friday 13th
+                      filesToDelete.remove pathWithAttributes;
+                      statusLogger.trace 'SCRIPT: not deleting path ' + pathWithAttributes;
+                    }
+                  }
+                }
+                statusLogger.trace 'SCRIPT: returning ' + filesToDelete;
+                filesToDelete;
+              ]] > <!-- delete space between ]] and > -->
+            </Script>
+          </ScriptCondition>
+        </Delete>
+      </DefaultRolloverStrategy>
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="RollingFile"/>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
         </subsection>
+
 			<a name="RollingRandomAccessFileAppender" />
 			<subsection name="RollingRandomAccessFileAppender">
 			<p><i>As of beta-9, the name of this appender has been changed from FastRollingFile to
