@@ -16,10 +16,14 @@
  */
 package org.apache.logging.log4j.core.script;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.util.FileWatcher;
-import org.apache.logging.log4j.core.util.WatchManager;
-import org.apache.logging.log4j.status.StatusLogger;
+import java.io.File;
+import java.io.Serializable;
+import java.nio.file.Path;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.script.Bindings;
 import javax.script.Compilable;
@@ -28,22 +32,20 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import java.io.File;
-import java.nio.file.Path;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.util.FileWatcher;
+import org.apache.logging.log4j.core.util.WatchManager;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Manages the scripts use by the Configuration.
  */
-public class ScriptManager implements FileWatcher {
-
+public class ScriptManager implements FileWatcher, Serializable {
+    private static final long serialVersionUID = -2534169384971965196L;
     private static final String KEY_THREADING = "THREADING";
     private static final Logger logger = StatusLogger.getLogger();
-    private static final long serialVersionUID = -2534169384971965196L;
+    
     private final ScriptEngineManager manager = new ScriptEngineManager();
     private final ConcurrentMap<String, ScriptRunner> scripts = new ConcurrentHashMap<>();
     private final String languages;
