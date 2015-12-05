@@ -475,7 +475,7 @@
             </tr>
             <tr>
               <td>script</td>
-              <td>Scriptm, ScriptFile or ScriptRef</td>
+              <td>Script, ScriptFile or ScriptRef</td>
               <td>The Script element that specifies the logic to be executed.
               </td>
             </tr>
@@ -555,7 +555,7 @@
 <Configuration status="ERROR">
   <Scripts>
     <ScriptFile name="filter.js" language="JavaScript" path="src/test/resources/scripts/filter.js" charset="UTF-8" />
-    <ScriptFile name="filter.groovy" path="src/test/resources/scripts/filter.groovy" charset="UTF-8" />
+    <ScriptFile name="filter.groovy" language="groovy" path="src/test/resources/scripts/filter.groovy" charset="UTF-8" />
   </Scripts>
   <Appenders>
     <List name="List">
