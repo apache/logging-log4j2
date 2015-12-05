@@ -549,7 +549,7 @@
             </tr>
           </table>
           <p>
-            The sample below shows how to declare script fiels and then reference them in specific components.
+            The sample below shows how to declare script fields and then reference them in specific components.
           </p>
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="ERROR">
