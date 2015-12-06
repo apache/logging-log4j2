@@ -2196,6 +2196,13 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                     for a full description of the expression.
                   </td>
                 </tr>
+                <tr>
+                  <td>evaluateOnStartup</td>
+                  <td>boolean</td>
+                  <td>On startup the cron expression will be evaluated against the file's last modification timestamp.
+                    If the cron expression indicates a rollover should have occurred between that time and the current
+                    time the file will be immediately rolled over.</td>
+                </tr>
               </table>
             <h5>OnStartup Triggering Policy</h5>
               <p>
