@@ -23,6 +23,7 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.compress.compressors.CompressorInputStream;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
 import org.apache.commons.compress.utils.IOUtils;
@@ -107,7 +108,12 @@ public class RollingAppenderSizeTest {
             if (file.getName().endsWith(fileExtension)) {
                 CompressorInputStream in = null;
                 try (FileInputStream fis = new FileInputStream(file)) {
-                    in = new CompressorStreamFactory().createCompressorInputStream(ext.name().toLowerCase(), fis);
+                    try {
+                        in = new CompressorStreamFactory().createCompressorInputStream(ext.name().toLowerCase(), fis);
+                    } catch (CompressorException ce) {
+                        ce.printStackTrace();
+                        fail("Error creating intput stream from " + file.toString() + ": " + ce.getMessage());
+                    }
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     IOUtils.copy(in, baos);
                     String text = new String(baos.toByteArray(), Charset.defaultCharset());
