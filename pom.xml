@@ -1103,7 +1103,7 @@
         </reportSets>
         <configuration>
           <!-- you'd think these would be the defaults, right? -->
-            <customBundle>${project.basedir}/src/site/custom/project-info-report.properties</customBundle>
+          <customBundle>${project.basedir}/src/site/custom/project-info-report.properties</customBundle>
           <webAccessUrl>${project.scm.url}</webAccessUrl>
           <anonymousConnection>${project.scm.connection}</anonymousConnection>
           <developerConnection>${project.scm.developerConnection}</developerConnection>
