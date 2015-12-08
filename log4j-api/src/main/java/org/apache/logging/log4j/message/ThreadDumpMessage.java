@@ -143,7 +143,7 @@ public class ThreadDumpMessage implements Message {
         private final String formattedMsg;
         private final String title;
 
-        public ThreadDumpMessageProxy(final ThreadDumpMessage msg) {
+        ThreadDumpMessageProxy(final ThreadDumpMessage msg) {
             this.formattedMsg = msg.getFormattedMessage();
             this.title = msg.title;
         }
