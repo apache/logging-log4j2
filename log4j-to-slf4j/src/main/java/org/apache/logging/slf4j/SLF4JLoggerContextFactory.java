@@ -57,6 +57,6 @@ public class SLF4JLoggerContextFactory implements LoggerContextFactory {
     }
 
     @Override
-    public void removeContext(final LoggerContext context) {
+    public void removeContext(final LoggerContext ignored) {
     }
 }
