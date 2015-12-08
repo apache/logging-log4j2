@@ -23,6 +23,11 @@
     <title>Changes</title>
   </properties>
   <body>
+    <release version="2.5.1" date="201Y-MM-DD" description="GA Release 2.5.1">
+      <action issue="LOG4J2-1215" dev="ggregory" type="fix" due-to="Erik Kemperman">
+        Documentation/XSD inconsistencies.
+      </action>
+    </release>
     <release version="2.5" date="2015-12-06" description="GA Release 2.5">
       <action issue="LOG4J2-324" dev="rpopma" type="fix">
         Reduced memory usage of status messages in bounded queue; support zero-length queue that stores no messages.
