@@ -55,6 +55,7 @@ public interface LoggerContext {
     /**
      * Detects if a Logger with the specified name and MessageFactory exists.
      * @param name The Logger name to search for.
+     * @param messageFactory The message factory to search for.
      * @return true if the Logger exists, false otherwise.
      * @since 2.5
      */
@@ -63,6 +64,7 @@ public interface LoggerContext {
     /**
      * Detects if a Logger with the specified name and MessageFactory type exists.
      * @param name The Logger name to search for.
+     * @param messageFactoryClass The message factory class to search for.
      * @return true if the Logger exists, false otherwise.
      * @since 2.5
      */
