@@ -24,6 +24,7 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.util.Objects;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -274,7 +275,7 @@ public class IoBuilder {
      * @throws IllegalStateException if no Reader was configured for this builder
      */
     public Reader buildReader() {
-        final Reader in = requireNonNull(this.reader, "reader");
+        final Reader in = Objects.requireNonNull(this.reader, "reader");
         if (this.buffered) {
             if (this.bufferSize > 0) {
                 return new LoggerBufferedReader(in, this.bufferSize, this.logger, this.fqcn, this.level, this.marker);
@@ -319,7 +320,7 @@ public class IoBuilder {
      * @throws IllegalStateException if no InputStream was configured for this builder
      */
     public InputStream buildInputStream() {
-        final InputStream in = requireNonNull(this.inputStream, "inputStream");
+        final InputStream in = Objects.requireNonNull(this.inputStream, "inputStream");
         if (this.buffered) {
             if (this.bufferSize > 0) {
                 return new LoggerBufferedInputStream(in, this.charset, this.bufferSize, this.logger, this.fqcn,
@@ -365,13 +366,6 @@ public class IoBuilder {
             // this exception shouldn't really happen since we use Charset and not String
             throw new LoggingException(e);
         }
-    }
-
-    private static <T> T requireNonNull(final T obj, final String name) {
-        if (obj == null) {
-            throw new IllegalStateException("The property " + name + " was not set");
-        }
-        return obj;
     }
 
 }
