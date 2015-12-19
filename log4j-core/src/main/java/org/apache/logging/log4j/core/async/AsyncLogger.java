@@ -140,8 +140,6 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
      * @param marker optional marker
      * @param message log message
      * @param thrown optional exception
-     * @return {@code true} if the event has been logged in the current thread, {@code false} if it should be passed to
-     *         the background thread
      */
     private void logMessageInCurrentThread(final String fqcn, final Level level, final Marker marker,
             final Message message, final Throwable thrown) {
@@ -153,7 +151,6 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
     /**
      * Enqueues the specified message to be logged in the background thread.
      * 
-     * @param info holds some cached information
      * @param fqcn fully qualified caller name
      * @param level log level
      * @param marker optional marker
@@ -174,8 +171,6 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
     /**
      * Enqueues the specified log event data for logging in a background thread.
      * 
-     * @param asyncLogger the {@code AsyncLogger} to call from the background thread
-     * @param location location information or {@code null}
      * @param fqcn fully qualified name of the caller
      * @param level level at which the caller wants to log the message
      * @param marker message marker
@@ -277,8 +272,6 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
      * This creates a new varargs Object array for each invocation, but does not store any non-JDK classes in a
      * {@code ThreadLocal} to avoid memory leaks in web applications (see LOG4J2-1172).
      * 
-     * @param asyncLogger the {@code AsyncLogger} to call from the background thread
-     * @param location location information or {@code null}
      * @param fqcn fully qualified name of the caller
      * @param level level at which the caller wants to log the message
      * @param marker message marker
