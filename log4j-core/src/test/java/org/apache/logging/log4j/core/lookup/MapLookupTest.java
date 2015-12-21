@@ -20,6 +20,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;
 
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.message.MapMessage;
 import org.junit.Test;
 
 /**
@@ -64,4 +67,26 @@ public class MapLookupTest {
         assertEquals(null, lookup.lookup("foo.txt"));
     }
 
+    @Test
+    public void testEventMapMessage() {
+      final HashMap<String, String> map = new HashMap<>();
+      map.put("A", "B");
+      final HashMap<String, String> eventMap = new HashMap<>();
+      eventMap.put("A1", "B1");
+      final MapMessage message = new MapMessage(eventMap);
+      final LogEvent event = Log4jLogEvent.newBuilder()
+                .setMessage(message)
+                .build();
+      final MapLookup lookup = new MapLookup(map);
+      assertEquals("B", lookup.lookup(event, "A"));
+      assertEquals("B1", lookup.lookup(event, "A"));
+    }
+
+    @Test
+    public void testNullEvent() {
+      final HashMap<String, String> map = new HashMap<>();
+      map.put("A", "B");
+      final MapLookup lookup = new MapLookup(map);
+      assertEquals("B", lookup.lookup(null, "A"));
+    }
 }
