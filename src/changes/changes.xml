@@ -24,12 +24,15 @@
   </properties>
   <body>
     <release version="2.5.1" date="201Y-MM-DD" description="GA Release 2.5.1">
+      <action issue="LOG4J2-1212" dev="rpopma" type="fix">
+        Fix documentation to correctly specify the blocking wait strategy as the default for async loggers.
+      </action>
       <action issue="LOG4J2-1215" dev="ggregory" type="fix" due-to="Erik Kemperman">
         Documentation/XSD inconsistencies.
       </action>
       <action issue="LOG4J2-1219" dev="ggregory" type="update">
         Update SLF4J from 1.7.12 to 1.7.13.
-      </action>      
+      </action>
     </release>
     <release version="2.5" date="2015-12-06" description="GA Release 2.5">
       <action issue="LOG4J2-324" dev="rpopma" type="fix">
