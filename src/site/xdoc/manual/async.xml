@@ -265,12 +265,19 @@
                 of applications.
               </p>
               <p>
-                You can also specify a fully qualified class name of a custom class that implements the
+                You can also specify the fully qualified class name of a custom class that implements the
                 <tt>Clock</tt> interface.
               </p>
             </td>
           </tr>
         </table>
+        <p>
+          There are also a few system properties that can be used to maintain application throughput even when
+          the underlying appender cannot keep up with the logging rate and the queue is filling up.
+          See the details for system properties
+          <a href="configuration.html#AsyncEventRouter"><tt>log4j2.AsyncEventRouter</tt>,
+            <tt>log4j2.DiscardThreshold</tt> and <tt>log4j2.DiscardQueueRatio</tt></a>.
+        </p>
       </subsection>
       <a name="MixedSync-Async" />
       <subsection name="Mixing Synchronous and Asynchronous Loggers">
@@ -379,6 +386,13 @@
             </td>
           </tr>
         </table>
+        <p>
+          There are also a few system properties that can be used to maintain application throughput even when
+          the underlying appender cannot keep up with the logging rate and the queue is filling up.
+          See the details for system properties
+          <a href="configuration.html#AsyncEventRouter"><tt>log4j2.AsyncEventRouter</tt>,
+            <tt>log4j2.DiscardThreshold</tt> and <tt>log4j2.DiscardQueueRatio</tt></a>.
+        </p>
       </subsection>
       <a name="Location" />
       <subsection name="Location, location, location...">
