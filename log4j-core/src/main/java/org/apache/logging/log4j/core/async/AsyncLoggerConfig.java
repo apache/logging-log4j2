@@ -88,14 +88,23 @@ public class AsyncLoggerConfig extends LoggerConfig {
      */
     @Override
     protected void callAppenders(final LogEvent event) {
-        // populate lazily initialized fields
+        populateLazilyInitializedFields(event);
+
+        final EventRoute eventRoute = delegate.getEventRoute(event.getLevel());
+        eventRoute.logMessage(this, event);
+    }
+
+    private void populateLazilyInitializedFields(final LogEvent event) {
         event.getSource();
         event.getThreadName();
+    }
 
-        // pass on the event to a separate thread
-        if (!delegate.tryCallAppendersInBackground(event, this)) {
-            super.callAppenders(event);
-        }
+    void callAppendersInCurrentThread(final LogEvent event) {
+        super.callAppenders(event);
+    }
+
+    void callAppendersInBackgroundThread(final LogEvent event) {
+        delegate.enqueueEvent(event, this);
     }
 
     /** Called by AsyncLoggerConfigHelper.RingBufferLog4jEventHandler. */
