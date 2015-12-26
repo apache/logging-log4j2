@@ -550,6 +550,8 @@
           </table>
           <p>
             The sample below shows how to declare script fields and then reference them in specific components.
+            See <a href="appenders.html#ScriptCondition">ScriptCondition</a> for an example of how the
+            <tt>Script</tt> element can be used to embed script code directly in the configuration.
           </p>
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="ERROR">
