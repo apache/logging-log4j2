@@ -2751,8 +2751,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
       </Policies>
       <DefaultRolloverStrategy max="100">
         <!--
-        Nested conditions: the inner condition is only evaluated for files
-        where the outer conditions are true.
+        Nested conditions: the inner condition is only evaluated on files
+        for which the outer conditions are true.
         -->
         <Delete basePath="${baseDir}" maxDepth="2">
           <IfFileName glob="*/app-*.log.gz">
