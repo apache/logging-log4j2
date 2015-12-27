@@ -35,10 +35,11 @@
       <li><a href="#config_sep_appender_level">How do I send log messages with different levels to different appenders?</a></li>
       <li><a href="#troubleshooting">How do I debug my configuration?</a></li>
       <li><a href="#separate_log_files">How do I dynamically write to separate log files?</a></li>
-      <li><a href="#reconfig_level_from_code">How do I set a logger's level programmatically?</a></li>      
-      <!--
-      <li><a href="#custom_plugin">How do I get log4j2 to recognize my custom plugin?</a></li>
-      -->
+      <li><a href="#reconfig_level_from_code">How do I set a logger's level programmatically?</a></li>
+      <li><a href="#retention">How do I set my log archive retention policy? How do I delete old log archives?</a></li>
+          <!--
+          <li><a href="#custom_plugin">How do I get log4j2 to recognize my custom plugin?</a></li>
+          -->
       </ul>
       <subsection>
         <a name="missing_core" />
@@ -60,7 +61,7 @@
           The component page will have more detail.
           For example, the <a href="log4j-core/index.html">log4j-core component page</a>
           has an outline of which log4j-core features have external dependencies.</p>
-        
+
 		<a name="config_location" />
         <h4>How do I specify the configuration file location?</h4>
         <p>By default, Log4j looks for a configuration file named <b>log4j2.xml</b> (not log4j.xml) in the classpath.
@@ -74,9 +75,9 @@
 		<a name="config_from_code" />
         <h4>How do I configure log4j2 in code without a configuration file?</h4>
         <p>Starting with version 2.4, Log4j 2 provides an <a href="manual/customconfig.html">API
-        for programmatic configuration</a>. 
+        for programmatic configuration</a>.
         The new <a href="log4j-core/apidocs/org/apache/logging/log4j/core/config/builder/api/ConfigurationBuilder.html">ConfigurationBuilder
-        API</a> allows you to create Configurations in code by constructing component definitions 
+        API</a> allows you to create Configurations in code by constructing component definitions
         without requiring you to know about the internals of actual configuration objects like Loggers and Appenders.</p>
 
         <a name="reconfig_from_code" />
@@ -97,7 +98,7 @@ context.setConfigLocation(file.toURI());
         <p>Normally there is no need to do this manually.
          Each LoggerContext registers a shutdown hook that takes care of releasing resources
          when the JVM exits (unless system property <code>log4j.shutdownHookEnabled</code>
-         is set to <code>false</code>).        
+         is set to <code>false</code>).
          Web applications should include the log4j-web
          module in their classpath which disables the shutdown hook but instead
          cleans up log4j resources when the web application is stopped.</p>
@@ -137,7 +138,7 @@ Configurator.shutdown(context);</pre>
 
 		<a name="troubleshooting" />
         <h4>How do I debug my configuration?</h4>
-        <p>First, make sure you have <a href="#which_jars">the right jar files</a> on your classpath. 
+        <p>First, make sure you have <a href="#which_jars">the right jar files</a> on your classpath.
         You need at least log4j-api and log4j-core.</p>
         <p>Next, check the name of your configuration file. By default, log4j2 will look
         for a configuration file named <code>log4j2.xml</code> on the classpath. Note the "2" in the file name!
@@ -150,8 +151,8 @@ Configurator.shutdown(context);</pre>
         This may be useful to trouble-shoot configuration issues.
         By default the status logger level is WARN, so you only see notifications when there is a problem.
         </p>
-        <p>If the configuration file is not found correctly, you can still enable 
-        log4j2 internal status logging by setting system property 
+        <p>If the configuration file is not found correctly, you can still enable
+        log4j2 internal status logging by setting system property
           <code>-Dorg.apache.logging.log4j.simplelog.StatusLogger.level=TRACE</code>.</p>
 
 		<a name="separate_log_files" />
@@ -226,6 +227,19 @@ Configurator.setLevel("com.example.Foo", Level.DEBUG);
 Configurator.setRootLevel(Level.DEBUG);
 </pre>
 
+          <a name="retention" />
+          <h4>How do I set my log archive retention policy? How do I delete old log archives?</h4>
+          <p>The <tt>DefaultRolloverStrategy</tt> of the Rolling File appender (and Rolling Random Access File
+          appender) supports a <a href="manual/appenders.html#CustomDeleteOnRollover">Delete</a>
+          element.</p>
+          <p>Starting at a specified base directory, you can delete all files for which some condition
+              holds true, for example all files that match a given file name pattern and are older
+              than some number of days. More complex conditions are possible, and if the built-in
+              conditions are not sufficient, users can provide
+              custom conditions by creating
+              <a href="manual/appenders.html#DeletePathCondition">plugin conditions</a> or by
+              writing a <a href="manual/appenders.html#ScriptCondition">script condition</a>
+          </p>
         <!--
 		<a name="custom_plugin" />
         <h4>How do I get log4j2 to recognize my custom plugin?</h4>

@@ -2485,7 +2485,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
   </Loggers>
 </Configuration>]]></pre>
           <a name="CustomDeleteOnRollover"/>
-          <h5>Custom Delete on Rollover</h5>
+          <h5>Log Archive Retention Policy: Delete on Rollover</h5>
           <p>
             Log4j-2.5 introduces a <tt>Delete</tt> action that gives users more control
             over what files are deleted at rollover time than what was possible with the DefaultRolloverStrategy
@@ -2751,6 +2751,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
       </Policies>
       <DefaultRolloverStrategy max="100">
         <!--
+        Nested conditions: the inner condition is only evaluated for files
+        where the outer conditions are true.
         -->
         <Delete basePath="${baseDir}" maxDepth="2">
           <IfFileName glob="*/app-*.log.gz">
