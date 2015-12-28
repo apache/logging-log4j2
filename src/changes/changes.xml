@@ -37,6 +37,9 @@
       <action issue="LOG4J2-1219" dev="ggregory" type="update">
         Update SLF4J from 1.7.12 to 1.7.13.
       </action>
+      <action issue="LOG4J2-1233" dev="ggregory" type="update" due-to="Bahri Gencsoy">
+        Misleading Value In Properties Example.        
+      </action>
     </release>
     <release version="2.5" date="2015-12-06" description="GA Release 2.5">
       <action issue="LOG4J2-324" dev="rpopma" type="fix">

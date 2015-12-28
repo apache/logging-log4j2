@@ -877,7 +877,7 @@ appender.list.filter.threshold.level = error
 
 loggers = rolling
 
-logger.rolling.name = org.apache.logging.log4j.core.appender.rolling
+logger.rolling.name = com.example.my.app
 logger.rolling.level = debug
 logger.rolling.additivity = false
 logger.rolling.appenderRefs = rolling
