@@ -790,7 +790,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
  * </p>
  * <h3>Pretty vs. compact XML</h3>
  * <p>
- * By default, the JSON layout is not compact (a.k.a. not "pretty") with {@code compact="false"}, which means the
+ * By default, the JSON layout is not compact (a.k.a. "pretty") with {@code compact="false"}, which means the
  * appender uses end-of-line characters and indents lines to format the text. If {@code compact="true"}, then no
  * end-of-line or indentation is used. Message content may contain, of course, escaped end-of-lines.
  * </p>
