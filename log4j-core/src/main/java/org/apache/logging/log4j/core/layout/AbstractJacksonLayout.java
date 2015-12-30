@@ -16,12 +16,16 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.nio.charset.Charset;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.util.StringBuilderWriter;
 import org.apache.logging.log4j.util.Strings;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
 abstract class AbstractJacksonLayout extends AbstractStringLayout {
@@ -51,13 +55,22 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
      */
     @Override
     public String toSerializable(final LogEvent event) {
+        StringBuilderWriter writer = new StringBuilderWriter();        
         try {
-            return this.objectWriter.writeValueAsString(event) + eol;
-        } catch (final JsonProcessingException e) {
+            toSerializable(event, writer);
+            return writer.toString();
+        } catch (final IOException e) {
             // Should this be an ISE or IAE?
             LOGGER.error(e);
             return Strings.EMPTY;
         }
+    }
+
+    public void toSerializable(final LogEvent event, Writer writer)
+            throws JsonGenerationException, JsonMappingException, IOException {
+        objectWriter.writeValue(writer, event);
+        writer.write(eol);
+        markEvent();
     }
 
 }

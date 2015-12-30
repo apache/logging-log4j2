@@ -28,6 +28,9 @@
         Added option to discard events below a certain log level if the async logger ring buffer
         or async appender queue remaining capacity falls below a certain ratio.
       </action>
+      <action issue="LOG4J2-908" dev="ggregory" type="fix" due-to="Konstantinos Liakos, Patrick Flaherty, Robin Coe, Gary Gregory">
+        JSONLayout doesn't add a comma between log events.
+      </action>
       <action issue="LOG4J2-1212" dev="rpopma" type="fix">
         Fix documentation to correctly specify the blocking wait strategy as the default for async loggers.
       </action>

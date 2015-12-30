@@ -50,6 +50,11 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
     protected final byte[] footer;
 
     /**
+     * The count of events successfully processed by this layout.
+     */
+    protected long eventCount;
+
+    /**
      * Constructs a layout with an optional header and footer.
      * 
      * @param header
@@ -86,5 +91,9 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
     @Override
     public byte[] getHeader() {
         return header;
+    }
+    
+    protected void markEvent() {
+        eventCount++;
     }
 }
