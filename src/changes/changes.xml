@@ -32,7 +32,7 @@
         JSONLayout doesn't add a comma between log events.
       </action>
       <action issue="LOG4J2-1238" dev="ggregory" type="fix">
-        org.apache.logging.log4j.core.net.TcpSocketManager does not display stack traces.
+        org.apache.logging.log4j.core.net.TcpSocketManager and other classes does not report internal exceptions to the status logger.
       </action>
       <action issue="LOG4J2-1212" dev="rpopma" type="fix">
         Fix documentation to correctly specify the blocking wait strategy as the default for async loggers.
