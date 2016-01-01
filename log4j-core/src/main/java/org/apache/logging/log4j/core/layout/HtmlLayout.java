@@ -289,7 +289,7 @@ public final class HtmlLayout extends AbstractStringLayout {
 
     /**
      * Returns the appropriate HTML footers.
-     * @return the footer as a byet array.
+     * @return the footer as a byte array.
      */
     @Override
     public byte[] getFooter() {
