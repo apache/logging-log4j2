@@ -33,8 +33,7 @@ import static org.junit.Assert.*;
 public class PatternProcessorTest {
 
     private String format(final long time) {
-        final String actualStr = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS").format(new Date(time));
-        return actualStr;
+        return new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS").format(new Date(time));
     }
 
     @Test
