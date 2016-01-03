@@ -47,7 +47,7 @@ public class PatternSelectorTest {
         assertNotNull("No ListAppender", app);
         List<String> messages = app.getMessages();
         assertNotNull("No Messages", messages);
-        assertTrue("Incorrect number of messages. Expected 3, Actual " + messages.size(), messages.size() == 3);
+        assertTrue("Incorrect number of messages. Expected 3, Actual " + messages.size() + ": " + messages, messages.size() == 3);
         final String expect = String.format("[TRACE] TestMarkerPatternSelector ====== "
                 + "o.a.l.l.c.PatternSelectorTest.testMarkerPatternSelector:43 entry ======%n");
         assertEquals(expect, messages.get(0));
@@ -67,7 +67,7 @@ public class PatternSelectorTest {
         assertNotNull("No ListAppender", app);
         List<String> messages = app.getMessages();
         assertNotNull("No Messages", messages);
-        assertTrue("Incorrect number of messages. Expected 4, Actual " + messages.size(), messages.size() == 4);
+        assertTrue("Incorrect number of messages. Expected 4, Actual " + messages.size() + ": " + messages, messages.size() == 4);
         String expect = "[TRACE] TestScriptPatternSelector ====== " +
                 "o.a.l.l.c.PatternSelectorTest.testScriptPatternSelector:62 entry ======" + Constants.LINE_SEPARATOR;
         assertEquals(expect, messages.get(0));
@@ -90,7 +90,7 @@ public class PatternSelectorTest {
         assertNotNull("No ListAppender", app);
         List<String> messages = app.getMessages();
         assertNotNull("No Messages", messages);
-        assertTrue("Incorrect number of messages. Expected 4, Actual " + messages.size(), messages.size() == 4);
+        assertTrue("Incorrect number of messages. Expected 4, Actual " + messages.size() + ": " + messages, messages.size() == 4);
         String expect = "[TRACE] TestJavaScriptPatternSelector ====== " +
                 "o.a.l.l.c.PatternSelectorTest.testJavaScriptPatternSelector:85 entry ======" + Constants.LINE_SEPARATOR;
         assertEquals(expect, messages.get(0));
