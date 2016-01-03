@@ -895,7 +895,7 @@ public final class JsonLayout extends AbstractJacksonLayout {
 
     @Override
     public void toSerializable(final LogEvent event, Writer writer) throws IOException {
-        if (complete && eventCount > 1) {
+        if (complete && eventCount > 0) {
             writer.append(", ");
         }
         super.toSerializable(event, writer);
