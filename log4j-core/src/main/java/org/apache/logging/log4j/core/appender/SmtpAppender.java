@@ -22,8 +22,11 @@ import java.io.Serializable;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
@@ -105,6 +108,7 @@ public final class SmtpAppender extends AbstractAppender {
      */
     @PluginFactory
     public static SmtpAppender createAppender(
+            @PluginConfiguration final Configuration config,
             @PluginAttribute("name") final String name,
             @PluginAttribute("to") final String to,
             @PluginAttribute("cc") final String cc,
@@ -138,8 +142,9 @@ public final class SmtpAppender extends AbstractAppender {
         if (filter == null) {
             filter = ThresholdFilter.createFilter(null, null, null);
         }
+        final Configuration configuration = config != null ? config : new DefaultConfiguration();
 
-        final SmtpManager manager = SmtpManager.getSMTPManager(to, cc, bcc, from, replyTo, subject, smtpProtocol,
+        final SmtpManager manager = SmtpManager.getSmtpManager(configuration, to, cc, bcc, from, replyTo, subject, smtpProtocol,
             smtpHost, smtpPort, smtpUsername, smtpPassword, isSmtpDebug, filter.toString(),  bufferSize);
         if (manager == null) {
             return null;

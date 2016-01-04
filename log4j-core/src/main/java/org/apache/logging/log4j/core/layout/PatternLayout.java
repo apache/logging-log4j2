@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.layout;
 
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -127,7 +128,7 @@ public final class PatternLayout extends AbstractStringLayout {
                 alwaysWriteExceptions, noConsoleNoAnsi);
     }
 
-    private Serializer createSerializer(final Configuration configuration, final RegexReplacement replace,
+    public static Serializer createSerializer(final Configuration configuration, final RegexReplacement replace,
             final String pattern, final String defaultPattern, final PatternSelector patternSelector,
             final boolean alwaysWriteExceptions, final boolean noConsoleNoAnsi) {
         if (Strings.isEmpty(pattern) && Strings.isEmpty(defaultPattern)) {
@@ -278,7 +279,7 @@ public final class PatternLayout extends AbstractStringLayout {
             .build();
     }
 
-    private interface Serializer {
+    public interface Serializer {
         
         String toSerializable(final LogEvent event);        
     }
@@ -307,6 +308,18 @@ public final class PatternLayout extends AbstractStringLayout {
             }
             return str;
         }
+
+        @Override
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            builder.append(super.toString());
+            builder.append("[formatters=");
+            builder.append(Arrays.toString(formatters));
+            builder.append(", replace=");
+            builder.append(replace);
+            builder.append("]");
+            return builder.toString();
+        }
     }
 
     private static class PatternSelectorSerializer implements Serializer {
@@ -333,6 +346,18 @@ public final class PatternLayout extends AbstractStringLayout {
                 str = replace.format(str);
             }
             return str;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            builder.append(super.toString());
+            builder.append("[patternSelector=");
+            builder.append(patternSelector);
+            builder.append(", replace=");
+            builder.append(replace);
+            builder.append("]");
+            return builder.toString();
         }
     }
 

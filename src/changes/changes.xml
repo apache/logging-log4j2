@@ -31,6 +31,9 @@
       <action issue="LOG4J2-1237" dev="ggregory" type="add" due-to="Mike Calmus, Gary Gregory">
         Make PatternLayout header and footer accept a pattern. 
       </action>
+      <action issue="LOG4J2-1192" dev="ggregory" type="add" due-to="Jörg Bretschneider, Gary Gregory">
+        Dynamic Subject for SMTP Appender.
+      </action>
       <action issue="LOG4J2-908" dev="ggregory" type="fix" due-to="Konstantinos Liakos, Patrick Flaherty, Robin Coe, Gary Gregory">
         JSONLayout doesn't add a comma between log events.
       </action>
