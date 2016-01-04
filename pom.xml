@@ -196,7 +196,7 @@
     <disruptorVersion>3.3.2</disruptorVersion>
     <compiler.plugin.version>3.3</compiler.plugin.version>
     <pmd.plugin.version>3.5</pmd.plugin.version>
-    <findbugs.plugin.version>3.0.2</findbugs.plugin.version>
+    <findbugs.plugin.version>3.0.3</findbugs.plugin.version>
     <changes.plugin.version>2.11</changes.plugin.version>
     <javadoc.plugin.version>2.10.3</javadoc.plugin.version>
     <!-- surefire.plugin.version 2.18 yields http://jira.codehaus.org/browse/SUREFIRE-1121, which is fixed in 2.18.1 -->
