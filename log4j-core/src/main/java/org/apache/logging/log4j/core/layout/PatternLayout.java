@@ -134,8 +134,8 @@ public final class PatternLayout extends AbstractStringLayout {
             return null;
         }
         if (patternSelector == null) {
-            final PatternParser parser = createPatternParser(configuration);
             try {
+                final PatternParser parser = createPatternParser(configuration);
                 final List<PatternFormatter> list = parser.parse(pattern == null ? defaultPattern : pattern,
                         alwaysWriteExceptions, noConsoleNoAnsi);
                 final PatternFormatter[] formatters = list.toArray(new PatternFormatter[0]);
