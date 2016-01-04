@@ -288,7 +288,7 @@ public class SmtpManager extends AbstractManager {
                 .setRecipients(Message.RecipientType.TO, data.to).setRecipients(Message.RecipientType.CC, data.cc)
                 .setRecipients(Message.RecipientType.BCC, data.bcc).setSubject(data.subject).getMimeMessage();
         } catch (final MessagingException e) {
-            logError("could not set SmtpAppender message options", e);
+            logError("Could not set SmtpAppender message options", e);
             message = null;
         }
     }
