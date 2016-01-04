@@ -201,8 +201,8 @@
     <javadoc.plugin.version>2.10.3</javadoc.plugin.version>
     <!-- surefire.plugin.version 2.18 yields http://jira.codehaus.org/browse/SUREFIRE-1121, which is fixed in 2.18.1 -->
     <!-- surefire.plugin.version 2.19 yields https://issues.apache.org/jira/browse/SUREFIRE-1193. -->
-    <surefire.plugin.version>2.18.1</surefire.plugin.version>
-    <failsafe.plugin.version>2.18.1</failsafe.plugin.version>
+    <surefire.plugin.version>2.19.1</surefire.plugin.version>
+    <failsafe.plugin.version>2.19.1</failsafe.plugin.version>
     <checkstyle.plugin.version>2.17</checkstyle.plugin.version>
     <rat.plugin.version>0.11</rat.plugin.version>
     <pdf.plugin.version>1.2</pdf.plugin.version>
