@@ -75,6 +75,21 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
                 && (StandardCharsets.ISO_8859_1.equals(charset) || StandardCharsets.US_ASCII.equals(charset));
     }
 
+    /**
+     * Returns a {@code StringBuilder} that this Layout implementation can use to write the formatted log event to.
+     * 
+     * @return a {@code StringBuilder}
+     */
+    protected static StringBuilder getStringBuilder() {
+        StringBuilder result = threadLocal.get();
+        if (result == null) {
+            result = new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);
+            threadLocal.set(result);
+        }
+        result.setLength(0);
+        return result;
+    }
+
     // LOG4J2-1151: If the built-in JDK 8 encoders are available we should use them.
     private static boolean isPreJava8() {
         final String version = System.getProperty("java.version");
@@ -96,21 +111,6 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
         in.defaultReadObject();
         final String csName = in.readUTF();
         charset = Charset.forName(csName);
-    }
-
-    /**
-     * Returns a {@code StringBuilder} that this Layout implementation can use to write the formatted log event to.
-     * 
-     * @return a {@code StringBuilder}
-     */
-    protected StringBuilder getStringBuilder() {
-        StringBuilder result = threadLocal.get();
-        if (result == null) {
-            result = new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);
-            threadLocal.set(result);
-        }
-        result.setLength(0);
-        return result;
     }
 
     protected byte[] getBytes(final String s) {

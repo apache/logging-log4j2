@@ -28,6 +28,9 @@
         Added option to discard events below a certain log level if the async logger ring buffer
         or async appender queue remaining capacity falls below a certain ratio.
       </action>
+      <action issue="LOG4J2-1237" dev="ggregory" type="add" due-to="Mike Calmus, Gary Gregory">
+        Make PatternLayout header and footer accept a pattern. 
+      </action>
       <action issue="LOG4J2-908" dev="ggregory" type="fix" due-to="Konstantinos Liakos, Patrick Flaherty, Robin Coe, Gary Gregory">
         JSONLayout doesn't add a comma between log events.
       </action>

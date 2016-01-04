@@ -82,6 +82,7 @@ public class PatternLayoutTest {
         assertTrue(headerStr, headerStr.contains("(build "));
         assertTrue(headerStr, headerStr.contains(" from "));
         assertTrue(headerStr, headerStr.contains(" architecture: "));
+        assertFalse(headerStr, headerStr.contains("%d{UNIX}"));
         //
         final byte[] footer = layout.getFooter();
         assertNotNull("No footer", footer);
@@ -91,6 +92,7 @@ public class PatternLayoutTest {
         assertTrue(footerStr, footerStr.contains("(build "));
         assertTrue(footerStr, footerStr.contains(" from "));
         assertTrue(footerStr, footerStr.contains(" architecture: "));
+        assertFalse(footerStr, footerStr.contains("%d{UNIX}"));
     }
 
     /**
@@ -323,7 +325,7 @@ public class PatternLayoutTest {
                 .setIncludeLocation(true)
                 .setMessage(new SimpleMessage("entry")).build();
         final String result1 = new FauxLogger().formatEvent(event1, layout);
-        final String expectSuffix1 = String.format("====== PatternLayoutTest.testPatternSelector:325 entry ======%n");
+        final String expectSuffix1 = String.format("====== PatternLayoutTest.testPatternSelector:327 entry ======%n");
         assertTrue("Unexpected result: " + result1, result1.endsWith(expectSuffix1));
         final LogEvent event2 = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //

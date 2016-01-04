@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -38,6 +39,7 @@ import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.core.pattern.RegexReplacement;
 import org.apache.logging.log4j.core.util.StringEncoder;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * A flexible layout configurable with pattern string.
@@ -57,35 +59,25 @@ import org.apache.logging.log4j.core.util.StringEncoder;
 public final class PatternLayout extends AbstractStringLayout {
 
     /**
-     * Default pattern string for log output. Currently set to the
-     * string <b>"%m%n"</b> which just prints the application supplied
-     * message.
+     * Default pattern string for log output. Currently set to the string <b>"%m%n"</b> which just prints the
+     * application supplied message.
      */
     public static final String DEFAULT_CONVERSION_PATTERN = "%m%n";
 
     /**
-     * A conversion pattern equivalent to the TTCCCLayout.
-     * Current value is <b>%r [%t] %p %c %x - %m%n</b>.
+     * A conversion pattern equivalent to the TTCCCLayout. Current value is <b>%r [%t] %p %c %x - %m%n</b>.
      */
-    public static final String TTCC_CONVERSION_PATTERN =
-        "%r [%t] %p %c %x - %m%n";
+    public static final String TTCC_CONVERSION_PATTERN = "%r [%t] %p %c %x - %m%n";
 
     /**
-     * A simple pattern.
-     * Current value is <b>%d [%t] %p %c - %m%n</b>.
+     * A simple pattern. Current value is <b>%d [%t] %p %c - %m%n</b>.
      */
-    public static final String SIMPLE_CONVERSION_PATTERN =
-        "%d [%t] %p %c - %m%n";
+    public static final String SIMPLE_CONVERSION_PATTERN = "%d [%t] %p %c - %m%n";
 
     /** Key to identify pattern converters. */
     public static final String KEY = "Converter";
 
     private static final long serialVersionUID = 1L;
-
-    /**
-     * Initial converter for pattern.
-     */
-    private final PatternFormatter[] formatters;
 
     /**
      * Conversion pattern.
@@ -94,76 +86,86 @@ public final class PatternLayout extends AbstractStringLayout {
 
     private final PatternSelector patternSelector;
 
-    private final Serializer serializer;
+    private final Serializer eventSerializer;
 
+    private final Serializer headerSerializer;
+
+    private final Serializer footerSerializer;
 
     /**
      * The current Configuration.
      */
     private final Configuration config;
 
-    private final RegexReplacement replace;
-
-    private final boolean alwaysWriteExceptions;
-
-    private final boolean noConsoleNoAnsi;
-
     /**
      * Constructs a EnhancedPatternLayout using the supplied conversion pattern.
      *
      * @param config The Configuration.
      * @param replace The regular expression to match.
-     * @param pattern conversion pattern.
+     * @param eventPattern conversion pattern.
      * @param patternSelector The PatternSelector.
      * @param charset The character set.
      * @param alwaysWriteExceptions Whether or not exceptions should always be handled in this pattern (if {@code true},
      *                         exceptions will be written even if the pattern does not specify so).
      * @param noConsoleNoAnsi
      *            If {@code "true"} (default) and {@link System#console()} is null, do not output ANSI escape codes
-     * @param header
+     * @param headerPattern header conversion pattern.
+     * @param footerPattern footer conversion pattern.
      */
-    private PatternLayout(final Configuration config, final RegexReplacement replace, final String pattern,
-                          final PatternSelector patternSelector, final Charset charset,
-                          final boolean alwaysWriteExceptions, final boolean noConsoleNoAnsi,
-                          final String header, final String footer) {
-        super(charset, StringEncoder.toBytes(header, charset), StringEncoder.toBytes(footer, charset));
-        this.replace = replace;
-        this.conversionPattern = pattern;
+    private PatternLayout(final Configuration config, final RegexReplacement replace, final String eventPattern,
+            final PatternSelector patternSelector, final Charset charset, final boolean alwaysWriteExceptions,
+            final boolean noConsoleNoAnsi, final String headerPattern, final String footerPattern) {
+        super(charset, StringEncoder.toBytes(headerPattern, charset), StringEncoder.toBytes(footerPattern, charset));
+        this.conversionPattern = eventPattern;
         this.patternSelector = patternSelector;
         this.config = config;
-        this.alwaysWriteExceptions = alwaysWriteExceptions;
-        this.noConsoleNoAnsi = noConsoleNoAnsi;
-        if (patternSelector == null) {
-            serializer = new PatternSerializer();
-            final PatternParser parser = createPatternParser(config);
-            try {
-                List<PatternFormatter> list = parser.parse(pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern,
-                        this.alwaysWriteExceptions, this.noConsoleNoAnsi);
-                this.formatters = list.toArray(new PatternFormatter[0]);
-            } catch (RuntimeException ex) {
-                throw new IllegalArgumentException("Cannot parse pattern '" + pattern + "'", ex);
-            }
-        } else {
-            this.formatters = null;
-            serializer = new PatternSelectorSerializer();
-        }
+        this.eventSerializer = createSerializer(config, replace, eventPattern, DEFAULT_CONVERSION_PATTERN, patternSelector,
+                alwaysWriteExceptions, noConsoleNoAnsi);
+        this.headerSerializer = createSerializer(config, replace, headerPattern, null, patternSelector,
+                alwaysWriteExceptions, noConsoleNoAnsi);
+        this.footerSerializer = createSerializer(config, replace, footerPattern, null, patternSelector,
+                alwaysWriteExceptions, noConsoleNoAnsi);
     }
 
-    private byte[] strSubstitutorReplace(final byte... b) {
-        if (b != null && config != null) {
-            return getBytes(config.getStrSubstitutor().replace(new String(b, getCharset())));
+    private Serializer createSerializer(final Configuration configuration, final RegexReplacement replace,
+            final String pattern, final String defaultPattern, final PatternSelector patternSelector,
+            final boolean alwaysWriteExceptions, final boolean noConsoleNoAnsi) {
+        if (Strings.isEmpty(pattern) && Strings.isEmpty(defaultPattern)) {
+            return null;
         }
-        return b;
+        if (patternSelector == null) {
+            final PatternParser parser = createPatternParser(configuration);
+            try {
+                final List<PatternFormatter> list = parser.parse(pattern == null ? defaultPattern : pattern,
+                        alwaysWriteExceptions, noConsoleNoAnsi);
+                final PatternFormatter[] formatters = list.toArray(new PatternFormatter[0]);
+                return new PatternSerializer(formatters, replace);
+            } catch (final RuntimeException ex) {
+                throw new IllegalArgumentException("Cannot parse pattern '" + pattern + "'", ex);
+            }
+        }
+        return new PatternSelectorSerializer(patternSelector, replace);
     }
 
     @Override
     public byte[] getHeader() {
-        return strSubstitutorReplace(super.getHeader());
+        return serializeHeaderFooter(headerSerializer);
     }
 
     @Override
     public byte[] getFooter() {
-        return strSubstitutorReplace(super.getFooter());
+        return serializeHeaderFooter(footerSerializer);
+    }
+
+    private byte[] serializeHeaderFooter(final Serializer serializer) {
+        if (serializer == null) {
+            return null;
+        }
+        final LoggerConfig rootLogger = config.getRootLogger();
+        // Using "" for the FQCN, does it matter?
+        final LogEvent logEvent = rootLogger.getLogEventFactory().createEvent(rootLogger.getName(), null, Strings.EMPTY,
+                rootLogger.getLevel(), null, null, null);
+        return StringEncoder.toBytes(serializer.toSerializable(logEvent), getCharset());
     }
 
     /**
@@ -186,8 +188,7 @@ public final class PatternLayout extends AbstractStringLayout {
      * @return Map of content format keys supporting PatternLayout
      */
     @Override
-    public Map<String, String> getContentFormat()
-    {
+    public Map<String, String> getContentFormat() {
         final Map<String, String> result = new HashMap<>();
         result.put("structured", "false");
         result.put("formatType", "conversion");
@@ -203,7 +204,7 @@ public final class PatternLayout extends AbstractStringLayout {
      */
     @Override
     public String toSerializable(final LogEvent event) {
-        return serializer.toSerializable(event);
+        return eventSerializer.toSerializable(event);
     }
 
     /**
@@ -246,9 +247,9 @@ public final class PatternLayout extends AbstractStringLayout {
      *        If {@code "true"} (default) exceptions are always written even if the pattern contains no exception tokens.
      * @param noConsoleNoAnsi
      *        If {@code "true"} (default is false) and {@link System#console()} is null, do not output ANSI escape codes
-     * @param header
+     * @param headerPattern
      *        The footer to place at the top of the document, once.
-     * @param footer
+     * @param footerPattern
      *        The footer to place at the bottom of the document, once.
      * @return The PatternLayout.
      */
@@ -262,8 +263,8 @@ public final class PatternLayout extends AbstractStringLayout {
             @PluginAttribute(value = "charset") final Charset charset,
             @PluginAttribute(value = "alwaysWriteExceptions", defaultBoolean = true) final boolean alwaysWriteExceptions,
             @PluginAttribute(value = "noConsoleNoAnsi", defaultBoolean = false) final boolean noConsoleNoAnsi,
-            @PluginAttribute("header") final String header,
-            @PluginAttribute("footer") final String footer) {
+            @PluginAttribute("header") final String headerPattern,
+            @PluginAttribute("footer") final String footerPattern) {
         return newBuilder()
             .withPattern(pattern)
             .withPatternSelector(patternSelector)
@@ -272,18 +273,27 @@ public final class PatternLayout extends AbstractStringLayout {
             .withCharset(charset)
             .withAlwaysWriteExceptions(alwaysWriteExceptions)
             .withNoConsoleNoAnsi(noConsoleNoAnsi)
-            .withHeader(header)
-            .withFooter(footer)
+            .withHeader(headerPattern)
+            .withFooter(footerPattern)
             .build();
     }
 
-
     private interface Serializer {
-
-        String toSerializable(final LogEvent event);
+        
+        String toSerializable(final LogEvent event);        
     }
 
-    private class PatternSerializer implements Serializer {
+    private static class PatternSerializer implements Serializer {
+
+        private final PatternFormatter[] formatters;
+        private final RegexReplacement replace;
+
+        private PatternSerializer(final PatternFormatter[] formatters, final RegexReplacement replace) {
+            super();
+            this.formatters = formatters;
+            this.replace = replace;
+        }
+
         @Override
         public String toSerializable(final LogEvent event) {
             final StringBuilder buf = getStringBuilder();
@@ -299,11 +309,21 @@ public final class PatternLayout extends AbstractStringLayout {
         }
     }
 
-    private class PatternSelectorSerializer implements Serializer {
+    private static class PatternSelectorSerializer implements Serializer {
+
+        private final PatternSelector patternSelector;
+        private final RegexReplacement replace;
+
+        private PatternSelectorSerializer(final PatternSelector patternSelector, final RegexReplacement replace) {
+            super();
+            this.patternSelector = patternSelector;
+            this.replace = replace;
+        }
+
         @Override
         public String toSerializable(final LogEvent event) {
             final StringBuilder buf = getStringBuilder();
-            PatternFormatter[] formatters = patternSelector.getFormatters(event);
+            final PatternFormatter[] formatters = patternSelector.getFormatters(event);
             final int len = formatters.length;
             for (int i = 0; i < len; i++) {
                 formatters[i].format(event, buf);
@@ -328,21 +348,21 @@ public final class PatternLayout extends AbstractStringLayout {
     }
 
     /**
-     * Creates a PatternLayout using the default options and the given
-     * configuration. These options include using UTF-8, the default conversion
-     * pattern, exceptions being written, and with ANSI escape codes.
+     * Creates a PatternLayout using the default options and the given configuration. These options include using UTF-8,
+     * the default conversion pattern, exceptions being written, and with ANSI escape codes.
      * 
      * @param configuration The Configuration.
      *
      * @return the PatternLayout.
      * @see #DEFAULT_CONVERSION_PATTERN Default conversion pattern
      */
-    public static PatternLayout createDefaultLayout(Configuration configuration) {
+    public static PatternLayout createDefaultLayout(final Configuration configuration) {
         return newBuilder().withConfiguration(configuration).build();
     }
 
     /**
      * Creates a builder for a custom PatternLayout.
+     * 
      * @return a PatternLayout builder.
      */
     @PluginBuilderFactory
@@ -397,7 +417,6 @@ public final class PatternLayout extends AbstractStringLayout {
             this.patternSelector = patternSelector;
             return this;
         }
-
 
         public Builder withConfiguration(final Configuration configuration) {
             this.configuration = configuration;
