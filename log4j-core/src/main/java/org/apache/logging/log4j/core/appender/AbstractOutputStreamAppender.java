@@ -44,9 +44,6 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
 
     private final M manager;
 
-    private final ReadWriteLock rwLock = new ReentrantReadWriteLock();
-    private final Lock readLock = rwLock.readLock();
-
     /**
      * Instantiates a WriterAppender and set the output destination to a new {@link java.io.OutputStreamWriter}
      * initialized with <code>os</code> as its {@link java.io.OutputStream}.
@@ -107,20 +104,14 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
      */
     @Override
     public void append(final LogEvent event) {
-        readLock.lock();
         try {
             final byte[] bytes = getLayout().toByteArray(event);
-            if (bytes.length > 0) {
-                manager.write(bytes);
-                if (this.immediateFlush || event.isEndOfBatch()) {
-                    manager.flush();
-                }
+            if (bytes != null && bytes.length > 0) {
+                manager.write(bytes, this.immediateFlush || event.isEndOfBatch());
             }
         } catch (final AppenderLoggingException ex) {
             error("Unable to write to stream " + manager.getName() + " for appender " + getName());
             throw ex;
-        } finally {
-            readLock.unlock();
         }
     }
 

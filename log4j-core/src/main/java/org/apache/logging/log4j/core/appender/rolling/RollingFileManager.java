@@ -89,9 +89,9 @@ public class RollingFileManager extends FileManager {
     }
 
     @Override
-    protected synchronized void write(final byte[] bytes, final int offset, final int length) {
+    protected synchronized void write(final byte[] bytes, final int offset, final int length, final boolean immediateFlush) {
         size += length;
-        super.write(bytes, offset, length);
+        super.write(bytes, offset, length, immediateFlush);
     }
 
     /**

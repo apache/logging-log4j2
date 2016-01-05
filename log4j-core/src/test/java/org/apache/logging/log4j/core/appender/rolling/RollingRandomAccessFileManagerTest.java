@@ -66,7 +66,7 @@ public class RollingRandomAccessFileManagerTest {
 
         final int size = RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3;
         final byte[] data = new byte[size];
-        manager.write(data, 0, data.length); // no buffer overflow exception
+        manager.write(data, 0, data.length, flushNow); // no buffer overflow exception
 
         // buffer is full but not flushed yet
         assertEquals(RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE * 2,
@@ -97,7 +97,7 @@ public class RollingRandomAccessFileManagerTest {
 
         final int size = RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3 + 1;
         final byte[] data = new byte[size];
-        manager.write(data, 0, data.length); // no exception
+        manager.write(data, 0, data.length, flushNow); // no exception
         assertEquals(RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3,
                 raf.length());
 
@@ -146,13 +146,14 @@ public class RollingRandomAccessFileManagerTest {
         }
         assertThat("all flushed to disk", file, hasLength(bytes.length));
 
+        final boolean immediateFlush = true;
         final RollingRandomAccessFileManager manager = RollingRandomAccessFileManager
                 .getRollingRandomAccessFileManager(
                         //
-                        file.getAbsolutePath(), Strings.EMPTY, isAppend, true, RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE,
+                        file.getAbsolutePath(), Strings.EMPTY, isAppend, immediateFlush, RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE,
                         new SizeBasedTriggeringPolicy(Long.MAX_VALUE), //
                         null, null, null);
-        manager.write(bytes, 0, bytes.length);
+        manager.write(bytes, 0, bytes.length, immediateFlush);
         final int expected = bytes.length * 2;
         assertThat("appended, not overwritten", file, hasLength(expected));
     }

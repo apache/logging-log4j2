@@ -116,7 +116,7 @@ public class TcpSocketManager extends AbstractSocketManager {
     }
 
     @Override
-    protected void write(final byte[] bytes, final int offset, final int length)  {
+    protected void write(final byte[] bytes, final int offset, final int length, boolean immediateFlush)  {
         if (socket == null) {
             if (connector != null && !immediateFail) {
                 connector.latch();
@@ -128,7 +128,11 @@ public class TcpSocketManager extends AbstractSocketManager {
         }
         synchronized (this) {
             try {
-                getOutputStream().write(bytes, offset, length);
+                final OutputStream outputStream = getOutputStream();
+                outputStream.write(bytes, offset, length);
+                if (immediateFlush) {
+                    outputStream.flush();
+                }
             } catch (final IOException ex) {
                 if (retry && connector == null) {
                     connector = new Reconnector(this);

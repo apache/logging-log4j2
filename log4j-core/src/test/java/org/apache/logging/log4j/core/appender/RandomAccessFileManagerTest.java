@@ -130,7 +130,7 @@ public class RandomAccessFileManagerTest {
 
         final RandomAccessFileManager manager = RandomAccessFileManager.getFileManager(
                 file.getAbsolutePath(), isAppend, true, RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null);
-        manager.write(bytes, 0, bytes.length);
+        manager.write(bytes, 0, bytes.length, false);
         final int expected = bytes.length * 2;
         assertEquals("appended, not overwritten", expected, file.length());
     }

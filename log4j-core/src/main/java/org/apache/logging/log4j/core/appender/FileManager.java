@@ -76,7 +76,7 @@ public class FileManager extends OutputStreamManager {
     }
 
     @Override
-    protected synchronized void write(final byte[] bytes, final int offset, final int length)  {
+    protected synchronized void write(final byte[] bytes, final int offset, final int length, final boolean immediateFlush)  {
 
         if (isLocking) {
             final FileChannel channel = ((FileOutputStream) getOutputStream()).getChannel();
@@ -90,7 +90,7 @@ public class FileManager extends OutputStreamManager {
                    files strings are configured that somehow map to the same file.*/
                 final FileLock lock = channel.lock(0, Long.MAX_VALUE, false);
                 try {
-                    super.write(bytes, offset, length);
+                    super.write(bytes, offset, length, immediateFlush);
                 } finally {
                     lock.release();
                 }
@@ -99,7 +99,7 @@ public class FileManager extends OutputStreamManager {
             }
 
         } else {
-            super.write(bytes, offset, length);
+            super.write(bytes, offset, length, immediateFlush);
         }
     }
 
