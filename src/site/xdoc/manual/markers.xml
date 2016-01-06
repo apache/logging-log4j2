@@ -39,14 +39,15 @@
         <pre class="prettyprint linenums"><![CDATA[
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.MarkerManager;
 import java.util.Map;
 
 public class MyApp {
 
     private Logger logger = LogManager.getLogger(MyApp.class.getName());
     private static final Marker SQL_MARKER = MarkerManager.getMarker("SQL");
-    private static final Marker UPDATE_MARKER = MarkerManager.getMarker("SQL_UPDATE").set(SQL_MARKER);
-    private static final Marker QUERY_MARKER = MarkerManager.getMarker("SQL_QUERY").set(SQL_MARKER);
+    private static final Marker UPDATE_MARKER = MarkerManager.getMarker("SQL_UPDATE").setParents(SQL_MARKER);
+    private static final Marker QUERY_MARKER = MarkerManager.getMarker("SQL_QUERY").setParents(SQL_MARKER);
 
     public String doQuery(String table) {
         logger.entry(param);
