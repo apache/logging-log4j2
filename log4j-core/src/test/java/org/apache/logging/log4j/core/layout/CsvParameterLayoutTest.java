@@ -65,8 +65,8 @@ public class CsvParameterLayoutTest {
 
     @Test
     public void testCustomCharset() {
-        final AbstractCsvLayout layout = CsvParameterLayout.createLayout("Excel", null, null, null, null, null, null,
-                StandardCharsets.UTF_16, null, null);
+        final AbstractCsvLayout layout = CsvParameterLayout.createLayout(null, "Excel", null, null, null, null, null,
+                null, StandardCharsets.UTF_16, null, null);
         assertEquals("text/csv; charset=UTF-16", layout.getContentType());
     }
 

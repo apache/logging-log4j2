@@ -25,9 +25,12 @@ import java.util.Map;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
 /**
@@ -798,14 +801,21 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 @Plugin(name = "JsonLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class JsonLayout extends AbstractJacksonLayout {
 
+    private static final String DEFAULT_FOOTER = "]";
+
+    private static final String DEFAULT_HEADER = "[";
+
     static final String CONTENT_TYPE = "application/json";
 
     private static final long serialVersionUID = 1L;
 
-    protected JsonLayout(final boolean locationInfo, final boolean properties, final boolean complete,
-            final boolean compact, final boolean eventEol, final Charset charset) {
-        super(new JacksonFactory.JSON().newWriter(locationInfo, properties, compact), charset, compact, complete,
-                eventEol);
+    protected JsonLayout(final Configuration config, final boolean locationInfo, final boolean properties,
+            final boolean complete, final boolean compact, final boolean eventEol, final String headerPattern,
+            final String footerPattern, final Charset charset) {
+        super(config, new JacksonFactory.JSON().newWriter(locationInfo, properties, compact), charset, compact,
+                complete, eventEol,
+                PatternLayout.createSerializer(config, null, headerPattern, DEFAULT_HEADER, null, false, false),
+                PatternLayout.createSerializer(config, null, footerPattern, DEFAULT_FOOTER, null, false, false));
     }
 
     /**
@@ -819,7 +829,10 @@ public final class JsonLayout extends AbstractJacksonLayout {
             return null;
         }
         final StringBuilder buf = new StringBuilder();
-        buf.append('[');
+        final String str = serializeToString(getHeaderSerializer());
+        if (str != null) {
+            buf.append(str);
+        }
         buf.append(this.eol);
         return getBytes(buf.toString());
     }
@@ -834,7 +847,14 @@ public final class JsonLayout extends AbstractJacksonLayout {
         if (!this.complete) {
             return null;
         }
-        return getBytes(this.eol + ']' + this.eol);
+        final StringBuilder buf = new StringBuilder();
+        buf.append(this.eol);
+        final String str = serializeToString(getFooterSerializer());
+        if (str != null) {
+            buf.append(str);
+        }
+        buf.append(this.eol);
+        return getBytes(buf.toString());
     }
 
     @Override
@@ -854,7 +874,8 @@ public final class JsonLayout extends AbstractJacksonLayout {
 
     /**
      * Creates a JSON Layout.
-     *
+     * @param config 
+     *           The plugin configuration.
      * @param locationInfo
      *            If "true", includes the location information in the generated JSON.
      * @param properties
@@ -866,6 +887,11 @@ public final class JsonLayout extends AbstractJacksonLayout {
      * @param eventEol
      *            If "true", forces an EOL after each log event (even if compact is "true"), defaults to "false". This
      *            allows one even per line, even in compact mode.
+     * @param headerPattern
+     *            The header pattern, defaults to {@code "["} if null.
+     * @param footerPattern
+     *            The header pattern, defaults to {@code "]"} if null.
+     * @param footerPattern
      * @param charset
      *            The character set to use, if {@code null}, uses "UTF-8".
      * @return A JSON Layout.
@@ -873,28 +899,31 @@ public final class JsonLayout extends AbstractJacksonLayout {
     @PluginFactory
     public static AbstractJacksonLayout createLayout(
             // @formatter:off
+            @PluginConfiguration final Configuration config,
             @PluginAttribute(value = "locationInfo", defaultBoolean = false) final boolean locationInfo,
             @PluginAttribute(value = "properties", defaultBoolean = false) final boolean properties,
             @PluginAttribute(value = "complete", defaultBoolean = false) final boolean complete,
             @PluginAttribute(value = "compact", defaultBoolean = false) final boolean compact,
             @PluginAttribute(value = "eventEol", defaultBoolean = false) final boolean eventEol,
+            @PluginAttribute(value = "header", defaultString = DEFAULT_HEADER) final String headerPattern,
+            @PluginAttribute(value = "footer", defaultString = DEFAULT_FOOTER) final String footerPattern,
             @PluginAttribute(value = "charset", defaultString = "UTF-8") final Charset charset
             // @formatter:on
     ) {
-        return new JsonLayout(locationInfo, properties, complete, compact, eventEol, charset);
+        return new JsonLayout(config, locationInfo, properties, complete, compact, eventEol, headerPattern, footerPattern, charset);
     }
 
     /**
-     * Creates a JSON Layout using the default settings.
+     * Creates a JSON Layout using the default settings. Useful for testing.
      *
      * @return A JSON Layout.
      */
     public static AbstractJacksonLayout createDefaultLayout() {
-        return new JsonLayout(false, false, false, false, false, StandardCharsets.UTF_8);
+        return new JsonLayout(new DefaultConfiguration(), false, false, false, false, false, DEFAULT_HEADER, DEFAULT_FOOTER, StandardCharsets.UTF_8);
     }
 
     @Override
-    public void toSerializable(final LogEvent event, Writer writer) throws IOException {
+    public void toSerializable(final LogEvent event, final Writer writer) throws IOException {
         if (complete && eventCount > 0) {
             writer.append(", ");
         }

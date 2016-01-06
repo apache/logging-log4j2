@@ -21,6 +21,7 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.util.StringBuilderWriter;
 import org.apache.logging.log4j.util.Strings;
 
@@ -39,8 +40,10 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
     protected final boolean compact;
     protected final boolean complete;
 
-    protected AbstractJacksonLayout(final ObjectWriter objectWriter, final Charset charset, final boolean compact, final boolean complete, final boolean eventEol) {
-        super(charset);
+    protected AbstractJacksonLayout(final Configuration config, final ObjectWriter objectWriter, final Charset charset,
+            final boolean compact, final boolean complete, final boolean eventEol, final Serializer headerSerializer,
+            final Serializer footerSerializer) {
+        super(config, charset, headerSerializer, footerSerializer);
         this.objectWriter = objectWriter;
         this.compact = compact;
         this.complete = complete;
@@ -55,7 +58,7 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
      */
     @Override
     public String toSerializable(final LogEvent event) {
-        StringBuilderWriter writer = new StringBuilderWriter();        
+        final StringBuilderWriter writer = new StringBuilderWriter();        
         try {
             toSerializable(event, writer);
             return writer.toString();
@@ -66,7 +69,7 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
         }
     }
 
-    public void toSerializable(final LogEvent event, Writer writer)
+    public void toSerializable(final LogEvent event, final Writer writer)
             throws JsonGenerationException, JsonMappingException, IOException {
         objectWriter.writeValue(writer, event);
         writer.write(eol);

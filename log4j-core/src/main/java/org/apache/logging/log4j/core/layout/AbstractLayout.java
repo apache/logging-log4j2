@@ -22,13 +22,14 @@ import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Abstract base class for Layouts.
  * 
  * @param <T>
- *        The Class that the Layout will format the LogEvent into.
+ *            The Class that the Layout will format the LogEvent into.
  */
 public abstract class AbstractLayout<T extends Serializable> implements Layout<T>, Serializable {
 
@@ -40,9 +41,14 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
     private static final long serialVersionUID = 1L;
 
     /**
-     * The header to include when the stream is opened. May be null.
+     * The current Configuration.
      */
-    protected final byte[] header;
+    protected final Configuration configuration;
+
+    /**
+     * The number of events successfully processed by this layout.
+     */
+    protected long eventCount;
 
     /**
      * The footer to add when the stream is closed. May be null.
@@ -50,22 +56,45 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
     protected final byte[] footer;
 
     /**
-     * The count of events successfully processed by this layout.
+     * The header to include when the stream is opened. May be null.
      */
-    protected long eventCount;
+    protected final byte[] header;
 
     /**
      * Constructs a layout with an optional header and footer.
      * 
+     * @param configuration
+     *            The configuration
      * @param header
-     *        The header to include when the stream is opened. May be null.
+     *            The header to include when the stream is opened. May be null.
      * @param footer
-     *        The footer to add when the stream is closed. May be null.
+     *            The footer to add when the stream is closed. May be null.
+     * @deprecated Use {@link #AbstractLayout(Configuration, byte[], byte[])}
      */
+    @Deprecated
     public AbstractLayout(final byte[] header, final byte[] footer) {
+        this(null, header, footer);
+    }
+
+    /**
+     * Constructs a layout with an optional header and footer.
+     * 
+     * @param configuration
+     *            The configuration
+     * @param header
+     *            The header to include when the stream is opened. May be null.
+     * @param footer
+     *            The footer to add when the stream is closed. May be null.
+     */
+    public AbstractLayout(final Configuration configuration, final byte[] header, final byte[] footer) {
         super();
+        this.configuration = configuration;
         this.header = header;
         this.footer = footer;
+    }
+
+    public Configuration getConfiguration() {
+        return configuration;
     }
 
     @Override
@@ -92,7 +121,7 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
     public byte[] getHeader() {
         return header;
     }
-    
+
     protected void markEvent() {
         eventCount++;
     }

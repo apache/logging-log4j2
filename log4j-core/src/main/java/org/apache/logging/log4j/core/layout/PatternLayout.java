@@ -26,7 +26,6 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -39,7 +38,6 @@ import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.core.pattern.RegexReplacement;
-import org.apache.logging.log4j.core.util.StringEncoder;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -89,15 +87,6 @@ public final class PatternLayout extends AbstractStringLayout {
 
     private final Serializer eventSerializer;
 
-    private final Serializer headerSerializer;
-
-    private final Serializer footerSerializer;
-
-    /**
-     * The current Configuration.
-     */
-    private final Configuration config;
-
     /**
      * Constructs a EnhancedPatternLayout using the supplied conversion pattern.
      *
@@ -116,16 +105,15 @@ public final class PatternLayout extends AbstractStringLayout {
     private PatternLayout(final Configuration config, final RegexReplacement replace, final String eventPattern,
             final PatternSelector patternSelector, final Charset charset, final boolean alwaysWriteExceptions,
             final boolean noConsoleNoAnsi, final String headerPattern, final String footerPattern) {
-        super(charset, StringEncoder.toBytes(headerPattern, charset), StringEncoder.toBytes(footerPattern, charset));
+        super(config, charset,
+                createSerializer(config, replace, headerPattern, null, patternSelector, alwaysWriteExceptions,
+                        noConsoleNoAnsi),
+                createSerializer(config, replace, footerPattern, null, patternSelector, alwaysWriteExceptions,
+                        noConsoleNoAnsi));
         this.conversionPattern = eventPattern;
         this.patternSelector = patternSelector;
-        this.config = config;
-        this.eventSerializer = createSerializer(config, replace, eventPattern, DEFAULT_CONVERSION_PATTERN, patternSelector,
-                alwaysWriteExceptions, noConsoleNoAnsi);
-        this.headerSerializer = createSerializer(config, replace, headerPattern, null, patternSelector,
-                alwaysWriteExceptions, noConsoleNoAnsi);
-        this.footerSerializer = createSerializer(config, replace, footerPattern, null, patternSelector,
-                alwaysWriteExceptions, noConsoleNoAnsi);
+        this.eventSerializer = createSerializer(config, replace, eventPattern, DEFAULT_CONVERSION_PATTERN,
+                patternSelector, alwaysWriteExceptions, noConsoleNoAnsi);
     }
 
     public static Serializer createSerializer(final Configuration configuration, final RegexReplacement replace,
@@ -146,27 +134,6 @@ public final class PatternLayout extends AbstractStringLayout {
             }
         }
         return new PatternSelectorSerializer(patternSelector, replace);
-    }
-
-    @Override
-    public byte[] getHeader() {
-        return serializeHeaderFooter(headerSerializer);
-    }
-
-    @Override
-    public byte[] getFooter() {
-        return serializeHeaderFooter(footerSerializer);
-    }
-
-    private byte[] serializeHeaderFooter(final Serializer serializer) {
-        if (serializer == null) {
-            return null;
-        }
-        final LoggerConfig rootLogger = config.getRootLogger();
-        // Using "" for the FQCN, does it matter?
-        final LogEvent logEvent = rootLogger.getLogEventFactory().createEvent(rootLogger.getName(), null, Strings.EMPTY,
-                rootLogger.getLevel(), null, null, null);
-        return StringEncoder.toBytes(serializer.toSerializable(logEvent), getCharset());
     }
 
     /**
@@ -277,11 +244,6 @@ public final class PatternLayout extends AbstractStringLayout {
             .withHeader(headerPattern)
             .withFooter(footerPattern)
             .build();
-    }
-
-    public interface Serializer {
-        
-        String toSerializable(final LogEvent event);        
     }
 
     private static class PatternSerializer implements Serializer {

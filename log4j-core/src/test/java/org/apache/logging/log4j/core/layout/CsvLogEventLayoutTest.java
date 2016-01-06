@@ -64,9 +64,18 @@ public class CsvLogEventLayoutTest {
 
     @Test
     public void testCustomCharset() {
-        final AbstractCsvLayout layout = CsvLogEventLayout.createLayout("Excel", null, null, null, null, null, null,
-                StandardCharsets.UTF_16, null, null);
+        final AbstractCsvLayout layout = CsvLogEventLayout.createLayout(null, "Excel", null, null, null, null, null,
+                null, StandardCharsets.UTF_16, null, null);
         assertEquals("text/csv; charset=UTF-16", layout.getContentType());
+    }
+
+    @Test
+    public void testHeaderFooter() {
+        final String header = "# Header";
+        final String footer = "# Footer ";
+        final AbstractCsvLayout layout = CsvLogEventLayout.createLayout(ctx.getConfiguration(), "Excel", null, null,
+                null, null, null, null, null, header, footer);
+        testLayout(CSVFormat.DEFAULT, layout, header, footer);
     }
 
     @Test
@@ -82,7 +91,10 @@ public class CsvLogEventLayoutTest {
     }
 
     private void testLayout(final CSVFormat format) {
-        final AbstractCsvLayout layout = CsvLogEventLayout.createLayout(format);
+        testLayout(format, CsvLogEventLayout.createLayout(format), null, null);
+    }
+
+    private void testLayout(final CSVFormat format, final AbstractCsvLayout layout, String header, String footer) {
         final Map<String, Appender> appenders = root.getAppenders();
         for (final Appender appender : appenders.values()) {
             root.removeAppender(appender);
@@ -100,13 +112,35 @@ public class CsvLogEventLayoutTest {
         appender.stop();
 
         final List<String> list = appender.getMessages();
-        final String event0 = list.get(0);
+        final boolean hasHeaderSerializer = layout.getHeaderSerializer() != null;
+        final boolean hasFooterSerializer = layout.getFooterSerializer() != null;
+        final int headerOffset = hasHeaderSerializer ? 1 : 0;
+        final String event0 = list.get(0 + headerOffset);
+        final String event1 = list.get(1 + headerOffset);
         final char del = format.getDelimiter();
         Assert.assertTrue(event0, event0.contains(del + "DEBUG" + del));
         final String quote = del == ',' ? "\"" : "";
         Assert.assertTrue(event0, event0.contains(del + quote + "one=1, two=2, three=3" + quote + del));
-        final String event1 = list.get(1);
         Assert.assertTrue(event1, event1.contains(del + "INFO" + del));
+        
+        if (hasHeaderSerializer && header == null) {
+            Assert.fail();
+        }
+        if (!hasHeaderSerializer && header != null) {
+            Assert.fail();
+        }
+        if (hasFooterSerializer && footer == null) {
+            Assert.fail();
+        }
+        if (!hasFooterSerializer && footer != null) {
+            Assert.fail();
+        }
+        if (hasHeaderSerializer) {
+            Assert.assertEquals(list.toString(), header, list.get(0));
+        }
+        if (hasFooterSerializer) {
+            Assert.assertEquals(list.toString(), footer, list.get(list.size() - 1));
+        }
     }
 
     @Test
