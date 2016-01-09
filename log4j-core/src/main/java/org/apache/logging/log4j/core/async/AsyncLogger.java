@@ -32,7 +32,6 @@ import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.NanoClock;
-import org.apache.logging.log4j.core.util.NanoClockFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.TimestampMessage;
@@ -89,7 +88,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
             final AsyncLoggerDisruptor loggerDisruptor) {
         super(context, name, messageFactory);
         this.loggerDisruptor = loggerDisruptor;
-        nanoClock = NanoClockFactory.createNanoClock(); // based on initial configuration
+        nanoClock = context.getConfiguration().getNanoClock();
     }
 
     /*
@@ -100,7 +99,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
     @Override
     protected void updateConfiguration(Configuration newConfig) {
         super.updateConfiguration(newConfig);
-        nanoClock = NanoClockFactory.createNanoClock();
+        nanoClock = newConfig.getNanoClock();
         LOGGER.trace("[{}] AsyncLogger {} uses {}.", getContext().getName(), getName(), nanoClock);
     }
 

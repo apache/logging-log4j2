@@ -26,8 +26,6 @@ import org.apache.logging.log4j.core.CoreLoggerContexts;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.DummyNanoClock;
-import org.apache.logging.log4j.core.util.NanoClockFactory;
-import org.apache.logging.log4j.core.util.NanoClockFactory.Mode;
 import org.apache.logging.log4j.core.util.SystemNanoClock;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
@@ -61,15 +59,16 @@ public class AsyncLoggerTestNanoTime {
         log.info("Use actual System.nanoTime()");
         assertTrue("using SystemNanoClock", log.getNanoClock() instanceof SystemNanoClock);
 
-        NanoClockFactory.setMode(Mode.Dummy);
-        final long DUMMYNANOTIME = 0;
-        
+        final long DUMMYNANOTIME = -53;
+        log.getContext().getConfiguration().setNanoClock(new DummyNanoClock(DUMMYNANOTIME));
+        log.updateConfiguration(log.getContext().getConfiguration());
+
         // trigger a new nano clock lookup
         log.updateConfiguration(log.getContext().getConfiguration());
-        
+
         log.info("Use dummy nano clock");
         assertTrue("using SystemNanoClock", log.getNanoClock() instanceof DummyNanoClock);
-        
+
         CoreLoggerContexts.stopLoggerContext(file); // stop async thread
 
         final BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -87,7 +86,7 @@ public class AsyncLoggerTestNanoTime {
         assertEquals(line1Parts[0], line1Parts[1]);
         long loggedNanoTime = Long.parseLong(line1Parts[0]);
         assertTrue("used system nano time", loggedNanoTime - before < TimeUnit.SECONDS.toNanos(1));
-        
+
         final String[] line2Parts = line2.split(" AND ");
         assertEquals("Use dummy nano clock", line2Parts[2]);
         assertEquals(String.valueOf(DUMMYNANOTIME), line2Parts[0]);

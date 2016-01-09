@@ -29,7 +29,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
-import org.apache.logging.log4j.core.util.NanoClockFactory;
+import org.apache.logging.log4j.core.util.SystemNanoClock;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
@@ -173,12 +173,13 @@ public final class PatternParser {
         final Iterator<FormattingInfo> fieldIter = fields.iterator();
         boolean handlesThrowable = false;
 
-        NanoClockFactory.setMode(NanoClockFactory.Mode.Dummy); // LOG4J2-1074 use dummy clock by default
         for (final PatternConverter converter : converters) {
             if (converter instanceof NanoTimePatternConverter) {
                 // LOG4J2-1074 Switch to actual clock if nanosecond timestamps are required in config.
-                // LoggerContext will notify known NanoClockFactory users that the configuration has changed.
-                NanoClockFactory.setMode(NanoClockFactory.Mode.System);
+                // LOG4J2-1248 set config nanoclock
+                if (config != null) {
+                    config.setNanoClock(new SystemNanoClock());
+                }
             }
             LogEventPatternConverter pc;
             if (converter instanceof LogEventPatternConverter) {
@@ -218,7 +219,7 @@ public final class PatternParser {
      *        last processed character.
      * @param pattern
      *        format string.
-     * @param i
+     * @param start
      *        current index into pattern format.
      * @param convBuf
      *        buffer to receive conversion specifier.
@@ -256,7 +257,7 @@ public final class PatternParser {
      *
      * @param pattern
      *            conversion pattern.
-     * @param i
+     * @param start
      *            start of options.
      * @param options
      *            array to receive extracted options
@@ -567,7 +568,7 @@ public final class PatternParser {
      *            initial character of format specifier.
      * @param pattern
      *            conversion pattern
-     * @param i
+     * @param start
      *            current position in conversion pattern.
      * @param currentLiteral
      *            current literal.
