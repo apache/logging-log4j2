@@ -236,8 +236,10 @@ public class PatternProcessorTest {
         }
     }
 
+    /**
+     * Tests https://issues.apache.org/jira/browse/LOG4J2-1232
+     */
     @Test
-    @Ignore("https://issues.apache.org/jira/browse/LOG4J2-1232")
     public void testGetNextTimeWeeklyReturnsFirstWeekInYear_US() {
         final Locale old = Locale.getDefault();
         Locale.setDefault(Locale.US); // force 1st day of the week to be Sunday
@@ -247,9 +249,9 @@ public class PatternProcessorTest {
             initial.set(2015, Calendar.DECEMBER, 28, 00, 00, 00); // Monday, December 28, 2015
             final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
 
-            // expect Monday January 4, 2016
+            // expect Sunday January 3, 2016
             final Calendar expected = Calendar.getInstance();
-            expected.set(2016, Calendar.JANUARY, 4, 00, 00, 00);
+            expected.set(2016, Calendar.JANUARY, 3, 00, 00, 00);
             expected.set(Calendar.MILLISECOND, 0);
             assertEquals(format(expected.getTimeInMillis()), format(actual));
         } finally {
