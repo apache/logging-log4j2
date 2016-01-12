@@ -76,6 +76,9 @@
       <action issue="LOG4J2-1233" dev="ggregory" type="update" due-to="Bahri Gencsoy">
         Misleading Value In Properties Example.
       </action>
+      <action issue="LOG4J2-1251" dev="mattsicker" type="fix" due-to="Romain Manni-Bucau">
+        Fix JUL bridge issue where LogRecord.getParameters() is used when null.
+      </action>
     </release>
     <release version="2.5" date="2015-12-06" description="GA Release 2.5">
       <action issue="LOG4J2-324" dev="rpopma" type="fix">

@@ -23,6 +23,7 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**
@@ -36,7 +37,7 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
  * accurate!</p>
  * <p>Also note that {@link #setParent(java.util.logging.Logger)} is explicitly unsupported. Parent loggers are
  * determined using the syntax of the logger name; not through an arbitrary graph of loggers.</p>
- * 
+ *
  * @since 2.1
  */
 public class ApiLogger extends Logger {
@@ -56,7 +57,11 @@ public class ApiLogger extends Logger {
             return;
         }
         final org.apache.logging.log4j.Level level = LevelTranslator.toLevel(record.getLevel());
-        final Message message = logger.getMessageFactory().newMessage(record.getMessage(), record.getParameters());
+        final Object[] parameters = record.getParameters();
+        final MessageFactory messageFactory = logger.getMessageFactory();
+        final Message message = parameters == null ?
+            messageFactory.newMessage(record.getMessage()) /* LOG4J2-1251: not formatted case */ :
+            messageFactory.newMessage(record.getMessage(), parameters);
         final Throwable thrown = record.getThrown();
         logger.logIfEnabled(FQCN, level, null, message, thrown);
     }
@@ -94,6 +99,7 @@ public class ApiLogger extends Logger {
 
     /**
      * Unsupported operation.
+     *
      * @throws UnsupportedOperationException always
      */
     @Override
