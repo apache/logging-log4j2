@@ -24,9 +24,11 @@ import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.QuoteMode;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -43,16 +45,17 @@ public class CsvLogEventLayout extends AbstractCsvLayout {
     private static final long serialVersionUID = 1L;
     
     public static CsvLogEventLayout createDefaultLayout() {
-        return new CsvLogEventLayout(Charset.forName(DEFAULT_CHARSET), CSVFormat.valueOf(DEFAULT_FORMAT), null, null);
+        return new CsvLogEventLayout(null, Charset.forName(DEFAULT_CHARSET), CSVFormat.valueOf(DEFAULT_FORMAT), null, null);
     }
 
     public static CsvLogEventLayout createLayout(final CSVFormat format) {
-        return new CsvLogEventLayout(Charset.forName(DEFAULT_CHARSET), format, null, null);
+        return new CsvLogEventLayout(null, Charset.forName(DEFAULT_CHARSET), format, null, null);
     }
 
     @PluginFactory
     public static CsvLogEventLayout createLayout(
             // @formatter:off
+            @PluginConfiguration final Configuration config,
             @PluginAttribute(value = "format", defaultString = DEFAULT_FORMAT) final String format,
             @PluginAttribute("delimiter") final Character delimiter,
             @PluginAttribute("escape") final Character escape,
@@ -61,17 +64,17 @@ public class CsvLogEventLayout extends AbstractCsvLayout {
             @PluginAttribute("nullString") final String nullString,
             @PluginAttribute("recordSeparator") final String recordSeparator,
             @PluginAttribute(value = "charset", defaultString = DEFAULT_CHARSET) final Charset charset,
-            @PluginAttribute("header") final String header,
+            @PluginAttribute("header") final String header, 
             @PluginAttribute("footer") final String footer)
             // @formatter:on
     {
 
         final CSVFormat csvFormat = createFormat(format, delimiter, escape, quote, quoteMode, nullString, recordSeparator);
-        return new CsvLogEventLayout(charset, csvFormat, header, footer);
+        return new CsvLogEventLayout(config, charset, csvFormat, header, footer);
     }
    
-    protected CsvLogEventLayout(final Charset charset, final CSVFormat csvFormat, final String header, final String footer) {
-        super(charset, csvFormat, header, footer);
+    protected CsvLogEventLayout(final Configuration config, final Charset charset, final CSVFormat csvFormat, final String header, final String footer) {
+        super(config, charset, csvFormat, header, footer);
     }
 
     @Override

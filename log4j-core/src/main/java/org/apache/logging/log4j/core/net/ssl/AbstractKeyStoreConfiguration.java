@@ -52,19 +52,19 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
                 return ks;
             }
         } catch (final CertificateException e) {
-            LOGGER.error("No Provider supports a KeyStoreSpi implementation for the specified type {}", this.keyStoreType);
+            LOGGER.error("No Provider supports a KeyStoreSpi implementation for the specified type" + this.keyStoreType, e);
             throw new StoreConfigurationException(e);
         } catch (final NoSuchAlgorithmException e) {
-            LOGGER.error("The algorithm used to check the integrity of the keystore cannot be found");
+            LOGGER.error("The algorithm used to check the integrity of the keystore cannot be found", e);
             throw new StoreConfigurationException(e);
         } catch (final KeyStoreException e) {
             LOGGER.error(e);
             throw new StoreConfigurationException(e);
         } catch (final FileNotFoundException e) {
-            LOGGER.error("The keystore file({}) is not found", this.getLocation());
+            LOGGER.error("The keystore file(" + this.getLocation() + ") is not found", e);
             throw new StoreConfigurationException(e);
         } catch (final IOException e) {
-            LOGGER.error("Something is wrong with the format of the keystore or the given password");
+            LOGGER.error("Something is wrong with the format of the keystore or the given password", e);
             throw new StoreConfigurationException(e);
         }
     }

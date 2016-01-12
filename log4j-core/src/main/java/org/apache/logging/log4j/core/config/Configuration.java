@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.filter.Filterable;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.script.ScriptManager;
+import org.apache.logging.log4j.core.util.NanoClock;
 import org.apache.logging.log4j.core.util.WatchManager;
 
 /**
@@ -41,7 +42,7 @@ public interface Configuration extends Filterable {
 
     /**
      * Returns the configuration name.
-     * 
+     *
      * @return the name of the configuration.
      */
     String getName();
@@ -49,7 +50,7 @@ public interface Configuration extends Filterable {
     /**
      * Locates the appropriate LoggerConfig for a Logger name. This will remove tokens from the package name as
      * necessary or return the root LoggerConfig if no other matches were found.
-     * 
+     *
      * @param name The Logger name.
      * @return The located LoggerConfig.
      */
@@ -57,7 +58,7 @@ public interface Configuration extends Filterable {
 
     /**
      * Returns the Appender with the specified name.
-     * 
+     *
      * @param <T> The expected Appender type.
      * @param name The name of the Appender.
      * @return the Appender with the specified name or null if the Appender cannot be located.
@@ -66,7 +67,7 @@ public interface Configuration extends Filterable {
 
     /**
      * Returns a Map containing all the Appenders and their name.
-     * 
+     *
      * @return A Map containing each Appender's name and the Appender object.
      */
     Map<String, Appender> getAppenders();
@@ -123,7 +124,7 @@ public interface Configuration extends Filterable {
 
     /**
      * Returns the source of this configuration.
-     * 
+     *
      * @return the source of this configuration
      */
     ConfigurationSource getConfigurationSource();
@@ -141,7 +142,7 @@ public interface Configuration extends Filterable {
      * {@link Level#getLevel(String)}), it is just not in the current configuration. {@link Level#values()} will return
      * {A, B, C, D and the built-in levels}.
      * </p>
-     * 
+     *
      * @return the custom levels defined in the current configuration
      */
     List<CustomLevelConfig> getCustomLevels();
@@ -151,7 +152,7 @@ public interface Configuration extends Filterable {
     /**
      * Returns the {@code AsyncLoggerConfigDelegate} shared by all
      * {@code AsyncLoggerConfig} instances defined in this Configuration.
-     * 
+     *
      * @return the {@code AsyncLoggerConfigDelegate}
      */
 	AsyncLoggerConfigDelegate getAsyncLoggerConfigDelegate();
@@ -172,4 +173,17 @@ public interface Configuration extends Filterable {
 
     ReliabilityStrategy getReliabilityStrategy(LoggerConfig loggerConfig);
 
+    /**
+     * Returns the {@link NanoClock} instance for this configuration.
+     *
+     * @return the nano clock
+     */
+    NanoClock getNanoClock();
+
+    /**
+     * Sets the {@link NanoClock} instance for this configuration.
+     *
+     * @param nanoClock the new nano clock for this configuration. Must be non-null.
+     */
+    void setNanoClock(NanoClock nanoClock);
 }

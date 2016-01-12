@@ -85,10 +85,10 @@ public class Log4jLogEvent implements LogEvent {
         private boolean includeLocation;
         private boolean endOfBatch = false;
         private long nanoTime;
-        
+
         public Builder() {
         }
-        
+
         public Builder(LogEvent other) {
             Objects.requireNonNull(other);
             if (other instanceof RingBufferLogEvent) {
@@ -108,7 +108,7 @@ public class Log4jLogEvent implements LogEvent {
             this.includeLocation = other.isIncludeLocation();
             this.endOfBatch = other.isEndOfBatch();
             this.nanoTime = other.getNanoTime();
-            
+
             // Avoid unnecessarily initializing thrownProxy, threadName and source if possible
             if (other instanceof Log4jLogEvent) {
                 Log4jLogEvent evt = (Log4jLogEvent) other;
@@ -325,7 +325,7 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
                                             final Map<String, String> mdc, final ThreadContext.ContextStack ndc,
                                             final String threadName, final StackTraceElement location,
                                             final long timestamp) {
-        final Log4jLogEvent result = new Log4jLogEvent(loggerName, marker, loggerFQCN, level, message, thrown, 
+        final Log4jLogEvent result = new Log4jLogEvent(loggerName, marker, loggerFQCN, level, message, thrown,
                 thrownProxy, mdc, ndc, threadName, location, timestamp, nanoClock.nanoTime());
         return result;
     }
@@ -343,7 +343,7 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
      * @param contextStack the nested diagnostic context.
      * @param threadName The name of the thread.
      * @param source The locations of the caller.
-     * @param timestamp The timestamp of the event.
+     * @param timestampMillis The timestamp of the event.
      * @param nanoTime The value of the running Java Virtual Machine's high-resolution time source when the event was
      *          created.
      */
@@ -385,7 +385,7 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
         }
         return Collections.unmodifiableMap(map);
     }
-    
+
     /**
      * Returns the {@code NanoClock} to use for creating the nanoTime timestamp of log events.
      * @return the {@code NanoClock} to use for creating the nanoTime timestamp of log events
@@ -393,20 +393,20 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
     public static NanoClock getNanoClock() {
         return nanoClock;
     }
-    
+
     /**
      * Sets the {@code NanoClock} to use for creating the nanoTime timestamp of log events.
      * <p>
      * FOR INTERNAL USE. This method may be called with a different {@code NanoClock} implementation when the
      * configuration changes.
-     * 
+     *
      * @param nanoClock the {@code NanoClock} to use for creating the nanoTime timestamp of log events
      */
     public static void setNanoClock(NanoClock nanoClock) {
         Log4jLogEvent.nanoClock = Objects.requireNonNull(nanoClock, "NanoClock must be non-null");
         StatusLogger.getLogger().trace("Using {} for nanosecond timestamps.", nanoClock.getClass().getSimpleName());
     }
-    
+
     /**
      * Returns a new fully initialized {@code Log4jLogEvent.Builder} containing a copy of all fields of this event.
      * @return a new fully initialized builder.

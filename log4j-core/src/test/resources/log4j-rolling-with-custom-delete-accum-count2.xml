@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="TRACE" name="RollingWithCustomDeleteAccumulatedSizeTest">
+<Configuration status="WARN" name="RollingWithCustomDeleteAccumulatedSizeTest">
   <Properties>
     <Property name="base">target/rolling-with-delete-accum-count2/</Property>
   </Properties>

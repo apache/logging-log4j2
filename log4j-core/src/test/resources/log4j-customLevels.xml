@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="DEBUG" name="TestCustomLevels">
+<Configuration status="WARN" name="TestCustomLevels">
 
   <CustomLevels>
     <CustomLevel name="DIAG" intLevel="350" />

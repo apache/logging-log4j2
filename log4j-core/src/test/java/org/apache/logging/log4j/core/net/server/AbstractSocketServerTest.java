@@ -35,6 +35,7 @@ import org.apache.logging.log4j.core.appender.SocketAppender;
 import org.apache.logging.log4j.core.layout.JsonLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.layout.XmlLayout;
+import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.test.AvailablePortFinder;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.After;
@@ -58,26 +59,26 @@ public abstract class AbstractSocketServerTest {
     
     static final int PORT_NUM = AvailablePortFinder.getNextAvailable();
 
-    static final String PORT = String.valueOf(PORT_NUM);
+    static final int PORT = PORT_NUM;
 
     private final LoggerContext ctx = LoggerContext.getContext(false);
 
     private final boolean expectLengthException;
 
-    protected final String port;
+    protected final int port;
 
-    protected final String protocol;
+    protected final Protocol protocol;
 
     private final Logger rootLogger = ctx.getLogger(AbstractSocketServerTest.class.getSimpleName());
 
-    protected AbstractSocketServerTest(final String protocol, final String port, final boolean expectLengthException) {
+    protected AbstractSocketServerTest(final Protocol protocol, final int port, final boolean expectLengthException) {
         this.protocol = protocol;
         this.port = port;
         this.expectLengthException = expectLengthException;
     }
 
     protected Layout<String> createJsonLayout() {
-        return JsonLayout.createLayout(true, true, false, false, false, null);
+        return JsonLayout.createLayout(null, true, true, false, false, false, null, null, null);
     }
 
     protected abstract Layout<? extends Serializable> createLayout();
@@ -205,8 +206,8 @@ public abstract class AbstractSocketServerTest {
 
     protected SocketAppender createSocketAppender(final Filter socketFilter,
             final Layout<? extends Serializable> socketLayout) {
-        return SocketAppender.createAppender("localhost", this.port, this.protocol, null, 0, "-1", null,
-                "Test", "true", "false", socketLayout, socketFilter, null, null);
+        return SocketAppender.createAppender("localhost", this.port, this.protocol, null, 0, -1, true,
+                "Test", true, false, socketLayout, socketFilter, false, null);
     }
 
 }

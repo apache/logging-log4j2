@@ -116,7 +116,7 @@ public class TcpSocketManager extends AbstractSocketManager {
     }
 
     @Override
-    protected void write(final byte[] bytes, final int offset, final int length)  {
+    protected void write(final byte[] bytes, final int offset, final int length, boolean immediateFlush)  {
         if (socket == null) {
             if (connector != null && !immediateFail) {
                 connector.latch();
@@ -128,7 +128,11 @@ public class TcpSocketManager extends AbstractSocketManager {
         }
         synchronized (this) {
             try {
-                getOutputStream().write(bytes, offset, length);
+                final OutputStream outputStream = getOutputStream();
+                outputStream.write(bytes, offset, length);
+                if (immediateFlush) {
+                    outputStream.flush();
+                }
             } catch (final IOException ex) {
                 if (retry && connector == null) {
                     connector = new Reconnector(this);
@@ -278,7 +282,7 @@ public class TcpSocketManager extends AbstractSocketManager {
             try {
                 inetAddress = InetAddress.getByName(data.host);
             } catch (final UnknownHostException ex) {
-                LOGGER.error("Could not find address of " + data.host, ex);
+                LOGGER.error("Could not find address of " + data.host, ex, ex);
                 return null;
             }
             try {
@@ -289,7 +293,7 @@ public class TcpSocketManager extends AbstractSocketManager {
                 return new TcpSocketManager(name, os, socket, inetAddress, data.host, data.port,
                         data.connectTimeoutMillis, data.delayMillis, data.immediateFail, data.layout);
             } catch (final IOException ex) {
-                LOGGER.error("TcpSocketManager (" + name + ") " + ex);
+                LOGGER.error("TcpSocketManager (" + name + ") " + ex, ex);
                 os = new ByteArrayOutputStream();
             }
             if (data.delayMillis == 0) {

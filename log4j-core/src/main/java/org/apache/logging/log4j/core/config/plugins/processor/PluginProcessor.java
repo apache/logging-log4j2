@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
@@ -34,7 +33,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementVisitor;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
-import javax.lang.model.util.SimpleElementVisitor6;
+import javax.lang.model.util.SimpleElementVisitor7;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
@@ -116,7 +115,7 @@ public class PluginProcessor extends AbstractProcessor {
     /**
      * ElementVisitor to scan the Plugin annotation.
      */
-    private static class PluginElementVisitor extends SimpleElementVisitor6<PluginEntry, Plugin> {
+    private static class PluginElementVisitor extends SimpleElementVisitor7<PluginEntry, Plugin> {
 
         private final Elements elements;
 
@@ -141,7 +140,7 @@ public class PluginProcessor extends AbstractProcessor {
     /**
      * ElementVisitor to scan the PluginAliases annotation.
      */
-    private static class PluginAliasesElementVisitor extends SimpleElementVisitor6<Collection<PluginEntry>, Plugin> {
+    private static class PluginAliasesElementVisitor extends SimpleElementVisitor7<Collection<PluginEntry>, Plugin> {
 
         private final Elements elements;
 

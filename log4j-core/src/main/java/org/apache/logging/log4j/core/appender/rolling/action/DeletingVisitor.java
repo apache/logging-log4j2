@@ -83,7 +83,7 @@ public class DeletingVisitor extends SimpleFileVisitor<Path> {
      */
     protected void delete(final Path file) throws IOException {
         LOGGER.trace("Deleting {}", file);
-        Files.delete(file);
+        Files.deleteIfExists(file);
     }
 
     /**

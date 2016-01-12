@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.core.async;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 
@@ -27,26 +28,22 @@ import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 public interface AsyncLoggerConfigDelegate {
 
     /**
-     * If possible, delegates the invocation of {@code callAppenders} to the background thread and returns {@code true}.
-     * If this is not possible (if it detects that delegating to the background thread would cause deadlock because the
-     * current call to Logger.log() originated from the background thread and the ringbuffer is full) then this method
-     * does nothing and returns {@code false}. It is the responsibility of the caller to process the event when this
-     * method returns {@code false}.
-     * 
-     * @param event the event to delegate to the background thread
-     * @param asyncLoggerConfig the logger config to call from the background thread
-     * @return {@code true} if delegation was successful, {@code false} if the calling thread needs to process the event
-     *         itself
-     */
-    boolean tryCallAppendersInBackground(LogEvent event, AsyncLoggerConfig asyncLoggerConfig);
-
-    /**
      * Creates and returns a new {@code RingBufferAdmin} that instruments the ringbuffer of this
      * {@code AsyncLoggerConfig}.
-     * 
+     *
      * @param contextName name of the {@code LoggerContext}
      * @param loggerConfigName name of the logger config
      * @return the RingBufferAdmin that instruments the ringbuffer
      */
-    RingBufferAdmin createRingBufferAdmin(String contextName, String loggerConfigName);
+    RingBufferAdmin createRingBufferAdmin(final String contextName, final String loggerConfigName);
+
+    /**
+     * Returns the {@code EventRoute} for the event with the specified level.
+     *
+     * @param level the level of the event to log
+     * @return the {@code EventRoute}
+     */
+    EventRoute getEventRoute(final Level level);
+
+    void enqueueEvent(LogEvent event, AsyncLoggerConfig asyncLoggerConfig);
 }

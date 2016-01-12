@@ -38,10 +38,11 @@
         <xs:attribute name="strict" type="xs:string"/>
         <xs:attribute name="name" type="xs:string"/>
         <xs:attribute name="advertiser" type="xs:string"/>
+        <xs:attribute name="schema" type="xs:string"/>
     </xs:complexType>
     <xs:complexType name="PropertiesType">
         <xs:sequence>
-            <xs:element name="Property" type="PropertyType"/>
+            <xs:element name="Property" type="PropertyType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="AppenderType">
@@ -135,8 +136,8 @@
         <xs:sequence>
             <xs:element name="Pattern" type="xs:string" minOccurs="0"/>
         </xs:sequence>
-        <xs:attribute name="Type" type="xs:string" use="required"/>
-        <xs:attribute name="Pattern" type="xs:string" use="optional"/>
+        <xs:attribute name="type" type="xs:string" use="required"/>
+        <xs:attribute name="pattern" type="xs:string" use="optional"/>
     </xs:complexType>
     <xs:complexType name="ThresholdFilterType">
         <xs:attribute name="level" type="xs:string" use="optional"/>

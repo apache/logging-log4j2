@@ -117,10 +117,26 @@ public class OutputStreamManager extends AbstractManager {
      * @param length The number of bytes to write.
      * @throws AppenderLoggingException if an error occurs.
      */
-    protected synchronized void write(final byte[] bytes, final int offset, final int length)  {
-        //System.out.println("write " + count);
+    protected void write(final byte[] bytes, final int offset, final int length) {
+        write(bytes, offset, length, false);
+    }
+    
+    /**
+     * Some output streams synchronize writes while others do not. Synchronizing here insures that
+     * log events won't be intertwined.
+     * @param bytes The serialized Log event.
+     * @param offset The offset into the byte array.
+     * @param length The number of bytes to write.
+     * @param immediateFlush flushes immediately after writing.
+     * @throws AppenderLoggingException if an error occurs.
+     */
+    protected synchronized void write(final byte[] bytes, final int offset, final int length, boolean immediateFlush) {
+        // System.out.println("write " + count);
         try {
             os.write(bytes, offset, length);
+            if (immediateFlush) {
+                os.flush();
+            }
         } catch (final IOException ex) {
             final String msg = "Error writing to stream " + getName();
             throw new AppenderLoggingException(msg, ex);
@@ -133,7 +149,17 @@ public class OutputStreamManager extends AbstractManager {
      * @throws AppenderLoggingException if an error occurs.
      */
     protected void write(final byte[] bytes)  {
-        write(bytes, 0, bytes.length);
+        write(bytes, 0, bytes.length, false);
+    }
+
+    /**
+     * Some output streams synchronize writes while others do not.
+     * @param bytes The serialized Log event.
+     * @param writeAndFlush If true, flushes after writing. 
+     * @throws AppenderLoggingException if an error occurs.
+     */
+    protected void write(final byte[] bytes, boolean immediateFlush)  {
+        write(bytes, 0, bytes.length, immediateFlush);
     }
 
     protected synchronized void close() {

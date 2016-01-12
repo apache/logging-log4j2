@@ -47,6 +47,7 @@ public class RoutingAppenderWithPurgingTest {
 
     private ListAppender app;
     private RoutingAppender routingAppenderIdle;
+    private RoutingAppender routingAppenderIdleWithHangingAppender;
     private RoutingAppender routingAppenderManual;
 
     @Rule
@@ -61,6 +62,8 @@ public class RoutingAppenderWithPurgingTest {
     public void setUp() throws Exception {
         this.app = this.init.getListAppender("List");
         this.routingAppenderIdle = this.init.getRequiredAppender("RoutingPurgeIdle", RoutingAppender.class);
+        this.routingAppenderIdleWithHangingAppender =
+                this.init.getRequiredAppender("RoutingPurgeIdleWithHangingAppender", RoutingAppender.class);
         this.routingAppenderManual = this.init.getRequiredAppender("RoutingPurgeManual", RoutingAppender.class);
     }
 
@@ -69,7 +72,7 @@ public class RoutingAppenderWithPurgingTest {
         this.app.clear();
     }
 
-    @Test
+    @Test(timeout = 5000)
     public void routingTest() throws InterruptedException {
         StructuredDataMessage msg = new StructuredDataMessage("1", "This is a test 1", "Service");
         EventLogger.logEvent(msg);
@@ -84,18 +87,20 @@ public class RoutingAppenderWithPurgingTest {
         assertFileExistance(files);
         
         assertEquals("Incorrect number of appenders with IdlePurgePolicy.", 3, routingAppenderIdle.getAppenders().size());
+        assertEquals("Incorrect number of appenders with IdlePurgePolicy with HangingAppender.",
+                3, routingAppenderIdleWithHangingAppender.getAppenders().size());
         assertEquals("Incorrect number of appenders manual purge.", 3, routingAppenderManual.getAppenders().size());
-        
+
         Thread.sleep(3000);
         EventLogger.logEvent(msg);
-        
+
         assertEquals("Incorrect number of appenders with IdlePurgePolicy.", 1, routingAppenderIdle.getAppenders().size());
         assertEquals("Incorrect number of appenders with manual purge.", 3, routingAppenderManual.getAppenders().size());
         
         routingAppenderManual.deleteAppender("1");
         routingAppenderManual.deleteAppender("2");
         routingAppenderManual.deleteAppender("3");
-        
+
         assertEquals("Incorrect number of appenders with IdlePurgePolicy.", 1, routingAppenderIdle.getAppenders().size());
         assertEquals("Incorrect number of appenders with manual purge.", 0, routingAppenderManual.getAppenders().size());
     }

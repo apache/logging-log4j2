@@ -43,6 +43,15 @@
       <IdlePurgePolicy timeToLive="2" timeUnit="seconds" />
     </Routing>
     
+    <Routing name="RoutingPurgeIdleWithHangingAppender">
+      <Routes pattern="$${sd:id}">
+        <Route>
+          <Hanging name="Routing-${sd:id}" shutdownDelay="10000"/>
+        </Route>
+      </Routes>
+      <IdlePurgePolicy timeToLive="2" timeUnit="seconds" />
+    </Routing>
+
     <Routing name="RoutingPurgeManual">
       <Routes pattern="$${sd:id}">
         <Route>
@@ -59,6 +68,7 @@
   <Loggers>
     <Logger name="EventLogger" level="info" additivity="false">
       <AppenderRef ref="RoutingPurgeIdle"/>
+      <AppenderRef ref="RoutingPurgeIdleWithHangingAppender"/>
       <AppenderRef ref="RoutingPurgeManual"/>
       <AppenderRef ref="List"/>
     </Logger>

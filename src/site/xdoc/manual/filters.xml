@@ -475,7 +475,7 @@
             </tr>
             <tr>
               <td>script</td>
-              <td>Scriptm, ScriptFile or ScriptRef</td>
+              <td>Script, ScriptFile or ScriptRef</td>
               <td>The Script element that specifies the logic to be executed.
               </td>
             </tr>
@@ -549,13 +549,15 @@
             </tr>
           </table>
           <p>
-            The sample below shows how to declare script fiels and then reference them in specific components.
+            The sample below shows how to declare script fields and then reference them in specific components.
+            See <a href="appenders.html#ScriptCondition">ScriptCondition</a> for an example of how the
+            <tt>Script</tt> element can be used to embed script code directly in the configuration.
           </p>
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="ERROR">
   <Scripts>
     <ScriptFile name="filter.js" language="JavaScript" path="src/test/resources/scripts/filter.js" charset="UTF-8" />
-    <ScriptFile name="filter.groovy" path="src/test/resources/scripts/filter.groovy" charset="UTF-8" />
+    <ScriptFile name="filter.groovy" language="groovy" path="src/test/resources/scripts/filter.groovy" charset="UTF-8" />
   </Scripts>
   <Appenders>
     <List name="List">
@@ -582,7 +584,7 @@
     </Root>
   </Loggers>
 </Configuration>
-          ]]></pre>pre>
+          ]]></pre>
         </subsection>
         <a name="StructuredDataFilter"/>
         <subsection name="StructuredDataFilter">

@@ -85,8 +85,8 @@ public class RandomAccessFileManager extends OutputStreamManager {
     }
 
     @Override
-    protected synchronized void write(final byte[] bytes, int offset, int length) {
-        super.write(bytes, offset, length); // writes to dummy output stream
+    protected synchronized void write(final byte[] bytes, int offset, int length, final boolean immediateFlush) {
+        super.write(bytes, offset, length, immediateFlush); // writes to dummy output stream
 
         int chunk = 0;
         do {
@@ -99,7 +99,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
             length -= chunk;
         } while (length > 0);
 
-        if (isImmediateFlush || isEndOfBatch.get() == Boolean.TRUE) {
+        if (immediateFlush || isImmediateFlush || isEndOfBatch.get() == Boolean.TRUE) {
             flush();
         }
     }

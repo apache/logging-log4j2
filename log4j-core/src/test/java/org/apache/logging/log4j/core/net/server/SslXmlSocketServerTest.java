@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.SocketAppender;
+import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.StoreConfigurationException;
@@ -50,8 +51,8 @@ public class SslXmlSocketServerTest extends AbstractSocketServerTest {
     @Override
     protected SocketAppender createSocketAppender(final Filter socketFilter,
             final Layout<? extends Serializable> socketLayout) {
-        return SocketAppender.createAppender("localhost", this.port, this.protocol, sslConfig, 0, "-1", null,
-                "Test", "true", "false", socketLayout, socketFilter, null, null);
+        return SocketAppender.createAppender("localhost", this.port, this.protocol, sslConfig, 0, -1, true,
+                "Test", true, false, socketLayout, socketFilter, false, null);
     }
 
     @BeforeClass
@@ -79,7 +80,7 @@ public class SslXmlSocketServerTest extends AbstractSocketServerTest {
     }
 
     public SslXmlSocketServerTest() {
-        super("SSL", PORT, false);
+        super(Protocol.SSL, PORT, false);
     }
 
     @Override

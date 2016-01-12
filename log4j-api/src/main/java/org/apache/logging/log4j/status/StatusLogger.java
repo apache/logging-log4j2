@@ -303,7 +303,7 @@ public final class StatusLogger extends AbstractLogger {
 
         private final int size;
 
-        public BoundedQueue(final int size) {
+        BoundedQueue(final int size) {
             this.size = size;
         }
 

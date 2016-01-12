@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="DEBUG" name="TestCustomLevelsOverride">
+<Configuration status="WARN" name="TestCustomLevelsOverride">
 
   <!-- Test overriding the int level of a standard level -->
   <CustomLevels>

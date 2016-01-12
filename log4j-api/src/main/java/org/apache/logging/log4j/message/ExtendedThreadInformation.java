@@ -30,8 +30,7 @@ class ExtendedThreadInformation implements ThreadInformation {
 
     private final ThreadInfo threadInfo;
 
-
-    public ExtendedThreadInformation(final ThreadInfo thread) {
+    ExtendedThreadInformation(final ThreadInfo thread) {
         this.threadInfo = thread;
     }
 

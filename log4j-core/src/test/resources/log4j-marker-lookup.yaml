@@ -1,5 +1,5 @@
 Configuration:
-  status: debug
+  status: warn
 
   Appenders:
     Console:

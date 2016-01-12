@@ -88,6 +88,10 @@ public class PatternProcessor {
      * @return the next potential rollover time and the timestamp for the target file.
      */
     public long getNextTime(final long currentMillis, final int increment, final boolean modulus) {
+        //
+        // https://issues.apache.org/jira/browse/LOG4J2-1232
+        // Call setMinimalDaysInFirstWeek(7);
+        //
         prevFileTime = nextFileTime;
         long nextTime;
 
@@ -97,6 +101,8 @@ public class PatternProcessor {
         final Calendar currentCal = Calendar.getInstance();
         currentCal.setTimeInMillis(currentMillis);
         final Calendar cal = Calendar.getInstance();
+        currentCal.setMinimalDaysInFirstWeek(7);
+        cal.setMinimalDaysInFirstWeek(7);
         cal.set(currentCal.get(Calendar.YEAR), 0, 1, 0, 0, 0);
         cal.set(Calendar.MILLISECOND, 0);
         if (frequency == RolloverFrequency.ANNUALLY) {

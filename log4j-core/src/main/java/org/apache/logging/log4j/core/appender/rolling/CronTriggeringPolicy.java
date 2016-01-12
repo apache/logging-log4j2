@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.util.CronExpression;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import java.text.ParseException;
+import java.util.Date;
 
 /**
  * Rolls a file over based on a cron schedule.
@@ -41,10 +42,12 @@ public final class CronTriggeringPolicy implements TriggeringPolicy {
     private RollingFileManager manager;
     private final CronExpression cronExpression;
     private final Configuration configuration;
+    private final boolean checkOnStartup;
 
-    private CronTriggeringPolicy(CronExpression schedule, Configuration configuration) {
+    private CronTriggeringPolicy(CronExpression schedule, boolean checkOnStartup, Configuration configuration) {
         this.cronExpression = schedule;
         this.configuration = configuration;
+        this.checkOnStartup = checkOnStartup;
     }
 
     /**
@@ -54,6 +57,12 @@ public final class CronTriggeringPolicy implements TriggeringPolicy {
     @Override
     public void initialize(final RollingFileManager aManager) {
         this.manager = aManager;
+        if (checkOnStartup) {
+            Date nextDate = cronExpression.getNextValidTimeAfter(new Date(this.manager.getFileTime()));
+            if (nextDate.getTime() < System.currentTimeMillis()) {
+                manager.rollover();
+            }
+        }
         configuration.getScheduler().scheduleWithCron(cronExpression, new CronTrigger());
     }
 
@@ -74,14 +83,17 @@ public final class CronTriggeringPolicy implements TriggeringPolicy {
     /**
      * Creates a ScheduledTriggeringPolicy.
      * @param configuration the Configuration.
+     * @param evaluateOnStartup check if the file should be rolled over immediately.
      * @param schedule the cron expression.
      * @return a ScheduledTriggeringPolicy.
      */
     @PluginFactory
     public static CronTriggeringPolicy createPolicy(
             @PluginConfiguration Configuration configuration,
+            @PluginAttribute("evaluateOnStartup") final String evaluateOnStartup,
             @PluginAttribute("schedule") final String schedule) {
         CronExpression cronExpression;
+        final boolean checkOnStartup = Boolean.parseBoolean(evaluateOnStartup);
         if (schedule == null) {
             LOGGER.info("No schedule specified, defaulting to Daily");
             cronExpression = getSchedule(defaultSchedule);
@@ -92,7 +104,7 @@ public final class CronTriggeringPolicy implements TriggeringPolicy {
                 cronExpression = getSchedule(defaultSchedule);
             }
         }
-        return new CronTriggeringPolicy(cronExpression, configuration);
+        return new CronTriggeringPolicy(cronExpression, checkOnStartup, configuration);
     }
 
     private static CronExpression getSchedule(String expression) {

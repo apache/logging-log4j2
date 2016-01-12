@@ -40,8 +40,10 @@ import org.apache.logging.log4j.core.script.AbstractScript;
 import org.apache.logging.log4j.core.script.ScriptManager;
 import org.apache.logging.log4j.core.script.ScriptRef;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.DummyNanoClock;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NameUtil;
+import org.apache.logging.log4j.core.util.NanoClock;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
@@ -86,7 +88,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * Packages found in configuration "packages" attribute.
      */
     protected final List<String> pluginPackages = new ArrayList<>();
-    
+
     /**
      * The plugin manager.
      */
@@ -117,7 +119,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private ConfigurationScheduler configurationScheduler = new ConfigurationScheduler();
     private final WatchManager watchManager = new WatchManager(configurationScheduler);
     private AsyncLoggerConfigDisruptor asyncLoggerConfigDisruptor;
-
+    private NanoClock nanoClock = new DummyNanoClock();
 
     /**
      * Constructor.
@@ -268,11 +270,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             loggerConfig.getReliabilityStrategy().beforeStopConfiguration(this);
         }
         root.getReliabilityStrategy().beforeStopConfiguration(this);
-        
+
         final String cls = getClass().getSimpleName();
         LOGGER.trace("{} notified {} ReliabilityStrategies that config will be stopped.", cls, loggerConfigs.size()
                 + 1);
-        
+
         if (!loggerConfigs.isEmpty()) {
             LOGGER.trace("{} stopping {} LoggerConfigs.", cls, loggerConfigs.size());
             for (final LoggerConfig logger : loggerConfigs.values()) {
@@ -288,7 +290,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             LOGGER.trace("{} stopping AsyncLoggerConfigDisruptor.", cls);
             asyncLoggerConfigDisruptor.stop();
         }
-                
+
         // Stop the appenders in reverse order in case they still have activity.
         final Appender[] array = appenders.values().toArray(new Appender[appenders.size()]);
         final List<Appender> async = getAsyncAppenders(array);
@@ -305,7 +307,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             loggerConfig.getReliabilityStrategy().beforeStopAppenders();
         }
         root.getReliabilityStrategy().beforeStopAppenders();
-        
+
         LOGGER.trace("{} stopping remaining Appenders.", cls);
         int appenderCount = 0;
         for (int i = array.length - 1; i >= 0; --i) {
@@ -339,7 +341,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
         LOGGER.debug("Stopped {} OK", this);
     }
-    
+
     private List<Appender> getAsyncAppenders(final Appender[] all) {
         final List<Appender> result = new ArrayList<Appender>();
         for (int i = all.length - 1; i >= 0; --i) {
@@ -534,7 +536,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     /**
      * Set the name of the configuration.
-     * 
+     *
      * @param name The name.
      */
     public void setName(final String name) {
@@ -543,7 +545,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     /**
      * Returns the name of the configuration.
-     * 
+     *
      * @return the name of the configuration.
      */
     @Override
@@ -553,7 +555,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     /**
      * Add a listener for changes on the configuration.
-     * 
+     *
      * @param listener The ConfigurationListener to add.
      */
     @Override
@@ -563,7 +565,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     /**
      * Remove a ConfigurationListener.
-     * 
+     *
      * @param listener The ConfigurationListener to remove.
      */
     @Override
@@ -573,7 +575,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     /**
      * Returns the Appender with the specified name.
-     * 
+     *
      * @param appenderName The name of the Appender.
      * @return the Appender with the specified name or null if the Appender cannot be located.
      */
@@ -585,7 +587,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     /**
      * Returns a Map containing all the Appenders and their name.
-     * 
+     *
      * @return A Map containing each Appender's name and the Appender object.
      */
     @Override
@@ -595,7 +597,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     /**
      * Adds an Appender to the configuration.
-     * 
+     *
      * @param appender The Appender to add.
      */
     @Override
@@ -634,7 +636,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * being updated at the same time.
      *
      * Note: This method is not used when configuring via configuration. It is primarily used by unit tests.
-     * 
+     *
      * @param logger The Logger the Appender will be associated with.
      * @param appender The Appender.
      */
@@ -661,7 +663,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * updated at the same time.
      *
      * Note: This method is not used when configuring via configuration. It is primarily used by unit tests.
-     * 
+     *
      * @param logger The Logger the Footer will be associated with.
      * @param filter The Filter.
      */
@@ -686,7 +688,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * updated at the same time.
      *
      * Note: This method is not used when configuring via configuration. It is primarily used by unit tests.
-     * 
+     *
      * @param logger The Logger the Appender will be associated with.
      * @param additive True if the LoggerConfig should be additive, false otherwise.
      */
@@ -709,7 +711,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * Remove an Appender. First removes any associations between LoggerConfigs and the Appender, removes the Appender
      * from this appender list and then stops the appender. This method is synchronized in case an Appender with the
      * same name is being added during the removal.
-     * 
+     *
      * @param appenderName the name of the appender to remove.
      */
     public synchronized void removeAppender(final String appenderName) {
@@ -725,7 +727,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.logging.log4j.core.config.Configuration#getCustomLevels()
      */
     @Override
@@ -736,7 +738,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     /**
      * Locates the appropriate LoggerConfig for a Logger name. This will remove tokens from the package name as
      * necessary or return the root LoggerConfig if no other matches were found.
-     * 
+     *
      * @param loggerName The Logger name.
      * @return The located LoggerConfig.
      */
@@ -758,7 +760,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     /**
      * Returns the root Logger.
-     * 
+     *
      * @return the root Logger.
      */
     @Override
@@ -768,7 +770,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     /**
      * Returns a Map of all the LoggerConfigs.
-     * 
+     *
      * @return a Map with each entry containing the name of the Logger and the LoggerConfig.
      */
     @Override
@@ -778,7 +780,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     /**
      * Returns the LoggerConfig with the specified name.
-     * 
+     *
      * @param loggerName The Logger name.
      * @return The LoggerConfig or null if no match was found.
      */
@@ -948,4 +950,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         return buffer.toByteArray();
     }
 
+    @Override
+    public NanoClock getNanoClock() {
+        return nanoClock;
+    }
+
+    @Override
+    public void setNanoClock(final NanoClock nanoClock) {
+        this.nanoClock = Objects.requireNonNull(nanoClock, "nanoClock");
+    }
 }

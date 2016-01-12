@@ -71,9 +71,9 @@
               <li>Log4j will inspect the <code>"log4j.configurationFile"</code> system property and, if set,  will attempt to
                 load the configuration using the <code>ConfigurationFactory</code> that matches the file
                 extension.</li>
-              <li>If no system property is set the properties ConfigurationFactory will look for 
+              <li>If no system property is set the properties ConfigurationFactory will look for
                 <code>log4j2-test.properties</code> in the classpath.</li>
-              <li>If no such file is found the YAML ConfigurationFactory will look for 
+              <li>If no such file is found the YAML ConfigurationFactory will look for
                 <code>log4j2-test.yaml</code> or <code>log4j2-test.yml</code> in the classpath.</li>
               <li>If no such file is found the JSON ConfigurationFactory will look for
                 <code>log4j2-test.json</code> or <code>log4j2-test.jsn</code> in the classpath.</li>
@@ -280,7 +280,7 @@ public class Bar {
         <subsection name="Automatic Reconfiguration">
           <p>
             When configured from a File, Log4j has the ability to automatically detect changes to the configuration
-            file and reconfigure itself. If the <code>monitorInterval</code> attribute is specified on the configuration 
+            file and reconfigure itself. If the <code>monitorInterval</code> attribute is specified on the configuration
             element and is set to a non-zero value then the file will be checked the next time a log event is evaluated
             and/or logged and the monitorInterval has elapsed since the last check. The example below shows how
             to configure the attribute so that the configuration file will be checked for changes only after at
@@ -877,7 +877,7 @@ appender.list.filter.threshold.level = error
 
 loggers = rolling
 
-logger.rolling.name = org.apache.logging.log4j.core.appender.rolling
+logger.rolling.name = com.example.my.app
 logger.rolling.level = debug
 logger.rolling.additivity = false
 logger.rolling.appenderRefs = rolling
@@ -948,7 +948,7 @@ rootLogger.appenderRef.stdout.ref = STDOUT
           <p>
             While this is useful, there are many more places properties can originate from. To accommodate this,
             Log4j also supports the syntax <code>${dollar}{prefix:name}</code> where the prefix identifies tells Log4j
-            that variable name should be evaluated in a specific context. 
+            that variable name should be evaluated in a specific context.
             See the <a href="lookups.html">Lookups</a> manual page for more details.
             The contexts that are built in to Logj4 are:
           </p>
@@ -1871,6 +1871,37 @@ public class AwesomeTest {
       If <tt>false</tt> (the default), Log4j will make sure the message is formatted in the caller thread, to ensure
       the value at the time of the call to the logger is the value that is logged.
     </td>
+  </tr>
+  <tr>
+    <td><a name="AsyncEventRouter"/>log4j2.AsyncEventRouter</td>
+    <td>&nbsp;</td>
+    <td>
+      <p>Used by Async Loggers and the AsyncAppender to maintain application throughput even when
+        the underlying appender cannot keep up with the logging rate and the queue is filling up.</p>
+      <p>If no value is specified (the default) events are never discarded. If the queue is full, the
+        logger call blocks until the event can be added to the queue.</p>
+      <p>Specify <tt>Discard</tt> to drop events whose level is equal or less than the threshold level
+        (INFO by default) when the queue has been filled to the discard ratio (0.8 by default).</p>
+      <p>It is also possible to specify the fully qualified class name of a custom class that implements the
+        <tt>org.apache.logging.log4j.core.async.AsyncEventRouter</tt> interface.</p>
+    </td>
+  </tr>
+  <tr>
+    <td>log4j2.DiscardThreshold</td>
+    <td>INFO</td>
+    <td>Used by the DiscardingAsyncEventRouter to determine which events to drop when the queue
+      becomes too full. By default, <tt>INFO</tt>, <tt>DEBUG</tt> and <tt>TRACE</tt> level
+      events are discarded when the queue has been filled up to or beyond the discard ratio.
+      This property only has effect if <tt>Discard</tt> is specified as the
+      <tt>log4j2.AsyncEventRouter</tt>.</td>
+  </tr>
+  <tr>
+    <td>log4j2.DiscardQueueRatio</td>
+    <td>0.8</td>
+    <td>Used by the DiscardingAsyncEventRouter to determine when the queue is becoming too full.
+      By default, events may be discarded when the queue is 80% full or more.
+      This property only has effect if <tt>Discard</tt> is specified as the
+      <tt>log4j2.AsyncEventRouter</tt>.</td>
   </tr>
 </table>
 

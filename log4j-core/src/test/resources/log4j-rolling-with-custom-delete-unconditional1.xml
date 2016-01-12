@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="TRACE" name="RollingWithCustomUnconditionalDeleteTest">
+<Configuration status="WARN" name="RollingWithCustomUnconditionalDeleteTest">
   <Properties>
     <Property name="base">target/rolling-unconditional-delete1/</Property>
   </Properties>

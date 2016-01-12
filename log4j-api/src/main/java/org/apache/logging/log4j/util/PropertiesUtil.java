@@ -114,19 +114,54 @@ public final class PropertiesUtil {
     }
 
     /**
-     * Gets the named property as a String.
+     * Gets the named property as a boolean value. If the property matches the string {@code "true"} (case-insensitive),
+     * then it is returned as the boolean value {@code true}. Any other non-{@code null} text in the property is
+     * considered {@code false}.
      *
      * @param name the name of the property to look up
-     * @return the String value of the property or {@code null} if undefined.
+     * @return the boolean value of the property or {@code false} if undefined.
      */
-    public String getStringProperty(final String name) {
+    public boolean getBooleanProperty(final String name) {
+        return getBooleanProperty(name, false);
+    }
+
+    /**
+     * Gets the named property as a boolean value.
+     *
+     * @param name the name of the property to look up
+     * @param defaultValue the default value to use if the property is undefined
+     * @return the boolean value of the property or {@code defaultValue} if undefined.
+     */
+    public boolean getBooleanProperty(final String name, final boolean defaultValue) {
+        final String prop = getStringProperty(name);
+        return (prop == null) ? defaultValue : "true".equalsIgnoreCase(prop);
+    }
+
+    /**
+     * Gets the named property as a double.
+     *
+     * @param name the name of the property to look up
+     * @param defaultValue the default value to use if the property is undefined
+     * @return the parsed double value of the property or {@code defaultValue} if it was undefined or could not be parsed.
+     */
+    public double getDoubleProperty(final String name, final double defaultValue) {
         String prop = null;
         try {
             prop = System.getProperty(name);
         } catch (final SecurityException ignored) {
             // Ignore
         }
-        return prop == null ? props.getProperty(name) : prop;
+        if (prop == null) {
+            prop = props.getProperty(name);
+        }
+        if (prop != null) {
+            try {
+                return Double.parseDouble(prop);
+            } catch (final Exception ignored) {
+                return defaultValue;
+            }
+        }
+        return defaultValue;
     }
 
     /**
@@ -188,6 +223,22 @@ public final class PropertiesUtil {
      * Gets the named property as a String.
      *
      * @param name the name of the property to look up
+     * @return the String value of the property or {@code null} if undefined.
+     */
+    public String getStringProperty(final String name) {
+        String prop = null;
+        try {
+            prop = System.getProperty(name);
+        } catch (final SecurityException ignored) {
+            // Ignore
+        }
+        return prop == null ? props.getProperty(name) : prop;
+    }
+
+    /**
+     * Gets the named property as a String.
+     *
+     * @param name the name of the property to look up
      * @param defaultValue the default value to use if the property is undefined
      * @return the String value of the property or {@code defaultValue} if undefined.
      */
@@ -197,32 +248,8 @@ public final class PropertiesUtil {
     }
 
     /**
-     * Gets the named property as a boolean value. If the property matches the string {@code "true"} (case-insensitive),
-     * then it is returned as the boolean value {@code true}. Any other non-{@code null} text in the property is
-     * considered {@code false}.
-     *
-     * @param name the name of the property to look up
-     * @return the boolean value of the property or {@code false} if undefined.
-     */
-    public boolean getBooleanProperty(final String name) {
-        return getBooleanProperty(name, false);
-    }
-
-    /**
-     * Gets the named property as a boolean value.
-     *
-     * @param name the name of the property to look up
-     * @param defaultValue the default value to use if the property is undefined
-     * @return the boolean value of the property or {@code defaultValue} if undefined.
-     */
-    public boolean getBooleanProperty(final String name, final boolean defaultValue) {
-        final String prop = getStringProperty(name);
-        return (prop == null) ? defaultValue : "true".equalsIgnoreCase(prop);
-    }
-
-    /**
      * Return the system properties or an empty Properties object if an error occurs.
-     * 
+     *
      * @return The system properties.
      */
     public static Properties getSystemProperties() {
@@ -238,7 +265,7 @@ public final class PropertiesUtil {
     /**
      * Extracts properties that start with or are equals to the specific prefix and returns them in a new Properties
      * object with the prefix removed.
-     * 
+     *
      * @param properties The Properties to evaluate.
      * @param prefix The prefix to extract.
      * @return The subset of properties.
@@ -266,7 +293,7 @@ public final class PropertiesUtil {
 
         return subset;
     }
-    
+
     /**
      * Returns true if system properties tell us we are running on Windows.
      * @return true if system properties tell us we are running on Windows.

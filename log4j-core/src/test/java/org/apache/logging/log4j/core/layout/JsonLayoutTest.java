@@ -30,6 +30,7 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.jackson.Log4jJsonObjectMapper;
@@ -105,8 +106,8 @@ public class JsonLayoutTest {
     private void testAllFeatures(final boolean includeSource, final boolean compact, final boolean eventEol, final boolean includeContext)
             throws Exception {
         final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
-        final AbstractJacksonLayout layout = JsonLayout.createLayout(includeSource,
-                includeContext, false, compact, eventEol, StandardCharsets.UTF_8);
+        final AbstractJacksonLayout layout = JsonLayout.createLayout(null, includeSource,
+                includeContext, false, compact, eventEol, null, null, StandardCharsets.UTF_8);
         final String str = layout.toSerializable(expected);
         // System.out.println(str);
         final String propSep = this.toPropertySeparator(compact);
@@ -176,8 +177,9 @@ public class JsonLayoutTest {
         for (final Appender appender : appenders.values()) {
             this.rootLogger.removeAppender(appender);
         }
+        final Configuration configuration = rootLogger.getContext().getConfiguration();
         // set up appender
-        final AbstractJacksonLayout layout = JsonLayout.createLayout(true, true, true, false, false, null);
+        final AbstractJacksonLayout layout = JsonLayout.createLayout(configuration, true, true, true, false, false, null, null, null);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
@@ -211,8 +213,10 @@ public class JsonLayoutTest {
         for (final Appender appender : appenders.values()) {
             this.rootLogger.removeAppender(appender);
         }
+        final Configuration configuration = rootLogger.getContext().getConfiguration();
         // set up appender
-        final AbstractJacksonLayout layout = JsonLayout.createLayout(true, true, true, false, false, null);
+        // Use [[ and ]] to test header and footer (instead of [ and ])
+        final AbstractJacksonLayout layout = JsonLayout.createLayout(configuration, true, true, true, false, false, "[[", "]]", null);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
@@ -239,7 +243,7 @@ public class JsonLayoutTest {
 
         final List<String> list = appender.getMessages();
 
-        this.checkAt("[", 0, list);
+        this.checkAt("[[", 0, list);
         this.checkAt("{", 1, list);
         this.checkContains("\"loggerFqcn\" : \"" + AbstractLogger.class.getName() + "\",", list);
         this.checkContains("\"level\" : \"DEBUG\",", list);
@@ -251,7 +255,8 @@ public class JsonLayoutTest {
 
     @Test
     public void testLayoutLoggerName() throws Exception {
-        final AbstractJacksonLayout layout = JsonLayout.createLayout(false, false, false, true, false, StandardCharsets.UTF_8);
+        final AbstractJacksonLayout layout = JsonLayout.createLayout(null, false, false, false, true, false, null, null,
+                StandardCharsets.UTF_8);
         final Log4jLogEvent expected = Log4jLogEvent.newBuilder() //
                 .setLoggerName("a.B") //
                 .setLoggerFqcn("f.q.c.n") //

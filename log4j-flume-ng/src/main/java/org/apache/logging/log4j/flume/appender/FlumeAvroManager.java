@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.flume.appender;
 
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.flume.Event;
 import org.apache.flume.api.RpcClient;
@@ -70,7 +71,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
         this.agents = agents;
         this.batchSize = batchSize;
         this.delayMillis = delayMillis;
-        this.delayNanos = delayMillis * 1000000;
+        this.delayNanos = TimeUnit.MILLISECONDS.toNanos(delayMillis);
         this.retries = retries;
         this.connectTimeoutMillis = connectTimeout;
         this.requestTimeoutMillis = requestTimeout;

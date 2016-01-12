@@ -53,7 +53,6 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
     private Object advertisement;
     private final Advertiser advertiser;
 
-
     private RollingFileAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
             final RollingFileManager manager, final String fileName, final String filePattern,
             final boolean ignoreExceptions, final boolean immediateFlush, final Advertiser advertiser) {

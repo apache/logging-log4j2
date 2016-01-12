@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="debug" dest="target/status.log" name="XMLConfigTest">
+<Configuration status="warn" dest="target/status.log" name="XMLConfigTest">
   <Properties>
     <Property name="filename">target/test.log</Property>
   </Properties>

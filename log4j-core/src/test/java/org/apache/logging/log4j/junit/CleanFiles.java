@@ -52,7 +52,7 @@ public class CleanFiles extends ExternalResource {
                     file.deleteOnExit();
                 }
                 assertTrue(
-                        "Could not delete " + file.toString() + ", last modifed "
+                        "Could not delete " + file.toString() + ", last modified "
                                 + DateFormat.getInstance().format(new Date(file.lastModified())), deleted);
             }
         }

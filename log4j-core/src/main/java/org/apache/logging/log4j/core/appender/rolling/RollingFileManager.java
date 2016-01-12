@@ -89,9 +89,9 @@ public class RollingFileManager extends FileManager {
     }
 
     @Override
-    protected synchronized void write(final byte[] bytes, final int offset, final int length) {
+    protected synchronized void write(final byte[] bytes, final int offset, final int length, final boolean immediateFlush) {
         size += length;
-        super.write(bytes, offset, length);
+        super.write(bytes, offset, length, immediateFlush);
     }
 
     /**
@@ -165,6 +165,7 @@ public class RollingFileManager extends FileManager {
      * @param <T> TriggeringPolicy type
      * @return The TriggeringPolicy
      */
+    @SuppressWarnings("unchecked")
     public <T extends TriggeringPolicy> T getTriggeringPolicy() {
         // TODO We could parameterize this class with a TriggeringPolicy instead of type casting here.
         return (T) this.triggeringPolicy;
@@ -273,6 +274,22 @@ public class RollingFileManager extends FileManager {
         public boolean isComplete() {
             return action.isComplete();
         }
+
+        @Override
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            builder.append(super.toString());
+            builder.append("[action=");
+            builder.append(action);
+            builder.append(", manager=");
+            builder.append(manager);
+            builder.append(", isComplete()=");
+            builder.append(isComplete());
+            builder.append(", isInterrupted()=");
+            builder.append(isInterrupted());
+            builder.append("]");
+            return builder.toString();
+        }
     }
 
     /**
@@ -318,6 +335,30 @@ public class RollingFileManager extends FileManager {
         public RolloverStrategy getRolloverStrategy()
         {
             return this.strategy;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            builder.append(super.toString());
+            builder.append("[pattern=");
+            builder.append(pattern);
+            builder.append(", append=");
+            builder.append(append);
+            builder.append(", bufferedIO=");
+            builder.append(bufferedIO);
+            builder.append(", bufferSize=");
+            builder.append(bufferSize);
+            builder.append(", policy=");
+            builder.append(policy);
+            builder.append(", strategy=");
+            builder.append(strategy);
+            builder.append(", advertiseURI=");
+            builder.append(advertiseURI);
+            builder.append(", layout=");
+            builder.append(layout);
+            builder.append("]");
+            return builder.toString();
         }
     }
 
@@ -370,7 +411,7 @@ public class RollingFileManager extends FileManager {
                 return new RollingFileManager(name, data.pattern, os, data.append, size, time, data.policy,
                     data.strategy, data.advertiseURI, data.layout, bufferSize, writeHeader);
             } catch (final FileNotFoundException ex) {
-                LOGGER.error("FileManager (" + name + ") " + ex);
+                LOGGER.error("FileManager (" + name + ") " + ex, ex);
             }
             return null;
         }

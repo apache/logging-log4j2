@@ -20,7 +20,7 @@ import java.nio.charset.Charset;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.QuoteMode;
-import org.apache.logging.log4j.core.util.StringEncoder;
+import org.apache.logging.log4j.core.config.Configuration;
 
 /**
  * A superclass for Comma-Separated Value (CSV) layouts.
@@ -38,9 +38,10 @@ public abstract class AbstractCsvLayout extends AbstractStringLayout {
 
     private final CSVFormat format;
 
-    protected AbstractCsvLayout(final Charset charset, final CSVFormat csvFormat, final String header,
-            final String footer) {
-        super(charset, StringEncoder.toBytes(header, charset), StringEncoder.toBytes(footer, charset));
+    protected AbstractCsvLayout(final Configuration config, final Charset charset, final CSVFormat csvFormat,
+            final String header, final String footer) {
+        super(config, charset, PatternLayout.createSerializer(config, null, header, null, null, false, false),
+                PatternLayout.createSerializer(config, null, footer, null, null, false, false));
         this.format = csvFormat;
     }
 

@@ -22,7 +22,7 @@
   <artifactId>log4j</artifactId>
   <packaging>pom</packaging>
   <name>Apache Log4j 2</name>
-  <version>2.5-SNAPSHOT</version>
+  <version>2.5.1-SNAPSHOT</version>
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
@@ -171,7 +171,7 @@
     <connection>scm:git:http://git-wip-us.apache.org/repos/asf/logging-log4j2.git</connection>
     <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/logging-log4j2.git</developerConnection>
     <url>https://git-wip-us.apache.org/repos/asf?p=logging-log4j2.git;a=summary</url>
-    <tag>log4j-2.3</tag>
+    <tag>log4j-${Log4jReleaseVersion}</tag>
   </scm>
   <organization>
     <name>Apache Software Foundation</name>
@@ -180,29 +180,29 @@
   <properties>
     <!-- make sure to update these for each release! -->
     <log4jParentDir>${basedir}</log4jParentDir>
-    <Log4jReleaseVersion>2.4.1</Log4jReleaseVersion>
+    <Log4jReleaseVersion>2.5</Log4jReleaseVersion>
     <Log4jReleaseCount>ninth</Log4jReleaseCount>
     <Log4jReleaseManager>Ralph Goers</Log4jReleaseManager>
     <Log4jReleaseKey>B3D8E1BA</Log4jReleaseKey>
     <!-- <Log4jReleaseManager>Matt Sicker</Log4jReleaseManager>
     <Log4jReleaseKey>FA1C814D</Log4jReleaseKey> -->
     <!-- note that any properties you want available in velocity templates must not use periods! -->
-    <slf4jVersion>1.7.12</slf4jVersion>
+    <slf4jVersion>1.7.13</slf4jVersion>
     <logbackVersion>1.1.3</logbackVersion>
     <jackson1Version>1.9.13</jackson1Version>
-    <jackson2Version>2.6.3</jackson2Version>
+    <jackson2Version>2.7.0</jackson2Version>
     <springVersion>3.2.13.RELEASE</springVersion>
     <flumeVersion>1.6.0</flumeVersion>
     <disruptorVersion>3.3.2</disruptorVersion>
     <compiler.plugin.version>3.3</compiler.plugin.version>
     <pmd.plugin.version>3.5</pmd.plugin.version>
-    <findbugs.plugin.version>3.0.2</findbugs.plugin.version>
+    <findbugs.plugin.version>3.0.3</findbugs.plugin.version>
     <changes.plugin.version>2.11</changes.plugin.version>
     <javadoc.plugin.version>2.10.3</javadoc.plugin.version>
     <!-- surefire.plugin.version 2.18 yields http://jira.codehaus.org/browse/SUREFIRE-1121, which is fixed in 2.18.1 -->
     <!-- surefire.plugin.version 2.19 yields https://issues.apache.org/jira/browse/SUREFIRE-1193. -->
-    <surefire.plugin.version>2.18.1</surefire.plugin.version>
-    <failsafe.plugin.version>2.18.1</failsafe.plugin.version>
+    <surefire.plugin.version>2.19.1</surefire.plugin.version>
+    <failsafe.plugin.version>2.19.1</failsafe.plugin.version>
     <checkstyle.plugin.version>2.17</checkstyle.plugin.version>
     <rat.plugin.version>0.11</rat.plugin.version>
     <pdf.plugin.version>1.2</pdf.plugin.version>
@@ -210,7 +210,7 @@
     <release.plugin.version>2.5.3</release.plugin.version>
     <scm.plugin.version>1.9.4</scm.plugin.version>
     <jxr.plugin.version>2.5</jxr.plugin.version>
-    <clirr.plugin.version>2.6.1</clirr.plugin.version>
+    <clirr.plugin.version>2.7</clirr.plugin.version>
     <site.plugin.version>3.4</site.plugin.version>
     <manifestfile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestfile>
     <maven.compile.source>1.7</maven.compile.source>
@@ -219,7 +219,7 @@
     <projectDir />
     <commonsLoggingVersion>1.2</commonsLoggingVersion>
     <osgi.api.version>4.3.1</osgi.api.version>
-    <activemq.version>5.12.0</activemq.version>
+    <activemq.version>5.13.0</activemq.version>
     <!-- Allow Clirr severity to be overriden by the command-line option -DminSeverity=level -->
     <minSeverity>info</minSeverity>
   </properties>
@@ -492,7 +492,7 @@
       <dependency>
         <groupId>org.apache.hadoop</groupId>
         <artifactId>hadoop-core</artifactId>
-        <version>1.1.1</version>
+        <version>1.2.1</version>
         <exclusions>
           <exclusion>
             <groupId>org.codehaus.jackson</groupId>
@@ -704,7 +704,7 @@
       <dependency>
         <groupId>org.liquibase</groupId>
         <artifactId>liquibase-core</artifactId>
-        <version>3.3.5</version>
+        <version>3.4.2</version>
       </dependency>
       <dependency>
         <groupId>net.javacrumbs.json-unit</groupId>
@@ -1103,7 +1103,7 @@
         </reportSets>
         <configuration>
           <!-- you'd think these would be the defaults, right? -->
-            <customBundle>${project.basedir}/src/site/custom/project-info-report.properties</customBundle>
+          <customBundle>${project.basedir}/src/site/custom/project-info-report.properties</customBundle>
           <webAccessUrl>${project.scm.url}</webAccessUrl>
           <anonymousConnection>${project.scm.connection}</anonymousConnection>
           <developerConnection>${project.scm.developerConnection}</developerConnection>
@@ -1315,6 +1315,8 @@
                 <exclude>src/test/resources/**/*</exclude>
                 <exclude>src/site/resources/**/*</exclude>
                 <exclude>src/site/site.vm</exclude>
+                <exclude>src/ide/**/*</exclude>
+                <exclude>**/target/generated-sources/**/*</exclude>
               </excludes>
             </configuration>
             <executions>

@@ -120,6 +120,13 @@
             </tr>
           </table>
           <p>
+            There are also a few system properties that can be used to maintain application throughput even when
+            the underlying appender cannot keep up with the logging rate and the queue is filling up.
+            See the details for system properties
+            <a href="configuration.html#AsyncEventRouter"><tt>log4j2.AsyncEventRouter</tt>,
+              <tt>log4j2.DiscardThreshold</tt> and <tt>log4j2.DiscardQueueRatio</tt></a>.
+          </p>
+          <p>
             A typical AsyncAppender configuration might look like:
           </p>
 
@@ -1256,8 +1263,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>layout</td>
               <td>Layout</td>
               <td>
-                The Layout to use to format the LogEvent. If you do not specify a layout, the appender will send the 
-                <a class="javadoc" href="http://logging.apache.org/log4j/2.x/log4j-api/apidocs/org/apache/logging/log4j/message/Message.html#getFormattedMessage())">formatted message</a> 
+                The Layout to use to format the LogEvent. If you do not specify a layout, the appender will send the
+                <a class="javadoc" href="http://logging.apache.org/log4j/2.x/log4j-api/apidocs/org/apache/logging/log4j/message/Message.html#getFormattedMessage())">formatted message</a>
                 to Kafka as a UTF-8 encoded string.
               </td>
             </tr>
@@ -2004,7 +2011,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         <p>
           You can use this policy to make loggers in third party code less chatty by changing event levels.
           The LoggerNameLevelRewritePolicy will rewrite log event levels for a given logger name prefix.
-          You configure a LoggerNameLevelRewritePolicy with a logger name prefix and a pairs of levels, 
+          You configure a LoggerNameLevelRewritePolicy with a logger name prefix and a pairs of levels,
           where a pair defines a source level and a target level.
         </p>
           <table>
@@ -2025,8 +2032,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             </tr>
           </table>
           <p>
-            The following configuration shows a RewriteAppender configured to map level INFO to DEBUG and level 
-            WARN to INFO for all loggers that start with <code>com.foo.bar</code>. 
+            The following configuration shows a RewriteAppender configured to map level INFO to DEBUG and level
+            WARN to INFO for all loggers that start with <code>com.foo.bar</code>.
           </p>
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp">
@@ -2196,6 +2203,13 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                     for a full description of the expression.
                   </td>
                 </tr>
+                <tr>
+                  <td>evaluateOnStartup</td>
+                  <td>boolean</td>
+                  <td>On startup the cron expression will be evaluated against the file's last modification timestamp.
+                    If the cron expression indicates a rollover should have occurred between that time and the current
+                    time the file will be immediately rolled over.</td>
+                </tr>
               </table>
             <h5>OnStartup Triggering Policy</h5>
               <p>
@@ -2256,11 +2270,11 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 is present it will be replaced with the current date and time values. If the pattern contains an integer
                 it will be incremented on each rollover. If the pattern contains both a date/time and integer
                 in the pattern the integer will be incremented until the result of the date/time pattern changes. If
-                the file pattern ends with ".gz", ".zip", ".bz2", ".deflate", ".pack200", or ".xz" the resulting archive 
-                will be compressed using the compression scheme that matches the suffix. The formats bzip2, Deflate, 
+                the file pattern ends with ".gz", ".zip", ".bz2", ".deflate", ".pack200", or ".xz" the resulting archive
+                will be compressed using the compression scheme that matches the suffix. The formats bzip2, Deflate,
                 Pack200 and XZ require <a href="http://commons.apache.org/proper/commons-compress/">Apache Commons Compress</a>.
-                In addition, XZ requires <a href="http://tukaani.org/xz/java.html">XZ for Java</a>. 
-                The pattern may also contain lookup references that can be resolved at runtime such as is shown in the example 
+                In addition, XZ requires <a href="http://tukaani.org/xz/java.html">XZ for Java</a>.
+                The pattern may also contain lookup references that can be resolved at runtime such as is shown in the example
                 below.
               </p>
               <p>The default rollover strategy supports two variations for incrementing the counter. The first is
@@ -2471,7 +2485,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
   </Loggers>
 </Configuration>]]></pre>
           <a name="CustomDeleteOnRollover"/>
-          <h5>Custom Delete on Rollover</h5>
+          <h5>Log Archive Retention Policy: Delete on Rollover</h5>
           <p>
             Log4j-2.5 introduces a <tt>Delete</tt> action that gives users more control
             over what files are deleted at rollover time than what was possible with the DefaultRolloverStrategy
@@ -2519,7 +2533,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>pathSorter</td>
               <td>PathSorter</td>
-              <td>A plugin implementing the 
+              <td>A plugin implementing the
                 <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/appender/rolling/action/PathSorter.html">PathSorter</a>
                 interface to sort the files before selecting the files to delete. The default is to sort most recently
                 modified files first.</td>
@@ -2527,7 +2541,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>pathConditions <a name="DeletePathCondition"/></td>
               <td>PathCondition[]</td>
-              <td><p><em>Required.</em> One or more PathCondition elements.</p>
+              <td><p><em>Required if no ScriptCondition is specified.</em> One or more PathCondition elements.</p>
                 <p>
                   If more than one condition is specified,
                   they all need to accept a path before it is deleted. Conditions can be nested, in which case the
@@ -2535,8 +2549,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                   If conditions are not nested they may be evaluated in any order.
                 </p>
                 <p>
-                  Conditions can also be combined with the logical operators AND, OR and NOT by using the 
-                  <tt>IfAll</tt>, <tt>IfAny</tt> and <tt>IfNot</tt> composite conditions. 
+                  Conditions can also be combined with the logical operators AND, OR and NOT by using the
+                  <tt>IfAll</tt>, <tt>IfAny</tt> and <tt>IfNot</tt> composite conditions.
                 </p>
                 <p>Users can create custom conditions or use the built-in conditions:</p>
                 <ul>
@@ -2556,6 +2570,21 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 </ul>
               </td>
             </tr>
+            <tr>
+              <td>scriptCondition <a name="DeleteScriptCondition"/></td>
+              <td>ScriptCondition</td>
+              <td><p><em>Required if no PathConditions are specified.</em> A ScriptCondition element specifying a script.</p>
+                <p>
+                  The ScriptCondition should contain a <a href="#ScriptCondition">Script,
+                  ScriptRef or ScriptFile</a> element that specifies the logic to be executed.
+                  (See also the <a href="filters.html#Script">ScriptFilter</a> documentation for more examples of
+                  configuring ScriptFiles and ScriptRefs.)
+                </p>
+                <p>The script is passed a number of <a href="#ScriptParameters">parameters</a>,
+                  including a list of paths found under the base path (up to <tt>maxDepth</tt>)
+                  and must return a list with the paths to delete.</p>
+              </td>
+            </tr>
           </table>
           <a name="DeleteIfFileName"/>
           <table>
@@ -2568,15 +2597,15 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>glob</td>
               <td>String</td>
-              <td><em>Required if regex not specified.</em> 
-                Matches the relative path (relative to the base path) using a limited pattern language that resembles regular expressions but with a 
+              <td><em>Required if regex not specified.</em>
+                Matches the relative path (relative to the base path) using a limited pattern language that resembles regular expressions but with a
                 <a href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)">simpler syntax</a>.
               </td>
             </tr>
             <tr>
               <td>regex</td>
               <td>String</td>
-              <td><em>Required if glob not specified.</em> 
+              <td><em>Required if glob not specified.</em>
                 Matches the relative path (relative to the base path) using a regular expression as defined by the
                 <a href="https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html">Pattern</a> class.
               </td>
@@ -2586,7 +2615,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>PathCondition[]</td>
               <td>An optional set of nested <a href="#DeletePathCondition">PathConditions</a>. If any nested conditions
                 exist they all need to accept the file before it is deleted. Nested conditions are only evaluated if the
-                outer condition accepts a file (if the path name matches). 
+                outer condition accepts a file (if the path name matches).
               </td>
             </tr>
           </table>
@@ -2601,7 +2630,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>age</td>
               <td>String</td>
-              <td><em>Required.</em> 
+              <td><em>Required.</em>
                 Specifies a <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/appender/rolling/action/Duration.html#parse(CharSequence)">duration</a>.
                 The condition accepts files that are as old or older than the specified duration.
               </td>
@@ -2611,7 +2640,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>PathCondition[]</td>
               <td>An optional set of nested <a href="#DeletePathCondition">PathConditions</a>. If any nested conditions
                 exist they all need to accept the file before it is deleted. Nested conditions are only evaluated if the
-                outer condition accepts a file (if the file is old enough). 
+                outer condition accepts a file (if the file is old enough).
               </td>
             </tr>
           </table>
@@ -2626,7 +2655,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>exceeds</td>
               <td>int</td>
-              <td><em>Required.</em> 
+              <td><em>Required.</em>
                 The threshold count from which files will be deleted.
               </td>
             </tr>
@@ -2635,7 +2664,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>PathCondition[]</td>
               <td>An optional set of nested <a href="#DeletePathCondition">PathConditions</a>. If any nested conditions
                 exist they all need to accept the file before it is deleted. Nested conditions are only evaluated if the
-                outer condition accepts a file (if the threshold count has been exceeded). 
+                outer condition accepts a file (if the threshold count has been exceeded).
               </td>
             </tr>
           </table>
@@ -2650,7 +2679,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>exceeds</td>
               <td>String</td>
-              <td><em>Required.</em> 
+              <td><em>Required.</em>
                 The threshold accumulated file size from which files will be deleted.
                 The size can be specified in bytes, with the suffix KB, MB or GB, for example <tt>20MB</tt>.
               </td>
@@ -2660,7 +2689,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>PathCondition[]</td>
               <td>An optional set of nested <a href="#DeletePathCondition">PathConditions</a>. If any nested conditions
                 exist they all need to accept the file before it is deleted. Nested conditions are only evaluated if the
-                outer condition accepts a file (if the threshold accumulated file size has been exceeded). 
+                outer condition accepts a file (if the threshold accumulated file size has been exceeded).
               </td>
             </tr>
           </table>
@@ -2701,9 +2730,10 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             triggering policies, will create up to 100 archives on the same day (1-100) that are stored in a directory
             based on the current year and month, and will compress each
             archive using gzip and will roll every hour.
-            Of the old archives under the base directory that match the "*/app-*.log.gz" glob, only the most recent files up to 100 GB are kept,
-            other files (that match the "*/app-*.log.gz" glob) are deleted. Files that do not match the
-            "*/app-*.log.gz" glob are not deleted.
+
+            During every rollover, this configuration will delete files that match "*/app-*.log.gz"
+            and are 30 days old or older,
+            but keep the most recent 100 GB or the most recent 10 files, whichever comes first.
           </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -2720,11 +2750,18 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         <SizeBasedTriggeringPolicy size="250 MB"/>
       </Policies>
       <DefaultRolloverStrategy max="100">
+        <!--
+        Nested conditions: the inner condition is only evaluated on files
+        for which the outer conditions are true.
+        -->
         <Delete basePath="${baseDir}" maxDepth="2">
           <IfFileName glob="*/app-*.log.gz">
-            <!-- nested: consider only the size of files that
-                 match the glob pattern, ignore other files -->
-            <IfAccumulatedFileSize exceeds="100 GB" />
+            <IfLastModified age="30d">
+              <IfAny>
+                <IfAccumulatedFileSize exceeds="100 GB" />
+                <IfAccumulatedFileCount exceeds="10" />
+              </IfAny>
+            </IfLastModified>
           </IfFileName>
         </Delete>
       </DefaultRolloverStrategy>
@@ -2736,7 +2773,129 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     </Root>
   </Loggers>
 </Configuration>]]></pre>
+          <a name="ScriptCondition"/>
+          <table>
+            <caption align="top">ScriptCondition Parameters</caption>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>script</td>
+              <td>Script, ScriptFile or ScriptRef</td>
+              <td>The Script element that specifies the logic to be executed. The script is passed
+                a list of paths found under the base path and must return the paths to delete as a
+                <tt>java.util.List&lt;<a href="../log4j-core/apidocs/org/apache/logging/log4j/core/appender/rolling/action/PathWithAttributes.html">PathWithAttributes</a>&gt;</tt>.
+                See also the <a href="filters.html#Script">ScriptFilter</a> documentation for an example of
+                how ScriptFiles and ScriptRefs can be configured.
+              </td>
+            </tr>
+          </table>
+          <a name="ScriptParameters"/>
+          <table>
+            <caption align="top">Script Parameters</caption>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>basePath</td>
+              <td><tt>java.nio.file.Path</tt></td>
+              <td>The directory from where the Delete action started scanning for
+                 files to delete. Can be used to relativize the paths in the pathList.</td>
+            </tr>
+            <tr>
+              <td>pathList</td>
+              <td><tt>java.util.List&lt;<a href="../log4j-core/apidocs/org/apache/logging/log4j/core/appender/rolling/action/PathWithAttributes.html">PathWithAttributes</a>&gt;</tt></td>
+              <td>The list of paths found under the base path up to the specified max depth,
+                sorted most recently modified files first.
+                The script is free to modify and return this list.</td>
+            </tr>
+            <tr>
+              <td>statusLogger</td>
+              <td>StatusLogger</td>
+              <td>The StatusLogger that can be used to log internal events during script execution.</td>
+            </tr>
+            <tr>
+              <td>configuration</td>
+              <td>Configuration</td>
+              <td>The Configuration that owns this ScriptCondition.</td>
+            </tr>
+            <tr>
+              <td>substitutor</td>
+              <td>StrSubstitutor</td>
+              <td>The StrSubstitutor used to replace lookup variables.</td>
+            </tr>
+            <tr>
+              <td>?</td>
+              <td>String</td>
+              <td>Any properties declared in the configuration.</td>
+            </tr>
+          </table>
+          <p>
+            Below is a sample configuration that uses a RollingFileAppender with the cron
+            triggering policy configured to trigger every day at midnight.
+            Archives are stored in a directory based on the current year and month.
+            The script returns a list of rolled over files under the base directory dated Friday the 13th.
+            The Delete action will delete all files returned by the script.
+          </p>
+
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="trace" name="MyApp" packages="">
+  <Properties>
+    <Property name="baseDir">logs</Property>
+  </Properties>
+  <Appenders>
+    <RollingFile name="RollingFile" fileName="${baseDir}/app.log"
+          filePattern="${baseDir}/$${date:yyyy-MM}/app-%d{yyyyMMdd}.log.gz">
+      <PatternLayout pattern="%d %p %c{1.} [%t] %m%n" />
+      <CronTriggeringPolicy schedule="0 0 0 * * ?"/>
+      <DefaultRolloverStrategy>
+        <Delete basePath="${baseDir}" maxDepth="2">
+          <ScriptCondition>
+            <Script name="superstitious" language="groovy"><![CDATA[
+                import java.nio.file.*;
+
+                def result = [];
+                def pattern = ~/\d*\/app-(\d*)\.log\.gz/;
+
+                pathList.each { pathWithAttributes ->
+                  def relative = basePath.relativize pathWithAttributes.path
+                  statusLogger.trace 'SCRIPT: relative path=' + relative + " (base=$basePath)";
+
+                  // remove files dated Friday the 13th
+
+                  def matcher = pattern.matcher(relative.toString());
+                  if (matcher.find()) {
+                    def dateString = matcher.group(1);
+                    def calendar = Date.parse("yyyyMMdd", dateString).toCalendar();
+                    def friday13th = calendar.get(Calendar.DAY_OF_MONTH) == 13 \
+                                  && calendar.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY;
+                    if (friday13th) {
+                      result.add pathWithAttributes;
+                      statusLogger.trace 'SCRIPT: deleting path ' + pathWithAttributes;
+                    }
+                  }
+                }
+                statusLogger.trace 'SCRIPT: returning ' + result;
+                result;
+              ]] >
+            </Script>
+          </ScriptCondition>
+        </Delete>
+      </DefaultRolloverStrategy>
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="RollingFile"/>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
         </subsection>
+
 			<a name="RollingRandomAccessFileAppender" />
 			<subsection name="RollingRandomAccessFileAppender">
 			<p><i>As of beta-9, the name of this appender has been changed from FastRollingFile to
@@ -3577,8 +3736,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         <a name="JeroMQAppender"/>
         <subsection name="ZeroMQ/JeroMQ Appender">
           <p>
-            The ZeroMQ appender uses the <a href="https://github.com/zeromq/jeromq">JeroMQ</a> library to send log 
-            events to one or more ZeroMQ endpoints.  
+            The ZeroMQ appender uses the <a href="https://github.com/zeromq/jeromq">JeroMQ</a> library to send log
+            events to one or more ZeroMQ endpoints.
           </p>
           <p>
             This is a simple JeroMQ configuration:
@@ -3586,7 +3745,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration name="JeroMQAppenderTest" status="TRACE">
   <Appenders>
-    <JeroMQ name="JeroMQAppender">    
+    <JeroMQ name="JeroMQAppender">
       <Property name="endpoint">tcp://*:5556</Property>
       <Property name="endpoint">ipc://info-topic</Property>
     </JeroMQ>
@@ -3596,7 +3755,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
       <AppenderRef ref="JeroMQAppender"/>
     </Root>
   </Loggers>
-</Configuration>]]></pre> 
+</Configuration>]]></pre>
           <p>
             The table below describes all options. Please consult the JeroMQ and ZeroMQ documentation for details.
           </p>
@@ -3615,8 +3774,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>Layout</td>
               <td>layout</td>
-              <td>The Layout of the Appender. If you do not specify a layout, the appender uses the default 
-              pattern appender returned by 
+              <td>The Layout of the Appender. If you do not specify a layout, the appender uses the default
+              pattern appender returned by
               <a href="https://logging.apache.org/log4j/2.x/log4j-core/apidocs/org/apache/logging/log4j/core/layout/PatternLayout.html#createDefaultLayout()">PatternLayout.createDefaultLayout()</a>.</td>
             </tr>
             <tr>
@@ -3734,7 +3893,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>boolean</td>
               <td>The ZMQ_XPUB_VERBOSE option. Defaults to false.</td>
             </tr>
-          </table>          
+          </table>
         </subsection>
 
       </section>

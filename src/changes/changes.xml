@@ -23,7 +23,61 @@
     <title>Changes</title>
   </properties>
   <body>
-    <release version="2.5" date="2015-MM-DD" description="GA Release 2.5">
+    <release version="2.5.1" date="201Y-MM-DD" description="GA Release 2.5.1">
+      <action issue="LOG4J2-1080" dev="rpopma" type="add">
+        Added option to discard events below a certain log level if the async logger ring buffer
+        or async appender queue remaining capacity falls below a certain ratio.
+      </action>
+      <action issue="LOG4J2-1237" dev="ggregory" type="add" due-to="Mike Calmus, Gary Gregory">
+        Make PatternLayout header and footer accept a pattern.
+      </action>
+      <action issue="LOG4J2-1244" dev="ggregory" type="add" due-to="Anshu Garg, Remko Popma, Gary Gregory">
+        Make header and footer values customizable in JSONLayout.
+      </action>
+      <action issue="LOG4J2-1245" dev="ggregory" type="add">
+        Make CSV Layout header and footers accept patterns.
+      </action>
+      <action issue="LOG4J2-1192" dev="ggregory" type="add" due-to="Jörg Bretschneider, Gary Gregory">
+        Dynamic Subject for SMTP Appender.
+      </action>
+      <action issue="LOG4J2-1232" dev="ggregory" type="fix" due-to="Nikolai">
+        Incorrect log rotation in last week of year.
+      </action>
+      <action issue="LOG4J2-1248" dev="rpopma" type="fix">
+        Fixed broken nanotime in pattern layout.
+      </action>
+      <action issue="LOG4J2-908" dev="ggregory" type="fix" due-to="Konstantinos Liakos, Patrick Flaherty, Robin Coe, Gary Gregory">
+        JSONLayout doesn't add a comma between log events.
+      </action>
+      <action issue="LOG4J2-1230" dev="ggregory" type="fix" due-to="Vladimir Hudec, Ralph Goers, Gary Gregory">
+        Don't concatenate SYSLOG Messages.
+      </action>
+      <action issue="LOG4J2-1238" dev="ggregory" type="fix">
+        org.apache.logging.log4j.core.net.TcpSocketManager and other classes does not report internal exceptions to the status logger.
+      </action>
+      <action issue="LOG4J2-1212" dev="rpopma" type="fix">
+        Fix documentation to correctly specify the blocking wait strategy as the default for async loggers.
+      </action>
+      <action issue="LOG4J2-1215" dev="ggregory" type="fix" due-to="Erik Kemperman">
+        Documentation/XSD inconsistencies.
+      </action>
+      <action issue="LOG4J2-1219" dev="ggregory" type="update">
+        Update SLF4J from 1.7.12 to 1.7.13.
+      </action>
+      <action issue="LOG4J2-1239" dev="ggregory" type="update">
+        Update Jackson from 2.6.3 to 2.6.4.
+      </action>
+      <action issue="LOG4J2-1249" dev="ggregory" type="update">
+        Update Jackson from 2.6.4 to 2.7.0.
+      </action>
+      <action issue="LOG4J2-1240" dev="ggregory" type="update">
+        Update Liquibase from 3.3.5 to 3.4.2.
+      </action>
+      <action issue="LOG4J2-1233" dev="ggregory" type="update" due-to="Bahri Gencsoy">
+        Misleading Value In Properties Example.
+      </action>
+    </release>
+    <release version="2.5" date="2015-12-06" description="GA Release 2.5">
       <action issue="LOG4J2-324" dev="rpopma" type="fix">
         Reduced memory usage of status messages in bounded queue; support zero-length queue that stores no messages.
       </action>

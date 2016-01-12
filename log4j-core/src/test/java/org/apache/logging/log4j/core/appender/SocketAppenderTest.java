@@ -42,6 +42,7 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.test.AvailablePortFinder;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -53,12 +54,9 @@ import org.junit.Test;
  */
 public class SocketAppenderTest {
 
-    private static final int PORTNUM1 = AvailablePortFinder.getNextAvailable();
-    private static final int PORTNUM2 = AvailablePortFinder.getNextAvailable();
-
-    private static final String PORT = String.valueOf(PORTNUM1);
-    private static final String DYN_PORT = String.valueOf(PORTNUM2);
-    private static final String ERROR_PORT = String.valueOf(AvailablePortFinder.getNextAvailable());
+    private static final int PORT = AvailablePortFinder.getNextAvailable();
+    private static final int DYN_PORT = AvailablePortFinder.getNextAvailable();
+    private static final int ERROR_PORT = AvailablePortFinder.getNextAvailable();
 
     private static BlockingQueue<LogEvent> list = new ArrayBlockingQueue<>(10);
 
@@ -73,7 +71,7 @@ public class SocketAppenderTest {
 
     @BeforeClass
     public static void setupClass() throws Exception {
-        tcpServer = new TCPSocketServer(PORTNUM1);
+        tcpServer = new TCPSocketServer(PORT);
         tcpServer.start();
         udpServer = new UDPSocketServer();
         udpServer.start();
@@ -103,8 +101,8 @@ public class SocketAppenderTest {
     @Test
     public void testTcpAppender() throws Exception {
 
-        final SocketAppender appender = SocketAppender.createAppender("localhost", PORT, "tcp", null, 0, "-1",
-                "false", "Test", null, null, null, null, null, null);
+        final SocketAppender appender = SocketAppender.createAppender("localhost", PORT, Protocol.TCP, null, 0, -1,
+                false, "Test", true, true, null, null, false, null);
         appender.start();
 
         // set appender on root and set level to debug
@@ -143,16 +141,16 @@ public class SocketAppenderTest {
     @Test
     public void testDefaultProtocol() throws Exception {
 
-        final SocketAppender appender = SocketAppender.createAppender("localhost", PORT, null, null, 0, "-1",
-                "false", "Test", null, null, null, null, null, null);
+        final SocketAppender appender = SocketAppender.createAppender("localhost", PORT, (Protocol) null, null, 0, -1,
+                false, "Test", true, true, null, null, false, null);
         assertNotNull(appender);
     }
 
     @Test
     public void testUdpAppender() throws Exception {
 
-        final SocketAppender appender = SocketAppender.createAppender("localhost", PORT, "udp", null, 0, "-1",
-                "false", "Test", null, null, null, null, null, null);
+        final SocketAppender appender = SocketAppender.createAppender("localhost", PORT, Protocol.UDP, null, 0, -1,
+                false, "Test", true, true, null, null, false, null);
         appender.start();
 
         // set appender on root and set level to debug
@@ -169,15 +167,15 @@ public class SocketAppenderTest {
     @Test
     public void testTcpAppenderDeadlock() throws Exception {
 
-        final SocketAppender appender = SocketAppender.createAppender("localhost", DYN_PORT, "tcp", null, 0,
-                "100", "false", "Test", null, null, null, null, null, null);
+        final SocketAppender appender = SocketAppender.createAppender("localhost", DYN_PORT, Protocol.TCP, null, 0,
+                100, false, "Test", true, true, null, null, false, null);
         appender.start();
         // set appender on root and set level to debug
         root.addAppender(appender);
         root.setAdditive(false);
         root.setLevel(Level.DEBUG);
 
-        new TCPSocketServer(PORTNUM2).start();
+        new TCPSocketServer(DYN_PORT).start();
 
         root.debug("This message is written because a deadlock never.");
 
@@ -188,8 +186,8 @@ public class SocketAppenderTest {
     @Test
     public void testTcpAppenderNoWait() throws Exception {
 
-        final SocketAppender appender = SocketAppender.createAppender("localhost", ERROR_PORT, "tcp", null, 0,
-                "100", "true", "Test", null, "false", null, null, null, null);
+        final SocketAppender appender = SocketAppender.createAppender("localhost", ERROR_PORT, Protocol.TCP, null, 0,
+                100, true, "Test", true, false, null, null, false, null);
         appender.start();
         // set appender on root and set level to debug
         root.addAppender(appender);
@@ -211,7 +209,7 @@ public class SocketAppenderTest {
         private Thread thread;
 
         public UDPSocketServer() throws IOException {
-            this.sock = new DatagramSocket(PORTNUM1);
+            this.sock = new DatagramSocket(PORT);
         }
 
         public void shutdown() {

@@ -16,10 +16,14 @@
  */
 package org.apache.logging.log4j.core.script;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.util.FileWatcher;
-import org.apache.logging.log4j.core.util.WatchManager;
-import org.apache.logging.log4j.status.StatusLogger;
+import java.io.File;
+import java.io.Serializable;
+import java.nio.file.Path;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.script.Bindings;
 import javax.script.Compilable;
@@ -28,22 +32,20 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import java.io.File;
-import java.nio.file.Path;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.util.FileWatcher;
+import org.apache.logging.log4j.core.util.WatchManager;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Manages the scripts use by the Configuration.
  */
-public class ScriptManager implements FileWatcher {
-
+public class ScriptManager implements FileWatcher, Serializable {
+    private static final long serialVersionUID = -2534169384971965196L;
     private static final String KEY_THREADING = "THREADING";
     private static final Logger logger = StatusLogger.getLogger();
-    private static final long serialVersionUID = -2534169384971965196L;
+    
     private final ScriptEngineManager manager = new ScriptEngineManager();
     private final ConcurrentMap<String, ScriptRunner> scripts = new ConcurrentHashMap<>();
     private final String languages;
@@ -142,16 +144,12 @@ public class ScriptManager implements FileWatcher {
             logger.warn("No script named {} could be found");
             return null;
         }
-        if (SECURITY_MANAGER == null) {
-            return scriptRunner.execute(bindings);
-        } else {
-            return AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                @Override
-                public Object run() {
-                    return scriptRunner.execute(bindings);
-                }
-            });
-        }
+        return AccessController.doPrivileged(new PrivilegedAction<Object>() {
+            @Override
+            public Object run() {
+                return scriptRunner.execute(bindings);
+            }
+        });
     }
 
     private interface ScriptRunner {
@@ -175,33 +173,21 @@ public class ScriptManager implements FileWatcher {
             CompiledScript compiled = null;
             if (scriptEngine instanceof Compilable) {
                 logger.debug("Script {} is compilable", script.getName());
-
-                if (SECURITY_MANAGER == null) {
-                    try {
-                        compiled = ((Compilable) scriptEngine).compile(script.getScriptText());
-                    } catch (final Throwable ex) {
-                        /* ScriptException is what really should be caught here. However, beanshell's ScriptEngine
-                         * implements Compilable but then throws Error when the compile method is called!
-                         */
-                        logger.warn("Error compiling script", ex);
-                    }
-                } else {
-                    compiled = AccessController.doPrivileged(new PrivilegedAction<CompiledScript>() {
-                        @Override
-                        public CompiledScript run() {
-                            try {
-                                return ((Compilable) scriptEngine).compile(script.getScriptText());
-                            } catch (final Throwable ex) {
+                compiled = AccessController.doPrivileged(new PrivilegedAction<CompiledScript>() {
+                    @Override
+                    public CompiledScript run() {
+                        try {
+                            return ((Compilable) scriptEngine).compile(script.getScriptText());
+                        } catch (final Throwable ex) {
                                 /* ScriptException is what really should be caught here. However, beanshell's
                                  * ScriptEngine implements Compilable but then throws Error when the compile method
                                  * is called!
                                  */
-                                logger.warn("Error compiling script", ex);
-                                return null;
-                            }
+                            logger.warn("Error compiling script", ex);
+                            return null;
                         }
-                    });
-                }
+                    }
+                });
             }
             compiledScript = compiled;
         }

@@ -57,6 +57,8 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
     private static final Target DEFAULT_TARGET = Target.SYSTEM_OUT;
     private static final AtomicInteger COUNT = new AtomicInteger();
 
+    private final Target target;
+    
     /**
      * Enumeration of console destinations.
      */
@@ -68,8 +70,9 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
     }
 
     private ConsoleAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
-            final OutputStreamManager manager, final boolean ignoreExceptions) {
+            final OutputStreamManager manager, final boolean ignoreExceptions, Target target) {
         super(name, layout, filter, ignoreExceptions, true, manager);
+        this.target = target;
     }
 
     /**
@@ -83,14 +86,15 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
      * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise they
      *            are propagated to the caller.
      * @return The ConsoleAppender.
+     * @deprecated Use {@link #createAppender(Layout, Filter, Target, String, String, boolean)}.
      */
-    @PluginFactory
-    public static ConsoleAppender createAppender(@PluginElement("Layout") Layout<? extends Serializable> layout,
-            @PluginElement("Filter") final Filter filter,
-            @PluginAttribute(value = "target", defaultString = "SYSTEM_OUT") final String targetStr,
-            @PluginAttribute("name") final String name,
-            @PluginAttribute(value = "follow", defaultBoolean = false) final String follow,
-            @PluginAttribute(value = "ignoreExceptions", defaultBoolean = true) final String ignore) {
+    @Deprecated
+    public static ConsoleAppender createAppender(Layout<? extends Serializable> layout,
+            final Filter filter,
+            final String targetStr,
+            final String name,
+            final String follow,
+            final String ignore) {
         if (name == null) {
             LOGGER.error("No name provided for ConsoleAppender");
             return null;
@@ -101,13 +105,46 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         final boolean isFollow = Boolean.parseBoolean(follow);
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         final Target target = targetStr == null ? DEFAULT_TARGET : Target.valueOf(targetStr);
-        return new ConsoleAppender(name, layout, filter, getManager(target, isFollow, layout), ignoreExceptions);
+        return new ConsoleAppender(name, layout, filter, getManager(target, isFollow, layout), ignoreExceptions, target);
+    }
+
+    /**
+     * Creates a Console Appender.
+     * 
+     * @param layout The layout to use (required).
+     * @param filter The Filter or null.
+     * @param target The target (SYSTEM_OUT or SYSTEM_ERR). The default is SYSTEM_OUT.
+     * @param follow If true will follow changes to the underlying output stream.
+     * @param name The name of the Appender (required).
+     * @param ignoreExceptions If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise they
+     *            are propagated to the caller.
+     * @return The ConsoleAppender.
+     */
+    @PluginFactory
+    public static ConsoleAppender createAppender(
+            // @formatter:off
+            @PluginElement("Layout") Layout<? extends Serializable> layout,
+            @PluginElement("Filter") final Filter filter,
+            @PluginAttribute(value = "target") Target target,
+            @PluginAttribute("name") final String name,
+            @PluginAttribute(value = "follow", defaultBoolean = false) final boolean follow,
+            @PluginAttribute(value = "ignoreExceptions", defaultBoolean = true) final boolean ignoreExceptions) {
+            // @formatter:on
+        if (name == null) {
+            LOGGER.error("No name provided for ConsoleAppender");
+            return null;
+        }
+        if (layout == null) {
+            layout = PatternLayout.createDefaultLayout();
+        }
+        target = target == null ? Target.SYSTEM_OUT : target;
+        return new ConsoleAppender(name, layout, filter, getManager(target, follow, layout), ignoreExceptions, target);
     }
 
     public static ConsoleAppender createDefaultAppenderForLayout(final Layout<? extends Serializable> layout) {
         // this method cannot use the builder class without introducing an infinite loop due to DefaultConfiguration
         return new ConsoleAppender("DefaultConsole-" + COUNT.incrementAndGet(), layout, null,
-                getDefaultManager(DEFAULT_TARGET, false, layout), true);
+                getDefaultManager(DEFAULT_TARGET, false, layout), true, DEFAULT_TARGET);
     }
 
     @PluginBuilderFactory
@@ -173,7 +210,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
 
         @Override
         public ConsoleAppender build() {
-            return new ConsoleAppender(name, layout, filter, getManager(target, follow, layout), ignoreExceptions);
+            return new ConsoleAppender(name, layout, filter, getManager(target, follow, layout), ignoreExceptions, target);
         }
     }
 
@@ -329,6 +366,10 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         public OutputStreamManager createManager(final String name, final FactoryData data) {
             return new OutputStreamManager(data.os, data.name, data.layout, true);
         }
+    }
+
+    public Target getTarget() {
+        return target;
     }
 
 }

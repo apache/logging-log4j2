@@ -133,7 +133,7 @@ public class SslConfiguration {
         try {
             return SSLContext.getDefault();
         } catch (final NoSuchAlgorithmException e) {
-            LOGGER.error("Failed to create an SSLContext with default configuration");
+            LOGGER.error("Failed to create an SSLContext with default configuration", e);
             return null;
         }
     }
@@ -158,11 +158,11 @@ public class SslConfiguration {
             return newSslContext;
         }
         catch (final NoSuchAlgorithmException e) {
-            LOGGER.error("No Provider supports a TrustManagerFactorySpi implementation for the specified protocol");
+            LOGGER.error("No Provider supports a TrustManagerFactorySpi implementation for the specified protocol", e);
             throw new TrustStoreConfigurationException(e);
         }
         catch (final KeyManagementException e) {
-            LOGGER.error("Failed to initialize the SSLContext");
+            LOGGER.error("Failed to initialize the SSLContext", e);
             throw new KeyStoreConfigurationException(e);
         }
     }
@@ -176,10 +176,10 @@ public class SslConfiguration {
             return trustStoreConfig.initTrustManagerFactory();
         }
         catch (final NoSuchAlgorithmException e) {
-            LOGGER.error("The specified algorithm is not available from the specified provider");
+            LOGGER.error("The specified algorithm is not available from the specified provider", e);
             throw new TrustStoreConfigurationException(e);
         } catch (final KeyStoreException e) {
-            LOGGER.error("Failed to initialize the TrustManagerFactory");
+            LOGGER.error("Failed to initialize the TrustManagerFactory", e);
             throw new TrustStoreConfigurationException(e);
         }
     }
@@ -193,13 +193,13 @@ public class SslConfiguration {
             return keyStoreConfig.initKeyManagerFactory();
         }
         catch (final NoSuchAlgorithmException e) {
-            LOGGER.error("The specified algorithm is not available from the specified provider");
+            LOGGER.error("The specified algorithm is not available from the specified provider", e);
             throw new KeyStoreConfigurationException(e);
         } catch (final KeyStoreException e) {
-            LOGGER.error("Failed to initialize the TrustManagerFactory");
+            LOGGER.error("Failed to initialize the TrustManagerFactory", e);
             throw new KeyStoreConfigurationException(e);
         } catch (final UnrecoverableKeyException e) {
-            LOGGER.error("The key cannot be recovered (e.g. the given password is wrong)");
+            LOGGER.error("The key cannot be recovered (e.g. the given password is wrong)", e);
             throw new KeyStoreConfigurationException(e);
         }
     }

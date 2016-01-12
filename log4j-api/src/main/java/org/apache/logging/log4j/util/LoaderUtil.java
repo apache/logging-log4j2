@@ -243,7 +243,7 @@ public final class LoaderUtil {
         private final ClassLoader classLoader;
         private final URL url;
 
-        public UrlResource(final ClassLoader classLoader, final URL url) {
+        UrlResource(final ClassLoader classLoader, final URL url) {
             this.classLoader = classLoader;
             this.url = url;
         }
