@@ -67,6 +67,9 @@
       <action issue="LOG4J2-1239" dev="ggregory" type="update">
         Update Jackson from 2.6.3 to 2.6.4.
       </action>
+      <action issue="LOG4J2-1249" dev="ggregory" type="update">
+        Update Jackson from 2.6.4 to 2.7.0.
+      </action>
       <action issue="LOG4J2-1240" dev="ggregory" type="update">
         Update Liquibase from 3.3.5 to 3.4.2.
       </action>
