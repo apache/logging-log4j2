@@ -193,7 +193,7 @@
     <jackson2Version>2.7.0</jackson2Version>
     <springVersion>3.2.13.RELEASE</springVersion>
     <flumeVersion>1.6.0</flumeVersion>
-    <disruptorVersion>3.3.2</disruptorVersion>
+    <disruptorVersion>3.3.4</disruptorVersion>
     <compiler.plugin.version>3.3</compiler.plugin.version>
     <pmd.plugin.version>3.5</pmd.plugin.version>
     <findbugs.plugin.version>3.0.3</findbugs.plugin.version>
