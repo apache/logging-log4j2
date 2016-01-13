@@ -183,40 +183,51 @@ public final class AsyncAppender extends AbstractAppender {
      * @param logEvent the event to log
      */
     public void logMessageInBackgroundThread(final Log4jLogEvent logEvent) {
-        boolean appendSuccessful = false;
-        if (blocking) {
-            final Serializable serialized = Log4jLogEvent.serialize(logEvent, includeLocation);
-            try {
-                // wait for free slots in the queue
-                queue.put(serialized);
-                appendSuccessful = true;
-            } catch (final InterruptedException e) {
-                // LOG4J2-1049: Some applications use Thread.interrupt() to send
-                // messages between application threads. This does not necessarily
-                // mean that the queue is full. To prevent dropping a log message,
-                // quickly try to offer the event to the queue again.
-                // (Yes, this means there is a possibility the same event is logged twice.)
-                //
-                // Finally, catching the InterruptedException means the
-                // interrupted flag has been cleared on the current thread.
-                // This may interfere with the application's expectation of
-                // being interrupted, so when we are done, we set the interrupted
-                // flag again.
-                appendSuccessful = queue.offer(serialized);
-                if (!appendSuccessful) {
-                    LOGGER.warn("Interrupted while waiting for a free slot in the AsyncAppender LogEvent-queue {}",
-                            getName());
-                }
-                // set the interrupted flag again.
-                Thread.currentThread().interrupt();
-            }
-        } else {
-            appendSuccessful = queue.offer(Log4jLogEvent.serialize(logEvent, includeLocation));
-            if (!appendSuccessful) {
-                error("Appender " + getName() + " is unable to write primary appenders. queue is full");
-            }
+        final boolean success = blocking ? enqueueOrBlockIfQueueFull(logEvent) : enqueueOrDropIfQueueFull(logEvent);
+        logToErrorAppenderIfNecessary(success, logEvent);
+    }
+
+    private boolean enqueueOrBlockIfQueueFull(final Log4jLogEvent logEvent) {
+        boolean appendSuccessful;
+        final Serializable serialized = Log4jLogEvent.serialize(logEvent, includeLocation);
+        try {
+            // wait for free slots in the queue
+            queue.put(serialized);
+            appendSuccessful = true;
+        } catch (final InterruptedException e) {
+            appendSuccessful = handleInterruptedException(serialized);
         }
-        logToErrorAppenderIfNecessary(appendSuccessful, logEvent);
+        return appendSuccessful;
+    }
+
+    private boolean enqueueOrDropIfQueueFull(final Log4jLogEvent logEvent) {
+        final boolean appendSuccessful = queue.offer(Log4jLogEvent.serialize(logEvent, includeLocation));
+        if (!appendSuccessful) {
+            error("Appender " + getName() + " is unable to write primary appenders. queue is full");
+        }
+        return appendSuccessful;
+    }
+
+    // LOG4J2-1049: Some applications use Thread.interrupt() to send
+    // messages between application threads. This does not necessarily
+    // mean that the queue is full. To prevent dropping a log message,
+    // quickly try to offer the event to the queue again.
+    // (Yes, this means there is a possibility the same event is logged twice.)
+    //
+    // Finally, catching the InterruptedException means the
+    // interrupted flag has been cleared on the current thread.
+    // This may interfere with the application's expectation of
+    // being interrupted, so when we are done, we set the interrupted
+    // flag again.
+    private boolean handleInterruptedException(final Serializable serialized) {
+        final boolean appendSuccessful = queue.offer(serialized);
+        if (!appendSuccessful) {
+            LOGGER.warn("Interrupted while waiting for a free slot in the AsyncAppender LogEvent-queue {}",
+                    getName());
+        }
+        // set the interrupted flag again.
+        Thread.currentThread().interrupt();
+        return appendSuccessful;
     }
 
     private void logToErrorAppenderIfNecessary(final boolean appendSuccessful, final Log4jLogEvent logEvent) {
@@ -251,7 +262,7 @@ public final class AsyncAppender extends AbstractAppender {
             @PluginAttribute(value = "bufferSize", defaultInt = DEFAULT_QUEUE_SIZE) final int size,
             @PluginAttribute("name") final String name,
             @PluginAttribute(value = "includeLocation", defaultBoolean = false) final boolean includeLocation,
-            @PluginElement("Filter") final Filter filter, 
+            @PluginElement("Filter") final Filter filter,
             @PluginConfiguration final Configuration config,
             @PluginAttribute(value = "ignoreExceptions", defaultBoolean = true) final boolean ignoreExceptions) {
             // @formatter:on
