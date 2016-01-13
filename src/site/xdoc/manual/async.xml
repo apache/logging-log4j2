@@ -207,14 +207,18 @@
           <tr>
             <td>AsyncLogger.WaitStrategy</td>
             <td>
-              <tt>Block</tt>
+              <tt>Timeout</tt>
             </td>
             <td>
-              Valid values: Block, Sleep, Yield.
+              Valid values: Block, Timeout, Sleep, Yield.
               <br />
               <tt>Block</tt> is a strategy that uses a lock and condition variable for the I/O thread waiting for log events.
               Block can be used when throughput and low-latency are not as important as CPU resource.
               Recommended for resource constrained/virtualised environments.
+              <br />
+              <tt>Timeout</tt> is a variation of the <tt>Block</tt> strategy that will periodically
+              wake up from the lock condition await() call. This ensures that if a notification is missed somehow
+              the consumer thread is not stuck but will recover with a small latency delay (default 10ms).
               <br />
               <tt>Sleep</tt> is a strategy that initially spins, then uses a Thread.yield(), and
               eventually parks for the minimum number of nanos the OS and JVM will allow
@@ -364,14 +368,18 @@
           <tr>
             <td>AsyncLoggerConfig.WaitStrategy</td>
             <td>
-              <tt>Block</tt>
+              <tt>Timeout</tt>
             </td>
             <td>
-              Valid values: Block, Sleep, Yield.
+              Valid values: Block, Timeout, Sleep, Yield.
               <br />
               <tt>Block</tt> is a strategy that uses a lock and condition variable for the I/O thread waiting for log events.
               Block can be used when throughput and low-latency are not as important as CPU resource.
               Recommended for resource constrained/virtualised environments.
+              <br />
+              <tt>Timeout</tt> is a variation of the <tt>Block</tt> strategy that will periodically
+              wake up from the lock condition await() call. This ensures that if a notification is missed somehow
+              the consumer thread is not stuck but will recover with a small latency delay (default 10ms).
               <br />
               <tt>Sleep</tt> is a strategy that initially spins, then uses a Thread.yield(), and
               eventually parks for the minimum number of nanos the OS and JVM will allow

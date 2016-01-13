@@ -24,6 +24,10 @@
   </properties>
   <body>
     <release version="2.5.1" date="201Y-MM-DD" description="GA Release 2.5.1">
+      <action issue="LOG4J2-1221" dev="rpopma" type="add" due-to="Michael Barker">
+        Added async logger Timeout wait strategy and made this the default wait strategy for async loggers.
+        This prevents a rare deadlock that may occur on Solaris.
+      </action>
       <action issue="LOG4J2-1080" dev="rpopma" type="add">
         Added option to discard events below a certain log level if the async logger ring buffer
         or async appender queue remaining capacity falls below a certain ratio.

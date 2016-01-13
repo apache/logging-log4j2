@@ -20,17 +20,13 @@ package org.apache.logging.log4j.core.async;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
+import com.lmax.disruptor.*;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
-
-import com.lmax.disruptor.BlockingWaitStrategy;
-import com.lmax.disruptor.ExceptionHandler;
-import com.lmax.disruptor.SleepingWaitStrategy;
-import com.lmax.disruptor.WaitStrategy;
-import com.lmax.disruptor.YieldingWaitStrategy;
 
 /**
  * Utility methods for getting Disruptor related configuration.
@@ -43,7 +39,19 @@ final class DisruptorUtil {
     private DisruptorUtil() {
     }
 
+    static long getTimeout(final String propertyName, final long defaultTimeout) {
+        return PropertiesUtil.getProperties().getLongProperty(propertyName, defaultTimeout);
+    }
+
     static WaitStrategy createWaitStrategy(final String propertyName) {
+        final String key = propertyName.startsWith("AsyncLogger.")
+                ? "AsyncLogger.Timeout"
+                : "AsyncLoggerConfig.Timeout";
+        final long timeout = DisruptorUtil.getTimeout(key, 10L);
+        return createWaitStrategy(propertyName, timeout);
+    }
+
+    static WaitStrategy createWaitStrategy(final String propertyName, final long timeoutMs) {
         final String strategy = PropertiesUtil.getProperties().getStringProperty(propertyName);
         if (strategy != null) {
             LOGGER.trace("property {}={}", propertyName, strategy);
@@ -53,9 +61,11 @@ final class DisruptorUtil {
                 return new YieldingWaitStrategy();
             } else if ("Block".equalsIgnoreCase(strategy)) {
                 return new BlockingWaitStrategy();
+            } else if ("Timeout".equalsIgnoreCase(strategy)) {
+                return new TimeoutBlockingWaitStrategy(timeoutMs, TimeUnit.MILLISECONDS);
             }
         }
-        return new BlockingWaitStrategy();
+        return new TimeoutBlockingWaitStrategy(timeoutMs, TimeUnit.MILLISECONDS);
     }
 
     static int calculateRingBufferSize(final String propertyName) {
@@ -95,7 +105,7 @@ final class DisruptorUtil {
     /**
      * Returns the thread ID of the background appender thread. This allows us to detect Logger.log() calls initiated
      * from the appender thread, which may cause deadlock when the RingBuffer is full. (LOG4J2-471)
-     * 
+     *
      * @param executor runs the appender thread
      * @return the thread ID of the background appender thread
      */
@@ -114,5 +124,4 @@ final class DisruptorUtil {
             throw new IllegalStateException(msg, ex);
         }
     }
-
 }
