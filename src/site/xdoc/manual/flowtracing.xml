@@ -50,7 +50,7 @@
               The exit() method should be placed before any return statement or as the last statement of
               methods without a return. exit() can be called with or without a parameter. Typically, methods
               that return void will use exit() while methods that return an Object will use exit(Object obj).
-              The entry() method logs with a level of TRACE and uses a Marker with a name of "EXIT" which is
+              The exit() method logs with a level of TRACE and uses a Marker with a name of "EXIT" which is
               also a "FLOW" Marker.
             </p>
             <p>

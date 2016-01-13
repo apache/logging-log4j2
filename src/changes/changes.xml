@@ -86,6 +86,9 @@
       <action issue="LOG4J2-1251" dev="mattsicker" type="fix" due-to="Romain Manni-Bucau">
         Fix JUL bridge issue where LogRecord.getParameters() is used when null.
       </action>
+      <action issue="LOG4J2-1254" dev="rpopma" type="fix" due-to="Josh Trow">
+        Fix typo in Flow Tracing documentation.
+      </action>
     </release>
     <release version="2.5" date="2015-12-06" description="GA Release 2.5">
       <action issue="LOG4J2-324" dev="rpopma" type="fix">
