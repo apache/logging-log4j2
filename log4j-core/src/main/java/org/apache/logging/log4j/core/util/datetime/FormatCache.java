@@ -40,9 +40,9 @@ abstract class FormatCache<F extends Format> {
     static final int NONE = -1;
 
     private static final ConcurrentMap<MultipartKey, String> DATETIME_INSTANCE_CACHE =
-            new ConcurrentHashMap<MultipartKey, String>(7);
+            new ConcurrentHashMap<>(7);
 
-    private final ConcurrentMap<MultipartKey, F> cInstanceCache = new ConcurrentHashMap<MultipartKey, F>(7);
+    private final ConcurrentMap<MultipartKey, F> cInstanceCache = new ConcurrentHashMap<>(7);
 
     /**
      * <p>
