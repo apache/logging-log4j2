@@ -24,14 +24,12 @@ import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LogEventListener;
 import org.apache.logging.log4j.core.appender.mom.JmsManager;
 import org.apache.logging.log4j.core.net.JndiManager;
-import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * LogEventListener server that receives LogEvents over a JMS {@link javax.jms.Destination}.

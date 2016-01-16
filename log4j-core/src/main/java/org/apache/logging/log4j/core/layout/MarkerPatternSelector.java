@@ -28,7 +28,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
-import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import java.util.HashMap;
