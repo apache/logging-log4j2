@@ -65,12 +65,14 @@ public class Log4jLogEventNanoTimeTest {
         
         CoreLoggerContexts.stopLoggerContext(file); // stop async thread
 
-        final BufferedReader reader = new BufferedReader(new FileReader(file));
-        final String line1 = reader.readLine();
-        final String line2 = reader.readLine();
-        // System.out.println(line1);
-        // System.out.println(line2);
-        reader.close();
+        String line1;
+        String line2;
+        try (final BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            line1 = reader.readLine();
+            line2 = reader.readLine();
+            // System.out.println(line1);
+            // System.out.println(line2);
+        }
         file.delete();
 
         assertNotNull("line1", line1);
