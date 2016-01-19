@@ -710,8 +710,8 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             return !foundNotEmptyValue;
         }
 
-        void union(final Map<String, String> fields) {
-            this.fields.putAll(fields);
+        void union(final Map<String, String> addFields) {
+            this.fields.putAll(addFields);
         }
 
         Map<String, String> getFields() {
