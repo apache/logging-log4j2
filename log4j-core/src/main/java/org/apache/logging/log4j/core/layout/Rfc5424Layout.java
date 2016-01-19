@@ -110,7 +110,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     private final List<String> mdcExcludes;
     private final List<String> mdcIncludes;
     private final List<String> mdcRequired;
-    private final ListChecker checker;
+    private final ListChecker listChecker;
     private final ListChecker noopChecker = new NoopChecker();
     private final boolean includeNewLine;
     private final String escapeNewLine;
@@ -187,7 +187,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         } else {
             mdcRequired = null;
         }
-        this.checker = c != null ? c : noopChecker;
+        this.listChecker = c != null ? c : noopChecker;
         final String name = config == null ? null : config.getName();
         configName = Strings.isNotEmpty(name) ? name : null;
         this.fieldFormatters = createFieldFormatters(loggerFields, config);
@@ -408,7 +408,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         }
 
         for (final Map.Entry<String, StructuredDataElement> entry : sdElements.entrySet()) {
-            formatStructuredElement(entry.getKey(), mdcPrefix, entry.getValue(), buffer, checker);
+            formatStructuredElement(entry.getKey(), mdcPrefix, entry.getValue(), buffer, listChecker);
         }
     }
 
