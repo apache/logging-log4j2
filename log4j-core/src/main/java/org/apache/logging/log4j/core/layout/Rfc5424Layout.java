@@ -412,11 +412,11 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         }
     }
 
-    private String escapeNewlines(final String text, final String escapeNewLine) {
-        if (null == escapeNewLine) {
+    private String escapeNewlines(final String text, final String replacement) {
+        if (null == replacement) {
             return text;
         }
-        return NEWLINE_PATTERN.matcher(text).replaceAll(escapeNewLine);
+        return NEWLINE_PATTERN.matcher(text).replaceAll(replacement);
     }
 
     protected String getProcId() {
