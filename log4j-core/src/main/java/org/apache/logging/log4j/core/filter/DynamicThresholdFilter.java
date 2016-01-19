@@ -115,8 +115,8 @@ public final class DynamicThresholdFilter extends AbstractFilter {
         return true;
     }
 
-    private Result filter(final Level level) {
-        final Object value = ThreadContext.get(key);
+    private Result filter(final Level level, Map<String, String> contextMap) {
+        final Object value = contextMap.get(key);
         if (value != null) {
             Level ctxLevel = levelMap.get(value);
             if (ctxLevel == null) {
@@ -130,25 +130,25 @@ public final class DynamicThresholdFilter extends AbstractFilter {
 
     @Override
     public Result filter(final LogEvent event) {
-        return filter(event.getLevel());
+        return filter(event.getLevel(), event.getContextMap());
     }
 
     @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg,
                          final Throwable t) {
-        return filter(level);
+        return filter(level, ThreadContext.getContext());
     }
 
     @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg,
                          final Throwable t) {
-        return filter(level);
+        return filter(level, ThreadContext.getContext());
     }
 
     @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
                          final Object... params) {
-        return filter(level);
+        return filter(level, ThreadContext.getContext());
     }
 
     public String getKey() {
