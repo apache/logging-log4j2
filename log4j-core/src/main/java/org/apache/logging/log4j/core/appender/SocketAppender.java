@@ -47,7 +47,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
 
     private static final long serialVersionUID = 1L;
 
-    private Object advertisement;
+    private final Object advertisement;
     private final Advertiser advertiser;
 
     protected SocketAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
@@ -60,6 +60,8 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
             configuration.put("contentType", layout.getContentType());
             configuration.put("name", name);
             this.advertisement = advertiser.advertise(configuration);
+        } else {
+            this.advertisement = null;
         }
         this.advertiser = advertiser;
     }
