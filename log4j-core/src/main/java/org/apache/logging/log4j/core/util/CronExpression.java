@@ -332,8 +332,9 @@ public final class CronExpression {
         // the second immediately following it.
         while (difference == 1000) {
             newDate = getTimeAfter(lastDate);
-            if (newDate == null)
+            if (newDate == null) {
                 break;
+            }
 
             difference = newDate.getTime() - lastDate.getTime();
 
@@ -647,8 +648,9 @@ public final class CronExpression {
                 if (c == '-') {
                     ValueSet vs = getValue(0, s, i + 1);
                     lastdayOffset = vs.value;
-                    if (lastdayOffset > 30)
+                    if (lastdayOffset > 30) {
                         throw new ParseException("Offset from last day must be <= 30", i + 1);
+                    }
                     i = vs.pos;
                 }
                 if (s.length() > i) {
@@ -697,8 +699,9 @@ public final class CronExpression {
 
         if (c == 'L') {
             if (type == DAY_OF_WEEK) {
-                if (val < 1 || val > 7)
+                if (val < 1 || val > 7) {
                     throw new ParseException("Day-of-Week values must be between 1 and 7", -1);
+                }
                 lastdayOfWeek = true;
             } else {
                 throw new ParseException("'L' option is not valid here. (pos=" + i + ")", i);
@@ -715,8 +718,9 @@ public final class CronExpression {
             } else {
                 throw new ParseException("'W' option is not valid here. (pos=" + i + ")", i);
             }
-            if (val > 31)
+            if (val > 31) {
                 throw new ParseException("The 'W' option does not make sense with values larger than 31 (max number of days in a month)", i);
+            }
             TreeSet<Integer> set = getSet(type);
             set.add(val);
             i++;
