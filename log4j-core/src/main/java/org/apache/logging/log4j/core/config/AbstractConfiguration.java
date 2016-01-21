@@ -153,6 +153,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         return scriptManager;
     }
 
+    @Override
     public WatchManager getWatchManager() {
         return watchManager;
     }

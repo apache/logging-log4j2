@@ -168,6 +168,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
             this.scheduledFuture = future;
         }
 
+        @Override
         public void run() {
             try {
                 runnable.run();

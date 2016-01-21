@@ -249,6 +249,7 @@ public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
         return false;
     }
 
+    @Override
     public void enqueueEvent(final LogEvent event, final AsyncLoggerConfig asyncLoggerConfig) {
         // LOG4J2-639: catch NPE if disruptor field was set to null after our check above
         try {
