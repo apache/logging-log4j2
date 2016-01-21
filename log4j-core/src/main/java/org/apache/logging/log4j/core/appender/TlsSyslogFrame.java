@@ -22,6 +22,8 @@ import org.apache.logging.log4j.util.Chars;
 
 /**
  * Wrapper for messages that are formatted according to RFC 5425.
+ * 
+ * @see <a href="https://tools.ietf.org/html/rfc5425">RFC 5425</a>
  */
 public class TlsSyslogFrame {
     private String message;
