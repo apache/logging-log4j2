@@ -51,7 +51,7 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
 
     private final String fileName;
     private final String filePattern;
-    private Object advertisement;
+    private final Object advertisement;
     private final Advertiser advertiser;
 
     private RollingRandomAccessFileAppender(final String name, final Layout<? extends Serializable> layout,
@@ -64,6 +64,8 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
             configuration.put("contentType", layout.getContentType());
             configuration.put("name", name);
             advertisement = advertiser.advertise(configuration);
+        } else {
+            advertisement = null;
         }
         this.fileName = fileName;
         this.filePattern = filePattern;
