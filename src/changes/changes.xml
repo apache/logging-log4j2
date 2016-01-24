@@ -23,7 +23,10 @@
     <title>Changes</title>
   </properties>
   <body>
-    <release version="2.5.1" date="201Y-MM-DD" description="GA Release 2.5.1">
+    <release version="2.6" date="201Y-MM-DD" description="GA Release 2.6">
+      <action issue="LOG4J2-124" dev="rgoers" type="add">
+        Add shutdown methods to LogManager.
+      </action>
       <action issue="LOG4J2-1222" dev="rgoers" type="fix">
         Creation of a LoggerContext will fail if shutdown is in progress. LogManager will default to SimpleLogger
         instead.
