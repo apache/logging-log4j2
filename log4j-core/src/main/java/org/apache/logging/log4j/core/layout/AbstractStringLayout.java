@@ -43,8 +43,8 @@ import org.apache.logging.log4j.util.Strings;
 public abstract class AbstractStringLayout extends AbstractLayout<String> implements StringLayout {
 
     public interface Serializer {
-        
-        String toSerializable(final LogEvent event);        
+
+        String toSerializable(final LogEvent event);
     }
 
     /**
@@ -58,7 +58,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
 
     /**
      * Returns a {@code StringBuilder} that this Layout implementation can use to write the formatted log event to.
-     * 
+     *
      * @return a {@code StringBuilder}
      */
     protected static StringBuilder getStringBuilder() {
@@ -98,10 +98,10 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
     protected AbstractStringLayout(final Charset charset) {
         this(charset, (byte[]) null, (byte[]) null);
     }
-    
+
     /**
      * Builds a new layout.
-     * @param charset the charset used to encode the header bytes, footer bytes and anything else that needs to be 
+     * @param charset the charset used to encode the header bytes, footer bytes and anything else that needs to be
      *      converted from strings to bytes.
      * @param header the header bytes
      * @param footer the footer bytes
@@ -118,11 +118,11 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
 
     /**
      * Builds a new layout.
-     * @param Configuration config the configuration
-     * @param charset the charset used to encode the header bytes, footer bytes and anything else that needs to be 
+     * @param config the configuration
+     * @param charset the charset used to encode the header bytes, footer bytes and anything else that needs to be
      *      converted from strings to bytes.
-     * @param header the header bytes serializer
-     * @param footer the footer bytes serializer
+     * @param headerSerializer the header bytes serializer
+     * @param footerSerializer the footer bytes serializer
      */
     protected AbstractStringLayout(final Configuration config, final Charset charset, final Serializer headerSerializer, final Serializer footerSerializer) {
         super(config, null, null);
@@ -161,7 +161,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
 
     /**
      * Returns the footer, if one is available.
-     * 
+     *
      * @return A byte array containing the footer.
      */
     @Override
@@ -175,7 +175,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
 
     /**
      * Returns the header, if one is available.
-     * 
+     *
      * @return A byte array containing the header.
      */
     @Override
@@ -211,7 +211,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
                 rootLogger.getLevel(), null, null, null);
         return serializer.toSerializable(logEvent);
     }
-    
+
     /**
      * Formats the Log Event as a byte array.
      *
@@ -222,7 +222,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
     public byte[] toByteArray(final LogEvent event) {
         return getBytes(toSerializable(event));
     }
-    
+
     private void writeObject(final ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
         out.writeUTF(charset.name());
