@@ -45,6 +45,7 @@ import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggerContextKey;
+import org.apache.logging.log4j.spi.ShutdownCapable;
 
 import static org.apache.logging.log4j.core.util.ShutdownCallbackRegistry.*;
 
@@ -54,7 +55,7 @@ import static org.apache.logging.log4j.core.util.ShutdownCallbackRegistry.*;
  * filters, etc and will be atomically updated whenever a reconfigure occurs.
  */
 public class LoggerContext extends AbstractLifeCycle implements org.apache.logging.log4j.spi.LoggerContext,
-        ConfigurationListener {
+        ShutdownCapable, ConfigurationListener {
 
     /**
      * Property name of the property change event fired if the configuration is changed.
@@ -275,6 +276,11 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
                 }
             }
         }
+    }
+
+    @Override
+    public void shutdown() {
+        stop();
     }
 
     @Override

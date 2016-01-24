@@ -27,6 +27,7 @@ import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.Provider;
+import org.apache.logging.log4j.spi.ShutdownCapable;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -282,6 +283,67 @@ public class LogManager {
     protected static LoggerContext getContext(final String fqcn, final ClassLoader loader,
             final boolean currentContext) {
         return factory.getContext(fqcn, loader, null, currentContext);
+    }
+
+    /**
+     * Shutdown using the default LoggerContext.
+     * @since 2.6
+     */
+    public static void shutdown() {
+        shutdown(getContext());
+    }
+
+    /**
+     * Shutdown the logging system if the logging system supports it.
+     * @param currentContext if true the LoggerContext for the caller of this method will be used.
+     * @since 2.6
+     */
+    public static void shutdown(boolean currentContext) {
+        shutdown(getContext(currentContext));
+    }
+
+    /**
+     * Shutdown the logging system if the logging system supports it.
+     * @param loader The ClassLoader for the context. If null the context will attempt to determine the appropriate
+     *            ClassLoader.
+     * @param currentContext if false the LoggerContext appropriate for the caller of this method will be used.
+     * @since 2.6
+     */
+    public static void shutdown(final ClassLoader loader, final boolean currentContext) {
+        shutdown(getContext(loader, currentContext));
+    }
+
+    /**
+     * Shutdown the logging system if the logging system supports it.
+     * @param context the LoggerContext.
+     * @since 2.6
+     */
+    public static void shutdown(LoggerContext context) {
+        if (context != null && context instanceof ShutdownCapable) {
+            ((ShutdownCapable) context).shutdown();
+        }
+    }
+
+    /**
+     * Shutdown the logging system if the logging system supports it.
+     * @param fqcn The fully qualified class name of the Class that this method is a member of.
+     * @param currentContext if false the LoggerContext appropriate for the caller of this method will be used.
+     * @since 2.6
+     */
+    protected static void shutdown(final String fqcn, final boolean currentContext) {
+        shutdown(getContext(fqcn, currentContext));
+    }
+
+    /**
+     * Shutdown the logging system if the logging system supports it.
+     * @param fqcn The fully qualified class name of the Class that this method is a member of.
+     * @param loader The ClassLoader for the context. If null the context will attempt to determine the appropriate
+     *            ClassLoader.
+     * @param currentContext if false the LoggerContext appropriate for the caller of this method will be used.
+     * @since 2.6
+     */
+    protected static void shutdown(final String fqcn, final ClassLoader loader, final boolean currentContext) {
+        shutdown(getContext(fqcn, loader, currentContext));
     }
 
     /**
