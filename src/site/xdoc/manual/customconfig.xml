@@ -164,15 +164,49 @@ builder.add(builder.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Re
     .addAttribute("level", Level.DEBUG));
 AppenderComponentBuilder appenderBuilder = builder.newAppender("Stdout", "CONSOLE").addAttribute("target",
     ConsoleAppender.Target.SYSTEM_OUT);
-appenderBuilder.add(builder.newLayout("PatternLayout").
-    addAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
-appenderBuilder.add(builder.newFilter("MarkerFilter", Filter.Result.DENY, Filter.Result.NEUTRAL).
-    addAttribute("marker", "FLOW"));
+appenderBuilder.add(builder.newLayout("PatternLayout")
+    .addAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
+appenderBuilder.add(builder.newFilter("MarkerFilter", Filter.Result.DENY, Filter.Result.NEUTRAL)
+    .addAttribute("marker", "FLOW"));
 builder.add(appenderBuilder);
-builder.add(builder.newLogger("org.apache.logging.log4j", Level.DEBUG).
-    add(builder.newAppenderRef("Stdout")).addAttribute("additivity", false));
+builder.add(builder.newLogger("org.apache.logging.log4j", Level.DEBUG)
+    .add(builder.newAppenderRef("Stdout")).addAttribute("additivity", false));
 builder.add(builder.newRootLogger(Level.ERROR).add(builder.newAppenderRef("Stdout")));
 ctx = Configurator.initialize(builder.build());
+]]></pre>
+            <p>This example shows how to create a configuration that includes a RollingFileAppender.</p>
+            <pre class="prettyprint linenum"><![CDATA[
+ConfigurationBuilder< BuiltConfiguration > builder = ConfigurationBuilderFactory.newConfigurationBuilder();
+
+builder.setStatusLevel( Level.ERROR);
+builder.setConfigurationName("RollingBuilder");
+// create a console appender
+AppenderComponentBuilder appenderBuilder = builder.newAppender("Stdout", "CONSOLE").addAttribute("target",
+    ConsoleAppender.Target.SYSTEM_OUT);
+appenderBuilder.add(builder.newLayout("PatternLayout")
+    .addAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
+builder.add( appenderBuilder );
+// create a rolling file appender
+LayoutComponentBuilder layoutBuilder = builder.newLayout("PatternLayout")
+    .addAttribute("pattern", "%d [%t] %-5level: %msg%n");
+ComponentBuilder triggeringPolicy = builder.newComponent("Policies")
+    .addComponent(builder.newComponent("CronTriggeringPolicy").addAttribute("schedule", "0 0 0 * * ?"))
+    .addComponent(builder.newComponent("SizeBasedTriggeringPolicy").addAttribute("size", "100M"));
+appenderBuilder = builder.newAppender("rolling", "RollingFile")
+    .addAttribute("fileName", "target/rolling.log")
+    .addAttribute("filePattern", "target/archive/rolling-%d{MM-dd-yy}.log.gz")
+    .add(layoutBuilder)
+    .addComponent(triggeringPolicy);
+builder.add(appenderBuilder);
+
+// create the new logger
+builder.add( builder.newLogger( "TestLogger", Level.DEBUG )
+    .add( builder.newAppenderRef( "rolling" ) )
+    .addAttribute( "additivity", false ) );
+
+builder.add( builder.newRootLogger( Level.DEBUG )
+    .add( builder.newAppenderRef( "rolling" ) ) );
+LoggerContext ctx = Configurator.intitialize(builder.build());
 ]]></pre>
         </subsection>
 
