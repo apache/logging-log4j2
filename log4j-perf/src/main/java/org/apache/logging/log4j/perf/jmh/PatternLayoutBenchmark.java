@@ -42,7 +42,8 @@ import org.openjdk.jmh.annotations.State;
 // ============================== HOW TO RUN THIS TEST: ====================================
 //
 // single thread:
-// java -jar log4j-perf/target/benchmarks.jar ".*PatternLayout.*" -f 1 -wi 5 -i 5
+// java -jar log4j-perf/target/benchmarks.jar ".*PatternLayoutBench.*" -f 1 -wi 5 -i 10
+// java -jar log4j-perf/target/benchmarks.jar ".*PatternLayoutBench.*" -f 1 -wi 5 -i 10 -bm sample -tu ns
 //
 // Usage help:
 // java -jar log4j-perf/target/benchmarks.jar -help
