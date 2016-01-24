@@ -343,7 +343,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     private List<Appender> getAsyncAppenders(final Appender[] all) {
-        final List<Appender> result = new ArrayList<Appender>();
+        final List<Appender> result = new ArrayList<>();
         for (int i = all.length - 1; i >= 0; --i) {
             if (all[i] instanceof AsyncAppender) {
                 result.add(all[i]);
@@ -415,12 +415,20 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     protected void preConfigure(Node node) {
-        for (final Node child : node.getChildren()) {
-            Class<?> clazz = child.getType().getPluginClass();
-            if (clazz.isAnnotationPresent(Scheduled.class)) {
-                configurationScheduler.incrementScheduledItems();
+        try {
+            for (final Node child : node.getChildren()) {
+                if (child.getType() == null) {
+                    LOGGER.error("Unable to locate plugin type for " + child.getName());
+                    continue;
+                }
+                Class<?> clazz = child.getType().getPluginClass();
+                if (clazz.isAnnotationPresent(Scheduled.class)) {
+                    configurationScheduler.incrementScheduledItems();
+                }
+                preConfigure(child);
             }
-            preConfigure(child);
+        } catch (Exception ex) {
+            LOGGER.error("Error capturing node data for node " + node.getName(), ex);
         }
     }
 
