@@ -147,7 +147,7 @@ public class LogManager {
      * WARNING - The LoggerContext returned by this method may not be the LoggerContext used to create a Logger for the
      * calling class.
      * </p>
-     * 
+     *
      * @return The current LoggerContext.
      */
     public static LoggerContext getContext() {
@@ -256,7 +256,7 @@ public class LogManager {
 
     /**
      * Returns a LoggerContext
-     * 
+     *
      * @param fqcn The fully qualified class name of the Class that this method is a member of.
      * @param currentContext if false the LoggerContext appropriate for the caller of this method is returned. For
      *            example, in a web application if the caller is a class in WEB-INF/lib then one LoggerContext may be
@@ -270,7 +270,7 @@ public class LogManager {
 
     /**
      * Returns a LoggerContext
-     * 
+     *
      * @param fqcn The fully qualified class name of the Class that this method is a member of.
      * @param loader The ClassLoader for the context. If null the context will attempt to determine the appropriate
      *            ClassLoader.
@@ -304,17 +304,6 @@ public class LogManager {
 
     /**
      * Shutdown the logging system if the logging system supports it.
-     * @param loader The ClassLoader for the context. If null the context will attempt to determine the appropriate
-     *            ClassLoader.
-     * @param currentContext if false the LoggerContext appropriate for the caller of this method will be used.
-     * @since 2.6
-     */
-    public static void shutdown(final ClassLoader loader, final boolean currentContext) {
-        shutdown(getContext(loader, currentContext));
-    }
-
-    /**
-     * Shutdown the logging system if the logging system supports it.
      * @param context the LoggerContext.
      * @since 2.6
      */
@@ -325,30 +314,8 @@ public class LogManager {
     }
 
     /**
-     * Shutdown the logging system if the logging system supports it.
-     * @param fqcn The fully qualified class name of the Class that this method is a member of.
-     * @param currentContext if false the LoggerContext appropriate for the caller of this method will be used.
-     * @since 2.6
-     */
-    protected static void shutdown(final String fqcn, final boolean currentContext) {
-        shutdown(getContext(fqcn, currentContext));
-    }
-
-    /**
-     * Shutdown the logging system if the logging system supports it.
-     * @param fqcn The fully qualified class name of the Class that this method is a member of.
-     * @param loader The ClassLoader for the context. If null the context will attempt to determine the appropriate
-     *            ClassLoader.
-     * @param currentContext if false the LoggerContext appropriate for the caller of this method will be used.
-     * @since 2.6
-     */
-    protected static void shutdown(final String fqcn, final ClassLoader loader, final boolean currentContext) {
-        shutdown(getContext(fqcn, loader, currentContext));
-    }
-
-    /**
      * Returns the current LoggerContextFactory.
-     * 
+     *
      * @return The LoggerContextFactory.
      */
     public static LoggerContextFactory getFactory() {
@@ -378,7 +345,7 @@ public class LogManager {
      * <p>
      * This logger lets you use a {@link java.util.Formatter} string in the message to format parameters.
      * </p>
-     * 
+     *
      * @return The Logger for the calling class.
      * @throws UnsupportedOperationException if the calling class cannot be determined.
      * @since 2.4
@@ -495,7 +462,7 @@ public class LogManager {
 
     /**
      * Returns a Logger with the name of the calling class.
-     * 
+     *
      * @return The Logger for the calling class.
      * @throws UnsupportedOperationException if the calling class cannot be determined.
      */
@@ -505,7 +472,7 @@ public class LogManager {
 
     /**
      * Returns a Logger using the fully qualified name of the Class as the Logger name.
-     * 
+     *
      * @param clazz The Class whose name should be used as the Logger name. If null it will default to the calling
      *            class.
      * @return The Logger.
@@ -519,7 +486,7 @@ public class LogManager {
 
     /**
      * Returns a Logger using the fully qualified name of the Class as the Logger name.
-     * 
+     *
      * @param clazz The Class whose name should be used as the Logger name. If null it will default to the calling
      *            class.
      * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change the
@@ -535,7 +502,7 @@ public class LogManager {
 
     /**
      * Returns a Logger with the name of the calling class.
-     * 
+     *
      * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change the
      *            logger but will log a warning if mismatched.
      * @return The Logger for the calling class.
@@ -547,7 +514,7 @@ public class LogManager {
 
     /**
      * Returns a Logger using the fully qualified class name of the value as the Logger name.
-     * 
+     *
      * @param value The value whose class name should be used as the Logger name. If null the name of the calling class
      *            will be used as the logger name.
      * @return The Logger.
@@ -560,7 +527,7 @@ public class LogManager {
 
     /**
      * Returns a Logger using the fully qualified class name of the value as the Logger name.
-     * 
+     *
      * @param value The value whose class name should be used as the Logger name. If null the name of the calling class
      *            will be used as the logger name.
      * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change the
