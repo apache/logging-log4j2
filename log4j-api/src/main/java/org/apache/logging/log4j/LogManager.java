@@ -286,16 +286,23 @@ public class LogManager {
     }
 
     /**
-     * Shutdown using the default LoggerContext.
+     * Shutdown using the LoggerContext appropriate for the caller of this method.
+     * This is equivalent to calling {@code LogManager.shutdown(false)}.
      * @since 2.6
      */
     public static void shutdown() {
-        shutdown(getContext());
+        shutdown(false);
     }
 
     /**
      * Shutdown the logging system if the logging system supports it.
-     * @param currentContext if true the LoggerContext for the caller of this method will be used.
+     * This is equivalent to calling {@code LogManager.shutdown(LogManager.getContext(currentContext))}.
+     * @param currentContext if true a default LoggerContext (may not be the LoggerContext used to create a Logger
+     *            for the calling class) will be used.
+     *            If false the LoggerContext appropriate for the caller of this method is used. For
+     *            example, in a web application if the caller is a class in WEB-INF/lib then one LoggerContext may be
+     *            used and if the caller is a class in the container's classpath then a different LoggerContext may
+     *            be used.
      * @since 2.6
      */
     public static void shutdown(boolean currentContext) {
