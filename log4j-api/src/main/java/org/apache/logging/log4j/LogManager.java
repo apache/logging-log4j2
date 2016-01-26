@@ -27,7 +27,7 @@ import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.Provider;
-import org.apache.logging.log4j.spi.ShutdownCapable;
+import org.apache.logging.log4j.spi.Terminable;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -315,8 +315,8 @@ public class LogManager {
      * @since 2.6
      */
     public static void shutdown(LoggerContext context) {
-        if (context != null && context instanceof ShutdownCapable) {
-            ((ShutdownCapable) context).shutdown();
+        if (context != null && context instanceof Terminable) {
+            ((Terminable) context).terminate();
         }
     }
 
