@@ -210,6 +210,7 @@ class StringBuilderPool extends ObjectPool<StringBuilder> {
         super.returnObject(stringBuilder);
     }
 
+    @Override
     protected StringBuilder createObject() {
         return new StringBuilder(initialSize);
     }
