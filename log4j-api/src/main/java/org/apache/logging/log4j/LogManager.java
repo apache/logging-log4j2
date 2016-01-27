@@ -288,6 +288,10 @@ public class LogManager {
     /**
      * Shutdown using the LoggerContext appropriate for the caller of this method.
      * This is equivalent to calling {@code LogManager.shutdown(false)}.
+     *
+     * This call is synchronous and will block until shut down is complete.
+     * This may include flushing pending log events over network connections.
+     *
      * @since 2.6
      */
     public static void shutdown() {
@@ -297,6 +301,10 @@ public class LogManager {
     /**
      * Shutdown the logging system if the logging system supports it.
      * This is equivalent to calling {@code LogManager.shutdown(LogManager.getContext(currentContext))}.
+     *
+     * This call is synchronous and will block until shut down is complete.
+     * This may include flushing pending log events over network connections.
+     *
      * @param currentContext if true a default LoggerContext (may not be the LoggerContext used to create a Logger
      *            for the calling class) will be used.
      *            If false the LoggerContext appropriate for the caller of this method is used. For
@@ -311,6 +319,10 @@ public class LogManager {
 
     /**
      * Shutdown the logging system if the logging system supports it.
+     *
+     * This call is synchronous and will block until shut down is complete.
+     * This may include flushing pending log events over network connections.
+     *
      * @param context the LoggerContext.
      * @since 2.6
      */
