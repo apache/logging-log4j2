@@ -12,6 +12,9 @@ public interface Terminable {
 
     /**
      * Requests that the logging implementation shut down.
+     *
+     * This call is synchronous and will block until shut down is complete.
+     * This may include flushing pending log events over network connections.
      */
     void terminate();
 }
