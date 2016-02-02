@@ -288,7 +288,7 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
 </pre>
           <p>
           If <code>complete="false"</code>, the appender does not write the JSON open array character "[" at the start
-          of the document. and "]" and the end.
+          of the document, "]" and the end, nor comma "," between records.
           </p>
           <p>
           This approach enforces the independence of the JSONLayout and the appender where you embed it.
@@ -334,7 +334,7 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
             <tr>
               <td>complete</td>
               <td>boolean</td>
-              <td>If true, the appender includes the JSON header and footer. Defaults to false.</td>
+              <td>If true, the appender includes the JSON header and footer, and comma between records. Defaults to false.</td>
             </tr>
             <tr>
               <td>properties</td>

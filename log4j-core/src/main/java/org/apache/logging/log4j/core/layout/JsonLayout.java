@@ -780,8 +780,8 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 }
  * </pre>
  * <p>
- * If {@code complete="false"}, the appender does not write the JSON open array character "[" at the start of the
- * document. and "]" and the end.
+ * If {@code complete="false"}, the appender does not write the JSON open array character "[" at the start
+ * of the document, "]" and the end, nor comma "," between records.
  * </p>
  * <p>
  * This approach enforces the independence of the JsonLayout and the appender where you embed it.
@@ -881,7 +881,7 @@ public final class JsonLayout extends AbstractJacksonLayout {
      * @param properties
      *            If "true", includes the thread context in the generated JSON.
      * @param complete
-     *            If "true", includes the JSON header and footer, defaults to "false".
+     *            If "true", includes the JSON header and footer, and comma between records.
      * @param compact
      *            If "true", does not use end-of-lines and indentation, defaults to "false".
      * @param eventEol
