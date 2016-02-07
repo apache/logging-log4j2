@@ -335,7 +335,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     @Override
     public void entry() {
-        entry(FQCN, (String) null);
+        entry(FQCN, (Object[]) null);
     }
 
     @Override
@@ -351,7 +351,11 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      */
     protected void entry(final String fqcn, final Object... params) {
         if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
-            logMessage(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg(null, params.length, params), null);
+            if (params == null) {
+                logMessage(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg(null, 0, null), null);
+            } else {
+                logMessage(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg(null, params.length, params), null);
+            }
         }
     }
 
@@ -361,7 +365,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     protected Message entryMsg(final String format, final int count, final Object... params) {
         if (count == 0) {
-            if (format == null) {
+            if (format == null || format.length() == 0) {
                 return messageFactory.newMessage("entry");
             } else {
                 return messageFactory.newMessage("entry: " + format);
@@ -1275,7 +1279,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     @Override
     public void traceEntry() {
-        enter(FQCN, null, null);
+        enter(FQCN, null, (Object[]) null);
     }
 
     @Override
