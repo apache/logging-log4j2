@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.6" date="201Y-MM-DD" description="GA Release 2.6">
+      <action issue="LOG4J2-1255" dev="rgoers" type="update">
+        Add enhanced entry and exit methods.
+      </action>
       <action issue="LOG4J2-124" dev="rgoers" type="add">
         Add shutdown methods to LogManager.
       </action>

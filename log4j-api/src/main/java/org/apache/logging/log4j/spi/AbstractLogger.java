@@ -24,6 +24,7 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
+import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LambdaUtil;
@@ -294,9 +295,47 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         logIfEnabled(FQCN, Level.DEBUG, null, msgSupplier, t);
     }
 
+    /**
+     * Logs entry to a method with location information.
+     *
+     * @param fqcn The fully qualified class name of the <b>caller</b>.
+     * @param format Format String for the parameters.
+     * @param paramSuppliers The Suppliers of the parameters.
+     */
+    protected void enter(final String fqcn, final String format, final Supplier<?>... paramSuppliers) {
+        if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
+            logMessage(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg(format, paramSuppliers.length, paramSuppliers), null);
+        }
+    }
+
+    /**
+     * Logs entry to a method with location information.
+     *
+     * @param fqcn The fully qualified class name of the <b>caller</b>.
+     * @param format The format String for the parameters.
+     * @param params The parameters to the method.
+     */
+    protected void enter(final String fqcn, final String format, final Object... params) {
+        if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
+            logMessage(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg(format, params.length, params), null);
+        }
+    }
+
+    /**
+     * Logs entry to a method with location information.
+     *
+     * @param fqcn The fully qualified class name of the <b>caller</b>.
+     * @param msgSupplier The Supplier of the Message.
+     */
+    protected void enter(final String fqcn, final MessageSupplier msgSupplier) {
+        if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
+            logMessage(fqcn, Level.TRACE, ENTRY_MARKER, new EntryMessage(msgSupplier.get()), null);
+        }
+    }
+
     @Override
     public void entry() {
-        entry(FQCN);
+        entry(FQCN, (String) null);
     }
 
     @Override
@@ -312,15 +351,28 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      */
     protected void entry(final String fqcn, final Object... params) {
         if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
-            logIfEnabled(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg(params.length, params), null);
+            logMessage(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg(null, params.length, params), null);
         }
     }
 
     protected Message entryMsg(final int count, final Object... params) {
+        return entryMsg(null, count, params);
+    }
+
+    protected Message entryMsg(final String format, final int count, final Object... params) {
         if (count == 0) {
-            return messageFactory.newMessage("entry");
+            if (format == null) {
+                return messageFactory.newMessage("entry");
+            } else {
+                return messageFactory.newMessage("entry: " + format);
+            }
         }
-        final StringBuilder sb = new StringBuilder("entry params(");
+        final StringBuilder sb = new StringBuilder("entry");
+        if (format != null) {
+            sb.append(": ").append(format);
+            return messageFactory.newMessage(sb.toString(), params);
+        }
+        sb.append(" params(");
         for (int i = 0; i < params.length; i++) {
             Object parm = params[i];
             sb.append(parm != null ? parm.toString() : "null");
@@ -330,6 +382,14 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         }
         sb.append(')');
         return messageFactory.newMessage(sb.toString());
+    }
+
+    protected Message entryMsg(final String format, final int count, final Supplier<?>... paramSuppliers) {
+        Object[] params = new Object[count];
+        for (int i = 0; i < count; i++) {
+            params[i] = paramSuppliers[i].get();
+        }
+        return entryMsg(format, count, params);
     }
 
     @Override
@@ -454,7 +514,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     @Override
     public void exit() {
-        exit(FQCN, null);
+        exit(FQCN, (Object) null);
     }
 
     @Override
@@ -471,17 +531,36 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * @return the return value passed to this method.
      */
     protected <R> R exit(final String fqcn, final R result) {
-        if (isEnabled(Level.TRACE, EXIT_MARKER, (Object) null, null)) {
-            logIfEnabled(fqcn, Level.TRACE, EXIT_MARKER, exitMsg(result), null);
-        }
+        logIfEnabled(fqcn, Level.TRACE, EXIT_MARKER, exitMsg(null, result), null);
         return result;
     }
 
-    protected Message exitMsg(final Object result) {
+    /**
+     * Logs exiting from a method with the result and location information.
+     *
+     * @param fqcn The fully qualified class name of the <b>caller</b>.
+     * @param <R> The type of the parameter and object being returned.
+     * @param result The result being returned from the method call.
+     * @return the return value passed to this method.
+     */
+    protected <R> R exit(final String fqcn, final String format, final R result) {
+        logIfEnabled(fqcn, Level.TRACE, EXIT_MARKER, exitMsg(format, result), null);
+        return result;
+    }
+
+    protected Message exitMsg(final String format, final Object result) {
         if (result == null) {
-            return messageFactory.newMessage("exit");
+            if (format == null) {
+                return messageFactory.newMessage("exit");
+            }
+            return messageFactory.newMessage("exit: " + format);
+        } else  {
+            if (format == null) {
+                return messageFactory.newMessage("exit with(" + result + ')');
+            }
+            return messageFactory.newMessage("exit: " + format, result);
         }
-        return messageFactory.newMessage("exit with(" + result + ')');
+
     }
 
     @Override
@@ -1195,6 +1274,73 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @Override
+    public void traceEntry() {
+        enter(FQCN, null, null);
+    }
+
+    @Override
+    public void traceEntry(final String format, final Object... params) {
+        enter(FQCN, format, params);
+    }
+
+
+    @Override
+    public void traceEntry(final Supplier<?>... paramSuppliers) {
+        enter(FQCN, null, paramSuppliers);
+    }
+
+    @Override
+    public void traceEntry(final String format, final Supplier<?>... paramSuppliers) {
+        enter(FQCN, format, paramSuppliers);
+    }
+
+
+    @Override
+    public void traceEntry(final Message message) {
+        enter(FQCN, new MessageSupplier() { @Override public Message get() { return message; }});
+    }
+
+    @Override
+    public void traceEntry(final MessageSupplier msgSupplier) {
+        enter(FQCN, msgSupplier);
+    }
+
+    @Override
+    public void traceExit() {
+        exit(FQCN, null, null);
+    }
+
+    @Override
+    public <R> R traceExit(final R result) {
+        return exit(FQCN, null, result);
+    }
+
+    @Override
+    public <R> R traceExit(final String format, final R result) {
+        return exit(FQCN, format, result);
+    }
+
+
+    @Override
+    public <R> R traceExit(final R result, final MessageSupplier messageSupplier) {
+        if (isEnabled(Level.TRACE, EXIT_MARKER, messageSupplier, null)) {
+            logMessage(FQCN, Level.TRACE, EXIT_MARKER, new MessageSupplier() {
+                public Message get() { return new ExitMessage(messageSupplier.get()); }; }, null);
+        }
+        return result;
+    }
+
+    @Override
+    public <R> R traceExit(final R result, final Message message) {
+        if (isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
+            logMessage(FQCN, Level.TRACE, EXIT_MARKER, new MessageSupplier() {
+                public Message get() { return new ExitMessage(message); }; }, null);
+        }
+        return result;
+    }
+
+
+    @Override
     public void warn(final Marker marker, final Message msg) {
         logIfEnabled(FQCN, Level.WARN, marker, msg, null);
     }
@@ -1312,5 +1458,66 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     @Override
     public void warn(final MessageSupplier msgSupplier, final Throwable t) {
         logIfEnabled(FQCN, Level.WARN, null, msgSupplier, t);
+    }
+
+    private static class FlowMessage implements Message {
+
+        private static final long serialVersionUID = 7580175170272152912L;
+        private Message message;
+        private final String text;
+
+        FlowMessage(String text, Message message) {
+            this.message = message;
+            this.text = text;
+        }
+
+        @Override
+        public String getFormattedMessage() {
+            if (message != null) {
+                return text + ": " + message.getFormattedMessage();
+            }
+            return text;
+        }
+
+        @Override
+        public String getFormat() {
+            if (message != null) {
+                return text + ": " + message.getFormat();
+            }
+            return text;
+        }
+
+        @Override
+        public Object[] getParameters() {
+            if (message != null) {
+                return message.getParameters();
+            }
+            return null;
+        }
+
+        @Override
+        public Throwable getThrowable() {
+            if (message != null) {
+                return message.getThrowable();
+            }
+            return null;
+        }
+    }
+
+    private static class EntryMessage extends FlowMessage {
+
+        EntryMessage(Message message) {
+            super("entry", message);
+        }
+
+    }
+
+
+    private static class ExitMessage extends FlowMessage {
+
+        ExitMessage(Message message) {
+            super("exit", message);
+        }
+
     }
 }

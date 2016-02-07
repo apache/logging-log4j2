@@ -20,10 +20,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.logging.log4j.message.JsonMessage;
+import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.SimpleMessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,6 +58,27 @@ public class LoggerTest {
         assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE entry"));
         assertThat("incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE exit"));
 
+    }
+
+    @Test
+    public void jsonFlow1() {
+        logger.traceEntry(new MessageSupplier() {
+            @Override
+            public Message get() {
+                return new JsonMessage(System.getProperties());
+            }
+        });
+        final Response response = new Response(-1, "Generic error");
+        logger.traceExit(response, new MessageSupplier() {
+            @Override public Message get() {
+                return new JsonMessage(response);
+            }
+        });
+        assertEquals(2, results.size());
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE entry"));
+        assertThat("Missing entry data", results.get(0), containsString("\"java.runtime.name\":"));
+        assertThat("incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE exit"));
+        assertThat("Missing exit data", results.get(1), containsString("\"message\":\"Generic error\""));
     }
 
     @Test
@@ -396,5 +420,32 @@ public class LoggerTest {
         assertEquals(1, results.size());
         assertThat("Incorrect Throwing",
                 results.get(0), startsWith("THROWING[ EXCEPTION ] ERROR throwing java.lang.IllegalArgumentException: Test Exception"));
+    }
+
+
+    private class Response {
+        int status;
+        String message;
+
+        public Response(int status, String message) {
+            this.status = status;
+            this.message = message;
+        }
+
+        public int getStatus() {
+            return status;
+        }
+
+        public void setStatus(int status) {
+            this.status = status;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
     }
 }

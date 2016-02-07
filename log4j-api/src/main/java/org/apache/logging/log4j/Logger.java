@@ -30,7 +30,7 @@ import org.apache.logging.log4j.util.Supplier;
  * gets its own Logger named after its fully qualified class name (the default Logger name when obtained through the
  * {@link LogManager#getLogger()} method). Thus, the simplest way to use this would be like so:
  * </p>
- * 
+ *
  * <pre>
  * public class MyClass {
  *     private static final Logger LOGGER = LogManager.getLogger();
@@ -49,7 +49,7 @@ import org.apache.logging.log4j.util.Supplier;
  * Since 2.4, methods have been added to the {@code Logger} interface to support lambda expressions. The new methods
  * allow client code to lazily log messages without explicitly checking if the requested log level is enabled. For
  * example, previously one would write:
- * 
+ *
  * <pre>
  * // pre-Java 8 style optimization: explicitly check the log level
  * // to make sure the expensiveOperation() method is only called if necessary
@@ -59,7 +59,7 @@ import org.apache.logging.log4j.util.Supplier;
  * </pre>
  * <p>
  * With Java 8, the same effect can be achieved with a lambda expression:
- * 
+ *
  * <pre>
  * // Java-8 style optimization: no need to explicitly check the log level:
  * // the lambda expression is not evaluated if the TRACE level is not enabled
@@ -320,7 +320,7 @@ public interface Logger {
 
     /**
      * Logs entry to a method along with its parameters. For example,
-     * 
+     *
      * <pre>
      * public void doSomething(String foo, int bar) {
      *     LOGGER.entry(foo, bar);
@@ -332,11 +332,7 @@ public interface Logger {
      * bytecode manipulation tools. It can be rather tedious (and messy) to use this type of method manually.
      * </p>
      *
-     * @param params The parameters to the method. TODO Use of varargs results in array creation which can be a
-     *            substantial portion of no-op case. LogMF/LogSF provides several overrides to avoid vararg except in
-     *            edge cases. (RG) LogMF and LogSF implement these in LogXF which calls logger.callAppenders.
-     *            callAppenders is part of the implementation and cannot be used by the API. Adding more methods here
-     *            and in AbstractLogger is sufficient.
+     * @param params The parameters to the method.
      */
     void entry(Object... params);
 
@@ -413,11 +409,6 @@ public interface Logger {
      * @param message the message to log; the format depends on the message factory.
      * @param params parameters to the message.
      * @see #getMessageFactory()
-     *
-     *      TODO Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
-     *      array creation expense on every call. (RG) I assume you meant error, not info. It isn't possible to be
-     *      misinterpreted as the previous method is for that signature. Methods should be added to avoid varargs for 1,
-     *      2 or 3 parameters.
      */
     void error(Marker marker, String message, Object... params);
 
@@ -529,11 +520,6 @@ public interface Logger {
      * @param message the message to log; the format depends on the message factory.
      * @param params parameters to the message.
      * @see #getMessageFactory()
-     *
-     *      TODO Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
-     *      array creation expense on every call. (RG) I assume you meant error, not info. It isn't possible to be
-     *      misinterpreted as the previous method is for that signature. Methods should be added to avoid varargs for 1,
-     *      2 or 3 parameters.
      */
     void error(String message, Object... params);
 
@@ -583,7 +569,7 @@ public interface Logger {
 
     /**
      * Logs exiting from a method with the result. This may be coded as:
-     * 
+     *
      * <pre>
      * return LOGGER.exit(myResult);
      * </pre>
@@ -667,11 +653,6 @@ public interface Logger {
      * @param message the message to log; the format depends on the message factory.
      * @param params parameters to the message.
      * @see #getMessageFactory()
-     *
-     *      TODO Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
-     *      array creation expense on every call.(RG) I assume you meant fatal, not info. It isn't possible to be
-     *      misinterpreted as the previous method is for that signature. Methods should be added to avoid varargs for 1,
-     *      2 or 3 parameters.
      */
     void fatal(Marker marker, String message, Object... params);
 
@@ -783,11 +764,6 @@ public interface Logger {
      * @param message the message to log; the format depends on the message factory.
      * @param params parameters to the message.
      * @see #getMessageFactory()
-     *
-     *      TODO Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
-     *      array creation expense on every call.(RG) I assume you meant fatal, not info. It isn't possible to be
-     *      misinterpreted as the previous method is for that signature. Methods should be added to avoid varargs for 1,
-     *      2 or 3 parameters.
      */
     void fatal(String message, Object... params);
 
@@ -924,10 +900,6 @@ public interface Logger {
      * @param message the message to log; the format depends on the message factory.
      * @param params parameters to the message.
      * @see #getMessageFactory()
-     *
-     *      TODO Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
-     *      array creation expense on every call. (RG) It isn't possible to be misinterpreted as the previous method is
-     *      for that signature. Methods should be added to avoid varargs for 1, 2 or 3 parameters.
      */
     void info(Marker marker, String message, Object... params);
 
@@ -1039,10 +1011,6 @@ public interface Logger {
      * @param message the message to log; the format depends on the message factory.
      * @param params parameters to the message.
      * @see #getMessageFactory()
-     *
-     *      TODO Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
-     *      array creation expense on every call. (RG) It isn't possible to be misinterpreted as the previous method is
-     *      for that signature. Methods should be added to avoid varargs for 1, 2 or 3 parameters.
      */
     void info(String message, Object... params);
 
@@ -1470,7 +1438,7 @@ public interface Logger {
 
     /**
      * Logs an exception or error to be thrown. This may be coded as:
-     * 
+     *
      * <pre>
      * throw logger.throwing(Level.DEBUG, myException);
      * </pre>
@@ -1484,7 +1452,7 @@ public interface Logger {
 
     /**
      * Logs an exception or error to be thrown. This may be coded as:
-     * 
+     *
      * <pre>
      * throw logger.throwing(myException);
      * </pre>
@@ -1726,6 +1694,144 @@ public interface Logger {
     void trace(Supplier<?> msgSupplier, Throwable t);
 
     /**
+     * Logs entry to a method. Used when the method in question has no parameters or when the parameters should not be
+     * logged.
+     */
+    void traceEntry();
+
+    /**
+     * Logs entry to a method along with its parameters. For example,
+     *
+     * <pre>
+     * public void doSomething(String foo, int bar) {
+     *     LOGGER.traceEntry("Parameters: {} and {}", foo, bar);
+     *     // do something
+     * }
+     * </pre>
+     *
+     * @param format The format String for the parameters.
+     * @param params The parameters to the method.
+     */
+    void traceEntry(final String format, final Object... params);
+
+    /**
+     * Logs entry to a method along with its parameters. For example,
+     *
+     * <pre>
+     * public void doSomething(Request foo) {
+     *     LOGGER.traceEntry(()->gson.toJson(foo));
+     *     // do something
+     * }
+     * </pre>
+     *
+     * @param paramSuppliers The Suppliers for the parameters to the method.
+     */
+    void traceEntry(final Supplier<?>... paramSuppliers);
+
+    /**
+     * Logs entry to a method along with its parameters. For example,
+     *
+     * <pre>
+     * public void doSomething(String foo, int bar) {
+     *     LOGGER.traceEntry("Parameters: {} and {}", ()->gson.toJson(foo), ()-> bar);
+     *     // do something
+     * }
+     * </pre>
+     *
+     * @param format The format String for the parameters.
+     * @param paramSuppliers The Suppliers for the parameters to the method.
+     */
+    void traceEntry(final String format, final Supplier<?>... paramSuppliers);
+
+    /**
+     * Logs entry to a method using a Message to describe the parameters.
+     * <pre>
+     * public void doSomething(Request foo) {
+     *     LOGGER.traceEntry(new JsonMessage(foo));
+     *     // do something
+     * }
+     * </pre>
+     *
+     * @param message The message.
+     */
+    void traceEntry(final Message message);
+
+    /**
+     * Logs entry to a method using a Message to describe the parameters.
+     * <pre>
+     * public void doSomething(Request foo) {
+     *     LOGGER.traceEntry(new JsonMessage(foo));
+     *     // do something
+     * }
+     * </pre>
+     *
+     * @param msgSupplier The Supplier of the Message.
+     */
+    void traceEntry(final MessageSupplier msgSupplier);
+
+    /**
+     * Logs exit from a method. Used for methods that do not return anything.
+     */
+    void traceExit();
+
+    /**
+     * Logs exiting from a method with the result. This may be coded as:
+     *
+     * <pre>
+     * return LOGGER.traceExit(myResult);
+     * </pre>
+     *
+     * @param <R> The type of the parameter and object being returned.
+     * @param result The result being returned from the method call.
+     * @return the result.
+     */
+    <R> R traceExit(R result);
+
+    /**
+     * Logs exiting from a method with the result. This may be coded as:
+     *
+     * <pre>
+     * return LOGGER.traceExit("Result: {}", myResult);
+     * </pre>
+     *
+     * @param <R> The type of the parameter and object being returned.
+     * @param format The format String for the result.
+     * @param result The result being returned from the method call.
+     * @return the result.
+     */
+    <R> R traceExit(final String format, final R result);
+
+    /**
+     * Logs exiting from a method with the result. Used when construction of the Message might be
+     * expensive. This may be coded as:
+     *
+     * <pre>
+     * return LOGGER.traceExit(myResult, () -> new ParameterizedMessage("MyResult: field1: {}, field2: {}",
+     *           myResult.field1.toString(), myResult.field2.toString());
+     * </pre>
+     *
+     * @param <R> The type of the parameter and object being returned.
+     * @param result The result being returned from the method call.
+     * @param messageSupplier The supplier of the Message.
+     * @return the result.
+     */
+    <R> R traceExit(final R result, final MessageSupplier messageSupplier);
+
+    /**
+     * Logs exiting from a method with the result. Allows custom formatting of the result. This may be coded as:
+     *
+     * <pre>
+     * return LOGGER.traceExit(myResult, new JsonMessage(myResult));
+     * </pre>
+     *
+     * @param <R> The type of the parameter and object being returned.
+     * @param result The result being returned from the method call.
+     * @param message The Message containing the formatted result.
+     * @return the result.
+     */
+    <R> R traceExit(final R result, final Message message);
+
+    /**
      * Logs a message with the specific Marker at the {@link Level#WARN WARN} level.
      *
      * @param marker the marker data specific to this log statement
@@ -1798,11 +1904,6 @@ public interface Logger {
      * @param message the message to log; the format depends on the message factory.
      * @param params parameters to the message.
      * @see #getMessageFactory()
-     *
-     *      TODO Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
-     *      array creation expense on every call. (RG) I assume you meant warn, not info. It isn't possible to be
-     *      misinterpreted as the previous method is for that signature.Methods should be added to avoid varargs for 1,
-     *      2 or 3 parameters.
      */
     void warn(Marker marker, String message, Object... params);
 
@@ -1914,11 +2015,6 @@ public interface Logger {
      * @param message the message to log; the format depends on the message factory.
      * @param params parameters to the message.
      * @see #getMessageFactory()
-     *
-     *      TODO Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs
-     *      array creation expense on every call. (RG) I assume you meant warn, not info. It isn't possible to be
-     *      misinterpreted as the previous method is for that signature.Methods should be added to avoid varargs for 1,
-     *      2 or 3 parameters.
      */
     void warn(String message, Object... params);
 

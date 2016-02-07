@@ -40,18 +40,26 @@
               <li>help educate new developers in learning the application.</li>
             </ul>
             <p>
-              The two most used methods are the entry() and exit() methods. entry() should be placed at the
-              beginning of methods, except perhaps for simple getters and setters. entry() can be called
-              passing from 0 to 4 parameters. Typically these will be parameters passed to the method.
-              The entry() method logs with a level of TRACE and uses a Marker with a name of "ENTER" which
-              is also a "FLOW" Marker.
+              The most used methods are the entry() or traceEntry() and exit() or traceExit() methods. entry()
+              or traceEntry() should be placed at the beginning of methods, except perhaps for simple
+              getters and setters. entry() can be calledpassing from 0 to 4 parameters. Typically these will be
+              parameters passed to the method. traceEntry() can be passed a format String and a variable list of
+              parameters, or a Message. The entry() and traceEntry() methods log with a level of TRACE and uses
+              a Marker with a name of "ENTER" which is also a "FLOW" Marker and all message strings will begin
+              with "event", even if a format String or Message is used.
             </p>
+            <p>The main difference between the entry and traceEntry methods is that the entry method accepts a
+              variable list of objects where presumably each is a method parameter. The traceEntry method
+              accepts a format string followed by a variable list of objects, presumably included in the
+              format String. It is not possible to have a single method that includes both of these as it would
+              be ambiguous whether the first String is a parameter or a format String.</p>
             <p>
-              The exit() method should be placed before any return statement or as the last statement of
-              methods without a return. exit() can be called with or without a parameter. Typically, methods
-              that return void will use exit() while methods that return an Object will use exit(Object obj).
-              The exit() method logs with a level of TRACE and uses a Marker with a name of "EXIT" which is
-              also a "FLOW" Marker.
+              An exit() or traceExit() method should be placed before any return statement or as the last statement of
+              methods without a return. exit() and traceExit() can be called with or without a parameter. Typically,
+              methods that return void will use exit() or traceExit() while methods that return an Object will use
+              exit(Object obj) or traceExit(object, new SomeMessage(object)). The exit() and traceExit() methods log
+              with a level of TRACE and uses a Marker with a name of "EXIT" which is also a "FLOW" Marker and all
+              message strings will begin with "exit", even if a format String or Message is used.
             </p>
             <p>
               The throwing() method can be used by an application when it is throwing an exception that is
@@ -86,6 +94,17 @@ public class TestService {
         "You had me at hello"
     };
     private Random rand = new Random(1);
+
+    public void setMessages(String[] messages) {
+        logger.traceEntry(new JsonMessage(messages));
+        this.messages = messages;
+        logger.traceExit();
+    }
+
+    public String[] getMessages() {
+        logger.traceEntry();
+        return logger.traceExit(messages, new JsonMessage(messages));
+    }
 
     public String retrieveMessage() {
         logger.entry();
