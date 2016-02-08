@@ -268,8 +268,8 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
                         }
                     });
                 } catch (final IllegalStateException e) {
-                    LOGGER.error(SHUTDOWN_HOOK_MARKER,
-                            "Unable to register shutdown hook because JVM is shutting down.", e);
+                    throw new IllegalStateException(
+                            "Unable to register Log4j shutdown hook because JVM is shutting down.", e);
                 } catch (final SecurityException e) {
                     LOGGER.error(SHUTDOWN_HOOK_MARKER, "Unable to register shutdown hook due to security restrictions",
                             e);
