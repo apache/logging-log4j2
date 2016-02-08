@@ -82,6 +82,17 @@ public class LoggerTest {
     }
 
     @Test
+    public void flowTracingStringObjectArray() {
+        logger.traceEntry("doFoo(a={}, b={})", 1, 2);
+        logger.traceExit(3);
+        assertEquals(2, results.size());
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE entry"));
+        assertThat("Missing entry data", results.get(0), containsString("doFoo(a=1, b=2)"));
+        assertThat("incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE exit"));
+        assertThat("Missing exit data", results.get(1), containsString("3"));
+    }
+
+    @Test
     public void catching() {
         try {
             throw new NullPointerException();
