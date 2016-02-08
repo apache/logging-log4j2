@@ -61,7 +61,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void jsonFlow1() {
+    public void flowTracingMessageSupplier() {
         logger.traceEntry(new MessageSupplier() {
             @Override
             public Message get() {
