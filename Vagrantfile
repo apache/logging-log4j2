@@ -17,7 +17,7 @@
 # limitations under the License.
 
 $script = <<SCRIPT
-apt-get install --quiet --yes openjdk-6-jdk maven
+apt-get install --quiet --yes openjdk-7-jdk maven
 SCRIPT
 
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
