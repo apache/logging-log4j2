@@ -48,11 +48,7 @@ public class BundleTestInfo {
         try {
             final Model model = reader.read(fileReader);
             this.project = new MavenProject(model);
-        } catch (final FileNotFoundException e) {
-            throw new IllegalStateException(e);
-        } catch (final IOException e) {
-            throw new IllegalStateException(e);
-        } catch (final XmlPullParserException e) {
+        } catch (final IOException | XmlPullParserException e) {
             throw new IllegalStateException(e);
         } finally {
             try {
