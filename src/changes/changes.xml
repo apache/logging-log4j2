@@ -105,6 +105,9 @@
       <action issue="LOG4J2-1254" dev="rpopma" type="fix" due-to="Josh Trow">
         Fix typo in Flow Tracing documentation.
       </action>
+      <action issue="LOG4J2-920" dev="mattsicker" type="fix" due-to="Ludovic Hochet">
+        ClassNotFoundException for BundleContextSelector when initialising in an OSGi environment.
+      </action>
     </release>
     <release version="2.5" date="2015-12-06" description="GA Release 2.5">
       <action issue="LOG4J2-324" dev="rpopma" type="fix">

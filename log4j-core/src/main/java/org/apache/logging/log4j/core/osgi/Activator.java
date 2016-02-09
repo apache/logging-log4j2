@@ -56,7 +56,8 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
     private static void scanInstalledBundlesForPlugins(final BundleContext context) {
         final Bundle[] bundles = context.getBundles();
         for (final Bundle bundle : bundles) {
-            if (bundle.getState() == Bundle.ACTIVE) {
+            // LOG4J2-920: don't scan system bundle for plugins
+            if (bundle.getState() == Bundle.ACTIVE && bundle.getBundleId() != 0) {
                 // TODO: bundle state can change during this
                 scanBundleForPlugins(bundle);
             }

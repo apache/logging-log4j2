@@ -78,7 +78,7 @@ public class BundleTestInfo {
      * @return the Maven version String.
      */
     public String getVersion() {
-        return project.getProperties().getProperty("project.version.osgi");
+        return project.getVersion();
     }
 
 }
