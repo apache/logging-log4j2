@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.6" date="201Y-MM-DD" description="GA Release 2.6">
+      <action issue="LOG4J2-1269" dev="rpopma" type="fix">
+        AsyncLogger should use thread-local translator by default.
+      </action>
       <action issue="LOG4J2-1268" dev="rpopma" type="fix">
         FixedDateFormat was incorrect for formats having MMM with the French locale.
       </action>

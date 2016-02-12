@@ -45,7 +45,7 @@ class AsyncLoggerDisruptor {
     private ExecutorService executor;
     private String contextName;
 
-    private boolean useThreadLocalTranslator;
+    private boolean useThreadLocalTranslator = true;
     private long backgroundThreadId;
     private AsyncEventRouter asyncEventRouter;
     private int ringBufferSize;
