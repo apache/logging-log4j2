@@ -55,8 +55,8 @@ public class LoggerTest {
         logger.entry();
         logger.exit();
         assertEquals(2, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE entry"));
-        assertThat("incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE exit"));
+        assertThat("Incorrect Entry", results.get(0), equalTo("ENTRY[ FLOW ] TRACE entry"));
+        assertThat("incorrect Exit", results.get(1), equalTo("EXIT[ FLOW ] TRACE exit"));
 
     }
 
@@ -90,6 +90,15 @@ public class LoggerTest {
         assertThat("Missing entry data", results.get(0), containsString("doFoo(a=1, b=2)"));
         assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE exit"));
         assertThat("Missing exit data", results.get(1), containsString("doFoo(a=1, b=2): 3"));
+    }
+
+    @Test
+    public void flowTracing() {
+        logger.traceEntry();
+        logger.traceExit();
+        assertEquals(2, results.size());
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE entry"));
+        assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE exit"));
     }
 
     @Test
