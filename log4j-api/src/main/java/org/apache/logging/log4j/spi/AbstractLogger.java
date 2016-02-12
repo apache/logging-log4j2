@@ -304,7 +304,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      */
     protected void enter(final String fqcn, final String format, final Supplier<?>... paramSuppliers) {
         if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
-            logMessage(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg(format, paramSuppliers.length, paramSuppliers), null);
+            logMessage(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg(format, paramSuppliers), null);
         }
     }
 
@@ -317,7 +317,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      */
     protected void enter(final String fqcn, final String format, final Object... params) {
         if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
-            logMessage(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg(format, params.length, params), null);
+            logMessage(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg(format, params), null);
         }
     }
 
@@ -352,14 +352,15 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     protected void entry(final String fqcn, final Object... params) {
         if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
             if (params == null) {
-                logMessage(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg(null, 0, null), null);
+                logMessage(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg(null, (Supplier<?>[]) null), null);
             } else {
-                logMessage(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg(null, params.length, params), null);
+                logMessage(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg(null, params), null);
             }
         }
     }
 
-    protected Message entryMsg(final String format, final int count, final Object... params) {
+    protected Message entryMsg(final String format, final Object... params) {
+        final int count = params == null ? 0 : params.length;
         if (count == 0) {
             if (Strings.isEmpty(format)) {
                 return messageFactory.newMessage("entry");
@@ -372,7 +373,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
             return messageFactory.newMessage(sb.toString(), params);
         }
         sb.append(" params(");
-        for (int i = 0; i < params.length; i++) {
+        for (int i = 0; i < count; i++) {
             Object parm = params[i];
             sb.append(parm != null ? parm.toString() : "null");
             if (i + 1 < params.length) {
@@ -383,12 +384,13 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         return messageFactory.newMessage(sb.toString());
     }
 
-    protected Message entryMsg(final String format, final int count, final Supplier<?>... paramSuppliers) {
+    protected Message entryMsg(final String format, final Supplier<?>... paramSuppliers) {
+        final int count = paramSuppliers == null ? 0 : paramSuppliers.length;
         Object[] params = new Object[count];
         for (int i = 0; i < count; i++) {
             params[i] = paramSuppliers[i].get();
         }
-        return entryMsg(format, count, params);
+        return entryMsg(format, params);
     }
 
     @Override

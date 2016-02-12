@@ -142,7 +142,6 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
     public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message,
             final Throwable t) {
         final Message msg = message == null ? new SimpleMessage(Strings.EMPTY) : message;
-
         final ReliabilityStrategy strategy = privateConfig.loggerConfig.getReliabilityStrategy();
         strategy.log(this, getName(), fqcn, marker, level, msg, t);
     }
