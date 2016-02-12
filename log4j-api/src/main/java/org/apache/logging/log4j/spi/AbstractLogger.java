@@ -29,6 +29,7 @@ import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LambdaUtil;
 import org.apache.logging.log4j.util.MessageSupplier;
+import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Supplier;
 
 /**
@@ -359,17 +360,12 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         }
     }
 
-    protected Message entryMsg(final int count, final Object... params) {
-        return entryMsg(null, count, params);
-    }
-
     protected Message entryMsg(final String format, final int count, final Object... params) {
         if (count == 0) {
-            if (format == null || format.length() == 0) {
+            if (Strings.isEmpty(format)) {
                 return messageFactory.newMessage("entry");
-            } else {
-                return messageFactory.newMessage("entry: " + format);
             }
+            return messageFactory.newMessage("entry: " + format);
         }
         final StringBuilder sb = new StringBuilder("entry");
         if (format != null) {
