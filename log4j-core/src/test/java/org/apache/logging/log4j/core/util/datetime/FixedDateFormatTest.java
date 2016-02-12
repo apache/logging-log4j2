@@ -144,7 +144,7 @@ public class FixedDateFormatTest {
             for (long time = start; time < end; time += 12345) {
                 final String actual = customTF.format(time);
                 final String expected = simpleDF.format(new Date(time));
-                assertEquals(format + "/" + time, expected, actual);
+                assertEquals(format + "(" + format.getPattern() + ")" + "/" + time, expected, actual);
             }
         }
     }
@@ -160,7 +160,7 @@ public class FixedDateFormatTest {
             for (long time = end; time > start; time -= 12345) {
                 final String actual = customTF.format(time);
                 final String expected = simpleDF.format(new Date(time));
-                assertEquals(format + "/" + time, expected, actual);
+                assertEquals(format + "(" + format.getPattern() + ")" + "/" + time, expected, actual);
             }
         }
     }
@@ -178,7 +178,7 @@ public class FixedDateFormatTest {
                 final int length = customTF.format(time, buffer, 23);
                 final String actual = new String(buffer, 23, length);
                 final String expected = simpleDF.format(new Date(time));
-                assertEquals(format + "/" + time, expected, actual);
+                assertEquals(format + "(" + format.getPattern() + ")" + "/" + time, expected, actual);
             }
         }
     }
@@ -196,7 +196,7 @@ public class FixedDateFormatTest {
                 final int length = customTF.format(time, buffer, 23);
                 final String actual = new String(buffer, 23, length);
                 final String expected = simpleDF.format(new Date(time));
-                assertEquals(format + "/" + time, expected, actual);
+                assertEquals(format + "(" + format.getPattern() + ")" + "/" + time, expected, actual);
             }
         }
     }
