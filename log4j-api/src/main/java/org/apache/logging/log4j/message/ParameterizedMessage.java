@@ -750,7 +750,6 @@ public class ParameterizedMessage implements Message {
 
     @Override
     public String toString() {
-        return "ParameterizedMessage[messagePattern=" + messagePattern + ", stringArgs=" +
-            Arrays.toString(stringArgs) + ", throwable=" + throwable + ']';
+        return getFormattedMessage();
     }
 }

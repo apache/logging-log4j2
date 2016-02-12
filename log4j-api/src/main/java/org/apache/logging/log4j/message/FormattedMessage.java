@@ -159,8 +159,7 @@ public class FormattedMessage implements Message {
 
     @Override
     public String toString() {
-        return "FormattedMessage[messagePattern=" + messagePattern + ", args=" +
-            Arrays.toString(argArray) + ']';
+        return getFormattedMessage();
     }
 
     private void writeObject(final ObjectOutputStream out) throws IOException {

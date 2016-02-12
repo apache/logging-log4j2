@@ -124,7 +124,7 @@ public final class ObjectArrayMessage implements Message {
 
     @Override
     public String toString() {
-        return "ObjectArrayMessage[obj=" + getFormattedMessage() + ']';
+        return getFormattedMessage();
     }
 
     private void writeObject(final ObjectOutputStream out) throws IOException {

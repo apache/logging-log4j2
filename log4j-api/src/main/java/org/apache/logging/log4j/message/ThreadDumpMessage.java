@@ -72,12 +72,7 @@ public class ThreadDumpMessage implements Message {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("ThreadDumpMessage[");
-        if (this.title.length() > 0) {
-            StringBuilders.appendKeyDqValue(sb, "Title", this.title);
-        }
-        sb.append(']');
-        return sb.toString();
+        return getFormattedMessage();
     }
 
     /**

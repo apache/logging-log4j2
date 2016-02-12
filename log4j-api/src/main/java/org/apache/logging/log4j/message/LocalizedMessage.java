@@ -255,6 +255,11 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
         return rb;
     }
 
+    @Override
+    public String toString() {
+        return getFormattedMessage();
+    }
+
     private void writeObject(final ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
         getFormattedMessage();

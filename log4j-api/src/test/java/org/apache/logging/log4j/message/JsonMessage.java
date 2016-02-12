@@ -24,7 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Converts an Object to a JSON String.
  */
-public class JsonMessage implements Message {
+public class JsonMessage extends AbstractMessage {
 
     private static final long serialVersionUID = 1L;
     private static final ObjectMapper mapper = new ObjectMapper();
@@ -62,10 +62,5 @@ public class JsonMessage implements Message {
     @Override
     public Throwable getThrowable() {
         return null;
-    }
-
-    @Override
-    public String toString() {
-        return getFormattedMessage();
     }
 }
