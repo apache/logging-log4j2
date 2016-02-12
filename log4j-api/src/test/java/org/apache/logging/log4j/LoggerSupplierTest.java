@@ -90,6 +90,20 @@ public class LoggerSupplierTest {
     }
 
     @Test
+    public void flowTracing_SupplierOfLong() {
+        logger.traceEntry(new Supplier<Long>() {
+            @Override
+            public Long get() {
+                return Long.valueOf(1234567890);
+            }
+        });
+        assertEquals(1, results.size());
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE entry"));
+        assertThat("Missing entry data", results.get(0), containsString("(1234567890)"));
+        assertThat("Bad toString()", results.get(0), not(containsString("SimpleMessage")));
+    }
+
+    @Test
     public void flowTracing_SupplierOfMessageFormatMessage() {
         logger.traceEntry(new Supplier<MessageFormatMessage>() {
             @Override
@@ -151,6 +165,20 @@ public class LoggerSupplierTest {
             @Override
             public SimpleMessage get() {
                 return new SimpleMessage("1234567890");
+            }
+        });
+        assertEquals(1, results.size());
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE entry"));
+        assertThat("Missing entry data", results.get(0), containsString("(1234567890)"));
+        assertThat("Bad toString()", results.get(0), not(containsString("SimpleMessage")));
+    }
+
+    @Test
+    public void flowTracing_SupplierOfString() {
+        logger.traceEntry(new Supplier<String>() {
+            @Override
+            public String get() {
+                return "1234567890";
             }
         });
         assertEquals(1, results.size());
