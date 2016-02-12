@@ -100,7 +100,7 @@ public class FixedDateFormat {
 
         /**
          * Returns the full pattern.
-         * 
+         *
          * @return the full pattern
          */
         public String getPattern() {
@@ -109,7 +109,7 @@ public class FixedDateFormat {
 
         /**
          * Returns the date part of the pattern.
-         * 
+         *
          * @return the date part of the pattern
          */
         public String getDatePattern() {
@@ -118,7 +118,7 @@ public class FixedDateFormat {
 
         /**
          * Returns the FixedFormat with the name or pattern matching the specified string or {@code null} if not found.
-         * 
+         *
          * @param nameOrPattern the name or pattern to find a FixedFormat for
          * @return the FixedFormat with the name or pattern matching the specified string
          */
@@ -133,7 +133,7 @@ public class FixedDateFormat {
 
         /**
          * Returns the length of the resulting formatted date and time strings.
-         * 
+         *
          * @return the length of the resulting formatted date and time strings
          */
         public int getLength() {
@@ -142,7 +142,7 @@ public class FixedDateFormat {
 
         /**
          * Returns the length of the date part of the resulting formatted string.
-         * 
+         *
          * @return the length of the date part of the resulting formatted string
          */
         public int getDatePatternLength() {
@@ -152,7 +152,7 @@ public class FixedDateFormat {
         /**
          * Returns the {@code FastDateFormat} object for formatting the date part of the pattern or {@code null} if the
          * pattern does not have a date part.
-         * 
+         *
          * @return the {@code FastDateFormat} object for formatting the date part of the pattern or {@code null}
          */
         public FastDateFormat getFastDateFormat() {
@@ -162,7 +162,6 @@ public class FixedDateFormat {
 
     private final FixedFormat fixedFormat;
     private final int length;
-    private final int dateLength;
     private final FastDateFormat fastDateFormat; // may be null
     private final char timeSeparatorChar;
     private final char millisSeparatorChar;
@@ -178,12 +177,13 @@ public class FixedDateFormat {
     // changes to cachedDate in one thread are visible to other threads.
     // See http://g.oswego.edu/dl/jmm/cookbook.html
     private char[] cachedDate; // may be null
+    private int dateLength;
 
     /**
      * Constructs a FixedDateFormat for the specified fixed format.
      * <p>
      * Package protected for unit tests.
-     * 
+     *
      * @param fixedFormat the fixed format
      */
     FixedDateFormat(final FixedFormat fixedFormat) {
@@ -193,7 +193,6 @@ public class FixedDateFormat {
         this.millisSeparatorChar = fixedFormat.millisSeparatorChar;
         this.millisSeparatorLength = fixedFormat.millisSeparatorLength;
         this.length = fixedFormat.getLength();
-        this.dateLength = fixedFormat.getDatePatternLength();
         this.fastDateFormat = fixedFormat.getFastDateFormat();
     }
 
@@ -210,7 +209,7 @@ public class FixedDateFormat {
 
     /**
      * Returns a new {@code FixedDateFormat} object for the specified {@code FixedFormat} and a {@code null} TimeZone.
-     * 
+     *
      * @param format the format to use
      * @return a new {@code FixedDateFormat} object
      */
@@ -220,7 +219,7 @@ public class FixedDateFormat {
 
     /**
      * Returns the full pattern of the selected fixed format.
-     * 
+     *
      * @return the full date-time pattern
      */
     public String getFormat() {
@@ -259,13 +258,14 @@ public class FixedDateFormat {
         if (fastDateFormat != null) {
             final StringBuilder result = fastDateFormat.format(now, new StringBuilder());
             cachedDate = result.toString().toCharArray();
+            dateLength = result.length();
         }
     }
 
     // Profiling showed this method is important to log4j performance. Modify with care!
     // 28 bytes (allows immediate JVM inlining: <= -XX:MaxInlineSize=35 bytes)
     public String format(final long time) {
-        final char[] result = new char[length];
+        final char[] result = new char[length << 1]; // double size for locales with lengthy DateFormatSymbols
         int written = format(time, result, 0);
         return new String(result, 0, written);
     }
