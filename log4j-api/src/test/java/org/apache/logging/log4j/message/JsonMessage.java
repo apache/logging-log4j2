@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.message;
 
+import org.apache.logging.log4j.status.StatusLogger;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -28,6 +30,11 @@ public class JsonMessage implements Message {
     private static final ObjectMapper mapper = new ObjectMapper();
     private final Object object;
 
+    /**
+     * Constructs a JsonMessage.
+     *  
+     * @param object the Object to serialize.
+     */
     public JsonMessage(final Object object) {
         this.object = object;
     }
@@ -36,8 +43,8 @@ public class JsonMessage implements Message {
     public String getFormattedMessage() {
         try {
             return mapper.writeValueAsString(object);
-        } catch (JsonProcessingException ex) {
-            System.err.println("Caught exception: " + ex.getMessage());
+        } catch (JsonProcessingException e) {
+            StatusLogger.getLogger().catching(e);
             return object.toString();
         }
     }
@@ -55,5 +62,10 @@ public class JsonMessage implements Message {
     @Override
     public Throwable getThrowable() {
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return getFormattedMessage();
     }
 }
