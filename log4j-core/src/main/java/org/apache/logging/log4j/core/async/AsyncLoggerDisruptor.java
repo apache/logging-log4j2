@@ -211,6 +211,9 @@ class AsyncLoggerDisruptor {
     /**
      * Signals this AsyncLoggerDisruptor whether it is allowed to store non-JDK classes in ThreadLocal objects for
      * efficiency.
+     * <p>
+     * This property may be modified after the {@link #start()} method has been called.
+     * </p>
      *
      * @param allow whether AsyncLoggers are allowed to use ThreadLocal objects
      * @since 2.5
@@ -218,5 +221,7 @@ class AsyncLoggerDisruptor {
      */
     public void setUseThreadLocals(final boolean allow) {
         useThreadLocalTranslator = allow;
+        LOGGER.trace("[{}] AsyncLoggers have been modified to use a {} translator", contextName,
+                useThreadLocalTranslator ? "threadlocal" : "vararg");
     }
 }
