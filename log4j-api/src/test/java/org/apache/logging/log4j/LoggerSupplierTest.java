@@ -39,7 +39,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Tests Logger APIs with MessageSupplier and Supplier.
+ * Tests Logger APIs with {@link Supplier}.
  */
 public class LoggerSupplierTest {
 
