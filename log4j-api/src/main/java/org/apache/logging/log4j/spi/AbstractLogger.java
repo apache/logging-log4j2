@@ -553,12 +553,11 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
                 return messageFactory.newMessage("exit");
             }
             return messageFactory.newMessage("exit: " + format);
-        } else  {
-            if (format == null) {
-                return messageFactory.newMessage("exit with(" + result + ')');
-            }
-            return messageFactory.newMessage("exit: " + format, result);
         }
+        if (format == null) {
+            return messageFactory.newMessage("exit with(" + result + ')');
+        }
+        return messageFactory.newMessage("exit: " + format, result);
 
     }
 
