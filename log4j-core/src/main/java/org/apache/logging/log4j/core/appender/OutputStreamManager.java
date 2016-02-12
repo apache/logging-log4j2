@@ -120,7 +120,7 @@ public class OutputStreamManager extends AbstractManager {
     protected void write(final byte[] bytes, final int offset, final int length) {
         write(bytes, offset, length, false);
     }
-    
+
     /**
      * Some output streams synchronize writes while others do not. Synchronizing here insures that
      * log events won't be intertwined.
@@ -155,7 +155,7 @@ public class OutputStreamManager extends AbstractManager {
     /**
      * Some output streams synchronize writes while others do not.
      * @param bytes The serialized Log event.
-     * @param writeAndFlush If true, flushes after writing. 
+     * @param immediateFlush If true, flushes after writing.
      * @throws AppenderLoggingException if an error occurs.
      */
     protected void write(final byte[] bytes, boolean immediateFlush)  {
