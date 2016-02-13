@@ -26,6 +26,27 @@ import java.io.Serializable;
  */
 public abstract class AbstractMessageFactory implements MessageFactory, Serializable {
 
+    /**
+     * Constructs an AbstractMessageFactory with the "entry" and "exit" strings.
+     */
+    public AbstractMessageFactory() {
+        this("entry", "exit");
+    }
+
+    /**
+     * Constructs an AbstractMessageFactory with the given entry and exit strings.
+     * @param entryText the text to use for trace entry, like "entry".
+     * @param exitText the text to use for trace exit, like "exit".
+     */
+    public AbstractMessageFactory(String entryText, String exitText) {
+        super();
+        this.entryText = entryText;
+        this.exitText = exitText;
+    }
+
+    private String entryText;
+    private String exitText;
+    
     private static class AbstractFlowMessage extends AbstractMessage implements FlowMessage {
 
         private static final long serialVersionUID = 1L;
@@ -82,39 +103,31 @@ public abstract class AbstractMessageFactory implements MessageFactory, Serializ
 
     private static final class SimpleEntryMessage extends AbstractFlowMessage implements EntryMessage {
 
-        private static final String DEFAULT_TEXT = "entry";
         private static final long serialVersionUID = 1L;
 
-        SimpleEntryMessage(final Message message) {
-            super(DEFAULT_TEXT, message);
+        SimpleEntryMessage(String entryText, final Message message) {
+            super(entryText, message);
         }
 
     }
 
     private static final class SimpleExitMessage extends AbstractFlowMessage implements ExitMessage {
 
-        private static final String DEFAULT_TEXT = "exit";
         private static final long serialVersionUID = 1L;
 
         private final Object result;
         private final boolean isVoid;
 
-        SimpleExitMessage(final Object result, final EntryMessage message) {
-            super(DEFAULT_TEXT, message.getMessage());
+        SimpleExitMessage(String exitText, final Object result, final EntryMessage message) {
+            super(exitText, message.getMessage());
             this.result = result;
             isVoid = false;
         }
 
-        SimpleExitMessage(final Object result, final Message message) {
-            super(DEFAULT_TEXT, message);
+        SimpleExitMessage(String exitText, final Object result, final Message message) {
+            super(exitText, message);
             this.result = result;
             isVoid = false;
-        }
-
-        SimpleExitMessage(final Message message) {
-            super(DEFAULT_TEXT, message);
-            this.result = null;
-            isVoid = true;
         }
 
         @Override
@@ -136,7 +149,7 @@ public abstract class AbstractMessageFactory implements MessageFactory, Serializ
      */
     @Override
     public EntryMessage newEntryMessage(Message message) {
-        return new SimpleEntryMessage(message);
+        return new SimpleEntryMessage(entryText, message);
     }
     
     /*
@@ -146,7 +159,7 @@ public abstract class AbstractMessageFactory implements MessageFactory, Serializ
      */
     @Override
     public ExitMessage newExitMessage(Object object, EntryMessage message) {
-        return new SimpleExitMessage(object, message);
+        return new SimpleExitMessage(exitText, object, message);
     }
     
     /*
@@ -156,7 +169,7 @@ public abstract class AbstractMessageFactory implements MessageFactory, Serializ
      */
     @Override
     public ExitMessage newExitMessage(Object object, Message message) {
-        return new SimpleExitMessage(object, message);
+        return new SimpleExitMessage(exitText, object, message);
     }
     
     /*
