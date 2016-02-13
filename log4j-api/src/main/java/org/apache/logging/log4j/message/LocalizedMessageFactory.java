@@ -35,12 +35,10 @@ public class LocalizedMessageFactory extends AbstractMessageFactory {
         this.baseName = null;
     }
 
-
     public LocalizedMessageFactory(final String baseName) {
         this.resourceBundle = null;
         this.baseName = baseName;
     }
-
 
     /**
      * Gets the resource bundle base name if set.
@@ -51,7 +49,6 @@ public class LocalizedMessageFactory extends AbstractMessageFactory {
         return this.baseName;
     }
 
-
     /**
      * Gets the resource bundle if set.
      * 
@@ -60,7 +57,6 @@ public class LocalizedMessageFactory extends AbstractMessageFactory {
     public ResourceBundle getResourceBundle() {
         return this.resourceBundle;
     }
-
 
     /**
      * Creates {@link org.apache.logging.log4j.message.StringFormattedMessage} instances.
