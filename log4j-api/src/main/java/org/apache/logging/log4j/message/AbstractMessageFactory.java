@@ -26,8 +26,151 @@ import java.io.Serializable;
  */
 public abstract class AbstractMessageFactory implements MessageFactory, Serializable {
 
+    private static class AbstactFlowMessage implements FlowMessage {
+
+        private static final long serialVersionUID = 1L;
+        private final Message message;
+        private final String text;
+
+        AbstactFlowMessage(final String text, final Message message) {
+            this.message = message;
+            this.text = text;
+        }
+
+        @Override
+        public String getFormattedMessage() {
+            if (message != null) {
+                return text + " " + message.getFormattedMessage();
+            }
+            return text;
+        }
+
+        @Override
+        public String getFormat() {
+            if (message != null) {
+                return text + ": " + message.getFormat();
+            }
+            return text;
+        }
+
+        @Override
+        public Object[] getParameters() {
+            if (message != null) {
+                return message.getParameters();
+            }
+            return null;
+        }
+
+        @Override
+        public Throwable getThrowable() {
+            if (message != null) {
+                return message.getThrowable();
+            }
+            return null;
+        }
+
+        @Override
+        public Message getMessage() {
+            return message;
+        }
+
+        @Override
+        public String getText() {
+            return text;
+        }
+
+        @Override
+        public String toString() {
+            final StringBuilder builder = new StringBuilder();
+            builder.append(getClass().getSimpleName());
+            builder.append(" [text=");
+            builder.append(text);
+            builder.append(", message=");
+            builder.append(message);
+            builder.append("]");
+            return builder.toString();
+        }
+    }
+
+    private static final class SimpleEntryMessage extends AbstactFlowMessage implements EntryMessage {
+
+        private static final String DEAULT_TEXT = "entry";
+        private static final long serialVersionUID = 1L;
+
+        SimpleEntryMessage(final Message message) {
+            super(DEAULT_TEXT, message);
+        }
+
+    }
+
+    private static final class SimpleExitMessage extends AbstactFlowMessage implements ExitMessage {
+
+        private static final String DEAULT_TEXT = "exit";
+        private static final long serialVersionUID = 1L;
+
+        private final Object result;
+        private final boolean isVoid;
+
+        SimpleExitMessage(final Object result, final EntryMessage message) {
+            super(DEAULT_TEXT, message.getMessage());
+            this.result = result;
+            isVoid = false;
+        }
+
+        SimpleExitMessage(final Object result, final Message message) {
+            super(DEAULT_TEXT, message);
+            this.result = result;
+            isVoid = false;
+        }
+
+        SimpleExitMessage(final Message message) {
+            super(DEAULT_TEXT, message);
+            this.result = null;
+            isVoid = true;
+        }
+
+        @Override
+        public String getFormattedMessage() {
+            final String formattedMessage = super.getFormattedMessage();
+            if (isVoid) {
+                return formattedMessage;
+            }
+            return formattedMessage + ": " + result;
+        }
+    }
+    
     private static final long serialVersionUID = 1L;
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.apache.logging.log4j.message.MessageFactory#newEntryMessage(org.apache.logging.log4j.message.Message)
+     */
+    @Override
+    public EntryMessage newEntryMessage(Message message) {
+        return new SimpleEntryMessage(message);
+    }
+    
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.apache.logging.log4j.message.MessageFactory#newEntryMessage(java.lang.Object, org.apache.logging.log4j.message.EntryMessage)
+     */
+    @Override
+    public ExitMessage newExitMessage(Object object, EntryMessage message) {
+        return new SimpleExitMessage(object, message);
+    }
+    
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.apache.logging.log4j.message.MessageFactory#newEntryMessage(java.lang.Object, org.apache.logging.log4j.message.Message)
+     */
+    @Override
+    public ExitMessage newExitMessage(Object object, Message message) {
+        return new SimpleExitMessage(object, message);
+    }
+    
     /*
      * (non-Javadoc)
      *

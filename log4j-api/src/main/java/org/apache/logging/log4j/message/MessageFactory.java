@@ -54,4 +54,10 @@ public interface MessageFactory {
      * @see StringFormatterMessageFactory
      */
     Message newMessage(String message, Object... params);
+
+    EntryMessage newEntryMessage(Message message);
+
+    ExitMessage newExitMessage(Object object, Message message);
+
+    ExitMessage newExitMessage(Object object, EntryMessage message);
 }

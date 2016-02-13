@@ -22,8 +22,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.message.EntryMessage;
-import org.apache.logging.log4j.message.ExitMessage;
-import org.apache.logging.log4j.message.FlowMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
@@ -350,9 +348,9 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * @param msgSupplier The Supplier of the Message.
      */
     protected EntryMessage enter(final String fqcn, final MessageSupplier msgSupplier) {
-        SimpleEntryMessage message = null;
+        EntryMessage message = null;
         if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
-            logMessage(fqcn, Level.TRACE, ENTRY_MARKER, message = new SimpleEntryMessage(msgSupplier.get()), null);
+            logMessage(fqcn, Level.TRACE, ENTRY_MARKER, message = messageFactory.newEntryMessage(msgSupplier.get()), null);
         }
         return message;
     }
@@ -387,14 +385,14 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         final int count = params == null ? 0 : params.length;
         if (count == 0) {
             if (Strings.isEmpty(format)) {
-                return new SimpleEntryMessage(null);
+                return messageFactory.newEntryMessage(null);
             }
-            return new SimpleEntryMessage(messageFactory.newMessage(format));
+            return messageFactory.newEntryMessage(messageFactory.newMessage(format));
         }
         final StringBuilder sb = new StringBuilder();
         if (format != null) {
             sb.append(format);
-            return new SimpleEntryMessage(messageFactory.newMessage(sb.toString(), params));
+            return messageFactory.newEntryMessage(messageFactory.newMessage(sb.toString(), params));
         }
         sb.append("params(");
         for (int i = 0; i < count; i++) {
@@ -405,7 +403,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
             }
         }
         sb.append(')');
-        return new SimpleEntryMessage(messageFactory.newMessage(sb.toString()));
+        return messageFactory.newEntryMessage(messageFactory.newMessage(sb.toString()));
     }
 
     protected EntryMessage entryMsg(final String format, final MessageSupplier... paramSuppliers) {
@@ -1367,7 +1365,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
             logMessage(FQCN, Level.TRACE, EXIT_MARKER, new MessageSupplier() {
                 @Override
                 public Message get() {
-                    return new SimpleExitMessage(result, messageSupplier.get());
+                    return messageFactory.newExitMessage(result, messageSupplier.get());
                 };
             }, null);
         }
@@ -1380,7 +1378,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
             logMessage(FQCN, Level.TRACE, EXIT_MARKER, new MessageSupplier() {
                 @Override
                 public Message get() {
-                    return new SimpleExitMessage(result, messageSupplier.get());
+                    return messageFactory.newExitMessage(result, messageSupplier.get());
                 };
             }, null);
         }
@@ -1393,7 +1391,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
             logMessage(FQCN, Level.TRACE, EXIT_MARKER, new MessageSupplier() {
                 @Override
                 public Message get() {
-                    return new SimpleExitMessage(result, message);
+                    return messageFactory.newExitMessage(result, message);
                 };
             }, null);
         }
@@ -1406,7 +1404,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
             logMessage(FQCN, Level.TRACE, EXIT_MARKER, new MessageSupplier() {
                 @Override
                 public Message get() {
-                    return new SimpleExitMessage(result, message);
+                    return messageFactory.newExitMessage(result, message);
                 };
             }, null);
         }
@@ -1531,119 +1529,5 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     @Override
     public void warn(final MessageSupplier msgSupplier, final Throwable t) {
         logIfEnabled(FQCN, Level.WARN, null, msgSupplier, t);
-    }
-
-    private static class AbstactFlowMessage implements FlowMessage {
-
-        private static final long serialVersionUID = 1L;
-        private final Message message;
-        private final String text;
-
-        AbstactFlowMessage(final String text, final Message message) {
-            this.message = message;
-            this.text = text;
-        }
-
-        @Override
-        public String getFormattedMessage() {
-            if (message != null) {
-                return text + " " + message.getFormattedMessage();
-            }
-            return text;
-        }
-
-        @Override
-        public String getFormat() {
-            if (message != null) {
-                return text + ": " + message.getFormat();
-            }
-            return text;
-        }
-
-        @Override
-        public Object[] getParameters() {
-            if (message != null) {
-                return message.getParameters();
-            }
-            return null;
-        }
-
-        @Override
-        public Throwable getThrowable() {
-            if (message != null) {
-                return message.getThrowable();
-            }
-            return null;
-        }
-
-        @Override
-        public Message getMessage() {
-            return message;
-        }
-
-        @Override
-        public String getText() {
-            return text;
-        }
-
-        @Override
-        public String toString() {
-            final StringBuilder builder = new StringBuilder();
-            builder.append(getClass().getSimpleName());
-            builder.append(" [text=");
-            builder.append(text);
-            builder.append(", message=");
-            builder.append(message);
-            builder.append("]");
-            return builder.toString();
-        }
-    }
-
-    private static final class SimpleEntryMessage extends AbstactFlowMessage implements EntryMessage {
-
-        private static final String DEAULT_TEXT = "entry";
-        private static final long serialVersionUID = 1L;
-
-        SimpleEntryMessage(final Message message) {
-            super(DEAULT_TEXT, message);
-        }
-
-    }
-
-    private static final class SimpleExitMessage extends AbstactFlowMessage implements ExitMessage {
-
-        private static final String DEAULT_TEXT = "exit";
-        private static final long serialVersionUID = 1L;
-
-        private final Object result;
-        private final boolean isVoid;
-
-        SimpleExitMessage(final Object result, final EntryMessage message) {
-            super(DEAULT_TEXT, message.getMessage());
-            this.result = result;
-            isVoid = false;
-        }
-
-        SimpleExitMessage(final Object result, final Message message) {
-            super(DEAULT_TEXT, message);
-            this.result = result;
-            isVoid = false;
-        }
-
-        SimpleExitMessage(final Message message) {
-            super(DEAULT_TEXT, message);
-            this.result = null;
-            isVoid = true;
-        }
-
-        @Override
-        public String getFormattedMessage() {
-            final String formattedMessage = super.getFormattedMessage();
-            if (isVoid) {
-                return formattedMessage;
-            }
-            return formattedMessage + ": " + result;
-        }
-
     }
 }
