@@ -54,8 +54,8 @@ public class LoggerTest {
         // empty
     }
 
-    TestLogger logger = (TestLogger) LogManager.getLogger("LoggerTest");
-    List<String> results = logger.getEntries();
+    private final TestLogger logger = (TestLogger) LogManager.getLogger("LoggerTest");
+    private final List<String> results = logger.getEntries();
 
     @Test
     public void basicFlow() {
