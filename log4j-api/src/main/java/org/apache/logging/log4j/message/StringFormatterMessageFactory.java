@@ -28,6 +28,23 @@ package org.apache.logging.log4j.message;
 public final class StringFormatterMessageFactory extends AbstractMessageFactory {
 
     /**
+     * Constructs a message factory with default flow strings.
+     */
+    public StringFormatterMessageFactory() {
+        super();
+    }
+
+    /**
+     * Constructs a message factory with the given entry and exit strings.
+     * @param entryText the text to use for trace entry, like {@code "entry"} or {@code "Enter"}.
+     * @param exitText the text to use for trace exit, like {@code "exit"} or {@code "Exit"}.
+     * @since 2.6
+     */
+    public StringFormatterMessageFactory(final String entryText, final String exitText) {
+        super(entryText, exitText);
+    }
+
+    /**
      * Instance of StringFormatterMessageFactory.
      */
     public static final StringFormatterMessageFactory INSTANCE = new StringFormatterMessageFactory();
