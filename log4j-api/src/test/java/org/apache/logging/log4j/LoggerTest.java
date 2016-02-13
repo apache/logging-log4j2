@@ -40,6 +40,7 @@ import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Supplier;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 /**
  *
@@ -98,6 +99,19 @@ public class LoggerTest {
         assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE entry"));
         assertThat("Missing entry data", results.get(0), containsString("doFoo(a=1, b=2)"));
         assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE exit"));
+        assertThat("Missing exit data", results.get(1), containsString("doFoo(a=1, b=2): 3"));
+    }
+
+    @Test
+    @Ignore("How do I set this up such that the logger in this methods works as a test logger?")
+    public void flowTracingString_ObjectArray2_ParameterizedMessageFactory() {
+        Logger myLogger = LogManager.getLogger("LoggerTestWithCustomParameterizedMessageFactory", new ParameterizedMessageFactory("Enter", "Exit"));
+        EntryMessage msg = myLogger.traceEntry("doFoo(a={}, b={})", 1, 2);
+        myLogger.traceExit(3, msg);
+        assertEquals(2, results.size()); // fail!
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE Enter"));
+        assertThat("Missing entry data", results.get(0), containsString("doFoo(a=1, b=2)"));
+        assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
         assertThat("Missing exit data", results.get(1), containsString("doFoo(a=1, b=2): 3"));
     }
 
