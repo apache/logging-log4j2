@@ -26,13 +26,13 @@ import java.io.Serializable;
  */
 public abstract class AbstractMessageFactory implements MessageFactory, Serializable {
 
-    private static class AbstactFlowMessage extends AbstractMessage implements FlowMessage {
+    private static class AbstractFlowMessage extends AbstractMessage implements FlowMessage {
 
         private static final long serialVersionUID = 1L;
         private final Message message;
         private final String text;
 
-        AbstactFlowMessage(final String text, final Message message) {
+        AbstractFlowMessage(final String text, final Message message) {
             this.message = message;
             this.text = text;
         }
@@ -80,39 +80,39 @@ public abstract class AbstractMessageFactory implements MessageFactory, Serializ
         }
     }
 
-    private static final class SimpleEntryMessage extends AbstactFlowMessage implements EntryMessage {
+    private static final class SimpleEntryMessage extends AbstractFlowMessage implements EntryMessage {
 
-        private static final String DEAULT_TEXT = "entry";
+        private static final String DEFAULT_TEXT = "entry";
         private static final long serialVersionUID = 1L;
 
         SimpleEntryMessage(final Message message) {
-            super(DEAULT_TEXT, message);
+            super(DEFAULT_TEXT, message);
         }
 
     }
 
-    private static final class SimpleExitMessage extends AbstactFlowMessage implements ExitMessage {
+    private static final class SimpleExitMessage extends AbstractFlowMessage implements ExitMessage {
 
-        private static final String DEAULT_TEXT = "exit";
+        private static final String DEFAULT_TEXT = "exit";
         private static final long serialVersionUID = 1L;
 
         private final Object result;
         private final boolean isVoid;
 
         SimpleExitMessage(final Object result, final EntryMessage message) {
-            super(DEAULT_TEXT, message.getMessage());
+            super(DEFAULT_TEXT, message.getMessage());
             this.result = result;
             isVoid = false;
         }
 
         SimpleExitMessage(final Object result, final Message message) {
-            super(DEAULT_TEXT, message);
+            super(DEFAULT_TEXT, message);
             this.result = result;
             isVoid = false;
         }
 
         SimpleExitMessage(final Message message) {
-            super(DEAULT_TEXT, message);
+            super(DEFAULT_TEXT, message);
             this.result = null;
             isVoid = true;
         }
