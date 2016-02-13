@@ -26,7 +26,7 @@ import java.io.Serializable;
  */
 public abstract class AbstractMessageFactory implements MessageFactory, Serializable {
 
-    private static class AbstactFlowMessage implements FlowMessage {
+    private static class AbstactFlowMessage extends AbstractMessage implements FlowMessage {
 
         private static final long serialVersionUID = 1L;
         private final Message message;
@@ -77,18 +77,6 @@ public abstract class AbstractMessageFactory implements MessageFactory, Serializ
         @Override
         public String getText() {
             return text;
-        }
-
-        @Override
-        public String toString() {
-            final StringBuilder builder = new StringBuilder();
-            builder.append(getClass().getSimpleName());
-            builder.append(" [text=");
-            builder.append(text);
-            builder.append(", message=");
-            builder.append(message);
-            builder.append("]");
-            return builder.toString();
         }
     }
 
