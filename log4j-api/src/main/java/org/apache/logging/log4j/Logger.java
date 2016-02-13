@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j;
 
+import org.apache.logging.log4j.message.EntryMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.util.MessageSupplier;
@@ -1696,8 +1697,11 @@ public interface Logger {
     /**
      * Logs entry to a method. Used when the method in question has no parameters or when the parameters should not be
      * logged.
+     * 
+     * @return built message
+     * @since 2.6
      */
-    void traceEntry();
+    EntryMessage traceEntry();
 
     /**
      * Logs entry to a method along with its parameters. For example,
@@ -1708,11 +1712,22 @@ public interface Logger {
      *     // do something
      * }
      * </pre>
+     * or:
+     * <pre>
+     * public int doSomething(String foo, int bar) {
+     *     Message m = LOGGER.traceEntry("doSomething(foo={}, bar={})", foo, bar);
+     *     // do something
+     *     return traceExit(value, m);
+     * }
+     * </pre>
      *
      * @param format The format String for the parameters.
      * @param params The parameters to the method.
+     * @return The built Message
+     * 
+     * @since 2.6
      */
-    void traceEntry(final String format, final Object... params);
+    EntryMessage traceEntry(String format, Object... params);
 
     /**
      * Logs entry to a method along with its parameters. For example,
@@ -1725,8 +1740,11 @@ public interface Logger {
      * </pre>
      *
      * @param paramSuppliers The Suppliers for the parameters to the method.
+     * @return built message
+     * 
+     * @since 2.6
      */
-    void traceEntry(final Supplier<?>... paramSuppliers);
+    EntryMessage traceEntry(Supplier<?>... paramSuppliers);
 
     /**
      * Logs entry to a method along with its parameters. For example,
@@ -1740,8 +1758,11 @@ public interface Logger {
      *
      * @param format The format String for the parameters.
      * @param paramSuppliers The Suppliers for the parameters to the method.
+     * @return built message
+     * 
+     * @since 2.6
      */
-    void traceEntry(final String format, final Supplier<?>... paramSuppliers);
+    EntryMessage traceEntry(String format, Supplier<?>... paramSuppliers);
 
     /**
      * Logs entry to a method using a Message to describe the parameters.
@@ -1753,8 +1774,11 @@ public interface Logger {
      * </pre>
      *
      * @param message The message.
+     * @return the built message
+     * 
+     * @since 2.6
      */
-    void traceEntry(final Message message);
+    EntryMessage traceEntry(Message message);
 
     /**
      * Logs entry to a method using a Message to describe the parameters.
@@ -1766,11 +1790,35 @@ public interface Logger {
      * </pre>
      *
      * @param msgSupplier The Supplier of the Message.
+     * @return built message
+     * 
+     * @since 2.6
      */
-    void traceEntry(final MessageSupplier msgSupplier);
+    EntryMessage traceEntry(MessageSupplier msgSupplier);
+
+    /**
+     * Logs entry to a method along with its parameters. For example,
+     *
+     * <pre>
+     * public void doSomething(String foo, int bar) {
+     *     LOGGER.traceEntry("Parameters: {} and {}", ()->gson.toJson(foo), ()-> bar);
+     *     // do something
+     * }
+     * </pre>
+     *
+     * @param format The format String for the parameters.
+     * @param params  The message suppliers for the parameters to the method.
+     * @param paramSuppliers The Suppliers for the parameters to the method.
+     * @return built message
+     * 
+     * @since 2.6
+     */
+    EntryMessage traceEntry(String format, MessageSupplier... params);
 
     /**
      * Logs exit from a method. Used for methods that do not return anything.
+     * 
+     * @since 2.6
      */
     void traceExit();
 
@@ -1784,6 +1832,8 @@ public interface Logger {
      * @param <R> The type of the parameter and object being returned.
      * @param result The result being returned from the method call.
      * @return the result.
+     * 
+     * @since 2.6
      */
     <R> R traceExit(R result);
 
@@ -1798,8 +1848,10 @@ public interface Logger {
      * @param format The format String for the result.
      * @param result The result being returned from the method call.
      * @return the result.
+     * 
+     * @since 2.6
      */
-    <R> R traceExit(final String format, final R result);
+    <R> R traceExit(String format, R result);
 
     /**
      * Logs exiting from a method with the result. Used when construction of the Message might be
@@ -1814,8 +1866,48 @@ public interface Logger {
      * @param result The result being returned from the method call.
      * @param messageSupplier The supplier of the Message.
      * @return the result.
+     * 
+     * @since 2.6
      */
-    <R> R traceExit(final R result, final MessageSupplier messageSupplier);
+    <R> R traceExit(R result, MessageSupplier messageSupplier);
+
+    /**
+     * Logs exiting from a method with the result. Used when construction of the Message might be
+     * expensive. This may be coded as:
+     *
+     * <pre>
+     * return LOGGER.traceExit(myResult, () -> new ParameterizedMessage("MyResult: field1: {}, field2: {}",
+     *           myResult.field1.toString(), myResult.field2.toString());
+     * </pre>
+     *
+     * @param <R> The type of the parameter and object being returned.
+     * @param result The result being returned from the method call.
+     * @param supplier The supplier of the Message.
+     * @return the result.
+     * 
+     * @since 2.6
+     */
+    <R> R traceExit(R result, Supplier<? extends Message> supplier);
+
+    /**
+     * Logs exiting from a method with the result. Allows custom formatting of the result. This may be coded as:
+     *
+     * <pre>
+     * public long doSomething(int a, int b) {
+     *    EntryMessage m = traceEntry("doSomething(a={}, b={})", a, b);
+     *    // ...
+     *    return LOGGER.traceExit(myResult, m);
+     * }
+     * </pre>
+     *
+     * @param <R> The type of the parameter and object being returned.
+     * @param result The result being returned from the method call.
+     * @param message The Message containing the formatted result.
+     * @return the result.
+     * 
+     * @since 2.6
+     */
+    <R> R traceExit(R result, EntryMessage message);
 
     /**
      * Logs exiting from a method with the result. Allows custom formatting of the result. This may be coded as:
@@ -1828,8 +1920,10 @@ public interface Logger {
      * @param result The result being returned from the method call.
      * @param message The Message containing the formatted result.
      * @return the result.
+     * 
+     * @since 2.6
      */
-    <R> R traceExit(final R result, final Message message);
+    <R> R traceExit(R result, Message message);
 
     /**
      * Logs a message with the specific Marker at the {@link Level#WARN WARN} level.

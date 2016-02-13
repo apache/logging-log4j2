@@ -16,24 +16,31 @@
  */
 package org.apache.logging.log4j;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.logging.log4j.message.EntryMessage;
 import org.apache.logging.log4j.message.JsonMessage;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.SimpleMessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util.Supplier;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.hamcrest.CoreMatchers.*;
-
-import static org.junit.Assert.*;
 /**
  *
  */
@@ -61,19 +68,10 @@ public class LoggerTest {
     }
 
     @Test
-    public void flowTracingMessageSupplier() {
-        logger.traceEntry(new MessageSupplier() {
-            @Override
-            public Message get() {
-                return new JsonMessage(System.getProperties());
-            }
-        });
+    public void flowTracingMessage() {
+        logger.traceEntry(new JsonMessage(System.getProperties()));
         final Response response = new Response(-1, "Generic error");
-        logger.traceExit(response, new MessageSupplier() {
-            @Override public Message get() {
-                return new JsonMessage(response);
-            }
-        });
+        logger.traceExit(response,  new JsonMessage(response));
         assertEquals(2, results.size());
         assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE entry"));
         assertThat("Missing entry data", results.get(0), containsString("\"java.runtime.name\":"));
@@ -82,7 +80,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void flowTracingStringObjectArray() {
+    public void flowTracingString_ObjectArray1() {
         logger.traceEntry("doFoo(a={}, b={})", 1, 2);
         logger.traceExit("doFoo(a=1, b=2): {}", 3);
         assertEquals(2, results.size());
@@ -93,12 +91,95 @@ public class LoggerTest {
     }
 
     @Test
-    public void flowTracing() {
+    public void flowTracingString_ObjectArray2() {
+        EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", 1, 2);
+        logger.traceExit(3, msg);
+        assertEquals(2, results.size());
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE entry"));
+        assertThat("Missing entry data", results.get(0), containsString("doFoo(a=1, b=2)"));
+        assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE exit"));
+        assertThat("Missing exit data", results.get(1), containsString("doFoo(a=1, b=2): 3"));
+    }
+
+    @Test
+    public void flowTracingNoExitArgs() {
         logger.traceEntry();
         logger.traceExit();
         assertEquals(2, results.size());
         assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE entry"));
         assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE exit"));
+    }
+
+    @Test
+    public void flowTracingNoArgs() {
+        final EntryMessage message = logger.traceEntry();
+        logger.traceExit(message);
+        assertEquals(2, results.size());
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE entry"));
+        assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE exit"));
+    }
+
+    @Test
+    public void flowTracingString_MessageSupplierOfObjectMessages() {
+        EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", new MessageSupplier() {
+            @Override
+            public Message get() {
+                return new ObjectMessage(1);
+            }
+        }, new MessageSupplier() {
+            @Override
+            public Message get() {
+                return new ObjectMessage(2);
+            }
+        });
+        logger.traceExit(3, msg);
+        assertEquals(2, results.size());
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE entry"));
+        assertThat("Missing entry data", results.get(0), containsString("doFoo(a=1, b=2)"));
+        assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE exit"));
+        assertThat("Missing exit data", results.get(1), containsString("doFoo(a=1, b=2): 3"));
+    }
+
+    @Test
+    public void flowTracingString_SupplierOfObjectMessages() {
+        EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", new Supplier<Message>() {
+            @Override
+            public Message get() {
+                return new ObjectMessage(1);
+            }
+        }, new Supplier<Message>() {
+            @Override
+            public Message get() {
+                return new ObjectMessage(2);
+            }
+        });
+        logger.traceExit(3, msg);
+        assertEquals(2, results.size());
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE entry"));
+        assertThat("Missing entry data", results.get(0), containsString("doFoo(a=1, b=2)"));
+        assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE exit"));
+        assertThat("Missing exit data", results.get(1), containsString("doFoo(a=1, b=2): 3"));
+    }
+
+    @Test
+    public void flowTracingString_SupplierOfStrings() {
+        EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", new Supplier<String>() {
+            @Override
+            public String get() {
+                return "1";
+            }
+        }, new Supplier<String>() {
+            @Override
+            public String get() {
+                return "2";
+            }
+        });
+        logger.traceExit(3, msg);
+        assertEquals(2, results.size());
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE entry"));
+        assertThat("Missing entry data", results.get(0), containsString("doFoo(a=1, b=2)"));
+        assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE exit"));
+        assertThat("Missing exit data", results.get(1), containsString("doFoo(a=1, b=2): 3"));
     }
 
     @Test
