@@ -27,7 +27,7 @@ import java.io.Serializable;
 public abstract class AbstractMessageFactory implements MessageFactory, Serializable {
 
     /**
-     * Constructs an AbstractMessageFactory with the "entry" and "exit" strings.
+     * Constructs a message factory with {@code "entry"} and {@code "exit"} as the default flow strings.
      */
     public AbstractMessageFactory() {
         this("entry", "exit");
