@@ -40,6 +40,7 @@ import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Supplier;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 /**
  *
@@ -54,8 +55,8 @@ public class LoggerTest {
         // empty
     }
 
-    TestLogger logger = (TestLogger) LogManager.getLogger("LoggerTest");
-    List<String> results = logger.getEntries();
+    private final TestLogger logger = (TestLogger) LogManager.getLogger("LoggerTest");
+    private final List<String> results = logger.getEntries();
 
     @Test
     public void basicFlow() {
@@ -99,6 +100,19 @@ public class LoggerTest {
         assertThat("Missing entry data", results.get(0), containsString("doFoo(a=1, b=2)"));
         assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE exit"));
         assertThat("Missing exit data", results.get(1), containsString("doFoo(a=1, b=2): 3"));
+    }
+
+    @Test
+    public void flowTracingString_ObjectArray2_ParameterizedMessageFactory() {
+        TestLogger myLogger = (TestLogger) LogManager.getLogger("LoggerTestWithCustomParameterizedMessageFactory", new ParameterizedMessageFactory("Enter", "Exit"));
+        EntryMessage msg = myLogger.traceEntry("doFoo(a={}, b={})", 1, 2);
+        myLogger.traceExit(3, msg);
+        final List<String> entries = myLogger.getEntries();
+        assertEquals(2, entries.size());
+        assertThat("Incorrect Entry", entries.get(0), startsWith("ENTRY[ FLOW ] TRACE Enter"));
+        assertThat("Missing entry data", entries.get(0), containsString("doFoo(a=1, b=2)"));
+        assertThat("Incorrect Exit", entries.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
+        assertThat("Missing exit data", entries.get(1), containsString("doFoo(a=1, b=2): 3"));
     }
 
     @Test

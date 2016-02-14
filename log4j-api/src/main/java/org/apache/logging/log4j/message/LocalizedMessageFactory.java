@@ -35,12 +35,34 @@ public class LocalizedMessageFactory extends AbstractMessageFactory {
         this.baseName = null;
     }
 
+    /**
+     * Constructs a message factory with the given entry and exit strings.
+     * @param entryText the text to use for trace entry, like {@code "entry"} or {@code "Enter"}.
+     * @param exitText the text to use for trace exit, like {@code "exit"} or {@code "Exit"}.
+     * @since 2.6
+     */
+    public LocalizedMessageFactory(final ResourceBundle resourceBundle, final String entryText, final String exitText) {
+        super(entryText, exitText);
+        this.resourceBundle = resourceBundle;
+        this.baseName = null;
+    }
 
     public LocalizedMessageFactory(final String baseName) {
         this.resourceBundle = null;
         this.baseName = baseName;
     }
 
+    /**
+     * Constructs a message factory with the given entry and exit strings.
+     * @param entryText the text to use for trace entry, like {@code "entry"} or {@code "Enter"}.
+     * @param exitText the text to use for trace exit, like {@code "exit"} or {@code "Exit"}.
+     * @since 2.6
+     */
+    public LocalizedMessageFactory(final String baseName, final String entryText, final String exitText) {
+        super(entryText, exitText);
+        this.resourceBundle = null;
+        this.baseName = baseName;
+    }
 
     /**
      * Gets the resource bundle base name if set.
@@ -51,7 +73,6 @@ public class LocalizedMessageFactory extends AbstractMessageFactory {
         return this.baseName;
     }
 
-
     /**
      * Gets the resource bundle if set.
      * 
@@ -60,7 +81,6 @@ public class LocalizedMessageFactory extends AbstractMessageFactory {
     public ResourceBundle getResourceBundle() {
         return this.resourceBundle;
     }
-
 
     /**
      * Creates {@link org.apache.logging.log4j.message.StringFormattedMessage} instances.

@@ -32,6 +32,23 @@ import org.apache.logging.log4j.status.StatusLogger;
 public final class ParameterizedNoReferenceMessageFactory extends AbstractMessageFactory {
 
     /**
+     * Constructs a message factory with default flow strings.
+     */
+    public ParameterizedNoReferenceMessageFactory() {
+        super();
+    }
+
+    /**
+     * Constructs a message factory with the given entry and exit strings.
+     * @param entryText the text to use for trace entry, like {@code "entry"} or {@code "Enter"}.
+     * @param exitText the text to use for trace exit, like {@code "exit"} or {@code "Exit"}.
+     * @since 2.6
+     */
+    public ParameterizedNoReferenceMessageFactory(final String entryText, final String exitText) {
+        super(entryText, exitText);
+    }
+
+    /**
      * Instance of ParameterizedStatusMessageFactory.
      */
     public static final ParameterizedNoReferenceMessageFactory INSTANCE = new ParameterizedNoReferenceMessageFactory();
