@@ -103,16 +103,16 @@ public class LoggerTest {
     }
 
     @Test
-    @Ignore("How do I set this up such that the logger in this methods works as a test logger?")
     public void flowTracingString_ObjectArray2_ParameterizedMessageFactory() {
-        Logger myLogger = LogManager.getLogger("LoggerTestWithCustomParameterizedMessageFactory", new ParameterizedMessageFactory("Enter", "Exit"));
+        TestLogger myLogger = (TestLogger) LogManager.getLogger("LoggerTestWithCustomParameterizedMessageFactory", new ParameterizedMessageFactory("Enter", "Exit"));
         EntryMessage msg = myLogger.traceEntry("doFoo(a={}, b={})", 1, 2);
         myLogger.traceExit(3, msg);
-        assertEquals(2, results.size()); // fail!
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE Enter"));
-        assertThat("Missing entry data", results.get(0), containsString("doFoo(a=1, b=2)"));
-        assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
-        assertThat("Missing exit data", results.get(1), containsString("doFoo(a=1, b=2): 3"));
+        final List<String> entries = myLogger.getEntries();
+        assertEquals(2, entries.size());
+        assertThat("Incorrect Entry", entries.get(0), startsWith("ENTRY[ FLOW ] TRACE Enter"));
+        assertThat("Missing entry data", entries.get(0), containsString("doFoo(a=1, b=2)"));
+        assertThat("Incorrect Exit", entries.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
+        assertThat("Missing exit data", entries.get(1), containsString("doFoo(a=1, b=2): 3"));
     }
 
     @Test
