@@ -29,7 +29,6 @@ import org.apache.logging.log4j.message.MultiformatMessage;
 @ConverterKeys({ "m", "msg", "message" })
 public final class MessagePatternConverter extends LogEventPatternConverter {
 
-    private static final String NULL = "null";
     private final String[] formats;
     private final Configuration config;
 
@@ -59,30 +58,20 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        final String result = messageString(event);
-        if (result == NULL) {
-            toAppendTo.append(NULL);
-        } else {
-            toAppendTo.append(replaceParams(event, result));
+        final Message msg = event.getMessage();
+        if (msg != null) {
+            String result;
+            if (msg instanceof MultiformatMessage) {
+                result = ((MultiformatMessage) msg).getFormattedMessage(formats);
+            } else {
+                result = msg.getFormattedMessage();
+            }
+            if (result != null) {
+                toAppendTo.append(config != null && result.contains("${") ?
+                        config.getStrSubstitutor().replace(event, result) : result);
+            } else {
+                toAppendTo.append("null");
+            }
         }
-    }
-
-    private String replaceParams(final LogEvent event, final String result) {
-        return config != null && result.contains("${") ?
-            config.getStrSubstitutor().replace(event, result) : result;
-    }
-
-    private String messageString(final LogEvent event) {
-        return messageString(event.getMessage());
-    }
-
-    private String messageString(final Message msg) {
-        String result;
-        if (msg instanceof MultiformatMessage) {
-            result = ((MultiformatMessage) msg).getFormattedMessage(formats);
-        } else {
-            result = msg == null ? NULL : msg.getFormattedMessage();
-        }
-        return result;
     }
 }
