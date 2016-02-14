@@ -23,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.logging.log4j.message.FormattedMessage;
 import org.apache.logging.log4j.message.JsonMessage;
@@ -35,7 +36,7 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.apache.logging.log4j.message.ThreadDumpMessage;
 import org.apache.logging.log4j.util.MessageSupplier;
-import org.apache.logging.log4j.util.Supplier;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -47,6 +48,8 @@ public class LoggerMessageSupplierTest {
     private final TestLogger logger = (TestLogger) LogManager.getLogger("LoggerTest");
 
     private final List<String> results = logger.getEntries();
+
+    Locale defaultLocale;
 
     @Test
     public void flowTracing_MessageSupplierOfFormattedMessage() {
@@ -188,10 +191,17 @@ public class LoggerMessageSupplierTest {
         assertThat("Missing entry data", results.get(0), containsString("Title of ..."));
         assertThat("Missing entry data", results.get(0), containsString(getClass().getName()));
     }
-
+    
     @Before
     public void setup() {
         results.clear();
+        defaultLocale = Locale.getDefault(Locale.Category.FORMAT);
+        Locale.setDefault(Locale.Category.FORMAT, java.util.Locale.US);
+    }
+    
+    @After
+    public void tearDown() {
+        Locale.setDefault(Locale.Category.FORMAT, defaultLocale);
     }
 
 }

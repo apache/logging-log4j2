@@ -91,6 +91,9 @@
       <action issue="LOG4J2-1215" dev="ggregory" type="fix" due-to="Erik Kemperman">
         Documentation/XSD inconsistencies.
       </action>
+      <action issue="LOG4J2-1276" dev="ggregory" type="fix" due-to="Ludovic HOCHET">
+        LoggerMessageSupplierTest and LoggerSupplierTest are Locale sensitive.
+      </action>
       <action issue="LOG4J2-1253" dev="ggregory" type="update">
         Update LMAX Disruptor from 3.3.2 to 3.3.4.
       </action>
