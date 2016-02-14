@@ -26,7 +26,7 @@
     <release version="2.6" date="201Y-MM-DD" description="GA Release 2.6">
       <action issue="LOG4J2-1272" dev="rpopma" type="update">
         Improve LoggerConfig's data structure for AppenderControl objects to avoid allocating temporary objects during
-        traversal.
+        traversal for each log event.
       </action>
       <action issue="LOG4J2-1269" dev="rpopma" type="fix">
         AsyncLogger should use thread-local translator by default.
