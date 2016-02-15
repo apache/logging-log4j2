@@ -182,7 +182,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
      * @param config
      *            The Configuration
      * @return A SocketAppender.
-     * @deprecated Use {@link #createAppender(String, String, Protocol, SslConfiguration, int, String, String, String, String, String, Layout, Filter, String, Configuration)}.
+     * @deprecated Use {@link #createAppender(String, int, Protocol, SslConfiguration, int, int, boolean, String, boolean, boolean, Layout, Filter, boolean, Configuration)}.
      */
     @Deprecated
     public static SocketAppender createAppender(
