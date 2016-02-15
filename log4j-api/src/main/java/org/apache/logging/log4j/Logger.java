@@ -322,8 +322,10 @@ public interface Logger {
     void entry();
 
     /**
-     * Logs entry to a method along with its parameters. For example,
-     *
+     * Logs entry to a method along with its parameters (consider using one of the {@code traceEntry(...)} methods instead.) 
+     * <p>
+     * For example:
+     * </p>
      * <pre>
      * public void doSomething(String foo, int bar) {
      *     LOGGER.entry(foo, bar);
