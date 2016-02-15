@@ -198,11 +198,6 @@ public class FormattedMessage implements Message {
         }
     }
 
-    /**
-     * Always returns null.
-     *
-     * @return null
-     */
     @Override
     public Throwable getThrowable() {
         if (throwable != null) {
