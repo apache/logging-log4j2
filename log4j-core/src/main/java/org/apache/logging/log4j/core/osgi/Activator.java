@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.osgi;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.util.PluginRegistry;
 import org.apache.logging.log4j.core.util.Constants;
@@ -78,9 +79,8 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
 
     @Override
     public void stop(final BundleContext context) throws Exception {
-        // not much can be done that isn't already automated by the framework
         this.context.compareAndSet(context, null);
-        // TODO: shut down log4j
+        LogManager.shutdown();
     }
 
     @Override
