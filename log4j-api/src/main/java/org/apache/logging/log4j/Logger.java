@@ -1887,8 +1887,11 @@ public interface Logger {
      * expensive. This may be coded as:
      *
      * <pre>
-     * return LOGGER.traceExit(myResult, () -> new ParameterizedMessage("MyResult: field1: {}, field2: {}",
-     *           myResult.field1.toString(), myResult.field2.toString());
+     * return LOGGER.traceExit(
+     *     () -> new ParameterizedMessage(
+     *            "MyResult: field1: {}, field2: {}", 
+     *            myResult.field1.toString(), myResult.field2.toString()),
+     *     myResult);
      * </pre>
      * @param supplier The supplier of the Message.
      * @param result The result being returned from the method call.
