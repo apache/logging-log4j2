@@ -47,7 +47,7 @@ public class MessageFormatMessage implements Message {
     private String[] serializedParameters;
     private transient String formattedMessage;
     private transient Throwable throwable;
-    private Locale locale;
+    private final Locale locale;
 
     /**
      * Constructs a message.
