@@ -21,6 +21,8 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+import java.util.Locale;
+
 /**
  *
  */
@@ -44,11 +46,29 @@ public class MessageFormatMessageTest {
     }
 
     @Test
-    public void testOneArg() {
+    public void testOneStringArg() {
         final String testMsg = "Test message {0}";
         final MessageFormatMessage msg = new MessageFormatMessage(testMsg, "Apache");
         final String result = msg.getFormattedMessage();
         final String expected = "Test message Apache";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testOneIntArgLocaleUs() {
+        final String testMsg = "Test message {0,number,currency}";
+        final MessageFormatMessage msg = new MessageFormatMessage(Locale.US, testMsg, 1234567890);
+        final String result = msg.getFormattedMessage();
+        final String expected = "Test message $1,234,567,890.00";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testOneIntArgLocaleFrance() {
+        final String testMsg = "Test message {0,number,currency}";
+        final MessageFormatMessage msg = new MessageFormatMessage(Locale.FRANCE, testMsg, 1234567890);
+        final String result = msg.getFormattedMessage();
+        final String expected = "Test message 1 234 567 890,00 €";
         assertEquals(expected, result);
     }
 
