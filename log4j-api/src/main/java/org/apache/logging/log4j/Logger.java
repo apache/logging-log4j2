@@ -565,7 +565,9 @@ public interface Logger {
 
     /**
      * Logs exit from a method. Used for methods that do not return anything.
+     * @deprecated Use {@link #traceExit()} instead which performs the same function.
      */
+    @Deprecated
     void exit();
 
     /**
@@ -578,7 +580,9 @@ public interface Logger {
      * @param <R> The type of the parameter and object being returned.
      * @param result The result being returned from the method call.
      * @return the result.
+     * @deprecated Use {@link #traceExit(Object)} instead which performs the same function.
      */
+    @Deprecated
     <R> R exit(R result);
 
     /**
