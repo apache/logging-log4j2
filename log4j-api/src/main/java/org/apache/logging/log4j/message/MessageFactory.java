@@ -55,9 +55,32 @@ public interface MessageFactory {
      */
     Message newMessage(String message, Object... params);
 
+    /**
+     * Creates a new entry message based on an existing message.
+     * 
+     * @param message the original message
+     * @return the new entry message
+     * @since 2.6
+     */
     EntryMessage newEntryMessage(Message message);
 
+    /**
+     * Creates a new exit message based on a return value and an existing message.
+     * 
+     * @param object the return value. 
+     * @param message the original message
+     * @return the new exit message
+     * @since 2.6
+     */
     ExitMessage newExitMessage(Object object, Message message);
 
+    /**
+     * Creates a new exit message based on a return value and an existing entry message.
+     * 
+     * @param object the return value. 
+     * @param message the original entry message
+     * @return the new exit message
+     * @since 2.6
+     */
     ExitMessage newExitMessage(Object object, EntryMessage message);
 }
