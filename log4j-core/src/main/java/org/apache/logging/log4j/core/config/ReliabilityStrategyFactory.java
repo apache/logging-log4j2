@@ -58,8 +58,8 @@ public final class ReliabilityStrategyFactory {
             return new LockingReliabilityStrategy(loggerConfig);
         }
         try {
-            @SuppressWarnings("unchecked")
-            Class<? extends ReliabilityStrategy> cls = (Class<? extends ReliabilityStrategy>) LoaderUtil.loadClass(strategy);
+            final Class<? extends ReliabilityStrategy> cls = LoaderUtil.loadClass(strategy).asSubclass(
+                ReliabilityStrategy.class);
             return cls.getConstructor(LoggerConfig.class).newInstance(loggerConfig);
         } catch (Exception dynamicFailed) {
             StatusLogger.getLogger().warn(
