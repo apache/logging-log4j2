@@ -74,7 +74,7 @@ public class FormattedMessage implements Message {
      * @param arguments The parameter.
      * @since 2.6
      */
-    public FormattedMessage(final Locale locale, final String messagePattern, final Object[] arguments) {
+    public FormattedMessage(final Locale locale, final String messagePattern, final Object... arguments) {
         this(locale, messagePattern, arguments, null);
     }
 
@@ -117,7 +117,7 @@ public class FormattedMessage implements Message {
      * @param messagePattern The message pattern.
      * @param arguments The parameter.
      */
-    public FormattedMessage(final String messagePattern, final Object[] arguments) {
+    public FormattedMessage(final String messagePattern, final Object... arguments) {
         this(messagePattern, arguments, null);
     }
 
