@@ -42,12 +42,23 @@ public class FormattedMessage implements Message {
     private final Throwable throwable;
     private Message message;
     
+    /**
+     * Constructs with a pattern, a parameter array, and a throwable.
+     * @param messagePattern The message pattern.
+     * @param arguments The parameter.
+     * @param throwable The throwable
+     */
     public FormattedMessage(final String messagePattern, final Object[] arguments, final Throwable throwable) {
         this.messagePattern = messagePattern;
         this.argArray = arguments;
         this.throwable = throwable;
     }
 
+    /**
+     * Constructs with a pattern and a parameter array.
+     * @param messagePattern The message pattern.
+     * @param arguments The parameter.
+     */
     public FormattedMessage(final String messagePattern, final Object[] arguments) {
         this(messagePattern, arguments, null);
     }
