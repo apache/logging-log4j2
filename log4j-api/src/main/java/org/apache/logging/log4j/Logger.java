@@ -1883,27 +1883,6 @@ public interface Logger {
     <R> R traceExit(MessageSupplier messageSupplier, R result);
 
     /**
-     * Logs exiting from a method with the result. Used when construction of the Message might be
-     * expensive. This may be coded as:
-     *
-     * <pre>
-     * return LOGGER.traceExit(
-     *     () -> new ParameterizedMessage(
-     *            "MyResult: field1: {}, field2: {}", 
-     *            myResult.field1.toString(), myResult.field2.toString()),
-     *     myResult);
-     * </pre>
-     * @param supplier The supplier of the Message.
-     * @param result The result being returned from the method call.
-     *
-     * @param <R> The type of the parameter and object being returned.
-     * @return the result.
-     * 
-     * @since 2.6
-     */
-    <R> R traceExit(Supplier<? extends Message> supplier, R result);
-
-    /**
      * Logs exiting from a method with no result. Allows custom formatting of the result. This may be coded as:
      *
      * <pre>
