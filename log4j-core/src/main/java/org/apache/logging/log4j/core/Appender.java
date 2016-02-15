@@ -47,7 +47,7 @@ public interface Appender extends LifeCycle {
 
 
     /**
-     * Get the name of this Appender.
+     * Gets the name of this Appender.
      *
      * @return name, may be null.
      */
