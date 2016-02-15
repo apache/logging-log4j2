@@ -69,7 +69,7 @@ public class FormattedMessage implements Message {
      * @param arg The parameter.
      */
     public FormattedMessage(final String messagePattern, final Object arg) {
-        this(messagePattern, new Object[] {arg}, null);
+        this(messagePattern, new Object[] { arg }, null);
     }
 
     /**
