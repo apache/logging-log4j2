@@ -21,6 +21,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.IllegalFormatException;
+import java.util.Locale;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -41,13 +42,34 @@ public class StringFormattedMessage implements Message {
     private String[] stringArgs;
     private transient String formattedMessage;
     private transient Throwable throwable;
-
-    public StringFormattedMessage(final String messagePattern, final Object... arguments) {
+    private final Locale locale;
+    
+   /**
+    * Constructs a message.
+    * 
+    * @param locale the locale for this message format
+    * @param messagePattern the pattern for this message format
+    * @param arguments The objects to format
+    * @since 2.6
+    */
+    public StringFormattedMessage(final Locale locale, final String messagePattern, final Object... arguments) {
+        this.locale = locale;
         this.messagePattern = messagePattern;
         this.argArray = arguments;
         if (arguments != null && arguments.length > 0 && arguments[arguments.length - 1] instanceof Throwable) {
             this.throwable = (Throwable) arguments[arguments.length - 1];
         }
+    }
+
+    /**
+     * Constructs a message.
+     * 
+     * @param messagePattern the pattern for this message format
+     * @param arguments The objects to format
+     * @since 2.6
+     */
+    public StringFormattedMessage(final String messagePattern, final Object... arguments) {
+        this(Locale.getDefault(Locale.Category.FORMAT), messagePattern, arguments);
     }
 
     /**
@@ -85,7 +107,7 @@ public class StringFormattedMessage implements Message {
 
     protected String formatMessage(final String msgPattern, final Object... args) {
         try {
-            return String.format(msgPattern, args);
+            return String.format(locale, msgPattern, args);
         } catch (final IllegalFormatException ife) {
             LOGGER.error("Unable to format msg: " + msgPattern, ife);
             return msgPattern;
