@@ -316,7 +316,9 @@ public interface Logger {
     /**
      * Logs entry to a method. Used when the method in question has no parameters or when the parameters should not be
      * logged.
+     * @deprecated Use {@link #traceEntry()} instead which performs the same function.
      */
+    @Deprecated
     void entry();
 
     /**
