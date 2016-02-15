@@ -1869,15 +1869,15 @@ public interface Logger {
      * return LOGGER.traceExit(myResult, () -> new ParameterizedMessage("MyResult: field1: {}, field2: {}",
      *           myResult.field1.toString(), myResult.field2.toString());
      * </pre>
+     * @param messageSupplier The supplier of the Message.
+     * @param result The result being returned from the method call.
      *
      * @param <R> The type of the parameter and object being returned.
-     * @param result The result being returned from the method call.
-     * @param messageSupplier The supplier of the Message.
      * @return the result.
      * 
      * @since 2.6
      */
-    <R> R traceExit(R result, MessageSupplier messageSupplier);
+    <R> R traceExit(MessageSupplier messageSupplier, R result);
 
     /**
      * Logs exiting from a method with the result. Used when construction of the Message might be
@@ -1887,15 +1887,15 @@ public interface Logger {
      * return LOGGER.traceExit(myResult, () -> new ParameterizedMessage("MyResult: field1: {}, field2: {}",
      *           myResult.field1.toString(), myResult.field2.toString());
      * </pre>
+     * @param supplier The supplier of the Message.
+     * @param result The result being returned from the method call.
      *
      * @param <R> The type of the parameter and object being returned.
-     * @param result The result being returned from the method call.
-     * @param supplier The supplier of the Message.
      * @return the result.
      * 
      * @since 2.6
      */
-    <R> R traceExit(R result, Supplier<? extends Message> supplier);
+    <R> R traceExit(Supplier<? extends Message> supplier, R result);
 
     /**
      * Logs exiting from a method with the result. Allows custom formatting of the result. This may be coded as:
@@ -1907,15 +1907,15 @@ public interface Logger {
      *    return LOGGER.traceExit(myResult, m);
      * }
      * </pre>
+     * @param message The Message containing the formatted result.
+     * @param result The result being returned from the method call.
      *
      * @param <R> The type of the parameter and object being returned.
-     * @param result The result being returned from the method call.
-     * @param message The Message containing the formatted result.
      * @return the result.
      * 
      * @since 2.6
      */
-    <R> R traceExit(R result, EntryMessage message);
+    <R> R traceExit(EntryMessage message, R result);
 
     /**
      * Logs exiting from a method with the result. Allows custom formatting of the result. This may be coded as:
@@ -1923,15 +1923,15 @@ public interface Logger {
      * <pre>
      * return LOGGER.traceExit(myResult, new JsonMessage(myResult));
      * </pre>
+     * @param message The Message containing the formatted result.
+     * @param result The result being returned from the method call.
      *
      * @param <R> The type of the parameter and object being returned.
-     * @param result The result being returned from the method call.
-     * @param message The Message containing the formatted result.
      * @return the result.
      * 
      * @since 2.6
      */
-    <R> R traceExit(R result, Message message);
+    <R> R traceExit(Message message, R result);
 
     /**
      * Logs a message with the specific Marker at the {@link Level#WARN WARN} level.

@@ -1360,7 +1360,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @Override
-    public <R> R traceExit(final R result, final MessageSupplier messageSupplier) {
+    public <R> R traceExit(final MessageSupplier messageSupplier, final R result) {
         if (isEnabled(Level.TRACE, EXIT_MARKER, messageSupplier, null)) {
             logMessage(FQCN, Level.TRACE, EXIT_MARKER, new MessageSupplier() {
                 @Override
@@ -1373,7 +1373,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @Override
-    public <R> R traceExit(final R result, final Supplier<? extends Message> messageSupplier) {
+    public <R> R traceExit(final Supplier<? extends Message> messageSupplier, final R result) {
         if (isEnabled(Level.TRACE, EXIT_MARKER, messageSupplier, null)) {
             logMessage(FQCN, Level.TRACE, EXIT_MARKER, new MessageSupplier() {
                 @Override
@@ -1386,7 +1386,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @Override
-    public <R> R traceExit(final R result, final EntryMessage message) {
+    public <R> R traceExit(final EntryMessage message, final R result) {
         if (isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
             logMessage(FQCN, Level.TRACE, EXIT_MARKER, new MessageSupplier() {
                 @Override
@@ -1399,7 +1399,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @Override
-    public <R> R traceExit(final R result, final Message message) {
+    public <R> R traceExit(final Message message, final R result) {
         if (isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
             logMessage(FQCN, Level.TRACE, EXIT_MARKER, new MessageSupplier() {
                 @Override
