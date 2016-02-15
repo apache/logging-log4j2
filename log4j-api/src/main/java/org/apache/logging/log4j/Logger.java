@@ -1904,6 +1904,23 @@ public interface Logger {
     <R> R traceExit(Supplier<? extends Message> supplier, R result);
 
     /**
+     * Logs exiting from a method with no result. Allows custom formatting of the result. This may be coded as:
+     *
+     * <pre>
+     * public long doSomething(int a, int b) {
+     *    EntryMessage m = traceEntry("doSomething(a={}, b={})", a, b);
+     *    // ...
+     *    return LOGGER.traceExit(m);
+     * }
+     * </pre>
+     * @param message The Message containing the formatted result.
+     * @param result The result being returned from the method call.
+     *
+     * @since 2.6
+     */
+    void traceExit(EntryMessage message);
+
+    /**
      * Logs exiting from a method with the result. Allows custom formatting of the result. This may be coded as:
      *
      * <pre>
@@ -2164,5 +2181,6 @@ public interface Logger {
      * @since 2.4
      */
     void warn(Supplier<?> msgSupplier, Throwable t);
+
 
 }

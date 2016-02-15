@@ -18,6 +18,7 @@ package org.apache.logging.log4j;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -40,7 +41,6 @@ import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Supplier;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 /**
  *
@@ -117,6 +117,17 @@ public class LoggerTest {
         assertThat("Missing entry data", results.get(0), containsString("doFoo(a=1, b=2)"));
         assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE exit"));
         assertThat("Missing exit data", results.get(1), containsString("doFoo(a=1, b=2): 3"));
+    }
+
+    @Test
+    public void flowTracingVoidReturn() {
+        EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", 1, 2);
+        logger.traceExit(msg);
+        assertEquals(2, results.size());
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE entry"));
+        assertThat("Missing entry data", results.get(0), containsString("doFoo(a=1, b=2)"));
+        assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE exit"));
+        assertThat("Missing exit data", results.get(1), endsWith("doFoo(a=1, b=2)"));
     }
 
     @Test

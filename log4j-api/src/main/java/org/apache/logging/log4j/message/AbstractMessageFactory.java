@@ -119,6 +119,12 @@ public abstract class AbstractMessageFactory implements MessageFactory, Serializ
         private final Object result;
         private final boolean isVoid;
 
+        SimpleExitMessage(final String exitText, final EntryMessage message) {
+            super(exitText, message.getMessage());
+            this.result = null;
+            isVoid = true;
+        }
+
         SimpleExitMessage(final String exitText, final Object result, final EntryMessage message) {
             super(exitText, message.getMessage());
             this.result = result;
@@ -169,6 +175,16 @@ public abstract class AbstractMessageFactory implements MessageFactory, Serializ
     @Override
     public EntryMessage newEntryMessage(final Message message) {
         return new SimpleEntryMessage(entryText, message);
+    }
+    
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.apache.logging.log4j.message.MessageFactory#newEntryMessage(org.apache.logging.log4j.message.EntryMessage)
+     */
+    @Override
+    public ExitMessage newExitMessage(final EntryMessage message) {
+        return new SimpleExitMessage(exitText, message);
     }
     
     /*

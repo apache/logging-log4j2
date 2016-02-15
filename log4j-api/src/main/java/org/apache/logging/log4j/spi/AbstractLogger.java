@@ -1386,6 +1386,18 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @Override
+    public void traceExit(final EntryMessage message) {
+        if (isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
+            logMessage(FQCN, Level.TRACE, EXIT_MARKER, new MessageSupplier() {
+                @Override
+                public Message get() {
+                    return messageFactory.newExitMessage(message);
+                };
+            }, null);
+        }
+    }
+
+    @Override
     public <R> R traceExit(final EntryMessage message, final R result) {
         if (isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
             logMessage(FQCN, Level.TRACE, EXIT_MARKER, new MessageSupplier() {
