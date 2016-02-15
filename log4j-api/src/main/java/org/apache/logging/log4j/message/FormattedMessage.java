@@ -22,6 +22,7 @@ import java.io.ObjectOutputStream;
 import java.text.Format;
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 /**
@@ -41,7 +42,57 @@ public class FormattedMessage implements Message {
     private transient String formattedMessage;
     private final Throwable throwable;
     private Message message;
+    final Locale locale;
     
+    /**
+     * Constructs with a locale, a pattern and a single parameter.
+     * @param locale The locale
+     * @param messagePattern The message pattern.
+     * @param arg The parameter.
+     * @since 2.6
+     */
+    public FormattedMessage(final Locale locale, final String messagePattern, final Object arg) {
+        this(locale, messagePattern, new Object[] { arg }, null);
+    }
+
+    /**
+     * Constructs with a locale, a pattern and two parameters.
+     * @param locale The locale
+     * @param messagePattern The message pattern.
+     * @param arg1 The first parameter.
+     * @param arg2 The second parameter.
+     * @since 2.6
+     */
+    public FormattedMessage(final Locale locale, final String messagePattern, final Object arg1, final Object arg2) {
+        this(locale, messagePattern, new Object[] { arg1, arg2 });
+    }
+
+    /**
+     * Constructs with a locale, a pattern and a parameter array.
+     * @param locale The locale
+     * @param messagePattern The message pattern.
+     * @param arguments The parameter.
+     * @since 2.6
+     */
+    public FormattedMessage(final Locale locale, final String messagePattern, final Object[] arguments) {
+        this(locale, messagePattern, arguments, null);
+    }
+
+    /**
+     * Constructs with a locale, a pattern, a parameter array, and a throwable.
+     * @param locale The Locale
+     * @param messagePattern The message pattern.
+     * @param arguments The parameter.
+     * @param throwable The throwable
+     * @since 2.6
+     */
+    public FormattedMessage(final Locale locale, final String messagePattern, final Object[] arguments, final Throwable throwable) {
+        this.locale = locale;
+        this.messagePattern = messagePattern;
+        this.argArray = arguments;
+        this.throwable = throwable;
+    }
+
     /**
      * Constructs with a pattern and a single parameter.
      * @param messagePattern The message pattern.
@@ -77,6 +128,7 @@ public class FormattedMessage implements Message {
      * @param throwable The throwable
      */
     public FormattedMessage(final String messagePattern, final Object[] arguments, final Throwable throwable) {
+        this.locale = Locale.getDefault(Locale.Category.FORMAT);
         this.messagePattern = messagePattern;
         this.argArray = arguments;
         this.throwable = throwable;
@@ -133,14 +185,14 @@ public class FormattedMessage implements Message {
             final MessageFormat format = new MessageFormat(msgPattern);
             final Format[] formats = format.getFormats();
             if (formats != null && formats.length > 0) {
-                return new MessageFormatMessage(msgPattern, args);
+                return new MessageFormatMessage(locale, msgPattern, args);
             }
         } catch (final Exception ignored) {
             // Obviously, the message is not a proper pattern for MessageFormat.
         }
         try {
             if (MSG_PATTERN.matcher(msgPattern).find()) {
-                return new StringFormattedMessage(msgPattern, args);
+                return new StringFormattedMessage(locale, msgPattern, args);
             }
         } catch (final Exception ignored) {
             // Also not properly formatted.

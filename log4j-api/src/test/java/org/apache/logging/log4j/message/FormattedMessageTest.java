@@ -20,6 +20,8 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+import java.util.Locale;
+
 /**
  *
  */
@@ -42,11 +44,47 @@ public class FormattedMessageTest {
     }
 
     @Test
-    public void tesStringOneArg() {
+    public void tesStringOneStringArg() {
         final String testMsg = "Test message %1s";
         final FormattedMessage msg = new FormattedMessage(testMsg, "Apache");
         final String result = msg.getFormattedMessage();
         final String expected = "Test message Apache";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void tesStringOneArgLocaleFrance_StringFormattedMessage() {
+        final String testMsg = "Test message e = %+10.4f";
+        final FormattedMessage msg = new FormattedMessage(Locale.FRANCE, testMsg, Math.E);
+        final String result = msg.getFormattedMessage();
+        final String expected = "Test message e =    +2,7183";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void tesStringOneArgLocaleFrance_MessageFormatMessage() {
+        final String testMsg = "Test message {0,number,currency}";
+        final FormattedMessage msg = new FormattedMessage(Locale.FRANCE, testMsg, 12);
+        final String result = msg.getFormattedMessage();
+        final String expected = "Test message 12,00 €";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void tesStringOneArgLocaleUs_MessageFormatMessage() {
+        final String testMsg = "Test message {0,number,currency}";
+        final FormattedMessage msg = new FormattedMessage(Locale.US, testMsg, 12);
+        final String result = msg.getFormattedMessage();
+        final String expected = "Test message $12.00";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void tesStringOneArgLocaleUs() {
+        final String testMsg = "Test message e = %+10.4f";
+        final FormattedMessage msg = new FormattedMessage(Locale.US, testMsg, Math.E);
+        final String result = msg.getFormattedMessage();
+        final String expected = "Test message e =    +2.7183";
         assertEquals(expected, result);
     }
 
