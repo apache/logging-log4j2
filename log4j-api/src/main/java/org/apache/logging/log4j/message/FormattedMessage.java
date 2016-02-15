@@ -42,7 +42,7 @@ public class FormattedMessage implements Message {
     private transient String formattedMessage;
     private final Throwable throwable;
     private Message message;
-    final Locale locale;
+    private final Locale locale;
     
     /**
      * Constructs with a locale, a pattern and a single parameter.
