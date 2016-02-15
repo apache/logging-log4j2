@@ -1866,8 +1866,11 @@ public interface Logger {
      * expensive. This may be coded as:
      *
      * <pre>
-     * return LOGGER.traceExit(myResult, () -> new ParameterizedMessage("MyResult: field1: {}, field2: {}",
-     *           myResult.field1.toString(), myResult.field2.toString());
+     * return LOGGER.traceExit(
+     *     () -> new ParameterizedMessage(
+     *            "MyResult: field1: {}, field2: {}", 
+     *            myResult.field1.toString(), myResult.field2.toString()),
+     *     myResult);
      * </pre>
      * @param messageSupplier The supplier of the Message.
      * @param result The result being returned from the method call.
@@ -1904,7 +1907,7 @@ public interface Logger {
      * public long doSomething(int a, int b) {
      *    EntryMessage m = traceEntry("doSomething(a={}, b={})", a, b);
      *    // ...
-     *    return LOGGER.traceExit(myResult, m);
+     *    return LOGGER.traceExit(m, myResult);
      * }
      * </pre>
      * @param message The Message containing the formatted result.
@@ -1921,7 +1924,7 @@ public interface Logger {
      * Logs exiting from a method with the result. Allows custom formatting of the result. This may be coded as:
      *
      * <pre>
-     * return LOGGER.traceExit(myResult, new JsonMessage(myResult));
+     * return LOGGER.traceExit(new JsonMessage(myResult), myResult);
      * </pre>
      * @param message The Message containing the formatted result.
      * @param result The result being returned from the method call.
