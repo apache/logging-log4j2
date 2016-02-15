@@ -41,7 +41,7 @@ public class FormattedMessage implements Message {
     private transient String formattedMessage;
     private final Throwable throwable;
     private Message message;
-
+    
     public FormattedMessage(final String messagePattern, final Object[] arguments, final Throwable throwable) {
         this.messagePattern = messagePattern;
         this.argArray = arguments;
@@ -53,7 +53,7 @@ public class FormattedMessage implements Message {
     }
 
     /**
-     * Constructor with a pattern and a single parameter.
+     * Constructs with a pattern and a single parameter.
      * @param messagePattern The message pattern.
      * @param arg The parameter.
      */
@@ -62,18 +62,18 @@ public class FormattedMessage implements Message {
     }
 
     /**
-     * Constructor with a pattern and two parameters.
+     * Constructs with a pattern and two parameters.
      * @param messagePattern The message pattern.
      * @param arg1 The first parameter.
      * @param arg2 The second parameter.
      */
     public FormattedMessage(final String messagePattern, final Object arg1, final Object arg2) {
-        this(messagePattern, new Object[]{arg1, arg2});
+        this(messagePattern, new Object[] { arg1, arg2 });
     }
 
 
     /**
-     * Returns the formatted message.
+     * Gets the formatted message.
      * @return the formatted message.
      */
     @Override
@@ -88,7 +88,7 @@ public class FormattedMessage implements Message {
     }
 
     /**
-     * Returns the message pattern.
+     * Gets the message pattern.
      * @return the message pattern.
      */
     @Override
@@ -97,7 +97,7 @@ public class FormattedMessage implements Message {
     }
 
     /**
-     * Returns the message parameters.
+     * Gets the message parameters.
      * @return the message parameters.
      */
     @Override
