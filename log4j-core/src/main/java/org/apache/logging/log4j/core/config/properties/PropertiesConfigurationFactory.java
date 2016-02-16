@@ -97,9 +97,9 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
                 }
                 scriptProps.remove("type");
                 if (type.equalsIgnoreCase("script")) {
-                    builder.add(createScript(builder, name, scriptProps));
+                    builder.add(createScript(builder, scriptProps));
                 } else {
-                    builder.add(createScriptFile(builder, name, scriptProps));
+                    builder.add(createScriptFile(builder, scriptProps));
                 }
             }
         }
@@ -150,7 +150,7 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
 
 
     private ScriptComponentBuilder createScript(final ConfigurationBuilder<PropertiesConfiguration> builder,
-                                                final String key, final Properties properties) {
+                                                final Properties properties) {
         final String name = properties.getProperty("name");
         if (name != null) {
             properties.remove("name");
@@ -164,12 +164,12 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
             properties.remove("text");
         }
         final ScriptComponentBuilder scriptBuilder = builder.newScript(name, language, text);
-        processRemainingProperties(scriptBuilder, key, properties);
+        processRemainingProperties(scriptBuilder, properties);
         return scriptBuilder;
     }
 
     private ScriptFileComponentBuilder createScriptFile(final ConfigurationBuilder<PropertiesConfiguration> builder,
-                                                        final String key, final Properties properties) {
+                                                        final Properties properties) {
         final String name = properties.getProperty("name");
         if (name != null) {
             properties.remove("name");
@@ -179,7 +179,7 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
             properties.remove("path");
         }
         final ScriptFileComponentBuilder scriptFileBuilder = builder.newScriptFile(name, path);
-        processRemainingProperties(scriptFileBuilder, key, properties);
+        processRemainingProperties(scriptFileBuilder, properties);
         return scriptFileBuilder;
     }
 
@@ -212,7 +212,7 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
             appenderBuilder.add(createLayout(builder, name, layoutProps));
         }
 
-        processRemainingProperties(appenderBuilder, name, properties);
+        processRemainingProperties(appenderBuilder, properties);
         return appenderBuilder;
     }
 
@@ -232,7 +232,7 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
             properties.remove("onMisMatch");
         }
         final FilterComponentBuilder filterBuilder = builder.newFilter(type, onMatch, onMisMatch);
-        processRemainingProperties(filterBuilder, key, properties);
+        processRemainingProperties(filterBuilder, properties);
         return filterBuilder;
     }
 
@@ -363,7 +363,7 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
         }
         properties.remove(CONFIG_TYPE);
         final LayoutComponentBuilder layoutBuilder = builder.newLayout(type);
-        processRemainingProperties(layoutBuilder, appenderName, properties);
+        processRemainingProperties(layoutBuilder, properties);
         return layoutBuilder;
     }
 
@@ -379,11 +379,11 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
         }
         properties.remove(CONFIG_TYPE);
         final ComponentBuilder<B> componentBuilder = parent.getBuilder().newComponent(name, type);
-        processRemainingProperties(componentBuilder, name, properties);
+        processRemainingProperties(componentBuilder, properties);
         return componentBuilder;
     }
 
-    private void processRemainingProperties(final ComponentBuilder<?> builder, final String name, final Properties properties) {
+    private void processRemainingProperties(final ComponentBuilder<?> builder, final Properties properties) {
         while (properties.size() > 0) {
             final String propertyName = properties.stringPropertyNames().iterator().next();
 
