@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.config.properties;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -35,10 +39,6 @@ import org.apache.logging.log4j.core.config.builder.api.ScriptFileComponentBuild
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 
 /**
  * Creates a PropertiesConfiguration from a properties file.
@@ -63,57 +63,35 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
     }
 
     @Override
-    public PropertiesConfiguration getConfiguration(ConfigurationSource source) {
+    public PropertiesConfiguration getConfiguration(final ConfigurationSource source) {
         final InputStream configStream = source.getInputStream();
-        Properties properties = new Properties();
+        final Properties properties = new Properties();
         try {
             properties.load(configStream);
         } catch (IOException ioe) {
             throw new ConfigurationException("Unable to load " + source.toString(), ioe);
         }
-        ConfigurationBuilder<PropertiesConfiguration> builder = newConfigurationBuilder(PropertiesConfiguration.class);
-        String value = properties.getProperty(STATUS_KEY);
-        if (value != null) {
-            builder.setStatusLevel(Level.toLevel(value, Level.ERROR));
-        } else {
-            builder.setStatusLevel(Level.ERROR);
-        }
-        value = properties.getProperty(SHUTDOWN_HOOK);
-        if (value != null) {
-            builder.setShutdownHook(value);
-        }
-        value = properties.getProperty(VERBOSE);
-        if (value != null) {
-            builder.setVerbosity(value);
-        }
-        value = properties.getProperty(PACKAGES);
-        if (value != null) {
-            builder.setPackages(value);
-        }
-        value = properties.getProperty(CONFIG_NAME);
-        if (value != null) {
-            builder.setConfigurationName(value);
-        }
-        value = properties.getProperty(MONITOR_INTERVAL);
-        if (value != null) {
-            builder.setMonitorInterval(value);
-        }
-        value = properties.getProperty(ADVERTISER_KEY);
-        if (value != null) {
-            builder.setAdvertiser(value);
-        }
-        Properties props = PropertiesUtil.extractSubset(properties, "property");
-        for (String key : props.stringPropertyNames()) {
+        final ConfigurationBuilder<PropertiesConfiguration> builder =
+            newConfigurationBuilder(PropertiesConfiguration.class)
+            .setStatusLevel(Level.toLevel(properties.getProperty(STATUS_KEY), Level.ERROR))
+            .setShutdownHook(properties.getProperty(SHUTDOWN_HOOK))
+            .setVerbosity(properties.getProperty(VERBOSE))
+            .setPackages(properties.getProperty(PACKAGES))
+            .setConfigurationName(properties.getProperty(CONFIG_NAME))
+            .setMonitorInterval(properties.getProperty(MONITOR_INTERVAL))
+            .setAdvertiser(properties.getProperty(ADVERTISER_KEY));
+        final Properties props = PropertiesUtil.extractSubset(properties, "property");
+        for (final String key : props.stringPropertyNames()) {
             builder.addProperty(key, props.getProperty(key));
         }
 
-        String scriptProp = properties.getProperty("scripts");
+        final String scriptProp = properties.getProperty("scripts");
         if (scriptProp != null) {
-            String[] scriptNames = scriptProp.split(",");
+            final String[] scriptNames = scriptProp.split(",");
             for (String scriptName : scriptNames) {
-                String name = scriptName.trim();
-                Properties scriptProps = PropertiesUtil.extractSubset(properties, "script." + name);
-                String type = scriptProps.getProperty("type");
+                final String name = scriptName.trim();
+                final Properties scriptProps = PropertiesUtil.extractSubset(properties, "script." + name);
+                final String type = scriptProps.getProperty("type");
                 if (type == null) {
                     throw new ConfigurationException("No type provided for script - must be Script or ScriptFile");
                 }
@@ -126,35 +104,35 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
             }
         }
 
-        Properties levelProps = PropertiesUtil.extractSubset(properties, "customLevel");
+        final Properties levelProps = PropertiesUtil.extractSubset(properties, "customLevel");
         if (levelProps.size() > 0) {
-            for (String key : levelProps.stringPropertyNames()) {
+            for (final String key : levelProps.stringPropertyNames()) {
                 builder.add(builder.newCustomLevel(key, Integer.parseInt(props.getProperty(key))));
             }
         }
 
-        String filterProp = properties.getProperty("filters");
+        final String filterProp = properties.getProperty("filters");
         if (filterProp != null) {
-            String[] filterNames = filterProp.split(",");
-            for (String filterName : filterNames) {
-                String name = filterName.trim();
+            final String[] filterNames = filterProp.split(",");
+            for (final String filterName : filterNames) {
+                final String name = filterName.trim();
                 builder.add(createFilter(builder, name, PropertiesUtil.extractSubset(properties, "filter." + name)));
             }
         }
-        String appenderProp = properties.getProperty("appenders");
+        final String appenderProp = properties.getProperty("appenders");
         if (appenderProp != null) {
-            String[] appenderNames = appenderProp.split(",");
-            for (String appenderName : appenderNames) {
-                String name = appenderName.trim();
+            final String[] appenderNames = appenderProp.split(",");
+            for (final String appenderName : appenderNames) {
+                final String name = appenderName.trim();
                 builder.add(createAppender(builder, name, PropertiesUtil.extractSubset(properties, "appender." +
                         name)));
             }
         }
-        String loggerProp = properties.getProperty("loggers");
+        final String loggerProp = properties.getProperty("loggers");
         if (loggerProp != null) {
-            String[] loggerNames = loggerProp.split(",");
-            for (String loggerName : loggerNames) {
-                String name = loggerName.trim();
+            final String[] loggerNames = loggerProp.split(",");
+            for (final String loggerName : loggerNames) {
+                final String name = loggerName.trim();
                 if (!name.equals(LoggerConfig.ROOT)) {
                     builder.add(createLogger(builder, name, PropertiesUtil.extractSubset(properties, "logger." +
                             name)));
@@ -162,74 +140,74 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
             }
         }
 
-        props = PropertiesUtil.extractSubset(properties, "rootLogger");
-        if (props.size() > 0) {
-            builder.add(createRootLogger(builder, props));
+        final Properties rootLogger = PropertiesUtil.extractSubset(properties, "rootLogger");
+        if (rootLogger.size() > 0) {
+            builder.add(createRootLogger(builder, rootLogger));
         }
 
         return builder.build();
     }
 
 
-    private ScriptComponentBuilder createScript(ConfigurationBuilder<PropertiesConfiguration> builder, String key,
-                                                Properties properties) {
-        String name = properties.getProperty("name");
+    private ScriptComponentBuilder createScript(final ConfigurationBuilder<PropertiesConfiguration> builder,
+                                                final String key, final Properties properties) {
+        final String name = properties.getProperty("name");
         if (name != null) {
             properties.remove("name");
         }
-        String language = properties.getProperty("language");
+        final String language = properties.getProperty("language");
         if (language!= null) {
             properties.remove("language");
         }
-        String text = properties.getProperty("text");
+        final String text = properties.getProperty("text");
         if (text != null) {
             properties.remove("text");
         }
-        ScriptComponentBuilder scriptBuilder = builder.newScript(name, language, text);
+        final ScriptComponentBuilder scriptBuilder = builder.newScript(name, language, text);
         processRemainingProperties(scriptBuilder, key, properties);
         return scriptBuilder;
     }
 
-    private ScriptFileComponentBuilder createScriptFile(ConfigurationBuilder<PropertiesConfiguration> builder, String key,
-                                                Properties properties) {
-        String name = properties.getProperty("name");
+    private ScriptFileComponentBuilder createScriptFile(final ConfigurationBuilder<PropertiesConfiguration> builder,
+                                                        final String key, final Properties properties) {
+        final String name = properties.getProperty("name");
         if (name != null) {
             properties.remove("name");
         }
-        String path = properties.getProperty("path");
+        final String path = properties.getProperty("path");
         if (path != null) {
             properties.remove("path");
         }
-        ScriptFileComponentBuilder scriptFileBuilder = builder.newScriptFile(name, path);
+        final ScriptFileComponentBuilder scriptFileBuilder = builder.newScriptFile(name, path);
         processRemainingProperties(scriptFileBuilder, key, properties);
         return scriptFileBuilder;
     }
 
 
-    private AppenderComponentBuilder createAppender(ConfigurationBuilder<PropertiesConfiguration> builder, String key,
-            Properties properties) {
-        String name = properties.getProperty(CONFIG_NAME);
+    private AppenderComponentBuilder createAppender(final ConfigurationBuilder<PropertiesConfiguration> builder,
+                                                    final String key, final Properties properties) {
+        final String name = properties.getProperty(CONFIG_NAME);
         if (Strings.isEmpty(name)) {
             throw new ConfigurationException("No name attribute provided for Appender " + key);
         }
         properties.remove(CONFIG_NAME);
-        String type = properties.getProperty(CONFIG_TYPE);
+        final String type = properties.getProperty(CONFIG_TYPE);
         if (Strings.isEmpty(type)) {
             throw new ConfigurationException("No type attribute provided for Appender " + key);
         }
         properties.remove(CONFIG_TYPE);
-        AppenderComponentBuilder appenderBuilder = builder.newAppender(name, type);
-        String filters = properties.getProperty("filters");
+        final AppenderComponentBuilder appenderBuilder = builder.newAppender(name, type);
+        final String filters = properties.getProperty("filters");
         if (filters != null) {
             properties.remove("filters");
-            String[] filterNames = filters.split(",");
-            for (String filterName : filterNames) {
-                filterName = filterName.trim();
-                Properties filterProps = PropertiesUtil.extractSubset(properties, "filter." + filterName);
-                appenderBuilder.add(createFilter(builder, filterName, filterProps));
+            final String[] filterNames = filters.split(",");
+            for (final String filterName : filterNames) {
+                final String filter = filterName.trim();
+                final Properties filterProps = PropertiesUtil.extractSubset(properties, "filter." + filter);
+                appenderBuilder.add(createFilter(builder, filter, filterProps));
             }
         }
-        Properties layoutProps = PropertiesUtil.extractSubset(properties, "layout");
+        final Properties layoutProps = PropertiesUtil.extractSubset(properties, "layout");
         if (layoutProps.size() > 0) {
             appenderBuilder.add(createLayout(builder, name, layoutProps));
         }
@@ -238,64 +216,64 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
         return appenderBuilder;
     }
 
-    private FilterComponentBuilder createFilter(ConfigurationBuilder<PropertiesConfiguration> builder, String key,
-            Properties properties) {
-        String type = properties.getProperty(CONFIG_TYPE);
+    private FilterComponentBuilder createFilter(final ConfigurationBuilder<PropertiesConfiguration> builder,
+                                                final String key, final Properties properties) {
+        final String type = properties.getProperty(CONFIG_TYPE);
         if (Strings.isEmpty(type)) {
             throw new ConfigurationException("No type attribute provided for Appender " + key);
         }
         properties.remove(CONFIG_TYPE);
-        String onMatch = properties.getProperty("onMatch");
+        final String onMatch = properties.getProperty("onMatch");
         if (onMatch != null) {
             properties.remove("onMatch");
         }
-        String onMisMatch = properties.getProperty("onMisMatch");
+        final String onMisMatch = properties.getProperty("onMisMatch");
         if (onMisMatch != null) {
             properties.remove("onMisMatch");
         }
-        FilterComponentBuilder filterBuilder = builder.newFilter(type, onMatch, onMisMatch);
+        final FilterComponentBuilder filterBuilder = builder.newFilter(type, onMatch, onMisMatch);
         processRemainingProperties(filterBuilder, key, properties);
         return filterBuilder;
     }
 
-    private AppenderRefComponentBuilder createAppenderRef(ConfigurationBuilder<PropertiesConfiguration> builder,
-            String key, Properties properties) {
-        String ref = properties.getProperty("ref");
+    private AppenderRefComponentBuilder createAppenderRef(final ConfigurationBuilder<PropertiesConfiguration> builder,
+                                                          final String key, final Properties properties) {
+        final String ref = properties.getProperty("ref");
         if (Strings.isEmpty(ref)) {
             throw new ConfigurationException("No ref attribute provided for AppenderRef " + key);
         }
         properties.remove("ref");
-        AppenderRefComponentBuilder appenderRefBuilder = builder.newAppenderRef(ref);
-        String level = properties.getProperty("level");
+        final AppenderRefComponentBuilder appenderRefBuilder = builder.newAppenderRef(ref);
+        final String level = properties.getProperty("level");
         if (!Strings.isEmpty(level)) {
             appenderRefBuilder.addAttribute("level", level);
         }
-        String filters = properties.getProperty("filters");
+        final String filters = properties.getProperty("filters");
         if (filters != null) {
             properties.remove("filters");
-            String[] filterNames = filters.split(",");
-            for (String filterName : filterNames) {
-                filterName = filterName.trim();
-                Properties filterProps = PropertiesUtil.extractSubset(properties, "filter." + filterName);
-                appenderRefBuilder.add(createFilter(builder, filterName, filterProps));
+            final String[] filterNames = filters.split(",");
+            for (final String filterName : filterNames) {
+                final String filter = filterName.trim();
+                final Properties filterProps = PropertiesUtil.extractSubset(properties, "filter." + filter);
+                appenderRefBuilder.add(createFilter(builder, filter, filterProps));
             }
         }
         return appenderRefBuilder;
     }
 
-    private LoggerComponentBuilder createLogger(ConfigurationBuilder<PropertiesConfiguration> builder, String key,
-            Properties properties) {
-        String name = properties.getProperty(CONFIG_NAME);
+    private LoggerComponentBuilder createLogger(final ConfigurationBuilder<PropertiesConfiguration> builder,
+                                                final String key, final Properties properties) {
+        final String name = properties.getProperty(CONFIG_NAME);
         if (Strings.isEmpty(name)) {
             throw new ConfigurationException("No name attribute provided for Logger " + key);
         }
         properties.remove(CONFIG_NAME);
-        String level = properties.getProperty("level");
+        final String level = properties.getProperty("level");
         if (level != null) {
             properties.remove("level");
         }
-        LoggerComponentBuilder loggerBuilder;
-        String type = properties.getProperty(CONFIG_TYPE);
+        final LoggerComponentBuilder loggerBuilder;
+        final String type = properties.getProperty(CONFIG_TYPE);
         if (type != null) {
             if (type.equalsIgnoreCase("asyncLogger")) {
                 loggerBuilder = builder.newAsyncLogger(name, level);
@@ -305,41 +283,46 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
         } else {
             loggerBuilder = builder.newLogger(name, level);
         }
-        String appenderRefs = properties.getProperty("appenderRefs");
-        if (appenderRefs != null) {
-            properties.remove("appenderRefs");
-            String[] refNames = appenderRefs.split(",");
-            for (String appenderRef : refNames) {
-                appenderRef = appenderRef.trim();
-                Properties refProps = PropertiesUtil.extractSubset(properties, "appenderRef." + appenderRef);
-                loggerBuilder.add(createAppenderRef(builder, appenderRef, refProps));
-            }
-        }
-        String filters = properties.getProperty("filters");
+        createAppenderRefs(builder, properties, loggerBuilder);
+        final String filters = properties.getProperty("filters");
         if (filters != null) {
             properties.remove("filters");
-            String[] filterNames = filters.split(",");
-            for (String filterName : filterNames) {
-                filterName = filterName.trim();
-                Properties filterProps = PropertiesUtil.extractSubset(properties, "filter." + filterName);
-                loggerBuilder.add(createFilter(builder, filterName, filterProps));
+            final String[] filterNames = filters.split(",");
+            for (final String filterName : filterNames) {
+                final String filter = filterName.trim();
+                final Properties filterProps = PropertiesUtil.extractSubset(properties, "filter." + filter);
+                loggerBuilder.add(createFilter(builder, filter, filterProps));
             }
         }
-        String additivity = properties.getProperty("additivity");
+        final String additivity = properties.getProperty("additivity");
         if (!Strings.isEmpty(additivity)) {
             loggerBuilder.addAttribute("additivity", additivity);
         }
         return loggerBuilder;
     }
 
-    private RootLoggerComponentBuilder createRootLogger(ConfigurationBuilder<PropertiesConfiguration> builder,
-            Properties properties) {
-        String level = properties.getProperty("level");
+    private void createAppenderRefs(ConfigurationBuilder<PropertiesConfiguration> builder, Properties properties,
+                                    LoggerComponentBuilder loggerBuilder) {
+        final String appenderRefs = properties.getProperty("appenderRefs");
+        if (appenderRefs != null) {
+            properties.remove("appenderRefs");
+            final String[] refNames = appenderRefs.split(",");
+            for (final String appenderRef : refNames) {
+                final String appender = appenderRef.trim();
+                final Properties refProps = PropertiesUtil.extractSubset(properties, "appenderRef." + appender);
+                loggerBuilder.add(createAppenderRef(builder, appender, refProps));
+            }
+        }
+    }
+
+    private RootLoggerComponentBuilder createRootLogger(final ConfigurationBuilder<PropertiesConfiguration> builder,
+                                                        final Properties properties) {
+        final String level = properties.getProperty("level");
         if (level != null) {
             properties.remove("level");
         }
-        RootLoggerComponentBuilder loggerBuilder;
-        String type = properties.getProperty(CONFIG_TYPE);
+        final RootLoggerComponentBuilder loggerBuilder;
+        final String type = properties.getProperty(CONFIG_TYPE);
         if (type != null) {
             if (type.equalsIgnoreCase("asyncRoot")) {
                 loggerBuilder = builder.newAsyncRootLogger(level);
@@ -349,65 +332,65 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
         } else {
             loggerBuilder = builder.newRootLogger(level);
         }
-        String appenderRefs = properties.getProperty("appenderRefs");
+        final String appenderRefs = properties.getProperty("appenderRefs");
         if (appenderRefs != null) {
             properties.remove("appenderRefs");
-            String[] refNames = appenderRefs.split(",");
-            for (String appenderRef : refNames) {
-                appenderRef = appenderRef.trim();
-                Properties refProps = PropertiesUtil.extractSubset(properties, "appenderRef." + appenderRef);
-                loggerBuilder.add(createAppenderRef(builder, appenderRef, refProps));
+            final String[] refNames = appenderRefs.split(",");
+            for (final String appenderRef : refNames) {
+                final String appender = appenderRef.trim();
+                final Properties refProps = PropertiesUtil.extractSubset(properties, "appenderRef." + appender);
+                loggerBuilder.add(createAppenderRef(builder, appender, refProps));
             }
         }
-        String filters = properties.getProperty("filters");
+        final String filters = properties.getProperty("filters");
         if (filters != null) {
             properties.remove("filters");
-            String[] filterNames = filters.split(",");
-            for (String filterName : filterNames) {
-                filterName = filterName.trim();
-                Properties filterProps = PropertiesUtil.extractSubset(properties, "filter." + filterName);
-                loggerBuilder.add(createFilter(builder, filterName, filterProps));
+            final String[] filterNames = filters.split(",");
+            for (final String filterName : filterNames) {
+                final String filter = filterName.trim();
+                final Properties filterProps = PropertiesUtil.extractSubset(properties, "filter." + filter);
+                loggerBuilder.add(createFilter(builder, filter, filterProps));
             }
         }
         return loggerBuilder;
     }
 
-    private LayoutComponentBuilder createLayout(ConfigurationBuilder<PropertiesConfiguration> builder,
-            String appenderName, Properties properties) {
-        String type = properties.getProperty(CONFIG_TYPE);
+    private LayoutComponentBuilder createLayout(final ConfigurationBuilder<PropertiesConfiguration> builder,
+                                                final String appenderName, final Properties properties) {
+        final String type = properties.getProperty(CONFIG_TYPE);
         if (Strings.isEmpty(type)) {
             throw new ConfigurationException("No type attribute provided for Layout on Appender " + appenderName);
         }
         properties.remove(CONFIG_TYPE);
-        LayoutComponentBuilder layoutBuilder = builder.newLayout(type);
+        final LayoutComponentBuilder layoutBuilder = builder.newLayout(type);
         processRemainingProperties(layoutBuilder, appenderName, properties);
         return layoutBuilder;
     }
 
-    private <B extends ComponentBuilder<B>> ComponentBuilder<B> createComponent(ComponentBuilder<?> parent, String key,
-            Properties properties) {
-        String name = properties.getProperty(CONFIG_NAME);
+    private <B extends ComponentBuilder<B>> ComponentBuilder<B> createComponent(final ComponentBuilder<?> parent,
+                                                                                final String key, final Properties properties) {
+        final String name = properties.getProperty(CONFIG_NAME);
         if (name != null) {
             properties.remove(CONFIG_NAME);
         }
-        String type = properties.getProperty(CONFIG_TYPE);
+        final String type = properties.getProperty(CONFIG_TYPE);
         if (Strings.isEmpty(type)) {
             throw new ConfigurationException("No type attribute provided for component " + key);
         }
         properties.remove(CONFIG_TYPE);
-        ComponentBuilder<B> componentBuilder = parent.getBuilder().newComponent(name, type);
+        final ComponentBuilder<B> componentBuilder = parent.getBuilder().newComponent(name, type);
         processRemainingProperties(componentBuilder, name, properties);
         return componentBuilder;
     }
 
-    private void processRemainingProperties(ComponentBuilder<?> builder, String name, Properties properties) {
+    private void processRemainingProperties(final ComponentBuilder<?> builder, final String name, final Properties properties) {
         while (properties.size() > 0) {
-            String propertyName = properties.stringPropertyNames().iterator().next();
+            final String propertyName = properties.stringPropertyNames().iterator().next();
 
-            int index = propertyName.indexOf('.');
+            final int index = propertyName.indexOf('.');
             if (index > 0) {
-                String prefix = propertyName.substring(0, index);
-                Properties componentProperties = PropertiesUtil.extractSubset(properties, prefix);
+                final String prefix = propertyName.substring(0, index);
+                final Properties componentProperties = PropertiesUtil.extractSubset(properties, prefix);
                 builder.addComponent(createComponent(builder, prefix, componentProperties));
             } else {
                 builder.addAttribute(propertyName, properties.getProperty(propertyName));
