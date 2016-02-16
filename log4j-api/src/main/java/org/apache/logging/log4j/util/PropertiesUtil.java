@@ -235,24 +235,24 @@ public final class PropertiesUtil {
      * @param prefix The prefix to extract.
      * @return The subset of properties.
      */
-    public static Properties extractSubset(Properties properties, String prefix) {
-        Properties subset = new Properties();
+    public static Properties extractSubset(final Properties properties, final String prefix) {
+        final Properties subset = new Properties();
 
         if (prefix == null || prefix.length() == 0) {
             return subset;
         }
 
-        String prefixToMatch = prefix.charAt(prefix.length() - 1) != '.' ? prefix + '.' : prefix;
+        final String prefixToMatch = prefix.charAt(prefix.length() - 1) != '.' ? prefix + '.' : prefix;
 
-        List<String> keys = new ArrayList<>();
+        final List<String> keys = new ArrayList<>();
 
-        for (String key : properties.stringPropertyNames()) {
+        for (final String key : properties.stringPropertyNames()) {
             if (key.startsWith(prefixToMatch)) {
                 subset.setProperty(key.substring(prefixToMatch.length()), properties.getProperty(key));
                 keys.add(key);
             }
         }
-        for (String key : keys) {
+        for (final String key : keys) {
             properties.remove(key);
         }
 
