@@ -57,23 +57,12 @@ public final class PropertiesUtil {
      * @param propertiesFileName the location of properties file to load
      */
     public PropertiesUtil(final String propertiesFileName) {
-        @SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
         final Properties properties = new Properties();
         for (final URL url : LoaderUtil.findResources(propertiesFileName)) {
-            InputStream in = null;
-            try {
-                in = url.openStream();
+            try (final InputStream in = url.openStream()) {
                 properties.load(in);
             } catch (final IOException ioe) {
                 LOGGER.error("Unable to read {}", url.toString(), ioe);
-            } finally {
-                if (in != null) {
-                    try {
-                        in.close();
-                    } catch (final IOException ioe) {
-                        LOGGER.error("Unable to close {}", url.toString(), ioe);
-                    }
-                }
             }
         }
         this.props = properties;
