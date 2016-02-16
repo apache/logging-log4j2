@@ -134,15 +134,7 @@ public final class PropertiesUtil {
      * @return the parsed double value of the property or {@code defaultValue} if it was undefined or could not be parsed.
      */
     public double getDoubleProperty(final String name, final double defaultValue) {
-        String prop = null;
-        try {
-            prop = System.getProperty(name);
-        } catch (final SecurityException ignored) {
-            // Ignore
-        }
-        if (prop == null) {
-            prop = props.getProperty(name);
-        }
+        final String prop = getStringProperty(name);
         if (prop != null) {
             try {
                 return Double.parseDouble(prop);
@@ -162,15 +154,7 @@ public final class PropertiesUtil {
      *         parsed.
      */
     public int getIntegerProperty(final String name, final int defaultValue) {
-        String prop = null;
-        try {
-            prop = System.getProperty(name);
-        } catch (final SecurityException ignored) {
-            // Ignore
-        }
-        if (prop == null) {
-            prop = props.getProperty(name);
-        }
+        final String prop = getStringProperty(name);
         if (prop != null) {
             try {
                 return Integer.parseInt(prop);
@@ -189,15 +173,7 @@ public final class PropertiesUtil {
      * @return the parsed long value of the property or {@code defaultValue} if it was undefined or could not be parsed.
      */
     public long getLongProperty(final String name, final long defaultValue) {
-        String prop = null;
-        try {
-            prop = System.getProperty(name);
-        } catch (final SecurityException ignored) {
-            // Ignore
-        }
-        if (prop == null) {
-            prop = props.getProperty(name);
-        }
+        final String prop = getStringProperty(name);
         if (prop != null) {
             try {
                 return Long.parseLong(prop);
