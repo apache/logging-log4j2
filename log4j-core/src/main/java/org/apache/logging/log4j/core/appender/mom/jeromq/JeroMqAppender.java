@@ -87,8 +87,8 @@ public final class JeroMqAppender extends AbstractAppender {
     static {
         logger = StatusLogger.getLogger();
         final PropertiesUtil managerProps = PropertiesUtil.getProperties();
-        final Integer ioThreads = managerProps.getIntegerProperty(SYS_PROPERTY_IO_THREADS, 1);
-        final Boolean enableShutdownHook = managerProps.getBooleanProperty(SYS_PROPERTY_ENABLE_SHUTDOWN_HOOK, true);
+        final int ioThreads = managerProps.getIntegerProperty(SYS_PROPERTY_IO_THREADS, 1);
+        final boolean enableShutdownHook = managerProps.getBooleanProperty(SYS_PROPERTY_ENABLE_SHUTDOWN_HOOK, true);
         final String simpleName = SIMPLE_NAME;
         logger.trace("{} using ZMQ version {}", simpleName, ZMQ.getVersionString());
         logger.trace("{} creating ZMQ context with ioThreads={}", simpleName, ioThreads);
