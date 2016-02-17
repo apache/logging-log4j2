@@ -23,7 +23,7 @@ import org.apache.logging.log4j.message.ParameterizedMessage;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Logger with varargs methods, ParameterizedMessage and PatternLayout("%m").
+ * Logger with varargs methods, ParameterizedMessage and Pat.
  */
 public class ClassicLogger extends AbstractLogger {
 
@@ -34,5 +34,6 @@ public class ClassicLogger extends AbstractLogger {
 
     public void log(String message, Object... params) {
         log(new ParameterizedMessage(message, params));
+        //log(new NoGcMessage(16).set(message, params[0], params[1], params[2], params[3]));
     }
 }

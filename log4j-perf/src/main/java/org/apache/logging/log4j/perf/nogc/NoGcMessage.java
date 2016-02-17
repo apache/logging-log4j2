@@ -24,44 +24,61 @@ import java.util.Arrays;
  * Reusable Message..
  */
 public class NoGcMessage implements Message {
-    private Object[] params = new Object[10];
-    private int paramCount;
-    private StringBuilder buffer = new StringBuilder(2048);
+    class InternalState {
+        private Object[] params = new Object[10];
+        private int paramCount;
+        private StringBuilder buffer = new StringBuilder(2048);
+
+        public Object[] getParamsCopy() {
+            return Arrays.copyOf(params, paramCount);
+        }
+    }
+
+    private ThreadLocal<InternalState> state = new ThreadLocal<>();
 
     public NoGcMessage() {
     }
 
-    public StringBuilder get() {
-        return buffer;
+    private InternalState getState() {
+        InternalState result = state.get();
+        if (result == null) {
+            result = new InternalState();
+            state.set(result);
+        }
+        return result;
     }
 
-    public StringBuilder set(String message, Object p1, Object p2, Object p3, Object p4) {
-        params[0] = p1;
-        params[1] = p2;
-        params[2] = p3;
-        params[3] = p4;
-        paramCount = 4;
+    public StringBuilder get() {
+        return getState().buffer;
+    }
+
+    public void set(String message, Object p1, Object p2, Object p3, Object p4) {
+        InternalState state = getState();
+        state.params[0] = p1;
+        state.params[1] = p2;
+        state.params[2] = p3;
+        state.params[3] = p4;
+        state.paramCount = 4;
         int current = 0;
-        buffer.setLength(0);
+        state.buffer.setLength(0);
         for (int i = 0; i < message.length() - 1; i++) {
             char c = message.charAt(i);
             if (c == '{' && message.charAt(i + 1) == '}') {
-                buffer.append(params[current++]);
+                state.buffer.append(state.params[current++]);
                 i++;
             } else {
-                buffer.append(c);
+                state.buffer.append(c);
             }
         }
         char c = message.charAt(message.length() - 1);
         if (c != '}') {
-            buffer.append(c);
+            state.buffer.append(c);
         }
-        return buffer;
     }
 
     @Override
     public String getFormattedMessage() {
-        return buffer.toString(); // not called by NoGcLayout
+        return getState().buffer.toString(); // not called by NoGcLayout
     }
 
     @Override
@@ -71,7 +88,7 @@ public class NoGcMessage implements Message {
 
     @Override
     public Object[] getParameters() {
-        return Arrays.copyOf(params, paramCount);
+        return getState().getParamsCopy();
     }
 
     @Override
