@@ -23,10 +23,10 @@ import static org.apache.logging.log4j.perf.nogc.Unbox.*;
  * Tests the classic Log4j2 components.
  * <p>
  * Run CLASSIC test (varargs, ParameterizedMessage, PatternLayout(%m)):
- * java -Xms64M -Xmx64M -cp log4j-perf/target/benchmarks.jar -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps org.apache.logging.log4j.perf.nogc.Test Classic
+ * java -Xms64M -Xmx64M -cp log4j-perf/target/benchmarks.jar -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCApplicationStoppedTime org.apache.logging.log4j.perf.nogc.Test Classic
  *
  * Run NOGC test (unrolled varargs, StringBuilderMessage, NoGcLayout(%m)):
- * java -Xms64M -Xmx64M -cp log4j-perf/target/benchmarks.jar -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps org.apache.logging.log4j.perf.nogc.Test NoGC
+ * java -Xms64M -Xmx64M -cp log4j-perf/target/benchmarks.jar -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCApplicationStoppedTime org.apache.logging.log4j.perf.nogc.Test NoGC
  *
  * </p>
  */
