@@ -405,14 +405,15 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         return messageFactory.newEntryMessage(messageFactory.newMessage(sb.toString()));
     }
 
-protected EntryMessage entryMsg(final String format, final MessageSupplier... paramSuppliers) {
-    final int count = paramSuppliers == null ? 0 : paramSuppliers.length;
-    final Object[] params = new Object[count];
-    for (int i = 0; i < count; i++) {
-        params[i] = paramSuppliers[i].get();
+    protected EntryMessage entryMsg(final String format, final MessageSupplier... paramSuppliers) {
+        final int count = paramSuppliers == null ? 0 : paramSuppliers.length;
+        final Object[] params = new Object[count];
+        for (int i = 0; i < count; i++) {
+            params[i] = paramSuppliers[i].get();
+            params[i] = params[i] != null ? ((Message) params[i]).getFormattedMessage() : null;
+        }
+        return entryMsg(format, params);
     }
-    return entryMsg(format, params);
-}
 
     protected EntryMessage entryMsg(final String format, final Supplier<?>... paramSuppliers) {
         final int count = paramSuppliers == null ? 0 : paramSuppliers.length;
