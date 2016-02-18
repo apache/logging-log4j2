@@ -64,7 +64,7 @@ public class NoGcMessage implements Message {
         for (int i = 0; i < message.length() - 1; i++) {
             char c = message.charAt(i);
             if (c == '{' && message.charAt(i + 1) == '}') {
-                state.buffer.append(state.params[current++]);
+                append(state.params[current++], state.buffer);
                 i++;
             } else {
                 state.buffer.append(c);
@@ -73,6 +73,14 @@ public class NoGcMessage implements Message {
         char c = message.charAt(message.length() - 1);
         if (c != '}') {
             state.buffer.append(c);
+        }
+    }
+
+    private void append(Object param, StringBuilder buffer) {
+        if (param instanceof StringBuilder) {
+            buffer.append((StringBuilder) param);
+        } else {
+            buffer.append(param);
         }
     }
 
