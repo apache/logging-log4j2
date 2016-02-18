@@ -47,8 +47,8 @@ public abstract class AbstractMessageFactory implements MessageFactory, Serializ
 
     private final String entryText;
     private final String exitText;
-    
-    private static class AbstractFlowMessage extends AbstractMessage implements FlowMessage {
+
+    private static class AbstractFlowMessage implements FlowMessage {
 
         private static final long serialVersionUID = 1L;
         private final Message message;
@@ -146,7 +146,7 @@ public abstract class AbstractMessageFactory implements MessageFactory, Serializ
             return formattedMessage + ": " + result;
         }
     }
-    
+
     private static final long serialVersionUID = 1L;
 
     /**
@@ -176,7 +176,7 @@ public abstract class AbstractMessageFactory implements MessageFactory, Serializ
     public EntryMessage newEntryMessage(final Message message) {
         return new SimpleEntryMessage(entryText, message);
     }
-    
+
     /*
      * (non-Javadoc)
      *
@@ -186,7 +186,7 @@ public abstract class AbstractMessageFactory implements MessageFactory, Serializ
     public ExitMessage newExitMessage(final EntryMessage message) {
         return new SimpleExitMessage(exitText, message);
     }
-    
+
     /*
      * (non-Javadoc)
      *
@@ -196,7 +196,7 @@ public abstract class AbstractMessageFactory implements MessageFactory, Serializ
     public ExitMessage newExitMessage(final Object object, final EntryMessage message) {
         return new SimpleExitMessage(exitText, object, message);
     }
-    
+
     /*
      * (non-Javadoc)
      *
@@ -206,7 +206,7 @@ public abstract class AbstractMessageFactory implements MessageFactory, Serializ
     public ExitMessage newExitMessage(final Object object, final Message message) {
         return new SimpleExitMessage(exitText, object, message);
     }
-    
+
     /*
      * (non-Javadoc)
      *
