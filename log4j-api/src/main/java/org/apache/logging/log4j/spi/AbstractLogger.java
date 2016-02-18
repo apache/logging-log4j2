@@ -316,7 +316,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      *
      * @param fqcn The fully qualified class name of the <b>caller</b>.
      * @param format The format String for the parameters.
-     * @param params The parameters to the method.
+     * @param paramSuppliers The parameters to the method.
      */
     protected EntryMessage enter(final String fqcn, final String format, final MessageSupplier... paramSuppliers) {
         EntryMessage entryMsg = null;
