@@ -389,31 +389,30 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
             }
             return messageFactory.newEntryMessage(messageFactory.newMessage(format));
         }
-        final StringBuilder sb = new StringBuilder();
         if (format != null) {
-            sb.append(format);
-            return messageFactory.newEntryMessage(messageFactory.newMessage(sb.toString(), params));
+            return messageFactory.newEntryMessage(messageFactory.newMessage(format, params));
         }
+        final StringBuilder sb = new StringBuilder();
         sb.append("params(");
         for (int i = 0; i < count; i++) {
-            final Object parm = params[i];
-            sb.append(parm != null ? parm.toString() : "null");
-            if (i + 1 < params.length) {
+            if (i > 0) {
                 sb.append(", ");
             }
+            final Object parm = params[i];
+            sb.append(parm instanceof Message ? ((Message) parm).getFormattedMessage() : String.valueOf(parm));
         }
         sb.append(')');
         return messageFactory.newEntryMessage(messageFactory.newMessage(sb.toString()));
     }
 
-    protected EntryMessage entryMsg(final String format, final MessageSupplier... paramSuppliers) {
-        final int count = paramSuppliers == null ? 0 : paramSuppliers.length;
-        final Object[] params = new Object[count];
-        for (int i = 0; i < count; i++) {
-            params[i] = paramSuppliers[i].get();
-        }
-        return entryMsg(format, params);
+protected EntryMessage entryMsg(final String format, final MessageSupplier... paramSuppliers) {
+    final int count = paramSuppliers == null ? 0 : paramSuppliers.length;
+    final Object[] params = new Object[count];
+    for (int i = 0; i < count; i++) {
+        params[i] = paramSuppliers[i].get();
     }
+    return entryMsg(format, params);
+}
 
     protected EntryMessage entryMsg(final String format, final Supplier<?>... paramSuppliers) {
         final int count = paramSuppliers == null ? 0 : paramSuppliers.length;
