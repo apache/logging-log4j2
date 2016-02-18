@@ -32,7 +32,7 @@ public final class LambdaUtil {
 
     /**
      * Converts an array of lambda expressions into an array of their evaluation results.
-     * 
+     *
      * @param suppliers an array of lambda expressions or {@code null}
      * @return an array containing the results of evaluating the lambda expressions (or {@code null} if the suppliers
      *         array was {@code null}
@@ -58,7 +58,8 @@ public final class LambdaUtil {
         if (supplier == null) {
             return null;
         }
-        return supplier.get();
+        Object result = supplier.get();
+        return result instanceof Message ? ((Message) result).getFormattedMessage() : result;
     }
 
     /**
