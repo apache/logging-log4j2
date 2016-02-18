@@ -24,7 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Converts an Object to a JSON String.
  */
-public class JsonMessage extends AbstractMessage {
+public class JsonMessage implements Message {
 
     private static final long serialVersionUID = 1L;
     private static final ObjectMapper mapper = new ObjectMapper();
@@ -32,7 +32,7 @@ public class JsonMessage extends AbstractMessage {
 
     /**
      * Constructs a JsonMessage.
-     *  
+     *
      * @param object the Object to serialize.
      */
     public JsonMessage(final Object object) {
