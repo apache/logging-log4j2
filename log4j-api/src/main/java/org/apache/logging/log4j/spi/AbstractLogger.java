@@ -420,6 +420,9 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         final Object[] params = new Object[count];
         for (int i = 0; i < count; i++) {
             params[i] = paramSuppliers[i].get();
+            if (params[i] instanceof Message) {
+                params[i] = ((Message) params[i]).getFormattedMessage();
+            }
         }
         return entryMsg(format, params);
     }
