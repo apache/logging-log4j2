@@ -127,11 +127,12 @@ public class LoggerConfig extends AbstractFilterable {
         this.includeLocation = includeLocation;
         this.config = config;
         if (properties != null && properties.length > 0) {
-            this.properties = new HashMap<>(properties.length);
+            final Map<Property, Boolean> map = new HashMap<>(properties.length);
             for (final Property prop : properties) {
                 final boolean interpolate = prop.getValue().contains("${");
-                this.properties.put(prop, interpolate);
+                map.put(prop, interpolate);
             }
+            this.properties = Collections.unmodifiableMap(map);
         } else {
             this.properties = null;
         }
@@ -308,7 +309,7 @@ public class LoggerConfig extends AbstractFilterable {
      */
     // LOG4J2-157
     public Map<Property, Boolean> getProperties() {
-        return properties == null ? null : Collections.unmodifiableMap(properties);
+        return properties;
     }
 
     /**

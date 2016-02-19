@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.6" date="201Y-MM-DD" description="GA Release 2.6">
+      <action issue="LOG4J2-1281" dev="rpopma" type="fix">
+        LoggerConfig.getProperties() should not allocate on each call.
+      </action>
       <action issue="LOG4J2-1280" dev="rpopma" type="fix">
         Logger methods taking Supplier parameters now correctly handle cases where the supplied value is a Message.
       </action>
