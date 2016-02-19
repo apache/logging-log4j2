@@ -181,7 +181,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
             final Class<ParameterizedMessageFactory> defaultMessageFactoryClass) {
         try {
             final String clsName = System.getProperty(property, defaultMessageFactoryClass.getName());
-            return Class.forName(clsName).asSubclass(ParameterizedMessageFactory.class);
+            return Class.forName(clsName).asSubclass(MessageFactory.class);
         } catch (final Throwable t) {
             return defaultMessageFactoryClass;
         }
