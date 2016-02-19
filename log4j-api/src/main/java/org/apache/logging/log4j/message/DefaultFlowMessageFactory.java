@@ -186,8 +186,8 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
      * @see org.apache.logging.log4j.message.MessageFactory#newExitMessage(java.lang.Object, org.apache.logging.log4j.message.EntryMessage)
      */
     @Override
-    public ExitMessage newExitMessage(final Object object, final EntryMessage message) {
-        return new SimpleExitMessage(exitText, object, message);
+    public ExitMessage newExitMessage(final Object result, final EntryMessage message) {
+        return new SimpleExitMessage(exitText, result, message);
     }
 
     /*
@@ -196,7 +196,7 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
      * @see org.apache.logging.log4j.message.MessageFactory#newExitMessage(java.lang.Object, org.apache.logging.log4j.message.Message)
      */
     @Override
-    public ExitMessage newExitMessage(final Object object, final Message message) {
-        return new SimpleExitMessage(exitText, object, message);
+    public ExitMessage newExitMessage(final Object result, final Message message) {
+        return new SimpleExitMessage(exitText, result, message);
     }
 }
