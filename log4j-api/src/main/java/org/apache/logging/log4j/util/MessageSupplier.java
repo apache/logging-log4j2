@@ -28,7 +28,9 @@ import org.apache.logging.log4j.message.Message;
  * <p>Implementors are free to cache values or return a new or distinct value each time the supplier is invoked.
  *
  * @since 2.4
+ * @deprecated Since 2.6, use {@link Supplier} instead as {@code Supplier<Message>}. 
  */
+@Deprecated
 public interface MessageSupplier {
 
     /**

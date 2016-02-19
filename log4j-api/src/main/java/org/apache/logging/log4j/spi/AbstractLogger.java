@@ -1360,11 +1360,6 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @Override
-    public EntryMessage traceEntry(final String format, final MessageSupplier... params) {
-        return enter(FQCN, format, params);
-    }
-
-    @Override
     public EntryMessage traceEntry(final Supplier<?>... paramSuppliers) {
         return enter(FQCN, null, paramSuppliers);
     }
@@ -1385,11 +1380,6 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @Override
-    public EntryMessage traceEntry(final MessageSupplier msgSupplier) {
-        return enter(FQCN, msgSupplier);
-    }
-
-    @Override
     public void traceExit() {
         exit(FQCN, null, null);
     }
@@ -1402,19 +1392,6 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     @Override
     public <R> R traceExit(final String format, final R result) {
         return exit(FQCN, format, result);
-    }
-
-    @Override
-    public <R> R traceExit(final MessageSupplier messageSupplier, final R result) {
-        if (isEnabled(Level.TRACE, EXIT_MARKER, messageSupplier, null)) {
-            logMessage(FQCN, Level.TRACE, EXIT_MARKER, new MessageSupplier() {
-                @Override
-                public Message get() {
-                    return flowMessageFactory.newExitMessage(result, messageSupplier.get());
-                };
-            }, null);
-        }
-        return result;
     }
 
     @Override

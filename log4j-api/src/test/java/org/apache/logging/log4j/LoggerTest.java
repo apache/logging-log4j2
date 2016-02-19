@@ -81,23 +81,6 @@ public class LoggerTest {
     }
 
     @Test
-    public void flowTracingMessageSupplier() {
-        logger.traceEntry(new JsonMessage(System.getProperties()));
-        final Response response = new Response(-1, "Generic error");
-        logger.traceExit(new MessageSupplier() {
-            @Override
-            public Message get() {
-                return new JsonMessage(response);
-            }
-        }, response);
-        assertEquals(2, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE entry"));
-        assertThat("Missing entry data", results.get(0), containsString("\"java.runtime.name\":"));
-        assertThat("incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE exit"));
-        assertThat("Missing exit data", results.get(1), containsString("\"message\":\"Generic error\""));
-    }
-
-    @Test
     public void flowTracingString_ObjectArray1() {
         logger.traceEntry("doFoo(a={}, b={})", 1, 2);
         logger.traceExit("doFoo(a=1, b=2): {}", 3);
