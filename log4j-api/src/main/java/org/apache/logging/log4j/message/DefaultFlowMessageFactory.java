@@ -173,7 +173,7 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
     /*
      * (non-Javadoc)
      *
-     * @see org.apache.logging.log4j.message.MessageFactory#newExitMessage(org.apache.logging.log4j.message.EntryMessage)
+     * @see org.apache.logging.log4j.message.FlowMessageFactory#newExitMessage(org.apache.logging.log4j.message.EntryMessage)
      */
     @Override
     public ExitMessage newExitMessage(final EntryMessage message) {
@@ -183,7 +183,7 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
     /*
      * (non-Javadoc)
      *
-     * @see org.apache.logging.log4j.message.MessageFactory#newExitMessage(java.lang.Object, org.apache.logging.log4j.message.EntryMessage)
+     * @see org.apache.logging.log4j.message.FlowMessageFactory#newExitMessage(java.lang.Object, org.apache.logging.log4j.message.EntryMessage)
      */
     @Override
     public ExitMessage newExitMessage(final Object result, final EntryMessage message) {
@@ -193,7 +193,7 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
     /*
      * (non-Javadoc)
      *
-     * @see org.apache.logging.log4j.message.MessageFactory#newExitMessage(java.lang.Object, org.apache.logging.log4j.message.Message)
+     * @see org.apache.logging.log4j.message.FlowMessageFactory#newExitMessage(java.lang.Object, org.apache.logging.log4j.message.Message)
      */
     @Override
     public ExitMessage newExitMessage(final Object result, final Message message) {
