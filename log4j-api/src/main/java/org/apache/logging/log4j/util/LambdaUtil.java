@@ -18,6 +18,7 @@
 package org.apache.logging.log4j.util;
 
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MessageFactory;
 
 
 /**
@@ -58,7 +59,7 @@ public final class LambdaUtil {
         if (supplier == null) {
             return null;
         }
-        Object result = supplier.get();
+        final Object result = supplier.get();
         return result instanceof Message ? ((Message) result).getFormattedMessage() : result;
     }
 
@@ -73,5 +74,13 @@ public final class LambdaUtil {
             return null;
         }
         return supplier.get();
+    }
+
+    public static Message getMessage(Supplier<?> supplier, MessageFactory messageFactory) {
+        if (supplier == null) {
+            return null;
+        }
+        final Object result = supplier.get();
+        return result instanceof Message ? (Message) result : messageFactory.newMessage(result);
     }
 }
