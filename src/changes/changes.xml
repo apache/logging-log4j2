@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.6" date="201Y-MM-DD" description="GA Release 2.6">
+      <action issue="LOG4J2-1284" dev="rpopma" type="fix">
+        Made default MessageFactory configurable.
+      </action>
       <action issue="LOG4J2-1281" dev="rpopma" type="fix">
         LoggerConfig.getProperties() should not allocate on each call.
       </action>

@@ -21,6 +21,7 @@ package org.apache.logging.log4j.message;
  * {@link #newMessage(String, Object...)}.
  */
 public class MessageFormatMessageFactory extends AbstractMessageFactory {
+    private static final long serialVersionUID = 3584821740584192453L;
 
     /**
      * Constructs a message factory with default flow strings.
@@ -28,18 +29,6 @@ public class MessageFormatMessageFactory extends AbstractMessageFactory {
     public MessageFormatMessageFactory() {
         super();
     }
-
-    /**
-     * Constructs a message factory with the given entry and exit strings.
-     * @param entryText the text to use for trace entry, like {@code "entry"} or {@code "Enter"}.
-     * @param exitText the text to use for trace exit, like {@code "exit"} or {@code "Exit"}.
-     * @since 2.6
-     */
-    public MessageFormatMessageFactory(final String entryText, final String exitText) {
-        super(entryText, exitText);
-    }
-
-    private static final long serialVersionUID = 1L;
 
     /**
      * Creates {@link org.apache.logging.log4j.message.StringFormattedMessage} instances.

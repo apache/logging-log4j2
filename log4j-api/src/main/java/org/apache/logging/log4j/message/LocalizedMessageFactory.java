@@ -23,8 +23,7 @@ import java.util.ResourceBundle;
  * {@link #newMessage(String, Object...)}.
  */
 public class LocalizedMessageFactory extends AbstractMessageFactory {
-
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1996295808703146741L;
 
     // FIXME: cannot use ResourceBundle name for serialization until Java 8
     private transient final ResourceBundle resourceBundle;
@@ -35,38 +34,14 @@ public class LocalizedMessageFactory extends AbstractMessageFactory {
         this.baseName = null;
     }
 
-    /**
-     * Constructs a message factory with the given entry and exit strings.
-     * @param entryText the text to use for trace entry, like {@code "entry"} or {@code "Enter"}.
-     * @param exitText the text to use for trace exit, like {@code "exit"} or {@code "Exit"}.
-     * @since 2.6
-     */
-    public LocalizedMessageFactory(final ResourceBundle resourceBundle, final String entryText, final String exitText) {
-        super(entryText, exitText);
-        this.resourceBundle = resourceBundle;
-        this.baseName = null;
-    }
-
     public LocalizedMessageFactory(final String baseName) {
         this.resourceBundle = null;
         this.baseName = baseName;
     }
 
     /**
-     * Constructs a message factory with the given entry and exit strings.
-     * @param entryText the text to use for trace entry, like {@code "entry"} or {@code "Enter"}.
-     * @param exitText the text to use for trace exit, like {@code "exit"} or {@code "Exit"}.
-     * @since 2.6
-     */
-    public LocalizedMessageFactory(final String baseName, final String entryText, final String exitText) {
-        super(entryText, exitText);
-        this.resourceBundle = null;
-        this.baseName = baseName;
-    }
-
-    /**
      * Gets the resource bundle base name if set.
-     * 
+     *
      * @return the resource bundle base name if set. May be null.
      */
     public String getBaseName() {
@@ -75,7 +50,7 @@ public class LocalizedMessageFactory extends AbstractMessageFactory {
 
     /**
      * Gets the resource bundle if set.
-     * 
+     *
      * @return the resource bundle if set. May be null.
      */
     public ResourceBundle getResourceBundle() {

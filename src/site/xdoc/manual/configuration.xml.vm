@@ -1903,6 +1903,16 @@ public class AwesomeTest {
       This property only has effect if <tt>Discard</tt> is specified as the
       <tt>log4j2.AsyncEventRouter</tt>.</td>
   </tr>
+  <tr>
+    <td>log4j2.messageFactory</td>
+    <td>org.apache.logging.log4j.message. ParameterizedMessageFactory</td>
+    <td>Default message factory used by Loggers if no factory was specified.</td>
+  </tr>
+  <tr>
+    <td>log4j2.flowMessageFactory</td>
+    <td>org.apache.logging.log4j.message. DefaultFlowMessageFactory</td>
+    <td>Default flow message factory used by Loggers.</td>
+  </tr>
 </table>
 
         </subsection>

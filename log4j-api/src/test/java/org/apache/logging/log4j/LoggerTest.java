@@ -142,19 +142,6 @@ public class LoggerTest {
     }
 
     @Test
-    public void flowTracingString_ObjectArray2_ParameterizedMessageFactory() {
-        TestLogger myLogger = (TestLogger) LogManager.getLogger("LoggerTestWithCustomParameterizedMessageFactory", new ParameterizedMessageFactory("Enter", "Exit"));
-        EntryMessage msg = myLogger.traceEntry("doFoo(a={}, b={})", 1, 2);
-        myLogger.traceExit(msg, 3);
-        final List<String> entries = myLogger.getEntries();
-        assertEquals(2, entries.size());
-        assertThat("Incorrect Entry", entries.get(0), startsWith("ENTRY[ FLOW ] TRACE Enter"));
-        assertThat("Missing entry data", entries.get(0), containsString("doFoo(a=1, b=2)"));
-        assertThat("Incorrect Exit", entries.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
-        assertThat("Missing exit data", entries.get(1), containsString("doFoo(a=1, b=2): 3"));
-    }
-
-    @Test
     public void flowTracingNoExitArgs() {
         logger.traceEntry();
         logger.traceExit();

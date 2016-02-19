@@ -30,6 +30,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * </p>
  */
 public final class ParameterizedNoReferenceMessageFactory extends AbstractMessageFactory {
+    private static final long serialVersionUID = 5027639245636870500L;
 
     /**
      * Constructs a message factory with default flow strings.
@@ -39,25 +40,13 @@ public final class ParameterizedNoReferenceMessageFactory extends AbstractMessag
     }
 
     /**
-     * Constructs a message factory with the given entry and exit strings.
-     * @param entryText the text to use for trace entry, like {@code "entry"} or {@code "Enter"}.
-     * @param exitText the text to use for trace exit, like {@code "exit"} or {@code "Exit"}.
-     * @since 2.6
-     */
-    public ParameterizedNoReferenceMessageFactory(final String entryText, final String exitText) {
-        super(entryText, exitText);
-    }
-
-    /**
      * Instance of ParameterizedStatusMessageFactory.
      */
     public static final ParameterizedNoReferenceMessageFactory INSTANCE = new ParameterizedNoReferenceMessageFactory();
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * Creates {@link SimpleMessage} instances containing the formatted parameterized message string.
-     * 
+     *
      * @param message The message pattern.
      * @param params The message parameters.
      * @return The Message.

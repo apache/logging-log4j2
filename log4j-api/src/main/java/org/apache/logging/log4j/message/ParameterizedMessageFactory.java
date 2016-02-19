@@ -26,22 +26,13 @@ package org.apache.logging.log4j.message;
  * </p>
  */
 public final class ParameterizedMessageFactory extends AbstractMessageFactory {
+    private static final long serialVersionUID = -8970940216592525651L;
 
     /**
-     * Constructs a message factory with default flow strings.
+     * Constructs a message factory.
      */
     public ParameterizedMessageFactory() {
         super();
-    }
-
-    /**
-     * Constructs a message factory with the given entry and exit strings.
-     * @param entryText the text to use for trace entry, like {@code "entry"} or {@code "Enter"}.
-     * @param exitText the text to use for trace exit, like {@code "exit"} or {@code "Exit"}.
-     * @since 2.6
-     */
-    public ParameterizedMessageFactory(final String entryText, final String exitText) {
-        super(entryText, exitText);
     }
 
     /**
@@ -49,11 +40,9 @@ public final class ParameterizedMessageFactory extends AbstractMessageFactory {
      */
     public static final ParameterizedMessageFactory INSTANCE = new ParameterizedMessageFactory();
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * Creates {@link ParameterizedMessage} instances.
-     * 
+     *
      * @param message The message pattern.
      * @param params The message parameters.
      * @return The Message.
