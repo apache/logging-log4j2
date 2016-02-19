@@ -21,6 +21,7 @@ package org.apache.logging.log4j.message;
  * @since 2.6
  */
 public interface FlowMessageFactory {
+    
     /**
      * Creates a new entry message based on an existing message.
      *
