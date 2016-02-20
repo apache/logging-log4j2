@@ -25,8 +25,8 @@ import java.io.Serializable;
  */
 public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializable {
     
-    private static final String EXIT_WORD = "Exit";
-    private static final String ENTRY_WORD = "Enter";
+    private static final String EXIT_DEFAULT_PREFIX = "Exit";
+    private static final String ENTRY_DEFAULT_PREFIX = "Enter";
     private static final long serialVersionUID = 8578655591131397576L;
     
     private final String entryText;
@@ -36,7 +36,7 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
      * Constructs a message factory with {@code "Enter"} and {@code "Exit"} as the default flow strings.
      */
     public DefaultFlowMessageFactory() {
-        this(ENTRY_WORD, EXIT_WORD);
+        this(ENTRY_DEFAULT_PREFIX, EXIT_DEFAULT_PREFIX);
     }
 
     /**
