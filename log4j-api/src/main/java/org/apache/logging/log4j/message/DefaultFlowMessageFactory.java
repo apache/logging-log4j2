@@ -20,6 +20,7 @@ import java.io.Serializable;
 
 /**
  * Default factory for flow messages.
+ * 
  * @since 2.6
  */
 public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializable {
