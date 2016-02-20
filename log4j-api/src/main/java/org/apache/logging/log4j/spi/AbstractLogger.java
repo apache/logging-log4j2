@@ -24,6 +24,7 @@ import org.apache.logging.log4j.message.EntryMessage;
 import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.message.MessageFactory2;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -337,6 +338,187 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         logIfEnabled(FQCN, Level.DEBUG, null, msgSupplier, t);
     }
 
+    @Override
+    public void debug(final Marker marker, final String message, final Object p0) {
+        if (isEnabled(Level.DEBUG, marker, message)) {
+            final Message msg = newMessage(message, p0);
+            logMessage(FQCN, Level.DEBUG, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void debug(final Marker marker, final String message, final Object p0, final Object p1) {
+        if (isEnabled(Level.DEBUG, marker, message)) {
+            final Message msg = newMessage(message, p0, p1);
+            logMessage(FQCN, Level.DEBUG, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void debug(final Marker marker, final String message, final Object p0, final Object p1, final Object p2) {
+        if (isEnabled(Level.DEBUG, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2);
+            logMessage(FQCN, Level.DEBUG, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void debug(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3) {
+        if (isEnabled(Level.DEBUG, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3);
+            logMessage(FQCN, Level.DEBUG, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void debug(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4) {
+        if (isEnabled(Level.DEBUG, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4);
+            logMessage(FQCN, Level.DEBUG, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void debug(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5) {
+        if (isEnabled(Level.DEBUG, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5);
+            logMessage(FQCN, Level.DEBUG, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void debug(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5,
+            final Object p6) {
+        if (isEnabled(Level.DEBUG, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6);
+            logMessage(FQCN, Level.DEBUG, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void debug(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5,
+            final Object p6, final Object p7) {
+        if (isEnabled(Level.DEBUG, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7);
+            logMessage(FQCN, Level.DEBUG, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void debug(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5,
+            final Object p6, final Object p7, final Object p8) {
+        if (isEnabled(Level.DEBUG, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
+            logMessage(FQCN, Level.DEBUG, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void debug(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5,
+            final Object p6, final Object p7, final Object p8, final Object p9) {
+        if (isEnabled(Level.DEBUG, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
+            logMessage(FQCN, Level.DEBUG, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void debug(final String message, final Object p0) {
+        if (isEnabled(Level.DEBUG, null, message)) {
+            final Message msg = newMessage(message, p0);
+            logMessage(FQCN, Level.DEBUG, null, msg, msg.getThrowable());
+        }
+
+    }
+
+    @Override
+    public void debug(final String message, final Object p0, final Object p1) {
+        if (isEnabled(Level.DEBUG, null, message)) {
+            final Message msg = newMessage(message, p0, p1);
+            logMessage(FQCN, Level.DEBUG, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void debug(final String message, final Object p0, final Object p1, final Object p2) {
+        if (isEnabled(Level.DEBUG, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2);
+            logMessage(FQCN, Level.DEBUG, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void debug(final String message, final Object p0, final Object p1, final Object p2, final Object p3) {
+        if (isEnabled(Level.DEBUG, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3);
+            logMessage(FQCN, Level.DEBUG, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void debug(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4) {
+        if (isEnabled(Level.DEBUG, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4);
+            logMessage(FQCN, Level.DEBUG, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void debug(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5) {
+        if (isEnabled(Level.DEBUG, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5);
+            logMessage(FQCN, Level.DEBUG, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void debug(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6) {
+        if (isEnabled(Level.DEBUG, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6);
+            logMessage(FQCN, Level.DEBUG, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void debug(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7) {
+        if (isEnabled(Level.DEBUG, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7);
+            logMessage(FQCN, Level.DEBUG, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void debug(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8) {
+        if (isEnabled(Level.DEBUG, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
+            logMessage(FQCN, Level.DEBUG, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void debug(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8, final Object p9) {
+        if (isEnabled(Level.DEBUG, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
+            logMessage(FQCN, Level.DEBUG, null, msg, msg.getThrowable());
+        }
+    }
+
     /**
      * Logs entry to a method with location information.
      *
@@ -590,6 +772,187 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @Override
+    public void error(final Marker marker, final String message, final Object p0) {
+        if (isEnabled(Level.ERROR, marker, message)) {
+            final Message msg = newMessage(message, p0);
+            logMessage(FQCN, Level.ERROR, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void error(final Marker marker, final String message, final Object p0, final Object p1) {
+        if (isEnabled(Level.ERROR, marker, message)) {
+            final Message msg = newMessage(message, p0, p1);
+            logMessage(FQCN, Level.ERROR, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void error(final Marker marker, final String message, final Object p0, final Object p1, final Object p2) {
+        if (isEnabled(Level.ERROR, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2);
+            logMessage(FQCN, Level.ERROR, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void error(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3) {
+        if (isEnabled(Level.ERROR, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3);
+            logMessage(FQCN, Level.ERROR, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void error(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4) {
+        if (isEnabled(Level.ERROR, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4);
+            logMessage(FQCN, Level.ERROR, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void error(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5) {
+        if (isEnabled(Level.ERROR, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5);
+            logMessage(FQCN, Level.ERROR, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void error(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5,
+            final Object p6) {
+        if (isEnabled(Level.ERROR, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6);
+            logMessage(FQCN, Level.ERROR, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void error(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5,
+            final Object p6, final Object p7) {
+        if (isEnabled(Level.ERROR, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7);
+            logMessage(FQCN, Level.ERROR, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void error(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5,
+            final Object p6, final Object p7, final Object p8) {
+        if (isEnabled(Level.ERROR, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
+            logMessage(FQCN, Level.ERROR, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void error(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5,
+            final Object p6, final Object p7, final Object p8, final Object p9) {
+        if (isEnabled(Level.ERROR, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
+            logMessage(FQCN, Level.ERROR, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void error(final String message, final Object p0) {
+        if (isEnabled(Level.ERROR, null, message)) {
+            final Message msg = newMessage(message, p0);
+            logMessage(FQCN, Level.ERROR, null, msg, msg.getThrowable());
+        }
+
+    }
+
+    @Override
+    public void error(final String message, final Object p0, final Object p1) {
+        if (isEnabled(Level.ERROR, null, message)) {
+            final Message msg = newMessage(message, p0, p1);
+            logMessage(FQCN, Level.ERROR, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void error(final String message, final Object p0, final Object p1, final Object p2) {
+        if (isEnabled(Level.ERROR, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2);
+            logMessage(FQCN, Level.ERROR, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void error(final String message, final Object p0, final Object p1, final Object p2, final Object p3) {
+        if (isEnabled(Level.ERROR, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3);
+            logMessage(FQCN, Level.ERROR, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void error(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4) {
+        if (isEnabled(Level.ERROR, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4);
+            logMessage(FQCN, Level.ERROR, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void error(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5) {
+        if (isEnabled(Level.ERROR, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5);
+            logMessage(FQCN, Level.ERROR, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void error(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6) {
+        if (isEnabled(Level.ERROR, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6);
+            logMessage(FQCN, Level.ERROR, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void error(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7) {
+        if (isEnabled(Level.ERROR, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7);
+            logMessage(FQCN, Level.ERROR, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void error(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8) {
+        if (isEnabled(Level.ERROR, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
+            logMessage(FQCN, Level.ERROR, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void error(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8, final Object p9) {
+        if (isEnabled(Level.ERROR, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
+            logMessage(FQCN, Level.ERROR, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
     public void exit() {
         exit(FQCN, (Object) null);
     }
@@ -760,6 +1123,187 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @Override
+    public void fatal(final Marker marker, final String message, final Object p0) {
+        if (isEnabled(Level.FATAL, marker, message)) {
+            final Message msg = newMessage(message, p0);
+            logMessage(FQCN, Level.FATAL, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void fatal(final Marker marker, final String message, final Object p0, final Object p1) {
+        if (isEnabled(Level.FATAL, marker, message)) {
+            final Message msg = newMessage(message, p0, p1);
+            logMessage(FQCN, Level.FATAL, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void fatal(final Marker marker, final String message, final Object p0, final Object p1, final Object p2) {
+        if (isEnabled(Level.FATAL, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2);
+            logMessage(FQCN, Level.FATAL, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void fatal(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3) {
+        if (isEnabled(Level.FATAL, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3);
+            logMessage(FQCN, Level.FATAL, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void fatal(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4) {
+        if (isEnabled(Level.FATAL, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4);
+            logMessage(FQCN, Level.FATAL, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void fatal(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5) {
+        if (isEnabled(Level.FATAL, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5);
+            logMessage(FQCN, Level.FATAL, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void fatal(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5,
+            final Object p6) {
+        if (isEnabled(Level.FATAL, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6);
+            logMessage(FQCN, Level.FATAL, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void fatal(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5,
+            final Object p6, final Object p7) {
+        if (isEnabled(Level.FATAL, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7);
+            logMessage(FQCN, Level.FATAL, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void fatal(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5,
+            final Object p6, final Object p7, final Object p8) {
+        if (isEnabled(Level.FATAL, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
+            logMessage(FQCN, Level.FATAL, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void fatal(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5,
+            final Object p6, final Object p7, final Object p8, final Object p9) {
+        if (isEnabled(Level.FATAL, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
+            logMessage(FQCN, Level.FATAL, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void fatal(final String message, final Object p0) {
+        if (isEnabled(Level.FATAL, null, message)) {
+            final Message msg = newMessage(message, p0);
+            logMessage(FQCN, Level.FATAL, null, msg, msg.getThrowable());
+        }
+
+    }
+
+    @Override
+    public void fatal(final String message, final Object p0, final Object p1) {
+        if (isEnabled(Level.FATAL, null, message)) {
+            final Message msg = newMessage(message, p0, p1);
+            logMessage(FQCN, Level.FATAL, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void fatal(final String message, final Object p0, final Object p1, final Object p2) {
+        if (isEnabled(Level.FATAL, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2);
+            logMessage(FQCN, Level.FATAL, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void fatal(final String message, final Object p0, final Object p1, final Object p2, final Object p3) {
+        if (isEnabled(Level.FATAL, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3);
+            logMessage(FQCN, Level.FATAL, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void fatal(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4) {
+        if (isEnabled(Level.FATAL, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4);
+            logMessage(FQCN, Level.FATAL, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void fatal(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5) {
+        if (isEnabled(Level.FATAL, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5);
+            logMessage(FQCN, Level.FATAL, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void fatal(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6) {
+        if (isEnabled(Level.FATAL, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6);
+            logMessage(FQCN, Level.FATAL, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void fatal(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7) {
+        if (isEnabled(Level.FATAL, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7);
+            logMessage(FQCN, Level.FATAL, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void fatal(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8) {
+        if (isEnabled(Level.FATAL, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
+            logMessage(FQCN, Level.FATAL, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void fatal(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8, final Object p9) {
+        if (isEnabled(Level.FATAL, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
+            logMessage(FQCN, Level.FATAL, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
     public MessageFactory getMessageFactory() {
         return messageFactory;
     }
@@ -887,6 +1431,187 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     @Override
     public void info(final MessageSupplier msgSupplier, final Throwable t) {
         logIfEnabled(FQCN, Level.INFO, null, msgSupplier, t);
+    }
+
+    @Override
+    public void info(final Marker marker, final String message, final Object p0) {
+        if (isEnabled(Level.INFO, marker, message)) {
+            final Message msg = newMessage(message, p0);
+            logMessage(FQCN, Level.INFO, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void info(final Marker marker, final String message, final Object p0, final Object p1) {
+        if (isEnabled(Level.INFO, marker, message)) {
+            final Message msg = newMessage(message, p0, p1);
+            logMessage(FQCN, Level.INFO, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void info(final Marker marker, final String message, final Object p0, final Object p1, final Object p2) {
+        if (isEnabled(Level.INFO, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2);
+            logMessage(FQCN, Level.INFO, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void info(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3) {
+        if (isEnabled(Level.INFO, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3);
+            logMessage(FQCN, Level.INFO, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void info(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4) {
+        if (isEnabled(Level.INFO, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4);
+            logMessage(FQCN, Level.INFO, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void info(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5) {
+        if (isEnabled(Level.INFO, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5);
+            logMessage(FQCN, Level.INFO, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void info(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5,
+            final Object p6) {
+        if (isEnabled(Level.INFO, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6);
+            logMessage(FQCN, Level.INFO, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void info(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5,
+            final Object p6, final Object p7) {
+        if (isEnabled(Level.INFO, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7);
+            logMessage(FQCN, Level.INFO, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void info(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5,
+            final Object p6, final Object p7, final Object p8) {
+        if (isEnabled(Level.INFO, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
+            logMessage(FQCN, Level.INFO, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void info(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5,
+            final Object p6, final Object p7, final Object p8, final Object p9) {
+        if (isEnabled(Level.INFO, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
+            logMessage(FQCN, Level.INFO, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void info(final String message, final Object p0) {
+        if (isEnabled(Level.INFO, null, message)) {
+            final Message msg = newMessage(message, p0);
+            logMessage(FQCN, Level.INFO, null, msg, msg.getThrowable());
+        }
+
+    }
+
+    @Override
+    public void info(final String message, final Object p0, final Object p1) {
+        if (isEnabled(Level.INFO, null, message)) {
+            final Message msg = newMessage(message, p0, p1);
+            logMessage(FQCN, Level.INFO, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void info(final String message, final Object p0, final Object p1, final Object p2) {
+        if (isEnabled(Level.INFO, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2);
+            logMessage(FQCN, Level.INFO, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void info(final String message, final Object p0, final Object p1, final Object p2, final Object p3) {
+        if (isEnabled(Level.INFO, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3);
+            logMessage(FQCN, Level.INFO, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void info(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4) {
+        if (isEnabled(Level.INFO, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4);
+            logMessage(FQCN, Level.INFO, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void info(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5) {
+        if (isEnabled(Level.INFO, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5);
+            logMessage(FQCN, Level.INFO, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void info(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6) {
+        if (isEnabled(Level.INFO, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6);
+            logMessage(FQCN, Level.INFO, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void info(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7) {
+        if (isEnabled(Level.INFO, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7);
+            logMessage(FQCN, Level.INFO, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void info(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8) {
+        if (isEnabled(Level.INFO, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
+            logMessage(FQCN, Level.INFO, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void info(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8, final Object p9) {
+        if (isEnabled(Level.INFO, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
+            logMessage(FQCN, Level.INFO, null, msg, msg.getThrowable());
+        }
     }
 
     @Override
@@ -1082,6 +1807,187 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @Override
+    public void log(final Level level, final Marker marker, final String message, final Object p0) {
+        if (isEnabled(level, marker, message)) {
+            final Message msg = newMessage(message, p0);
+            logMessage(FQCN, level, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void log(final Level level, final Marker marker, final String message, final Object p0, final Object p1) {
+        if (isEnabled(level, marker, message)) {
+            final Message msg = newMessage(message, p0, p1);
+            logMessage(FQCN, level, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void log(final Level level, final Marker marker, final String message, final Object p0, final Object p1, final Object p2) {
+        if (isEnabled(level, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2);
+            logMessage(FQCN, level, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void log(final Level level, final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3) {
+        if (isEnabled(level, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3);
+            logMessage(FQCN, level, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void log(final Level level, final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4) {
+        if (isEnabled(level, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4);
+            logMessage(FQCN, level, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void log(final Level level, final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5) {
+        if (isEnabled(level, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5);
+            logMessage(FQCN, level, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void log(final Level level, final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5,
+            final Object p6) {
+        if (isEnabled(level, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6);
+            logMessage(FQCN, level, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void log(final Level level, final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5,
+            final Object p6, final Object p7) {
+        if (isEnabled(level, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7);
+            logMessage(FQCN, level, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void log(final Level level, final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5,
+            final Object p6, final Object p7, final Object p8) {
+        if (isEnabled(level, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
+            logMessage(FQCN, level, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void log(final Level level, final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5,
+            final Object p6, final Object p7, final Object p8, final Object p9) {
+        if (isEnabled(level, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
+            logMessage(FQCN, level, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void log(final Level level, final String message, final Object p0) {
+        if (isEnabled(level, null, message)) {
+            final Message msg = newMessage(message, p0);
+            logMessage(FQCN, level, null, msg, msg.getThrowable());
+        }
+
+    }
+
+    @Override
+    public void log(final Level level, final String message, final Object p0, final Object p1) {
+        if (isEnabled(level, null, message)) {
+            final Message msg = newMessage(message, p0, p1);
+            logMessage(FQCN, level, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void log(final Level level, final String message, final Object p0, final Object p1, final Object p2) {
+        if (isEnabled(level, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2);
+            logMessage(FQCN, level, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void log(final Level level, final String message, final Object p0, final Object p1, final Object p2, final Object p3) {
+        if (isEnabled(level, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3);
+            logMessage(FQCN, level, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void log(final Level level, final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4) {
+        if (isEnabled(level, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4);
+            logMessage(FQCN, level, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void log(final Level level, final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5) {
+        if (isEnabled(level, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5);
+            logMessage(FQCN, level, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void log(final Level level, final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6) {
+        if (isEnabled(level, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6);
+            logMessage(FQCN, level, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void log(final Level level, final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7) {
+        if (isEnabled(level, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7);
+            logMessage(FQCN, level, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void log(final Level level, final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8) {
+        if (isEnabled(level, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
+            logMessage(FQCN, level, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void log(final Level level, final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8, final Object p9) {
+        if (isEnabled(level, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
+            logMessage(FQCN, level, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
     public void logIfEnabled(final String fqcn, final Level level, final Marker marker, final Message msg,
             final Throwable t) {
         if (isEnabled(level, marker, msg, t)) {
@@ -1181,6 +2087,102 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
             final Supplier<?>... paramSuppliers) {
         final Message msg = messageFactory.newMessage(message, LambdaUtil.getAll(paramSuppliers));
         logMessage(fqcn, level, marker, msg, msg.getThrowable());
+    }
+
+    private Message newMessage(final String message, final Object p0) {
+        final MessageFactory factory = getMessageFactory();
+        if (factory instanceof MessageFactory2) {
+            return ((MessageFactory2) factory).newMessage(message, p0);
+        } else {
+            return factory.newMessage(message, p0);
+        }
+    }
+
+    private Message newMessage(final String message, final Object p0, final Object p1) {
+        final MessageFactory factory = getMessageFactory();
+        if (factory instanceof MessageFactory2) {
+            return ((MessageFactory2) factory).newMessage(message, p0, p1);
+        } else {
+            return factory.newMessage(message, p0, p1);
+        }
+    }
+
+    private Message newMessage(final String message, final Object p0, final Object p1, final Object p2) {
+        final MessageFactory factory = getMessageFactory();
+        if (factory instanceof MessageFactory2) {
+            return ((MessageFactory2) factory).newMessage(message, p0, p1, p2);
+        } else {
+            return factory.newMessage(message, p0, p1, p2);
+        }
+    }
+
+    private Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3) {
+        final MessageFactory factory = getMessageFactory();
+        if (factory instanceof MessageFactory2) {
+            return ((MessageFactory2) factory).newMessage(message, p0, p1, p2, p3);
+        } else {
+            return factory.newMessage(message, p0, p1, p2, p3);
+        }
+    }
+
+    private Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4) {
+        final MessageFactory factory = getMessageFactory();
+        if (factory instanceof MessageFactory2) {
+            return ((MessageFactory2) factory).newMessage(message, p0, p1, p2, p3, p4);
+        } else {
+            return factory.newMessage(message, p0, p1, p2, p3, p4);
+        }
+    }
+
+    private Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5) {
+        final MessageFactory factory = getMessageFactory();
+        if (factory instanceof MessageFactory2) {
+            return ((MessageFactory2) factory).newMessage(message, p0, p1, p2, p3, p4, p5);
+        } else {
+            return factory.newMessage(message, p0, p1, p2, p3, p4, p5);
+        }
+    }
+
+    private Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6) {
+        final MessageFactory factory = getMessageFactory();
+        if (factory instanceof MessageFactory2) {
+            return ((MessageFactory2) factory).newMessage(message, p0, p1, p2, p3, p4, p5, p6);
+        } else {
+            return factory.newMessage(message, p0, p1, p2, p3, p4, p5, p6);
+        }
+    }
+
+    private Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6, final Object p7) {
+        final MessageFactory factory = getMessageFactory();
+        if (factory instanceof MessageFactory2) {
+            return ((MessageFactory2) factory).newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7);
+        } else {
+            return factory.newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7);
+        }
+    }
+
+    private Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6, final Object p7, final Object p8) {
+        final MessageFactory factory = getMessageFactory();
+        if (factory instanceof MessageFactory2) {
+            return ((MessageFactory2) factory).newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
+        } else {
+            return factory.newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
+        }
+    }
+
+    private Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6, final Object p7, final Object p8, final Object p9) {
+        final MessageFactory factory = getMessageFactory();
+        if (factory instanceof MessageFactory2) {
+            return ((MessageFactory2) factory).newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
+        } else {
+            return factory.newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
+        }
     }
 
     @Override
@@ -1347,6 +2349,187 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     @Override
     public void trace(final MessageSupplier msgSupplier, final Throwable t) {
         logIfEnabled(FQCN, Level.TRACE, null, msgSupplier, t);
+    }
+
+    @Override
+    public void trace(final Marker marker, final String message, final Object p0) {
+        if (isEnabled(Level.TRACE, marker, message)) {
+            final Message msg = newMessage(message, p0);
+            logMessage(FQCN, Level.TRACE, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void trace(final Marker marker, final String message, final Object p0, final Object p1) {
+        if (isEnabled(Level.TRACE, marker, message)) {
+            final Message msg = newMessage(message, p0, p1);
+            logMessage(FQCN, Level.TRACE, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void trace(final Marker marker, final String message, final Object p0, final Object p1, final Object p2) {
+        if (isEnabled(Level.TRACE, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2);
+            logMessage(FQCN, Level.TRACE, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void trace(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3) {
+        if (isEnabled(Level.TRACE, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3);
+            logMessage(FQCN, Level.TRACE, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void trace(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4) {
+        if (isEnabled(Level.TRACE, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4);
+            logMessage(FQCN, Level.TRACE, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void trace(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5) {
+        if (isEnabled(Level.TRACE, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5);
+            logMessage(FQCN, Level.TRACE, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void trace(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5,
+            final Object p6) {
+        if (isEnabled(Level.TRACE, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6);
+            logMessage(FQCN, Level.TRACE, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void trace(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5,
+            final Object p6, final Object p7) {
+        if (isEnabled(Level.TRACE, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7);
+            logMessage(FQCN, Level.TRACE, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void trace(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5,
+            final Object p6, final Object p7, final Object p8) {
+        if (isEnabled(Level.TRACE, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
+            logMessage(FQCN, Level.TRACE, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void trace(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5,
+            final Object p6, final Object p7, final Object p8, final Object p9) {
+        if (isEnabled(Level.TRACE, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
+            logMessage(FQCN, Level.TRACE, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void trace(final String message, final Object p0) {
+        if (isEnabled(Level.TRACE, null, message)) {
+            final Message msg = newMessage(message, p0);
+            logMessage(FQCN, Level.TRACE, null, msg, msg.getThrowable());
+        }
+
+    }
+
+    @Override
+    public void trace(final String message, final Object p0, final Object p1) {
+        if (isEnabled(Level.TRACE, null, message)) {
+            final Message msg = newMessage(message, p0, p1);
+            logMessage(FQCN, Level.TRACE, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void trace(final String message, final Object p0, final Object p1, final Object p2) {
+        if (isEnabled(Level.TRACE, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2);
+            logMessage(FQCN, Level.TRACE, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void trace(final String message, final Object p0, final Object p1, final Object p2, final Object p3) {
+        if (isEnabled(Level.TRACE, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3);
+            logMessage(FQCN, Level.TRACE, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void trace(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4) {
+        if (isEnabled(Level.TRACE, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4);
+            logMessage(FQCN, Level.TRACE, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void trace(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5) {
+        if (isEnabled(Level.TRACE, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5);
+            logMessage(FQCN, Level.TRACE, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void trace(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6) {
+        if (isEnabled(Level.TRACE, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6);
+            logMessage(FQCN, Level.TRACE, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void trace(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7) {
+        if (isEnabled(Level.TRACE, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7);
+            logMessage(FQCN, Level.TRACE, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void trace(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8) {
+        if (isEnabled(Level.TRACE, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
+            logMessage(FQCN, Level.TRACE, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void trace(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8, final Object p9) {
+        if (isEnabled(Level.TRACE, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
+            logMessage(FQCN, Level.TRACE, null, msg, msg.getThrowable());
+        }
     }
 
     @Override
@@ -1550,5 +2733,186 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     @Override
     public void warn(final MessageSupplier msgSupplier, final Throwable t) {
         logIfEnabled(FQCN, Level.WARN, null, msgSupplier, t);
+    }
+
+    @Override
+    public void warn(final Marker marker, final String message, final Object p0) {
+        if (isEnabled(Level.WARN, marker, message)) {
+            final Message msg = newMessage(message, p0);
+            logMessage(FQCN, Level.WARN, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void warn(final Marker marker, final String message, final Object p0, final Object p1) {
+        if (isEnabled(Level.WARN, marker, message)) {
+            final Message msg = newMessage(message, p0, p1);
+            logMessage(FQCN, Level.WARN, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void warn(final Marker marker, final String message, final Object p0, final Object p1, final Object p2) {
+        if (isEnabled(Level.WARN, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2);
+            logMessage(FQCN, Level.WARN, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void warn(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3) {
+        if (isEnabled(Level.WARN, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3);
+            logMessage(FQCN, Level.WARN, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void warn(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4) {
+        if (isEnabled(Level.WARN, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4);
+            logMessage(FQCN, Level.WARN, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void warn(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5) {
+        if (isEnabled(Level.WARN, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5);
+            logMessage(FQCN, Level.WARN, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void warn(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5,
+            final Object p6) {
+        if (isEnabled(Level.WARN, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6);
+            logMessage(FQCN, Level.WARN, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void warn(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5,
+            final Object p6, final Object p7) {
+        if (isEnabled(Level.WARN, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7);
+            logMessage(FQCN, Level.WARN, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void warn(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5,
+            final Object p6, final Object p7, final Object p8) {
+        if (isEnabled(Level.WARN, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
+            logMessage(FQCN, Level.WARN, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void warn(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3, final Object p4, final Object p5,
+            final Object p6, final Object p7, final Object p8, final Object p9) {
+        if (isEnabled(Level.WARN, marker, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
+            logMessage(FQCN, Level.WARN, marker, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void warn(final String message, final Object p0) {
+        if (isEnabled(Level.WARN, null, message)) {
+            final Message msg = newMessage(message, p0);
+            logMessage(FQCN, Level.WARN, null, msg, msg.getThrowable());
+        }
+
+    }
+
+    @Override
+    public void warn(final String message, final Object p0, final Object p1) {
+        if (isEnabled(Level.WARN, null, message)) {
+            final Message msg = newMessage(message, p0, p1);
+            logMessage(FQCN, Level.WARN, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void warn(final String message, final Object p0, final Object p1, final Object p2) {
+        if (isEnabled(Level.WARN, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2);
+            logMessage(FQCN, Level.WARN, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void warn(final String message, final Object p0, final Object p1, final Object p2, final Object p3) {
+        if (isEnabled(Level.WARN, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3);
+            logMessage(FQCN, Level.WARN, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void warn(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4) {
+        if (isEnabled(Level.WARN, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4);
+            logMessage(FQCN, Level.WARN, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void warn(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5) {
+        if (isEnabled(Level.WARN, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5);
+            logMessage(FQCN, Level.WARN, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void warn(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6) {
+        if (isEnabled(Level.WARN, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6);
+            logMessage(FQCN, Level.WARN, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void warn(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7) {
+        if (isEnabled(Level.WARN, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7);
+            logMessage(FQCN, Level.WARN, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void warn(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8) {
+        if (isEnabled(Level.WARN, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
+            logMessage(FQCN, Level.WARN, null, msg, msg.getThrowable());
+        }
+    }
+
+    @Override
+    public void warn(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8, final Object p9) {
+        if (isEnabled(Level.WARN, null, message)) {
+            final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
+            logMessage(FQCN, Level.WARN, null, msg, msg.getThrowable());
+        }
     }
 }
