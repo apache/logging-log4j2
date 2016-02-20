@@ -25,15 +25,15 @@ import java.io.Serializable;
  */
 public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializable {
     
-    private static final String EXIT_WORD = "exit";
-    private static final String ENTRY_WORD = "entry";
+    private static final String EXIT_WORD = "Exit";
+    private static final String ENTRY_WORD = "Enter";
     private static final long serialVersionUID = 8578655591131397576L;
     
     private final String entryText;
     private final String exitText;
 
     /**
-     * Constructs a message factory with {@code "entry"} and {@code "exit"} as the default flow strings.
+     * Constructs a message factory with {@code "Enter"} and {@code "Exit"} as the default flow strings.
      */
     public DefaultFlowMessageFactory() {
         this(ENTRY_WORD, EXIT_WORD);
@@ -41,8 +41,8 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
 
     /**
      * Constructs a message factory with the given entry and exit strings.
-     * @param entryText the text to use for trace entry, like {@code "entry"} or {@code "Enter"}.
-     * @param exitText the text to use for trace exit, like {@code "exit"} or {@code "Exit"}.
+     * @param entryText the text to use for trace entry, like {@code "Enter"}.
+     * @param exitText the text to use for trace exit, like {@code "Exit"}.
      */
     public DefaultFlowMessageFactory(final String entryText, final String exitText) {
         super();

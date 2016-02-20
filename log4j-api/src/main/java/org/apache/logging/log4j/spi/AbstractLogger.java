@@ -628,14 +628,14 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     protected Message exitMsg(final String format, final Object result) {
         if (result == null) {
             if (format == null) {
-                return messageFactory.newMessage("exit");
+                return messageFactory.newMessage("Exit");
             }
-            return messageFactory.newMessage("exit: " + format);
+            return messageFactory.newMessage("Exit: " + format);
         }
         if (format == null) {
-            return messageFactory.newMessage("exit with(" + result + ')');
+            return messageFactory.newMessage("Exit with(" + result + ')');
         }
-        return messageFactory.newMessage("exit: " + format, result);
+        return messageFactory.newMessage("Exit: " + format, result);
 
     }
 
