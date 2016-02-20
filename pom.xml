@@ -35,7 +35,7 @@
     <url>https://issues.apache.org/jira/browse/LOG4J2</url>
   </issueManagement>
   <ciManagement>
-    <system>Buildbot</system>
+    <system>Jenkins</system>
     <url>https://builds.apache.org/job/Log4j%202.x/</url>
   </ciManagement>
   <inceptionYear>1999</inceptionYear>
