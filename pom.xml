@@ -1373,9 +1373,9 @@
       </build>
     </profile>
     <profile>
-      <id>jdk-pre-8</id>
+      <id>jdk7</id>
       <activation>
-        <jdk>[1.6,1.8)</jdk>
+        <jdk>1.7</jdk>
       </activation>
       <build>
         <plugins>
