@@ -36,7 +36,7 @@
   </issueManagement>
   <ciManagement>
     <system>Buildbot</system>
-    <url>http://ci.apache.org/builders/log4j2-nightly/</url>
+    <url>https://builds.apache.org/job/Log4j%202.x/</url>
   </ciManagement>
   <inceptionYear>1999</inceptionYear>
   <developers>
