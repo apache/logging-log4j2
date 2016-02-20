@@ -68,7 +68,7 @@ public class ExitTagTest {
     @Test
     public void testDoEndTag() throws Exception {
         assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
-        verify("exit TRACE M-EXIT[ FLOW ] E");
+        verify("Exit TRACE M-EXIT[ FLOW ] E");
     }
 
     @Test
@@ -76,7 +76,7 @@ public class ExitTagTest {
         this.tag.setResult(CONFIG);
 
         assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
-        verify("exit with(log4j-test1.xml) TRACE M-EXIT[ FLOW ] E");
+        verify("Exit with(log4j-test1.xml) TRACE M-EXIT[ FLOW ] E");
     }
 
     @Test
@@ -84,7 +84,7 @@ public class ExitTagTest {
         this.tag.setResult(5792);
 
         assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
-        verify("exit with(5792) TRACE M-EXIT[ FLOW ] E");
+        verify("Exit with(5792) TRACE M-EXIT[ FLOW ] E");
     }
 
     private void verify(final String expected) {

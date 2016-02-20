@@ -60,7 +60,7 @@ public class LoggerSupplierTest {
             }
         });
         assertEquals(1, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE entry"));
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE Enter"));
         assertThat("Missing entry data", results.get(0), containsString("(int foo=1234567890)"));
         assertThat("Bad toString()", results.get(0), not(containsString("FormattedMessage")));
     }
@@ -74,7 +74,7 @@ public class LoggerSupplierTest {
             }
         });
         assertEquals(1, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE entry"));
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE Enter"));
         assertThat("Missing entry data", results.get(0), containsString("\"java.runtime.name\":"));
         assertThat("Bad toString()", results.get(0), not(containsString("JsonMessage")));
     }
@@ -88,7 +88,7 @@ public class LoggerSupplierTest {
             }
         });
         assertEquals(1, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE entry"));
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE Enter"));
         assertThat("Missing entry data", results.get(0), containsString("(int foo=1234567890)"));
         assertThat("Bad toString()", results.get(0), not(containsString("LocalizedMessage")));
     }
@@ -102,7 +102,7 @@ public class LoggerSupplierTest {
             }
         });
         assertEquals(1, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE entry"));
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE Enter"));
         assertThat("Missing entry data", results.get(0), containsString("(1234567890)"));
         assertThat("Bad toString()", results.get(0), not(containsString("SimpleMessage")));
     }
@@ -116,7 +116,7 @@ public class LoggerSupplierTest {
             }
         });
         assertEquals(1, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE entry"));
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE Enter"));
         assertThat("Missing entry data", results.get(0), containsString("(int foo=1,234,567,890)"));
         assertThat("Bad toString()", results.get(0), not(containsString("MessageFormatMessage")));
     }
@@ -130,8 +130,8 @@ public class LoggerSupplierTest {
             }
         });
         assertEquals(1, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE entry"));
-        assertThat("Missing entry data", results.get(0), containsString("([1234567890])"));
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE Enter"));
+        assertThat("Missing Enter data", results.get(0), containsString("([1234567890])"));
         assertThat("Bad toString()", results.get(0), not(containsString("ObjectArrayMessage")));
     }
 
@@ -144,7 +144,7 @@ public class LoggerSupplierTest {
             }
         });
         assertEquals(1, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE entry"));
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE Enter"));
         assertThat("Missing entry data", results.get(0), containsString("(1234567890)"));
         assertThat("Bad toString()", results.get(0), not(containsString("ObjectMessage")));
     }
@@ -158,7 +158,7 @@ public class LoggerSupplierTest {
             }
         });
         assertEquals(1, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE entry"));
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE Enter"));
         assertThat("Missing entry data", results.get(0), containsString("(int foo=1234567890)"));
         assertThat("Bad toString()", results.get(0), not(containsString("ParameterizedMessage")));
     }
@@ -172,7 +172,7 @@ public class LoggerSupplierTest {
             }
         });
         assertEquals(1, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE entry"));
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE Enter"));
         assertThat("Missing entry data", results.get(0), containsString("(1234567890)"));
         assertThat("Bad toString()", results.get(0), not(containsString("SimpleMessage")));
     }
@@ -186,7 +186,7 @@ public class LoggerSupplierTest {
             }
         });
         assertEquals(1, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE entry"));
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE Enter"));
         assertThat("Missing entry data", results.get(0), containsString("(1234567890)"));
         assertThat("Bad toString()", results.get(0), not(containsString("SimpleMessage")));
     }
@@ -200,7 +200,7 @@ public class LoggerSupplierTest {
             }
         });
         assertEquals(1, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE entry"));
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE Enter"));
         assertThat("Missing entry data", results.get(0), containsString("(int foo=1,234,567,890)"));
         assertThat("Bad toString()", results.get(0), not(containsString("StringFormattedMessage")));
     }
@@ -214,7 +214,7 @@ public class LoggerSupplierTest {
             }
         });
         assertEquals(1, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE entry"));
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE Enter"));
         assertThat("Missing entry data", results.get(0), containsString("RUNNABLE"));
         assertThat("Missing entry data", results.get(0), containsString("Title of ..."));
         assertThat("Missing entry data", results.get(0), containsString(getClass().getName()));

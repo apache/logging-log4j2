@@ -20,24 +20,29 @@ import java.io.Serializable;
 
 /**
  * Default factory for flow messages.
+ * 
  * @since 2.6
  */
 public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializable {
+    
+    private static final String EXIT_DEFAULT_PREFIX = "Exit";
+    private static final String ENTRY_DEFAULT_PREFIX = "Enter";
     private static final long serialVersionUID = 8578655591131397576L;
+    
     private final String entryText;
     private final String exitText;
 
     /**
-     * Constructs a message factory with {@code "entry"} and {@code "exit"} as the default flow strings.
+     * Constructs a message factory with {@code "Enter"} and {@code "Exit"} as the default flow strings.
      */
     public DefaultFlowMessageFactory() {
-        this("entry", "exit");
+        this(ENTRY_DEFAULT_PREFIX, EXIT_DEFAULT_PREFIX);
     }
 
     /**
      * Constructs a message factory with the given entry and exit strings.
-     * @param entryText the text to use for trace entry, like {@code "entry"} or {@code "Enter"}.
-     * @param exitText the text to use for trace exit, like {@code "exit"} or {@code "Exit"}.
+     * @param entryText the text to use for trace entry, like {@code "Enter"}.
+     * @param exitText the text to use for trace exit, like {@code "Exit"}.
      */
     public DefaultFlowMessageFactory(final String entryText, final String exitText) {
         super();
@@ -173,7 +178,7 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
     /*
      * (non-Javadoc)
      *
-     * @see org.apache.logging.log4j.message.MessageFactory#newEntryMessage(org.apache.logging.log4j.message.EntryMessage)
+     * @see org.apache.logging.log4j.message.FlowMessageFactory#newExitMessage(org.apache.logging.log4j.message.EntryMessage)
      */
     @Override
     public ExitMessage newExitMessage(final EntryMessage message) {
@@ -183,20 +188,20 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
     /*
      * (non-Javadoc)
      *
-     * @see org.apache.logging.log4j.message.MessageFactory#newEntryMessage(java.lang.Object, org.apache.logging.log4j.message.EntryMessage)
+     * @see org.apache.logging.log4j.message.FlowMessageFactory#newExitMessage(java.lang.Object, org.apache.logging.log4j.message.EntryMessage)
      */
     @Override
-    public ExitMessage newExitMessage(final Object object, final EntryMessage message) {
-        return new SimpleExitMessage(exitText, object, message);
+    public ExitMessage newExitMessage(final Object result, final EntryMessage message) {
+        return new SimpleExitMessage(exitText, result, message);
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see org.apache.logging.log4j.message.MessageFactory#newEntryMessage(java.lang.Object, org.apache.logging.log4j.message.Message)
+     * @see org.apache.logging.log4j.message.FlowMessageFactory#newExitMessage(java.lang.Object, org.apache.logging.log4j.message.Message)
      */
     @Override
-    public ExitMessage newExitMessage(final Object object, final Message message) {
-        return new SimpleExitMessage(exitText, object, message);
+    public ExitMessage newExitMessage(final Object result, final Message message) {
+        return new SimpleExitMessage(exitText, result, message);
     }
 }

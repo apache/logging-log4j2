@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core;
 
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import java.util.List;
 
 import static org.junit.Assert.*;
 /**
@@ -49,7 +49,7 @@ public class PatternSelectorTest {
         assertNotNull("No Messages", messages);
         assertTrue("Incorrect number of messages. Expected 3, Actual " + messages.size() + ": " + messages, messages.size() == 3);
         final String expect = String.format("[TRACE] TestMarkerPatternSelector ====== "
-                + "o.a.l.l.c.PatternSelectorTest.testMarkerPatternSelector:43 entry ======%n");
+                + "o.a.l.l.c.PatternSelectorTest.testMarkerPatternSelector:43 Enter ======%n");
         assertEquals(expect, messages.get(0));
         assertEquals("[INFO ] TestMarkerPatternSelector Hello World" + Constants.LINE_SEPARATOR, messages.get(1));
         app.clear();
@@ -69,7 +69,7 @@ public class PatternSelectorTest {
         assertNotNull("No Messages", messages);
         assertTrue("Incorrect number of messages. Expected 4, Actual " + messages.size() + ": " + messages, messages.size() == 4);
         String expect = "[TRACE] TestScriptPatternSelector ====== " +
-                "o.a.l.l.c.PatternSelectorTest.testScriptPatternSelector:62 entry ======" + Constants.LINE_SEPARATOR;
+                "o.a.l.l.c.PatternSelectorTest.testScriptPatternSelector:62 Enter ======" + Constants.LINE_SEPARATOR;
         assertEquals(expect, messages.get(0));
         expect = "[INFO ] TestScriptPatternSelector o.a.l.l.c.PatternSelectorTest.testScriptPatternSelector.63 " +
                 "Hello World" + Constants.LINE_SEPARATOR;
@@ -92,7 +92,7 @@ public class PatternSelectorTest {
         assertNotNull("No Messages", messages);
         assertTrue("Incorrect number of messages. Expected 4, Actual " + messages.size() + ": " + messages, messages.size() == 4);
         String expect = "[TRACE] TestJavaScriptPatternSelector ====== " +
-                "o.a.l.l.c.PatternSelectorTest.testJavaScriptPatternSelector:85 entry ======" + Constants.LINE_SEPARATOR;
+                "o.a.l.l.c.PatternSelectorTest.testJavaScriptPatternSelector:85 Enter ======" + Constants.LINE_SEPARATOR;
         assertEquals(expect, messages.get(0));
         expect = "[INFO ] TestJavaScriptPatternSelector " +
                 "o.a.l.l.c.PatternSelectorTest.testJavaScriptPatternSelector.86 Hello World" + Constants.LINE_SEPARATOR;
