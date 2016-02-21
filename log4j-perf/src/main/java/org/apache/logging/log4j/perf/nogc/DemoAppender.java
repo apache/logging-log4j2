@@ -16,11 +16,13 @@
  */
 package org.apache.logging.log4j.perf.nogc;
 
+import java.nio.ByteBuffer;
+
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
-
-import java.nio.ByteBuffer;
+import org.apache.logging.log4j.core.layout.ByteBufferDestination;
+import org.apache.logging.log4j.core.layout.Encoder;
 
 /**
  * Demo Appender that does not do any I/O.
