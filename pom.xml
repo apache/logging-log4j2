@@ -35,8 +35,8 @@
     <url>https://issues.apache.org/jira/browse/LOG4J2</url>
   </issueManagement>
   <ciManagement>
-    <system>Buildbot</system>
-    <url>http://ci.apache.org/builders/log4j2-nightly/</url>
+    <system>Jenkins</system>
+    <url>https://builds.apache.org/job/Log4j%202.x/</url>
   </ciManagement>
   <inceptionYear>1999</inceptionYear>
   <developers>
@@ -610,7 +610,7 @@
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>4.11</version>
+        <version>4.12</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -1373,9 +1373,9 @@
       </build>
     </profile>
     <profile>
-      <id>jdk-pre-8</id>
+      <id>jdk7</id>
       <activation>
-        <jdk>[1.6,1.8)</jdk>
+        <jdk>1.7</jdk>
       </activation>
       <build>
         <plugins>
