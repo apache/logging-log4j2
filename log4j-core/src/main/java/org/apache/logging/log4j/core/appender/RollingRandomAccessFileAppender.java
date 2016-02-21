@@ -45,7 +45,7 @@ import org.apache.logging.log4j.core.util.Integers;
  * intervals.
  */
 @Plugin(name = "RollingRandomAccessFile", category = "Core", elementType = "appender", printObject = true)
-public final class RollingRandomAccessFileAppender extends AbstractOutputStreamAppender<RollingFileManager> {
+public final class RollingRandomAccessFileAppender extends AbstractOutputStreamAppender<RollingRandomAccessFileManager> {
 
     private static final long serialVersionUID = 1L;
 
@@ -55,7 +55,7 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
     private final Advertiser advertiser;
 
     private RollingRandomAccessFileAppender(final String name, final Layout<? extends Serializable> layout,
-            final Filter filter, final RollingFileManager manager, final String fileName,
+            final Filter filter, final RollingRandomAccessFileManager manager, final String fileName,
             final String filePattern, final boolean ignoreExceptions,
             final boolean immediateFlush, final int bufferSize, final Advertiser advertiser) {
         super(name, layout, filter, ignoreExceptions, immediateFlush, manager);
@@ -97,7 +97,18 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
         // _always_ available in the log file, without incurring the overhead
         // of immediateFlush=true.
         manager.setEndOfBatch(event.isEndOfBatch());
-        super.append(event);
+
+        // LOG4J2-1292 utilize gc-free Layout.encode() method
+        // super.append(event);
+        try {
+            getLayout().encode(event, getManager());
+            if (getImmediateFlush() || event.isEndOfBatch()) {
+                getManager().flush();
+            }
+        } catch (final AppenderLoggingException ex) {
+            error("Unable to write to stream " + getManager().getName() + " for appender " + getName());
+            throw ex;
+        }
     }
 
     /**
@@ -117,7 +128,7 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
     public String getFilePattern() {
         return filePattern;
     }
-    
+
     /**
      * Returns the size of the file manager's buffer.
      * @return the buffer size
