@@ -39,8 +39,8 @@ public class DemoAppender extends AbstractAppender implements ByteBufferDestinat
     @Override
     public void append(LogEvent event) {
         Layout<?> layout = getLayout();
-        if (layout instanceof Encoder) {
-            ((Encoder<LogEvent>) layout).encode(event, this);
+        if (layout instanceof NoGcLayout) {
+            layout.encode(event, this);
             drain(byteBuffer);
         } else {
             byte[] binary = getLayout().toByteArray(event);
