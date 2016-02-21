@@ -147,8 +147,55 @@ public class TextEncoderHelperTest {
 
     @Test
     public void testEncodeText_TextDoesntFitCharBuff_BytesDontFitByteBuff() throws Exception {
-        final TextEncoderHelper helper = new TextEncoderHelper(StandardCharsets.UTF_8, 16);
-        // TODO
+        final TextEncoderHelper helper = new TextEncoderHelper(StandardCharsets.UTF_8, 4);
+        final StringBuilder text = createText(15);
+        final SpyByteBufferDestination destination = new SpyByteBufferDestination(3, 17);
+        helper.encodeText(text, destination);
+
+        assertEquals("drained", 4, destination.drainPoints.size());
+        assertEquals("destination.buf.pos", 3, destination.buffer.position());
+
+        for (int i = 0; i < text.length() - 3; i++) {
+            assertEquals("char at " + i, (byte) text.charAt(i), destination.drained.get(i));
+        }
+        for (int i = 0; i < 3; i++) {
+            assertEquals("char at " + (12 + i), (byte) text.charAt(12 + i), destination.buffer.get(i));
+        }
+    }
+
+    @Test
+    public void testEncodeText_JapaneseTextUtf8DoesntFitCharBuff_BytesDontFitByteBuff() throws Exception {
+        final TextEncoderHelper helper = new TextEncoderHelper(StandardCharsets.UTF_8, 4);
+        final StringBuilder text = new StringBuilder( // 日本語テスト文章
+                "\u65e5\u672c\u8a9e\u30c6\u30b9\u30c8\u6587\u7ae0");
+        final SpyByteBufferDestination destination = new SpyByteBufferDestination(3, 50);
+        helper.encodeText(text, destination);
+
+        assertEquals("drained", 7, destination.drainPoints.size());
+        destination.drain(destination.getByteBuffer());
+
+        final byte[] utf8 = text.toString().getBytes(StandardCharsets.UTF_8);
+        for (int i = 0; i < utf8.length; i++) {
+            assertEquals("byte at " + i, utf8[i], destination.drained.get(i));
+        }
+    }
+
+    @Test
+    public void testEncodeText_JapaneseTextShiftJisDoesntFitCharBuff_BytesDontFitByteBuff() throws Exception {
+        final Charset SHIFT_JIS = Charset.forName("Shift_JIS");
+        final TextEncoderHelper helper = new TextEncoderHelper(SHIFT_JIS, 4);
+        final StringBuilder text = new StringBuilder( // 日本語テスト文章
+                "\u65e5\u672c\u8a9e\u30c6\u30b9\u30c8\u6587\u7ae0");
+        final SpyByteBufferDestination destination = new SpyByteBufferDestination(3, 50);
+        helper.encodeText(text, destination);
+
+        assertEquals("drained", 7, destination.drainPoints.size());
+        destination.drain(destination.getByteBuffer());
+
+        final byte[] bytes = text.toString().getBytes(SHIFT_JIS);
+        for (int i = 0; i < bytes.length; i++) {
+            assertEquals("byte at " + i, bytes[i], destination.drained.get(i));
+        }
     }
 
     @Test
