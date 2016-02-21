@@ -96,8 +96,6 @@ public class RollingRandomAccessFileManager extends RollingFileManager implement
 
     @Override
     protected synchronized void write(final byte[] bytes, int offset, int length, final boolean immediateFlush) {
-        super.write(bytes, offset, length, immediateFlush); // writes to dummy output stream, needed to track file size
-
         int chunk = 0;
         do {
             if (length > buffer.remaining()) {
@@ -128,6 +126,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager implement
         buffer.flip();
         try {
             randomAccessFile.write(buffer.array(), 0, buffer.limit());
+            size += buffer.limit(); // track file size
         } catch (final IOException ex) {
             final String msg = "Error writing to RandomAccessFile " + getName();
             throw new AppenderLoggingException(msg, ex);

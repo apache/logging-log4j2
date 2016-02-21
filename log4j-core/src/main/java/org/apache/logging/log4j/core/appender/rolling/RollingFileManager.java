@@ -41,7 +41,7 @@ public class RollingFileManager extends FileManager {
 
     private static RollingFileManagerFactory factory = new RollingFileManagerFactory();
 
-    private long size;
+    protected long size;
     private long initialTime;
     private final PatternProcessor patternProcessor;
     private final Semaphore semaphore = new Semaphore(1);
