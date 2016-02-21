@@ -17,11 +17,13 @@
 package org.apache.logging.log4j.core.layout;
 
 import java.io.Serializable;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -122,5 +124,40 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
 
     protected void markEvent() {
         eventCount++;
+    }
+
+    /**
+     * Encodes the specified source LogEvent to some binary representation and writes the result to the specified
+     * destination.
+     *
+     * @param event the LogEvent to encode.
+     * @param destination holds the ByteBuffer to write into.
+     */
+    @Override
+    public void encode(final LogEvent event, final ByteBufferDestination destination) {
+        final byte[] data = toByteArray(event);
+        writeTo(data, 0, data.length, destination);
+    }
+
+    /**
+     * Writes the specified data to the specified destination.
+     *
+     * @param data the data to write
+     * @param offset where to start in the specified data array
+     * @param length the number of bytes to write
+     * @param destination the {@code ByteBufferDestination} to write to
+     */
+    public static void writeTo(final byte[] data, int offset, int length, final ByteBufferDestination destination) {
+        int chunk = 0;
+        ByteBuffer buffer = destination.getByteBuffer();
+        do {
+            if (length > buffer.remaining()) {
+                buffer = destination.drain(buffer);
+            }
+            chunk = Math.min(length, buffer.remaining());
+            buffer.put(data, offset, chunk);
+            offset += chunk;
+            length -= chunk;
+        } while (length > 0);
     }
 }
