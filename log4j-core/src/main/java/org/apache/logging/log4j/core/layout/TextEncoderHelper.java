@@ -48,7 +48,7 @@ public class TextEncoderHelper {
         this.cachedCharBuffer = CharBuffer.wrap(new char[bufferSize]);
     }
 
-    public void encodeText(final StringBuilder text, final ByteBufferDestination destination) {
+    public void encodeText(final CharSequence text, final ByteBufferDestination destination) {
         charsetEncoder.reset();
         ByteBuffer byteBuf = destination.getByteBuffer();
         final CharBuffer charBuf = getCachedCharBuffer();
@@ -116,13 +116,13 @@ public class TextEncoderHelper {
     }
 
     /**
-     * Copies characters from the StringBuilder into the CharBuffer,
+     * Copies characters from the CharSequence into the CharBuffer,
      * starting at the specified offset and ending when either all
      * characters have been copied or when the CharBuffer is full.
      *
      * @return the number of characters that were copied
      */
-    static int copy(final StringBuilder source, final int offset, final CharBuffer destination) {
+    static int copy(final CharSequence source, final int offset, final CharBuffer destination) {
         final int length = Math.min(source.length() - offset, destination.remaining());
         for (int i = offset; i < offset + length; i++) {
             destination.put(source.charAt(i));
