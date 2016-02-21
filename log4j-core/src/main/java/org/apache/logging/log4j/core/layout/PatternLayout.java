@@ -178,7 +178,7 @@ public final class PatternLayout extends AbstractStringLayout {
 
     @Override
     public void encode(final LogEvent event, final ByteBufferDestination destination) {
-        if (!Constants.ENABLE_OBJECT_POOLING || !(eventSerializer instanceof Serializer2)) {
+        if (!Constants.ENABLE_THREADLOCALS || !(eventSerializer instanceof Serializer2)) {
             super.encode(event, destination);
             return;
         }
