@@ -23,6 +23,8 @@ import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CoderResult;
 import java.nio.charset.StandardCharsets;
 
+import org.apache.logging.log4j.core.layout.ByteBufferDestination;
+
 /**
  * TextEncoderHelper class proposed in LOG4J2-1274.
  */
