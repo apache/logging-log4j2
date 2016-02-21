@@ -43,8 +43,15 @@ import org.apache.logging.log4j.util.Strings;
 public abstract class AbstractStringLayout extends AbstractLayout<String> implements StringLayout {
 
     public interface Serializer {
-
         String toSerializable(final LogEvent event);
+    }
+
+    /**
+     * Variation of {@link Serializer} that avoids allocating temporary objects.
+     * @since 2.6
+     */
+    public interface Serializer2 {
+        StringBuilder toSerializable(final LogEvent event, final StringBuilder buffer);
     }
 
     /**
