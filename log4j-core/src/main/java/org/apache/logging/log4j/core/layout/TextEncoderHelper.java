@@ -30,7 +30,7 @@ import java.util.Objects;
  *
  * @since 2.6
  */
-class TextEncoderHelper {
+public class TextEncoderHelper {
     private static final int DEFAULT_BUFFER_SIZE = 2048;
 
     private final Charset charset;
