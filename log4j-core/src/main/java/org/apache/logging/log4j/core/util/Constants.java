@@ -72,10 +72,12 @@ public final class Constants {
             "log4j.format.msg.async", false);
 
     /**
-     * Returns {@code true} if we think we are running in a web container, based on the presence of the
-     * {@code javax.servlet.Servlet} class in the classpath.
+     * {@code true} if we think we are running in a web container, base on the boolean value of system property
+     * "log4j2.is.webapp", or (if this system property is not set) whether the  {@code javax.servlet.Servlet} class
+     * is present in the classpath.
      */
-    public static final boolean IS_WEB_APP = Loader.isClassAvailable("javax.servlet.Servlet");
+    public static final boolean IS_WEB_APP = PropertiesUtil.getProperties().getBooleanProperty(
+            "log4j2.is.webapp", Loader.isClassAvailable("javax.servlet.Servlet"));
 
     /**
      * Kill switch for object pooling in ThreadLocals that enables much of the LOG4J2-1270 no-GC behaviour.
