@@ -27,7 +27,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Abstract base class for Layouts.
- * 
+ *
  * @param <T>
  *            The Class that the Layout will format the LogEvent into.
  */
@@ -62,9 +62,7 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
 
     /**
      * Constructs a layout with an optional header and footer.
-     * 
-     * @param configuration
-     *            The configuration
+     *
      * @param header
      *            The header to include when the stream is opened. May be null.
      * @param footer
@@ -78,7 +76,7 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
 
     /**
      * Constructs a layout with an optional header and footer.
-     * 
+     *
      * @param configuration
      *            The configuration
      * @param header
@@ -104,7 +102,7 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
 
     /**
      * Returns the footer, if one is available.
-     * 
+     *
      * @return A byte array containing the footer.
      */
     @Override
@@ -114,7 +112,7 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
 
     /**
      * Returns the header, if one is available.
-     * 
+     *
      * @return A byte array containing the header.
      */
     @Override
