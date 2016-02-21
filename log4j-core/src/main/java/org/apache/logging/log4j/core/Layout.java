@@ -70,13 +70,8 @@ public interface Layout<T extends Serializable> extends Encoder<LogEvent> {
      *
      * @param event The Logging Event.
      * @return The formatted event.
-     * TODO Likely better to write to a OutputStream instead of return a byte[]. (RG) That limits how the
-     * Appender can use the Layout. For example, it might concatenate information in front or behind the
-     * data and then write it all to the OutputStream in one call.
      */
     byte[] toByteArray(LogEvent event);
-
-    // TODO: it would be nice to provide ByteBuffers alongside the byte[]s
 
     /**
      * Formats the event as an Object that can be serialized.
