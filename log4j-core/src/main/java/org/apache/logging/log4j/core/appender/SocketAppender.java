@@ -174,7 +174,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
      *            If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise they
      *            are propagated to the caller.
      * @param layout
-     *            The layout to use (defaults to SerializedLayout).
+     *            The layout to use (defaults to {@link SerializedLayout}).
      * @param filter
      *            The Filter or null.
      * @param advertise
@@ -182,7 +182,9 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
      * @param config
      *            The Configuration
      * @return A SocketAppender.
-     * @deprecated Use {@link #createAppender(String, int, Protocol, SslConfiguration, int, int, boolean, String, boolean, boolean, Layout, Filter, boolean, Configuration)}.
+     * @deprecated Deprecated in 2.5; use
+     *             {@link #createAppender(String, int, Protocol, SslConfiguration, int, int, boolean, String, boolean, boolean, Layout, Filter, boolean, Configuration)}
+     *             .
      */
     @Deprecated
     public static SocketAppender createAppender(
