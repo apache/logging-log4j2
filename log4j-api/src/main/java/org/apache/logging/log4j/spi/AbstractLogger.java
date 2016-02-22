@@ -356,6 +356,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * @param format The format String for the parameters.
      * @param paramSuppliers The parameters to the method.
      */
+    @Deprecated
     protected EntryMessage enter(final String fqcn, final String format, final MessageSupplier... paramSuppliers) {
         EntryMessage entryMsg = null;
         if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
@@ -385,6 +386,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * @param fqcn The fully qualified class name of the <b>caller</b>.
      * @param msgSupplier The Supplier of the Message.
      */
+    @Deprecated
     protected EntryMessage enter(final String fqcn, final MessageSupplier msgSupplier) {
         EntryMessage message = null;
         if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
@@ -392,6 +394,24 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
                     msgSupplier.get()), null);
         }
         return message;
+    }
+
+    /**
+     * Logs entry to a method with location information.
+     *
+     * @param fqcn
+     *            The fully qualified class name of the <b>caller</b>.
+     * @param message
+     *            the Message.
+     * @since 2.6
+     */
+    protected EntryMessage enter(final String fqcn, final Message message) {
+        EntryMessage flowMessage = null;
+        if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
+            logMessage(fqcn, Level.TRACE, ENTRY_MARKER, flowMessage = flowMessageFactory.newEntryMessage(message),
+                    null);
+        }
+        return flowMessage;
     }
 
     @Override
@@ -1368,12 +1388,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     @Override
     public EntryMessage traceEntry(final Message message) {
-        return enter(FQCN, new MessageSupplier() {
-            @Override
-            public Message get() {
-                return message;
-            }
-        });
+        return enter(FQCN, message);
     }
 
     @Override
@@ -1394,24 +1409,14 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     @Override
     public void traceExit(final EntryMessage message) {
         if (isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
-            logMessage(FQCN, Level.TRACE, EXIT_MARKER, new MessageSupplier() {
-                @Override
-                public Message get() {
-                    return flowMessageFactory.newExitMessage(message);
-                };
-            }, null);
+            logMessage(FQCN, Level.TRACE, EXIT_MARKER, flowMessageFactory.newExitMessage(message), null);
         }
     }
 
     @Override
     public <R> R traceExit(final EntryMessage message, final R result) {
         if (isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
-            logMessage(FQCN, Level.TRACE, EXIT_MARKER, new MessageSupplier() {
-                @Override
-                public Message get() {
-                    return flowMessageFactory.newExitMessage(result, message);
-                };
-            }, null);
+            logMessage(FQCN, Level.TRACE, EXIT_MARKER, flowMessageFactory.newExitMessage(result, message), null);
         }
         return result;
     }
@@ -1419,12 +1424,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     @Override
     public <R> R traceExit(final Message message, final R result) {
         if (isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
-            logMessage(FQCN, Level.TRACE, EXIT_MARKER, new MessageSupplier() {
-                @Override
-                public Message get() {
-                    return flowMessageFactory.newExitMessage(result, message);
-                };
-            }, null);
+            logMessage(FQCN, Level.TRACE, EXIT_MARKER, flowMessageFactory.newExitMessage(result, message), null);
         }
         return result;
     }
