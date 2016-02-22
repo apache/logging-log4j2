@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.filter.Filterable;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * Wraps an {@link Appender} with details an appender implementation shouldn't need to know about.
@@ -88,14 +89,17 @@ public class AppenderControl extends AbstractFilterable {
         return isFilteredByAppenderControl(event) || isFilteredByLevel(event) || isRecursiveCall();
     }
 
+    @PerformanceSensitive
     private boolean isFilteredByAppenderControl(final LogEvent event) {
         return getFilter() != null && Filter.Result.DENY == getFilter().filter(event);
     }
 
+    @PerformanceSensitive
     private boolean isFilteredByLevel(final LogEvent event) {
         return level != null && intLevel < event.getLevel().intLevel();
     }
 
+    @PerformanceSensitive
     private boolean isRecursiveCall() {
         if (recursive.get() != null) {
             appenderErrorHandlerMessage("Recursive call to appender ");
