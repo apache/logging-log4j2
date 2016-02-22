@@ -31,6 +31,7 @@ import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LambdaUtil;
 import org.apache.logging.log4j.util.MessageSupplier;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Supplier;
 
@@ -179,7 +180,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     private static Class<? extends MessageFactory> createClassForProperty(final String property,
             final Class<ParameterizedMessageFactory> defaultMessageFactoryClass) {
         try {
-            final String clsName = System.getProperty(property, defaultMessageFactoryClass.getName());
+            final String clsName = PropertiesUtil.getProperties().getStringProperty(property, defaultMessageFactoryClass.getName());
             return Class.forName(clsName).asSubclass(MessageFactory.class);
         } catch (final Throwable t) {
             return defaultMessageFactoryClass;
@@ -189,7 +190,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     private static Class<? extends FlowMessageFactory> createFlowClassForProperty(final String property,
             final Class<DefaultFlowMessageFactory> defaultFlowMessageFactoryClass) {
         try {
-            final String clsName = System.getProperty(property, defaultFlowMessageFactoryClass.getName());
+            final String clsName = PropertiesUtil.getProperties().getStringProperty(property, defaultFlowMessageFactoryClass.getName());
             return Class.forName(clsName).asSubclass(FlowMessageFactory.class);
         } catch (final Throwable t) {
             return defaultFlowMessageFactoryClass;
