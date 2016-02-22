@@ -67,7 +67,7 @@ public enum StandardLevel {
 
     private final int intLevel;
 
-    private StandardLevel(final int val) {
+    StandardLevel(final int val) {
         intLevel = val;
     }
 
