@@ -25,5 +25,5 @@ package org.apache.logging.log4j.util;
  */
 public @interface PerformanceSensitive {
     /** Description of why this is written the way it is. */
-    String value() default "";
+    String[] value() default "";
 }
