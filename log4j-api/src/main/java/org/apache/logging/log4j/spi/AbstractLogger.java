@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.spi;
 
+import java.io.Serializable;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -28,12 +30,11 @@ import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LambdaUtil;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Supplier;
-
-import java.io.Serializable;
 
 /**
  * Base implementation of a Logger. It is highly recommended that any Logger implementation extend this class.
@@ -180,8 +181,8 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     private static Class<? extends MessageFactory> createClassForProperty(final String property,
             final Class<ParameterizedMessageFactory> defaultMessageFactoryClass) {
         try {
-            final String clsName = System.getProperty(property, defaultMessageFactoryClass.getName());
-            return Class.forName(clsName).asSubclass(MessageFactory.class);
+            final String clsName = PropertiesUtil.getProperties().getStringProperty(property, defaultMessageFactoryClass.getName());
+            return LoaderUtil.loadClass(clsName).asSubclass(MessageFactory.class);
         } catch (final Throwable t) {
             return defaultMessageFactoryClass;
         }
@@ -190,8 +191,8 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     private static Class<? extends FlowMessageFactory> createFlowClassForProperty(final String property,
             final Class<DefaultFlowMessageFactory> defaultFlowMessageFactoryClass) {
         try {
-            final String clsName = System.getProperty(property, defaultFlowMessageFactoryClass.getName());
-            return Class.forName(clsName).asSubclass(FlowMessageFactory.class);
+            final String clsName = PropertiesUtil.getProperties().getStringProperty(property, defaultFlowMessageFactoryClass.getName());
+            return LoaderUtil.loadClass(clsName).asSubclass(FlowMessageFactory.class);
         } catch (final Throwable t) {
             return defaultFlowMessageFactoryClass;
         }
@@ -200,9 +201,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     private static MessageFactory createDefaultMessageFactory() {
         try {
             return DEFAULT_MESSAGE_FACTORY_CLASS.newInstance();
-        } catch (final InstantiationException e) {
-            throw new IllegalStateException(e);
-        } catch (final IllegalAccessException e) {
+        } catch (final InstantiationException | IllegalAccessException e) {
             throw new IllegalStateException(e);
         }
     }
@@ -210,9 +209,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     private static FlowMessageFactory createDefaultFlowMessageFactory() {
         try {
             return DEFAULT_FLOW_MESSAGE_FACTORY_CLASS.newInstance();
-        } catch (final InstantiationException e) {
-            throw new IllegalStateException(e);
-        } catch (final IllegalAccessException e) {
+        } catch (final InstantiationException | IllegalAccessException e) {
             throw new IllegalStateException(e);
         }
     }
