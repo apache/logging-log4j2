@@ -16,10 +16,12 @@
  */
 package org.apache.logging.log4j.message;
 
+import org.apache.logging.log4j.util.StringBuilderFormattable;
+
 /**
  * The simplest possible implementation of Message. It just returns the String given as the constructor argument.
  */
-public class SimpleMessage implements Message {
+public class SimpleMessage implements Message, StringBuilderFormattable {
     private static final long serialVersionUID = -8398002534962715992L;
 
     private final String message;
@@ -46,6 +48,11 @@ public class SimpleMessage implements Message {
     @Override
     public String getFormattedMessage() {
         return message;
+    }
+
+    @Override
+    public void formatTo(final StringBuilder buffer) {
+        buffer.append(message);
     }
 
     /**
