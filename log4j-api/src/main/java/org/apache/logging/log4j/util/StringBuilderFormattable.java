@@ -19,7 +19,7 @@ package org.apache.logging.log4j.util;
 /**
  * Objects that implement this interface can be converted to text, ideally without allocating temporary objects.
  *
- * @since 2.6s
+ * @since 2.6
  */
 public interface StringBuilderFormattable {
 
