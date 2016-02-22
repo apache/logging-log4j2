@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.spi;
 
+import java.io.Serializable;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -29,11 +31,8 @@ import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LambdaUtil;
 import org.apache.logging.log4j.util.MessageSupplier;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Supplier;
-
-import java.io.Serializable;
 
 /**
  * Base implementation of a Logger. It is highly recommended that any Logger implementation extend this class.
@@ -200,9 +199,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     private static MessageFactory createDefaultMessageFactory() {
         try {
             return DEFAULT_MESSAGE_FACTORY_CLASS.newInstance();
-        } catch (final InstantiationException e) {
-            throw new IllegalStateException(e);
-        } catch (final IllegalAccessException e) {
+        } catch (final InstantiationException | IllegalAccessException e) {
             throw new IllegalStateException(e);
         }
     }
@@ -210,9 +207,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     private static FlowMessageFactory createDefaultFlowMessageFactory() {
         try {
             return DEFAULT_FLOW_MESSAGE_FACTORY_CLASS.newInstance();
-        } catch (final InstantiationException e) {
-            throw new IllegalStateException(e);
-        } catch (final IllegalAccessException e) {
+        } catch (final InstantiationException | IllegalAccessException e) {
             throw new IllegalStateException(e);
         }
     }
