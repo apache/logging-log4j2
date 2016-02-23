@@ -51,7 +51,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
      * @since 2.6
      */
     public interface Serializer2 {
-        StringBuilder toSerializable(final LogEvent event, final StringBuilder buffer);
+        StringBuilder toSerializable(final LogEvent event, final StringBuilder builder);
     }
 
     /**
