@@ -67,6 +67,8 @@ public class RollingRandomAccessFileAppenderRolloverTest {
 
         final String trigger = "This message triggers rollover.";
         log.warn(trigger);
+        Thread.sleep(100);
+        log.warn(trigger);
 
         CoreLoggerContexts.stopLoggerContext(); // stop async thread
         CoreLoggerContexts.stopLoggerContext(false); // stop async thread
@@ -91,7 +93,11 @@ public class RollingRandomAccessFileAppenderRolloverTest {
         assertTrue("renamed file line 1", old1.contains(msg));
         final String old2 = reader.readLine();
         assertTrue("renamed file line 2", old2.contains(exceed));
-        final String line = reader.readLine();
+        String line = reader.readLine();
+        if (line != null) {
+            assertTrue("strange...", line.contains("This message triggers rollover."));
+            line = reader.readLine();
+        }
         assertNull("No more lines", line);
         reader.close();
         after1.delete();
