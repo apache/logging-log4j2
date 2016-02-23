@@ -72,7 +72,7 @@ import com.fasterxml.jackson.core.io.JsonStringEncoder;
 @Plugin(name = "GelfLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class GelfLayout extends AbstractStringLayout {
 
-    public static enum CompressionType {
+    public enum CompressionType {
 
         GZIP {
             @Override
@@ -131,24 +131,20 @@ public final class GelfLayout extends AbstractStringLayout {
         return new GelfLayout(host, additionalFields, compressionType, compressionThreshold);
     }
 
-    /**
-     * http://en.wikipedia.org/wiki/Syslog#Severity_levels
-     */
-    static int formatLevel(final Level level) {
-        return Severity.getSeverity(level).getCode();
+    @Override
+    public Map<String, String> getContentFormat() {
+        return Collections.emptyMap();
     }
 
-    static String formatThrowable(final Throwable throwable) {
-        // stack traces are big enough to provide a reasonably large initial capacity here
-        final StringWriter sw = new StringWriter(2048);
-        final PrintWriter pw = new PrintWriter(sw);
-        throwable.printStackTrace(pw);
-        pw.flush();
-        return sw.toString();
+    @Override
+    public String getContentType() {
+        return JsonLayout.CONTENT_TYPE + "; charset=" + this.getCharset();
     }
 
-    static String formatTimestamp(final long timeMillis) {
-        return new BigDecimal(timeMillis).divide(TIME_DIVISOR).toPlainString();
+    @Override
+    public byte[] toByteArray(final LogEvent event) {
+        final byte[] bytes = getBytes(toSerializable(event));
+        return bytes.length > compressionThreshold ? compress(bytes) : bytes;
     }
 
     private byte[] compress(final byte[] bytes) {
@@ -166,22 +162,6 @@ public final class GelfLayout extends AbstractStringLayout {
             StatusLogger.getLogger().error(e);
             return bytes;
         }
-    }
-
-    @Override
-    public Map<String, String> getContentFormat() {
-        return Collections.emptyMap();
-    }
-
-    @Override
-    public String getContentType() {
-        return JsonLayout.CONTENT_TYPE + "; charset=" + this.getCharset();
-    }
-
-    @Override
-    public byte[] toByteArray(final LogEvent event) {
-        final byte[] bytes = getBytes(toSerializable(event));
-        return bytes.length > compressionThreshold ? compress(bytes) : bytes;
     }
 
     @Override
@@ -221,5 +201,31 @@ public final class GelfLayout extends AbstractStringLayout {
 
     private String toNullSafeString(final String s) {
         return s == null ? Strings.EMPTY : s;
+    }
+
+    /**
+     * Non-private to make it accessible from unit test.
+     */
+    static String formatTimestamp(final long timeMillis) {
+        return new BigDecimal(timeMillis).divide(TIME_DIVISOR).toPlainString();
+    }
+
+    /**
+     * http://en.wikipedia.org/wiki/Syslog#Severity_levels
+     */
+    private int formatLevel(final Level level) {
+        return Severity.getSeverity(level).getCode();
+    }
+
+    /**
+     * Non-private to make it accessible from unit test.
+     */
+    static String formatThrowable(final Throwable throwable) {
+        // stack traces are big enough to provide a reasonably large initial capacity here
+        final StringWriter sw = new StringWriter(2048);
+        final PrintWriter pw = new PrintWriter(sw);
+        throwable.printStackTrace(pw);
+        pw.flush();
+        return sw.toString();
     }
 }
