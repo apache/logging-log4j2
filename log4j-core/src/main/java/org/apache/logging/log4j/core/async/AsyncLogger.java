@@ -34,6 +34,7 @@ import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.NanoClock;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -158,10 +159,15 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
 
         // Implementation note: this method is tuned for performance. MODIFY WITH CARE!
 
-        if (!Constants.FORMAT_MESSAGES_IN_BACKGROUND) { // LOG4J2-898: user may choose
+        // if the Message instance is reused, there is no point in freezing its message here
+        if (!isReused(message) && !Constants.FORMAT_MESSAGES_IN_BACKGROUND) { // LOG4J2-898: user may choose
             message.getFormattedMessage(); // LOG4J2-763: ask message to freeze parameters
         }
         logInBackground(fqcn, level, marker, message, thrown);
+    }
+
+    private boolean isReused(final Message message) {
+        return message instanceof ReusableMessage && ((ReusableMessage) message).isReused();
     }
 
     /**

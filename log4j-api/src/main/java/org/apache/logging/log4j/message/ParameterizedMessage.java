@@ -34,7 +34,7 @@ import org.apache.logging.log4j.util.StringBuilderFormattable;
  * licensed under the LGPL. It has been relicensed here with his permission providing that this attribution remain.
  * </p>
  */
-public class ParameterizedMessage implements Message, StringBuilderFormattable {
+public class ParameterizedMessage implements ReusableMessage {
 
     /**
      * Prefix for recursion.
@@ -75,13 +75,14 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
     private static ThreadLocal<SimpleDateFormat> threadLocalSimpleDateFormat = new ThreadLocal<>();
     private static ThreadLocal<Object[]> threadLocalUnrolledArgs = new ThreadLocal<>();
 
-    private final String messagePattern;
-    private final int argCount;
+    private String messagePattern;
+    private int argCount;
     private StringBuilder formattedMessage;
     private transient Object[] argArray;
 
     private boolean isThrowableInitialized;
     private transient Throwable throwable;
+    private boolean reused;
 
     /**
      * Creates a parameterized message.
@@ -155,6 +156,22 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
         args[0] = arg0;
         args[1] = arg1;
         this.argCount = 2;
+    }
+
+    public boolean isReused() {
+        return reused;
+    }
+
+    void setReused(boolean reused) {
+        this.reused = reused;
+    }
+
+    void set(String messagePattern, Object... arguments) {
+        this.messagePattern = messagePattern;
+        this.argArray = arguments;
+        this.argCount = arguments == null ? 0 : arguments.length;
+        this.isThrowableInitialized = false;
+        this.formattedMessage = null;
     }
 
     private static Object[] unrolledArgs() {

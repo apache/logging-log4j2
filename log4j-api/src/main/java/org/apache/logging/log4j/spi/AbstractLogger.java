@@ -27,6 +27,7 @@ import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
+import org.apache.logging.log4j.message.ReusableParameterizedMessageFactory;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LambdaUtil;
@@ -75,7 +76,8 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * The default MessageFactory class.
      */
     public static final Class<? extends MessageFactory> DEFAULT_MESSAGE_FACTORY_CLASS =
-            createClassForProperty("log4j2.messageFactory", ParameterizedMessageFactory.class);
+            createClassForProperty("log4j2.messageFactory", ReusableParameterizedMessageFactory.class,
+                    ParameterizedMessageFactory.class);
 
     /**
      * The default FlowMessageFactory class.
@@ -179,12 +181,33 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     private static Class<? extends MessageFactory> createClassForProperty(final String property,
-            final Class<ParameterizedMessageFactory> defaultMessageFactoryClass) {
+            final Class<ReusableParameterizedMessageFactory> reusableParameterizedMessageFactoryClass,
+            final Class<ParameterizedMessageFactory> parameterizedMessageFactoryClass) {
         try {
-            final String clsName = PropertiesUtil.getProperties().getStringProperty(property, defaultMessageFactoryClass.getName());
+            final boolean IS_WEB_APP = PropertiesUtil.getProperties().getBooleanProperty(
+                    "log4j2.is.webapp", isClassAvailable("javax.servlet.Servlet"));
+            final boolean ENABLE_THREADLOCALS = !IS_WEB_APP && PropertiesUtil.getProperties().getBooleanProperty(
+                    "log4j2.enable.threadlocals", true);
+            final String fallback = ENABLE_THREADLOCALS ? reusableParameterizedMessageFactoryClass.getName()
+                    : parameterizedMessageFactoryClass.getName();
+            final String clsName = PropertiesUtil.getProperties().getStringProperty(property, fallback);
             return LoaderUtil.loadClass(clsName).asSubclass(MessageFactory.class);
         } catch (final Throwable t) {
-            return defaultMessageFactoryClass;
+            return parameterizedMessageFactoryClass;
+        }
+    }
+
+    /**
+     * Determines if a named Class can be loaded or not.
+     *
+     * @param className The class name.
+     * @return {@code true} if the class could be found or {@code false} otherwise.
+     */
+    private static boolean isClassAvailable(final String className) {
+        try {
+            return Class.forName(className) != null;
+        } catch (final Throwable e) {
+            return false;
         }
     }
 

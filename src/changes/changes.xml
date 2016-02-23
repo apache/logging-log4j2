@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.6" date="2016-MM-DD" description="GA Release 2.6">
+      <action issue="LOG4J2-1271" dev="rpopma" type="add">
+        Add MessageFactory that avoid allocation by reusing a cached ParameterizedMessage instance.
+      </action>
       <action issue="LOG4J2-1271" dev="rpopma" type="update">
         ParameterizedMessage optimizations to avoid or at least postpone allocating temporary objects.
       </action>
