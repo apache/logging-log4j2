@@ -69,7 +69,8 @@ public class RollingRandomAccessFileAppenderRolloverTest {
         log.warn(trigger);
 
         CoreLoggerContexts.stopLoggerContext(); // stop async thread
-        
+        CoreLoggerContexts.stopLoggerContext(false); // stop async thread
+
         final int MAX_ATTEMPTS = 50;
         int count = 0;
         while (!after1.exists() && count++ < MAX_ATTEMPTS) {
