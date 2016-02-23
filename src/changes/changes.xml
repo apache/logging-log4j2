@@ -138,6 +138,9 @@
       <action issue="LOG4J2-1240" dev="ggregory" type="update">
         Update Liquibase from 3.3.5 to 3.4.2.
       </action>
+      <action issue="LOG4J2-1294" dev="ggregory" type="update">
+        Update Kafka client from 0.9.0.0 to 0.9.0.1.
+      </action>
       <action issue="LOG4J2-1233" dev="ggregory" type="update" due-to="Bahri Gencsoy">
         Misleading Value In Properties Example.
       </action>
