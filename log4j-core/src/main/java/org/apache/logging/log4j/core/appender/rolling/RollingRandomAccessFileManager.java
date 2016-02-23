@@ -26,13 +26,14 @@ import java.nio.ByteBuffer;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
+import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.util.NullOutputStream;
 
 /**
  * Extends RollingFileManager but instead of using a buffered output stream, this class uses a {@code ByteBuffer} and a
  * {@code RandomAccessFile} to do the I/O.
  */
-public class RollingRandomAccessFileManager extends RollingFileManager {
+public class RollingRandomAccessFileManager extends RollingFileManager implements ByteBufferDestination {
     /**
      * The default buffer size.
      */
@@ -95,8 +96,6 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
 
     @Override
     protected synchronized void write(final byte[] bytes, int offset, int length, final boolean immediateFlush) {
-        super.write(bytes, offset, length, immediateFlush); // writes to dummy output stream, needed to track file size
-
         int chunk = 0;
         do {
             if (length > buffer.remaining()) {
@@ -127,6 +126,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
         buffer.flip();
         try {
             randomAccessFile.write(buffer.array(), 0, buffer.limit());
+            size += buffer.limit(); // track file size
         } catch (final IOException ex) {
             final String msg = "Error writing to RandomAccessFile " + getName();
             throw new AppenderLoggingException(msg, ex);
@@ -146,12 +146,23 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
 
     /**
      * Returns the buffer capacity.
-     * 
+     *
      * @return the buffer size
      */
     @Override
     public int getBufferSize() {
         return buffer.capacity();
+    }
+
+    @Override
+    public ByteBuffer getByteBuffer() {
+        return buffer;
+    }
+
+    @Override
+    public ByteBuffer drain(final ByteBuffer buf) {
+        flush();
+        return buffer;
     }
 
     /**

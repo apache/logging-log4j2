@@ -14,19 +14,23 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.taglib;
-
-import org.apache.logging.log4j.Level;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+package org.apache.logging.log4j.core.layout;
 
 /**
+ * Objects implementing the {@code Encoder} interface know how to convert an object to some binary representation and
+ * write the result to a {@code ByteBuffer}, ideally without creating temporary objects.
  *
+ * @param <T> the type of objects that the Encoder can encode
+ * @since 2.6
  */
-public class InfoTagTest {
-    @Test
-    public void testGetLevel() {
-        assertEquals("The logging level is not correct.", Level.INFO, new InfoTag().getLevel());
-    }
+public interface Encoder<T> {
+
+    /**
+     * Encodes the specified source object to some binary representation and writes the result to the specified
+     * destination.
+     *
+     * @param source the object to encode.
+     * @param destination holds the ByteBuffer to write into.
+     */
+    void encode(T source, ByteBufferDestination destination);
 }

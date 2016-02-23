@@ -23,9 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.status.StatusLogger;
-
 /**
  * <em>Consider this class private.</em>
  * <p>
@@ -36,8 +33,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 public final class PropertiesUtil {
 
     private static final PropertiesUtil LOG4J_PROPERTIES = new PropertiesUtil("log4j2.component.properties");
-
-    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final Properties props;
 
@@ -62,7 +57,7 @@ public final class PropertiesUtil {
             try (final InputStream in = url.openStream()) {
                 properties.load(in);
             } catch (final IOException ioe) {
-                LOGGER.error("Unable to read {}", url.toString(), ioe);
+                logException("Unable to read " + url.toString(), ioe);
             }
         }
         this.props = properties;
@@ -81,12 +76,12 @@ public final class PropertiesUtil {
             try {
                 props.load(in);
             } catch (final IOException e) {
-                LOGGER.error("Unable to read {}", source, e);
+                logException("Unable to read " + source, e);
             } finally {
                 try {
                     in.close();
                 } catch (final IOException e) {
-                    LOGGER.error("Unable to close {}", source, e);
+                    logException("Unable to close " + source, e);
                 }
             }
         }
@@ -221,7 +216,7 @@ public final class PropertiesUtil {
         try {
             return new Properties(System.getProperties());
         } catch (final SecurityException ex) {
-            LOGGER.error("Unable to access system properties.", ex);
+            logException("Unable to access system properties.", ex);
             // Sandboxed - can't read System Properties
             return new Properties();
         }
@@ -265,5 +260,10 @@ public final class PropertiesUtil {
      */
     public boolean isOsWindows() {
         return getStringProperty("os.name").startsWith("Windows");
+    }
+
+    private static void logException(final String message, final Throwable exception) {
+        System.err.println(message);
+        exception.printStackTrace(System.err);
     }
 }

@@ -14,19 +14,16 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.taglib;
 
-import org.apache.logging.log4j.Level;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+package org.apache.logging.log4j.util;
 
 /**
+ * Indicates that a particular annotated construct was written with certain performance constraints in mind that
+ * should be considered when modifying or testing.
  *
+ * @since 2.6
  */
-public class WarnTagTest {
-    @Test
-    public void testGetLevel() {
-        assertEquals("The logging level is not correct.", Level.WARN, new WarnTag().getLevel());
-    }
+public @interface PerformanceSensitive {
+    /** Description of why this is written the way it is. */
+    String[] value() default "";
 }

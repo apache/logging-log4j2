@@ -40,6 +40,7 @@ import org.apache.logging.log4j.core.async.DaemonThreadFactory;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.selector.ContextSelector;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -74,17 +75,9 @@ public final class Server {
      * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-938">LOG4J2-938</a>
      */
     private static ExecutorService createExecutor() {
-        final boolean defaultAsync = !isWebApp();
+        final boolean defaultAsync = !Constants.IS_WEB_APP;
         final boolean async = PropertiesUtil.getProperties().getBooleanProperty(PROPERTY_ASYNC_NOTIF, defaultAsync);
         return async ? Executors.newFixedThreadPool(1, new DaemonThreadFactory(THREAD_NAME_PREFIX)) : null;
-    }
-
-    /**
-     * Returns {@code true} if we think we are running in a web container, based on the presence of the
-     * {@code javax.servlet.Servlet} class in the classpath.
-     */
-    private static boolean isWebApp() {
-        return Loader.isClassAvailable("javax.servlet.Servlet");
     }
 
     /**

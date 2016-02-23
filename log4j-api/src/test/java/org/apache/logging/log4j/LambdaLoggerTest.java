@@ -118,7 +118,7 @@ public class LambdaLoggerTest {
             invoked = true;
             return message;
         }
-    };
+    }
 
     final MyMessageSupplier messageSupplier = new MyMessageSupplier();
 

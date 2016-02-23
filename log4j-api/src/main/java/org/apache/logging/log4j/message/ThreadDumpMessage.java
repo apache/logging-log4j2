@@ -26,12 +26,13 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.Strings;
 
 /**
  * Captures information about all running Threads.
  */
-public class ThreadDumpMessage implements Message {
+public class ThreadDumpMessage implements Message, StringBuilderFormattable {
 
     private static final long serialVersionUID = -1103400781608841088L;
 
@@ -83,7 +84,14 @@ public class ThreadDumpMessage implements Message {
         if (formattedMessage != null) {
             return formattedMessage;
         }
-        final StringBuilder sb = new StringBuilder(title);
+        final StringBuilder sb = new StringBuilder(255);
+        formatTo(sb);
+        return sb.toString();
+    }
+
+    @Override
+    public void formatTo(final StringBuilder sb) {
+        sb.append(title);
         if (title.length() > 0) {
             sb.append('\n');
         }
@@ -93,7 +101,6 @@ public class ThreadDumpMessage implements Message {
             info.printStack(sb, entry.getValue());
             sb.append('\n');
         }
-        return sb.toString();
     }
 
     /**

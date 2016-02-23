@@ -14,19 +14,44 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
 package org.apache.logging.log4j.taglib;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.apache.logging.log4j.Level;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import static org.junit.Assert.*;
 
-/**
- *
- */
-public class DebugTagTest {
+@RunWith(Parameterized.class)
+public class TagLevelTest {
+
+    private final Class<? extends LoggingMessageTagSupport> cls;
+    private final Level level;
+
+    public TagLevelTest(final Class<? extends LoggingMessageTagSupport> cls, final Level level) {
+        this.cls = cls;
+        this.level = level;
+    }
+
+    @Parameterized.Parameters
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][]{
+            {DebugTag.class, Level.DEBUG},
+            {ErrorTag.class, Level.ERROR},
+            {FatalTag.class, Level.FATAL},
+            {InfoTag.class, Level.INFO},
+            {TraceTag.class, Level.TRACE},
+            {WarnTag.class, Level.WARN}
+        });
+    }
+
     @Test
-    public void testGetLevel() {
-        assertEquals("The logging level is not correct.", Level.DEBUG, new DebugTag().getLevel());
+    public void testGetLevel() throws Exception {
+        assertEquals(level, cls.newInstance().getLevel());
     }
 }

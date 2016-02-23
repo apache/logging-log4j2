@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.spi;
 
+import java.io.Serializable;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -26,15 +28,15 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.MessageFactory2;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
+import org.apache.logging.log4j.message.ReusableParameterizedMessageFactory;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LambdaUtil;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Supplier;
-
-import java.io.Serializable;
 
 /**
  * Base implementation of a Logger. It is highly recommended that any Logger implementation extend this class.
@@ -75,7 +77,8 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * The default MessageFactory class.
      */
     public static final Class<? extends MessageFactory> DEFAULT_MESSAGE_FACTORY_CLASS =
-            createClassForProperty("log4j2.messageFactory", ParameterizedMessageFactory.class);
+            createClassForProperty("log4j2.messageFactory", ReusableParameterizedMessageFactory.class,
+                    ParameterizedMessageFactory.class);
 
     /**
      * The default FlowMessageFactory class.
@@ -179,20 +182,41 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     private static Class<? extends MessageFactory> createClassForProperty(final String property,
-            final Class<ParameterizedMessageFactory> defaultMessageFactoryClass) {
+            final Class<ReusableParameterizedMessageFactory> reusableParameterizedMessageFactoryClass,
+            final Class<ParameterizedMessageFactory> parameterizedMessageFactoryClass) {
         try {
-            final String clsName = System.getProperty(property, defaultMessageFactoryClass.getName());
-            return Class.forName(clsName).asSubclass(MessageFactory.class);
+            final boolean IS_WEB_APP = PropertiesUtil.getProperties().getBooleanProperty(
+                    "log4j2.is.webapp", isClassAvailable("javax.servlet.Servlet"));
+            final boolean ENABLE_THREADLOCALS = !IS_WEB_APP && PropertiesUtil.getProperties().getBooleanProperty(
+                    "log4j2.enable.threadlocals", true);
+            final String fallback = ENABLE_THREADLOCALS ? reusableParameterizedMessageFactoryClass.getName()
+                    : parameterizedMessageFactoryClass.getName();
+            final String clsName = PropertiesUtil.getProperties().getStringProperty(property, fallback);
+            return LoaderUtil.loadClass(clsName).asSubclass(MessageFactory.class);
         } catch (final Throwable t) {
-            return defaultMessageFactoryClass;
+            return parameterizedMessageFactoryClass;
+        }
+    }
+
+    /**
+     * Determines if a named Class can be loaded or not.
+     *
+     * @param className The class name.
+     * @return {@code true} if the class could be found or {@code false} otherwise.
+     */
+    private static boolean isClassAvailable(final String className) {
+        try {
+            return Class.forName(className) != null;
+        } catch (final Throwable e) {
+            return false;
         }
     }
 
     private static Class<? extends FlowMessageFactory> createFlowClassForProperty(final String property,
             final Class<DefaultFlowMessageFactory> defaultFlowMessageFactoryClass) {
         try {
-            final String clsName = System.getProperty(property, defaultFlowMessageFactoryClass.getName());
-            return Class.forName(clsName).asSubclass(FlowMessageFactory.class);
+            final String clsName = PropertiesUtil.getProperties().getStringProperty(property, defaultFlowMessageFactoryClass.getName());
+            return LoaderUtil.loadClass(clsName).asSubclass(FlowMessageFactory.class);
         } catch (final Throwable t) {
             return defaultFlowMessageFactoryClass;
         }
@@ -201,9 +225,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     private static MessageFactory createDefaultMessageFactory() {
         try {
             return DEFAULT_MESSAGE_FACTORY_CLASS.newInstance();
-        } catch (final InstantiationException e) {
-            throw new IllegalStateException(e);
-        } catch (final IllegalAccessException e) {
+        } catch (final InstantiationException | IllegalAccessException e) {
             throw new IllegalStateException(e);
         }
     }
@@ -211,9 +233,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     private static FlowMessageFactory createDefaultFlowMessageFactory() {
         try {
             return DEFAULT_FLOW_MESSAGE_FACTORY_CLASS.newInstance();
-        } catch (final InstantiationException e) {
-            throw new IllegalStateException(e);
-        } catch (final IllegalAccessException e) {
+        } catch (final InstantiationException | IllegalAccessException e) {
             throw new IllegalStateException(e);
         }
     }
@@ -541,6 +561,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * @param format The format String for the parameters.
      * @param paramSuppliers The parameters to the method.
      */
+    @Deprecated
     protected EntryMessage enter(final String fqcn, final String format, final MessageSupplier... paramSuppliers) {
         EntryMessage entryMsg = null;
         if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
@@ -570,6 +591,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * @param fqcn The fully qualified class name of the <b>caller</b>.
      * @param msgSupplier The Supplier of the Message.
      */
+    @Deprecated
     protected EntryMessage enter(final String fqcn, final MessageSupplier msgSupplier) {
         EntryMessage message = null;
         if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
@@ -577,6 +599,24 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
                     msgSupplier.get()), null);
         }
         return message;
+    }
+
+    /**
+     * Logs entry to a method with location information.
+     *
+     * @param fqcn
+     *            The fully qualified class name of the <b>caller</b>.
+     * @param message
+     *            the Message.
+     * @since 2.6
+     */
+    protected EntryMessage enter(final String fqcn, final Message message) {
+        EntryMessage flowMessage = null;
+        if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
+            logMessage(fqcn, Level.TRACE, ENTRY_MARKER, flowMessage = flowMessageFactory.newEntryMessage(message),
+                    null);
+        }
+        return flowMessage;
     }
 
     @Override
@@ -2554,12 +2594,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     @Override
     public EntryMessage traceEntry(final Message message) {
-        return enter(FQCN, new MessageSupplier() {
-            @Override
-            public Message get() {
-                return message;
-            }
-        });
+        return enter(FQCN, message);
     }
 
     @Override
@@ -2580,24 +2615,14 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     @Override
     public void traceExit(final EntryMessage message) {
         if (isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
-            logMessage(FQCN, Level.TRACE, EXIT_MARKER, new MessageSupplier() {
-                @Override
-                public Message get() {
-                    return flowMessageFactory.newExitMessage(message);
-                };
-            }, null);
+            logMessage(FQCN, Level.TRACE, EXIT_MARKER, flowMessageFactory.newExitMessage(message), null);
         }
     }
 
     @Override
     public <R> R traceExit(final EntryMessage message, final R result) {
         if (isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
-            logMessage(FQCN, Level.TRACE, EXIT_MARKER, new MessageSupplier() {
-                @Override
-                public Message get() {
-                    return flowMessageFactory.newExitMessage(result, message);
-                };
-            }, null);
+            logMessage(FQCN, Level.TRACE, EXIT_MARKER, flowMessageFactory.newExitMessage(result, message), null);
         }
         return result;
     }
@@ -2605,12 +2630,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     @Override
     public <R> R traceExit(final Message message, final R result) {
         if (isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
-            logMessage(FQCN, Level.TRACE, EXIT_MARKER, new MessageSupplier() {
-                @Override
-                public Message get() {
-                    return flowMessageFactory.newExitMessage(result, message);
-                };
-            }, null);
+            logMessage(FQCN, Level.TRACE, EXIT_MARKER, flowMessageFactory.newExitMessage(result, message), null);
         }
         return result;
     }

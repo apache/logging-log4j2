@@ -164,7 +164,9 @@ public interface ExtendedLogger extends Logger {
      * @param marker A Marker or null.
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t the exception to log, including its stack trace.
+     * @deprecated Deprecated in 2.6; use {@link #logIfEnabled(String, Level, Marker, Supplier, Throwable)}
      */
+    @Deprecated
     void logIfEnabled(String fqcn, Level level, Marker marker, MessageSupplier msgSupplier, Throwable t);
 
     /**

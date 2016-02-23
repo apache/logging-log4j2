@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.util.NullOutputStream;
 
 /**
@@ -33,7 +34,7 @@ import org.apache.logging.log4j.core.util.NullOutputStream;
  * this class uses a {@code ByteBuffer} and a {@code RandomAccessFile} to do the
  * I/O.
  */
-public class RandomAccessFileManager extends OutputStreamManager {
+public class RandomAccessFileManager extends OutputStreamManager implements ByteBufferDestination {
     static final int DEFAULT_BUFFER_SIZE = 256 * 1024;
 
     private static final RandomAccessFileManagerFactory FACTORY = new RandomAccessFileManagerFactory();
@@ -134,7 +135,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
     public String getFileName() {
         return getName();
     }
-    
+
     /**
      * Returns the buffer capacity.
      * @return the buffer size
@@ -148,7 +149,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
      * <p>
      * Key: "fileURI" Value: provided "advertiseURI" param.
      * </p>
-     * 
+     *
      * @return Map of content format keys supporting FileManager
      */
     @Override
@@ -157,6 +158,17 @@ public class RandomAccessFileManager extends OutputStreamManager {
                 super.getContentFormat());
         result.put("fileURI", advertiseURI);
         return result;
+    }
+
+    @Override
+    public ByteBuffer getByteBuffer() {
+        return buffer;
+    }
+
+    @Override
+    public ByteBuffer drain(final ByteBuffer buf) {
+        flush();
+        return buffer;
     }
 
     /**

@@ -16,17 +16,19 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import org.apache.logging.log4j.core.Appender;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.util.PerformanceSensitive;
+
 /**
  * Data structure with similar semantics to CopyOnWriteArraySet, but giving direct access to the underlying array.
  */
+@PerformanceSensitive
 public class AppenderControlArraySet {
     private final AtomicReference<AppenderControl[]> appenderArray = new AtomicReference<>(new AppenderControl[0]);
 

@@ -56,10 +56,10 @@ public final class Constants {
      * Number of milliseconds in a second.
      */
     public static final int MILLIS_IN_SECONDS = 1000;
-    
+
     /**
      * Equivalent to StandardCharsets.UTF_8.
-     * 
+     *
      * @deprecated Use {@link StandardCharsets#UTF_8}. Will be removed in 2.5.
      */
     @Deprecated
@@ -70,6 +70,25 @@ public final class Constants {
      */
     public static final boolean FORMAT_MESSAGES_IN_BACKGROUND = PropertiesUtil.getProperties().getBooleanProperty(
             "log4j.format.msg.async", false);
+
+    /**
+     * {@code true} if we think we are running in a web container, base on the boolean value of system property
+     * "log4j2.is.webapp", or (if this system property is not set) whether the  {@code javax.servlet.Servlet} class
+     * is present in the classpath.
+     */
+    public static final boolean IS_WEB_APP = PropertiesUtil.getProperties().getBooleanProperty(
+            "log4j2.is.webapp", Loader.isClassAvailable("javax.servlet.Servlet"));
+
+    /**
+     * Kill switch for object pooling in ThreadLocals that enables much of the LOG4J2-1270 no-GC behaviour.
+     * <p>
+     * {@code True} for non-{@link #IS_WEB_APP web apps}, disable by setting system property
+     * "log4j2.enable.threadlocals" to "false".
+     *
+     * @since 2.6
+     */
+    public static final boolean ENABLE_THREADLOCALS = !IS_WEB_APP && PropertiesUtil.getProperties().getBooleanProperty(
+            "log4j2.enable.threadlocals", true);
 
     /**
      * Prevent class instantiation.

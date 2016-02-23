@@ -18,6 +18,9 @@ package org.apache.logging.log4j.perf.nogc;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.layout.ByteBufferDestination;
+import org.apache.logging.log4j.core.layout.Encoder;
+import org.apache.logging.log4j.core.layout.TextEncoderHelper;
 import org.apache.logging.log4j.core.pattern.FormattingInfo;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 
@@ -46,7 +49,7 @@ public class NoGcLayout implements Layout<Serializable>, Encoder<LogEvent> {
         StringBuilder text = toText(event, getCachedStringBuilder());
 
         TextEncoderHelper helper = getCachedHelper();
-        helper.encodeWithoutAllocation(text, destination);
+        helper.encodeText(text, destination);
     }
 
     /**

@@ -14,11 +14,20 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.perf.nogc;
+package org.apache.logging.log4j.util;
 
 /**
- * Encoder interface proposed in LOG4J2-1274..
+ * Objects that implement this interface can be converted to text, ideally without allocating temporary objects.
+ *
+ * @since 2.6
  */
-public interface Encoder<T> {
-    void encode(T source, ByteBufferDestination destination);
+public interface StringBuilderFormattable {
+
+    /**
+     * Writes a text representation of this object into the specified {@code StringBuilder}, ideally without allocating
+     * temporary objects.
+     *
+     * @param buffer the StringBuilder to write into
+     */
+    void formatTo(StringBuilder buffer);
 }

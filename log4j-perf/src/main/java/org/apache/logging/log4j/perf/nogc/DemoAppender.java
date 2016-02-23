@@ -16,11 +16,13 @@
  */
 package org.apache.logging.log4j.perf.nogc;
 
+import java.nio.ByteBuffer;
+
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
-
-import java.nio.ByteBuffer;
+import org.apache.logging.log4j.core.layout.ByteBufferDestination;
+import org.apache.logging.log4j.core.layout.Encoder;
 
 /**
  * Demo Appender that does not do any I/O.
@@ -37,8 +39,8 @@ public class DemoAppender extends AbstractAppender implements ByteBufferDestinat
     @Override
     public void append(LogEvent event) {
         Layout<?> layout = getLayout();
-        if (layout instanceof Encoder) {
-            ((Encoder<LogEvent>) layout).encode(event, this);
+        if (layout instanceof NoGcLayout) {
+            layout.encode(event, this);
             drain(byteBuffer);
         } else {
             byte[] binary = getLayout().toByteArray(event);

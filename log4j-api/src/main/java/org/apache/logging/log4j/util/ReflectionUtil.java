@@ -117,6 +117,7 @@ public final class ReflectionUtil {
     // (MS) I believe this would work without any modifications elsewhere, but I could be wrong
 
     // migrated from ReflectiveCallerClassUtility
+    @PerformanceSensitive
     public static Class<?> getCallerClass(final int depth) {
         if (depth < 0) {
             throw new IndexOutOfBoundsException(Integer.toString(depth));
@@ -193,11 +194,13 @@ public final class ReflectionUtil {
     }
 
     // migrated from ClassLoaderContextSelector
+    @PerformanceSensitive
     public static Class<?> getCallerClass(final String fqcn) {
         return getCallerClass(fqcn, Strings.EMPTY);
     }
 
     // migrated from Log4jLoggerFactory
+    @PerformanceSensitive
     public static Class<?> getCallerClass(final String fqcn, final String pkg) {
         if (supportsFastReflection()) {
             boolean next = false;
@@ -227,6 +230,7 @@ public final class ReflectionUtil {
     }
 
     // added for use in LoggerAdapter implementations mainly
+    @PerformanceSensitive
     public static Class<?> getCallerClass(final Class<?> anchor) {
         if (supportsFastReflection()) {
             boolean next = false;
@@ -270,6 +274,7 @@ public final class ReflectionUtil {
     }
 
     // migrated from ThrowableProxy
+    @PerformanceSensitive
     public static Stack<Class<?>> getCurrentStackTrace() {
         // benchmarks show that using the SecurityManager is much faster than looping through getCallerClass(int)
         if (SECURITY_MANAGER != null) {

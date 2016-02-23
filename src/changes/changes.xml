@@ -24,6 +24,28 @@
   </properties>
   <body>
     <release version="2.6" date="2016-MM-DD" description="GA Release 2.6">
+      <action issue="LOG4J2-1271" dev="rpopma" type="add">
+        Add MessageFactory that avoid allocation by reusing a cached ParameterizedMessage instance.
+      </action>
+      <action issue="LOG4J2-1271" dev="rpopma" type="update">
+        ParameterizedMessage optimizations to avoid or at least postpone allocating temporary objects.
+      </action>
+      <action issue="LOG4J2-1283" dev="rpopma" type="update">
+        Provide ThreadLocal-based gc-free caching mechanism in DatePatternConverter for non-webapps.
+      </action>
+      <action issue="LOG4J2-1293" dev="rpopma" type="add">
+        Add interface StringBuilderFormattable to enable converting Messages and parameters to text without allocating temporary objects.
+        ParameterizedMessage, ObjectMessage, SimpleMessage and ThreadDumpMessage now implement StringBuilderFormattable.
+      </action>
+      <action issue="LOG4J2-1291" dev="rpopma" type="update">
+        Update PatternLayout to utilize gc-free mechanism for LogEvent processing.
+      </action>
+      <action issue="LOG4J2-1292" dev="rpopma" type="update">
+        Update RandomAccessFileAppender and RollingRandomAccessFileAppender to utilize gc-free Layout.encode() method.
+      </action>
+      <action issue="LOG4J2-1274" dev="rpopma" type="add">
+        Add encode() method to Layout API to enable converting LogEvents to bytes without creating temporary objects.
+      </action>
       <action issue="LOG4J2-1289" dev="ggregory" type="fix">
         Change flow logging text from "entry' to "Enter" and "exit" to "Exit".
       </action>
@@ -56,8 +78,7 @@
         Add shutdown methods to LogManager.
       </action>
       <action issue="LOG4J2-1222" dev="rgoers" type="fix">
-        Creation of a LoggerContext will fail if shutdown is in progress. LogManager will default to SimpleLogger
-        instead.
+        Creation of a LoggerContext will fail if shutdown is in progress. LogManager will default to SimpleLogger instead.
       </action>
       <action issue="LOG4J2-1221" dev="rpopma" type="update" due-to="Michael Barker">
         Added async logger Timeout wait strategy and made this the default wait strategy for async loggers.
@@ -126,6 +147,9 @@
       </action>
       <action issue="LOG4J2-1240" dev="ggregory" type="update">
         Update Liquibase from 3.3.5 to 3.4.2.
+      </action>
+      <action issue="LOG4J2-1294" dev="ggregory" type="update">
+        Update Kafka client from 0.9.0.0 to 0.9.0.1.
       </action>
       <action issue="LOG4J2-1233" dev="ggregory" type="update" due-to="Bahri Gencsoy">
         Misleading Value In Properties Example.

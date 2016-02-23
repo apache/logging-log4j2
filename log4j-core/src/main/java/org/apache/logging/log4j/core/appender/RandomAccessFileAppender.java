@@ -49,7 +49,7 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
     private RandomAccessFileAppender(final String name, final Layout<? extends Serializable> layout,
             final Filter filter, final RandomAccessFileManager manager, final String filename,
             final boolean ignoreExceptions, final boolean immediateFlush, final Advertiser advertiser) {
-        
+
         super(name, layout, filter, ignoreExceptions, immediateFlush, manager);
         if (advertiser != null) {
             final Map<String, String> configuration = new HashMap<>(
@@ -86,7 +86,18 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
         // _always_ available in the log file, without incurring the overhead
         // of immediateFlush=true.
         getManager().setEndOfBatch(event.isEndOfBatch());
-        super.append(event);
+
+        // LOG4J2-1292 utilize gc-free Layout.encode() method
+        // super.append(event);
+        try {
+            getLayout().encode(event, getManager());
+            if (getImmediateFlush() || event.isEndOfBatch()) {
+                getManager().flush();
+            }
+        } catch (final AppenderLoggingException ex) {
+            error("Unable to write to stream " + getManager().getName() + " for appender " + getName());
+            throw ex;
+        }
     }
 
     /**
@@ -97,7 +108,7 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
     public String getFileName() {
         return this.fileName;
     }
-    
+
     /**
      * Returns the size of the file manager's buffer.
      * @return the buffer size

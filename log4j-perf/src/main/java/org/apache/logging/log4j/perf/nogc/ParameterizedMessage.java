@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.message;
+package org.apache.logging.log4j.perf.nogc;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -24,7 +24,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.logging.log4j.util.StringBuilderFormattable;
+import org.apache.logging.log4j.message.Message;
 
 /**
  * Handles messages that consist of a format string containing '{}' to represent each replaceable token, and
@@ -34,7 +34,7 @@ import org.apache.logging.log4j.util.StringBuilderFormattable;
  * licensed under the LGPL. It has been relicensed here with his permission providing that this attribution remain.
  * </p>
  */
-public class ParameterizedMessage implements ReusableMessage {
+public class ParameterizedMessage implements Message {
 
     /**
      * Prefix for recursion.
@@ -70,19 +70,11 @@ public class ParameterizedMessage implements ReusableMessage {
     private static final char DELIM_STOP = '}';
     private static final char ESCAPE_CHAR = '\\';
 
-    // storing JDK classes in ThreadLocals does not cause memory leaks in web apps, so this is okay
-    private static ThreadLocal<StringBuilder> threadLocalStringBuilder = new ThreadLocal<>();
-    private static ThreadLocal<SimpleDateFormat> threadLocalSimpleDateFormat = new ThreadLocal<>();
-    private static ThreadLocal<Object[]> threadLocalUnrolledArgs = new ThreadLocal<>();
-
-    private String messagePattern;
-    private int argCount;
-    private StringBuilder formattedMessage;
+    private final String messagePattern;
+    private final String[] stringArgs;
     private transient Object[] argArray;
-
-    private boolean isThrowableInitialized;
+    private transient String formattedMessage;
     private transient Throwable throwable;
-    private boolean reused;
 
     /**
      * Creates a parameterized message.
@@ -90,29 +82,24 @@ public class ParameterizedMessage implements ReusableMessage {
      * where parameters should be substituted.
      * @param stringArgs The arguments for substitution.
      * @param throwable A Throwable.
-     * @deprecated Use constructor ParameterizedMessage(String, Object[], Throwable) instead
      */
     public ParameterizedMessage(final String messagePattern, final String[] stringArgs, final Throwable throwable) {
         this.messagePattern = messagePattern;
-        this.argArray = stringArgs;
-        this.argCount = stringArgs == null ? 0 : stringArgs.length;
+        this.stringArgs = stringArgs;
         this.throwable = throwable;
-        this.isThrowableInitialized = throwable != null;
     }
 
     /**
      * Creates a parameterized message.
      * @param messagePattern The message "format" string. This will be a String containing "{}" placeholders
      * where parameters should be substituted.
-     * @param arguments The arguments for substitution.
+     * @param objectArgs The arguments for substitution.
      * @param throwable A Throwable.
      */
-    public ParameterizedMessage(final String messagePattern, final Object[] arguments, final Throwable throwable) {
+    public ParameterizedMessage(final String messagePattern, final Object[] objectArgs, final Throwable throwable) {
         this.messagePattern = messagePattern;
-        this.argArray = arguments;
-        this.argCount = arguments == null ? 0 : arguments.length;
         this.throwable = throwable;
-        this.isThrowableInitialized = throwable != null;
+        this.stringArgs = argumentsToStrings(objectArgs);
     }
 
     /**
@@ -128,8 +115,7 @@ public class ParameterizedMessage implements ReusableMessage {
      */
     public ParameterizedMessage(final String messagePattern, final Object[] arguments) {
         this.messagePattern = messagePattern;
-        this.argArray = arguments;
-        this.argCount = arguments == null ? 0 : arguments.length;
+        this.stringArgs = argumentsToStrings(arguments);
     }
 
     /**
@@ -138,56 +124,56 @@ public class ParameterizedMessage implements ReusableMessage {
      * @param arg The parameter.
      */
     public ParameterizedMessage(final String messagePattern, final Object arg) {
-        this.messagePattern = messagePattern;
-        Object[] args = unrolledArgs();
-        args[0] = arg;
-        this.argCount = 1;
+        this(messagePattern, new Object[]{arg});
     }
 
     /**
      * Constructor with a pattern and two parameters.
      * @param messagePattern The message pattern.
-     * @param arg0 The first parameter.
-     * @param arg1 The second parameter.
+     * @param arg1 The first parameter.
+     * @param arg2 The second parameter.
      */
-    public ParameterizedMessage(final String messagePattern, final Object arg0, final Object arg1) {
-        this.messagePattern = messagePattern;
-        Object[] args = unrolledArgs();
-        args[0] = arg0;
-        args[1] = arg1;
-        this.argCount = 2;
+    public ParameterizedMessage(final String messagePattern, final Object arg1, final Object arg2) {
+        this(messagePattern, new Object[]{arg1, arg2});
     }
 
-    public boolean isReused() {
-        return reused;
-    }
-
-    void setReused(boolean reused) {
-        this.reused = reused;
-    }
-
-    void set(String messagePattern, Object... arguments) {
-        this.messagePattern = messagePattern;
-        this.argArray = arguments;
-        this.argCount = arguments == null ? 0 : arguments.length;
-        this.isThrowableInitialized = false;
-        this.formattedMessage = null;
-    }
-
-    private static Object[] unrolledArgs() {
-        Object[] result = threadLocalUnrolledArgs.get();
-        if (result == null) {
-            result = new Object[10]; // array must be as big as number of unrolled varargs
-            threadLocalUnrolledArgs.set(result);
+    private String[] argumentsToStrings(final Object[] arguments) {
+        if (arguments == null) {
+            return null;
         }
-        return result;
+        final int argsCount = countArgumentPlaceholders(messagePattern);
+        int resultArgCount = arguments.length;
+        if (argsCount < arguments.length && throwable == null && arguments[arguments.length - 1] instanceof Throwable) {
+            throwable = (Throwable) arguments[arguments.length - 1];
+            resultArgCount--;
+        }
+        argArray = new Object[resultArgCount];
+        System.arraycopy(arguments, 0, argArray, 0, resultArgCount);
+
+        String[] strArgs;
+        if (argsCount == 1 && throwable == null && arguments.length > 1) {
+            // special case
+            strArgs = new String[1];
+            strArgs[0] = deepToString(arguments);
+        } else {
+            strArgs = new String[resultArgCount];
+            for (int i = 0; i < strArgs.length; i++) {
+                strArgs[i] = deepToString(arguments[i]);
+            }
+        }
+        return strArgs;
     }
 
-    private void clearUnrolledArgs() {
-        final Object[] args = unrolledArgs();
-        for (int i = 0; i < argCount; i++) {
-            args[i] = null;
+    /**
+     * Returns the formatted message.
+     * @return the formatted message.
+     */
+    @Override
+    public String getFormattedMessage() {
+        if (formattedMessage == null) {
+            formattedMessage = formatMessage(messagePattern, stringArgs);
         }
+        return formattedMessage;
     }
 
     /**
@@ -205,7 +191,10 @@ public class ParameterizedMessage implements ReusableMessage {
      */
     @Override
     public Object[] getParameters() {
-        return argArray == null && argCount > 0 ? unrolledArgs() : argArray;
+        if (argArray != null) {
+            return argArray;
+        }
+        return stringArgs;
     }
 
     /**
@@ -219,52 +208,40 @@ public class ParameterizedMessage implements ReusableMessage {
      */
     @Override
     public Throwable getThrowable() {
-        if (!isThrowableInitialized) {
-            initFormattedMessage(); // force initialization
-        }
         return throwable;
     }
 
-    /**
-     * Returns the formatted message.
-     * @return the formatted message.
-     */
-    @Override
-    public String getFormattedMessage() {
-        if (formattedMessage == null) {
-            initFormattedMessage();
-        }
-        return formattedMessage.toString();
-    }
-
-    private void initFormattedMessage() {
-        final StringBuilder buffer = getThreadLocalStringBuilder();
-        formatTo(buffer);
-        formattedMessage = buffer;
-    }
-
-    private static StringBuilder getThreadLocalStringBuilder() {
-        StringBuilder buffer = threadLocalStringBuilder.get();
-        if (buffer == null) {
-            buffer = new StringBuilder(255);
-            threadLocalStringBuilder.set(buffer);
-        }
-        buffer.setLength(0);
-        return buffer;
+    protected String formatMessage(final String msgPattern, final String[] sArgs) {
+        return formatStringArgs(msgPattern, sArgs);
     }
 
     @Override
-    public void formatTo(final StringBuilder buffer) {
-        final Throwable t = formatMessage(buffer, messagePattern, getParameters(), argCount, throwable);
-        initThrowable(t);
-        clearUnrolledArgs();
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        final ParameterizedMessage that = (ParameterizedMessage) o;
+
+        if (messagePattern != null ? !messagePattern.equals(that.messagePattern) : that.messagePattern != null) {
+            return false;
+        }
+        if (!Arrays.equals(stringArgs, that.stringArgs)) {
+            return false;
+        }
+        //if (throwable != null ? !throwable.equals(that.throwable) : that.throwable != null) return false;
+
+        return true;
     }
 
-    private void initThrowable(final Throwable t) {
-        if (!isThrowableInitialized && t != null) {
-            throwable = t;
-        }
-        isThrowableInitialized = true;
+    @Override
+    public int hashCode() {
+        int result = messagePattern != null ? messagePattern.hashCode() : 0;
+        result = HASHVAL * result + (stringArgs != null ? Arrays.hashCode(stringArgs) : 0);
+        return result;
     }
 
     /**
@@ -275,31 +252,48 @@ public class ParameterizedMessage implements ReusableMessage {
      * @return the formatted message.
      */
     public static String format(final String messagePattern, final Object[] arguments) {
-        final StringBuilder result = getThreadLocalStringBuilder();
-        final int argCount = arguments == null ? 0 : arguments.length;
-        formatMessage(result, messagePattern, arguments, argCount, null);
-        return result.toString();
+        if (messagePattern == null || arguments == null || arguments.length == 0) {
+            return messagePattern;
+        }
+        if (arguments instanceof String[]) {
+            return formatStringArgs(messagePattern, (String[]) arguments);
+        }
+        final String[] stringArgs = new String[arguments.length];
+        for (int i = 0; i < arguments.length; i++) {
+            stringArgs[i] = String.valueOf(arguments[i]);
+        }
+        return formatStringArgs(messagePattern, stringArgs);
     }
 
     /**
      * Replace placeholders in the given messagePattern with arguments.
+     * <p>
+     * Package protected for unit tests.
      *
-     * @param buffer the buffer to write the formatted message into
      * @param messagePattern the message pattern containing placeholders.
      * @param arguments      the arguments to be used to replace placeholders.
-     * @param err the Throwable passed to the constructor (or null if none)
-     * @return the Throwable that was the last unused argument in the list, or the specified {@code err} Throwable
+     * @return the formatted message.
      */
-    private static Throwable formatMessage(final StringBuilder buffer, final String messagePattern,
-            final Object[] arguments, final int argCount, final Throwable err) {
-        if (messagePattern == null || arguments == null || argCount == 0) {
-            buffer.append(messagePattern);
-            return err;
+    // Profiling showed this method is important to log4j performance. Modify with care!
+    // 33 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
+    static String formatStringArgs(final String messagePattern, final String[] arguments) {
+        int len = 0;
+        if (messagePattern == null || (len = messagePattern.length()) == 0 || arguments == null
+                || arguments.length == 0) {
+            return messagePattern;
         }
+
+        return formatStringArgs0(messagePattern, len, arguments);
+    }
+
+    // Profiling showed this method is important to log4j performance. Modify with care!
+    // 157 bytes (will be inlined when hot enough: < 325 bytes)
+    private static String formatStringArgs0(final String messagePattern, final int len, final String[] arguments) {
+        final char[] result = new char[len + sumStringLengths(arguments)];
+        int pos = 0;
         int escapeCounter = 0;
         int currentArgument = 0;
         int i = 0;
-        int len = messagePattern.length();
         for (; i < len - 1; i++) { // last char is excluded from the loop
             final char curChar = messagePattern.charAt(i);
             if (curChar == ESCAPE_CHAR) {
@@ -309,32 +303,38 @@ public class ParameterizedMessage implements ReusableMessage {
                     i++;
 
                     // write escaped escape chars
-                    writeEscapedEscapeChars(escapeCounter, buffer);
+                    pos = writeEscapedEscapeChars(escapeCounter, result, pos);
 
                     if (isOdd(escapeCounter)) {
-                        // i.e. escaped: write escaped escape chars
-                        writeDelimPair(buffer);
+                        // i.e. escaped
+                        // write escaped escape chars
+                        pos = writeDelimPair(result, pos);
                     } else {
                         // unescaped
-                        writeArgOrDelimPair(arguments, argCount, currentArgument, buffer);
+                        pos = writeArgOrDelimPair(arguments, currentArgument, result, pos);
                         currentArgument++;
                     }
                 } else {
-                    handleLiteralChar(buffer, escapeCounter, curChar);
+                    pos = handleLiteralChar(result, pos, escapeCounter, curChar);
                 }
                 escapeCounter = 0;
             }
         }
-        handleRemainingCharIfAny(messagePattern, len, buffer, escapeCounter, i);
-        return extractThrowable(arguments, argCount, currentArgument, err);
+        pos = handleRemainingCharIfAny(messagePattern, len, result, pos, escapeCounter, i);
+        return new String(result, 0, pos);
     }
 
-    private static Throwable extractThrowable(final Object[] params, final int paramCount, final int usedParams,
-            final Throwable err) {
-        if (usedParams < paramCount && err == null && params[paramCount - 1] instanceof Throwable) {
-            return (Throwable) params[paramCount - 1];
+    /**
+     * Returns the sum of the lengths of all Strings in the specified array.
+     */
+    // Profiling showed this method is important to log4j performance. Modify with care!
+    // 30 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
+    private static int sumStringLengths(final String[] arguments) {
+        int result = 0;
+        for (int i = 0; i < arguments.length; i++) {
+            result += String.valueOf(arguments[i]).length();
         }
-        return err;
+        return result;
     }
 
     /**
@@ -353,12 +353,13 @@ public class ParameterizedMessage implements ReusableMessage {
      */
     // Profiling showed this method is important to log4j performance. Modify with care!
     // 28 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
-    private static void handleRemainingCharIfAny(final String messagePattern, final int len,
-            final StringBuilder buffer, int escapeCounter, int i) {
+    private static int handleRemainingCharIfAny(final String messagePattern, final int len, final char[] result,
+            int pos, int escapeCounter, int i) {
         if (i == len - 1) {
             final char curChar = messagePattern.charAt(i);
-            handleLastChar(buffer, escapeCounter, curChar);
+            pos = handleLastChar(result, pos, escapeCounter, curChar);
         }
+        return pos;
     }
 
     /**
@@ -366,12 +367,13 @@ public class ParameterizedMessage implements ReusableMessage {
      */
     // Profiling showed this method is important to log4j performance. Modify with care!
     // 28 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
-    private static void handleLastChar(final StringBuilder buffer, final int escapeCounter, final char curChar) {
+    private static int handleLastChar(final char[] result, int pos, final int escapeCounter, final char curChar) {
         if (curChar == ESCAPE_CHAR) {
-            writeUnescapedEscapeChars(escapeCounter + 1, buffer);
+            pos = writeUnescapedEscapeChars(escapeCounter + 1, result, pos);
         } else {
-            handleLiteralChar(buffer, escapeCounter, curChar);
+            pos = handleLiteralChar(result, pos, escapeCounter, curChar);
         }
+        return pos;
     }
 
     /**
@@ -380,11 +382,12 @@ public class ParameterizedMessage implements ReusableMessage {
      */
     // Profiling showed this method is important to log4j performance. Modify with care!
     // 16 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
-    private static void handleLiteralChar(final StringBuilder buffer, final int escapeCounter, final char curChar) {
+    private static int handleLiteralChar(final char[] result, int pos, final int escapeCounter, final char curChar) {
         // any other char beside ESCAPE or DELIM_START/STOP-combo
         // write unescaped escape chars
-        writeUnescapedEscapeChars(escapeCounter, buffer);
-        buffer.append(curChar);
+        pos = writeUnescapedEscapeChars(escapeCounter, result, pos);
+        result[pos++] = curChar;
+        return pos;
     }
 
     /**
@@ -392,9 +395,10 @@ public class ParameterizedMessage implements ReusableMessage {
      */
     // Profiling showed this method is important to log4j performance. Modify with care!
     // 18 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
-    private static void writeDelimPair(final StringBuilder buffer) {
-        buffer.append(DELIM_START);
-        buffer.append(DELIM_STOP);
+    private static int writeDelimPair(final char[] result, int pos) {
+        result[pos++] = DELIM_START;
+        result[pos++] = DELIM_STOP;
+        return pos;
     }
 
     /**
@@ -412,9 +416,9 @@ public class ParameterizedMessage implements ReusableMessage {
      */
     // Profiling showed this method is important to log4j performance. Modify with care!
     // 11 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
-    private static void writeEscapedEscapeChars(final int escapeCounter, final StringBuilder buffer) {
+    private static int writeEscapedEscapeChars(final int escapeCounter, final char[] result, final int pos) {
         final int escapedEscapes = escapeCounter >> 1; // divide by two
-        writeUnescapedEscapeChars(escapedEscapes, buffer);
+        return writeUnescapedEscapeChars(escapedEscapes, result, pos);
     }
 
     /**
@@ -423,11 +427,12 @@ public class ParameterizedMessage implements ReusableMessage {
      */
     // Profiling showed this method is important to log4j performance. Modify with care!
     // 20 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
-    private static void writeUnescapedEscapeChars(int escapeCounter, final StringBuilder buffer) {
+    private static int writeUnescapedEscapeChars(int escapeCounter, char[] result, int pos) {
         while (escapeCounter > 0) {
-            buffer.append(ESCAPE_CHAR);
+            result[pos++] = ESCAPE_CHAR;
             escapeCounter--;
         }
+        return pos;
     }
 
     /**
@@ -436,42 +441,28 @@ public class ParameterizedMessage implements ReusableMessage {
      */
     // Profiling showed this method is important to log4j performance. Modify with care!
     // 25 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
-    private static void writeArgOrDelimPair(final Object[] arguments, final int argCount, final int currentArgument,
-            final StringBuilder buffer) {
-        if (currentArgument < argCount) {
-            recursiveDeepToString(arguments[currentArgument], buffer, null);
+    private static int writeArgOrDelimPair(final String[] arguments, final int currentArgument, final char[] result,
+            int pos) {
+        if (currentArgument < arguments.length) {
+            pos = writeArgAt0(arguments, currentArgument, result, pos);
         } else {
-            writeDelimPair(buffer);
+            pos = writeDelimPair(result, pos);
         }
+        return pos;
     }
 
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        final ParameterizedMessage that = (ParameterizedMessage) o;
-
-        if (messagePattern != null ? !messagePattern.equals(that.messagePattern) : that.messagePattern != null) {
-            return false;
-        }
-        if (!Arrays.equals(this.argArray, that.argArray)) {
-            return false;
-        }
-        //if (throwable != null ? !throwable.equals(that.throwable) : that.throwable != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = messagePattern != null ? messagePattern.hashCode() : 0;
-        result = HASHVAL * result + (argArray != null ? Arrays.hashCode(argArray) : 0);
-        return result;
+    /**
+     * Appends the argument at the specified argument index to the specified result char array at the specified position
+     * and returns the resulting position.
+     */
+    // Profiling showed this method is important to log4j performance. Modify with care!
+    // 30 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
+    private static int writeArgAt0(final String[] arguments, final int currentArgument, final char[] result,
+            final int pos) {
+        final String arg = String.valueOf(arguments[currentArgument]);
+        int argLen = arg.length();
+        arg.getChars(0, argLen, result, pos);
+        return pos + argLen;
     }
 
     /**
@@ -479,7 +470,6 @@ public class ParameterizedMessage implements ReusableMessage {
      *
      * @param messagePattern the message pattern to be analyzed.
      * @return the number of unescaped placeholders.
-     * @deprecated This method is no longer used internally and is scheduled to be deleted.
      */
     public static int countArgumentPlaceholders(final String messagePattern) {
         if (messagePattern == null) {
@@ -567,7 +557,7 @@ public class ParameterizedMessage implements ReusableMessage {
      * @param dejaVu a list of container identities that were already used.
      */
     private static void recursiveDeepToString(final Object o, final StringBuilder str, final Set<String> dejaVu) {
-        if (appendSpecialTypes(o, str)) {
+        if (appendStringDateOrNull(o, str)) {
             return;
         }
         if (isMaybeRecursive(o)) {
@@ -577,15 +567,9 @@ public class ParameterizedMessage implements ReusableMessage {
         }
     }
 
-    private static boolean appendSpecialTypes(final Object o, final StringBuilder str) {
+    private static boolean appendStringDateOrNull(final Object o, final StringBuilder str) {
         if (o == null || o instanceof String) {
-            str.append((String) o);
-            return true;
-        } else if (o instanceof StringBuilder) {
-            str.append((StringBuilder) o);
-            return true;
-        } else if (o instanceof StringBuilderFormattable) {
-            ((StringBuilderFormattable) o).formatTo(str);
+            str.append(String.valueOf(o));
             return true;
         }
         return appendDate(o, str);
@@ -602,12 +586,8 @@ public class ParameterizedMessage implements ReusableMessage {
     }
 
     private static SimpleDateFormat getSimpleDateFormat() {
-        SimpleDateFormat result = threadLocalSimpleDateFormat.get();
-        if (result == null) {
-            result = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-            threadLocalSimpleDateFormat.set(result);
-        }
-        return result;
+        // I'll leave it like this for the moment... this could probably be optimized using ThreadLocal...
+        return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
     }
 
     /**
@@ -617,10 +597,8 @@ public class ParameterizedMessage implements ReusableMessage {
         return o.getClass().isArray() || o instanceof Map || o instanceof Collection;
     }
 
-    private static void appendPotentiallyRecursiveValue(final Object o, final StringBuilder str, Set<String> dejaVu) {
-        if (dejaVu == null) {
-            dejaVu = new HashSet<>();
-        }
+    private static void appendPotentiallyRecursiveValue(final Object o, final StringBuilder str,
+            final Set<String> dejaVu) {
         final Class<?> oClass = o.getClass();
         if (oClass.isArray()) {
             appendArray(o, str, dejaVu, oClass);

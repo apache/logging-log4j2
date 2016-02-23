@@ -14,20 +14,21 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.perf.nogc;
+package org.apache.logging.log4j.message;
 
-import java.nio.ByteBuffer;
+import org.apache.logging.log4j.util.StringBuilderFormattable;
 
 /**
- * ByteBufferDestination interface proposed in LOG4J2-1274..
+ * Messages implementing this interface may or may not be reused.
+ * <p>
+ * If a Message is reused, downstream components should not hand over this instance to another thread, but extract its
+ * content (via the {@link StringBuilderFormattable#formatTo(StringBuilder)} method) instead.
+ * </p>
  */
-public interface ByteBufferDestination {
-    ByteBuffer getByteBuffer();
+public interface ReusableMessage extends Message, StringBuilderFormattable {
     /**
-     * Consumes the buffer content and returns a buffer with more available() space
-     * (which may or may not be the same instance).
-     * <p>
-     * Called by the producer when buffer becomes too full to write to.
+     * Returns {@code true} if this instance is and will be reused
+     * @return whether this is a reused instance
      */
-    ByteBuffer drain(ByteBuffer buf);
+    boolean isReused();
 }
