@@ -16,18 +16,26 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.TimeZone;
 
 import org.apache.logging.log4j.core.AbstractLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.datetime.FixedDateFormat;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import static org.junit.Assert.*;
 
+@RunWith(Parameterized.class)
 public class DatePatternConverterTest {
 
     /**
@@ -41,6 +49,25 @@ public class DatePatternConverterTest {
     private static final String ISO8601_FORMAT = FixedDateFormat.FixedFormat.ISO8601.name();
 
     private static final String[] ISO8601_FORMAT_OPTIONS = {ISO8601_FORMAT};
+
+    @Parameterized.Parameters
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][]{{Boolean.TRUE}, {Boolean.FALSE}});
+    }
+
+    public DatePatternConverterTest(Boolean threadLocalEnabled) throws Exception {
+        // Setting the system property does not work: the Constant field has already been initialized...
+        //System.setProperty("log4j2.enable.threadlocals", threadLocalEnabled.toString());
+
+        final Field field = Constants.class.getDeclaredField("ENABLE_THREADLOCALS");
+        field.setAccessible(true); // make non-private
+
+        final Field modifiersField = Field.class.getDeclaredField("modifiers");
+        modifiersField.setAccessible(true);
+        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL); // make non-final
+
+        field.setBoolean(null, threadLocalEnabled.booleanValue());
+    }
 
     @Test
     public void testNewInstanceAllowsNullParameter() {
