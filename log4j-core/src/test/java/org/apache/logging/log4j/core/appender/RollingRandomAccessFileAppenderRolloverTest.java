@@ -26,6 +26,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.CoreLoggerContexts;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -39,6 +40,7 @@ public class RollingRandomAccessFileAppenderRolloverTest {
     }
 
     @Test
+    @Ignore
     public void testRollover() throws Exception {
         final File file = new File("target", "RollingRandomAccessFileAppenderTest.log");
         // System.out.println(f.getAbsolutePath());
