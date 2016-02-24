@@ -80,7 +80,6 @@ public class ParameterizedMessage implements ReusableMessage {
     private transient Object[] argArray;
 
     private boolean isThreadLocalMessageInitialized;
-    private boolean isThrowableInitialized;
     private transient Throwable throwable;
     private boolean reused;
 
@@ -88,16 +87,14 @@ public class ParameterizedMessage implements ReusableMessage {
      * Creates a parameterized message.
      * @param messagePattern The message "format" string. This will be a String containing "{}" placeholders
      * where parameters should be substituted.
-     * @param stringArgs The arguments for substitution.
+     * @param arguments The arguments for substitution.
      * @param throwable A Throwable.
      * @deprecated Use constructor ParameterizedMessage(String, Object[], Throwable) instead
      */
-    public ParameterizedMessage(final String messagePattern, final String[] stringArgs, final Throwable throwable) {
-        this.messagePattern = messagePattern;
-        this.argArray = stringArgs;
-        this.argCount = stringArgs == null ? 0 : stringArgs.length;
+    public ParameterizedMessage(final String messagePattern, final String[] arguments, final Throwable throwable) {
+        this.argArray = arguments;
         this.throwable = throwable;
-        this.isThrowableInitialized = throwable != null;
+        init(messagePattern, arguments == null ? 0 : arguments.length);
     }
 
     /**
@@ -108,11 +105,9 @@ public class ParameterizedMessage implements ReusableMessage {
      * @param throwable A Throwable.
      */
     public ParameterizedMessage(final String messagePattern, final Object[] arguments, final Throwable throwable) {
-        this.messagePattern = messagePattern;
         this.argArray = arguments;
-        this.argCount = arguments == null ? 0 : arguments.length;
         this.throwable = throwable;
-        this.isThrowableInitialized = throwable != null;
+        init(messagePattern, arguments == null ? 0 : arguments.length);
     }
 
     /**
@@ -127,9 +122,8 @@ public class ParameterizedMessage implements ReusableMessage {
      * @param arguments      the argument array to be converted.
      */
     public ParameterizedMessage(final String messagePattern, final Object[] arguments) {
-        this.messagePattern = messagePattern;
         this.argArray = arguments;
-        this.argCount = arguments == null ? 0 : arguments.length;
+        init(messagePattern, arguments == null ? 0 : arguments.length);
     }
 
     /**
@@ -138,10 +132,9 @@ public class ParameterizedMessage implements ReusableMessage {
      * @param arg The parameter.
      */
     public ParameterizedMessage(final String messagePattern, final Object arg) {
-        this.messagePattern = messagePattern;
         Object[] args = unrolledArgs();
         args[0] = arg;
-        this.argCount = 1;
+        init(messagePattern, 1);
     }
 
     /**
@@ -151,11 +144,10 @@ public class ParameterizedMessage implements ReusableMessage {
      * @param arg1 The second parameter.
      */
     public ParameterizedMessage(final String messagePattern, final Object arg0, final Object arg1) {
-        this.messagePattern = messagePattern;
         Object[] args = unrolledArgs();
         args[0] = arg0;
         args[1] = arg1;
-        this.argCount = 2;
+        init(messagePattern, 2);
     }
 
     public boolean isReused() {
@@ -167,19 +159,24 @@ public class ParameterizedMessage implements ReusableMessage {
     }
 
     ParameterizedMessage set(String messagePattern, Object... arguments) {
-        this.messagePattern = messagePattern;
         this.argArray = arguments;
-        this.argCount = arguments == null ? 0 : arguments.length;
-        this.isThrowableInitialized = false;
-        this.isThreadLocalMessageInitialized = false;
+        init(messagePattern, arguments == null ? 0 : arguments.length);
         return this;
     }
 
     private void init(String messagePattern, int argCount) {
         this.messagePattern = messagePattern;
         this.argCount = argCount;
-        this.isThrowableInitialized = false;
         this.isThreadLocalMessageInitialized = false;
+        int usedCount = countArgumentPlaceholders(messagePattern);
+        initThrowable(getParameters(), usedCount);
+    }
+
+    private void initThrowable(final Object[] params, final int usedParams) {
+        if (usedParams < argCount && this.throwable == null && params[argCount - 1] instanceof Throwable) {
+            this.throwable = (Throwable) params[argCount - 1];
+            argCount--;
+        }
     }
 
     ParameterizedMessage set(String messagePattern, Object p0) {
@@ -346,9 +343,6 @@ public class ParameterizedMessage implements ReusableMessage {
      */
     @Override
     public Throwable getThrowable() {
-        if (!isThrowableInitialized) {
-            initFormattedMessage(); // force initialization
-        }
         return throwable;
     }
 
@@ -389,16 +383,8 @@ public class ParameterizedMessage implements ReusableMessage {
             }
             return;
         }
-        final Throwable t = formatMessage(buffer, messagePattern, getParameters(), argCount, throwable);
-        initThrowable(t);
+        formatMessage(buffer, messagePattern, getParameters(), argCount);
         clearUnrolledArgs();
-    }
-
-    private void initThrowable(final Throwable t) {
-        if (!isThrowableInitialized && t != null) {
-            throwable = t;
-        }
-        isThrowableInitialized = true;
     }
 
     /**
@@ -411,7 +397,7 @@ public class ParameterizedMessage implements ReusableMessage {
     public static String format(final String messagePattern, final Object[] arguments) {
         final StringBuilder result = getThreadLocalStringBuilder();
         final int argCount = arguments == null ? 0 : arguments.length;
-        formatMessage(result, messagePattern, arguments, argCount, null);
+        formatMessage(result, messagePattern, arguments, argCount);
         return result.toString();
     }
 
@@ -421,14 +407,12 @@ public class ParameterizedMessage implements ReusableMessage {
      * @param buffer the buffer to write the formatted message into
      * @param messagePattern the message pattern containing placeholders.
      * @param arguments      the arguments to be used to replace placeholders.
-     * @param err the Throwable passed to the constructor (or null if none)
-     * @return the Throwable that was the last unused argument in the list, or the specified {@code err} Throwable
      */
-    private static Throwable formatMessage(final StringBuilder buffer, final String messagePattern,
-            final Object[] arguments, final int argCount, final Throwable err) {
+    private static void formatMessage(final StringBuilder buffer, final String messagePattern,
+            final Object[] arguments, final int argCount) {
         if (messagePattern == null || arguments == null || argCount == 0) {
             buffer.append(messagePattern);
-            return err;
+            return;
         }
         int escapeCounter = 0;
         int currentArgument = 0;
@@ -460,15 +444,6 @@ public class ParameterizedMessage implements ReusableMessage {
             }
         }
         handleRemainingCharIfAny(messagePattern, len, buffer, escapeCounter, i);
-        return extractThrowable(arguments, argCount, currentArgument, err);
-    }
-
-    private static Throwable extractThrowable(final Object[] params, final int paramCount, final int usedParams,
-            final Throwable err) {
-        if (usedParams < paramCount && err == null && params[paramCount - 1] instanceof Throwable) {
-            return (Throwable) params[paramCount - 1];
-        }
-        return err;
     }
 
     /**
@@ -613,27 +588,20 @@ public class ParameterizedMessage implements ReusableMessage {
      *
      * @param messagePattern the message pattern to be analyzed.
      * @return the number of unescaped placeholders.
-     * @deprecated This method is no longer used internally and is scheduled to be deleted.
      */
     public static int countArgumentPlaceholders(final String messagePattern) {
         if (messagePattern == null) {
             return 0;
         }
-
-        final int delim = messagePattern.indexOf(DELIM_START);
-
-        if (delim == -1) {
-            // special case, no placeholders at all.
-            return 0;
-        }
+        int length = messagePattern.length();
         int result = 0;
         boolean isEscaped = false;
-        for (int i = 0; i < messagePattern.length(); i++) {
+        for (int i = 0; i < length - 1; i++) {
             final char curChar = messagePattern.charAt(i);
             if (curChar == ESCAPE_CHAR) {
                 isEscaped = !isEscaped;
             } else if (curChar == DELIM_START) {
-                if (!isEscaped && i < messagePattern.length() - 1 && messagePattern.charAt(i + 1) == DELIM_STOP) {
+                if (!isEscaped && messagePattern.charAt(i + 1) == DELIM_STOP) {
                     result++;
                     i++;
                 }

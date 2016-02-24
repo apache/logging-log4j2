@@ -45,6 +45,7 @@ public class NoGcLayout implements Layout<Serializable>, Encoder<LogEvent> {
         cachedHelper = new TextEncoderHelper(charset);
     }
 
+    @Override
     public void encode(LogEvent event, ByteBufferDestination destination) {
         StringBuilder text = toText(event, getCachedStringBuilder());
 

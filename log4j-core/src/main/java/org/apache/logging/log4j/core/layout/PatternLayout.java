@@ -292,8 +292,7 @@ public final class PatternLayout extends AbstractStringLayout {
 
         @Override
         public String toSerializable(final LogEvent event) {
-            final StringBuilder buf = getStringBuilder();
-            return toSerializable(event, buf).toString();
+            return toSerializable(event, getStringBuilder()).toString();
         }
 
         @Override
@@ -337,8 +336,7 @@ public final class PatternLayout extends AbstractStringLayout {
 
         @Override
         public String toSerializable(final LogEvent event) {
-            final StringBuilder buf = getStringBuilder();
-            return toSerializable(event, buf).toString();
+            return toSerializable(event, getStringBuilder()).toString();
         }
 
         @Override

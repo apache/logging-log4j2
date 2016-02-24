@@ -27,6 +27,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -95,8 +96,8 @@ final class DisruptorUtil {
         }
         try {
             @SuppressWarnings("unchecked")
-            final Class<? extends ExceptionHandler<T>> klass = (Class<? extends ExceptionHandler<T>>) Class
-                    .forName(cls);
+            final Class<? extends ExceptionHandler<T>> klass =
+                (Class<? extends ExceptionHandler<T>>) LoaderUtil.loadClass(cls);
             return klass.newInstance();
         } catch (final Exception ignored) {
             LOGGER.debug("Invalid {} value: error creating {}: ", propertyName, cls, ignored);

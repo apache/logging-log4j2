@@ -206,7 +206,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      */
     private static boolean isClassAvailable(final String className) {
         try {
-            return Class.forName(className) != null;
+            return LoaderUtil.loadClass(className) != null;
         } catch (final Throwable e) {
             return false;
         }
