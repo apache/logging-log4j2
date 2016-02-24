@@ -85,14 +85,8 @@ public final class JpaAppender extends AbstractDatabaseAppender<JpaDatabaseManag
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
 
         try {
-            @SuppressWarnings("unchecked")
             final Class<? extends AbstractLogEventWrapperEntity> entityClass =
-                    (Class<? extends AbstractLogEventWrapperEntity>) Loader.loadClass(entityClassName);
-
-            if (!AbstractLogEventWrapperEntity.class.isAssignableFrom(entityClass)) {
-                LOGGER.error("Entity class [{}] does not extend AbstractLogEventWrapperEntity.", entityClassName);
-                return null;
-            }
+                Loader.loadClass(entityClassName).asSubclass(AbstractLogEventWrapperEntity.class);
 
             try {
                 entityClass.getConstructor();
@@ -122,6 +116,9 @@ public final class JpaAppender extends AbstractDatabaseAppender<JpaDatabaseManag
         } catch (final NoSuchMethodException e) {
             LOGGER.error("Entity class [{}] does not have a constructor with a single argument of type LogEvent.",
                     entityClassName);
+            return null;
+        } catch (final ClassCastException e) {
+            LOGGER.error("Entity class [{}] does not extend AbstractLogEventWrapperEntity.", entityClassName);
             return null;
         }
     }

@@ -16,12 +16,13 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import java.lang.reflect.Constructor;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
-
-import java.lang.reflect.Constructor;
 
 /**
  * Creates {@link AsyncEventRouter} instances based on user-specified system properties. The {@code AsyncEventRouter}
@@ -86,11 +87,10 @@ public class AsyncEventRouterFactory {
 
     private static AsyncEventRouter createCustomRouter(final String router, final int queueSize) {
         try {
-            @SuppressWarnings("unchecked")
-            final Class<AsyncEventRouter> cls = (Class<AsyncEventRouter>) Class.forName(router);
+            final Class<? extends AsyncEventRouter> cls = LoaderUtil.loadClass(router).asSubclass(AsyncEventRouter.class);
             try {
                 // if the custom router has a constructor taking an int, pass it the queue size
-                Constructor<AsyncEventRouter> constructor = cls.getDeclaredConstructor(new Class[]{int.class});
+                Constructor<? extends AsyncEventRouter> constructor = cls.getDeclaredConstructor(new Class[]{int.class});
                 LOGGER.debug("Creating custom AsyncEventRouter '{}({})'", router, queueSize);
                 return constructor.newInstance(new Object[]{queueSize});
             } catch (final Exception e) {
