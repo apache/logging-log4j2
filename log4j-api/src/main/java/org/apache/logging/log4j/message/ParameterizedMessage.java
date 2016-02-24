@@ -77,9 +77,9 @@ public class ParameterizedMessage implements ReusableMessage {
 
     private String messagePattern;
     private int argCount;
-    private StringBuilder formattedMessage;
     private transient Object[] argArray;
 
+    private boolean isThreadLocalMessageInitialized;
     private boolean isThrowableInitialized;
     private transient Throwable throwable;
     private boolean reused;
@@ -166,12 +166,13 @@ public class ParameterizedMessage implements ReusableMessage {
         this.reused = reused;
     }
 
-    void set(String messagePattern, Object... arguments) {
+    ParameterizedMessage set(String messagePattern, Object... arguments) {
         this.messagePattern = messagePattern;
         this.argArray = arguments;
         this.argCount = arguments == null ? 0 : arguments.length;
         this.isThrowableInitialized = false;
-        this.formattedMessage = null;
+        this.isThreadLocalMessageInitialized = false;
+        return this;
     }
 
     private static Object[] unrolledArgs() {
@@ -231,16 +232,16 @@ public class ParameterizedMessage implements ReusableMessage {
      */
     @Override
     public String getFormattedMessage() {
-        if (formattedMessage == null) {
+        if (!isThreadLocalMessageInitialized) {
             initFormattedMessage();
         }
-        return formattedMessage.toString();
+        return threadLocalStringBuilder.get().toString();
     }
 
     private void initFormattedMessage() {
         final StringBuilder buffer = getThreadLocalStringBuilder();
         formatTo(buffer);
-        formattedMessage = buffer;
+        isThreadLocalMessageInitialized = true;
     }
 
     private static StringBuilder getThreadLocalStringBuilder() {
@@ -255,6 +256,13 @@ public class ParameterizedMessage implements ReusableMessage {
 
     @Override
     public void formatTo(final StringBuilder buffer) {
+        if (isThreadLocalMessageInitialized) {
+            final StringBuilder msg = threadLocalStringBuilder.get();
+            if (msg != buffer) {
+                buffer.append(msg);
+            }
+            return;
+        }
         final Throwable t = formatMessage(buffer, messagePattern, getParameters(), argCount, throwable);
         initThrowable(t);
         clearUnrolledArgs();
