@@ -96,8 +96,8 @@ public class RingBufferLogEvent implements LogEvent {
             buffer.append(stringBuilder);
 
             // ensure that excessively long char[] arrays are not kept in memory forever
-            if (stringBuilder.length() > 512) {
-                stringBuilder.setLength(512);
+            if (stringBuilder.length() > 518) { // resized twice from 128 (s=s*2+2)
+                stringBuilder.setLength(518);
                 stringBuilder.trimToSize();
             }
         }
@@ -141,6 +141,7 @@ public class RingBufferLogEvent implements LogEvent {
                 // only happens if user logs a custom reused message when Constants.ENABLE_THREADLOCALS is false
                 messageText = new StringBuilder(128);
             }
+            messageText.setLength(0);
             ((ReusableMessage) msg).formatTo(messageText);
         } else {
             this.message = msg;
