@@ -175,6 +175,132 @@ public class ParameterizedMessage implements ReusableMessage {
         return this;
     }
 
+    private void init(String messagePattern, int argCount) {
+        this.messagePattern = messagePattern;
+        this.argCount = argCount;
+        this.isThrowableInitialized = false;
+        this.isThreadLocalMessageInitialized = false;
+    }
+
+    ParameterizedMessage set(String messagePattern, Object p0) {
+        Object[] args = unrolledArgs();
+        args[0] = p0;
+        init(messagePattern, 1);
+        return this;
+    }
+
+    ParameterizedMessage set(String messagePattern, Object p0, Object p1) {
+        Object[] args = unrolledArgs();
+        args[0] = p0;
+        args[1] = p1;
+        init(messagePattern, 2);
+        return this;
+    }
+
+    ParameterizedMessage set(String messagePattern, Object p0, Object p1, Object p2) {
+        Object[] args = unrolledArgs();
+        args[0] = p0;
+        args[1] = p1;
+        args[2] = p2;
+        init(messagePattern, 3);
+        return this;
+    }
+
+    ParameterizedMessage set(String messagePattern, Object p0, Object p1, Object p2, Object p3) {
+        Object[] args = unrolledArgs();
+        args[0] = p0;
+        args[1] = p1;
+        args[2] = p2;
+        args[3] = p3;
+        init(messagePattern, 4);
+        return this;
+    }
+
+    ParameterizedMessage set(String messagePattern, Object p0, Object p1, Object p2, Object p3, Object p4) {
+        Object[] args = unrolledArgs();
+        args[0] = p0;
+        args[1] = p1;
+        args[2] = p2;
+        args[3] = p3;
+        args[4] = p4;
+        init(messagePattern, 5);
+        return this;
+    }
+
+    ParameterizedMessage set(String messagePattern, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5) {
+        Object[] args = unrolledArgs();
+        args[0] = p0;
+        args[1] = p1;
+        args[2] = p2;
+        args[3] = p3;
+        args[4] = p4;
+        args[5] = p5;
+        init(messagePattern, 6);
+        return this;
+    }
+
+    ParameterizedMessage set(String messagePattern, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5,
+            Object p6) {
+        Object[] args = unrolledArgs();
+        args[0] = p0;
+        args[1] = p1;
+        args[2] = p2;
+        args[3] = p3;
+        args[4] = p4;
+        args[5] = p5;
+        args[6] = p6;
+        init(messagePattern, 7);
+        return this;
+    }
+
+    ParameterizedMessage set(String messagePattern, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5,
+            Object p6, Object p7) {
+        Object[] args = unrolledArgs();
+        args[0] = p0;
+        args[1] = p1;
+        args[2] = p2;
+        args[3] = p3;
+        args[4] = p4;
+        args[5] = p5;
+        args[6] = p6;
+        args[7] = p7;
+        init(messagePattern, 8);
+        return this;
+    }
+
+    ParameterizedMessage set(String messagePattern, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5,
+            Object p6, Object p7, Object p8) {
+        Object[] args = unrolledArgs();
+        args[0] = p0;
+        args[1] = p1;
+        args[2] = p2;
+        args[3] = p3;
+        args[4] = p4;
+        args[5] = p5;
+        args[6] = p6;
+        args[7] = p7;
+        args[8] = p8;
+        init(messagePattern, 9);
+        return this;
+    }
+
+    ParameterizedMessage set(String messagePattern, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5,
+            Object p6, Object p7, Object p8, Object p9) {
+        Object[] args = unrolledArgs();
+        args[0] = p0;
+        args[1] = p1;
+        args[2] = p2;
+        args[3] = p3;
+        args[4] = p4;
+        args[5] = p5;
+        args[6] = p6;
+        args[7] = p7;
+        args[8] = p8;
+        args[9] = p9;
+        init(messagePattern, 10);
+        return this;
+    }
+
     private static Object[] unrolledArgs() {
         Object[] result = threadLocalUnrolledArgs.get();
         if (result == null) {
