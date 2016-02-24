@@ -25,7 +25,7 @@ package org.apache.logging.log4j.message;
  * This class is immutable.
  * </p>
  */
-public final class ReusableParameterizedMessageFactory extends AbstractMessageFactory {
+public final class ReusableParameterizedMessageFactory extends AbstractMessageFactory implements MessageFactory2 {
 
     /**
      * Instance of StringFormatterMessageFactory.
@@ -42,6 +42,15 @@ public final class ReusableParameterizedMessageFactory extends AbstractMessageFa
         super();
     }
 
+    private ParameterizedMessage get() {
+        ParameterizedMessage result = threadLocalMessage.get();
+        if (result == null) {
+            result = new ParameterizedMessage("", null);
+            result.setReused(true);
+            threadLocalMessage.set(result);
+        }
+        return result;
+    }
     /**
      * Creates {@link ParameterizedMessage} instances.
      *
@@ -53,14 +62,63 @@ public final class ReusableParameterizedMessageFactory extends AbstractMessageFa
      */
     @Override
     public Message newMessage(final String message, final Object... params) {
-        ParameterizedMessage result = threadLocalMessage.get();
-        if (result == null) {
-            result = new ParameterizedMessage(message, params);
-            result.setReused(true);
-            threadLocalMessage.set(result);
-        } else {
-            result.set(message, params);
-        }
-        return result;
+        return get().set(message, params);
+    }
+
+    @Override
+    public Message newMessage(final String message, final Object p0) {
+        return get().set(message, p0);
+    }
+
+    @Override
+    public Message newMessage(final String message, final Object p0, final Object p1) {
+        return get().set(message, p0, p1);
+    }
+
+    @Override
+    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2) {
+        return get().set(message, p0, p1, p2);
+    }
+
+    @Override
+    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3) {
+        return get().set(message, p0, p1, p2, p3);
+    }
+
+    @Override
+    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4) {
+        return get().set(message, p0, p1, p2, p3, p4);
+    }
+
+    @Override
+    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5) {
+        return get().set(message, p0, p1, p2, p3, p4, p5);
+    }
+
+    @Override
+    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6) {
+        return get().set(message, p0, p1, p2, p3, p4, p5, p6);
+    }
+
+    @Override
+    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6, final Object p7) {
+        return get().set(message, p0, p1, p2, p3, p4, p5, p6, p7);
+    }
+
+    @Override
+    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6, final Object p7, final Object p8) {
+        return get().set(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
+    }
+
+    @Override
+    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6, final Object p7, final Object p8, final Object p9) {
+        return get().set(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
 }
