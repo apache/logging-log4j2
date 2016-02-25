@@ -176,7 +176,7 @@ public enum Facility {
 
     private final int code;
 
-    private Facility(final int code) {
+    Facility(final int code) {
         this.code = code;
     }
 

@@ -36,7 +36,7 @@ public enum ExtensionLanguageMapping {
     private final String extension;
     private final String language;
 
-    private ExtensionLanguageMapping(String extension, String language) {
+    ExtensionLanguageMapping(String extension, String language) {
         this.extension = extension;
         this.language = language;
     }
