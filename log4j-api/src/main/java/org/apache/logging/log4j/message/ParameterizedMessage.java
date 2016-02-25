@@ -206,7 +206,8 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
         if (formattedMessage != null) {
             buffer.append(formattedMessage);
         } else {
-            ParameterFormatter.formatMessage(buffer, messagePattern, argArray, argArray.length);
+            ParameterFormatter.formatMessage(buffer, messagePattern, argArray,
+                    argArray == null ? 0 : argArray.length);
         }
     }
 
