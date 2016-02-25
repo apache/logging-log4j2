@@ -119,6 +119,7 @@ public class JmsServer extends LogEventListener implements MessageListener, Life
      * Starts and runs this server until the user types "exit" into standard input.
      *
      * @throws IOException
+     * @since 2.6
      */
     public void run() throws IOException {
         this.start();
