@@ -42,6 +42,15 @@ public final class ReusableParameterizedMessageFactory extends AbstractMessageFa
         super();
     }
 
+    private static ReusableParameterizedMessage get() {
+        ReusableParameterizedMessage result = threadLocalMessage.get();
+        if (result == null) {
+            result = new ReusableParameterizedMessage();
+            threadLocalMessage.set(result);
+        }
+        return result;
+    }
+
     /**
      * Creates {@link ReusableParameterizedMessage} instances.
      *
@@ -53,12 +62,6 @@ public final class ReusableParameterizedMessageFactory extends AbstractMessageFa
      */
     @Override
     public Message newMessage(final String message, final Object... params) {
-        ReusableParameterizedMessage result = threadLocalMessage.get();
-        if (result == null) {
-            result = new ReusableParameterizedMessage();
-            threadLocalMessage.set(result);
-        }
-        result.set(message, params);
-        return result;
+        return get().set(message, params);
     }
 }
