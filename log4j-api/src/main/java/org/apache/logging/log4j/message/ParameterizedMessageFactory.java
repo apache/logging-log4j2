@@ -36,7 +36,7 @@ public final class ParameterizedMessageFactory extends AbstractMessageFactory {
     }
 
     /**
-     * Instance of StringFormatterMessageFactory.
+     * Instance of ParameterizedMessageFactory.
      */
     public static final ParameterizedMessageFactory INSTANCE = new ParameterizedMessageFactory();
 
