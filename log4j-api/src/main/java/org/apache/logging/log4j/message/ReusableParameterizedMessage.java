@@ -264,8 +264,10 @@ public class ReusableParameterizedMessage implements ReusableMessage {
         ParameterFormatter.formatMessage(buffer, state.messagePattern, state.getParams(), state.argCount);
     }
 
+
     @Override
     public String toString() {
-        return getFormattedMessage();
+        return "ReusableParameterizedMessage[messagePattern=" + getFormat() + ", stringArgs=" +
+                Arrays.toString(getParameters()) + ", throwable=" + getThrowable() + ']';
     }
 }
