@@ -19,21 +19,21 @@ package org.apache.logging.log4j.message;
 /**
  * Enables use of <code>{}</code> parameter markers in message strings.
  * <p>
- * Reuses a ThreadLocal {@link ParameterizedMessage} instance for {@link #newMessage(String, Object...)}.
+ * Reuses a ThreadLocal {@link ReusableParameterizedMessage} instance for {@link #newMessage(String, Object...)}.
  * </p>
  * <p>
  * This class is immutable.
  * </p>
  */
-public final class ReusableParameterizedMessageFactory extends AbstractMessageFactory implements MessageFactory2 {
+public final class ReusableParameterizedMessageFactory extends AbstractMessageFactory {
 
     /**
-     * Instance of StringFormatterMessageFactory.
+     * Instance of ReusableParameterizedMessageFactory.
      */
     public static final ReusableParameterizedMessageFactory INSTANCE = new ReusableParameterizedMessageFactory();
 
     private static final long serialVersionUID = -8970940216592525651L;
-    private static ThreadLocal<ParameterizedMessage> threadLocalMessage = new ThreadLocal<>();
+    private static ThreadLocal<ReusableParameterizedMessage> threadLocalMessage = new ThreadLocal<>();
 
     /**
      * Constructs a message factory.
@@ -43,16 +43,16 @@ public final class ReusableParameterizedMessageFactory extends AbstractMessageFa
     }
 
     private ParameterizedMessage get() {
-        ParameterizedMessage result = threadLocalMessage.get();
+        ReusableParameterizedMessage result = threadLocalMessage.get();
         if (result == null) {
-            result = new ParameterizedMessage("", null);
-            result.setReused(true);
+            result = new ReusableParameterizedMessage();
             threadLocalMessage.set(result);
         }
         return result;
     }
+
     /**
-     * Creates {@link ParameterizedMessage} instances.
+     * Creates {@link ReusableParameterizedMessage} instances.
      *
      * @param message The message pattern.
      * @param params The message parameters.
