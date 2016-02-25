@@ -17,6 +17,10 @@
 
 package org.apache.logging.log4j.core.net.server;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.concurrent.atomic.AtomicReference;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -109,6 +113,25 @@ public class JmsServer extends LogEventListener implements MessageListener, Life
     @Override
     public boolean isStopped() {
         return state.get() == State.STOPPED;
+    }
+
+    /**
+     * Starts and runs this server until the user types "exit" into standard input.
+     *
+     * @throws IOException
+     */
+    public void run() throws IOException {
+        this.start();
+        System.out.println("Type \"exit\" to quit.");
+        final BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in, Charset.defaultCharset()));
+        while (true) {
+            final String line = stdin.readLine();
+            if (line == null || line.equalsIgnoreCase("exit")) {
+                System.out.println("Exiting. Kill the application if it does not exit due to daemon threads.");
+                this.stop();
+                return;
+            }
+        }
     }
 
 }
