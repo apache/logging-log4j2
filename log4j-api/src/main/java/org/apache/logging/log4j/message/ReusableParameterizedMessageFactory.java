@@ -42,7 +42,7 @@ public final class ReusableParameterizedMessageFactory extends AbstractMessageFa
         super();
     }
 
-    private ReusableParameterizedMessage get() {
+    private static ReusableParameterizedMessage get() {
         ReusableParameterizedMessage result = threadLocalMessage.get();
         if (result == null) {
             result = new ReusableParameterizedMessage();

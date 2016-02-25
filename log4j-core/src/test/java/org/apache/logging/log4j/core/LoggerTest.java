@@ -41,6 +41,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
+import org.apache.logging.log4j.message.ReusableParameterizedMessage;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
@@ -406,8 +407,8 @@ public class LoggerTest {
         Throwable thrown = event.getThrown();
         assertNotNull("No throwable present in log event", thrown);
         Message msg = event.getMessage();
-        assertTrue("Incorrect message type. Expected ParameterizedMessage, actual " + msg.getClass().getSimpleName(),
-                msg instanceof ParameterizedMessage);
+        assertTrue("Incorrect message type. Expected ParameterizedMessage/ReusableParameterizedMessage, actual " + msg.getClass().getSimpleName(),
+                msg instanceof ParameterizedMessage || msg instanceof ReusableParameterizedMessage);
 
     }
 }
