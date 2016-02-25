@@ -25,7 +25,7 @@ package org.apache.logging.log4j.message;
  * This class is immutable.
  * </p>
  */
-public final class ReusableParameterizedMessageFactory extends AbstractMessageFactory {
+public final class ReusableParameterizedMessageFactory extends AbstractMessageFactory implements MessageFactory2 {
 
     /**
      * Instance of ReusableParameterizedMessageFactory.
@@ -42,7 +42,7 @@ public final class ReusableParameterizedMessageFactory extends AbstractMessageFa
         super();
     }
 
-    private ParameterizedMessage get() {
+    private ReusableParameterizedMessage get() {
         ReusableParameterizedMessage result = threadLocalMessage.get();
         if (result == null) {
             result = new ReusableParameterizedMessage();
