@@ -16,17 +16,7 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.Map;
-import java.util.zip.DeflaterOutputStream;
-import java.util.zip.GZIPOutputStream;
+import com.fasterxml.jackson.core.io.JsonStringEncoder;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
@@ -41,7 +31,17 @@ import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
-import com.fasterxml.jackson.core.io.JsonStringEncoder;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.Map;
+import java.util.zip.DeflaterOutputStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * Lays out events in the Graylog Extended Log Format (GELF) 1.1.
@@ -144,7 +144,7 @@ public final class GelfLayout extends AbstractStringLayout {
     @Override
     public byte[] toByteArray(final LogEvent event) {
         final byte[] bytes = getBytes(toSerializable(event));
-        return bytes.length > compressionThreshold ? compress(bytes) : bytes;
+        return compressionType != CompressionType.OFF && bytes.length > compressionThreshold ? compress(bytes) : bytes;
     }
 
     private byte[] compress(final byte[] bytes) {
@@ -166,7 +166,11 @@ public final class GelfLayout extends AbstractStringLayout {
 
     @Override
     public String toSerializable(final LogEvent event) {
-        final StringBuilder builder = getStringBuilder();
+        final StringBuilder text = toText(event, getStringBuilder());
+        return text.toString();
+    }
+
+    private StringBuilder toText(LogEvent event, StringBuilder builder) {
         final JsonStringEncoder jsonEncoder = JsonStringEncoder.getInstance();
         builder.append('{');
         builder.append("\"version\":\"1.1\",");
@@ -196,7 +200,7 @@ public final class GelfLayout extends AbstractStringLayout {
         builder.append("\"short_message\":\"").append(jsonEncoder.quoteAsString(toNullSafeString(event.getMessage().getFormattedMessage())))
                 .append(Q);
         builder.append('}');
-        return builder.toString();
+        return builder;
     }
 
     private String toNullSafeString(final String s) {
