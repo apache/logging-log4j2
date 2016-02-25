@@ -57,9 +57,8 @@ public final class ReusableParameterizedMessageFactory extends AbstractMessageFa
         if (result == null) {
             result = new ReusableParameterizedMessage();
             threadLocalMessage.set(result);
-        } else {
-            result.set(message, params);
         }
+        result.set(message, params);
         return result;
     }
 }
