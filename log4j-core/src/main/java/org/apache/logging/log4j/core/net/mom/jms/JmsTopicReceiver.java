@@ -17,54 +17,30 @@
 
 package org.apache.logging.log4j.core.net.mom.jms;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
-
-import org.apache.logging.log4j.core.net.server.JmsServer;
-
 /**
  * Receives Topic messages that contain LogEvents. This implementation expects that all messages
  * are serialized log events.
  */
-public abstract class JmsTopicReceiver {
+public class JmsTopicReceiver extends AbstractJmsReceiver {
+
+    private JmsTopicReceiver() {
+    }
 
     /**
      * Main startup for the receiver.
+     *
      * @param args The command line arguments.
      * @throws Exception if an error occurs.
      */
     public static void main(final String[] args) throws Exception {
-        if (args.length != 4) {
-            usage("Wrong number of arguments.");
-        }
-
-        final String tcfBindingName = args[0];
-        final String topicBindingName = args[1];
-        final String username = args[2];
-        final String password = args[3];
-        final JmsServer server = new JmsServer(tcfBindingName, topicBindingName, username, password);
-        server.start();
-
-        final Charset enc = Charset.defaultCharset();
-        final BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in, enc));
-        // Loop until the word "exit" is typed
-        System.out.println("Type \"exit\" to quit JmsTopicReceiver.");
-        while (true) {
-            final String line = stdin.readLine();
-            if (line == null || line.equalsIgnoreCase("exit")) {
-                System.out.println("Exiting. Kill the application if it does not exit "
-                    + "due to daemon threads.");
-                server.stop();
-                return;
-            }
-        }
+        final JmsTopicReceiver receiver = new JmsTopicReceiver();
+        receiver.doMain(args);
     }
 
-    private static void usage(final String msg) {
-        System.err.println(msg);
+    @Override
+    protected void usage() {
+        System.err.println("Wrong number of arguments.");
         System.err.println("Usage: java " + JmsTopicReceiver.class.getName()
             + " TopicConnectionFactoryBindingName TopicBindingName username password");
-        System.exit(1);
     }
 }
