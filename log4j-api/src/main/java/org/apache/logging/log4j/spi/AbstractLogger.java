@@ -50,7 +50,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     /**
      * Marker for method entry tracing.
      */
-    public static final Marker ENTRY_MARKER = MarkerManager.getMarker("ENTRY").setParents(FLOW_MARKER);
+    public static final Marker ENTRY_MARKER = MarkerManager.getMarker("ENTER").setParents(FLOW_MARKER);
 
     /**
      * Marker for method exit tracing.
