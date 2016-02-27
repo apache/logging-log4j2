@@ -25,10 +25,12 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.apache.logging.log4j.core.util.Builder;
+
 /**
- *  Helper class for SmtpManager.
+ * Builder for {@link MimeMessage} instances.
  */
-public class MimeMessageBuilder {
+public class MimeMessageBuilder implements Builder<MimeMessage> {
     private final MimeMessage message;
 
     public MimeMessageBuilder(final Session session) {
@@ -76,7 +78,16 @@ public class MimeMessageBuilder {
         return this;
     }
 
+    /**
+     * @deprecated Use {@link #build()}.
+     */
+    @Deprecated
     public MimeMessage getMimeMessage() {
+        return build();
+    }
+
+    @Override
+    public MimeMessage build() {
         return message;
     }
 

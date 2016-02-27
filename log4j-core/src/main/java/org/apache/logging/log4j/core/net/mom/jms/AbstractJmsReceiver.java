@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,30 +17,32 @@
 
 package org.apache.logging.log4j.core.net.mom.jms;
 
-/**
- * Receives Log Events over a JMS Queue. This implementation expects that all messages will
- * contain a serialized LogEvent.
- */
-public class JmsQueueReceiver extends AbstractJmsReceiver {
+import org.apache.logging.log4j.core.net.server.JmsServer;
 
-    private JmsQueueReceiver() {
-    }
+/**
+ * Common JMS server functionality.
+ *
+ * @since 2.6
+ */
+public abstract class AbstractJmsReceiver {
 
     /**
-     * Main startup for the receiver.
-     *
-     * @param args The command line arguments.
-     * @throws Exception if an error occurs.
+     * Prints out usage information to {@linkplain System#err standard error}.
      */
-    public static void main(final String[] args) throws Exception {
-        final JmsQueueReceiver receiver = new JmsQueueReceiver();
-        receiver.doMain(args);
-    }
+    protected abstract void usage();
 
-    @Override
-    protected void usage() {
-        System.err.println("Wrong number of arguments.");
-        System.err.println("Usage: java " + JmsQueueReceiver.class.getName()
-            + " QueueConnectionFactoryBindingName QueueBindingName username password");
+    /**
+     * Executes a JmsServer with the given command line arguments.
+     *
+     * @param args command line arguments
+     * @throws Exception
+     */
+    protected void doMain(final String... args) throws Exception {
+        if (args.length != 4) {
+            usage();
+            System.exit(1);
+        }
+        final JmsServer server = new JmsServer(args[0], args[1], args[2], args[3]);
+        server.run();
     }
 }

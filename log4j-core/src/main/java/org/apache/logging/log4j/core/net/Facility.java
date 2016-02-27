@@ -21,33 +21,108 @@ import org.apache.logging.log4j.util.EnglishEnums;
 /**
  *  The facility codes used by the Syslog system.
  *
- *        Numerical          Facility<br>
- *           Code<br>
- *
- *             0             kernel messages<br>
- *             1             user-level messages<br>
- *             2             mail system<br>
- *             3             system daemons<br>
- *             4             security/authorization messages<br>
- *             5             messages generated internally by syslogd<br>
- *             6             line printer subsystem<br>
- *             7             network news subsystem<br>
- *             8             UUCP subsystem<br>
- *             9             clock daemon<br>
- *            10             security/authorization messages<br>
- *            11             FTP daemon<br>
- *            12             NTP subsystem<br>
- *            13             log audit<br>
- *            14             log alert<br>
- *            15             clock daemon (note 2)<br>
- *            16             local use 0  (local0)<br>
- *            17             local use 1  (local1)<br>
- *            18             local use 2  (local2)<br>
- *            19             local use 3  (local3)<br>
- *            20             local use 4  (local4)<br>
- *            21             local use 5  (local5)<br>
- *            22             local use 6  (local6)<br>
- *            23             local use 7  (local7)<br>
+ * <table>
+ *     <tr>
+ *         <th>Numerical Code</th>
+ *         <th>Facility</th>
+ *     </tr>
+ *     <tr>
+ *         <td>0</td>
+ *         <td>kernel messages</td>
+ *     </tr>
+ *     <tr>
+ *         <td>1</td>
+ *         <td>user-level messages</td>
+ *     </tr>
+ *     <tr>
+ *         <td>2</td>
+ *         <td>mail system</td>
+ *     </tr>
+ *     <tr>
+ *         <td>3</td>
+ *         <td>system daemons</td>
+ *     </tr>
+ *     <tr>
+ *         <td>4</td>
+ *         <td>security/authorization messages</td>
+ *     </tr>
+ *     <tr>
+ *         <td>5</td>
+ *         <td>messages generated internally by syslogd</td>
+ *     </tr>
+ *     <tr>
+ *         <td>6</td>
+ *         <td>line printer subsystem</td>
+ *     </tr>
+ *     <tr>
+ *         <td>7</td>
+ *         <td>network news subsystem</td>
+ *     </tr>
+ *     <tr>
+ *         <td>8</td>
+ *         <td>UUCP subsystem</td>
+ *     </tr>
+ *     <tr>
+ *         <td>9</td>
+ *         <td>clock daemon</td>
+ *     </tr>
+ *     <tr>
+ *         <td>10</td>
+ *         <td>security/authorization messages</td>
+ *     </tr>
+ *     <tr>
+ *         <td>11</td>
+ *         <td>FTP daemon</td>
+ *     </tr>
+ *     <tr>
+ *         <td>12</td>
+ *         <td>NTP subsystem</td>
+ *     </tr>
+ *     <tr>
+ *         <td>13</td>
+ *         <td>log audit</td>
+ *     </tr>
+ *     <tr>
+ *         <td>14</td>
+ *         <td>log alert</td>
+ *     </tr>
+ *     <tr>
+ *         <td>15</td>
+ *         <td>clock daemon (note 2)</td>
+ *     </tr>
+ *     <tr>
+ *         <td>16</td>
+ *         <td>local use 0 (local0)</td>
+ *     </tr>
+ *     <tr>
+ *         <td>17</td>
+ *         <td>local use 1 (local1)</td>
+ *     </tr>
+ *     <tr>
+ *         <td>18</td>
+ *         <td>local use 2 (local2)</td>
+ *     </tr>
+ *     <tr>
+ *         <td>19</td>
+ *         <td>local use 3 (local3)</td>
+ *     </tr>
+ *     <tr>
+ *         <td>20</td>
+ *         <td>local use 4 (local4)</td>
+ *     </tr>
+ *     <tr>
+ *         <td>21</td>
+ *         <td>local use 5 (local5)</td>
+ *     </tr>
+ *     <tr>
+ *         <td>22</td>
+ *         <td>local use 6 (local6)</td>
+ *     </tr>
+ *     <tr>
+ *         <td>23</td>
+ *         <td>local use 7 (local7)</td>
+ *     </tr>
+ * </table>
  */
 public enum Facility {
     /** Kernel messages. */
@@ -101,7 +176,7 @@ public enum Facility {
 
     private final int code;
 
-    private Facility(final int code) {
+    Facility(final int code) {
         this.code = code;
     }
 

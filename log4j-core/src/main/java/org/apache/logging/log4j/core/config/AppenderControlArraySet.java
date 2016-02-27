@@ -27,6 +27,8 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * Data structure with similar semantics to CopyOnWriteArraySet, but giving direct access to the underlying array.
+ *
+ * @since 2.6
  */
 @PerformanceSensitive
 public class AppenderControlArraySet {
@@ -102,6 +104,7 @@ public class AppenderControlArraySet {
 
     /**
      * Atomically sets the values to an empty array and returns the old array.
+     *
      * @return the contents before this collection was cleared.
      */
     public AppenderControl[] clear() {
@@ -114,6 +117,7 @@ public class AppenderControlArraySet {
 
     /**
      * Returns the underlying array.
+     *
      * @return the array supporting this collection
      */
     public AppenderControl[] get() {

@@ -69,7 +69,7 @@ public class SmtpManager extends AbstractManager {
         return new MimeMessageBuilder(session).setFrom(data.from).setReplyTo(data.replyto)
                 .setRecipients(Message.RecipientType.TO, data.to).setRecipients(Message.RecipientType.CC, data.cc)
                 .setRecipients(Message.RecipientType.BCC, data.bcc).setSubject(data.subject.toSerializable(appendEvent))
-                .getMimeMessage();
+                .build();
     }
 
     protected SmtpManager(final String name, final Session session, final MimeMessage message,
