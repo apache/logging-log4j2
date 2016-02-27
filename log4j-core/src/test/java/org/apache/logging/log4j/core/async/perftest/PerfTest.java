@@ -124,7 +124,7 @@ public class PerfTest {
         Thread.sleep(7000);
 
         println("Starting the main test...");
-        runSingleThreadedTest(runner, LINES * iterations, name, resultFile);
+        runSingleThreadedTest(runner, LINES, name, resultFile);
         Thread.sleep(1000);
     }
 
@@ -136,7 +136,7 @@ public class PerfTest {
         final int bytesPerLine = 0 + IPerfTestRunner.THROUGHPUT_MSG.getBytes().length;
         final int bytesWritten = bytesPerLine * linesPerIteration * iterations;
         final int threshold = 1073741824; // magic number: defined in perf9MMapLocation.xml
-        
+
         int todo = threshold - bytesWritten;
         if (todo <= 0) {
             return;
