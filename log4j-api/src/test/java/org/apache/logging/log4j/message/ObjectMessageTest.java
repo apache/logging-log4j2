@@ -19,7 +19,7 @@ package org.apache.logging.log4j.message;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import org.apache.log4j.util.SerialUtil;
+import org.apache.logging.log4j.junit.SerialUtil;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
