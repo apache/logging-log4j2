@@ -20,6 +20,7 @@ import java.util.Stack;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.ParentRunner;
 import sun.reflect.Reflection;
@@ -27,6 +28,7 @@ import sun.reflect.Reflection;
 import static org.junit.Assert.*;
 import static org.junit.Assume.assumeTrue;
 
+@RunWith(BlockJUnit4ClassRunner.class)
 public class ReflectionUtilTest {
 
     @Before
