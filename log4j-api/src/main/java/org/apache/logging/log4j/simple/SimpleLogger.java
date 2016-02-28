@@ -46,7 +46,7 @@ public class SimpleLogger extends AbstractLogger {
      * Note that DateFormat is not Thread-safe.
      * </p>
      */
-    private DateFormat dateFormatter;
+    private final DateFormat dateFormatter;
 
     private Level level;
 
@@ -82,12 +82,16 @@ public class SimpleLogger extends AbstractLogger {
         this.stream = stream;
 
         if (showDateTime) {
+            DateFormat format;
             try {
-                this.dateFormatter = new SimpleDateFormat(dateTimeFormat);
+                format = new SimpleDateFormat(dateTimeFormat);
             } catch (final IllegalArgumentException e) {
                 // If the format pattern is invalid - use the default format
-                this.dateFormatter = new SimpleDateFormat(SimpleLoggerContext.DEFAULT_DATE_TIME_FORMAT);
+                format = new SimpleDateFormat(SimpleLoggerContext.DEFAULT_DATE_TIME_FORMAT);
             }
+            this.dateFormatter = format;
+        } else {
+            this.dateFormatter = null;
         }
     }
 
