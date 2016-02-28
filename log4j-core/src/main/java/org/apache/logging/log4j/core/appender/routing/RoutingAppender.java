@@ -53,7 +53,7 @@ public final class RoutingAppender extends AbstractAppender {
     private final Configuration config;
     private final ConcurrentMap<String, AppenderControl> appenders = new ConcurrentHashMap<>();
     private final RewritePolicy rewritePolicy;
-	private final PurgePolicy purgePolicy;
+	  private final PurgePolicy purgePolicy;
 
     private RoutingAppender(final String name, final Filter filter, final boolean ignoreExceptions, final Routes routes,
                             final RewritePolicy rewritePolicy, final Configuration config, PurgePolicy purgePolicy) {
