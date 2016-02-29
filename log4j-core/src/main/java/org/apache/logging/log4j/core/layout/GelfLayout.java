@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
@@ -148,7 +149,7 @@ public final class GelfLayout extends AbstractStringLayout {
     }
 
     static String formatTimestamp(final long timeMillis) {
-        return new BigDecimal(timeMillis).divide(TIME_DIVISOR).toPlainString();
+        return new BigDecimal(timeMillis).divide(TIME_DIVISOR, RoundingMode.UNNECESSARY).toPlainString();
     }
 
     private byte[] compress(final byte[] bytes) {
