@@ -30,6 +30,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
  */
 @Plugin(name = "main", category = StrLookup.CATEGORY)
 public class MainMapLookup extends MapLookup {
+    private static final long serialVersionUID = 1L;
 
     /**
      * A singleton used by a main method to save its arguments.

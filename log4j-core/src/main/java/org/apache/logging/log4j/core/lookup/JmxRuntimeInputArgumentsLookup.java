@@ -30,6 +30,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
  */
 @Plugin(name = "jvmrunargs", category = StrLookup.CATEGORY)
 public class JmxRuntimeInputArgumentsLookup extends MapLookup {
+    private static final long serialVersionUID = 1L;
 
     static {
         final List<String> argsList = ManagementFactory.getRuntimeMXBean().getInputArguments();

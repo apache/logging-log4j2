@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -31,7 +32,8 @@ import org.apache.logging.log4j.status.StatusLogger;
  * Formats the current date or the date in the LogEvent. The "key" is used as the format String.
  */
 @Plugin(name = "date", category = StrLookup.CATEGORY)
-public class DateLookup implements StrLookup {
+public class DateLookup implements StrLookup, Serializable {
+    private static final long serialVersionUID = 1L;
 
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final Marker LOOKUP = MarkerManager.getMarker("LOOKUP");
