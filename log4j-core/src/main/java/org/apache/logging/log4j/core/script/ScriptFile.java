@@ -43,6 +43,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 @Plugin(name = "ScriptFile", category = Node.CATEGORY, printObject = true)
 public class ScriptFile extends AbstractScript {
 
+    private static final long serialVersionUID = 1L;
     private static final Logger LOGGER = StatusLogger.getLogger();
     private final Path filePath;
     private final boolean isWatched;

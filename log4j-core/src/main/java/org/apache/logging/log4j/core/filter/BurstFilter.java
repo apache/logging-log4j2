@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.core.filter;
 
+import java.io.Serializable;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.DelayQueue;
@@ -171,7 +172,9 @@ public final class BurstFilter extends AbstractFilter {
      * 
      * Consider this class private, package visibility for testing.
      */
-    private static class LogDelay implements Delayed {
+    private static class LogDelay implements Delayed, Serializable {
+
+        private static final long serialVersionUID = 1L;
 
         LogDelay(final long expireTime) {
             this.expireTime = expireTime;
