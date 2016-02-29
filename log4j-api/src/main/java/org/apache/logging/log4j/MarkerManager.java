@@ -20,6 +20,8 @@ import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.apache.logging.log4j.util.PerformanceSensitive;
+
 /**
  * Applications create Markers by using the Marker Manager. All Markers created by this Manager are immutable.
  */
@@ -245,6 +247,7 @@ public final class MarkerManager {
         }
 
         @Override
+        @PerformanceSensitive({"allocation", "unrolled"})
         public boolean isInstanceOf(final Marker marker) {
             if (marker == null) {
                 throw new IllegalArgumentException("A marker parameter is required");
@@ -274,6 +277,7 @@ public final class MarkerManager {
         }
 
         @Override
+        @PerformanceSensitive({"allocation", "unrolled"})
         public boolean isInstanceOf(final String markerName) {
             if (markerName == null) {
                 throw new IllegalArgumentException("A marker name is required");
@@ -307,6 +311,7 @@ public final class MarkerManager {
             return false;
         }
 
+        @PerformanceSensitive({"allocation", "unrolled"})
         private static boolean checkParent(final Marker parent, final Marker marker) {
             if (parent == marker) {
                 return true;
@@ -335,9 +340,10 @@ public final class MarkerManager {
         /*
          * Called from add while synchronized.
          */
+        @PerformanceSensitive("allocation")
         private static boolean contains(final Marker parent, final Marker... localParents) {
-            // noinspection ForLoopReplaceableByForEach
             // performance tests showed a normal for loop is slightly faster than a for-each loop on some platforms
+            // noinspection ForLoopReplaceableByForEach
             for (int i = 0, localParentsLength = localParents.length; i < localParentsLength; i++) {
                 final Marker marker = localParents[i];
                 if (marker == parent) {
@@ -375,6 +381,7 @@ public final class MarkerManager {
             return sb.toString();
         }
 
+        @PerformanceSensitive("allocation")
         private static void addParentInfo(final StringBuilder sb, final Marker... parents) {
             sb.append("[ ");
             boolean first = true;
