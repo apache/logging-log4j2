@@ -26,8 +26,7 @@ import org.osgi.framework.launch.Framework;
 import org.osgi.framework.launch.FrameworkFactory;
 
 /**
- * @author msicker
- * @version 1.0.0
+ * JUnit rule to initialize and shutdown an OSGi framework.
  */
 public class OsgiRule extends ExternalResource {
 
