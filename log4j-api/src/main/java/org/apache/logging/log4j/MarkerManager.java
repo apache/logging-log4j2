@@ -42,7 +42,7 @@ public final class MarkerManager {
 
     /**
      * Tests existence of the given marker.
-     * 
+     *
      * @param key the marker name
      * @return true if the marker exists.
      * @since 2.4
@@ -53,7 +53,7 @@ public final class MarkerManager {
 
     /**
      * Retrieves a Marker or create a Marker that has no parent.
-     * 
+     *
      * @param name The name of the Marker.
      * @return The Marker with the specified name.
      * @throws IllegalArgumentException if the argument is {@code null}
@@ -65,7 +65,7 @@ public final class MarkerManager {
 
     /**
      * Retrieves or creates a Marker with the specified parent. The parent must have been previously created.
-     * 
+     *
      * @param name The name of the Marker.
      * @param parent The name of the parent Marker.
      * @return The Marker with the specified name.
@@ -85,7 +85,7 @@ public final class MarkerManager {
 
     /**
      * Retrieves or creates a Marker with the specified parent.
-     * 
+     *
      * @param name The name of the Marker.
      * @param parent The parent Marker.
      * @return The Marker with the specified name.
@@ -128,16 +128,14 @@ public final class MarkerManager {
 
         /**
          * Constructs a new Marker.
-         * 
+         *
          * @param name the name of the Marker.
          * @throws IllegalArgumentException if the argument is {@code null}
          */
         public Log4jMarker(final String name) {
-            if (name == null) {
-                // we can't store null references in a ConcurrentHashMap as it is, not to mention that a null Marker
-                // name seems rather pointless. To get an "anonymous" Marker, just use an empty string.
-                throw new IllegalArgumentException("Marker name cannot be null.");
-            }
+            // we can't store null references in a ConcurrentHashMap as it is, not to mention that a null Marker
+            // name seems rather pointless. To get an "anonymous" Marker, just use an empty string.
+            requireNonNull(name, "Marker name cannot be null.");
             this.name = name;
             this.parents = null;
         }
@@ -146,9 +144,7 @@ public final class MarkerManager {
 
         @Override
         public synchronized Marker addParents(final Marker... parentMarkers) {
-            if (parentMarkers == null) {
-                throw new IllegalArgumentException("A parent marker must be specified");
-            }
+            requireNonNull(parentMarkers, "A parent marker must be specified");
             // It is not strictly necessary to copy the variable here but it should perform better than
             // Accessing a volatile variable multiple times.
             final Marker[] localParents = this.parents;
@@ -184,9 +180,7 @@ public final class MarkerManager {
 
         @Override
         public synchronized boolean remove(final Marker parent) {
-            if (parent == null) {
-                throw new IllegalArgumentException("A parent marker must be specified");
-            }
+            requireNonNull(parent, "A parent marker must be specified");
             final Marker[] localParents = this.parents;
             if (localParents == null) {
                 return false;
@@ -249,9 +243,7 @@ public final class MarkerManager {
         @Override
         @PerformanceSensitive({"allocation", "unrolled"})
         public boolean isInstanceOf(final Marker marker) {
-            if (marker == null) {
-                throw new IllegalArgumentException("A marker parameter is required");
-            }
+            requireNonNull(marker, "A marker parameter is required");
             if (this == marker) {
                 return true;
             }
@@ -279,9 +271,7 @@ public final class MarkerManager {
         @Override
         @PerformanceSensitive({"allocation", "unrolled"})
         public boolean isInstanceOf(final String markerName) {
-            if (markerName == null) {
-                throw new IllegalArgumentException("A marker name is required");
-            }
+            requireNonNull(markerName, "A marker name is required");
             if (markerName.equals(this.getName())) {
                 return true;
             }
@@ -402,4 +392,10 @@ public final class MarkerManager {
         }
     }
 
+    // this method wouldn't be necessary if Marker methods threw an NPE instead of an IAE for null values ;)
+    private static void requireNonNull(final Object obj, final String message) {
+        if (obj == null) {
+            throw new IllegalArgumentException(message);
+        }
+    }
 }
