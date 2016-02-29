@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
  */
 @Plugin(name = "env", category = StrLookup.CATEGORY)
 public class EnvironmentLookup extends AbstractLookup {
+    private static final long serialVersionUID = 1L;
 
     /**
      * Looks up the value of the environment variable.

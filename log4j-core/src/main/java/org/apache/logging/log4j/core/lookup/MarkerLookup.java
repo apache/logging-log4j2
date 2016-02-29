@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
  */
 @Plugin(name = "marker", category = StrLookup.CATEGORY)
 public class MarkerLookup extends AbstractLookup {
+    private static final long serialVersionUID = 1L;
 
     static final String MARKER = "marker";
 

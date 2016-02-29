@@ -27,6 +27,7 @@ import org.apache.logging.log4j.util.Strings;
  */
 @Plugin(name = "java", category = StrLookup.CATEGORY)
 public class JavaLookup extends AbstractLookup {
+    private static final long serialVersionUID = 1L;
 
     private final SystemPropertiesLookup spLookup = new SystemPropertiesLookup();
 

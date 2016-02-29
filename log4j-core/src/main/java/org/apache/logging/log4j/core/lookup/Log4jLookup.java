@@ -33,6 +33,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 @Plugin(name = "log4j", category = StrLookup.CATEGORY)
 public class Log4jLookup extends AbstractLookup {
+    private static final long serialVersionUID = 1L;
 
     public final static String KEY_CONFIG_LOCATION = "configLocation";
     public final static String KEY_CONFIG_PARENT_LOCATION = "configParentLocation";
