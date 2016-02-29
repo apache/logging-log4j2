@@ -14,12 +14,13 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.message;
+
+package org.apache.logging.log4j.junit;
 
 /**
  * Helper class for JUnit tests.
  */
-class Mutable {
+public class Mutable {
     private String value;
 
     public Mutable set(final String value) {

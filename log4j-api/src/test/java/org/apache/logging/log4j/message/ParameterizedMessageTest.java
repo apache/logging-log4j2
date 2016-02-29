@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.message;
 
+import org.apache.logging.log4j.junit.Mutable;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
