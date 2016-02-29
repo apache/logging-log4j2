@@ -164,7 +164,7 @@ public class PerfTest {
         if (file != null) {
             try (final FileWriter writer = new FileWriter(file, true)) {
                 writer.write(result);
-                writer.write(System.getProperty("line.separator"));
+                writer.write(System.lineSeparator());
             }
         }
     }
