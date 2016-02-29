@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -40,7 +41,8 @@ import org.apache.logging.log4j.util.Strings;
  * It is this class that parses conversion patterns and creates a chained list of {@link PatternConverter
  * PatternConverters}.
  */
-public final class PatternParser {
+public final class PatternParser implements Serializable {
+    private static final long serialVersionUID = 1L;
     static final String NO_CONSOLE_NO_ANSI = "noConsoleNoAnsi";
 
     /**

@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import java.io.Serializable;
 import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.Logger;
@@ -28,7 +29,8 @@ import org.apache.logging.log4j.status.StatusLogger;
  * Replace tokens in the LogEvent message.
  */
 @Plugin(name = "replace", category = "Core", printObject = true)
-public final class RegexReplacement {
+public final class RegexReplacement implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
