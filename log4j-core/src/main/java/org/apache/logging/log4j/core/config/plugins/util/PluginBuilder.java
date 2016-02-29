@@ -207,7 +207,7 @@ public class PluginBuilder implements Builder<Object> {
     /**
      * {@code object.getClass().getSimpleName()} returns {@code Builder}, when we want {@code PatternLayout$Builder}.
      */
-    private String simpleName(final Object object) {
+    private static String simpleName(final Object object) {
         if (object == null) {
             return "null";
         }
