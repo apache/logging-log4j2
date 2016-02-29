@@ -72,7 +72,7 @@ import com.fasterxml.jackson.core.io.JsonStringEncoder;
 @Plugin(name = "GelfLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class GelfLayout extends AbstractStringLayout {
 
-    public static enum CompressionType {
+    public enum CompressionType {
 
         GZIP {
             @Override
