@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import java.io.Serializable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -49,7 +50,8 @@ import com.lmax.disruptor.dsl.ProducerType;
  * This class serves to make the dependency on the Disruptor optional, so that these classes are only loaded when the
  * {@code AsyncLoggerConfig} is actually used.
  */
-public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
+public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate, Serializable {
+    private static final long serialVersionUID = 1L;
 
     private static final int MAX_DRAIN_ATTEMPTS_BEFORE_SHUTDOWN = 200;
     private static final int SLEEP_MILLIS_BETWEEN_DRAIN_ATTEMPTS = 50;
@@ -136,8 +138,8 @@ public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
 
     private static final ThreadFactory THREAD_FACTORY = new DaemonThreadFactory("AsyncLoggerConfig-");
 
-    private volatile Disruptor<Log4jEventWrapper> disruptor;
-    private ExecutorService executor;
+    private transient volatile Disruptor<Log4jEventWrapper> disruptor;
+    private transient ExecutorService executor;
     private long backgroundThreadId; // LOG4J2-471
 
     public AsyncLoggerConfigDisruptor() {

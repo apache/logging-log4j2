@@ -16,10 +16,13 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import java.io.Serializable;
+
 /**
  * Implementation of the {@code NanoClock} interface that always returns a fixed value.
  */
-public final class DummyNanoClock implements NanoClock {
+public final class DummyNanoClock implements NanoClock, Serializable {
+    private static final long serialVersionUID = 1L;
 
     private final long fixedNanoTime;
 

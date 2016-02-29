@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Discarding router extends the DefaultAsyncEventRouter by first verifying if the queue is fuller than the specified
@@ -30,6 +30,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * default routing rules hold.
  */
 public class DiscardingAsyncEventRouter extends DefaultAsyncEventRouter {
+    private static final long serialVersionUID = 1L;
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final int thresholdQueueRemainingCapacity;

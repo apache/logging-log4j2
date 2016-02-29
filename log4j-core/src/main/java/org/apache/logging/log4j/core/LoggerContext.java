@@ -76,7 +76,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
     private Object externalContext;
     private String contextName;
     private volatile URI configLocation;
-    private Cancellable shutdownCallback;
+    private transient Cancellable shutdownCallback;
 
     private final Lock configLock = new ReentrantLock();
 

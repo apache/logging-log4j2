@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import java.io.Serializable;
+
 import org.apache.logging.log4j.Level;
 import org.junit.After;
 import org.junit.Before;
@@ -108,7 +110,8 @@ public class AsyncEventRouterFactoryTest {
         }
     }
 
-    static class CustomRouterDefaultConstructor implements AsyncEventRouter {
+    static class CustomRouterDefaultConstructor implements AsyncEventRouter, Serializable {
+        private static final long serialVersionUID = 1L;
         public CustomRouterDefaultConstructor() {
         }
 
@@ -119,7 +122,8 @@ public class AsyncEventRouterFactoryTest {
         }
     }
 
-    static class CustomRouterIntConstructor implements AsyncEventRouter {
+    static class CustomRouterIntConstructor implements AsyncEventRouter, Serializable {
+        private static final long serialVersionUID = 1L;
         public CustomRouterIntConstructor(int queueSize) {
         }
 

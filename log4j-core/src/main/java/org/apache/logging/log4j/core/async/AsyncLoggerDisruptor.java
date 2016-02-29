@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.core.async;
 
+import java.io.Serializable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -36,18 +37,19 @@ import com.lmax.disruptor.dsl.ProducerType;
  * life cycle of the context. The AsyncLoggerDisruptor of the context is shared by all AsyncLogger objects created by
  * that AsyncLoggerContext.
  */
-class AsyncLoggerDisruptor {
+class AsyncLoggerDisruptor implements Serializable {
+    private static final long serialVersionUID = 1L;
     private static final int SLEEP_MILLIS_BETWEEN_DRAIN_ATTEMPTS = 50;
     private static final int MAX_DRAIN_ATTEMPTS_BEFORE_SHUTDOWN = 200;
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
-    private volatile Disruptor<RingBufferLogEvent> disruptor;
-    private ExecutorService executor;
+    private transient volatile Disruptor<RingBufferLogEvent> disruptor;
+    private transient ExecutorService executor;
     private String contextName;
 
     private boolean useThreadLocalTranslator = true;
     private long backgroundThreadId;
-    private AsyncEventRouter asyncEventRouter;
+    private transient AsyncEventRouter asyncEventRouter;
     private int ringBufferSize;
 
     AsyncLoggerDisruptor(String contextName) {
