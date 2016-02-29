@@ -17,7 +17,6 @@
 
 package org.apache.logging.log4j.core.filter;
 
-import java.util.Iterator;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.DelayQueue;
@@ -156,9 +155,7 @@ public final class BurstFilter extends AbstractFilter {
      * Clear the history. Used for unit testing.
      */
     public void clear() {
-        final Iterator<LogDelay> iter = history.iterator();
-        while (iter.hasNext()) {
-            final LogDelay delay = iter.next();
+        for (LogDelay delay : history) {
             history.remove(delay);
             available.add(delay);
         }
