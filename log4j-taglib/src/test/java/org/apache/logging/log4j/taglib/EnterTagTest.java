@@ -69,7 +69,7 @@ public class EnterTagTest {
         try
         {
             assertEquals("Incorrect number of messages.", 1, events.size());
-            assertEquals("Incorrect message.", "o.a.l.l.t.EntryTagTest " + expected, events.get(0));
+            assertEquals("Incorrect message.", "o.a.l.l.t.EnterTagTest " + expected, events.get(0));
         }
         finally
         {
