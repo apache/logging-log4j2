@@ -145,88 +145,80 @@ public class Timer implements Serializable
     public String toString()
     {
         final StringBuilder result = new StringBuilder("Timer ").append(name);
-        if (status.equals("Start"))
-        {
-            result.append(" started");
-        }
-        else if (status.equals("Pause"))
-        {
-            result.append(" paused");
-        }
-        else if (status.equals("Resume"))
-        {
-            result.append(" resumed");
-        }
-        else if (status.equals("Stop"))
-        {
-            long nanoseconds = elapsedTime;
-            // Get elapsed hours
-            long hours = nanoseconds / NANO_PER_HOUR;
-            // Get remaining nanoseconds
-            nanoseconds = nanoseconds % NANO_PER_HOUR;
-            // Get minutes
-            long minutes = nanoseconds / NANO_PER_MINUTE;
-            // Get remaining nanoseconds
-            nanoseconds = nanoseconds % NANO_PER_MINUTE;
-            // Get seconds
-            long seconds = nanoseconds / NANO_PER_SECOND;
-            // Get remaining nanoseconds
-            nanoseconds = nanoseconds % NANO_PER_SECOND;
-
-            String elapsed = Strings.EMPTY;
-
-            if (hours > 0)
-            {
-                elapsed += hours + " hours ";
-            }
-            if (minutes > 0 || hours > 0)
-            {
-                elapsed += minutes + " minutes ";
-            }
-
-            DecimalFormat numFormat = null;
-            numFormat = new DecimalFormat("#0");
-            elapsed += numFormat.format(seconds) + '.';
-            numFormat = new DecimalFormat("000000000");
-            elapsed += numFormat.format(nanoseconds) + " seconds";
-            result.append(" stopped. Elapsed time: ").append(elapsed);
-            if (iterations > 0)
-            {
-                nanoseconds = elapsedTime / iterations;
+        switch (status) {
+            case "Start":
+                result.append(" started");
+                break;
+            case "Pause":
+                result.append(" paused");
+                break;
+            case "Resume":
+                result.append(" resumed");
+                break;
+            case "Stop":
+                long nanoseconds = elapsedTime;
                 // Get elapsed hours
-                hours = nanoseconds / NANO_PER_HOUR;
+                long hours = nanoseconds / NANO_PER_HOUR;
                 // Get remaining nanoseconds
                 nanoseconds = nanoseconds % NANO_PER_HOUR;
                 // Get minutes
-                minutes = nanoseconds / NANO_PER_MINUTE;
+                long minutes = nanoseconds / NANO_PER_MINUTE;
                 // Get remaining nanoseconds
                 nanoseconds = nanoseconds % NANO_PER_MINUTE;
                 // Get seconds
-                seconds = nanoseconds / NANO_PER_SECOND;
+                long seconds = nanoseconds / NANO_PER_SECOND;
                 // Get remaining nanoseconds
                 nanoseconds = nanoseconds % NANO_PER_SECOND;
 
-                elapsed = Strings.EMPTY;
+                String elapsed = Strings.EMPTY;
 
-                if (hours > 0)
-                {
+                if (hours > 0) {
                     elapsed += hours + " hours ";
                 }
-                if (minutes > 0 || hours > 0)
-                {
+                if (minutes > 0 || hours > 0) {
                     elapsed += minutes + " minutes ";
                 }
 
+                DecimalFormat numFormat;
                 numFormat = new DecimalFormat("#0");
                 elapsed += numFormat.format(seconds) + '.';
                 numFormat = new DecimalFormat("000000000");
                 elapsed += numFormat.format(nanoseconds) + " seconds";
-                result.append(" Average per iteration: ").append(elapsed);
-            }
-        }
-        else
-        {
-            result.append(' ').append(status);
+                result.append(" stopped. Elapsed time: ").append(elapsed);
+                if (iterations > 0) {
+                    nanoseconds = elapsedTime / iterations;
+                    // Get elapsed hours
+                    hours = nanoseconds / NANO_PER_HOUR;
+                    // Get remaining nanoseconds
+                    nanoseconds = nanoseconds % NANO_PER_HOUR;
+                    // Get minutes
+                    minutes = nanoseconds / NANO_PER_MINUTE;
+                    // Get remaining nanoseconds
+                    nanoseconds = nanoseconds % NANO_PER_MINUTE;
+                    // Get seconds
+                    seconds = nanoseconds / NANO_PER_SECOND;
+                    // Get remaining nanoseconds
+                    nanoseconds = nanoseconds % NANO_PER_SECOND;
+
+                    elapsed = Strings.EMPTY;
+
+                    if (hours > 0) {
+                        elapsed += hours + " hours ";
+                    }
+                    if (minutes > 0 || hours > 0) {
+                        elapsed += minutes + " minutes ";
+                    }
+
+                    numFormat = new DecimalFormat("#0");
+                    elapsed += numFormat.format(seconds) + '.';
+                    numFormat = new DecimalFormat("000000000");
+                    elapsed += numFormat.format(nanoseconds) + " seconds";
+                    result.append(" Average per iteration: ").append(elapsed);
+                }
+                break;
+            default:
+                result.append(' ').append(status);
+                break;
         }
         return result.toString();
     }
