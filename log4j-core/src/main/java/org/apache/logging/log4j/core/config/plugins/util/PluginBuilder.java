@@ -119,8 +119,7 @@ public class PluginBuilder implements Builder<Object> {
             final Builder<?> builder = createBuilder(this.clazz);
             if (builder != null) {
                 injectFields(builder);
-                final Object result = builder.build();
-                return result;
+                return builder.build();
             }
         } catch (final Exception e) {
             LOGGER.error("Unable to inject fields into builder class for plugin type {}, element {}.", this.clazz,
@@ -130,8 +129,7 @@ public class PluginBuilder implements Builder<Object> {
         try {
             final Method factory = findFactoryMethod(this.clazz);
             final Object[] params = generateParameters(factory);
-            final Object plugin = factory.invoke(null, params);
-            return plugin;
+            return factory.invoke(null, params);
         } catch (final Exception e) {
             LOGGER.error("Unable to invoke factory method in class {} for element {}.", this.clazz, this.node.getName(),
                 e);
@@ -151,8 +149,7 @@ public class PluginBuilder implements Builder<Object> {
                 Modifier.isStatic(method.getModifiers()) &&
                 TypeUtil.isAssignable(Builder.class, method.getGenericReturnType())) {
                 ReflectionUtil.makeAccessible(method);
-                final Builder<?> builder = (Builder<?>) method.invoke(null);
-                return builder;
+                return (Builder<?>) method.invoke(null);
             }
         }
         return null;
