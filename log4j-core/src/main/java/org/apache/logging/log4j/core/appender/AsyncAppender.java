@@ -69,8 +69,8 @@ public final class AsyncAppender extends AbstractAppender {
     private final String errorRef;
     private final boolean includeLocation;
     private AppenderControl errorAppender;
-    private AsyncThread thread;
-    private AsyncEventRouter asyncEventRouter;
+    private transient AsyncThread thread;
+    private transient AsyncEventRouter asyncEventRouter;
 
     private AsyncAppender(final String name, final Filter filter, final AppenderRef[] appenderRefs,
             final String errorRef, final int queueSize, final boolean blocking, final boolean ignoreExceptions,
