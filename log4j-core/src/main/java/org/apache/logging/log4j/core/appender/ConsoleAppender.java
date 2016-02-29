@@ -62,7 +62,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
     /**
      * Enumeration of console destinations.
      */
-    public static enum Target {
+    public enum Target {
         /** Standard output. */
         SYSTEM_OUT,
         /** Standard error output. */
