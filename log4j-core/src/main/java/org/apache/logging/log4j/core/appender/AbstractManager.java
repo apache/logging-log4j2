@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
@@ -29,7 +30,8 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Abstract base class used to register managers.
  */
-public abstract class AbstractManager {
+public abstract class AbstractManager implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     /**
      * Allow subclasses access to the status logger without creating another instance.
