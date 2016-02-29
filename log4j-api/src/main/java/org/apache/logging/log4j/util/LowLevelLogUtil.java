@@ -29,7 +29,7 @@ import java.util.Objects;
  *
  * @since 2.6
  */
-class LowLevelLogUtil {
+final class LowLevelLogUtil {
 
     private static PrintWriter writer = new PrintWriter(System.err, true);
 
