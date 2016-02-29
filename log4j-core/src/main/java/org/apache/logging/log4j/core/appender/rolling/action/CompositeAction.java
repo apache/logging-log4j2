@@ -25,6 +25,7 @@ import java.util.List;
  * A group of Actions to be executed in sequence.
  */
 public class CompositeAction extends AbstractAction {
+    private static final long serialVersionUID = 1L;
     
     /**
      * Actions to perform.

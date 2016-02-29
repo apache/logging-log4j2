@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.flume.appender;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +25,8 @@ import org.apache.flume.Event;
 /**
  *
  */
-public class BatchEvent {
+public class BatchEvent implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private final List<Event> events = new ArrayList<>();
 

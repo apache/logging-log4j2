@@ -31,6 +31,7 @@ import org.apache.logging.log4j.util.Strings;
  * Socket Manager for UDP connections.
  */
 public class DatagramSocketManager extends AbstractSocketManager {
+    private static final long serialVersionUID = 1L;
 
     private static final DatagramSocketManagerFactory FACTORY = new DatagramSocketManagerFactory();
 

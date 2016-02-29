@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.io.Serializable;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -27,7 +29,8 @@ import org.apache.logging.log4j.status.StatusLogger;
  * The array of failover Appenders.
  */
 @Plugin(name = "failovers", category = "Core")
-public final class FailoversPlugin {
+public final class FailoversPlugin implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 

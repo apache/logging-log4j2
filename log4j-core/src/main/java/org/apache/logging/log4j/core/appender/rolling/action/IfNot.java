@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Objects;
@@ -28,7 +29,8 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
  * Wrapper {@code PathCondition} that accepts objects that are rejected by the wrapped component filter.
  */
 @Plugin(name = "IfNot", category = "Core", printObject = true)
-public final class IfNot implements PathCondition {
+public final class IfNot implements PathCondition, Serializable {
+    private static final long serialVersionUID = 1L;
 
     private final PathCondition negate;
 

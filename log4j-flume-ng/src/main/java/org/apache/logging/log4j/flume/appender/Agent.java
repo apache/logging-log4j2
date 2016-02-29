@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.flume.appender;
 
+import java.io.Serializable;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -27,7 +29,8 @@ import org.apache.logging.log4j.status.StatusLogger;
  * Agent Specification for FlumeAvroAppender.
  */
 @Plugin(name = "Agent", category = "Core", printObject = true)
-public final class Agent {
+public final class Agent implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private static final String DEFAULT_HOST = "localhost";
 

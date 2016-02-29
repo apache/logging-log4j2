@@ -36,6 +36,7 @@ import org.apache.logging.log4j.core.lookup.StrSubstitutor;
  * Abstract action for processing files that are accepted by the specified PathFilters.
  */
 public abstract class AbstractPathAction extends AbstractAction {
+    private static final long serialVersionUID = 1L;
 
     private final String basePathString;
     private final Set<FileVisitOption> options;

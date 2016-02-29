@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 import org.apache.logging.log4j.util.Chars;
@@ -28,7 +29,8 @@ import org.apache.logging.log4j.util.Strings;
  * This class comes complete with various factory methods.
  * If these do not suffice, you can subclass and implement your own matcher.
  */
-public abstract class StrMatcher {
+public abstract class StrMatcher implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     /**
      * Matches the comma character.
@@ -267,6 +269,7 @@ public abstract class StrMatcher {
      * Class used to define a set of characters for matching purposes.
      */
     static final class CharSetMatcher extends StrMatcher {
+        private static final long serialVersionUID = 1L;
         /** The set of characters to match. */
         private final char[] chars;
 
@@ -301,6 +304,7 @@ public abstract class StrMatcher {
      * Class used to define a character for matching purposes.
      */
     static final class CharMatcher extends StrMatcher {
+        private static final long serialVersionUID = 1L;
         /** The character to match. */
         private final char ch;
 
@@ -334,6 +338,7 @@ public abstract class StrMatcher {
      * Class used to define a set of characters for matching purposes.
      */
     static final class StringMatcher extends StrMatcher {
+        private static final long serialVersionUID = 1L;
         /** The string to match, as a character array. */
         private final char[] chars;
 
@@ -382,6 +387,7 @@ public abstract class StrMatcher {
      * Class used to match no characters.
      */
     static final class NoMatcher extends StrMatcher {
+        private static final long serialVersionUID = 1L;
 
         /**
          * Constructs a new instance of <code>NoMatcher</code>.
@@ -410,6 +416,7 @@ public abstract class StrMatcher {
      * Class used to match whitespace as per trim().
      */
     static final class TrimMatcher extends StrMatcher {
+        private static final long serialVersionUID = 1L;
 
         /**
          * Constructs a new instance of <code>TrimMatcher</code>.

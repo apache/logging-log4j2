@@ -17,6 +17,8 @@
 
 package org.apache.logging.log4j.core.appender.mom.kafka;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -29,6 +31,7 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.util.Log4jThread;
 
 public class KafkaManager extends AbstractManager {
+    private static final long serialVersionUID = 1L;
 
     public static final String DEFAULT_TIMEOUT_MILLIS = "30000";
 
@@ -38,7 +41,7 @@ public class KafkaManager extends AbstractManager {
     static KafkaProducerFactory producerFactory = new DefaultKafkaProducerFactory();
 
     private final Properties config = new Properties();
-    private Producer<byte[], byte[]> producer = null;
+    private transient Producer<byte[], byte[]> producer = null;
     private final int timeoutMillis;
 
     private final String topic;
@@ -53,6 +56,11 @@ public class KafkaManager extends AbstractManager {
             config.setProperty(property.getName(), property.getValue());
         }
         this.timeoutMillis = Integer.parseInt(config.getProperty("timeout.ms", DEFAULT_TIMEOUT_MILLIS));
+    }
+
+    private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        this.producer = null;
     }
 
     @Override

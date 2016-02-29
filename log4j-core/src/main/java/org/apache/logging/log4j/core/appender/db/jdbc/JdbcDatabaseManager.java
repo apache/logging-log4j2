@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
+import java.io.Serializable;
 import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -36,6 +37,7 @@ import org.apache.logging.log4j.core.util.Closer;
  * An {@link AbstractDatabaseManager} implementation for relational databases accessed via JDBC.
  */
 public final class JdbcDatabaseManager extends AbstractDatabaseManager {
+    private static final long serialVersionUID = 1L;
 
     private static final JdbcDatabaseManagerFactory INSTANCE = new JdbcDatabaseManagerFactory();
 
@@ -43,8 +45,8 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
     private final ConnectionSource connectionSource;
     private final String sqlStatement;
 
-    private Connection connection;
-    private PreparedStatement statement;
+    private transient Connection connection;
+    private transient PreparedStatement statement;
     private boolean isBatchSupported;
 
     private JdbcDatabaseManager(final String name, final int bufferSize, final ConnectionSource connectionSource,
@@ -238,7 +240,8 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
     /**
      * Encapsulates information about a database column and how to persist data to it.
      */
-    private static final class Column {
+    private static final class Column implements Serializable {
+        private static final long serialVersionUID = 1L;
         private final PatternLayout layout;
         private final boolean isEventTimestamp;
         private final boolean isUnicode;

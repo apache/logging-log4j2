@@ -31,6 +31,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
  */
 @Plugin(name = "KeyStore", category = "Core", printObject = true)
 public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
+    private static final long serialVersionUID = 1L;
 
     private final String keyManagerFactoryAlgorithm;
 

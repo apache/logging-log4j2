@@ -31,6 +31,7 @@ import org.lightcouch.Response;
  * The Apache CouchDB implementation of {@link NoSqlConnection}.
  */
 public final class CouchDbConnection extends AbstractNoSqlConnection<Map<String, Object>, DefaultNoSqlObject> {
+    private static final long serialVersionUID = 1L;
     private final CouchDbClient client;
 
     public CouchDbConnection(final CouchDbClient client) {

@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 
 import org.apache.logging.log4j.core.LogEvent;
@@ -30,7 +31,8 @@ import org.apache.logging.log4j.status.StatusLogger;
  * always return false.
  */
 @Plugin(name = "OnStartupTriggeringPolicy", category = "Core", printObject = true)
-public class OnStartupTriggeringPolicy implements TriggeringPolicy {
+public class OnStartupTriggeringPolicy implements TriggeringPolicy, Serializable {
+    private static final long serialVersionUID = 1L;
     private static long JVM_START_TIME = initStartTime();
 
     private boolean evaluated = false;

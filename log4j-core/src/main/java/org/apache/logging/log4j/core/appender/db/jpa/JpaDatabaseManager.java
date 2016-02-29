@@ -32,16 +32,17 @@ import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
  * An {@link AbstractDatabaseManager} implementation for relational databases accessed via JPA.
  */
 public final class JpaDatabaseManager extends AbstractDatabaseManager {
+    private static final long serialVersionUID = 1L;
     private static final JPADatabaseManagerFactory FACTORY = new JPADatabaseManagerFactory();
 
     private final String entityClassName;
     private final Constructor<? extends AbstractLogEventWrapperEntity> entityConstructor;
     private final String persistenceUnitName;
 
-    private EntityManagerFactory entityManagerFactory;
+    private transient EntityManagerFactory entityManagerFactory;
 
-    private EntityManager entityManager;
-    private EntityTransaction transaction;
+    private transient EntityManager entityManager;
+    private transient EntityTransaction transaction;
 
     private JpaDatabaseManager(final String name, final int bufferSize,
                                final Class<? extends AbstractLogEventWrapperEntity> entityClass,

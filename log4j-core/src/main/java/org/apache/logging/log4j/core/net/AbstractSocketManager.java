@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.appender.OutputStreamManager;
  * Abstract base class for managing sockets.
  */
 public abstract class AbstractSocketManager extends OutputStreamManager {
+    private static final long serialVersionUID = 1L;
 
     /**
      * The Internet address of the host.

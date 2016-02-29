@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.appender.rolling.action;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -25,7 +26,8 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Abstract base class for implementations of Action.
  */
-public abstract class AbstractAction implements Action {
+public abstract class AbstractAction implements Action, Serializable {
+    private static final long serialVersionUID = 1L;
     
     /**
      * Allows subclasses access to the status logger without creating another instance.

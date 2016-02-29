@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.appender.AbstractManager;
  *
  */
 public abstract class AbstractFlumeManager extends AbstractManager {
+    private static final long serialVersionUID = 1L;
 
     public AbstractFlumeManager(final String name) {
         super(name);

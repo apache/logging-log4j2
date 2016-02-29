@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.net;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Properties;
 
@@ -54,6 +55,7 @@ import org.apache.logging.log4j.util.Strings;
  * Manager for sending SMTP events.
  */
 public class SmtpManager extends AbstractManager {
+    private static final long serialVersionUID = 1L;
     private static final SMTPManagerFactory FACTORY = new SMTPManagerFactory();
 
     private final Session session;
@@ -162,13 +164,7 @@ public class SmtpManager extends AbstractManager {
             final MimeMultipart mp = getMimeMultipart(encodedBytes, headers);
 
             sendMultipartMessage(message, mp);
-        } catch (final MessagingException e) {
-            logError("caught exception while sending e-mail notification.", e);
-            throw new LoggingException("Error occurred while sending email", e);
-        } catch (final IOException e) {
-            logError("caught exception while sending e-mail notification.", e);
-            throw new LoggingException("Error occurred while sending email", e);
-        } catch (final RuntimeException e) {
+        } catch (final MessagingException | IOException | RuntimeException e) {
             logError("caught exception while sending e-mail notification.", e);
             throw new LoggingException("Error occurred while sending email", e);
         }
@@ -259,7 +255,7 @@ public class SmtpManager extends AbstractManager {
     /**
      * Factory data.
      */
-    private static class FactoryData {
+    private static class FactoryData implements Serializable {
         private final String to;
         private final String cc;
         private final String bcc;

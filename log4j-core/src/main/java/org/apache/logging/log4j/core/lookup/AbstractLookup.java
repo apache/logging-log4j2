@@ -16,12 +16,15 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import java.io.Serializable;
+
 /**
  * A default lookup for others to extend.
  * 
  * @since 2.1
  */
-public abstract class AbstractLookup implements StrLookup {
+public abstract class AbstractLookup implements StrLookup, Serializable {
+    private static final long serialVersionUID = 1L;
 
     /**
      * Calls {@code lookup(null, key)} in the super class.

@@ -30,6 +30,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
  */
 @Plugin(name = "TrustStore", category = "Core", printObject = true)
 public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
+    private static final long serialVersionUID = 1L;
 
     private final String trustManagerFactoryAlgorithm;
 

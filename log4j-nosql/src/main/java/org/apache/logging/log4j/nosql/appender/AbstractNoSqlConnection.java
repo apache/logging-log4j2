@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.nosql.appender;
 
+import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -27,7 +28,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @param <T>See
  *            {@link NoSqlConnection}.
  */
-public abstract class AbstractNoSqlConnection<W, T extends NoSqlObject<W>> implements NoSqlConnection<W, T> {
+public abstract class AbstractNoSqlConnection<W, T extends NoSqlObject<W>>
+    implements NoSqlConnection<W, T>, Serializable {
+    private static final long serialVersionUID = 1L;
 
     private final AtomicBoolean closed = new AtomicBoolean(false);
 

@@ -38,6 +38,7 @@ import org.apache.logging.log4j.core.util.Log4jThread;
  * The Rolling File Manager.
  */
 public class RollingFileManager extends FileManager {
+    private static final long serialVersionUID = 1L;
 
     private static RollingFileManagerFactory factory = new RollingFileManagerFactory();
 

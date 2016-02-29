@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -34,7 +35,8 @@ import org.apache.logging.log4j.util.Strings;
  * A {@link JdbcAppender} connection source that uses a {@link DataSource} to connect to the database.
  */
 @Plugin(name = "DataSource", category = "Core", elementType = "connectionSource", printObject = true)
-public final class DataSourceConnectionSource implements ConnectionSource {
+public final class DataSourceConnectionSource implements ConnectionSource, Serializable {
+    private static final long serialVersionUID = 1L;
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final DataSource dataSource;

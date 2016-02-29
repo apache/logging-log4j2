@@ -31,6 +31,7 @@ import org.apache.commons.compress.utils.IOUtils;
  * Compresses a file using bzip2 compression.
  */
 public final class CommonsCompressAction extends AbstractAction {
+    private static final long serialVersionUID = 1L;
 
     private static final int BUF_SIZE = 8102;
 

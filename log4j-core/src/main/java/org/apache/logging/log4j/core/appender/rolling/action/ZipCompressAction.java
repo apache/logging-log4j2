@@ -28,6 +28,7 @@ import java.util.zip.ZipOutputStream;
  * Compresses a file using Zip compression.
  */
 public final class ZipCompressAction extends AbstractAction {
+    private static final long serialVersionUID = 1L;
 
     private static final int BUF_SIZE = 8102;
 

@@ -55,6 +55,7 @@ import org.apache.logging.log4j.core.util.NullOutputStream;
  */
 //CHECKSTYLE:ON
 public class MemoryMappedFileManager extends OutputStreamManager {
+    private static final long serialVersionUID = 1L;
     /**
      * Default length of region to map.
      */

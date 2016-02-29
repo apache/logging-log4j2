@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.Layout;
  * allow appenders to reconfigure without requiring a new stream.
  */
 public class OutputStreamManager extends AbstractManager {
+    private static final long serialVersionUID = 1L;
 
     private volatile OutputStream os;
     protected final Layout<?> layout;

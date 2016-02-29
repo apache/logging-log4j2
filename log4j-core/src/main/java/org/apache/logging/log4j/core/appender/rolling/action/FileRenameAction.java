@@ -26,6 +26,7 @@ import java.nio.channels.FileChannel;
  * File rename action.
  */
 public class FileRenameAction extends AbstractAction {
+    private static final long serialVersionUID = 1L;
 
     /**
      * Source.

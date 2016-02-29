@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -136,7 +137,8 @@ import org.apache.logging.log4j.util.Strings;
  * property to <b>true</b>.
  * </p>
  */
-public class StrSubstitutor {
+public class StrSubstitutor implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     /**
      * Constant for the default escape character.

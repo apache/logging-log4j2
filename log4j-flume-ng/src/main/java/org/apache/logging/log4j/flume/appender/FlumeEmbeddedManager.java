@@ -35,6 +35,7 @@ import org.apache.logging.log4j.util.Strings;
  *
  */
 public class FlumeEmbeddedManager extends AbstractFlumeManager {
+    private static final long serialVersionUID = 1L;
 
     private static final String FILE_SEP = PropertiesUtil.getProperties().getStringProperty("file.separator");
 

@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -39,11 +42,12 @@ import org.apache.logging.log4j.status.StatusLogger;
  *  SSL Configuration
  */
 @Plugin(name = "Ssl", category = "Core", printObject = true)
-public class SslConfiguration {
+public class SslConfiguration implements Serializable {
+    private static final long serialVersionUID = 1L;
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
     private final KeyStoreConfiguration keyStoreConfig;
     private final TrustStoreConfiguration trustStoreConfig;
-    private final SSLContext sslContext;
+    private transient SSLContext sslContext;
     private final String protocol;
 
     private SslConfiguration(final String protocol, final KeyStoreConfiguration keyStoreConfig,
@@ -51,6 +55,11 @@ public class SslConfiguration {
         this.keyStoreConfig = keyStoreConfig;
         this.trustStoreConfig = trustStoreConfig;
         this.protocol = protocol == null ? SslConfigurationDefaults.PROTOCOL : protocol;
+        this.sslContext = this.createSslContext();
+    }
+
+    private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
         this.sslContext = this.createSslContext();
     }
 

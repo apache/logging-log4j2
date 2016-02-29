@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 import org.apache.logging.log4j.core.LogEvent;
@@ -27,7 +28,8 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
  * Triggering policy that wraps other policies.
  */
 @Plugin(name = "Policies", category = "Core", printObject = true)
-public final class CompositeTriggeringPolicy implements TriggeringPolicy {
+public final class CompositeTriggeringPolicy implements TriggeringPolicy, Serializable {
+    private static final long serialVersionUID = 1L;
 
     private final TriggeringPolicy[] triggeringPolicy;
 

@@ -39,6 +39,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * involving a configured ConnectionFactory and Destination.
  */
 public class JmsManager extends AbstractManager {
+    private static final long serialVersionUID = 1L;
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 

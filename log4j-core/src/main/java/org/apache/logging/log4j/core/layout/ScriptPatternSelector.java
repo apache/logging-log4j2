@@ -16,6 +16,12 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.script.SimpleBindings;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -31,16 +37,12 @@ import org.apache.logging.log4j.core.script.AbstractScript;
 import org.apache.logging.log4j.core.script.ScriptRef;
 import org.apache.logging.log4j.status.StatusLogger;
 
-import javax.script.SimpleBindings;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * Selects the pattern to use based on the Marker in the LogEvent.
  */
 @Plugin(name = "ScriptPatternSelector", category = Node.CATEGORY, elementType = PatternSelector.ELEMENT_TYPE, printObject = true)
-public class ScriptPatternSelector implements PatternSelector {
+public class ScriptPatternSelector implements PatternSelector, Serializable {
+    private static final long serialVersionUID = 1L;
 
     private final Map<String, PatternFormatter[]> formatterMap = new HashMap<>();
 
