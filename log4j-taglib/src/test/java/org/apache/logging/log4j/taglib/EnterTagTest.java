@@ -32,7 +32,7 @@ import static org.junit.Assert.*;
 /**
  *
  */
-public class EntryTagTest {
+public class EnterTagTest {
     private static final String CONFIG = "log4j-test1.xml";
 
     @ClassRule
