@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 @Plugin(name = "ThreadPatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "t", "thread" })
 public final class ThreadPatternConverter extends LogEventPatternConverter {
+    private static final long serialVersionUID = 1L;
     /**
      * Singleton.
      */

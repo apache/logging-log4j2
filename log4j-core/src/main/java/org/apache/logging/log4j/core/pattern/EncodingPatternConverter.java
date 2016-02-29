@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 @Plugin(name = "encode", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "enc", "encode" })
 public final class EncodingPatternConverter extends LogEventPatternConverter {
+    private static final long serialVersionUID = 1L;
 
     private final List<PatternFormatter> formatters;
 

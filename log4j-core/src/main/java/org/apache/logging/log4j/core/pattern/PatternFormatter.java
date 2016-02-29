@@ -16,13 +16,17 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import java.io.Serializable;
+
 import org.apache.logging.log4j.core.LogEvent;
 
 
 /**
  *
  */
-public class PatternFormatter {
+public class PatternFormatter implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private final LogEventPatternConverter converter;
     private final FormattingInfo field;
     private final boolean skipFormattingInfo;

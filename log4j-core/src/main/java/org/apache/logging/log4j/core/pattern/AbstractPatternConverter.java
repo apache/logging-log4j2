@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import java.io.Serializable;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -27,7 +29,8 @@ import org.apache.logging.log4j.status.StatusLogger;
  * responsible for converting an object in a converter specific manner.
  * </p>
  */
-public abstract class AbstractPatternConverter implements PatternConverter {
+public abstract class AbstractPatternConverter implements PatternConverter, Serializable {
+    private static final long serialVersionUID = 1L;
     /**
      * Allow subclasses access to the status logger.
      */

@@ -33,6 +33,7 @@ import org.apache.logging.log4j.core.util.Constants;
 @Plugin(name = "ExtendedThrowablePatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "xEx", "xThrowable", "xException" })
 public final class ExtendedThrowablePatternConverter extends ThrowablePatternConverter {
+    private static final long serialVersionUID = 1L;
 
     /**
      * Private constructor.

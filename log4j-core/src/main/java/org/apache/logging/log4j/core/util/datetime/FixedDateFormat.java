@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.core.util.datetime;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Objects;
 
@@ -27,7 +28,9 @@ import java.util.Objects;
  * Related benchmarks: /log4j-perf/src/main/java/org/apache/logging/log4j/perf/jmh/TimeFormatBenchmark.java and
  * /log4j-perf/src/main/java/org/apache/logging/log4j/perf/jmh/ThreadsafeDateFormatBenchmark.java
  */
-public class FixedDateFormat {
+public class FixedDateFormat implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     /**
      * Enumeration over the supported date/time format patterns.
      * <p>

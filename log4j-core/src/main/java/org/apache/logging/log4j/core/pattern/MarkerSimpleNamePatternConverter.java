@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 @Plugin(name = "MarkerNamePatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "markerSimpleName" })
 public final class MarkerSimpleNamePatternConverter extends LogEventPatternConverter {
+    private static final long serialVersionUID = 1L;
 
     /**
      * Private constructor.

@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 @Plugin(name = "RelativeTimePatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "r", "relative" })
 public class RelativeTimePatternConverter extends LogEventPatternConverter {
+    private static final long serialVersionUID = 1L;
     /**
      * Cached formatted timestamp.
      */

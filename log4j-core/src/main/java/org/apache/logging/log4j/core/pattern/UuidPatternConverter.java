@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.util.UuidUtil;
 @Plugin(name = "UuidPatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "u", "uuid" })
 public final class UuidPatternConverter extends LogEventPatternConverter {
+    private static final long serialVersionUID = 1L;
 
     private final boolean isRandom;
 

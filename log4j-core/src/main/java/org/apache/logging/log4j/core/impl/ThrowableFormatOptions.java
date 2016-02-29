@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -27,7 +28,8 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Contains options which control how a {@link Throwable} pattern is formatted.
  */
-public final class ThrowableFormatOptions {
+public final class ThrowableFormatOptions implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private static final int DEFAULT_LINES = Integer.MAX_VALUE;
 

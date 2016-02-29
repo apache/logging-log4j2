@@ -17,10 +17,14 @@
 
 package org.apache.logging.log4j.core.pattern;
 
+import java.io.Serializable;
+
 /**
  * Modifies the output of a pattern converter for a specified minimum and maximum width and alignment.
  */
-public final class FormattingInfo {
+public final class FormattingInfo implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     /**
      * Array of spaces.
      */

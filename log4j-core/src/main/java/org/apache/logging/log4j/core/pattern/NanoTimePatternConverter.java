@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 @Plugin(name = "NanoTimePatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "N", "nano" })
 public final class NanoTimePatternConverter extends LogEventPatternConverter {
+    private static final long serialVersionUID = 1L;
 
     /**
      * Private constructor.

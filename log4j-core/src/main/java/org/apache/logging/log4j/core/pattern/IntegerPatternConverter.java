@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 @Plugin(name = "IntegerPatternConverter", category = "FileConverter")
 @ConverterKeys({ "i", "index" })
 public final class IntegerPatternConverter extends AbstractPatternConverter implements ArrayPatternConverter {
+    private static final long serialVersionUID = 1L;
     
     /**
      * Singleton.

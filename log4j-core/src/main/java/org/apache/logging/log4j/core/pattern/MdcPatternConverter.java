@@ -33,6 +33,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 @Plugin(name = "MdcPatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "X", "mdc", "MDC" })
 public final class MdcPatternConverter extends LogEventPatternConverter {
+    private static final long serialVersionUID = 1L;
     /**
      * Name of property to output.
      */

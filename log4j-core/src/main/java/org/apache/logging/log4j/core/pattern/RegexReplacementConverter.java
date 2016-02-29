@@ -30,6 +30,7 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 @Plugin(name = "replace", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "replace" })
 public final class RegexReplacementConverter extends LogEventPatternConverter {
+    private static final long serialVersionUID = 1L;
 
     private final Pattern pattern;
 

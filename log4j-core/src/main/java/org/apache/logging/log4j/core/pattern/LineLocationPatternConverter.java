@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 @Plugin(name = "LineLocationPatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "L", "line" })
 public final class LineLocationPatternConverter extends LogEventPatternConverter {
+    private static final long serialVersionUID = 1L;
     /**
      * Singleton.
      */

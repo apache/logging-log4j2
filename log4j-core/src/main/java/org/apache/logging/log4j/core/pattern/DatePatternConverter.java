@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
@@ -35,8 +36,11 @@ import org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat;
 @Plugin(name = "DatePatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({"d", "date"})
 public final class DatePatternConverter extends LogEventPatternConverter implements ArrayPatternConverter {
+    private static final long serialVersionUID = 1L;
 
-    private abstract static class Formatter {
+    private abstract static class Formatter implements Serializable {
+        private static final long serialVersionUID = 1L;
+
         long previousTime; // for ThreadLocal caching mode
 
         abstract String format(long timeMillis);
@@ -49,6 +53,8 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     }
 
     private static final class PatternFormatter extends Formatter {
+        private static final long serialVersionUID = 1L;
+
         private final FastDateFormat fastDateFormat;
 
         // this field is only used in ThreadLocal caching mode
@@ -79,6 +85,8 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     }
 
     private static final class FixedFormatter extends Formatter {
+        private static final long serialVersionUID = 1L;
+
         private final FixedDateFormat fixedDateFormat;
 
         // below fields are only used in ThreadLocal caching mode
@@ -109,6 +117,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     }
 
     private static final class UnixFormatter extends Formatter {
+        private static final long serialVersionUID = 1L;
 
         @Override
         String format(final long timeMillis) {
@@ -122,6 +131,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     }
 
     private static final class UnixMillisFormatter extends Formatter {
+        private static final long serialVersionUID = 1L;
 
         @Override
         String format(final long timeMillis) {
@@ -134,7 +144,9 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         }
     }
 
-    private final class CachedTime {
+    private final class CachedTime implements Serializable {
+        private static final long serialVersionUID = 1L;
+
         public long timestampMillis;
         public String formatted;
 

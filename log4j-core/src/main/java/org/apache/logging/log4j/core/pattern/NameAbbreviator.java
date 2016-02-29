@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +24,8 @@ import java.util.List;
 /**
  * NameAbbreviator generates abbreviated logger and class names.
  */
-public abstract class NameAbbreviator {
+public abstract class NameAbbreviator implements Serializable {
+    private static final long serialVersionUID = 1L;
     /**
      * Default (no abbreviation) abbreviator.
      */
@@ -136,6 +138,7 @@ public abstract class NameAbbreviator {
      * Abbreviator that simply appends full name to buffer.
      */
     private static class NOPAbbreviator extends NameAbbreviator {
+        private static final long serialVersionUID = 1L;
         /**
          * Constructor.
          */
@@ -155,6 +158,7 @@ public abstract class NameAbbreviator {
      * Abbreviator that drops starting path elements.
      */
     private static class MaxElementAbbreviator extends NameAbbreviator {
+        private static final long serialVersionUID = 1L;
         /**
          * Maximum number of path elements to output.
          */
@@ -197,7 +201,8 @@ public abstract class NameAbbreviator {
     /**
      * Fragment of an pattern abbreviator.
      */
-    private static class PatternAbbreviatorFragment {
+    private static class PatternAbbreviatorFragment implements Serializable {
+        private static final long serialVersionUID = 1L;
         /**
          * Count of initial characters of element to output.
          */
@@ -254,6 +259,7 @@ public abstract class NameAbbreviator {
      * Pattern abbreviator.
      */
     private static class PatternAbbreviator extends NameAbbreviator {
+        private static final long serialVersionUID = 1L;
         /**
          * Element abbreviation patterns.
          */

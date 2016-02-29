@@ -69,6 +69,7 @@ import org.apache.logging.log4j.util.Strings;
 @Plugin(name = "highlight", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "highlight" })
 public final class HighlightConverter extends LogEventPatternConverter implements AnsiConverter {
+    private static final long serialVersionUID = 1L;
 
     private static final Map<Level, String> DEFAULT_STYLES = new HashMap<>();
 

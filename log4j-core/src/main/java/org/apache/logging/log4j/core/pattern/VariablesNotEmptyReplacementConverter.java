@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 @Plugin(name = "notEmpty", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "notEmpty", "varsNotEmpty", "variablesNotEmpty", })
 public final class VariablesNotEmptyReplacementConverter extends LogEventPatternConverter {
+    private static final long serialVersionUID = 1L;
 
     private final List<PatternFormatter> formatters;
 

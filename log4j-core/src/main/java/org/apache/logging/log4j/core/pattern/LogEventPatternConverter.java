@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.LogEvent;
  * that can format information from instances of LoggingEvent.
  */
 public abstract class LogEventPatternConverter extends AbstractPatternConverter {
+    private static final long serialVersionUID = 1L;
 
     /**
      * Constructs an instance of LoggingEventPatternConverter.

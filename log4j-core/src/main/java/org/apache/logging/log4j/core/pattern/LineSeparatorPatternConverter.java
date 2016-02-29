@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.util.Constants;
 @Plugin(name = "LineSeparatorPatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "n" })
 public final class LineSeparatorPatternConverter extends LogEventPatternConverter {
+    private static final long serialVersionUID = 1L;
 
     /**
      * Singleton.
