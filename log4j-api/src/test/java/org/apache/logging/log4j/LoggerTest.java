@@ -192,7 +192,7 @@ public class LoggerTest {
             logger.catching(e);
             assertEquals(1, results.size());
             assertThat("Incorrect Catching",
-                    results.get(0), startsWith("CATCHING[ EXCEPTION ] ERROR catching java.lang.NullPointerException"));
+                    results.get(0), startsWith("CATCHING[ EXCEPTION ] ERROR Catching java.lang.NullPointerException"));
         }
     }
 
@@ -522,7 +522,7 @@ public class LoggerTest {
         logger.throwing(new IllegalArgumentException("Test Exception"));
         assertEquals(1, results.size());
         assertThat("Incorrect Throwing",
-                results.get(0), startsWith("THROWING[ EXCEPTION ] ERROR throwing java.lang.IllegalArgumentException: Test Exception"));
+                results.get(0), startsWith("THROWING[ EXCEPTION ] ERROR Throwing java.lang.IllegalArgumentException: Test Exception"));
     }
 
 

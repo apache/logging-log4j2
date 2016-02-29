@@ -88,8 +88,8 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     private static final long serialVersionUID = 2L;
 
     private static final String FQCN = AbstractLogger.class.getName();
-    private static final String THROWING = "throwing";
-    private static final String CATCHING = "catching";
+    private static final String THROWING = "Throwing";
+    private static final String CATCHING = "Catching";
 
     private final String name;
     private final MessageFactory messageFactory;
