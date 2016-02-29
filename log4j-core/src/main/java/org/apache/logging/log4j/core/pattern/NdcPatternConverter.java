@@ -24,35 +24,33 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
  * Returns the event's NDC in a StringBuilder.
  */
 @Plugin(name = "NdcPatternConverter", category = PatternConverter.CATEGORY)
-@ConverterKeys({ "x", "NDC" })
+@ConverterKeys({"x", "NDC"})
 public final class NdcPatternConverter extends LogEventPatternConverter {
-  /**
-   *   Singleton.
-   */
-  private static final NdcPatternConverter INSTANCE =
-    new NdcPatternConverter();
+    /**
+     * Singleton.
+     */
+    private static final NdcPatternConverter INSTANCE =
+        new NdcPatternConverter();
 
-  /**
-   * Private constructor.
-   */
-  private NdcPatternConverter() {
-    super("NDC", "ndc");
-  }
+    /**
+     * Private constructor.
+     */
+    private NdcPatternConverter() {
+        super("NDC", "ndc");
+    }
 
-  /**
-   * Obtains an instance of NdcPatternConverter.
-   * @param options options, may be null.
-   * @return instance of NdcPatternConverter.
-   */
-  public static NdcPatternConverter newInstance(final String[] options) {
-    return INSTANCE;
-  }
+    /**
+     * Obtains an instance of NdcPatternConverter.
+     *
+     * @param options options, may be null.
+     * @return instance of NdcPatternConverter.
+     */
+    public static NdcPatternConverter newInstance(final String[] options) {
+        return INSTANCE;
+    }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-public void format(final LogEvent event, final StringBuilder toAppendTo) {
-    toAppendTo.append(event.getContextStack());
-  }
+    @Override
+    public void format(final LogEvent event, final StringBuilder toAppendTo) {
+        toAppendTo.append(event.getContextStack());
+    }
 }
