@@ -113,29 +113,26 @@ public final class TimeFilter extends AbstractFilter {
             @PluginAttribute("timezone") final String tz,
             @PluginAttribute("onMatch") final Result match,
             @PluginAttribute("onMismatch") final Result mismatch) {
-        final SimpleDateFormat stf = new SimpleDateFormat("HH:mm:ss");
-        long s = 0;
-        if (start != null) {
-            stf.setTimeZone(TimeZone.getTimeZone("UTC"));
-            try {
-                s = stf.parse(start).getTime();
-            } catch (final ParseException ex) {
-                LOGGER.warn("Error parsing start value " + start, ex);
-            }
-        }
-        long e = Long.MAX_VALUE;
-        if (end != null) {
-            stf.setTimeZone(TimeZone.getTimeZone("UTC"));
-            try {
-                e = stf.parse(end).getTime();
-            } catch (final ParseException ex) {
-                LOGGER.warn("Error parsing start value " + end, ex);
-            }
-        }
+        final long s = parseTimestamp(start, 0);
+        final long e = parseTimestamp(end, Long.MAX_VALUE);
         final TimeZone timezone = tz == null ? TimeZone.getDefault() : TimeZone.getTimeZone(tz);
         final Result onMatch = match == null ? Result.NEUTRAL : match;
         final Result onMismatch = mismatch == null ? Result.DENY : mismatch;
         return new TimeFilter(s, e, timezone, onMatch, onMismatch);
+    }
+
+    private static long parseTimestamp(final String timestamp, final long defaultValue) {
+        if (timestamp == null) {
+            return defaultValue;
+        }
+        final SimpleDateFormat stf = new SimpleDateFormat("HH:mm:ss");
+        stf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        try {
+            return stf.parse(timestamp).getTime();
+        } catch (ParseException e) {
+            LOGGER.warn("Error parsing TimeFilter timestamp value {}", timestamp, e);
+            return defaultValue;
+        }
     }
 
 }
