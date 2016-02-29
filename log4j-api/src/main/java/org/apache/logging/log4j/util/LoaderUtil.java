@@ -229,7 +229,7 @@ public final class LoaderUtil {
                         resources.add(new UrlResource(cl, resourceEnum.nextElement()));
                     }
                 } catch (final IOException e) {
-                    e.printStackTrace();
+                    LowLevelLogUtil.logException(e);
                 }
             }
         }
