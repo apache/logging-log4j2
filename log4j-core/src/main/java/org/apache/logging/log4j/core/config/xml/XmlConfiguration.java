@@ -16,10 +16,7 @@
  */
 package org.apache.logging.log4j.core.config.xml;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -67,7 +64,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             "http://apache.org/xml/features/xinclude/fixup-language";
     private static final String XINCLUDE_FIXUP_BASE_URIS =
             "http://apache.org/xml/features/xinclude/fixup-base-uris";
-    private static final String[] VERBOSE_CLASSES = new String[] {ResolverUtil.class.getName()};
+    private static final String[] VERBOSE_CLASSES = new String[]{ResolverUtil.class.getName()};
     private static final String LOG4J_XSD = "Log4j-config.xsd";
 
     private final List<Status> status = new ArrayList<>();
@@ -99,7 +96,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                 if (throwable instanceof UnsupportedOperationException) {
                     LOGGER.warn(
                             "The DocumentBuilder {} does not support an operation: {}."
-                            + "Trying again without XInclude...",
+                                    + "Trying again without XInclude...",
                             documentBuilder, e);
                     document = newDocumentBuilder(false).parse(source);
                 } else {
@@ -136,6 +133,9 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                         if (configFile != null) {
                             FileWatcher watcher = new ConfiguratonFileWatcher(this, listeners);
                             getWatchManager().watchFile(configFile, watcher);
+                            for (File file : getOptionalWatchFiles(configFile.getParent(), attrs)) {
+                                getWatchManager().watchFile(file, watcher);
+                            }
                         }
                     }
                 } else if ("advertiser".equalsIgnoreCase(key)) {
@@ -145,6 +145,8 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             statusConfig.initialize();
         } catch (final SAXException domEx) {
             LOGGER.error("Error parsing {}", configSource.getLocation(), domEx);
+        } catch (final FileNotFoundException fnfe) {
+            LOGGER.error("Error parsing {}", configSource.getLocation(), fnfe);
         } catch (final IOException ioe) {
             LOGGER.error("Error parsing {}", configSource.getLocation(), ioe);
         } catch (final ParserConfigurationException pex) {
@@ -185,8 +187,37 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
     }
 
     /**
+     * Retrieves a comma separated list of files to monitor for automatic reconfiguration.
+     * File names must be a valid file and already exist. No restrictions on fileType.
+     *
+     * @param baseDir      baseDir to search for files
+     * @param attributeMap map containing optionalMonitorFiles key and value
+     * @return a new DocumentBuilder
+     * @throws ParserConfigurationException
+     */
+    public List<File> getOptionalWatchFiles(String baseDir, Map<String, String> attributeMap) throws FileNotFoundException {
+        final String attr_name = "optionalMonitorFiles"; //attr name consistent with monitorInterval
+        final List<File> fileList = new ArrayList<>();
+        final String rawFileNames = attributeMap.get(attr_name);
+        if (rawFileNames == null) {
+            return fileList;
+        }
+        for (String fileName : rawFileNames.split(Patterns.COMMA_SEPARATOR)) {
+            final String absoluteFileName = baseDir + File.separator + fileName.trim();
+            File optionalWatchFile = new File(absoluteFileName);
+            if (optionalWatchFile.exists()) {
+                fileList.add(optionalWatchFile);
+            } else {
+                LOGGER.error("optionalMonitorFile: {} was not found or is not a valid file", absoluteFileName);
+                throw new FileNotFoundException(absoluteFileName);
+            }
+        }
+        return fileList;
+    }
+
+    /**
      * Creates a new DocumentBuilder suitable for parsing a configuration file.
-     * 
+     *
      * @param xIncludeAware enabled XInclude
      * @return a new DocumentBuilder
      * @throws ParserConfigurationException
