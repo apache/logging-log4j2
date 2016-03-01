@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,8 +28,7 @@ import org.apache.logging.log4j.message.MapMessage;
  * A map-based lookup.
  */
 @Plugin(name = "map", category = StrLookup.CATEGORY)
-public class MapLookup implements StrLookup, Serializable {
-    private static final long serialVersionUID = 1L;
+public class MapLookup implements StrLookup {
 
     /**
      * Map keys are variable names and value.

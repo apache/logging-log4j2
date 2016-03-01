@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import java.io.Serializable;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.message.StructuredDataMessage;
@@ -26,8 +24,7 @@ import org.apache.logging.log4j.message.StructuredDataMessage;
  * Looks up keys from {@link org.apache.logging.log4j.message.StructuredDataMessage} log messages.
  */
 @Plugin(name = "sd", category = StrLookup.CATEGORY)
-public class StructuredDataLookup implements StrLookup, Serializable {
-    private static final long serialVersionUID = 1L;
+public class StructuredDataLookup implements StrLookup {
 
     /**
      * Returns {@code null}. This Lookup plugin does not make sense outside the context of a LogEvent.

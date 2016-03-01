@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import java.io.Serializable;
-
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -26,8 +24,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
  * Looks up keys from {@link ThreadContext} objects..
  */
 @Plugin(name = "ctx", category = StrLookup.CATEGORY)
-public class ContextMapLookup implements StrLookup, Serializable {
-    private static final long serialVersionUID = 1L;
+public class ContextMapLookup implements StrLookup {
 
     /**
      * Looks up the value from the ThreadContext Map.
