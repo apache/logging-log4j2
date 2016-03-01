@@ -244,6 +244,23 @@ public class PatternParserTest {
     }
 
     @Test
+    public void testThreadNamePattern() {
+        testThreadNamePattern("%thread");
+    }
+
+    private void testThreadNamePattern(final String pattern) {
+        final List<PatternFormatter> formatters = parser.parse(pattern);
+        assertNotNull(formatters);
+        assertEquals(1, formatters.size());
+        assertTrue(formatters.get(0).getConverter() instanceof ThreadPatternConverter);
+    }
+
+    @Test
+    public void testThreadNameShortPattern() {
+        testThreadNamePattern("%t");
+    }
+
+    @Test
     public void testNanoPatternShortChangesConfigurationNanoClock() {
         Configuration config = new NullConfiguration();
         assertTrue(config.getNanoClock() instanceof DummyNanoClock);
