@@ -80,8 +80,6 @@ public final class JeroMqAppender extends AbstractAppender {
     // ZMQ sockets are not thread safe.
     private static ZMQ.Socket publisher;
 
-    private static final long serialVersionUID = 1L;
-
     private static final String SIMPLE_NAME = JeroMqAppender.class.getSimpleName();
 
     static {

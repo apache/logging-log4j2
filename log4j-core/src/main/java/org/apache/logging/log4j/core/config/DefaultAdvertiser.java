@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.io.Serializable;
 import java.util.Map;
 
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -26,9 +25,7 @@ import org.apache.logging.log4j.core.net.Advertiser;
  * The default advertiser does not do anything.
  */
 @Plugin(name = "default", category = Node.CATEGORY, elementType = "advertiser", printObject = false)
-public class DefaultAdvertiser implements Advertiser, Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class DefaultAdvertiser implements Advertiser {
 
     /**
      * Does nothing.
