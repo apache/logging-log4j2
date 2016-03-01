@@ -17,7 +17,10 @@
 
 package org.apache.logging.log4j.core.config.plugins.util;
 
-import java.io.Serializable;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -25,15 +28,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Strings;
-
 /**
  * Loads and manages all the plugins.
  */
-public class PluginManager implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class PluginManager {
 
     private static final CopyOnWriteArrayList<String> PACKAGES = new CopyOnWriteArrayList<>();
     private static final String LOG4J_PACKAGES = "org.apache.logging.log4j.core";

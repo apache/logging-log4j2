@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.io.Serializable;
 import java.util.Objects;
 
 import org.apache.logging.log4j.Level;
@@ -29,8 +28,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * Descriptor of a custom Level object that is created via configuration.
  */
 @Plugin(name = "CustomLevel", category = "Core", printObject = true)
-public final class CustomLevelConfig implements Serializable {
-    private static final long serialVersionUID = 1L;
+public final class CustomLevelConfig {
 
     private final String levelName;
     private final int intLevel;

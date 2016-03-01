@@ -23,15 +23,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.net.URL;
 import java.util.Objects;
 
 /**
  * Represents the source for the logging configuration.
  */
-public class ConfigurationSource implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class ConfigurationSource {
     /**
      * ConfigurationSource to use with Configurations that do not require a "real" configuration source.
      */

@@ -16,13 +16,10 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import java.io.Serializable;
-
 /**
  * Implementation of the {@code NanoClock} interface that returns the system nano time.
  */
-public final class SystemNanoClock implements NanoClock, Serializable {
-    private static final long serialVersionUID = 1L;
+public final class SystemNanoClock implements NanoClock {
 
     /**
      * Returns the system high-resolution time.
