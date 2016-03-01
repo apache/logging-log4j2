@@ -192,8 +192,6 @@ import org.apache.logging.log4j.core.jackson.XmlConstants;
 @Plugin(name = "XmlLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class XmlLayout extends AbstractJacksonLayout {
 
-    private static final long serialVersionUID = 1L;
-
     private static final String ROOT_TAG = "Events";
 
     protected XmlLayout(final boolean locationInfo, final boolean properties, final boolean complete, final boolean compact, final Charset charset) {

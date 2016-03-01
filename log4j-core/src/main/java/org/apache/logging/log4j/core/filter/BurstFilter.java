@@ -56,8 +56,6 @@ import org.apache.logging.log4j.message.Message;
 @Plugin(name = "BurstFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
 public final class BurstFilter extends AbstractFilter {
 
-    private static final long serialVersionUID = 1L;
-
     private static final long NANOS_IN_SECONDS = 1000000000;
 
     private static final int DEFAULT_RATE = 10;

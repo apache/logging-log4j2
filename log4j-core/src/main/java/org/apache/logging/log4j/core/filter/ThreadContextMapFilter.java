@@ -42,8 +42,6 @@ import org.apache.logging.log4j.message.Message;
 @Plugin(name = "ThreadContextMapFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
 public class ThreadContextMapFilter extends MapFilter {
 
-    private static final long serialVersionUID = 1L;
-
     private final String key;
     private final String value;
 

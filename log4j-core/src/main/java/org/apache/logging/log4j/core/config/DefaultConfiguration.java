@@ -39,8 +39,6 @@ public class DefaultConfiguration extends AbstractConfiguration {
      */
     public static final String DEFAULT_PATTERN = "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n";
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * Constructor to create the default configuration.
      */

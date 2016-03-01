@@ -34,7 +34,6 @@ public abstract class AbstractCsvLayout extends AbstractStringLayout {
     protected static final String DEFAULT_CHARSET = "UTF-8";
     protected static final String DEFAULT_FORMAT = "Default";
     private static final String CONTENT_TYPE = "text/csv";
-    private static final long serialVersionUID = 1L;
 
     private final CSVFormat format;
 

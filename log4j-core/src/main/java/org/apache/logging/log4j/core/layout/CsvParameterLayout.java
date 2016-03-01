@@ -51,8 +51,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 @Plugin(name = "CsvParameterLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public class CsvParameterLayout extends AbstractCsvLayout {
 
-    private static final long serialVersionUID = 1L;
-    
     public static AbstractCsvLayout createDefaultLayout() {
         return new CsvParameterLayout(null, Charset.forName(DEFAULT_CHARSET), CSVFormat.valueOf(DEFAULT_FORMAT), null, null);
     }

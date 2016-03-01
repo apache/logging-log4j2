@@ -68,8 +68,6 @@ import org.apache.logging.log4j.util.Strings;
 @Plugin(name = "asyncLogger", category = Node.CATEGORY, printObject = true)
 public class AsyncLoggerConfig extends LoggerConfig {
 
-    private static final long serialVersionUID = 1L;
-
     private AsyncLoggerConfigDelegate delegate;
 
     protected AsyncLoggerConfig(final String name,
@@ -194,8 +192,6 @@ public class AsyncLoggerConfig extends LoggerConfig {
      */
     @Plugin(name = "asyncRoot", category = "Core", printObject = true)
     public static class RootLogger extends LoggerConfig {
-
-        private static final long serialVersionUID = 1L;
 
         @PluginFactory
         public static LoggerConfig createLogger(

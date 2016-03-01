@@ -34,8 +34,6 @@ import org.apache.logging.log4j.message.Message;
 @Plugin(name = "MarkerFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
 public final class MarkerFilter extends AbstractFilter {
 
-    private static final long serialVersionUID = 1L;
-
     private final String name;
 
     private MarkerFilter(final String name, final Result onMatch, final Result onMismatch) {

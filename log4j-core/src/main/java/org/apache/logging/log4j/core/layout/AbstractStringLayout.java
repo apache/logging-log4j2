@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -58,8 +55,6 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
      * Default length for new StringBuilder instances: {@value} .
      */
     protected static final int DEFAULT_STRING_BUILDER_SIZE = 1024;
-
-    private static final long serialVersionUID = 1L;
 
     private final static ThreadLocal<StringBuilder> threadLocal = new ThreadLocal<>();
 
@@ -194,12 +189,6 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
         return headerSerializer;
     }
 
-    private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
-        final String csName = in.readUTF();
-        charset = Charset.forName(csName);
-    }
-
     protected byte[] serializeToBytes(final Serializer serializer, byte[] defaultValue) {
         final String serializable = serializeToString(serializer);
         if (serializer == null) {
@@ -228,11 +217,6 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
     @Override
     public byte[] toByteArray(final LogEvent event) {
         return getBytes(toSerializable(event));
-    }
-
-    private void writeObject(final ObjectOutputStream out) throws IOException {
-        out.defaultWriteObject();
-        out.writeUTF(charset.name());
     }
 
 }

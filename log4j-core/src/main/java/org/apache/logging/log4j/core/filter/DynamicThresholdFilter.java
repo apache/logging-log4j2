@@ -40,8 +40,6 @@ import org.apache.logging.log4j.message.Message;
 @Plugin(name = "DynamicThresholdFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
 public final class DynamicThresholdFilter extends AbstractFilter {
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * Create the DynamicThresholdFilter.
      * @param key The name of the key to compare.

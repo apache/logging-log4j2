@@ -42,8 +42,6 @@ import org.apache.logging.log4j.core.util.Integers;
 @Plugin(name = "MemoryMappedFile", category = "Core", elementType = "appender", printObject = true)
 public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender<MemoryMappedFileManager> {
 
-    private static final long serialVersionUID = 1L;
-
     private static final int BIT_POSITION_1GB = 30; // 2^30 ~= 1GB
     private static final int MAX_REGION_LENGTH = 1 << BIT_POSITION_1GB;
     private static final int MIN_REGION_LENGTH = 256;

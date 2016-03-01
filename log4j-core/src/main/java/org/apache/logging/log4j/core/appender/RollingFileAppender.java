@@ -46,7 +46,6 @@ import org.apache.logging.log4j.core.util.Integers;
 public final class RollingFileAppender extends AbstractOutputStreamAppender<RollingFileManager> {
 
     private static final int DEFAULT_BUFFER_SIZE = 8192;
-    private static final long serialVersionUID = 1L;
 
     private final String fileName;
     private final String filePattern;

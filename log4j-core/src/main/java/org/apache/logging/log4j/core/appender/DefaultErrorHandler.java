@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Logger;
@@ -28,9 +27,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  *
  */
-public class DefaultErrorHandler implements ErrorHandler, Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class DefaultErrorHandler implements ErrorHandler {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 

@@ -66,7 +66,6 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
     // this is within the MaxInlineSize threshold and makes these methods candidates for
     // immediate inlining instead of waiting until they are designated "hot enough".
 
-    private static final long serialVersionUID = 1L;
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
     private static final Clock CLOCK = ClockFactory.getClock(); // not reconfigurable
 

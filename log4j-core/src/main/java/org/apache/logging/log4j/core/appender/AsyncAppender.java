@@ -54,7 +54,6 @@ import org.apache.logging.log4j.core.util.Constants;
 @Plugin(name = "Async", category = "Core", elementType = "appender", printObject = true)
 public final class AsyncAppender extends AbstractAppender {
 
-    private static final long serialVersionUID = 1L;
     private static final int DEFAULT_QUEUE_SIZE = 128;
     private static final String SHUTDOWN = "Shutdown";
 
