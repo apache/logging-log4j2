@@ -259,8 +259,13 @@ public class PatternParserTest {
     }
 
     @Test
-    public void testThreadIdShortPattern() {
+    public void testThreadIdShortPattern1() {
         testThreadIdPattern("%tid");
+    }
+
+    @Test
+    public void testThreadIdShortPattern2() {
+        testThreadIdPattern("%T");
     }
 
     @Test
