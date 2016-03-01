@@ -28,7 +28,6 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 @Plugin(name = "sys", category = StrLookup.CATEGORY)
 public class SystemPropertiesLookup extends AbstractLookup {
-    private static final long serialVersionUID = 1L;
 
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final Marker LOOKUP = MarkerManager.getMarker("LOOKUP");

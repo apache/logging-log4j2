@@ -27,7 +27,6 @@ import org.apache.logging.log4j.util.Strings;
 
 @Plugin(name = "web", category = "Lookup")
 public class WebLookup extends AbstractLookup {
-    private static final long serialVersionUID = 1L;
     private static final String ATTR_PREFIX = "attr.";
     private static final String INIT_PARAM_PREFIX = "initParam.";
 

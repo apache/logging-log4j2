@@ -16,10 +16,6 @@
  */
 package org.apache.logging.log4j.lookup;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -29,13 +25,17 @@ import org.apache.logging.log4j.core.lookup.AbstractLookup;
 import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.status.StatusLogger;
 
+import java.lang.Override;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 /**
  *
  */
 
 @Plugin(name = "custom", category = StrLookup.CATEGORY)
 public class CustomLookup extends AbstractLookup {
-    private static final long serialVersionUID = 1L;
 
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final Marker LOOKUP = MarkerManager.getMarker("LOOKUP");
