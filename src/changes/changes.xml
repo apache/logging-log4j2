@@ -163,6 +163,9 @@
       <action issue="LOG4J2-920" dev="mattsicker" type="fix" due-to="Ludovic Hochet">
         ClassNotFoundException for BundleContextSelector when initialising in an OSGi environment.
       </action>
+      <action issue="LOG4J2-1300" dev="mattsicker" type="update">
+        Remove serializability from classes that don't need it.
+      </action>
     </release>
     <release version="2.5" date="2015-12-06" description="GA Release 2.5">
       <action issue="LOG4J2-324" dev="rpopma" type="fix">
