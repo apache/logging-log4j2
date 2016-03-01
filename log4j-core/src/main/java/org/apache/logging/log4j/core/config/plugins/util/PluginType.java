@@ -17,8 +17,6 @@
 package org.apache.logging.log4j.core.config.plugins.util;
 
 
-import java.io.Serializable;
-
 import org.apache.logging.log4j.core.config.plugins.processor.PluginEntry;
 
 /**
@@ -27,9 +25,8 @@ import org.apache.logging.log4j.core.config.plugins.processor.PluginEntry;
  * @param <T> The plug-in class, which can be any kind of class.
  * @see org.apache.logging.log4j.core.config.plugins.Plugin
  */
-public class PluginType<T> implements Serializable {
+public class PluginType<T> {
 
-    private static final long serialVersionUID = 1L;
     private final PluginEntry pluginEntry;
     private final Class<T> pluginClass;
     private final String elementName;

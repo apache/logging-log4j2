@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +26,7 @@ import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 /**
  * A Configuration node.
  */
-public class Node implements Serializable {
+public class Node {
 
     /**
      * Main plugin category for plugins which are represented as a configuration node. Such plugins tend to be
@@ -36,7 +35,6 @@ public class Node implements Serializable {
      * @since 2.1
      */
     public static final String CATEGORY = "Core";
-    private static final long serialVersionUID = 1L;
 
     private final Node parent;
     private final String name;
