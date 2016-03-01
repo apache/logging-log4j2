@@ -16,14 +16,11 @@
  */
 package org.apache.logging.log4j.core.script;
 
-import java.io.Serializable;
-
 /**
  * Container for the language and body of a script.
  */
-public abstract class AbstractScript implements Serializable {
+public abstract class AbstractScript {
 
-    private static final long serialVersionUID = 1L;
     protected static final String DEFAULT_LANGUAGE = "JavaScript";
     private final String language;
     private final String scriptText;

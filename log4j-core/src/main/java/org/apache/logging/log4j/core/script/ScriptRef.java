@@ -31,7 +31,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 @Plugin(name = "ScriptRef", category = Node.CATEGORY, printObject = true)
 public class ScriptRef extends AbstractScript {
 
-    private static final long serialVersionUID = 1L;
     private static final Logger logger = StatusLogger.getLogger();
     private final ScriptManager scriptManager;
 
