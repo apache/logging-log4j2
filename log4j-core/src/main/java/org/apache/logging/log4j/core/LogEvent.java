@@ -117,6 +117,7 @@ public interface LogEvent extends Serializable {
      * Gets the thread ID.
      *
      * @return thread ID.
+     * @since 2.6
      */
     long getThreadId();
 
@@ -124,6 +125,7 @@ public interface LogEvent extends Serializable {
      * Gets the thread priority.
      *
      * @return thread priority.
+     * @since 2.6
      */
     int getThreadPriority();
 
