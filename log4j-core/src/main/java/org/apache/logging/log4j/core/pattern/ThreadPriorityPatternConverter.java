@@ -20,22 +20,24 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 
 /**
- * Formats the event thread name.
+ * Formats the event thread priority.
+ * 
+ * @since 2.6
  */
-@Plugin(name = "ThreadPatternConverter", category = PatternConverter.CATEGORY)
-@ConverterKeys({ "t", "thread", "threadName" })
-public final class ThreadPatternConverter extends LogEventPatternConverter {
+@Plugin(name = "ThreadPriorityPatternConverter", category = PatternConverter.CATEGORY)
+@ConverterKeys({ "tp", "threadPriority" })
+public final class ThreadPriorityPatternConverter extends LogEventPatternConverter {
     /**
      * Singleton.
      */
-    private static final ThreadPatternConverter INSTANCE =
-        new ThreadPatternConverter();
+    private static final ThreadPriorityPatternConverter INSTANCE =
+        new ThreadPriorityPatternConverter();
 
     /**
      * Private constructor.
      */
-    private ThreadPatternConverter() {
-        super("Thread", "thread");
+    private ThreadPriorityPatternConverter() {
+        super("ThreadPriority", "threadPriority");
     }
 
     /**
@@ -44,7 +46,7 @@ public final class ThreadPatternConverter extends LogEventPatternConverter {
      * @param options options, currently ignored, may be null.
      * @return instance of ThreadPatternConverter.
      */
-    public static ThreadPatternConverter newInstance(
+    public static ThreadPriorityPatternConverter newInstance(
         final String[] options) {
         return INSTANCE;
     }
@@ -54,6 +56,6 @@ public final class ThreadPatternConverter extends LogEventPatternConverter {
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        toAppendTo.append(event.getThreadName());
+        toAppendTo.append(event.getThreadPriority());
     }
 }

@@ -26,6 +26,16 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 enum ThreadNameCachingStrategy { // LOG4J2-467
     CACHED {
         @Override
+        public long getThreadId() {
+            Long result = THREADLOCAL_ID.get();
+            if (result == null) {
+                result = Thread.currentThread().getId();
+                THREADLOCAL_ID.set(result);
+            }
+            return result;
+        }
+
+        @Override
         public String getThreadName() {
             String result = THREADLOCAL_NAME.get();
             if (result == null) {
@@ -34,19 +44,42 @@ enum ThreadNameCachingStrategy { // LOG4J2-467
             }
             return result;
         }
+
+        @Override
+        public int getThreadPriority() {
+            Integer result = THREADLOCAL_PRIORITY.get();
+            if (result == null) {
+                result = Thread.currentThread().getPriority();
+                THREADLOCAL_PRIORITY.set(result);
+            }
+            return result;
+        }
     },
     UNCACHED {
+        @Override
+        public long getThreadId() {
+            return Thread.currentThread().getId();
+        }
+
         @Override
         public String getThreadName() {
             return Thread.currentThread().getName();
         }
+
+        @Override
+        public int getThreadPriority() {
+            return Thread.currentThread().getPriority();
+        }
     };
     
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
+    private static final ThreadLocal<Long> THREADLOCAL_ID = new ThreadLocal<>();
     private static final ThreadLocal<String> THREADLOCAL_NAME = new ThreadLocal<>();
+    private static final ThreadLocal<Integer> THREADLOCAL_PRIORITY = new ThreadLocal<>();
     
-    
+    abstract long getThreadId();
     abstract String getThreadName();
+    abstract int getThreadPriority();
 
     static ThreadNameCachingStrategy create() {
         final String name = PropertiesUtil.getProperties().getStringProperty("AsyncLogger.ThreadNameStrategy",

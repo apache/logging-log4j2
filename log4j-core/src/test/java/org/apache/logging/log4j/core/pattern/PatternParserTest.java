@@ -253,11 +253,44 @@ public class PatternParserTest {
         testThreadNamePattern("%threadName");
     }
 
+    @Test
+    public void testThreadIdFullPattern() {
+        testThreadIdPattern("%threadId");
+    }
+
+    @Test
+    public void testThreadIdShortPattern() {
+        testThreadIdPattern("%tid");
+    }
+
+    @Test
+    public void testThreadPriorityShortPattern() {
+        testThreadPriorityPattern("%tp");
+    }
+
+    @Test
+    public void testThreadPriorityFullPattern() {
+        testThreadPriorityPattern("%threadPriority");
+    }
+
+    private void testThreadIdPattern(final String pattern) {
+        testFirstConverter(pattern, ThreadIdPatternConverter.class);
+    }
+
     private void testThreadNamePattern(final String pattern) {
+        testFirstConverter(pattern, ThreadNamePatternConverter.class);
+    }
+
+    private void testThreadPriorityPattern(final String pattern) {
+        testFirstConverter(pattern, ThreadPriorityPatternConverter.class);
+    }
+
+    private void testFirstConverter(final String pattern, Class<?> checkClass) {
         final List<PatternFormatter> formatters = parser.parse(pattern);
         assertNotNull(formatters);
-        assertEquals(1, formatters.size());
-        assertTrue(formatters.get(0).getConverter() instanceof ThreadPatternConverter);
+        final String msg = formatters.toString();
+        assertEquals(msg, 1, formatters.size());
+        assertTrue(msg, checkClass.isInstance(formatters.get(0).getConverter()));
     }
 
     @Test

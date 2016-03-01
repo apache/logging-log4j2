@@ -166,7 +166,9 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
             <li>Time Nanos</li>
             <li>Time Millis</li>
             <li>Level</li>
+            <li>Thread ID</li>
             <li>Thread Name</li>
+            <li>Thread Priority</li>
             <li>Formatted Message</li>
             <li>Logger FQCN</li>
             <li>Logger Name</li>
@@ -273,14 +275,18 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
     "logger":"com.foo.Bar",
     "timestamp":"1376681196470",
     "level":"INFO",
+    "threadId":1,
     "thread":"main",
+    "threadPriority":1,
     "message":"Message flushed with immediate flush=true"
   },
   {
     "logger":"com.foo.Bar",
     "timestamp":"1376681196471",
     "level":"ERROR",
+    "threadId":1,
     "thread":"main",
+    "threadPriority":1,
     "message":"Message flushed with immediate flush=true",
     "throwable":"java.lang.IllegalArgumentException: badarg\\n\\tat org.apache.logging.log4j.core.appender.JSONCompleteFileAppenderTest.testFlushAtEndOfBatch(JSONCompleteFileAppenderTest.java:54)\\n\\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\\n\\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)\\n\\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\\n\\tat java.lang.reflect.Method.invoke(Method.java:606)\\n\\tat org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:47)\\n\\tat org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)\\n\\tat org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:44)\\n\\tat org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)\\n\\tat org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:271)\\n\\tat org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:70)\\n\\tat org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)\\n\\tat org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)\\n\\tat org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)\\n\\tat org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)\\n\\tat org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)\\n\\tat org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)\\n\\tat org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)\\n\\tat org.junit.runners.ParentRunner.run(ParentRunner.java:309)\\n\\tat org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:50)\\n\\tat org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)\\n\\tat org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:467)\\n\\tat org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:683)\\n\\tat org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:390)\\n\\tat org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:197)\\n"
   }
@@ -1233,10 +1239,26 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <b>T</b><br />
+                <b>tid</b><br />
+                <b>threadId</b>
+              </td>
+              <td>Outputs the ID of the thread that generated the logging event.</td>
+            </tr>
+            <tr>
+              <td align="center">
                 <b>t</b><br />
-                <b>thread</b>
+                <b>thread</b><br />
+                <b>threadName</b>
               </td>
               <td>Outputs the name of the thread that generated the logging event.</td>
+            </tr>
+            <tr>
+              <td align="center">
+                <b>tp</b><br />
+                <b>threadPriority</b>
+              </td>
+              <td>Outputs the priority of the thread that generated the logging event.</td>
             </tr>
             <tr>
               <td align="center">
@@ -1714,11 +1736,11 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           </p>
           <pre class="prettyprint linenums">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 &lt;Events xmlns=&quot;http://logging.apache.org/log4j/2.0/events&quot;&gt;
-  &lt;Event logger=&quot;com.foo.Bar&quot; timestamp=&quot;1373436580419&quot; level=&quot;INFO&quot; thread=&quot;main&quot;&gt;
+  &lt;Event logger=&quot;com.foo.Bar&quot; timestamp=&quot;1373436580419&quot; level=&quot;INFO&quot; threadId=&quot;1&quot; thread=&quot;main&quot; threadPriority=&quot;1&quot;&gt;
     &lt;Message&gt;&lt;![CDATA[This is a log message 1]]&gt;&lt;/Message&gt;
     &lt;Marker parent=&quot;Parent Marker&quot;&gt;&lt;Child Marker&gt;&lt;/Marker&gt;
   &lt;/Event&gt;
-  &lt;Event logger=&quot;com.foo.Baz&quot; timestamp=&quot;1373436580420&quot; level=&quot;INFO&quot; thread=&quot;main&quot;&gt;
+  &lt;Event logger=&quot;com.foo.Baz&quot; timestamp=&quot;1373436580420&quot; level=&quot;INFO&quot; threadId=&quot;1&quot; thread=&quot;main&quot; threadPriority=&quot;1&quot;&gt;
     &lt;Message&gt;&lt;![CDATA[This is a log message 2]]&gt;&lt;/Message&gt;
     &lt;Marker&gt;&lt;The Marker Name&gt;&lt;/Marker&gt;
   &lt;/Event&gt;

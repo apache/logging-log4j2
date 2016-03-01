@@ -85,7 +85,9 @@ public class CsvLogEventLayout extends AbstractCsvLayout {
             printer.print(event.getNanoTime());
             printer.print(event.getTimeMillis());
             printer.print(event.getLevel());
+            printer.print(event.getThreadId());
             printer.print(event.getThreadName());
+            printer.print(event.getThreadPriority());
             printer.print(event.getMessage().getFormattedMessage());
             printer.print(event.getLoggerFqcn());
             printer.print(event.getLoggerName());

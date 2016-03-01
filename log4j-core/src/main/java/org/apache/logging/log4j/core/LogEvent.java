@@ -106,12 +106,26 @@ public interface LogEvent extends Serializable {
     StackTraceElement getSource();
 
     /**
-     * Gets thread name.
+     * Gets the thread name.
      *
      * @return thread name, may be null.
      * TODO guess this could go into a thread context object too. (RG) Why?
      */
     String getThreadName();
+
+    /**
+     * Gets the thread ID.
+     *
+     * @return thread ID.
+     */
+    long getThreadId();
+
+    /**
+     * Gets the thread priority.
+     *
+     * @return thread priority.
+     */
+    int getThreadPriority();
 
     /**
      * Gets throwable associated with logging request.

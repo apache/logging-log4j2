@@ -25,15 +25,15 @@ import static org.junit.Assert.*;
 /**
  *
  */
-public class ThreadNamePatternConverterTest {
+public class ThreadIdPatternConverterTest {
 
     @Test
     public void testConverterAppendsLogEventNanoTimeToStringBuilder() {
         final LogEvent event = Log4jLogEvent.newBuilder() //
-                .setThreadName("Hello-1").build();
+                .setThreadId(1).build();
         final StringBuilder sb = new StringBuilder();
-        final ThreadNamePatternConverter converter = ThreadNamePatternConverter.newInstance(null);
+        final ThreadIdPatternConverter converter = ThreadIdPatternConverter.newInstance(null);
         converter.format(event, sb);
-        assertEquals("Hello-1", sb.toString());
+        assertEquals("1", sb.toString());
     }
 }

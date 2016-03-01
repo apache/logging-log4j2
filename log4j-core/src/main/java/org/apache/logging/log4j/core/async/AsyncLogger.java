@@ -245,14 +245,15 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
                 // needs shallow copy to be fast (LOG4J2-154)
                 ThreadContext.getImmutableStack(), //
 
+                THREAD_NAME_CACHING_STRATEGY.getThreadId(), //
+
                 // Thread.currentThread().getName(), //
-                THREAD_NAME_CACHING_STRATEGY.getThreadName(), //
+                THREAD_NAME_CACHING_STRATEGY.getThreadName(),
 
+                THREAD_NAME_CACHING_STRATEGY.getThreadPriority(), //
                 // location (expensive to calculate)
-                calcLocationIfRequested(fqcn),
-
-                eventTimeMillis(message), //
-                nanoClock.nanoTime() //
+                calcLocationIfRequested(fqcn)
+, eventTimeMillis(message), nanoClock.nanoTime() //
                 );
     }
 
@@ -315,10 +316,12 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
         // needs shallow copy to be fast (LOG4J2-154)
         final ContextStack contextStack = ThreadContext.getImmutableStack();
 
+        final Long threadId = THREAD_NAME_CACHING_STRATEGY.getThreadId();
         final String threadName = THREAD_NAME_CACHING_STRATEGY.getThreadName();
+        final Integer threadPriority = THREAD_NAME_CACHING_STRATEGY.getThreadPriority();
 
         event.setValues(asyncLogger, asyncLogger.getName(), marker, fqcn, level, message, thrown, contextMap,
-                contextStack, threadName, location, eventTimeMillis(message), nanoClock.nanoTime());
+                contextStack, threadId, threadName, threadPriority, location, eventTimeMillis(message), nanoClock.nanoTime());
     }
 
     /**
