@@ -248,6 +248,11 @@ public class PatternParserTest {
         testThreadNamePattern("%thread");
     }
 
+    @Test
+    public void testThreadNameFullPattern() {
+        testThreadNamePattern("%threadName");
+    }
+
     private void testThreadNamePattern(final String pattern) {
         final List<PatternFormatter> formatters = parser.parse(pattern);
         assertNotNull(formatters);
