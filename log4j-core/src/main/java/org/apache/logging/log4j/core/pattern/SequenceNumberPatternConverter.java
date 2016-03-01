@@ -28,7 +28,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 @Plugin(name = "SequenceNumberPatternConverter", category = "Converter")
 @ConverterKeys({ "sn", "sequenceNumber" })
 public final class SequenceNumberPatternConverter extends LogEventPatternConverter {
-    private static final long serialVersionUID = 1L;
 
     private static final AtomicLong SEQUENCE = new AtomicLong();
 

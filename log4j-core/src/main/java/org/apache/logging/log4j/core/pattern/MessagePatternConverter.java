@@ -21,6 +21,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MultiformatMessage;
+import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 
 /**
@@ -29,7 +30,6 @@ import org.apache.logging.log4j.util.StringBuilderFormattable;
 @Plugin(name = "MessagePatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "m", "msg", "message" })
 public final class MessagePatternConverter extends LogEventPatternConverter {
-    private static final long serialVersionUID = 1L;
 
     private final String[] formats;
     private final Configuration config;

@@ -30,7 +30,6 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
  * Style pattern converter. Adds ANSI color styling to the result of the enclosed pattern.
  */
 public abstract class AbstractStyleNameConverter extends LogEventPatternConverter /*TODO: implements AnsiConverter*/ {
-    private static final long serialVersionUID = 1L;
 
     private final List<PatternFormatter> formatters;
 
@@ -55,8 +54,6 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
     @Plugin(name = Black.NAME, category = "Converter")
     @ConverterKeys(Black.NAME)
     public static final class Black extends AbstractStyleNameConverter {
-
-        private static final long serialVersionUID = 1L;
 
         /** Black */
         protected static final String NAME = "black";
@@ -91,8 +88,6 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
     @ConverterKeys(Blue.NAME)
     public static final class Blue extends AbstractStyleNameConverter {
 
-        private static final long serialVersionUID = 1L;
-
         /** Blue */
         protected static final String NAME = "blue";
 
@@ -125,8 +120,6 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
     @Plugin(name = Cyan.NAME, category = "Converter")
     @ConverterKeys(Cyan.NAME)
     public static final class Cyan extends AbstractStyleNameConverter {
-
-        private static final long serialVersionUID = 1L;
 
         /** Cyan */
         protected static final String NAME = "cyan";
@@ -161,8 +154,6 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
     @ConverterKeys(Green.NAME)
     public static final class Green extends AbstractStyleNameConverter {
 
-        private static final long serialVersionUID = 1L;
-
         /** Green */
         protected static final String NAME = "green";
 
@@ -195,8 +186,6 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
     @Plugin(name = Magenta.NAME, category = "Converter")
     @ConverterKeys(Magenta.NAME)
     public static final class Magenta extends AbstractStyleNameConverter {
-
-        private static final long serialVersionUID = 1L;
 
         /** Magenta */
         protected static final String NAME = "magenta";
@@ -231,8 +220,6 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
     @ConverterKeys(Red.NAME)
     public static final class Red extends AbstractStyleNameConverter {
 
-        private static final long serialVersionUID = 1L;
-
         /** Red */
         protected static final String NAME = "red";
 
@@ -266,8 +253,6 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
     @ConverterKeys(White.NAME)
     public static final class White extends AbstractStyleNameConverter {
 
-        private static final long serialVersionUID = 1L;
-
         /** White */
         protected static final String NAME = "white";
 
@@ -300,8 +285,6 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
     @Plugin(name = Yellow.NAME, category = "Converter")
     @ConverterKeys(Yellow.NAME)
     public static final class Yellow extends AbstractStyleNameConverter {
-
-        private static final long serialVersionUID = 1L;
 
         /** Yellow */
         protected static final String NAME = "yellow";

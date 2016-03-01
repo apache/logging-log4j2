@@ -26,7 +26,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 @Plugin(name = "FullLocationPatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "l", "location" })
 public final class FullLocationPatternConverter extends LogEventPatternConverter {
-    private static final long serialVersionUID = 1L;
     /**
      * Singleton.
      */

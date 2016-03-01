@@ -34,7 +34,6 @@ import org.apache.logging.log4j.util.Strings;
 @Plugin(name = "ThrowablePatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "ex", "throwable", "exception" })
 public class ThrowablePatternConverter extends LogEventPatternConverter {
-    private static final long serialVersionUID = 1L;
 
     private String rawOption;
 

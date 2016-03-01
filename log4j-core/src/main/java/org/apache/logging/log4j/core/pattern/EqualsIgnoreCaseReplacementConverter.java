@@ -29,7 +29,6 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 @Plugin(name = "equalsIgnoreCase", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "equalsIgnoreCase" })
 public final class EqualsIgnoreCaseReplacementConverter extends LogEventPatternConverter {
-    private static final long serialVersionUID = 1L;
 
     /**
      * Gets an instance of the class.

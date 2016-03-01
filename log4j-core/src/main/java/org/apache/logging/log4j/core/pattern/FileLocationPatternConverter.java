@@ -26,7 +26,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 @Plugin(name = "FileLocationPatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "F", "file" })
 public final class FileLocationPatternConverter extends LogEventPatternConverter {
-    private static final long serialVersionUID = 1L;
     /**
      * Singleton.
      */

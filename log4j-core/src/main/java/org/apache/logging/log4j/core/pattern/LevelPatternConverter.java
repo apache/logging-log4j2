@@ -31,7 +31,6 @@ import org.apache.logging.log4j.core.util.Patterns;
 @Plugin(name = "LevelPatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "p", "level" })
 public final class LevelPatternConverter extends LogEventPatternConverter {
-    private static final long serialVersionUID = 1L;
     private static final String OPTION_LENGTH = "length";
     private static final String OPTION_LOWER = "lowerCase";
 

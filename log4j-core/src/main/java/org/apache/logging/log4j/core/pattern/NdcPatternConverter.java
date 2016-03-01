@@ -26,7 +26,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 @Plugin(name = "NdcPatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({"x", "NDC"})
 public final class NdcPatternConverter extends LogEventPatternConverter {
-    private static final long serialVersionUID = 1L;
     /**
      * Singleton.
      */

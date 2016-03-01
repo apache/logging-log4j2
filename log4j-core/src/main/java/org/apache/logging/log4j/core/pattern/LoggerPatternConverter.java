@@ -26,7 +26,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 @Plugin(name = "LoggerPatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "c", "logger" })
 public final class LoggerPatternConverter extends NamePatternConverter {
-    private static final long serialVersionUID = 1L;
     /**
      * Singleton.
      */

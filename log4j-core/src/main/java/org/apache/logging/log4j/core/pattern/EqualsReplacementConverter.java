@@ -29,7 +29,6 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 @Plugin(name = "equals", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "equals" })
 public final class EqualsReplacementConverter extends LogEventPatternConverter {
-    private static final long serialVersionUID = 1L;
 
     /**
      * Gets an instance of the class.

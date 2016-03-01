@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import java.io.Serializable;
-
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 
 /**
@@ -27,8 +25,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
  */
 @Plugin(name = "FileDatePatternConverter", category = "FileConverter")
 @ConverterKeys({ "d", "date" })
-public final class FileDatePatternConverter implements Serializable {
-    private static final long serialVersionUID = 1L;
+public final class FileDatePatternConverter {
     /**
      * Private constructor.
      */

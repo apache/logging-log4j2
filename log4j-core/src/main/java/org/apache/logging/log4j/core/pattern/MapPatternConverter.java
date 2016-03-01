@@ -33,7 +33,6 @@ import org.apache.logging.log4j.message.MapMessage;
 @Plugin(name = "MapPatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "K", "map", "MAP" })
 public final class MapPatternConverter extends LogEventPatternConverter {
-    private static final long serialVersionUID = 1L;
     /**
      * Name of property to output.
      */

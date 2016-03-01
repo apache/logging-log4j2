@@ -26,7 +26,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 @Plugin(name = "ClassNamePatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "C", "class" })
 public final class ClassNamePatternConverter extends NamePatternConverter {
-    private static final long serialVersionUID = 1L;
 
     private static final String NA = "?";
 

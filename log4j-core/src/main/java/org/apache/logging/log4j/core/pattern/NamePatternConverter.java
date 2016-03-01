@@ -21,7 +21,6 @@ package org.apache.logging.log4j.core.pattern;
  * Abstract base class for other pattern converters which can return only parts of their name.
  */
 public abstract class NamePatternConverter extends LogEventPatternConverter {
-    private static final long serialVersionUID = 1L;
     /**
      * Abbreviator.
      */
