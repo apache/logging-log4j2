@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.net;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.ConnectException;
@@ -40,7 +39,6 @@ import org.apache.logging.log4j.util.Strings;
  * Manager of TCP Socket connections.
  */
 public class TcpSocketManager extends AbstractSocketManager {
-    private static final long serialVersionUID = 1L;
     /**
       The default reconnection delay (30000 milliseconds or 30 seconds).
      */
@@ -54,9 +52,9 @@ public class TcpSocketManager extends AbstractSocketManager {
 
     private final int reconnectionDelay;
 
-    private transient Reconnector connector;
+    private Reconnector connector;
 
-    private transient Socket socket;
+    private Socket socket;
 
     private final boolean retry;
 
@@ -87,20 +85,11 @@ public class TcpSocketManager extends AbstractSocketManager {
         this.immediateFail = immediateFail;
         retry = delay > 0;
         if (sock == null) {
-            startReconnector();
+            connector = new Reconnector(this);
+            connector.setDaemon(true);
+            connector.setPriority(Thread.MIN_PRIORITY);
+            connector.start();
         }
-    }
-
-    private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
-        startReconnector();
-    }
-
-    private void startReconnector() {
-        connector = new Reconnector(this);
-        connector.setDaemon(true);
-        connector.setPriority(Thread.MIN_PRIORITY);
-        connector.start();
     }
 
     /**
@@ -146,7 +135,10 @@ public class TcpSocketManager extends AbstractSocketManager {
                 }
             } catch (final IOException ex) {
                 if (retry && connector == null) {
-                    startReconnector();
+                    connector = new Reconnector(this);
+                    connector.setDaemon(true);
+                    connector.setPriority(Thread.MIN_PRIORITY);
+                    connector.start();
                 }
                 final String msg = "Error writing to " + getName();
                 throw new AppenderLoggingException(msg, ex);

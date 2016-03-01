@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import java.io.Serializable;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -43,8 +42,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * expression described in {@link FileSystem#getPathMatcher(String)}.
  */
 @Plugin(name = "IfFileName", category = "Core", printObject = true)
-public final class IfFileName implements PathCondition, Serializable {
-    private static final long serialVersionUID = 1L;
+public final class IfFileName implements PathCondition {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private final PathMatcher pathMatcher;
     private final String syntaxAndPattern;

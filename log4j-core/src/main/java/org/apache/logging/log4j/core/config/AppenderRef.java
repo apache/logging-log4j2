@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.io.Serializable;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Filter;
@@ -33,8 +31,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 @Plugin(name = "AppenderRef", category = Node.CATEGORY, printObject = true)
 @PluginAliases("appender-ref")
-public final class AppenderRef implements Serializable {
-    private static final long serialVersionUID = 1L;
+public final class AppenderRef {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final String ref;

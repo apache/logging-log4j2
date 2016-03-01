@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import java.io.Serializable;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -28,8 +26,7 @@ import org.apache.logging.log4j.core.util.Integers;
  * Rolls a file over based on time.
  */
 @Plugin(name = "TimeBasedTriggeringPolicy", category = "Core", printObject = true)
-public final class TimeBasedTriggeringPolicy implements TriggeringPolicy, Serializable {
-    private static final long serialVersionUID = 1L;
+public final class TimeBasedTriggeringPolicy implements TriggeringPolicy {
 
     private long nextRolloverMillis;
     private final int interval;

@@ -34,7 +34,6 @@ import org.apache.logging.log4j.core.util.NullOutputStream;
  * {@code RandomAccessFile} to do the I/O.
  */
 public class RollingRandomAccessFileManager extends RollingFileManager implements ByteBufferDestination {
-    private static final long serialVersionUID = 1L;
     /**
      * The default buffer size.
      */

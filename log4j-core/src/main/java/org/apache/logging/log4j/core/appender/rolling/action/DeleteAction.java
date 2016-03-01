@@ -37,7 +37,6 @@ import org.apache.logging.log4j.core.lookup.StrSubstitutor;
  */
 @Plugin(name = "Delete", category = "Core", printObject = true)
 public class DeleteAction extends AbstractPathAction {
-    private static final long serialVersionUID = 1L;
 
     private final PathSorter pathSorter;
     private final boolean testMode;

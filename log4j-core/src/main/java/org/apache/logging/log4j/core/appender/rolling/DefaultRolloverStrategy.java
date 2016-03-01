@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -77,15 +76,14 @@ import org.apache.logging.log4j.status.StatusLogger;
  * </p>
  */
 @Plugin(name = "DefaultRolloverStrategy", category = "Core", printObject = true)
-public class DefaultRolloverStrategy implements RolloverStrategy, Serializable {
-    private static final long serialVersionUID = 1L;
+public class DefaultRolloverStrategy implements RolloverStrategy {
 
     /**
      * Enumerates over supported file extensions.
      * <p>
      * Package-protected for unit tests.
      */
-    enum FileExtensions {
+    static enum FileExtensions {
         ZIP(".zip") {
             @Override
             Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
@@ -135,7 +133,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy, Serializable {
 
         private final String extension;
 
-        FileExtensions(final String extension) {
+        private FileExtensions(final String extension) {
             Objects.requireNonNull(extension, "extension");
             this.extension = extension;
         }

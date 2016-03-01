@@ -32,7 +32,6 @@ import org.apache.logging.log4j.core.util.Closer;
  * @param <W> A type parameter for reassuring the compiler that all operations are using the same {@link NoSqlObject}.
  */
 public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
-    private static final long serialVersionUID = 1L;
     private static final NoSQLDatabaseManagerFactory FACTORY = new NoSQLDatabaseManagerFactory();
 
     private final NoSqlProvider<NoSqlConnection<W, ? extends NoSqlObject<W>>> provider;

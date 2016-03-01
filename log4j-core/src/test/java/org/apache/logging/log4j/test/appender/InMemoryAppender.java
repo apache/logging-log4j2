@@ -42,7 +42,6 @@ public class InMemoryAppender extends AbstractOutputStreamAppender<InMemoryAppen
     }
 
     static class InMemoryManager extends OutputStreamManager {
-        private static final long serialVersionUID = 1L;
 
         public InMemoryManager(final String name, final Layout<? extends Serializable> layout,
                 final boolean writeHeader) {

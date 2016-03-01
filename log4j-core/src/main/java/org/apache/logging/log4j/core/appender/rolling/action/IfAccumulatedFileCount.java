@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
@@ -34,8 +33,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * PathCondition that accepts paths after some count threshold is exceeded during the file tree walk.
  */
 @Plugin(name = "IfAccumulatedFileCount", category = "Core", printObject = true)
-public final class IfAccumulatedFileCount implements PathCondition, Serializable {
-    private static final long serialVersionUID = 1L;
+public final class IfAccumulatedFileCount implements PathCondition {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private final int threshold;
     private int count;

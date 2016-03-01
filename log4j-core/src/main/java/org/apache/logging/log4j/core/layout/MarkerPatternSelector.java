@@ -16,11 +16,6 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
@@ -35,12 +30,15 @@ import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.status.StatusLogger;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Selects the pattern to use based on the Marker in the LogEvent.
  */
 @Plugin(name = "MarkerPatternSelector", category = Node.CATEGORY, elementType = PatternSelector.ELEMENT_TYPE, printObject = true)
-public class MarkerPatternSelector implements PatternSelector, Serializable {
-    private static final long serialVersionUID = 1L;
+public class MarkerPatternSelector implements PatternSelector {
 
     private final Map<String, PatternFormatter[]> formatterMap = new HashMap<>();
 

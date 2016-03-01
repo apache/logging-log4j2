@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import java.io.Serializable;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -29,8 +27,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  *
  */
 @Plugin(name = "SizeBasedTriggeringPolicy", category = "Core", printObject = true)
-public class SizeBasedTriggeringPolicy implements TriggeringPolicy, Serializable {
-    private static final long serialVersionUID = 1L;
+public class SizeBasedTriggeringPolicy implements TriggeringPolicy {
     /**
      * Allow subclasses access to the status logger without creating another instance.
      */

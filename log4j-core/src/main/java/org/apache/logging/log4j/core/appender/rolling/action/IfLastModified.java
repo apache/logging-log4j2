@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
@@ -38,8 +37,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * PathCondition that accepts paths that are older than the specified duration.
  */
 @Plugin(name = "IfLastModified", category = "Core", printObject = true)
-public final class IfLastModified implements PathCondition, Serializable {
-    private static final long serialVersionUID = 1L;
+public final class IfLastModified implements PathCondition {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final Clock CLOCK = ClockFactory.getClock();
 

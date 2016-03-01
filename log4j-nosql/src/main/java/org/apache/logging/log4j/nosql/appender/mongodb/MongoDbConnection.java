@@ -36,7 +36,6 @@ import com.mongodb.WriteConcern;
  * The MongoDB implementation of {@link NoSqlConnection}.
  */
 public final class MongoDbConnection extends AbstractNoSqlConnection<BasicDBObject, MongoDbObject> {
-    private static final long serialVersionUID = 1L;
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 

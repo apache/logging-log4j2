@@ -26,7 +26,6 @@ import org.apache.logging.log4j.core.StringLayout;
  * allow appenders to reconfigure without requiring a new writer.
  */
 public class WriterManager extends AbstractManager {
-    private static final long serialVersionUID = 1L;
 
     /**
      * Creates a Manager.

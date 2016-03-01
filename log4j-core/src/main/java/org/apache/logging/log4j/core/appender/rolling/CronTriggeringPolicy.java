@@ -16,10 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import java.io.Serializable;
-import java.text.ParseException;
-import java.util.Date;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -31,13 +27,15 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.CronExpression;
 import org.apache.logging.log4j.status.StatusLogger;
 
+import java.text.ParseException;
+import java.util.Date;
+
 /**
  * Rolls a file over based on a cron schedule.
  */
 @Plugin(name = "CronTriggeringPolicy", category = "Core", printObject = true)
 @Scheduled
-public final class CronTriggeringPolicy implements TriggeringPolicy, Serializable {
-    private static final long serialVersionUID = 1L;
+public final class CronTriggeringPolicy implements TriggeringPolicy {
 
     private static Logger LOGGER = StatusLogger.getLogger();
     private static final String defaultSchedule = "0 0 0 * * ?";

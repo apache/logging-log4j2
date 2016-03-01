@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.nosql.appender.mongodb;
 
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -43,8 +42,7 @@ import com.mongodb.WriteConcern;
  * The MongoDB implementation of {@link NoSqlProvider}.
  */
 @Plugin(name = "MongoDb", category = "Core", printObject = true)
-public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection>, Serializable {
-    private static final long serialVersionUID = 1L;
+public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
     
     private static final WriteConcern DEFAULT_WRITE_CONCERN = WriteConcern.ACKNOWLEDGED;
     private static final Logger LOGGER = StatusLogger.getLogger();

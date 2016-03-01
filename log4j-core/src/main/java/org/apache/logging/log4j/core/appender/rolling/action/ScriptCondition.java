@@ -17,7 +17,6 @@
 
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import java.io.Serializable;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
@@ -41,8 +40,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * @see #createCondition(AbstractScript, Configuration)
  */
 @Plugin(name = "ScriptCondition", category = "Core", printObject = true)
-public class ScriptCondition implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class ScriptCondition {
     private static Logger LOGGER = StatusLogger.getLogger();
 
     private final AbstractScript script;

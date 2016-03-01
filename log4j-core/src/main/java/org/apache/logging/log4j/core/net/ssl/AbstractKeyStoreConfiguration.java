@@ -19,20 +19,16 @@ package org.apache.logging.log4j.core.net.ssl;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 
-import org.apache.logging.log4j.core.util.Throwables;
-
 /**
  * Configuration of the KeyStore
  */
 public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> {
-    private static final long serialVersionUID = 1L;
-    private transient KeyStore keyStore;
+    private final KeyStore keyStore;
     private final String keyStoreType;
 
     public AbstractKeyStoreConfiguration(final String location, final String password, final String keyStoreType)
@@ -40,15 +36,6 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
         super(location, password);
         this.keyStoreType = keyStoreType == null ? SslConfigurationDefaults.KEYSTORE_TYPE : keyStoreType;
         this.keyStore = this.load();
-    }
-
-    private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
-        try {
-            this.keyStore = this.load();
-        } catch (final StoreConfigurationException e) {
-            Throwables.rethrow(e);
-        }
     }
 
     @Override

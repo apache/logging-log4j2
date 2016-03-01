@@ -33,7 +33,6 @@ import org.apache.logging.log4j.core.util.JndiCloser;
  * @since 2.1
  */
 public class JndiManager extends AbstractManager {
-    private static final long serialVersionUID = 1L;
 
     private static final JndiManagerFactory FACTORY = new JndiManagerFactory();
 

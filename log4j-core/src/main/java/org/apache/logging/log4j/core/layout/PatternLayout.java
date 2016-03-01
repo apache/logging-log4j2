@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -280,8 +279,7 @@ public final class PatternLayout extends AbstractStringLayout {
             .build();
     }
 
-    private static class PatternSerializer implements Serializer, Serializer2, Serializable {
-        private static final long serialVersionUID = 1L;
+    private static class PatternSerializer implements Serializer, Serializer2 {
 
         private final PatternFormatter[] formatters;
         private final RegexReplacement replace;
@@ -325,8 +323,7 @@ public final class PatternLayout extends AbstractStringLayout {
         }
     }
 
-    private static class PatternSelectorSerializer implements Serializer, Serializer2, Serializable {
-        private static final long serialVersionUID = 1L;
+    private static class PatternSelectorSerializer implements Serializer, Serializer2 {
 
         private final PatternSelector patternSelector;
         private final RegexReplacement replace;

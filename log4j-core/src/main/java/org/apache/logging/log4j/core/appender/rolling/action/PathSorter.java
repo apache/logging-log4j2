@@ -17,12 +17,11 @@
 
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import java.io.Serializable;
 import java.util.Comparator;
 
 /**
  * Defines the interface of classes that can sort Paths.
  */
-public interface PathSorter extends Comparator<PathWithAttributes>, Serializable {
+public interface PathSorter extends Comparator<PathWithAttributes>{
 
 }

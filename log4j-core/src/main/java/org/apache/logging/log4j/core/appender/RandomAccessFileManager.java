@@ -35,7 +35,6 @@ import org.apache.logging.log4j.core.util.NullOutputStream;
  * I/O.
  */
 public class RandomAccessFileManager extends OutputStreamManager implements ByteBufferDestination {
-    private static final long serialVersionUID = 1L;
     static final int DEFAULT_BUFFER_SIZE = 256 * 1024;
 
     private static final RandomAccessFileManagerFactory FACTORY = new RandomAccessFileManagerFactory();

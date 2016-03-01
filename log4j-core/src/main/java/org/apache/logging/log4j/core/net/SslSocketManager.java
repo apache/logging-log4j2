@@ -38,7 +38,6 @@ import org.apache.logging.log4j.util.Strings;
  *
  */
 public class SslSocketManager extends TcpSocketManager {
-    private static final long serialVersionUID = 1L;
     public static final int DEFAULT_PORT = 6514;
     private static final SslSocketManagerFactory FACTORY = new SslSocketManagerFactory();
     private final SslConfiguration sslConfig;

@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import java.io.Serializable;
 import java.lang.reflect.Array;
 
 /**
@@ -24,8 +23,7 @@ import java.lang.reflect.Array;
  * size of the buffer the oldest element will be overwritten. Access to the buffer is thread safe.
  * @param <T> The type of object stored in the buffer.
  */
-public final class CyclicBuffer<T> implements Serializable {
-    private static final long serialVersionUID = 1L;
+public final class CyclicBuffer<T> {
     private final T[] ring;
     private int first = 0;
     private int last = 0;

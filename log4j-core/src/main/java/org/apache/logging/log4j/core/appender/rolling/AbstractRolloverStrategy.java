@@ -16,16 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import java.io.Serializable;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  *
  */
-public abstract class AbstractRolloverStrategy implements RolloverStrategy, Serializable {
-    private static final long serialVersionUID = 1L;
+public abstract class AbstractRolloverStrategy implements RolloverStrategy {
 
     /**
      * Allow subclasses access to the status logger without creating another instance.

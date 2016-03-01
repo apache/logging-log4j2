@@ -17,15 +17,15 @@
 
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
+
+import org.apache.logging.log4j.core.appender.rolling.action.PathCondition;
 
 /**
  * Test helper class.
  */
-public class CountingCondition implements PathCondition, Serializable {
-    private static final long serialVersionUID = 1L;
+public class CountingCondition implements PathCondition {
 
     private final boolean accept;
     private int acceptCount;

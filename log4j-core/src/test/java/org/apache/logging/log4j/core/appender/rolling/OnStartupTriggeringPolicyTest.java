@@ -49,7 +49,6 @@ public class OnStartupTriggeringPolicyTest {
     }
 
     private class MyRollingManager extends RollingFileManager {
-        private static final long serialVersionUID = 1L;
 
         private long timestamp;
 

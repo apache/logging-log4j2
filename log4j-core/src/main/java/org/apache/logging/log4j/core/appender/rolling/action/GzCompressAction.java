@@ -28,7 +28,6 @@ import java.util.zip.GZIPOutputStream;
  * Compresses a file using GZ compression.
  */
 public final class GzCompressAction extends AbstractAction {
-    private static final long serialVersionUID = 1L;
 
     private static final int BUF_SIZE = 8102;
 

@@ -66,7 +66,6 @@ import com.sleepycat.je.Transaction;
  * Manager that persists data to Berkeley DB before passing it on to Flume.
  */
 public class FlumePersistentManager extends FlumeAvroManager {
-    private static final long serialVersionUID = 1L;
 
     /** Attribute name for the key provider. */
     public static final String KEY_PROVIDER = "keyProvider";

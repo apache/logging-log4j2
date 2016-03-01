@@ -35,7 +35,6 @@ import org.apache.logging.log4j.core.Layout;
  * Manages actual File I/O for File Appenders.
  */
 public class FileManager extends OutputStreamManager {
-    private static final long serialVersionUID = 1L;
 
     private static final FileManagerFactory FACTORY = new FileManagerFactory();
 

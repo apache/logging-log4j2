@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.flume.appender;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
@@ -31,7 +29,6 @@ import org.apache.logging.log4j.core.appender.ManagerFactory;
  * Manager for FlumeAvroAppenders.
  */
 public class FlumeAvroManager extends AbstractFlumeManager {
-    private static final long serialVersionUID = 1L;
 
     private static final int MAX_RECONNECTS = 3;
     private static final int MINIMUM_TIMEOUT = 1000;
@@ -53,7 +50,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
 
     private final int current = 0;
 
-    private transient RpcClient rpcClient = null;
+    private RpcClient rpcClient = null;
 
     private BatchEvent batchEvent = new BatchEvent();
     private long nextSend = 0;
@@ -79,11 +76,6 @@ public class FlumeAvroManager extends AbstractFlumeManager {
         this.connectTimeoutMillis = connectTimeout;
         this.requestTimeoutMillis = requestTimeout;
         this.rpcClient = connect(agents, retries, connectTimeout, requestTimeout);
-    }
-
-    private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
-        this.rpcClient = connect(this.agents, this.retries, this.connectTimeoutMillis, this.requestTimeoutMillis);
     }
 
     /**

@@ -21,9 +21,6 @@ package org.apache.logging.log4j.core.util;
  * Copyright Terracotta, Inc.
  */
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
@@ -197,8 +194,7 @@ import java.util.TreeSet;
  * </ul>
  * </p>
  */
-public final class CronExpression implements Serializable {
-    private static final long serialVersionUID = 1L;
+public final class CronExpression {
 
     protected static final int SECOND = 0;
     protected static final int MINUTE = 1;
@@ -274,15 +270,6 @@ public final class CronExpression implements Serializable {
         this.cronExpression = cronExpression.toUpperCase(Locale.US);
 
         buildExpression(this.cronExpression);
-    }
-
-    private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
-        try {
-            buildExpression(this.cronExpression);
-        } catch (final ParseException e) {
-            Throwables.rethrow(e);
-        }
     }
 
     /**

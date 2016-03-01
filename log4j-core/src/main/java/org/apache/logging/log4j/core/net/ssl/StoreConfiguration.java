@@ -16,15 +16,12 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
-import java.io.Serializable;
-
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  *
  */
-public class StoreConfiguration<T> implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class StoreConfiguration<T> {
     protected static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     private String location;

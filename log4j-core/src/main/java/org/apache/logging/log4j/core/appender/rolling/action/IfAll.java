@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
@@ -31,8 +30,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
  * Corresponds to logical "AND".
  */
 @Plugin(name = "IfAll", category = "Core", printObject = true)
-public final class IfAll implements PathCondition, Serializable {
-    private static final long serialVersionUID = 1L;
+public final class IfAll implements PathCondition {
 
     private final PathCondition[] components;
 

@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.nosql.appender.couchdb;
 
-import java.io.Serializable;
 import java.lang.reflect.Method;
 
 import org.apache.logging.log4j.Logger;
@@ -36,8 +35,7 @@ import org.lightcouch.CouchDbProperties;
  * The Apache CouchDB implementation of {@link NoSqlProvider}.
  */
 @Plugin(name = "CouchDB", category = "Core", printObject = true)
-public final class CouchDbProvider implements NoSqlProvider<CouchDbConnection>, Serializable {
-    private static final long serialVersionUID = 1L;
+public final class CouchDbProvider implements NoSqlProvider<CouchDbConnection> {
     private static final int HTTP = 80;
     private static final int HTTPS = 443;
     private static final Logger LOGGER = StatusLogger.getLogger();
