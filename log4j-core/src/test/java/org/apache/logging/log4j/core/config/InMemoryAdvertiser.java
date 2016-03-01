@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,8 +23,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.net.Advertiser;
 
 @Plugin(name = "memory", category = "Core", elementType = "advertiser", printObject = false)
-public class InMemoryAdvertiser implements Advertiser, Serializable {
-    private static final long serialVersionUID = 1L;
+public class InMemoryAdvertiser implements Advertiser {
     private static Map<Object, Map<String, String>> properties = new HashMap<>();
 
     public static Map<Object, Map<String, String>> getAdvertisedEntries()

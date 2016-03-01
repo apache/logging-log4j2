@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.net;
 
-import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -37,8 +36,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  *
  */
 @Plugin(name = "multicastdns", category = "Core", elementType = "advertiser", printObject = false)
-public class MulticastDnsAdvertiser implements Advertiser, Serializable {
-    private static final long serialVersionUID = 1L;
+public class MulticastDnsAdvertiser implements Advertiser {
     /**
      * Status logger.
      */
