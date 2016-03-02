@@ -71,6 +71,7 @@ public class ReusableParameterizedMessage implements ReusableMessage {
     public ReusableParameterizedMessage() {
     }
 
+    @Override
     public boolean isReused() {
         return true;
     }
