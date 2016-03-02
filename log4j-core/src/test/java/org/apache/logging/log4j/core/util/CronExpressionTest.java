@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.util;
 
 import org.junit.Test;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 

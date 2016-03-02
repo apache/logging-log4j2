@@ -22,8 +22,6 @@ import java.util.Map;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 
-import com.sun.tools.jconsole.JConsolePlugin;
-
 /**
  * Adapts the {@code ClientGui} to the {@code JConsolePlugin} API.
  */
