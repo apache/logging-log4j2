@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.async.perftest;
 
 import java.util.concurrent.TimeUnit;
 
-import org.apache.kafka.common.metrics.stats.Count;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.async.AsyncLogger;
