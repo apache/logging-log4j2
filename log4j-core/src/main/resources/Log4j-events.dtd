@@ -47,7 +47,9 @@
 	logger CDATA #REQUIRED
 	timestamp NMTOKEN #REQUIRED
 	level (OFF | FATAL | ERROR | WARN | INFO | DEBUG | TRACE | ALL) #REQUIRED
-	thread CDATA #REQUIRED
+    threadId CDATA #REQUIRED
+    thread CDATA #REQUIRED
+    threadProperty CDATA #REQUIRED
 >
 <!ELEMENT %log4j..Message; ANY>
 <!ELEMENT %log4j..NDC; ANY>
