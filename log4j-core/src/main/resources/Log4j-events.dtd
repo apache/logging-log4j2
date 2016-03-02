@@ -49,7 +49,7 @@
 	level (OFF | FATAL | ERROR | WARN | INFO | DEBUG | TRACE | ALL) #REQUIRED
     threadId CDATA #REQUIRED
     thread CDATA #REQUIRED
-    threadProperty CDATA #REQUIRED
+    threadPriority CDATA #REQUIRED
 >
 <!ELEMENT %log4j..Message; ANY>
 <!ELEMENT %log4j..NDC; ANY>
