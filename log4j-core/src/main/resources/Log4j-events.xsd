@@ -58,7 +58,9 @@
                         <xs:attribute name="timestamp" type="xs:long" use="required"/>
                         <xs:attribute name="nanoTime" type="xs:long" use="optional"/>
                         <xs:attribute name="level" type="log4j:LevelEnum" use="required"/>
+                        <xs:attribute name="threadId" type="xs:long" use="required"/>
                         <xs:attribute name="thread" type="xs:string" use="required"/>
+                        <xs:attribute name="threadProperty" type="xs:integer" use="required"/>
                     </xs:complexType>
                 </xs:element>
             </xs:sequence>
