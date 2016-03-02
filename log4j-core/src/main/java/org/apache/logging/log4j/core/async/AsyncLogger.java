@@ -235,6 +235,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
 
         // Implementation note: this method is tuned for performance. MODIFY WITH CARE!
 
+        final Thread currentThread = Thread.currentThread();
         translator.setValuesPart2(
                 // config properties are taken care of in the EventHandler thread
                 // in the AsyncLogger#actualAsyncLog method
@@ -245,15 +246,15 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
                 // needs shallow copy to be fast (LOG4J2-154)
                 ThreadContext.getImmutableStack(), //
 
-                THREAD_NAME_CACHING_STRATEGY.getThreadId(), //
+                currentThread.getId(), //
 
                 // Thread.currentThread().getName(), //
                 THREAD_NAME_CACHING_STRATEGY.getThreadName(),
 
-                THREAD_NAME_CACHING_STRATEGY.getThreadPriority(), //
+                currentThread.getPriority(), //
                 // location (expensive to calculate)
-                calcLocationIfRequested(fqcn)
-, eventTimeMillis(message), nanoClock.nanoTime() //
+                calcLocationIfRequested(fqcn), 
+                eventTimeMillis(message), nanoClock.nanoTime() //
                 );
     }
 
@@ -316,12 +317,11 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
         // needs shallow copy to be fast (LOG4J2-154)
         final ContextStack contextStack = ThreadContext.getImmutableStack();
 
-        final Long threadId = THREAD_NAME_CACHING_STRATEGY.getThreadId();
+        final Thread currentThread = Thread.currentThread();
         final String threadName = THREAD_NAME_CACHING_STRATEGY.getThreadName();
-        final Integer threadPriority = THREAD_NAME_CACHING_STRATEGY.getThreadPriority();
-
         event.setValues(asyncLogger, asyncLogger.getName(), marker, fqcn, level, message, thrown, contextMap,
-                contextStack, threadId, threadName, threadPriority, location, eventTimeMillis(message), nanoClock.nanoTime());
+                contextStack, currentThread.getId(), threadName, currentThread.getPriority(), location,
+                eventTimeMillis(message), nanoClock.nanoTime());
     }
 
     /**
