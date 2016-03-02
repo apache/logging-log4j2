@@ -197,7 +197,7 @@ public class PerfTestDriver {
         Log4j2(RunLog4j2.class), //
         Logback(RunLogback.class);
 
-        private Class<? extends IPerfTestRunner> implementationClass;
+        private final Class<? extends IPerfTestRunner> implementationClass;
 
         private Runner(Class<? extends IPerfTestRunner> cls) {
             this.implementationClass = cls;

@@ -37,7 +37,7 @@ public class WatchManager extends AbstractLifeCycle {
     private final ConcurrentMap<File, FileMonitor> watchers = new ConcurrentHashMap<>();
     private int intervalSeconds = 0;
     private ScheduledFuture<?> future;
-    private ConfigurationScheduler scheduler;
+    private final ConfigurationScheduler scheduler;
 
     public WatchManager(ConfigurationScheduler scheduler) {
         this.scheduler = scheduler;

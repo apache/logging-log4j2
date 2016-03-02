@@ -72,7 +72,7 @@ public class ThreadLocalVsPoolBenchmark {
      */
     private final static PatternFormatter[] formatters = createFormatters();
 
-    private StringBuilderPool pool = new StringBuilderPool(DEFAULT_STRING_BUILDER_SIZE);
+    private final StringBuilderPool pool = new StringBuilderPool(DEFAULT_STRING_BUILDER_SIZE);
     private static ThreadLocal<StringBuilder> threadLocal = new ThreadLocal<>();
 
     /**

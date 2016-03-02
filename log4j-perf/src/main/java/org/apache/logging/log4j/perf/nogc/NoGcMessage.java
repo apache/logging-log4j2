@@ -25,16 +25,16 @@ import java.util.Arrays;
  */
 public class NoGcMessage implements Message {
     class InternalState {
-        private Object[] params = new Object[10];
+        private final Object[] params = new Object[10];
         private int paramCount;
-        private StringBuilder buffer = new StringBuilder(2048);
+        private final StringBuilder buffer = new StringBuilder(2048);
 
         public Object[] getParamsCopy() {
             return Arrays.copyOf(params, paramCount);
         }
     }
 
-    private ThreadLocal<InternalState> state = new ThreadLocal<>();
+    private final ThreadLocal<InternalState> state = new ThreadLocal<>();
 
     public NoGcMessage() {
     }

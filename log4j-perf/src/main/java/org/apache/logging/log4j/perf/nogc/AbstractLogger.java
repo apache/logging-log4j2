@@ -24,7 +24,7 @@ import org.apache.logging.log4j.message.Message;
  * Logic common among ClassicLogger and NoGcLogger.
  */
 public abstract class AbstractLogger {
-    private MutableLogEvent reusedLogEvent = new MutableLogEvent();
+    private final MutableLogEvent reusedLogEvent = new MutableLogEvent();
     protected DemoAppender appender = new DemoAppender(createLayout());
 
     protected abstract Layout<?> createLayout();

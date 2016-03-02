@@ -28,7 +28,7 @@ public class ReusableParameterizedMessage implements ReusableMessage {
     private static final long serialVersionUID = 7800075879295123856L;
 
     static class InternalState {
-        private StringBuilder buffer = new StringBuilder(2048);
+        private final StringBuilder buffer = new StringBuilder(2048);
         private String messagePattern;
         private int argCount;
         private transient Object[] varargs;

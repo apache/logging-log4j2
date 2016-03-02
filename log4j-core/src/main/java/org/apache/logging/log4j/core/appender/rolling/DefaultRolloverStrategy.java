@@ -192,9 +192,9 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
     private final StrSubstitutor subst;
     private final int compressionLevel;
 
-    private List<Action> customActions;
+    private final List<Action> customActions;
 
-    private boolean stopCustomActionsOnError;
+    private final boolean stopCustomActionsOnError;
 
     /**
      * Constructs a new instance.

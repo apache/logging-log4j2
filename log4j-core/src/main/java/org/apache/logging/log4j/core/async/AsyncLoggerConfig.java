@@ -68,7 +68,7 @@ import org.apache.logging.log4j.util.Strings;
 @Plugin(name = "asyncLogger", category = Node.CATEGORY, printObject = true)
 public class AsyncLoggerConfig extends LoggerConfig {
 
-    private AsyncLoggerConfigDelegate delegate;
+    private final AsyncLoggerConfigDelegate delegate;
 
     protected AsyncLoggerConfig(final String name,
             final List<AppenderRef> appenders, final Filter filter,
