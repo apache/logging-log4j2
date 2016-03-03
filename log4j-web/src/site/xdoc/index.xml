@@ -52,6 +52,7 @@
         <section name="Requirements">
            <p>
              The Web module requires Servlet 2.5 and is dependent on the Log4j 2 API and implementation.
+             For more information, see <a href="../runtime-dependencies.html">Runtime Dependencies</a>.
           </p>
         </section>
 

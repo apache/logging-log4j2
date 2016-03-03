@@ -36,6 +36,7 @@
         <section name="Requirements">
            <p>
              The JMX GUI is dependent on Log4j 2 Core.
+             For more information, see <a href="../runtime-dependencies.html">Runtime Dependencies</a>.
           </p>
         </section>
 

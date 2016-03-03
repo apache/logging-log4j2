@@ -172,6 +172,9 @@
       <action issue="LOG4J2-1300" dev="mattsicker" type="update">
         Remove serializability from classes that don't need it.
       </action>
+      <action issue="LOG4J2-1303" dev="mattsicker" type="add">
+        Add documentation links to runtime dependencies in each component intro page.
+      </action>
     </release>
     <release version="2.5" date="2015-12-06" description="GA Release 2.5">
       <action issue="LOG4J2-324" dev="rpopma" type="fix">
