@@ -185,7 +185,7 @@
         JeroMqAppender should support layouts.
       </action>
       <action issue="LOG4J2-1227" dev="mattsicker" type="fix" due-to="Olivier Lemasle">
-        NullPointerException in MapLookup.lookup is the event is null.
+        NullPointerException in MapLookup.lookup if the event is null.
       </action>
       <action issue="LOG4J2-1306" dev="mattsicker" type="update">
         JeroMqAppender should use ShutdownCallbackRegistry instead of runtime hooks.
