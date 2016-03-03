@@ -175,6 +175,9 @@
       <action issue="LOG4J2-1303" dev="mattsicker" type="add">
         Add documentation links to runtime dependencies in each component intro page.
       </action>
+      <action issue="LOG4J2-1275" dev="mattsicker" type="fix" due-to="Ludovic Hochet">
+        Fix RollingAppenderNoUnconditionalDeleteTest repeat test runs from failing.
+      </action>
     </release>
     <release version="2.5" date="2015-12-06" description="GA Release 2.5">
       <action issue="LOG4J2-324" dev="rpopma" type="fix">
