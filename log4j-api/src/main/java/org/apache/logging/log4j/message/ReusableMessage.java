@@ -19,16 +19,11 @@ package org.apache.logging.log4j.message;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 
 /**
- * Messages implementing this interface may or may not be reused.
+ * Messages implementing this interface are reused.
  * <p>
- * If a Message is reused, downstream components should not hand over this instance to another thread, but extract its
+ * If a Message is reusable, downstream components should not hand over this instance to another thread, but extract its
  * content (via the {@link StringBuilderFormattable#formatTo(StringBuilder)} method) instead.
  * </p>
  */
 public interface ReusableMessage extends Message, StringBuilderFormattable {
-    /**
-     * Returns {@code true} if this instance is and will be reused
-     * @return whether this is a reused instance
-     */
-    boolean isReused();
 }

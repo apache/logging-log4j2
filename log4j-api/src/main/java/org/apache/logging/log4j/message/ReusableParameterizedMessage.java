@@ -71,11 +71,6 @@ public class ReusableParameterizedMessage implements ReusableMessage {
     public ReusableParameterizedMessage() {
     }
 
-    @Override
-    public boolean isReused() {
-        return true;
-    }
-
     private InternalState getState() {
         InternalState result = state.get();
         if (result == null) {

@@ -166,7 +166,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
     }
 
     private boolean isReused(final Message message) {
-        return message instanceof ReusableMessage && ((ReusableMessage) message).isReused();
+        return message instanceof ReusableMessage;
     }
 
     /**
@@ -253,7 +253,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
 
                 currentThread.getPriority(), //
                 // location (expensive to calculate)
-                calcLocationIfRequested(fqcn), 
+                calcLocationIfRequested(fqcn),
                 eventTimeMillis(message), nanoClock.nanoTime() //
                 );
     }

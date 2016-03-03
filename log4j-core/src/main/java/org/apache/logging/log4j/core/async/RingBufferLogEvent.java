@@ -67,11 +67,6 @@ public class RingBufferLogEvent implements LogEvent {
         private StringBuilder stringBuilder;
 
         @Override
-        public boolean isReused() {
-            return true;
-        }
-
-        @Override
         public String getFormattedMessage() {
             return null;
         }
@@ -137,7 +132,7 @@ public class RingBufferLogEvent implements LogEvent {
         this.marker = aMarker;
         this.fqcn = theFqcn;
         this.level = aLevel;
-        if (msg instanceof ReusableMessage && ((ReusableMessage) msg).isReused()) {
+        if (msg instanceof ReusableMessage) {
             if (messageText == null) {
                 // Should never happen:
                 // only happens if user logs a custom reused message when Constants.ENABLE_THREADLOCALS is false
@@ -336,7 +331,7 @@ public class RingBufferLogEvent implements LogEvent {
                 0, // threadName
                 null, // location
                 0, // currentTimeMillis
-                null, 
+                null,
                 0, 0 // nanoTime
         );
     }
