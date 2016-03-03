@@ -244,8 +244,9 @@ public final class JeroMqAppender extends AbstractAppender {
 
     @Override
     public synchronized void append(final LogEvent event) {
-        final String formattedMessage = event.getMessage().getFormattedMessage();
-        if (getPublisher().send(formattedMessage, 0)) {
+        final Layout<? extends Serializable> layout = getLayout();
+        final byte[] formattedMessage = layout.toByteArray(event);
+        if (getPublisher().send(getLayout().toByteArray(event))) {
             sendRcTrue++;
         } else {
             sendRcFalse++;

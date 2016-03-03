@@ -181,6 +181,9 @@
       <action issue="LOG4J2-1262" dev="mattsicker" type="fix">
         Stop throwing unnecessary exception in Log4jServletContextListener.contextDestroyed().
       </action>
+      <action issue="LOG4J2-1252" dev="mattsicker" type="add">
+        JeroMqAppender should support layouts.
+      </action>
     </release>
     <release version="2.5" date="2015-12-06" description="GA Release 2.5">
       <action issue="LOG4J2-324" dev="rpopma" type="fix">
