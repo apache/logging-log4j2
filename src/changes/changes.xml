@@ -184,6 +184,9 @@
       <action issue="LOG4J2-1252" dev="mattsicker" type="add">
         JeroMqAppender should support layouts.
       </action>
+      <action issue="LOG4J2-1227" dev="mattsicker" type="fix" due-to="Olivier Lemasle">
+        NullPointerException in MapLookup.lookup is the event is null.
+      </action>
     </release>
     <release version="2.5" date="2015-12-06" description="GA Release 2.5">
       <action issue="LOG4J2-324" dev="rpopma" type="fix">
