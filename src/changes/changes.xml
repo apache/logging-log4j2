@@ -187,6 +187,9 @@
       <action issue="LOG4J2-1227" dev="mattsicker" type="fix" due-to="Olivier Lemasle">
         NullPointerException in MapLookup.lookup is the event is null.
       </action>
+      <action issue="LOG4J2-1306" dev="mattsicker" type="update">
+        JeroMqAppender should use ShutdownCallbackRegistry instead of runtime hooks.
+      </action>
     </release>
     <release version="2.5" date="2015-12-06" description="GA Release 2.5">
       <action issue="LOG4J2-324" dev="rpopma" type="fix">
