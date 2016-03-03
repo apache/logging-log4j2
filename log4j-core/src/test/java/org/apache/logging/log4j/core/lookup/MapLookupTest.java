@@ -79,7 +79,7 @@ public class MapLookupTest {
                 .build();
       final MapLookup lookup = new MapLookup(map);
       assertEquals("B", lookup.lookup(event, "A"));
-      assertEquals("B1", lookup.lookup(event, "A"));
+      assertEquals("B1", lookup.lookup(event, "A1"));
     }
 
     @Test
