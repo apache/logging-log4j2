@@ -178,6 +178,9 @@
       <action issue="LOG4J2-1275" dev="mattsicker" type="fix" due-to="Ludovic Hochet">
         Fix RollingAppenderNoUnconditionalDeleteTest repeat test runs from failing.
       </action>
+      <action issue="LOG4J2-1262" dev="mattsicker" type="fix">
+        Stop throwing unnecessary exception in Log4jServletContextListener.contextDestroyed().
+      </action>
     </release>
     <release version="2.5" date="2015-12-06" description="GA Release 2.5">
       <action issue="LOG4J2-324" dev="rpopma" type="fix">
