@@ -910,6 +910,7 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternMap"/>
                 <b>K</b>{key}<br />
                 <b>map</b>{key}<br />
                 <b>MAP</b>{key}
@@ -957,6 +958,7 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternMessage"/>
                 <b>m</b><br />
                 <b>msg</b><br />
                 <b>message</b>
@@ -977,18 +979,40 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternMarker"/>
                 <b>marker</b>
               </td>
               <td>The full name of the marker, including parents, if one is present.</td>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternMarkerSimpleName"/>
                 <b>markerSimpleName</b>
               </td>
               <td>The simple name of the marker (not including parents), if one is present.</td>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternMaxLength"/>
+                <b>maxLen</b><br/>
+                <b>maxLength</b>
+              </td>
+              <td>
+                <p>
+                  Outputs the result of evaluating the pattern and truncating the result. If the length is greater
+                  than 20, then the output will contain a trailing ellipsis. If the provided length is invalid, a
+                  default value of 100 is used.
+                </p>
+                <p>
+                  Example syntax: <code>%maxLen{%p: %c{1} - %m%notEmpty{ =>%ex{short}}}{160}</code> will be limited to
+                  160 characters with a trailing ellipsis. Another example: <code>%maxLen{%m}{20}</code> will be
+                  limited to 20 characters and no trailing ellipsis.
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td align="center">
+                <a name="PatternNewLine"/>
                 <b>n</b>
               </td>
               <td>
@@ -1029,6 +1053,7 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternLevel"/>
                 <b>p</b>|<b>level</b>{<em>level</em>=<em>label</em>, <em>level</em>=<em>label</em>, ...}
                 <b>p</b>|<b>level</b>{length=<em>n</em>}
                 <b>p</b>|<b>level</b>{lowerCase=<em>true</em>|<em>false</em>}
@@ -1065,6 +1090,7 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternRelative"/>
                 <b>r</b><br />
                 <b>relative</b>
               </td>
@@ -1074,6 +1100,7 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternReplace"/>
                 <b>replace</b>{pattern}{regex}{substitution}
               </td>
               <td>
@@ -1089,6 +1116,7 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternException"/>
                 <b>rEx</b>["none"|"short"|"full"|depth],[filters(packages)}<br />
                 <b>rException</b>["none"|"short"|"full"|depth],[filters(packages)}<br />
                 <b>rThrowable</b>["none"|"short"|"full"|depth],[filters(packages)}
@@ -1109,6 +1137,7 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternSequenceNumber"/>
                 <b>sn</b><br />
                 <b>sequenceNumber</b>
               </td>
@@ -1118,6 +1147,7 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternStyle"/>
                 <b>style</b>{pattern}{ANSI style}
               </td>
               <td>
@@ -1239,6 +1269,7 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternThreadId"/>
                 <b>T</b><br />
                 <b>tid</b><br />
                 <b>threadId</b>
@@ -1247,6 +1278,7 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternThreadName"/>
                 <b>t</b><br />
                 <b>thread</b><br />
                 <b>threadName</b>
@@ -1255,6 +1287,7 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternThreadPriority"/>
                 <b>tp</b><br />
                 <b>threadPriority</b>
               </td>
@@ -1262,6 +1295,7 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternNDC"/>
                 <b>x</b><br />
                 <b>NDC</b>
               </td>
@@ -1271,6 +1305,7 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternMDC"/>
                 <b>X</b>{key[,key2...]}<br />
                 <b>mdc</b>{key[,key2...]}<br />
                 <b>MDC</b>{key[,key2...]}
@@ -1300,6 +1335,7 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternUUID"/>
                 <b>u</b>{"RANDOM" | "TIME"}<br />
                 <b>uuid</b>
               </td>
@@ -1314,6 +1350,7 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternExtendedException"/>
                 <b>xEx</b>{"none"|"short"|"full"|depth],[filters(packages)}<br />
                 <b>xException</b>["none"|"short"|"full"|depth],[filters(packages)}<br />
                 <b>xThrowable</b>["none"|"short"|"full"|depth],[filters(packages)}
@@ -1338,6 +1375,7 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+                <a name="PatternPercentLiteral"/>
                 <b>%</b>
               </td>
               <td>The sequence %% outputs a single percent sign.

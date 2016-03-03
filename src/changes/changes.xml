@@ -190,6 +190,9 @@
       <action issue="LOG4J2-1306" dev="mattsicker" type="update">
         JeroMqAppender should use ShutdownCallbackRegistry instead of runtime hooks.
       </action>
+      <action issue="LOG4J2-1217" dev="mattsicker" type="add" due-to="Thies Wellpott">
+        PatternLayout option to limit length of text.
+      </action>
     </release>
     <release version="2.5" date="2015-12-06" description="GA Release 2.5">
       <action issue="LOG4J2-324" dev="rpopma" type="fix">
