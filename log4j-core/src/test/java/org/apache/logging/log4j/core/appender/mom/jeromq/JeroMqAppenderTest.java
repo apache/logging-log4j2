@@ -22,6 +22,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.AfterClass;
@@ -49,7 +50,7 @@ public class JeroMqAppenderTest {
     @Test(timeout = 10000)
     public void testClientServer() throws Exception {
         final JeroMqAppender appender = ctx.getRequiredAppender("JeroMQAppender", JeroMqAppender.class);
-        final int expectedReceiveCount = 2;
+        final int expectedReceiveCount = 3;
         final JeroMqTestClient client = new JeroMqTestClient(JeroMqAppender.getContext(), "tcp://localhost:5556", expectedReceiveCount);
         final ExecutorService executor = Executors.newSingleThreadExecutor();
         try {
@@ -59,11 +60,14 @@ public class JeroMqAppenderTest {
             appender.resetSendRcs();
             logger.info("Hello");
             logger.info("Again");
+            ThreadContext.put("foo", "bar");
+            logger.info("World");
             final List<String> list = future.get();
             Assert.assertEquals(expectedReceiveCount, appender.getSendRcTrue());
             Assert.assertEquals(0, appender.getSendRcFalse());
             Assert.assertEquals("Hello", list.get(0));
             Assert.assertEquals("Again", list.get(1));
+            Assert.assertEquals("barWorld", list.get(2));
         } finally {
             executor.shutdown();
         }
