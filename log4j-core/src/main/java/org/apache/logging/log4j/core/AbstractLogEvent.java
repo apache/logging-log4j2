@@ -78,8 +78,18 @@ public abstract class AbstractLogEvent implements LogEvent {
     }
 
     @Override
+    public long getThreadId() {
+        return 0;
+    }
+
+    @Override
     public String getThreadName() {
         return null;
+    }
+
+    @Override
+    public int getThreadPriority() {
+        return 0;
     }
 
     @Override

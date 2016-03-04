@@ -35,6 +35,7 @@
            <p>
              The Log4j 2 Liquibase Binding has a dependency
              on the Log4j 2 API as well as the Liquibase core.
+             For more information, see <a href="../runtime-dependencies.html">Runtime Dependencies</a>.
           </p>
         </section>
 

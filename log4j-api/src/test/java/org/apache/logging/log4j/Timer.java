@@ -28,11 +28,11 @@ public class Timer implements Serializable
 {
     private static final long serialVersionUID = 9175191792439630013L;
 
-    private final String m_name;              // The timer's name
-    private String m_status;            // The timer's status
-    private long m_startTime;           // The start time
-    private long m_elapsedTime;         // The elapsed time
-    private final int m_iterations;
+    private final String name;        // The timer's name
+    private String status;            // The timer's status
+    private long startTime;           // The start time
+    private long elapsedTime;         // The elapsed time
+    private final int iterations;
     private static long NANO_PER_SECOND = 1000000000L;
     private static long NANO_PER_MINUTE = NANO_PER_SECOND * 60;
     private static long NANO_PER_HOUR = NANO_PER_MINUTE * 60;
@@ -54,10 +54,10 @@ public class Timer implements Serializable
      */
     public Timer(final String name, final int iterations)
     {
-        m_name = name;
-        m_startTime = 0;
-        m_status = "Stopped";
-        m_iterations = (iterations > 0) ? iterations : 0;
+        this.name = name;
+        startTime = 0;
+        status = "Stopped";
+        this.iterations = (iterations > 0) ? iterations : 0;
     }
 
     /**
@@ -65,9 +65,9 @@ public class Timer implements Serializable
      */
     public void start()
     {
-        m_startTime = System.nanoTime();
-        m_elapsedTime = 0;
-        m_status = "Start";
+        startTime = System.nanoTime();
+        elapsedTime = 0;
+        status = "Start";
     }
 
     /**
@@ -75,9 +75,9 @@ public class Timer implements Serializable
      */
     public void stop()
     {
-        m_elapsedTime += System.nanoTime() - m_startTime;
-        m_startTime = 0;
-        m_status = "Stop";
+        elapsedTime += System.nanoTime() - startTime;
+        startTime = 0;
+        status = "Stop";
     }
 
     /**
@@ -85,9 +85,9 @@ public class Timer implements Serializable
      */
     public void pause()
     {
-        m_elapsedTime += System.nanoTime() - m_startTime;
-        m_startTime = 0;
-        m_status = "Pause";
+        elapsedTime += System.nanoTime() - startTime;
+        startTime = 0;
+        status = "Pause";
     }
 
     /**
@@ -95,8 +95,8 @@ public class Timer implements Serializable
      */
     public void resume()
     {
-        m_startTime = System.nanoTime();
-        m_status = "Resume";
+        startTime = System.nanoTime();
+        status = "Resume";
     }
 
     /**
@@ -105,7 +105,7 @@ public class Timer implements Serializable
      */
     public String getName()
     {
-        return m_name;
+        return name;
     }
 
     /**
@@ -115,7 +115,7 @@ public class Timer implements Serializable
      */
     public long getElapsedTime()
     {
-        return m_elapsedTime / 1000000;
+        return elapsedTime / 1000000;
     }
 
     /**
@@ -125,7 +125,7 @@ public class Timer implements Serializable
      */
     public long getElapsedNanoTime()
     {
-        return m_elapsedTime;
+        return elapsedTime;
     }
 
     /**
@@ -135,7 +135,7 @@ public class Timer implements Serializable
      */
     public String getStatus()
     {
-        return m_status;
+        return status;
     }
 
     /**
@@ -144,89 +144,81 @@ public class Timer implements Serializable
     @Override
     public String toString()
     {
-        final StringBuilder result = new StringBuilder("Timer ").append(m_name);
-        if (m_status.equals("Start"))
-        {
-            result.append(" started");
-        }
-        else if (m_status.equals("Pause"))
-        {
-            result.append(" paused");
-        }
-        else if (m_status.equals("Resume"))
-        {
-            result.append(" resumed");
-        }
-        else if (m_status.equals("Stop"))
-        {
-            long nanoseconds = m_elapsedTime;
-            // Get elapsed hours
-            long hours = nanoseconds / NANO_PER_HOUR;
-            // Get remaining nanoseconds
-            nanoseconds = nanoseconds % NANO_PER_HOUR;
-            // Get minutes
-            long minutes = nanoseconds / NANO_PER_MINUTE;
-            // Get remaining nanoseconds
-            nanoseconds = nanoseconds % NANO_PER_MINUTE;
-            // Get seconds
-            long seconds = nanoseconds / NANO_PER_SECOND;
-            // Get remaining nanoseconds
-            nanoseconds = nanoseconds % NANO_PER_SECOND;
-
-            String elapsed = Strings.EMPTY;
-
-            if (hours > 0)
-            {
-                elapsed += hours + " hours ";
-            }
-            if (minutes > 0 || hours > 0)
-            {
-                elapsed += minutes + " minutes ";
-            }
-
-            DecimalFormat numFormat = null;
-            numFormat = new DecimalFormat("#0");
-            elapsed += numFormat.format(seconds) + '.';
-            numFormat = new DecimalFormat("000000000");
-            elapsed += numFormat.format(nanoseconds) + " seconds";
-            result.append(" stopped. Elapsed time: ").append(elapsed);
-            if (m_iterations > 0)
-            {
-                nanoseconds = m_elapsedTime / m_iterations;
+        final StringBuilder result = new StringBuilder("Timer ").append(name);
+        switch (status) {
+            case "Start":
+                result.append(" started");
+                break;
+            case "Pause":
+                result.append(" paused");
+                break;
+            case "Resume":
+                result.append(" resumed");
+                break;
+            case "Stop":
+                long nanoseconds = elapsedTime;
                 // Get elapsed hours
-                hours = nanoseconds / NANO_PER_HOUR;
+                long hours = nanoseconds / NANO_PER_HOUR;
                 // Get remaining nanoseconds
                 nanoseconds = nanoseconds % NANO_PER_HOUR;
                 // Get minutes
-                minutes = nanoseconds / NANO_PER_MINUTE;
+                long minutes = nanoseconds / NANO_PER_MINUTE;
                 // Get remaining nanoseconds
                 nanoseconds = nanoseconds % NANO_PER_MINUTE;
                 // Get seconds
-                seconds = nanoseconds / NANO_PER_SECOND;
+                long seconds = nanoseconds / NANO_PER_SECOND;
                 // Get remaining nanoseconds
                 nanoseconds = nanoseconds % NANO_PER_SECOND;
 
-                elapsed = Strings.EMPTY;
+                String elapsed = Strings.EMPTY;
 
-                if (hours > 0)
-                {
+                if (hours > 0) {
                     elapsed += hours + " hours ";
                 }
-                if (minutes > 0 || hours > 0)
-                {
+                if (minutes > 0 || hours > 0) {
                     elapsed += minutes + " minutes ";
                 }
 
+                DecimalFormat numFormat;
                 numFormat = new DecimalFormat("#0");
                 elapsed += numFormat.format(seconds) + '.';
                 numFormat = new DecimalFormat("000000000");
                 elapsed += numFormat.format(nanoseconds) + " seconds";
-                result.append(" Average per iteration: ").append(elapsed);
-            }
-        }
-        else
-        {
-            result.append(' ').append(m_status);
+                result.append(" stopped. Elapsed time: ").append(elapsed);
+                if (iterations > 0) {
+                    nanoseconds = elapsedTime / iterations;
+                    // Get elapsed hours
+                    hours = nanoseconds / NANO_PER_HOUR;
+                    // Get remaining nanoseconds
+                    nanoseconds = nanoseconds % NANO_PER_HOUR;
+                    // Get minutes
+                    minutes = nanoseconds / NANO_PER_MINUTE;
+                    // Get remaining nanoseconds
+                    nanoseconds = nanoseconds % NANO_PER_MINUTE;
+                    // Get seconds
+                    seconds = nanoseconds / NANO_PER_SECOND;
+                    // Get remaining nanoseconds
+                    nanoseconds = nanoseconds % NANO_PER_SECOND;
+
+                    elapsed = Strings.EMPTY;
+
+                    if (hours > 0) {
+                        elapsed += hours + " hours ";
+                    }
+                    if (minutes > 0 || hours > 0) {
+                        elapsed += minutes + " minutes ";
+                    }
+
+                    numFormat = new DecimalFormat("#0");
+                    elapsed += numFormat.format(seconds) + '.';
+                    numFormat = new DecimalFormat("000000000");
+                    elapsed += numFormat.format(nanoseconds) + " seconds";
+                    result.append(" Average per iteration: ").append(elapsed);
+                }
+                break;
+            default:
+                result.append(' ').append(status);
+                break;
         }
         return result.toString();
     }
@@ -242,16 +234,16 @@ public class Timer implements Serializable
 
         final Timer timer = (Timer) o;
 
-        if (m_elapsedTime != timer.m_elapsedTime) {
+        if (elapsedTime != timer.elapsedTime) {
             return false;
         }
-        if (m_startTime != timer.m_startTime) {
+        if (startTime != timer.startTime) {
             return false;
         }
-        if (m_name != null ? !m_name.equals(timer.m_name) : timer.m_name != null) {
+        if (name != null ? !name.equals(timer.name) : timer.name != null) {
             return false;
         }
-        if (m_status != null ? !m_status.equals(timer.m_status) : timer.m_status != null) {
+        if (status != null ? !status.equals(timer.status) : timer.status != null) {
             return false;
         }
 
@@ -261,10 +253,10 @@ public class Timer implements Serializable
     @Override
     public int hashCode() {
         int result;
-        result = (m_name != null ? m_name.hashCode() : 0);
-        result = 29 * result + (m_status != null ? m_status.hashCode() : 0);
-        result = 29 * result + (int) (m_startTime ^ (m_startTime >>> 32));
-        result = 29 * result + (int) (m_elapsedTime ^ (m_elapsedTime >>> 32));
+        result = (name != null ? name.hashCode() : 0);
+        result = 29 * result + (status != null ? status.hashCode() : 0);
+        result = 29 * result + (int) (startTime ^ (startTime >>> 32));
+        result = 29 * result + (int) (elapsedTime ^ (elapsedTime >>> 32));
         return result;
     }
 

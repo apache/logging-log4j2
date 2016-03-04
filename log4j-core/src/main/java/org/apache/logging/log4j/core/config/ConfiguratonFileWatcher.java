@@ -27,8 +27,8 @@ import java.util.List;
  */
 public class ConfiguratonFileWatcher implements FileWatcher {
 
-    private Reconfigurable reconfigurable;
-    private List<ConfigurationListener> listeners;
+    private final Reconfigurable reconfigurable;
+    private final List<ConfigurationListener> listeners;
 
     public ConfiguratonFileWatcher(Reconfigurable reconfigurable, final List<ConfigurationListener> listeners) {
         this.reconfigurable = reconfigurable;

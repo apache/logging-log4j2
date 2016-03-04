@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.Locale;
 
 import org.apache.commons.lang3.SerializationUtils;
+import org.apache.logging.log4j.junit.Mutable;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

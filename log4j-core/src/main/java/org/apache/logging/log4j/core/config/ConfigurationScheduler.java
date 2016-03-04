@@ -35,7 +35,6 @@ import java.util.concurrent.TimeUnit;
 public class ConfigurationScheduler extends AbstractLifeCycle {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
-    private static final long serialVersionUID = 4570411889877332287L;
     private ScheduledExecutorService executorService;
 
     private int scheduledItems = 0;

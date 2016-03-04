@@ -67,11 +67,6 @@ public class RingBufferLogEvent implements LogEvent {
         private StringBuilder stringBuilder;
 
         @Override
-        public boolean isReused() {
-            return true;
-        }
-
-        @Override
         public String getFormattedMessage() {
             return null;
         }
@@ -119,7 +114,9 @@ public class RingBufferLogEvent implements LogEvent {
     private ThrowableProxy thrownProxy;
     private Map<String, String> contextMap;
     private ContextStack contextStack;
+    private long threadId;
     private String threadName;
+    private int threadPriority;
     private StackTraceElement location;
     private long currentTimeMillis;
     private boolean endOfBatch;
@@ -128,14 +125,14 @@ public class RingBufferLogEvent implements LogEvent {
 
     public void setValues(final AsyncLogger anAsyncLogger, final String aLoggerName, final Marker aMarker,
             final String theFqcn, final Level aLevel, final Message msg, final Throwable aThrowable,
-            final Map<String, String> aMap, final ContextStack aContextStack, final String aThreadName,
-            final StackTraceElement aLocation, final long aCurrentTimeMillis, final long aNanoTime) {
+            final Map<String, String> aMap, final ContextStack aContextStack, long threadId,
+            final String threadName, int threadPriority, final StackTraceElement aLocation, final long aCurrentTimeMillis, final long aNanoTime) {
         this.asyncLogger = anAsyncLogger;
         this.loggerName = aLoggerName;
         this.marker = aMarker;
         this.fqcn = theFqcn;
         this.level = aLevel;
-        if (msg instanceof ReusableMessage && ((ReusableMessage) msg).isReused()) {
+        if (msg instanceof ReusableMessage) {
             if (messageText == null) {
                 // Should never happen:
                 // only happens if user logs a custom reused message when Constants.ENABLE_THREADLOCALS is false
@@ -150,7 +147,9 @@ public class RingBufferLogEvent implements LogEvent {
         this.thrownProxy = null;
         this.contextMap = aMap;
         this.contextStack = aContextStack;
-        this.threadName = aThreadName;
+        this.threadId = threadId;
+        this.threadName = threadName;
+        this.threadPriority = threadPriority;
         this.location = aLocation;
         this.currentTimeMillis = aCurrentTimeMillis;
         this.nanoTime = aNanoTime;
@@ -259,8 +258,18 @@ public class RingBufferLogEvent implements LogEvent {
     }
 
     @Override
+    public long getThreadId() {
+        return threadId;
+    }
+
+    @Override
     public String getThreadName() {
         return threadName;
+    }
+
+    @Override
+    public int getThreadPriority() {
+        return threadPriority;
     }
 
     @Override
@@ -319,10 +328,11 @@ public class RingBufferLogEvent implements LogEvent {
                 null, // t
                 null, // map
                 null, // contextStack
-                null, // threadName
+                0, // threadName
                 null, // location
                 0, // currentTimeMillis
-                0 // nanoTime
+                null,
+                0, 0 // nanoTime
         );
     }
 
@@ -357,9 +367,12 @@ public class RingBufferLogEvent implements LogEvent {
                 .setMessage(getMessage()) // ensure non-null
                 .setNanoTime(nanoTime) //
                 .setSource(location) //
+                .setThreadId(threadId) //
                 .setThreadName(threadName) //
+                .setThreadPriority(threadPriority) //
                 .setThrown(getThrown()) // may deserialize from thrownProxy
                 .setThrownProxy(thrownProxy) // avoid unnecessarily creating thrownProxy
                 .setTimeMillis(currentTimeMillis);
     }
+
 }

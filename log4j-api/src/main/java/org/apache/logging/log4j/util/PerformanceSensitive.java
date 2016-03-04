@@ -19,7 +19,9 @@ package org.apache.logging.log4j.util;
 
 /**
  * Indicates that a particular annotated construct was written with certain performance constraints in mind that
- * should be considered when modifying or testing.
+ * should be considered when modifying or testing. Descriptive values should be similar to the conventions used by
+ * {@link SuppressWarnings}. For example, code that should not be allocating objects (like iterators) could use the
+ * description "allocation".
  *
  * @since 2.6
  */

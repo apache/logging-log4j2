@@ -17,7 +17,6 @@
 
 package org.apache.logging.log4j.core.util;
 
-import java.io.Serializable;
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
@@ -37,10 +36,9 @@ import org.apache.logging.log4j.status.StatusLogger;
  *
  * @since 2.1
  */
-public class DefaultShutdownCallbackRegistry implements ShutdownCallbackRegistry, LifeCycle, Runnable, Serializable {
+public class DefaultShutdownCallbackRegistry implements ShutdownCallbackRegistry, LifeCycle, Runnable {
     /** Status logger. */
     protected static final Logger LOGGER = StatusLogger.getLogger();
-    private static final long serialVersionUID = 1L;
 
     private final AtomicReference<State> state = new AtomicReference<>(State.INITIALIZED);
     private final ThreadFactory threadFactory;

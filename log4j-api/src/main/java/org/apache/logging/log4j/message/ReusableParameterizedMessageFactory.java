@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.message;
 
+import org.apache.logging.log4j.util.PerformanceSensitive;
+
 /**
  * Enables use of <code>{}</code> parameter markers in message strings.
  * <p>
@@ -25,6 +27,7 @@ package org.apache.logging.log4j.message;
  * This class is immutable.
  * </p>
  */
+@PerformanceSensitive("allocation")
 public final class ReusableParameterizedMessageFactory extends AbstractMessageFactory implements MessageFactory2 {
 
     /**

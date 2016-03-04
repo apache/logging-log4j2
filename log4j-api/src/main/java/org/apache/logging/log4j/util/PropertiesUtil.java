@@ -57,7 +57,7 @@ public final class PropertiesUtil {
             try (final InputStream in = url.openStream()) {
                 properties.load(in);
             } catch (final IOException ioe) {
-                logException("Unable to read " + url.toString(), ioe);
+                LowLevelLogUtil.logException("Unable to read " + url.toString(), ioe);
             }
         }
         this.props = properties;
@@ -76,12 +76,12 @@ public final class PropertiesUtil {
             try {
                 props.load(in);
             } catch (final IOException e) {
-                logException("Unable to read " + source, e);
+                LowLevelLogUtil.logException("Unable to read " + source, e);
             } finally {
                 try {
                     in.close();
                 } catch (final IOException e) {
-                    logException("Unable to close " + source, e);
+                    LowLevelLogUtil.logException("Unable to close " + source, e);
                 }
             }
         }
@@ -216,7 +216,7 @@ public final class PropertiesUtil {
         try {
             return new Properties(System.getProperties());
         } catch (final SecurityException ex) {
-            logException("Unable to access system properties.", ex);
+            LowLevelLogUtil.logException("Unable to access system properties.", ex);
             // Sandboxed - can't read System Properties
             return new Properties();
         }
@@ -262,8 +262,4 @@ public final class PropertiesUtil {
         return getStringProperty("os.name").startsWith("Windows");
     }
 
-    private static void logException(final String message, final Throwable exception) {
-        System.err.println(message);
-        exception.printStackTrace(System.err);
-    }
 }

@@ -31,7 +31,6 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  * Wraps an {@link Appender} with details an appender implementation shouldn't need to know about.
  */
 public class AppenderControl extends AbstractFilterable {
-    private static final long serialVersionUID = 1L;
 
     private final ThreadLocal<AppenderControl> recursive = new ThreadLocal<>();
     private final Appender appender;

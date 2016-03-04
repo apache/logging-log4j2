@@ -87,9 +87,9 @@ public abstract class AbstractLoggerTest {
     @Test
     public void testLogParamMarkers() {
         final Logger flowLogger = Logger.getLogger("TestFlow");
-        flowLogger.logp(java.util.logging.Level.FINER, "sourceClass", "sourceMethod", "ENTRY {0}", "params");
+        flowLogger.logp(java.util.logging.Level.FINER, "sourceClass", "sourceMethod", "ENTER {0}", "params");
         final List<LogEvent> events = flowAppender.getEvents();
-        assertEquals("ENTRY params", events.get(0).getMessage().getFormattedMessage());
+        assertEquals("ENTER params", events.get(0).getMessage().getFormattedMessage());
     }
 
     @Test

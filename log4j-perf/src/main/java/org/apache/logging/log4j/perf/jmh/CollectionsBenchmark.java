@@ -39,12 +39,12 @@ import org.openjdk.jmh.infra.Blackhole;
 //
 @State(Scope.Benchmark)
 public class CollectionsBenchmark {
-    private ConcurrentHashMap<String, Long> map1 = new ConcurrentHashMap<String, Long>();
-    private CopyOnWriteArraySet<Long> arraySet1 = new CopyOnWriteArraySet<Long>();
-    private CopyOnWriteArrayList<Long> arrayList1 = new CopyOnWriteArrayList<Long>();
-    private ConcurrentHashMap<String, Long> map3 = new ConcurrentHashMap<String, Long>();
-    private CopyOnWriteArraySet<Long> arraySet3 = new CopyOnWriteArraySet<Long>();
-    private CopyOnWriteArrayList<Long> arrayList3 = new CopyOnWriteArrayList<Long>();
+    private final ConcurrentHashMap<String, Long> map1 = new ConcurrentHashMap<String, Long>();
+    private final CopyOnWriteArraySet<Long> arraySet1 = new CopyOnWriteArraySet<Long>();
+    private final CopyOnWriteArrayList<Long> arrayList1 = new CopyOnWriteArrayList<Long>();
+    private final ConcurrentHashMap<String, Long> map3 = new ConcurrentHashMap<String, Long>();
+    private final CopyOnWriteArraySet<Long> arraySet3 = new CopyOnWriteArraySet<Long>();
+    private final CopyOnWriteArrayList<Long> arrayList3 = new CopyOnWriteArrayList<Long>();
 
     @Setup
     public void setup() {

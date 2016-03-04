@@ -14,21 +14,26 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.message;
+package org.apache.logging.log4j.core.pattern;
+
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
- * Helper class for JUnit tests.
+ *
  */
-class Mutable {
-    private String value;
+public class ThreadPriorityPatternConverterTest {
 
-    public Mutable set(final String value) {
-        this.value = value;
-        return this;
-    }
-
-    @Override
-    public String toString() {
-        return this.value;
+    @Test
+    public void testConverterAppendsLogEventNanoTimeToStringBuilder() {
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setThreadPriority(1).build();
+        final StringBuilder sb = new StringBuilder();
+        final ThreadPriorityPatternConverter converter = ThreadPriorityPatternConverter.newInstance(null);
+        converter.format(event, sb);
+        assertEquals("1", sb.toString());
     }
 }

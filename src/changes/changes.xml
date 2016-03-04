@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.6" date="2016-MM-DD" description="GA Release 2.6">
+      <action issue="LOG4J2-1299" dev="ggregory" type="add">
+        Add pattern converter for thread id and priority in PatternLayout.
+      </action>
       <action issue="LOG4J2-1271" dev="rpopma" type="add">
         Add MessageFactory that avoid allocation by reusing a cached ParameterizedMessage instance.
       </action>
@@ -133,6 +136,9 @@
       <action issue="LOG4J2-1276" dev="ggregory" type="fix" due-to="Ludovic HOCHET">
         LoggerMessageSupplierTest and LoggerSupplierTest are Locale sensitive.
       </action>
+      <action issue="LOG4J2-1304" dev="ggregory" type="update">
+        Update Jackson from 2.7.0 to 2.7.2.
+      </action>
       <action issue="LOG4J2-1253" dev="ggregory" type="update">
         Update LMAX Disruptor from 3.3.2 to 3.3.4.
       </action>
@@ -162,6 +168,30 @@
       </action>
       <action issue="LOG4J2-920" dev="mattsicker" type="fix" due-to="Ludovic Hochet">
         ClassNotFoundException for BundleContextSelector when initialising in an OSGi environment.
+      </action>
+      <action issue="LOG4J2-1300" dev="mattsicker" type="update">
+        Remove serializability from classes that don't need it.
+      </action>
+      <action issue="LOG4J2-1303" dev="mattsicker" type="add">
+        Add documentation links to runtime dependencies in each component intro page.
+      </action>
+      <action issue="LOG4J2-1275" dev="mattsicker" type="fix" due-to="Ludovic Hochet">
+        Fix RollingAppenderNoUnconditionalDeleteTest repeat test runs from failing.
+      </action>
+      <action issue="LOG4J2-1262" dev="mattsicker" type="fix">
+        Stop throwing unnecessary exception in Log4jServletContextListener.contextDestroyed().
+      </action>
+      <action issue="LOG4J2-1252" dev="mattsicker" type="add">
+        JeroMqAppender should support layouts.
+      </action>
+      <action issue="LOG4J2-1227" dev="mattsicker" type="fix" due-to="Olivier Lemasle">
+        NullPointerException in MapLookup.lookup if the event is null.
+      </action>
+      <action issue="LOG4J2-1306" dev="mattsicker" type="update">
+        JeroMqAppender should use ShutdownCallbackRegistry instead of runtime hooks.
+      </action>
+      <action issue="LOG4J2-1217" dev="mattsicker" type="add" due-to="Thies Wellpott">
+        PatternLayout option to limit length of text.
       </action>
     </release>
     <release version="2.5" date="2015-12-06" description="GA Release 2.5">

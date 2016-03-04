@@ -92,9 +92,19 @@ abstract class LogEventMixIn implements LogEvent {
     public abstract StackTraceElement getSource();
 
     @Override
+    @JsonProperty("threadId")
+    @JacksonXmlProperty(isAttribute = true, localName = "threadId")
+    public abstract long getThreadId();
+
+    @Override
     @JsonProperty("thread")
     @JacksonXmlProperty(isAttribute = true, localName = "thread")
     public abstract String getThreadName();
+
+    @Override
+    @JsonProperty("threadPriority")
+    @JacksonXmlProperty(isAttribute = true, localName = "threadPriority")
+    public abstract int getThreadPriority();
 
     @JsonIgnore
     @Override

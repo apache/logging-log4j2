@@ -32,7 +32,7 @@ import static org.junit.Assert.*;
 /**
  *
  */
-public class EntryTagTest {
+public class EnterTagTest {
     private static final String CONFIG = "log4j-test1.xml";
 
     @ClassRule
@@ -51,7 +51,7 @@ public class EntryTagTest {
     @Test
     public void testDoEndTag() throws Exception {
         assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
-        verify("Enter TRACE M-ENTRY[ FLOW ] E");
+        verify("Enter TRACE M-ENTER[ FLOW ] E");
     }
 
     @Test
@@ -60,7 +60,7 @@ public class EntryTagTest {
         this.tag.setDynamicAttribute(null, null, 5792);
 
         assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
-        verify("Enter params(log4j-test1.xml, 5792) TRACE M-ENTRY[ FLOW ] E");
+        verify("Enter params(log4j-test1.xml, 5792) TRACE M-ENTER[ FLOW ] E");
     }
 
     private void verify(final String expected) {
@@ -69,7 +69,7 @@ public class EntryTagTest {
         try
         {
             assertEquals("Incorrect number of messages.", 1, events.size());
-            assertEquals("Incorrect message.", "o.a.l.l.t.EntryTagTest " + expected, events.get(0));
+            assertEquals("Incorrect message.", "o.a.l.l.t.EnterTagTest " + expected, events.get(0));
         }
         finally
         {

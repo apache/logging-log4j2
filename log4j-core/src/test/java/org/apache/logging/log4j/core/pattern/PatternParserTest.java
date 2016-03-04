@@ -244,6 +244,66 @@ public class PatternParserTest {
     }
 
     @Test
+    public void testThreadNamePattern() {
+        testThreadNamePattern("%thread");
+    }
+
+    @Test
+    public void testThreadNameFullPattern() {
+        testThreadNamePattern("%threadName");
+    }
+
+    @Test
+    public void testThreadIdFullPattern() {
+        testThreadIdPattern("%threadId");
+    }
+
+    @Test
+    public void testThreadIdShortPattern1() {
+        testThreadIdPattern("%tid");
+    }
+
+    @Test
+    public void testThreadIdShortPattern2() {
+        testThreadIdPattern("%T");
+    }
+
+    @Test
+    public void testThreadPriorityShortPattern() {
+        testThreadPriorityPattern("%tp");
+    }
+
+    @Test
+    public void testThreadPriorityFullPattern() {
+        testThreadPriorityPattern("%threadPriority");
+    }
+
+    private void testThreadIdPattern(final String pattern) {
+        testFirstConverter(pattern, ThreadIdPatternConverter.class);
+    }
+
+    private void testThreadNamePattern(final String pattern) {
+        testFirstConverter(pattern, ThreadNamePatternConverter.class);
+    }
+
+    private void testThreadPriorityPattern(final String pattern) {
+        testFirstConverter(pattern, ThreadPriorityPatternConverter.class);
+    }
+
+    private void testFirstConverter(final String pattern, Class<?> checkClass) {
+        final List<PatternFormatter> formatters = parser.parse(pattern);
+        assertNotNull(formatters);
+        final String msg = formatters.toString();
+        assertEquals(msg, 1, formatters.size());
+        assertTrue(msg, checkClass.isInstance(formatters.get(0).getConverter()));
+    }
+
+    @Test
+    public void testThreadNameShortPattern() {
+        testThreadNamePattern("%t");
+    }
+
+    @Test
     public void testNanoPatternShortChangesConfigurationNanoClock() {
         Configuration config = new NullConfiguration();
         assertTrue(config.getNanoClock() instanceof DummyNanoClock);

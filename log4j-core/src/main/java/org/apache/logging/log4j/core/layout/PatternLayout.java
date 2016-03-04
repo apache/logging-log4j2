@@ -77,8 +77,6 @@ public final class PatternLayout extends AbstractStringLayout {
     /** Key to identify pattern converters. */
     public static final String KEY = "Converter";
 
-    private static final long serialVersionUID = 1L;
-
     private static final ThreadLocal<TextEncoderHelper> textEncoderHelper = new ThreadLocal<>();
 
     /**

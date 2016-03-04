@@ -48,8 +48,6 @@ public final class SyslogLayout extends AbstractStringLayout {
      */
     public static final Pattern NEWLINE_PATTERN = Pattern.compile("\\r?\\n");
 
-    private static final long serialVersionUID = 1L;
-
     private final Facility facility;
     private final boolean includeNewLine;
     private final String escapeNewLine;

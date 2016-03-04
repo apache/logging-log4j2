@@ -38,8 +38,6 @@ import org.apache.logging.log4j.core.util.Booleans;
  */
 @Plugin(name = "Rewrite", category = "Core", elementType = "appender", printObject = true)
 public final class RewriteAppender extends AbstractAppender {
-    
-    private static final long serialVersionUID = 1L;
 
     private final Configuration config;
     private final ConcurrentMap<String, AppenderControl> appenders = new ConcurrentHashMap<>();

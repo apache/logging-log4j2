@@ -51,7 +51,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     /**
      * Marker for method entry tracing.
      */
-    public static final Marker ENTRY_MARKER = MarkerManager.getMarker("ENTRY").setParents(FLOW_MARKER);
+    public static final Marker ENTRY_MARKER = MarkerManager.getMarker("ENTER").setParents(FLOW_MARKER);
 
     /**
      * Marker for method exit tracing.
@@ -89,8 +89,8 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     private static final long serialVersionUID = 2L;
 
     private static final String FQCN = AbstractLogger.class.getName();
-    private static final String THROWING = "throwing";
-    private static final String CATCHING = "catching";
+    private static final String THROWING = "Throwing";
+    private static final String CATCHING = "Catching";
 
     private final String name;
     private final MessageFactory messageFactory;

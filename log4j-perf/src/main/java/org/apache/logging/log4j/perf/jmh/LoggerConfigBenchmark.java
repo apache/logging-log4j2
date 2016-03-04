@@ -51,17 +51,17 @@ import org.openjdk.jmh.infra.Blackhole;
 @State(Scope.Benchmark)
 public class LoggerConfigBenchmark {
 
-    private CopyOnWriteArraySet<AppenderControl> appenderSet = new CopyOnWriteArraySet<AppenderControl>();
+    private final CopyOnWriteArraySet<AppenderControl> appenderSet = new CopyOnWriteArraySet<AppenderControl>();
     private volatile Filter filter = null;
-    private boolean additive = true;
-    private boolean includeLocation = true;
+    private final boolean additive = true;
+    private final boolean includeLocation = true;
     private LoggerConfig parent;
     private final AtomicInteger counter = new AtomicInteger();
     private final AtomicBoolean shutdown = new AtomicBoolean(false);
     private final Lock shutdownLock = new ReentrantLock();
     private final Condition noLogEvents = shutdownLock.newCondition(); // should only be used when shutdown == true
     private final LogEvent LOGEVENT = createLogEventWithoutException();
-    private SimpleListAppender listAppender = new SimpleListAppender();
+    private final SimpleListAppender listAppender = new SimpleListAppender();
 
     private static class SimpleListAppender extends AbstractAppender {
         private static final long serialVersionUID = 1L;

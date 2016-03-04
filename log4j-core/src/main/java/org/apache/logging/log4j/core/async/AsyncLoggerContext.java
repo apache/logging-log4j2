@@ -31,8 +31,6 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 public class AsyncLoggerContext extends LoggerContext {
 
-    private static final long serialVersionUID = 1L;
-
     private final AsyncLoggerDisruptor loggerDisruptor;
 
     public AsyncLoggerContext(final String name) {

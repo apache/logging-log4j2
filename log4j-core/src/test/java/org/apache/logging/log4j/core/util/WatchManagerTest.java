@@ -27,8 +27,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.config.ConfigurationScheduler;
@@ -41,9 +39,9 @@ import org.junit.Test;
  */
 public class WatchManagerTest {
 
-    private String testFile = "target/testWatchFile";
-    private String originalFile = "target/test-classes/log4j-test1.xml";
-    private String newFile = "target/test-classes/log4j-test1.yaml";
+    private final String testFile = "target/testWatchFile";
+    private final String originalFile = "target/test-classes/log4j-test1.xml";
+    private final String newFile = "target/test-classes/log4j-test1.yaml";
 
     private static final boolean IS_WINDOWS = PropertiesUtil.getProperties().isOsWindows();
 

@@ -76,6 +76,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
      * @param throwable A Throwable.
      * @deprecated Use constructor ParameterizedMessage(String, Object[], Throwable) instead
      */
+    @Deprecated
     public ParameterizedMessage(final String messagePattern, final String[] arguments, final Throwable throwable) {
         this.argArray = arguments;
         this.throwable = throwable;

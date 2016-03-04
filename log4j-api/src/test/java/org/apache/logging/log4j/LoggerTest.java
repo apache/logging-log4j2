@@ -37,7 +37,6 @@ import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.SimpleMessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Supplier;
 import org.junit.Before;
@@ -63,7 +62,7 @@ public class LoggerTest {
         logger.entry();
         logger.exit();
         assertEquals(2, results.size());
-        assertThat("Incorrect Entry", results.get(0), equalTo("ENTRY[ FLOW ] TRACE Enter"));
+        assertThat("Incorrect Entry", results.get(0), equalTo("ENTER[ FLOW ] TRACE Enter"));
         assertThat("incorrect Exit", results.get(1), equalTo("EXIT[ FLOW ] TRACE Exit"));
 
     }
@@ -74,7 +73,7 @@ public class LoggerTest {
         final Response response = new Response(-1, "Generic error");
         logger.traceExit(new JsonMessage(response),  response);
         assertEquals(2, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE Enter"));
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
         assertThat("Missing entry data", results.get(0), containsString("\"java.runtime.name\":"));
         assertThat("incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
         assertThat("Missing exit data", results.get(1), containsString("\"message\":\"Generic error\""));
@@ -85,7 +84,7 @@ public class LoggerTest {
         logger.traceEntry("doFoo(a={}, b={})", 1, 2);
         logger.traceExit("doFoo(a=1, b=2): {}", 3);
         assertEquals(2, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE Enter"));
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
         assertThat("Missing entry data", results.get(0), containsString("doFoo(a=1, b=2)"));
         assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
         assertThat("Missing exit data", results.get(1), containsString("doFoo(a=1, b=2): 3"));
@@ -96,7 +95,7 @@ public class LoggerTest {
         logger.traceEntry("doFoo(a={}, b={})", 1, 2);
         logger.traceExit(3);
         assertEquals(2, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE Enter"));
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
         assertThat("Missing entry data", results.get(0), containsString("doFoo(a=1, b=2)"));
         assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
         assertThat("Missing exit data", results.get(1), containsString("3"));
@@ -107,7 +106,7 @@ public class LoggerTest {
         EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", 1, 2);
         logger.traceExit(msg, 3);
         assertEquals(2, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE Enter"));
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
         assertThat("Missing entry data", results.get(0), containsString("doFoo(a=1, b=2)"));
         assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
         assertThat("Missing exit data", results.get(1), containsString("doFoo(a=1, b=2): 3"));
@@ -118,7 +117,7 @@ public class LoggerTest {
         EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", 1, 2);
         logger.traceExit(msg);
         assertEquals(2, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE Enter"));
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
         assertThat("Missing entry data", results.get(0), containsString("doFoo(a=1, b=2)"));
         assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
         assertThat("Missing exit data", results.get(1), endsWith("doFoo(a=1, b=2)"));
@@ -129,7 +128,7 @@ public class LoggerTest {
         logger.traceEntry();
         logger.traceExit();
         assertEquals(2, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE Enter"));
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
         assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
     }
 
@@ -138,7 +137,7 @@ public class LoggerTest {
         final EntryMessage message = logger.traceEntry();
         logger.traceExit(message);
         assertEquals(2, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE Enter"));
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
         assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
     }
 
@@ -157,7 +156,7 @@ public class LoggerTest {
         });
         logger.traceExit(msg, 3);
         assertEquals(2, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE Enter"));
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
         assertThat("Missing entry data", results.get(0), containsString("doFoo(a=1, b=2)"));
         assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
         assertThat("Missing exit data", results.get(1), containsString("doFoo(a=1, b=2): 3"));
@@ -178,7 +177,7 @@ public class LoggerTest {
         });
         logger.traceExit(msg, 3);
         assertEquals(2, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE Enter"));
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
         assertThat("Missing entry data", results.get(0), containsString("doFoo(a=1, b=2)"));
         assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
         assertThat("Missing exit data", results.get(1), containsString("doFoo(a=1, b=2): 3"));
@@ -192,7 +191,7 @@ public class LoggerTest {
             logger.catching(e);
             assertEquals(1, results.size());
             assertThat("Incorrect Catching",
-                    results.get(0), startsWith("CATCHING[ EXCEPTION ] ERROR catching java.lang.NullPointerException"));
+                    results.get(0), startsWith("CATCHING[ EXCEPTION ] ERROR Catching java.lang.NullPointerException"));
         }
     }
 
@@ -522,7 +521,7 @@ public class LoggerTest {
         logger.throwing(new IllegalArgumentException("Test Exception"));
         assertEquals(1, results.size());
         assertThat("Incorrect Throwing",
-                results.get(0), startsWith("THROWING[ EXCEPTION ] ERROR throwing java.lang.IllegalArgumentException: Test Exception"));
+                results.get(0), startsWith("THROWING[ EXCEPTION ] ERROR Throwing java.lang.IllegalArgumentException: Test Exception"));
     }
 
 

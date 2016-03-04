@@ -66,7 +66,6 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
     // this is within the MaxInlineSize threshold and makes these methods candidates for
     // immediate inlining instead of waiting until they are designated "hot enough".
 
-    private static final long serialVersionUID = 1L;
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
     private static final Clock CLOCK = ClockFactory.getClock(); // not reconfigurable
 
@@ -167,7 +166,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
     }
 
     private boolean isReused(final Message message) {
-        return message instanceof ReusableMessage && ((ReusableMessage) message).isReused();
+        return message instanceof ReusableMessage;
     }
 
     /**
@@ -236,6 +235,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
 
         // Implementation note: this method is tuned for performance. MODIFY WITH CARE!
 
+        final Thread currentThread = Thread.currentThread();
         translator.setValuesPart2(
                 // config properties are taken care of in the EventHandler thread
                 // in the AsyncLogger#actualAsyncLog method
@@ -246,14 +246,15 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
                 // needs shallow copy to be fast (LOG4J2-154)
                 ThreadContext.getImmutableStack(), //
 
-                // Thread.currentThread().getName(), //
-                THREAD_NAME_CACHING_STRATEGY.getThreadName(), //
+                currentThread.getId(), //
 
+                // Thread.currentThread().getName(), //
+                THREAD_NAME_CACHING_STRATEGY.getThreadName(),
+
+                currentThread.getPriority(), //
                 // location (expensive to calculate)
                 calcLocationIfRequested(fqcn),
-
-                eventTimeMillis(message), //
-                nanoClock.nanoTime() //
+                eventTimeMillis(message), nanoClock.nanoTime() //
                 );
     }
 
@@ -316,10 +317,11 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
         // needs shallow copy to be fast (LOG4J2-154)
         final ContextStack contextStack = ThreadContext.getImmutableStack();
 
+        final Thread currentThread = Thread.currentThread();
         final String threadName = THREAD_NAME_CACHING_STRATEGY.getThreadName();
-
         event.setValues(asyncLogger, asyncLogger.getName(), marker, fqcn, level, message, thrown, contextMap,
-                contextStack, threadName, location, eventTimeMillis(message), nanoClock.nanoTime());
+                contextStack, currentThread.getId(), threadName, currentThread.getPriority(), location,
+                eventTimeMillis(message), nanoClock.nanoTime());
     }
 
     /**

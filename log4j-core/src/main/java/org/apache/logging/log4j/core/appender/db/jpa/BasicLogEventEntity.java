@@ -147,6 +147,28 @@ public abstract class BasicLogEventEntity extends AbstractLogEventWrapperEntity 
     }
 
     /**
+     * Gets the thread ID. Annotated with {@code @Basic}.
+     *
+     * @return the thread ID.
+     */
+    @Override
+    @Basic
+    public long getThreadId() {
+        return this.getWrappedEvent().getThreadId();
+    }
+
+    /**
+     * Gets the thread name. Annotated with {@code @Basic}.
+     *
+     * @return the thread name.
+     */
+    @Override
+    @Basic
+    public int getThreadPriority() {
+        return this.getWrappedEvent().getThreadPriority();
+    }
+
+    /**
      * Gets the thread name. Annotated with {@code @Basic}.
      *
      * @return the thread name.

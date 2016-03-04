@@ -237,6 +237,7 @@
         <section name="Requirements">
            <p>
              The Flume Appender requires the Log4J 2 API.
+             For more information, see <a href="../runtime-dependencies.html">Runtime Dependencies</a>.
           </p>
         </section>
 

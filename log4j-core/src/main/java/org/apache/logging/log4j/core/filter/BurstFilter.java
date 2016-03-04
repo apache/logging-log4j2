@@ -17,7 +17,6 @@
 
 package org.apache.logging.log4j.core.filter;
 
-import java.util.Iterator;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.DelayQueue;
@@ -56,8 +55,6 @@ import org.apache.logging.log4j.message.Message;
 
 @Plugin(name = "BurstFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
 public final class BurstFilter extends AbstractFilter {
-
-    private static final long serialVersionUID = 1L;
 
     private static final long NANOS_IN_SECONDS = 1000000000;
 
@@ -156,9 +153,7 @@ public final class BurstFilter extends AbstractFilter {
      * Clear the history. Used for unit testing.
      */
     public void clear() {
-        final Iterator<LogDelay> iter = history.iterator();
-        while (iter.hasNext()) {
-            final LogDelay delay = iter.next();
+        for (LogDelay delay : history) {
             history.remove(delay);
             available.add(delay);
         }

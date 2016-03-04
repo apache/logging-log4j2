@@ -807,8 +807,6 @@ public final class JsonLayout extends AbstractJacksonLayout {
 
     static final String CONTENT_TYPE = "application/json";
 
-    private static final long serialVersionUID = 1L;
-
     protected JsonLayout(final Configuration config, final boolean locationInfo, final boolean properties,
             final boolean complete, final boolean compact, final boolean eventEol, final String headerPattern,
             final String footerPattern, final Charset charset) {

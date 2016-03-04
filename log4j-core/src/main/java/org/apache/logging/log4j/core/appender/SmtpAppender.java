@@ -55,7 +55,6 @@ import org.apache.logging.log4j.core.util.Booleans;
 @Plugin(name = "SMTP", category = "Core", elementType = "appender", printObject = true)
 public final class SmtpAppender extends AbstractAppender {
 
-    private static final long serialVersionUID = 1L;
     private static final int DEFAULT_BUFFER_SIZE = 512;
 
     /** The SMTP Manager */

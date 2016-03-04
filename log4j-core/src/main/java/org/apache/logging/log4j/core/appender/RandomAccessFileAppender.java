@@ -40,8 +40,6 @@ import org.apache.logging.log4j.core.util.Integers;
 @Plugin(name = "RandomAccessFile", category = "Core", elementType = "appender", printObject = true)
 public final class RandomAccessFileAppender extends AbstractOutputStreamAppender<RandomAccessFileManager> {
 
-    private static final long serialVersionUID = 1L;
-
     private final String fileName;
     private Object advertisement;
     private final Advertiser advertiser;

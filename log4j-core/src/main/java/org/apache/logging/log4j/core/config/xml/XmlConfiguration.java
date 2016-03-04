@@ -63,8 +63,6 @@ import org.xml.sax.SAXException;
  */
 public class XmlConfiguration extends AbstractConfiguration implements Reconfigurable {
 
-    private static final long serialVersionUID = 1L;
-
     private static final String XINCLUDE_FIXUP_LANGUAGE =
             "http://apache.org/xml/features/xinclude/fixup-language";
     private static final String XINCLUDE_FIXUP_BASE_URIS =

@@ -112,8 +112,20 @@ public class TestBaseEntity extends AbstractLogEventWrapperEntity {
 
     @Override
     @Transient
+    public long getThreadId() {
+        return this.getWrappedEvent().getThreadId();
+    }
+
+    @Override
+    @Transient
     public String getThreadName() {
         return this.getWrappedEvent().getThreadName();
+    }
+
+    @Override
+    @Transient
+    public int getThreadPriority() {
+        return this.getWrappedEvent().getThreadPriority();
     }
 
     @Override

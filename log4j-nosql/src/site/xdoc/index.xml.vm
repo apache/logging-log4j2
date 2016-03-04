@@ -78,6 +78,7 @@
         <section name="Requirements">
            <p>
              The NoSQL Appenders is dependent on the Log4j 2 API and implementation.
+             For more information, see <a href="../runtime-dependencies.html">Runtime Dependencies</a>.
           </p>
         </section>
 

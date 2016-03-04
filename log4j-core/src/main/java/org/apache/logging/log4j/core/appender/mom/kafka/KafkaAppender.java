@@ -17,6 +17,9 @@
 
 package org.apache.logging.log4j.core.appender.mom.kafka;
 
+import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
+
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -31,19 +34,12 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Requi
 import org.apache.logging.log4j.core.layout.SerializedLayout;
 import org.apache.logging.log4j.core.util.StringEncoder;
 
-import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
-
 /**
  * Sends log events to an Apache Kafka topic.
  */
 @Plugin(name = "Kafka", category = "Core", elementType = "appender", printObject = true)
 public final class KafkaAppender extends AbstractAppender {
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 1L;
     @PluginFactory
     public static KafkaAppender createAppender(
             @PluginElement("Layout") final Layout<? extends Serializable> layout,

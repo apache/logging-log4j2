@@ -72,7 +72,7 @@ import com.fasterxml.jackson.core.io.JsonStringEncoder;
 @Plugin(name = "GelfLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class GelfLayout extends AbstractStringLayout {
 
-    public static enum CompressionType {
+    public enum CompressionType {
 
         GZIP {
             @Override
@@ -101,7 +101,6 @@ public final class GelfLayout extends AbstractStringLayout {
     private static final char Q = '\"';
     private static final String QC = "\",";
     private static final String QU = "\"_";
-    private static final long serialVersionUID = 1L;
     private static final BigDecimal TIME_DIVISOR = new BigDecimal(1000);
 
     private final KeyValuePair[] additionalFields;

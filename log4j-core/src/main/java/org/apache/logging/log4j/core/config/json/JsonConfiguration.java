@@ -16,6 +16,16 @@
  */
 package org.apache.logging.log4j.core.config.json;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,22 +42,11 @@ import org.apache.logging.log4j.core.config.status.StatusConfiguration;
 import org.apache.logging.log4j.core.util.FileWatcher;
 import org.apache.logging.log4j.core.util.Patterns;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 /**
  * Creates a Node hierarchy from a JSON file.
  */
 public class JsonConfiguration extends AbstractConfiguration implements Reconfigurable {
 
-    private static final long serialVersionUID = 1L;
     private static final String[] VERBOSE_CLASSES = new String[] { ResolverUtil.class.getName() };
     private final List<Status> status = new ArrayList<>();
     private JsonNode root;

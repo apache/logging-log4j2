@@ -14,26 +14,26 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.util;
+package org.apache.logging.log4j.core.pattern;
 
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collection;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.junit.Test;
 
-import org.apache.logging.log4j.AbstractSerializationTest;
-import org.junit.runners.Parameterized.Parameters;
+import static org.junit.Assert.*;
 
-public class KeyValuePairSerializationTest extends AbstractSerializationTest {
+/**
+ *
+ */
+public class ThreadNamePatternConverterTest {
 
-    @Parameters
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-                { new KeyValuePair("testuser", "DEBUG") },
-                { new KeyValuePair("JohnDoe", "warn") } });
+    @Test
+    public void testConverterAppendsLogEventNanoTimeToStringBuilder() {
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setThreadName("Hello-1").build();
+        final StringBuilder sb = new StringBuilder();
+        final ThreadNamePatternConverter converter = ThreadNamePatternConverter.newInstance(null);
+        converter.format(event, sb);
+        assertEquals("Hello-1", sb.toString());
     }
-
-    public KeyValuePairSerializationTest(final Serializable serializable) {
-        super(serializable);
-    }
-
 }

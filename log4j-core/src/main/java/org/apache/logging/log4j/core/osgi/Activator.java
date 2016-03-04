@@ -39,7 +39,7 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private final AtomicReference<BundleContext> context = new AtomicReference<>();
+    private final AtomicReference<BundleContext> contextRef = new AtomicReference<>();
 
     @Override
     public void start(final BundleContext context) throws Exception {
@@ -47,7 +47,7 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
         if (PropertiesUtil.getProperties().getStringProperty(Constants.LOG4J_CONTEXT_SELECTOR) == null) {
             System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, BundleContextSelector.class.getName());
         }
-        if (this.context.compareAndSet(null, context)) {
+        if (this.contextRef.compareAndSet(null, context)) {
             context.addBundleListener(this);
             // done after the BundleListener as to not miss any new bundle installs in the interim
             scanInstalledBundlesForPlugins(context);
@@ -79,7 +79,7 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
 
     @Override
     public void stop(final BundleContext context) throws Exception {
-        this.context.compareAndSet(context, null);
+        this.contextRef.compareAndSet(context, null);
         LogManager.shutdown();
     }
 

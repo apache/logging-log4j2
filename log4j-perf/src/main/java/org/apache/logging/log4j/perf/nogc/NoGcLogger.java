@@ -24,7 +24,7 @@ import java.nio.charset.StandardCharsets;
  * Logger with unrolled varargs, cached Message and NoGcLayout.
  */
 public class NoGcLogger extends AbstractLogger {
-    private NoGcMessage reusedMessage = new NoGcMessage();
+    private final NoGcMessage reusedMessage = new NoGcMessage();
 
     @Override
     protected Layout<?> createLayout() {

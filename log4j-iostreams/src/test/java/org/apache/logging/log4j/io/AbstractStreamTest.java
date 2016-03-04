@@ -34,7 +34,7 @@ public abstract class AbstractStreamTest {
         return ctx.getLogger("UnitTestLogger");
     }
     
-    protected final static String NEWLINE = System.getProperty("line.separator");
+    protected final static String NEWLINE = System.lineSeparator();
     protected final static Level LEVEL = Level.ERROR;
     protected final static String FIRST = "first";
 

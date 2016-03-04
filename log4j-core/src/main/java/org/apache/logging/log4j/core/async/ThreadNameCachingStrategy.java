@@ -41,11 +41,10 @@ enum ThreadNameCachingStrategy { // LOG4J2-467
             return Thread.currentThread().getName();
         }
     };
-    
+
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
     private static final ThreadLocal<String> THREADLOCAL_NAME = new ThreadLocal<>();
-    
-    
+
     abstract String getThreadName();
 
     static ThreadNameCachingStrategy create() {

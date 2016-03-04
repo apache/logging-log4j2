@@ -54,7 +54,6 @@ import org.apache.logging.log4j.util.Strings;
 public class LoggerConfig extends AbstractFilterable {
 
     public static final String ROOT = "root";
-    private static final long serialVersionUID = 1L;
     private static LogEventFactory LOG_EVENT_FACTORY = null;
 
     private List<AppenderRef> appenderRefs = new ArrayList<>();

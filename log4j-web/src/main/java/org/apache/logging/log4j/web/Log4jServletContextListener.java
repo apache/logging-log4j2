@@ -52,7 +52,8 @@ public class Log4jServletContextListener implements ServletContextListener {
     @Override
     public void contextDestroyed(final ServletContextEvent event) {
         if (this.servletContext == null || this.initializer == null) {
-            throw new IllegalStateException("Context destroyed before it was initialized.");
+            LOGGER.warn("Context destroyed before it was initialized.");
+            return;
         }
         LOGGER.debug("Log4jServletContextListener ensuring that Log4j shuts down properly.");
 
