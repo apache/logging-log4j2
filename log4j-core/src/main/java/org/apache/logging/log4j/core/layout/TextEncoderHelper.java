@@ -48,7 +48,7 @@ public class TextEncoderHelper {
         this.cachedCharBuffer = CharBuffer.wrap(new char[bufferSize]);
     }
 
-    public void encodeText(final CharSequence text, final ByteBufferDestination destination) {
+    public void encodeText(final StringBuilder text, final ByteBufferDestination destination) {
         charsetEncoder.reset();
         ByteBuffer byteBuf = destination.getByteBuffer();
         final CharBuffer charBuf = getCachedCharBuffer();
@@ -65,6 +65,12 @@ public class TextEncoderHelper {
             charBuf.flip(); // prepare for reading: set limit to position, position to zero
             byteBuf = encode(charBuf, endOfInput, destination, byteBuf);
         } while (!endOfInput);
+    }
+
+    public void encodeText(final CharBuffer charBuf, final ByteBufferDestination destination) {
+        charsetEncoder.reset();
+        final ByteBuffer byteBuf = destination.getByteBuffer();
+        encode(charBuf, true, destination, byteBuf);
     }
 
     private ByteBuffer encode(final CharBuffer charBuf, final boolean endOfInput,
@@ -116,17 +122,18 @@ public class TextEncoderHelper {
     }
 
     /**
-     * Copies characters from the CharSequence into the CharBuffer,
+     * Copies characters from the StringBuilder into the CharBuffer,
      * starting at the specified offset and ending when either all
      * characters have been copied or when the CharBuffer is full.
      *
      * @return the number of characters that were copied
      */
-    static int copy(final CharSequence source, final int offset, final CharBuffer destination) {
+    static int copy(final StringBuilder source, final int offset, final CharBuffer destination) {
         final int length = Math.min(source.length() - offset, destination.remaining());
-        for (int i = offset; i < offset + length; i++) {
-            destination.put(source.charAt(i));
-        }
+        final char[] array = destination.array();
+        final int start = destination.position();
+        source.getChars(offset, offset + length, array, start);
+        destination.position(start + length);
         return length;
     }
 
