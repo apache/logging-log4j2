@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import java.io.FileInputStream;
 import java.util.Properties;
 
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -32,7 +31,7 @@ public class PropertiesUtilTest {
     @Test
     public void testSubset() throws Exception {
         Properties props = new Properties();
-        props.load(new FileInputStream("target/test-classes/log4j2-properties.properties"));
+        props.load(ClassLoader.getSystemResourceAsStream("log4j2-properties.properties"));
         Properties subset = PropertiesUtil.extractSubset(props, "appender.Stdout.filter.marker");
         assertNotNull("No subset returned", subset);
         assertTrue("Incorrect number of items. Expected 4, actual " + subset.size(), subset.size() == 4);
