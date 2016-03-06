@@ -36,12 +36,12 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 class DefaultComponentBuilder<T extends ComponentBuilder<T>, CB extends ConfigurationBuilder<? extends Configuration>>
         implements ComponentBuilder<T> {
 
-    private CB builder;
-    private String type;
+    private final CB builder;
+    private final String type;
     private final Map<String, String> attributes = new HashMap<>();
     private final List<Component> components = new ArrayList<>();
-    private String name;
-    private String value;
+    private final String name;
+    private final String value;
 
     public DefaultComponentBuilder(final CB builder, final String type) {
         this(builder, null, type, null);
