@@ -44,6 +44,7 @@ import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
@@ -373,8 +374,10 @@ public class LoggerConfig extends AbstractFilterable {
         }
     }
 
+    @PerformanceSensitive("allocation")
     protected void callAppenders(final LogEvent event) {
         final AppenderControl[] controls = appenders.get();
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < controls.length; i++) {
             controls[i].callAppender(event);
         }
