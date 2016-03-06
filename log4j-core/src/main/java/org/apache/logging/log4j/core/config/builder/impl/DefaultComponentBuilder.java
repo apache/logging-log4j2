@@ -16,20 +16,22 @@
  */
 package org.apache.logging.log4j.core.config.builder.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.builder.api.Component;
 import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * Generic component that captures attributes and Components in preparation for assembling the Appender's
  * Component.
+ *
+ * @since 2.4
  */
 class DefaultComponentBuilder<T extends ComponentBuilder<T>, CB extends ConfigurationBuilder<? extends Configuration>>
         implements ComponentBuilder<T> {
@@ -61,7 +63,7 @@ class DefaultComponentBuilder<T extends ComponentBuilder<T>, CB extends Configur
     public T addAttribute(final String key, final boolean value) {
         return put(key, Boolean.toString(value));
     }
-    
+
     @Override
     public T addAttribute(final String key, final Enum<?> value) {
         return put(key, value.name());

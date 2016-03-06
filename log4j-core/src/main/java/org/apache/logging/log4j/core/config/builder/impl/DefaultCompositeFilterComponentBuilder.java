@@ -21,7 +21,7 @@ import org.apache.logging.log4j.core.config.builder.api.CompositeFilterComponent
 import org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder;
 
 /**
- *
+ * @since 2.4
  */
 class DefaultCompositeFilterComponentBuilder
         extends DefaultComponentAndConfigurationBuilder<CompositeFilterComponentBuilder>

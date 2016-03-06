@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.config.builder.impl;
 
+import java.lang.reflect.Constructor;
+import java.util.List;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -35,12 +38,9 @@ import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuild
 import org.apache.logging.log4j.core.config.builder.api.ScriptComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptFileComponentBuilder;
 
-import java.lang.reflect.Constructor;
-import java.util.List;
-
 /**
  * @param <T> The BuiltConfiguration type.
- *
+ * @since 2.4
  */
 public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implements ConfigurationBuilder<T> {
 
@@ -87,7 +87,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         loggers = new Component("Loggers");
         components.add(loggers);
     }
-    
+
     protected ConfigurationBuilder<T> add(final Component parent, final ComponentBuilder<?> builder) {
         parent.getComponents().add(builder.build());
         return this;
@@ -233,7 +233,8 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public <B extends ComponentBuilder<B>> ComponentBuilder<B> newComponent(final String name, final String type, final String value) {
+    public <B extends ComponentBuilder<B>> ComponentBuilder<B> newComponent(final String name, final String type,
+                                                                            final String value) {
         return new DefaultComponentBuilder<>(this, name, type, value);
     }
 
@@ -244,7 +245,8 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public FilterComponentBuilder newFilter(final String type, final Filter.Result onMatch, final Filter.Result onMisMatch) {
+    public FilterComponentBuilder newFilter(final String type, final Filter.Result onMatch,
+                                            final Filter.Result onMisMatch) {
         return new DefaultFilterComponentBuilder(this, type, onMatch.name(), onMisMatch.name());
     }
 

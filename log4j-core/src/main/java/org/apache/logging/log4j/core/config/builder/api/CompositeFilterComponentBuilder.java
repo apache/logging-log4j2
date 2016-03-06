@@ -17,7 +17,9 @@
 package org.apache.logging.log4j.core.config.builder.api;
 
 /**
- * Wraps multiple Filter Comnponent builders.
+ * Wraps multiple Filter Component builders.
+ *
+ * @since 2.4
  */
 public interface CompositeFilterComponentBuilder extends FilterableComponentBuilder<CompositeFilterComponentBuilder> {
 }

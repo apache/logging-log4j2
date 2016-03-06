@@ -20,7 +20,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder;
 
 /**
- *
+ * @since 2.4
  */
 class DefaultFilterComponentBuilder extends DefaultComponentAndConfigurationBuilder<FilterComponentBuilder>
         implements FilterComponentBuilder {

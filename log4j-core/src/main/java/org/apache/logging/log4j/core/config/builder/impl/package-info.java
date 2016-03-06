@@ -16,5 +16,7 @@
  */
 /**
  * Configuration Builder Implementation.
+ *
+ * @since 2.4
  */
 package org.apache.logging.log4j.core.config.builder.impl;
