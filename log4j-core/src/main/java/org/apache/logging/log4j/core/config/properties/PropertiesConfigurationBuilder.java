@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.core.config.properties;
 
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.logging.log4j.Level;
@@ -84,21 +85,18 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
             builder.addProperty(key, propertyPlaceholders.getProperty(key));
         }
 
-        final String scriptProp = (String) rootProperties.remove("scripts");
-        if (scriptProp != null) {
-            final String[] scriptNames = scriptProp.split(",");
-            for (final String scriptName : scriptNames) {
-                final String name = scriptName.trim();
-                final Properties scriptProps = PropertiesUtil.extractSubset(rootProperties, "script." + name);
-                final String type = (String) scriptProps.remove("type");
-                if (type == null) {
-                    throw new ConfigurationException("No type provided for script - must be Script or ScriptFile");
-                }
-                if (type.equalsIgnoreCase("script")) {
-                    builder.add(createScript(scriptProps));
-                } else {
-                    builder.add(createScriptFile(scriptProps));
-                }
+        final Map<String, Properties> scripts = PropertiesUtil.partitionOnCommonPrefixes(
+            PropertiesUtil.extractSubset(rootProperties, "script"));
+        for (final Map.Entry<String, Properties> entry : scripts.entrySet()) {
+            final Properties scriptProps = entry.getValue();
+            final String type = (String) scriptProps.remove("type");
+            if (type == null) {
+                throw new ConfigurationException("No type provided for script - must be Script or ScriptFile");
+            }
+            if (type.equalsIgnoreCase("script")) {
+                builder.add(createScript(scriptProps));
+            } else {
+                builder.add(createScriptFile(scriptProps));
             }
         }
 
@@ -109,32 +107,24 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
             }
         }
 
-        final String filterProp = (String) rootProperties.remove("filters");
-        if (filterProp != null) {
-            final String[] filterNames = filterProp.split(",");
-            for (final String filterName : filterNames) {
-                final String name = filterName.trim();
-                builder.add(createFilter(name, PropertiesUtil.extractSubset(rootProperties, "filter." + name)));
-            }
+        final Map<String, Properties> filters = PropertiesUtil.partitionOnCommonPrefixes(
+            PropertiesUtil.extractSubset(rootProperties, "filter"));
+        for (final Map.Entry<String, Properties> entry : filters.entrySet()) {
+            builder.add(createFilter(entry.getKey().trim(), entry.getValue()));
         }
 
-        final String appenderProp = (String) rootProperties.remove("appenders");
-        if (appenderProp != null) {
-            final String[] appenderNames = appenderProp.split(",");
-            for (final String appenderName : appenderNames) {
-                final String name = appenderName.trim();
-                builder.add(createAppender(name, PropertiesUtil.extractSubset(rootProperties, "appender." + name)));
-            }
+        final Map<String, Properties> appenders = PropertiesUtil.partitionOnCommonPrefixes(
+            PropertiesUtil.extractSubset(rootProperties, "appender"));
+        for (final Map.Entry<String, Properties> entry : appenders.entrySet()) {
+            builder.add(createAppender(entry.getKey().trim(), entry.getValue()));
         }
 
-        final String loggerProp = (String) rootProperties.remove("loggers");
-        if (loggerProp != null) {
-            final String[] loggerNames = loggerProp.split(",");
-            for (final String loggerName : loggerNames) {
-                final String name = loggerName.trim();
-                if (!name.equals(LoggerConfig.ROOT)) {
-                    builder.add(createLogger(name, PropertiesUtil.extractSubset(rootProperties, "logger." + name)));
-                }
+        final Map<String, Properties> loggers = PropertiesUtil.partitionOnCommonPrefixes(
+            PropertiesUtil.extractSubset(rootProperties, "logger"));
+        for (final Map.Entry<String, Properties> entry : loggers.entrySet()) {
+            final String name = entry.getKey().trim();
+            if (!name.equals(LoggerConfig.ROOT)) {
+                builder.add(createLogger(name, entry.getValue()));
             }
         }
 
@@ -288,28 +278,20 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
 
     private <B extends FilterableComponentBuilder<? extends ComponentBuilder<?>>> B addFiltersToComponent(
         final B componentBuilder, final Properties properties) {
-        final String filters = (String) properties.remove("filters");
-        if (filters != null) {
-            final String[] filterNames = filters.split(",");
-            for (final String name : filterNames) {
-                final String filterName = name.trim();
-                final Properties filterProps = PropertiesUtil.extractSubset(properties, "filter." + filterName);
-                componentBuilder.add(createFilter(filterName, filterProps));
-            }
+        final Map<String, Properties> filters = PropertiesUtil.partitionOnCommonPrefixes(
+            PropertiesUtil.extractSubset(properties, "filter"));
+        for (final Map.Entry<String, Properties> entry : filters.entrySet()) {
+            componentBuilder.add(createFilter(entry.getKey().trim(), entry.getValue()));
         }
         return componentBuilder;
     }
 
     private <B extends LoggableComponentBuilder<? extends ComponentBuilder<?>>> B addLoggersToComponent(
         final B loggerBuilder, final Properties properties) {
-        final String appenderRefs = (String) properties.remove("appenderRefs");
-        if (appenderRefs != null) {
-            final String[] refNames = appenderRefs.split(",");
-            for (final String refName : refNames) {
-                final String appenderRef = refName.trim();
-                final Properties refProps = PropertiesUtil.extractSubset(properties, "appenderRef." + appenderRef);
-                loggerBuilder.add(createAppenderRef(appenderRef, refProps));
-            }
+        final Map<String, Properties> appenderRefs = PropertiesUtil.partitionOnCommonPrefixes(
+            PropertiesUtil.extractSubset(properties, "appenderRef"));
+        for (final Map.Entry<String, Properties> entry : appenderRefs.entrySet()) {
+            loggerBuilder.add(createAppenderRef(entry.getKey().trim(), entry.getValue()));
         }
         return loggerBuilder;
     }

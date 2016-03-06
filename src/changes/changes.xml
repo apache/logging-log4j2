@@ -193,6 +193,9 @@
       <action issue="LOG4J2-1217" dev="mattsicker" type="add" due-to="Thies Wellpott">
         PatternLayout option to limit length of text.
       </action>
+      <action issue="LOG4J2-1308" dev="mattsicker" type="update">
+        Remove need to pre-specify appender et al. identifiers in property file config format.
+      </action>
     </release>
     <release version="2.5" date="2015-12-06" description="GA Release 2.5">
       <action issue="LOG4J2-324" dev="rpopma" type="fix">
