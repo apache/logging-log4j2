@@ -113,7 +113,7 @@ public class BuiltConfiguration extends AbstractConfiguration {
         return this.contentType;
     }
 
-    public void setContentType(String contentType) {
+    public void setContentType(final String contentType) {
         this.contentType = contentType;
     }
 
