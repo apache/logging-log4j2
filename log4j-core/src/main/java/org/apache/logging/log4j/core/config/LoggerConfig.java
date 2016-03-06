@@ -35,6 +35,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
@@ -404,8 +405,9 @@ public class LoggerConfig extends AbstractFilterable {
      * @param config The Configuration.
      * @param filter A Filter.
      * @return A new LoggerConfig.
+     * @deprecated Use {@link #createLogger(boolean, Level, String, String, AppenderRef[], Property[], Configuration, Filter)}
      */
-    @PluginFactory
+    @Deprecated
     public static LoggerConfig createLogger(@PluginAttribute("additivity") final String additivity,
             @PluginAttribute("level") final Level level, @PluginAttribute("name") final String loggerName,
             @PluginAttribute("includeLocation") final String includeLocation,
@@ -423,6 +425,36 @@ public class LoggerConfig extends AbstractFilterable {
 
         return new LoggerConfig(name, appenderRefs, filter, level, additive, properties, config,
                 includeLocation(includeLocation));
+    }
+
+    /**
+     * Factory method to create a LoggerConfig.
+     *
+     * @param additivity True if additive, false otherwise.
+     * @param level The Level to be associated with the Logger.
+     * @param loggerName The name of the Logger.
+     * @param includeLocation whether location should be passed downstream
+     * @param refs An array of Appender names.
+     * @param properties Properties to pass to the Logger.
+     * @param config The Configuration.
+     * @param filter A Filter.
+     * @return A new LoggerConfig.
+     * @since 2.6
+     */
+    @PluginFactory
+    public static LoggerConfig createLogger(
+        @PluginAttribute(value = "additivity", defaultBoolean = true) final boolean additivity,
+        @PluginAttribute("level") final Level level,
+        @Required(message = "Loggers cannot be configured without a name") @PluginAttribute("name") final String loggerName,
+        @PluginAttribute("includeLocation") final String includeLocation,
+        @PluginElement("AppenderRef") final AppenderRef[] refs,
+        @PluginElement("Properties") final Property[] properties,
+        @PluginConfiguration final Configuration config,
+        @PluginElement("Filter") final Filter filter
+    ) {
+        final String name = loggerName.equals(ROOT) ? Strings.EMPTY : loggerName;
+        return new LoggerConfig(name, Arrays.asList(refs), filter, level, additivity, properties, config,
+            includeLocation(includeLocation));
     }
 
     // Note: for asynchronous loggers, includeLocation default is FALSE,
