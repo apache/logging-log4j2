@@ -143,12 +143,8 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                 }
             }
             statusConfig.initialize();
-        } catch (final SAXException domEx) {
-            LOGGER.error("Error parsing {}", configSource.getLocation(), domEx);
-        } catch (final IOException ioe) {
-            LOGGER.error("Error parsing {}", configSource.getLocation(), ioe);
-        } catch (final ParserConfigurationException pex) {
-            LOGGER.error("Error parsing {}", configSource.getLocation(), pex);
+        } catch (final SAXException | IOException | ParserConfigurationException e) {
+            LOGGER.error("Error parsing {}", configSource.getLocation(), e);
         }
         if (strict && schemaResource != null && buffer != null) {
             InputStream is = null;
@@ -212,11 +208,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             factory.setXIncludeAware(true);
         } catch (final UnsupportedOperationException e) {
             LOGGER.warn("The DocumentBuilderFactory [{}] does not support XInclude: {}", factory, e);
-        } catch (@SuppressWarnings("ErrorNotRethrown") final AbstractMethodError err) {
-            LOGGER.warn("The DocumentBuilderFactory [{}] is out of date and does not support XInclude: {}", factory,
-                    err);
-        } catch (final NoSuchMethodError err) {
-            // LOG4J2-919
+        } catch (@SuppressWarnings("ErrorNotRethrown") final AbstractMethodError | NoSuchMethodError err) {
             LOGGER.warn("The DocumentBuilderFactory [{}] is out of date and does not support XInclude: {}", factory,
                     err);
         }
