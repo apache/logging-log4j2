@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import org.apache.logging.log4j.util.PropertiesUtil;
-import org.junit.Test;
-
 import java.io.FileInputStream;
 import java.util.Properties;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import org.apache.logging.log4j.util.PropertiesUtil;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  *
@@ -37,6 +36,6 @@ public class PropertiesUtilTest {
         Properties subset = PropertiesUtil.extractSubset(props, "appender.Stdout.filter.marker");
         assertNotNull("No subset returned", subset);
         assertTrue("Incorrect number of items. Expected 4, actual " + subset.size(), subset.size() == 4);
-        assertTrue("Missing propertu", subset.containsKey("type"));
+        assertTrue("Missing property", subset.containsKey("type"));
     }
 }
