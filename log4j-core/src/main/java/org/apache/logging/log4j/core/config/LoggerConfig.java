@@ -327,10 +327,14 @@ public class LoggerConfig extends AbstractFilterable {
         List<Property> props = null;
         if (properties != null) {
             props = new ArrayList<>(properties.size());
-            Log4jLogEvent.Builder builder = new Log4jLogEvent.Builder();
-            builder.setMessage(data).setMarker(marker).setLevel(level).setLoggerName(loggerName);
-            builder.setLoggerFqcn(fqcn).setThrown(t);
-            LogEvent event = builder.build();
+            final LogEvent event = Log4jLogEvent.newBuilder()
+                .setMessage(data)
+                .setMarker(marker)
+                .setLevel(level)
+                .setLoggerName(loggerName)
+                .setLoggerFqcn(fqcn)
+                .setThrown(t)
+                .build();
             for (final Map.Entry<Property, Boolean> entry : properties.entrySet()) {
                 final Property prop = entry.getKey();
                 final String value = entry.getValue() ? config.getStrSubstitutor().replace(event, prop.getValue())
