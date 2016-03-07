@@ -162,13 +162,7 @@ public class SmtpManager extends AbstractManager {
             final MimeMultipart mp = getMimeMultipart(encodedBytes, headers);
 
             sendMultipartMessage(message, mp);
-        } catch (final MessagingException e) {
-            logError("caught exception while sending e-mail notification.", e);
-            throw new LoggingException("Error occurred while sending email", e);
-        } catch (final IOException e) {
-            logError("caught exception while sending e-mail notification.", e);
-            throw new LoggingException("Error occurred while sending email", e);
-        } catch (final RuntimeException e) {
+        } catch (final MessagingException | IOException | RuntimeException e) {
             logError("caught exception while sending e-mail notification.", e);
             throw new LoggingException("Error occurred while sending email", e);
         }
