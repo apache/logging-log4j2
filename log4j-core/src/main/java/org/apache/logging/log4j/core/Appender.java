@@ -37,6 +37,14 @@ import java.io.Serializable;
 public interface Appender extends LifeCycle {
 
     /**
+     * Main {@linkplain org.apache.logging.log4j.core.config.plugins.Plugin#elementType() plugin element type} for
+     * Appender plugins.
+     *
+     * @since 2.6
+     */
+    String ELEMENT_TYPE = "appender";
+
+    /**
      * Logs a LogEvent using whatever logic this Appender wishes to use. It is typically recommended to use a
      * bridge pattern not only for the benefits from decoupling an Appender from its implementation, but it is also
      * handy for sharing resources which may require some form of locking.
