@@ -102,4 +102,11 @@ public final class KafkaAppender extends AbstractAppender {
         manager.release();
     }
 
+    @Override
+    public String toString() {
+        return "KafkaAppender{" +
+            "name=" + getName() +
+            ", topic=" + manager.getTopic() +
+            '}';
+    }
 }
