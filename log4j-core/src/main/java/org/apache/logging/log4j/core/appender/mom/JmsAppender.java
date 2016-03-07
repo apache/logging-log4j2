@@ -68,6 +68,12 @@ public class JmsAppender extends AbstractAppender {
         }
     }
 
+    @Override
+    public void stop() {
+        this.manager.release();
+        super.stop();
+    }
+
     @PluginBuilderFactory
     public static Builder newBuilder() {
         return new Builder();
