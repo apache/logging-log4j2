@@ -106,6 +106,7 @@ public final class KafkaAppender extends AbstractAppender {
     public String toString() {
         return "KafkaAppender{" +
             "name=" + getName() +
+            ", state=" + getState() +
             ", topic=" + manager.getTopic() +
             '}';
     }
