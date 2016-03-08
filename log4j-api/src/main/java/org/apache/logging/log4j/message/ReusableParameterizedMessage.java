@@ -31,8 +31,8 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 public class ReusableParameterizedMessage implements ReusableMessage {
 
     private static final long serialVersionUID = 7800075879295123856L;
+    private static ThreadLocal<StringBuilder> buffer = new ThreadLocal<>();
 
-    private final StringBuilder buffer = new StringBuilder(2048);
     private String messagePattern;
     private int argCount;
     private transient Object[] varargs;
@@ -55,8 +55,6 @@ public class ReusableParameterizedMessage implements ReusableMessage {
 
     private void init(String messagePattern, int argCount, Object[] paramArray) {
         this.varargs = null;
-        this.buffer.setLength(0);
-
         this.messagePattern = messagePattern;
         this.argCount= argCount;
         int usedCount = ParameterFormatter.countArgumentPlaceholders(messagePattern);
@@ -68,10 +66,6 @@ public class ReusableParameterizedMessage implements ReusableMessage {
             this.throwable = (Throwable) params[argCount - 1];
             argCount--;
         }
-    }
-
-    public StringBuilder get() {
-        return buffer;
     }
 
     ReusableParameterizedMessage set(String messagePattern, Object... arguments) {
@@ -227,8 +221,19 @@ public class ReusableParameterizedMessage implements ReusableMessage {
      */
     @Override
     public String getFormattedMessage() {
-        formatTo(buffer);
-        return buffer.toString();
+        final StringBuilder sb = getBuffer();
+        formatTo(sb);
+        return sb.toString();
+    }
+
+    private StringBuilder getBuffer() {
+        StringBuilder result = buffer.get();
+        if (result == null) {
+            result = new StringBuilder(Math.min(512, messagePattern.length() * 2));
+            buffer.set(result);
+        }
+        result.setLength(0);
+        return result;
     }
 
     @Override

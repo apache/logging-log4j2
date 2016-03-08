@@ -23,8 +23,10 @@ import java.util.concurrent.ThreadFactory;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import com.lmax.disruptor.EventFactory;
@@ -264,7 +266,9 @@ public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
 
     private LogEvent prepareEvent(final LogEvent event) {
         final LogEvent logEvent = ensureImmutable(event);
-        if (!Constants.FORMAT_MESSAGES_IN_BACKGROUND) { // LOG4J2-898: user may choose
+        if (logEvent instanceof Log4jLogEvent && logEvent.getMessage() instanceof ReusableMessage) {
+            ((Log4jLogEvent) logEvent).makeMessageImmutable();
+        } else if (!Constants.FORMAT_MESSAGES_IN_BACKGROUND) { // LOG4J2-898: user may choose
             logEvent.getMessage().getFormattedMessage(); // LOG4J2-763: ask message to freeze parameters
         }
         return logEvent;
