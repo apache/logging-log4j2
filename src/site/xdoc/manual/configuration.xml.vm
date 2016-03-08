@@ -974,6 +974,10 @@ rootLogger.appenderRef.stdout.ref = STDOUT
                 <td>System environment variables</td>
               </tr>
               <tr>
+                <td>jndi</td>
+                <td>A value set in the default JNDI Context.</td>
+              </tr>
+              <tr>
                 <td>jvmrunargs</td>
                 <td>
                   A JVM input argument accessed through JMX, but not a main argument;
