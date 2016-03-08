@@ -19,15 +19,14 @@ package org.apache.logging.log4j.core.appender.mom.jeromq;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -35,12 +34,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
-import org.zeromq.ZMQ;
-import org.zeromq.ZMQ.Socket;
 
 /**
  * Sends log events to one or more ZeroMQ (JeroMQ) endpoints.
@@ -52,21 +46,8 @@ import org.zeromq.ZMQ.Socket;
 // Some methods are synchronized because a ZMQ.Socket is not thread-safe
 // Using a ThreadLocal for the publisher hangs tests on shutdown. There must be
 // some issue on threads owning certain resources as opposed to others.
-@Plugin(name = "JeroMQ", category = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "JeroMQ", category = Node.CATEGORY, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class JeroMqAppender extends AbstractAppender {
-
-    /**
-     * System property to enable shutdown hook.
-     */
-    static final String SYS_PROPERTY_ENABLE_SHUTDOWN_HOOK = "log4j.jeromq.enableShutdownHook";
-
-    /**
-     * System property to control JeroMQ I/O thread count.
-     */
-    static final String SYS_PROPERTY_IO_THREADS = "log4j.jeromq.ioThreads";
-
-    // Per ZMQ docs, there should usually only be one ZMQ context per process.
-    private static volatile ZMQ.Context context;
 
     private static final int DEFAULT_BACKLOG = 100;
 
@@ -76,58 +57,10 @@ public final class JeroMqAppender extends AbstractAppender {
 
     private static final int DEFAULT_SND_HWM = 1000;
 
-    private static Logger logger;
-
-    // ZMQ sockets are not thread safe.
-    private static ZMQ.Socket publisher;
-
-    private static final String SIMPLE_NAME = JeroMqAppender.class.getSimpleName();
-
-    static {
-        logger = StatusLogger.getLogger();
-        final PropertiesUtil managerProps = PropertiesUtil.getProperties();
-        final int ioThreads = managerProps.getIntegerProperty(SYS_PROPERTY_IO_THREADS, 1);
-        final boolean enableShutdownHook = managerProps.getBooleanProperty(SYS_PROPERTY_ENABLE_SHUTDOWN_HOOK, true);
-        final String simpleName = SIMPLE_NAME;
-        logger.trace("{} using ZMQ version {}", simpleName, ZMQ.getVersionString());
-        logger.trace("{} creating ZMQ context with ioThreads={}", simpleName, ioThreads);
-        context = ZMQ.context(ioThreads);
-        logger.trace("{} created ZMQ context {}", simpleName, context);
-        if (enableShutdownHook) {
-            logger.trace("{} adding shutdown hook", simpleName);
-            ((ShutdownCallbackRegistry) LogManager.getFactory()).addShutdownCallback(new Runnable() {
-                @Override
-                public void run() {
-                    shutdown();
-                }
-            });
-        }
-    }
-
-    private final long affinity;
-    private final long backlog;
-    private final boolean delayAttachOnConnect;
+    private final JeroMqManager manager;
     private final List<String> endpoints;
-    private final byte[] identity;
-    private final int ioThreads = 1;
-    private final boolean ipv4Only;
-    private final long linger;
-    private final long maxMsgSize;
-    private final long rcvHwm;
-    private final long receiveBufferSize;
-    private final int receiveTimeOut;
-    private final long reconnectIVL;
-    private final long reconnectIVLMax;
-    private final long sendBufferSize;
     private int sendRcFalse;
     private int sendRcTrue;
-    private final int sendTimeOut;
-    private final long sndHwm;
-    private final int tcpKeepAlive;
-    private final long tcpKeepAliveCount;
-    private final long tcpKeepAliveIdle;
-    private final long tcpKeepAliveInterval;
-    private final boolean xpubVerbose;
 
     private JeroMqAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
             final boolean ignoreExceptions, final List<String> endpoints, final long affinity, final long backlog,
@@ -137,27 +70,11 @@ public final class JeroMqAppender extends AbstractAppender {
             final long sndHWM, final int tcpKeepAlive, final long tcpKeepAliveCount, final long tcpKeepAliveIdle,
             final long tcpKeepAliveInterval, final boolean xpubVerbose) {
         super(name, filter, layout, ignoreExceptions);
+        this.manager = JeroMqManager.getJeroMqManager(name, affinity, backlog, delayAttachOnConnect, identity, ipv4Only,
+            linger, maxMsgSize, rcvHwm, receiveBufferSize, receiveTimeOut, reconnectIVL, reconnectIVLMax,
+            sendBufferSize, sendTimeOut, sndHWM, tcpKeepAlive, tcpKeepAliveCount, tcpKeepAliveIdle,
+            tcpKeepAliveInterval, xpubVerbose, endpoints);
         this.endpoints = endpoints;
-        this.affinity = affinity;
-        this.backlog = backlog;
-        this.delayAttachOnConnect = delayAttachOnConnect;
-        this.identity = identity;
-        this.ipv4Only = ipv4Only;
-        this.linger = linger;
-        this.maxMsgSize = maxMsgSize;
-        this.rcvHwm = rcvHwm;
-        this.receiveBufferSize = receiveBufferSize;
-        this.receiveTimeOut = receiveTimeOut;
-        this.reconnectIVL = reconnectIVL;
-        this.reconnectIVLMax = reconnectIVLMax;
-        this.sendBufferSize = sendBufferSize;
-        this.sendTimeOut = sendTimeOut;
-        this.sndHwm = sndHWM;
-        this.tcpKeepAlive = tcpKeepAlive;
-        this.tcpKeepAliveCount = tcpKeepAliveCount;
-        this.tcpKeepAliveIdle = tcpKeepAliveIdle;
-        this.tcpKeepAliveInterval = tcpKeepAliveInterval;
-        this.xpubVerbose = xpubVerbose;
     }
 
     // The ZMQ.Socket class has other set methods that we do not cover because
@@ -211,7 +128,7 @@ public final class JeroMqAppender extends AbstractAppender {
                 }
             }
         }
-        logger.debug("Creating JeroMqAppender with name={}, filter={}, layout={}, ignoreExceptions={}, endpoints={}",
+        LOGGER.debug("Creating JeroMqAppender with name={}, filter={}, layout={}, ignoreExceptions={}, endpoints={}",
                 name, filter, layout, ignoreExceptions, endpoints);
         return new JeroMqAppender(name, filter, layout, ignoreExceptions, endpoints, affinity, backlog,
                 delayAttachOnConnect, identity, ipv4Only, linger, maxMsgSize, rcvHwm, receiveBufferSize,
@@ -219,39 +136,22 @@ public final class JeroMqAppender extends AbstractAppender {
                 tcpKeepAliveCount, tcpKeepAliveIdle, tcpKeepAliveInterval, xpubVerbose);
     }
 
-    static ZMQ.Context getContext() {
-        return context;
-    }
-
-    private static ZMQ.Socket getPublisher() {
-        return publisher;
-    }
-
-    private static ZMQ.Socket newPublisher() {
-        logger.trace("{} creating a new ZMQ PUB socket with context {}", SIMPLE_NAME, context);
-        final Socket socketPub = context.socket(ZMQ.PUB);
-        logger.trace("{} created new ZMQ PUB socket {}", SIMPLE_NAME, socketPub);
-        return socketPub;
-    }
-
-    static void shutdown() {
-        if (context != null) {
-            logger.trace("{} terminating JeroMQ context {}", SIMPLE_NAME, context);
-            context.term();
-            context = null;
-        }
-    }
-
     @Override
     public synchronized void append(final LogEvent event) {
         final Layout<? extends Serializable> layout = getLayout();
         final byte[] formattedMessage = layout.toByteArray(event);
-        if (getPublisher().send(getLayout().toByteArray(event))) {
+        if (manager.send(getLayout().toByteArray(event))) {
             sendRcTrue++;
         } else {
             sendRcFalse++;
-            logger.error("Appender {} could not send message {} to JeroMQ {}", getName(), sendRcFalse, formattedMessage);
+            LOGGER.error("Appender {} could not send message {} to JeroMQ {}", getName(), sendRcFalse, formattedMessage);
         }
+    }
+
+    @Override
+    public void stop() {
+        manager.release();
+        super.stop();
     }
 
     // not public, handy for testing
@@ -270,95 +170,12 @@ public final class JeroMqAppender extends AbstractAppender {
     }
 
     @Override
-    public synchronized void start() {
-        super.start();
-        publisher = newPublisher();
-        final String name = getName();
-        final String prefix = "JeroMQ Appender";
-        logger.debug("Starting {} {} using ZMQ version {}", prefix, name, ZMQ.getVersionString());
-        logger.debug("{} {} context {} with ioThreads={}", prefix, name, context, ioThreads);
-        //
-        final ZMQ.Socket socketPub = getPublisher();
-        logger.trace("{} {} setting {} publisher properties for instance {}", prefix, name, socketPub.getClass()
-                .getName(), socketPub);
-        logger.trace("{} {} publisher setAffinity({})", prefix, name, affinity);
-        socketPub.setAffinity(affinity);
-        logger.trace("{} {} publisher setBacklog({})", prefix, name, backlog);
-        socketPub.setBacklog(backlog);
-        logger.trace("{} {} publisher setDelayAttachOnConnect({})", prefix, name, delayAttachOnConnect);
-        socketPub.setDelayAttachOnConnect(delayAttachOnConnect);
-        if (identity != null) {
-            logger.trace("{} {} publisher setIdentity({})", prefix, name, Arrays.toString(identity));
-            socketPub.setIdentity(identity);
-        }
-        logger.trace("{} {} publisher setIPv4Only({})", prefix, name, ipv4Only);
-        socketPub.setIPv4Only(ipv4Only);
-        logger.trace("{} {} publisher setLinger({})", prefix, name, linger);
-        socketPub.setLinger(linger);
-        logger.trace("{} {} publisher setMaxMsgSize({})", prefix, name, maxMsgSize);
-        socketPub.setMaxMsgSize(maxMsgSize);
-        logger.trace("{} {} publisher setRcvHWM({})", prefix, name, rcvHwm);
-        socketPub.setRcvHWM(rcvHwm);
-        logger.trace("{} {} publisher setReceiveBufferSize({})", prefix, name, receiveBufferSize);
-        socketPub.setReceiveBufferSize(receiveBufferSize);
-        logger.trace("{} {} publisher setReceiveTimeOut({})", prefix, name, receiveTimeOut);
-        socketPub.setReceiveTimeOut(receiveTimeOut);
-        logger.trace("{} {} publisher setReconnectIVL({})", prefix, name, reconnectIVL);
-        socketPub.setReconnectIVL(reconnectIVL);
-        logger.trace("{} {} publisher setReconnectIVLMax({})", prefix, name, reconnectIVLMax);
-        socketPub.setReconnectIVLMax(reconnectIVLMax);
-        logger.trace("{} {} publisher setSendBufferSize({})", prefix, name, sendBufferSize);
-        socketPub.setSendBufferSize(sendBufferSize);
-        logger.trace("{} {} publisher setSendTimeOut({})", prefix, name, sendTimeOut);
-        socketPub.setSendTimeOut(sendTimeOut);
-        logger.trace("{} {} publisher setSndHWM({})", prefix, name, sndHwm);
-        socketPub.setSndHWM(sndHwm);
-        logger.trace("{} {} publisher setTCPKeepAlive({})", prefix, name, tcpKeepAlive);
-        socketPub.setTCPKeepAlive(tcpKeepAlive);
-        logger.trace("{} {} publisher setTCPKeepAliveCount({})", prefix, name, tcpKeepAliveCount);
-        socketPub.setTCPKeepAliveCount(tcpKeepAliveCount);
-        logger.trace("{} {} publisher setTCPKeepAliveIdle({})", prefix, name, tcpKeepAliveIdle);
-        socketPub.setTCPKeepAliveIdle(tcpKeepAliveIdle);
-        logger.trace("{} {} publisher setTCPKeepAliveInterval({})", prefix, name, tcpKeepAliveInterval);
-        socketPub.setTCPKeepAliveInterval(tcpKeepAliveInterval);
-        logger.trace("{} {} publisher setXpubVerbose({})", prefix, name, xpubVerbose);
-        socketPub.setXpubVerbose(xpubVerbose);
-        //
-        if (logger.isDebugEnabled()) {
-            logger.debug(
-                    "Created JeroMQ {} publisher {} type {}, affinity={}, backlog={}, delayAttachOnConnect={}, events={}, IPv4Only={}, linger={}, maxMsgSize={}, multicastHops={}, "
-                            + "rate={}, rcvHWM={}, receiveBufferSize={}, receiveTimeOut={}, reconnectIVL={}, reconnectIVLMax={}, recoveryInterval={}, sendBufferSize={}, "
-                            + "sendTimeOut={}, sndHWM={}, TCPKeepAlive={}, TCPKeepAliveCount={}, TCPKeepAliveIdle={}, TCPKeepAliveInterval={}, TCPKeepAliveSetting={}",
-                    name, socketPub, socketPub.getType(), socketPub.getAffinity(), socketPub.getBacklog(),
-                    socketPub.getDelayAttachOnConnect(), socketPub.getEvents(), socketPub.getIPv4Only(),
-                    socketPub.getLinger(), socketPub.getMaxMsgSize(), socketPub.getMulticastHops(),
-                    socketPub.getRate(), socketPub.getRcvHWM(), socketPub.getReceiveBufferSize(),
-                    socketPub.getReceiveTimeOut(), socketPub.getReconnectIVL(), socketPub.getReconnectIVLMax(),
-                    socketPub.getRecoveryInterval(), socketPub.getSendBufferSize(), socketPub.getSendTimeOut(),
-                    socketPub.getSndHWM(), socketPub.getTCPKeepAlive(), socketPub.getTCPKeepAliveCount(),
-                    socketPub.getTCPKeepAliveIdle(), socketPub.getTCPKeepAliveInterval(),
-                    socketPub.getTCPKeepAliveSetting());
-        }
-        for (final String endpoint : endpoints) {
-            logger.debug("Binding {} appender {} to endpoint {}", SIMPLE_NAME, name, endpoint);
-            socketPub.bind(endpoint);
-        }
-    }
-
-    @Override
-    public synchronized void stop() {
-        super.stop();
-        final Socket socketPub = getPublisher();
-        if (socketPub != null) {
-            logger.debug("Closing {} appender {} publisher {}", SIMPLE_NAME, getName(), socketPub);
-            socketPub.close();
-            publisher = null;
-        }
-    }
-
-    @Override
     public String toString() {
-        return "JeroMqAppender [context=" + context + ", publisher=" + publisher + ", endpoints=" + endpoints + "]";
+        return "JeroMqAppender{" +
+            "name=" + getName() +
+            ", state=" + getState() +
+            ", manager=" + manager +
+            ", endpoints=" + endpoints +
+            '}';
     }
-
 }

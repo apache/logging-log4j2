@@ -17,8 +17,6 @@
 
 package org.apache.logging.log4j.core.util;
 
-import java.io.Serializable;
-
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
@@ -27,7 +25,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 /**
  * Key/Value pair configuration item.
  *
- * @since 2.1 implements {@link Serializable}
  * @since 2.1 implements {@link #hashCode()} and {@link #equals(Object)}
  */
 @Plugin(name = "KeyValuePair", category = Node.CATEGORY, printObject = true)

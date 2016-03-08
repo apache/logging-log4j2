@@ -21,6 +21,7 @@ import java.net.URISyntaxException;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationAware;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.easymock.EasyMock;
@@ -41,27 +42,26 @@ public class Log4jLookupWithSpacesTest {
 
     private final static File EXPECT = new File(System.getProperty("user.home"), "/a a/b b/c c/d d/e e/log4j2 file.xml");
     private LoggerContext mockCtx = null;
+    private Configuration config = null;
+    private ConfigurationSource configSrc = null;
 
     @Before
     public void setup() throws URISyntaxException, MalformedURLException {
         this.mockCtx = EasyMock.createMock(LoggerContext.class);
         ContextAnchor.THREAD_CONTEXT.set(mockCtx);
 
-        final Configuration config = EasyMock.createMock(Configuration.class);
-        expect(mockCtx.getConfiguration()).andReturn(config);
+        this.config = EasyMock.createMock(Configuration.class);
 
-        final ConfigurationSource configSrc = EasyMock.createMock(ConfigurationSource.class);
+        this.configSrc = EasyMock.createMock(ConfigurationSource.class);
         expect(config.getConfigurationSource()).andReturn(configSrc);
         expect(configSrc.getFile()).andReturn(EXPECT);
 
-        replay(mockCtx);
-        replay(config);
-        replay(configSrc);
+        replay(mockCtx, config, configSrc);
     }
 
     @After
     public void cleanup() {
-        verify(mockCtx);
+        verify(mockCtx, config, configSrc);
 
         ContextAnchor.THREAD_CONTEXT.set(null);
         this.mockCtx = null;
@@ -70,6 +70,7 @@ public class Log4jLookupWithSpacesTest {
     @Test
     public void lookupConfigLocation_withSpaces() {
         final StrLookup log4jLookup = new Log4jLookup();
+        ((ConfigurationAware) log4jLookup).setConfiguration(config);
         final String value = log4jLookup.lookup(KEY_CONFIG_LOCATION);
         assertEquals(
                 new File(System.getProperty("user.home"), "/a a/b b/c c/d d/e e/log4j2 file.xml").getAbsolutePath(),
@@ -79,6 +80,7 @@ public class Log4jLookupWithSpacesTest {
     @Test
     public void lookupConfigParentLocation_withSpaces() {
         final StrLookup log4jLookup = new Log4jLookup();
+        ((ConfigurationAware) log4jLookup).setConfiguration(config);
         final String value = log4jLookup.lookup(KEY_CONFIG_PARENT_LOCATION);
         assertEquals(new File(System.getProperty("user.home"), "/a a/b b/c c/d d/e e").getAbsolutePath(), value);
     }

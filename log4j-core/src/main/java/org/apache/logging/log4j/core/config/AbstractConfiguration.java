@@ -177,6 +177,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @Override
     public void initialize() {
         LOGGER.debug("Initializing configuration {}", this);
+        subst.setConfiguration(this);
         scriptManager = new ScriptManager(watchManager);
         pluginManager.collectPlugins(pluginPackages);
         final PluginManager levelPlugins = new PluginManager(Level.CATEGORY);

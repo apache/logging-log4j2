@@ -14,9 +14,21 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
+package org.apache.logging.log4j.core.config.builder.api;
+
 /**
- * Configuration Builder Implementation.
+ * Component builder that can add Filters. Similar in idea to the {@link org.apache.logging.log4j.core.filter.Filterable}.
  *
- * @since 2.4
+ * @since 2.6
  */
-package org.apache.logging.log4j.core.config.builder.impl;
+public interface FilterableComponentBuilder<T extends ComponentBuilder<T>> extends ComponentBuilder<T> {
+
+    /**
+     * Adds a Filter to the component.
+     *
+     * @param assembler The FilterComponentBuilder with all of its attributes and sub components set.
+     * @return this Assembler.
+     */
+    T add(FilterComponentBuilder assembler);
+}

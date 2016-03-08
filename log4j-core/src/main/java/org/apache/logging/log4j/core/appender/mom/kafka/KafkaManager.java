@@ -86,4 +86,8 @@ public class KafkaManager extends AbstractManager {
         producer = producerFactory.newKafkaProducer(config);
     }
 
+    public String getTopic() {
+        return topic;
+    }
+
 }

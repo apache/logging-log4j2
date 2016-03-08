@@ -14,9 +14,20 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
+package org.apache.logging.log4j.core.config;
+
 /**
- * Configuration Builder Implementation.
+ * Indicates that a class requests the current Configuration to be injected.
  *
- * @since 2.4
+ * @since 2.6
  */
-package org.apache.logging.log4j.core.config.builder.impl;
+public interface ConfigurationAware {
+
+    /**
+     * Injects the current Configuration into this object.
+     *
+     * @param configuration the current Configuration
+     */
+    void setConfiguration(Configuration configuration);
+}

@@ -29,26 +29,26 @@ public class CronScheduledFuture<V> implements ScheduledFuture<V> {
 
     private volatile ScheduledFuture<?> scheduledFuture;
 
-    public CronScheduledFuture(ScheduledFuture<V> future) {
+    public CronScheduledFuture(final ScheduledFuture<V> future) {
         this.scheduledFuture = future;
     }
 
-    void setScheduledFuture(ScheduledFuture<?> future) {
+    void setScheduledFuture(final ScheduledFuture<?> future) {
         this.scheduledFuture = future;
     }
 
     @Override
-    public long getDelay(TimeUnit unit) {
+    public long getDelay(final TimeUnit unit) {
         return scheduledFuture.getDelay(unit);
     }
 
     @Override
-    public int compareTo(Delayed delayed) {
+    public int compareTo(final Delayed delayed) {
         return scheduledFuture.compareTo(delayed);
     }
 
     @Override
-    public boolean cancel(boolean mayInterruptIfRunning) {
+    public boolean cancel(final boolean mayInterruptIfRunning) {
         return scheduledFuture.cancel(mayInterruptIfRunning);
     }
 
@@ -70,7 +70,7 @@ public class CronScheduledFuture<V> implements ScheduledFuture<V> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public V get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+    public V get(final long timeout, final TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
         return (V) scheduledFuture.get(timeout, unit);
     }
 }

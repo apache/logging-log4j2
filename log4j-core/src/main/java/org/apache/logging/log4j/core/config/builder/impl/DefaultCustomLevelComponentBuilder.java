@@ -20,7 +20,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.builder.api.CustomLevelComponentBuilder;
 
 /**
- *
+ * @since 2.4
  */
 class DefaultCustomLevelComponentBuilder extends DefaultComponentAndConfigurationBuilder<CustomLevelComponentBuilder>
         implements CustomLevelComponentBuilder {

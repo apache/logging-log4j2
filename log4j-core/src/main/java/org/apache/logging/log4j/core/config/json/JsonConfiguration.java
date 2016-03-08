@@ -103,7 +103,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
                 setName(configSource.getLocation());
             }
         } catch (final Exception ex) {
-            LOGGER.error("Error parsing {}", configSource.getLocation(), ex);
+            LOGGER.error("Error parsing " + configSource.getLocation(), ex);
         }
     }
 

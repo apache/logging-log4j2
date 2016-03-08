@@ -14,9 +14,20 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
+package org.apache.logging.log4j.core.config.builder.api;
+
 /**
- * Configuration Builder Implementation.
+ * Common component builder for Logger and RootLogger elements.
  *
- * @since 2.4
+ * @since 2.6
  */
-package org.apache.logging.log4j.core.config.builder.impl;
+public interface LoggableComponentBuilder<T extends ComponentBuilder<T>> extends FilterableComponentBuilder<T> {
+    /**
+     * Add an Appender reference to the Logger component.
+     *
+     * @param assembler The AppenderRefComponentBuilder with all of its attributes and sub-components set.
+     * @return this Assembler.
+     */
+    T add(AppenderRefComponentBuilder assembler);
+}

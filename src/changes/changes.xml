@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.6" date="2016-MM-DD" description="GA Release 2.6">
+      <action issue="LOG4J2-1309" dev="ggregory" type="fix">
+        Configuration file error does not show cause exception.
+      </action>
       <action issue="LOG4J2-1299" dev="ggregory" type="add">
         Add pattern converter for thread id and priority in PatternLayout.
       </action>
@@ -192,6 +195,12 @@
       </action>
       <action issue="LOG4J2-1217" dev="mattsicker" type="add" due-to="Thies Wellpott">
         PatternLayout option to limit length of text.
+      </action>
+      <action issue="LOG4J2-1308" dev="mattsicker" type="update">
+        Remove need to pre-specify appender et al. identifiers in property file config format.
+      </action>
+      <action issue="LOG4J2-1050" dev="mattsicker" type="fix" due-to="Adam Retter">
+        Add a Log4jLookup class to help write log files relative to log4j2.xml
       </action>
     </release>
     <release version="2.5" date="2015-12-06" description="GA Release 2.5">

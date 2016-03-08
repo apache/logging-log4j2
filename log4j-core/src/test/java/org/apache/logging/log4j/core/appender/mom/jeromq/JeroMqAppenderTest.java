@@ -25,17 +25,11 @@ import java.util.concurrent.Future;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
 
 public class JeroMqAppenderTest {
-
-    @AfterClass
-    public static void tearDownClass() {
-        // JeroMqAppender.shutdown();
-    }
 
     @ClassRule
     public static LoggerContextRule ctx = new LoggerContextRule("JeroMqAppenderTest.xml");
@@ -44,14 +38,14 @@ public class JeroMqAppenderTest {
     public void testAppenderLifeCycle() throws Exception {
         // do nothing to make sure the appender starts and stops without
         // locking up resources.
-        Assert.assertNotNull(JeroMqAppender.getContext());
+        Assert.assertNotNull(JeroMqManager.getContext());
     }
 
     @Test(timeout = 10000)
     public void testClientServer() throws Exception {
         final JeroMqAppender appender = ctx.getRequiredAppender("JeroMQAppender", JeroMqAppender.class);
         final int expectedReceiveCount = 3;
-        final JeroMqTestClient client = new JeroMqTestClient(JeroMqAppender.getContext(), "tcp://localhost:5556", expectedReceiveCount);
+        final JeroMqTestClient client = new JeroMqTestClient(JeroMqManager.getContext(), "tcp://localhost:5556", expectedReceiveCount);
         final ExecutorService executor = Executors.newSingleThreadExecutor();
         try {
             final Future<List<String>> future = executor.submit(client);
@@ -78,7 +72,7 @@ public class JeroMqAppenderTest {
         final int nThreads = 10;
         final JeroMqAppender appender = ctx.getRequiredAppender("JeroMQAppender", JeroMqAppender.class);
         final int expectedReceiveCount = 2 * nThreads;
-        final JeroMqTestClient client = new JeroMqTestClient(JeroMqAppender.getContext(), "tcp://localhost:5556",
+        final JeroMqTestClient client = new JeroMqTestClient(JeroMqManager.getContext(), "tcp://localhost:5556",
                 expectedReceiveCount);
         final ExecutorService executor = Executors.newSingleThreadExecutor();
         try {

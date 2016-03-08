@@ -20,7 +20,7 @@ package org.apache.logging.log4j.core.config.builder.api;
  * Builder for constructing Appender Components.
  * @since 2.4
  */
-public interface AppenderComponentBuilder extends ComponentBuilder<AppenderComponentBuilder> {
+public interface AppenderComponentBuilder extends FilterableComponentBuilder<AppenderComponentBuilder> {
 
     /**
      * Adds a Layout to the Appender component.
@@ -28,13 +28,6 @@ public interface AppenderComponentBuilder extends ComponentBuilder<AppenderCompo
      * @return this builder.
      */
     AppenderComponentBuilder add(LayoutComponentBuilder builder);
-
-    /**
-     * Adds a Filter to the Appender component.
-     * @param builder The FilterComponentBuilder with all of its attributes and sub components set.
-     * @return this builder.
-     */
-    AppenderComponentBuilder add(FilterComponentBuilder builder);
 
     /**
      * Returns the name of the Appender.

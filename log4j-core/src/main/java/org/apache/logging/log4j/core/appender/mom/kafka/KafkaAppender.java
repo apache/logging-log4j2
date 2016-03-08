@@ -20,11 +20,13 @@ package org.apache.logging.log4j.core.appender.mom.kafka;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
+import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -37,7 +39,7 @@ import org.apache.logging.log4j.core.util.StringEncoder;
 /**
  * Sends log events to an Apache Kafka topic.
  */
-@Plugin(name = "Kafka", category = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "Kafka", category = Node.CATEGORY, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class KafkaAppender extends AbstractAppender {
 
     @PluginFactory
@@ -100,4 +102,12 @@ public final class KafkaAppender extends AbstractAppender {
         manager.release();
     }
 
+    @Override
+    public String toString() {
+        return "KafkaAppender{" +
+            "name=" + getName() +
+            ", state=" + getState() +
+            ", topic=" + manager.getTopic() +
+            '}';
+    }
 }

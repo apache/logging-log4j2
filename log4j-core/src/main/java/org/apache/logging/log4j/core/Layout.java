@@ -47,7 +47,8 @@ import org.apache.logging.log4j.core.layout.Encoder;
 public interface Layout<T extends Serializable> extends Encoder<LogEvent> {
 
     /**
-     * Main plugin element type for Layout plugins.
+     * Main {@linkplain org.apache.logging.log4j.core.config.plugins.Plugin#elementType() plugin element type} for
+     * Layout plugins.
      *
      * @since 2.1
      */

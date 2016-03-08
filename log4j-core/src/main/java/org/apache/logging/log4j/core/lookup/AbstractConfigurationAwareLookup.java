@@ -14,9 +14,22 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
+package org.apache.logging.log4j.core.lookup;
+
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationAware;
+
 /**
- * Configuration Builder Implementation.
+ * StrLookup that is ConfigurationAware. Handles saving the Configuration.
  *
- * @since 2.4
+ * @since 2.6
  */
-package org.apache.logging.log4j.core.config.builder.impl;
+public abstract class AbstractConfigurationAwareLookup extends AbstractLookup implements ConfigurationAware {
+    protected Configuration configuration;
+
+    @Override
+    public void setConfiguration(final Configuration configuration) {
+        this.configuration = configuration;
+    }
+}
