@@ -18,11 +18,14 @@ package org.apache.logging.log4j.message;
 
 import java.util.Arrays;
 
+import org.apache.logging.log4j.util.PerformanceSensitive;
+
 /**
  * Reusable parameterized message.
  * @see ParameterizedMessage
  * @since 2.6
  */
+@PerformanceSensitive("allocation")
 public class ReusableParameterizedMessage implements ReusableMessage {
 
     private static final long serialVersionUID = 7800075879295123856L;
