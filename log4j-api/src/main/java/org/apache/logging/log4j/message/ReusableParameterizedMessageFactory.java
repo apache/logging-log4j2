@@ -37,6 +37,8 @@ public final class ReusableParameterizedMessageFactory extends AbstractMessageFa
 
     private static final long serialVersionUID = -8970940216592525651L;
     private static ThreadLocal<ReusableParameterizedMessage> threadLocalMessage = new ThreadLocal<>();
+    private static ThreadLocal<ReusableSimpleMessage> threadLocalSimpleMessage = new ThreadLocal<>();
+    private static ThreadLocal<ReusableObjectMessage> threadLocalObjectMessage = new ThreadLocal<>();
 
     /**
      * Constructs a message factory.
@@ -45,11 +47,29 @@ public final class ReusableParameterizedMessageFactory extends AbstractMessageFa
         super();
     }
 
-    private static ReusableParameterizedMessage get() {
+    private static ReusableParameterizedMessage getParameterized() {
         ReusableParameterizedMessage result = threadLocalMessage.get();
         if (result == null) {
             result = new ReusableParameterizedMessage();
             threadLocalMessage.set(result);
+        }
+        return result;
+    }
+
+    private static ReusableSimpleMessage getSimple() {
+        ReusableSimpleMessage result = threadLocalSimpleMessage.get();
+        if (result == null) {
+            result = new ReusableSimpleMessage();
+            threadLocalSimpleMessage.set(result);
+        }
+        return result;
+    }
+
+    private static ReusableObjectMessage getObject() {
+        ReusableObjectMessage result = threadLocalObjectMessage.get();
+        if (result == null) {
+            result = new ReusableObjectMessage();
+            threadLocalObjectMessage.set(result);
         }
         return result;
     }
@@ -65,6 +85,37 @@ public final class ReusableParameterizedMessageFactory extends AbstractMessageFa
      */
     @Override
     public Message newMessage(final String message, final Object... params) {
-        return get().set(message, params);
+        return getParameterized().set(message, params);
+    }
+
+    /**
+     * Creates {@link ReusableSimpleMessage} instances.
+     *
+     * @param message The message String.
+     * @return The Message.
+     *
+     * @see MessageFactory#newMessage(String)
+     */
+    @Override
+    public Message newMessage(final String message) {
+        ReusableSimpleMessage result = getSimple();
+        result.set(message);
+        return result;
+    }
+
+
+    /**
+     * Creates {@link ReusableObjectMessage} instances.
+     *
+     * @param message The message Object.
+     * @return The Message.
+     *
+     * @see MessageFactory#newMessage(Object)
+     */
+    @Override
+    public Message newMessage(final Object message) {
+        ReusableObjectMessage result = getObject();
+        result.set(message);
+        return result;
     }
 }
