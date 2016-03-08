@@ -33,8 +33,6 @@ import org.apache.logging.log4j.test.SomethingThatUsesLogging;
 @Plugin(name = "UsesLoggingAppender", category = "Core", elementType = "appender", printObject = true)
 public final class UsesLoggingAppender extends AbstractAppender {
 
-    private static final long serialVersionUID = 1L;
-
     private final SomethingThatUsesLogging thing;
 
     private UsesLoggingAppender(final String name, final Filter filter, final Layout<?> layout, final boolean ignoreExceptions) {

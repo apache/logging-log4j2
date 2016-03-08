@@ -32,8 +32,6 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Requi
 @Plugin(name="Deadlock", category ="Core",elementType="appender",printObject=true)
 public class DeadlockAppender extends AbstractAppender {
 
-    private static final long serialVersionUID = 1L;
-
     private WorkerThread thread = null;
 
     private DeadlockAppender(final String name) {
