@@ -225,6 +225,10 @@ public class RingBufferLogEvent implements LogEvent {
         return message;
     }
 
+    private Message getNonNullImmutableMessage() {
+        return message != null ? message : new SimpleMessage(String.valueOf(messageText));
+    }
+
     @Override
     public Throwable getThrown() {
         // after deserialization, thrown is null but thrownProxy may be non-null
@@ -364,7 +368,7 @@ public class RingBufferLogEvent implements LogEvent {
                 .setLoggerFqcn(fqcn) //
                 .setLoggerName(loggerName) //
                 .setMarker(marker) //
-                .setMessage(getMessage()) // ensure non-null
+                .setMessage(getNonNullImmutableMessage()) // ensure non-null & immutable
                 .setNanoTime(nanoTime) //
                 .setSource(location) //
                 .setThreadId(threadId) //
