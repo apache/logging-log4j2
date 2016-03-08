@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Requi
 /**
  *
  */
-@Plugin(name="AlwaysFail", category ="Core",elementType="appender",printObject=true)
+@Plugin(name="AlwaysFail", category ="Core", elementType="appender", printObject=true)
 public class AlwaysFailAppender extends AbstractAppender {
 
     private AlwaysFailAppender(final String name) {

@@ -30,7 +30,7 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Requi
 /**
  *
  */
-@Plugin(name="FailOnce", category ="Core",elementType="appender",printObject=true)
+@Plugin(name="FailOnce", category ="Core", elementType="appender", printObject=true)
 public class FailOnceAppender extends AbstractAppender {
 
     boolean fail = true;

@@ -29,7 +29,7 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Requi
 /**
  *
  */
-@Plugin(name="Deadlock", category ="Core",elementType="appender",printObject=true)
+@Plugin(name="Deadlock", category ="Core", elementType="appender", printObject=true)
 public class DeadlockAppender extends AbstractAppender {
 
     private WorkerThread thread = null;
