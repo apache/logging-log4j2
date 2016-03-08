@@ -245,7 +245,7 @@ public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
      */
     private boolean hasLog4jBeenShutDown(final Disruptor<Log4jEventWrapper> aDisruptor) {
         if (aDisruptor == null) { // LOG4J2-639
-            LOGGER.fatal("Ignoring log event after log4j was shut down");
+            LOGGER.error("Ignoring log event after log4j was shut down");
             return true;
         }
         return false;
@@ -260,7 +260,7 @@ public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
         } catch (final NullPointerException npe) {
             // Note: NPE prevents us from adding a log event to the disruptor after it was shut down,
             // which could cause the publishEvent method to hang and never return.
-            LOGGER.fatal("Ignoring log event after log4j was shut down.");
+            LOGGER.error("Ignoring log event after log4j was shut down.");
         }
     }
 
