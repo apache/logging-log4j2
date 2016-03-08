@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.message;
 
 import java.util.ArrayList;
-import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -101,8 +100,73 @@ public class ParameterFormatterTest {
     }
 
     @Test
-    public void testFormatMessage() throws Exception {
+    public void testFormatMessage3StringArgs() {
+        final String testMsg = "Test message {}{} {}";
+        final String[] args = { "a", "b", "c" };
+        final StringBuilder sb = new StringBuilder();
+        ParameterFormatter.formatMessage(sb, testMsg, args, 3);
+        final String result = sb.toString();
+        assertEquals("Test message ab c", result);
+    }
 
+    @Test
+    public void testFormatMessageNullArgs() {
+        final String testMsg = "Test message {} {} {} {} {} {}";
+        final String[] args = { "a", null, "c", null, null, null };
+        final StringBuilder sb = new StringBuilder();
+        ParameterFormatter.formatMessage(sb, testMsg, args, 6);
+        final String result = sb.toString();
+        assertEquals("Test message a null c null null null", result);
+    }
+
+    @Test
+    public void testFormatMessageStringArgsIgnoresSuperfluousArgs() {
+        final String testMsg = "Test message {}{} {}";
+        final String[] args = { "a", "b", "c", "unnecessary", "superfluous" };
+        final StringBuilder sb = new StringBuilder();
+        ParameterFormatter.formatMessage(sb, testMsg, args, 5);
+        final String result = sb.toString();
+        assertEquals("Test message ab c", result);
+    }
+
+    @Test
+    public void testFormatMessageStringArgsWithEscape() {
+        final String testMsg = "Test message \\{}{} {}";
+        final String[] args = { "a", "b", "c" };
+        final StringBuilder sb = new StringBuilder();
+        ParameterFormatter.formatMessage(sb, testMsg, args, 3);
+        final String result = sb.toString();
+        assertEquals("Test message {}a b", result);
+    }
+
+    @Test
+    public void testFormatMessageStringArgsWithTrailingEscape() {
+        final String testMsg = "Test message {}{} {}\\";
+        final String[] args = { "a", "b", "c" };
+        final StringBuilder sb = new StringBuilder();
+        ParameterFormatter.formatMessage(sb, testMsg, args, 3);
+        final String result = sb.toString();
+        assertEquals("Test message ab c\\", result);
+    }
+
+    @Test
+    public void testFormatMessageStringArgsWithTrailingEscapedEscape() {
+        final String testMsg = "Test message {}{} {}\\\\";
+        final String[] args = { "a", "b", "c" };
+        final StringBuilder sb = new StringBuilder();
+        ParameterFormatter.formatMessage(sb, testMsg, args, 3);
+        final String result = sb.toString();
+        assertEquals("Test message ab c\\\\", result);
+    }
+
+    @Test
+    public void testFormatMessageStringArgsWithEscapedEscape() {
+        final String testMsg = "Test message \\\\{}{} {}";
+        final String[] args = { "a", "b", "c" };
+        final StringBuilder sb = new StringBuilder();
+        ParameterFormatter.formatMessage(sb, testMsg, args, 3);
+        final String result = sb.toString();
+        assertEquals("Test message \\ab c", result);
     }
 
     @Test
