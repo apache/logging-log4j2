@@ -16,11 +16,14 @@
  */
 package org.apache.logging.log4j.message;
 
+import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 
 /**
  * Mutable Message wrapper around an Object message.
+ * @since 2.6
  */
+@PerformanceSensitive("allocation")
 public class ReusableObjectMessage implements ReusableMessage {
     private static final long serialVersionUID = 6922476812535519960L;
 
