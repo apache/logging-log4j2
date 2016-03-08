@@ -179,7 +179,7 @@ class AsyncLoggerDisruptor {
          */
     private boolean hasLog4jBeenShutDown(final Disruptor<RingBufferLogEvent> aDisruptor) {
         if (aDisruptor == null) { // LOG4J2-639
-            LOGGER.fatal("Ignoring log event after log4j was shut down");
+            LOGGER.error("Ignoring log event after log4j was shut down");
             return true;
         }
         return false;
@@ -193,7 +193,7 @@ class AsyncLoggerDisruptor {
             // was shut down, which could cause the publishEvent method to hang and never return.
             disruptor.publishEvent(translator);
         } catch (final NullPointerException npe) {
-            LOGGER.fatal("[{}] Ignoring log event after log4j was shut down.", contextName);
+            LOGGER.error("[{}] Ignoring log event after log4j was shut down.", contextName);
         }
     }
 
