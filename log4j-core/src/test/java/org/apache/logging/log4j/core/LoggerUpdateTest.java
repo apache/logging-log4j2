@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 
 import org.apache.logging.log4j.*;
@@ -63,6 +65,19 @@ public class LoggerUpdateTest {
         logger.entry();
         events = app.getEvents();
         assertEquals("Incorrect number of events. Expected 0, actual " + events.size(), 0, events.size());
+    }
+
+    @Test
+    public void testUpdateLoggersPropertyListeners() throws Exception {
+        final LoggerContext ctx = context.getContext();
+        ctx.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(final PropertyChangeEvent evt) {
+                assertEquals(LoggerContext.PROPERTY_CONFIG, evt.getPropertyName());
+                assertSame(ctx, evt.getSource());
+            }
+        });
+        ctx.updateLoggers();
     }
 }
 

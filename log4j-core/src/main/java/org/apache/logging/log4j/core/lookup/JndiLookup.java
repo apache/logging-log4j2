@@ -52,7 +52,7 @@ public class JndiLookup extends AbstractLookup {
         final String jndiName = convertJndiName(key);
         final JndiManager jndiManager = JndiManager.getDefaultManager();
         try {
-            return jndiManager.lookup(jndiName);
+            return String.valueOf(jndiManager.lookup(jndiName));
         } catch (final NamingException e) {
             LOGGER.warn(LOOKUP, "Error looking up JNDI resource [{}].", jndiName, e);
             return null;

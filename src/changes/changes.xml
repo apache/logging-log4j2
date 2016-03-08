@@ -200,7 +200,19 @@
         Remove need to pre-specify appender et al. identifiers in property file config format.
       </action>
       <action issue="LOG4J2-1050" dev="mattsicker" type="fix" due-to="Adam Retter">
-        Add a Log4jLookup class to help write log files relative to log4j2.xml
+        Add a Log4jLookup class to help write log files relative to log4j2.xml.
+      </action>
+      <action issue="LOG4J2-1133" dev="mattsicker" type="add">
+        Add JNDI lookup documentation.
+      </action>
+      <action issue="LOG4J2-1310" dev="mattsicker" type="fix">
+        JndiLookup mindlessly casts to String and should use String.valueOf().
+      </action>
+      <action issue="LOG4J2-1206" dev="mattsicker" type="update">
+        org.apache.logging.log4j.core.LoggerContext#updateLoggers should call firePropertyChangeEvent.
+      </action>
+      <action issue="LOG4J2-248" dev="mattsicker" type="fix">
+        Log4jWebInitializerImpl: Use Thread instead of Class for fallback classloader.
       </action>
     </release>
     <release version="2.5" date="2015-12-06" description="GA Release 2.5">

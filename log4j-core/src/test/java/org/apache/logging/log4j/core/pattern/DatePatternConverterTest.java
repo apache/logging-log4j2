@@ -154,7 +154,7 @@ public class DatePatternConverterTest {
         @Override
         public long getTimeMillis() {
             final Calendar cal = Calendar.getInstance();
-            cal.set(2011, 11, 30, 10, 56, 35);
+            cal.set(2011, Calendar.DECEMBER, 30, 10, 56, 35);
             cal.set(Calendar.MILLISECOND, 987);
             return cal.getTimeInMillis();
         }
