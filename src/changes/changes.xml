@@ -205,6 +205,9 @@
       <action issue="LOG4J2-1133" dev="mattsicker" type="add">
         Add JNDI lookup documentation.
       </action>
+      <action issue="LOG4J2-1310" dev="mattsicker" type="fix">
+        JndiLookup mindlessly casts to String and should use String.valueOf().
+      </action>
     </release>
     <release version="2.5" date="2015-12-06" description="GA Release 2.5">
       <action issue="LOG4J2-324" dev="rpopma" type="fix">

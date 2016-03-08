@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import java.util.Arrays;
+import java.util.Collection;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -34,6 +36,10 @@ public class JndiLookupTest {
 
     private static final String TEST_CONTEXT_RESOURCE_NAME = "logging/context-name";
     private static final String TEST_CONTEXT_NAME = "app-1";
+    private static final String TEST_INTEGRAL_NAME = "int-value";
+    private static final int TEST_INTEGRAL_VALUE = 42;
+    private static final String TEST_STRINGS_NAME = "string-collection";
+    private static final Collection<String> TEST_STRINGS_COLLECTION = Arrays.asList("one", "two", "three");
 
     private Context context;
 
@@ -42,6 +48,8 @@ public class JndiLookupTest {
         MockContextFactory.setAsInitial();
         context = new InitialContext();
         context.bind(JndiLookup.CONTAINER_JNDI_RESOURCE_PATH_PREFIX + TEST_CONTEXT_RESOURCE_NAME, TEST_CONTEXT_NAME);
+        context.bind(JndiLookup.CONTAINER_JNDI_RESOURCE_PATH_PREFIX + TEST_INTEGRAL_NAME, TEST_INTEGRAL_VALUE);
+        context.bind(JndiLookup.CONTAINER_JNDI_RESOURCE_PATH_PREFIX + TEST_STRINGS_NAME, TEST_STRINGS_COLLECTION);
     }
 
     @After
@@ -65,5 +73,15 @@ public class JndiLookupTest {
 
         final String nonExistingResource = lookup.lookup("logging/non-existing-resource");
         assertNull(nonExistingResource);
+    }
+
+    @Test
+    public void testNonStringLookup() throws Exception {
+        // LOG4J2-1310
+        final StrLookup lookup = new JndiLookup();
+        final String integralValue = lookup.lookup(TEST_INTEGRAL_NAME);
+        assertEquals(String.valueOf(TEST_INTEGRAL_VALUE), integralValue);
+        final String collectionValue = lookup.lookup(TEST_STRINGS_NAME);
+        assertEquals(String.valueOf(TEST_STRINGS_COLLECTION), collectionValue);
     }
 }
