@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.6" date="2016-MM-DD" description="GA Release 2.6">
+      <action issue="LOG4J2-1309" dev="ggregory" type="fix">
+        Configuration file error does not show cause exception.
+      </action>
       <action issue="LOG4J2-1299" dev="ggregory" type="add">
         Add pattern converter for thread id and priority in PatternLayout.
       </action>

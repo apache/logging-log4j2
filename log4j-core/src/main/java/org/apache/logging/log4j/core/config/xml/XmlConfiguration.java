@@ -144,7 +144,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             }
             statusConfig.initialize();
         } catch (final SAXException | IOException | ParserConfigurationException e) {
-            LOGGER.error("Error parsing {}", configSource.getLocation(), e);
+            LOGGER.error("Error parsing " + configSource.getLocation(), e);
         }
         if (strict && schemaResource != null && buffer != null) {
             InputStream is = null;
