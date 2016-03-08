@@ -27,7 +27,7 @@ import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
-import org.apache.logging.log4j.message.ReusableParameterizedMessageFactory;
+import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LambdaUtil;
@@ -76,7 +76,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * The default MessageFactory class.
      */
     public static final Class<? extends MessageFactory> DEFAULT_MESSAGE_FACTORY_CLASS =
-            createClassForProperty("log4j2.messageFactory", ReusableParameterizedMessageFactory.class,
+            createClassForProperty("log4j2.messageFactory", ReusableMessageFactory.class,
                     ParameterizedMessageFactory.class);
 
     /**
@@ -181,7 +181,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     private static Class<? extends MessageFactory> createClassForProperty(final String property,
-            final Class<ReusableParameterizedMessageFactory> reusableParameterizedMessageFactoryClass,
+            final Class<ReusableMessageFactory> reusableParameterizedMessageFactoryClass,
             final Class<ParameterizedMessageFactory> parameterizedMessageFactoryClass) {
         try {
             final boolean IS_WEB_APP = PropertiesUtil.getProperties().getBooleanProperty(

@@ -16,42 +16,44 @@
  */
 package org.apache.logging.log4j.message;
 
+import java.io.Serializable;
+
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
- * Enables use of <code>{}</code> parameter markers in message strings.
- * <p>
- * Reuses a ThreadLocal {@link ReusableParameterizedMessage} instance for {@link #newMessage(String, Object...)}.
- * </p>
- * <p>
- * This class is immutable.
- * </p>
+ * Implementation of the {@link MessageFactory} interface that avoids allocating temporary objects where possible.
+ * Message instances are cached in a ThreadLocal and reused when a new message is requested within the same thread.
+ * @see ParameterizedMessageFactory
+ * @see ReusableSimpleMessage
+ * @see ReusableObjectMessage
+ * @see ReusableParameterizedMessage
+ * @since 2.6
  */
 @PerformanceSensitive("allocation")
-public final class ReusableParameterizedMessageFactory extends AbstractMessageFactory {
+public final class ReusableMessageFactory implements MessageFactory, Serializable {
 
     /**
-     * Instance of ReusableParameterizedMessageFactory.
+     * Instance of ReusableMessageFactory..
      */
-    public static final ReusableParameterizedMessageFactory INSTANCE = new ReusableParameterizedMessageFactory();
+    public static final ReusableMessageFactory INSTANCE = new ReusableMessageFactory();
 
     private static final long serialVersionUID = -8970940216592525651L;
-    private static ThreadLocal<ReusableParameterizedMessage> threadLocalMessage = new ThreadLocal<>();
+    private static ThreadLocal<ReusableParameterizedMessage> threadLocalParameterized = new ThreadLocal<>();
     private static ThreadLocal<ReusableSimpleMessage> threadLocalSimpleMessage = new ThreadLocal<>();
     private static ThreadLocal<ReusableObjectMessage> threadLocalObjectMessage = new ThreadLocal<>();
 
     /**
      * Constructs a message factory.
      */
-    public ReusableParameterizedMessageFactory() {
+    public ReusableMessageFactory() {
         super();
     }
 
     private static ReusableParameterizedMessage getParameterized() {
-        ReusableParameterizedMessage result = threadLocalMessage.get();
+        ReusableParameterizedMessage result = threadLocalParameterized.get();
         if (result == null) {
             result = new ReusableParameterizedMessage();
-            threadLocalMessage.set(result);
+            threadLocalParameterized.set(result);
         }
         return result;
     }
