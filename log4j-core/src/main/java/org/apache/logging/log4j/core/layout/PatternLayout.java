@@ -77,8 +77,6 @@ public final class PatternLayout extends AbstractStringLayout {
     /** Key to identify pattern converters. */
     public static final String KEY = "Converter";
 
-    private static final ThreadLocal<TextEncoderHelper> textEncoderHelper = new ThreadLocal<>();
-
     /**
      * Conversion pattern.
      */
@@ -195,15 +193,6 @@ public final class PatternLayout extends AbstractStringLayout {
     private StringBuilder toText(final Serializer2 serializer, final LogEvent event,
             final StringBuilder destination) {
         return serializer.toSerializable(event, destination);
-    }
-
-    private TextEncoderHelper getCachedTextEncoderHelper() {
-        TextEncoderHelper result = textEncoderHelper.get();
-        if (result == null) {
-            result = new TextEncoderHelper(getCharset());
-            textEncoderHelper.set(result);
-        }
-        return result;
     }
 
     /**

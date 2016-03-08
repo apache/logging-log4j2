@@ -37,6 +37,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.net.Severity;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
@@ -142,8 +143,20 @@ public final class GelfLayout extends AbstractStringLayout {
 
     @Override
     public byte[] toByteArray(final LogEvent event) {
-        final byte[] bytes = getBytes(toSerializable(event));
+        StringBuilder text = toText(event, getStringBuilder());
+        final byte[] bytes = getBytes(text);
         return compressionType != CompressionType.OFF && bytes.length > compressionThreshold ? compress(bytes) : bytes;
+    }
+
+    @Override
+    public void encode(final LogEvent event, final ByteBufferDestination destination) {
+        if (!Constants.ENABLE_THREADLOCALS || compressionType != CompressionType.OFF) {
+            super.encode(event, destination);
+            return;
+        }
+        final StringBuilder text = toText(event, getStringBuilder());
+        final TextEncoderHelper helper = getCachedTextEncoderHelper();
+        helper.encodeText(text, destination);
     }
 
     private byte[] compress(final byte[] bytes) {

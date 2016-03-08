@@ -17,6 +17,8 @@
 package org.apache.logging.log4j.core.layout;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
@@ -56,7 +58,9 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
      */
     protected static final int DEFAULT_STRING_BUILDER_SIZE = 1024;
 
-    private final static ThreadLocal<StringBuilder> threadLocal = new ThreadLocal<>();
+    private static final ThreadLocal<StringBuilder> threadLocal = new ThreadLocal<>();
+
+    private static final ThreadLocal<TextEncoderHelper> textEncoderHelper = new ThreadLocal<>();
 
     /**
      * Returns a {@code StringBuilder} that this Layout implementation can use to write the formatted log event to.
@@ -72,6 +76,16 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
         result.setLength(0);
         return result;
     }
+
+    protected TextEncoderHelper getCachedTextEncoderHelper() {
+        TextEncoderHelper result = textEncoderHelper.get();
+        if (result == null) {
+            result = new TextEncoderHelper(getCharset());
+            textEncoderHelper.set(result);
+        }
+        return result;
+    }
+
     // LOG4J2-1151: If the built-in JDK 8 encoders are available we should use them.
     private static boolean isPreJava8() {
         final String version = System.getProperty("java.version");
@@ -144,6 +158,20 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
             return s.getBytes(charsetName);
         } catch (final UnsupportedEncodingException e) {
             return s.getBytes(charset);
+        }
+    }
+
+    protected byte[] getBytes(final CharSequence cseq) {
+        if (useCustomEncoding) { // rely on branch prediction to eliminate this check if false
+            return StringEncoder.encodeSingleByteChars(cseq);
+        }
+        ByteBuffer byteBuffer = charset.encode(CharBuffer.wrap(cseq));
+        if (byteBuffer.hasArray()) {
+            return byteBuffer.array();
+        } else {
+            byte[] bytes = new byte[byteBuffer.remaining()];
+            byteBuffer.get(bytes);
+            return bytes;
         }
     }
 

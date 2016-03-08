@@ -53,13 +53,13 @@ public final class StringEncoder {
     }
 
     /**
-     * Encodes the specified string by casting each character to a byte.
+     * Encodes the specified char sequence by casting each character to a byte.
      *
-     * @param s the string to encode
+     * @param s the char sequence to encode
      * @return the encoded String
      * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-1151">LOG4J2-1151</a>
      */
-    public static byte[] encodeSingleByteChars(String s) {
+    public static byte[] encodeSingleByteChars(CharSequence s) {
         final int length = s.length();
         final byte[] result = new byte[length];
         encodeString(s, 0, length, result);
@@ -71,7 +71,7 @@ public final class StringEncoder {
      * Implementation note: this is the fast path. If the char array contains only ISO-8859-1 characters, all the work
      * will be done here.
      */
-    public static int encodeIsoChars(String charArray, int charIndex, byte[] byteArray, int byteIndex, int length) {
+    public static int encodeIsoChars(CharSequence charArray, int charIndex, byte[] byteArray, int byteIndex, int length) {
         int i = 0;
         for (; i < length; i++) {
             char c = charArray.charAt(charIndex++);
@@ -84,7 +84,7 @@ public final class StringEncoder {
     }
 
     // LOG4J2-1151
-    public static int encodeString(String charArray, int charOffset, int charLength, byte[] byteArray) {
+    public static int encodeString(CharSequence charArray, int charOffset, int charLength, byte[] byteArray) {
         int byteOffset = 0;
         int length = Math.min(charLength, byteArray.length);
         int charDoneIndex = charOffset + length;
