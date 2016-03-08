@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 
 /**
  *
@@ -63,12 +64,8 @@ public class DeadlockAppender extends AbstractAppender {
     }
 
     @PluginFactory
-    public static DeadlockAppender createAppender(@PluginAttribute("name") final String name) {
-        if (name == null) {
-            LOGGER.error("A name for the Appender must be specified");
-            return null;
-        }
-
+    public static DeadlockAppender createAppender(
+        @PluginAttribute("name") @Required(message = "A name for the Appender must be specified") final String name) {
         return new DeadlockAppender(name);
     }
 

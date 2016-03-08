@@ -163,9 +163,7 @@ public class ListAppender extends AbstractAppender {
 
     @PluginFactory
     public static ListAppender createAppender(
-            @PluginAttribute("name")
-            @Required(message = "No name provided for ListAppender")
-            final String name,
+            @PluginAttribute("name") @Required(message = "No name provided for ListAppender") final String name,
             @PluginAttribute("entryPerNewLine") final boolean newLine,
             @PluginAttribute("raw") final boolean raw,
             @PluginElement("Layout") final Layout<? extends Serializable> layout,
