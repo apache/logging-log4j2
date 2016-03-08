@@ -25,6 +25,7 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 @PerformanceSensitive("allocation")
 public class ReusableSimpleMessage implements ReusableMessage {
     private static final long serialVersionUID = -9199974506498249809L;
+    private static Object[] EMPTY_PARAMS = new Object[0];
     private String message;
 
     public void set(String message) {
@@ -43,7 +44,7 @@ public class ReusableSimpleMessage implements ReusableMessage {
 
     @Override
     public Object[] getParameters() {
-        return new Object[0];
+        return EMPTY_PARAMS;
     }
 
     @Override
