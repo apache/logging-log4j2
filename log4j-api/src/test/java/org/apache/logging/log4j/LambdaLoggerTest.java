@@ -23,7 +23,6 @@ import java.util.List;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.Supplier;
 import org.junit.Before;
 import org.junit.Test;
@@ -110,7 +109,7 @@ public class LambdaLoggerTest {
     final Throwable throwable = new Error("I'm Bad");
     final Marker marker = MarkerManager.getMarker("test");
 
-    private class MyMessageSupplier implements MessageSupplier {
+    private class MyMessageSupplier implements Supplier<Message> {
         public boolean invoked = false;
 
         @Override
