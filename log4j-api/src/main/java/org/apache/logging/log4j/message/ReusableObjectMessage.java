@@ -41,11 +41,7 @@ public class ReusableObjectMessage implements ReusableMessage {
      */
     @Override
     public String getFormattedMessage() {
-        // LOG4J2-763: cache formatted string in case obj changes later
-        if (objectString == null) {
-            objectString = String.valueOf(obj);
-        }
-        return objectString;
+        return String.valueOf(obj);
     }
 
     @Override
