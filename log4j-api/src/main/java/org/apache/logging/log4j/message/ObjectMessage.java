@@ -58,7 +58,11 @@ public class ObjectMessage implements Message, StringBuilderFormattable {
 
     @Override
     public void formatTo(final StringBuilder buffer) {
-        if (obj instanceof StringBuilderFormattable) {
+        if (obj == null || obj instanceof String) {
+            buffer.append((String) obj);
+        } else if (obj instanceof StringBuilder) {
+            buffer.append((StringBuilder) obj);
+        } else if (obj instanceof StringBuilderFormattable) {
             ((StringBuilderFormattable) obj).formatTo(buffer);
         } else {
             buffer.append(obj);

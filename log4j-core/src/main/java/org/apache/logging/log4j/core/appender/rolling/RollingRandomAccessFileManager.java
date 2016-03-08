@@ -208,7 +208,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager implement
                         data.append, data.immediateFlush, data.bufferSize, size, time, data.policy, data.strategy,
                         data.advertiseURI, data.layout, writeHeader);
             } catch (final IOException ex) {
-                LOGGER.error("Cannot access RandomAccessFile {}) " + ex);
+                LOGGER.error("Cannot access RandomAccessFile " + ex, ex);
                 if (raf != null) {
                     try {
                         raf.close();

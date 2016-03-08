@@ -81,7 +81,7 @@ public class JmsManager extends AbstractManager {
                                            final String username, final String password) {
         final JmsConfiguration configuration = new JmsConfiguration(jndiManager, connectionFactoryName, destinationName,
             username, password);
-        return FACTORY.createManager(name, configuration);
+        return getManager(name, FACTORY, configuration);
     }
 
     /**

@@ -33,7 +33,6 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
     protected static final String DEFAULT_EOL = "\r\n";
     protected static final String COMPACT_EOL = Strings.EMPTY;
-    private static final long serialVersionUID = 1L;
 
     protected final String eol;
     protected final ObjectWriter objectWriter;

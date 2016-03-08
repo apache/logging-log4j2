@@ -16,19 +16,45 @@
  */
 package org.apache.logging.log4j.message;
 
-/**
- * Helper class for JUnit tests.
- */
-class Mutable {
-    private String value;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
-    public Mutable set(final String value) {
-        this.value = value;
-        return this;
+/**
+ * Mutable Message wrapper around a String message.
+ * @since 2.6
+ */
+@PerformanceSensitive("allocation")
+public class ReusableSimpleMessage implements ReusableMessage {
+    private static final long serialVersionUID = -9199974506498249809L;
+    private static Object[] EMPTY_PARAMS = new Object[0];
+    private String message;
+
+    public void set(String message) {
+        this.message = message;
     }
 
     @Override
-    public String toString() {
-        return this.value;
+    public String getFormattedMessage() {
+        return message;
+    }
+
+    @Override
+    public String getFormat() {
+        return message;
+    }
+
+    @Override
+    public Object[] getParameters() {
+        return EMPTY_PARAMS;
+    }
+
+    @Override
+    public Throwable getThrowable() {
+        return null;
+    }
+
+    @Override
+    public void formatTo(final StringBuilder buffer) {
+        buffer.append(message);
     }
 }
+

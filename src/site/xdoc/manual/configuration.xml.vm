@@ -818,12 +818,17 @@ public class Bar {
               configurations define the configuration in terms of plugins and attributes to the plugins.
             </p>
             <p>
-              The properties configuration requires that you list the identifiers of the appenders, filters and loggers,
+              Prior to version 2.6,
+              the properties configuration requires that you list the identifiers of the appenders, filters and loggers,
               in a comma separated list in properties with those names. Each of those components will then be expected
               to be defined in sets of properties that begin with <i>component.identifier</i>. The identifier does not
               have to match the name of the component being defined but must uniquely identify all the attributes and
               subcomponents that are part of the component. Each individual component MUST have a "type" attribute
               specified that identifies the component's Plugin type.
+            </p>
+            <p>
+              As of version 2.6, this list of identifiers is no longer required as names are inferred upon first usage.
+              The list of identifiers used in a 2.4/2.5 format will be safely ignored in 2.6+.
             </p>
             <p>
               Unlike the base components, when creating subcomponents you cannot specify an element containing a list of
@@ -842,12 +847,8 @@ name = PropertiesConfig
 
 property.filename = target/rolling/rollingtest.log
 
-filters = threshold
-
 filter.threshold.type = ThresholdFilter
 filter.threshold.level = debug
-
-appenders = console, rolling, list
 
 appender.console.type = Console
 appender.console.name = STDOUT
@@ -871,20 +872,15 @@ appender.rolling.strategy.max = 5
 
 appender.list.type = List
 appender.list.name = List
-appender.list.filters = threshold
 appender.list.filter.threshold.type = ThresholdFilter
 appender.list.filter.threshold.level = error
-
-loggers = rolling
 
 logger.rolling.name = com.example.my.app
 logger.rolling.level = debug
 logger.rolling.additivity = false
-logger.rolling.appenderRefs = rolling
 logger.rolling.appenderRef.rolling.ref = RollingFile
 
 rootLogger.level = info
-rootLogger.appenderRefs = stdout
 rootLogger.appenderRef.stdout.ref = STDOUT
           </pre>
         </subsection>
@@ -1474,14 +1470,14 @@ StatusLogger.getLogger().registerListener(listener);
           named file to be used during the test.
         </p>
           <p>
-            A third approach, also used extensively by Log4j 2, is to use the <code>InitialLoggerContext</code>
+            A third approach, also used extensively by Log4j 2, is to use the <code>LoggerContextRule</code>
             JUnit test rule which provides additional convenience methods for testing. This requires adding the
             <code>log4j-core</code> <code>test-jar</code> dependency to your test scope dependencies. For example:
           </p>
           <pre class="prettyprint linenums"><![CDATA[
 public class AwesomeTest {
     @Rule
-    public InitialLoggerContext init = new InitialLoggerContext("MyTestConfig.xml");
+    public LoggerContextRule init = new LoggerContextRule("MyTestConfig.xml");
 
     @Test
     public void testSomeAwesomeFeature() {

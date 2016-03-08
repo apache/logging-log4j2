@@ -21,7 +21,9 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * <em>Consider this class private.</em>
@@ -57,7 +59,7 @@ public final class PropertiesUtil {
             try (final InputStream in = url.openStream()) {
                 properties.load(in);
             } catch (final IOException ioe) {
-                logException("Unable to read " + url.toString(), ioe);
+                LowLevelLogUtil.logException("Unable to read " + url.toString(), ioe);
             }
         }
         this.props = properties;
@@ -76,12 +78,12 @@ public final class PropertiesUtil {
             try {
                 props.load(in);
             } catch (final IOException e) {
-                logException("Unable to read " + source, e);
+                LowLevelLogUtil.logException("Unable to read " + source, e);
             } finally {
                 try {
                     in.close();
                 } catch (final IOException e) {
-                    logException("Unable to close " + source, e);
+                    LowLevelLogUtil.logException("Unable to close " + source, e);
                 }
             }
         }
@@ -216,7 +218,7 @@ public final class PropertiesUtil {
         try {
             return new Properties(System.getProperties());
         } catch (final SecurityException ex) {
-            logException("Unable to access system properties.", ex);
+            LowLevelLogUtil.logException("Unable to access system properties.", ex);
             // Sandboxed - can't read System Properties
             return new Properties();
         }
@@ -255,6 +257,26 @@ public final class PropertiesUtil {
     }
 
     /**
+     * Partitions a properties map based on common key prefixes up to the first period.
+     *
+     * @param properties properties to partition
+     * @return the partitioned properties where each key is the common prefix (minus the period) and the values are
+     * new property maps without the prefix and period in the key
+     * @since 2.6
+     */
+    public static Map<String, Properties> partitionOnCommonPrefixes(final Properties properties) {
+        final Map<String, Properties> parts = new ConcurrentHashMap<>();
+        for (final String key : properties.stringPropertyNames()) {
+            final String prefix = key.substring(0, key.indexOf('.'));
+            if (!parts.containsKey(prefix)) {
+                parts.put(prefix, new Properties());
+            }
+            parts.get(prefix).setProperty(key.substring(key.indexOf('.') + 1), properties.getProperty(key));
+        }
+        return parts;
+    }
+
+    /**
      * Returns true if system properties tell us we are running on Windows.
      * @return true if system properties tell us we are running on Windows.
      */
@@ -262,8 +284,4 @@ public final class PropertiesUtil {
         return getStringProperty("os.name").startsWith("Windows");
     }
 
-    private static void logException(final String message, final Throwable exception) {
-        System.err.println(message);
-        exception.printStackTrace(System.err);
-    }
 }

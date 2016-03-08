@@ -14,29 +14,26 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.util;
+package org.apache.logging.log4j.core.pattern;
 
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.junit.Test;
 
-import java.io.FileInputStream;
-import java.util.Properties;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  *
  */
-public class PropertiesUtilTest {
+public class ThreadPriorityPatternConverterTest {
 
     @Test
-    public void testSubset() throws Exception {
-        Properties props = new Properties();
-        props.load(new FileInputStream("target/test-classes/log4j2-properties.properties"));
-        Properties subset = PropertiesUtil.extractSubset(props, "appender.Stdout.filter.marker");
-        assertNotNull("No subset returned", subset);
-        assertTrue("Incorrect number of items. Expected 4, actual " + subset.size(), subset.size() == 4);
-        assertTrue("Missing propertu", subset.containsKey("type"));
+    public void testConverterAppendsLogEventNanoTimeToStringBuilder() {
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setThreadPriority(1).build();
+        final StringBuilder sb = new StringBuilder();
+        final ThreadPriorityPatternConverter converter = ThreadPriorityPatternConverter.newInstance(null);
+        converter.format(event, sb);
+        assertEquals("1", sb.toString());
     }
 }

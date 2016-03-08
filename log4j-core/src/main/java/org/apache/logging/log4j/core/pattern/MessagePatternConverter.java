@@ -21,6 +21,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MultiformatMessage;
+import org.apache.logging.log4j.util.StringBuilderFormattable;
 
 /**
  * Returns the event's rendered message in a StringBuilder.
@@ -59,6 +60,22 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
         final Message msg = event.getMessage();
+        if (msg instanceof StringBuilderFormattable) {
+            int offset = toAppendTo.length();
+            ((StringBuilderFormattable) msg).formatTo(toAppendTo);
+
+            // TODO can we optimize this?
+            if (config != null) {
+                for (int i = offset; i < toAppendTo.length() - 1; i++) {
+                    if (toAppendTo.charAt(i) == '$' && toAppendTo.charAt(i + 1) == '{') {
+                        final String value = toAppendTo.substring(offset, toAppendTo.length());
+                        toAppendTo.setLength(offset);
+                        toAppendTo.append(config.getStrSubstitutor().replace(event, value));
+                    }
+                }
+            }
+            return;
+        }
         if (msg != null) {
             String result;
             if (msg instanceof MultiformatMessage) {

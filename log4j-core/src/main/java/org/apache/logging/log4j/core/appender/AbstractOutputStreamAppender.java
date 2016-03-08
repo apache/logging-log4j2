@@ -28,8 +28,6 @@ import org.apache.logging.log4j.core.LogEvent;
  */
 public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager> extends AbstractAppender {
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * Immediate flush means that the underlying writer or output stream will be flushed at the end of each append
      * operation. Immediate flush is slower but ensures that each append request is actually written. If

@@ -43,7 +43,7 @@ public class RoutingAppenderWithPurgingTest {
     private static final String MANUAL_LOG_FILE1 = "target/routing-purge-manual/routingtest-1.log";
     private static final String MANUAL_LOG_FILE2 = "target/routing-purge-manual/routingtest-2.log";
     private static final String MANUAL_LOG_FILE3 = "target/routing-purge-manual/routingtest-3.log";
-   
+
 
     private ListAppender app;
     private RoutingAppender routingAppenderIdle;
@@ -54,9 +54,9 @@ public class RoutingAppenderWithPurgingTest {
     public LoggerContextRule init = new LoggerContextRule(CONFIG);
 
     @Rule
-    public CleanFiles files = new CleanFiles(IDLE_LOG_FILE1, IDLE_LOG_FILE2, IDLE_LOG_FILE3, 
+    public CleanFiles files = new CleanFiles(IDLE_LOG_FILE1, IDLE_LOG_FILE2, IDLE_LOG_FILE3,
     		MANUAL_LOG_FILE1, MANUAL_LOG_FILE2, MANUAL_LOG_FILE3);
-	
+
 
     @Before
     public void setUp() throws Exception {
@@ -70,6 +70,7 @@ public class RoutingAppenderWithPurgingTest {
     @After
     public void tearDown() throws Exception {
         this.app.clear();
+        this.init.getContext().stop();
     }
 
     @Test(timeout = 5000)
@@ -85,7 +86,7 @@ public class RoutingAppenderWithPurgingTest {
         EventLogger.logEvent(msg);
         String[] files = {IDLE_LOG_FILE1, IDLE_LOG_FILE2, IDLE_LOG_FILE3, MANUAL_LOG_FILE1, MANUAL_LOG_FILE2, MANUAL_LOG_FILE3};
         assertFileExistance(files);
-        
+
         assertEquals("Incorrect number of appenders with IdlePurgePolicy.", 3, routingAppenderIdle.getAppenders().size());
         assertEquals("Incorrect number of appenders with IdlePurgePolicy with HangingAppender.",
                 3, routingAppenderIdleWithHangingAppender.getAppenders().size());
@@ -96,7 +97,7 @@ public class RoutingAppenderWithPurgingTest {
 
         assertEquals("Incorrect number of appenders with IdlePurgePolicy.", 1, routingAppenderIdle.getAppenders().size());
         assertEquals("Incorrect number of appenders with manual purge.", 3, routingAppenderManual.getAppenders().size());
-        
+
         routingAppenderManual.deleteAppender("1");
         routingAppenderManual.deleteAppender("2");
         routingAppenderManual.deleteAppender("3");
@@ -104,7 +105,7 @@ public class RoutingAppenderWithPurgingTest {
         assertEquals("Incorrect number of appenders with IdlePurgePolicy.", 1, routingAppenderIdle.getAppenders().size());
         assertEquals("Incorrect number of appenders with manual purge.", 0, routingAppenderManual.getAppenders().size());
     }
-    
+
     private void assertFileExistance(String... files) {
     	for (String file : files) {
 			assertTrue("File should exist - " + file + " file ", new File(file).exists());

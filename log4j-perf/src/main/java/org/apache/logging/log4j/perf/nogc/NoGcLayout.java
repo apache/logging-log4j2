@@ -37,14 +37,15 @@ import java.util.Map;
  * </p>
  */
 public class NoGcLayout implements Layout<Serializable>, Encoder<LogEvent> {
-    private StringBuilder cachedStringBuilder = new StringBuilder(2048);
-    private PatternSerializer2 serializer = new PatternSerializer2();
-    private TextEncoderHelper cachedHelper;
+    private final StringBuilder cachedStringBuilder = new StringBuilder(2048);
+    private final PatternSerializer2 serializer = new PatternSerializer2();
+    private final TextEncoderHelper cachedHelper;
 
     public NoGcLayout(Charset charset) {
         cachedHelper = new TextEncoderHelper(charset);
     }
 
+    @Override
     public void encode(LogEvent event, ByteBufferDestination destination) {
         StringBuilder text = toText(event, getCachedStringBuilder());
 

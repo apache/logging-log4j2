@@ -86,8 +86,6 @@ public final class Rfc5424Layout extends AbstractStringLayout {
      */
     public static final String DEFAULT_MDCID = "mdc";
 
-    private static final long serialVersionUID = 1L;
-
     private static final String LF = "\n";
     private static final int TWO_DIGITS = 10;
     private static final int THREE_DIGITS = 100;

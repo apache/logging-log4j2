@@ -69,7 +69,7 @@ public class SmtpManager extends AbstractManager {
         return new MimeMessageBuilder(session).setFrom(data.from).setReplyTo(data.replyto)
                 .setRecipients(Message.RecipientType.TO, data.to).setRecipients(Message.RecipientType.CC, data.cc)
                 .setRecipients(Message.RecipientType.BCC, data.bcc).setSubject(data.subject.toSerializable(appendEvent))
-                .getMimeMessage();
+                .build();
     }
 
     protected SmtpManager(final String name, final Session session, final MimeMessage message,
@@ -162,13 +162,7 @@ public class SmtpManager extends AbstractManager {
             final MimeMultipart mp = getMimeMultipart(encodedBytes, headers);
 
             sendMultipartMessage(message, mp);
-        } catch (final MessagingException e) {
-            logError("caught exception while sending e-mail notification.", e);
-            throw new LoggingException("Error occurred while sending email", e);
-        } catch (final IOException e) {
-            logError("caught exception while sending e-mail notification.", e);
-            throw new LoggingException("Error occurred while sending email", e);
-        } catch (final RuntimeException e) {
+        } catch (final MessagingException | IOException | RuntimeException e) {
             logError("caught exception while sending e-mail notification.", e);
             throw new LoggingException("Error occurred while sending email", e);
         }

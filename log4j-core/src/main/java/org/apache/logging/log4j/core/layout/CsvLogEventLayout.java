@@ -42,8 +42,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 @Plugin(name = "CsvLogEventLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public class CsvLogEventLayout extends AbstractCsvLayout {
 
-    private static final long serialVersionUID = 1L;
-    
     public static CsvLogEventLayout createDefaultLayout() {
         return new CsvLogEventLayout(null, Charset.forName(DEFAULT_CHARSET), CSVFormat.valueOf(DEFAULT_FORMAT), null, null);
     }
@@ -87,7 +85,9 @@ public class CsvLogEventLayout extends AbstractCsvLayout {
             printer.print(event.getNanoTime());
             printer.print(event.getTimeMillis());
             printer.print(event.getLevel());
+            printer.print(event.getThreadId());
             printer.print(event.getThreadName());
+            printer.print(event.getThreadPriority());
             printer.print(event.getMessage().getFormattedMessage());
             printer.print(event.getLoggerFqcn());
             printer.print(event.getLoggerName());

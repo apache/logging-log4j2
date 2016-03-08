@@ -62,7 +62,6 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      */
     public static final String PROPERTY_CONFIG = "config";
 
-    private static final long serialVersionUID = 1L;
     private static final Configuration NULL_CONFIGURATION = new NullConfiguration();
 
     private final ConcurrentMap<String, Logger> loggers = new ConcurrentHashMap<>();

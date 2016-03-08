@@ -24,8 +24,10 @@ import java.util.concurrent.TimeUnit;
 
 import com.lmax.disruptor.*;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -35,6 +37,7 @@ final class DisruptorUtil {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final int RINGBUFFER_MIN_SIZE = 128;
     private static final int RINGBUFFER_DEFAULT_SIZE = 256 * 1024;
+    private static final int RINGBUFFER_NO_GC_DEFAULT_SIZE = 4 * 1024;
 
     private DisruptorUtil() {
     }
@@ -69,7 +72,7 @@ final class DisruptorUtil {
     }
 
     static int calculateRingBufferSize(final String propertyName) {
-        int ringBufferSize = RINGBUFFER_DEFAULT_SIZE;
+        int ringBufferSize = Constants.ENABLE_THREADLOCALS ? RINGBUFFER_NO_GC_DEFAULT_SIZE : RINGBUFFER_DEFAULT_SIZE;
         final String userPreferredRBSize = PropertiesUtil.getProperties().getStringProperty(propertyName,
                 String.valueOf(ringBufferSize));
         try {
@@ -93,8 +96,8 @@ final class DisruptorUtil {
         }
         try {
             @SuppressWarnings("unchecked")
-            final Class<? extends ExceptionHandler<T>> klass = (Class<? extends ExceptionHandler<T>>) Class
-                    .forName(cls);
+            final Class<? extends ExceptionHandler<T>> klass =
+                (Class<? extends ExceptionHandler<T>>) LoaderUtil.loadClass(cls);
             return klass.newInstance();
         } catch (final Exception ignored) {
             LOGGER.debug("Invalid {} value: error creating {}: ", propertyName, cls, ignored);

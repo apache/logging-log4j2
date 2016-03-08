@@ -159,8 +159,6 @@ public class AbstractDatabaseAppenderTest {
     private static abstract class LocalAbstractDatabaseAppender extends
             AbstractDatabaseAppender<LocalAbstractDatabaseManager> {
 
-        private static final long serialVersionUID = 1L;
-
         public LocalAbstractDatabaseAppender(final String name, final Filter filter, final boolean exceptionSuppressed,
                                              final LocalAbstractDatabaseManager manager) {
             super(name, filter, exceptionSuppressed, manager);

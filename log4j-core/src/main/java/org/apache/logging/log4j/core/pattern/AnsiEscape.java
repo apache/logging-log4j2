@@ -218,7 +218,7 @@ public enum AnsiEscape {
 
     private final String code;
 
-    private AnsiEscape(final String code) {
+    AnsiEscape(final String code) {
         this.code = code;
     }
 

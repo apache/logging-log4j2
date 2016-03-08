@@ -20,6 +20,7 @@
     <JeroMQ name="JeroMQAppender">    
       <Property name="endpoint">tcp://*:5556</Property>
       <Property name="endpoint">ipc://info-topic</Property>
+      <PatternLayout pattern="%X{foo}%m"/>
     </JeroMQ>
   </Appenders>
   <Loggers>

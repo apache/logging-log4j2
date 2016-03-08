@@ -126,7 +126,7 @@ public class SslSocketManager extends TcpSocketManager {
 
     private static class SslSocketManagerFactory implements ManagerFactory<SslSocketManager, SslFactoryData> {
 
-        private class TlsSocketManagerFactoryException extends Exception {
+        private static class TlsSocketManagerFactoryException extends Exception {
 
             private static final long serialVersionUID = 1L;
         }

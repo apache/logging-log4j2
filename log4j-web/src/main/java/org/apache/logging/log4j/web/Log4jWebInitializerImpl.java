@@ -49,8 +49,6 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
 
     private static final String WEB_INF = "/WEB-INF/";
 
-    private static final long serialVersionUID = 1L;
-
     static {
         if (Loader.isClassAvailable("org.apache.logging.log4j.core.web.JNDIContextFilter")) {
             throw new IllegalStateException("You are using Log4j 2 in a web application with the old, extinct "

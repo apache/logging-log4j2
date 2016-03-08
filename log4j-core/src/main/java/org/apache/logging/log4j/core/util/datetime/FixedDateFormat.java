@@ -33,7 +33,7 @@ public class FixedDateFormat {
      * <p>
      * Package protected for unit tests.
      */
-    public static enum FixedFormat {
+    public enum FixedFormat {
         /**
          * ABSOLUTE time format: {@code "HH:mm:ss,SSS"}.
          */
@@ -87,8 +87,8 @@ public class FixedDateFormat {
         private final char millisSeparatorChar;
         private final int millisSeparatorLength;
 
-        private FixedFormat(final String pattern, final String datePattern, final int escapeCount,
-                final char timeSeparator, final int timeSepLength, final char millisSeparator, final int millisSepLength) {
+        FixedFormat(final String pattern, final String datePattern, final int escapeCount, final char timeSeparator,
+                    final int timeSepLength, final char millisSeparator, final int millisSepLength) {
             this.timeSeparatorChar = timeSeparator;
             this.timeSeparatorLength = timeSepLength;
             this.millisSeparatorChar = millisSeparator;

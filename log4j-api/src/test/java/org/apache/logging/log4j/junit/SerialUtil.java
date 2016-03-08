@@ -15,7 +15,7 @@
  * limitations under the license.
  */
 
-package org.apache.log4j.util;
+package org.apache.logging.log4j.junit;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

@@ -35,6 +35,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
@@ -44,6 +45,7 @@ import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
@@ -54,7 +56,6 @@ import org.apache.logging.log4j.util.Strings;
 public class LoggerConfig extends AbstractFilterable {
 
     public static final String ROOT = "root";
-    private static final long serialVersionUID = 1L;
     private static LogEventFactory LOG_EVENT_FACTORY = null;
 
     private List<AppenderRef> appenderRefs = new ArrayList<>();
@@ -327,10 +328,14 @@ public class LoggerConfig extends AbstractFilterable {
         List<Property> props = null;
         if (properties != null) {
             props = new ArrayList<>(properties.size());
-            Log4jLogEvent.Builder builder = new Log4jLogEvent.Builder();
-            builder.setMessage(data).setMarker(marker).setLevel(level).setLoggerName(loggerName);
-            builder.setLoggerFqcn(fqcn).setThrown(t);
-            LogEvent event = builder.build();
+            final LogEvent event = Log4jLogEvent.newBuilder()
+                .setMessage(data)
+                .setMarker(marker)
+                .setLevel(level)
+                .setLoggerName(loggerName)
+                .setLoggerFqcn(fqcn)
+                .setThrown(t)
+                .build();
             for (final Map.Entry<Property, Boolean> entry : properties.entrySet()) {
                 final Property prop = entry.getKey();
                 final String value = entry.getValue() ? config.getStrSubstitutor().replace(event, prop.getValue())
@@ -374,8 +379,10 @@ public class LoggerConfig extends AbstractFilterable {
         }
     }
 
+    @PerformanceSensitive("allocation")
     protected void callAppenders(final LogEvent event) {
         final AppenderControl[] controls = appenders.get();
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < controls.length; i++) {
             controls[i].callAppender(event);
         }
@@ -398,8 +405,9 @@ public class LoggerConfig extends AbstractFilterable {
      * @param config The Configuration.
      * @param filter A Filter.
      * @return A new LoggerConfig.
+     * @deprecated Use {@link #createLogger(boolean, Level, String, String, AppenderRef[], Property[], Configuration, Filter)}
      */
-    @PluginFactory
+    @Deprecated
     public static LoggerConfig createLogger(@PluginAttribute("additivity") final String additivity,
             @PluginAttribute("level") final Level level, @PluginAttribute("name") final String loggerName,
             @PluginAttribute("includeLocation") final String includeLocation,
@@ -419,6 +427,36 @@ public class LoggerConfig extends AbstractFilterable {
                 includeLocation(includeLocation));
     }
 
+    /**
+     * Factory method to create a LoggerConfig.
+     *
+     * @param additivity True if additive, false otherwise.
+     * @param level The Level to be associated with the Logger.
+     * @param loggerName The name of the Logger.
+     * @param includeLocation whether location should be passed downstream
+     * @param refs An array of Appender names.
+     * @param properties Properties to pass to the Logger.
+     * @param config The Configuration.
+     * @param filter A Filter.
+     * @return A new LoggerConfig.
+     * @since 2.6
+     */
+    @PluginFactory
+    public static LoggerConfig createLogger(
+        @PluginAttribute(value = "additivity", defaultBoolean = true) final boolean additivity,
+        @PluginAttribute("level") final Level level,
+        @Required(message = "Loggers cannot be configured without a name") @PluginAttribute("name") final String loggerName,
+        @PluginAttribute("includeLocation") final String includeLocation,
+        @PluginElement("AppenderRef") final AppenderRef[] refs,
+        @PluginElement("Properties") final Property[] properties,
+        @PluginConfiguration final Configuration config,
+        @PluginElement("Filter") final Filter filter
+    ) {
+        final String name = loggerName.equals(ROOT) ? Strings.EMPTY : loggerName;
+        return new LoggerConfig(name, Arrays.asList(refs), filter, level, additivity, properties, config,
+            includeLocation(includeLocation));
+    }
+
     // Note: for asynchronous loggers, includeLocation default is FALSE,
     // for synchronous loggers, includeLocation default is TRUE.
     protected static boolean includeLocation(final String includeLocationConfigValue) {
@@ -434,8 +472,6 @@ public class LoggerConfig extends AbstractFilterable {
      */
     @Plugin(name = ROOT, category = "Core", printObject = true)
     public static class RootLogger extends LoggerConfig {
-
-        private static final long serialVersionUID = 1L;
 
         @PluginFactory
         public static LoggerConfig createLogger(

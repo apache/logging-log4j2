@@ -57,7 +57,7 @@ public class StatusConfiguration {
     /**
      * Specifies how verbose the StatusLogger should be.
      */
-    public static enum Verbosity {
+    public enum Verbosity {
         QUIET, VERBOSE;
 
         /**

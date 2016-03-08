@@ -36,6 +36,7 @@
            <p>
              The Log4j 2 SLF4J Binding has a dependency 
              on the Log4j 2 API as well as the SLF4J API.
+             For more information, see <a href="../runtime-dependencies.html">Runtime Dependencies</a>.
           </p>
         </section>
 

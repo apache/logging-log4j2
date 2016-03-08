@@ -16,11 +16,16 @@
  */
 package org.apache.logging.log4j;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.ParameterizedMessage;
+import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -29,6 +34,19 @@ import static org.junit.Assert.*;
  *
  */
 public class AbstractLoggerTest extends AbstractLogger {
+
+    // TODO add proper tests for ReusableMessage
+    @Before
+    public void before() throws Exception {
+        Field field = AbstractLogger.class.getDeclaredField("messageFactory");
+        field.setAccessible(true); // make non-private
+
+        Field modifierField = Field.class.getDeclaredField("modifiers");
+        modifierField.setAccessible(true);
+        modifierField.setInt(field, field.getModifiers() &~ Modifier.FINAL); // make non-private
+
+        field.set(this, ParameterizedMessageFactory.INSTANCE);
+    }
 
     private static class LogEvent {
 

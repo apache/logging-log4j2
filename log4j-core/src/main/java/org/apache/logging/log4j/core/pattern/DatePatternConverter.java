@@ -82,7 +82,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         private final FixedDateFormat fixedDateFormat;
 
         // below fields are only used in ThreadLocal caching mode
-        private char[] cachedBuffer = new char[64]; // max length of formatted date-time in any format < 64
+        private final char[] cachedBuffer = new char[64]; // max length of formatted date-time in any format < 64
         private int length = 0;
 
         FixedFormatter(final FixedDateFormat fixedDateFormat) {
@@ -155,7 +155,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     private static final String UNIX_MILLIS_FORMAT = "UNIX_MILLIS";
 
     private final String[] options;
-    private ThreadLocal<Formatter> threadLocalFormatter = new ThreadLocal<>();
+    private final ThreadLocal<Formatter> threadLocalFormatter = new ThreadLocal<>();
     private final AtomicReference<CachedTime> cachedTime;
     private final Formatter formatter;
 

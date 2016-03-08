@@ -14,9 +14,9 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.osgi;
 
-import java.io.FileNotFoundException;
+package org.apache.logging.log4j.junit;
+
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -36,26 +36,12 @@ public class BundleTestInfo {
      * Constructs a new helper objects and initializes itself.
      */
     public BundleTestInfo() {
-        // get a raw POM view, not a fully realized POM object.
-        final MavenXpp3Reader reader = new MavenXpp3Reader();
-        FileReader fileReader;
-        final String fileName = "pom.xml";
-        try {
-            fileReader = new FileReader(fileName);
-        } catch (final FileNotFoundException e) {
-            throw new IllegalStateException("Could not find " + fileName, e);
-        }
-        try {
-            final Model model = reader.read(fileReader);
+        try (final FileReader reader = new FileReader("pom.xml")) {
+            // get a raw POM view, not a fully realized POM object.
+            final Model model = new MavenXpp3Reader().read(reader);
             this.project = new MavenProject(model);
         } catch (final IOException | XmlPullParserException e) {
-            throw new IllegalStateException(e);
-        } finally {
-            try {
-                fileReader.close();
-            } catch (final IOException e) {
-                throw new IllegalStateException(e);
-            }
+            throw new IllegalStateException("Could not read pom.xml", e);
         }
     }
 

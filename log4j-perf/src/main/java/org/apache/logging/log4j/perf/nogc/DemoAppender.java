@@ -22,13 +22,12 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
-import org.apache.logging.log4j.core.layout.Encoder;
 
 /**
  * Demo Appender that does not do any I/O.
  */
 public class DemoAppender extends AbstractAppender implements ByteBufferDestination {
-    private ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[4096]);
+    private final ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[4096]);
 
     public long checksum;
 

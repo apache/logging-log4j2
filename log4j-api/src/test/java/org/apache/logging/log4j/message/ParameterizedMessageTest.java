@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.message;
 
+import org.apache.logging.log4j.junit.Mutable;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -41,7 +42,7 @@ public class ParameterizedMessageTest {
     public void testFormat3StringArgs() {
         final String testMsg = "Test message {}{} {}";
         final String[] args = { "a", "b", "c" };
-        final String result = ParameterizedMessage.formatStringArgs(testMsg, args);
+        final String result = ParameterizedMessage.format(testMsg, args);
         assertEquals("Test message ab c", result);
     }
 
@@ -49,7 +50,7 @@ public class ParameterizedMessageTest {
     public void testFormatNullArgs() {
         final String testMsg = "Test message {} {} {} {} {} {}";
         final String[] args = { "a", null, "c", null, null, null };
-        final String result = ParameterizedMessage.formatStringArgs(testMsg, args);
+        final String result = ParameterizedMessage.format(testMsg, args);
         assertEquals("Test message a null c null null null", result);
     }
 
@@ -57,7 +58,7 @@ public class ParameterizedMessageTest {
     public void testFormatStringArgsIgnoresSuperfluousArgs() {
         final String testMsg = "Test message {}{} {}";
         final String[] args = { "a", "b", "c", "unnecessary", "superfluous" };
-        final String result = ParameterizedMessage.formatStringArgs(testMsg, args);
+        final String result = ParameterizedMessage.format(testMsg, args);
         assertEquals("Test message ab c", result);
     }
 
@@ -65,7 +66,7 @@ public class ParameterizedMessageTest {
     public void testFormatStringArgsWithEscape() {
         final String testMsg = "Test message \\{}{} {}";
         final String[] args = { "a", "b", "c" };
-        final String result = ParameterizedMessage.formatStringArgs(testMsg, args);
+        final String result = ParameterizedMessage.format(testMsg, args);
         assertEquals("Test message {}a b", result);
     }
 
@@ -73,7 +74,7 @@ public class ParameterizedMessageTest {
     public void testFormatStringArgsWithTrailingEscape() {
         final String testMsg = "Test message {}{} {}\\";
         final String[] args = { "a", "b", "c" };
-        final String result = ParameterizedMessage.formatStringArgs(testMsg, args);
+        final String result = ParameterizedMessage.format(testMsg, args);
         assertEquals("Test message ab c\\", result);
     }
 
@@ -81,7 +82,7 @@ public class ParameterizedMessageTest {
     public void testFormatStringArgsWithTrailingEscapedEscape() {
         final String testMsg = "Test message {}{} {}\\\\";
         final String[] args = { "a", "b", "c" };
-        final String result = ParameterizedMessage.formatStringArgs(testMsg, args);
+        final String result = ParameterizedMessage.format(testMsg, args);
         assertEquals("Test message ab c\\\\", result);
     }
 
@@ -89,7 +90,7 @@ public class ParameterizedMessageTest {
     public void testFormatStringArgsWithEscapedEscape() {
         final String testMsg = "Test message \\\\{}{} {}";
         final String[] args = { "a", "b", "c" };
-        final String result = ParameterizedMessage.formatStringArgs(testMsg, args);
+        final String result = ParameterizedMessage.format(testMsg, args);
         assertEquals("Test message \\ab c", result);
     }
 
@@ -102,6 +103,11 @@ public class ParameterizedMessageTest {
         // modify parameter before calling msg.getFormattedMessage
         param.set("XYZ");
         final String actual = msg.getFormattedMessage();
-        assertEquals("Should use initial param value", "Test message abc", actual);
+        assertEquals("Should use current param value", "Test message XYZ", actual);
+
+        // modify parameter after calling msg.getFormattedMessage
+        param.set("000");
+        final String after = msg.getFormattedMessage();
+        assertEquals("Should not change after rendered once", "Test message XYZ", after);
     }
 }

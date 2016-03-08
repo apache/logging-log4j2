@@ -24,7 +24,7 @@ import org.junit.Test;
  *
  */
 public class CustomConfigurationTest {
-    private Logger logger = LogManager.getLogger(CustomConfiguration.class);
+    private final Logger logger = LogManager.getLogger(CustomConfiguration.class);
 
     @Test
     public void testLogging() {

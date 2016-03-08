@@ -128,8 +128,6 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
 
     private static WriterManagerFactory factory = new WriterManagerFactory();
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * Creates a WriterAppender.
      * 

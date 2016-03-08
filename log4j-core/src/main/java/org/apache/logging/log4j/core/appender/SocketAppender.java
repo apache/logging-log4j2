@@ -45,8 +45,6 @@ import org.apache.logging.log4j.core.util.Booleans;
 @Plugin(name = "Socket", category = "Core", elementType = "appender", printObject = true)
 public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketManager> {
 
-    private static final long serialVersionUID = 1L;
-
     private final Object advertisement;
     private final Advertiser advertiser;
 

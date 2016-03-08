@@ -77,8 +77,6 @@ public final class PatternLayout extends AbstractStringLayout {
     /** Key to identify pattern converters. */
     public static final String KEY = "Converter";
 
-    private static final long serialVersionUID = 1L;
-
     private static final ThreadLocal<TextEncoderHelper> textEncoderHelper = new ThreadLocal<>();
 
     /**
@@ -292,8 +290,7 @@ public final class PatternLayout extends AbstractStringLayout {
 
         @Override
         public String toSerializable(final LogEvent event) {
-            final StringBuilder buf = getStringBuilder();
-            return toSerializable(event, buf).toString();
+            return toSerializable(event, getStringBuilder()).toString();
         }
 
         @Override
@@ -337,8 +334,7 @@ public final class PatternLayout extends AbstractStringLayout {
 
         @Override
         public String toSerializable(final LogEvent event) {
-            final StringBuilder buf = getStringBuilder();
-            return toSerializable(event, buf).toString();
+            return toSerializable(event, getStringBuilder()).toString();
         }
 
         @Override

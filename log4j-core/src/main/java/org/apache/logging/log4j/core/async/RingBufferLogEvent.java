@@ -28,7 +28,9 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
 
@@ -52,7 +54,52 @@ public class RingBufferLogEvent implements LogEvent {
 
         @Override
         public RingBufferLogEvent newInstance() {
-            return new RingBufferLogEvent();
+            RingBufferLogEvent result = new RingBufferLogEvent();
+            if (Constants.ENABLE_THREADLOCALS) {
+                result.messageText = new StringBuilder(128);
+            }
+            return result;
+        }
+    }
+
+    private static class StringBuilderWrapperMessage implements ReusableMessage {
+        static final StringBuilderWrapperMessage INSTANCE = new StringBuilderWrapperMessage();
+        private StringBuilder stringBuilder;
+
+        @Override
+        public String getFormattedMessage() {
+            return null;
+        }
+
+        @Override
+        public String getFormat() {
+            return null;
+        }
+
+        @Override
+        public Object[] getParameters() {
+            return new Object[0];
+        }
+
+        @Override
+        public Throwable getThrowable() {
+            return null;
+        }
+
+        @Override
+        public void formatTo(final StringBuilder buffer) {
+            buffer.append(stringBuilder);
+
+            // ensure that excessively long char[] arrays are not kept in memory forever
+            if (stringBuilder.length() > 518) { // resized twice from 128 (s=s*2+2)
+                stringBuilder.setLength(518);
+                stringBuilder.trimToSize();
+            }
+        }
+
+        public Message setFormattedMessage(final StringBuilder messageText) {
+            this.stringBuilder = messageText;
+            return this;
         }
     }
 
@@ -61,12 +108,15 @@ public class RingBufferLogEvent implements LogEvent {
     private Marker marker;
     private String fqcn;
     private Level level;
+    private StringBuilder messageText;
     private Message message;
     private transient Throwable thrown;
     private ThrowableProxy thrownProxy;
     private Map<String, String> contextMap;
     private ContextStack contextStack;
+    private long threadId;
     private String threadName;
+    private int threadPriority;
     private StackTraceElement location;
     private long currentTimeMillis;
     private boolean endOfBatch;
@@ -75,19 +125,31 @@ public class RingBufferLogEvent implements LogEvent {
 
     public void setValues(final AsyncLogger anAsyncLogger, final String aLoggerName, final Marker aMarker,
             final String theFqcn, final Level aLevel, final Message msg, final Throwable aThrowable,
-            final Map<String, String> aMap, final ContextStack aContextStack, final String aThreadName,
-            final StackTraceElement aLocation, final long aCurrentTimeMillis, final long aNanoTime) {
+            final Map<String, String> aMap, final ContextStack aContextStack, long threadId,
+            final String threadName, int threadPriority, final StackTraceElement aLocation, final long aCurrentTimeMillis, final long aNanoTime) {
         this.asyncLogger = anAsyncLogger;
         this.loggerName = aLoggerName;
         this.marker = aMarker;
         this.fqcn = theFqcn;
         this.level = aLevel;
-        this.message = msg;
+        if (msg instanceof ReusableMessage) {
+            if (messageText == null) {
+                // Should never happen:
+                // only happens if user logs a custom reused message when Constants.ENABLE_THREADLOCALS is false
+                messageText = new StringBuilder(128);
+            }
+            messageText.setLength(0);
+            ((ReusableMessage) msg).formatTo(messageText);
+        } else {
+            this.message = msg;
+        }
         this.thrown = aThrowable;
         this.thrownProxy = null;
         this.contextMap = aMap;
         this.contextStack = aContextStack;
-        this.threadName = aThreadName;
+        this.threadId = threadId;
+        this.threadName = threadName;
+        this.threadPriority = threadPriority;
         this.location = aLocation;
         this.currentTimeMillis = aCurrentTimeMillis;
         this.nanoTime = aNanoTime;
@@ -95,7 +157,7 @@ public class RingBufferLogEvent implements LogEvent {
 
     /**
      * Event processor that reads the event from the ringbuffer can call this method.
-     * 
+     *
      * @param endOfBatch flag to indicate if this is the last event in a batch from the RingBuffer
      */
     public void execute(final boolean endOfBatch) {
@@ -105,7 +167,7 @@ public class RingBufferLogEvent implements LogEvent {
 
     /**
      * Returns {@code true} if this event is the end of a batch, {@code false} otherwise.
-     * 
+     *
      * @return {@code true} if this event is the end of a batch, {@code false} otherwise
      */
     @Override
@@ -154,7 +216,11 @@ public class RingBufferLogEvent implements LogEvent {
     @Override
     public Message getMessage() {
         if (message == null) {
-            message = new SimpleMessage(Strings.EMPTY);
+            if (messageText == null) {
+                message = new SimpleMessage(Strings.EMPTY);
+            } else {
+                message = StringBuilderWrapperMessage.INSTANCE.setFormattedMessage(messageText);
+            }
         }
         return message;
     }
@@ -192,8 +258,18 @@ public class RingBufferLogEvent implements LogEvent {
     }
 
     @Override
+    public long getThreadId() {
+        return threadId;
+    }
+
+    @Override
     public String getThreadName() {
         return threadName;
+    }
+
+    @Override
+    public int getThreadPriority() {
+        return threadPriority;
     }
 
     @Override
@@ -205,7 +281,7 @@ public class RingBufferLogEvent implements LogEvent {
     public long getTimeMillis() {
         return currentTimeMillis;
     }
-    
+
     @Override
     public long getNanoTime() {
         return nanoTime;
@@ -214,7 +290,7 @@ public class RingBufferLogEvent implements LogEvent {
     /**
      * Merges the contents of the specified map into the contextMap, after replacing any variables in the property
      * values with the StrSubstitutor-supplied actual values.
-     * 
+     *
      * @param properties configured properties
      * @param strSubstitutor used to lookup values of variables in properties
      */
@@ -252,10 +328,11 @@ public class RingBufferLogEvent implements LogEvent {
                 null, // t
                 null, // map
                 null, // contextStack
-                null, // threadName
+                0, // threadName
                 null, // location
                 0, // currentTimeMillis
-                0 // nanoTime
+                null,
+                0, 0 // nanoTime
         );
     }
 
@@ -290,9 +367,12 @@ public class RingBufferLogEvent implements LogEvent {
                 .setMessage(getMessage()) // ensure non-null
                 .setNanoTime(nanoTime) //
                 .setSource(location) //
+                .setThreadId(threadId) //
                 .setThreadName(threadName) //
+                .setThreadPriority(threadPriority) //
                 .setThrown(getThrown()) // may deserialize from thrownProxy
                 .setThrownProxy(thrownProxy) // avoid unnecessarily creating thrownProxy
                 .setTimeMillis(currentTimeMillis);
     }
+
 }

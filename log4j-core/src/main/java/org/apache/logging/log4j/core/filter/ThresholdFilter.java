@@ -38,8 +38,6 @@ import org.apache.logging.log4j.message.Message;
 @Plugin(name = "ThresholdFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
 public final class ThresholdFilter extends AbstractFilter {
 
-    private static final long serialVersionUID = 1L;
-
     private final Level level;
 
     private ThresholdFilter(final Level level, final Result onMatch, final Result onMismatch) {

@@ -25,7 +25,6 @@ import java.util.List;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -60,16 +59,13 @@ public class RollingAppenderNoUnconditionalDeleteTest {
     public RollingAppenderNoUnconditionalDeleteTest(final String configFile, final String dir) {
         this.directory = new File(dir);
         this.init = new LoggerContextRule(configFile);
+        deleteDir();
+        deleteDirParent();
     }
 
     @Before
     public void setUp() throws Exception {
         this.logger = this.init.getLogger();
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        deleteDir();
     }
 
     @Test
@@ -93,12 +89,20 @@ public class RollingAppenderNoUnconditionalDeleteTest {
     }
 
     private void deleteDir() {
-        if (directory.exists()) {
-            final File[] files = directory.listFiles();
+        deleteDir(directory);
+    }
+
+    private void deleteDirParent() {
+        deleteDir(directory.getParentFile());
+    }
+
+    private void deleteDir(File dir) {
+        if (dir.exists()) {
+            final File[] files = dir.listFiles();
             for (final File file : files) {
                 file.delete();
             }
-            directory.delete();
+            dir.delete();
         }
     }
 }

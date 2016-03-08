@@ -27,6 +27,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.ExtendedLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 import org.slf4j.impl.StaticMarkerBinder;
@@ -412,7 +413,7 @@ public class Log4jLogger implements LocationAwareLogger, Serializable {
 
     private static EventDataConverter createConverter() {
         try {
-            Class.forName("org.slf4j.ext.EventData");
+            LoaderUtil.loadClass("org.slf4j.ext.EventData");
             return new EventDataConverter();
         } catch (final ClassNotFoundException cnfe) {
             return null;

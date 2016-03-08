@@ -135,8 +135,6 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
 
     private static OutputStreamManagerFactory factory = new OutputStreamManagerFactory();
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * Creates an OutputStream Appender.
      * 

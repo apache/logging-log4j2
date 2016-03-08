@@ -31,8 +31,6 @@ import org.apache.logging.log4j.message.Message;
  *
  */
 public abstract class AbstractFilter extends AbstractLifeCycle implements Filter {
-    
-    private static final long serialVersionUID = 1L;
 
     /**
      * The onMatch Result.

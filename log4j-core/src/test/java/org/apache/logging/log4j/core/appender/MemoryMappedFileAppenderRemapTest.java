@@ -71,7 +71,7 @@ public class MemoryMappedFileAppenderRemapTest {
         } finally {
             CoreLoggerContexts.stopLoggerContext(false);
         }
-        final int LINESEP = System.getProperty("line.separator").length();
+        final int LINESEP = System.lineSeparator().length();
         assertEquals("Shrunk to actual used size", 658 + 3 * LINESEP, f.length());
 
         String line1, line2, line3, line4;

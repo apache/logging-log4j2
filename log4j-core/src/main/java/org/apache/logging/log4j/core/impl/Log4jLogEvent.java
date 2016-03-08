@@ -47,7 +47,7 @@ import org.apache.logging.log4j.util.Strings;
  */
 public class Log4jLogEvent implements LogEvent {
 
-    private static final long serialVersionUID = -1351367343806656055L;
+    private static final long serialVersionUID = -8393305700508709443L;
     private static final Clock CLOCK = ClockFactory.getClock();
     private static volatile NanoClock nanoClock = new DummyNanoClock();
     private final String loggerFqcn;
@@ -60,7 +60,9 @@ public class Log4jLogEvent implements LogEvent {
     private ThrowableProxy thrownProxy;
     private final Map<String, String> contextMap;
     private final ThreadContext.ContextStack contextStack;
+    private long threadId;
     private String threadName;
+    private int threadPriority;
     private StackTraceElement source;
     private boolean includeLocation;
     private boolean endOfBatch = false;
@@ -80,7 +82,9 @@ public class Log4jLogEvent implements LogEvent {
         private ThrowableProxy thrownProxy;
         private Map<String, String> contextMap = ThreadContext.getImmutableContext();
         private ThreadContext.ContextStack contextStack = ThreadContext.getImmutableStack();
-        private String threadName = null;
+        private long threadId;
+        private String threadName;
+        private int threadPriority;
         private StackTraceElement source;
         private boolean includeLocation;
         private boolean endOfBatch = false;
@@ -114,11 +118,15 @@ public class Log4jLogEvent implements LogEvent {
                 Log4jLogEvent evt = (Log4jLogEvent) other;
                 this.thrownProxy = evt.thrownProxy;
                 this.source = evt.source;
+                this.threadId = evt.threadId;
                 this.threadName = evt.threadName;
+                this.threadPriority = evt.threadPriority;
             } else {
                 this.thrownProxy = other.getThrownProxy();
                 this.source = other.getSource();
+                this.threadId = other.getThreadId();
                 this.threadName = other.getThreadName();
+                this.threadPriority = other.getThreadPriority();
             }
         }
 
@@ -172,8 +180,18 @@ public class Log4jLogEvent implements LogEvent {
             return this;
         }
 
+        public Builder setThreadId(long threadId) {
+            this.threadId = threadId;
+            return this;
+        }
+
         public Builder setThreadName(String threadName) {
             this.threadName = threadName;
+            return this;
+        }
+
+        public Builder setThreadPriority(int threadPriority) {
+            this.threadPriority = threadPriority;
             return this;
         }
 
@@ -206,7 +224,7 @@ public class Log4jLogEvent implements LogEvent {
         @Override
         public Log4jLogEvent build() {
             final Log4jLogEvent result = new Log4jLogEvent(loggerName, marker, loggerFqcn, level, message, thrown,
-                    thrownProxy, contextMap, contextStack, threadName, source, timeMillis, nanoTime);
+                    thrownProxy, contextMap, contextStack, threadId, threadName, threadPriority, source, timeMillis, nanoTime);
             result.setIncludeLocation(includeLocation);
             result.setEndOfBatch(endOfBatch);
             return result;
@@ -222,8 +240,8 @@ public class Log4jLogEvent implements LogEvent {
     }
 
     public Log4jLogEvent() {
-        this(Strings.EMPTY, null, Strings.EMPTY, null, null, (Throwable) null, null, null, null, null, null,
-                CLOCK.currentTimeMillis(), nanoClock.nanoTime());
+        this(Strings.EMPTY, null, Strings.EMPTY, null, null, (Throwable) null, null, null, null, 0, null,
+                0, null, CLOCK.currentTimeMillis(), nanoClock.nanoTime());
     }
 
     /**
@@ -232,8 +250,8 @@ public class Log4jLogEvent implements LogEvent {
     */
    @Deprecated
    public Log4jLogEvent(final long timestamp) {
-       this(Strings.EMPTY, null, Strings.EMPTY, null, null, (Throwable) null, null, null, null, null, null,
-               timestamp, nanoClock.nanoTime());
+       this(Strings.EMPTY, null, Strings.EMPTY, null, null, (Throwable) null, null, null, null, 0, null,
+               0, null, timestamp, nanoClock.nanoTime());
    }
 
    /**
@@ -268,13 +286,13 @@ public class Log4jLogEvent implements LogEvent {
        this(loggerName, marker, loggerFQCN, level, message, t, null,
            createMap(properties),
            ThreadContext.getDepth() == 0 ? null : ThreadContext.cloneStack(), // mutable copy
-           null, // thread name
+           0, // thread name
            null, // stack trace element
-           // LOG4J2-628 use log4j.Clock for timestamps
+           0,
+           null, // LOG4J2-628 use log4j.Clock for timestamps
            // LOG4J2-744 unless TimestampMessage already has one
            message instanceof TimestampMessage ? ((TimestampMessage) message).getTimestamp() :
-               CLOCK.currentTimeMillis(),
-           nanoClock.nanoTime());
+               CLOCK.currentTimeMillis(), nanoClock.nanoTime());
    }
 
    /**
@@ -297,8 +315,8 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
                         final Message message, final Throwable t, final Map<String, String> mdc,
                         final ThreadContext.ContextStack ndc, final String threadName,
                         final StackTraceElement location, final long timestampMillis) {
-       this(loggerName, marker, loggerFQCN, level, message, t, null, mdc, ndc, threadName,
-               location, timestampMillis, nanoClock.nanoTime());
+       this(loggerName, marker, loggerFQCN, level, message, t, null, mdc, ndc, 0,
+               threadName, 0, location, timestampMillis, nanoClock.nanoTime());
    }
 
    /**
@@ -326,7 +344,7 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
                                             final String threadName, final StackTraceElement location,
                                             final long timestamp) {
         final Log4jLogEvent result = new Log4jLogEvent(loggerName, marker, loggerFQCN, level, message, thrown,
-                thrownProxy, mdc, ndc, threadName, location, timestamp, nanoClock.nanoTime());
+                thrownProxy, mdc, ndc, 0, threadName, 0, location, timestamp, nanoClock.nanoTime());
         return result;
     }
 
@@ -341,7 +359,9 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
      * @param thrownProxy A ThrowableProxy or null.
      * @param contextMap The mapped diagnostic context.
      * @param contextStack the nested diagnostic context.
+     * @param threadId the thread ID
      * @param threadName The name of the thread.
+     * @param threadPriority the thread priority
      * @param source The locations of the caller.
      * @param timestampMillis The timestamp of the event.
      * @param nanoTime The value of the running Java Virtual Machine's high-resolution time source when the event was
@@ -349,8 +369,9 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
      */
     private Log4jLogEvent(final String loggerName, final Marker marker, final String loggerFQCN, final Level level,
             final Message message, final Throwable thrown, final ThrowableProxy thrownProxy,
-            final Map<String, String> contextMap, final ThreadContext.ContextStack contextStack,
-            final String threadName, final StackTraceElement source, final long timestampMillis, final long nanoTime) {
+            final Map<String, String> contextMap, final ThreadContext.ContextStack contextStack, long threadId,
+            final String threadName, int threadPriority, final StackTraceElement source, final long timestampMillis,
+            final long nanoTime) {
         this.loggerName = loggerName;
         this.marker = marker;
         this.loggerFqcn = loggerFQCN;
@@ -363,7 +384,9 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
         this.timeMillis = message instanceof TimestampMessage
                 ? ((TimestampMessage) message).getTimestamp()
                 : timestampMillis;
+        this.threadId = threadId;
         this.threadName = threadName;
+        this.threadPriority = threadPriority;
         this.source = source;
         if (message != null && message instanceof LoggerNameAwareMessage) {
             ((LoggerNameAwareMessage) message).setLoggerName(loggerName);
@@ -442,6 +465,14 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
         return message;
     }
 
+    @Override
+    public long getThreadId() {
+        if (threadId == 0) {
+            threadId = Thread.currentThread().getId();
+        }
+        return threadId;
+    }
+
     /**
      * Returns the name of the Thread on which the event was generated.
      * @return The name of the Thread.
@@ -452,6 +483,14 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
             threadName = Thread.currentThread().getName();
         }
         return threadName;
+    }
+
+    @Override
+    public int getThreadPriority() {
+        if (threadPriority == 0) {
+            threadPriority = Thread.currentThread().getPriority();
+        }
+        return threadPriority;
     }
 
     /**
@@ -605,8 +644,8 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
             final LogEventProxy proxy = (LogEventProxy) event;
             final Log4jLogEvent result = new Log4jLogEvent(proxy.loggerName, proxy.marker,
                     proxy.loggerFQCN, proxy.level, proxy.message,
-                    proxy.thrown, proxy.thrownProxy, proxy.contextMap, proxy.contextStack, proxy.threadName,
-                    proxy.source, proxy.timeMillis, proxy.nanoTime);
+                    proxy.thrown, proxy.thrownProxy, proxy.contextMap, proxy.contextStack, proxy.threadId,
+                    proxy.threadName, proxy.threadPriority, proxy.source, proxy.timeMillis, proxy.nanoTime);
             result.setEndOfBatch(proxy.isEndOfBatch);
             result.setIncludeLocation(proxy.isLocationRequired);
             return result;
@@ -675,7 +714,13 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
         if (contextStack != null ? !contextStack.equals(that.contextStack) : that.contextStack != null) {
             return false;
         }
+        if (threadId != that.threadId) {
+            return false;
+        }
         if (threadName != null ? !threadName.equals(that.threadName) : that.threadName != null) {
+            return false;
+        }
+        if (threadPriority != that.threadPriority) {
             return false;
         }
         if (thrown != null ? !thrown.equals(that.thrown) : that.thrown != null) {
@@ -702,7 +747,9 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
         result = 31 * result + (thrownProxy != null ? thrownProxy.hashCode() : 0);
         result = 31 * result + (contextMap != null ? contextMap.hashCode() : 0);
         result = 31 * result + (contextStack != null ? contextStack.hashCode() : 0);
+        result = 31 * result + (int) (threadId ^ (threadId >>> 32));
         result = 31 * result + (threadName != null ? threadName.hashCode() : 0);
+        result = 31 * result + (threadPriority ^ (threadPriority >>> 32));
         result = 31 * result + (source != null ? source.hashCode() : 0);
         result = 31 * result + (includeLocation ? 1 : 0);
         result = 31 * result + (endOfBatch ? 1 : 0);
@@ -715,7 +762,7 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
      */
     private static class LogEventProxy implements Serializable {
 
-        private static final long serialVersionUID = -7139032940312647146L;
+        private static final long serialVersionUID = -8634075037355293699L;
         private final String loggerFQCN;
         private final Marker marker;
         private final Level level;
@@ -726,11 +773,15 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
         private final ThrowableProxy thrownProxy;
         private final Map<String, String> contextMap;
         private final ThreadContext.ContextStack contextStack;
+        /** @since 2.6 */
+        private final long threadId;
         private final String threadName;
+        /** @since 2.6 */
+        private final int threadPriority;
         private final StackTraceElement source;
         private final boolean isLocationRequired;
         private final boolean isEndOfBatch;
-        /** @since Log4J 2.4 */
+        /** @since 2.4 */
         private final transient long nanoTime;
 
         public LogEventProxy(final Log4jLogEvent event, final boolean includeLocation) {
@@ -745,7 +796,9 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
             this.contextMap = event.contextMap;
             this.contextStack = event.contextStack;
             this.source = includeLocation ? event.getSource() : null;
+            this.threadId = event.getThreadId();
             this.threadName = event.getThreadName();
+            this.threadPriority = event.getThreadPriority();
             this.isLocationRequired = includeLocation;
             this.isEndOfBatch = event.endOfBatch;
             this.nanoTime = event.nanoTime;
@@ -757,10 +810,11 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
          */
         protected Object readResolve() {
             final Log4jLogEvent result = new Log4jLogEvent(loggerName, marker, loggerFQCN, level, message, thrown,
-                    thrownProxy, contextMap, contextStack, threadName, source, timeMillis, nanoTime);
+                    thrownProxy, contextMap, contextStack, threadId, threadName, threadPriority, source, timeMillis, nanoTime);
             result.setEndOfBatch(isEndOfBatch);
             result.setIncludeLocation(isLocationRequired);
             return result;
         }
     }
+
 }

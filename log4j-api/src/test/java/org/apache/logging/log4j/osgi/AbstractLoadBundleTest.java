@@ -22,6 +22,8 @@ import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import org.apache.logging.log4j.junit.BundleTestInfo;
+import org.apache.logging.log4j.junit.OsgiRule;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Before;

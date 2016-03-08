@@ -47,7 +47,7 @@ public class SmtpAppenderTest {
         final MimeMessageBuilder builder = new MimeMessageBuilder(null);
         final String address = "testing@example.com";
 
-        assertNull(builder.getMimeMessage().getFrom());
+        assertNull(builder.build().getFrom());
 
         builder.setFrom(null);
         Address[] array = null;
@@ -55,11 +55,11 @@ public class SmtpAppenderTest {
         if (addr != null) {
             array = new Address[] { addr };
         }
-        assertArrayEquals(array, builder.getMimeMessage().getFrom());
+        assertArrayEquals(array, builder.build().getFrom());
 
         builder.setFrom(address);
         assertArrayEquals(new Address[] { new InternetAddress(address) },
-                builder.getMimeMessage().getFrom());
+                builder.build().getFrom());
     }
 
     @Test
@@ -67,14 +67,14 @@ public class SmtpAppenderTest {
         final MimeMessageBuilder builder = new MimeMessageBuilder(null);
         final String addresses = "testing1@example.com,testing2@example.com";
 
-        assertNull(builder.getMimeMessage().getReplyTo());
+        assertNull(builder.build().getReplyTo());
 
         builder.setReplyTo(null);
-        assertNull(builder.getMimeMessage().getReplyTo());
+        assertNull(builder.build().getReplyTo());
 
         builder.setReplyTo(addresses);
         assertArrayEquals(InternetAddress.parse(addresses), builder
-                .getMimeMessage().getReplyTo());
+                .build().getReplyTo());
     }
 
     @Test
@@ -82,16 +82,16 @@ public class SmtpAppenderTest {
         final MimeMessageBuilder builder = new MimeMessageBuilder(null);
         final String addresses = "testing1@example.com,testing2@example.com";
 
-        assertNull(builder.getMimeMessage().getRecipients(
+        assertNull(builder.build().getRecipients(
                 Message.RecipientType.TO));
 
         builder.setRecipients(Message.RecipientType.TO, null);
-        assertNull(builder.getMimeMessage().getRecipients(
+        assertNull(builder.build().getRecipients(
                 Message.RecipientType.TO));
 
         builder.setRecipients(Message.RecipientType.TO, addresses);
         assertArrayEquals(InternetAddress.parse(addresses), builder
-                .getMimeMessage().getRecipients(Message.RecipientType.TO));
+                .build().getRecipients(Message.RecipientType.TO));
     }
 
     @Test
@@ -99,13 +99,13 @@ public class SmtpAppenderTest {
         final MimeMessageBuilder builder = new MimeMessageBuilder(null);
         final String subject = "Test Subject";
 
-        assertNull(builder.getMimeMessage().getSubject());
+        assertNull(builder.build().getSubject());
 
         builder.setSubject(null);
-        assertNull(builder.getMimeMessage().getSubject());
+        assertNull(builder.build().getSubject());
 
         builder.setSubject(subject);
-        assertEquals(subject, builder.getMimeMessage().getSubject());
+        assertEquals(subject, builder.build().getSubject());
     }
 
     @Test

@@ -22,17 +22,15 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Lookup properties of Log4j
  */
 @Plugin(name = "log4j", category = StrLookup.CATEGORY)
-public class Log4jLookup extends AbstractLookup {
+public class Log4jLookup extends AbstractConfigurationAwareLookup {
 
     public final static String KEY_CONFIG_LOCATION = "configLocation";
     public final static String KEY_CONFIG_PARENT_LOCATION = "configParentLocation";
@@ -57,40 +55,42 @@ public class Log4jLookup extends AbstractLookup {
 
     @Override
     public String lookup(final LogEvent event, final String key) {
-        final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
-        if (ctx == null) {
-            return null;
-        }
-        final ConfigurationSource configSrc = ctx.getConfiguration().getConfigurationSource();
-        final File file = configSrc.getFile();
-        if (file != null) {
-            switch (key) {
-            case KEY_CONFIG_LOCATION:
-                return file.getAbsolutePath();
+        if (configuration != null) {
+            final ConfigurationSource configSrc = configuration.getConfigurationSource();
+            final File file = configSrc.getFile();
+            if (file != null) {
+                switch (key) {
+                    case KEY_CONFIG_LOCATION:
+                        return file.getAbsolutePath();
 
-            case KEY_CONFIG_PARENT_LOCATION:
-                return file.getParentFile().getAbsolutePath();
+                    case KEY_CONFIG_PARENT_LOCATION:
+                        return file.getParentFile().getAbsolutePath();
 
-            default:
-                return null;
+                    default:
+                        return null;
+                }
+            }
+
+            final URL url = configSrc.getURL();
+            if (url != null) {
+                try {
+                    switch (key) {
+                        case KEY_CONFIG_LOCATION:
+                            return asPath(url.toURI());
+
+                        case KEY_CONFIG_PARENT_LOCATION:
+                            return asPath(getParent(url.toURI()));
+
+                        default:
+                            return null;
+                    }
+                } catch (final URISyntaxException use) {
+                    LOGGER.error(use);
+                    return null;
+                }
             }
         }
 
-        final URL url = configSrc.getURL();
-        try {
-            switch (key) {
-            case KEY_CONFIG_LOCATION:
-                return asPath(url.toURI());
-
-            case KEY_CONFIG_PARENT_LOCATION:
-                return asPath(getParent(url.toURI()));
-
-            default:
-                return null;
-            }
-        } catch (final URISyntaxException use) {
-            LOGGER.error(use);
-            return null;
-        }
+        return null;
     }
 }

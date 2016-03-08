@@ -31,6 +31,7 @@ import static org.junit.Assert.*;
  * A JUnit test rule to automatically delete certain files after a test is run.
  */
 public class CleanFiles extends ExternalResource {
+    private static final int MAX_TRIES = 10;
     private final List<File> files;
 
     public CleanFiles(final File... files) {
@@ -46,11 +47,17 @@ public class CleanFiles extends ExternalResource {
 
     private void clean() {
         for (final File file : files) {
-            if (file.exists()) {
+            for (int i = 0; i < MAX_TRIES; i++) {
+                if (file.exists()) {
+                    try {
+                        FileSystems.getDefault().provider().delete(file.toPath());
+                    } catch (IOException e) {
+                        fail(e.toString());
+                    }
+                }
                 try {
-                    FileSystems.getDefault().provider().delete(file.toPath());
-                } catch (IOException e) {
-                    fail(e.toString());
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
                 }
             }
         }

@@ -25,7 +25,6 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy;
-import org.apache.logging.log4j.core.appender.rolling.RollingFileManager;
 import org.apache.logging.log4j.core.appender.rolling.RollingRandomAccessFileManager;
 import org.apache.logging.log4j.core.appender.rolling.RolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
@@ -46,8 +45,6 @@ import org.apache.logging.log4j.core.util.Integers;
  */
 @Plugin(name = "RollingRandomAccessFile", category = "Core", elementType = "appender", printObject = true)
 public final class RollingRandomAccessFileAppender extends AbstractOutputStreamAppender<RollingRandomAccessFileManager> {
-
-    private static final long serialVersionUID = 1L;
 
     private final String fileName;
     private final String filePattern;
