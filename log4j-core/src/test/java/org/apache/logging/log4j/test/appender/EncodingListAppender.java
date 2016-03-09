@@ -47,14 +47,14 @@ public class EncodingListAppender extends ListAppender {
             Destination content = new Destination();
             content.byteBuffer.put(layout.getHeader());
             layout.encode(event, content);
-            content.getByteBuffer().rewind();
+            content.getByteBuffer().flip();
             byte[] record = new byte[content.getByteBuffer().remaining()];
             content.getByteBuffer().get(record);
             data.add(record);
         } else {
             Destination content = new Destination();
             layout.encode(event, content);
-            content.getByteBuffer().rewind();
+            content.getByteBuffer().flip();
             byte[] record = new byte[content.getByteBuffer().remaining()];
             content.getByteBuffer().get(record);
             write(record);
