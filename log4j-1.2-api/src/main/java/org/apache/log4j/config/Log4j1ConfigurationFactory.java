@@ -122,7 +122,7 @@ public class Log4j1ConfigurationFactory extends ConfigurationFactory {
             }
             case "org.apache.log4j.TTCCLayout": {
                 // TODO We do not have a %d for the time since the start of the app?
-                appenderBuilder.add(newPatternLayout(builder, "%d{UNIX_MILLIS} [%threadName] %level %logger - %m%n"));
+                appenderBuilder.add(newPatternLayout(builder, "%relative [%threadName] %level %logger - %m%n"));
                 break;
             }
             case "org.apache.log4j.HTMLLayout": {

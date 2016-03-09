@@ -77,7 +77,7 @@ public class Log4j1ConfigurationFactoryTest {
     @Test
     public void testConsoleTtccLayout() throws Exception {
         final PatternLayout layout = (PatternLayout) testConsole("config-1.2/log4j-console-TTCCLayout.properties");
-        Assert.assertEquals("%d{UNIX_MILLIS} [%threadName] %level %logger - %m%n", layout.getConversionPattern());
+        Assert.assertEquals("%relative [%threadName] %level %logger - %m%n", layout.getConversionPattern());
     }
 
     @Test
