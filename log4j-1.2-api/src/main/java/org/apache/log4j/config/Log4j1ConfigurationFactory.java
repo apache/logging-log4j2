@@ -54,6 +54,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * <li>Target</li>
  * <li>layout = org.apache.log4j.PatternLayout</li>
  * <li>layout = org.apache.log4j.SimpleLayout</li>
+ * <li>layout = org.apache.log4j.TTCCLayout (partial)</li>
  * <li>layout = org.apache.log4j.HtmlLayout (partial)</li>
  * <li>layout = org.apache.log4j.XmlLayout (partial)</li>
  * <li>layout.ConversionPattern</li>
@@ -113,6 +114,11 @@ public class Log4j1ConfigurationFactory extends ConfigurationFactory {
             }
             case "org.apache.log4j.SimpleLayout": {
                 appenderBuilder.add(newPatternLayout(builder, "%level - %m%n"));
+                break;
+            }
+            case "org.apache.log4j.TTCCLayout": {
+                // TODO We do not have a %d for the time since the start of the app?
+                appenderBuilder.add(newPatternLayout(builder, "%d{UNIX_MILLIS} [%threadName] %level %logger - %m%n"));
                 break;
             }
             case "org.apache.log4j.HTMLLayout": {
