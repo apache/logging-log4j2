@@ -30,17 +30,16 @@ import org.apache.commons.compress.utils.IOUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import static org.apache.logging.log4j.hamcrest.Descriptors.*;
-import static org.apache.logging.log4j.hamcrest.FileMatchers.*;
-import static org.hamcrest.Matchers.*;
-
+import static org.apache.logging.log4j.hamcrest.Descriptors.that;
+import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.hasItemInArray;
 import static org.junit.Assert.*;
 
 /**
@@ -80,11 +79,6 @@ public class RollingAppenderSizeTest {
     @Before
     public void setUp() throws Exception {
         this.logger = this.init.getLogger(RollingAppenderSizeTest.class.getName());
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        deleteDir();
     }
 
     @Test
@@ -127,6 +121,7 @@ public class RollingAppenderSizeTest {
                 }
             }
         }
+        deleteDir();
     }
 
     private static void deleteDir() {
