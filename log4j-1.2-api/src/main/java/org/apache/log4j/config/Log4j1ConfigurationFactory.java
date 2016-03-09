@@ -54,6 +54,8 @@ import org.apache.logging.log4j.status.StatusLogger;
  * <li>Target</li>
  * <li>layout = org.apache.log4j.PatternLayout</li>
  * <li>layout = org.apache.log4j.SimpleLayout</li>
+ * <li>layout = org.apache.log4j.HtmlLayout (partial)</li>
+ * <li>layout = org.apache.log4j.XmlLayout (partial)</li>
  * <li>layout.ConversionPattern</li>
  * </ul>
  * </ul>
@@ -94,25 +96,31 @@ public class Log4j1ConfigurationFactory extends ConfigurationFactory {
             final ConfigurationBuilder<BuiltConfiguration> builder) {
         final AppenderComponentBuilder appenderBuilder = builder.newAppender(name, "CONSOLE");
         buildConsoleAppenderTarget(properties, name, builder, appenderBuilder);
-        buildConsoleAppenderLayout(properties, name, builder, appenderBuilder);
+        buildAppenderLayout(properties, name, builder, appenderBuilder);
         buildConsoleAppenderFollow(properties, name, builder, appenderBuilder);
         builder.add(appenderBuilder);
     }
 
-    private void buildConsoleAppenderLayout(final Properties properties, final String name,
+    private void buildAppenderLayout(final Properties properties, final String name,
             final ConfigurationBuilder<BuiltConfiguration> builder, final AppenderComponentBuilder appenderBuilder) {
         final String layoutValue = getLog4jAppenderValue(properties, name, "layout", null);
         if (layoutValue != null) {
             final String cpValue = getLog4jAppenderValue(properties, name, "layout.ConversionPattern", null);
             switch (layoutValue) {
             case "org.apache.log4j.PatternLayout": {
-                final LayoutComponentBuilder layoutBuilder = newPatternLayout(builder, cpValue);
-                appenderBuilder.add(layoutBuilder);
+                appenderBuilder.add(newPatternLayout(builder, cpValue));
                 break;
             }
             case "org.apache.log4j.SimpleLayout": {
-                final LayoutComponentBuilder layoutBuilder = newPatternLayout(builder, "%level - %m%n");
-                appenderBuilder.add(layoutBuilder);
+                appenderBuilder.add(newPatternLayout(builder, "%level - %m%n"));
+                break;
+            }
+            case "org.apache.log4j.HTMLLayout": {
+                appenderBuilder.add(builder.newLayout("HtmlLayout"));
+                break;
+            }
+            case "org.apache.log4j.XMLLayout": {
+                appenderBuilder.add(builder.newLayout("XmlLayout"));
                 break;
             }
             default:
