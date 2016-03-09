@@ -112,6 +112,10 @@ public class Log4j1ConfigurationFactory extends ConfigurationFactory {
                 appenderBuilder.add(newPatternLayout(builder, cpValue));
                 break;
             }
+            case "org.apache.log4j.EnhancedPatternLayout": {
+                appenderBuilder.add(newPatternLayout(builder, cpValue));
+                break;
+            }
             case "org.apache.log4j.SimpleLayout": {
                 appenderBuilder.add(newPatternLayout(builder, "%level - %m%n"));
                 break;

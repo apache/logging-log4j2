@@ -51,6 +51,12 @@ public class Log4j1ConfigurationFactoryTest {
     }
 
     @Test
+    public void testConsoleEnhancedPatternLayout() throws Exception {
+        final PatternLayout layout = (PatternLayout) testConsole("config-1.2/log4j-console-EnhancedPatternLayout.properties");
+        Assert.assertEquals("%d{ISO8601} [%t][%c] %-5p: %m%n", layout.getConversionPattern());
+    }
+
+    @Test
     public void testConsoleHtmlLayout() throws Exception {
         final Layout<?> layout = testConsole("config-1.2/log4j-console-HtmlLayout.properties");
         Assert.assertTrue(layout instanceof HtmlLayout);
