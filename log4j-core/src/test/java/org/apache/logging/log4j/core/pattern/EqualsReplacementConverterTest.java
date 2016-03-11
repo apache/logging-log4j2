@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import static org.junit.Assert.assertEquals;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -26,10 +24,14 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
 
+import static org.junit.Assert.*;
+
 /**
  *
  */
 public class EqualsReplacementConverterTest {
+
+    private static final String TEST_MESSAGE = "This is a test";
 
     @Test
     public void testMarkerReplacement() {
@@ -46,18 +48,61 @@ public class EqualsReplacementConverterTest {
         testReplacement("%logger", "[" + EqualsReplacementConverterTest.class.getName() + "]");
     }
 
-    private void testReplacement(String tag, String expectedValue) {
+    @Test
+    public void testMarkerReplacementWithMessage() {
+        testReplacement(TEST_MESSAGE, new String[]{"[%marker]", "[]", "%msg"});
+    }
+
+    private void testReplacement(final String tag, final String expectedValue) {
+        final String[] options = new String[]{"[" + tag + "]", "[]", expectedValue};
+        testReplacement(expectedValue, options);
+    }
+
+    private void testReplacement(final String expectedValue, final String[] options) {
         final LogEvent event = Log4jLogEvent.newBuilder() //
-                .setLoggerName(EqualsReplacementConverterTest.class.getName()) //
-                .setLevel(Level.DEBUG) //
-                .setMessage(new SimpleMessage("This is a test")) //
-                .build();
+            .setLoggerName(EqualsReplacementConverterTest.class.getName()) //
+            .setLevel(Level.DEBUG) //
+            .setMessage(new SimpleMessage(TEST_MESSAGE)) //
+            .build();
         final StringBuilder sb = new StringBuilder();
         final LoggerContext ctx = LoggerContext.getContext();
-        final String[] options = new String[] { "[" + tag + "]", "[]", expectedValue };
         final EqualsReplacementConverter converter = EqualsReplacementConverter.newInstance(ctx.getConfiguration(),
-                options);
+            options);
         converter.format(event, sb);
         assertEquals(expectedValue, sb.toString());
+    }
+
+    @Test
+    public void testParseSubstitutionWithPattern() {
+        testParseSubstitution("%msg", TEST_MESSAGE);
+    }
+
+    @Test
+    public void testParseSubstitutionWithoutPattern() {
+        String substitution = "test";
+        testParseSubstitution(substitution, substitution);
+    }
+
+    @Test
+    public void testParseSubstitutionEmpty() {
+        testParseSubstitution("", "");
+    }
+
+    @Test
+    public void testParseSubstitutionWithWhiteSpaces() {
+        testParseSubstitution(" ", " ");
+    }
+
+    private void testParseSubstitution(final String substitution, final String expected) {
+        final LogEvent event = Log4jLogEvent.newBuilder()
+            .setLoggerName(EqualsReplacementConverterTest.class.getName())
+            .setLevel(Level.DEBUG)
+            .setMessage(new SimpleMessage(TEST_MESSAGE))
+            .build();
+        final LoggerContext ctx = LoggerContext.getContext();
+        final EqualsReplacementConverter converter = EqualsReplacementConverter.newInstance(ctx.getConfiguration(),
+            new String[]{"[%marker]", "[]", substitution});
+        final String actual = converter.parseSubstitution(event);
+        assertEquals(expected, actual);
     }
 }
