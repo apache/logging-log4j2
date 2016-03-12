@@ -19,8 +19,6 @@ package org.apache.logging.log4j.core;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.util.List;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
