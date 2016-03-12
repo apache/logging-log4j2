@@ -59,10 +59,10 @@ public class CustomLevelsWithFiltersTest {
         assertNotNull(appender);
         final CompositeFilter compFilter = (CompositeFilter) appender.getFilter();
         assertNotNull(compFilter);
-        final List<Filter> filterList = compFilter.getFilters();
-        assertNotNull(filterList);
+        final Filter[] filters = compFilter.getFiltersArray();
+        assertNotNull(filters);
         boolean foundLevel = false;
-        for (final Filter filter : filterList) {
+        for (final Filter filter : filters) {
             final ThresholdFilter tFilter = (ThresholdFilter) filter;
             if (infom1Level.equals(tFilter.getLevel())) {
                 foundLevel = true;
