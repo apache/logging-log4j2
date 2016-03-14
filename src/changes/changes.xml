@@ -92,7 +92,7 @@
       </action>
       <action issue="LOG4J2-1080" dev="rpopma" type="update">
         Added option to discard events below a certain log level if the async logger ring buffer
-        or async appender queue remaining capacity falls below a certain ratio.
+        or async appender queue is full.
       </action>
       <action issue="LOG4J2-1237" dev="ggregory" type="add" due-to="Mike Calmus, Gary Gregory">
         Make PatternLayout header and footer accept a pattern.
