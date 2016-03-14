@@ -62,13 +62,13 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
 
     /**
      * The constructor.
-     * 
+     *
      * @param context The LoggerContext this Logger is associated with.
      * @param messageFactory The message factory.
      * @param name The name of the Logger.
      */
     protected Logger(final LoggerContext context, final String name, final MessageFactory messageFactory) {
-        super(name, messageFactory);
+        super(name, messageFactory, context.getThreadLocalRegistry());
         this.context = context;
         privateConfig = new PrivateConfig(context.getConfiguration(), this);
     }
@@ -99,7 +99,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
 
     /**
      * Returns the LoggerContext this Logger is associated with.
-     * 
+     *
      * @return the LoggerContext.
      */
     public LoggerContext getContext() {
@@ -111,7 +111,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
      * <p>
      * If the new level is null, this logger inherits the level from its parent.
      * </p>
-     * 
+     *
      * @param level The Level to use on this Logger, may be null.
      */
     public synchronized void setLevel(final Level level) {
@@ -130,7 +130,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.logging.log4j.util.Supplier#get()
      */
     @Override
@@ -173,7 +173,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
 
     /**
      * This method is not exposed through the public API and is used primarily for unit testing.
-     * 
+     *
      * @param appender The Appender to add to the Logger.
      */
     public void addAppender(final Appender appender) {
@@ -182,7 +182,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
 
     /**
      * This method is not exposed through the public API and is used primarily for unit testing.
-     * 
+     *
      * @param appender The Appender to remove from the Logger.
      */
     public void removeAppender(final Appender appender) {
@@ -191,7 +191,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
 
     /**
      * This method is not exposed through the public API and is used primarily for unit testing.
-     * 
+     *
      * @return A Map containing the Appender's name as the key and the Appender as the value.
      */
     public Map<String, Appender> getAppenders() {
@@ -200,7 +200,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
 
     /**
      * This method is not exposed through the public API and is used primarily for unit testing.
-     * 
+     *
      * @return An Iterator over all the Filters associated with the Logger.
      */
     // FIXME: this really ought to be an Iterable instead of an Iterator
@@ -229,7 +229,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
 
     /**
      * This method is not exposed through the public API and is used primarily for unit testing.
-     * 
+     *
      * @return The number of Filters associated with the Logger.
      */
     public int filterCount() {
@@ -244,7 +244,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
 
     /**
      * This method is not exposed through the public API and is used primarily for unit testing.
-     * 
+     *
      * @param filter The Filter to add.
      */
     public void addFilter(final Filter filter) {
@@ -254,7 +254,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
     /**
      * This method is not exposed through the public API and is present only to support the Log4j 1.2 compatibility
      * bridge.
-     * 
+     *
      * @return true if the associated LoggerConfig is additive, false otherwise.
      */
     public boolean isAdditive() {
@@ -264,7 +264,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
     /**
      * This method is not exposed through the public API and is present only to support the Log4j 1.2 compatibility
      * bridge.
-     * 
+     *
      * @param additive Boolean value to indicate whether the Logger is additive or not.
      */
     public void setAdditive(final boolean additive) {
@@ -431,7 +431,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
 
     /**
      * Returns a String representation of this instance in the form {@code "name:level[ in context_name]"}.
-     * 
+     *
      * @return A String describing this Logger instance.
      */
     @Override

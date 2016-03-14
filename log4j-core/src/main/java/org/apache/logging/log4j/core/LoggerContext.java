@@ -43,9 +43,11 @@ import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.core.util.DefaultThreadLocalRegistry;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggerContextKey;
 import org.apache.logging.log4j.spi.Terminable;
+import org.apache.logging.log4j.util.ThreadLocalRegistry;
 
 import static org.apache.logging.log4j.core.util.ShutdownCallbackRegistry.*;
 
@@ -66,6 +68,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
 
     private final ConcurrentMap<String, Logger> loggers = new ConcurrentHashMap<>();
     private final CopyOnWriteArrayList<PropertyChangeListener> propertyChangeListeners = new CopyOnWriteArrayList<>();
+    private final ThreadLocalRegistry threadLocalRegistry = new DefaultThreadLocalRegistry();
 
     /**
      * The Configuration is volatile to guarantee that initialization of the Configuration has completed before the
@@ -321,6 +324,10 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      */
     public String getName() {
         return contextName;
+    }
+
+    public ThreadLocalRegistry getThreadLocalRegistry() {
+        return threadLocalRegistry;
     }
 
     /**

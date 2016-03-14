@@ -19,6 +19,8 @@ package org.apache.logging.log4j.message;
 import java.io.Serializable;
 
 import org.apache.logging.log4j.util.PerformanceSensitive;
+import org.apache.logging.log4j.util.ThreadLocalRegistry;
+import org.apache.logging.log4j.util.ThreadLocalRegistryAware;
 
 /**
  * Implementation of the {@link MessageFactory} interface that avoids allocating temporary objects where possible.
@@ -30,26 +32,32 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  * @since 2.6
  */
 @PerformanceSensitive("allocation")
-public final class ReusableMessageFactory implements MessageFactory, Serializable {
-
-    /**
-     * Instance of ReusableMessageFactory..
-     */
-    public static final ReusableMessageFactory INSTANCE = new ReusableMessageFactory();
+public final class ReusableMessageFactory implements MessageFactory, Serializable, ThreadLocalRegistryAware {
 
     private static final long serialVersionUID = -8970940216592525651L;
-    private static ThreadLocal<ReusableParameterizedMessage> threadLocalParameterized = new ThreadLocal<>();
-    private static ThreadLocal<ReusableSimpleMessage> threadLocalSimpleMessage = new ThreadLocal<>();
-    private static ThreadLocal<ReusableObjectMessage> threadLocalObjectMessage = new ThreadLocal<>();
+    // @TODO - The ThreadLocals need to be restored on deserialization.
+    private transient ThreadLocal<ReusableParameterizedMessage> threadLocalParameterized = null;
+    private transient ThreadLocal<ReusableSimpleMessage> threadLocalSimpleMessage = null;
+    private transient ThreadLocal<ReusableObjectMessage> threadLocalObjectMessage = null;
 
     /**
      * Constructs a message factory.
+     * @param registry The ThreadLocalRegistry
      */
-    public ReusableMessageFactory() {
+    @SuppressWarnings("unchecked")
+    public ReusableMessageFactory(ThreadLocalRegistry registry) {
         super();
+        if (registry != null) {
+            threadLocalParameterized = (ThreadLocal<ReusableParameterizedMessage>) registry.get("ParameterizedMessage");
+            threadLocalSimpleMessage = (ThreadLocal<ReusableSimpleMessage>) registry.get("SimpleMessage");
+            threadLocalObjectMessage = (ThreadLocal<ReusableObjectMessage>) registry.get("ObjectMessage");
+        }
     }
 
-    private static ReusableParameterizedMessage getParameterized() {
+    public ReusableMessageFactory() {
+    }
+
+    private ReusableParameterizedMessage getParameterized() {
         ReusableParameterizedMessage result = threadLocalParameterized.get();
         if (result == null) {
             result = new ReusableParameterizedMessage();
@@ -58,7 +66,7 @@ public final class ReusableMessageFactory implements MessageFactory, Serializabl
         return result;
     }
 
-    private static ReusableSimpleMessage getSimple() {
+    private ReusableSimpleMessage getSimple() {
         ReusableSimpleMessage result = threadLocalSimpleMessage.get();
         if (result == null) {
             result = new ReusableSimpleMessage();
@@ -67,7 +75,7 @@ public final class ReusableMessageFactory implements MessageFactory, Serializabl
         return result;
     }
 
-    private static ReusableObjectMessage getObject() {
+    private ReusableObjectMessage getObject() {
         ReusableObjectMessage result = threadLocalObjectMessage.get();
         if (result == null) {
             result = new ReusableObjectMessage();
@@ -87,7 +95,8 @@ public final class ReusableMessageFactory implements MessageFactory, Serializabl
      */
     @Override
     public Message newMessage(final String message, final Object... params) {
-        return getParameterized().set(message, params);
+        return threadLocalParameterized != null ? getParameterized().set(message, params) :
+                new ParameterizedMessage(message, params);
     }
 
     /**
@@ -100,9 +109,12 @@ public final class ReusableMessageFactory implements MessageFactory, Serializabl
      */
     @Override
     public Message newMessage(final String message) {
-        ReusableSimpleMessage result = getSimple();
-        result.set(message);
-        return result;
+        if (threadLocalSimpleMessage != null) {
+            ReusableSimpleMessage result = getSimple();
+            result.set(message);
+            return result;
+        }
+        return new SimpleMessage(message);
     }
 
 
@@ -116,8 +128,11 @@ public final class ReusableMessageFactory implements MessageFactory, Serializabl
      */
     @Override
     public Message newMessage(final Object message) {
-        ReusableObjectMessage result = getObject();
-        result.set(message);
-        return result;
+        if (threadLocalObjectMessage != null) {
+            ReusableObjectMessage result = getObject();
+            result.set(message);
+            return result;
+        }
+        return new ObjectMessage(message);
     }
 }

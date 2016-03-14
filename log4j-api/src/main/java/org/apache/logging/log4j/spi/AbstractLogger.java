@@ -18,6 +18,9 @@ package org.apache.logging.log4j.spi;
 
 import java.io.Serializable;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -36,6 +39,8 @@ import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Supplier;
+import org.apache.logging.log4j.util.ThreadLocalRegistry;
+import org.apache.logging.log4j.util.ThreadLocalRegistryAware;
 
 /**
  * Base implementation of a Logger. It is highly recommended that any Logger implementation extend this class.
@@ -94,12 +99,15 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     private final String name;
     private final MessageFactory messageFactory;
     private final FlowMessageFactory flowMessageFactory;
+    private final transient ThreadLocalRegistry registry;
 
     /**
      * Creates a new logger named after this class (or subclass).
      */
     public AbstractLogger() {
+        super();
         this.name = getClass().getName();
+        this.registry = null;
         this.messageFactory = createDefaultMessageFactory();
         this.flowMessageFactory = createDefaultFlowMessageFactory();
     }
@@ -110,7 +118,11 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * @param name the logger name
      */
     public AbstractLogger(final String name) {
-        this(name, createDefaultMessageFactory());
+        super();
+        this.name = name;
+        this.registry = null;
+        this.messageFactory = createDefaultMessageFactory();
+        this.flowMessageFactory = createDefaultFlowMessageFactory();
     }
 
     /**
@@ -120,7 +132,17 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * @param messageFactory the message factory, if null then use the default message factory.
      */
     public AbstractLogger(final String name, final MessageFactory messageFactory) {
+        super();
         this.name = name;
+        this.registry = null;
+        this.messageFactory = messageFactory == null ? createDefaultMessageFactory() : messageFactory;
+        this.flowMessageFactory = createDefaultFlowMessageFactory();
+    }
+
+    public AbstractLogger(final String name, final MessageFactory messageFactory, ThreadLocalRegistry registry) {
+        super();
+        this.name = name;
+        this.registry = registry;
         this.messageFactory = messageFactory == null ? createDefaultMessageFactory() : messageFactory;
         this.flowMessageFactory = createDefaultFlowMessageFactory();
     }
@@ -221,17 +243,41 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         }
     }
 
-    private static MessageFactory createDefaultMessageFactory() {
+    private MessageFactory createDefaultMessageFactory() {
         try {
-            return DEFAULT_MESSAGE_FACTORY_CLASS.newInstance();
+            MessageFactory factory = DEFAULT_MESSAGE_FACTORY_CLASS.newInstance();
+            if (factory instanceof ThreadLocalRegistryAware) {
+                try {
+                    Constructor<? extends MessageFactory> constructor =
+                            DEFAULT_MESSAGE_FACTORY_CLASS.getConstructor(ThreadLocalRegistry.class);
+                    factory = constructor.newInstance(registry);
+                } catch (NoSuchMethodException | InvocationTargetException ex) {
+                    factory = DEFAULT_MESSAGE_FACTORY_CLASS.newInstance();
+                }
+            } else {
+                factory = DEFAULT_MESSAGE_FACTORY_CLASS.newInstance();
+            }
+            return factory;
         } catch (final InstantiationException | IllegalAccessException e) {
             throw new IllegalStateException(e);
         }
     }
 
-    private static FlowMessageFactory createDefaultFlowMessageFactory() {
+    private FlowMessageFactory createDefaultFlowMessageFactory() {
         try {
-            return DEFAULT_FLOW_MESSAGE_FACTORY_CLASS.newInstance();
+            FlowMessageFactory factory = DEFAULT_FLOW_MESSAGE_FACTORY_CLASS.newInstance();
+            if (factory instanceof ThreadLocalRegistryAware) {
+                try {
+                    Constructor<? extends FlowMessageFactory> constructor =
+                            DEFAULT_FLOW_MESSAGE_FACTORY_CLASS.getConstructor(ThreadLocalRegistry.class);
+                    factory = constructor.newInstance(registry);
+                } catch (NoSuchMethodException | InvocationTargetException ex) {
+                    factory = DEFAULT_FLOW_MESSAGE_FACTORY_CLASS.newInstance();
+                }
+            } else {
+                factory = DEFAULT_FLOW_MESSAGE_FACTORY_CLASS.newInstance();
+            }
+            return factory;
         } catch (final InstantiationException | IllegalAccessException e) {
             throw new IllegalStateException(e);
         }
