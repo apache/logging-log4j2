@@ -1881,25 +1881,15 @@ public class AwesomeTest {
       <p>If no value is specified (the default) events are never discarded. If the queue is full, the
         logger call blocks until the event can be added to the queue.</p>
       <p>Specify <tt>Discard</tt> to drop events whose level is equal or less than the threshold level
-        (INFO by default) when the queue has been filled to the discard ratio (0.8 by default).</p>
-      <p>It is also possible to specify the fully qualified class name of a custom class that implements the
-        <tt>org.apache.logging.log4j.core.async.AsyncEventRouter</tt> interface.</p>
+        (INFO by default) when the queue is full.</p>
     </td>
   </tr>
   <tr>
     <td>log4j2.DiscardThreshold</td>
     <td>INFO</td>
     <td>Used by the DiscardingAsyncEventRouter to determine which events to drop when the queue
-      becomes too full. By default, <tt>INFO</tt>, <tt>DEBUG</tt> and <tt>TRACE</tt> level
-      events are discarded when the queue has been filled up to or beyond the discard ratio.
-      This property only has effect if <tt>Discard</tt> is specified as the
-      <tt>log4j2.AsyncEventRouter</tt>.</td>
-  </tr>
-  <tr>
-    <td>log4j2.DiscardQueueRatio</td>
-    <td>0.8</td>
-    <td>Used by the DiscardingAsyncEventRouter to determine when the queue is becoming too full.
-      By default, events may be discarded when the queue is 80% full or more.
+      becomes full. By default, <tt>INFO</tt>, <tt>DEBUG</tt> and <tt>TRACE</tt> level
+      events are discarded when the queue is full.
       This property only has effect if <tt>Discard</tt> is specified as the
       <tt>log4j2.AsyncEventRouter</tt>.</td>
   </tr>
