@@ -46,6 +46,8 @@ public class RingBufferLogEvent implements LogEvent {
     public static final Factory FACTORY = new Factory();
 
     private static final long serialVersionUID = 8462119088943934758L;
+    private static final int INITIAL_REUSABLE_MESSAGE_SIZE = 128;
+    private static final int MAX_REUSABLE_MESSAGE_SIZE = 128 * 2 + 2; // resized once from 128 (s=s*2+2)
 
     /**
      * Creates the events that will be put in the RingBuffer.
@@ -56,7 +58,7 @@ public class RingBufferLogEvent implements LogEvent {
         public RingBufferLogEvent newInstance() {
             RingBufferLogEvent result = new RingBufferLogEvent();
             if (Constants.ENABLE_THREADLOCALS) {
-                result.messageText = new StringBuilder(128);
+                result.messageText = new StringBuilder(INITIAL_REUSABLE_MESSAGE_SIZE);
             }
             return result;
         }
@@ -91,8 +93,8 @@ public class RingBufferLogEvent implements LogEvent {
             buffer.append(stringBuilder);
 
             // ensure that excessively long char[] arrays are not kept in memory forever
-            if (stringBuilder.length() > 518) { // resized twice from 128 (s=s*2+2)
-                stringBuilder.setLength(518);
+            if (stringBuilder.length() > MAX_REUSABLE_MESSAGE_SIZE) {
+                stringBuilder.setLength(MAX_REUSABLE_MESSAGE_SIZE);
                 stringBuilder.trimToSize();
             }
         }
@@ -136,7 +138,7 @@ public class RingBufferLogEvent implements LogEvent {
             if (messageText == null) {
                 // Should never happen:
                 // only happens if user logs a custom reused message when Constants.ENABLE_THREADLOCALS is false
-                messageText = new StringBuilder(128);
+                messageText = new StringBuilder(INITIAL_REUSABLE_MESSAGE_SIZE);
             }
             messageText.setLength(0);
             ((ReusableMessage) msg).formatTo(messageText);
@@ -340,8 +342,8 @@ public class RingBufferLogEvent implements LogEvent {
         );
 
         // ensure that excessively long char[] arrays are not kept in memory forever
-        if (messageText != null && messageText.length() > 258) { // resized more than once from 128 (s=s*2+2)
-            messageText.setLength(258);
+        if (messageText != null && messageText.length() > MAX_REUSABLE_MESSAGE_SIZE) {
+            messageText.setLength(MAX_REUSABLE_MESSAGE_SIZE);
             messageText.trimToSize();
         }
     }
