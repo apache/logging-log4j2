@@ -91,7 +91,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     private static final String THROWING = "Throwing";
     private static final String CATCHING = "Catching";
 
-    private final String name;
+    protected final String name;
     private final MessageFactory messageFactory;
     private final FlowMessageFactory flowMessageFactory;
 
