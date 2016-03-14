@@ -36,7 +36,6 @@ public enum EventRoute {
         @Override
         public void logMessage(final AsyncLogger asyncLogger, final String fqcn, final Level level,
                 final Marker marker, final Message message, final Throwable thrown) {
-            asyncLogger.logMessageInBackgroundThread(fqcn, level, marker, message, thrown);
         }
 
         @Override
@@ -56,7 +55,6 @@ public enum EventRoute {
         @Override
         public void logMessage(final AsyncLogger asyncLogger, final String fqcn, final Level level,
                 final Marker marker, final Message message, final Throwable thrown) {
-            asyncLogger.logMessageInCurrentThread(fqcn, level, marker, message, thrown);
         }
 
         @Override
