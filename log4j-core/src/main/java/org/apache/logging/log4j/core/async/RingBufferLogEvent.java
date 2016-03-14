@@ -338,6 +338,12 @@ public class RingBufferLogEvent implements LogEvent {
                 null,
                 0, 0 // nanoTime
         );
+
+        // ensure that excessively long char[] arrays are not kept in memory forever
+        if (messageText != null && messageText.length() > 258) { // resized more than once from 128 (s=s*2+2)
+            messageText.setLength(258);
+            messageText.trimToSize();
+        }
     }
 
     private void writeObject(final java.io.ObjectOutputStream out) throws IOException {
