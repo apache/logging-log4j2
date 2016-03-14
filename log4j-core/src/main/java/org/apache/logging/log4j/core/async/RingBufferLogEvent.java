@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
 import com.lmax.disruptor.EventFactory;
@@ -46,8 +47,12 @@ public class RingBufferLogEvent implements LogEvent {
     public static final Factory FACTORY = new Factory();
 
     private static final long serialVersionUID = 8462119088943934758L;
-    private static final int INITIAL_REUSABLE_MESSAGE_SIZE = 128;
-    private static final int MAX_REUSABLE_MESSAGE_SIZE = 128 * 2 + 2; // resized once from 128 (s=s*2+2)
+    private static final int INITIAL_REUSABLE_MESSAGE_SIZE = size("log4j.initialReusableMsgSize", 128);
+    private static final int MAX_REUSABLE_MESSAGE_SIZE = size("log4j.maxReusableMsgSize", (128 * 2 + 2) * 2 + 2);
+
+    private static int size(final String property, final int defaultValue) {
+        return PropertiesUtil.getProperties().getIntegerProperty(property, defaultValue);
+    }
 
     /**
      * Creates the events that will be put in the RingBuffer.

@@ -1903,6 +1903,18 @@ public class AwesomeTest {
     <td>org.apache.logging.log4j.message. DefaultFlowMessageFactory</td>
     <td>Default flow message factory used by Loggers.</td>
   </tr>
+  <tr>
+    <td>log4j.initialReusableMsgSize</td>
+    <td>128</td>
+    <td>In GC-free mode, this property determines the initial size of the reusable StringBuilders where the message
+     text is formatted and potentially passed to background threads.</td>
+  </tr>
+  <tr>
+    <td>log4j.maxReusableMsgSize</td>
+    <td>518</td>
+    <td>In GC-free mode, this property determines the maximum size of the reusable StringBuilders where the message
+     text is formatted and potentially passed to background threads.</td>
+  </tr>
 </table>
 
         </subsection>
