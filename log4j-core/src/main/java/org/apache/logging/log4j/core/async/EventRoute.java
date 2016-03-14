@@ -26,7 +26,7 @@ import org.apache.logging.log4j.message.Message;
 /**
  * Enumeration over the different destinations where a log event can be sent.
  *
- * @since 2.5.1
+ * @since 2.6
  */
 public enum EventRoute {
     /**
