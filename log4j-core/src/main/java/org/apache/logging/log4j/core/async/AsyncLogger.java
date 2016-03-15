@@ -74,6 +74,8 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
     private final ThreadLocal<RingBufferLogEventTranslator> threadLocalTranslator = new ThreadLocal<>();
     private final AsyncLoggerDisruptor loggerDisruptor;
 
+    // Reconfigurable. Volatile field nanoClock is always updated later, so no need to make includeLocation volatile.
+    private boolean includeLocation;
     private volatile NanoClock nanoClock; // reconfigurable
 
     /**
@@ -88,6 +90,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
             final AsyncLoggerDisruptor loggerDisruptor) {
         super(context, name, messageFactory);
         this.loggerDisruptor = loggerDisruptor;
+        includeLocation = privateConfig.loggerConfig.isIncludeLocation();
         nanoClock = context.getConfiguration().getNanoClock();
     }
 
@@ -99,6 +102,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
     @Override
     protected void updateConfiguration(Configuration newConfig) {
         super.updateConfiguration(newConfig);
+        includeLocation = privateConfig.loggerConfig.isIncludeLocation();
         nanoClock = newConfig.getNanoClock();
         LOGGER.trace("[{}] AsyncLogger {} uses {}.", getContext().getName(), getName(), nanoClock);
     }
@@ -121,66 +125,10 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
     public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message,
             final Throwable thrown) {
 
-        // Implementation note: this method is tuned for performance. MODIFY WITH CARE!
-
-        final EventRoute eventRoute = loggerDisruptor.getEventRoute(level);
-        eventRoute.logMessage(this, fqcn, level, marker, message, thrown);
-    }
-
-    /**
-     * LOG4J2-471: prevent deadlock when RingBuffer is full and object being logged calls Logger.log() from its
-     * toString() method
-     *
-     * @param fqcn fully qualified caller name
-     * @param level log level
-     * @param marker optional marker
-     * @param message log message
-     * @param thrown optional exception
-     */
-    void logMessageInCurrentThread(final String fqcn, final Level level, final Marker marker,
-            final Message message, final Throwable thrown) {
-        // bypass RingBuffer and invoke Appender directly
-        final ReliabilityStrategy strategy = privateConfig.loggerConfig.getReliabilityStrategy();
-        strategy.log(this, getName(), fqcn, marker, level, message, thrown);
-    }
-
-    /**
-     * Enqueues the specified message to be logged in the background thread.
-     *
-     * @param fqcn fully qualified caller name
-     * @param level log level
-     * @param marker optional marker
-     * @param message log message
-     * @param thrown optional exception
-     */
-    void logMessageInBackgroundThread(final String fqcn, final Level level, final Marker marker,
-            final Message message, final Throwable thrown) {
-
-        // Implementation note: this method is tuned for performance. MODIFY WITH CARE!
-
         // if the Message instance is reused, there is no point in freezing its message here
-        if (!isReused(message) && !Constants.FORMAT_MESSAGES_IN_BACKGROUND) { // LOG4J2-898: user may choose
+        if (!Constants.FORMAT_MESSAGES_IN_BACKGROUND && !isReused(message)) { // LOG4J2-898: user may choose
             message.getFormattedMessage(); // LOG4J2-763: ask message to freeze parameters
         }
-        logInBackground(fqcn, level, marker, message, thrown);
-    }
-
-    private boolean isReused(final Message message) {
-        return message instanceof ReusableMessage;
-    }
-
-    /**
-     * Enqueues the specified log event data for logging in a background thread.
-     *
-     * @param fqcn fully qualified name of the caller
-     * @param level level at which the caller wants to log the message
-     * @param marker message marker
-     * @param message the log message
-     * @param thrown a {@code Throwable} or {@code null}
-     */
-    private void logInBackground(final String fqcn, final Level level, final Marker marker, final Message message,
-            final Throwable thrown) {
-        // Implementation note: this method is tuned for performance. MODIFY WITH CARE!
 
         if (loggerDisruptor.isUseThreadLocals()) {
             logWithThreadLocalTranslator(fqcn, level, marker, message, thrown);
@@ -188,6 +136,10 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
             // LOG4J2-1172: avoid storing non-JDK classes in ThreadLocals to avoid memory leaks in web apps
             logWithVarargTranslator(fqcn, level, marker, message, thrown);
         }
+    }
+
+    private boolean isReused(final Message message) {
+        return message instanceof ReusableMessage;
     }
 
     /**
@@ -208,35 +160,35 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
 
         final RingBufferLogEventTranslator translator = getCachedTranslator();
         initTranslator(translator, fqcn, level, marker, message, thrown);
-        loggerDisruptor.enqueueLogMessageInfo(translator);
+        if (!loggerDisruptor.tryPublish(translator)) {
+            handleRingBufferFull(translator);
+        }
+    }
+
+    private void handleRingBufferFull(final RingBufferLogEventTranslator translator) {
+        final EventRoute eventRoute = loggerDisruptor.getEventRoute(translator.level);
+        switch (eventRoute) {
+            case ENQUEUE:
+                loggerDisruptor.enqueueLogMessageInfo(translator);
+                break;
+            case SYNCHRONOUS:
+                logMessageInCurrentThread(translator.fqcn, translator.level, translator.marker, translator.message,
+                        translator.thrown);
+                break;
+            case DISCARD:
+                break;
+            default:
+                throw new IllegalStateException("Unknown EventRoute " + eventRoute);
+        }
     }
 
     private void initTranslator(final RingBufferLogEventTranslator translator, final String fqcn,
             final Level level, final Marker marker, final Message message, final Throwable thrown) {
 
-        // Implementation note: this method is tuned for performance. MODIFY WITH CARE!
-
-        initTranslatorPart1(translator, fqcn, level, marker, message, thrown);
-        initTranslatorPart2(translator, fqcn, message);
-    }
-
-    private void initTranslatorPart1(final RingBufferLogEventTranslator translator, final String fqcn,
-            final Level level, final Marker marker, final Message message, final Throwable thrown) {
-
-        // Implementation note: this method is tuned for performance. MODIFY WITH CARE!
-
-        translator.setValuesPart1(this, getName(), marker, fqcn, level, message, //
+        translator.setBasicValues(this, name, marker, fqcn, level, message, //
                 // don't construct ThrowableProxy until required
-                thrown);
-    }
+                thrown,
 
-    private void initTranslatorPart2(final RingBufferLogEventTranslator translator, final String fqcn,
-            final Message message) {
-
-        // Implementation note: this method is tuned for performance. MODIFY WITH CARE!
-
-        final Thread currentThread = Thread.currentThread();
-        translator.setValuesPart2(
                 // config properties are taken care of in the EventHandler thread
                 // in the AsyncLogger#actualAsyncLog method
 
@@ -245,17 +197,33 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
 
                 // needs shallow copy to be fast (LOG4J2-154)
                 ThreadContext.getImmutableStack(), //
-
-                currentThread.getId(), //
-
-                // Thread.currentThread().getName(), //
-                THREAD_NAME_CACHING_STRATEGY.getThreadName(),
-
-                currentThread.getPriority(), //
                 // location (expensive to calculate)
-                calcLocationIfRequested(fqcn),
-                eventTimeMillis(message), nanoClock.nanoTime() //
-                );
+                calcLocationIfRequested(fqcn), //
+                eventTimeMillis(message), //
+                nanoClock.nanoTime() //
+        );
+        // constant check should be optimized out when using default (CACHED)
+        if (THREAD_NAME_CACHING_STRATEGY == ThreadNameCachingStrategy.UNCACHED) {
+            final Thread currentThread = Thread.currentThread();
+            translator.setThreadValues(
+                    currentThread.getId(), //
+                    currentThread.getName(), //
+                    currentThread.getPriority() //
+            );
+        }
+    }
+
+    /**
+     * Returns the caller location if requested, {@code null} otherwise.
+     *
+     * @param fqcn fully qualified caller name.
+     * @return the caller location if requested, {@code null} otherwise.
+     */
+    private StackTraceElement calcLocationIfRequested(String fqcn) {
+        // location: very expensive operation. LOG4J2-153:
+        // Only include if "includeLocation=true" is specified,
+        // exclude if not specified or if "false" was specified.
+        return includeLocation ? Log4jLogEvent.calcLocation(fqcn) : null;
     }
 
     private long eventTimeMillis(final Message message) {
@@ -325,17 +293,20 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
     }
 
     /**
-     * Returns the caller location if requested, {@code null} otherwise.
+     * LOG4J2-471: prevent deadlock when RingBuffer is full and object being logged calls Logger.log() from its
+     * toString() method
      *
-     * @param fqcn fully qualified caller name.
-     * @return the caller location if requested, {@code null} otherwise.
+     * @param fqcn fully qualified caller name
+     * @param level log level
+     * @param marker optional marker
+     * @param message log message
+     * @param thrown optional exception
      */
-    private StackTraceElement calcLocationIfRequested(String fqcn) {
-        // location: very expensive operation. LOG4J2-153:
-        // Only include if "includeLocation=true" is specified,
-        // exclude if not specified or if "false" was specified.
-        final boolean includeLocation = privateConfig.loggerConfig.isIncludeLocation();
-        return includeLocation ? Log4jLogEvent.calcLocation(fqcn) : null;
+    void logMessageInCurrentThread(final String fqcn, final Level level, final Marker marker,
+            final Message message, final Throwable thrown) {
+        // bypass RingBuffer and invoke Appender directly
+        final ReliabilityStrategy strategy = privateConfig.loggerConfig.getReliabilityStrategy();
+        strategy.log(this, getName(), fqcn, marker, level, message, thrown);
     }
 
     /**

@@ -64,9 +64,7 @@ public class ServletAppender extends AbstractAppender {
     public static ServletAppender createAppender(
             @PluginElement("Layout") Layout<? extends Serializable> layout,
             @PluginElement("Filter") final Filter filter,
-            @PluginAttribute("name")
-            @Required(message = "No name provided for ServletAppender")
-            final String name,
+            @PluginAttribute("name") @Required(message = "No name provided for ServletAppender") final String name,
             @PluginAttribute(value = "ignoreExceptions", defaultBoolean = true) final boolean ignoreExceptions) {
         final ServletContext servletContext = WebLoggerContextUtils.getServletContext();
         if (servletContext == null) {

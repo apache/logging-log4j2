@@ -26,7 +26,7 @@ import org.apache.logging.log4j.message.Message;
 /**
  * Enumeration over the different destinations where a log event can be sent.
  *
- * @since 2.5.1
+ * @since 2.6
  */
 public enum EventRoute {
     /**
@@ -36,7 +36,6 @@ public enum EventRoute {
         @Override
         public void logMessage(final AsyncLogger asyncLogger, final String fqcn, final Level level,
                 final Marker marker, final Message message, final Throwable thrown) {
-            asyncLogger.logMessageInBackgroundThread(fqcn, level, marker, message, thrown);
         }
 
         @Override
@@ -56,7 +55,6 @@ public enum EventRoute {
         @Override
         public void logMessage(final AsyncLogger asyncLogger, final String fqcn, final Level level,
                 final Marker marker, final Message message, final Throwable thrown) {
-            asyncLogger.logMessageInCurrentThread(fqcn, level, marker, message, thrown);
         }
 
         @Override
