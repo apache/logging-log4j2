@@ -730,6 +730,12 @@
         <artifactId>commons-csv</artifactId>
         <version>1.2</version>
       </dependency>
+      <!-- GC-free -->
+      <dependency>
+        <groupId>com.google.code.java-allocation-instrumenter</groupId>
+        <artifactId>java-allocation-instrumenter</artifactId>
+        <version>3.0</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <build>
