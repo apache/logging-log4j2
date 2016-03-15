@@ -194,7 +194,7 @@
         <dependency>
           <groupId>com.sun</groupId>
           <artifactId>jconsole</artifactId>
-          <version>1.6.0</version>
+          <version>1.7.0</version>
           <scope>system</scope>
           <systemPath>${java.home}/../lib/jconsole.jar</systemPath>
           <optional>true</optional>
@@ -213,7 +213,7 @@
         <dependency>
           <groupId>com.sun</groupId>
           <artifactId>jconsole</artifactId>
-          <version>1.6.0</version>
+          <version>1.7.0</version>
           <scope>system</scope>
           <systemPath>${java.home}/../Classes/jconsole.jar</systemPath>
           <optional>true</optional>
