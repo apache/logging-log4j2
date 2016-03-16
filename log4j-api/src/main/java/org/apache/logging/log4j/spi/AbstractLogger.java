@@ -1939,7 +1939,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     @Override
     public void log(final Level level, final String message, final Object p0) {
-        if (isEnabled(level, null, message)) {
+        if (isEnabled(level, null, message, p0)) {
             final Message msg = newMessage(message, p0);
             logMessage(FQCN, level, null, msg, msg.getThrowable());
         }
@@ -1948,7 +1948,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     @Override
     public void log(final Level level, final String message, final Object p0, final Object p1) {
-        if (isEnabled(level, null, message)) {
+        if (isEnabled(level, null, message, p0, p1)) {
             final Message msg = newMessage(message, p0, p1);
             logMessage(FQCN, level, null, msg, msg.getThrowable());
         }
@@ -1956,7 +1956,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     @Override
     public void log(final Level level, final String message, final Object p0, final Object p1, final Object p2) {
-        if (isEnabled(level, null, message)) {
+        if (isEnabled(level, null, message, p0, p1, p2)) {
             final Message msg = newMessage(message, p0, p1, p2);
             logMessage(FQCN, level, null, msg, msg.getThrowable());
         }
@@ -1964,7 +1964,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     @Override
     public void log(final Level level, final String message, final Object p0, final Object p1, final Object p2, final Object p3) {
-        if (isEnabled(level, null, message)) {
+        if (isEnabled(level, null, message, p0, p1, p2, p3)) {
             final Message msg = newMessage(message, p0, p1, p2, p3);
             logMessage(FQCN, level, null, msg, msg.getThrowable());
         }
@@ -1973,7 +1973,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     @Override
     public void log(final Level level, final String message, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4) {
-        if (isEnabled(level, null, message)) {
+        if (isEnabled(level, null, message, p0, p1, p2, p3, p4)) {
             final Message msg = newMessage(message, p0, p1, p2, p3, p4);
             logMessage(FQCN, level, null, msg, msg.getThrowable());
         }
@@ -1982,7 +1982,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     @Override
     public void log(final Level level, final String message, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5) {
-        if (isEnabled(level, null, message)) {
+        if (isEnabled(level, null, message, p0, p1, p2, p3, p4, p5)) {
             final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5);
             logMessage(FQCN, level, null, msg, msg.getThrowable());
         }
@@ -1991,7 +1991,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     @Override
     public void log(final Level level, final String message, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6) {
-        if (isEnabled(level, null, message)) {
+        if (isEnabled(level, null, message, p0, p1, p2, p3, p4, p5, p6)) {
             final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6);
             logMessage(FQCN, level, null, msg, msg.getThrowable());
         }
@@ -2001,7 +2001,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     public void log(final Level level, final String message, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6,
             final Object p7) {
-        if (isEnabled(level, null, message)) {
+        if (isEnabled(level, null, message, p0, p1, p2, p3, p4, p5, p6, p7)) {
             final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7);
             logMessage(FQCN, level, null, msg, msg.getThrowable());
         }
@@ -2011,7 +2011,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     public void log(final Level level, final String message, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6,
             final Object p7, final Object p8) {
-        if (isEnabled(level, null, message)) {
+        if (isEnabled(level, null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8)) {
             final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
             logMessage(FQCN, level, null, msg, msg.getThrowable());
         }
@@ -2021,7 +2021,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     public void log(final Level level, final String message, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6,
             final Object p7, final Object p8, final Object p9) {
-        if (isEnabled(level, null, message)) {
+        if (isEnabled(level, null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9)) {
             final Message msg = newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
             logMessage(FQCN, level, null, msg, msg.getThrowable());
         }
