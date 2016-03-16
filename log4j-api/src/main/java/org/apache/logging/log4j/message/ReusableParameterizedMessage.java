@@ -18,52 +18,26 @@ package org.apache.logging.log4j.message;
 
 import java.util.Arrays;
 
+import org.apache.logging.log4j.util.PerformanceSensitive;
+
 /**
- * Reusable parameterized message.
+ * Reusable parameterized message. This message is mutable and is not safe to be accessed or modified by multiple
+ * threads concurrently.
+ *
  * @see ParameterizedMessage
  * @since 2.6
  */
+@PerformanceSensitive("allocation")
 public class ReusableParameterizedMessage implements ReusableMessage {
 
     private static final long serialVersionUID = 7800075879295123856L;
+    private static ThreadLocal<StringBuilder> buffer = new ThreadLocal<>();
 
-    static class InternalState {
-        private final StringBuilder buffer = new StringBuilder(2048);
-        private String messagePattern;
-        private int argCount;
-        private transient Object[] varargs;
-        private transient Object[] params = new Object[10];
-        private transient Throwable throwable;
-
-        private Object[] getTrimmedParams() {
-            return varargs == null ? Arrays.copyOf(params, argCount) : varargs;
-        }
-
-        private Object[] getParams() {
-            return varargs == null ? params : varargs;
-        }
-
-        private void init(String messagePattern, int argCount, Object[] paramArray) {
-            this.varargs = null;
-            this.buffer.setLength(0);
-
-            this.messagePattern = messagePattern;
-            this.argCount= argCount;
-            //this.formattedMessage = null;
-            int usedCount = ParameterFormatter.countArgumentPlaceholders(messagePattern);
-            initThrowable(paramArray, usedCount);
-        }
-
-        private void initThrowable(final Object[] params, final int usedParams) {
-            if (usedParams < argCount && this.throwable == null && params[argCount - 1] instanceof Throwable) {
-                this.throwable = (Throwable) params[argCount - 1];
-                argCount--;
-            }
-        }
-    }
-
-    // storing non-JDK classes in ThreadLocals causes memory leaks in web apps, do not use in web apps!
-    private static ThreadLocal<InternalState> state = new ThreadLocal<>();
+    private String messagePattern;
+    private int argCount;
+    private transient Object[] varargs;
+    private transient Object[] params = new Object[10];
+    private transient Throwable throwable;
 
     /**
      * Creates a reusable message.
@@ -71,142 +45,141 @@ public class ReusableParameterizedMessage implements ReusableMessage {
     public ReusableParameterizedMessage() {
     }
 
-    private InternalState getState() {
-        InternalState result = state.get();
-        if (result == null) {
-            result = new InternalState();
-            state.set(result);
-        }
-        return result;
+    private Object[] getTrimmedParams() {
+        return varargs == null ? Arrays.copyOf(params, argCount) : varargs;
     }
 
-    public StringBuilder get() {
-        return getState().buffer;
+    private Object[] getParams() {
+        return varargs == null ? params : varargs;
+    }
+
+    private void init(String messagePattern, int argCount, Object[] paramArray) {
+        this.varargs = null;
+        this.messagePattern = messagePattern;
+        this.argCount= argCount;
+        int usedCount = ParameterFormatter.countArgumentPlaceholders(messagePattern);
+        initThrowable(paramArray, usedCount);
+    }
+
+    private void initThrowable(final Object[] params, final int usedParams) {
+        if (usedParams < argCount && this.throwable == null && params[argCount - 1] instanceof Throwable) {
+            this.throwable = (Throwable) params[argCount - 1];
+            argCount--;
+        }
     }
 
     ReusableParameterizedMessage set(String messagePattern, Object... arguments) {
-        InternalState state = getState();
-        state.init(messagePattern, arguments == null ? 0 : arguments.length, arguments);
-        state.varargs = arguments;
+        init(messagePattern, arguments == null ? 0 : arguments.length, arguments);
+        varargs = arguments;
         return this;
     }
 
     ReusableParameterizedMessage set(String messagePattern, Object p0) {
-        InternalState state = getState();
-        state.params[0] = p0;
-        state.init(messagePattern, 1, state.params);
+        params[0] = p0;
+        init(messagePattern, 1, params);
         return this;
     }
 
     ReusableParameterizedMessage set(String messagePattern, Object p0, Object p1) {
-        InternalState state = getState();
-        state.params[0] = p0;
-        state.params[1] = p1;
-        state.init(messagePattern, 2, state.params);
+        params[0] = p0;
+        params[1] = p1;
+        init(messagePattern, 2, params);
         return this;
     }
 
     ReusableParameterizedMessage set(String messagePattern, Object p0, Object p1, Object p2) {
-        InternalState state = getState();
-        state.params[0] = p0;
-        state.params[1] = p1;
-        state.params[2] = p2;
-        state.init(messagePattern, 3, state.params);
+        params[0] = p0;
+        params[1] = p1;
+        params[2] = p2;
+        init(messagePattern, 3, params);
         return this;
     }
 
     ReusableParameterizedMessage set(String messagePattern, Object p0, Object p1, Object p2, Object p3) {
-        InternalState state = getState();
-        state.params[0] = p0;
-        state.params[1] = p1;
-        state.params[2] = p2;
-        state.params[3] = p3;
-        state.init(messagePattern, 4, state.params);
+        params[0] = p0;
+        params[1] = p1;
+        params[2] = p2;
+        params[3] = p3;
+        init(messagePattern, 4, params);
         return this;
     }
 
     ReusableParameterizedMessage set(String messagePattern, Object p0, Object p1, Object p2, Object p3, Object p4) {
-        InternalState state = getState();
-        state.params[0] = p0;
-        state.params[1] = p1;
-        state.params[2] = p2;
-        state.params[3] = p3;
-        state.params[4] = p4;
-        state.init(messagePattern, 5, state.params);
+        params[0] = p0;
+        params[1] = p1;
+        params[2] = p2;
+        params[3] = p3;
+        params[4] = p4;
+        init(messagePattern, 5, params);
         return this;
     }
 
     ReusableParameterizedMessage set(String messagePattern, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5) {
-        InternalState state = getState();
-        state.params[0] = p0;
-        state.params[1] = p1;
-        state.params[2] = p2;
-        state.params[3] = p3;
-        state.params[4] = p4;
-        state.params[5] = p5;
-        state.init(messagePattern, 6, state.params);
+        params[0] = p0;
+        params[1] = p1;
+        params[2] = p2;
+        params[3] = p3;
+        params[4] = p4;
+        params[5] = p5;
+        init(messagePattern, 6, params);
         return this;
     }
 
     ReusableParameterizedMessage set(String messagePattern, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5,
             Object p6) {
-        InternalState state = getState();
-        state.params[0] = p0;
-        state.params[1] = p1;
-        state.params[2] = p2;
-        state.params[3] = p3;
-        state.params[4] = p4;
-        state.params[5] = p5;
-        state.params[6] = p6;
-        state.init(messagePattern, 7, state.params);
+        params[0] = p0;
+        params[1] = p1;
+        params[2] = p2;
+        params[3] = p3;
+        params[4] = p4;
+        params[5] = p5;
+        params[6] = p6;
+        init(messagePattern, 7, params);
         return this;
     }
 
     ReusableParameterizedMessage set(String messagePattern, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5,
             Object p6, Object p7) {
-        InternalState state = getState();
-        state.params[0] = p0;
-        state.params[1] = p1;
-        state.params[2] = p2;
-        state.params[3] = p3;
-        state.params[4] = p4;
-        state.params[5] = p5;
-        state.params[6] = p6;
-        state.params[7] = p7;
-        state.init(messagePattern, 8, state.params);
+        params[0] = p0;
+        params[1] = p1;
+        params[2] = p2;
+        params[3] = p3;
+        params[4] = p4;
+        params[5] = p5;
+        params[6] = p6;
+        params[7] = p7;
+        init(messagePattern, 8, params);
         return this;
     }
 
     ReusableParameterizedMessage set(String messagePattern, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5,
             Object p6, Object p7, Object p8) {
-        InternalState state = getState();
-        state.params[0] = p0;
-        state.params[1] = p1;
-        state.params[2] = p2;
-        state.params[3] = p3;
-        state.params[4] = p4;
-        state.params[5] = p5;
-        state.params[6] = p6;
-        state.params[7] = p7;
-        state.params[8] = p8;
-        state.init(messagePattern, 9, state.params);
+        params[0] = p0;
+        params[1] = p1;
+        params[2] = p2;
+        params[3] = p3;
+        params[4] = p4;
+        params[5] = p5;
+        params[6] = p6;
+        params[7] = p7;
+        params[8] = p8;
+        init(messagePattern, 9, params);
         return this;
     }
 
     ReusableParameterizedMessage set(String messagePattern, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5,
             Object p6, Object p7, Object p8, Object p9) {
-        InternalState state = getState();
-        state.params[0] = p0;
-        state.params[1] = p1;
-        state.params[2] = p2;
-        state.params[3] = p3;
-        state.params[4] = p4;
-        state.params[5] = p5;
-        state.params[6] = p6;
-        state.params[7] = p7;
-        state.params[8] = p8;
-        state.params[9] = p9;
-        state.init(messagePattern, 10, state.params);
+        params[0] = p0;
+        params[1] = p1;
+        params[2] = p2;
+        params[3] = p3;
+        params[4] = p4;
+        params[5] = p5;
+        params[6] = p6;
+        params[7] = p7;
+        params[8] = p8;
+        params[9] = p9;
+        init(messagePattern, 10, params);
         return this;
     }
 
@@ -216,7 +189,7 @@ public class ReusableParameterizedMessage implements ReusableMessage {
      */
     @Override
     public String getFormat() {
-        return getState().messagePattern;
+        return messagePattern;
     }
 
     /**
@@ -225,7 +198,7 @@ public class ReusableParameterizedMessage implements ReusableMessage {
      */
     @Override
     public Object[] getParameters() {
-        return getState().getTrimmedParams();
+        return getTrimmedParams();
     }
 
     /**
@@ -239,7 +212,7 @@ public class ReusableParameterizedMessage implements ReusableMessage {
      */
     @Override
     public Throwable getThrowable() {
-        return getState().throwable;
+        return throwable;
     }
 
     /**
@@ -248,16 +221,24 @@ public class ReusableParameterizedMessage implements ReusableMessage {
      */
     @Override
     public String getFormattedMessage() {
-        final InternalState state = getState();
-        final StringBuilder buffer = state.buffer;
-        formatTo(buffer);
-        return buffer.toString();
+        final StringBuilder sb = getBuffer();
+        formatTo(sb);
+        return sb.toString();
+    }
+
+    private StringBuilder getBuffer() {
+        StringBuilder result = buffer.get();
+        if (result == null) {
+            result = new StringBuilder(Math.min(512, messagePattern.length() * 2));
+            buffer.set(result);
+        }
+        result.setLength(0);
+        return result;
     }
 
     @Override
     public void formatTo(final StringBuilder buffer) {
-        InternalState state = getState();
-        ParameterFormatter.formatMessage(buffer, state.messagePattern, state.getParams(), state.argCount);
+        ParameterFormatter.formatMessage(buffer, messagePattern, getParams(), argCount);
     }
 
 

@@ -38,6 +38,8 @@ import org.apache.logging.log4j.core.util.DummyNanoClock;
 import org.apache.logging.log4j.core.util.NanoClock;
 import org.apache.logging.log4j.message.LoggerNameAwareMessage;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.ReusableMessage;
+import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
@@ -54,7 +56,7 @@ public class Log4jLogEvent implements LogEvent {
     private final Marker marker;
     private final Level level;
     private final String loggerName;
-    private final Message message;
+    private Message message;
     private final long timeMillis;
     private final transient Throwable thrown;
     private ThrowableProxy thrownProxy;
@@ -465,6 +467,10 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
         return message;
     }
 
+    public void makeMessageImmutable() {
+        message = new SimpleMessage(message.getFormattedMessage());
+    }
+
     @Override
     public long getThreadId() {
         if (threadId == 0) {
@@ -789,7 +795,9 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
             this.marker = event.marker;
             this.level = event.level;
             this.loggerName = event.loggerName;
-            this.message = event.message;
+            this.message = event.message instanceof ReusableMessage
+                    ? memento((ReusableMessage) event.message)
+                    : event.message;
             this.timeMillis = event.timeMillis;
             this.thrown = event.thrown;
             this.thrownProxy = event.thrownProxy;
@@ -802,6 +810,10 @@ public Log4jLogEvent(final String loggerName, final Marker marker, final String 
             this.isLocationRequired = includeLocation;
             this.isEndOfBatch = event.endOfBatch;
             this.nanoTime = event.nanoTime;
+        }
+
+        private Message memento(final ReusableMessage message) {
+            return new SimpleMessage(message.getFormattedMessage());
         }
 
         /**

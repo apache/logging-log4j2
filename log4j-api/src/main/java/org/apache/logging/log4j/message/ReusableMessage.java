@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.message;
 
+import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 
 /**
@@ -24,6 +25,9 @@ import org.apache.logging.log4j.util.StringBuilderFormattable;
  * If a Message is reusable, downstream components should not hand over this instance to another thread, but extract its
  * content (via the {@link StringBuilderFormattable#formatTo(StringBuilder)} method) instead.
  * </p>
+ *
+ * @since 2.6
  */
+@PerformanceSensitive("allocation")
 public interface ReusableMessage extends Message, StringBuilderFormattable {
 }

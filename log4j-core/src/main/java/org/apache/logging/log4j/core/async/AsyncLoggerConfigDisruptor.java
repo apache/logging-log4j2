@@ -23,8 +23,10 @@ import java.util.concurrent.ThreadFactory;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import com.lmax.disruptor.EventFactory;
@@ -160,7 +162,7 @@ public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
         final WaitStrategy waitStrategy = DisruptorUtil.createWaitStrategy("AsyncLoggerConfig.WaitStrategy");
         executor = Executors.newSingleThreadExecutor(THREAD_FACTORY);
         backgroundThreadId = DisruptorUtil.getExecutorThreadId(executor);
-        asyncEventRouter = AsyncEventRouterFactory.create(ringBufferSize);
+        asyncEventRouter = AsyncEventRouterFactory.create();
 
         disruptor = new Disruptor<>(FACTORY, ringBufferSize, executor, ProducerType.MULTI, waitStrategy);
 
@@ -227,7 +229,7 @@ public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
         if (remainingCapacity < 0) {
             return EventRoute.DISCARD;
         }
-        return asyncEventRouter.getRoute(backgroundThreadId, logLevel, ringBufferSize, remainingCapacity);
+        return asyncEventRouter.getRoute(backgroundThreadId, logLevel);
     }
 
     private int remainingDisruptorCapacity() {
@@ -243,7 +245,7 @@ public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
      */
     private boolean hasLog4jBeenShutDown(final Disruptor<Log4jEventWrapper> aDisruptor) {
         if (aDisruptor == null) { // LOG4J2-639
-            LOGGER.fatal("Ignoring log event after log4j was shut down");
+            LOGGER.warn("Ignoring log event after log4j was shut down");
             return true;
         }
         return false;
@@ -258,13 +260,15 @@ public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
         } catch (final NullPointerException npe) {
             // Note: NPE prevents us from adding a log event to the disruptor after it was shut down,
             // which could cause the publishEvent method to hang and never return.
-            LOGGER.fatal("Ignoring log event after log4j was shut down.");
+            LOGGER.warn("Ignoring log event after log4j was shut down.");
         }
     }
 
     private LogEvent prepareEvent(final LogEvent event) {
         final LogEvent logEvent = ensureImmutable(event);
-        if (!Constants.FORMAT_MESSAGES_IN_BACKGROUND) { // LOG4J2-898: user may choose
+        if (logEvent instanceof Log4jLogEvent && logEvent.getMessage() instanceof ReusableMessage) {
+            ((Log4jLogEvent) logEvent).makeMessageImmutable();
+        } else if (!Constants.FORMAT_MESSAGES_IN_BACKGROUND) { // LOG4J2-898: user may choose
             logEvent.getMessage().getFormattedMessage(); // LOG4J2-763: ask message to freeze parameters
         }
         return logEvent;
@@ -272,6 +276,12 @@ public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
 
     private void enqueue(final LogEvent logEvent, final AsyncLoggerConfig asyncLoggerConfig) {
         disruptor.getRingBuffer().publishEvent(TRANSLATOR, logEvent, asyncLoggerConfig);
+    }
+
+    @Override
+    public boolean tryEnqueue(final LogEvent event, final AsyncLoggerConfig asyncLoggerConfig) {
+        final LogEvent logEvent = prepareEvent(event);
+        return disruptor.getRingBuffer().tryPublishEvent(TRANSLATOR, logEvent, asyncLoggerConfig);
     }
 
     private LogEvent ensureImmutable(final LogEvent event) {

@@ -42,11 +42,13 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout.Serializer;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.CyclicBuffer;
 import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.core.util.NetUtils;
+import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
@@ -57,7 +59,7 @@ public class SmtpManager extends AbstractManager {
     private static final SMTPManagerFactory FACTORY = new SMTPManagerFactory();
 
     private final Session session;
-    
+
     private final CyclicBuffer<LogEvent> buffer;
 
     private volatile MimeMessage message;
@@ -82,6 +84,9 @@ public class SmtpManager extends AbstractManager {
     }
 
     public void add(final LogEvent event) {
+        if (event instanceof Log4jLogEvent && event.getMessage() instanceof ReusableMessage) {
+            ((Log4jLogEvent) event).makeMessageImmutable();
+        }
         buffer.add(event);
     }
 
@@ -162,13 +167,7 @@ public class SmtpManager extends AbstractManager {
             final MimeMultipart mp = getMimeMultipart(encodedBytes, headers);
 
             sendMultipartMessage(message, mp);
-        } catch (final MessagingException e) {
-            logError("caught exception while sending e-mail notification.", e);
-            throw new LoggingException("Error occurred while sending email", e);
-        } catch (final IOException e) {
-            logError("caught exception while sending e-mail notification.", e);
-            throw new LoggingException("Error occurred while sending email", e);
-        } catch (final RuntimeException e) {
+        } catch (final MessagingException | IOException | RuntimeException e) {
             logError("caught exception while sending e-mail notification.", e);
             throw new LoggingException("Error occurred while sending email", e);
         }

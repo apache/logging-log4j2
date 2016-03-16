@@ -22,11 +22,13 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageProducer;
 
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
+import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
@@ -40,7 +42,7 @@ import org.apache.logging.log4j.core.net.JndiManager;
  * Generic JMS Appender plugin for both queues and topics. This Appender replaces the previous split ones. However,
  * configurations set up for the 2.0 version of the JMS appenders will still work.
  */
-@Plugin(name = "JMS", category = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "JMS", category = Node.CATEGORY, elementType = Appender.ELEMENT_TYPE, printObject = true)
 @PluginAliases({"JMSQueue", "JMSTopic"})
 public class JmsAppender extends AbstractAppender {
 
@@ -64,6 +66,12 @@ public class JmsAppender extends AbstractAppender {
         } catch (final JMSException e) {
             throw new AppenderLoggingException(e);
         }
+    }
+
+    @Override
+    public void stop() {
+        this.manager.release();
+        super.stop();
     }
 
     @PluginBuilderFactory

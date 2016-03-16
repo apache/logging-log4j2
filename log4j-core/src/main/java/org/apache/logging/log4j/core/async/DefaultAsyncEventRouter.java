@@ -25,12 +25,11 @@ import org.apache.logging.log4j.Level;
  */
 public class DefaultAsyncEventRouter implements AsyncEventRouter {
     @Override
-    public EventRoute getRoute(final long backgroundThreadId, final Level level, final int queueSize,
-            final int queueRemainingCapacity) {
+    public EventRoute getRoute(final long backgroundThreadId, final Level level) {
 
         // LOG4J2-471: prevent deadlock when RingBuffer is full and object
         // being logged calls Logger.log() from its toString() method
-        if (queueRemainingCapacity == 0 && Thread.currentThread().getId() == backgroundThreadId) {
+        if (Thread.currentThread().getId() == backgroundThreadId) {
             return EventRoute.SYNCHRONOUS;
         }
         return EventRoute.ENQUEUE;

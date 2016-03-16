@@ -595,9 +595,11 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      * @param config The Configuration.
      */
     public void updateLoggers(final Configuration config) {
+        final Configuration old = this.configuration;
         for (final Logger logger : loggers.values()) {
             logger.updateConfiguration(config);
         }
+        firePropertyChangeEvent(new PropertyChangeEvent(this, PROPERTY_CONFIG, old, config));
     }
 
     /**

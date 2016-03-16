@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.ConfigurationAware;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.util.Loader;
@@ -31,7 +32,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Proxies all the other {@link StrLookup}s.
  */
-public class Interpolator extends AbstractLookup {
+public class Interpolator extends AbstractConfigurationAwareLookup {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -150,6 +151,9 @@ public class Interpolator extends AbstractLookup {
             final String prefix = var.substring(0, prefixPos);
             final String name = var.substring(prefixPos + 1);
             final StrLookup lookup = lookups.get(prefix);
+            if (lookup instanceof ConfigurationAware) {
+                ((ConfigurationAware) lookup).setConfiguration(configuration);
+            }
             String value = null;
             if (lookup != null) {
                 value = event == null ? lookup.lookup(name) : lookup.lookup(event, name);

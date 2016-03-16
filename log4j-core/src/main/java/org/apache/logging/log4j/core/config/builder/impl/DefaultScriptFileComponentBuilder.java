@@ -21,6 +21,8 @@ import org.apache.logging.log4j.core.config.builder.api.ScriptFileComponentBuild
 
 /**
  * Creates a ScriptFile ComponentBuilder.
+ *
+ * @since 2.5
  */
 class DefaultScriptFileComponentBuilder extends DefaultComponentAndConfigurationBuilder<ScriptFileComponentBuilder>
         implements ScriptFileComponentBuilder {

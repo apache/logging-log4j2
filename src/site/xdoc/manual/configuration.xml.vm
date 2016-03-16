@@ -818,12 +818,17 @@ public class Bar {
               configurations define the configuration in terms of plugins and attributes to the plugins.
             </p>
             <p>
-              The properties configuration requires that you list the identifiers of the appenders, filters and loggers,
+              Prior to version 2.6,
+              the properties configuration requires that you list the identifiers of the appenders, filters and loggers,
               in a comma separated list in properties with those names. Each of those components will then be expected
               to be defined in sets of properties that begin with <i>component.identifier</i>. The identifier does not
               have to match the name of the component being defined but must uniquely identify all the attributes and
               subcomponents that are part of the component. Each individual component MUST have a "type" attribute
               specified that identifies the component's Plugin type.
+            </p>
+            <p>
+              As of version 2.6, this list of identifiers is no longer required as names are inferred upon first usage.
+              The list of identifiers used in a 2.4/2.5 format will be safely ignored in 2.6+.
             </p>
             <p>
               Unlike the base components, when creating subcomponents you cannot specify an element containing a list of
@@ -842,12 +847,8 @@ name = PropertiesConfig
 
 property.filename = target/rolling/rollingtest.log
 
-filters = threshold
-
 filter.threshold.type = ThresholdFilter
 filter.threshold.level = debug
-
-appenders = console, rolling, list
 
 appender.console.type = Console
 appender.console.name = STDOUT
@@ -871,20 +872,15 @@ appender.rolling.strategy.max = 5
 
 appender.list.type = List
 appender.list.name = List
-appender.list.filters = threshold
 appender.list.filter.threshold.type = ThresholdFilter
 appender.list.filter.threshold.level = error
-
-loggers = rolling
 
 logger.rolling.name = com.example.my.app
 logger.rolling.level = debug
 logger.rolling.additivity = false
-logger.rolling.appenderRefs = rolling
 logger.rolling.appenderRef.rolling.ref = RollingFile
 
 rootLogger.level = info
-rootLogger.appenderRefs = stdout
 rootLogger.appenderRef.stdout.ref = STDOUT
           </pre>
         </subsection>
@@ -976,6 +972,10 @@ rootLogger.appenderRef.stdout.ref = STDOUT
               <tr>
                 <td>env</td>
                 <td>System environment variables</td>
+              </tr>
+              <tr>
+                <td>jndi</td>
+                <td>A value set in the default JNDI Context.</td>
               </tr>
               <tr>
                 <td>jvmrunargs</td>
@@ -1474,14 +1474,14 @@ StatusLogger.getLogger().registerListener(listener);
           named file to be used during the test.
         </p>
           <p>
-            A third approach, also used extensively by Log4j 2, is to use the <code>InitialLoggerContext</code>
+            A third approach, also used extensively by Log4j 2, is to use the <code>LoggerContextRule</code>
             JUnit test rule which provides additional convenience methods for testing. This requires adding the
             <code>log4j-core</code> <code>test-jar</code> dependency to your test scope dependencies. For example:
           </p>
           <pre class="prettyprint linenums"><![CDATA[
 public class AwesomeTest {
     @Rule
-    public InitialLoggerContext init = new InitialLoggerContext("MyTestConfig.xml");
+    public LoggerContextRule init = new LoggerContextRule("MyTestConfig.xml");
 
     @Test
     public void testSomeAwesomeFeature() {
@@ -1881,25 +1881,15 @@ public class AwesomeTest {
       <p>If no value is specified (the default) events are never discarded. If the queue is full, the
         logger call blocks until the event can be added to the queue.</p>
       <p>Specify <tt>Discard</tt> to drop events whose level is equal or less than the threshold level
-        (INFO by default) when the queue has been filled to the discard ratio (0.8 by default).</p>
-      <p>It is also possible to specify the fully qualified class name of a custom class that implements the
-        <tt>org.apache.logging.log4j.core.async.AsyncEventRouter</tt> interface.</p>
+        (INFO by default) when the queue is full.</p>
     </td>
   </tr>
   <tr>
     <td>log4j2.DiscardThreshold</td>
     <td>INFO</td>
     <td>Used by the DiscardingAsyncEventRouter to determine which events to drop when the queue
-      becomes too full. By default, <tt>INFO</tt>, <tt>DEBUG</tt> and <tt>TRACE</tt> level
-      events are discarded when the queue has been filled up to or beyond the discard ratio.
-      This property only has effect if <tt>Discard</tt> is specified as the
-      <tt>log4j2.AsyncEventRouter</tt>.</td>
-  </tr>
-  <tr>
-    <td>log4j2.DiscardQueueRatio</td>
-    <td>0.8</td>
-    <td>Used by the DiscardingAsyncEventRouter to determine when the queue is becoming too full.
-      By default, events may be discarded when the queue is 80% full or more.
+      becomes full. By default, <tt>INFO</tt>, <tt>DEBUG</tt> and <tt>TRACE</tt> level
+      events are discarded when the queue is full.
       This property only has effect if <tt>Discard</tt> is specified as the
       <tt>log4j2.AsyncEventRouter</tt>.</td>
   </tr>
@@ -1912,6 +1902,18 @@ public class AwesomeTest {
     <td>log4j2.flowMessageFactory</td>
     <td>org.apache.logging.log4j.message. DefaultFlowMessageFactory</td>
     <td>Default flow message factory used by Loggers.</td>
+  </tr>
+  <tr>
+    <td>log4j.initialReusableMsgSize</td>
+    <td>128</td>
+    <td>In GC-free mode, this property determines the initial size of the reusable StringBuilders where the message
+     text is formatted and potentially passed to background threads.</td>
+  </tr>
+  <tr>
+    <td>log4j.maxReusableMsgSize</td>
+    <td>518</td>
+    <td>In GC-free mode, this property determines the maximum size of the reusable StringBuilders where the message
+     text is formatted and potentially passed to background threads.</td>
   </tr>
 </table>
 

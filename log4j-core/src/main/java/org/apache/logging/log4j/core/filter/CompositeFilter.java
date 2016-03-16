@@ -16,9 +16,7 @@
  */
 package org.apache.logging.log4j.core.filter;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -32,6 +30,7 @@ import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.util.ObjectArrayIterator;
 import org.apache.logging.log4j.message.Message;
 
 /**
@@ -40,18 +39,15 @@ import org.apache.logging.log4j.message.Message;
 @Plugin(name = "filters", category = Node.CATEGORY, printObject = true)
 public final class CompositeFilter extends AbstractLifeCycle implements Iterable<Filter>, Filter {
 
-    private final List<Filter> filters;
+    private static final Filter[] EMPTY_FILTERS = new Filter[0];
+    private final Filter[] filters;
 
     private CompositeFilter() {
-        this.filters = new ArrayList<>();
+        this.filters = EMPTY_FILTERS;
     }
 
-    private CompositeFilter(final List<Filter> filters) {
-        if (filters == null) {
-            this.filters = Collections.unmodifiableList(new ArrayList<Filter>());
-            return;
-        }
-        this.filters = Collections.unmodifiableList(filters);
+    private CompositeFilter(final Filter[] filters) {
+        this.filters = filters == null ? EMPTY_FILTERS : filters;
     }
 
     public CompositeFilter addFilter(final Filter filter) {
@@ -59,9 +55,9 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
             // null does nothing
             return this;
         }
-        final List<Filter> filterList = new ArrayList<>(this.filters);
-        filterList.add(filter);
-        return new CompositeFilter(Collections.unmodifiableList(filterList));
+        final Filter[] copy = Arrays.copyOf(this.filters, this.filters.length + 1);
+        copy[this.filters.length] = filter;
+        return new CompositeFilter(copy);
     }
 
     public CompositeFilter removeFilter(final Filter filter) {
@@ -69,17 +65,31 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
             // null does nothing
             return this;
         }
-        final List<Filter> filterList = new ArrayList<>(this.filters);
+        // This is not a great implementation but simpler than copying Apache Commons 
+        // Lang ArrayUtils.removeElement() and associated bits (MutableInt),
+        // which is OK since removing a filter should not be on the critical path.
+        final List<Filter> filterList = Arrays.asList(this.filters);
         filterList.remove(filter);
-        return new CompositeFilter(Collections.unmodifiableList(filterList));
+        return new CompositeFilter(filterList.toArray(new Filter[this.filters.length - 1]));
     }
 
     @Override
     public Iterator<Filter> iterator() {
-        return filters.iterator();
+        return new ObjectArrayIterator<>(filters);
     }
 
+    /**
+     * Gets a new list over the internal filter array.
+     * 
+     * @return a new list over the internal filter array
+     * @deprecated Use {@link #getFiltersArray()}
+     */
+    @Deprecated
     public List<Filter> getFilters() {
+        return Arrays.asList(filters);
+    }
+
+    public Filter[] getFiltersArray() {
         return filters;
     }
 
@@ -89,11 +99,11 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
      * @return whether this composite contains any filters.
      */
     public boolean isEmpty() {
-        return this.filters.isEmpty();
+        return this.filters.length == 0;
     }
 
     public int size() {
-        return filters.size();
+        return filters.length;
     }
 
     @Override
@@ -151,10 +161,10 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
      */
     @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-                         final Object... params) {
+            final Object... params) {
         Result result = Result.NEUTRAL;
-        for (final Filter filter : filters) {
-            result = filter.filter(logger, level, marker, msg, params);
+        for (int i = 0; i < filters.length; i++) {
+            result = filters[i].filter(logger, level, marker, msg, params);
             if (result == Result.ACCEPT || result == Result.DENY) {
                 return result;
             }
@@ -179,10 +189,10 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
      */
     @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg,
-                         final Throwable t) {
+            final Throwable t) {
         Result result = Result.NEUTRAL;
-        for (final Filter filter : filters) {
-            result = filter.filter(logger, level, marker, msg, t);
+        for (int i = 0; i < filters.length; i++) {
+            result = filters[i].filter(logger, level, marker, msg, t);
             if (result == Result.ACCEPT || result == Result.DENY) {
                 return result;
             }
@@ -207,10 +217,10 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
      */
     @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg,
-                         final Throwable t) {
+            final Throwable t) {
         Result result = Result.NEUTRAL;
-        for (final Filter filter : filters) {
-            result = filter.filter(logger, level, marker, msg, t);
+        for (int i = 0; i < filters.length; i++) {
+            result = filters[i].filter(logger, level, marker, msg, t);
             if (result == Result.ACCEPT || result == Result.DENY) {
                 return result;
             }
@@ -228,8 +238,8 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
     @Override
     public Result filter(final LogEvent event) {
         Result result = Result.NEUTRAL;
-        for (final Filter filter : filters) {
-            result = filter.filter(event);
+        for (int i = 0; i < filters.length; i++) {
+            result = filters[i].filter(event);
             if (result == Result.ACCEPT || result == Result.DENY) {
                 return result;
             }
@@ -240,13 +250,13 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        for (final Filter filter : filters) {
+        for (int i = 0; i < filters.length; i++) {
             if (sb.length() == 0) {
                 sb.append('{');
             } else {
                 sb.append(", ");
             }
-            sb.append(filter.toString());
+            sb.append(filters[i].toString());
         }
         if (sb.length() > 0) {
             sb.append('}');
@@ -263,9 +273,7 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
      */
     @PluginFactory
     public static CompositeFilter createFilters(@PluginElement("Filters") final Filter[] filters) {
-        final List<Filter> filterList = filters == null || filters.length == 0 ?
-            new ArrayList<Filter>() : Arrays.asList(filters);
-        return new CompositeFilter(filterList);
+        return new CompositeFilter(filters);
     }
 
 }

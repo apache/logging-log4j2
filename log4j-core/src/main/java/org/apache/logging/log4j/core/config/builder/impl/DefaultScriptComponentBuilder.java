@@ -20,7 +20,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.builder.api.ScriptComponentBuilder;
 
 /**
- *
+ * @since 2.5
  */
 class DefaultScriptComponentBuilder extends DefaultComponentAndConfigurationBuilder<ScriptComponentBuilder>
         implements ScriptComponentBuilder {

@@ -57,7 +57,7 @@ public final class StringEncoder {
      *
      * @param s the string to encode
      * @return the encoded String
-     * @see https://issues.apache.org/jira/browse/LOG4J2-1151
+     * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-1151">LOG4J2-1151</a>
      */
     public static byte[] encodeSingleByteChars(String s) {
         final int length = s.length();

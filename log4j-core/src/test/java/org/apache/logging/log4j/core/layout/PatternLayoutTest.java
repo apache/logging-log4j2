@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
@@ -74,6 +75,32 @@ public class PatternLayoutTest {
         ThreadContext.clearMap();
     }
 
+    private static class Destination implements ByteBufferDestination {
+        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[2048]);
+        @Override
+        public ByteBuffer getByteBuffer() {
+            return byteBuffer;
+        }
+
+        @Override
+        public ByteBuffer drain(final ByteBuffer buf) {
+            throw new IllegalStateException("Unexpected message larger than 2048 bytes");
+        }
+    }
+
+    private void assertToByteArray(final String expectedStr, final PatternLayout layout, final LogEvent event) {
+        final byte[] result = layout.toByteArray(event);
+        assertEquals(expectedStr, new String(result));
+    }
+
+    private void assertEncode(final String expectedStr, final PatternLayout layout, final LogEvent event) {
+        final Destination destination = new Destination();
+        layout.encode(event, destination);
+        final ByteBuffer byteBuffer = destination.getByteBuffer();
+        byteBuffer.flip(); // set limit to position, position back to zero
+        assertEquals(expectedStr, new String(byteBuffer.array(), 0, byteBuffer.limit()));
+    }
+
     @Test
     public void testEqualsEmptyMarker() throws Exception {
         // replace "[]" with the empty string
@@ -85,15 +112,17 @@ public class PatternLayoutTest {
                 .setLevel(Level.INFO) //
                 .setMarker(MarkerManager.getMarker("TestMarker")) //
                 .setMessage(new SimpleMessage("Hello, world!")).build();
-        final byte[] result1 = layout.toByteArray(event1);
-        assertEquals("[org.apache.logging.log4j.core.layout.PatternLayoutTest][TestMarker] Hello, world!", new String(result1));
+        assertToByteArray("[org.apache.logging.log4j.core.layout.PatternLayoutTest][TestMarker] Hello, world!", layout,
+                event1);
+        assertEncode("[org.apache.logging.log4j.core.layout.PatternLayoutTest][TestMarker] Hello, world!", layout,
+                event1);
         // empty marker
         final LogEvent event2 = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage("Hello, world!")).build();
-        final byte[] result2 = layout.toByteArray(event2);
-        assertEquals("[org.apache.logging.log4j.core.layout.PatternLayoutTest] Hello, world!", new String(result2));
+        assertToByteArray("[org.apache.logging.log4j.core.layout.PatternLayoutTest] Hello, world!", layout, event2);
+        assertEncode("[org.apache.logging.log4j.core.layout.PatternLayoutTest] Hello, world!", layout, event2);
     }
 
     @Test
@@ -167,8 +196,8 @@ public class PatternLayoutTest {
                 .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage("Hello")).build();
-        final byte[] result = layout.toByteArray(event);
-        assertEquals(expectedStr, new String(result));
+        assertToByteArray(expectedStr, layout, event);
+        assertEncode(expectedStr, layout, event);
     }
 
     @Test
@@ -210,7 +239,7 @@ public class PatternLayoutTest {
                 .setIncludeLocation(true)
                 .setMessage(new SimpleMessage("entry")).build();
         final String result1 = new FauxLogger().formatEvent(event1, layout);
-        final String expectSuffix1 = String.format("====== PatternLayoutTest.testPatternSelector:212 entry ======%n");
+        final String expectSuffix1 = String.format("====== PatternLayoutTest.testPatternSelector:241 entry ======%n");
         assertTrue("Unexpected result: " + result1, result1.endsWith(expectSuffix1));
         final LogEvent event2 = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
@@ -229,8 +258,8 @@ public class PatternLayoutTest {
                 .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage("Hello, world!")).build();
-        final byte[] result = layout.toByteArray(event);
-        assertEquals("org/apache/logging/log4j/core/layout/PatternLayoutTest Hello, world!", new String(result));
+        assertToByteArray("org/apache/logging/log4j/core/layout/PatternLayoutTest Hello, world!", layout, event);
+        assertEncode("org/apache/logging/log4j/core/layout/PatternLayoutTest Hello, world!", layout, event);
     }
 
     @Test
@@ -244,15 +273,40 @@ public class PatternLayoutTest {
                 .setLevel(Level.INFO) //
                 .setMarker(MarkerManager.getMarker("TestMarker")) //
                 .setMessage(new SimpleMessage("Hello, world!")).build();
-        final byte[] result1 = layout.toByteArray(event1);
-        assertEquals("[org.apache.logging.log4j.core.layout.PatternLayoutTest][TestMarker] Hello, world!", new String(result1));
+        assertToByteArray("[org.apache.logging.log4j.core.layout.PatternLayoutTest][TestMarker] Hello, world!", layout,
+                event1);
+        assertEncode("[org.apache.logging.log4j.core.layout.PatternLayoutTest][TestMarker] Hello, world!", layout,
+                event1);
+
         // empty marker
         final LogEvent event2 = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage("Hello, world!")).build();
+        assertToByteArray("[org.apache.logging.log4j.core.layout.PatternLayoutTest] Hello, world!", layout, event2);
+        assertEncode("[org.apache.logging.log4j.core.layout.PatternLayoutTest] Hello, world!", layout, event2);
+    }
+
+    @Test
+    public void testEqualsMarkerWithMessageSubstitution() throws Exception {
+        // replace "[]" with the empty string
+        final PatternLayout layout = PatternLayout.newBuilder().withPattern("[%logger]%equals{[%marker]}{[]}{[%msg]}")
+            .withConfiguration(ctx.getConfiguration()).build();
+        // Not empty marker
+        final LogEvent event1 = Log4jLogEvent.newBuilder() //
+            .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
+            .setLevel(Level.INFO) //
+            .setMarker(MarkerManager.getMarker("TestMarker"))
+            .setMessage(new SimpleMessage("Hello, world!")).build();
+        final byte[] result1 = layout.toByteArray(event1);
+        assertEquals("[org.apache.logging.log4j.core.layout.PatternLayoutTest][TestMarker]", new String(result1));
+        // empty marker
+        final LogEvent event2 = Log4jLogEvent.newBuilder() //
+            .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
+            .setLevel(Level.INFO)
+            .setMessage(new SimpleMessage("Hello, world!")).build();
         final byte[] result2 = layout.toByteArray(event2);
-        assertEquals("[org.apache.logging.log4j.core.layout.PatternLayoutTest] Hello, world!", new String(result2));
+        assertEquals("[org.apache.logging.log4j.core.layout.PatternLayoutTest][Hello, world!]", new String(result2));
     }
 
     @Test
@@ -263,9 +317,12 @@ public class PatternLayoutTest {
                 .setLoggerName(this.getClass().getName()).setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage("Hello, world!")).build();
-        final byte[] result = layout.toByteArray(event);
-        assertEquals("\\INFO\tHello, world!\n\torg.apache.logging.log4j.core.layout.PatternLayoutTest\r\n\f",
-                new String(result));
+        assertToByteArray("\\INFO\tHello, world!\n" +
+                "\torg.apache.logging.log4j.core.layout.PatternLayoutTest\r\n" +
+                "\f", layout, event);
+        assertEncode("\\INFO\tHello, world!\n" +
+                "\torg.apache.logging.log4j.core.layout.PatternLayoutTest\r\n" +
+                "\f", layout, event);
     }
 
     @Test

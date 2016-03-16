@@ -16,30 +16,32 @@
  */
 package org.apache.logging.log4j.core.config.builder.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.builder.api.Component;
 import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * Generic component that captures attributes and Components in preparation for assembling the Appender's
  * Component.
+ *
+ * @since 2.4
  */
 class DefaultComponentBuilder<T extends ComponentBuilder<T>, CB extends ConfigurationBuilder<? extends Configuration>>
         implements ComponentBuilder<T> {
 
-    private CB builder;
-    private String type;
+    private final CB builder;
+    private final String type;
     private final Map<String, String> attributes = new HashMap<>();
     private final List<Component> components = new ArrayList<>();
-    private String name;
-    private String value;
+    private final String name;
+    private final String value;
 
     public DefaultComponentBuilder(final CB builder, final String type) {
         this(builder, null, type, null);
@@ -61,7 +63,7 @@ class DefaultComponentBuilder<T extends ComponentBuilder<T>, CB extends Configur
     public T addAttribute(final String key, final boolean value) {
         return put(key, Boolean.toString(value));
     }
-    
+
     @Override
     public T addAttribute(final String key, final Enum<?> value) {
         return put(key, value.name());

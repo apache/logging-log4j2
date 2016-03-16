@@ -83,7 +83,7 @@ class AsyncLoggerDisruptor {
         final WaitStrategy waitStrategy = DisruptorUtil.createWaitStrategy("AsyncLogger.WaitStrategy");
         executor = Executors.newSingleThreadExecutor(new DaemonThreadFactory("AsyncLogger[" + contextName + "]"));
         backgroundThreadId = DisruptorUtil.getExecutorThreadId(executor);
-        asyncEventRouter = AsyncEventRouterFactory.create(ringBufferSize);
+        asyncEventRouter = AsyncEventRouterFactory.create();
 
         disruptor = new Disruptor<>(RingBufferLogEvent.FACTORY, ringBufferSize, executor, ProducerType.MULTI,
                 waitStrategy);
@@ -164,7 +164,7 @@ class AsyncLoggerDisruptor {
         if (remainingCapacity < 0) {
             return EventRoute.DISCARD;
         }
-        return asyncEventRouter.getRoute(backgroundThreadId, logLevel, ringBufferSize, remainingCapacity);
+        return asyncEventRouter.getRoute(backgroundThreadId, logLevel);
     }
 
     private int remainingDisruptorCapacity() {
@@ -179,10 +179,14 @@ class AsyncLoggerDisruptor {
          */
     private boolean hasLog4jBeenShutDown(final Disruptor<RingBufferLogEvent> aDisruptor) {
         if (aDisruptor == null) { // LOG4J2-639
-            LOGGER.fatal("Ignoring log event after log4j was shut down");
+            LOGGER.warn("Ignoring log event after log4j was shut down");
             return true;
         }
         return false;
+    }
+
+    public boolean tryPublish(final RingBufferLogEventTranslator translator) {
+        return disruptor.getRingBuffer().tryPublishEvent(translator);
     }
 
     void enqueueLogMessageInfo(final RingBufferLogEventTranslator translator) {
@@ -193,7 +197,7 @@ class AsyncLoggerDisruptor {
             // was shut down, which could cause the publishEvent method to hang and never return.
             disruptor.publishEvent(translator);
         } catch (final NullPointerException npe) {
-            LOGGER.fatal("[{}] Ignoring log event after log4j was shut down.", contextName);
+            LOGGER.warn("[{}] Ignoring log event after log4j was shut down.", contextName);
         }
     }
 

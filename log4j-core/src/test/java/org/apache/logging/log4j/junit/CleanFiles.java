@@ -57,7 +57,7 @@ public class CleanFiles extends ExternalResource {
                 }
                 try {
                     Thread.sleep(200);
-                } catch (InterruptedException e) {
+                } catch (InterruptedException ignored) {
                 }
             }
         }

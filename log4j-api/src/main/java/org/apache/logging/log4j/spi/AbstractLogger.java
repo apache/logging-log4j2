@@ -28,7 +28,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.MessageFactory2;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
-import org.apache.logging.log4j.message.ReusableParameterizedMessageFactory;
+import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LambdaUtil;
@@ -77,7 +77,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * The default MessageFactory class.
      */
     public static final Class<? extends MessageFactory> DEFAULT_MESSAGE_FACTORY_CLASS =
-            createClassForProperty("log4j2.messageFactory", ReusableParameterizedMessageFactory.class,
+            createClassForProperty("log4j2.messageFactory", ReusableMessageFactory.class,
                     ParameterizedMessageFactory.class);
 
     /**
@@ -92,7 +92,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     private static final String THROWING = "Throwing";
     private static final String CATCHING = "Catching";
 
-    private final String name;
+    protected final String name;
     private final MessageFactory messageFactory;
     private final FlowMessageFactory flowMessageFactory;
 
@@ -182,7 +182,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     private static Class<? extends MessageFactory> createClassForProperty(final String property,
-            final Class<ReusableParameterizedMessageFactory> reusableParameterizedMessageFactoryClass,
+            final Class<ReusableMessageFactory> reusableParameterizedMessageFactoryClass,
             final Class<ParameterizedMessageFactory> parameterizedMessageFactoryClass) {
         try {
             final boolean IS_WEB_APP = PropertiesUtil.getProperties().getBooleanProperty(
@@ -2614,14 +2614,16 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     @Override
     public void traceExit(final EntryMessage message) {
-        if (isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
+        // If the message is null, traceEnter returned null because flow logging was disabled, we can optimize out calling isEnabled().
+        if (message != null && isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
             logMessage(FQCN, Level.TRACE, EXIT_MARKER, flowMessageFactory.newExitMessage(message), null);
         }
     }
 
     @Override
     public <R> R traceExit(final EntryMessage message, final R result) {
-        if (isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
+        // If the message is null, traceEnter returned null because flow logging was disabled, we can optimize out calling isEnabled().
+        if (message != null && isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
             logMessage(FQCN, Level.TRACE, EXIT_MARKER, flowMessageFactory.newExitMessage(result, message), null);
         }
         return result;
@@ -2629,7 +2631,8 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     @Override
     public <R> R traceExit(final Message message, final R result) {
-        if (isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
+        // If the message is null, traceEnter returned null because flow logging was disabled, we can optimize out calling isEnabled().
+        if (message != null && isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
             logMessage(FQCN, Level.TRACE, EXIT_MARKER, flowMessageFactory.newExitMessage(result, message), null);
         }
         return result;
