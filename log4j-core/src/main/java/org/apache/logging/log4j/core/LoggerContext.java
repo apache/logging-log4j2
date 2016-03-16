@@ -310,6 +310,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
             prev.stop();
             externalContext = null;
             LogManager.getFactory().removeContext(this);
+            threadLocalRegistry.clearAndRemoveAll();
             this.setStopped();
         } finally {
             configLock.unlock();

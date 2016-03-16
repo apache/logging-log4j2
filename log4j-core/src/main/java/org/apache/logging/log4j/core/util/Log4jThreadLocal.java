@@ -61,12 +61,12 @@ public class Log4jThreadLocal<T> extends ThreadLocal<T> {
     }
 
     public void clear() {
-        Iterator<Map.Entry<Long, AtomicReference<T>>> iterator = containers.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<Long, AtomicReference<T>> entry = iterator.next();
-            iterator.remove();
-            entry.setValue(null);
+        for (Map.Entry<Long, AtomicReference<T>> entry : containers.entrySet()) {
+            if (entry.getValue() != null) {
+                entry.getValue().set(null);
+            }
         }
+        containers.clear();
     }
 
     private AtomicReference<T> getContainer(long id) {

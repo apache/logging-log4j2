@@ -72,7 +72,7 @@ public class LoggerContextRule implements TestRule {
 
     @Override
     public Statement apply(final Statement base, final Description description) {
-        // Hack: Using -DEBUG as a JVM param sets a property called "EBUG"... 
+        // Hack: Using -DEBUG as a JVM param sets a property called "EBUG"...
         if (System.getProperties().containsKey("EBUG")) {
             StatusLogger.getLogger().setLevel(Level.DEBUG);
         }
@@ -80,24 +80,25 @@ public class LoggerContextRule implements TestRule {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                if (contextSelectorClass != null) {
-                    System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, contextSelectorClass.getName());
-                }
-                System.setProperty(SYS_PROP_KEY_CLASS_NAME, description.getClassName());
-                System.setProperty(SYS_PROP_KEY_DISPLAY_NAME, description.getDisplayName());
-                context = Configurator.initialize(
-                    description.getDisplayName(),
-                    description.getTestClass().getClassLoader(),
-                    configLocation
-                );
                 try {
-                    base.evaluate();
-                } finally {
-                    Configurator.shutdown(context);
-                    StatusLogger.getLogger().reset();
-                    System.clearProperty(Constants.LOG4J_CONTEXT_SELECTOR);
-                    System.clearProperty(SYS_PROP_KEY_CLASS_NAME);
-                    System.clearProperty(SYS_PROP_KEY_DISPLAY_NAME);
+                    if (contextSelectorClass != null) {
+                        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, contextSelectorClass.getName());
+                    }
+                    System.setProperty(SYS_PROP_KEY_CLASS_NAME, description.getClassName());
+                    System.setProperty(SYS_PROP_KEY_DISPLAY_NAME, description.getDisplayName());
+                    context = Configurator.initialize(description.getDisplayName(), description.getTestClass().getClassLoader(),
+                            configLocation);
+                    try {
+                        base.evaluate();
+                    } finally {
+                        Configurator.shutdown(context);
+                        StatusLogger.getLogger().reset();
+                        System.clearProperty(Constants.LOG4J_CONTEXT_SELECTOR);
+                        System.clearProperty(SYS_PROP_KEY_CLASS_NAME);
+                        System.clearProperty(SYS_PROP_KEY_DISPLAY_NAME);
+                    }
+                } catch (Throwable t) {
+                    t.printStackTrace();
                 }
             }
         };
