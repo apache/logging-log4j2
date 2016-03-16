@@ -169,6 +169,75 @@ public class AbstractLoggerTest extends AbstractLogger {
     }
 
     @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0) {
+        return isEnabled(level, marker, new ParameterizedMessage(message, p0), null);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1) {
+        return isEnabled(level, marker, new ParameterizedMessage(message, p0, p1), null);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1, final Object p2) {
+        return isEnabled(level, marker, new ParameterizedMessage(message, p0, p1, p2), null);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1, final Object p2, final Object p3) {
+        return isEnabled(level, marker, new ParameterizedMessage(message, p0, p1, p2, p3), null);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1, final Object p2, final Object p3,
+            final Object p4) {
+        return isEnabled(level, marker, new ParameterizedMessage(message, p0, p1, p2, p3, p4), null);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5) {
+        return isEnabled(level, marker, new ParameterizedMessage(message, p0, p1, p2, p3, p4, p5), null);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6) {
+        return isEnabled(level, marker, new ParameterizedMessage(message, p0, p1, p2, p3, p4, p5, p6), null);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7) {
+        return isEnabled(level, marker, new ParameterizedMessage(message, p0, p1, p2, p3, p4, p5, p6, p7), null);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8) {
+        return isEnabled(level, marker, new ParameterizedMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8), null);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8, final Object p9) {
+        return isEnabled(level, marker, new ParameterizedMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9),
+                null);
+    }
+
+    @Override
     public boolean isEnabled(final Level level, final Marker marker, final String data, final Throwable t) {
         return isEnabled(level, marker, new SimpleMessage(data), t);
     }

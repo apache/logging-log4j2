@@ -83,6 +83,74 @@ public class LambdaLoggerTest {
         }
 
         @Override
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0) {
+            return enabled;
+        }
+
+        @Override
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+                final Object p1) {
+            return enabled;
+        }
+
+        @Override
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+                final Object p1, final Object p2) {
+            return enabled;
+        }
+
+        @Override
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+                final Object p1, final Object p2, final Object p3) {
+            return enabled;
+        }
+
+        @Override
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+                final Object p1, final Object p2, final Object p3,
+                final Object p4) {
+            return enabled;
+        }
+
+        @Override
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+                final Object p1, final Object p2, final Object p3,
+                final Object p4, final Object p5) {
+            return enabled;
+        }
+
+        @Override
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+                final Object p1, final Object p2, final Object p3,
+                final Object p4, final Object p5, final Object p6) {
+            return enabled;
+        }
+
+        @Override
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+                final Object p1, final Object p2, final Object p3,
+                final Object p4, final Object p5, final Object p6,
+                final Object p7) {
+            return enabled;
+        }
+
+        @Override
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+                final Object p1, final Object p2, final Object p3,
+                final Object p4, final Object p5, final Object p6,
+                final Object p7, final Object p8) {
+            return enabled;
+        }
+
+        @Override
+        public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+                final Object p1, final Object p2, final Object p3,
+                final Object p4, final Object p5, final Object p6,
+                final Object p7, final Object p8, final Object p9) {
+            return enabled;
+        }
+
+        @Override
         public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message, final Throwable t) {
             list.add(new LogEvent(fqcn, level, marker, message, t));
         }
