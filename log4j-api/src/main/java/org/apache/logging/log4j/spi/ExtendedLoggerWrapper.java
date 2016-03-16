@@ -35,7 +35,7 @@ public class ExtendedLoggerWrapper extends AbstractLogger {
 
     /**
      * Constructor that wraps and existing Logger.
-     * 
+     *
      * @param logger The Logger to wrap.
      * @param name The name of the Logger.
      * @param messageFactory TODO
@@ -52,7 +52,7 @@ public class ExtendedLoggerWrapper extends AbstractLogger {
 
     /**
      * Detect if the event would be logged.
-     * 
+     *
      * @param level The logging Level to check.
      * @param marker A Marker or null.
      * @param message The Message.
@@ -66,7 +66,7 @@ public class ExtendedLoggerWrapper extends AbstractLogger {
 
     /**
      * Detect if the event would be logged.
-     * 
+     *
      * @param level The logging Level to check.
      * @param marker A Marker or null.
      * @param message The message.
@@ -80,7 +80,7 @@ public class ExtendedLoggerWrapper extends AbstractLogger {
 
     /**
      * Detect if the event would be logged.
-     * 
+     *
      * @param level The logging Level to check.
      * @param marker A Marker or null.
      * @param message The message.
@@ -93,7 +93,7 @@ public class ExtendedLoggerWrapper extends AbstractLogger {
 
     /**
      * Detect if the event would be logged.
-     * 
+     *
      * @param level The logging Level to check.
      * @param marker A Marker or null.
      * @param message The message.
@@ -105,9 +105,77 @@ public class ExtendedLoggerWrapper extends AbstractLogger {
         return logger.isEnabled(level, marker, message, params);
     }
 
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0) {
+        return logger.isEnabled(level, marker, message, p0);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1) {
+        return logger.isEnabled(level, marker, message, p0, p1);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1, final Object p2) {
+        return logger.isEnabled(level, marker, message, p0, p1, p2);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1, final Object p2, final Object p3) {
+        return logger.isEnabled(level, marker, message, p0, p1, p2, p3);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1, final Object p2, final Object p3,
+            final Object p4) {
+        return logger.isEnabled(level, marker, message, p0, p1, p2, p3, p4);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5) {
+        return logger.isEnabled(level, marker, message, p0, p1, p2, p3, p4, p5);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6) {
+        return logger.isEnabled(level, marker, message, p0, p1, p2, p3, p4, p5, p6);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7) {
+        return logger.isEnabled(level, marker, message, p0, p1, p2, p3, p4, p5, p6, p7);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8) {
+        return logger.isEnabled(level, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object p0,
+            final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8, final Object p9) {
+        return logger.isEnabled(level, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
+    }
+
     /**
      * Detect if the event would be logged.
-     * 
+     *
      * @param level The logging Level to check.
      * @param marker A Marker or null.
      * @param message The message.
@@ -122,7 +190,7 @@ public class ExtendedLoggerWrapper extends AbstractLogger {
     /**
      * Always log an event. This tends to be already guarded by an enabled check, so this method should not check for
      * the logger level again
-     * 
+     *
      * @param fqcn The fully qualified class name of the <b>caller</b>
      * @param level The logging level
      * @param marker The Marker
