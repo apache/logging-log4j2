@@ -107,7 +107,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
      * @param messagePattern the message pattern that to be checked for placeholders.
      * @param arguments      the argument array to be converted.
      */
-    public ParameterizedMessage(final String messagePattern, final Object[] arguments) {
+    public ParameterizedMessage(final String messagePattern, final Object... arguments) {
         this.argArray = arguments;
         init(messagePattern);
     }
