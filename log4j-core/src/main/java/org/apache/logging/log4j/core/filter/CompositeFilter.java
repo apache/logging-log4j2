@@ -65,7 +65,7 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
             // null does nothing
             return this;
         }
-        // This is not a great implementation but simpler than copying Apache Commons 
+        // This is not a great implementation but simpler than copying Apache Commons
         // Lang ArrayUtils.removeElement() and associated bits (MutableInt),
         // which is OK since removing a filter should not be on the critical path.
         final List<Filter> filterList = Arrays.asList(this.filters);
@@ -80,7 +80,7 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
 
     /**
      * Gets a new list over the internal filter array.
-     * 
+     *
      * @return a new list over the internal filter array
      * @deprecated Use {@link #getFiltersArray()}
      */
@@ -165,6 +165,330 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
         Result result = Result.NEUTRAL;
         for (int i = 0; i < filters.length; i++) {
             result = filters[i].filter(logger, level, marker, msg, params);
+            if (result == Result.ACCEPT || result == Result.DENY) {
+                return result;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Filter an event.
+     *
+     * @param logger
+     *            The Logger.
+     * @param level
+     *            The event logging Level.
+     * @param marker
+     *            The Marker for the event or null.
+     * @param msg
+     *            String text to filter on.
+     * @param p0 the message parameters
+     * @return the Result.
+     */
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0) {
+        Result result = Result.NEUTRAL;
+        for (int i = 0; i < filters.length; i++) {
+            result = filters[i].filter(logger, level, marker, msg, p0);
+            if (result == Result.ACCEPT || result == Result.DENY) {
+                return result;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Filter an event.
+     *
+     * @param logger
+     *            The Logger.
+     * @param level
+     *            The event logging Level.
+     * @param marker
+     *            The Marker for the event or null.
+     * @param msg
+     *            String text to filter on.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @return the Result.
+     */
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1) {
+        Result result = Result.NEUTRAL;
+        for (int i = 0; i < filters.length; i++) {
+            result = filters[i].filter(logger, level, marker, msg, p0, p1);
+            if (result == Result.ACCEPT || result == Result.DENY) {
+                return result;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Filter an event.
+     *
+     * @param logger
+     *            The Logger.
+     * @param level
+     *            The event logging Level.
+     * @param marker
+     *            The Marker for the event or null.
+     * @param msg
+     *            String text to filter on.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @return the Result.
+     */
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2) {
+        Result result = Result.NEUTRAL;
+        for (int i = 0; i < filters.length; i++) {
+            result = filters[i].filter(logger, level, marker, msg, p0, p1, p2);
+            if (result == Result.ACCEPT || result == Result.DENY) {
+                return result;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Filter an event.
+     *
+     * @param logger
+     *            The Logger.
+     * @param level
+     *            The event logging Level.
+     * @param marker
+     *            The Marker for the event or null.
+     * @param msg
+     *            String text to filter on.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @return the Result.
+     */
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3) {
+        Result result = Result.NEUTRAL;
+        for (int i = 0; i < filters.length; i++) {
+            result = filters[i].filter(logger, level, marker, msg, p0, p1, p2, p3);
+            if (result == Result.ACCEPT || result == Result.DENY) {
+                return result;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Filter an event.
+     *
+     * @param logger
+     *            The Logger.
+     * @param level
+     *            The event logging Level.
+     * @param marker
+     *            The Marker for the event or null.
+     * @param msg
+     *            String text to filter on.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @return the Result.
+     */
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4) {
+        Result result = Result.NEUTRAL;
+        for (int i = 0; i < filters.length; i++) {
+            result = filters[i].filter(logger, level, marker, msg, p0, p1, p2, p3, p4);
+            if (result == Result.ACCEPT || result == Result.DENY) {
+                return result;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Filter an event.
+     *
+     * @param logger
+     *            The Logger.
+     * @param level
+     *            The event logging Level.
+     * @param marker
+     *            The Marker for the event or null.
+     * @param msg
+     *            String text to filter on.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @param p5 the message parameters
+     * @return the Result.
+     */
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5) {
+        Result result = Result.NEUTRAL;
+        for (int i = 0; i < filters.length; i++) {
+            result = filters[i].filter(logger, level, marker, msg, p0, p1, p2, p3, p4, p5);
+            if (result == Result.ACCEPT || result == Result.DENY) {
+                return result;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Filter an event.
+     *
+     * @param logger
+     *            The Logger.
+     * @param level
+     *            The event logging Level.
+     * @param marker
+     *            The Marker for the event or null.
+     * @param msg
+     *            String text to filter on.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @param p5 the message parameters
+     * @param p6 the message parameters
+     * @return the Result.
+     */
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6) {
+        Result result = Result.NEUTRAL;
+        for (int i = 0; i < filters.length; i++) {
+            result = filters[i].filter(logger, level, marker, msg, p0, p1, p2, p3, p4, p5, p6);
+            if (result == Result.ACCEPT || result == Result.DENY) {
+                return result;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Filter an event.
+     *
+     * @param logger
+     *            The Logger.
+     * @param level
+     *            The event logging Level.
+     * @param marker
+     *            The Marker for the event or null.
+     * @param msg
+     *            String text to filter on.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @param p5 the message parameters
+     * @param p6 the message parameters
+     * @param p7 the message parameters
+     * @return the Result.
+     */
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7) {
+        Result result = Result.NEUTRAL;
+        for (int i = 0; i < filters.length; i++) {
+            result = filters[i].filter(logger, level, marker, msg, p0, p1, p2, p3, p4, p5, p6, p7);
+            if (result == Result.ACCEPT || result == Result.DENY) {
+                return result;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Filter an event.
+     *
+     * @param logger
+     *            The Logger.
+     * @param level
+     *            The event logging Level.
+     * @param marker
+     *            The Marker for the event or null.
+     * @param msg
+     *            String text to filter on.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @param p5 the message parameters
+     * @param p6 the message parameters
+     * @param p7 the message parameters
+     * @param p8 the message parameters
+     * @return the Result.
+     */
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8) {
+        Result result = Result.NEUTRAL;
+        for (int i = 0; i < filters.length; i++) {
+            result = filters[i].filter(logger, level, marker, msg, p0, p1, p2, p3, p4, p5, p6, p7, p8);
+            if (result == Result.ACCEPT || result == Result.DENY) {
+                return result;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Filter an event.
+     *
+     * @param logger
+     *            The Logger.
+     * @param level
+     *            The event logging Level.
+     * @param marker
+     *            The Marker for the event or null.
+     * @param msg
+     *            String text to filter on.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @param p5 the message parameters
+     * @param p6 the message parameters
+     * @param p7 the message parameters
+     * @param p8 the message parameters
+     * @param p9 the message parameters
+     * @return the Result.
+     */
+    @Override
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+            final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6,
+            final Object p7, final Object p8, final Object p9) {
+        Result result = Result.NEUTRAL;
+        for (int i = 0; i < filters.length; i++) {
+            result = filters[i].filter(logger, level, marker, msg, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
             if (result == Result.ACCEPT || result == Result.DENY) {
                 return result;
             }
