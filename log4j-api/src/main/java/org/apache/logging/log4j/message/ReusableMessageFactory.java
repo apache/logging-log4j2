@@ -30,7 +30,7 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  * @since 2.6
  */
 @PerformanceSensitive("allocation")
-public final class ReusableMessageFactory implements MessageFactory, Serializable {
+public final class ReusableMessageFactory implements MessageFactory2, Serializable {
 
     /**
      * Instance of ReusableMessageFactory..
@@ -88,6 +88,63 @@ public final class ReusableMessageFactory implements MessageFactory, Serializabl
     @Override
     public Message newMessage(final String message, final Object... params) {
         return getParameterized().set(message, params);
+    }
+
+    @Override
+    public Message newMessage(final String message, final Object p0) {
+        return getParameterized().set(message, p0);
+    }
+
+    @Override
+    public Message newMessage(final String message, final Object p0, final Object p1) {
+        return getParameterized().set(message, p0, p1);
+    }
+
+    @Override
+    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2) {
+        return getParameterized().set(message, p0, p1, p2);
+    }
+
+    @Override
+    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2,
+            final Object p3) {
+        return getParameterized().set(message, p0, p1, p2, p3);
+    }
+
+    @Override
+    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4) {
+        return getParameterized().set(message, p0, p1, p2, p3, p4);
+    }
+
+    @Override
+    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5) {
+        return getParameterized().set(message, p0, p1, p2, p3, p4, p5);
+    }
+
+    @Override
+    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6) {
+        return getParameterized().set(message, p0, p1, p2, p3, p4, p5, p6);
+    }
+
+    @Override
+    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6, final Object p7) {
+        return getParameterized().set(message, p0, p1, p2, p3, p4, p5, p6, p7);
+    }
+
+    @Override
+    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6, final Object p7, final Object p8) {
+        return getParameterized().set(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
+    }
+
+    @Override
+    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6, final Object p7, final Object p8, final Object p9) {
+        return getParameterized().set(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
 
     /**
