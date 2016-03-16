@@ -31,7 +31,7 @@ public interface ExtendedLogger extends Logger {
 
     /**
      * Determines if logging is enabled.
-     * 
+     *
      * @param level The logging Level to check.
      * @param marker A Marker or null.
      * @param message The Message.
@@ -42,7 +42,7 @@ public interface ExtendedLogger extends Logger {
 
     /**
      * Determines if logging is enabled.
-     * 
+     *
      * @param level The logging Level to check.
      * @param marker A Marker or null.
      * @param message The message.
@@ -53,7 +53,7 @@ public interface ExtendedLogger extends Logger {
 
     /**
      * Determines if logging is enabled.
-     * 
+     *
      * @param level The logging Level to check.
      * @param marker A Marker or null.
      * @param message The message.
@@ -64,7 +64,7 @@ public interface ExtendedLogger extends Logger {
 
     /**
      * Determine if logging is enabled.
-     * 
+     *
      * @param level The logging Level to check.
      * @param marker A Marker or null.
      * @param message The message.
@@ -74,7 +74,7 @@ public interface ExtendedLogger extends Logger {
 
     /**
      * Determines if logging is enabled.
-     * 
+     *
      * @param level The logging Level to check.
      * @param marker A Marker or null.
      * @param message The message.
@@ -84,8 +84,169 @@ public interface ExtendedLogger extends Logger {
     boolean isEnabled(Level level, Marker marker, String message, Object... params);
 
     /**
+     * Determines if logging is enabled.
+     *
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param message The message.
+     * @param p0 the message parameters
+     * @return True if logging is enabled, false otherwise.
+     */
+    boolean isEnabled(Level level, Marker marker, String message, Object p0);
+
+    /**
+     * Determines if logging is enabled.
+     *
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param message The message.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @return True if logging is enabled, false otherwise.
+     */
+    boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1);
+
+    /**
+     * Determines if logging is enabled.
+     *
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param message The message.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @return True if logging is enabled, false otherwise.
+     */
+    boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2);
+
+    /**
+     * Determines if logging is enabled.
+     *
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param message The message.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @return True if logging is enabled, false otherwise.
+     */
+    boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3);
+
+    /**
+     * Determines if logging is enabled.
+     *
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param message The message.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @return True if logging is enabled, false otherwise.
+     */
+    boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3,
+            Object p4);
+
+    /**
+     * Determines if logging is enabled.
+     *
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param message The message.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @param p5 the message parameters
+     * @return True if logging is enabled, false otherwise.
+     */
+    boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3,
+            Object p4, Object p5);
+
+    /**
+     * Determines if logging is enabled.
+     *
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param message The message.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @param p5 the message parameters
+     * @param p6 the message parameters
+     * @return True if logging is enabled, false otherwise.
+     */
+    boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3,
+            Object p4, Object p5, Object p6);
+
+    /**
+     * Determines if logging is enabled.
+     *
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param message The message.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @param p5 the message parameters
+     * @param p6 the message parameters
+     * @param p7 the message parameters
+     * @return True if logging is enabled, false otherwise.
+     */
+    boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3,
+            Object p4, Object p5, Object p6, Object p7);
+
+    /**
+     * Determines if logging is enabled.
+     *
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param message The message.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @param p5 the message parameters
+     * @param p6 the message parameters
+     * @param p7 the message parameters
+     * @param p8 the message parameters
+     * @return True if logging is enabled, false otherwise.
+     */
+    boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3,
+            Object p4, Object p5, Object p6, Object p7, Object p8);
+
+    /**
+     * Determines if logging is enabled.
+     *
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param message The message.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @param p5 the message parameters
+     * @param p6 the message parameters
+     * @param p7 the message parameters
+     * @param p8 the message parameters
+     * @param p9 the message parameters
+     * @return True if logging is enabled, false otherwise.
+     */
+    boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3,
+            Object p4, Object p5, Object p6, Object p7, Object p8, Object p9);
+
+    /**
      * Logs a message if the specified level is active.
-     * 
+     *
      * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class and
      *            method when location information needs to be logged.
      * @param level The logging Level to check.
@@ -97,7 +258,7 @@ public interface ExtendedLogger extends Logger {
 
     /**
      * Logs a message if the specified level is active.
-     * 
+     *
      * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class and
      *            method when location information needs to be logged.
      * @param level The logging Level to check.
@@ -109,7 +270,7 @@ public interface ExtendedLogger extends Logger {
 
     /**
      * Logs a message if the specified level is active.
-     * 
+     *
      * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class and
      *            method when location information needs to be logged.
      * @param level The logging Level to check.
@@ -121,7 +282,7 @@ public interface ExtendedLogger extends Logger {
 
     /**
      * Logs a message if the specified level is active.
-     * 
+     *
      * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class and
      *            method when location information needs to be logged.
      * @param level The logging Level to check.
@@ -132,7 +293,7 @@ public interface ExtendedLogger extends Logger {
 
     /**
      * Logs a message if the specified level is active.
-     * 
+     *
      * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class and
      *            method when location information needs to be logged.
      * @param level The logging Level to check.
@@ -145,7 +306,7 @@ public interface ExtendedLogger extends Logger {
     /**
      * Always logs a message at the specified level. It is the responsibility of the caller to ensure the specified
      * level is enabled.
-     * 
+     *
      * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class and
      *            method when location information needs to be logged.
      * @param level The logging Level to check.
@@ -157,7 +318,7 @@ public interface ExtendedLogger extends Logger {
 
     /**
      * Logs a message which is only to be constructed if the specified level is active.
-     * 
+     *
      * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class and
      *            method when location information needs to be logged.
      * @param level The logging Level to check.
@@ -171,7 +332,7 @@ public interface ExtendedLogger extends Logger {
 
     /**
      * Logs a message whose parameters are only to be constructed if the specified level is active.
-     * 
+     *
      * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class and
      *            method when location information needs to be logged.
      * @param level The logging Level to check.
@@ -183,7 +344,7 @@ public interface ExtendedLogger extends Logger {
 
     /**
      * Logs a message which is only to be constructed if the specified level is active.
-     * 
+     *
      * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class and
      *            method when location information needs to be logged.
      * @param level The logging Level to check.
