@@ -91,4 +91,15 @@ public final class LambdaUtil {
         final Object result = supplier.get();
         return result instanceof Message ? (Message) result : messageFactory.newMessage(result);
     }
+
+    /**
+     * If the specified object is a {@code Supplier} then returns the result of calling its {@link Supplier#get()}
+     * method, otherwise returns the specified object itself.
+     *
+     * @param maybe the object to evaluate if it is a lambda, or return as is if it is not
+     * @return the result of evaluating the specified lambda, or the specified object itself it not a lambda
+     */
+    public static Object maybeLambda(final Object maybe) {
+        return maybe instanceof Supplier<?> ? ((Supplier<?>) maybe).get() : maybe;
+    }
 }
