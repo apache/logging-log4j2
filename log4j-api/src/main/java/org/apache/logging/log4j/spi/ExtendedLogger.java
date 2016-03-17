@@ -304,16 +304,188 @@ public interface ExtendedLogger extends Logger {
     void logIfEnabled(String fqcn, Level level, Marker marker, String message, Object... params);
 
     /**
-     * Always logs a message at the specified level. It is the responsibility of the caller to ensure the specified
-     * level is enabled.
+     * Logs a message if the specified level is active.
      *
      * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class and
      *            method when location information needs to be logged.
      * @param level The logging Level to check.
      * @param marker A Marker or null.
-     * @param message The Message.
-     * @param t the exception to log, including its stack trace.
+     * @param message The message format.
+     * @param p0 the message parameters
      */
+    void logIfEnabled(String fqcn, Level level, Marker marker, String message, Object p0);
+
+    /**
+     * Logs a message if the specified level is active.
+     *
+     * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class and
+     *            method when location information needs to be logged.
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param message The message format.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     */
+    void logIfEnabled(String fqcn, Level level, Marker marker, String message, Object p0, Object p1);
+
+    /**
+     * Logs a message if the specified level is active.
+     *
+     * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class and
+     *            method when location information needs to be logged.
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param message The message format.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     */
+    void logIfEnabled(String fqcn, Level level, Marker marker, String message, Object p0, Object p1, Object p2);
+
+    /**
+     * Logs a message if the specified level is active.
+     *
+     * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class and
+     *            method when location information needs to be logged.
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param message The message format.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     */
+    void logIfEnabled(String fqcn, Level level, Marker marker, String message, Object p0, Object p1, Object p2,
+            Object p3);
+
+    /**
+     * Logs a message if the specified level is active.
+     *
+     * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class and
+     *            method when location information needs to be logged.
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param message The message format.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     */
+    void logIfEnabled(String fqcn, Level level, Marker marker, String message, Object p0, Object p1, Object p2,
+            Object p3, Object p4);
+
+    /**
+     * Logs a message if the specified level is active.
+     *
+     * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class and
+     *            method when location information needs to be logged.
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param message The message format.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @param p5 the message parameters
+     */
+    void logIfEnabled(String fqcn, Level level, Marker marker, String message, Object p0, Object p1, Object p2,
+            Object p3, Object p4, Object p5);
+
+    /**
+     * Logs a message if the specified level is active.
+     *
+     * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class and
+     *            method when location information needs to be logged.
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param message The message format.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @param p5 the message parameters
+     * @param p6 the message parameters
+     */
+    void logIfEnabled(String fqcn, Level level, Marker marker, String message, Object p0, Object p1, Object p2,
+            Object p3, Object p4, Object p5, Object p6);
+
+    /**
+     * Logs a message if the specified level is active.
+     *
+     * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class and
+     *            method when location information needs to be logged.
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param message The message format.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @param p5 the message parameters
+     * @param p6 the message parameters
+     * @param p7 the message parameters
+     */
+    void logIfEnabled(String fqcn, Level level, Marker marker, String message, Object p0, Object p1, Object p2,
+            Object p3, Object p4, Object p5, Object p6, Object p7);
+
+    /**
+     * Logs a message if the specified level is active.
+     *
+     * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class and
+     *            method when location information needs to be logged.
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param message The message format.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @param p5 the message parameters
+     * @param p6 the message parameters
+     * @param p7 the message parameters
+     * @param p8 the message parameters
+     */
+    void logIfEnabled(String fqcn, Level level, Marker marker, String message, Object p0, Object p1, Object p2,
+            Object p3, Object p4, Object p5, Object p6, Object p7, Object p8);
+
+    /**
+     * Logs a message if the specified level is active.
+     *
+     * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class and
+     *            method when location information needs to be logged.
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param message The message format.
+     * @param p0 the message parameters
+     * @param p1 the message parameters
+     * @param p2 the message parameters
+     * @param p3 the message parameters
+     * @param p4 the message parameters
+     * @param p5 the message parameters
+     * @param p6 the message parameters
+     * @param p7 the message parameters
+     * @param p8 the message parameters
+     * @param p9 the message parameters
+     */
+    void logIfEnabled(String fqcn, Level level, Marker marker, String message, Object p0, Object p1, Object p2,
+            Object p3, Object p4, Object p5, Object p6, Object p7, Object p8, Object p9);
+
+        /**
+         * Always logs a message at the specified level. It is the responsibility of the caller to ensure the specified
+         * level is enabled.
+         *
+         * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class and
+         *            method when location information needs to be logged.
+         * @param level The logging Level to check.
+         * @param marker A Marker or null.
+         * @param message The Message.
+         * @param t the exception to log, including its stack trace.
+         */
     void logMessage(String fqcn, Level level, Marker marker, Message message, Throwable t);
 
     /**
