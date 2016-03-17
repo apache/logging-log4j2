@@ -58,8 +58,20 @@ public class NameAbbreviatorTest {
     @Test
     public void testAbbreviatorPatterns() throws Exception {
         final NameAbbreviator abbreviator = NameAbbreviator.getAbbreviator(this.pattern);
-        final String actual = abbreviator.abbreviate(this.getClass().getName());
+        final StringBuilder destination = new StringBuilder();
+        abbreviator.abbreviate(this.getClass().getName(), destination);
+        final String actual = destination.toString();
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testAbbreviatorPatternsAppend() throws Exception {
+        final NameAbbreviator abbreviator = NameAbbreviator.getAbbreviator(this.pattern);
+        final String PREFIX = "some random text";
+        final StringBuilder destination = new StringBuilder(PREFIX);
+        abbreviator.abbreviate(this.getClass().getName(), destination);
+        final String actual = destination.toString();
+        assertEquals(PREFIX + expected, actual);
     }
 
 }
