@@ -61,6 +61,6 @@ public final class LoggerPatternConverter extends NamePatternConverter {
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        toAppendTo.append(abbreviate(event.getLoggerName()));
+        abbreviate(event.getLoggerName(), toAppendTo);
     }
 }
