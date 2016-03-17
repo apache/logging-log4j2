@@ -38,8 +38,6 @@ import static org.junit.Assert.*;
  */
 public class GcFreeLoggingTest {
 
-    // ignored: test still fails because of vararg arrays
-    @Ignore
     @Test
     public void testNoAllocationDuringSteadyStateLogging() throws Throwable {
         final String javaHome = System.getProperty("java.home");
