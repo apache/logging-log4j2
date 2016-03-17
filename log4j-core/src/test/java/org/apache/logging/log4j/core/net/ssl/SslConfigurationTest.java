@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.net.ssl;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.UnknownHostException;
 
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
@@ -40,9 +41,13 @@ public class SslConfigurationTest {
     public void emptyConfigurationHasDefaultTrustStore() throws IOException {
         final SslConfiguration sc = SslConfiguration.createSSLConfiguration(null, null, null);
         final SSLSocketFactory factory = sc.getSslSocketFactory();
-        try (final SSLSocket clientSocket = (SSLSocket) factory.createSocket(TLS_TEST_HOST, TLS_TEST_PORT)) {
-            Assert.assertNotNull(clientSocket);
-            clientSocket.close();
+        try {
+            try (final SSLSocket clientSocket = (SSLSocket) factory.createSocket(TLS_TEST_HOST, TLS_TEST_PORT)) {
+                Assert.assertNotNull(clientSocket);
+                clientSocket.close();
+            }
+        } catch (UnknownHostException offline) {
+            // this exception is thrown on Windows when offline
         }
     }
 
@@ -51,13 +56,17 @@ public class SslConfigurationTest {
         final TrustStoreConfiguration tsc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE, null, null, null);
         final SslConfiguration sc = SslConfiguration.createSSLConfiguration(null, null, tsc);
         final SSLSocketFactory factory = sc.getSslSocketFactory();
-        try (final SSLSocket clientSocket = (SSLSocket) factory.createSocket(TLS_TEST_HOST, TLS_TEST_PORT)) {
-            try (final OutputStream os = clientSocket.getOutputStream()) {
-                os.write("GET config/login_verify2?".getBytes());
-                Assert.fail("Expected IOException");
-            } catch (final IOException e) {
-                // Expected, do nothing.
+        try {
+            try (final SSLSocket clientSocket = (SSLSocket) factory.createSocket(TLS_TEST_HOST, TLS_TEST_PORT)) {
+                try (final OutputStream os = clientSocket.getOutputStream()) {
+                    os.write("GET config/login_verify2?".getBytes());
+                    Assert.fail("Expected IOException");
+                } catch (final IOException e) {
+                    // Expected, do nothing.
+                }
             }
+        } catch (UnknownHostException offline) {
+            // this exception is thrown on Windows when offline
         }
     }
 
