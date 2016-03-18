@@ -549,4 +549,20 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         return "DefaultRolloverStrategy(min=" + minIndex + ", max=" + maxIndex + ')';
     }
 
+    public boolean isUseMax() {
+        return useMax;
+    }
+
+    public StrSubstitutor getSubst() {
+        return subst;
+    }
+
+    public List<Action> getCustomActions() {
+        return customActions;
+    }
+
+    public boolean isStopCustomActionsOnError() {
+        return stopCustomActionsOnError;
+    }
+
 }
