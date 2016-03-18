@@ -191,9 +191,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
     private final boolean useMax;
     private final StrSubstitutor subst;
     private final int compressionLevel;
-
     private final List<Action> customActions;
-
     private final boolean stopCustomActionsOnError;
 
     /**
