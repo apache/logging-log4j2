@@ -72,6 +72,17 @@
                   Remove calls to <code>org.apache.log4j.LogManager.shutdown()</code>, they are not needed in version 2
                   because the Log4j Core now automatically adds a JVM shutdown hook on start up to perform any Core
                   clean ups.
+                  <ol>
+                    <li>
+                      Starting in Log4j 2.1, you can specify a custom
+                      <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/util/ShutdownCallbackRegistry.html">ShutdownCallbackRegistry</a>
+                      to override the default JVM shutdown hook strategy.
+                    </li>
+                    <li>
+                      Starting in Log4j 2.6, you can now use <code>org.apache.logging.log4j.LogManager.shutdown()</code>
+                      to initiate shutdown manually.
+                    </li>
+                  </ol>
                 </li>
                 <li>
                   Calls to <code>org.apache.log4j.Logger.setLevel()</code> or similar methods are not supported in the API.
