@@ -131,12 +131,24 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             }
         };
 
+        static FileExtensions lookup(String fileExtension) {
+            for (FileExtensions ext : values()) {
+                if (ext.isExtensionFor(fileExtension)) {
+                    return ext;
+                }
+            }
+            return null;
+        }
+
         private final String extension;
 
         private FileExtensions(final String extension) {
             Objects.requireNonNull(extension, "extension");
             this.extension = extension;
         }
+
+        abstract Action createCompressAction(String renameTo, String compressedName, boolean deleteSource,
+                int compressionLevel);
 
         String getExtension() {
             return extension;
@@ -157,18 +169,6 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         File target(String fileName) {
             return new File(fileName);
         }
-
-        abstract Action createCompressAction(String renameTo, String compressedName, boolean deleteSource,
-                int compressionLevel);
-
-        static FileExtensions lookup(String fileExtension) {
-            for (FileExtensions ext : values()) {
-                if (ext.isExtensionFor(fileExtension)) {
-                    return ext;
-                }
-            }
-            return null;
-        }
     };
 
     /**
@@ -178,41 +178,6 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
 
     private static final int MIN_WINDOW_SIZE = 1;
     private static final int DEFAULT_WINDOW_SIZE = 7;
-
-    /**
-     * Index for oldest retained log file.
-     */
-    private final int maxIndex;
-
-    /**
-     * Index for most recent log file.
-     */
-    private final int minIndex;
-    private final boolean useMax;
-    private final StrSubstitutor subst;
-    private final int compressionLevel;
-    private final List<Action> customActions;
-    private final boolean stopCustomActionsOnError;
-
-    /**
-     * Constructs a new instance.
-     * 
-     * @param minIndex The minimum index.
-     * @param maxIndex The maximum index.
-     * @param customActions custom actions to perform asynchronously after rollover
-     * @param stopCustomActionsOnError whether to stop executing asynchronous actions if an error occurs
-     */
-    protected DefaultRolloverStrategy(final int minIndex, final int maxIndex, final boolean useMax,
-            final int compressionLevel, final StrSubstitutor subst, final Action[] customActions,
-            final boolean stopCustomActionsOnError) {
-        this.minIndex = minIndex;
-        this.maxIndex = maxIndex;
-        this.useMax = useMax;
-        this.compressionLevel = compressionLevel;
-        this.subst = subst;
-        this.stopCustomActionsOnError = stopCustomActionsOnError;
-        this.customActions = customActions == null ? Collections.<Action> emptyList() : Arrays.asList(customActions);
-    }
 
     /**
      * Create the DefaultRolloverStrategy.
@@ -261,8 +226,47 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
                 customActions, stopCustomActionsOnError);
     }
 
+    /**
+     * Index for oldest retained log file.
+     */
+    private final int maxIndex;
+    /**
+     * Index for most recent log file.
+     */
+    private final int minIndex;
+    private final boolean useMax;
+    private final StrSubstitutor subst;
+    private final int compressionLevel;
+    private final List<Action> customActions;
+
+    private final boolean stopCustomActionsOnError;
+
+    /**
+     * Constructs a new instance.
+     * 
+     * @param minIndex The minimum index.
+     * @param maxIndex The maximum index.
+     * @param customActions custom actions to perform asynchronously after rollover
+     * @param stopCustomActionsOnError whether to stop executing asynchronous actions if an error occurs
+     */
+    protected DefaultRolloverStrategy(final int minIndex, final int maxIndex, final boolean useMax,
+            final int compressionLevel, final StrSubstitutor subst, final Action[] customActions,
+            final boolean stopCustomActionsOnError) {
+        this.minIndex = minIndex;
+        this.maxIndex = maxIndex;
+        this.useMax = useMax;
+        this.compressionLevel = compressionLevel;
+        this.subst = subst;
+        this.stopCustomActionsOnError = stopCustomActionsOnError;
+        this.customActions = customActions == null ? Collections.<Action> emptyList() : Arrays.asList(customActions);
+    }
+
     public int getCompressionLevel() {
         return this.compressionLevel;
+    }
+
+    public List<Action> getCustomActions() {
+        return customActions;
     }
 
     public int getMaxIndex() {
@@ -271,6 +275,31 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
 
     public int getMinIndex() {
         return this.minIndex;
+    }
+
+    public StrSubstitutor getSubst() {
+        return subst;
+    }
+
+    public boolean isStopCustomActionsOnError() {
+        return stopCustomActionsOnError;
+    }
+
+    public boolean isUseMax() {
+        return useMax;
+    }
+
+    private Action merge(final Action compressAction, final List<Action> custom, final boolean stopOnError) {
+        if (custom.isEmpty()) {
+            return compressAction;
+        }
+        if (compressAction == null) {
+            return new CompositeAction(custom, stopOnError);
+        }
+        final List<Action> all = new ArrayList<>();
+        all.add(compressAction);
+        all.addAll(custom);
+        return new CompositeAction(all, stopOnError);
     }
 
     private int purge(final int lowIndex, final int highIndex, final RollingFileManager manager) {
@@ -479,15 +508,6 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         return lowIndex;
     }
 
-    private int suffixLength(final String lowFilename) {
-        for (FileExtensions extension : FileExtensions.values()) {
-            if (extension.isExtensionFor(lowFilename)) {
-                return extension.length();
-            }
-        }
-        return 0;
-    }
-
     /**
      * Perform the rollover.
      * 
@@ -531,38 +551,18 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         return new RolloverDescriptionImpl(currentFileName, false, renameAction, asyncAction);
     }
 
-    private Action merge(final Action compressAction, final List<Action> custom, final boolean stopOnError) {
-        if (custom.isEmpty()) {
-            return compressAction;
+    private int suffixLength(final String lowFilename) {
+        for (FileExtensions extension : FileExtensions.values()) {
+            if (extension.isExtensionFor(lowFilename)) {
+                return extension.length();
+            }
         }
-        if (compressAction == null) {
-            return new CompositeAction(custom, stopOnError);
-        }
-        final List<Action> all = new ArrayList<>();
-        all.add(compressAction);
-        all.addAll(custom);
-        return new CompositeAction(all, stopOnError);
+        return 0;
     }
 
     @Override
     public String toString() {
         return "DefaultRolloverStrategy(min=" + minIndex + ", max=" + maxIndex + ')';
-    }
-
-    public boolean isUseMax() {
-        return useMax;
-    }
-
-    public StrSubstitutor getSubst() {
-        return subst;
-    }
-
-    public List<Action> getCustomActions() {
-        return customActions;
-    }
-
-    public boolean isStopCustomActionsOnError() {
-        return stopCustomActionsOnError;
     }
 
 }
