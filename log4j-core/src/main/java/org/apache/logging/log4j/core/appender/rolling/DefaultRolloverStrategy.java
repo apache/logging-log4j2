@@ -230,6 +230,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
      * Index for oldest retained log file.
      */
     private final int maxIndex;
+
     /**
      * Index for most recent log file.
      */
@@ -238,7 +239,6 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
     private final StrSubstitutor strSubstitutor;
     private final int compressionLevel;
     private final List<Action> customActions;
-
     private final boolean stopCustomActionsOnError;
 
     /**
