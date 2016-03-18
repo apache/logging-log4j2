@@ -104,8 +104,17 @@
           <subsection name="Configuring Log4j 2">
             <p>
               Although the Log4j 2 configuration syntax is different than that of Log4j 1.x, most, if not all, of
-              the same functionality is available. Below are the example configurations for Log4j 1.x and their
-              counterparts in Log4j 2.
+              the same functionality is available.
+            </p>
+            <p>
+              Note that system property interpolation via the <code>${foo}</code> syntax has been extended to allow
+              property lookups from many different sources. See the <a href="lookups.html">Lookups</a> documentation
+              for more details. For example, using a lookup for the system property named <code>catalina.base</code>,
+              in Log4j 1.x, the syntax would be <code>${catalina.base}</code>. In Log4j 2, the syntax would be
+              <code>${sys:catalina.base}</code>.
+            </p>
+            <p>
+              Below are the example configurations for Log4j 1.x and their counterparts in Log4j 2.
             </p>
 
             <h4>Sample 1 - Simple configuration using a Console Appender</h4>

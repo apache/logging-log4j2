@@ -220,6 +220,9 @@
       <action issue="LOG4J2-1169" dev="mattsicker" type="add" due-to="Gerald Kritzinger">
         PatternLayout: Possible variable substitution in equals substitution parameter.
       </action>
+      <action issue="LOG4J2-1322" dev="mattsicker" type="update">
+        Update Log4j 1.x migration guide to include information about system property lookup syntax changes.
+      </action>
     </release>
     <release version="2.5" date="2015-12-06" description="GA Release 2.5">
       <action issue="LOG4J2-324" dev="rpopma" type="fix">
