@@ -235,7 +235,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
      */
     private final int minIndex;
     private final boolean useMax;
-    private final StrSubstitutor subst;
+    private final StrSubstitutor strSubstitutor;
     private final int compressionLevel;
     private final List<Action> customActions;
 
@@ -250,13 +250,13 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
      * @param stopCustomActionsOnError whether to stop executing asynchronous actions if an error occurs
      */
     protected DefaultRolloverStrategy(final int minIndex, final int maxIndex, final boolean useMax,
-            final int compressionLevel, final StrSubstitutor subst, final Action[] customActions,
+            final int compressionLevel, final StrSubstitutor strSubstitutor, final Action[] customActions,
             final boolean stopCustomActionsOnError) {
         this.minIndex = minIndex;
         this.maxIndex = maxIndex;
         this.useMax = useMax;
         this.compressionLevel = compressionLevel;
-        this.subst = subst;
+        this.strSubstitutor = strSubstitutor;
         this.stopCustomActionsOnError = stopCustomActionsOnError;
         this.customActions = customActions == null ? Collections.<Action> emptyList() : Arrays.asList(customActions);
     }
@@ -277,8 +277,8 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         return this.minIndex;
     }
 
-    public StrSubstitutor getSubst() {
-        return subst;
+    public StrSubstitutor getStrSubstitutor() {
+        return strSubstitutor;
     }
 
     public boolean isStopCustomActionsOnError() {
@@ -320,8 +320,8 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         final StringBuilder buf = new StringBuilder();
 
         // LOG4J2-531: directory scan & rollover must use same format
-        manager.getPatternProcessor().formatFileName(subst, buf, highIndex);
-        String highFilename = subst.replace(buf);
+        manager.getPatternProcessor().formatFileName(strSubstitutor, buf, highIndex);
+        String highFilename = strSubstitutor.replace(buf);
         final int suffixLength = suffixLength(highFilename);
         int curMaxIndex = 0;
 
@@ -371,9 +371,9 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
                 // add a rename action to the list
                 buf.setLength(0);
                 // LOG4J2-531: directory scan & rollover must use same format
-                manager.getPatternProcessor().formatFileName(subst, buf, i - 1);
+                manager.getPatternProcessor().formatFileName(strSubstitutor, buf, i - 1);
 
-                final String lowFilename = subst.replace(buf);
+                final String lowFilename = strSubstitutor.replace(buf);
                 String renameTo = lowFilename;
 
                 if (isBase) {
@@ -385,9 +385,9 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             } else {
                 buf.setLength(0);
                 // LOG4J2-531: directory scan & rollover must use same format
-                manager.getPatternProcessor().formatFileName(subst, buf, i - 1);
+                manager.getPatternProcessor().formatFileName(strSubstitutor, buf, i - 1);
 
-                highFilename = subst.replace(buf);
+                highFilename = strSubstitutor.replace(buf);
             }
         }
         if (curMaxIndex == 0) {
@@ -427,9 +427,9 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         final StringBuilder buf = new StringBuilder();
 
         // LOG4J2-531: directory scan & rollover must use same format
-        manager.getPatternProcessor().formatFileName(subst, buf, lowIndex);
+        manager.getPatternProcessor().formatFileName(strSubstitutor, buf, lowIndex);
 
-        String lowFilename = subst.replace(buf);
+        String lowFilename = strSubstitutor.replace(buf);
         final int suffixLength = suffixLength(lowFilename);
 
         for (int i = lowIndex; i <= highIndex; i++) {
@@ -472,9 +472,9 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
                 // add a rename action to the list
                 buf.setLength(0);
                 // LOG4J2-531: directory scan & rollover must use same format
-                manager.getPatternProcessor().formatFileName(subst, buf, i + 1);
+                manager.getPatternProcessor().formatFileName(strSubstitutor, buf, i + 1);
 
-                final String highFilename = subst.replace(buf);
+                final String highFilename = strSubstitutor.replace(buf);
                 String renameTo = highFilename;
 
                 if (isBase) {
@@ -530,7 +530,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             LOGGER.trace("DefaultRolloverStrategy.purge() took {} milliseconds", durationMillis);
         }
         final StringBuilder buf = new StringBuilder(255);
-        manager.getPatternProcessor().formatFileName(subst, buf, fileIndex);
+        manager.getPatternProcessor().formatFileName(strSubstitutor, buf, fileIndex);
         final String currentFileName = manager.getFileName();
 
         String renameTo = buf.toString();
