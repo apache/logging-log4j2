@@ -294,14 +294,14 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         manager.getPatternProcessor().formatFileName(subst, buf, highIndex);
         String highFilename = subst.replace(buf);
         final int suffixLength = suffixLength(highFilename);
-        int maxIndex = 0;
+        int curMaxIndex = 0;
 
         for (int i = highIndex; i >= lowIndex; i--) {
             File toRename = new File(highFilename);
             if (i == highIndex && toRename.exists()) {
-                maxIndex = highIndex;
-            } else if (maxIndex == 0 && toRename.exists()) {
-                maxIndex = i + 1;
+                curMaxIndex = highIndex;
+            } else if (curMaxIndex == 0 && toRename.exists()) {
+                curMaxIndex = i + 1;
                 break;
             }
 
@@ -361,8 +361,8 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
                 highFilename = subst.replace(buf);
             }
         }
-        if (maxIndex == 0) {
-            maxIndex = lowIndex;
+        if (curMaxIndex == 0) {
+            curMaxIndex = lowIndex;
         }
 
         //
@@ -381,7 +381,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
                 return -1;
             }
         }
-        return maxIndex;
+        return curMaxIndex;
     }
 
     /**
