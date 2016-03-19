@@ -72,6 +72,17 @@
                   Remove calls to <code>org.apache.log4j.LogManager.shutdown()</code>, they are not needed in version 2
                   because the Log4j Core now automatically adds a JVM shutdown hook on start up to perform any Core
                   clean ups.
+                  <ol>
+                    <li>
+                      Starting in Log4j 2.1, you can specify a custom
+                      <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/util/ShutdownCallbackRegistry.html">ShutdownCallbackRegistry</a>
+                      to override the default JVM shutdown hook strategy.
+                    </li>
+                    <li>
+                      Starting in Log4j 2.6, you can now use <code>org.apache.logging.log4j.LogManager.shutdown()</code>
+                      to initiate shutdown manually.
+                    </li>
+                  </ol>
                 </li>
                 <li>
                   Calls to <code>org.apache.log4j.Logger.setLevel()</code> or similar methods are not supported in the API.
@@ -93,8 +104,17 @@
           <subsection name="Configuring Log4j 2">
             <p>
               Although the Log4j 2 configuration syntax is different than that of Log4j 1.x, most, if not all, of
-              the same functionality is available. Below are the example configurations for Log4j 1.x and their
-              counterparts in Log4j 2.
+              the same functionality is available.
+            </p>
+            <p>
+              Note that system property interpolation via the <code>${foo}</code> syntax has been extended to allow
+              property lookups from many different sources. See the <a href="lookups.html">Lookups</a> documentation
+              for more details. For example, using a lookup for the system property named <code>catalina.base</code>,
+              in Log4j 1.x, the syntax would be <code>${catalina.base}</code>. In Log4j 2, the syntax would be
+              <code>${sys:catalina.base}</code>.
+            </p>
+            <p>
+              Below are the example configurations for Log4j 1.x and their counterparts in Log4j 2.
             </p>
 
             <h4>Sample 1 - Simple configuration using a Console Appender</h4>

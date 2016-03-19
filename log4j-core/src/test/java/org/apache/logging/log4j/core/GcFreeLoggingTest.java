@@ -91,14 +91,14 @@ public class GcFreeLoggingTest {
                         return; // exclude
                     }
                 }
-                System.out.println("I just allocated the object " + newObj +
+                System.err.println("I just allocated the object " + newObj +
                         " of type " + desc + " whose size is " + size);
                 if (count != -1) {
-                    System.out.println("It's an array of size " + count);
+                    System.err.println("It's an array of size " + count);
                 }
 
-                // uncomment to get a stack trace and see which line caused allocation
-                //new RuntimeException().printStackTrace();
+                // show a stack trace to see which line caused allocation
+                new RuntimeException().printStackTrace();
             }
         };
         Thread.sleep(500);
