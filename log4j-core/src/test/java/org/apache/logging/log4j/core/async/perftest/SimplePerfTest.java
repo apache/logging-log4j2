@@ -52,7 +52,6 @@ public class SimplePerfTest {
             System.out.printf("Warmup: Throughput: %,d ops/s%n", opsPerSec);
             total += opsPerSec;
             count++;
-            Thread.sleep(1000);// drain buffer
         } while (System.currentTimeMillis() < end);
         System.out.printf("Average warmup throughput: %,d ops/s%n", total/count);
 
@@ -63,7 +62,6 @@ public class SimplePerfTest {
             loop(logger, ITERATIONS);
             long endNanos = System.nanoTime();
             durationNanos[i] = endNanos - startNanos;
-            Thread.sleep(1000);// drain buffer
         }
         total = 0;
         for (int i = 0; i < COUNT; i++) {
