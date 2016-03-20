@@ -93,7 +93,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     private static final String CATCHING = "Catching";
 
     protected final String name;
-    private final MessageFactory messageFactory;
+    private final MessageFactory2 messageFactory;
     private final FlowMessageFactory flowMessageFactory;
 
     /**
@@ -122,7 +122,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      */
     public AbstractLogger(final String name, final MessageFactory messageFactory) {
         this.name = name;
-        this.messageFactory = messageFactory == null ? createDefaultMessageFactory() : messageFactory;
+        this.messageFactory = messageFactory == null ? createDefaultMessageFactory() : narrow(messageFactory);
         this.flowMessageFactory = createDefaultFlowMessageFactory();
     }
 
@@ -222,12 +222,20 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         }
     }
 
-    private static MessageFactory createDefaultMessageFactory() {
+    private static MessageFactory2 createDefaultMessageFactory() {
         try {
-            return DEFAULT_MESSAGE_FACTORY_CLASS.newInstance();
+            final MessageFactory result = DEFAULT_MESSAGE_FACTORY_CLASS.newInstance();
+            return narrow(result);
         } catch (final InstantiationException | IllegalAccessException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    private static MessageFactory2 narrow(final MessageFactory result) {
+        if (result instanceof MessageFactory2) {
+            return (MessageFactory2) result;
+        }
+        return new MessageFactory2Adapter(result);
     }
 
     private static FlowMessageFactory createDefaultFlowMessageFactory() {
@@ -1892,40 +1900,40 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Object p0) {
-        final Message msg = newMessage(message, LambdaUtil.maybeLambda(p0));
+        final Message msg = messageFactory.newMessage(message, LambdaUtil.maybeLambda(p0));
         logMessage(fqcn, level, marker, msg, msg.getThrowable());
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Object p0, final Object p1) {
-        final Message msg = newMessage(message, LambdaUtil.maybeLambda(p0), LambdaUtil.maybeLambda(p1));
+        final Message msg = messageFactory.newMessage(message, LambdaUtil.maybeLambda(p0), LambdaUtil.maybeLambda(p1));
         logMessage(fqcn, level, marker, msg, msg.getThrowable());
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Object p0, final Object p1, final Object p2) {
-        final Message msg = newMessage(message, LambdaUtil.maybeLambda(p0), LambdaUtil.maybeLambda(p1),
+        final Message msg = messageFactory.newMessage(message, LambdaUtil.maybeLambda(p0), LambdaUtil.maybeLambda(p1),
                 LambdaUtil.maybeLambda(p2));
         logMessage(fqcn, level, marker, msg, msg.getThrowable());
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Object p0, final Object p1, final Object p2, final Object p3) {
-        final Message msg = newMessage(message, LambdaUtil.maybeLambda(p0), LambdaUtil.maybeLambda(p1),
+        final Message msg = messageFactory.newMessage(message, LambdaUtil.maybeLambda(p0), LambdaUtil.maybeLambda(p1),
                 LambdaUtil.maybeLambda(p2), LambdaUtil.maybeLambda(p3));
         logMessage(fqcn, level, marker, msg, msg.getThrowable());
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
-        final Message msg = newMessage(message, LambdaUtil.maybeLambda(p0), LambdaUtil.maybeLambda(p1),
+        final Message msg = messageFactory.newMessage(message, LambdaUtil.maybeLambda(p0), LambdaUtil.maybeLambda(p1),
                 LambdaUtil.maybeLambda(p2), LambdaUtil.maybeLambda(p3), LambdaUtil.maybeLambda(p4));
         logMessage(fqcn, level, marker, msg, msg.getThrowable());
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5) {
-        final Message msg = newMessage(message, LambdaUtil.maybeLambda(p0), LambdaUtil.maybeLambda(p1),
+        final Message msg = messageFactory.newMessage(message, LambdaUtil.maybeLambda(p0), LambdaUtil.maybeLambda(p1),
                 LambdaUtil.maybeLambda(p2), LambdaUtil.maybeLambda(p3), LambdaUtil.maybeLambda(p4),
                 LambdaUtil.maybeLambda(p5));
         logMessage(fqcn, level, marker, msg, msg.getThrowable());
@@ -1934,7 +1942,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
             final Object p6) {
-        final Message msg = newMessage(message, LambdaUtil.maybeLambda(p0), LambdaUtil.maybeLambda(p1),
+        final Message msg = messageFactory.newMessage(message, LambdaUtil.maybeLambda(p0), LambdaUtil.maybeLambda(p1),
                 LambdaUtil.maybeLambda(p2), LambdaUtil.maybeLambda(p3), LambdaUtil.maybeLambda(p4),
                 LambdaUtil.maybeLambda(p5), LambdaUtil.maybeLambda(p6));
         logMessage(fqcn, level, marker, msg, msg.getThrowable());
@@ -1943,7 +1951,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
             final Object p6, final Object p7) {
-        final Message msg = newMessage(message, LambdaUtil.maybeLambda(p0), LambdaUtil.maybeLambda(p1),
+        final Message msg = messageFactory.newMessage(message, LambdaUtil.maybeLambda(p0), LambdaUtil.maybeLambda(p1),
                 LambdaUtil.maybeLambda(p2), LambdaUtil.maybeLambda(p3), LambdaUtil.maybeLambda(p4),
                 LambdaUtil.maybeLambda(p5), LambdaUtil.maybeLambda(p6), LambdaUtil.maybeLambda(p7));
         logMessage(fqcn, level, marker, msg, msg.getThrowable());
@@ -1952,7 +1960,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
             final Object p6, final Object p7, final Object p8) {
-        final Message msg = newMessage(message, LambdaUtil.maybeLambda(p0), LambdaUtil.maybeLambda(p1),
+        final Message msg = messageFactory.newMessage(message, LambdaUtil.maybeLambda(p0), LambdaUtil.maybeLambda(p1),
                 LambdaUtil.maybeLambda(p2), LambdaUtil.maybeLambda(p3), LambdaUtil.maybeLambda(p4),
                 LambdaUtil.maybeLambda(p5), LambdaUtil.maybeLambda(p6), LambdaUtil.maybeLambda(p7),
                 LambdaUtil.maybeLambda(p8));
@@ -1962,7 +1970,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
             final Object p6, final Object p7, final Object p8, final Object p9) {
-        final Message msg = newMessage(message, LambdaUtil.maybeLambda(p0), LambdaUtil.maybeLambda(p1),
+        final Message msg = messageFactory.newMessage(message, LambdaUtil.maybeLambda(p0), LambdaUtil.maybeLambda(p1),
                 LambdaUtil.maybeLambda(p2), LambdaUtil.maybeLambda(p3), LambdaUtil.maybeLambda(p4),
                 LambdaUtil.maybeLambda(p5), LambdaUtil.maybeLambda(p6), LambdaUtil.maybeLambda(p7),
                 LambdaUtil.maybeLambda(p8), LambdaUtil.maybeLambda(p9));
@@ -1973,102 +1981,6 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
             final Supplier<?>... paramSuppliers) {
         final Message msg = messageFactory.newMessage(message, LambdaUtil.getAll(paramSuppliers));
         logMessage(fqcn, level, marker, msg, msg.getThrowable());
-    }
-
-    private Message newMessage(final String message, final Object p0) {
-        final MessageFactory factory = messageFactory;
-        if (factory instanceof MessageFactory2) {
-            return ((MessageFactory2) factory).newMessage(message, p0);
-        } else {
-            return factory.newMessage(message, p0);
-        }
-    }
-
-    private Message newMessage(final String message, final Object p0, final Object p1) {
-        final MessageFactory factory = messageFactory;
-        if (factory instanceof MessageFactory2) {
-            return ((MessageFactory2) factory).newMessage(message, p0, p1);
-        } else {
-            return factory.newMessage(message, p0, p1);
-        }
-    }
-
-    private Message newMessage(final String message, final Object p0, final Object p1, final Object p2) {
-        final MessageFactory factory = messageFactory;
-        if (factory instanceof MessageFactory2) {
-            return ((MessageFactory2) factory).newMessage(message, p0, p1, p2);
-        } else {
-            return factory.newMessage(message, p0, p1, p2);
-        }
-    }
-
-    private Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3) {
-        final MessageFactory factory = messageFactory;
-        if (factory instanceof MessageFactory2) {
-            return ((MessageFactory2) factory).newMessage(message, p0, p1, p2, p3);
-        } else {
-            return factory.newMessage(message, p0, p1, p2, p3);
-        }
-    }
-
-    private Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4) {
-        final MessageFactory factory = messageFactory;
-        if (factory instanceof MessageFactory2) {
-            return ((MessageFactory2) factory).newMessage(message, p0, p1, p2, p3, p4);
-        } else {
-            return factory.newMessage(message, p0, p1, p2, p3, p4);
-        }
-    }
-
-    private Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5) {
-        final MessageFactory factory = messageFactory;
-        if (factory instanceof MessageFactory2) {
-            return ((MessageFactory2) factory).newMessage(message, p0, p1, p2, p3, p4, p5);
-        } else {
-            return factory.newMessage(message, p0, p1, p2, p3, p4, p5);
-        }
-    }
-
-    private Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6) {
-        final MessageFactory factory = messageFactory;
-        if (factory instanceof MessageFactory2) {
-            return ((MessageFactory2) factory).newMessage(message, p0, p1, p2, p3, p4, p5, p6);
-        } else {
-            return factory.newMessage(message, p0, p1, p2, p3, p4, p5, p6);
-        }
-    }
-
-    private Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6, final Object p7) {
-        final MessageFactory factory = messageFactory;
-        if (factory instanceof MessageFactory2) {
-            return ((MessageFactory2) factory).newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7);
-        } else {
-            return factory.newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7);
-        }
-    }
-
-    private Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6, final Object p7, final Object p8) {
-        final MessageFactory factory = messageFactory;
-        if (factory instanceof MessageFactory2) {
-            return ((MessageFactory2) factory).newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
-        } else {
-            return factory.newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
-        }
-    }
-
-    private Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6, final Object p7, final Object p8, final Object p9) {
-        final MessageFactory factory = messageFactory;
-        if (factory instanceof MessageFactory2) {
-            return ((MessageFactory2) factory).newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
-        } else {
-            return factory.newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
-        }
     }
 
     @Override
