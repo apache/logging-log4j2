@@ -88,8 +88,10 @@ public class AsyncLoggerConfig extends LoggerConfig {
     protected void callAppenders(final LogEvent event) {
         populateLazilyInitializedFields(event);
 
-        final EventRoute eventRoute = delegate.getEventRoute(event.getLevel());
-        eventRoute.logMessage(this, event);
+        if (!delegate.tryEnqueue(event, this)) {
+            final EventRoute eventRoute = delegate.getEventRoute(event.getLevel());
+            eventRoute.logMessage(this, event);
+        }
     }
 
     private void populateLazilyInitializedFields(final LogEvent event) {

@@ -132,7 +132,7 @@ public class FlumeEmbeddedAppenderTest {
         EventLogger.logEvent(msg);
 
         final Event event = primary.poll();
-        Assert.assertNotNull(event);
+        Assert.assertNotNull("Event should not be null", event);
         final String body = getBody(event);
         Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
             body.endsWith("Test Log4j"));
@@ -147,7 +147,7 @@ public class FlumeEmbeddedAppenderTest {
         }
         for (int i = 0; i < 10; ++i) {
             final Event event = primary.poll();
-            Assert.assertNotNull(event);
+            Assert.assertNotNull("Event should not be null", event);
             final String body = getBody(event);
             final String expected = "Test Multiple " + i;
             Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
@@ -166,7 +166,7 @@ public class FlumeEmbeddedAppenderTest {
         }
         for (int i = 0; i < 10; ++i) {
             final Event event = primary.poll();
-            Assert.assertNotNull(event);
+            Assert.assertNotNull("Event should not be null", event);
             final String body = getBody(event);
             final String expected = "Test Primary " + i;
             Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
@@ -185,7 +185,7 @@ public class FlumeEmbeddedAppenderTest {
         }
         for (int i = 0; i < 10; ++i) {
             final Event event = alternate.poll();
-            Assert.assertNotNull(event);
+            Assert.assertNotNull("Event should not be null", event);
             final String body = getBody(event);
             final String expected = "Test Alternate " + i;
             /* When running in Gump Flume consistently returns the last event from the primary channel after
@@ -202,7 +202,7 @@ public class FlumeEmbeddedAppenderTest {
         EventLogger.logEvent(msg);
 
         final Event event = primary.poll();
-        Assert.assertNotNull(event);
+        Assert.assertNotNull("Event should not be null", event);
         final String environmentHeader = event.getHeaders().get("environment");
         Assert.assertEquals("local", environmentHeader);
     }

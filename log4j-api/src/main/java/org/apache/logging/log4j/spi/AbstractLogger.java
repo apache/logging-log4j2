@@ -91,7 +91,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     private static final String THROWING = "Throwing";
     private static final String CATCHING = "Catching";
 
-    private final String name;
+    protected final String name;
     private final MessageFactory messageFactory;
     private final FlowMessageFactory flowMessageFactory;
 
@@ -1431,14 +1431,16 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     @Override
     public void traceExit(final EntryMessage message) {
-        if (isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
+        // If the message is null, traceEnter returned null because flow logging was disabled, we can optimize out calling isEnabled().
+        if (message != null && isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
             logMessage(FQCN, Level.TRACE, EXIT_MARKER, flowMessageFactory.newExitMessage(message), null);
         }
     }
 
     @Override
     public <R> R traceExit(final EntryMessage message, final R result) {
-        if (isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
+        // If the message is null, traceEnter returned null because flow logging was disabled, we can optimize out calling isEnabled().
+        if (message != null && isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
             logMessage(FQCN, Level.TRACE, EXIT_MARKER, flowMessageFactory.newExitMessage(result, message), null);
         }
         return result;
@@ -1446,7 +1448,8 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     @Override
     public <R> R traceExit(final Message message, final R result) {
-        if (isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
+        // If the message is null, traceEnter returned null because flow logging was disabled, we can optimize out calling isEnabled().
+        if (message != null && isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
             logMessage(FQCN, Level.TRACE, EXIT_MARKER, flowMessageFactory.newExitMessage(result, message), null);
         }
         return result;

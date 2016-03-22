@@ -40,13 +40,12 @@ public class AsyncEventRouterFactoryTest {
 
     private void clearProperties() {
         System.clearProperty(AsyncEventRouterFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER);
-        System.clearProperty(AsyncEventRouterFactory.PROPERTY_NAME_DISCARDING_QUEUE_RATIO);
         System.clearProperty(AsyncEventRouterFactory.PROPERTY_NAME_DISCARDING_THRESHOLD_LEVEL);
     }
 
     @Test
     public void testCreateReturnsDefaultRouterByDefault() throws Exception {
-        AsyncEventRouter router = AsyncEventRouterFactory.create(256);
+        AsyncEventRouter router = AsyncEventRouterFactory.create();
         assertEquals(DefaultAsyncEventRouter.class, router.getClass());
     }
 
@@ -54,31 +53,23 @@ public class AsyncEventRouterFactoryTest {
     public void testCreateReturnsDiscardingRouterIfSpecified() throws Exception {
         System.setProperty(AsyncEventRouterFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
                 AsyncEventRouterFactory.PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER);
-        assertEquals(DiscardingAsyncEventRouter.class, AsyncEventRouterFactory.create(256).getClass());
+        assertEquals(DiscardingAsyncEventRouter.class, AsyncEventRouterFactory.create().getClass());
 
         System.setProperty(AsyncEventRouterFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
                 DiscardingAsyncEventRouter.class.getSimpleName());
-        assertEquals(DiscardingAsyncEventRouter.class, AsyncEventRouterFactory.create(256).getClass());
+        assertEquals(DiscardingAsyncEventRouter.class, AsyncEventRouterFactory.create().getClass());
 
         System.setProperty(AsyncEventRouterFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
                 DiscardingAsyncEventRouter.class.getName());
-        assertEquals(DiscardingAsyncEventRouter.class, AsyncEventRouterFactory.create(256).getClass());
+        assertEquals(DiscardingAsyncEventRouter.class, AsyncEventRouterFactory.create().getClass());
     }
 
     @Test
     public void testCreateDiscardingRouterDefaultThresholdLevelInfo() throws Exception {
         System.setProperty(AsyncEventRouterFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
                 AsyncEventRouterFactory.PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER);
-        assertEquals(Level.INFO, ((DiscardingAsyncEventRouter) AsyncEventRouterFactory.create(256)).
+        assertEquals(Level.INFO, ((DiscardingAsyncEventRouter) AsyncEventRouterFactory.create()).
                 getThresholdLevel());
-    }
-
-    @Test
-    public void testCreateDiscardingRouterDefaultThresholdQueueRemainingCapacity() throws Exception {
-        System.setProperty(AsyncEventRouterFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
-                AsyncEventRouterFactory.PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER);
-        assertEquals((int) (256 * (1.0 - 0.8)), ((DiscardingAsyncEventRouter) AsyncEventRouterFactory.create(256)).
-                getThresholdQueueRemainingCapacity());
     }
 
     @Test
@@ -89,22 +80,8 @@ public class AsyncEventRouterFactoryTest {
         for (Level level : Level.values()) {
             System.setProperty(AsyncEventRouterFactory.PROPERTY_NAME_DISCARDING_THRESHOLD_LEVEL,
                     level.name());
-            assertEquals(level, ((DiscardingAsyncEventRouter) AsyncEventRouterFactory.create(256)).
+            assertEquals(level, ((DiscardingAsyncEventRouter) AsyncEventRouterFactory.create()).
                     getThresholdLevel());
-        }
-    }
-
-    @Test
-    public void testCreateDiscardingRouterThresholdQueueCapacityCustomizable() throws Exception {
-        System.setProperty(AsyncEventRouterFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
-                AsyncEventRouterFactory.PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER);
-        float[] ratios = new float[] {0.1f, 0.2f, 0.5f, 0.8f, 0.9f};
-        for (final float ratio : ratios) {
-            System.setProperty(AsyncEventRouterFactory.PROPERTY_NAME_DISCARDING_QUEUE_RATIO,
-                    String.valueOf(ratio));
-            int expected = (int) (256 * (1.0 - ratio));
-            assertEquals(expected, ((DiscardingAsyncEventRouter) AsyncEventRouterFactory.create(256)).
-                    getThresholdQueueRemainingCapacity());
         }
     }
 
@@ -113,19 +90,7 @@ public class AsyncEventRouterFactoryTest {
         }
 
         @Override
-        public EventRoute getRoute(final long backgroundThreadId, final Level level, final int queueSize,
-                final int queueRemainingCapacity) {
-            return null;
-        }
-    }
-
-    static class CustomRouterIntConstructor implements AsyncEventRouter {
-        public CustomRouterIntConstructor(int queueSize) {
-        }
-
-        @Override
-        public EventRoute getRoute(final long backgroundThreadId, final Level level, final int queueSize,
-                final int queueRemainingCapacity) {
+        public EventRoute getRoute(final long backgroundThreadId, final Level level) {
             return null;
         }
     }
@@ -137,17 +102,13 @@ public class AsyncEventRouterFactoryTest {
     public void testCreateReturnsCustomRouterIfSpecified() throws Exception {
         System.setProperty(AsyncEventRouterFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
                 CustomRouterDefaultConstructor.class.getName());
-        assertEquals(CustomRouterDefaultConstructor.class, AsyncEventRouterFactory.create(256).getClass());
-
-        System.setProperty(AsyncEventRouterFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
-                CustomRouterIntConstructor.class.getName());
-        assertEquals(CustomRouterIntConstructor.class, AsyncEventRouterFactory.create(256).getClass());
+        assertEquals(CustomRouterDefaultConstructor.class, AsyncEventRouterFactory.create().getClass());
     }
 
     @Test
     public void testCreateReturnsDefaultRouterIfSpecifiedCustomRouterFails() throws Exception {
         System.setProperty(AsyncEventRouterFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
                 DoesNotImplementInterface.class.getName());
-        assertEquals(DefaultAsyncEventRouter.class, AsyncEventRouterFactory.create(256).getClass());
+        assertEquals(DefaultAsyncEventRouter.class, AsyncEventRouterFactory.create().getClass());
     }
 }

@@ -111,7 +111,7 @@ public final class AsyncAppender extends AbstractAppender {
         } else if (errorRef == null) {
             throw new ConfigurationException("No appenders are available for AsyncAppender " + getName());
         }
-        asyncEventRouter = AsyncEventRouterFactory.create(queueSize);
+        asyncEventRouter = AsyncEventRouterFactory.create();
 
         thread.start();
         super.start();
@@ -160,8 +160,7 @@ public final class AsyncAppender extends AbstractAppender {
 
     private void logEvent(final Log4jLogEvent logEvent) {
         final Level logLevel = logEvent.getLevel();
-        final int remainingCapacity = getQueueRemainingCapacity();
-        final EventRoute route = asyncEventRouter.getRoute(thread.getId(), logLevel, queueSize, remainingCapacity);
+        final EventRoute route = asyncEventRouter.getRoute(thread.getId(), logLevel);
         route.logMessage(this, logEvent);
     }
 

@@ -162,7 +162,7 @@ public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
         final WaitStrategy waitStrategy = DisruptorUtil.createWaitStrategy("AsyncLoggerConfig.WaitStrategy");
         executor = Executors.newSingleThreadExecutor(THREAD_FACTORY);
         backgroundThreadId = DisruptorUtil.getExecutorThreadId(executor);
-        asyncEventRouter = AsyncEventRouterFactory.create(ringBufferSize);
+        asyncEventRouter = AsyncEventRouterFactory.create();
 
         disruptor = new Disruptor<>(FACTORY, ringBufferSize, executor, ProducerType.MULTI, waitStrategy);
 
@@ -229,7 +229,7 @@ public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
         if (remainingCapacity < 0) {
             return EventRoute.DISCARD;
         }
-        return asyncEventRouter.getRoute(backgroundThreadId, logLevel, ringBufferSize, remainingCapacity);
+        return asyncEventRouter.getRoute(backgroundThreadId, logLevel);
     }
 
     private int remainingDisruptorCapacity() {
@@ -276,6 +276,12 @@ public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
 
     private void enqueue(final LogEvent logEvent, final AsyncLoggerConfig asyncLoggerConfig) {
         disruptor.getRingBuffer().publishEvent(TRANSLATOR, logEvent, asyncLoggerConfig);
+    }
+
+    @Override
+    public boolean tryEnqueue(final LogEvent event, final AsyncLoggerConfig asyncLoggerConfig) {
+        final LogEvent logEvent = prepareEvent(event);
+        return disruptor.getRingBuffer().tryPublishEvent(TRANSLATOR, logEvent, asyncLoggerConfig);
     }
 
     private LogEvent ensureImmutable(final LogEvent event) {

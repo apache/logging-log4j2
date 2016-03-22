@@ -361,7 +361,7 @@ public class LogManager {
      *            be used.
      * @since 2.6
      */
-    public static void shutdown(boolean currentContext) {
+    public static void shutdown(final boolean currentContext) {
         shutdown(getContext(currentContext));
     }
 
@@ -374,7 +374,7 @@ public class LogManager {
      * @param context the LoggerContext.
      * @since 2.6
      */
-    public static void shutdown(LoggerContext context) {
+    public static void shutdown(final LoggerContext context) {
         if (context != null && context instanceof Terminable) {
             ((Terminable) context).terminate();
         }

@@ -46,4 +46,6 @@ public interface AsyncLoggerConfigDelegate {
     EventRoute getEventRoute(final Level level);
 
     void enqueueEvent(LogEvent event, AsyncLoggerConfig asyncLoggerConfig);
+
+    boolean tryEnqueue(LogEvent event, AsyncLoggerConfig asyncLoggerConfig);
 }
