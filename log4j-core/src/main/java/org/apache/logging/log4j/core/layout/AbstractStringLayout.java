@@ -77,6 +77,11 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
         return result;
     }
 
+    /**
+     * Returns a {@code TextEncoderHelper} that this Layout implementation can use for encoding log events.
+     *
+     * @return a {@code TextEncoderHelper}
+     */
     protected TextEncoderHelper getCachedTextEncoderHelper() {
         TextEncoderHelper result = textEncoderHelper.get();
         if (result == null) {
@@ -161,25 +166,10 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
         }
     }
 
-    protected byte[] getBytes(final CharSequence cseq) {
-        if (useCustomEncoding) { // rely on branch prediction to eliminate this check if false
-            return StringEncoder.encodeSingleByteChars(cseq);
-        }
-        ByteBuffer byteBuffer = charset.encode(CharBuffer.wrap(cseq));
-        if (byteBuffer.hasArray()) {
-            return byteBuffer.array();
-        } else {
-            byte[] bytes = new byte[byteBuffer.remaining()];
-            byteBuffer.get(bytes);
-            return bytes;
-        }
-    }
-
     @Override
     public Charset getCharset() {
         return charset;
     }
-
 
     /**
      * @return The default content type for Strings.
