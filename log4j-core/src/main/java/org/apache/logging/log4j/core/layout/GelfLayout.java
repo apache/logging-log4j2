@@ -37,6 +37,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.net.Severity;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
@@ -130,24 +131,32 @@ public final class GelfLayout extends AbstractStringLayout {
         return new GelfLayout(host, additionalFields, compressionType, compressionThreshold);
     }
 
-    /**
-     * http://en.wikipedia.org/wiki/Syslog#Severity_levels
-     */
-    static int formatLevel(final Level level) {
-        return Severity.getSeverity(level).getCode();
+    @Override
+    public Map<String, String> getContentFormat() {
+        return Collections.emptyMap();
     }
 
-    static String formatThrowable(final Throwable throwable) {
-        // stack traces are big enough to provide a reasonably large initial capacity here
-        final StringWriter sw = new StringWriter(2048);
-        final PrintWriter pw = new PrintWriter(sw);
-        throwable.printStackTrace(pw);
-        pw.flush();
-        return sw.toString();
+    @Override
+    public String getContentType() {
+        return JsonLayout.CONTENT_TYPE + "; charset=" + this.getCharset();
     }
 
-    static String formatTimestamp(final long timeMillis) {
-        return new BigDecimal(timeMillis).divide(TIME_DIVISOR).toPlainString();
+    @Override
+    public byte[] toByteArray(final LogEvent event) {
+        StringBuilder text = toText(event, getStringBuilder());
+        final byte[] bytes = getBytes(text.toString());
+        return compressionType != CompressionType.OFF && bytes.length > compressionThreshold ? compress(bytes) : bytes;
+    }
+
+    @Override
+    public void encode(final LogEvent event, final ByteBufferDestination destination) {
+        if (!Constants.ENABLE_THREADLOCALS || compressionType != CompressionType.OFF) {
+            super.encode(event, destination);
+            return;
+        }
+        final StringBuilder text = toText(event, getStringBuilder());
+        final TextEncoderHelper helper = getCachedTextEncoderHelper();
+        helper.encodeText(text, destination);
     }
 
     private byte[] compress(final byte[] bytes) {
@@ -168,24 +177,12 @@ public final class GelfLayout extends AbstractStringLayout {
     }
 
     @Override
-    public Map<String, String> getContentFormat() {
-        return Collections.emptyMap();
-    }
-
-    @Override
-    public String getContentType() {
-        return JsonLayout.CONTENT_TYPE + "; charset=" + this.getCharset();
-    }
-
-    @Override
-    public byte[] toByteArray(final LogEvent event) {
-        final byte[] bytes = getBytes(toSerializable(event));
-        return bytes.length > compressionThreshold ? compress(bytes) : bytes;
-    }
-
-    @Override
     public String toSerializable(final LogEvent event) {
-        final StringBuilder builder = getStringBuilder();
+        final StringBuilder text = toText(event, getStringBuilder());
+        return text.toString();
+    }
+
+    private StringBuilder toText(LogEvent event, StringBuilder builder) {
         final JsonStringEncoder jsonEncoder = JsonStringEncoder.getInstance();
         builder.append('{');
         builder.append("\"version\":\"1.1\",");
@@ -215,10 +212,36 @@ public final class GelfLayout extends AbstractStringLayout {
         builder.append("\"short_message\":\"").append(jsonEncoder.quoteAsString(toNullSafeString(event.getMessage().getFormattedMessage())))
                 .append(Q);
         builder.append('}');
-        return builder.toString();
+        return builder;
     }
 
     private String toNullSafeString(final String s) {
         return s == null ? Strings.EMPTY : s;
+    }
+
+    /**
+     * Non-private to make it accessible from unit test.
+     */
+    static String formatTimestamp(final long timeMillis) {
+        return new BigDecimal(timeMillis).divide(TIME_DIVISOR).toPlainString();
+    }
+
+    /**
+     * http://en.wikipedia.org/wiki/Syslog#Severity_levels
+     */
+    private int formatLevel(final Level level) {
+        return Severity.getSeverity(level).getCode();
+    }
+
+    /**
+     * Non-private to make it accessible from unit test.
+     */
+    static String formatThrowable(final Throwable throwable) {
+        // stack traces are big enough to provide a reasonably large initial capacity here
+        final StringWriter sw = new StringWriter(2048);
+        final PrintWriter pw = new PrintWriter(sw);
+        throwable.printStackTrace(pw);
+        pw.flush();
+        return sw.toString();
     }
 }

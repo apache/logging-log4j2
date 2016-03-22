@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.async.perftest;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
@@ -37,21 +39,28 @@ public class SimplePerfTest {
         logger.info("Starting...");
         Thread.sleep(100);
 
+        final RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
+
         // warmup
         final int ITERATIONS = 100000;
         long startMs = System.currentTimeMillis();
         long end = startMs + TimeUnit.SECONDS.toMillis(10);
         long total = 0;
         int count = 0;
+        StringBuilder sb = new StringBuilder(512);
         do {
+            sb.setLength(0);
             long startNanos = System.nanoTime();
+            long uptime = runtimeMXBean.getUptime();
             loop(logger, ITERATIONS);
             long endNanos = System.nanoTime();
             long durationNanos = endNanos - startNanos;
             final long opsPerSec = (1000L * 1000L * 1000L * ITERATIONS) / durationNanos;
-            System.out.printf("Warmup: Throughput: %,d ops/s%n", opsPerSec);
+            sb.append(uptime).append(" Warmup: Throughput: ").append(opsPerSec).append(" ops/s");
+            System.out.println(sb);
             total += opsPerSec;
             count++;
+            // Thread.sleep(1000);// drain buffer
         } while (System.currentTimeMillis() < end);
         System.out.printf("Average warmup throughput: %,d ops/s%n", total/count);
 
@@ -62,6 +71,7 @@ public class SimplePerfTest {
             loop(logger, ITERATIONS);
             long endNanos = System.nanoTime();
             durationNanos[i] = endNanos - startNanos;
+            // Thread.sleep(1000);// drain buffer
         }
         total = 0;
         for (int i = 0; i < COUNT; i++) {

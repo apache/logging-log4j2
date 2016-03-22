@@ -36,6 +36,9 @@ import org.apache.logging.log4j.core.layout.SerializedLayout;
 /**
  * This appender is primarily used for testing. Use in a real environment is discouraged as the
  * List could eventually grow to cause an OutOfMemoryError.
+ *
+ * This appender will use {@link Layout#toByteArray(LogEvent)}.
+ *
  * @see org.apache.logging.log4j.junit.LoggerContextRule#getListAppender(String) ILC.getListAppender
  */
 @Plugin(name = "List", category = "Core", elementType = "appender", printObject = true)
@@ -43,11 +46,11 @@ public class ListAppender extends AbstractAppender {
 
     // Use CopyOnWriteArrayList?
 
-    private final List<LogEvent> events = new ArrayList<>();
+    final List<LogEvent> events = new ArrayList<>();
 
     private final List<String> messages = new ArrayList<>();
 
-    private final List<byte[]> data = new ArrayList<>();
+    final List<byte[]> data = new ArrayList<>();
 
     private final boolean newLine;
 
@@ -91,7 +94,7 @@ public class ListAppender extends AbstractAppender {
         }
     }
 
-    private void write(final byte[] bytes) {
+    void write(final byte[] bytes) {
         if (raw) {
             data.add(bytes);
             return;

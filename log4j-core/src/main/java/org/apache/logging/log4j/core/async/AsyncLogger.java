@@ -74,8 +74,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
     private final ThreadLocal<RingBufferLogEventTranslator> threadLocalTranslator = new ThreadLocal<>();
     private final AsyncLoggerDisruptor loggerDisruptor;
 
-    // Reconfigurable. Volatile field nanoClock is always updated later, so no need to make includeLocation volatile.
-    private boolean includeLocation;
+    private volatile boolean includeLocation; // reconfigurable
     private volatile NanoClock nanoClock; // reconfigurable
 
     /**
@@ -101,9 +100,9 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
      */
     @Override
     protected void updateConfiguration(Configuration newConfig) {
-        super.updateConfiguration(newConfig);
-        includeLocation = privateConfig.loggerConfig.isIncludeLocation();
         nanoClock = newConfig.getNanoClock();
+        includeLocation = newConfig.getLoggerConfig(name).isIncludeLocation();
+        super.updateConfiguration(newConfig);
         LOGGER.trace("[{}] AsyncLogger {} uses {}.", getContext().getName(), getName(), nanoClock);
     }
 
@@ -124,11 +123,6 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
     @Override
     public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message,
             final Throwable thrown) {
-
-        // if the Message instance is reused, there is no point in freezing its message here
-        if (!Constants.FORMAT_MESSAGES_IN_BACKGROUND && !isReused(message)) { // LOG4J2-898: user may choose
-            message.getFormattedMessage(); // LOG4J2-763: ask message to freeze parameters
-        }
 
         if (loggerDisruptor.isUseThreadLocals()) {
             logWithThreadLocalTranslator(fqcn, level, marker, message, thrown);
@@ -160,6 +154,11 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
 
         final RingBufferLogEventTranslator translator = getCachedTranslator();
         initTranslator(translator, fqcn, level, marker, message, thrown);
+        initTranslatorThreadValues(translator);
+        publish(translator);
+    }
+
+    private void publish(final RingBufferLogEventTranslator translator) {
         if (!loggerDisruptor.tryPublish(translator)) {
             handleRingBufferFull(translator);
         }
@@ -202,14 +201,12 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
                 eventTimeMillis(message), //
                 nanoClock.nanoTime() //
         );
+    }
+
+    private void initTranslatorThreadValues(final RingBufferLogEventTranslator translator) {
         // constant check should be optimized out when using default (CACHED)
         if (THREAD_NAME_CACHING_STRATEGY == ThreadNameCachingStrategy.UNCACHED) {
-            final Thread currentThread = Thread.currentThread();
-            translator.setThreadValues(
-                    currentThread.getId(), //
-                    currentThread.getName(), //
-                    currentThread.getPriority() //
-            );
+            translator.updateThreadValues();
         }
     }
 
@@ -257,6 +254,10 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
         if (disruptor == null) {
             LOGGER.error("Ignoring log event after Log4j has been shut down.");
             return;
+        }
+        // if the Message instance is reused, there is no point in freezing its message here
+        if (!Constants.FORMAT_MESSAGES_IN_BACKGROUND && !isReused(message)) { // LOG4J2-898: user may choose
+            message.getFormattedMessage(); // LOG4J2-763: ask message to freeze parameters
         }
         // calls the translateTo method on this AsyncLogger
         disruptor.getRingBuffer().publishEvent(this, this, calcLocationIfRequested(fqcn), fqcn, level, marker, message,
