@@ -95,9 +95,10 @@ public class RingBufferLogEventTranslator implements
         this.nanoTime = aNanoTime;
     }
 
-    public void setThreadValues(final long threadId, final String threadName, final int threadPriority) {
-        this.threadId = threadId;
-        this.threadName = threadName;
-        this.threadPriority = threadPriority;
+    public void updateThreadValues() {
+        final Thread currentThread = Thread.currentThread();
+        this.threadId = currentThread.getId();
+        this.threadName = currentThread.getName();
+        this.threadPriority = currentThread.getPriority();
     }
 }

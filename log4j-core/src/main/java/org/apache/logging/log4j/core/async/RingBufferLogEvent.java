@@ -139,17 +139,6 @@ public class RingBufferLogEvent implements LogEvent {
         this.marker = aMarker;
         this.fqcn = theFqcn;
         this.level = aLevel;
-        if (msg instanceof ReusableMessage) {
-            if (messageText == null) {
-                // Should never happen:
-                // only happens if user logs a custom reused message when Constants.ENABLE_THREADLOCALS is false
-                messageText = new StringBuilder(INITIAL_REUSABLE_MESSAGE_SIZE);
-            }
-            messageText.setLength(0);
-            ((ReusableMessage) msg).formatTo(messageText);
-        } else {
-            this.message = msg;
-        }
         this.thrown = aThrowable;
         this.thrownProxy = null;
         this.contextMap = aMap;
@@ -160,6 +149,29 @@ public class RingBufferLogEvent implements LogEvent {
         this.location = aLocation;
         this.currentTimeMillis = aCurrentTimeMillis;
         this.nanoTime = aNanoTime;
+        setMessage(msg);
+    }
+
+    private void setMessage(final Message msg) {
+        if (msg instanceof ReusableMessage) {
+            ((ReusableMessage) msg).formatTo(getMessageTextForWriting());
+        } else {
+            // if the Message instance is reused, there is no point in freezing its message here
+            if (!Constants.FORMAT_MESSAGES_IN_BACKGROUND) { // LOG4J2-898: user may choose
+                msg.getFormattedMessage(); // LOG4J2-763: ask message to freeze parameters
+            }
+            this.message = msg;
+        }
+    }
+
+    private StringBuilder getMessageTextForWriting() {
+        if (messageText == null) {
+            // Should never happen:
+            // only happens if user logs a custom reused message when Constants.ENABLE_THREADLOCALS is false
+            messageText = new StringBuilder(INITIAL_REUSABLE_MESSAGE_SIZE);
+        }
+        messageText.setLength(0);
+        return messageText;
     }
 
     /**
@@ -345,8 +357,11 @@ public class RingBufferLogEvent implements LogEvent {
                 null,
                 0, 0 // nanoTime
         );
+        trimMessageText();
+    }
 
-        // ensure that excessively long char[] arrays are not kept in memory forever
+    // ensure that excessively long char[] arrays are not kept in memory forever
+    private void trimMessageText() {
         if (messageText != null && messageText.length() > MAX_REUSABLE_MESSAGE_SIZE) {
             messageText.setLength(MAX_REUSABLE_MESSAGE_SIZE);
             messageText.trimToSize();
