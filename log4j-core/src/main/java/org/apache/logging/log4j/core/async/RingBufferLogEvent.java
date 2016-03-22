@@ -71,11 +71,12 @@ public class RingBufferLogEvent implements LogEvent {
 
     private static class StringBuilderWrapperMessage implements ReusableMessage {
         static final StringBuilderWrapperMessage INSTANCE = new StringBuilderWrapperMessage();
+        private static final Object[] PARAMS = new Object[0];
         private StringBuilder stringBuilder;
 
         @Override
         public String getFormattedMessage() {
-            return null;
+            return stringBuilder.toString();
         }
 
         @Override
@@ -85,7 +86,7 @@ public class RingBufferLogEvent implements LogEvent {
 
         @Override
         public Object[] getParameters() {
-            return new Object[0];
+            return PARAMS;
         }
 
         @Override
