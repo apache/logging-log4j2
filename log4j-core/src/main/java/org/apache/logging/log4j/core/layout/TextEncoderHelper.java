@@ -25,6 +25,8 @@ import java.nio.charset.CoderResult;
 import java.nio.charset.CodingErrorAction;
 import java.util.Objects;
 
+import org.apache.logging.log4j.status.StatusLogger;
+
 /**
  * Helper class to encode text to binary data without allocating temporary objects.
  *
@@ -49,6 +51,20 @@ public class TextEncoderHelper {
     }
 
     public void encodeText(final StringBuilder text, final ByteBufferDestination destination) {
+        try {
+            encodeText0(text, destination);
+        } catch (final Exception ex) {
+            logEncodeTextException(ex, text, destination);
+            encodeTextFallBack(text, destination);
+        }
+    }
+
+    private void logEncodeTextException(final Exception ex, final StringBuilder text,
+            final ByteBufferDestination destination) {
+        StatusLogger.getLogger().error("Recovering from TextEncoderHelper.encodeText('{}') error", text, ex);
+    }
+
+    private void encodeText0(final StringBuilder text, final ByteBufferDestination destination) {
         charsetEncoder.reset();
         ByteBuffer byteBuf = destination.getByteBuffer();
         final CharBuffer charBuf = getCachedCharBuffer();
@@ -65,6 +81,20 @@ public class TextEncoderHelper {
             charBuf.flip(); // prepare for reading: set limit to position, position to zero
             byteBuf = encode(charBuf, endOfInput, destination, byteBuf);
         } while (!endOfInput);
+    }
+
+    private void encodeTextFallBack(final StringBuilder text, final ByteBufferDestination destination) {
+        final byte[] bytes = text.toString().getBytes(charset);
+        ByteBuffer buffer = destination.getByteBuffer();
+        int offset = 0;
+        do {
+            final int length = Math.min(bytes.length - offset, buffer.remaining());
+            buffer.put(bytes, offset, length);
+            offset += length;
+            if (offset < bytes.length) {
+                buffer = destination.drain(buffer);
+            }
+        } while (offset < bytes.length);
     }
 
     public void encodeText(final CharBuffer charBuf, final ByteBufferDestination destination) {
