@@ -343,21 +343,17 @@ public class RingBufferLogEvent implements LogEvent {
      * Release references held by ring buffer to allow objects to be garbage-collected.
      */
     public void clear() {
-        setValues(null, // asyncLogger
-                null, // loggerName
-                null, // marker
-                null, // fqcn
-                null, // level
-                null, // data
-                null, // t
-                null, // map
-                null, // contextStack
-                0, // threadName
-                null, // location
-                0, // currentTimeMillis
-                null,
-                0, 0 // nanoTime
-        );
+        this.asyncLogger = null;
+        this.loggerName = null;
+        this.marker = null;
+        this.fqcn = null;
+        this.level = null;
+        this.message = null;
+        this.thrown = null;
+        this.thrownProxy = null;
+        this.contextMap = null;
+        this.contextStack = null;
+        this.location = null;
         trimMessageText();
     }
 
