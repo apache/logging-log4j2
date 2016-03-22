@@ -163,7 +163,7 @@ public class RingBufferLogEvent implements LogEvent {
             ((ReusableMessage) msg).formatTo(getMessageTextForWriting());
         } else {
             // if the Message instance is reused, there is no point in freezing its message here
-            if (!Constants.FORMAT_MESSAGES_IN_BACKGROUND) { // LOG4J2-898: user may choose
+            if (!Constants.FORMAT_MESSAGES_IN_BACKGROUND && msg != null) { // LOG4J2-898: user may choose
                 msg.getFormattedMessage(); // LOG4J2-763: ask message to freeze parameters
             }
             this.message = msg;
