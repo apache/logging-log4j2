@@ -76,7 +76,9 @@ public class RingBufferLogEvent implements LogEvent {
 
         @Override
         public String getFormattedMessage() {
-            return stringBuilder.toString();
+            final String result = stringBuilder.toString();
+            trim(stringBuilder, MAX_REUSABLE_MESSAGE_SIZE);
+            return result;
         }
 
         @Override
@@ -97,11 +99,14 @@ public class RingBufferLogEvent implements LogEvent {
         @Override
         public void formatTo(final StringBuilder buffer) {
             buffer.append(stringBuilder);
+            trim(stringBuilder, MAX_REUSABLE_MESSAGE_SIZE);
+        }
 
-            // ensure that excessively long char[] arrays are not kept in memory forever
-            if (stringBuilder.length() > MAX_REUSABLE_MESSAGE_SIZE) {
-                stringBuilder.setLength(MAX_REUSABLE_MESSAGE_SIZE);
-                stringBuilder.trimToSize();
+        // ensure that excessively long char[] arrays are not kept in memory forever
+        private static void trim(final StringBuilder sb, final int maxReusableMessageSize) {
+            if (sb.length() > maxReusableMessageSize) {
+                sb.setLength(maxReusableMessageSize);
+                sb.trimToSize();
             }
         }
 
