@@ -66,7 +66,6 @@ import com.fasterxml.jackson.core.io.JsonStringEncoder;
  * &lt;/Appenders&gt;
  * </pre>
  *
- * @see <a href="http://graylog2.org/gelf">GELF home page</a>
  * @see <a href="http://graylog2.org/resources/gelf/specification">GELF
  *      specification</a>
  */
