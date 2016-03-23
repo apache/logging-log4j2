@@ -68,7 +68,7 @@ public class GcFreeLoggingTest {
     public static void main(String[] args) throws Exception {
         System.setProperty("log4j2.enable.threadlocals", "true");
         System.setProperty("log4j2.is.webapp", "false");
-        System.setProperty("log4j.configurationFile", "perf3PlainNoLoc.xml");
+        System.setProperty("log4j.configurationFile", "gcFreeLogging.xml");
         System.setProperty("Log4jContextSelector", AsyncLoggerContextSelector.class.getName());
 
         assertTrue("Constants.ENABLE_THREADLOCALS", Constants.ENABLE_THREADLOCALS);
@@ -114,8 +114,8 @@ public class GcFreeLoggingTest {
             logger.error("Test parameterized message {}{}", "param", "param2");
             logger.error("Test parameterized message {}{}{}", "param", "param2", "abc");
         }
-        AllocationRecorder.removeSampler(sampler);
         Thread.sleep(50);
+        AllocationRecorder.removeSampler(sampler);
     }
 
     private static File agentJar() {
@@ -125,7 +125,7 @@ public class GcFreeLoggingTest {
             throw new IllegalStateException("Could not find url for " + name);
         }
         final String temp = url.toString();
-        final String path = temp.substring("jar:file:/".length(), temp.indexOf('!'));
+        final String path = temp.substring("jar:file:".length(), temp.indexOf('!'));
         return new File(path);
     }
 }
