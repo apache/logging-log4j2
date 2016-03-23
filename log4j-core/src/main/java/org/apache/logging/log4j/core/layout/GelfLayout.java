@@ -221,7 +221,7 @@ public final class GelfLayout extends AbstractStringLayout {
     /**
      * Non-private to make it accessible from unit test.
      */
-    static String formatTimestamp(final long timeMillis) {
+    static CharSequence formatTimestamp(final long timeMillis) {
         return new BigDecimal(timeMillis).divide(TIME_DIVISOR).toPlainString();
     }
 
