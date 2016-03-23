@@ -16,18 +16,7 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.Map;
-import java.util.zip.DeflaterOutputStream;
-import java.util.zip.GZIPOutputStream;
-
+import com.fasterxml.jackson.core.io.JsonStringEncoder;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -42,7 +31,13 @@ import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
-import com.fasterxml.jackson.core.io.JsonStringEncoder;
+import java.io.*;
+import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.Map;
+import java.util.zip.DeflaterOutputStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * Lays out events in the Graylog Extended Log Format (GELF) 1.1.
@@ -222,7 +217,26 @@ public final class GelfLayout extends AbstractStringLayout {
      * Non-private to make it accessible from unit test.
      */
     static CharSequence formatTimestamp(final long timeMillis) {
-        return new BigDecimal(timeMillis).divide(TIME_DIVISOR).toPlainString();
+        if (timeMillis < 1000) {
+            return "0";
+        } else {
+            StringBuilder builder = getTimestampStringBuilder();
+            builder.append(timeMillis);
+            builder.insert(builder.length() - 3, '.');
+            return builder;
+        }
+    }
+
+    private static final ThreadLocal<StringBuilder> timestampStringBuilder = new ThreadLocal<>();
+
+    private static StringBuilder getTimestampStringBuilder() {
+        StringBuilder result = timestampStringBuilder.get();
+        if (result == null) {
+            result = new StringBuilder(20);
+            timestampStringBuilder.set(result);
+        }
+        result.setLength(0);
+        return result;
     }
 
     /**
