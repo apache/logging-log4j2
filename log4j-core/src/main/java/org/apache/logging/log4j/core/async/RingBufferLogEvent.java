@@ -41,7 +41,7 @@ import com.lmax.disruptor.EventFactory;
  * When the Disruptor is started, the RingBuffer is populated with event objects. These objects are then re-used during
  * the life of the RingBuffer.
  */
-public class RingBufferLogEvent implements LogEvent {
+public class RingBufferLogEvent implements LogEvent, ReusableMessage {
 
     /** The {@code EventFactory} for {@code RingBufferLogEvent}s. */
     public static final Factory FACTORY = new Factory();
@@ -49,6 +49,8 @@ public class RingBufferLogEvent implements LogEvent {
     private static final long serialVersionUID = 8462119088943934758L;
     private static final int INITIAL_REUSABLE_MESSAGE_SIZE = size("log4j.initialReusableMsgSize", 128);
     private static final int MAX_REUSABLE_MESSAGE_SIZE = size("log4j.maxReusableMsgSize", (128 * 2 + 2) * 2 + 2);
+    private static final Object[] PARAMS = new Object[0];
+    private static final Message EMPTY = new SimpleMessage(Strings.EMPTY);
 
     private static int size(final String property, final int defaultValue) {
         return PropertiesUtil.getProperties().getIntegerProperty(property, defaultValue);
@@ -66,53 +68,6 @@ public class RingBufferLogEvent implements LogEvent {
                 result.messageText = new StringBuilder(INITIAL_REUSABLE_MESSAGE_SIZE);
             }
             return result;
-        }
-    }
-
-    private static class StringBuilderWrapperMessage implements ReusableMessage {
-        static final StringBuilderWrapperMessage INSTANCE = new StringBuilderWrapperMessage();
-        private static final Object[] PARAMS = new Object[0];
-        private StringBuilder stringBuilder;
-
-        @Override
-        public String getFormattedMessage() {
-            final String result = stringBuilder.toString();
-            trim(stringBuilder, MAX_REUSABLE_MESSAGE_SIZE);
-            return result;
-        }
-
-        @Override
-        public String getFormat() {
-            return null;
-        }
-
-        @Override
-        public Object[] getParameters() {
-            return PARAMS;
-        }
-
-        @Override
-        public Throwable getThrowable() {
-            return null;
-        }
-
-        @Override
-        public void formatTo(final StringBuilder buffer) {
-            buffer.append(stringBuilder);
-            trim(stringBuilder, MAX_REUSABLE_MESSAGE_SIZE);
-        }
-
-        // ensure that excessively long char[] arrays are not kept in memory forever
-        private static void trim(final StringBuilder sb, final int maxReusableMessageSize) {
-            if (sb.length() > maxReusableMessageSize) {
-                sb.setLength(maxReusableMessageSize);
-                sb.trimToSize();
-            }
-        }
-
-        public Message setFormattedMessage(final StringBuilder messageText) {
-            this.stringBuilder = messageText;
-            return this;
         }
     }
 
@@ -163,7 +118,7 @@ public class RingBufferLogEvent implements LogEvent {
             ((ReusableMessage) msg).formatTo(getMessageTextForWriting());
         } else {
             // if the Message instance is reused, there is no point in freezing its message here
-            if (!Constants.FORMAT_MESSAGES_IN_BACKGROUND) { // LOG4J2-898: user may choose
+            if (!Constants.FORMAT_MESSAGES_IN_BACKGROUND && msg != null) { // LOG4J2-898: user may choose
                 msg.getFormattedMessage(); // LOG4J2-763: ask message to freeze parameters
             }
             this.message = msg;
@@ -241,13 +196,49 @@ public class RingBufferLogEvent implements LogEvent {
     @Override
     public Message getMessage() {
         if (message == null) {
-            if (messageText == null) {
-                message = new SimpleMessage(Strings.EMPTY);
-            } else {
-                message = StringBuilderWrapperMessage.INSTANCE.setFormattedMessage(messageText);
-            }
+            return (messageText == null) ? EMPTY : this;
         }
         return message;
+    }
+
+    /**
+     * @see ReusableMessage#getFormattedMessage()
+     */
+    @Override
+    public String getFormattedMessage() {
+        return messageText.toString();
+    }
+
+    /**
+     * @see ReusableMessage#getFormat()
+     */
+    @Override
+    public String getFormat() {
+        return null;
+    }
+
+    /**
+     * @see ReusableMessage#getParameters()
+     */
+    @Override
+    public Object[] getParameters() {
+        return PARAMS;
+    }
+
+    /**
+     * @see ReusableMessage#getThrowable()
+     */
+    @Override
+    public Throwable getThrowable() {
+        return getThrown();
+    }
+
+    /**
+     * @see ReusableMessage#formatTo(StringBuilder)
+     */
+    @Override
+    public void formatTo(final StringBuilder buffer) {
+        buffer.append(messageText);
     }
 
     private Message getNonNullImmutableMessage() {

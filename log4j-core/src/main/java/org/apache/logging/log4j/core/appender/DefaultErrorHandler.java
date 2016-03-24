@@ -93,4 +93,8 @@ public class DefaultErrorHandler implements ErrorHandler {
             throw new AppenderLoggingException(msg, t);
         }
     }
+
+    public Appender getAppender() {
+        return appender;
+    }
 }

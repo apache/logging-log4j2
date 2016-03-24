@@ -1280,6 +1280,7 @@ WARN  [main]: Message 2</pre>
               <td align="center">
                 <a name="PatternThreadName"/>
                 <b>t</b><br />
+                <b>tn</b><br />
                 <b>thread</b><br />
                 <b>threadName</b>
               </td>
