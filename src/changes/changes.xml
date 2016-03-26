@@ -24,6 +24,9 @@
   </properties>
   <body>
     <release version="2.6" date="2016-MM-DD" description="GA Release 2.6">
+      <action issue="LOG4J2-1324" dev="rpopma" type="fix">
+        Improve error handling in the Async Logger background thread: the new default exception handler no longer rethrows the error.
+      </action>
       <action issue="LOG4J2-1321" dev="rpopma" type="update">
         Avoid allocating unnecessary temporary objects in PatternLayout's NamePatternConverter and ClassNamePatternConverter.
       </action>
@@ -222,6 +225,9 @@
       </action>
       <action issue="LOG4J2-1322" dev="mattsicker" type="update">
         Update Log4j 1.x migration guide to include information about system property lookup syntax changes.
+      </action>
+      <action issue="LOG4J2-1330" dev="mattsicker" type="fix">
+        Fix NoClassDefFoundError in ReflectionUtil on Google App Engine.
       </action>
     </release>
     <release version="2.5" date="2015-12-06" description="GA Release 2.5">

@@ -186,12 +186,16 @@
           <tr>
             <td>AsyncLogger.ExceptionHandler</td>
             <td>
-              <tt>null</tt>
+              <tt>default handler</tt>
             </td>
             <td>
               Fully qualified name of a class that implements the <tt>com.lmax.disruptor.ExceptionHandler</tt>
               interface. The class needs to have a public zero-argument constructor.
               If specified, this class will be notified when an exception occurs while logging the messages.
+              <p>
+                If not specified, the default exception handler will print a message and stack trace to the standard
+                error output stream.
+              </p>
             </td>
           </tr>
           <tr>
@@ -347,12 +351,16 @@
           <tr>
             <td>AsyncLoggerConfig.ExceptionHandler</td>
             <td>
-              <tt>null</tt>
+              <tt>default handler</tt>
             </td>
             <td>
               Fully qualified name of a class that implements the <tt>com.lmax.disruptor.ExceptionHandler</tt>
               interface. The class needs to have a public zero-argument constructor.
               If specified, this class will be notified when an exception occurs while logging the messages.
+              <p>
+                If not specified, the default exception handler will print a message and stack trace to the standard
+                error output stream.
+              </p>
             </td>
           </tr>
           <tr>

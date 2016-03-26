@@ -88,8 +88,7 @@ class AsyncLoggerDisruptor {
         disruptor = new Disruptor<>(RingBufferLogEvent.FACTORY, ringBufferSize, executor, ProducerType.MULTI,
                 waitStrategy);
 
-        final ExceptionHandler<RingBufferLogEvent> errorHandler = DisruptorUtil.getExceptionHandler(
-                "AsyncLogger.ExceptionHandler", RingBufferLogEvent.class);
+        final ExceptionHandler<RingBufferLogEvent> errorHandler = DisruptorUtil.getAsyncLoggerExceptionHandler();
         disruptor.handleExceptionsWith(errorHandler);
 
         final RingBufferLogEventHandler[] handlers = {new RingBufferLogEventHandler()};
