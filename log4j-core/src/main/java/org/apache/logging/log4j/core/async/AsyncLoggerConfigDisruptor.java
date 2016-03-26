@@ -63,7 +63,7 @@ public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
     /**
      * RingBuffer events contain all information necessary to perform the work in a separate thread.
      */
-    private static class Log4jEventWrapper {
+    public static class Log4jEventWrapper {
         private AsyncLoggerConfig loggerConfig;
         private LogEvent event;
 
@@ -73,6 +73,11 @@ public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
         public void clear() {
             loggerConfig = null;
             event = null;
+        }
+
+        @Override
+        public String toString() {
+            return String.valueOf(event);
         }
     }
 
@@ -166,8 +171,7 @@ public class AsyncLoggerConfigDisruptor implements AsyncLoggerConfigDelegate {
 
         disruptor = new Disruptor<>(FACTORY, ringBufferSize, executor, ProducerType.MULTI, waitStrategy);
 
-        final ExceptionHandler<Log4jEventWrapper> errorHandler = DisruptorUtil.getExceptionHandler(
-                "AsyncLoggerConfig.ExceptionHandler", Log4jEventWrapper.class);
+        final ExceptionHandler<Log4jEventWrapper> errorHandler = DisruptorUtil.getAsyncLoggerConfigExceptionHandler();
         disruptor.handleExceptionsWith(errorHandler);
 
         final Log4jEventWrapperHandler[] handlers = {new Log4jEventWrapperHandler()};

@@ -89,19 +89,35 @@ final class DisruptorUtil {
         return Integers.ceilingNextPowerOfTwo(ringBufferSize);
     }
 
-    static <T> ExceptionHandler<T> getExceptionHandler(final String propertyName, Class<T> type) {
-        final String cls = PropertiesUtil.getProperties().getStringProperty(propertyName);
+    static ExceptionHandler<RingBufferLogEvent> getAsyncLoggerExceptionHandler() {
+        final String cls = PropertiesUtil.getProperties().getStringProperty("AsyncLogger.ExceptionHandler");
         if (cls == null) {
-            return null;
+            return new DefaultAsyncLoggerExceptionHandler();
         }
         try {
             @SuppressWarnings("unchecked")
-            final Class<? extends ExceptionHandler<T>> klass =
-                (Class<? extends ExceptionHandler<T>>) LoaderUtil.loadClass(cls);
+            final Class<? extends ExceptionHandler<RingBufferLogEvent>> klass =
+                (Class<? extends ExceptionHandler<RingBufferLogEvent>>) LoaderUtil.loadClass(cls);
             return klass.newInstance();
         } catch (final Exception ignored) {
-            LOGGER.debug("Invalid {} value: error creating {}: ", propertyName, cls, ignored);
-            return null;
+            LOGGER.debug("Invalid AsyncLogger.ExceptionHandler value: error creating {}: ", cls, ignored);
+            return new DefaultAsyncLoggerExceptionHandler();
+        }
+    }
+
+    static ExceptionHandler<AsyncLoggerConfigDisruptor.Log4jEventWrapper> getAsyncLoggerConfigExceptionHandler() {
+        final String cls = PropertiesUtil.getProperties().getStringProperty("AsyncLoggerConfig.ExceptionHandler");
+        if (cls == null) {
+            return new DefaultAsyncLoggerConfigExceptionHandler();
+        }
+        try {
+            @SuppressWarnings("unchecked")
+            final Class<? extends ExceptionHandler<AsyncLoggerConfigDisruptor.Log4jEventWrapper>> klass =
+                    (Class<? extends ExceptionHandler<AsyncLoggerConfigDisruptor.Log4jEventWrapper>>) LoaderUtil.loadClass(cls);
+            return klass.newInstance();
+        } catch (final Exception ignored) {
+            LOGGER.debug("Invalid AsyncLoggerConfig.ExceptionHandler value: error creating {}: ", cls, ignored);
+            return new DefaultAsyncLoggerConfigExceptionHandler();
         }
     }
 
