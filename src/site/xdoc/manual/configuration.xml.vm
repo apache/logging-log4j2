@@ -1798,8 +1798,7 @@ public class AwesomeTest {
   </tr>
   <tr>
     <td>AsyncLogger.ExceptionHandler</td>
-    <td>&nbsp;
-    </td>
+    <td>default handler</td>
     <td>
       See <a href="async.html#SysPropsAllAsync">Async Logger System Properties</a> for details.
     </td>
@@ -1831,7 +1830,7 @@ public class AwesomeTest {
   </tr>
   <tr>
     <td>AsyncLoggerConfig.ExceptionHandler</td>
-    <td>&nbsp;    </td>
+    <td>default handler</td>
     <td>
       See <a href="async.html#SysPropsMixedSync-Async">Mixed Async/Synchronous Logger System Properties</a> for details.
     </td>
