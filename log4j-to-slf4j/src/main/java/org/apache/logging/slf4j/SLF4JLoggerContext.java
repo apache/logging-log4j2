@@ -16,20 +16,17 @@
  */
 package org.apache.logging.slf4j;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
-import org.apache.logging.log4j.spi.LoggerContextKey;
+import org.apache.logging.log4j.spi.LoggerRegistry;
 import org.slf4j.LoggerFactory;
 
 /**
  *
  */
 public class SLF4JLoggerContext implements LoggerContext {
-    private final ConcurrentMap<String, SLF4JLogger> loggers = new ConcurrentHashMap<>();
+    private final LoggerRegistry<ExtendedLogger> loggerRegistry = new LoggerRegistry<>();
 
     @Override
     public Object getExternalContext() {
@@ -38,32 +35,39 @@ public class SLF4JLoggerContext implements LoggerContext {
 
     @Override
     public ExtendedLogger getLogger(final String name) {
-        if (!loggers.containsKey(name)) {
-            loggers.putIfAbsent(name, new SLF4JLogger(name, LoggerFactory.getLogger(name)));
+        if (!loggerRegistry.hasLogger(name)) {
+            loggerRegistry.putIfAbsent(name, null, new SLF4JLogger(name, LoggerFactory.getLogger(name)));
         }
-        return loggers.get(name);
+        return loggerRegistry.getLogger(name);
     }
 
     @Override
     public ExtendedLogger getLogger(final String name, final MessageFactory messageFactory) {
-        if (!loggers.containsKey(name)) {
-            loggers.putIfAbsent(name, new SLF4JLogger(name, messageFactory, LoggerFactory.getLogger(name)));
+        // FIXME according to LOG4J2-1180, the below line should be:
+        // FIXME if (!loggerRegistry.hasLogger(name, messageFactory)) {
+        if (!loggerRegistry.hasLogger(name)) {
+            // FIXME: should be loggerRegistry.putIfAbsent(name, messageFactory,
+            loggerRegistry.putIfAbsent(name, null,
+                    new SLF4JLogger(name, messageFactory, LoggerFactory.getLogger(name)));
         }
-        return loggers.get(name);
+        // FIXME should be return loggerRegistry.getLogger(name, messageFactory);
+        return loggerRegistry.getLogger(name);
+
+        // TODO applying the above fixes causes (log4j-to-slf4j) LoggerTest to fail
     }
 
     @Override
     public boolean hasLogger(final String name) {
-        return loggers.containsKey(LoggerContextKey.create(name));
+        return loggerRegistry.hasLogger(name);
     }
 
     @Override
     public boolean hasLogger(String name, MessageFactory messageFactory) {
-        return loggers.containsKey(LoggerContextKey.create(name, messageFactory));
+        return loggerRegistry.hasLogger(name, messageFactory);
     }
 
     @Override
     public boolean hasLogger(String name, Class<? extends MessageFactory> messageFactoryClass) {
-        return loggers.containsKey(LoggerContextKey.create(name, messageFactoryClass));
+        return loggerRegistry.hasLogger(name, messageFactoryClass);
     }
 }
