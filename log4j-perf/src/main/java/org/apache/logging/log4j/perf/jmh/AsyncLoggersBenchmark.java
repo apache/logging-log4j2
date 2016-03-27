@@ -24,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LifeCycle;
+import org.apache.logging.log4j.perf.nogc.Unbox;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Level;
@@ -50,7 +51,7 @@ import org.openjdk.jmh.annotations.TearDown;
 //
 @State(Scope.Thread)
 public class AsyncLoggersBenchmark {
-    final static char[] CHARS = new char[500];
+    final static char[] CHARS = new char[16];
     static {
         Arrays.fill(CHARS, 'a');
     }
@@ -60,10 +61,15 @@ public class AsyncLoggersBenchmark {
 
     @Setup(Level.Trial)
     public void up() {
-        new File("perftest.log").delete();
-        System.setProperty("log4j.configurationFile", "perf3PlainNoLoc.xml");
+        System.setProperty("log4j.configurationFile", "perf-WithoutAnyAppender.xml");
         System.setProperty("Log4jContextSelector", "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
+        System.setProperty("AsyncLogger.RingBufferSize", "262144");
+        System.setProperty("AsyncLogger.WaitStrategy", "Yield");
+        //System.setProperty("log4j2.enable.threadlocals", "true");
+        //System.setProperty("log4j.format.msg.async", "true");
+
         logger = LogManager.getLogger(getClass());
+        new File("perftest.log").delete();
     }
 
     @TearDown(Level.Trial)
@@ -75,28 +81,70 @@ public class AsyncLoggersBenchmark {
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
-    public boolean throughputBaseline() {
-        return logger.isInfoEnabled();
+    public void throughputSimple() {
+        logger.info(TEST);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
-    public void throughput() {
+    public void throughput3Params() {
+        logger.info("p1={}, p2={}, p3={}", "1", "2", "3");
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    public void throughput5Params() {
+        logger.info("p1={}, p2={}, p3={}, p4={}, p5={}", "1", "2", "3", "4", "5");
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    public void throughput7Params() {
+        logger.info("p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}", "1", "2", "3", "4", "5", "6", "7");
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    public void throughput9Params() {
+        logger.info("p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}", "1", "2", "3", "4", "5", "6", "7", "8", "9");
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public void latencySimple() {
         logger.info(TEST);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public boolean latencyBaseline() {
-        return logger.isInfoEnabled();
+    public void latency3Params() {
+        logger.info("p1={}, p2={}, p3={}", "1", "2", "3");
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public void latency() {
-        logger.info(TEST);
+    public void latency5Params() {
+        logger.info("p1={}, p2={}, p3={}, p4={}, p5={}", "1", "2", "3", "4", "5");
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public void latency7Params() {
+        logger.info("p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}", "1", "2", "3", "4", "5", "6", "7");
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public void latency9Params() {
+        logger.info("p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}", "1", "2", "3", "4", "5", "6", "7", "8", "9");
     }
 }
