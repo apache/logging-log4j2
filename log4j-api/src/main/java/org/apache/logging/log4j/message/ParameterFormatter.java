@@ -332,8 +332,8 @@ final class ParameterFormatter {
         if (o == null || o instanceof String) {
             str.append((String) o);
             return true;
-        } else if (o instanceof StringBuilder) {
-            str.append((StringBuilder) o);
+        } else if (o instanceof CharSequence) {
+            str.append((CharSequence) o);
             return true;
         } else if (o instanceof StringBuilderFormattable) {
             ((StringBuilderFormattable) o).formatTo(str);

@@ -22,7 +22,6 @@ import java.io.File;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.Lock;
@@ -44,7 +43,7 @@ import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
-import org.apache.logging.log4j.spi.LoggerContextKey;
+import org.apache.logging.log4j.spi.LoggerRegistry;
 import org.apache.logging.log4j.spi.Terminable;
 
 import static org.apache.logging.log4j.core.util.ShutdownCallbackRegistry.*;
@@ -64,7 +63,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
 
     private static final Configuration NULL_CONFIGURATION = new NullConfiguration();
 
-    private final ConcurrentMap<String, Logger> loggers = new ConcurrentHashMap<>();
+    private final LoggerRegistry<Logger> loggerRegistry = new LoggerRegistry<>();
     private final CopyOnWriteArrayList<PropertyChangeListener> propertyChangeListeners = new CopyOnWriteArrayList<>();
 
     /**
@@ -382,7 +381,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      * @return a collection of the current loggers.
      */
     public Collection<Logger> getLoggers() {
-        return loggers.values();
+        return loggerRegistry.getLoggers();
     }
 
     /**
@@ -395,20 +394,16 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      */
     @Override
     public Logger getLogger(final String name, final MessageFactory messageFactory) {
-        // Note: This is the only method where we add entries to the 'loggers' ivar.
-        // The loggers map key is the logger name plus the messageFactory FQCN.
-        String key = LoggerContextKey.create(name, messageFactory);
-        Logger logger = loggers.get(key);
+        // Note: This is the only method where we add entries to the 'loggerRegistry' ivar.
+        Logger logger = loggerRegistry.getLogger(name, messageFactory);
         if (logger != null) {
             AbstractLogger.checkMessageFactory(logger, messageFactory);
             return logger;
         }
 
         logger = newInstance(this, name, messageFactory);
-        // If messageFactory was null then we need to pull it out of the logger now
-        key = LoggerContextKey.create(name, logger.getMessageFactory());
-        final Logger prev = loggers.putIfAbsent(key, logger);
-        return prev == null ? logger : prev;
+        loggerRegistry.putIfAbsent(name, messageFactory, logger);
+        return loggerRegistry.getLogger(name, messageFactory);
     }
 
     /**
@@ -419,7 +414,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      */
     @Override
     public boolean hasLogger(final String name) {
-        return loggers.containsKey(LoggerContextKey.create(name));
+        return loggerRegistry.hasLogger(name);
     }
 
     /**
@@ -430,7 +425,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      */
     @Override
     public boolean hasLogger(final String name, MessageFactory messageFactory) {
-        return loggers.containsKey(LoggerContextKey.create(name, messageFactory));
+        return loggerRegistry.hasLogger(name, messageFactory);
     }
 
     /**
@@ -441,7 +436,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      */
     @Override
     public boolean hasLogger(final String name, Class<? extends MessageFactory> messageFactoryClass) {
-        return loggers.containsKey(LoggerContextKey.create(name, messageFactoryClass));
+        return loggerRegistry.hasLogger(name, messageFactoryClass);
     }
 
     /**
@@ -596,7 +591,7 @@ public class LoggerContext extends AbstractLifeCycle implements org.apache.loggi
      */
     public void updateLoggers(final Configuration config) {
         final Configuration old = this.configuration;
-        for (final Logger logger : loggers.values()) {
+        for (final Logger logger : loggerRegistry.getLoggers()) {
             logger.updateConfiguration(config);
         }
         firePropertyChangeEvent(new PropertyChangeEvent(this, PROPERTY_CONFIG, old, config));

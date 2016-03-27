@@ -27,6 +27,12 @@
       <action issue="LOG4J2-1324" dev="rpopma" type="fix">
         Improve error handling in the Async Logger background thread: the new default exception handler no longer rethrows the error.
       </action>
+      <action issue="LOG4J2-1318" dev="rpopma" type="update">
+        Avoid allocating unnecessary temporary objects in LoggerContext's getLogger methods.
+      </action>
+      <action issue="LOG4J2-1333" dev="rpopma" type="update">
+        Avoid allocating unnecessary temporary objects in MarkerManager's getMarker methods.
+      </action>
       <action issue="LOG4J2-1321" dev="rpopma" type="update">
         Avoid allocating unnecessary temporary objects in PatternLayout's NamePatternConverter and ClassNamePatternConverter.
       </action>

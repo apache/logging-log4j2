@@ -1,0 +1,133 @@
+<?xml version="1.0"?>
+<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor
+  license agreements. See the NOTICE file distributed with this work for additional
+  information regarding copyright ownership. The ASF licenses this file to
+  You under the Apache License, Version 2.0 (the "License"); you may not use
+  this file except in compliance with the License. You may obtain a copy of
+  the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required
+  by applicable law or agreed to in writing, software distributed under the
+  License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
+  OF ANY KIND, either express or implied. See the License for the specific
+  language governing permissions and limitations under the License. -->
+<document xmlns="http://maven.apache.org/XDOC/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+  <properties>
+    <title>Garbage-free Steady State Logging</title>
+    <author email="rpopma@apache.org">Remko Popma</author>
+  </properties>
+  <body>
+    <section name="Garbage-free Steady State Logging">
+      <p>
+        Different applications have different performance requirements.
+        Some applications only need to worry about throughput, but for many applications
+        the most important performance consideration is latency (response time).
+        Users of such applications would consider it a big problem
+        if the system becomes unresponsive for more than a few seconds, or even milliseconds in some cases.
+        In financial trading for example predictable low latency is so important that it is often considered
+        worthwhile to trade off some throughput in return for consistent latency.
+
+        Garbage collection pauses are a common cause of latency spikes and for many systems
+        significant effort is spent on controlling these pauses.
+      </p>
+      <p>
+        Traditionally, logging libraries allocate many temporary objects like log event objects, Strings, and more during steady state logging.
+        This contributes to pressure on the garbage collector and increases the frequency with which GC pauses occur.
+        From version 2.6, Log4j can be run in a "garbage free" mode where objects and buffers are reused
+        and temporary object allocation is avoided as much as possible.
+      </p>
+      <p>
+
+      </p>
+      <a name="Enabling" />
+      <subsection name="Enabling Garbage-free Logging">
+        <p>
+          As of log4j-2.6, only a limited set of functionality is garbage-free. This set may grow in the future,
+          but for now only the following configuration does not allocate temporary objects during steady-state logging:
+        </p>
+        <ul>
+          <li>ThreadLocals are enabled (system property <tt>log4j2.enable.threadlocals</tt> is set to
+            <tt>true</tt>).
+          </li>
+          <li>Loggers are all asynchronous (system property <tt>Log4jContextSelector</tt> is set to
+            <tt>org.apache.logging.log4j.core.async.AsyncLoggerContextSelector</tt>).
+          </li>
+          <li>The "steady-state" appenders are either <tt>RandomAccessFile</tt> or <tt>RollingRandomAccessFile</tt>.
+            Logging to any other appender, including <tt>FileAppender</tt> or <tt>ConsoleAppender</tt>,
+            will cause temporary objects to be created.</li>
+          <li>The Layout is a <tt>PatternLayout</tt> that uses one of the pre-defined date formats,
+            and does not contain regular expression replacements or lookups.</li>
+          <li>The configuration does not contain a <tt>&lt;Properties&gt;</tt> section.</li>
+        </ul>
+        <p>
+          In addition to configuration, user code should follow these guidelines to be garbage-free:
+        </p>
+        <p>
+          The following code snippet demonstrates garbage-free logging.
+          Note the use of Log4j's <tt>Unboxer</tt> utility to prevent auto-boxing of primitive parameters.
+        </p>
+        <pre class="prettyprint linenums">import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Marker;
+import static org.apache.logging.log4j.util.Unboxer.box;
+
+public class Usage {
+    private static final Logger logger = LogManager.getLogger("GarbageFree");
+
+    public void garbageFree() {
+        logger.info("Simple string message");
+        logger.info("Message with {}", "parameters");
+        logger.info("Var-args {} {} {} {} {} {}", "are", "unrolled", "up", "to", "10", "parameters"); // etc up to 10 parameters
+        logger.info("Prevent primitive auto-boxing {} {}", box(10L), box(2.6d));
+        logger.info(() -> callExpensiveMethod());
+
+        // of course similarly for all log levels including custom log levels
+        logger.debug("debug level message");
+        logger.trace("trace level message");
+        logger.log(Level.forName("NOTICE", 345), "custom level message");
+    }
+...</pre>
+        <p>
+          However, not all logging is garbage free. Specifically:
+          <ul>
+            <li>Use no more than 10 parameters when logging a parameterized message to avoid vararg array creation.</li>
+            <li>Avoid using the ThreadContext map and stack for now since these are copy-on-write data structures by default.</li>
+            <li>Avoid the <tt>Logger.traceEntry</tt> and <tt>Logger.traceExit</tt> for now.</li>
+          </ul>
+        </p>
+        <pre class="prettyprint linenums">...
+    private static final String TOO_LARGE = new String(new char[519]);
+
+    public void notGarbageFree() {
+        logger.traceEntry("creates temporary objects");
+        logger.info(TOO_LARGE); // causes resize of internal StringBuilder, which will be trimmed back to 518 characters
+        logger.info("Messages containing '${': substituting a ${variable} creates temporary objects");
+
+        // a vararg array is created when logging a parameterized message with lambda parameters
+        logger.info("lambda value is {}", () -> callExpensiveMethod());
+
+        // a vararg array is created when logging more than 10 params
+        logger.info("{}{}{}{}{}{}{}{}{}{}{}", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11");
+        logger.info("Auto-boxing creates java.lang.Integer {} java.lang.Double {} etc", 987665, 3.14d);
+        ThreadContext.put("any", "thing"); // creates copy of the map
+        logger.traceExit("creates temporary objects");
+    }
+}</pre>
+        <p>
+        </p>
+        <p>
+        </p>
+      </subsection>
+      <!--
+      <a name="Performance" />
+      <subsection name="Garbage-free Logging Performance">
+
+        <a name="Latency" />
+        <h4>Latency</h4>
+      </subsection>
+      <a name="UnderTheHood" />
+      <subsection name="Under The Hood">
+      </subsection>
+      -->
+    </section>
+  </body>
+</document>
