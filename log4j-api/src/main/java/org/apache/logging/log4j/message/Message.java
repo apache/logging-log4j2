@@ -17,12 +17,17 @@
 package org.apache.logging.log4j.message;
 
 import java.io.Serializable;
+import org.apache.logging.log4j.util.StringBuilderFormattable;
 
 /**
  * An interface for various Message implementations that can be logged. Messages can act as wrappers
  * around Objects so that user can have control over converting Objects to Strings when necessary without
  * requiring complicated formatters and as a way to manipulate the message based on information available
  * at runtime such as the locale of the system.
+ * <p>
+ * Custom Message implementations should consider implementing the {@link StringBuilderFormattable}
+ * interface for more efficient processing.
+ * </p>
  *<p>
  * Note: Message objects should not be considered to be thread safe nor should they be assumed to be
  * safely reusable even on the same thread. The logging system may provide information to the Message
@@ -34,6 +39,8 @@ import java.io.Serializable;
  * (RG) That section also says "If a class or interface exists primarily to participate in a framework that
  * requires all participants to implement Serializable, then it makes perfect sense for the class or
  * interface to implement or extend Serializable". Such is the case here as the LogEvent must be Serializable.
+ *
+ * @see StringBuilderFormattable
  */
 public interface Message extends Serializable {
 
@@ -41,6 +48,12 @@ public interface Message extends Serializable {
      * Gets the Message formatted as a String. Each Message implementation determines the
      * appropriate way to format the data encapsulated in the Message. Messages that provide
      * more than one way of formatting the Message will implement MultiformatMessage.
+     * <p>
+     * This method will not be called for Messages that implement the
+     * {@link StringBuilderFormattable} interface: instead, the
+     * {@link StringBuilderFormattable#formatTo(StringBuilder) formatTo(StringBuilder)} method will be called so the
+     * Message can format its contents without creating intermediate String objects.
+     * </p>
      *
      * @return The message String.
      */
