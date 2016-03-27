@@ -59,8 +59,12 @@ public final class MarkerManager {
      * @throws IllegalArgumentException if the argument is {@code null}
      */
     public static Marker getMarker(final String name) {
-        MARKERS.putIfAbsent(name, new Log4jMarker(name));
-        return MARKERS.get(name);
+        Marker result = MARKERS.get(name);
+        if (result == null) {
+            MARKERS.putIfAbsent(name, new Log4jMarker(name));
+            result = MARKERS.get(name);
+        }
+        return result;
     }
 
     /**
@@ -94,8 +98,7 @@ public final class MarkerManager {
      */
     @Deprecated
     public static Marker getMarker(final String name, final Marker parent) {
-        MARKERS.putIfAbsent(name, new Log4jMarker(name));
-        return MARKERS.get(name).addParents(parent);
+        return getMarker(name).addParents(parent);
     }
 
     /**
