@@ -45,6 +45,7 @@ import org.apache.logging.log4j.message.ReusableParameterizedMessage;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.spi.MessageFactory2Adapter;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Before;
 import org.junit.Rule;
@@ -289,7 +290,11 @@ public class LoggerTest {
         if (messageFactory1 == null) {
             assertEquals(AbstractLogger.DEFAULT_MESSAGE_FACTORY_CLASS, testLogger1.getMessageFactory().getClass());
         } else {
-            assertEquals(messageFactory1, testLogger1.getMessageFactory());
+            MessageFactory actual = testLogger1.getMessageFactory();
+            if (actual instanceof MessageFactory2Adapter) {
+                actual = ((MessageFactory2Adapter) actual).getOriginal();
+            }
+            assertEquals(messageFactory1, actual);
         }
     }
 

@@ -25,6 +25,7 @@ import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.spi.MessageFactory2Adapter;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -45,7 +46,7 @@ public class AbstractLoggerTest extends AbstractLogger {
         modifierField.setAccessible(true);
         modifierField.setInt(field, field.getModifiers() &~ Modifier.FINAL); // make non-private
 
-        field.set(this, ParameterizedMessageFactory.INSTANCE);
+        field.set(this, new MessageFactory2Adapter(ParameterizedMessageFactory.INSTANCE));
     }
 
     private static class LogEvent {

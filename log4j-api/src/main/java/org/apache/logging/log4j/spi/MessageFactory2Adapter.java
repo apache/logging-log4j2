@@ -34,6 +34,10 @@ public class MessageFactory2Adapter implements MessageFactory2 {
         this.wrapped = Objects.requireNonNull(wrapped);
     }
 
+    public MessageFactory getOriginal() {
+        return wrapped;
+    }
+
     @Override
     public Message newMessage(final String message, final Object p0) {
         return wrapped.newMessage(message, p0);
