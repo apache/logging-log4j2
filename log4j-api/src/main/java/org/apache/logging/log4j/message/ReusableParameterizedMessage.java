@@ -57,9 +57,9 @@ public class ReusableParameterizedMessage implements ReusableMessage {
     private void init(final String messagePattern, final int argCount, final Object[] paramArray) {
         this.varargs = null;
         this.messagePattern = messagePattern;
-        this.argCount= argCount;
         int usedCount = count(messagePattern, indices);
-        initThrowable(paramArray, usedCount);
+        initThrowable(paramArray, argCount,usedCount);
+        this.argCount = Math.min(usedCount, argCount);
     }
 
     private static int count(final String messagePattern, final int[] indices) {
@@ -71,10 +71,9 @@ public class ReusableParameterizedMessage implements ReusableMessage {
         }
     }
 
-    private void initThrowable(final Object[] params, final int usedParams) {
+    private void initThrowable(final Object[] params, final int argCount, final int usedParams) {
         if (usedParams < argCount && this.throwable == null && params[argCount - 1] instanceof Throwable) {
             this.throwable = (Throwable) params[argCount - 1];
-            argCount--;
         }
     }
 

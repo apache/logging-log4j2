@@ -30,8 +30,12 @@ public class ReusableParameterizedMessageTest {
     public void testNoArgs() {
         final String testMsg = "Test message {}";
         ReusableParameterizedMessage msg = new ReusableParameterizedMessage();
-        msg.set(testMsg, null);
+        msg.set(testMsg, (Object[]) null);
         String result = msg.getFormattedMessage();
+        assertEquals(testMsg, result);
+
+        msg.set(testMsg, null);
+        result = msg.getFormattedMessage();
         assertEquals(testMsg, result);
 
         msg.set(testMsg, null, null);
