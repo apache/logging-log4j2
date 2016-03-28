@@ -79,6 +79,14 @@ public class ParameterizedMessageTest {
     }
 
     @Test
+    public void testFormatStringArgsWithTrailingText() {
+        final String testMsg = "Test message {}{} {}Text";
+        final String[] args = { "a", "b", "c" };
+        final String result = ParameterizedMessage.format(testMsg, args);
+        assertEquals("Test message ab cText", result);
+    }
+
+    @Test
     public void testFormatStringArgsWithTrailingEscapedEscape() {
         final String testMsg = "Test message {}{} {}\\\\";
         final String[] args = { "a", "b", "c" };
