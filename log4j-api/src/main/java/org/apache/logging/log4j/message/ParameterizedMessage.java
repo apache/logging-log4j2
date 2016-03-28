@@ -68,6 +68,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
     private String formattedMessage;
     private transient Throwable throwable;
     private int[] indices;
+    private int usedCount;
 
     /**
      * Creates a parameterized message.
@@ -135,8 +136,9 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
     private void init(String messagePattern) {
         this.messagePattern = messagePattern;
         this.indices = new int[messagePattern == null ? 0 : messagePattern.length() << 1];
-        final int usedCount = ParameterFormatter.countArgumentPlaceholders2(messagePattern, indices);
+        int usedCount = ParameterFormatter.countArgumentPlaceholders2(messagePattern, indices);
         initThrowable(argArray, usedCount);
+        this.usedCount = Math.min(usedCount, (argArray == null) ? 0 : argArray.length);
     }
 
     private void initThrowable(final Object[] params, final int usedParams) {
@@ -210,11 +212,9 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
             buffer.append(formattedMessage);
         } else {
             if (indices[0] < 0) {
-                ParameterFormatter.formatMessage(buffer, messagePattern, argArray,
-                        argArray == null ? 0 : argArray.length);
+                ParameterFormatter.formatMessage(buffer, messagePattern, argArray, usedCount);
             } else {
-                ParameterFormatter.formatMessage2(buffer, messagePattern, argArray,
-                        argArray == null ? 0 : argArray.length, indices);
+                ParameterFormatter.formatMessage2(buffer, messagePattern, argArray, usedCount, indices);
             }
         }
     }
