@@ -96,6 +96,65 @@ final class ParameterFormatter {
     }
 
     /**
+     * Counts the number of unescaped placeholders in the given messagePattern.
+     *
+     * @param messagePattern the message pattern to be analyzed.
+     * @return the number of unescaped placeholders.
+     */
+    static int countArgumentPlaceholders2(final String messagePattern, final int[] indices) {
+        if (messagePattern == null) {
+            return 0;
+        }
+        int length = messagePattern.length();
+        int result = 0;
+        boolean isEscaped = false;
+        for (int i = 0; i < length - 1; i++) {
+            final char curChar = messagePattern.charAt(i);
+            if (curChar == ESCAPE_CHAR) {
+                isEscaped = !isEscaped;
+                indices[0] = -1; // escaping means fast path is not available...
+            } else if (curChar == DELIM_START) {
+                if (!isEscaped && messagePattern.charAt(i + 1) == DELIM_STOP) {
+                    indices[result] = i;
+                    result++;
+                    i++;
+                }
+                isEscaped = false;
+            } else {
+                isEscaped = false;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Counts the number of unescaped placeholders in the given messagePattern.
+     *
+     * @param messagePattern the message pattern to be analyzed.
+     * @return the number of unescaped placeholders.
+     */
+    static int countArgumentPlaceholders3(final char[] messagePattern, int length, final int[] indices) {
+        int result = 0;
+        boolean isEscaped = false;
+        for (int i = 0; i < length - 1; i++) {
+            final char curChar = messagePattern[i];
+            if (curChar == ESCAPE_CHAR) {
+                isEscaped = !isEscaped;
+            } else if (curChar == DELIM_START) {
+                if (!isEscaped && messagePattern[i + 1] == DELIM_STOP) {
+                    indices[result] = i;
+                    result++;
+                    i++;
+                }
+                isEscaped = false;
+            } else {
+                isEscaped = false;
+            }
+        }
+        return result;
+    }
+
+    /**
      * Replace placeholders in the given messagePattern with arguments.
      *
      * @param messagePattern the message pattern containing placeholders.
@@ -107,6 +166,50 @@ final class ParameterFormatter {
         final int argCount = arguments == null ? 0 : arguments.length;
         formatMessage(result, messagePattern, arguments, argCount);
         return result.toString();
+    }
+
+    /**
+     * Replace placeholders in the given messagePattern with arguments.
+     *
+     * @param buffer the buffer to write the formatted message into
+     * @param messagePattern the message pattern containing placeholders.
+     * @param arguments      the arguments to be used to replace placeholders.
+     */
+    static void formatMessage2(final StringBuilder buffer, final String messagePattern,
+            final Object[] arguments, final int argCount, final int[] indices) {
+        if (messagePattern == null || arguments == null || argCount == 0) {
+            buffer.append(messagePattern);
+            return;
+        }
+        int previous = 0;
+        for (int i = 0; i < argCount; i++) {
+            buffer.append(messagePattern, previous, indices[i]);
+            previous = indices[i] + 2;
+            recursiveDeepToString(arguments[i], buffer, null);
+        }
+        buffer.append(messagePattern, previous, messagePattern.length());
+    }
+
+    /**
+     * Replace placeholders in the given messagePattern with arguments.
+     *
+     * @param buffer the buffer to write the formatted message into
+     * @param messagePattern the message pattern containing placeholders.
+     * @param arguments      the arguments to be used to replace placeholders.
+     */
+    static void formatMessage3(final StringBuilder buffer, final char[] messagePattern, final int patternLength,
+            final Object[] arguments, final int argCount, final int[] indices) {
+        if (messagePattern == null || arguments == null || argCount == 0) {
+            buffer.append(messagePattern);
+            return;
+        }
+        int previous = 0;
+        for (int i = 0; i < argCount; i++) {
+            buffer.append(messagePattern, previous, indices[i]);
+            previous = indices[i] + 2;
+            recursiveDeepToString(arguments[i], buffer, null);
+        }
+        buffer.append(messagePattern, previous, patternLength);
     }
 
     /**
