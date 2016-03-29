@@ -32,7 +32,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
 import java.io.*;
-import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
@@ -96,7 +95,6 @@ public final class GelfLayout extends AbstractStringLayout {
     private static final char Q = '\"';
     private static final String QC = "\",";
     private static final String QU = "\"_";
-    private static final BigDecimal TIME_DIVISOR = new BigDecimal(1000);
 
     private final KeyValuePair[] additionalFields;
     private final int compressionThreshold;
