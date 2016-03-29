@@ -80,7 +80,7 @@ public final class ReflectionUtil {
                     java7u25CompensationOffset = 1;
                 }
             }
-        } catch (final Throwable e) {
+        } catch (final Exception | LinkageError e) {
             LOGGER.info("sun.reflect.Reflection.getCallerClass is not supported. "
                     + "ReflectionUtil.getCallerClass will be much slower due to this.", e);
             getCallerClass = null;
