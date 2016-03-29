@@ -1900,80 +1900,65 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Object p0) {
-        final Message msg = messageFactory.newMessage(message, LambdaUtil.maybeLambda(p0));
+        final Message msg = messageFactory.newMessage(message, p0);
         logMessage(fqcn, level, marker, msg, msg.getThrowable());
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Object p0, final Object p1) {
-        final Message msg = messageFactory.newMessage(message, LambdaUtil.maybeLambda(p0), LambdaUtil.maybeLambda(p1));
+        final Message msg = messageFactory.newMessage(message, p0, p1);
         logMessage(fqcn, level, marker, msg, msg.getThrowable());
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Object p0, final Object p1, final Object p2) {
-        final Message msg = messageFactory.newMessage(message, LambdaUtil.maybeLambda(p0), LambdaUtil.maybeLambda(p1),
-                LambdaUtil.maybeLambda(p2));
+        final Message msg = messageFactory.newMessage(message, p0, p1, p2);
         logMessage(fqcn, level, marker, msg, msg.getThrowable());
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Object p0, final Object p1, final Object p2, final Object p3) {
-        final Message msg = messageFactory.newMessage(message, LambdaUtil.maybeLambda(p0), LambdaUtil.maybeLambda(p1),
-                LambdaUtil.maybeLambda(p2), LambdaUtil.maybeLambda(p3));
+        final Message msg = messageFactory.newMessage(message, p0, p1, p2, p3);
         logMessage(fqcn, level, marker, msg, msg.getThrowable());
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
-        final Message msg = messageFactory.newMessage(message, LambdaUtil.maybeLambda(p0), LambdaUtil.maybeLambda(p1),
-                LambdaUtil.maybeLambda(p2), LambdaUtil.maybeLambda(p3), LambdaUtil.maybeLambda(p4));
+        final Message msg = messageFactory.newMessage(message, p0, p1, p2, p3, p4);
         logMessage(fqcn, level, marker, msg, msg.getThrowable());
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5) {
-        final Message msg = messageFactory.newMessage(message, LambdaUtil.maybeLambda(p0), LambdaUtil.maybeLambda(p1),
-                LambdaUtil.maybeLambda(p2), LambdaUtil.maybeLambda(p3), LambdaUtil.maybeLambda(p4),
-                LambdaUtil.maybeLambda(p5));
+        final Message msg = messageFactory.newMessage(message, p0, p1, p2, p3, p4, p5);
         logMessage(fqcn, level, marker, msg, msg.getThrowable());
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
             final Object p6) {
-        final Message msg = messageFactory.newMessage(message, LambdaUtil.maybeLambda(p0), LambdaUtil.maybeLambda(p1),
-                LambdaUtil.maybeLambda(p2), LambdaUtil.maybeLambda(p3), LambdaUtil.maybeLambda(p4),
-                LambdaUtil.maybeLambda(p5), LambdaUtil.maybeLambda(p6));
+        final Message msg = messageFactory.newMessage(message, p0, p1, p2, p3, p4, p5, p6);
         logMessage(fqcn, level, marker, msg, msg.getThrowable());
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
             final Object p6, final Object p7) {
-        final Message msg = messageFactory.newMessage(message, LambdaUtil.maybeLambda(p0), LambdaUtil.maybeLambda(p1),
-                LambdaUtil.maybeLambda(p2), LambdaUtil.maybeLambda(p3), LambdaUtil.maybeLambda(p4),
-                LambdaUtil.maybeLambda(p5), LambdaUtil.maybeLambda(p6), LambdaUtil.maybeLambda(p7));
+        final Message msg = messageFactory.newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7);
         logMessage(fqcn, level, marker, msg, msg.getThrowable());
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
             final Object p6, final Object p7, final Object p8) {
-        final Message msg = messageFactory.newMessage(message, LambdaUtil.maybeLambda(p0), LambdaUtil.maybeLambda(p1),
-                LambdaUtil.maybeLambda(p2), LambdaUtil.maybeLambda(p3), LambdaUtil.maybeLambda(p4),
-                LambdaUtil.maybeLambda(p5), LambdaUtil.maybeLambda(p6), LambdaUtil.maybeLambda(p7),
-                LambdaUtil.maybeLambda(p8));
+        final Message msg = messageFactory.newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
         logMessage(fqcn, level, marker, msg, msg.getThrowable());
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
             final Object p6, final Object p7, final Object p8, final Object p9) {
-        final Message msg = messageFactory.newMessage(message, LambdaUtil.maybeLambda(p0), LambdaUtil.maybeLambda(p1),
-                LambdaUtil.maybeLambda(p2), LambdaUtil.maybeLambda(p3), LambdaUtil.maybeLambda(p4),
-                LambdaUtil.maybeLambda(p5), LambdaUtil.maybeLambda(p6), LambdaUtil.maybeLambda(p7),
-                LambdaUtil.maybeLambda(p8), LambdaUtil.maybeLambda(p9));
+        final Message msg = messageFactory.newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
         logMessage(fqcn, level, marker, msg, msg.getThrowable());
     }
 
