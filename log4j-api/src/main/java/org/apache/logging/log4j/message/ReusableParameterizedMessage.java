@@ -238,7 +238,8 @@ public class ReusableParameterizedMessage implements ReusableMessage {
     private StringBuilder getBuffer() {
         StringBuilder result = buffer.get();
         if (result == null) {
-            result = new StringBuilder(Math.min(512, messagePattern.length() * 2));
+            final int currentPatternLength = messagePattern == null ? 0 : messagePattern.length();
+            result = new StringBuilder(Math.min(512, currentPatternLength * 2));
             buffer.set(result);
         }
         result.setLength(0);
