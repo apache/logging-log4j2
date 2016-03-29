@@ -113,10 +113,10 @@ public class CsvParameterLayoutTest {
     }
 
     private void logDebugNormalApi() {
-        root.debug(null, 1, 2, 3);
-        root.debug(null, 2, 3);
-        root.debug(null, 5, 6);
-        root.debug(null, 7, 8, 9, 10);
+        root.debug("{}{}{}", 1, 2, 3);
+        root.debug("{}{}{}", 2, 3);
+        root.debug("{}{}{}", 5, 6);
+        root.debug("{}{}{}", 7, 8, 9, 10);
     }
 
     private void logDebugObjectArrayMessage() {
