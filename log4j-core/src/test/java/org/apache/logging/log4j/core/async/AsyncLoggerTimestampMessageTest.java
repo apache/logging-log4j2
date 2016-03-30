@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -37,6 +34,8 @@ import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Confirms that if you log a {@link TimestampMessage} then there are no unnecessary calls to {@link Clock}.
@@ -69,7 +68,9 @@ public class AsyncLoggerTimestampMessageTest {
         // System.out.println(f.getAbsolutePath());
         file.delete();
         final Logger log = LogManager.getLogger("com.foo.Bar");
+        assertFalse(PoisonClock.called);
         log.info(new TimeMsg("Async logger msg with embedded timestamp", 123456789000L));
+        assertTrue(PoisonClock.called);
         CoreLoggerContexts.stopLoggerContext(false, file); // stop async thread
 
         final BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -81,9 +82,12 @@ public class AsyncLoggerTimestampMessageTest {
     }
 
     public static class PoisonClock implements Clock {
+        public static boolean called = false;
         @Override
         public long currentTimeMillis() {
-            throw new RuntimeException("This should not have been called");
+            //throw new RuntimeException("This should not have been called");
+            called = true;
+            return 987654321L;
         }
     }
 
