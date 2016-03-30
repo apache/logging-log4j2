@@ -35,7 +35,6 @@ import org.apache.logging.log4j.core.util.NanoClock;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ReusableMessage;
-import org.apache.logging.log4j.message.TimestampMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import com.lmax.disruptor.EventTranslatorVararg;
@@ -198,7 +197,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
                 ThreadContext.getImmutableStack(), //
                 // location (expensive to calculate)
                 calcLocationIfRequested(fqcn), //
-                eventTimeMillis(message), //
+                CLOCK.currentTimeMillis(), //
                 nanoClock.nanoTime() //
         );
     }
@@ -221,17 +220,6 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
         // Only include if "includeLocation=true" is specified,
         // exclude if not specified or if "false" was specified.
         return includeLocation ? Log4jLogEvent.calcLocation(fqcn) : null;
-    }
-
-    private long eventTimeMillis(final Message message) {
-        // Implementation note: this method is tuned for performance. MODIFY WITH CARE!
-
-        // System.currentTimeMillis());
-        // CoarseCachedClock: 20% faster than system clock, 16ms gaps
-        // CachedClock: 10% faster than system clock, smaller gaps
-        // LOG4J2-744 avoid calling clock altogether if message has the timestamp
-        return message instanceof TimestampMessage ? ((TimestampMessage) message).getTimestamp() : CLOCK
-                .currentTimeMillis();
     }
 
     /**
@@ -290,7 +278,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
         final String threadName = THREAD_NAME_CACHING_STRATEGY.getThreadName();
         event.setValues(asyncLogger, asyncLogger.getName(), marker, fqcn, level, message, thrown, contextMap,
                 contextStack, currentThread.getId(), threadName, currentThread.getPriority(), location,
-                eventTimeMillis(message), nanoClock.nanoTime());
+                CLOCK.currentTimeMillis(), nanoClock.nanoTime());
     }
 
     /**
