@@ -113,6 +113,7 @@ final class ParameterFormatter {
             if (curChar == ESCAPE_CHAR) {
                 isEscaped = !isEscaped;
                 indices[0] = -1; // escaping means fast path is not available...
+                result++;
             } else if (curChar == DELIM_START) {
                 if (!isEscaped && messagePattern.charAt(i + 1) == DELIM_STOP) {
                     indices[result] = i;
