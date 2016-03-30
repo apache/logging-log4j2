@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.message.TimestampMessage;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
@@ -299,7 +300,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage {
 
     @Override
     public long getTimeMillis() {
-        return currentTimeMillis;
+        return message instanceof TimestampMessage ? ((TimestampMessage) message).getTimestamp() :currentTimeMillis;
     }
 
     @Override
