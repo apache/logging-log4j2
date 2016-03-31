@@ -28,19 +28,19 @@
         LoggerFactory in 1.2 API module is not compatible with 1.2.
       </action>
       <action issue="LOG4J2-1339" dev="rpopma" type="fix">
-        AsyncLogger performance optimization: avoid calling instanceof TimestampMessage in hot path.
+        (Perf) AsyncLogger performance optimization: avoid calling instanceof TimestampMessage in hot path.
       </action>
       <action issue="LOG4J2-1324" dev="rpopma" type="fix">
         Improve error handling in the Async Logger background thread: the new default exception handler no longer rethrows the error.
       </action>
       <action issue="LOG4J2-1318" dev="rpopma" type="update">
-        Avoid allocating unnecessary temporary objects in LoggerContext's getLogger methods.
+        (GC) Avoid allocating unnecessary temporary objects in LoggerContext's getLogger methods.
       </action>
       <action issue="LOG4J2-1333" dev="rpopma" type="update">
-        Avoid allocating unnecessary temporary objects in MarkerManager's getMarker methods.
+        (GC) Avoid allocating unnecessary temporary objects in MarkerManager's getMarker methods.
       </action>
       <action issue="LOG4J2-1321" dev="rpopma" type="update">
-        Avoid allocating unnecessary temporary objects in PatternLayout's NamePatternConverter and ClassNamePatternConverter.
+        (GC) Avoid allocating unnecessary temporary objects in PatternLayout's NamePatternConverter and ClassNamePatternConverter.
       </action>
       <action issue="LOG4J2-1309" dev="ggregory" type="fix">
         Configuration file error does not show cause exception.
@@ -49,48 +49,48 @@
         Add pattern converter for thread id and priority in PatternLayout.
       </action>
       <action issue="LOG4J2-1271" dev="rpopma" type="add">
-        Add MessageFactory that avoid allocation by reusing a cached ParameterizedMessage instance.
+        (GC) Add MessageFactory that avoid allocation by reusing a cached ParameterizedMessage instance.
       </action>
       <action issue="LOG4J2-1271" dev="rpopma" type="update">
-        ParameterizedMessage optimizations to avoid or at least postpone allocating temporary objects.
+        (GC) ParameterizedMessage optimizations to avoid or at least postpone allocating temporary objects.
       </action>
       <action issue="LOG4J2-1283" dev="rpopma" type="update">
-        Provide ThreadLocal-based gc-free caching mechanism in DatePatternConverter for non-webapps.
+        (GC) Provide ThreadLocal-based gc-free caching mechanism in DatePatternConverter for non-webapps.
       </action>
       <action issue="LOG4J2-1293" dev="rpopma" type="add">
-        Add interface StringBuilderFormattable to enable converting Messages and parameters to text without allocating temporary objects.
+        (GC) Add interface StringBuilderFormattable to enable converting Messages and parameters to text without allocating temporary objects.
         ParameterizedMessage, ObjectMessage, SimpleMessage and ThreadDumpMessage now implement StringBuilderFormattable.
       </action>
       <action issue="LOG4J2-1291" dev="rpopma" type="update">
-        Update PatternLayout to utilize gc-free mechanism for LogEvent processing.
+        (GC) Update PatternLayout to utilize gc-free mechanism for LogEvent processing.
       </action>
       <action issue="LOG4J2-1292" dev="rpopma" type="update">
-        Update RandomAccessFileAppender and RollingRandomAccessFileAppender to utilize gc-free Layout.encode() method.
+        (GC) Update RandomAccessFileAppender and RollingRandomAccessFileAppender to utilize gc-free Layout.encode() method.
       </action>
       <action issue="LOG4J2-1274" dev="rpopma" type="add">
-        Add encode() method to Layout API to enable converting LogEvents to bytes without creating temporary objects.
+        (GC) Add encode(LogEvent, ByteBufferDestination) method to Layout API to enable converting LogEvents to bytes without creating temporary objects.
       </action>
       <action issue="LOG4J2-1289" dev="ggregory" type="fix">
         Change flow logging text from "entry' to "Enter" and "exit" to "Exit".
-      </action>
-      <action issue="LOG4J2-1284" dev="ggregory" type="fix">
-        Deprecate org.apache.logging.log4j.util.MessageSupplier.
       </action>
       <action issue="LOG4J2-1284" dev="rpopma" type="fix">
         Made default MessageFactory configurable.
       </action>
       <action issue="LOG4J2-1281" dev="rpopma" type="fix">
-        LoggerConfig.getProperties() should not allocate on each call.
+        (GC) LoggerConfig.getProperties() should not allocate on each call.
+      </action>
+      <action issue="LOG4J2-1280" dev="ggregory" type="fix">
+        Deprecate org.apache.logging.log4j.util.MessageSupplier.
       </action>
       <action issue="LOG4J2-1280" dev="rpopma" type="fix">
         Logger methods taking Supplier parameters now correctly handle cases where the supplied value is a Message.
       </action>
       <action issue="LOG4J2-1272" dev="rpopma" type="update">
-        Improve LoggerConfig's data structure for AppenderControl objects to avoid allocating temporary objects during
+        (GC) Improve LoggerConfig's data structure for AppenderControl objects to avoid allocating temporary objects during
         traversal for each log event.
       </action>
       <action issue="LOG4J2-1269" dev="rpopma" type="fix">
-        AsyncLogger should use thread-local translator by default.
+        (GC) AsyncLogger should use thread-local translator by default.
       </action>
       <action issue="LOG4J2-1268" dev="rpopma" type="fix">
         FixedDateFormat was incorrect for formats having MMM with the French locale.
@@ -104,11 +104,11 @@
       <action issue="LOG4J2-1222" dev="rgoers" type="fix">
         Creation of a LoggerContext will fail if shutdown is in progress. LogManager will default to SimpleLogger instead.
       </action>
-      <action issue="LOG4J2-1221" dev="rpopma" type="update" due-to="Michael Barker">
+      <action issue="LOG4J2-1221" dev="rpopma" type="add" due-to="Michael Barker">
         Added async logger Timeout wait strategy and made this the default wait strategy for async loggers.
         This prevents a rare deadlock that may occur on Solaris.
       </action>
-      <action issue="LOG4J2-1080" dev="rpopma" type="update">
+      <action issue="LOG4J2-1080" dev="rpopma" type="add">
         Added option to discard events below a certain log level if the async logger ring buffer
         or async appender queue is full.
       </action>
@@ -149,7 +149,7 @@
         org.apache.logging.log4j.core.net.TcpSocketManager and other classes does not report internal exceptions to the status logger.
       </action>
       <action issue="LOG4J2-1212" dev="rpopma" type="fix">
-        Fix documentation to correctly specify the blocking wait strategy as the default for async loggers.
+        Fix documentation to specify the correct default wait strategy used by async loggers.
       </action>
       <action issue="LOG4J2-1215" dev="ggregory" type="fix" due-to="Erik Kemperman">
         Documentation/XSD inconsistencies.
