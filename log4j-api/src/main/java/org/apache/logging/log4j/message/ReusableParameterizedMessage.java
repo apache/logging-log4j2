@@ -35,6 +35,7 @@ public class ReusableParameterizedMessage implements ReusableMessage {
 
     private String messagePattern;
     private int argCount;
+    private int usedCount;
     private int[] indices = new int[256];
     private transient Object[] varargs;
     private transient Object[] params = new Object[10];
@@ -57,9 +58,10 @@ public class ReusableParameterizedMessage implements ReusableMessage {
     private void init(final String messagePattern, final int argCount, final Object[] paramArray) {
         this.varargs = null;
         this.messagePattern = messagePattern;
-        int usedCount = count(messagePattern, indices);
-        initThrowable(paramArray, argCount,usedCount);
-        this.argCount = Math.min(usedCount, argCount);
+        this.argCount = argCount;
+        int placeholderCount = count(messagePattern, indices);
+        initThrowable(paramArray, argCount, placeholderCount);
+        this.usedCount = Math.min(placeholderCount, argCount);
     }
 
     private static int count(final String messagePattern, final int[] indices) {
@@ -251,7 +253,7 @@ public class ReusableParameterizedMessage implements ReusableMessage {
         if (indices[0] < 0) {
             ParameterFormatter.formatMessage(buffer, messagePattern, getParams(), argCount);
         } else {
-            ParameterFormatter.formatMessage2(buffer, messagePattern, getParams(), argCount, indices);
+            ParameterFormatter.formatMessage2(buffer, messagePattern, getParams(), usedCount, indices);
         }
     }
 
